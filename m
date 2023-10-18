@@ -2,160 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88F7CDFEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496357CDFD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345411AbjJROdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        id S1345227AbjJRObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345343AbjJROcu (ORCPT
+        with ESMTP id S1345741AbjJRObH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:32:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E243D24F18;
-        Wed, 18 Oct 2023 07:23:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5BA011F383;
-        Wed, 18 Oct 2023 14:23:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697638995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2IvKfrgI6kIvXjlAq5Aks0oGwA1m42o1gRc23nO1fAE=;
-        b=xVtsU/1Ua8x38vrciCf3fXDEoneDqknKaF6UtsI4cf1gEaJdvYDYXXgTUpsauQMzm16yDI
-        1C3HD0cKmNlo7fh0Q75XeVwMiPX3svsfn0Wf2C6f0btGo9E0CwRoXMbt45P3Lz6NtIAXWV
-        7QoB4XVaj8hxs2de2til1uzYHStFLhc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697638995;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2IvKfrgI6kIvXjlAq5Aks0oGwA1m42o1gRc23nO1fAE=;
-        b=ihRWtvfV5N2TdE/ymRmqxIkhdyZY8+l0Y4jDOViTCkSq/7LFvebhKgVimkOzXuqdSHJTLu
-        pIpLC59qeE8O7sAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25E3213915;
-        Wed, 18 Oct 2023 14:23:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NkKKCFPqL2UfVgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 18 Oct 2023 14:23:15 +0000
-Message-ID: <3b723bf1-830e-7f47-27ce-98f7808fbc4b@suse.cz>
-Date:   Wed, 18 Oct 2023 16:23:14 +0200
+        Wed, 18 Oct 2023 10:31:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C76724F1C
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:23:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26198C433C8;
+        Wed, 18 Oct 2023 14:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697639015;
+        bh=Ib5xGlxFnL+g2CztwHbaocEOnFEe/Lvk6lssJdyUbDk=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=K7izogodyR6m1/+d0slSkw+5+0OJ9cpE46MG2k7Yl6dLM7o8diY5WLcvWmfY7zNjk
+         fcCYtLJgvpSt1lg6BAYIe3GPVu3JKguUyL25bHpPnudT6k1TeYUQPfaUd9hL0tqDWP
+         L3gc0aISlW2qlIEEAfX/OwoczOhPbnF4yUz482sIY/Mxi42rYjfJcTNH8yWx4TQe6T
+         HBLxBZOqQ/qYGEWSrcZdsydD1w4jUUMXGStypPSohzho2CWhfBSQhqVZu7S5RAYuac
+         bW5vNmS+j1TSq07G3uQ6mKFEzlGT/KTGBUV/JdJ38YuFCD8ca93UA12Vpl8uJ+oVQY
+         QR0EmoI5+FgWg==
+Message-ID: <beb42f6d-3c3b-47ea-897b-2a0656ab5c0a@kernel.org>
+Date:   Wed, 18 Oct 2023 16:23:33 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 5/5] percpu: scoped objcg protection
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/6] arm64: dts: qcom: starqltechn: enable more features
 Content-Language: en-US
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
- <20231016221900.4031141-6-roman.gushchin@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231016221900.4031141-6-roman.gushchin@linux.dev>
+To:     Dzmitry Sankouski <dsankouski@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20231018123033.301005-1-dsankouski@gmail.com>
+ <20231018123033.301005-5-dsankouski@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231018123033.301005-5-dsankouski@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.57
-X-Spamd-Result: default: False [-2.57 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(1.53)[86.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 00:19, Roman Gushchin wrote:
-> Similar to slab and kmem, switch to a scope-based protection of the
-> objcg pointer to avoid.
+On 18/10/2023 14:30, Dzmitry Sankouski wrote:
+> - enable usb 2.0
+> - enable debug uart (uart9)
+> - enable touchscreen
+> - enable ipa so that we can bring up mobile data
 > 
-> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Acked-by: Shakeel Butt <shakeelb@google.com>
+> Signed-off-by: Dzmitry Sankouski <dsankouski@gmail.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Do you plan to convert also the bpf users of get_obj_cgroup_from_current()
-so it could be removed?
+>  &usb_1_dwc3 {
+>  	/* Until we have Type C hooked up we'll force this as peripheral. */
+>  	dr_mode = "peripheral";
+> +
+> +	maximum-speed = "high-speed";
+>  };
+>  
+>  &usb_1_hsphy {
+> @@ -444,4 +580,53 @@ sd_card_det_n_state: sd-card-det-n-state {
+>  		function = "gpio";
+>  		bias-pull-up;
+>  	};
+> +
+> +	s2dos05_irq: s2dos05_irq {
 
-Thanks!
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
 
-> ---
->  mm/percpu.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index a7665de8485f..f53ba692d67a 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -1628,14 +1628,12 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
->  	if (!memcg_kmem_online() || !(gfp & __GFP_ACCOUNT))
->  		return true;
->  
-> -	objcg = get_obj_cgroup_from_current();
-> +	objcg = current_obj_cgroup();
->  	if (!objcg)
->  		return true;
->  
-> -	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size))) {
-> -		obj_cgroup_put(objcg);
-> +	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
->  		return false;
-> -	}
->  
->  	*objcgp = objcg;
->  	return true;
-> @@ -1649,6 +1647,7 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
->  		return;
->  
->  	if (likely(chunk && chunk->obj_cgroups)) {
-> +		obj_cgroup_get(objcg);
->  		chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = objcg;
->  
->  		rcu_read_lock();
-> @@ -1657,7 +1656,6 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
->  		rcu_read_unlock();
->  	} else {
->  		obj_cgroup_uncharge(objcg, pcpu_obj_full_size(size));
-> -		obj_cgroup_put(objcg);
->  	}
->  }
->  
+Best regards,
+Krzysztof
 
