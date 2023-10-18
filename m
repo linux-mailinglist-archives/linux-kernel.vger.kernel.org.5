@@ -2,55 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 398257CDCBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AA37CDD64
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjJRNI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        id S1344748AbjJRNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjJRNIx (ORCPT
+        with ESMTP id S1344731AbjJRNex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:08:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6037F7;
-        Wed, 18 Oct 2023 06:08:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C115C433CA;
-        Wed, 18 Oct 2023 13:08:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697634531;
-        bh=59MIHQ5xze11X1GA0H585EDWrwAwT1Pnx5pWo4xmF+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cC5/Mgcj98h1IrbbjUfngbT0g86KQQNui60+guG2C+Z6f5Aejwf1DdojOFHFooDEs
-         Q4/16gdfwhYSR7hK9LFBwvnEyluwDD8m8DGHfU35ZtrI2gcYJqeny5AGPppfrAm4W/
-         /N4BvJSfcNx1/pomDjDB10RTskPC+BfOsdQC+DSZkE7O9Ou3mHR3EwxCqI7ruvRw5O
-         0q2t4Llvo4J/X1IOgUj1A68t87IfNGh8PixqLfLsiXCrg0MsIQSCF29d0RwHdzOMEP
-         eJyPXj0nq9nxZ2XCMOjdZ+ve73O+7Ef3zetjoWAH89oE9lGAKEvbqfs7Z3VMGCrLFA
-         9/tBaRvFJrZ8g==
-Date:   Wed, 18 Oct 2023 18:38:43 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qiang Yu <quic_qianyu@quicinc.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, quic_jhugo@quicinc.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem
- support
-Message-ID: <20231018130843.GB47321@thinkpad>
-References: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
- <20230808075103.GD4990@thinkpad>
- <be205d43-b558-47eb-0250-b7415474b6e9@quicinc.com>
- <20230808105928.GF4990@thinkpad>
- <e3a206e7-f36b-d896-20f7-4e35b9743c1d@quicinc.com>
- <20231017075035.GB5274@thinkpad>
- <b7a35d1e-85e2-4c60-a049-e6234d6431df@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 18 Oct 2023 09:34:53 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CAF83;
+        Wed, 18 Oct 2023 06:34:51 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDRIM0018290;
+        Wed, 18 Oct 2023 13:34:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=v1hbk3o2iW6VZiZOHYqCLqw6rsfgHH1WHNcVMCZL7Lg=;
+ b=XeXNKEoKxeYKo8OdNhS43HFY3CCEhYxdwTmIz5j30pKOMW/PAy4nx6/csUz8wyzoN3cg
+ rWltPMe/bcP8sA5vJxW28e5Rma9TebUemKq5m0/N2twAv5ViftB5VeEUMhfB+jb6sHK0
+ qEuk5CIRyi1EVg15yjKSpp58tnTQUMupAZYQxpdrl+8saeCLtQHc1HSpm4nE5Sps78fA
+ NljvmmvKL768yFKojXEIrbNi+S/Kt0a3k7oIByQmopYtEc0v2ByddFzhULT+oohBEzuk
+ 3UxlNwV/8PPGmfD2VXrodVGm4AYyfpaWgzueFhr1NjzzKI+lPhhUuvjlkmFSht0U+TO2 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg8v8cr9-79
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:34:29 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39ID7P4x016033;
+        Wed, 18 Oct 2023 13:10:51 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttfydr61x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:10:51 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39ICpYgH020101;
+        Wed, 18 Oct 2023 13:09:12 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6an8hx5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:09:12 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39ID9CL450200984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 13:09:12 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 217BA58063;
+        Wed, 18 Oct 2023 13:09:12 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A7235805A;
+        Wed, 18 Oct 2023 13:09:11 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.77.189])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Oct 2023 13:09:11 +0000 (GMT)
+Message-ID: <c896c8ed559d0075146070be232e449b6951eb99.camel@linux.ibm.com>
+Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net,
+        linux-integrity@vger.kernel.org
+Date:   Wed, 18 Oct 2023 09:09:10 -0400
+In-Reply-To: <2637d5294d4a7ae871f1b758f5a30234836e2463.camel@huaweicloud.com>
+References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
+         <20230912205658.3432-1-casey@schaufler-ca.com>
+         <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
+         <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
+         <ae39864947debbc7c460db478b8abe1c147b7d5c.camel@huaweicloud.com>
+         <CAHC9VhRQ7xpeSX7b3VZfzQ15noJ8mgauNMuHWo_n3hMgsYMAfQ@mail.gmail.com>
+         <468436cf766732a3cfc55d07ad119a6ccdc815c1.camel@huaweicloud.com>
+         <CAHC9VhTjHT-DGKu0=cZPVb=+kMwmbPdr8HiVWJq-yzaDiYk_SA@mail.gmail.com>
+         <6f33144c850c40e9438a6de2cf3004e223508755.camel@huaweicloud.com>
+         <2637d5294d4a7ae871f1b758f5a30234836e2463.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Vfsivn6sAVLBujdoYS7Plieh6W-ICf3d
+X-Proofpoint-ORIG-GUID: vzSDU5G1JRFXs3FNhIyRJAQRNlXG6h78
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b7a35d1e-85e2-4c60-a049-e6234d6431df@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_12,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 clxscore=1011 phishscore=0
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310180112
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,213 +107,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 09:52:55AM +0800, Qiang Yu wrote:
-> 
-> On 10/17/2023 3:50 PM, Manivannan Sadhasivam wrote:
-> > On Wed, Aug 09, 2023 at 11:42:39AM +0800, Qiang Yu wrote:
-> > > On 8/8/2023 6:59 PM, Manivannan Sadhasivam wrote:
-> > > > On Tue, Aug 08, 2023 at 04:53:32PM +0800, Qiang Yu wrote:
-> > > > > On 8/8/2023 3:51 PM, Manivannan Sadhasivam wrote:
-> > > > > > On Tue, Aug 08, 2023 at 10:03:35AM +0800, Qiang Yu wrote:
-> > > > > > > Add generic info for SDX75 based modems. SDX75 takes longer than expected
-> > > > > > > (default, 8 seconds) to set ready after reboot. Hence add optional ready
-> > > > > > > timeout parameter to wait enough for device ready as part of power up
-> > > > > > > sequence.
-> > > > > > > 
-> > > > > > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> > > > > > > ---
-> > > > > > >     drivers/bus/mhi/host/init.c        |  1 +
-> > > > > > >     drivers/bus/mhi/host/main.c        |  7 ++++++-
-> > > > > > >     drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
-> > > > > > >     drivers/bus/mhi/host/pm.c          |  6 +++++-
-> > > > > > >     include/linux/mhi.h                |  4 ++++
-> > > > > > >     5 files changed, 38 insertions(+), 2 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-> > > > > > > index f78aefd..65ceac1 100644
-> > > > > > > --- a/drivers/bus/mhi/host/init.c
-> > > > > > > +++ b/drivers/bus/mhi/host/init.c
-> > > > > > > @@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
-> > > > > > >     	if (!mhi_cntrl->timeout_ms)
-> > > > > > >     		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
-> > > > > > > +	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
-> > > > > > >     	mhi_cntrl->bounce_buf = config->use_bounce_buf;
-> > > > > > >     	mhi_cntrl->buffer_len = config->buf_len;
-> > > > > > >     	if (!mhi_cntrl->buffer_len)
-> > > > > > > diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> > > > > > > index 74a7543..8590926 100644
-> > > > > > > --- a/drivers/bus/mhi/host/main.c
-> > > > > > > +++ b/drivers/bus/mhi/host/main.c
-> > > > > > > @@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> > > > > > >     				    u32 mask, u32 val, u32 delayus)
-> > > > > > >     {
-> > > > > > >     	int ret;
-> > > > > > > -	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-> > > > > > > +	u32 out, retry;
-> > > > > > > +	u32 timeout_ms = mhi_cntrl->timeout_ms;
-> > > > > > > +	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
-> > > > > > > +		timeout_ms = mhi_cntrl->ready_timeout_ms;
-> > > > > > Instead of handling the timeout inside mhi_poll_reg_field(), you should pass the
-> > > > > > appropriate timeout value to this function.
-> > > > > OK, will do.
-> > > > > > > +
-> > > > > > > +	retry = (timeout_ms * 1000) / delayus;
-> > > > > > >     	while (retry--) {
-> > > > > > >     		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
-> > > > > > >     		if (ret)
-> > > > > > > diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-> > > > > > > index fcd80bc..9c601f0 100644
-> > > > > > > --- a/drivers/bus/mhi/host/pci_generic.c
-> > > > > > > +++ b/drivers/bus/mhi/host/pci_generic.c
-> > > > > > > @@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
-> > > > > > >     	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
-> > > > > > >     };
-> > > > > > > +static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
-> > > > > > > +	.max_channels = 128,
-> > > > > > > +	.timeout_ms = 8000,
-> > > > > > > +	.ready_timeout_ms = 50000,
-> > > > > > > +	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
-> > > > > > > +	.ch_cfg = modem_qcom_v1_mhi_channels,
-> > > > > > > +	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
-> > > > > > > +	.event_cfg = modem_qcom_v1_mhi_events,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > >     static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
-> > > > > > >     	.max_channels = 128,
-> > > > > > >     	.timeout_ms = 8000,
-> > > > > > > @@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
-> > > > > > >     	.event_cfg = modem_qcom_v1_mhi_events,
-> > > > > > >     };
-> > > > > > > +static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
-> > > > > > > +	.name = "qcom-sdx75m",
-> > > > > > > +	.fw = "qcom/sdx75m/xbl.elf",
-> > > > > > > +	.edl = "qcom/sdx75m/edl.mbn",
-> > > > > > > +	.config = &modem_qcom_v2_mhiv_config,
-> > > > > > > +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> > > > > > > +	.dma_data_width = 32,
-> > > > > > > +	.sideband_wake = false,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > >     static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
-> > > > > > >     	.name = "qcom-sdx65m",
-> > > > > > >     	.fw = "qcom/sdx65m/xbl.elf",
-> > > > > > > @@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
-> > > > > > >     		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
-> > > > > > >     	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
-> > > > > > >     		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
-> > > > > > > +	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
-> > > > > > > +		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
-> > > > > > >     	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
-> > > > > > >     		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
-> > > > > > >     	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
-> > > > > > > diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-> > > > > > > index 8a4362d..6f049e0 100644
-> > > > > > > --- a/drivers/bus/mhi/host/pm.c
-> > > > > > > +++ b/drivers/bus/mhi/host/pm.c
-> > > > > > > @@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
-> > > > > > >     int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
-> > > > > > >     {
-> > > > > > >     	int ret = mhi_async_power_up(mhi_cntrl);
-> > > > > > > +	u32 timeout_ms;
-> > > > > > >     	if (ret)
-> > > > > > >     		return ret;
-> > > > > > > +	/* Some devices need more time to set ready during power up */
-> > > > > > > +	timeout_ms = mhi_cntrl->ready_timeout_ms ?
-> > > > > > > +		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
-> > > > > > Since you are using this extended timeout value in a couple of places (not just
-> > > > > > for checking READY_STATE), it is better to use the existing "timeout_ms"
-> > > > > > parameter.
+On Wed, 2023-10-18 at 11:31 +0200, Roberto Sassu wrote:
+> On Tue, 2023-10-17 at 18:07 +0200, Roberto Sassu wrote:
+> > On Tue, 2023-10-17 at 11:58 -0400, Paul Moore wrote:
+> > > On Tue, Oct 17, 2023 at 3:01 AM Roberto Sassu
+> > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > On Mon, 2023-10-16 at 11:06 -0400, Paul Moore wrote:
+> > > > > On Mon, Oct 16, 2023 at 8:05 AM Roberto Sassu
+> > > > > <roberto.sassu@huaweicloud.com> wrote:
 > > > > > > 
-> > > > > > - Mani
-> > > > > We use ready_timeout_ms here is because READY_STATE is polled in a
-> > > > > workqueue,  in parallel with waiting valid EE.
+> > > > > > Sorry, I just noticed LSM_ID_IMA. Since we have the 'integrity' LSM, I
+> > > > > > think it should be LSM_ID_INTEGRITY.
+> > > > > > 
+> > > > > > Mimi, all, do you agree? If yes, I send a patch shortly.
 > > > > > 
-> > > > > That means we start to wait valid EE and poll ready like at same time
-> > > > > instead of starting to wait EE after ready state.
+> > > > > I believe LSM_ID_IMA is the better option, despite "integrity" already
+> > > > > being present in Kconfig and possibly other areas.  "IMA" is a
+> > > > > specific thing/LSM whereas "integrity" is a property, principle, or
+> > > > > quality.  Especially as we move forward with promoting IMA as a full
+> > > > > and proper LSM, we should work towards referring to it as "IMA" and
+> > > > > not "integrity".
 > > > > > 
-> > > > > Thus the total time it takes to wait valid EE is about the time for polling
-> > > > > ready.
-> > > > > 
-> > > > Yes, but why can't you still increase "timeout_ms" for SDX75 and use the same?
+> > > > > If anything we should be working to support "IMA" in places where we
+> > > > > currently have "integrity" so that we can eventually deprecate
+> > > > > "integrity".
 > > > > 
-> > > > Btw, please do not send another version while the discussion is going on for the
-> > > > current one.
+> > > > Hi Paul
 > > > > 
-> > > > - Mani
-> > > SDX75 only needs 50 seconds when setting ready for the first time after
-> > > power on. Other state transitions
+> > > > I fully understand your argument. However, 'integrity' has been the
+> > > > word to identify the integrity subsystem since long time ago.
+> > > > 
+> > > > Reducing the scope to 'ima' would create some confusion since, while
+> > > > 'ima' is associated to integrity, it would not encompass EVM.
 > > > 
-> > > is expected to wait only 8 seconds. If we use 50s for every state
-> > > transition, it's OK but not friendly in some cases.
-> > > 
-> > > 
-> > > For example, host is resuming from suspend, but device has already crashed
-> > > and tansferred to Sahara mode when
-> > > 
-> > > in suspended state. Thus host must wait M0 event timeout, and then reinit
-> > > mhi and tranfer to SBL state in recovery
-> > > 
-> > > process. If we set mhi_cntrl->timeout_ms=50s, we have to wait 50s to collect
-> > > crash dump after seeing resume fail log.
-> > > 
-> > Hmm. Can't you fix the firmware? Taking 50s to bootup doesn't look good from
-> > user perspective.
+> > > Using LSM_ID_IMA to reference the combination of IMA+EVM makes much
+> > > more sense to me than using LSM_ID_INTEGRITY, especially as we move
+> > > towards promoting IMA+EVM and adopting LSM hooks for integrity
+> > > verification, opening the door for other integrity focused LSMs.
 > > 
-> > - Mani
->  It is a firmware limitation and we can't fix it now.
+> > + Mimi, linux-integrity
+> > 
+> > Ok, just to understand before posting v4, the code looks like this:
+> 
+> I worked on a new proposal. Let me know what you think. It is available
+> here:
+> 
+> https://github.com/robertosassu/linux/tree/ima-evm-lsms-v4-devel-v6
+> 
+> 
+> I made IMA and EVM as standalone LSMs and removed 'integrity'. They
+> maintain the same properties of 'integrity', i.e. they are the last and
+> always enabled.
+> 
+> During initialization, 'ima' and 'evm' call integrity_iintcache_init(),
+> so that they can get integrity metadata. I added a check to ensure that
+> this function is called only once. I also added the lsmid parameter so
+> that the integrity-specific functions are added under the LSM ID of the
+> caller.
+> 
+> I added a new LSM ID for EVM, does not look good that IMA and EVM are
+> represented by LSM_ID_IMA.
+> 
+> Finally, I had to drop the patch to remove the rbtree, because without
+> the 'integrity' LSM, space in the security blob cannot be reserved.
+> Since integrity metadata is shared, it cannot be reserved by 'ima' or
+> 'evm'.
+> 
+> An intermediate solution would be to keep the 'integrity' LSM just to
+> reserve space in the security blob. Or, we remove the rbtree if/when
+> IMA and EVM use disjoint integrity metadata.
 
-Okay. Then I'm fine with this workaround.
+One of the major benefits for making IMA and EVM LSMs was removing the
+rbtree and replacing it with the ability of using i_security.
 
-Please post the next version incorporating other comments.
-
-- Mani
-
-> > > > > > >     	wait_event_timeout(mhi_cntrl->state_event,
-> > > > > > >     			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
-> > > > > > >     			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
-> > > > > > > -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> > > > > > > +			   msecs_to_jiffies(timeout_ms));
-> > > > > > >     	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> > > > > > >     	if (ret)
-> > > > > > > diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> > > > > > > index f6de4b6..a43e5f8 100644
-> > > > > > > --- a/include/linux/mhi.h
-> > > > > > > +++ b/include/linux/mhi.h
-> > > > > > > @@ -266,6 +266,7 @@ struct mhi_event_config {
-> > > > > > >      * struct mhi_controller_config - Root MHI controller configuration
-> > > > > > >      * @max_channels: Maximum number of channels supported
-> > > > > > >      * @timeout_ms: Timeout value for operations. 0 means use default
-> > > > > > > + * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
-> > > > > > >      * @buf_len: Size of automatically allocated buffers. 0 means use default
-> > > > > > >      * @num_channels: Number of channels defined in @ch_cfg
-> > > > > > >      * @ch_cfg: Array of defined channels
-> > > > > > > @@ -277,6 +278,7 @@ struct mhi_event_config {
-> > > > > > >     struct mhi_controller_config {
-> > > > > > >     	u32 max_channels;
-> > > > > > >     	u32 timeout_ms;
-> > > > > > > +	u32 ready_timeout_ms;
-> > > > > > >     	u32 buf_len;
-> > > > > > >     	u32 num_channels;
-> > > > > > >     	const struct mhi_channel_config *ch_cfg;
-> > > > > > > @@ -326,6 +328,7 @@ struct mhi_controller_config {
-> > > > > > >      * @pm_mutex: Mutex for suspend/resume operation
-> > > > > > >      * @pm_lock: Lock for protecting MHI power management state
-> > > > > > >      * @timeout_ms: Timeout in ms for state transitions
-> > > > > > > + * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
-> > > > > > >      * @pm_state: MHI power management state
-> > > > > > >      * @db_access: DB access states
-> > > > > > >      * @ee: MHI device execution environment
-> > > > > > > @@ -413,6 +416,7 @@ struct mhi_controller {
-> > > > > > >     	struct mutex pm_mutex;
-> > > > > > >     	rwlock_t pm_lock;
-> > > > > > >     	u32 timeout_ms;
-> > > > > > > +	u32 ready_timeout_ms;
-> > > > > > >     	u32 pm_state;
-> > > > > > >     	u32 db_access;
-> > > > > > >     	enum mhi_ee_type ee;
-> > > > > > > -- 
-> > > > > > > 2.7.4
-> > > > > > > 
+I agree with Roberto.  All three should be defined: LSM_ID_INTEGRITY,
+LSM_ID_IMA, LSM_ID_EVM.
 
 -- 
-மணிவண்ணன் சதாசிவம்
+thanks,
+
+Mimi
+
