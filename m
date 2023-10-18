@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D897CE81E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A4C7CE820
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjJRTtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S232257AbjJRTtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjJRTs6 (ORCPT
+        with ESMTP id S232458AbjJRTtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:48:58 -0400
+        Wed, 18 Oct 2023 15:49:01 -0400
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6931A134;
-        Wed, 18 Oct 2023 12:48:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0752F12A;
+        Wed, 18 Oct 2023 12:48:57 -0700 (PDT)
 Received: from smtp.gmail.com (1.general.jsalisbury.us.vpn [10.172.66.188])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B6A7741538;
-        Wed, 18 Oct 2023 19:48:50 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6FFC841667;
+        Wed, 18 Oct 2023 19:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697658532;
-        bh=d70wFwXulEx1BEkYka3RH1xY2ngWeBIL+MztFYjvhlc=;
+        s=20210705; t=1697658533;
+        bh=q/gI4PcKUTSkZEO2X7cx1o5TMd8FkYNBDk5OQzXeztw=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=uTajf4Lrk/Y6l0PMtoBHSezRxbtL6I+9Etz56AKlRR7JWdgBtA2AgEQV3/Rupk25Y
-         ymMXoaB4O00xU2p3kpxyx2gU5OaaISsp8UuLCHRKhfRSD1NURNzXc6lXvCvSMrsJmn
-         QAqHgB7jlEbrrtctV3GBhbpeyca3C/g7+TjFn/HbzMP5OcomVDbqC0OrNWOKLinqMa
-         j5gX5NDorx+NHXgRr+k0onATTxnDpnpuyJHWX7vAewtsnEUG3UfckFGZ43VEaAwH/D
-         9z3KGo7fSjqHSw3K7YImQN2LOrPLrcufRaZ9wwG+Li4hqFbonl0VojHt4v5oB84EHT
-         WTftckTLnLf5g==
+        b=U34gL95E19+hPs4CUFk2ZWiCQKMKSxu4Rp+Kq5hmE6LgNO2Afspz4YBbB1jq4Nx6C
+         v6E9dVAiy5qhR5JEE1tPdscJJPB7BjY5Y1djPfuJYZfQINWjjl3xcfM+JvzdU6JlBQ
+         VgUEfFfV3Wtlx2Kz/zMuQKTrRqxZhv9IP/4dzmHdXe7RWJCj7J+QZ6M10yGA9JwGPV
+         rzerVR6frjNZfJjjGTqcBetYs2sdBO2MftlyZhMWLmq9viIvvHsIy5FQQC+ZWi+Tu8
+         dOYp4x2NFWtAngH7k3o0NycUadFgWywSLAOk4o1zok8GI9ieOe7eAJwXQSXQAt9dMu
+         dZKLhkl219FxQ==
 From:   Joseph Salisbury <joseph.salisbury@canonical.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -45,10 +45,11 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>,
         Joseph Salisbury <joseph.salisbury@canonical.com>
-Cc:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH RT 07/12] locking/seqlock: Do the lockdep annotation before locking in do_write_seqcount_begin_nested()
-Date:   Wed, 18 Oct 2023 15:48:28 -0400
-Message-Id: <20231018194833.651674-8-joseph.salisbury@canonical.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH RT 08/12] mm/page_alloc: Use write_seqlock_irqsave() instead write_seqlock() + local_irq_save().
+Date:   Wed, 18 Oct 2023 15:48:29 -0400
+Message-Id: <20231018194833.651674-9-joseph.salisbury@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231018194833.651674-1-joseph.salisbury@canonical.com>
 References: <20231018194833.651674-1-joseph.salisbury@canonical.com>
@@ -72,53 +73,93 @@ If anyone has any objections, please let me know.
 -----------
 
 
-It was brought up by Tetsuo that the following sequence:
+__build_all_zonelists() acquires zonelist_update_seq by first disabling
+interrupts via local_irq_save() and then acquiring the seqlock with
+write_seqlock(). This is troublesome and leads to problems on
+PREEMPT_RT. The problem is that the inner spinlock_t becomes a sleeping
+lock on PREEMPT_RT and must not be acquired with disabled interrupts.
 
-   write_seqlock_irqsave()
-   printk_deferred_enter()
+The API provides write_seqlock_irqsave() which does the right thing in
+one step.
+printk_deferred_enter() has to be invoked in non-migrate-able context to
+ensure that deferred printing is enabled and disabled on the same CPU.
+This is the case after zonelist_update_seq has been acquired.
 
-could lead to a deadlock if the lockdep annotation within
-write_seqlock_irqsave() triggers.
+There was discussion on the first submission that the order should be:
+	local_irq_disable();
+	printk_deferred_enter();
+	write_seqlock();
 
-The problem is that the sequence counter is incremented before the lockdep
-annotation is performed. The lockdep splat would then attempt to invoke
-printk() but the reader side, of the same seqcount, could have a
-tty_port::lock acquired waiting for the sequence number to become even again.
+to avoid pitfalls like having an unaccounted printk() coming from
+write_seqlock_irqsave() before printk_deferred_enter() is invoked. The
+only origin of such a printk() can be a lockdep splat because the
+lockdep annotation happens after the sequence count is incremented.
+This is exceptional and subject to change.
 
-The other lockdep annotations come before the actual locking because "we
-want to see the locking error before it happens". There is no reason why
-seqcount should be different here.
+It was also pointed that PREEMPT_RT can be affected by the printk
+problem since its write_seqlock_irqsave() does not really disable
+interrupts. This isn't the case because PREEMPT_RT's printk
+implementation differs from the mainline implementation in two important
+aspects:
+- Printing happens in a dedicated threads and not at during the
+  invocation of printk().
+- In emergency cases where synchronous printing is used, a different
+  driver is used which does not use tty_port::lock.
 
-Do the lockdep annotation first then perform the locking operation (the
-sequence increment).
+Acquire zonelist_update_seq with write_seqlock_irqsave() and then defer
+printk output.
 
-Fixes: 1ca7d67cf5d5a ("seqcount: Add lockdep functionality to seqcount/seqlock structures")
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 1007843a91909 ("mm/page_alloc: fix potential deadlock on zonelist_update_seq seqlock")
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20230623201517.yw286Knb@linutronix.de
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230920104627._DTHgPyA@linutronix.de
-
-Closes: https://lore.kernel.org/20230621130641.-5iueY1I@linutronix.de
-(cherry picked from commit 41b43b6c6e30a832c790b010a06772e793bca193)
+(cherry picked from commit 4d1139baae8bc4fff3728d1d204bdb04c13dbe10)
 Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
 ---
- include/linux/seqlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/page_alloc.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 37ded6b8fee6..2c5d0102315d 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -516,8 +516,8 @@ do {									\
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 33355028122a..174bcc23d5fd 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6419,19 +6419,17 @@ static void __build_all_zonelists(void *data)
+ 	unsigned long flags;
  
- static inline void do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
- {
--	do_raw_write_seqcount_begin(s);
- 	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
-+	do_raw_write_seqcount_begin(s);
+ 	/*
+-	 * Explicitly disable this CPU's interrupts before taking seqlock
+-	 * to prevent any IRQ handler from calling into the page allocator
+-	 * (e.g. GFP_ATOMIC) that could hit zonelist_iter_begin and livelock.
++	 * The zonelist_update_seq must be acquired with irqsave because the
++	 * reader can be invoked from IRQ with GFP_ATOMIC.
+ 	 */
+-	local_irq_save(flags);
++	write_seqlock_irqsave(&zonelist_update_seq, flags);
+ 	/*
+-	 * Explicitly disable this CPU's synchronous printk() before taking
+-	 * seqlock to prevent any printk() from trying to hold port->lock, for
++	 * Also disable synchronous printk() to prevent any printk() from
++	 * trying to hold port->lock, for
+ 	 * tty_insert_flip_string_and_push_buffer() on other CPU might be
+ 	 * calling kmalloc(GFP_ATOMIC | __GFP_NOWARN) with port->lock held.
+ 	 */
+ 	printk_deferred_enter();
+-	write_seqlock(&zonelist_update_seq);
+ 
+ #ifdef CONFIG_NUMA
+ 	memset(node_load, 0, sizeof(node_load));
+@@ -6464,9 +6462,8 @@ static void __build_all_zonelists(void *data)
+ #endif
+ 	}
+ 
+-	write_sequnlock(&zonelist_update_seq);
+ 	printk_deferred_exit();
+-	local_irq_restore(flags);
++	write_sequnlock_irqrestore(&zonelist_update_seq, flags);
  }
  
- /**
+ static noinline void __init
 -- 
 2.34.1
 
