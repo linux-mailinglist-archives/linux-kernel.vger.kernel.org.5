@@ -2,179 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FC27CE8DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBF17CE8EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbjJRU3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        id S230304AbjJRU34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbjJRU22 (ORCPT
+        with ESMTP id S235167AbjJRU3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:28:28 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1984D4C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:28:17 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507bd19eac8so3482198e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697660896; x=1698265696; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1IkfvvSOsBHtTtrxwDROKr8J2+syziWFNikOdZa81Lk=;
-        b=mkWYfqQqjb878ItjeyYcPAoG0BJ3aTsas2sb2gwBo+WwhMWDee04ln5rcE4/DnhAPU
-         mhroC/KttNdHg2mtZfRzMc7p5TSM6COHpUrTMTK4oIzvlPfNx7waf9NsOSxg8zgq6Pgt
-         +O9IDirCWv2BLeMchjal9h8TKVLsa8j8CiWfqQLCqEp7sc6+FFXv9PyHJppX+igvLDZA
-         qBMJ8GGgIzMeLJ6ovbHbtGEW8Uf21+dL8mtthYiRSL6AER8ohAmAcIioZ/n7XdfXXyE6
-         oT+56kc47k9QJW6gFoVxTqkPI9qqWM6vXkbZVEKDgRoXtqQRXLwGztyv5JpcQ8AqtR+n
-         e9WQ==
+        Wed, 18 Oct 2023 16:29:36 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D30413D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:29:03 -0700 (PDT)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 73C643F697
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:29:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1697660940;
+        bh=Yk6MXkIPUgxpsJ5kIJxp6djW0jucI4oJfrO+nT8SMO4=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=iD56LVus6zu0v5OVZVVQvaSQGI/6e3hYPXPonpGWH4yAWdSNu5Pucr6C5IjxjOr2s
+         caGnbxAg8ecskfqWMW0anBE/x0IvEH6pw1imFwqsWiQ0hquh/EgeVaHfPaOFgCCITH
+         cun6UE06T8FvdIhe1xMr9SzERNYbZZmV8McHVdxli//x9JYGhQ9hL5TjYW3kB67OEb
+         60bbgzjeJNKElcINkIFL8nNQMd1Uzd5N8ldH391YQenNpHtGCkDFdmljK/JbcyRabK
+         24sBUujj+9RhZUImHiXKeGbKgXyB7G+/Pocmg4GGaIqgV0wcWPvEc1YsDO3m/wkJx9
+         WGTu5DI6xt72w==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41b83b8dbe1so23983081cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:29:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697660896; x=1698265696;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1IkfvvSOsBHtTtrxwDROKr8J2+syziWFNikOdZa81Lk=;
-        b=mjsqWkkFz0ZGgW+kN61LUBELzbb3Ul1i5pxQkYaQmICgPmG4OHVtgvQsVhHid1v/aJ
-         AEQZ7Kkd7v3onaEkD4R9jVVXD/mLz6nb3nheRESiPFo17gY7n9tE/28Lsmu9jeUJVzs/
-         f7nRVLJoEqB06y87PJyCueZhIsmjx+xKEyb1qzqfXMIPaa42RotTiq9ZNNMmtAauyhZX
-         ulTPFkKSp1VBHHN3RCEeTfIRJUvzFSiwsvNEMr02pSaNT0ITVpxfNcNWaNnD6cbYRwuL
-         S3y8W/Gz2oB+SiE6qoX9KT/N2jI7VcCant5SDJenHND6L2nbcpdOh4tvdRiKWKoPjeI/
-         5ZZw==
-X-Gm-Message-State: AOJu0Ywj8lZmm7pCScERcPARRU2QFPnSXciUr+7wnVMkUq+04U3gaM1o
-        s9oy6PwX8iJDOzNpzZwtkzn/9A==
-X-Google-Smtp-Source: AGHT+IG8XQIHxsr/RXLobSRarxMuGa2jh08MntDK4B5b0mJ7E/k80IR779VemDrdi8r7WBRejm78mw==
-X-Received: by 2002:a19:f603:0:b0:500:b42f:1830 with SMTP id x3-20020a19f603000000b00500b42f1830mr46218lfe.63.1697660895733;
-        Wed, 18 Oct 2023 13:28:15 -0700 (PDT)
-Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v12-20020ac2558c000000b00507aced147esm825302lfg.203.2023.10.18.13.28.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 13:28:15 -0700 (PDT)
-Message-ID: <5ac0d16a-0303-46c7-a008-31280629cc11@linaro.org>
-Date:   Wed, 18 Oct 2023 22:28:13 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325
- thermals
-Content-Language: en-US
-To:     Luca Weiss <luca@z3ntu.xyz>, Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
- <20231013-fp5-thermals-v1-4-f14df01922e6@fairphone.com>
- <34da335e-cbcd-4dc2-8a86-f31369db1fcd@linaro.org>
- <4958673.31r3eYUQgx@z3ntu.xyz>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <4958673.31r3eYUQgx@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697660939; x=1698265739;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yk6MXkIPUgxpsJ5kIJxp6djW0jucI4oJfrO+nT8SMO4=;
+        b=ElUvdRDqUeqXjCNpxVdVZyz+0WzDIzgVnyUy2wopMOUcs7Ypja+keqIhnuT95KwWdk
+         jOZ2P9JLcUSBdhTd2YWAkST0T1daqIVFQISJkMrurQkuPdDlzM+Uy8JdGxU9mVrrqzi8
+         I65jncOXWzMVD1LjmLfDOxaa0myXjqymWhaisLcjgSmWldPvN4nBnw6PHwQ3Swz/Smhi
+         ZAxSQ0tMlX8e5X3vF9skuMdjOkylgpAvG2COrkH6dxZy7HapqfY8KEOCw8TGJhHU+fNx
+         8wt7Y8rkgS2I+xXe9eY8M0y1ClKaHdknhA2assHfY3dS/YXpdQ3QDMJHyu0gQsQoTQny
+         a4+A==
+X-Gm-Message-State: AOJu0Yy0yHSGnc3MyAJkcOIZWshHDmBO15mw//QdDjQBFmYgXDzWuMsT
+        uu9hiK/h66xQcYmNOdzmLH0PPNeO+Rm3w1tKBocgUOxuOklLxhYsBbWpT3/l9FDaPLEEwA0pd+u
+        zt/lzT3R4uyMr7fToWkRL89jaSLp2Dl9fDdscmIAgNkgVGvvzkOrGPXKZgw==
+X-Received: by 2002:ac8:5c91:0:b0:418:1a99:3918 with SMTP id r17-20020ac85c91000000b004181a993918mr453760qta.6.1697660939411;
+        Wed, 18 Oct 2023 13:28:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFa9lkBDDI7SVR+Bl3OqPuNw6QMUQszI0XhfSaacQVkvysEVz0YUjgDwP4eZawXQ7MRpIZZYDJyVjlUQ8N9HxU=
+X-Received: by 2002:ac8:5c91:0:b0:418:1a99:3918 with SMTP id
+ r17-20020ac85c91000000b004181a993918mr453740qta.6.1697660939077; Wed, 18 Oct
+ 2023 13:28:59 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 18 Oct 2023 13:28:58 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <ZTA948rCoTQ2aNx6@ghost>
+References: <20231017-module_relocations-v4-0-937f5ef316f0@rivosinc.com>
+ <20231017-module_relocations-v4-1-937f5ef316f0@rivosinc.com>
+ <CAJM55Z9xgyJoCX83hgwerF6SRo6yit8=0rmLzhF8Ju4TmZq3BA@mail.gmail.com>
+ <ZTAkZAm21O3gtA7i@ghost> <CAJM55Z_Myd-ifrmQebO3V+GXTU70e105O7D7+hu4T7CazpdJsg@mail.gmail.com>
+ <ZTA948rCoTQ2aNx6@ghost>
+Mime-Version: 1.0
+Date:   Wed, 18 Oct 2023 13:28:58 -0700
+Message-ID: <CAJM55Z9zb_pOQyJcj=GcamyU3V-iqxMmOkOGRpD7a6mqszLpuQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] riscv: Add remaining module relocations
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Charlie Jenkins wrote:
+> On Wed, Oct 18, 2023 at 11:38:39AM -0700, Emil Renner Berthing wrote:
+> > Charlie Jenkins wrote:
+> > > On Wed, Oct 18, 2023 at 05:17:44AM -0700, Emil Renner Berthing wrote:
+> > > > Charlie Jenkins wrote:
+> > > > > Add all final module relocations and add error logs explaining the ones
+> > > > > that are not supported.
+> > > > >
+> > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > > ---
+> > > > >  arch/riscv/include/uapi/asm/elf.h |   5 +-
+> > > > >  arch/riscv/kernel/module.c        | 207 +++++++++++++++++++++++++++++++++-----
+> > > > >  2 files changed, 186 insertions(+), 26 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
+> > > > > index d696d6610231..11a71b8533d5 100644
+> > > > > --- a/arch/riscv/include/uapi/asm/elf.h
+> > > > > +++ b/arch/riscv/include/uapi/asm/elf.h
+> > > > > @@ -49,6 +49,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
+> > > > >  #define R_RISCV_TLS_DTPREL64	9
+> > > > >  #define R_RISCV_TLS_TPREL32	10
+> > > > >  #define R_RISCV_TLS_TPREL64	11
+> > > > > +#define R_RISCV_IRELATIVE	58
+> > > > >
+> > > > >  /* Relocation types not used by the dynamic linker */
+> > > > >  #define R_RISCV_BRANCH		16
+> > > > > @@ -81,7 +82,6 @@ typedef union __riscv_fp_state elf_fpregset_t;
+> > > > >  #define R_RISCV_ALIGN		43
+> > > > >  #define R_RISCV_RVC_BRANCH	44
+> > > > >  #define R_RISCV_RVC_JUMP	45
+> > > > > -#define R_RISCV_LUI		46
+> > > > >  #define R_RISCV_GPREL_I		47
+> > > > >  #define R_RISCV_GPREL_S		48
+> > > > >  #define R_RISCV_TPREL_I		49
+> > > > > @@ -93,6 +93,9 @@ typedef union __riscv_fp_state elf_fpregset_t;
+> > > > >  #define R_RISCV_SET16		55
+> > > > >  #define R_RISCV_SET32		56
+> > > > >  #define R_RISCV_32_PCREL	57
+> > > > > +#define R_RISCV_PLT32		59
+> > > > > +#define R_RISCV_SET_ULEB128	60
+> > > > > +#define R_RISCV_SUB_ULEB128	61
+> > > > >
+> > > > >
+> > > > >  #endif /* _UAPI_ASM_RISCV_ELF_H */
+> > > > > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > > > > index 7c651d55fcbd..e860726352ac 100644
+> > > > > --- a/arch/riscv/kernel/module.c
+> > > > > +++ b/arch/riscv/kernel/module.c
+> > > > > @@ -7,6 +7,7 @@
+> > > > >  #include <linux/elf.h>
+> > > > >  #include <linux/err.h>
+> > > > >  #include <linux/errno.h>
+> > > > > +#include <linux/kernel.h>
+> > > > >  #include <linux/moduleloader.h>
+> > > > >  #include <linux/vmalloc.h>
+> > > > >  #include <linux/sizes.h>
+> > > > > @@ -268,6 +269,12 @@ static int apply_r_riscv_align_rela(struct module *me, u32 *location,
+> > > > >  	return -EINVAL;
+> > > > >  }
+> > > > >
+> > > > > +static int apply_r_riscv_add8_rela(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u8 *)location += (u8)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > >  static int apply_r_riscv_add16_rela(struct module *me, u32 *location,
+> > > > >  				    Elf_Addr v)
+> > > > >  {
+> > > > > @@ -289,6 +296,12 @@ static int apply_r_riscv_add64_rela(struct module *me, u32 *location,
+> > > > >  	return 0;
+> > > > >  }
+> > > > >
+> > > > > +static int apply_r_riscv_sub8_rela(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u8 *)location -= (u8)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > >  static int apply_r_riscv_sub16_rela(struct module *me, u32 *location,
+> > > > >  				    Elf_Addr v)
+> > > > >  {
+> > > > > @@ -310,31 +323,149 @@ static int apply_r_riscv_sub64_rela(struct module *me, u32 *location,
+> > > > >  	return 0;
+> > > > >  }
+> > > > >
+> > > > > -static int (*reloc_handlers_rela[]) (struct module *me, u32 *location,
+> > > > > -				Elf_Addr v) = {
+> > > > > -	[R_RISCV_32]			= apply_r_riscv_32_rela,
+> > > > > -	[R_RISCV_64]			= apply_r_riscv_64_rela,
+> > > > > -	[R_RISCV_BRANCH]		= apply_r_riscv_branch_rela,
+> > > > > -	[R_RISCV_JAL]			= apply_r_riscv_jal_rela,
+> > > > > -	[R_RISCV_RVC_BRANCH]		= apply_r_riscv_rvc_branch_rela,
+> > > > > -	[R_RISCV_RVC_JUMP]		= apply_r_riscv_rvc_jump_rela,
+> > > > > -	[R_RISCV_PCREL_HI20]		= apply_r_riscv_pcrel_hi20_rela,
+> > > > > -	[R_RISCV_PCREL_LO12_I]		= apply_r_riscv_pcrel_lo12_i_rela,
+> > > > > -	[R_RISCV_PCREL_LO12_S]		= apply_r_riscv_pcrel_lo12_s_rela,
+> > > > > -	[R_RISCV_HI20]			= apply_r_riscv_hi20_rela,
+> > > > > -	[R_RISCV_LO12_I]		= apply_r_riscv_lo12_i_rela,
+> > > > > -	[R_RISCV_LO12_S]		= apply_r_riscv_lo12_s_rela,
+> > > > > -	[R_RISCV_GOT_HI20]		= apply_r_riscv_got_hi20_rela,
+> > > > > -	[R_RISCV_CALL_PLT]		= apply_r_riscv_call_plt_rela,
+> > > > > -	[R_RISCV_CALL]			= apply_r_riscv_call_rela,
+> > > > > -	[R_RISCV_RELAX]			= apply_r_riscv_relax_rela,
+> > > > > -	[R_RISCV_ALIGN]			= apply_r_riscv_align_rela,
+> > > > > -	[R_RISCV_ADD16]			= apply_r_riscv_add16_rela,
+> > > > > -	[R_RISCV_ADD32]			= apply_r_riscv_add32_rela,
+> > > > > -	[R_RISCV_ADD64]			= apply_r_riscv_add64_rela,
+> > > > > -	[R_RISCV_SUB16]			= apply_r_riscv_sub16_rela,
+> > > > > -	[R_RISCV_SUB32]			= apply_r_riscv_sub32_rela,
+> > > > > -	[R_RISCV_SUB64]			= apply_r_riscv_sub64_rela,
+> > > > > +static int dynamic_linking_not_supported(struct module *me, u32 *location,
+> > > > > +					 Elf_Addr v)
+> > > > > +{
+> > > > > +	pr_err("%s: Dynamic linking not supported in kernel modules PC = %p\n",
+> > > > > +	       me->name, location);
+> > > > > +	return -EINVAL;
+> > > > > +}
+> > > > > +
+> > > > > +static int tls_not_supported(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	pr_err("%s: Thread local storage not supported in kernel modules PC = %p\n",
+> > > > > +	       me->name, location);
+> > > > > +	return -EINVAL;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_sub6_rela(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u8 *)location = (*location - ((u8)v & 0x3F)) & 0x3F;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_set6_rela(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u8 *)location = (*(u8 *)location & 0xc0) | ((u8)v & 0x3F);
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_set8_rela(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u8 *)location = (u8)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_set16_rela(struct module *me, u32 *location,
+> > > > > +				    Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u16 *)location = (u16)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_set32_rela(struct module *me, u32 *location,
+> > > > > +				    Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u32 *)location = (u32)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_32_pcrel_rela(struct module *me, u32 *location,
+> > > > > +				       Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u32 *)location = (u32)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_plt32_rela(struct module *me, u32 *location,
+> > > > > +				    Elf_Addr v)
+> > > > > +{
+> > > > > +	*(u32 *)location = (u32)v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_set_uleb128(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	/*
+> > > > > +	 * Relocation is only performed if R_RISCV_SET_ULEB128 is followed by
+> > > > > +	 * R_RISCV_SUB_ULEB128 so do computation there
+> > > > > +	 */
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int apply_r_riscv_sub_uleb128(struct module *me, u32 *location, Elf_Addr v)
+> > > > > +{
+> > > > > +	if (v >= 128) {
+> > > > > +		pr_err("%s: uleb128 must be in [0, 127] (not %ld) at PC = %p\n",
+> > > > > +		       me->name, (unsigned long)v, location);
+> > > > > +		return -EINVAL;
+> > > > > +	}
+> > > > > +
+> > > > > +	*location = v;
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +/*
+> > > > > + * Relocations defined in the riscv-elf-psabi-doc.
+> > > > > + * This handles static linking only.
+> > > > > + */
+> > > > > +static int (*reloc_handlers_rela[])(struct module *me, u32 *location,
+> > > > > +				    Elf_Addr v) = {
+> > > > > +	[R_RISCV_32] =			apply_r_riscv_32_rela,
+> > > > > +	[R_RISCV_64] =			apply_r_riscv_64_rela,
+> > > > > +	[R_RISCV_RELATIVE] =		dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_COPY] =		dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_JUMP_SLOT] =		dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_DTPMOD32] =	dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_DTPMOD64] =	dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_DTPREL32] =	dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_DTPREL64] =	dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_TPREL32] =		dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_TLS_TPREL64] =		dynamic_linking_not_supported,
+> > > > > +	/* 12-15 undefined */
+> > > > > +	[R_RISCV_BRANCH] =		apply_r_riscv_branch_rela,
+> > > > > +	[R_RISCV_JAL] =			apply_r_riscv_jal_rela,
+> > > > > +	[R_RISCV_CALL] =		apply_r_riscv_call_rela,
+> > > > > +	[R_RISCV_CALL_PLT] =		apply_r_riscv_call_plt_rela,
+> > > > > +	[R_RISCV_GOT_HI20] =		apply_r_riscv_got_hi20_rela,
+> > > > > +	[R_RISCV_TLS_GOT_HI20] =	tls_not_supported,
+> > > > > +	[R_RISCV_TLS_GD_HI20] =		tls_not_supported,
+> > > > > +	[R_RISCV_PCREL_HI20] =		apply_r_riscv_pcrel_hi20_rela,
+> > > > > +	[R_RISCV_PCREL_LO12_I] =	apply_r_riscv_pcrel_lo12_i_rela,
+> > > > > +	[R_RISCV_PCREL_LO12_S] =	apply_r_riscv_pcrel_lo12_s_rela,
+> > > > > +	[R_RISCV_HI20] =		apply_r_riscv_hi20_rela,
+> > > > > +	[R_RISCV_LO12_I] =		apply_r_riscv_lo12_i_rela,
+> > > > > +	[R_RISCV_LO12_S] =		apply_r_riscv_lo12_s_rela,
+> > > > > +	[R_RISCV_TPREL_HI20] =		tls_not_supported,
+> > > > > +	[R_RISCV_TPREL_LO12_I] =	tls_not_supported,
+> > > > > +	[R_RISCV_TPREL_LO12_S] =	tls_not_supported,
+> > > > > +	[R_RISCV_TPREL_ADD] =		tls_not_supported,
+> > > > > +	[R_RISCV_ADD8] =		apply_r_riscv_add8_rela,
+> > > > > +	[R_RISCV_ADD16] =		apply_r_riscv_add16_rela,
+> > > > > +	[R_RISCV_ADD32] =		apply_r_riscv_add32_rela,
+> > > > > +	[R_RISCV_ADD64] =		apply_r_riscv_add64_rela,
+> > > > > +	[R_RISCV_SUB8] =		apply_r_riscv_sub8_rela,
+> > > > > +	[R_RISCV_SUB16] =		apply_r_riscv_sub16_rela,
+> > > > > +	[R_RISCV_SUB32] =		apply_r_riscv_sub32_rela,
+> > > > > +	[R_RISCV_SUB64] =		apply_r_riscv_sub64_rela,
+> > > > > +	/* 41-42 reserved for future standard use */
+> > > > > +	[R_RISCV_ALIGN] =		apply_r_riscv_align_rela,
+> > > > > +	[R_RISCV_RVC_BRANCH] =		apply_r_riscv_rvc_branch_rela,
+> > > > > +	[R_RISCV_RVC_JUMP] =		apply_r_riscv_rvc_jump_rela,
+> > > > > +	/* 46-50 reserved for future standard use */
+> > > > > +	[R_RISCV_RELAX] =		apply_r_riscv_relax_rela,
+> > > > > +	[R_RISCV_SUB6] =		apply_r_riscv_sub6_rela,
+> > > > > +	[R_RISCV_SET6] =		apply_r_riscv_set6_rela,
+> > > > > +	[R_RISCV_SET8] =		apply_r_riscv_set8_rela,
+> > > > > +	[R_RISCV_SET16] =		apply_r_riscv_set16_rela,
+> > > > > +	[R_RISCV_SET32] =		apply_r_riscv_set32_rela,
+> > > > > +	[R_RISCV_32_PCREL] =		apply_r_riscv_32_pcrel_rela,
+> > > > > +	[R_RISCV_IRELATIVE] =		dynamic_linking_not_supported,
+> > > > > +	[R_RISCV_PLT32] =		apply_r_riscv_plt32_rela,
+> > > > > +	[R_RISCV_SET_ULEB128] =		apply_r_riscv_set_uleb128,
+> > > > > +	[R_RISCV_SUB_ULEB128] =		apply_r_riscv_sub_uleb128,
+> > > > > +	/* 62-191 reserved for future standard use */
+> > > > > +	/* 192-255 nonstandard ABI extensions  */
+> > > > >  };
+> > > >
+> > > > Hi Charlie,
+> > > >
+> > > > This is not a critique of this patch, but all these callbacks take a
+> > > > u32 *location and
+> > > > because of the compressed instructions this pointer may not be
+> > > > aligned, so a lot of
+> > > > the callbacks end up doing unaligned access which may fault to an
+> > > > M-mode handler on
+> > > > some platforms.
+> > > >
+> > > > I once sent a patch to fix this:
+> > > > https://lore.kernel.org/linux-riscv/20220224152456.493365-2-kernel@esmil.dk/
+> > > >
+> > > > Maybe that's something you want to look into while touching this code anyway.
+> > > >
+> > > > /Emil
+> > >
+> > > Oh nice, I will pick up that patch and change the "native-endian"
+> > > wording to be "little-endian" in the commit.
+> >
+> > Great, thanks. You'll probably also want the reads to be wrapped in
+> > le16_to_cpu() and similar when writing now that it's decided that the parcels
+> > are always in little-endian byteorder.
+> >
+> > /Emil
+>
+> I believe that le16_to_cpu() is only needed when instructions are being modified, and
+> the relocations that only touch data can be left alone. Is this correct?
 
+Yes, that sounds right to me. I only meant in the riscv_insn_rmw() function of
+my patch and the callbacks modifying a compressed instruction, but I haven't
+gone through all the other reloc types to check if they have a set endianess.
 
-On 10/14/23 19:52, Luca Weiss wrote:
-> On Samstag, 14. Oktober 2023 01:13:29 CEST Konrad Dybcio wrote:
->> On 13.10.2023 10:09, Luca Weiss wrote:
->>> Configure the thermals for the QUIET_THERM, CAM_FLASH_THERM, MSM_THERM
->>> and RFC_CAM_THERM thermistors connected to PM7325.
->>>
->>> With this PMIC the software communication to the ADC is going through
->>> PMK7325 (= PMK8350).
->>>
->>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>> ---
->>>
->>>   arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 117
->>>   +++++++++++++++++++++ 1 file changed, 117 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>> b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts index
->>> 2c01f799a6b2..d0b1e4e507ff 100644
->>> --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>> @@ -9,6 +9,7 @@
->>>
->>>   #define PM7250B_SID 8
->>>   #define PM7250B_SID1 9
->>>
->>> +#include <dt-bindings/iio/qcom,spmi-adc7-pm7325.h>
->>>
->>>   #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
->>>   #include <dt-bindings/leds/common.h>
->>>   #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>>
->>> @@ -137,6 +138,20 @@ afvdd_2p8: regulator-afvdd-2p8 {
->>>
->>>   	};
->>>   	
->>>   	thermal-zones {
->>>
->>> +		camera-thermal {
->>> +			polling-delay-passive = <0>;
->>> +			polling-delay = <0>;
->>> +			thermal-sensors = <&pmk8350_adc_tm 2>;
->>> +
->>> +			trips {
->>> +				active-config0 {
->>> +					temperature = <125000>;
->>
->> are
->>
->>> +		rear-cam-thermal {
->>>
->>> +					temperature = <125000>;
->>
->> you
->>
->>> +		sdm-skin-thermal {
->>>
->>> +					temperature = <125000>;
->>
->> sure
->>
->> about these temps?
-> 
-> (email from my other address, quicker right now)
-> 
-> Well yes and no.
-> 
-> Yes as in those are the temps specified in downstream dtb.
-> No as in I'm 99% sure there's user space with definitely lower threshold that
-> actually does something in response to the temps.
-> 
-> I didn't look too much into this but does the kernel even do something when it
-> hits one of these trip points? I assume when there's a cooling device thing
-> specified then it can actually tell the driver to do something, but without
-> (and most drivers don't support this?) I'm assuming the kernel can't do much
-> anyways?
-> 
-> So e.g. when the temperature for the flash led is reached I'm assuming
-> downstream (+Android) either dims the led or turns it off? But I'd have to dig
-> quite a bit into the thermal setup there to check what it's really doing.
-I think reaching "critical" shuts down the platform, unless something
-registering the thermal zone explicitly overrides the behavior.
-
-> 
-> But for now I think it's okay to put this current thermal config into dts and
-> we'll improve it later when 1. I understand more and 2. maybe some useful
-> drivers support the cooling bits?
-Yeah it's better than nothing, but ultimately we should probably move
-the values that userspace daemon operates on here in the dt..
-
-Konrad
+/Emil
