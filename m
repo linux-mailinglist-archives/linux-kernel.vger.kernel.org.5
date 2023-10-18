@@ -2,292 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDA17CE625
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9F27CE630
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjJRSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
+        id S231621AbjJRSTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjJRSTW (ORCPT
+        with ESMTP id S231223AbjJRSTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:19:22 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB94B8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:19:19 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-419b53acc11so42301cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:19:19 -0700 (PDT)
+        Wed, 18 Oct 2023 14:19:38 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2074.outbound.protection.outlook.com [40.107.215.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0F3111;
+        Wed, 18 Oct 2023 11:19:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EXib0617sF6gB92iIKMrzzc+GobdpLKXTHHLDUNt7vNjbRHHuQA59EBfRGYegC7USlHg7kwdPXZtF4zW41a4oQp45BXfVgl5KA6EurBIuphjtM4r+IIE5ze5AMJ4r8LK05IaTjQtz1DRPyPrrR608nBf33x2jT86PuSSpukMmb0U8TaotdsCjnZlpL8Yh5sD6v647dm2Hs1VwZsUvk3fTdpj2+4gjphsStIVxjYYkA8lej4Y01B/JtStpEqGIMCzw+FEOmyNVtrKAjvyUZ4vadQ49E1BxjzRVVuTWvYjakjRMiYvKNiv4r6GzjNT3HNkmI/WOsKjcGaoAraNb4sCxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eeQ59FtHGcGCydvoZA0h/fX3T3epa3YHFbT2jrtXvGU=;
+ b=gqklxzq6VGzcIQWqM4STCnkcKoHEuyVu9uEQnBYOugVNiI9YkGDTybmIVLuMgF+7qFM5SmgGte/U9bwrjewD2fRNO/I5HBmsopyAf/SDwtOf2+EmF2utQ1H4xKvMhqet6lsMSjo3tljIa9gzaTbeA+T4SbBtn2GkmvlRt39QvbkGl5vR0mi6TWYvQfCNc3yoycrKcuFEbb1MffCYvHyCIo/JpwUxhRVcvnLbTVCCJAuOCZVLk3KBczGWPosIe/hTud5rmWXRbPQOHGOLbCqDk4dcLbMd7n/XnsQwlmqa6e+IZssEBg3wWa0L1xc+c6NYIPtB49DrHl+TzE1RSJutfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=codeconstruct.com.au
+ smtp.mailfrom=nuvoton.com; dmarc=fail (p=none sp=quarantine pct=100)
+ action=none header.from=gmail.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697653158; x=1698257958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yJ3EjA/DdMiQV83zq9nxbWMT9iDAMkZuiptuvkWigh4=;
-        b=BTz8OPZ14p2SBsf7C+k46Mv36uyCYHcG30OofA9vkpq1bC1B5plgoS5fb6slmRpYSG
-         Htz5l2RsEPqp7rZXhmwyGuVQr7BeogZ1W5AiYaNW1Bqv6iiz0VOmmUiqd2TsupGQajKt
-         sl7RFUmu7pXLVqUBpme+iWtW50p0hWikNJJgUMN+4SpzpdkbtsFmJRgwbFCDoSLrMuuL
-         3zKsNGLodUCFhQq7ETQaKk/bhaD4/tspsXlP0h0YqiIzVPxf7+EKVJxrp3eXz2XlcfqX
-         JagTZxcfCuT3fQDOWsTFzxKwCc3LZ4ydDInZ5qplk1UvjC5ytBpWgPvUARCulnNgqfcu
-         VDRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697653158; x=1698257958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yJ3EjA/DdMiQV83zq9nxbWMT9iDAMkZuiptuvkWigh4=;
-        b=k84qu2khl0KH3xILGuL7WyNZa9JP0L93SNiwCrQ43Nn09GNWS7GjBnGreOyes+mY10
-         wio+kHtMBddlmgPWWfjKnz5qbXIU9rZuDTSiIAoLocJRQdPhhenjKLFUOy0nWfd/rIsb
-         OovD2caGDhA7ieiIac2AfRmct3vPemt5NmQJTIolGldk574AaNTmoDL8jlatW/z3slsr
-         inCLuh43LFPsER36z4QAwRTPp/+pc899o4vlcOIpBenjJVa06BGA9omGbDoPephqsoCl
-         Mw4J0EXnf4Q8O3DIP1XwrGsuosmysYDgwZ5owF87NF7RVAhd/S06mqyZtQKo7KqFdG8B
-         yfFw==
-X-Gm-Message-State: AOJu0YxuucVCR0c7SK0nlNd0qWo1z+/1yMDF4t9IzwrGRJZD0aIO/l3x
-        0MhChgmoSrc8BlQWuOyvOS/rhixH4ENwLWxnCTrAag==
-X-Google-Smtp-Source: AGHT+IHK+i17Y9IcO2PQf/JmQCdGgPfi8myqP25zde2F1LpyFkrss81iwvqT1M8c7/8umDJKNWx3fRkodE5Ar/dsLV0=
-X-Received: by 2002:a05:622a:a020:b0:41c:bd34:7e44 with SMTP id
- jt32-20020a05622aa02000b0041cbd347e44mr44659qtb.6.1697653157766; Wed, 18 Oct
- 2023 11:19:17 -0700 (PDT)
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eeQ59FtHGcGCydvoZA0h/fX3T3epa3YHFbT2jrtXvGU=;
+ b=ispH93IRcKGkBbGFKEmsBS/N0LCriOmhWmNwaxB0dgEBSdiZGXyDTDBmMgEw6A/RTP8sC+6UX5uMA9/NA8VhYBCcXUiy4yuQROliLmTZ9OD7XyHeMoXKCoJ+yVmQtaZmI3ki+iZQP6r71+wc/6o2+35X5ZN7F8nzNLzyhpJXPV0=
+Received: from SG2PR03CA0125.apcprd03.prod.outlook.com (2603:1096:4:91::29) by
+ KL1PR03MB5603.apcprd03.prod.outlook.com (2603:1096:820:5d::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.24; Wed, 18 Oct 2023 18:19:30 +0000
+Received: from SG2PEPF000B66CD.apcprd03.prod.outlook.com
+ (2603:1096:4:91:cafe::d1) by SG2PR03CA0125.outlook.office365.com
+ (2603:1096:4:91::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.7 via Frontend
+ Transport; Wed, 18 Oct 2023 18:19:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=gmail.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ SG2PEPF000B66CD.mail.protection.outlook.com (10.167.240.27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6907.20 via Frontend Transport; Wed, 18 Oct 2023 18:19:30 +0000
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 19 Oct
+ 2023 02:19:28 +0800
+Received: from taln58.nuvoton.co.il (10.191.1.178) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Thu, 19 Oct 2023 02:19:28 +0800
+Received: from taln60.nuvoton.co.il (taln60 [10.191.1.180])
+        by taln58.nuvoton.co.il (Postfix) with ESMTP id 6D95168E66;
+        Wed, 18 Oct 2023 21:19:27 +0300 (IDT)
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id 4A05821CFCF4; Wed, 18 Oct 2023 21:19:27 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     <linux@roeck-us.net>, <jdelvare@suse.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <avifishman70@gmail.com>,
+        <tali.perry1@gmail.com>, <joel@jms.id.au>,
+        <andrew@codeconstruct.com.au>, <venture@google.com>,
+        <yuenn@google.com>, <benjaminfair@google.com>,
+        <j.neuschaefer@gmx.net>
+CC:     <openbmc@lists.ozlabs.org>, <linux-hwmon@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v2 0/2] hwmon: npcm: add Arbel NPCM8XX support
+Date:   Wed, 18 Oct 2023 21:19:23 +0300
+Message-ID: <20231018181925.1826042-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20230807174159.1140957-1-kyletso@google.com> <20230807174159.1140957-2-kyletso@google.com>
- <20230821162517.GA1832382-robh@kernel.org>
-In-Reply-To: <20230821162517.GA1832382-robh@kernel.org>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Thu, 19 Oct 2023 02:19:01 +0800
-Message-ID: <CAGZ6i=0ey+94YYgc=os5iQ_pNmNVB=qZQD0=jB4fRTKggZPSWA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: connector: Add child nodes for
- multiple PD capabilities
-To:     Rob Herring <robh@kernel.org>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, badhri@google.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CD:EE_|KL1PR03MB5603:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5010bf6-ef02-41a2-66bd-08dbd006c554
+X-MS-Exchange-SenderADCheck: 0
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QpMJB8pRD0Q4bFuBNqLAeKKcZ1r7VUaAvT3nODyvkOmSawYJXjLmJ+c0SGxBV7wohl8NymIco2hD53aBzWkzl6p5CLnjIPDc0FX4YfANZY5vuK5nHm5jdTgqoZX1RN9KsSCjvkDkOFMfYtJ3EbhSnqvgJM/d5AUIsz4vjQXPp4qmlFP3Q/DOA0b7mlSAlaJvi7E2TIcjMtcRaWl+p4eFljWwE4Rj2QiFmeksgYXtmrZSbS4kuu3AtCzCZrOK8zv3pqbS1lFHyTpufnwEnZ2RUQxPSEVSZ1qEhr0M2cyhgKc6yashROQqRFJtMJshfXX4VStnN+q0kpt/qJJ5On9wEoZ2cFEEnfARAbVNMK/BrfXS/9OEK/oIfwcLMimLkU9Jt1ywrkYFX+cgUoptVNtmyyc8HlPNRxNvlSR6gCJl8ycBtyq1zDMcl9zlOqbp2WGAbGDLcXWpdauOcmG65Y77T4yqxuNM37wfJ0+kgoYA5CWx7jBXCJsItZTPGozq737/CBtTFiMhyD1lkkqUVMa6kcAezaSAutlVwrcXJex0XGpxUyXmSdm5Wu1paSGnjLM3/HMxC/i6mCdRal35Qn8+0GkOtogOoElfn5077/4eoDRCe/hgP0VPcZ4MME43OyNxgKfFxWp+wQxSYiLRyP5I+2WU9k4YjNIeZlIC26TxflA3mzMIKuMULjrTuuNLP/7f9AqKV1OZL4c3oE69/fYgq5H5DeMrcZctdcRkoNyCVYRu95n9PId9zrntFjrS0IF2NfMODhigzFbT6rBFmnqmLG4pg/SsKzQtWWSaMHmpb1rPFHtfsiVZl4qFDRO1WexQ3LLZ19DfcLu9kHQyRj0AwS3VnS4+r+LHmrsDtzVmEIXknSltJLpT0wf8PnrlOHo59rh4PwRkF4PUDLK+ErP1ft7KARa/9QA45JG6UBCMFKY=
+X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(82310400011)(186009)(64100799003)(48200799006)(451199024)(61400799006)(40470700004)(46966006)(36840700001)(47076005)(36860700001)(83380400001)(83170400001)(2616005)(6266002)(73392003)(42882007)(82202003)(81166007)(1076003)(82740400003)(336012)(6666004)(478600001)(356005)(76482006)(54906003)(26005)(921005)(42186006)(110136005)(316002)(4326008)(8936002)(8676002)(70586007)(70206006)(41300700001)(5660300002)(36756003)(7416002)(2906002)(55446002)(4744005)(40460700003)(40480700001)(45356006)(32563001)(35450700002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 18:19:30.0362
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5010bf6-ef02-41a2-66bd-08dbd006c554
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: SG2PEPF000B66CD.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB5603
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 12:25=E2=80=AFAM Rob Herring <robh@kernel.org> wrot=
-e:
->
+This patch set adds Arbel NPCM8XX Pulse Width Modulation (PWM) and
+Fan tachometer (Fan) support to PWM FAN NPCM driver.
 
-Sorry for the late response...
+The NPCM8XX supports up to 16 Fan tachometer inputs and
+up to 12 PWM outputs.
 
-> On Tue, Aug 08, 2023 at 01:41:58AM +0800, Kyle Tso wrote:
-> > Define a new optional property "capabilities" which is a child node
-> > under connector to contain multiple USB Power Delivery capabilities.
-> >
-> > Define a new property with pattern (e.g. caps-0, caps-1) which is a
->
-> A property in json-schema terms, but for DT it's a node not a property.
-> 'Define a child node ...' would be clearer.
->
+The NPCM PWM FAN driver was tested on the NPCM845 evaluation board.
 
-Will do in the future patch
+Changes since version 1:
+ - Add Rob Ack to the dt-binding commit. 
 
-> > child node under "capabilities". Each node contains PDO data of a
-> > selectable Power Delivery capability.
-> >
-> > Also define common properties for source-pdos, sink-pdos, and
-> > op-sink-microwatt that can be referenced.
->
-> Why do we need this? What issue does this solve? The commit message
-> should answer those questions (always).
->
+Tomer Maimon (2):
+  dt-bindings: hwmon: npcm: Add npcm845 compatible string
+  hwmon: npcm750-pwm-fan: Add NPCM8xx support
 
-Will state the rationale in the future patch
+ .../bindings/hwmon/npcm750-pwm-fan.txt        |   6 +-
+ drivers/hwmon/npcm750-pwm-fan.c               | 161 +++++++++++++++---
+ 2 files changed, 141 insertions(+), 26 deletions(-)
 
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > ---
-> > v1 -> v2:
-> > - move source/sink-pdos to $defs and reference them in properties
-> >
-> >  .../bindings/connector/usb-connector.yaml     | 80 +++++++++++++------
-> >  1 file changed, 57 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/connector/usb-connector.=
-yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > index 1c4d3eb87763..c6b02dbda83f 100644
-> > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > @@ -117,28 +117,10 @@ properties:
-> >    # The following are optional properties for "usb-c-connector" with p=
-ower
-> >    # delivery support.
-> >    source-pdos:
-> > -    description: An array of u32 with each entry providing supported p=
-ower
-> > -      source data object(PDO), the detailed bit definitions of PDO can=
- be found
-> > -      in "Universal Serial Bus Power Delivery Specification" chapter 6=
-.4.1.2
-> > -      Source_Capabilities Message, the order of each entry(PDO) should=
- follow
-> > -      the PD spec chapter 6.4.1. Required for power source and power d=
-ual role.
-> > -      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS=
-_APDO()
-> > -      defined in dt-bindings/usb/pd.h.
-> > -    minItems: 1
-> > -    maxItems: 7
-> > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    $ref: "#/$defs/source-pdos"
-> >
-> >    sink-pdos:
-> > -    description: An array of u32 with each entry providing supported p=
-ower sink
-> > -      data object(PDO), the detailed bit definitions of PDO can be fou=
-nd in
-> > -      "Universal Serial Bus Power Delivery Specification" chapter 6.4.=
-1.3
-> > -      Sink Capabilities Message, the order of each entry(PDO) should f=
-ollow the
-> > -      PD spec chapter 6.4.1. Required for power sink and power dual ro=
-le. User
-> > -      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()=
- defined
-> > -      in dt-bindings/usb/pd.h.
-> > -    minItems: 1
-> > -    maxItems: 7
-> > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    $ref: "#/$defs/sink-pdos"
-> >
-> >    sink-vdos:
-> >      description: An array of u32 with each entry, a Vendor Defined Mes=
-sage Object (VDO),
-> > @@ -164,9 +146,7 @@ properties:
-> >      $ref: /schemas/types.yaml#/definitions/uint32-array
-> >
-> >    op-sink-microwatt:
-> > -    description: Sink required operating power in microwatt, if source=
- can't
-> > -      offer the power, Capability Mismatch is set. Required for power =
-sink and
-> > -      power dual role.
-> > +    $ref: "#/$defs/op-sink-microwatt"
-> >
-> >    port:
-> >      $ref: /schemas/graph.yaml#/properties/port
-> > @@ -228,6 +208,30 @@ properties:
-> >        SNK_READY for non-pd link.
-> >      type: boolean
-> >
-> > +  capabilities:
-> > +    description: A child node to contain all the selectable USB Power =
-Delivery capabilities.
-> > +    type: object
-> > +
-> > +    patternProperties:
-> > +      "^caps-[0-9]+$":
-> > +        description: Child nodes under "capabilities" node. Each node =
-contains a selectable USB
-> > +          Power Delivery capability.
-> > +        type: object
-> > +
-> > +        properties:
-> > +          source-pdos:
-> > +            $ref: "#/$defs/source-pdos"
-> > +
-> > +          sink-pdos:
-> > +            $ref: "#/$defs/sink-pdos"
-> > +
-> > +          op-sink-microwatt:
-> > +            $ref: "#/$defs/op-sink-microwatt"
-> > +
-> > +        additionalProperties: false
-> > +
-> > +    additionalProperties: false
-> > +
-> >  dependencies:
-> >    sink-vdos-v1: [ 'sink-vdos' ]
-> >    sink-vdos: [ 'sink-vdos-v1' ]
-> > @@ -235,6 +239,36 @@ dependencies:
-> >  required:
-> >    - compatible
-> >
-> > +$defs:
->
-> Make this:
->
-> $defs:
->   capabilities:
->     properties:
->       ...
->
-> And then just reference "#/$defs/capabilities" at the top-level and in
-> caps-[0-9] node schema.
->
-> You'll need to use unevaluatedProperties instead of additionalProperties
-> as well.
->
+-- 
+2.33.0
 
-I am sorry I don't understand this part. Could you explain more?
-
-In $defs, define a whole structure of "capabilities" which has
-patternProperties "caps-[0-9]+", and inside "caps-[0-9]+" there are
-properties "source/sink-pdos" ?
-
-Reference it in the property "capabilities" under connector node?
-Reference it in the property "source/sink-pdos" under connector node as wel=
-l?
-
-And I don't know the usage of unevaluatedProperties. Where should it
-be inserted and what is the value of it?
-
-> > +  source-pdos:
-> > +    description: An array of u32 with each entry providing supported p=
-ower
-> > +      source data object(PDO), the detailed bit definitions of PDO can=
- be found
-> > +      in "Universal Serial Bus Power Delivery Specification" chapter 6=
-.4.1.2
-> > +      Source_Capabilities Message, the order of each entry(PDO) should=
- follow
-> > +      the PD spec chapter 6.4.1. Required for power source and power d=
-ual role.
-> > +      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS=
-_APDO()
-> > +      defined in dt-bindings/usb/pd.h.
-> > +    minItems: 1
-> > +    maxItems: 7
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +
-> > +  sink-pdos:
-> > +    description: An array of u32 with each entry providing supported p=
-ower sink
-> > +      data object(PDO), the detailed bit definitions of PDO can be fou=
-nd in
-> > +      "Universal Serial Bus Power Delivery Specification" chapter 6.4.=
-1.3
-> > +      Sink Capabilities Message, the order of each entry(PDO) should f=
-ollow the
-> > +      PD spec chapter 6.4.1. Required for power sink and power dual ro=
-le. User
-> > +      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()=
- defined
-> > +      in dt-bindings/usb/pd.h.
-> > +    minItems: 1
-> > +    maxItems: 7
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +
-> > +  op-sink-microwatt:
-> > +    description: Sink required operating power in microwatt, if source=
- can't
-> > +      offer the power, Capability Mismatch is set. Required for power =
-sink and
-> > +      power dual role.
-> > +
-> >  allOf:
-> >    - if:
-> >        properties:
-> > --
-> > 2.41.0.585.gd2178a4bd4-goog
-> >
