@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B0A7CE12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F317B7CE127
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjJRP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
+        id S231792AbjJRP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjJRP2O (ORCPT
+        with ESMTP id S230444AbjJRP13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:28:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6224C116
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697642855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LO3U/3O7orcDX1UKblPetHP+0g37M+8wNFC9UUNpGbg=;
-        b=GhGhvTDa6Qk9bqLYG2EUWr1HAXBq4VmXcQJS9J/zdI1IUzkBLhW8PgcO64c/JdQ7cnIUYa
-        5JZhBSNdEELEFsxkawIXVtuCa/VNUhOFpYxkthyEuhg2FH087SlycYCDmAhF5GLFQrJ0tw
-        rKEbVpxzKCgbCQNVrLHNLu9LK7xg+kA=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-346-WsQtEvmRPiWajntt-xIjVQ-1; Wed, 18 Oct 2023 11:27:23 -0400
-X-MC-Unique: WsQtEvmRPiWajntt-xIjVQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d35dda745so46251036d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697642843; x=1698247643;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LO3U/3O7orcDX1UKblPetHP+0g37M+8wNFC9UUNpGbg=;
-        b=dvWyxXGNd3ftK/QjRhF7+HyqEhz+YM/sNnPPVHZh2H767KunajKMF1Jyid2qt7+s1l
-         PSD2HRftS1tvgAM30hAZBUY76eRR3ql8QqSG8vSbWi9ojihW9GpXqQzLABO1I2GUXNzg
-         EXQPNYCCm/0igYgMAlgLkaM6cCCXdfrUT1tsAXMiTFjaqpSfU4hJ+9GeM4S+8QC/LXzZ
-         m/sHtmmCjix9B+wbsTdkww0no9tgIgCJSHNvr5GaMV8MG9+dveQEDgimvgzi4uppUSDO
-         SU4XtsV7uwCpNF4c8IHegON/bGKJBpo8FicDg8tqiHmvjVe8oOqiDHi/aL3NUHu5mF6s
-         vUjg==
-X-Gm-Message-State: AOJu0YyeITzV/Dw3sOal0kGn3Jy7mPIu9fl3Ii6WG2CMU80QXT6RdOwe
-        YZcjMAz5CBhB5uvx+p4zOhCr1DdHfYuGp+UBFKIvnmj/Icpco99o6cZoQHwOI1lzDG6/Jp5/URu
-        SKnZPEfDmmDiSlurxnpwMATrjHfeUS81s
-X-Received: by 2002:a05:6214:2602:b0:66c:ffe1:e244 with SMTP id gu2-20020a056214260200b0066cffe1e244mr7592497qvb.62.1697642842839;
-        Wed, 18 Oct 2023 08:27:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH6fCGqNMshOHcVQgHFixpMRES/AbjqtXvQxpoRaWfInZXTWRZ0YrGHrSAVlJmDRabVuafBLg==
-X-Received: by 2002:a05:6214:2602:b0:66c:ffe1:e244 with SMTP id gu2-20020a056214260200b0066cffe1e244mr7592455qvb.62.1697642842210;
-        Wed, 18 Oct 2023 08:27:22 -0700 (PDT)
-Received: from vschneid.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id dy20-20020ad44e94000000b006588bd29c7esm35137qvb.28.2023.10.18.08.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 08:27:21 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     dccp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tomas Glozar <tglozar@redhat.com>
-Subject: Re: [RFC PATCH] tcp/dcpp: Un-pin tw_timer
-In-Reply-To: <CANn89iJUicsEdbp7qrsaSUg8jQ=dBUr0nK296LxXp5rnPrw8cA@mail.gmail.com>
-References: <20231016125934.1970789-1-vschneid@redhat.com>
- <CANn89i+pQ3j+rb2SjFWjCU7BEges3TADDes5+csEr1JJamtzPQ@mail.gmail.com>
- <xhsmhil74m10c.mognet@vschneid.remote.csb>
- <CANn89iJUicsEdbp7qrsaSUg8jQ=dBUr0nK296LxXp5rnPrw8cA@mail.gmail.com>
-Date:   Wed, 18 Oct 2023 17:27:18 +0200
-Message-ID: <xhsmhfs28lzmx.mognet@vschneid.remote.csb>
+        Wed, 18 Oct 2023 11:27:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742EAF7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:27 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 199AC1FD7C;
+        Wed, 18 Oct 2023 15:27:26 +0000 (UTC)
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AF8FE2C23A;
+        Wed, 18 Oct 2023 15:27:25 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 17:27:25 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
+Message-ID: <ZS_5Xd7zPWvSHuqq@alley>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
+ <20231013204340.1112036-4-john.ogness@linutronix.de>
+ <ZS5vrte2OZXcIc9L@alley>
+ <87mswh6iwq.fsf@jogness.linutronix.de>
+ <ZS_Vg4vvT29LxWSD@alley>
+ <874jio6o2y.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874jio6o2y.fsf@jogness.linutronix.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+         REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 199AC1FD7C
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/23 17:00, Eric Dumazet wrote:
-> On Wed, Oct 18, 2023 at 4:57=E2=80=AFPM Valentin Schneider <vschneid@redh=
-at.com> wrote:
->
->>
->> Looks reasonable to me, I'll go write v2.
->>
->> Thanks for the help!
->
-> Sure thing !
->
-> BTW, we also use TIMER_PINNED for req->rsk_timer, are you working on it t=
-oo ?
+On Wed 2023-10-18 15:51:57, John Ogness wrote:
+> On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
+> > Wait! This means that your patch actually does not work. Here is the diff:
+> >
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -2815,8 +2815,19 @@ static bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+> >  	else
+> >  		prb_rec_init_rd(&r, &info, outbuf, outbuf_sz);
+> >  
+> > -	if (!prb_read_valid(prb, seq, &r))
+> > -		return false;
+> > +	while (!prb_read_valid(prb, seq, &r)) {
+> > +		if (this_cpu_in_panic() && seq < prb_next_seq(prb)) {
+> > +			/*
+> > +			 * The record @seq is not finalized and there may be
+> > +			 * more records in the ringbuffer. Since this is the
+> > +			 * panic CPU, skip over the unfinalized record and
+> > +			 * try to read a finalized record that may follow.
+> > +			 */
+> > +			seq++;
+> > +		} else {
+> > +			return false;
+> > +		}
+> > +	}
+> >  
+> >  	pmsg->seq = r.info->seq;
+> >  	pmsg->dropped = r.info->seq - seq;
+> >
+> > It skips the invalid reads only when seq < prb_next_seq(). But
+> > prb_next_seq(prb) points to the 1st non-finalized record. And
+> > all records with seq < prb_next_seq() must be finalized!
+> 
+> Please take a look at prb_next_seq(). It _starts_ its search from:
+> 
+>     id = atomic_long_read(&desc_ring->last_finalized_id);
 
-Ah, no, that wasn't on my radar. This hasn't shown up on our systems
-yet. From a cursory look it does look like it could lead to similar issues,
-I'll add that to my todolist. Thanks!
+I see. And this this set in
 
+static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
+{
+[...]
+
+	/* Best effort to remember the last finalized @id. */
+	atomic_long_set(&desc_ring->last_finalized_id, id);
+}
+
+So it is the _last_ finalized id from the timing POV. If there are
+more CPUs storing and finalizing the messages in parallel then
+it might change forth and back. There might be earlier non-finalized
+records and newer finalized ones.
+
+It means that prb_next_seq() really is the best effort and
+the description is not valid:
+
+/**
+ * prb_next_seq() - Get the sequence number after the last available record.
+ *
+ * @rb:  The ringbuffer to get the sequence number from.
+ *
+ * This is the public function available to readers to see what the next
+ * newest sequence number available to readers will be.
+ *
+ * This provides readers a sequence number to jump to if all currently
+ * available records should be skipped.
+
+It is not guaranteed that it will be the last available record
+because there might be newer already finalized records with
+some non-finalized records in between.
+
+Also it is not guaranteed that it will be the next record available
+to readers because readers should stop on the 1st non-yet-finalized
+record and prb_next_seq() might be behind.
+
+It would be great to document these subtle details especially when
+we are going to depend on them.
+
+> For console_flush_on_panic(), @last_finalized_id will _always_ be set to
+> the last finalized message of the panic messages, being higher than any
+> non-finalized records that may exist. There are no other CPUs running
+> except the panic CPU.
+
+It is not guaranteed. It might be lower when some still running CPU
+manages to finalize an earlier record and there are later
+non-finalized records.
+
+But you are right, there is a very high chance that it will point
+behind the last message from panic() context sooner or later,
+especially after CPUs get stopped.
+
+Well, note that only NMI guarantees that CPUs get stopped. There
+are still architectures which stop CPUs using normal interrupts.
+
+> Unfortunately you are not reading the code correctly. (Or rather, you
+> are being misled by comments because you incorrectly associate "not
+> available to reader" to mean "valid record with an empty string".
+
+You are right. Well, it is really hard to put all the pieces together
+just by reading the code. And the unclear comments make it even worse.
+
+Best Regards,
+Petr
