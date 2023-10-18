@@ -2,169 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439507CE460
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86F87CE45D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjJRRZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S229900AbjJRRZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbjJRRZp (ORCPT
+        with ESMTP id S229757AbjJRRZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:25:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DA84482
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697649895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5AOd0/hJo+xQgO9OcEYZKv2n43WMiR7HBnvKw0ANJXA=;
-        b=RpLe8K5mAbONvk3pVUNsI4+KdLJWkb4Zd9ewl7cxXQAdsznE4rGSePUyLJFZV8w27RY0b4
-        i9ifvv9a0k6avUvykWdoY4WksisMo9a39GlOOQELElu2KislSdpYgCyQbG6VKGGHfv+yCk
-        uTlHixqRbVjrgO5F6jvHbypvUdwpEc4=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-wKcdzogVMbO8MJ8zqYjt0Q-1; Wed, 18 Oct 2023 13:24:53 -0400
-X-MC-Unique: wKcdzogVMbO8MJ8zqYjt0Q-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c51a7df557so40675041fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:24:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697649892; x=1698254692;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Wed, 18 Oct 2023 13:25:30 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349F7449C
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:25:27 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso101344971fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697649925; x=1698254725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5AOd0/hJo+xQgO9OcEYZKv2n43WMiR7HBnvKw0ANJXA=;
-        b=oPARvJzAUh7RcgkeJhn9MYFUIz596E5nwULRc4e6X0NOYj+a06vxCveLaiz4sn5tJQ
-         rTKqGq+Wdo1MJOUhObX945HkgAiIdu9Nwv7xt1glvnDAxK1Ep/GZS7roeIC3FyztWZHk
-         CRUaoJa+2mouKfJDsvXzWfVctkg1QkoRDVbthxbznKQzt0eXySwfu1rPfPuOI6qSUx6Q
-         C+Tx17U/etTXmBTwVL4jF+U2d1BGcybzFt90+qCvyUq3YDzFOJmZqb6sQK+gGXhirbKz
-         +rRvfUiIGnhAhNx1N/KzoZaJ6SDdsEkIdlaDrklzBJr/9FRE9vdftAnYGNJSfQbVViEs
-         D3Pg==
-X-Gm-Message-State: AOJu0Yx8v5Rg6Lc8ZomwDaZ3P6S8bPj0Qcq3QLTnMQBSPm+RukGniZE2
-        YQjBCgOjcoKnWhoZaeRG/cb4F8Z2JsMUHzDXkZ2DW5I9CEyyQwZRZcHP2COaAERZZR6N1MUg6x4
-        EtMf0Fbjmdqar/QzavWbqUGZG
-X-Received: by 2002:a2e:3619:0:b0:2bf:a9b6:d254 with SMTP id d25-20020a2e3619000000b002bfa9b6d254mr3934018lja.50.1697649892292;
-        Wed, 18 Oct 2023 10:24:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHBwF/FZH/EqE5Pe6mKGEiyQtBuyLQcUH3K5SG7IYfDvAmL8IFrvXOTzgtqDTf2JFbCaqPxsA==
-X-Received: by 2002:a2e:3619:0:b0:2bf:a9b6:d254 with SMTP id d25-20020a2e3619000000b002bfa9b6d254mr3933990lja.50.1697649891837;
-        Wed, 18 Oct 2023 10:24:51 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f2:2037:f34:d61b:7da0:a7be])
-        by smtp.gmail.com with ESMTPSA id r9-20020a05600c320900b0040644e699a0sm2184668wmp.45.2023.10.18.10.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 10:24:51 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 13:24:46 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v4 00/16] vdpa: Add support for vq descriptor
- mappings
-Message-ID: <20231018132347-mutt-send-email-mst@kernel.org>
-References: <20231018171456.1624030-2-dtatulea@nvidia.com>
+        bh=tbixeUBAnXxzznhgP0IZfHR6Ap9ypS+fHg7KPLOGdDs=;
+        b=o1uvyhw4mRfZ0Oix87hN8GJA2ClSos4OYPMiO6an7rw5MbWQlhzuqj2eoL5yOrVwtP
+         p5QUS6/h0TYpeOjkUBnHYQl0ra7W99G/ozAUFAGw1+eNYSqRl1zDd5BEyr4u0wCTxBI2
+         ExUBMA6CSR6G11LRLu4MkCxjeabymUgc7wyEXYwjP17INwvLCKjskjsxuyR1rZXqgwFh
+         yijNiifZUhpSDkQo1zOl1h6HufVzyM1NoY0fVzXQKAsl9YTPe1oyAsKmKH0RCmTc4ic4
+         sECIegpq2PWyhtoMuKd9k8ZuzLSAmnBau2ehOzrHVgaJwRANXdUb+HL7u29/tPU5Z/wK
+         3x5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697649925; x=1698254725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tbixeUBAnXxzznhgP0IZfHR6Ap9ypS+fHg7KPLOGdDs=;
+        b=Ii4CSjJiOMJR+ZDcWophODd2D3qk9YmhywKPBUei7lr4xGijXB/Gu1nT9uhHf8uXfk
+         4M2LIuUo7axHXdQwsf5+gTBxx/A3yBCvai7zhHzuBgBiAnOWQTAcsaDL9x/Wq2n+hw8q
+         mpGVEjhecvBeoajI/dAntSE18vHwgrXhMobsQIITyl9AxZG9994oMiaSYmM1sOb5wcEC
+         MUSQHO66VRfkoOnwPfdV9AT9HpUKxu28BnveojWaYhIeSP4QFAeCvZnL571t2bvhLdun
+         SpmPex0PToH/FHTmgTykN8kl5NJMBJIt6wxHpkbxCat4Ml7G97tp3lt7eQLgvDfXl6si
+         w2uw==
+X-Gm-Message-State: AOJu0Yy3nrm6cpKzaw/du++9x1vDrah/kmFDfbUms+pMjP+7Way4GQEP
+        3cr/8MxlcGAlqNTveJLN5+hEZdJLX8Tzu7amgN6iWw==
+X-Google-Smtp-Source: AGHT+IHzFya1PKaT/fp+v+fPaWtz2nZSKePWthzhWNxfg7RP5nxfUjweywZ3NPnQfQWgt7OXrR8rjvSgSZf0oZQ26Nk=
+X-Received: by 2002:a05:651c:10b2:b0:2c1:522a:8e25 with SMTP id
+ k18-20020a05651c10b200b002c1522a8e25mr3786476ljn.32.1697649925479; Wed, 18
+ Oct 2023 10:25:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018171456.1624030-2-dtatulea@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-4-cleger@rivosinc.com>
+In-Reply-To: <20231017131456.2053396-4-cleger@rivosinc.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Wed, 18 Oct 2023 10:24:49 -0700
+Message-ID: <CALs-HssE=denuwBqH4KtCr1QqTzPb9rELW1ZXR5Cr-nqQQWQoA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/19] riscv: hwprobe: add support for scalar crypto
+ ISA extensions
+To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 08:14:39PM +0300, Dragos Tatulea wrote:
-> This patch series adds support for vq descriptor table mappings which
-> are used to improve vdpa live migration downtime. The improvement comes
-> from using smaller mappings which take less time to create and destroy
-> in hw.
-> 
-> The first part adds the vdpa core changes from Si-Wei [0].
-> 
-> The second part adds support in mlx5_vdpa:
-> - Refactor the mr code to be able to cleanly add descriptor mappings.
-> - Add hardware descriptor mr support.
-> - Properly update iotlb for cvq during ASID switch.
-> 
-> Changes in v4:
-> 
-> - Improved the handling of empty iotlbs. See mlx5_vdpa_change_map
->   section in patch "12/16 vdpa/mlx5: Improve mr upate flow".
-> - Fixed a invalid usage of desc_group_mkey hw vq field when the
->   capability is not there. See patch
->   "15/16 vdpa/mlx5: Enable hw support for vq descriptor map".
+On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
+osinc.com> wrote:
+>
+> Export the following scalar crypto extensions through hwprobe:
+>
+> - Zbkb
+> - Zbkc
+> - Zbkx
+> - Zknd
+> - Zkne
+> - Zknh
+> - Zksed
+> - Zksh
+> - Zkt
+>
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> ---
+>  Documentation/riscv/hwprobe.rst       | 30 +++++++++++++++++++++++++++
+>  arch/riscv/include/uapi/asm/hwprobe.h | 10 +++++++++
+>  arch/riscv/kernel/sys_riscv.c         | 10 +++++++++
+>  3 files changed, 50 insertions(+)
+>
+> diff --git a/Documentation/riscv/hwprobe.rst b/Documentation/riscv/hwprob=
+e.rst
+> index a52996b22f75..968895562d42 100644
+> --- a/Documentation/riscv/hwprobe.rst
+> +++ b/Documentation/riscv/hwprobe.rst
+> @@ -77,6 +77,36 @@ The following keys are defined:
+>    * :c:macro:`RISCV_HWPROBE_EXT_ZBS`: The Zbs extension is supported, as=
+ defined
+>         in version 1.0 of the Bit-Manipulation ISA extensions.
+>
+> +  * :c:macro:`RISCV_HWPROBE_EXT_ZBC` The Zbc extension is supported, as =
+defined
+> +       in version 1.0 of the Scalar Crypto ISA extensions.
 
-At this point, whether this patchset makes it in 6.7 will largely depend
-on how many rcs there are in 6.6, so it can get some time in next.
-
-
-> Changes in v3:
-> 
-> - dup_iotlb now checks for src == dst case and returns an error.
-> - Renamed iotlb parameter in dup_iotlb to dst.
-> - Removed a redundant check of the asid value.
-> - Fixed a commit message.
-> - mx5_ifc.h patch has been applied to mlx5-vhost tree. When applying
->   this series please pull from that tree first.
-> 
-> Changes in v2:
-> 
-> - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
->   was split off into two patches to avoid merge conflicts into the tree
->   of Linus.
-> 
->   The first patch contains only changes for mlx5_ifc.h. This must be
->   applied into the mlx5-vdpa tree [1] first. Once this patch is applied
->   on mlx5-vdpa, the change has to be pulled fom mlx5-vdpa into the vhost
->   tree and only then the remaining patches can be applied.
-> 
-> [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
-> 
-> Dragos Tatulea (13):
->   vdpa/mlx5: Expose descriptor group mkey hw capability
->   vdpa/mlx5: Create helper function for dma mappings
->   vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
->   vdpa/mlx5: Take cvq iotlb lock during refresh
->   vdpa/mlx5: Collapse "dvq" mr add/delete functions
->   vdpa/mlx5: Rename mr destroy functions
->   vdpa/mlx5: Allow creation/deletion of any given mr struct
->   vdpa/mlx5: Move mr mutex out of mr struct
->   vdpa/mlx5: Improve mr update flow
->   vdpa/mlx5: Introduce mr for vq descriptor
->   vdpa/mlx5: Enable hw support for vq descriptor mapping
->   vdpa/mlx5: Make iotlb helper functions more generic
->   vdpa/mlx5: Update cvq iotlb mapping on ASID change
-> 
-> Si-Wei Liu (3):
->   vdpa: introduce dedicated descriptor group for virtqueue
->   vhost-vdpa: introduce descriptor group backend feature
->   vhost-vdpa: uAPI to get dedicated descriptor group id
-> 
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
->  drivers/vdpa/mlx5/core/mr.c        | 194 ++++++++++++++++-------------
->  drivers/vdpa/mlx5/core/resources.c |   6 +-
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 105 +++++++++++-----
->  drivers/vhost/vdpa.c               |  27 ++++
->  include/linux/mlx5/mlx5_ifc.h      |   8 +-
->  include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
->  include/linux/vdpa.h               |  11 ++
->  include/uapi/linux/vhost.h         |   8 ++
->  include/uapi/linux/vhost_types.h   |   5 +
->  10 files changed, 272 insertions(+), 130 deletions(-)
-> 
-> -- 
-> 2.41.0
-
+At least in my v1.0.1 version of the crypto scalar spec, I don't see
+Zbc. That seems to be defined in the bit manipulation extensions.
