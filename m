@@ -2,355 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFF37CE8BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FC27CE8DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjJRU1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S232461AbjJRU3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRU1M (ORCPT
+        with ESMTP id S231834AbjJRU22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:27:12 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2989A4;
-        Wed, 18 Oct 2023 13:27:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IcXDUbhyWn9T+jx75G0ZdYct4O9hXXAwi0sGxtAtzifUGYVPSv5xU7rKsGcONo8evNqaWFlNmh06cJ+ikZLRebb9JbmlxzaoT/q9ptRVtLn/eCGLFVdooOxHL6E4rKfnSisEaICQSxZh3X9QjDSYCaQTV6bO5j44bq+0YTsbd7vDEIM31PheOHiwBYX8Zqi3wRBfHU07jfx5Af8GMXDx0F6H5STpJ9YPwK5xcFvc9jKcfeDZzZF+xH9qyD7qAVpkATV++OWMFqoNrk8cwZzYgyRl7MSqZX0zVGdi6pQfV1iQIZdVnmORP0UbSz11V7ueFUSt2vAtbx6BYkyYz3ZILQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L/weRuittkt8e4EBns2qpQvAvdMKdQENgKYlm96Hvd0=;
- b=TXXAowlargLokgDlcdGT2/hsjS3Y4gJ1Vl1zsDP9z5IqS/LbXApGu8hjVOUZhEXvjDQXpT8nblTD7x4kTUMNdLvbtqtOPa3cgAtqBkVQj+k3bHnvOlnQc9bh4Ss/PNqzmddxIwzpEutZQqxZHU0ND2niCjS5fMuFG7eHIev1bDWonQmJnLcd+WWeF+p3LLwFqbeFams5aOfR9rDuz+gySh1YBsPgJBtXr7GLuUGMLSN4sKv7JVuDhqtIILWmdawzokSaBNjpvjguAN7CLpnUrvpqlea35BAAjafu8lnOgnQ7kpwdQnQUWvxA//kHhc7iqq7kHrKEN/C8Q/15HLYnWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L/weRuittkt8e4EBns2qpQvAvdMKdQENgKYlm96Hvd0=;
- b=sAOIHAz5yWQeVUU2rTzDEdJbh4Lb7Fl/3pNhQ6adOEawxRF18pMSkSIW2SZGyYBl0cz0xe2Y2/pfMSPvoRM4B2pONPD/Yg2kLEzthlkNwz7c/WNnXosV0MQOhBLyMZM69NCw/A95XMuAhRXQIIgxT4yhuJgvU4SNyAdnZl96NeI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by IA0PR12MB8840.namprd12.prod.outlook.com (2603:10b6:208:490::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
- 2023 20:27:06 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::6ac8:eb30:6faf:32b2]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::6ac8:eb30:6faf:32b2%5]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
- 20:27:06 +0000
-Message-ID: <09556ee3-3d9c-0ecc-0b4a-3df2d6bb5255@amd.com>
-Date:   Wed, 18 Oct 2023 15:27:03 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
- NAE event
+        Wed, 18 Oct 2023 16:28:28 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1984D4C
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:28:17 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507bd19eac8so3482198e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697660896; x=1698265696; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1IkfvvSOsBHtTtrxwDROKr8J2+syziWFNikOdZa81Lk=;
+        b=mkWYfqQqjb878ItjeyYcPAoG0BJ3aTsas2sb2gwBo+WwhMWDee04ln5rcE4/DnhAPU
+         mhroC/KttNdHg2mtZfRzMc7p5TSM6COHpUrTMTK4oIzvlPfNx7waf9NsOSxg8zgq6Pgt
+         +O9IDirCWv2BLeMchjal9h8TKVLsa8j8CiWfqQLCqEp7sc6+FFXv9PyHJppX+igvLDZA
+         qBMJ8GGgIzMeLJ6ovbHbtGEW8Uf21+dL8mtthYiRSL6AER8ohAmAcIioZ/n7XdfXXyE6
+         oT+56kc47k9QJW6gFoVxTqkPI9qqWM6vXkbZVEKDgRoXtqQRXLwGztyv5JpcQ8AqtR+n
+         e9WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697660896; x=1698265696;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1IkfvvSOsBHtTtrxwDROKr8J2+syziWFNikOdZa81Lk=;
+        b=mjsqWkkFz0ZGgW+kN61LUBELzbb3Ul1i5pxQkYaQmICgPmG4OHVtgvQsVhHid1v/aJ
+         AEQZ7Kkd7v3onaEkD4R9jVVXD/mLz6nb3nheRESiPFo17gY7n9tE/28Lsmu9jeUJVzs/
+         f7nRVLJoEqB06y87PJyCueZhIsmjx+xKEyb1qzqfXMIPaa42RotTiq9ZNNMmtAauyhZX
+         ulTPFkKSp1VBHHN3RCEeTfIRJUvzFSiwsvNEMr02pSaNT0ITVpxfNcNWaNnD6cbYRwuL
+         S3y8W/Gz2oB+SiE6qoX9KT/N2jI7VcCant5SDJenHND6L2nbcpdOh4tvdRiKWKoPjeI/
+         5ZZw==
+X-Gm-Message-State: AOJu0Ywj8lZmm7pCScERcPARRU2QFPnSXciUr+7wnVMkUq+04U3gaM1o
+        s9oy6PwX8iJDOzNpzZwtkzn/9A==
+X-Google-Smtp-Source: AGHT+IG8XQIHxsr/RXLobSRarxMuGa2jh08MntDK4B5b0mJ7E/k80IR779VemDrdi8r7WBRejm78mw==
+X-Received: by 2002:a19:f603:0:b0:500:b42f:1830 with SMTP id x3-20020a19f603000000b00500b42f1830mr46218lfe.63.1697660895733;
+        Wed, 18 Oct 2023 13:28:15 -0700 (PDT)
+Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id v12-20020ac2558c000000b00507aced147esm825302lfg.203.2023.10.18.13.28.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 13:28:15 -0700 (PDT)
+Message-ID: <5ac0d16a-0303-46c7-a008-31280629cc11@linaro.org>
+Date:   Wed, 18 Oct 2023 22:28:13 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325
+ thermals
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Alexey Kardashevskiy <aik@amd.com>
-Cc:     Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-49-michael.roth@amd.com>
- <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
- <ZS614OSoritrE1d2@google.com> <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
- <ZS_iS4UOgBbssp7Z@google.com>
-From:   "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <ZS_iS4UOgBbssp7Z@google.com>
+To:     Luca Weiss <luca@z3ntu.xyz>, Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
+ <20231013-fp5-thermals-v1-4-f14df01922e6@fairphone.com>
+ <34da335e-cbcd-4dc2-8a86-f31369db1fcd@linaro.org>
+ <4958673.31r3eYUQgx@z3ntu.xyz>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <4958673.31r3eYUQgx@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9P223CA0015.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:806:26::20) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|IA0PR12MB8840:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04fa3703-f907-42df-56c0-08dbd018986c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n4pPuwAn+ip3Zc0bps996/l0DockWkGcxozh8HhuqCa6haWOyLMWwTUvYiGLGJH7RM8z0sLiuNJZvE2YyBiLqp5cv9WHjS6aiaUVKOvxa/W0B+5kO+qNtBlOK2TxMo8fpUOrLGuLbiIB+khAYoJ/TmOq49dwfgoqwR2MPfzYkSSVZhm1UEdger7z5S6RTSejFs4u0gr7byn8uyIYxj/u8GQpeQ8Gghc5MelrKa1ASad1RDG25kpPmw0c44dvgUli6/ypBt88svZamRAjvBhY4f9778Zy+frJ4gs7eO+CIUl6c7bv9UCCtX2VEuzow258dlshZgE/G0UUdLlPDAc9Fjp3dFbnGLOw3mNGmJ5ISm6ycuU81FETPp+c3XemaZHFT/y75vUNy7M70kMQZ4P1nEF9lXFTT1BOW0rmSKi8RoOH79T/t6wzYP5M5sC9LBxcwwAjLhBp5Dia9VyZg5DxbvqFIyenznAx4qT+w7YNT3HyZrRav2ZkeoEu4LNyI/I9WO7Wxnz0hiuukFK9EWO26ueT0vXJy8jPRSoRbQgrwp/ZWElQCDW2rGeipf99myMfJ/7i7DAlaKMiKSqrdp7CRivy5ZXsqV+q4D2K6mqVR/HWATLPOKqyu0N2TGjAYtAHz/UKJKCJ/GxoKw5vnayJoQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(2616005)(54906003)(6666004)(478600001)(66556008)(66476007)(66946007)(110136005)(6486002)(6636002)(53546011)(6512007)(6506007)(41300700001)(26005)(316002)(7406005)(7416002)(4326008)(2906002)(8936002)(5660300002)(36756003)(8676002)(83380400001)(86362001)(31696002)(38100700002)(66899024)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cmxMcXZJeGpvcXcrQVd6bjhyeTZ2cWdrY3p1K2tQYnQvdnc4VUxxSzU4TUpT?=
- =?utf-8?B?NVZRcEcyYnVrNVRSczBWMCtQK0JwRUwxcEpNU3lRMGdyOC9qZkNGeUFKeTJm?=
- =?utf-8?B?Mzg0YVA4RTlyVENCUmJIVXlxUHZPSWFFblhGMzBNSGFYbDdDenRYbEYvMFBa?=
- =?utf-8?B?SzRKL0s3K2Q5U1ZFMFNtem5MaDYrZW56V0pqenc4YitaOGVheGVDS0NJYnFG?=
- =?utf-8?B?R2thbGdGSnNCUm5KenpwQmxuVDUwRS85bDQrQXpZQW9jeFRubnlKNTU0NjNj?=
- =?utf-8?B?ZWxIbERiY280TmxOcFNPZ1ZxN0t0ckllYmpKY0RkM2E5c05hOWR6RmlwU29j?=
- =?utf-8?B?bDcvVU4rR0JhL2ZOVEQ5U3BRZ29yNHVOR0ZFRjZaVW1iTXdGZ1F2TlB2Vy8w?=
- =?utf-8?B?QU5JYUZ5MzNkVzZ4M1ZPYmt5VEMvRC9xb0YwTjlMMVMvcDNVa3ltWlFRNG5Z?=
- =?utf-8?B?ekxpMUpHeStXU3BpaWN3U2VXZ1h4a2ttdUs0cWlGWHJ0Zi9TOXhUVFpQenB5?=
- =?utf-8?B?MUxDWDZDWFZiSUY3QTMvQlNIb2lBRkpjZHlpU3FhT24yRlFlenJsNXBtdmpO?=
- =?utf-8?B?QytvaUhKUHNOSjU1OHBPbG1KRjloQkF5ZXZMT2tqTDljN2ZieFFqNDZCMVd5?=
- =?utf-8?B?TDZhdk8yVVYxbk9ERWk3Z0dYNHB4a3RjVTRxNUp5VTd5S1ppNisxZDkwRjZW?=
- =?utf-8?B?bTZkVlUvWUtnMnczb0N0d3hLZXQ1ci9PSGVJQXdzUjBLTHJoSHZ6MjQ1MGFh?=
- =?utf-8?B?UjB0a0xEZkFSRlNVb3VDNXFyQkRmRnJpUGl6UGNGN3NxY1F5emh5cXZ2MWpj?=
- =?utf-8?B?SXVFWXpOSHQzM2xQMSs0S0JvZ0UxNUxsSytlck8xMExLVzNLaW14SGREWkJv?=
- =?utf-8?B?WHlUVVhxRkRHNzE5U2VvVlo1NnNLZkJZbCtlL0t2Z1FON3JKeEZNNGFZbWo1?=
- =?utf-8?B?d29rcU1OZVJ3cWV1SzBCSlgzVnZEUytyVzNaRXhvRkE0bW5QUyt5b0pKeGp2?=
- =?utf-8?B?TWR0L3Z6T0JZR2s2R1pCQmhGeXk1NVJubjV4Yzc1VlQ4TFpIUmg3NVkxUWNw?=
- =?utf-8?B?Q3JLMG14eTRUU1hhOGtkR2tDb3dCMDlZVG05cVNTZll4dm1aRWRjLzRjc2JQ?=
- =?utf-8?B?VHpyZ01yWXpLNER2SVArZloyQXUxU0JDSzJZTE5PSHRkemVZTXRMdnJBWDc4?=
- =?utf-8?B?dGRmVFI4eEFSK3hGbmx1cldBdUpZeWYxZVg2OFlFSThaTnAvZ1V0UTd2SUI3?=
- =?utf-8?B?MkZ6dWNmQ3ZMU254UmEvOGFhMldvUW9SNjkzRUJVUUoxNFRKdERMYXpRUmhw?=
- =?utf-8?B?WDJNVFY4eXE0VHo1Mmg0Q3luNlc3WkRVS2lPNTFsU1dRNFlYRW9iSER2Q3VY?=
- =?utf-8?B?a2poTGJMR3ZMT3M4UTNhRGNxRGl0Z3lWVWxvM1YwSWdHeWZIaXUxVkV1U0FT?=
- =?utf-8?B?VGp4Q01XR1NhYXFoelh3eXNaWG90VFhkYy9QR3VzV3ZDS3VWc0xlSUp1Zm01?=
- =?utf-8?B?djVHUGt0VUZzRnZiQ1NLOFNBZjk1bElyYzY5Mll6cWtOYnpyamY3aHg1emp4?=
- =?utf-8?B?bHc3YVQ1Q3o5Y291UEd5ZGc0NUJpZ1E5NEJIVHlBbXZHUlludDY1M2tnRHoz?=
- =?utf-8?B?NXR5YTRpT0ZTazFLVTJlaVMvbFRBcS9kODE0c2JONXRHMmdtc3c4dmJMNTM3?=
- =?utf-8?B?aHdrWlRTNTRFc1kwM3FKZU5iZjZiMXgvaEdqK1J4SGZxSlNPZUJFb3dXY1Y2?=
- =?utf-8?B?UmU1bHlnbC9QMnVwWDJTQnNoRmtSaEQrakxjaDlCZkhQTllFNVoyTUJ3TGVR?=
- =?utf-8?B?aFFjSWNjQWd6WDZLRlE4cDZIbFA4cm1BVkZCaGQzK2JHdXEzN3htdHNPaXlv?=
- =?utf-8?B?eE9vbHFxc1pMS3VseUpOeDZwaCt2SHRRMWgrSC9rTkx2Um1leUJ6bk5xaDY5?=
- =?utf-8?B?LyttSFlBNkJ4bHBMaW1mV0ZYZkRXN1ZScG44Z3FTK2NqZlhYU2dEOVlHeVZZ?=
- =?utf-8?B?aFpkK2cwOEdhZnlQL3Exb1M5VkdUeCtCbFVhV3E4M0Z2bUpWOXF5aEZqeVlP?=
- =?utf-8?B?SStRdTlRRGdCblRKRlZOYWw1QjlDd0htRjdoOWlNYU9DNThGQjJ1TXcrQkJ2?=
- =?utf-8?Q?r+PA48miOS0DfefWfkpLr8lVA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04fa3703-f907-42df-56c0-08dbd018986c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:27:05.9725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Twkt6Db/9mmDQSzMcGWd33JpqHZETELK3IG7gi0m4i+a2LmdG9tbVw4QW/waM9hjRLoYvUN1Wf86QxGc9njSsA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8840
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/2023 8:48 AM, Sean Christopherson wrote:
-> On Wed, Oct 18, 2023, Alexey Kardashevskiy wrote:
+
+
+On 10/14/23 19:52, Luca Weiss wrote:
+> On Samstag, 14. Oktober 2023 01:13:29 CEST Konrad Dybcio wrote:
+>> On 13.10.2023 10:09, Luca Weiss wrote:
+>>> Configure the thermals for the QUIET_THERM, CAM_FLASH_THERM, MSM_THERM
+>>> and RFC_CAM_THERM thermistors connected to PM7325.
+>>>
+>>> With this PMIC the software communication to the ADC is going through
+>>> PMK7325 (= PMK8350).
+>>>
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>
+>>>   arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 117
+>>>   +++++++++++++++++++++ 1 file changed, 117 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>>> b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts index
+>>> 2c01f799a6b2..d0b1e4e507ff 100644
+>>> --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>>> @@ -9,6 +9,7 @@
+>>>
+>>>   #define PM7250B_SID 8
+>>>   #define PM7250B_SID1 9
+>>>
+>>> +#include <dt-bindings/iio/qcom,spmi-adc7-pm7325.h>
+>>>
+>>>   #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+>>>   #include <dt-bindings/leds/common.h>
+>>>   #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>>>
+>>> @@ -137,6 +138,20 @@ afvdd_2p8: regulator-afvdd-2p8 {
+>>>
+>>>   	};
+>>>   	
+>>>   	thermal-zones {
+>>>
+>>> +		camera-thermal {
+>>> +			polling-delay-passive = <0>;
+>>> +			polling-delay = <0>;
+>>> +			thermal-sensors = <&pmk8350_adc_tm 2>;
+>>> +
+>>> +			trips {
+>>> +				active-config0 {
+>>> +					temperature = <125000>;
 >>
->> On 18/10/23 03:27, Sean Christopherson wrote:
->>> On Mon, Oct 16, 2023, Dionna Amalie Glaze wrote:
->>>>> +
->>>>> +       /*
->>>>> +        * If a VMM-specific certificate blob hasn't been provided, grab the
->>>>> +        * host-wide one.
->>>>> +        */
->>>>> +       snp_certs = sev_snp_certs_get(sev->snp_certs);
->>>>> +       if (!snp_certs)
->>>>> +               snp_certs = sev_snp_global_certs_get();
->>>>> +
->>>>
->>>> This is where the generation I suggested adding would get checked. If
->>>> the instance certs' generation is not the global generation, then I
->>>> think we need a way to return to the VMM to make that right before
->>>> continuing to provide outdated certificates.
->>>> This might be an unreasonable request, but the fact that the certs and
->>>> reported_tcb can be set while a VM is running makes this an issue.
->>>
->>> Before we get that far, the changelogs need to explain why the kernel is storing
->>> userspace blobs in the first place.  The whole thing is a bit of a mess.
->>>
->>> sev_snp_global_certs_get() has data races that could lead to variations of TOCTOU
->>> bugs: sev_ioctl_snp_set_config() can overwrite psp_master->sev_data->snp_certs
->>> while sev_snp_global_certs_get() is running.  If the compiler reloads snp_certs
->>> between bumping the refcount and grabbing the pointer, KVM will end up leaking a
->>> refcount and consuming a pointer without a refcount.
->>>
->>> 	if (!kref_get_unless_zero(&certs->kref))
->>> 		return NULL;
->>>
->>> 	return certs;
+>> are
 >>
->> I'm missing something here. The @certs pointer is on the stack,
-> 
-> No, nothing guarantees that @certs is on the stack and will never be reloaded.
-> sev_snp_certs_get() is in full view of sev_snp_global_certs_get(), so it's entirely
-> possible that it can be inlined.  Then you end up with:
-> 
-> 	struct sev_device *sev;
-> 
-> 	if (!psp_master || !psp_master->sev_data)
-> 		return NULL;
-> 
-> 	sev = psp_master->sev_data;
-> 	if (!sev->snp_initialized)
-> 		return NULL;
-> 
-> 	if (!sev->snp_certs)
-> 		return NULL;
-> 
-> 	if (!kref_get_unless_zero(&sev->snp_certs->kref))
-> 		return NULL;
-> 
-> 	return sev->snp_certs;
-> 
-> At which point the compiler could choose to omit a local variable entirely, it
-> could store @certs in a register and reload after kref_get_unless_zero(), etc.
-> If psp_master->sev_data->snp_certs is changed at any point, odd thing can happen.
-> 
-> That atomic operation in kref_get_unless_zero() might prevent a reload between
-> getting the kref and the return, but it wouldn't prevent a reload between the
-> !NULL check and kref_get_unless_zero().
-> 
->>> If userspace wants to provide garbage to the guest, so be it, not KVM's problem.
->>> That way, whether the VM gets the global cert or a per-VM cert is purely a userspace
->>> concern.
+>>> +		rear-cam-thermal {
+>>>
+>>> +					temperature = <125000>;
 >>
->> The global cert lives in CCP (/dev/sev), the per VM cert lives in kvmvm_fd.
->> "A la vcpu->run" is fine for the latter but for the former we need something
->> else.
+>> you
+>>
+>>> +		sdm-skin-thermal {
+>>>
+>>> +					temperature = <125000>;
+>>
+>> sure
+>>
+>> about these temps?
 > 
-> Why?  The cert ultimately comes from userspace, no?  Make userspace deal with it.
+> (email from my other address, quicker right now)
 > 
->> And there is scenario when one global certs blob is what is needed and
->> copying it over multiple VMs seems suboptimal.
+> Well yes and no.
 > 
-> That's a solvable problem.  I'm not sure I like the most obvious solution, but it
-> is a solution: let userspace define a KVM-wide blob pointer, either via .mmap()
-> or via an ioctl().
+> Yes as in those are the temps specified in downstream dtb.
+> No as in I'm 99% sure there's user space with definitely lower threshold that
+> actually does something in response to the temps.
 > 
-> FWIW, there's no need to do .mmap() shenanigans, e.g. an ioctl() to set the
-> userspace pointer would suffice.  The benefit of a kernel controlled pointer is
-> that it doesn't require copying to a kernel buffer (or special code to copy from
-> userspace into guest).
+> I didn't look too much into this but does the kernel even do something when it
+> hits one of these trip points? I assume when there's a cooling device thing
+> specified then it can actually tell the driver to do something, but without
+> (and most drivers don't support this?) I'm assuming the kernel can't do much
+> anyways?
 > 
-> Actually, looking at the flow again, AFAICT there's nothing special about the
-> target DATA_PAGE.  It must be SHARED *before* SVM_VMGEXIT_EXT_GUEST_REQUEST, i.e.
-> KVM doesn't need to do conversions, there's no kernel priveleges required, etc.
-> And the GHCB doesn't dictate ordering between storing the certificates and doing
-> the request.  
+> So e.g. when the temperature for the flash led is reached I'm assuming
+> downstream (+Android) either dims the led or turns it off? But I'd have to dig
+> quite a bit into the thermal setup there to check what it's really doing.
+I think reaching "critical" shuts down the platform, unless something
+registering the thermal zone explicitly overrides the behavior.
 
-That's true.
+> 
+> But for now I think it's okay to put this current thermal config into dts and
+> we'll improve it later when 1. I understand more and 2. maybe some useful
+> drivers support the cooling bits?
+Yeah it's better than nothing, but ultimately we should probably move
+the values that userspace daemon operates on here in the dt..
 
->That means the certificate stuff can be punted entirely to usersepace.
-
-> 
-> Heh, typing up the below, there's another bug: KVM will incorrectly "return" '0'
-> for non-SNP guests:
-> 
-> 	unsigned long exitcode = 0;
-> 	u64 data_gpa;
-> 	int err, rc;
-> 
-> 	if (!sev_snp_guest(vcpu->kvm)) {
-> 		rc = SEV_RET_INVALID_GUEST; <= sets "rc", not "exitcode"
-> 		goto e_fail;
-> 	}
-> 
-> e_fail:
-> 	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, exitcode);
-> 
-> Which really highlights that we need to get test infrastructure up and running
-> for SEV-ES, SNP, and TDX.
-> 
-> Anyways, back to punting to userspace.  Here's a rough sketch.  The only new uAPI
-> is the definition of KVM_HC_SNP_GET_CERTS and its arguments.
-> 
-> static void snp_handle_guest_request(struct vcpu_svm *svm)
-> {
-> 	struct vmcb_control_area *control = &svm->vmcb->control;
-> 	struct sev_data_snp_guest_request data = {0};
-> 	struct kvm_vcpu *vcpu = &svm->vcpu;
-> 	struct kvm *kvm = vcpu->kvm;
-> 	struct kvm_sev_info *sev;
-> 	gpa_t req_gpa = control->exit_info_1;
-> 	gpa_t resp_gpa = control->exit_info_2;
-> 	unsigned long rc;
-> 	int err;
-> 
-> 	if (!sev_snp_guest(vcpu->kvm)) {
-> 		rc = SEV_RET_INVALID_GUEST;
-> 		goto e_fail;
-> 	}
-> 
-> 	sev = &to_kvm_svm(kvm)->sev_info;
-> 
-> 	mutex_lock(&sev->guest_req_lock);
-> 
-> 	rc = snp_setup_guest_buf(svm, &data, req_gpa, resp_gpa);
-> 	if (rc)
-> 		goto unlock;
-> 
-> 	rc = sev_issue_cmd(kvm, SEV_CMD_SNP_GUEST_REQUEST, &data, &err);
-> 	if (rc)
-> 		/* Ensure an error value is returned to guest. */
-> 		rc = err ? err : SEV_RET_INVALID_ADDRESS;
-> 
-> 	snp_cleanup_guest_buf(&data, &rc);
-> 
-> unlock:
-> 	mutex_unlock(&sev->guest_req_lock);
-> 
-> e_fail:
-> 	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, rc);
-> }
-> 
-> static int snp_complete_ext_guest_request(struct kvm_vcpu *vcpu)
-> {
-> 	u64 certs_exitcode = vcpu->run->hypercall.args[2];
-> 	struct vcpu_svm *svm = to_svm(vcpu);
-> 
-> 	if (certs_exitcode)
-> 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, certs_exitcode);
-> 	else
-> 		snp_handle_guest_request(svm);
-> 	return 1;
-> }
-> 
-> static int snp_handle_ext_guest_request(struct vcpu_svm *svm)
-> {
-> 	struct kvm_vcpu *vcpu = &svm->vcpu;
-> 	struct kvm *kvm = vcpu->kvm;
-> 	struct kvm_sev_info *sev;
-> 	unsigned long exitcode;
-> 	u64 data_gpa;
-> 
-> 	if (!sev_snp_guest(vcpu->kvm)) {
-> 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_GUEST);
-> 		return 1;
-> 	}
-> 
-> 	data_gpa = vcpu->arch.regs[VCPU_REGS_RAX];
-> 	if (!IS_ALIGNED(data_gpa, PAGE_SIZE)) {
-> 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_ADDRESS);
-> 		return 1;
-> 	}
-> 
-> 	vcpu->run->hypercall.nr		 = KVM_HC_SNP_GET_CERTS;
-> 	vcpu->run->hypercall.args[0]	 = data_gpa;
-> 	vcpu->run->hypercall.args[1]	 = vcpu->arch.regs[VCPU_REGS_RBX];
-> 	vcpu->run->hypercall.flags	 = KVM_EXIT_HYPERCALL_LONG_MODE;
-> 	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_request;
-> 	return 0;
-> }
-> 
-
-IIRC, the important consideration here is to ensure that getting the 
-attestation report and retrieving the certificates appears atomic to the 
-guest. When SNP live migration is supported we don't want a case where 
-the guest could have migrated between the call to obtain the 
-certificates and obtaining the attestation report, which can potentially 
-cause failure of validation of the attestation report.
-
-Thanks,
-Ashish
+Konrad
