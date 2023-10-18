@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4277D7CD414
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D207CD406
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344566AbjJRGSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        id S1344501AbjJRGRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344468AbjJRGRq (ORCPT
+        with ESMTP id S229689AbjJRGRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:17:46 -0400
+        Wed, 18 Oct 2023 02:17:40 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A87EA
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5FFC4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:38 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrs-0001a4-MS; Wed, 18 Oct 2023 08:17:20 +0200
+        id 1qszrs-0001a6-MK; Wed, 18 Oct 2023 08:17:20 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrr-002UYg-C0; Wed, 18 Oct 2023 08:17:19 +0200
+        id 1qszrr-002UYi-E6; Wed, 18 Oct 2023 08:17:19 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrr-00EvjW-0S;
+        id 1qszrr-00EvjZ-0X;
         Wed, 18 Oct 2023 08:17:19 +0200
 From:   Sascha Hauer <s.hauer@pengutronix.de>
 To:     linux-rockchip@lists.infradead.org
@@ -46,11 +46,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH v8 22/26] dt-bindings: devfreq: event: rockchip,dfi: Add rk3588 support
-Date:   Wed, 18 Oct 2023 08:17:10 +0200
-Message-Id: <20231018061714.3553817-23-s.hauer@pengutronix.de>
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v8 23/26] dt-bindings: soc: rockchip: grf: add rockchip,rk3588-pmugrf
+Date:   Wed, 18 Oct 2023 08:17:11 +0200
+Message-Id: <20231018061714.3553817-24-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231018061714.3553817-1-s.hauer@pengutronix.de>
 References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
@@ -69,50 +68,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds rockchip,rk3588-dfi to the list of compatibles. Unlike ealier
-SoCs the rk3588 has four interrupts (one for each channel) instead of
-only one, so increase the number of allowed interrupts to four.
+Add rockchip,rk3588-pmugrf compatible string.
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
 
 Notes:
-    Changes since v4:
-     - new patch
-    
     Changes since v5:
-     - drop interrupt-names property
-    
-    Changes since v4:
      - new patch
 
- .../devicetree/bindings/devfreq/event/rockchip,dfi.yaml       | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-index e8b64494ee8bd..50d3fabe958d5 100644
---- a/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-+++ b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-@@ -14,6 +14,7 @@ properties:
-     enum:
-       - rockchip,rk3399-dfi
-       - rockchip,rk3568-dfi
-+      - rockchip,rk3588-dfi
+diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+index e4fa6a07b4fa2..1309bf5ae0cdd 100644
+--- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
++++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+@@ -233,6 +233,7 @@ allOf:
+               - rockchip,rk3399-grf
+               - rockchip,rk3399-pmugrf
+               - rockchip,rk3568-pmugrf
++              - rockchip,rk3588-pmugrf
+               - rockchip,rv1108-grf
+               - rockchip,rv1108-pmugrf
  
-   clocks:
-     maxItems: 1
-@@ -23,7 +24,8 @@ properties:
-       - const: pclk_ddr_mon
- 
-   interrupts:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 4
- 
-   reg:
-     maxItems: 1
 -- 
 2.39.2
 
