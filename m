@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1BE7CEC60
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246447CEC69
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjJRXyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 19:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S231709AbjJRX6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJRXyL (ORCPT
+        with ESMTP id S229679AbjJRX6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:54:11 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2D1B6;
-        Wed, 18 Oct 2023 16:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697673247;
-        bh=pZQOYLEmRp8XKzGG50czVgLtAv6PDRjCUr5lNelzZ8c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nURqdBbmIVMioDaEGxHTL4lQj2F6ybn0cMryZ1cWg9IaFXGFGs/GmIrgf+xiGKq/h
-         YK5iToczyJyI71Jjo2J3htkO0mpZYb4UuUkQovx3n8TFjy+hpGMH3+ozTwSEr2Mvo0
-         9Jd26EW4MsEpUTsu00zVsR7uxDclo3h6nkzHP/lIkaifagfJT/VFt2JXwRVBa6TaRw
-         tC/uVQOfO28m7Y4lHnzXpLO+M4iTHOp5nxDMCIuwLYQLDx7MifP1FRUUdgqHBVFg9I
-         ieB1FbS+1ZW+gzYPQryRY0Od+yzXrPEyyhbYhYESG7+IRzUtANZojQXFI/isueTXAe
-         Lj0xf3vh4rxRA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9nkQ4pbcz4xNq;
-        Thu, 19 Oct 2023 10:54:06 +1100 (AEDT)
-Date:   Thu, 19 Oct 2023 10:54:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20231019105405.6ed2f53d@canb.auug.org.au>
+        Wed, 18 Oct 2023 19:58:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A92114;
+        Wed, 18 Oct 2023 16:58:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 270F2C433C7;
+        Wed, 18 Oct 2023 23:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697673530;
+        bh=hhQCYOOCg448O1KYZrGigVrToJM8nwnoz1Z+VpjMS30=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=uQNuBF78XOoYTJdI6kLb9QzUVfw0sAthXjPMYLijxK0wznFlba/bFkGF+0INxNqLX
+         yvt4cjw3j4I+HmocmQoZ3U7bOcot80AdlcjjyyefSm3hiE4f4GUJFrkdI4civuNKFh
+         +z1pgEknD4Z9wdUBaGyhNTVVt1NTvwWge2XzyfjVxpFaqbPS+NTEDhnGejJ0+xo2jK
+         KW9h3j8YWeC8uBLlhAfmcdKw3g/h2fycwkbWLYkxLvM7aoiiZ+6rs5ehrO1pozxihP
+         u3AlFRCklqHsRD1BdZlr1Z+/09NWi95wEwBxQRwJWaWjXOvFyrRGC2vbFCQuNcpsZq
+         qJmeVDHnbtyrA==
+Message-ID: <04645ece5398efdf03e8ab4bb874a0ba.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nu_IY3DkkME3u+LW1b.wP+7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <248c5ad76abad07b2c710c5c561d4e37a099bd36.1697600121.git.quic_varada@quicinc.com>
+References: <cover.1697600121.git.quic_varada@quicinc.com> <248c5ad76abad07b2c710c5c561d4e37a099bd36.1697600121.git.quic_varada@quicinc.com>
+Subject: Re: [PATCH v3 1/8] clk: qcom: clk-alpha-pll: introduce stromer plus ops
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, ilia.lin@kernel.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        mturquette@baylibre.com, quic_kathirav@quicinc.com,
+        rafael@kernel.org, robh+dt@kernel.org, viresh.kumar@linaro.org
+Date:   Wed, 18 Oct 2023 16:58:47 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nu_IY3DkkME3u+LW1b.wP+7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Quoting Varadarajan Narayanan (2023-10-18 02:29:14)
+> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alph=
+a-pll.c
+> index 4edbf77..f839a31 100644
+> --- a/drivers/clk/qcom/clk-alpha-pll.c
+> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> @@ -2508,3 +2508,60 @@ const struct clk_ops clk_alpha_pll_stromer_ops =3D=
+ {
+>         .set_rate =3D clk_alpha_pll_stromer_set_rate,
+>  };
+>  EXPORT_SYMBOL_GPL(clk_alpha_pll_stromer_ops);
+> +
+> +static int clk_alpha_pll_stromer_plus_set_rate(struct clk_hw *hw,
+> +                                              unsigned long rate,
+> +                                              unsigned long prate)
+> +{
+> +       struct clk_alpha_pll *pll =3D to_clk_alpha_pll(hw);
+> +       u32 l, alpha_width =3D pll_alpha_width(pll);
+> +       int ret;
+> +       u64 a;
+> +
+> +       rate =3D alpha_pll_round_rate(rate, prate, &l, &a, alpha_width);
+> +
+> +       regmap_write(pll->clkr.regmap, PLL_MODE(pll), 0);
 
-Hi all,
+It still assumes the clk is always enabled. Please read back the
+register value and make sure the PLL was already enabled before
+restoring the enable state of the clk.
 
-After merging the vfs-brauner tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-ERROR: modpost: "bdev_mark_dead" [drivers/block/floppy.ko] undefined!
-
-Caused by commit
-
-  3b97609801fa ("block: move bdev_mark_dead out of disk_check_media_change")
-
-I have used the vfs-brauner tree from next-20231018 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nu_IY3DkkME3u+LW1b.wP+7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwcB0ACgkQAVBC80lX
-0GyHCwf/T8OQI509pNKulGpzrjmPxh1Z4+D7EOeldMqyONxSpmGI2ZKlwFIXcV9C
-kdjOo2h+WslADyuAZYDGkZvvgzEyjWdZzWQzPpAFE0WYYfx3/Xu/K6TsF6LyZoOZ
-cVuBs8zC9KrVOVECvAiC6aVESubXXq/NcbEDMzEzzeKpFSf1TsHBwg4+6ECw3VjH
-JwJ7PupLQWwgIvLN7o+iZ2eolNoey03B/ldHSFsmQTNRhW4zyaUCIPaty/GcIIIp
-gLtj6227MkyktJV/PSxd5SRiHPNpWDouxZH9n3OyFwlwGs44XiPDR5TfVGoesTHZ
-Yp4VuqhmMkUx7YzxTG0vlq3ZfFnP5Q==
-=Rimz
------END PGP SIGNATURE-----
-
---Sig_/Nu_IY3DkkME3u+LW1b.wP+7--
+> +
+> +       /* Delay of 2 output clock ticks required until output is disable=
+d */
+> +       udelay(1);
