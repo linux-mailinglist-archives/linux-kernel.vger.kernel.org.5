@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27707CDC27
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C75E7CDC24
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjJRMpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S230368AbjJRMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbjJRMpD (ORCPT
+        with ESMTP id S230202AbjJRMo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:45:03 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5AC98
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:45:01 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0795F5C02E2;
-        Wed, 18 Oct 2023 08:44:58 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 18 Oct 2023 08:44:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697633098; x=1697719498; bh=L/
-        /WJax4brKzE8K7jlKJOqfsX92u6DaWmDWFcr+tAL8=; b=qYyY873Dt2zfjzazma
-        nNumniuOGs+QnE66R8Qw7LXa1+z9SCRvo+dMkr17AHe+reNoSTFV3yo3/TcyH75E
-        qDgQZDtsM008s8kQyV4qV1NuHEC8//U96z/HedW/G78+IMf7sl8dXbWswjhsZELG
-        nebAjcMP8GI8M56Dx0OeC3Nb/HW4Tsi716ecclcRVvRNRTqNFPUt/E9ZtlLmNTCx
-        NGjy3H7ZKZkeEVHBC6NCY2BwIdsacEBM7lKEKYNGAYc+SqRsW1Tw38/k+BARVAQG
-        /A84IRDVI8iKvLnpcJqAV2rexGBogHbezzFIs0Nkt2aXL7+nJyNqSMu6uabRXEA6
-        Hhiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697633098; x=1697719498; bh=L//WJax4brKzE
-        8K7jlKJOqfsX92u6DaWmDWFcr+tAL8=; b=A/NkEeWRcrtfFAAUpsMK5GrpinDVT
-        eIAmNsl60iPZ2tWGKUnQSriCq3Sg7iRDOpYMnUU5pFR346syIDPWEq6ITbZGDAkb
-        0oBmatvLu5A39KsvTbEPlt1zJzTaBJF92fMazM15k6IkLWEEUbP1/hk6NNuj1ZcM
-        KHookJ8wMYcnXEYhO9F0eGX+36DvChIhaRd+boLeHfN1ucbaiTHkf0+i32vy1w26
-        KnsNW0VVCiRlbCIPKIWfPCIoBfudWQNDhJknaoN6mqxu/2JWj+DIm1FPc1BscGzb
-        cb4lnmxXSxqdqqS50gU4l1GD4Py3OQ4OrLA+4qp68lVMAEko1WlVJWykg==
-X-ME-Sender: <xms:SdMvZVTEat_lgSzFjC6-pQ0aZwl9hHop8KdyWNVp9DKMTs8_CHoLLQ>
-    <xme:SdMvZewrPypTt6AY3bBLyM6BWPhzZbD7tYhoff6xqG12clNy3CRYqr_4FNk9jvsDp
-    cZe2y5w0ZyESylFGbs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeggdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:SdMvZa0TTNu8XS1hAfOu2EmlSofw3fX370cbiIYmQZH53dwtF66Rng>
-    <xmx:SdMvZdA6cScNXFeIa4WPTvjXQADBwE8dlDYWZqodJGJdAobdrH47JA>
-    <xmx:SdMvZeiuEFoA5v5z2tmMzjW4UUQiDHUGjJp4-yvm7OM22Y_Ubvs2KQ>
-    <xmx:StMvZWfDZsdz_fKuzeJtFAkqNa1kVKtlxakAAULe7J_N_ZCwPAJcaQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A1D67B60089; Wed, 18 Oct 2023 08:44:57 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Wed, 18 Oct 2023 08:44:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF51798
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:44:57 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso10629554a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697633096; x=1698237896; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tEU1LGbzWJlYQImQ/FQQEXA9hWg9U9vQlJ46IkPulMM=;
+        b=P5ZqWimteKLPB8oar6v2qgRf0OVOpja4Eydg2ZeQYh3UJ1CNhOesssoeHIT2zEZEig
+         wFAZIEPllxtsclLMi+3Brp8M2qnyWyJPKIIOkL/MeVw7rEdtYVrlWp3kpxfqQR17Z8BZ
+         ygIBSJyCcNGlJoq5TVYBgCSzdt2BR4yA6ldexphF2e+GAnoCDf9ssK/QHHrw0yqiLggm
+         Ll6rG2nTjEN7QLAraaLggftsn0BZWQOqJxpT2chH5bFp4B8aMYKx+AxurDkIRqjTT7Uy
+         q3Ezk5S2SZ/1IG5olccy/pWqgEJwCR/8qMXjR6+SCyTLGsELTEhuwtgt3dNFzzsP2miT
+         6OGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697633096; x=1698237896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tEU1LGbzWJlYQImQ/FQQEXA9hWg9U9vQlJ46IkPulMM=;
+        b=tEsnv4K02DrqG4xv5x1BI/SP7e2LdU+phC9WjEY5JS2zuLW5QLQRv3xXj+5fxGIKRd
+         0TzojwZ+P4HwDikiKZ1o3CcXYOK1WkKryZmYCOdctrEBPWDPZktSeXg1Tk4KAkTFojz9
+         M5gRVjifunAORalTMP93e3Uu1KW5XkKOy0OR6A1M2pKm7IlYIcpgNp57kxk8g5KOqF+A
+         0O8lto4omevS4wgmyX2i5fgA8wFXvnvinF9zEZfKvWzYj7zYf43AejmbMkzHIRwuI7WY
+         NZPrFZdQEivGVJAA7vuG9f4q+5eqD9BB8def/S6mM8rGxiWnhsbxGJrtiEItWq26WdLm
+         0+CA==
+X-Gm-Message-State: AOJu0YzadM62LuHyNEkyAX/o6kpt3Q4JEy3iSV0t5zIGO37nAk6yW33T
+        dppuZ+0mecxPXg6ZVE8rsg+dT1Slp9I=
+X-Google-Smtp-Source: AGHT+IEAez9HT1UAqDAySoV5yAJbIFqzJMjfsVFtgpV1VYBAlh4y4QnjWE7xYuczgUxAGxcYlWcyFA==
+X-Received: by 2002:a17:907:36cd:b0:9be:fc31:8cd2 with SMTP id bj13-20020a17090736cd00b009befc318cd2mr4663212ejc.24.1697633095875;
+        Wed, 18 Oct 2023 05:44:55 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id f4-20020a170906560400b009ad81554c1bsm1597719ejq.55.2023.10.18.05.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 05:44:55 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 14:44:52 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] x86/mm: Drop 4MB restriction on minimal NUMA node
+ memory size
+Message-ID: <ZS/TRNf02Un8IOTK@gmail.com>
+References: <20231017062215.171670-1-rppt@kernel.org>
+ <ZS+2qqjEO5/867br@gmail.com>
+ <605cc166-e731-e7d1-25d7-b6797a802e6f@bytedance.com>
 MIME-Version: 1.0
-Message-Id: <da4985cd-43db-4957-b841-7b8f6bf8f885@app.fastmail.com>
-In-Reply-To: <20231018122729.GA18556@willie-the-truck>
-References: <cover.1697614386.git.andrea.porta@suse.com>
- <20231018122729.GA18556@willie-the-truck>
-Date:   Wed, 18 Oct 2023 14:44:37 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Will Deacon" <will@kernel.org>,
-        "Andrea della Porta" <andrea.porta@suse.com>
-Cc:     "Catalin Marinas" <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nik.borisov@suse.com, "Kees Cook" <keescook@chromium.org>
-Subject: Re: [PATCH 0/4] arm64: Make Aarch32 compatibility enablement optional at boot
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <605cc166-e731-e7d1-25d7-b6797a802e6f@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023, at 14:27, Will Deacon wrote:
-> Hi,
->
-> On Wed, Oct 18, 2023 at 01:13:18PM +0200, Andrea della Porta wrote:
->> Aarch32 compatibility mode is enabled at compile time through
->> CONFIG_COMPAT Kconfig option. This patchset lets 32-bit support
->> (for both processes and syscalls) be enabled at boot time using
->> a kernel parameter. Also, it provides a mean for distributions 
->> to set their own default without sacrificing compatibility support,
->> that is users can override default behaviour through the kernel
->> parameter.
->
-> I proposed something similar in the past:
->
-> https://lkml.kernel.org/linux-fsdevel/20210916131816.8841-1-will@kernel.org/
->
-> bu the conclusion there (see the reply from Kees) was that it was better
-> to either use existing seccomp mechanisms or add something to control
-> which binfmts can be loaded.
 
-Right, I was going to reply along the same lines here: x86 is
-a bit of a special case that needs this, but I believe all the
-other architectures already guard the compat syscall execution
-on test_thread_flag(TIF_32BIT) that is only set by the compat
-binfmt loader.
+* Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 
-Doing the reverse is something that has however come up in the
-past several times and that could be interesting: In order to
-run userspace emulation (qemu-user, fex, ...) we may want to
-allow calling syscalls and ioctls for foreign ABIs in a native
-task, and at that point having a mechanism to control this
-capability globally or per task would be useful as well.
+> > While I agree with dropping the limitation, and I agree that 
+> > 9391a3f9c7f1 should have provided more of a justification, I believe a 
+> > core MM fix is in order as well, for it to not crash. [ If it's fixed 
+> > upstream already, please reference the relevant commit ID. ]
+> 
+> Agree. I posted a fixed patchset[1] before, maybe we can reconsider it. 
+> :)
+> 
+> [1]. https://lore.kernel.org/lkml/20230215152412.13368-1-zhengqi.arch@bytedance.com/
+> 
+> For memoryless node, this patchset skip it and fallback to other nodes
+> when build its zonelists.
 
-The compat mode (arm32 on arm64) is the easiest case here, but the
-same thing could be done for emulating the very subtle architecture
-differences (x86-64 on arm64, arm64 on x86_64, arm32 on x86-compat,
-or any of the above on riscv or  loongarch).
+Mind resubmitting that to the MM folks, with the NULL dereference crash 
+mentioned prominently? Feel free to Cc: me.
 
-     Arnd
+Fixing hypothetical robustness problems is good, fixing specific crashes is 
+better. :-)
+
+Thanks,
+
+	Ingo
