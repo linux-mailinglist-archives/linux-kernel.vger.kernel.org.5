@@ -2,154 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2557F7CE5BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992587CE5C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235221AbjJRSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        id S1344865AbjJRSAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbjJRSAI (ORCPT
+        with ESMTP id S1344726AbjJRSAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:00:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384951980
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:59:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD54AC433C9;
-        Wed, 18 Oct 2023 17:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697651982;
-        bh=8G1OxKOfk68WbZVYUB5YAFZhu1uCaWJkAzB6k9kgYD0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mESBSMwrU+w/PCBKSQQy2t2YDkDC5tiSnWJBi5cnZDPJwJMtMIYhKTCjqK13A0EJW
-         BWFOfktXcQ+2JKRzkwQMv9WlTFOjES7/y0EBtwihBD4a/4BduExFkCviIHuafe2ERK
-         sBdk1R4sPnhHLahLFtrbTKQ4HY69/PE+ZBRNC8p7BlNrPxbN41lj44wANSDXTgp5nK
-         BRLtckwBOrJA22ePQoN5ifLFcTQgcwZBd4QONjGtZxxKKa0c3d8lFwtEJRhpGIVxpq
-         9bpkDs3Ul+2pHPkcw3wwtBt8wnxiRLgf6SKnJgpul1SKI/OTMmdXI+minYamUP3PF6
-         S8wSkE9yuBt0w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4CB07CE0DE3; Wed, 18 Oct 2023 10:59:42 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 10:59:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <8ab0ae35-9ad3-40cb-8ee8-3801bec0213e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <87ttrngmq0.ffs@tglx>
- <87jzshhexi.ffs@tglx>
- <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
- <87pm1c3wbn.ffs@tglx>
- <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
- <20231018134107.1941dcf5@gandalf.local.home>
+        Wed, 18 Oct 2023 14:00:12 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07F098
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:59:47 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9b70b9656so45957795ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697651987; x=1698256787; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KIX8roHs6Y2xfB0yyrc9fz1uKsUCw1ugcleeV2Jgmg8=;
+        b=IVi8JOrRGInH9OWBomhXtdus3PvgOWYQZG9XrtiREWZ+AsTsBl0ZFFeK4dtI33x31s
+         TPKTPi8OFCH7pOlVs+y0yjGxf7rDb6NQrqY5lnrSZXXLc+f4mb7LYT8rz5bHliVwcgXk
+         TFAQZ/DMvyqpgj8oTx/wDe9fteQvWEBoHoG3oZMUf1EtnnegfZht2URaHDW4D4HgEboE
+         UAiUV+55vMim6OGef1x/lK1JGam0eCoxnSjZw7r4hm0QTbYnGsIcSQg7zEqW5foF930C
+         sf9Yb8Rkr1P+/NALj7XrZnkdRZv0V+kD5NzW6IAMlYed0tA1x4fNVIj/fCNfcIXm3sRw
+         +HVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697651987; x=1698256787;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KIX8roHs6Y2xfB0yyrc9fz1uKsUCw1ugcleeV2Jgmg8=;
+        b=CSB0XkF8AlsdphJ3YAQ0UeARjvD0v8Y/o/jKEJS/pFb+jgJEGTtin2L8sB8VUl6uq5
+         wshAiz8zaLJvzDfDqAjWuBz3FWWjly/8CWDMQBci2Wo9+rf0YDuPv43FMLBy01pvracr
+         cuYEBM5Og0FuZTSGwJM2mx33keuYZiVKirb2c7rTr8EkkhPVqQMg+aGv3lzQe7/rW42n
+         b9g66ntfxD5Ted3syuKLKYW850uBTDBQZNyE6W82k7GKGXOgIjl0rB5mW1yEGRuiGRqw
+         0YH6eBtR9+Qzg/Mubk9Kt2pCsXAxEHXMnBGSUgn1QPBIBv+R/aMZLGg5617B7/DuasYF
+         1h4g==
+X-Gm-Message-State: AOJu0YzOXFjYHT3J/83uHk3ZKrR1QAmPfGsS/vxpo+9DRniyp0jJC5F5
+        B8BfXw+qszF60NQbR4Llxj5oLg==
+X-Google-Smtp-Source: AGHT+IFuRZYdlOYu8jcYT7a+dm4yo2n/AMX0UeXuajz4t3w2UbaA9ylak4iJyUvNX3BWgaHQgHTx6Q==
+X-Received: by 2002:a17:903:1110:b0:1c8:9832:827f with SMTP id n16-20020a170903111000b001c89832827fmr102594plh.20.1697651986953;
+        Wed, 18 Oct 2023 10:59:46 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:f680:3b92:d9c:239b:cd56])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902cec900b001c5f7e06256sm214183plg.152.2023.10.18.10.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 10:59:46 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 10:59:43 -0700
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 6/7] riscv: dts: thead: Enable BeagleV Ahead eMMC
+ controller
+Message-ID: <ZTAdD/28PTNCWvWp@x1>
+References: <20231017-th1520-mmc-v2-0-4678c8cc4048@baylibre.com>
+ <20231017-th1520-mmc-v2-6-4678c8cc4048@baylibre.com>
+ <20231018-dating-yogurt-d7f3a65a873e@spud>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231018134107.1941dcf5@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231018-dating-yogurt-d7f3a65a873e@spud>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 01:41:07PM -0400, Steven Rostedt wrote:
-> On Wed, 18 Oct 2023 10:19:53 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Wed, Oct 18, 2023 at 02:57:50PM +0100, Conor Dooley wrote:
+> On Tue, Oct 17, 2023 at 01:43:52PM -0700, Drew Fustini wrote:
+> > Add properties to the emmc node and enable it and set the frequency for
+> > the sdhci clock.
 > > 
-> > Isn't rcu_read_lock() defined as preempt_disable() and rcu_read_unlock()
-> > as preempt_enable() in this approach?  I certainly hope so, as RCU
-> > priority boosting would be a most unwelcome addition to many datacenter
-> > workloads.
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > ---
+> >  arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
 > > 
-> > > With this approach the kernel is by definition fully preemptible, which
-> > > means means rcu_read_lock() is preemptible too. That's pretty much the
-> > > same situation as with PREEMPT_DYNAMIC.  
-> > 
-> > Please, just no!!!
+> > diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > index 70e8042c8304..bf55319ba950 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > @@ -52,6 +52,10 @@ &uart_sclk {
+> >  	clock-frequency = <100000000>;
+> >  };
+> >  
+> > +&sdhci_clk {
+> > +	clock-frequency = <198000000>;
+> > +};
+> > +
+> >  &dmac0 {
+> >  	status = "okay";
+> >  };
+> > @@ -59,3 +63,13 @@ &dmac0 {
+> >  &uart0 {
+> >  	status = "okay";
+> >  };
+> > +
+> > +&mmc0 {
+> > +	bus-width = <8>;
+> > +	max-frequency = <198000000>;
+> > +	mmc-hs400-1_8v;
+> > +	non-removable;
+> > +	no-sdio;
+> > +	no-sd;
+> > +	status = "okay";
+> > +};
 > 
-> Note, when I first read Thomas's proposal, I figured that Paul would no
-> longer get to brag that:
+> Is this file meant to be in alphanumerical order?
 > 
->  "In CONFIG_PREEMPT_NONE, rcu_read_lock() and rcu_read_unlock() are simply
->  nops!"
 
-I will still be able to brag that in a fully non-preemptible environment,
-rcu_read_lock() and rcu_read_unlock() are simply no-ops.  It will
-just be that the Linux kernel will no longer be such an environment.
-For the moment, anyway, there is still userspace RCU along with a few
-other instances of zero-cost RCU readers.  ;-)
+Good point, I should add the new nodes in alphabetical order.
 
-> But instead, they would be:
-> 
-> static void rcu_read_lock(void)
-> {
-> 	preempt_disable();
-> }
-> 
-> static void rcu_read_unlock(void)
-> {
-> 	preempt_enable();
-> }
-> 
-> as it was mentioned that today's preempt_disable() is fast and not an issue
-> like it was in older kernels.
-
-And they are already defined as you show above in rcupdate.h, albeit
-with leading underscores on the function names.
-
-> That would mean that there will still be a "non preempt" version of RCU.
-
-That would be very good!
-
-> As the preempt version of RCU adds a lot more logic when scheduling out in
-> an RCU critical section, that I can envision not all workloads would want
-> around. Adding "preempt_disable()" is now low overhead, but adding the RCU
-> logic to handle preemption isn't as lightweight as that.
-> 
-> Not to mention the logic to boost those threads that were preempted and
-> being starved for some time.
-
-Exactly, thank you!
-
-> > > > 6.	You might think that RCU Tasks (as opposed to RCU Tasks Trace
-> > > > 	or RCU Tasks Rude) would need those pesky cond_resched() calls
-> > > > 	to stick around.  The reason is that RCU Tasks readers are ended
-> > > > 	only by voluntary context switches.  This means that although a
-> > > > 	preemptible infinite loop in the kernel won't inconvenience a
-> > > > 	real-time task (nor an non-real-time task for all that long),
-> > > > 	and won't delay grace periods for the other flavors of RCU,
-> > > > 	it would indefinitely delay an RCU Tasks grace period.
-> > > >
-> > > > 	However, RCU Tasks grace periods seem to be finite in preemptible
-> > > > 	kernels today, so they should remain finite in limited-preemptible
-> > > > 	kernels tomorrow.  Famous last words...  
-> > > 
-> > > That's an issue which you have today with preempt FULL, right? So if it
-> > > turns out to be a problem then it's not a problem of the new model.  
-> > 
-> > Agreed, and hence my last three lines of text above.  Plus the guy who
-> > requested RCU Tasks said that it was OK for its grace periods to take
-> > a long time, and I am holding Steven Rostedt to that.  ;-)
-> 
-> Matters what your definition of "long time" is ;-)
-
-If RCU Tasks grace-period latency has been acceptable in preemptible
-kernels (including all CONFIG_PREEMPT_DYNAMIC=y kernels), your definition
-of "long" is sufficiently short.  ;-)
-
-							Thanx, Paul
+Thanks,
+Drew
