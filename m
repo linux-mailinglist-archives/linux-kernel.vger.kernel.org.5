@@ -2,193 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5376C7CE1B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EEC7CE1AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344767AbjJRPvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
+        id S232110AbjJRPvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjJRPvj (ORCPT
+        with ESMTP id S232182AbjJRPvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:51:39 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3F2118
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:51:37 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IFnbhj010839;
-        Wed, 18 Oct 2023 15:51:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=YqEAXhIbrZO4p/9m5sqSlbZgv6nkuUCB6eyMpurijrg=;
- b=FWq+jFkDCm5XlUxZ+WLQAHhcKEYpE4VA1NdAlT3+x52dt0uC3qmiC5+nZzXblNyb6sT/
- IBb8GkvTLMa8UGjz3WrO3+gHKSymFNWo2fl5LqObNuXvS+VWAS8g7B6wGWpz04YP5YwT
- 3r5UNUKUoEJEDADF7yBydmT3Z+KkNUskm5OC7N6zslmqqGmJ/c/PhoklgqlnAcPFiPE6
- 1N10szAakH6TaAxb/oQ0qHB4J1h6fuHOIa8nKlIJDLm9tBOLdqfeTEo2qmzQn65eQMJh
- DjUVhoyzpANGRomA2B7iegVFx6jhdENylwqblTnGFNaaL/Sin8jOU/f9Bh39Tlozt/R4 pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjbg02hs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 15:51:10 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IFnmAZ011098;
-        Wed, 18 Oct 2023 15:51:10 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjbg02eg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 15:51:10 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IFnLFS031142;
-        Wed, 18 Oct 2023 15:51:07 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr7hjsa6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 15:51:07 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IFp6Fx15925890
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 15:51:06 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 127932004F;
-        Wed, 18 Oct 2023 15:51:06 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1598F20043;
-        Wed, 18 Oct 2023 15:51:03 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.43.47.66])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 15:51:02 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Wed, 18 Oct 2023 11:51:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E2D121
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:51:05 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697644262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o6GadWL9FpMiVRJIsdolf94ub9c2wj+B0srEPRRHi/8=;
+        b=LGaXj0BB6V/RCSUd2bikdxO1ThAn5INzm6drb7NirEggUR9/WzkF5qAoAo/4hn/ELwSGOQ
+        l8KcdpjIS4OOmL8hxbN5Hf8KTI9xNAXnBsBv1PML0IiCGCzOQslGRMqAq+drLfhABKJn4M
+        CSMznIaODqO8nMXeRY00UVhu3q3UBenYB19rSrq+1J8XTCSQa1e4FqFFbvALunoYqeZXJh
+        zbr4yvg6euB+BARJNxPj1licM7kjyhcTJG7lDN58awkAAZ0RCTKXFiaMMQ2obIMwaVVfNi
+        9xllQIyZhSYrIRNsRYv+9zhefXfu2w3HPVD/DSUw4d/ueZbRwxrFEvf3YWvmAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697644262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o6GadWL9FpMiVRJIsdolf94ub9c2wj+B0srEPRRHi/8=;
+        b=hRgTolrgzoZRwPTSQi9Ycwg/Kgx6hn4v48bDX2jrhY2VixFgSwBNWJx9mhuyrS5Cs8MJsS
+        TOZNjCbA+xqMolDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Subject: [PATCH] sched/fair: Enable group_asym_packing in find_idlest_group
-Date:   Wed, 18 Oct 2023 21:20:35 +0530
-Message-ID: <20231018155036.2314342-1-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
+In-Reply-To: <ZS_5Xd7zPWvSHuqq@alley>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
+ <20231013204340.1112036-4-john.ogness@linutronix.de>
+ <ZS5vrte2OZXcIc9L@alley> <87mswh6iwq.fsf@jogness.linutronix.de>
+ <ZS_Vg4vvT29LxWSD@alley> <874jio6o2y.fsf@jogness.linutronix.de>
+ <ZS_5Xd7zPWvSHuqq@alley>
+Date:   Wed, 18 Oct 2023 17:56:52 +0206
+Message-ID: <87zg0g53qb.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DV-vLiv0mu1yWIaV3yrjhV5iCunaLvup
-X-Proofpoint-GUID: 0FNOajdg9yX1a1BNOmfNOV9nZiG7JcwF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_14,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 impostorscore=0 clxscore=1011
- priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 adultscore=0
- spamscore=0 mlxlogscore=914 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310180128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current scheduler code doesn't handle SD_ASYM_PACKING in the
-find_idlest_cpu path. On few architectures, like Powerpc, cache is at a
-core. Moving threads across cores may end up in cache misses.
+On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
+> So it is the _last_ finalized id from the timing POV. If there are
+> more CPUs storing and finalizing the messages in parallel then
+> it might change forth and back. There might be earlier non-finalized
+> records and newer finalized ones.
+>
+> It means that prb_next_seq() really is the best effort and
+> the description is not valid:
 
-While asym_packing can be enabled above SMT level, enabling Asym packing
-across cores could result in poorer performance due to cache misses.
-However if the initial task placement via find_idlest_cpu does take
-Asym_packing into consideration, then scheduler can avoid asym_packing
-migrations. This will result in lesser migrations and better packing and
-better overall performance.
+Well, the description was valid until prb_next_seq() was optimized and
+converted to best-effort with:
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- kernel/sched/fair.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+commit f244b4dc53e5 ("printk: ringbuffer: Improve prb_next_seq() performance")
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cb225921bbca..7164f79a3d13 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9931,11 +9931,13 @@ static int idle_cpu_without(int cpu, struct task_struct *p)
-  * @group: sched_group whose statistics are to be updated.
-  * @sgs: variable to hold the statistics for this group.
-  * @p: The task for which we look for the idlest group/CPU.
-+ * @this_cpu: current cpu
-  */
- static inline void update_sg_wakeup_stats(struct sched_domain *sd,
- 					  struct sched_group *group,
- 					  struct sg_lb_stats *sgs,
--					  struct task_struct *p)
-+					  struct task_struct *p,
-+					  int this_cpu)
- {
- 	int i, nr_running;
- 
-@@ -9972,6 +9974,11 @@ static inline void update_sg_wakeup_stats(struct sched_domain *sd,
- 
- 	}
- 
-+	if (sd->flags & SD_ASYM_PACKING && sgs->sum_h_nr_running &&
-+			sched_asym_prefer(group->asym_prefer_cpu, this_cpu)) {
-+		sgs->group_asym_packing = 1;
-+	}
-+
- 	sgs->group_capacity = group->sgc->capacity;
- 
- 	sgs->group_weight = group->group_weight;
-@@ -10012,8 +10019,17 @@ static bool update_pick_idlest(struct sched_group *idlest,
- 			return false;
- 		break;
- 
--	case group_imbalanced:
- 	case group_asym_packing:
-+		if (sched_asym_prefer(group->asym_prefer_cpu, idlest->asym_prefer_cpu)) {
-+			int busy_cpus = idlest_sgs->group_weight - idlest_sgs->idle_cpus;
-+
-+			busy_cpus -= (sgs->group_weight - sgs->idle_cpus);
-+			if (busy_cpus >= 0)
-+				return true;
-+		}
-+		return false;
-+
-+	case group_imbalanced:
- 	case group_smt_balance:
- 		/* Those types are not used in the slow wakeup path */
- 		return false;
-@@ -10080,7 +10096,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			sgs = &tmp_sgs;
- 		}
- 
--		update_sg_wakeup_stats(sd, group, sgs, p);
-+		update_sg_wakeup_stats(sd, group, sgs, p, this_cpu);
- 
- 		if (!local_group && update_pick_idlest(idlest, &idlest_sgs, group, sgs)) {
- 			idlest = group;
-@@ -10112,6 +10128,17 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 	if (local_sgs.group_type > idlest_sgs.group_type)
- 		return idlest;
- 
-+	if (idlest_sgs.group_type == group_asym_packing) {
-+		if (sched_asym_prefer(idlest->asym_prefer_cpu, local->asym_prefer_cpu)) {
-+			int busy_cpus = local_sgs.group_weight - local_sgs.idle_cpus;
-+
-+			busy_cpus -= (idlest_sgs.group_weight - idlest_sgs.idle_cpus);
-+			if (busy_cpus >= 0)
-+				return idlest;
-+		}
-+		return NULL;
-+	}
-+
- 	switch (local_sgs.group_type) {
- 	case group_overloaded:
- 	case group_fully_busy:
--- 
-2.31.1
+> It would be great to document these subtle details especially when
+> we are going to depend on them.
 
+Going through the various call sites of prb_next_seq(), I would argue
+that the above optimization introduced some bugs. I will investigate if
+prb_next_seq() can be fixed to match its description because the current
+users already depend on that.
+
+WRT to this series, I have put together an alternative implementation
+that does not use prb_next_seq().
+
+John
