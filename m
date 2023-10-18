@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDF67CDBFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925767CDBFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344486AbjJRMiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
+        id S235038AbjJRMiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbjJRMiF (ORCPT
+        with ESMTP id S231374AbjJRMiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:38:05 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D9B10E
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9be3b66f254so719711566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:03 -0700 (PDT)
+        Wed, 18 Oct 2023 08:38:16 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0395811C
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:14 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso10723406a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697632682; x=1698237482; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3qQmGYMA/S/kWNsfETnUZllqVCQ7paKt7r6KbXhorwY=;
-        b=IDeYgP2bKLi5UkFUhINiGkW8/1DHaVmRTiTGfbQLclEWEbhp52Oil4froQIWvhdG3C
-         89U7m5AFjicW+P3Rx5zx68UkEfVkjo9wawI3piDhFSvimgslzydOotTe4fxg6junLDpG
-         SVUutXdUA3aefCKdBytEY0BUStAERyOntlhjmdsffKvdDSZUG41EqEl3VLijZYghW4Er
-         /3tpHVPhKOm2hRokdSDW9id1qCrZ/BTFOVEch7bkgzZirzdT1FpMMlmPiz6PsxyFLzwf
-         d5slTF6ygeyh6tQCtE+g5qzXfxsWqsqQiMAHaPnY94g77/J8p4GXJ312ElZEdNASnan8
-         uLbQ==
+        d=gmail.com; s=20230601; t=1697632692; x=1698237492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DLUXL/iPx3v+XR7Yu/Dv2RbgN18FZCB4Gf9I+UdPwaE=;
+        b=VSTb6ge9s2A35PiDVCCBY0AE9gquhe8TZHMcvo0aFS0y+NGjgD0xfLMt/lPqaiQe4g
+         DT9aZ2V9VPuwDo4B1tUYRsgjp5xJPC8UHCujzuJ9y00cPqOEzpis/uhWXzbhoPFqfPir
+         SIGRpjH8T24MVeyhI+7nnm9YPLUvRgWqkAbV5IDWhXxkDl3cIyQ5rKQ/ZHEl1uH6PK69
+         nBYmfgUjFROjHEeYtYFh63kGr6ZLNblQYGkLq/FS6o7BHUVnut9BWGksCOB3FupAZlKo
+         JR4nQ4rh3/OnAfUgThVplxn9rcgIJJh1XPFvM825RZh3GAfuTtHMvMt6D4gOgESqWgUy
+         AkYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697632682; x=1698237482;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3qQmGYMA/S/kWNsfETnUZllqVCQ7paKt7r6KbXhorwY=;
-        b=YjCtP1oiUEyCYijfeRva07515FodS/YjVSek+Jtt7843smBaqX8xPOZtNDR3Tty6tk
-         0xvWshXpQXmUqNx1HjrkDleAhUEN4u8XDjhGTEeuqtlCmAtcjp/QuQpCC87cfM99OL9/
-         mZSO6dKdqxWzhaRngZ+izPFIGFzc8PYNVFSAT/dKO5k1l5BGPui7n4SL9ne74/tOUfz4
-         7qfqDXH910unFFq0B1uyDUDvXhFkg8u02cNyujuaIuwWFWHCDa8USheCu8rYeZD2Z4v9
-         Uon8KdQO8VyNvWT6eqsfJEj8XXbTB/uy1PoeCv8vMWZhWiVyQBUgeft2xcZzPZHAwLl9
-         xb2A==
-X-Gm-Message-State: AOJu0Yzr6HUlKQxuAJ1q+yxt/17UYGdymvTsxEJD+5AgaxPWMtuyspGS
-        34InyttWz8vPUetMK5cR/zly7A==
-X-Google-Smtp-Source: AGHT+IEv0afA8MvLYpLh9AHhXpQVqh1dTYchdh/YkxFnJBj+fwK7WpxSPxuTDgKJ4pbY7Z0rzhOckA==
-X-Received: by 2002:a17:907:a42:b0:9bd:f902:9a61 with SMTP id be2-20020a1709070a4200b009bdf9029a61mr4000821ejc.18.1697632682177;
-        Wed, 18 Oct 2023 05:38:02 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id jz14-20020a17090775ee00b009b27d4153c0sm1620770ejc.178.2023.10.18.05.38.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 05:38:01 -0700 (PDT)
-Message-ID: <84f9f1c4-0627-4986-8160-b4ab99469b81@linaro.org>
-Date:   Wed, 18 Oct 2023 14:38:00 +0200
+        d=1e100.net; s=20230601; t=1697632692; x=1698237492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DLUXL/iPx3v+XR7Yu/Dv2RbgN18FZCB4Gf9I+UdPwaE=;
+        b=tDr6w4Zl0zBZ48FleZuKtWb6hnXX3w9P+QOqZruLdIuUbLhXRVZ7APD+6aZHRux1Uq
+         T10hvt7zuizVmBVEpCSuWNkoR9B9ePgfBs8tVqYw8hRRz5Y1ZEtHxfqjzmagHIAjztcT
+         eSgo/AuVY6j7rtKZqvyH7NG/wvJnZf2qctr7X/Uz/vWGtATLXeF7SCLUMD+AP2pIUJNI
+         ASZdiI1TNmr7aEpG0+ey6a1oN436Yow0a8fPonX+9woIpzhfOTjRJzPsWOrNpICAT7kK
+         bECcs6nFEGDYBZErzDo7tdIdI+S91VVZ6MVqLMyYgtk6fRopAp3fLY0rg5qsJBeySGv8
+         viqA==
+X-Gm-Message-State: AOJu0Yzky2N2DpZpZFC6oHf6UsT1JB2NOIfBTW+eoA+70YgZmBwCx4cX
+        L0HbvZrg3K1lQmI/CWrqkLc=
+X-Google-Smtp-Source: AGHT+IHqVtWl9quPNuyGYaPKOwaB9R4TUOVnLydGasfjeOI3hnAHOekW9hgbN5HbNqHQfnMba9Jc4g==
+X-Received: by 2002:a50:a6db:0:b0:53e:7ef9:a8cc with SMTP id f27-20020a50a6db000000b0053e7ef9a8ccmr4156087edc.0.1697632692254;
+        Wed, 18 Oct 2023 05:38:12 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id z96-20020a509e69000000b0053b67aba57bsm2797420ede.17.2023.10.18.05.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 05:38:11 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 14:38:09 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Subject: Re: [PATCH] x86/mm: fix pg_level_to_pfn for 5-level paging mode.
+Message-ID: <ZS/RsVFDFImuHDJC@gmail.com>
+References: <20231013191703.422085-1-Ashish.Kalra@amd.com>
+ <ZSpVtZhks7Wm5Upc@gmail.com>
+ <f7aa58e0-7fcd-35a9-d04c-1369a8cb0701@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
- <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7aa58e0-7fcd-35a9-d04c-1369a8cb0701@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 14:35, Mark Brown wrote:
-> On Wed, Oct 18, 2023 at 12:00:55PM +0200, Krzysztof Kozlowski wrote:
->> On some boards with multiple WSA8840/WSA8845 speakers, the reset
->> (shutdown) GPIO is shared between two speakers.  Request it as
->> GPIOD_FLAGS_BIT_NONEXCLUSIVE to allow such configurations.
+
+* Kalra, Ashish <ashish.kalra@amd.com> wrote:
+
 > 
->>  	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
->> -						GPIOD_OUT_HIGH);
->> +						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
+> On 10/14/2023 3:47 AM, Ingo Molnar wrote:
+> > 
+> > * Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+> > 
+> > > From: Ashish Kalra <ashish.kalra@amd.com>
+> > > 
+> > > Add support for 5-level paging in pg_level_to_pfn().
+> > > 
+> > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > ---
+> > >   arch/x86/mm/mem_encrypt_amd.c | 4 ++++
+> > >   1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+> > > index 6faea41e99b6..45914568596a 100644
+> > > --- a/arch/x86/mm/mem_encrypt_amd.c
+> > > +++ b/arch/x86/mm/mem_encrypt_amd.c
+> > > @@ -267,6 +267,10 @@ static unsigned long pg_level_to_pfn(int level, pte_t *kpte, pgprot_t *ret_prot)
+> > >   		pfn = pud_pfn(*(pud_t *)kpte);
+> > >   		prot = pud_pgprot(*(pud_t *)kpte);
+> > >   		break;
+> > > +	case PG_LEVEL_512G:
+> > > +		pfn = p4d_pfn(*(p4d_t *)kpte);
+> > > +		prot = p4d_pgprot(*(p4d_t *)kpte);
+> > > +		break;
+> > 
+> > Mind explaining what happens if we don't have this fix, how you found it,
+> > which users are expected to be affected by it, whether that's the full
+> > known extent of 5-level paging support deficiencies in
+> > mem_encrypt_amd.c,foud etc?
+> > 
 > 
-> How do the speakers coordinate?
+> It was found during working on SNP guest kexec support, this helper function
+> is used during early boot stage for setting of C-bit on the PTEs and
+> additionally need this same helper for switching shared pages to private
+> during guest kexec, so i believe this patch is needed.
 
-They don't and that's the generic problem of many Linux drivers. Not
-only this one, but others as well.
+Please integrate the information I suggested into the changelog and submit 
+a v2 patch.
 
-Device unbind (remove()) or runtime suspend of one speaker will affect
-other speaker. I don't think any other drivers solved this, because this
-is rather core's GPIO issue, thus I am not solving it here either. :(
+Thanks,
 
-Best regards,
-Krzysztof
-
+	Ingo
