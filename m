@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5327CDF0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D452F7CDF10
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbjJROQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        id S1344979AbjJROQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjJROPZ (ORCPT
+        with ESMTP id S1345109AbjJROPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:15:25 -0400
+        Wed, 18 Oct 2023 10:15:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CAF212C;
-        Wed, 18 Oct 2023 07:13:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2139EC43391;
-        Wed, 18 Oct 2023 14:13:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB14CD68;
+        Wed, 18 Oct 2023 07:13:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F2DC433D9;
+        Wed, 18 Oct 2023 14:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638428;
-        bh=4TpKUHbeJhydNfeTrWYik6Eg3Dy0qNg/mrIhNU3pthk=;
+        s=k20201202; t=1697638429;
+        bh=rTVhYDE+rQI0sAnXEiLXrhwq8F5WMJ6T4HrQTI0D7ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJj+95CiCpKMwDNmB3N2QhB1MEptus1bGhcbvVg6dy4DuZE43KXCSakC1ukF59Xc0
-         paLifneUXdcfY7NecgZyMWM7tpcJtsBpPuMhPyFLFAX1qKfcUHGF6sAHf3zMkbBgVl
-         vILzSd7jZXzuPPGtnYQuakFHIVeVbx64JgsA4LEdmJATTaWHDKcBbo1J04fxrTNnk9
-         V5XsijgCpSHNjMlrg7c7XUcrXhdSqkRc3n7CHSMZKExfRuSBmp7eIb3L9gdcYEptt8
-         C0JnKRa77YhsF703Lpudjf+USurhqYOiK6hbJ9VYQXcuvFcaOL3URjQJ4L/Yv4Zgy8
-         My9/xcJn0Q+pQ==
+        b=GyP/EpUR48dZfhwzp4SG2wqbo7PqW+XRX8v95se9rjaGT/PkL/j0NyBR6HkPj38Op
+         Adb0IBgp84yCPXpnH3KiJHpD91nh1nU1wBA8wZGzzPo3/UFiE30juYvRDyUiAacLMz
+         GpCn9aN1quIHnEqzShNml3MQhQrXa9f+yXnhMX+BcBECJRknzXdxMtmTv6Uua2uTXw
+         Hsunu+ov4KFsrD9lsuwTWGuZD7blHMji8ilS5f81AErbCqLbUxNJJFLdlzX6ifiUsm
+         KHWcCxB5e8qutiwcbgupvjzgM3bHg0aod/5otCGlwfdUGBXvHLlpwP1/9wocalyHlS
+         qWf2swF4dI5AQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Dmitry Dunaev <dunaev@tecon.ru>, Marc Zyngier <maz@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 11/19] irqchip/riscv-intc: Mark all INTC nodes as initialized
-Date:   Wed, 18 Oct 2023 10:13:13 -0400
-Message-Id: <20231018141323.1334898-11-sashal@kernel.org>
+Cc:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        tglx@linutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 12/19] irqchip/stm32-exti: add missing DT IRQ flag translation
+Date:   Wed, 18 Oct 2023 10:13:14 -0400
+Message-Id: <20231018141323.1334898-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141323.1334898-1-sashal@kernel.org>
 References: <20231018141323.1334898-1-sashal@kernel.org>
@@ -54,52 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anup Patel <apatel@ventanamicro.com>
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 
-[ Upstream commit e13cd66bd821be417c498a34928652db4ac6b436 ]
+[ Upstream commit 8554cba1d6dbd3c74e0549e28ddbaccbb1d6b30a ]
 
-The RISC-V INTC local interrupts are per-HART (or per-CPU) so we
-create INTC IRQ domain only for the INTC node belonging to the boot
-HART. This means only the boot HART INTC node will be marked as
-initialized and other INTC nodes won't be marked which results
-downstream interrupt controllers (such as PLIC, IMSIC and APLIC
-direct-mode) not being probed due to missing device suppliers.
+The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
+flags specified in the device tree were being ignored. This was
+preventing the RTC alarm interrupt from working, because it must be set
+to trigger on the rising edge to function correctly.
 
-To address this issue, we mark all INTC node for which we don't
-create IRQ domain as initialized.
-
-Reported-by: Dmitry Dunaev <dunaev@tecon.ru>
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20230926102801.1591126-1-dunaev@tecon.ru
-Link: https://lore.kernel.org/r/20231003044403.1974628-4-apatel@ventanamicro.com
+Link: https://lore.kernel.org/r/20231003162003.1649967-1-ben.wolsieffer@hefring.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-riscv-intc.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-stm32-exti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-index 499e5f81b3fe3..4b66850978e6e 100644
---- a/drivers/irqchip/irq-riscv-intc.c
-+++ b/drivers/irqchip/irq-riscv-intc.c
-@@ -110,8 +110,16 @@ static int __init riscv_intc_init(struct device_node *node,
- 	 * for each INTC DT node. We only need to do INTC initialization
- 	 * for the INTC DT node belonging to boot CPU (or boot HART).
- 	 */
--	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id())
-+	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id()) {
-+		/*
-+		 * The INTC nodes of each CPU are suppliers for downstream
-+		 * interrupt controllers (such as PLIC, IMSIC and APLIC
-+		 * direct-mode) so we should mark an INTC node as initialized
-+		 * if we are not creating IRQ domain for it.
-+		 */
-+		fwnode_dev_initialized(of_fwnode_handle(node), true);
- 		return 0;
-+	}
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 8bbb2b114636c..dc6f67decb022 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -458,6 +458,7 @@ static const struct irq_domain_ops irq_exti_domain_ops = {
+ 	.map	= irq_map_generic_chip,
+ 	.alloc  = stm32_exti_alloc,
+ 	.free	= stm32_exti_free,
++	.xlate	= irq_domain_xlate_twocell,
+ };
  
- 	intc_domain = irq_domain_add_linear(node, BITS_PER_LONG,
- 					    &riscv_intc_domain_ops, NULL);
+ static void stm32_irq_ack(struct irq_data *d)
 -- 
 2.40.1
 
