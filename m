@@ -2,133 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F847CEC0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233917CEC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjJRXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 19:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        id S231878AbjJRXad convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 19:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbjJRXag (ORCPT
+        with ESMTP id S231548AbjJRXa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:30:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79AE116
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697671835; x=1729207835;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XYmTFSuYLOrfa5SSs65gm16cQyePHty0bHzTVLsfZXY=;
-  b=BY4MkwOQoBQqC/aKTBp49HqcF3W06XySGIDLY/NWy5fOV4zIwbRtJbAw
-   En5kOPFM2t542ZWuqAvXjAqng7CrGhWMcmaIIWI9UMkQkB7+cT0xs9wVR
-   vpvzKD4AnQTip3bnXiJfcSCXf1T+wc5plwYt0RG58QK6+qK1gFGx9eWqU
-   I/TUshakrb38/qk+tRmwOiBTumbd7q9f2Ny9vQCzTe6uAZzqv/542eP0K
-   eyQMjs9zz14njBd0fzw5qp4yEgqbwqdoFOG74/ZxnFrwcbI09aCIUgrAH
-   +Osu0WKPLj10D5UAeWzF4eCifWbgMqgHiBYcruBKzehLLP/uEen1Ai9tl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="4730909"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="4730909"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 16:30:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="822621143"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="822621143"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Oct 2023 16:30:33 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtFzi-0001Eu-2v;
-        Wed, 18 Oct 2023 23:30:30 +0000
-Date:   Thu, 19 Oct 2023 07:30:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/powerpc/platforms/pseries/lpar.c:2032:36: error: '%ld'
- directive writing between 1 and 20 bytes into a region of size 12
-Message-ID: <202310190736.sgDpsRRj-lkp@intel.com>
+        Wed, 18 Oct 2023 19:30:29 -0400
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4C113;
+        Wed, 18 Oct 2023 16:30:26 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-584a761b301so5436316a12.3;
+        Wed, 18 Oct 2023 16:30:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697671826; x=1698276626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6x4MOo5/gvvDjdQbTbVRFsm6OAJqGdIH7cIh4FO9aMI=;
+        b=ai65WB9rtwIQ6y2fgJt5kn0OAUlTebSVaAVswjLRdPvLS/yM11Uu8JAhuBEv87bTlC
+         ZMUHmpzk/orNqAIzpyKUWfoxedM4hlL9k6eoNynYP9pr0z1r2N8dK2mYveYiBE0hAE/T
+         BlMHq3lujsWXEp/Wrx/SVgoe8phY4JU+yMrt8WNzv+WCrZ/I7KnynwMYwO1rDNUmAATL
+         +r+I4NESdP1ywE1spyhdClIkq74VAMv5vB4sxyO8CCyqZwspZoOvvalJxrm1K0qrx5bJ
+         uxoF4if2Eb/3GXpg68njvBPcE5XWOsvB6EAUn6VgkKQCJBi2LzQOUNtGFk/fMhoSaKrM
+         Bq4g==
+X-Gm-Message-State: AOJu0YxFKP1HEUT9LYtpvQgPnvdMCl9+egC432E1r0TW02FDv35SHUjS
+        R8/FaueE0Pgd68EVIXi/Lyj+UfcJYpJuPDut3bg=
+X-Google-Smtp-Source: AGHT+IHgipjxPBcfAIbKk9O2m4YkW5BgcpV1jfpiPcBoPEWVF5sMa8/z+Uxrtn2Sh7DA6NrF4CMrHQw+W5rMoBJZDic=
+X-Received: by 2002:a05:6a21:6da0:b0:14c:d494:77c5 with SMTP id
+ wl32-20020a056a216da000b0014cd49477c5mr679241pzb.13.1697671826126; Wed, 18
+ Oct 2023 16:30:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-14-irogers@google.com>
+In-Reply-To: <20231012062359.1616786-14-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 18 Oct 2023 16:30:15 -0700
+Message-ID: <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
+Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        German Gomez <german.gomez@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Artem Savkov <asavkov@redhat.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   dd72f9c7e512da377074d47d990564959b772643
-commit: 33e67710beda78aed38a2fe10be6088d4aeb1c53 cpumask: switch for_each_cpu{,_not} to use for_each_bit()
-date:   1 year, 1 month ago
-config: powerpc64-randconfig-r003-20220418 (https://download.01.org/0day-ci/archive/20231019/202310190736.sgDpsRRj-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310190736.sgDpsRRj-lkp@intel.com/reproduce)
+On Wed, Oct 11, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
+>
+> struct thread values hold onto references to mmaps, dsos, etc. When a
+> thread exits it is necessary to clean all of this memory up by
+> removing the thread from the machine's threads. Some tools require
+> this doesn't happen, such as perf report if offcpu events exist or if
+> a task list is being generated, so add a symbol_conf value to make the
+> behavior optional. When an exited thread is left in the machine's
+> threads, mark it as exited.
+>
+> This change relates to commit 40826c45eb0b ("perf thread: Remove
+> notion of dead threads"). Dead threads were removed as they had a
+> reference count of 0 and were difficult to reason about with the
+> reference count checker. Here a thread is removed from threads when it
+> exits, unless via symbol_conf the exited thread isn't remove and is
+> marked as exited. Reference counting behaves as it normally does.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310190736.sgDpsRRj-lkp@intel.com/
+Maybe we can do it the other way around.  IOW tools can access
+dead threads for whatever reason if they are dealing with a data
+file.  And I guess the main concern is perf top to reduce memory
+footprint, right?  Then we can declare to remove the dead threads
+for perf top case only IMHO.
 
-All errors (new ones prefixed by >>):
+Thanks,
+Namhyung
 
-   arch/powerpc/platforms/pseries/lpar.c: In function '__machine_initcall_pseries_vpa_debugfs_init':
->> arch/powerpc/platforms/pseries/lpar.c:2032:36: error: '%ld' directive writing between 1 and 20 bytes into a region of size 12 [-Werror=format-overflow=]
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                                    ^~~
-   In function 'vpa_debugfs_init',
-       inlined from '__machine_initcall_pseries_vpa_debugfs_init' at arch/powerpc/platforms/pseries/lpar.c:2038:1:
-   arch/powerpc/platforms/pseries/lpar.c:2032:31: note: directive argument in the range [-9223372036854775808, 4294967294]
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                               ^~~~~~~~~
-   arch/powerpc/platforms/pseries/lpar.c:2032:17: note: 'sprintf' output between 6 and 25 bytes into a destination of size 16
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
---
-   arch/powerpc/sysdev/xive/common.c: In function 'xive_core_debug_init':
->> arch/powerpc/sysdev/xive/common.c:1845:50: error: '%ld' directive output may be truncated writing between 1 and 20 bytes into a region of size 13 [-Werror=format-truncation=]
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                                                  ^~~
-   In function 'xive_core_debugfs_create',
-       inlined from 'xive_core_debug_init' at arch/powerpc/sysdev/xive/common.c:1861:3:
-   arch/powerpc/sysdev/xive/common.c:1845:46: note: directive argument in the range [-9223372036854775808, 4294967294]
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                                              ^~~~~~~~
-   arch/powerpc/sysdev/xive/common.c:1845:17: note: 'snprintf' output between 5 and 24 bytes into a destination of size 16
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +2032 arch/powerpc/platforms/pseries/lpar.c
-
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2018  
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2019  static int __init vpa_debugfs_init(void)
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2020  {
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2021  	char name[16];
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2022  	long i;
-11dd34f3eae5a4 YueHaibing       2019-02-18  2023  	struct dentry *vpa_dir;
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2024  
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2025  	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2026  		return 0;
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2027  
-dbf77fed8b302e Aneesh Kumar K.V 2021-08-12  2028  	vpa_dir = debugfs_create_dir("vpa", arch_debugfs_dir);
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2029  
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2030  	/* set up the per-cpu vpa file*/
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16  2031  	for_each_possible_cpu(i) {
-c6c26fb55e8e4b Aravinda Prasad  2018-10-16 @2032  		sprintf(name, "cpu-%ld", i);
-
-:::::: The code at line 2032 was first introduced by commit
-:::::: c6c26fb55e8e4b3fc376be5611685990a17de27a powerpc/pseries: Export raw per-CPU VPA data via debugfs
-
-:::::: TO: Aravinda Prasad <aravinda@linux.vnet.ibm.com>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-report.c   |  7 +++++++
+>  tools/perf/util/machine.c     | 10 +++++++---
+>  tools/perf/util/symbol_conf.h |  3 ++-
+>  tools/perf/util/thread.h      | 14 ++++++++++++++
+>  4 files changed, 30 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index dcedfe00f04d..749246817aed 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
+>         if (ret < 0)
+>                 goto exit;
+>
+> +       /*
+> +        * tasks_mode require access to exited threads to list those that are in
+> +        * the data file. Off-cpu events are synthesized after other events and
+> +        * reference exited threads.
+> +        */
+> +       symbol_conf.keep_exited_threads = true;
+> +
+>         annotation_options__init(&report.annotation_opts);
+>
+>         ret = perf_config(report__config, &report);
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 6ca7500e2cf4..5cda47eb337d 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *machine, union perf_event *event
+>         if (dump_trace)
+>                 perf_event__fprintf_task(event, stdout);
+>
+> -       if (thread != NULL)
+> -               thread__put(thread);
+> -
+> +       if (thread != NULL) {
+> +               if (symbol_conf.keep_exited_threads)
+> +                       thread__set_exited(thread, /*exited=*/true);
+> +               else
+> +                       machine__remove_thread(machine, thread);
+> +       }
+> +       thread__put(thread);
+>         return 0;
+>  }
+>
+> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
+> index 2b2fb9e224b0..6040286e07a6 100644
+> --- a/tools/perf/util/symbol_conf.h
+> +++ b/tools/perf/util/symbol_conf.h
+> @@ -43,7 +43,8 @@ struct symbol_conf {
+>                         disable_add2line_warn,
+>                         buildid_mmap2,
+>                         guest_code,
+> -                       lazy_load_kernel_maps;
+> +                       lazy_load_kernel_maps,
+> +                       keep_exited_threads;
+>         const char      *vmlinux_name,
+>                         *kallsyms_name,
+>                         *source_prefix,
+> diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+> index e79225a0ea46..0df775b5c110 100644
+> --- a/tools/perf/util/thread.h
+> +++ b/tools/perf/util/thread.h
+> @@ -36,13 +36,22 @@ struct thread_rb_node {
+>  };
+>
+>  DECLARE_RC_STRUCT(thread) {
+> +       /** @maps: mmaps associated with this thread. */
+>         struct maps             *maps;
+>         pid_t                   pid_; /* Not all tools update this */
+> +       /** @tid: thread ID number unique to a machine. */
+>         pid_t                   tid;
+> +       /** @ppid: parent process of the process this thread belongs to. */
+>         pid_t                   ppid;
+>         int                     cpu;
+>         int                     guest_cpu; /* For QEMU thread */
+>         refcount_t              refcnt;
+> +       /**
+> +        * @exited: Has the thread had an exit event. Such threads are usually
+> +        * removed from the machine's threads but some events/tools require
+> +        * access to dead threads.
+> +        */
+> +       bool                    exited;
+>         bool                    comm_set;
+>         int                     comm_len;
+>         struct list_head        namespaces_list;
+> @@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct thread *thread)
+>         return &RC_CHK_ACCESS(thread)->refcnt;
+>  }
+>
+> +static inline void thread__set_exited(struct thread *thread, bool exited)
+> +{
+> +       RC_CHK_ACCESS(thread)->exited = exited;
+> +}
+> +
+>  static inline bool thread__comm_set(const struct thread *thread)
+>  {
+>         return RC_CHK_ACCESS(thread)->comm_set;
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
