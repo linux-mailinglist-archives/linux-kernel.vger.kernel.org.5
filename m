@@ -2,254 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1D7CD382
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675F47CD389
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjJRFZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
+        id S1344378AbjJRF2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 01:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjJRFZZ (ORCPT
+        with ESMTP id S229499AbjJRF2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:25:25 -0400
-Received: from out-192.mta1.migadu.com (out-192.mta1.migadu.com [95.215.58.192])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533D1B0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:25:21 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 14:25:06 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697606719;
+        Wed, 18 Oct 2023 01:28:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4198DC6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697606840;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0h6nflNFypuhILcnv1wO3LUauqRPTuSUKj5qe6lmlmU=;
-        b=PLCErrGWTDAtCDFE58chCnSWwch3wwGmEm/As4/vrSEoktGHsjy/XTEtx9R3WZkeHwYFi3
-        2CxuNH2RyxbumGbqLfB4WF5qNvmPLMrhKUgBcRRn4RwntVM1pVX4lX+SdtDCIRzsO2hVSE
-        VwYqcY5/KniKVwGjRwrncUhuLvX/fh0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v1 0/5] mm, kpageflags: support folio and fix output for
- compound pages
-Message-ID: <20231018052506.GB2942027@ik1-406-35019.vs.sakura.ne.jp>
-References: <20231010142801.3780917-1-naoya.horiguchi@linux.dev>
- <63d119f7-5adb-861a-00c2-69a92b19ef9b@redhat.com>
- <20231012150226.GA473412@u2004>
- <86170ebf-cbe3-1cda-dcb4-87e18695f9cd@redhat.com>
- <ZSlcJWvTNi3rEcPf@casper.infradead.org>
- <65dbdf2a-9281-a3c3-b7e3-a79c5b60b357@redhat.com>
- <daa423be-6db6-46bc-98a7-0c37ede04a8e@arm.com>
+        bh=ollVqSStLsVJatOIN7vznzZdWtrCE/bS0EYy1MvvR4E=;
+        b=QVvq8SZ7xMplfzM3JhdMm24ivsAJaicHx0TIddRQ8Lal6i9nZE3cjUPB1BO4vrnYElm6ge
+        R5Qq6vVfHb5U1Fc74miA0KPyTPmN/8kBzShe//fSuVZ9jKKjk7OP3/qWznXDUap/2xxTLx
+        h9GLDtB2makhrpQGc6CdpcvZft2YYUw=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-P2SSfNhEPJ6oVCkUt4HRRg-1; Wed, 18 Oct 2023 01:27:18 -0400
+X-MC-Unique: P2SSfNhEPJ6oVCkUt4HRRg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507b9078aaaso2086873e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:27:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697606837; x=1698211637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ollVqSStLsVJatOIN7vznzZdWtrCE/bS0EYy1MvvR4E=;
+        b=EqK+JnLLA+SaKFYETleB9VORjGksF+qyYDB1QYJTTCdFUfEqD0z/JAajLz959D3UQJ
+         3SggQ1wMepLzBvhgQ3MuuOH+v5BDbxG2RKYhPgAroux2xpGDTX8m6JNZhlaJtUz9WPi/
+         q/9pZSi/6puYQ7m39ScOAQFHggB801NeNxGUN/ANW3wtzscQHxtw8ct0+HIt4x3RByLS
+         NKGcAdlxDT8rJmxMrkIbiQSz8w/VWx3ysRDPPPxWB8OJ1pPyZPgQBYjow6+5QBlDENIa
+         0cIy8Y7T50diLByqmiV3jDm5RRdaq6Ygqr6eEiaqd8cqZWi6TsSfJI2ENzV56O3wDyzU
+         Sm+A==
+X-Gm-Message-State: AOJu0YwVcrxpcGwbAmGS9hawxPG6tg6Gc7Dby2+TCCCbk3G4pqPczuFD
+        Tb8J0XiWurcMUtJ00zChVOIWDXyi7VuiYNylAJmCVJl7EJLcf73o/OqJ5ECEF21eaXbS8VIBc/v
+        IArY2lRAMPjBsdscIOg6XBfHwN8Na1gEA3MO/YjhM
+X-Received: by 2002:a05:6512:318c:b0:507:984e:9f17 with SMTP id i12-20020a056512318c00b00507984e9f17mr3892157lfe.34.1697606837083;
+        Tue, 17 Oct 2023 22:27:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG6t8lhjmaY0LoqYW8ClgebuDF1WzMvRdRwo9piVz2J0NxkTT54KAGqmdTmiKSAQ8WL3CEOk//URGfbakVWzJ8=
+X-Received: by 2002:a05:6512:318c:b0:507:984e:9f17 with SMTP id
+ i12-20020a056512318c00b00507984e9f17mr3892137lfe.34.1697606836672; Tue, 17
+ Oct 2023 22:27:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <daa423be-6db6-46bc-98a7-0c37ede04a8e@arm.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
+ <1696928580-7520-3-git-send-email-si-wei.liu@oracle.com> <CACGkMEtkcyC54M_8A63uBEYjJP+EinLzTk3gP8CQ_rWs0Omt-Q@mail.gmail.com>
+ <1bd79050-8eb5-49f6-9e58-6c7eb3fcab3e@oracle.com> <CACGkMEt_zvBM=ysbXZJEC1sdbCk=BpcWvtjeuP_L2WH4ke1dWQ@mail.gmail.com>
+ <CAJaqyWf0AhsS6kaGUMVCosDjuRoeCAqO3OTVC=veqjV3jCqUjQ@mail.gmail.com>
+ <8f8c0c28-59a4-489b-9276-fc3b5cfa8faa@oracle.com> <CACGkMEs0W1joaNh0-a27Nekxn8V8CmGgr99p+r60dA6sQeys5g@mail.gmail.com>
+ <c9c819b9-4a63-4bb4-a977-881f6e653ed8@oracle.com>
+In-Reply-To: <c9c819b9-4a63-4bb4-a977-881f6e653ed8@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 18 Oct 2023 13:27:05 +0800
+Message-ID: <CACGkMEuX8-T6BhbiqkTfF3NBoxS35zQ=k6Th=h0G5sDz4DV93Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] vhost-vdpa: reset vendor specific mapping to initial
+ state in .release
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     Eugenio Perez Martin <eperezma@redhat.com>, mst@redhat.com,
+        xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 12:36:22PM +0100, Ryan Roberts wrote:
-> On 16/10/2023 11:13, David Hildenbrand wrote:
-> >>>>> It does sound inconsistent. What exactly do you want to tell user space with
-> >>>>> the new flag?
+On Wed, Oct 18, 2023 at 12:36=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.com>=
+ wrote:
+>
+>
+>
+> On 10/16/2023 7:35 PM, Jason Wang wrote:
+> > On Tue, Oct 17, 2023 at 4:30=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.c=
+om> wrote:
+> >>
+> >>
+> >> On 10/16/2023 4:28 AM, Eugenio Perez Martin wrote:
+> >>> On Mon, Oct 16, 2023 at 8:33=E2=80=AFAM Jason Wang <jasowang@redhat.c=
+om> wrote:
+> >>>> On Fri, Oct 13, 2023 at 3:36=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracl=
+e.com> wrote:
+> >>>>>
+> >>>>> On 10/12/2023 8:01 PM, Jason Wang wrote:
+> >>>>>> On Tue, Oct 10, 2023 at 5:05=E2=80=AFPM Si-Wei Liu <si-wei.liu@ora=
+cle.com> wrote:
+> >>>>>>> Devices with on-chip IOMMU or vendor specific IOTLB implementatio=
+n
+> >>>>>>> may need to restore iotlb mapping to the initial or default state
+> >>>>>>> using the .reset_map op, as it's desirable for some parent device=
+s
+> >>>>>>> to solely manipulate mappings by its own, independent of virtio d=
+evice
+> >>>>>>> state. For instance, device reset does not cause mapping go away =
+on
+> >>>>>>> such IOTLB model in need of persistent mapping. Before vhost-vdpa
+> >>>>>>> is going away, give them a chance to reset iotlb back to the init=
+ial
+> >>>>>>> state in vhost_vdpa_cleanup().
+> >>>>>>>
+> >>>>>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> >>>>>>> ---
+> >>>>>>>     drivers/vhost/vdpa.c | 16 ++++++++++++++++
+> >>>>>>>     1 file changed, 16 insertions(+)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> >>>>>>> index 851535f..a3f8160 100644
+> >>>>>>> --- a/drivers/vhost/vdpa.c
+> >>>>>>> +++ b/drivers/vhost/vdpa.c
+> >>>>>>> @@ -131,6 +131,15 @@ static struct vhost_vdpa_as *vhost_vdpa_find=
+_alloc_as(struct vhost_vdpa *v,
+> >>>>>>>            return vhost_vdpa_alloc_as(v, asid);
+> >>>>>>>     }
+> >>>>>>>
+> >>>>>>> +static void vhost_vdpa_reset_map(struct vhost_vdpa *v, u32 asid)
+> >>>>>>> +{
+> >>>>>>> +       struct vdpa_device *vdpa =3D v->vdpa;
+> >>>>>>> +       const struct vdpa_config_ops *ops =3D vdpa->config;
+> >>>>>>> +
+> >>>>>>> +       if (ops->reset_map)
+> >>>>>>> +               ops->reset_map(vdpa, asid);
+> >>>>>>> +}
+> >>>>>>> +
+> >>>>>>>     static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asi=
+d)
+> >>>>>>>     {
+> >>>>>>>            struct vhost_vdpa_as *as =3D asid_to_as(v, asid);
+> >>>>>>> @@ -140,6 +149,13 @@ static int vhost_vdpa_remove_as(struct vhost=
+_vdpa *v, u32 asid)
+> >>>>>>>
+> >>>>>>>            hlist_del(&as->hash_link);
+> >>>>>>>            vhost_vdpa_iotlb_unmap(v, &as->iotlb, 0ULL, 0ULL - 1, =
+asid);
+> >>>>>>> +       /*
+> >>>>>>> +        * Devices with vendor specific IOMMU may need to restore
+> >>>>>>> +        * iotlb to the initial or default state which is not don=
+e
+> >>>>>>> +        * through device reset, as the IOTLB mapping manipulatio=
+n
+> >>>>>>> +        * could be decoupled from the virtio device life cycle.
+> >>>>>>> +        */
+> >>>>>> Should we do this according to whether IOTLB_PRESIST is set?
+> >>>>> Well, in theory this seems like so but it's unnecessary code change
+> >>>>> actually, as that is the way how vDPA parent behind platform IOMMU =
+works
+> >>>>> today, and userspace doesn't break as of today. :)
+> >>>> Well, this is one question I've ever asked before. You have explaine=
+d
+> >>>> that one of the reason that we don't break userspace is that they ma=
+y
+> >>>> couple IOTLB reset with vDPA reset as well. One example is the Qemu.
 > >>>>
-> >>>> The current most problematic behavior is to report folio as thp (order-2
-> >>>> pagecache page is definitely a folio but not a thp), and this is what the
-> >>>> new flag is intended to tell.
-> >>>
-> >>> We are currently considering calling these sub-PMD sized THPs "small-sized
-> >>> THP". [1] Arguably, we're starting with the anon part where we won't get
-> >>> around exposing them to the user in sysfs.
-> >>>
-> >>> So I wouldn't immediately say that these things are not THPs. They are not
-> >>> PMD-sized THP. A slab/hugetlb is certainly not a thp but a folio. Whereby
-> >>> slabs can also be order-0 folios, but hugetlb can't.
-> >>
-> >> I think this is a mistake.  Users expect THPs to be PMD sized.  We already
-> >> have the term "large folio" in use for file-backed memory; why do we
-> >> need to invent a new term for anon large folios?
-> > 
-> > I changed my opinion two times, but I stabilized at "these are just huge pages
-> > of different size" when it comes to user-visible features.
-> > 
-> > Handling/calling them folios internally -- especially to abstract the page vs.
-> > compound page and how we manage/handle the metadata -- is a reasonable thing to
-> > do, because that's what we decided to pass around.
-> > 
-> > 
-> > For future reference, here is a writeup about my findings and the reason for my
-> > opinion:
-> > 
-> > 
-> > (1) OS-independent concept
-> > 
-> > Ignoring how the OS manages metadata (e.g., "struct page", "struct folio",
-> > compound head/tail, memdesc, ...), the common term to describe a "the smallest
-> > fixed-length contiguous block of physical memory into which memory pages are
-> > mapped by the operating system.["[1] is a page frame -- people usually simplify
-> > by dropping the "frame" part, so do I.
-> > 
-> > Larger pages (which we call "huge pages", FreeBSD "superpages", Windows "large
-> > pages") can come in different sizes and were traditionally based on architecture
-> > support, whereby architectures can support multiple ones [1]; I think what we
-> > see is that the OS might use intermediate sizes to manage memory more
-> > efficiently, abstracting/evolving that concept from the actual hardware page
-> > table mapping granularity.
-> > 
-> > But the foundation is that we are dealing with "blocks of physical memory" in a
-> > unit that is larger than the smallest page sizes. Larger pages.
-> > 
-> > [the comment about SGI IRIX on [1] is an interesting read; so are "scattered
-> > superpages"[3]]
-> > 
-> > Users learned the difference between a "page" and a "huge page". I'm confident
-> > that they can learn the difference between a "traditional huge page" and a
-> > "small-sized huge page", just like they did with hugetlb (below).
-> > 
-> > We just have to be careful with memory statistics and to default to the
-> > traditional huge pages for now. Slowly, the term "THP" will become more generic.
-> > Apart from that, I fail to see the big source of confusion.
-> > 
-> > Note: FreeBSD currently similarly calls these things on arm64 "medium-sized
-> > superpages", and did not invent new terms for that so far [2].
-> > 
-> > 
-> > (2) hugetlb
-> > 
-> > Traditional huge pages started out to be PMD-sized. Before 2008, we only
-> > supported a single huge page size. Ever since, we added support for sizes larger
-> > (gigantic) and smaller than that (cont-pte / cont-pmd).
-> > 
-> > So (a) users did not panic because we also supported huge pages that were not
-> > PMD-sized; (b) we managed to integrate it into the existing environment,
-> > defaulting to the old PMD-sized huge pages towards the user but still providing
-> > configuration knobs and (c) it is natural today to have multiple huge page sizes
-> > supported in hugetlb.
-> > 
-> > Nowadays, when somebody says that they are using hugetlb huge pages, the first
-> > question frequently is "which huge page size?". The same will happen with
-> > transparent huge pages I believe.
-> > 
-> > 
-> > (3) THP preparation for multiple sizes
-> > 
-> > With
-> >     /sys/kernel/mm/transparent_hugepage/hpage_pmd_size
-> > added in 2016, we already provided a way for users to query the PMD size for
-> > THP, implying that there might be multiple sizes in the future.
-> > 
-> > Therefore, in commit 49920d28781d, Hugh already envisioned " some transparent
-> > support for pud and pgd pages" and ended up calling it "_pmd_size". Turns out,
-> > we want smaller THPs first, not larger ones.
-> > 
-> > 
-> > (4) Metadata management
-> > 
-> > How the OS manages metadata for its memory -- and how it calls the involved
-> > datastructures -- is IMHO an implementation detail (an important one regarding
-> > performance, robustness and metadata overhead as we learned, though ;) ).
-> > 
-> > We were able to introduce folios without user-visible changes. We should be able
-> > to implement memdesc (or memory type hierarchies) without user-visible changes
-> > -- except for some interfaces that provide access to bare "struct page"
-> > information (classifies as debugging interfaces IMHO).
-> > 
-> > 
-> > Last but not least, we ended up consistently calling these "larger than a page"
-> > things that we map into user space "(transparent) huge page" towards the user in
-> > toggles, stats and documentation. Fortunately we didn't use the term "compound
-> > page" back then; it would have been a mistake.
-> > 
-> > 
-> > Regarding the pagecache, we managed to not expose any toggles towards the user,
-> > because memory waste can be better controlled. So the term "folio" does not pop
-> > up as a toggle in /sys and /proc.
-> > 
-> >     t14s: ~  $ find /sys -name "*folio*" 2> /dev/null
-> >     t14s: ~  $ find /proc -name "*folio*" 2> /dev/null
-> > 
-> > Once we want to remove the (sub)page mapcount, we'll likely have to remove
-> > _nr_pages_mapped. To make some workloads that are sensitive to memory
-> > consumption [4] play along when not accounting only the actually mapped parts,
-> > we might have to introduce other ways to control that, when
-> > "/sys/kernel/debug/fault_around_bytes" no longer does the trick. I'm hoping we
-> > can still find ways to avoid exposing any toggles for that; we'll see.
-> > 
-> > 
-> > [1] https://en.wikipedia.org/wiki/Page_(computer_memory)
-> > [2] https://www.freebsd.org/status/report-2022-04-2022-06/superpages/
-> > [3] https://ieeexplore.ieee.org/document/6657040/similar#similar
-> > [4] https://www.suse.com/support/kb/doc/?id=000019017
-> 
-> +1 for David's reasoning.
-> 
-> FWIW, the way I see it, everything is a folio; a folio is an implementation
-> detail that neatly abstracts a physically contiguous, power-of-2 number of pages
-> (including the single page case). So I'm not sure how useful it is to add the
-> proposed KPF_FOLIO flag. The only real thing I can imagine user space using it
-> for would be to tell if some extent of virtual memory is physically contiguous,
-> and you can already do that from the PFN.
-> 
-> Bigger picture interface-wise, I think it is simpler and more understandable to
-> the user to extend an existing concept (THP) rather than invent a new one
-> (folios) that substantially overlaps with the existing (PMD-sized) THP concept.
-> 
-> That said, if you have plans in the folio roadmap that I'm not aware of, then
-> perhaps those would change my mind. There is a thread here [1] where we are
-> discussing the best way to expose "small-sized THP" (anon large folios) to user
-> space - Metthew if you you stong feelings, please do reply!
-> 
-> [1]
-> https://lore.kernel.org/linux-mm/6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com/
-> 
+> >>>>> As explained in previous threads [1][2], when IOTLB_PERSIST is not =
+set
+> >>>>> it doesn't necessarily mean the iotlb will definitely be destroyed
+> >>>>> across reset (think about the platform IOMMU case), so userspace to=
+day
+> >>>>> is already tolerating enough with either good or bad IOMMU.
+> > I'm confused, how to define tolerating here?
+>
+> Tolerating defined as QEMU has to proactively unmap before reset just to
+> workaround the driver bug (on-chip maps out of sync), unconditionally
+> for platform or on-chip. While we all know it doesn't have to do so for
+> platform IOMMU, though userspace has no means to distinguish. That said,
+> userspace is sacrificing reset time performance on platform IOMMU setup
+> just for working around buggy implementation in the other setup.
+
+Ok, so what you actually mean is that userspace can tolerate the "bug"
+with the performance penalty.
+
+
+>
+> > For example, if it has tolerance, why bother?
+> I'm not sure I get the question. But I think userspace is compromising
+> because of buggy implementation in a few drivers doesn't mean we should
+> uniformly enforce such behavior for all set_map/dma_map implementations.
+
+This is not my point. I meant, we can fix we need a negotiation in
+order to let some "buggy" old user space to survive from the changes.
+
+>
+> >
+> >>>> This code of
+> >>>>> not checking IOTLB_PERSIST being set is intentional, there's no poi=
+nt to
+> >>>>> emulate bad IOMMU behavior even for older userspace (with improper
+> >>>>> emulation to be done it would result in even worse performance).
+> > I can easily imagine a case:
+> >
+> > The old Qemu that works only with a setup like mlx5_vdpa.
+> Noted, seems to me there's no such case of a userspace implementation
+> that only works with mlx5_vdpa or its friends, but doesn't work with the
+> others e.g. platform IOMMU, or well behaving on-chip IOMMU
+> implementations.
+
+It's not hard to think of a case where:
+
+1) the environment has mlx5_vdpa only
+2) kernel doc can't have endless details, so when developing
+application, the author notice IOTLB is cleared during reset
+
+> The Unmap+remap trick around vdpa reset works totally
+> fine for platform IOMMU, except with sub-optimal performance. Other than
+> this trick, I cannot easily think of other means or iotlb message
+> sequence for userspace to recover the bogus state and make iotlb back to
+> work again after reset.
+
+Yes for sure, but we can't audit every user space, no?
+
+> Are we talking about hypnosis that has no real
+> basis to exist in the real world?
+
+Instead of trying to answer these hard questions, I would go another
+way. That is, stick to the old behaviour when IOTLB_PRESISIT is not
+set by the backend. This is much easier.
+
+>
+> >   If we do
+> > this without a negotiation, IOTLB will not be clear but the Qemu will
+> > try to re-program the IOTLB after reset. Which will break?
+> >
+> > 1) stick the exact old behaviour with just one line of check
+> It's not just one line of check here, the old behavior emulation has to
+> be done as Eugenio illustrated in the other email.
+
+For vhost-vDPA it's just
+
+if (IOTLB_PERSIST is acked by userspace)
+    reset_map()
+
+For parent, it's somehow similar:
+
+during .reset()
+
+if (IOTLB_PERSIST is not acked by userspace)
+        reset_vendor_mappings()
+
+Anything I missed here?
+
+> In addition, the
+> emulation has to limit to those buggy drivers as I don't feel this
+> emulation should apply uniformly to all future set_map/dma_map
+> implementations.
+
+Unfortunately, it's a must to stick to ABI. I agree it's a mess but we
+don't have a better choice. Or we can fail the probe if userspace
+doesn't ack this feature.
+
+> > 2) audit all the possible cases to avoid a one line of code
+> >
+> > 1) seems much easier than 2)
+> You see it's more than just one line of code, and I'm uncertain if the
+> additional complexity is warranted or necessary, particularly if added
+> this piece of compatibility code will linger for quite a long time.
+
+This is a must as long as it can be noticed by userspace. Doing
+something conservative makes more sense to me.
+
+> Instead of adding hypothetical code change for no specific good reason
+> and no real use case,
+
+It's not adding something new or new behaviours, it's just making the
+IOTLB reset conditional based on vDPA reset.
+
+> I'd like to add the code when we find out a
+> specific use case that may get impacted or already being affected,
+
+It doesn't conflict with what you proposed here. Old behaviours have
+their users, no?
+
+> then
+> we will have good understanding how to code up the fix and emulate
+> properly for compatibility, while not affecting other good implementation=
+s.
+
+The issue is, even if we can't find a userspace now. It doesn't mean
+we can't have one in the future. Then it might be too late or too
+tricky to fix them. We had a lot of lessons in the past.
+
+Thanks
+
+>
 > Thanks,
-> Ryan
-> 
-> 
-> > 
-> > 
-> >>
-> >>> Looking at other interfaces, we do expose:
+> -Siwe/i/
+>
+> >
+> >>>> For two reasons:
+> >>>>
+> >>>> 1) backend features need acked by userspace this is by design
+> >>>> 2) keep the odd behaviour seems to be more safe as we can't audit
+> >>>> every userspace program
+> >>>>
+> >>> The old behavior (without flag ack) cannot be trusted already, as:
+> > Possibly but the point is to unbreak userspace no matter how weird the
+> > behaviour we've ever had.
+> >
+> >>> * Devices using platform IOMMU (in other words, not implementing
+> >>> neither .set_map nor .dma_map) does not unmap memory at virtio reset.
+> >>> * Devices that implement .set_map or .dma_map (vdpa_sim, mlx5) do
+> >>> reset IOTLB, but in their parent ops (vdpasim_do_reset, prune_iotlb
+> >>> called from mlx5_vdpa_reset). With vdpa_sim patch removing the reset,
+> >>> now all backends work the same as far as I know., which was (and is)
+> >>> the way devices using the platform IOMMU works.
 > >>>
-> >>> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_HEAD        15
-> >>> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_TAIL        16
+> >>> The difference in behavior did not matter as QEMU unmaps all the
+> >>> memory unregistering the memory listener at vhost_vdpa_dev_start(...,
+> >>> started =3D false),
+> >> Exactly. It's not just QEMU, but any (older) userspace manipulates
+> >> mappings through the vhost-vdpa iotlb interface has to unmap all
+> >> mappings to workaround the vdpa parent driver bug.
+> > Just to clarify, from userspace, it's the (odd) behaviour of the curren=
+t uAPI.
+> >
+> >> If they don't do
+> >> explicit unmap, it would cause state inconsistency between vhost-vdpa
+> >> and parent driver, then old mappings can't be restored, and new mappin=
+g
+> >> can be added to iotlb after vDPA reset. There's no point to preserve
+> >> this broken and inconsistent behavior between vhost-vdpa and parent
+> >> driver, as userspace doesn't care at all!
+> > It's a userspace notice change so we can't fix it silently:
+> >
+> > https://lkml.org/lkml/2012/12/23/75
+> >
+> > Another example which is related to vhost-vDPA:
+> >
+> > https://lore.kernel.org/netdev/20230927140544.205088-1-eric.auger@redha=
+t.com/T/
+> >
+> > Thanks
+> >
+> >>> but the backend acknowledging this feature flag
+> >>> allows QEMU to make sure it is safe to skip this unmap & map in the
+> >>> case of vhost stop & start cycle.
 > >>>
-> >>> So maybe we should just continue talking about compound pages or do we have
-> >>> to use both terms here in this interface?
+> >>> In that sense, this feature flag is actually a signal for userspace t=
+o
+> >>> know that the bug has been solved.
+> >> Right, I couldn't say it better than you do, thanks! The feature flag =
+is
+> >> more of an unusual means to indicating kernel bug having been fixed,
+> >> rather than introduce a new feature or new kernel behavior ending up i=
+n
+> >> change of userspace's expectation.
 > >>
-> >> I don;t know how easy it's going to be to distinguish between a head
-> >> and tail page in the Glorious Future once pages and folios are separated.
-> > 
-> > Probably a page-based interface would be the wrong interface for that;
-> > fortunately, this interface has a "debugging" smell to it, so we might be able
-> > to replace it.
+> >>> Not offering it indicates that
+> >>> userspace cannot trust the kernel will retain the maps.
+> >>>
+> >>> Si-Wei or Dragos, please correct me if I've missed something. Feel
+> >>> free to use the text in case you find more clear in doc or patch log.
+> >> Sure, will do, thank you! Will post v2 adding these to the log.
+> >>
+> >> Thanks,
+> >> -Siwei
+> >>
+> >>
+> >>
+> >>> Thanks!
+> >>>
+> >>>> Thanks
+> >>>>
+> >>>>> I think
+> >>>>> the purpose of the IOTLB_PERSIST flag is just to give userspace 100=
+%
+> >>>>> certainty of persistent iotlb mapping not getting lost across vdpa =
+reset.
+> >>>>>
+> >>>>> Thanks,
+> >>>>> -Siwei
+> >>>>>
+> >>>>> [1]
+> >>>>> https://lore.kernel.org/virtualization/9f118fc9-4f6f-dd67-a291-be78=
+152e47fd@oracle.com/
+> >>>>> [2]
+> >>>>> https://lore.kernel.org/virtualization/3364adfd-1eb7-8bce-41f9-bfe5=
+473f1f2e@oracle.com/
+> >>>>>>     Otherwise
+> >>>>>> we may break old userspace.
+> >>>>>>
+> >>>>>> Thanks
+> >>>>>>
+> >>>>>>> +       vhost_vdpa_reset_map(v, asid);
+> >>>>>>>            kfree(as);
+> >>>>>>>
+> >>>>>>>            return 0;
+> >>>>>>> --
+> >>>>>>> 1.8.3.1
+> >>>>>>>
+>
 
-This interface exposes per-pfn (not per-page) data records, specifying pfn by
-file offset. It does not care about distinction between head and tail.
-So I don't think that we can avoid referring to tail pages even after page-to-folio
-conversion is complete.
-
-But I agree that this interface is for debugging or testing.  To clarify
-this, we might consider relocating this interface to a more suitable location
-within debugfs, making it effectively invisible to non-debugging processes.
-And maybe this could be the case also for other similar interfaces /proc/kpage*.
-So all these files can be handled together to address this problem.
-
-Thanks,
-Naoya Horiguchi
