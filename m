@@ -2,1517 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6433B7CE05C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95647CE05E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjJROvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S1344811AbjJROvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjJROvD (ORCPT
+        with ESMTP id S231984AbjJROvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:51:03 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4B494
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:50:58 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d77ad095f13so7069743276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697640657; x=1698245457; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3W5b7OIeaAJuZdG7kQyk2WXUpBnPr+nck1MqmEenKM=;
-        b=ZccoTGFrDqjCo7oDAXB58Z6C5mWeJhabQZ3ycSZq0ZK/McQr45HTr6Sb4rBc0BHXz1
-         8rFHOgtZt49M4+zXGwZw3p2NCG1Ob5aFJta9NyuGtwXu33BOt1cPEQ4k97ewTfbfOJ9L
-         iXS0ZRmeL/nNSBjgno8YFFIs268w6L9yQtzjPa/JhcYMKeqlkIyu27WVK9ahOTQau2FM
-         JxomxUQqqajTzTWEqLZkPBD5aOgT48MTT+krQHrXu5fQn/LAAs80KsuK5zozBVo2lnv7
-         Cv4s6dkpITFsRGHrzkeGJyCB5IOHwPVqWCurlUCALijjSvUE6qpIdS1p3OVi5VNL4JTu
-         QH+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697640657; x=1698245457;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F3W5b7OIeaAJuZdG7kQyk2WXUpBnPr+nck1MqmEenKM=;
-        b=T+TSfqvQz/wsO+XPmWrLBNBVPcb3kRV3MqX2izl2r86Q0NblAo4GHy86yPonmGLlc8
-         9G8KAjsygHMrR+nYs+ODJ5Z8TqGv8vKoW0VRRbXUUPG//ixmmJUIG/TmtiwuGCCiVO08
-         wC465xdkSzv8z7GDQx46Rd25zP2gCo8hKIZOZo/doVLourpkpcNMe7ZNIGpW8CgW4cu+
-         X5x0sNv5d8Wygwbcw5Mk07bTRB5YW3fLNGbfSwIDuByvKXZddNPIcdEKAwL+42olW/mo
-         VxxeWgJZRZfGCc1xSDbI38bE/6Rd4TCJHHJHL3mnI/y4Isj2lyezGCgBEvwwVrsGIiHw
-         q77A==
-X-Gm-Message-State: AOJu0YxAI0o6wXnrdR6XTHC1Rlm6J7Z406bxYXXhRsFgSU/rERr9FQ6J
-        va/XWyXKsu/hAbvTABpregSabXQs5kpU8/xLoNUhGw==
-X-Google-Smtp-Source: AGHT+IFRgcpqheF+ILmH/yvMlvixN4cpkWTtHhKr9I8+4Q4V4DtyU++2/bpF48t4omGxnaIqImBT84RdZN9HdWkR/Jc=
-X-Received: by 2002:a25:dbc5:0:b0:d9a:4163:7b6d with SMTP id
- g188-20020a25dbc5000000b00d9a41637b6dmr5876937ybf.59.1697640657474; Wed, 18
- Oct 2023 07:50:57 -0700 (PDT)
+        Wed, 18 Oct 2023 10:51:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29055A4;
+        Wed, 18 Oct 2023 07:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697640662; x=1729176662;
+  h=date:from:to:cc:subject:message-id:
+   content-transfer-encoding:mime-version;
+  bh=cTTw7EYcqvlPg5uYDr/CocVmkujz72nldBegE73zlQw=;
+  b=ixDv95iwVZEtib6TpSt5L6DxmM6mltKvCi5qmDyrKwVa919/xNhyWJLt
+   3PpoX3UbEwh6PhBjT4D9FtSSVGGX9go5g5aKJOkQCNFpw+qc2mqCqR1oJ
+   S9Efa0+5yJiwjWRyq0t6mbKI3QaFYc/YKx0jcZbRDU6oMOGzricDUi9q0
+   bcZcbBL+Os+7yz57sJqrZXCkOy9dpjTeSI8n83EgT23MpKPGvs4CpL/7T
+   vwevx2m+r8cgfLG4OTWZG8PnCj7wkbMsw6WDkbXjfM5TCqUxkBoz4waC4
+   SnCLLGHS95PGgnJm3MDB5fBJGxlGY/L/6eiKtnJ9BwQ4St5ZUAA4GjSkw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="384909456"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="384909456"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:51:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756613881"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="756613881"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2023 07:50:58 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 18 Oct 2023 07:50:58 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 18 Oct 2023 07:50:58 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 18 Oct 2023 07:50:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EHXXpvaDzpfCTx5GrddSzEY63rVQeTZafCuLaHDh7AshJW4uYDh97fhIrMzhNjlPblmGVUdwKpC9k0puli+/eEyOGO/KPFB/ZKK6v3/2J2rT7Sd4K6M0xAlkgOETosBFgf+VAeC4xKATM6xqajnRJLBD9RjZe9jzCdsPCEyu1O+yMp+UMAUKmpph8ehq6yDMlDYKd2cldZ7QSPXBK2OJCnvYefOA5gyIjfm9WpDhtF6pEyFFKiTagy6cZkFeFownZmxO77et+9vaGcOSZXyoJ48JDu8ZqGZZEv5PIFa+Z74msEj6RTqImcSkUvprSfvxtbUiI/KRztmIu5N8Tydi8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E0Cg0Z5ppP8Uy4Q67LN/nWE1sdyLlAYEKcrUuqHK8HI=;
+ b=InzxmT+92vuy1GrwBSjsI3Lrsb96wyl+WN8rO+GxTFczL4/LYePvGxqrGDM8g4uipUDKTCCCcIadgVh4YxVFbdA2B7Cziu8UrVG/CAtg18awrVACAh0FUl5HcqxY3c1iqRXsNk2gWjiMbgr2K5mfmUNiL9bJ6IrqK3H/1ZUBYkPtXAyh83M2oCwVu3INiqGhniQNQh3ZQuEiMgi/+esW8WDD+J7RQ+sULdirfkfz0OwF5m+IcFy39aF/VbLVkErpe/KhvJdBYg8pyDPGjfeKGWSUzLrbpX/5RcJ6E/x8tJ9hf5PS35BBUoI6o7jHi6Txk7E0DVM9d4qPIAk2Umx0Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+ by PH0PR11MB7636.namprd11.prod.outlook.com (2603:10b6:510:26f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Wed, 18 Oct
+ 2023 14:50:55 +0000
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::134a:412c:eb02:ae17]) by PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::134a:412c:eb02:ae17%5]) with mapi id 15.20.6863.046; Wed, 18 Oct 2023
+ 14:50:55 +0000
+Date:   Wed, 18 Oct 2023 22:50:46 +0800
+From:   kernel test robot <oliver.sang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Raghavendra K T <raghavendra.kt@amd.com>,
+        <linux-trace-kernel@vger.kernel.org>, <ying.huang@intel.com>,
+        <feng.tang@intel.com>, <fengwei.yin@intel.com>,
+        <aubrey.li@linux.intel.com>, <yu.c.chen@intel.com>,
+        <oliver.sang@intel.com>
+Subject: [tip:sched/core] [sched/numa]  f169c62ff7:
+ autonuma-benchmark.numa01.seconds -32.0% improvement
+Message-ID: <202310182223.6ef26fcb-oliver.sang@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR01CA0153.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::33) To PH8PR11MB6779.namprd11.prod.outlook.com
+ (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
-References: <40fa5bc3a602463fab0d0982903925a6@realtek.com>
-In-Reply-To: <40fa5bc3a602463fab0d0982903925a6@realtek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 18 Oct 2023 16:50:21 +0200
-Message-ID: <CAPDyKFpVDUHcHL1LF9HGE-=sunG4ZA45r+GqwiEhSMMHGn2D3A@mail.gmail.com>
-Subject: Re: [PATCH v2] misc: rtsx: add to support new card reader rts5264
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH0PR11MB7636:EE_
+X-MS-Office365-Filtering-Correlation-Id: acefa347-a1fd-4655-93b7-08dbcfe9a1c9
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R2at6+OxCDSRwzJ/DDr91zNCasvvyAhTwguVRaYBQkuxXzP2fwm6oYA0vvVl1DWO4gNo9rOQ8c+R5OWS1oMSOkN5mbaMYK3v4Etz/7gAN+0qMsJYRejz3UYaN0TGmchyy0JJm47u1uxcsKkyNO4lVJiH2/e/82pfd4F0BbHIXAjERSgPFcny/ay9vHPU3XOog35fNkajQsrHMTKsJK5GIRxw+PXPvhkkeRmpfpybidvIbmbqH3ALGfOn7sNsaqbAUKT8gYRc2smnW6bNA40xyl8Iy15QP3dNqvuuswofC66pj6p2Puq95JGcmkBHaiI8cF/PVa7Voba/Rj8gd7eXnyi2ZoD2yIKqddoM6Tz1ecoPjgwSq28GtEWSSEtfMDzMiEqDFJwl+Q8rJ4sTi5y/RaEsAOCwrxim13GObcASQO8ONjub5Br7SN8ZWKZr3LPb4qyATezaF94k7eGzP2ggMNeP2Mm5fzzJqymIrBWL/pi+4JOpCmNN1ni7kfm19TZP+af+Jf6gwR9Lcq5If1Yi52jikXFMJoLRKVnL76aNlC/I/kbgyINJsaxA5i4amiSRRmF5kdWwPlt1i7fLwhTXew==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(82960400001)(26005)(2616005)(1076003)(8936002)(8676002)(4326008)(5660300002)(38100700002)(83380400001)(478600001)(2906002)(6486002)(966005)(41300700001)(86362001)(30864003)(6512007)(316002)(6666004)(6506007)(66946007)(66476007)(54906003)(36756003)(66556008)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?RrYl/jkGDvlhUiW0Xmb+THBhOGjtRDOEwsBPda0xJAjz6JuBgDlGZuw8Y/?=
+ =?iso-8859-1?Q?HIv1Ru6y2NU7GlNLKQ+ipA8Zz8Cqubhz1anlDnq5p1GUC1iXePmkI1aSNy?=
+ =?iso-8859-1?Q?FABe714HVb+OL9ABlrDz+PFHOkbM94aqX96hdYSk4pBIfOQhXzKdkr1VXC?=
+ =?iso-8859-1?Q?Taw4+npO2iuoRgHrLytuAWcPx4czyNJm5ad3H/PV7RvA9gZDIr/W81Z0qm?=
+ =?iso-8859-1?Q?h6ElBH8Bm1DtgO9Grt4A1BrZYDita0o3JdzTuVjGLHbX/XaKri+iejwlBO?=
+ =?iso-8859-1?Q?UIGbC5ZkauoFZ6KJNuCZwrzTnJx3PldN2beBIy3zYa2kI43vTiuAkFy3t1?=
+ =?iso-8859-1?Q?VksKHQnSk3ciKyshjCYMtfrd+2WrjUFk3wX8h3/6tORgmnaeI53IngpRzW?=
+ =?iso-8859-1?Q?1wBpKWh3bsOrfIr+fCUXLcZfedIKC2t3yZsOxrbC2Cj/ZMm8vFdjvVRPkE?=
+ =?iso-8859-1?Q?tTylGM7P5c/UN54FoBCBDvBJEaG9gkOM8k954LPJYONzRs+pNBq1+DiRE9?=
+ =?iso-8859-1?Q?2dDBcNDdv0YVh9+hbs7SaQaVefeSVNLnGPB3HidBy3/wTtTmIqI0fpIWZ4?=
+ =?iso-8859-1?Q?zJ02ja9KdX0r1wRJSofHPCGScIFReSfjsHG+UsyGgjFhcYbYWQGGQsMrj/?=
+ =?iso-8859-1?Q?/OeNrB4AwUExLA6nOKl/0h4tvmdz2uEJQ8PSe+T2cya4G54p0qlzIf7ak/?=
+ =?iso-8859-1?Q?W1MQcsHPAtw6b+BTn+cqCTlum2pmzidwyLMLmMo/o6XcjONdIiuCHeaXvv?=
+ =?iso-8859-1?Q?t6nk5ulEojxLSEHgRNSiDyl3ZcDamKdkA/z6dLWqg+FEA+zvqR/9z+jZIC?=
+ =?iso-8859-1?Q?YaGNbGFVWecnVMX2/I3+yNVf33CKxa6yEudihj2rtibao4yOYYYCeQ1JBx?=
+ =?iso-8859-1?Q?1S9kKksnaRHpP7L9q7xeeu6u4bjYDYNhYgPAmX/zHGUNimEfi94mgTzIp6?=
+ =?iso-8859-1?Q?/vt58O1CJjdo+Ox6M8uoGYUJBSe9UaZUx9Z9yQcQKD+EjAXGKqV+TFsj1+?=
+ =?iso-8859-1?Q?6HoNVxHFivArtTjMyBpHBttfwPaqV46g5kEpVp+oheox78JzxR8z+E5jCx?=
+ =?iso-8859-1?Q?OsSkUbFSs3qdmL14U9sKe1dZBz4c68O0Ld+z1qGliptPcmthA3j34D9Zgi?=
+ =?iso-8859-1?Q?s2xagptP53FsIShDlliGz81RRT2t/QLIIsYCDRCV1dQtJlEkuad9u8DJu7?=
+ =?iso-8859-1?Q?hUhz12+NnRYnmaepCYJUuJvKxU7fT1IP4DtkMMXdYb0pHkOEUIfXoyunWB?=
+ =?iso-8859-1?Q?eozim8zEqmSppfKliDtdAnggOtoxcunHhU5+2mQC3kk+sRofl+S6RS9tVu?=
+ =?iso-8859-1?Q?WeRTanqRAGUt4wxOsNfENLjW0jVwUOridHlDWS4BnLsewjp2SliWziawuS?=
+ =?iso-8859-1?Q?vqci756joRotiHb6Ug3MKPMxMVCnMbHFBKJ7Isc1YkiSHhHCfSz9i30s3H?=
+ =?iso-8859-1?Q?p+HcSmojcKNlnVv1bHzlDNCgMC0RqK2Nlv8FhNeVrUz8cKgQhLQjIqGjqA?=
+ =?iso-8859-1?Q?wzk2hWdsbY+1vI1qbTTjXcgXglwQRZdl+qq7SBMpOhRqLWM65tcKBKYLhS?=
+ =?iso-8859-1?Q?tFGOeKLpiddKQvsjeZi2jK8F4idD/ZyR6Tfl8QU/6WFkCifft2z+ZnLlIk?=
+ =?iso-8859-1?Q?U+sW9w71n3+oWRmvMz7H01VyXJPyI9Ras7z4yIkhrAVpP3aOW7231+xg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: acefa347-a1fd-4655-93b7-08dbcfe9a1c9
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 14:50:55.3593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1O7mXk1eSKH2+MCSdTNXvWOJd/+0TPKOY45FY22i9mFtrOX3I75wgMr3vCEGcsHr+M07IXt3G0ydGn+XOu5orw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7636
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 at 11:42, Ricky WU <ricky_wu@realtek.com> wrote:
->
->
-> In order to support new chip rts5264, the definitions of some internal
-> registers and workflow have to be modified.
-> Added rts5264.c rts5264.h for independent functions of the new chip rts5264
->
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> ---
-> v2: removed ic version check
-> ---
->  drivers/misc/cardreader/Makefile   |   2 +-
->  drivers/misc/cardreader/rts5264.c  | 886 +++++++++++++++++++++++++++++
->  drivers/misc/cardreader/rts5264.h  | 278 +++++++++
->  drivers/misc/cardreader/rtsx_pcr.c |  30 +-
->  drivers/misc/cardreader/rtsx_pcr.h |   1 +
->  drivers/mmc/host/rtsx_pci_sdmmc.c  |  17 +-
->  include/linux/rtsx_pci.h           |   8 +
->  7 files changed, 1215 insertions(+), 7 deletions(-)
->  create mode 100644 drivers/misc/cardreader/rts5264.c
->  create mode 100644 drivers/misc/cardreader/rts5264.h
 
-Before I really start reviewing this, would you mind splitting this up
-in some more patches? The cardreader part could be a separate patch
-and so can the mmc part. Smaller pieces are easier to review.
 
-Kind regards
-Uffe
+Hello,
 
->
-> diff --git a/drivers/misc/cardreader/Makefile b/drivers/misc/cardreader/Makefile
-> index 895128475d83..1e1bca6b0b22 100644
-> --- a/drivers/misc/cardreader/Makefile
-> +++ b/drivers/misc/cardreader/Makefile
-> @@ -1,5 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_MISC_ALCOR_PCI)   += alcor_pci.o
->  obj-$(CONFIG_MISC_RTSX_PCI)    += rtsx_pci.o
-> -rtsx_pci-objs := rtsx_pcr.o rts5209.o rts5229.o rtl8411.o rts5227.o rts5249.o rts5260.o rts5261.o rts5228.o
-> +rtsx_pci-objs := rtsx_pcr.o rts5209.o rts5229.o rtl8411.o rts5227.o rts5249.o rts5260.o rts5261.o rts5228.o rts5264.o
->  obj-$(CONFIG_MISC_RTSX_USB)    += rtsx_usb.o
-> diff --git a/drivers/misc/cardreader/rts5264.c b/drivers/misc/cardreader/rts5264.c
-> new file mode 100644
-> index 000000000000..8be4ed7d9d47
-> --- /dev/null
-> +++ b/drivers/misc/cardreader/rts5264.c
-> @@ -0,0 +1,886 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Driver for Realtek PCI-Express card reader
-> + *
-> + * Copyright(c) 2009-2013 Realtek Semiconductor Corp. All rights reserved.
-> + *
-> + * Author:
-> + *   Ricky Wu <ricky_wu@realtek.com>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/delay.h>
-> +#include <linux/rtsx_pci.h>
-> +
-> +#include "rts5264.h"
-> +#include "rtsx_pcr.h"
-> +
-> +static u8 rts5264_get_ic_version(struct rtsx_pcr *pcr)
-> +{
-> +       u8 val;
-> +
-> +       rtsx_pci_read_register(pcr, DUMMY_REG_RESET_0, &val);
-> +       return val & 0x0F;
-> +}
-> +
-> +static void rts5264_fill_driving(struct rtsx_pcr *pcr, u8 voltage)
-> +{
-> +       u8 driving_3v3[4][3] = {
-> +               {0x88, 0x88, 0x88},
-> +               {0x77, 0x77, 0x77},
-> +               {0x99, 0x99, 0x99},
-> +               {0x66, 0x66, 0x66},
-> +       };
-> +       u8 driving_1v8[4][3] = {
-> +               {0x99, 0x99, 0x99},
-> +               {0x77, 0x77, 0x77},
-> +               {0xBB, 0xBB, 0xBB},
-> +               {0x65, 0x65, 0x65},
-> +       };
-> +       u8 (*driving)[3], drive_sel;
-> +
-> +       if (voltage == OUTPUT_3V3) {
-> +               driving = driving_3v3;
-> +               drive_sel = pcr->sd30_drive_sel_3v3;
-> +       } else {
-> +               driving = driving_1v8;
-> +               drive_sel = pcr->sd30_drive_sel_1v8;
-> +       }
-> +
-> +       rtsx_pci_write_register(pcr, SD30_CLK_DRIVE_SEL,
-> +                       0xFF, driving[drive_sel][0]);
-> +       rtsx_pci_write_register(pcr, SD30_CMD_DRIVE_SEL,
-> +                       0xFF, driving[drive_sel][1]);
-> +       rtsx_pci_write_register(pcr, SD30_DAT_DRIVE_SEL,
-> +                       0xFF, driving[drive_sel][2]);
-> +}
-> +
-> +static void rts5264_force_power_down(struct rtsx_pcr *pcr, u8 pm_state, bool runtime)
-> +{
-> +       /* Set relink_time to 0 */
-> +       rtsx_pci_write_register(pcr, AUTOLOAD_CFG_BASE + 1, MASK_8_BIT_DEF, 0);
-> +       rtsx_pci_write_register(pcr, AUTOLOAD_CFG_BASE + 2, MASK_8_BIT_DEF, 0);
-> +       rtsx_pci_write_register(pcr, AUTOLOAD_CFG_BASE + 3,
-> +                               RELINK_TIME_MASK, 0);
-> +
-> +       if (pm_state == HOST_ENTER_S3)
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3,
-> +                                       D3_DELINK_MODE_EN, D3_DELINK_MODE_EN);
-> +
-> +       if (!runtime) {
-> +               rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG1,
-> +                               CD_RESUME_EN_MASK, 0);
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, 0x01, 0x00);
-> +               rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +                               FORCE_PM_CONTROL | FORCE_PM_VALUE, FORCE_PM_CONTROL);
-> +       } else {
-> +               rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +                               FORCE_PM_CONTROL | FORCE_PM_VALUE, 0);
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, 0x01, 0x01);
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3,
-> +                                       D3_DELINK_MODE_EN, 0);
-> +               rtsx_pci_write_register(pcr, RTS5264_FW_CTL,
-> +                               RTS5264_INFORM_RTD3_COLD, RTS5264_INFORM_RTD3_COLD);
-> +               rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG4,
-> +                               RTS5264_FORCE_PRSNT_LOW, RTS5264_FORCE_PRSNT_LOW);
-> +       }
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_REG_FPDCTL,
-> +               SSC_POWER_DOWN, SSC_POWER_DOWN);
-> +}
-> +
-> +static int rts5264_enable_auto_blink(struct rtsx_pcr *pcr)
-> +{
-> +       return rtsx_pci_write_register(pcr, OLT_LED_CTL,
-> +               LED_SHINE_MASK, LED_SHINE_EN);
-> +}
-> +
-> +static int rts5264_disable_auto_blink(struct rtsx_pcr *pcr)
-> +{
-> +       return rtsx_pci_write_register(pcr, OLT_LED_CTL,
-> +               LED_SHINE_MASK, LED_SHINE_DISABLE);
-> +}
-> +
-> +static int rts5264_turn_on_led(struct rtsx_pcr *pcr)
-> +{
-> +       return rtsx_pci_write_register(pcr, GPIO_CTL,
-> +               0x02, 0x02);
-> +}
-> +
-> +static int rts5264_turn_off_led(struct rtsx_pcr *pcr)
-> +{
-> +       return rtsx_pci_write_register(pcr, GPIO_CTL,
-> +               0x02, 0x00);
-> +}
-> +
-> +/* SD Pull Control Enable:
-> + *     SD_DAT[3:0] ==> pull up
-> + *     SD_CD       ==> pull up
-> + *     SD_WP       ==> pull up
-> + *     SD_CMD      ==> pull up
-> + *     SD_CLK      ==> pull down
-> + */
-> +static const u32 rts5264_sd_pull_ctl_enable_tbl[] = {
-> +       RTSX_REG_PAIR(CARD_PULL_CTL2, 0xAA),
-> +       RTSX_REG_PAIR(CARD_PULL_CTL3, 0xE9),
-> +       0,
-> +};
-> +
-> +/* SD Pull Control Disable:
-> + *     SD_DAT[3:0] ==> pull down
-> + *     SD_CD       ==> pull up
-> + *     SD_WP       ==> pull down
-> + *     SD_CMD      ==> pull down
-> + *     SD_CLK      ==> pull down
-> + */
-> +static const u32 rts5264_sd_pull_ctl_disable_tbl[] = {
-> +       RTSX_REG_PAIR(CARD_PULL_CTL2, 0x55),
-> +       RTSX_REG_PAIR(CARD_PULL_CTL3, 0xD5),
-> +       0,
-> +};
-> +
-> +static int rts5264_sd_set_sample_push_timing_sd30(struct rtsx_pcr *pcr)
-> +{
-> +       rtsx_pci_write_register(pcr, SD_CFG1, SD_MODE_SELECT_MASK
-> +               | SD_ASYNC_FIFO_NOT_RST, SD_30_MODE | SD_ASYNC_FIFO_NOT_RST);
-> +       rtsx_pci_write_register(pcr, CLK_CTL, CLK_LOW_FREQ, CLK_LOW_FREQ);
-> +       rtsx_pci_write_register(pcr, CARD_CLK_SOURCE, 0xFF,
-> +                       CRC_VAR_CLK0 | SD30_FIX_CLK | SAMPLE_VAR_CLK1);
-> +       rtsx_pci_write_register(pcr, CLK_CTL, CLK_LOW_FREQ, 0);
-> +
-> +       return 0;
-> +}
-> +
-> +static int rts5264_card_power_on(struct rtsx_pcr *pcr, int card)
-> +{
-> +       struct rtsx_cr_option *option = &pcr->option;
-> +
-> +       if (option->ocp_en)
-> +               rtsx_pci_enable_ocp(pcr);
-> +
-> +       rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
-> +               CFG_SD_POW_AUTO_PD, CFG_SD_POW_AUTO_PD);
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG1,
-> +                       RTS5264_LDO1_TUNE_MASK, RTS5264_LDO1_33);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO1233318_POW_CTL,
-> +                       RTS5264_LDO1_POWERON, RTS5264_LDO1_POWERON);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO1233318_POW_CTL,
-> +                       RTS5264_LDO3318_POWERON, RTS5264_LDO3318_POWERON);
-> +
-> +       msleep(20);
-> +
-> +       rtsx_pci_write_register(pcr, CARD_OE, SD_OUTPUT_EN, SD_OUTPUT_EN);
-> +
-> +       /* Initialize SD_CFG1 register */
-> +       rtsx_pci_write_register(pcr, SD_CFG1, 0xFF,
-> +                       SD_CLK_DIVIDE_128 | SD_20_MODE | SD_BUS_WIDTH_1BIT);
-> +       rtsx_pci_write_register(pcr, SD_SAMPLE_POINT_CTL,
-> +                       0xFF, SD20_RX_POS_EDGE);
-> +       rtsx_pci_write_register(pcr, SD_PUSH_POINT_CTL, 0xFF, 0);
-> +       rtsx_pci_write_register(pcr, CARD_STOP, SD_STOP | SD_CLR_ERR,
-> +                       SD_STOP | SD_CLR_ERR);
-> +
-> +       /* Reset SD_CFG3 register */
-> +       rtsx_pci_write_register(pcr, SD_CFG3, SD30_CLK_END_EN, 0);
-> +       rtsx_pci_write_register(pcr, REG_SD_STOP_SDCLK_CFG,
-> +                       SD30_CLK_STOP_CFG_EN | SD30_CLK_STOP_CFG1 |
-> +                       SD30_CLK_STOP_CFG0, 0);
-> +
-> +       if (pcr->extra_caps & EXTRA_CAPS_SD_SDR50 ||
-> +           pcr->extra_caps & EXTRA_CAPS_SD_SDR104)
-> +               rts5264_sd_set_sample_push_timing_sd30(pcr);
-> +
-> +       return 0;
-> +}
-> +
-> +static int rts5264_switch_output_voltage(struct rtsx_pcr *pcr, u8 voltage)
-> +{
-> +       rtsx_pci_write_register(pcr, RTS5264_CARD_PWR_CTL,
-> +                       RTS5264_PUPDC, RTS5264_PUPDC);
-> +
-> +       switch (voltage) {
-> +       case OUTPUT_3V3:
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO1233318_POW_CTL,
-> +                               RTS5264_TUNE_REF_LDO3318, RTS5264_TUNE_REF_LDO3318);
-> +               rtsx_pci_write_register(pcr, RTS5264_DV3318_CFG,
-> +                               RTS5264_DV3318_TUNE_MASK, RTS5264_DV3318_33);
-> +               rtsx_pci_write_register(pcr, SD_PAD_CTL,
-> +                               SD_IO_USING_1V8, 0);
-> +               break;
-> +       case OUTPUT_1V8:
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO1233318_POW_CTL,
-> +                               RTS5264_TUNE_REF_LDO3318, RTS5264_TUNE_REF_LDO3318_DFT);
-> +               rtsx_pci_write_register(pcr, RTS5264_DV3318_CFG,
-> +                               RTS5264_DV3318_TUNE_MASK, RTS5264_DV3318_18);
-> +               rtsx_pci_write_register(pcr, SD_PAD_CTL,
-> +                               SD_IO_USING_1V8, SD_IO_USING_1V8);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* set pad drive */
-> +       rts5264_fill_driving(pcr, voltage);
-> +
-> +       return 0;
-> +}
-> +
-> +static void rts5264_stop_cmd(struct rtsx_pcr *pcr)
-> +{
-> +       rtsx_pci_writel(pcr, RTSX_HCBCTLR, STOP_CMD);
-> +       rtsx_pci_writel(pcr, RTSX_HDBCTLR, STOP_DMA);
-> +       rtsx_pci_write_register(pcr, DMACTL, DMA_RST, DMA_RST);
-> +       rtsx_pci_write_register(pcr, RBCTL, RB_FLUSH, RB_FLUSH);
-> +}
-> +
-> +static void rts5264_card_before_power_off(struct rtsx_pcr *pcr)
-> +{
-> +       rts5264_stop_cmd(pcr);
-> +       rts5264_switch_output_voltage(pcr, OUTPUT_3V3);
-> +}
-> +
-> +static int rts5264_card_power_off(struct rtsx_pcr *pcr, int card)
-> +{
-> +       int err = 0;
-> +
-> +       rts5264_card_before_power_off(pcr);
-> +       err = rtsx_pci_write_register(pcr, RTS5264_LDO1233318_POW_CTL,
-> +                               RTS5264_LDO_POWERON_MASK, 0);
-> +
-> +       rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
-> +               CFG_SD_POW_AUTO_PD, 0);
-> +       if (pcr->option.ocp_en)
-> +               rtsx_pci_disable_ocp(pcr);
-> +
-> +       return err;
-> +}
-> +
-> +static void rts5264_enable_ocp(struct rtsx_pcr *pcr)
-> +{
-> +       u8 mask = 0;
-> +       u8 val = 0;
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG0,
-> +                       RTS5264_LDO1_OCP_EN | RTS5264_LDO1_OCP_LMT_EN,
-> +                       RTS5264_LDO1_OCP_EN | RTS5264_LDO1_OCP_LMT_EN);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO2_CFG0,
-> +                       RTS5264_LDO2_OCP_EN | RTS5264_LDO2_OCP_LMT_EN,
-> +                       RTS5264_LDO2_OCP_EN | RTS5264_LDO2_OCP_LMT_EN);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO3_CFG0,
-> +                       RTS5264_LDO3_OCP_EN | RTS5264_LDO3_OCP_LMT_EN,
-> +                       RTS5264_LDO3_OCP_EN | RTS5264_LDO3_OCP_LMT_EN);
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_DET,
-> +                       RTS5264_POW_VDET, RTS5264_POW_VDET);
-> +
-> +       mask = SD_OCP_INT_EN | SD_DETECT_EN;
-> +       mask |= SDVIO_OCP_INT_EN | SDVIO_DETECT_EN;
-> +       val = mask;
-> +       rtsx_pci_write_register(pcr, REG_OCPCTL, mask, val);
-> +
-> +       mask = SD_VDD3_OCP_INT_EN | SD_VDD3_DETECT_EN;
-> +       val = mask;
-> +       rtsx_pci_write_register(pcr, RTS5264_OCP_VDD3_CTL, mask, val);
-> +
-> +       mask = RTS5264_OVP_INT_EN | RTS5264_OVP_DETECT_EN;
-> +       val = mask;
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_CTL, mask, val);
-> +}
-> +
-> +static void rts5264_disable_ocp(struct rtsx_pcr *pcr)
-> +{
-> +       u8 mask = 0;
-> +
-> +       mask = SD_OCP_INT_EN | SD_DETECT_EN;
-> +       mask |= SDVIO_OCP_INT_EN | SDVIO_DETECT_EN;
-> +       rtsx_pci_write_register(pcr, REG_OCPCTL, mask, 0);
-> +
-> +       mask = SD_VDD3_OCP_INT_EN | SD_VDD3_DETECT_EN;
-> +       rtsx_pci_write_register(pcr, RTS5264_OCP_VDD3_CTL, mask, 0);
-> +
-> +       mask = RTS5264_OVP_INT_EN | RTS5264_OVP_DETECT_EN;
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_CTL, mask, 0);
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG0,
-> +                       RTS5264_LDO1_OCP_EN | RTS5264_LDO1_OCP_LMT_EN, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO2_CFG0,
-> +                       RTS5264_LDO2_OCP_EN | RTS5264_LDO2_OCP_LMT_EN, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_LDO3_CFG0,
-> +                       RTS5264_LDO3_OCP_EN | RTS5264_LDO3_OCP_LMT_EN, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_DET, RTS5264_POW_VDET, 0);
-> +}
-> +
-> +static void rts5264_init_ocp(struct rtsx_pcr *pcr)
-> +{
-> +       struct rtsx_cr_option *option = &pcr->option;
-> +
-> +       if (option->ocp_en) {
-> +               u8 mask, val;
-> +
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG0,
-> +                       RTS5264_LDO1_OCP_THD_MASK, option->sd_800mA_ocp_thd);
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG0,
-> +                       RTS5264_LDO1_OCP_LMT_THD_MASK,
-> +                       RTS5264_LDO1_LMT_THD_2000);
-> +
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO2_CFG0,
-> +                       RTS5264_LDO2_OCP_THD_MASK, RTS5264_LDO2_OCP_THD_950);
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO2_CFG0,
-> +                       RTS5264_LDO2_OCP_LMT_THD_MASK,
-> +                       RTS5264_LDO2_LMT_THD_2000);
-> +
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO3_CFG0,
-> +                       RTS5264_LDO3_OCP_THD_MASK, RTS5264_LDO3_OCP_THD_710);
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO3_CFG0,
-> +                       RTS5264_LDO3_OCP_LMT_THD_MASK,
-> +                       RTS5264_LDO3_LMT_THD_1500);
-> +
-> +               rtsx_pci_write_register(pcr, RTS5264_OVP_DET,
-> +                       RTS5264_TUNE_VROV_MASK, RTS5264_TUNE_VROV_1V6);
-> +
-> +               mask = SD_OCP_GLITCH_MASK | SDVIO_OCP_GLITCH_MASK;
-> +               val = pcr->hw_param.ocp_glitch;
-> +               rtsx_pci_write_register(pcr, REG_OCPGLITCH, mask, val);
-> +
-> +       } else {
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO1_CFG0,
-> +                       RTS5264_LDO1_OCP_EN | RTS5264_LDO1_OCP_LMT_EN, 0);
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO2_CFG0,
-> +                       RTS5264_LDO2_OCP_EN | RTS5264_LDO2_OCP_LMT_EN, 0);
-> +               rtsx_pci_write_register(pcr, RTS5264_LDO3_CFG0,
-> +                       RTS5264_LDO3_OCP_EN | RTS5264_LDO3_OCP_LMT_EN, 0);
-> +               rtsx_pci_write_register(pcr, RTS5264_OVP_DET,
-> +                       RTS5264_POW_VDET, 0);
-> +       }
-> +}
-> +
-> +static int rts5264_get_ocpstat2(struct rtsx_pcr *pcr, u8 *val)
-> +{
-> +       return rtsx_pci_read_register(pcr, RTS5264_OCP_VDD3_STS, val);
-> +}
-> +
-> +static int rts5264_get_ovpstat(struct rtsx_pcr *pcr, u8 *val)
-> +{
-> +       return rtsx_pci_read_register(pcr, RTS5264_OVP_STS, val);
-> +}
-> +
-> +static void rts5264_clear_ocpstat(struct rtsx_pcr *pcr)
-> +{
-> +       u8 mask = 0;
-> +       u8 val = 0;
-> +
-> +       mask = SD_OCP_INT_CLR | SD_OC_CLR;
-> +       mask |= SDVIO_OCP_INT_CLR | SDVIO_OC_CLR;
-> +       val = mask;
-> +       rtsx_pci_write_register(pcr, REG_OCPCTL, mask, val);
-> +       rtsx_pci_write_register(pcr, RTS5264_OCP_VDD3_CTL,
-> +               SD_VDD3_OCP_INT_CLR | SD_VDD3_OC_CLR,
-> +               SD_VDD3_OCP_INT_CLR | SD_VDD3_OC_CLR);
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_CTL,
-> +               RTS5264_OVP_INT_CLR | RTS5264_OVP_CLR,
-> +               RTS5264_OVP_INT_CLR | RTS5264_OVP_CLR);
-> +
-> +       udelay(1000);
-> +
-> +       rtsx_pci_write_register(pcr, REG_OCPCTL, mask, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_OCP_VDD3_CTL,
-> +               SD_VDD3_OCP_INT_CLR | SD_VDD3_OC_CLR, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_OVP_CTL,
-> +               RTS5264_OVP_INT_CLR | RTS5264_OVP_CLR, 0);
-> +}
-> +
-> +static void rts5264_process_ocp(struct rtsx_pcr *pcr)
-> +{
-> +       if (!pcr->option.ocp_en)
-> +               return;
-> +
-> +       rtsx_pci_get_ocpstat(pcr, &pcr->ocp_stat);
-> +       rts5264_get_ocpstat2(pcr, &pcr->ocp_stat2);
-> +       rts5264_get_ovpstat(pcr, &pcr->ovp_stat);
-> +
-> +       if ((pcr->ocp_stat & (SD_OC_NOW | SD_OC_EVER | SDVIO_OC_NOW | SDVIO_OC_EVER)) ||
-> +                       (pcr->ocp_stat2 & (SD_VDD3_OC_NOW | SD_VDD3_OC_EVER)) ||
-> +                       (pcr->ovp_stat & (RTS5264_OVP_NOW | RTS5264_OVP_EVER))) {
-> +               rts5264_clear_ocpstat(pcr);
-> +               rts5264_card_power_off(pcr, RTSX_SD_CARD);
-> +               rtsx_pci_write_register(pcr, CARD_OE, SD_OUTPUT_EN, 0);
-> +               pcr->ocp_stat = 0;
-> +               pcr->ocp_stat2 = 0;
-> +               pcr->ovp_stat = 0;
-> +       }
-> +}
-> +
-> +static void rts5264_init_from_hw(struct rtsx_pcr *pcr)
-> +{
-> +       struct pci_dev *pdev = pcr->pci;
-> +       u32 lval1, lval2, i;
-> +       u16 setting_reg1, setting_reg2;
-> +       u8 valid, efuse_valid, tmp;
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +               REG_EFUSE_POR | REG_EFUSE_POWER_MASK,
-> +               REG_EFUSE_POR | REG_EFUSE_POWERON);
-> +       udelay(1);
-> +       rtsx_pci_write_register(pcr, RTS5264_EFUSE_ADDR,
-> +               RTS5264_EFUSE_ADDR_MASK, 0x00);
-> +       rtsx_pci_write_register(pcr, RTS5264_EFUSE_CTL,
-> +               RTS5264_EFUSE_ENABLE | RTS5264_EFUSE_MODE_MASK,
-> +               RTS5264_EFUSE_ENABLE);
-> +
-> +       /* Wait transfer end */
-> +       for (i = 0; i < MAX_RW_REG_CNT; i++) {
-> +               rtsx_pci_read_register(pcr, RTS5264_EFUSE_CTL, &tmp);
-> +               if ((tmp & 0x80) == 0)
-> +                       break;
-> +       }
-> +       rtsx_pci_read_register(pcr, RTS5264_EFUSE_READ_DATA, &tmp);
-> +       efuse_valid = ((tmp & 0x0C) >> 2);
-> +       pcr_dbg(pcr, "Load efuse valid: 0x%x\n", efuse_valid);
-> +
-> +       pci_read_config_dword(pdev, PCR_SETTING_REG2, &lval2);
-> +       pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, lval2);
-> +       /* 0x816 */
-> +       valid = (u8)((lval2 >> 16) & 0x03);
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +               REG_EFUSE_POR, 0);
-> +       pcr_dbg(pcr, "Disable efuse por!\n");
-> +
-> +       if (efuse_valid == 2 || efuse_valid == 3) {
-> +               if (valid == 3) {
-> +                       /* Bypass efuse */
-> +                       setting_reg1 = PCR_SETTING_REG1;
-> +                       setting_reg2 = PCR_SETTING_REG2;
-> +               } else {
-> +                       /* Use efuse data */
-> +                       setting_reg1 = PCR_SETTING_REG4;
-> +                       setting_reg2 = PCR_SETTING_REG5;
-> +               }
-> +       } else if (efuse_valid == 0) {
-> +               // default
-> +               setting_reg1 = PCR_SETTING_REG1;
-> +               setting_reg2 = PCR_SETTING_REG2;
-> +       } else {
-> +               return;
-> +       }
-> +
-> +       pci_read_config_dword(pdev, setting_reg2, &lval2);
-> +       pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", setting_reg2, lval2);
-> +
-> +       if (!rts5264_vendor_setting_valid(lval2)) {
-> +               pcr_dbg(pcr, "skip fetch vendor setting\n");
-> +               return;
-> +       }
-> +
-> +       pcr->rtd3_en = rts5264_reg_to_rtd3(lval2);
-> +
-> +       if (rts5264_reg_check_reverse_socket(lval2))
-> +               pcr->flags |= PCR_REVERSE_SOCKET;
-> +
-> +       pci_read_config_dword(pdev, setting_reg1, &lval1);
-> +       pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", setting_reg1, lval1);
-> +
-> +       pcr->aspm_en = rts5264_reg_to_aspm(lval1);
-> +       pcr->sd30_drive_sel_1v8 = rts5264_reg_to_sd30_drive_sel_1v8(lval1);
-> +       pcr->sd30_drive_sel_3v3 = rts5264_reg_to_sd30_drive_sel_3v3(lval1);
-> +
-> +       if (setting_reg1 == PCR_SETTING_REG1) {
-> +               /* store setting */
-> +               rtsx_pci_write_register(pcr, 0xFF0C, 0xFF, (u8)(lval1 & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF0D, 0xFF, (u8)((lval1 >> 8) & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF0E, 0xFF, (u8)((lval1 >> 16) & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF0F, 0xFF, (u8)((lval1 >> 24) & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF10, 0xFF, (u8)(lval2 & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF11, 0xFF, (u8)((lval2 >> 8) & 0xFF));
-> +               rtsx_pci_write_register(pcr, 0xFF12, 0xFF, (u8)((lval2 >> 16) & 0xFF));
-> +
-> +               pci_write_config_dword(pdev, PCR_SETTING_REG4, lval1);
-> +               lval2 = lval2 & 0x00FFFFFF;
-> +               pci_write_config_dword(pdev, PCR_SETTING_REG5, lval2);
-> +       }
-> +}
-> +
-> +static void rts5264_init_from_cfg(struct rtsx_pcr *pcr)
-> +{
-> +       struct rtsx_cr_option *option = &pcr->option;
-> +
-> +       if (rtsx_check_dev_flag(pcr, ASPM_L1_1_EN | ASPM_L1_2_EN
-> +                               | PM_L1_1_EN | PM_L1_2_EN))
-> +               rtsx_pci_disable_oobs_polling(pcr);
-> +       else
-> +               rtsx_pci_enable_oobs_polling(pcr);
-> +
-> +       rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0xFF, 0);
-> +
-> +       if (option->ltr_en) {
-> +               if (option->ltr_enabled)
-> +                       rtsx_set_ltr_latency(pcr, option->ltr_active_latency);
-> +       }
-> +}
-> +
-> +static int rts5264_extra_init_hw(struct rtsx_pcr *pcr)
-> +{
-> +       struct rtsx_cr_option *option = &pcr->option;
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG1,
-> +                       CD_RESUME_EN_MASK, CD_RESUME_EN_MASK);
-> +       rtsx_pci_write_register(pcr, REG_VREF, PWD_SUSPND_EN, PWD_SUSPND_EN);
-> +
-> +       rts5264_init_from_cfg(pcr);
-> +       rts5264_init_from_hw(pcr);
-> +
-> +       /* power off efuse */
-> +       rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +                       REG_EFUSE_POWER_MASK, REG_EFUSE_POWEROFF);
-> +       rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG2,
-> +                       RTS5264_CHIP_RST_N_SEL, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_REG_LDO12_CFG,
-> +                       RTS5264_LDO12_SR_MASK, RTS5264_LDO12_SR_0_0_MS);
-> +       rtsx_pci_write_register(pcr, CDGW, 0xFF, 0x01);
-> +       rtsx_pci_write_register(pcr, RTS5264_CKMUX_MBIAS_PWR,
-> +                       RTS5264_POW_CKMUX, RTS5264_POW_CKMUX);
-> +       rtsx_pci_write_register(pcr, RTS5264_CMD_OE_START_EARLY,
-> +                       RTS5264_CMD_OE_EARLY_EN | RTS5264_CMD_OE_EARLY_CYCLE_MASK,
-> +                       RTS5264_CMD_OE_EARLY_EN);
-> +       rtsx_pci_write_register(pcr, RTS5264_DAT_OE_START_EARLY,
-> +                       RTS5264_DAT_OE_EARLY_EN | RTS5264_DAT_OE_EARLY_CYCLE_MASK,
-> +                       RTS5264_DAT_OE_EARLY_EN);
-> +       rtsx_pci_write_register(pcr, SSC_DIV_N_0, 0xFF, 0x5D);
-> +
-> +       rtsx_pci_write_register(pcr, RTS5264_PWR_CUT,
-> +                       RTS5264_CFG_MEM_PD, RTS5264_CFG_MEM_PD);
-> +       rtsx_pci_write_register(pcr, L1SUB_CONFIG1,
-> +                       AUX_CLK_ACTIVE_SEL_MASK, MAC_CKSW_DONE);
-> +       rtsx_pci_write_register(pcr, L1SUB_CONFIG3, 0xFF, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG4,
-> +                       RTS5264_AUX_CLK_16M_EN, 0);
-> +
-> +       /* Release PRSNT# */
-> +       rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG4,
-> +                       RTS5264_FORCE_PRSNT_LOW, 0);
-> +       rtsx_pci_write_register(pcr, PCLK_CTL,
-> +                       PCLK_MODE_SEL, PCLK_MODE_SEL);
-> +
-> +       /* LED shine disabled, set initial shine cycle period */
-> +       rtsx_pci_write_register(pcr, OLT_LED_CTL, 0x0F, 0x02);
-> +
-> +       /* Configure driving */
-> +       rts5264_fill_driving(pcr, OUTPUT_3V3);
-> +
-> +       if (pcr->flags & PCR_REVERSE_SOCKET)
-> +               rtsx_pci_write_register(pcr, PETXCFG, 0x30, 0x30);
-> +       else
-> +               rtsx_pci_write_register(pcr, PETXCFG, 0x30, 0x00);
-> +
-> +       /*
-> +        * If u_force_clkreq_0 is enabled, CLKREQ# PIN will be forced
-> +        * to drive low, and we forcibly request clock.
-> +        */
-> +       if (option->force_clkreq_0)
-> +               rtsx_pci_write_register(pcr, PETXCFG,
-> +                                FORCE_CLKREQ_DELINK_MASK, FORCE_CLKREQ_LOW);
-> +       else
-> +               rtsx_pci_write_register(pcr, PETXCFG,
-> +                                FORCE_CLKREQ_DELINK_MASK, FORCE_CLKREQ_HIGH);
-> +
-> +       rtsx_pci_write_register(pcr, PWD_SUSPEND_EN, 0xFF, 0xFF);
-> +       rtsx_pci_write_register(pcr, RBCTL, U_AUTO_DMA_EN_MASK, 0);
-> +       rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG4,
-> +                       RTS5264_F_HIGH_RC_MASK, RTS5264_F_HIGH_RC_400K);
-> +
-> +       if (pcr->rtd3_en) {
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, 0x01, 0x00);
-> +               rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +                               FORCE_PM_CONTROL | FORCE_PM_VALUE, 0);
-> +       } else {
-> +               rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, 0x01, 0x00);
-> +               rtsx_pci_write_register(pcr, RTS5264_REG_PME_FORCE_CTL,
-> +                               FORCE_PM_CONTROL | FORCE_PM_VALUE, FORCE_PM_CONTROL);
-> +       }
-> +       rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, D3_DELINK_MODE_EN, 0x00);
-> +
-> +       /* Clear Enter RTD3_cold Information*/
-> +       rtsx_pci_write_register(pcr, RTS5264_FW_CTL,
-> +               RTS5264_INFORM_RTD3_COLD, 0);
-> +
-> +       return 0;
-> +}
-> +
-> +static void rts5264_enable_aspm(struct rtsx_pcr *pcr, bool enable)
-> +{
-> +       u8 val = FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +       u8 mask = FORCE_ASPM_VAL_MASK | FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +
-> +       if (pcr->aspm_enabled == enable)
-> +               return;
-> +
-> +       val |= (pcr->aspm_en & 0x02);
-> +       rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, mask, val);
-> +       pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
-> +                                          PCI_EXP_LNKCTL_ASPMC, pcr->aspm_en);
-> +       pcr->aspm_enabled = enable;
-> +}
-> +
-> +static void rts5264_disable_aspm(struct rtsx_pcr *pcr, bool enable)
-> +{
-> +       u8 val = FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +       u8 mask = FORCE_ASPM_VAL_MASK | FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1;
-> +
-> +       if (pcr->aspm_enabled == enable)
-> +               return;
-> +
-> +       pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
-> +                                          PCI_EXP_LNKCTL_ASPMC, 0);
-> +       rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, mask, val);
-> +       rtsx_pci_write_register(pcr, SD_CFG1, SD_ASYNC_FIFO_NOT_RST, 0);
-> +       udelay(10);
-> +       pcr->aspm_enabled = enable;
-> +}
-> +
-> +static void rts5264_set_aspm(struct rtsx_pcr *pcr, bool enable)
-> +{
-> +       if (enable)
-> +               rts5264_enable_aspm(pcr, true);
-> +       else
-> +               rts5264_disable_aspm(pcr, false);
-> +}
-> +
-> +static void rts5264_set_l1off_cfg_sub_d0(struct rtsx_pcr *pcr, int active)
-> +{
-> +       struct rtsx_cr_option *option = &(pcr->option);
-> +
-> +       u32 interrupt = rtsx_pci_readl(pcr, RTSX_BIPR);
-> +       int card_exist = (interrupt & SD_EXIST);
-> +       int aspm_L1_1, aspm_L1_2;
-> +       u8 val = 0;
-> +
-> +       aspm_L1_1 = rtsx_check_dev_flag(pcr, ASPM_L1_1_EN);
-> +       aspm_L1_2 = rtsx_check_dev_flag(pcr, ASPM_L1_2_EN);
-> +
-> +       if (active) {
-> +               /* Run, latency: 60us */
-> +               if (aspm_L1_1)
-> +                       val = option->ltr_l1off_snooze_sspwrgate;
-> +       } else {
-> +               /* L1off, latency: 300us */
-> +               if (aspm_L1_2)
-> +                       val = option->ltr_l1off_sspwrgate;
-> +       }
-> +
-> +       if (aspm_L1_1 || aspm_L1_2) {
-> +               if (rtsx_check_dev_flag(pcr,
-> +                                       LTR_L1SS_PWR_GATE_CHECK_CARD_EN)) {
-> +                       if (card_exist)
-> +                               val &= ~L1OFF_MBIAS2_EN_5250;
-> +                       else
-> +                               val |= L1OFF_MBIAS2_EN_5250;
-> +               }
-> +       }
-> +       rtsx_set_l1off_sub(pcr, val);
-> +}
-> +
-> +static const struct pcr_ops rts5264_pcr_ops = {
-> +       .turn_on_led = rts5264_turn_on_led,
-> +       .turn_off_led = rts5264_turn_off_led,
-> +       .extra_init_hw = rts5264_extra_init_hw,
-> +       .enable_auto_blink = rts5264_enable_auto_blink,
-> +       .disable_auto_blink = rts5264_disable_auto_blink,
-> +       .card_power_on = rts5264_card_power_on,
-> +       .card_power_off = rts5264_card_power_off,
-> +       .switch_output_voltage = rts5264_switch_output_voltage,
-> +       .force_power_down = rts5264_force_power_down,
-> +       .stop_cmd = rts5264_stop_cmd,
-> +       .set_aspm = rts5264_set_aspm,
-> +       .set_l1off_cfg_sub_d0 = rts5264_set_l1off_cfg_sub_d0,
-> +       .enable_ocp = rts5264_enable_ocp,
-> +       .disable_ocp = rts5264_disable_ocp,
-> +       .init_ocp = rts5264_init_ocp,
-> +       .process_ocp = rts5264_process_ocp,
-> +       .clear_ocpstat = rts5264_clear_ocpstat,
-> +};
-> +
-> +static inline u8 double_ssc_depth(u8 depth)
-> +{
-> +       return ((depth > 1) ? (depth - 1) : depth);
-> +}
-> +
-> +int rts5264_pci_switch_clock(struct rtsx_pcr *pcr, unsigned int card_clock,
-> +               u8 ssc_depth, bool initial_mode, bool double_clk, bool vpclk)
-> +{
-> +       int err, clk;
-> +       u16 n;
-> +       u8 clk_divider, mcu_cnt, div;
-> +       static const u8 depth[] = {
-> +               [RTSX_SSC_DEPTH_4M] = RTS5264_SSC_DEPTH_4M,
-> +               [RTSX_SSC_DEPTH_2M] = RTS5264_SSC_DEPTH_2M,
-> +               [RTSX_SSC_DEPTH_1M] = RTS5264_SSC_DEPTH_1M,
-> +               [RTSX_SSC_DEPTH_500K] = RTS5264_SSC_DEPTH_512K,
-> +       };
-> +
-> +       if (initial_mode) {
-> +               /* We use 250k(around) here, in initial stage */
-> +               clk_divider = SD_CLK_DIVIDE_128;
-> +               card_clock = 30000000;
-> +       } else {
-> +               clk_divider = SD_CLK_DIVIDE_0;
-> +       }
-> +       err = rtsx_pci_write_register(pcr, SD_CFG1,
-> +                       SD_CLK_DIVIDE_MASK, clk_divider);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       card_clock /= 1000000;
-> +       pcr_dbg(pcr, "Switch card clock to %dMHz\n", card_clock);
-> +
-> +       clk = card_clock;
-> +       if (!initial_mode && double_clk)
-> +               clk = card_clock * 2;
-> +       pcr_dbg(pcr, "Internal SSC clock: %dMHz (cur_clock = %d)\n",
-> +               clk, pcr->cur_clock);
-> +
-> +       if (clk == pcr->cur_clock)
-> +               return 0;
-> +
-> +       if (pcr->ops->conv_clk_and_div_n)
-> +               n = pcr->ops->conv_clk_and_div_n(clk, CLK_TO_DIV_N);
-> +       else
-> +               n = clk - 4;
-> +       if ((clk <= 4) || (n > 396))
-> +               return -EINVAL;
-> +
-> +       mcu_cnt = 125/clk + 3;
-> +       if (mcu_cnt > 15)
-> +               mcu_cnt = 15;
-> +
-> +       div = CLK_DIV_1;
-> +       while ((n < MIN_DIV_N_PCR - 4) && (div < CLK_DIV_8)) {
-> +               if (pcr->ops->conv_clk_and_div_n) {
-> +                       int dbl_clk = pcr->ops->conv_clk_and_div_n(n,
-> +                                       DIV_N_TO_CLK) * 2;
-> +                       n = pcr->ops->conv_clk_and_div_n(dbl_clk,
-> +                                       CLK_TO_DIV_N);
-> +               } else {
-> +                       n = (n + 4) * 2 - 4;
-> +               }
-> +               div++;
-> +       }
-> +
-> +       n = (n / 2) - 1;
-> +       pcr_dbg(pcr, "n = %d, div = %d\n", n, div);
-> +
-> +       ssc_depth = depth[ssc_depth];
-> +       if (double_clk)
-> +               ssc_depth = double_ssc_depth(ssc_depth);
-> +
-> +       if (ssc_depth) {
-> +               if (div == CLK_DIV_2) {
-> +                       if (ssc_depth > 1)
-> +                               ssc_depth -= 1;
-> +                       else
-> +                               ssc_depth = RTS5264_SSC_DEPTH_8M;
-> +               } else if (div == CLK_DIV_4) {
-> +                       if (ssc_depth > 2)
-> +                               ssc_depth -= 2;
-> +                       else
-> +                               ssc_depth = RTS5264_SSC_DEPTH_8M;
-> +               } else if (div == CLK_DIV_8) {
-> +                       if (ssc_depth > 3)
-> +                               ssc_depth -= 3;
-> +                       else
-> +                               ssc_depth = RTS5264_SSC_DEPTH_8M;
-> +               }
-> +       } else {
-> +               ssc_depth = 0;
-> +       }
-> +       pcr_dbg(pcr, "ssc_depth = %d\n", ssc_depth);
-> +
-> +       rtsx_pci_init_cmd(pcr);
-> +       rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CLK_CTL,
-> +                               CHANGE_CLK, CHANGE_CLK);
-> +       rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CLK_DIV,
-> +                       0xFF, (div << 4) | mcu_cnt);
-> +       rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL1, SSC_RSTB, 0);
-> +       rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2,
-> +                       SSC_DEPTH_MASK, ssc_depth);
-> +       rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_DIV_N_0, 0xFF, n);
-> +
-> +       if (is_version(pcr, 0x5264, IC_VER_A)) {
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL1, SSC_RSTB, 0);
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, RTS5264_CARD_CLK_SRC2,
-> +                       RTS5264_REG_BIG_KVCO_A, 0);
-> +       } else {
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL1, SSC_RSTB, SSC_RSTB);
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, RTS5264_SYS_DUMMY_1,
-> +                       RTS5264_REG_BIG_KVCO, 0);
-> +       }
-> +
-> +       if (vpclk) {
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SD_VPCLK0_CTL,
-> +                               PHASE_NOT_RESET, 0);
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SD_VPCLK1_CTL,
-> +                               PHASE_NOT_RESET, 0);
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SD_VPCLK0_CTL,
-> +                               PHASE_NOT_RESET, PHASE_NOT_RESET);
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SD_VPCLK1_CTL,
-> +                               PHASE_NOT_RESET, PHASE_NOT_RESET);
-> +       }
-> +
-> +       err = rtsx_pci_send_cmd(pcr, 2000);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Wait SSC clock stable */
-> +       udelay(SSC_CLOCK_STABLE_WAIT);
-> +       err = rtsx_pci_write_register(pcr, CLK_CTL, CHANGE_CLK, 0);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       pcr->cur_clock = clk;
-> +       return 0;
-> +}
-> +
-> +void rts5264_init_params(struct rtsx_pcr *pcr)
-> +{
-> +       struct rtsx_cr_option *option = &pcr->option;
-> +       struct rtsx_hw_param *hw_param = &pcr->hw_param;
-> +       u8 val;
-> +
-> +       pcr->extra_caps = EXTRA_CAPS_SD_SDR50 | EXTRA_CAPS_SD_SDR104;
-> +       pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
-> +       rtsx_pci_read_register(pcr, RTS5264_FW_STATUS, &val);
-> +       if (!(val & RTS5264_EXPRESS_LINK_FAIL_MASK))
-> +               pcr->extra_caps |= EXTRA_CAPS_SD_EXPRESS;
-> +       pcr->num_slots = 1;
-> +       pcr->ops = &rts5264_pcr_ops;
-> +
-> +       pcr->flags = 0;
-> +       pcr->card_drive_sel = RTSX_CARD_DRIVE_DEFAULT;
-> +       pcr->sd30_drive_sel_1v8 = 0x00;
-> +       pcr->sd30_drive_sel_3v3 = 0x00;
-> +       pcr->aspm_en = ASPM_L1_EN;
-> +       pcr->aspm_mode = ASPM_MODE_REG;
-> +       pcr->tx_initial_phase = SET_CLOCK_PHASE(24, 24, 11);
-> +       pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
-> +
-> +       pcr->ic_version = rts5264_get_ic_version(pcr);
-> +       pcr->sd_pull_ctl_enable_tbl = rts5264_sd_pull_ctl_enable_tbl;
-> +       pcr->sd_pull_ctl_disable_tbl = rts5264_sd_pull_ctl_disable_tbl;
-> +
-> +       pcr->reg_pm_ctrl3 = RTS5264_AUTOLOAD_CFG3;
-> +
-> +       option->dev_flags = (LTR_L1SS_PWR_GATE_CHECK_CARD_EN
-> +                               | LTR_L1SS_PWR_GATE_EN);
-> +       option->ltr_en = true;
-> +
-> +       /* init latency of active, idle, L1OFF to 60us, 300us, 3ms */
-> +       option->ltr_active_latency = LTR_ACTIVE_LATENCY_DEF;
-> +       option->ltr_idle_latency = LTR_IDLE_LATENCY_DEF;
-> +       option->ltr_l1off_latency = LTR_L1OFF_LATENCY_DEF;
-> +       option->l1_snooze_delay = L1_SNOOZE_DELAY_DEF;
-> +       option->ltr_l1off_sspwrgate = 0x7F;
-> +       option->ltr_l1off_snooze_sspwrgate = 0x78;
-> +
-> +       option->ocp_en = 1;
-> +       hw_param->interrupt_en |= (SD_OC_INT_EN | SD_OVP_INT_EN);
-> +       hw_param->ocp_glitch =  SD_OCP_GLITCH_800U | SDVIO_OCP_GLITCH_800U;
-> +       option->sd_800mA_ocp_thd =  RTS5264_LDO1_OCP_THD_1150;
-> +}
-> diff --git a/drivers/misc/cardreader/rts5264.h b/drivers/misc/cardreader/rts5264.h
-> new file mode 100644
-> index 000000000000..e3cbbf2fe1a4
-> --- /dev/null
-> +++ b/drivers/misc/cardreader/rts5264.h
-> @@ -0,0 +1,278 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Driver for Realtek PCI-Express card reader
-> + *
-> + * Copyright(c) 2018-2019 Realtek Semiconductor Corp. All rights reserved.
-> + *
-> + * Author:
-> + *   Ricky Wu <ricky_wu@realtek.com>
-> + */
-> +#ifndef RTS5264_H
-> +#define RTS5264_H
-> +
-> +/*New add*/
-> +#define rts5264_vendor_setting_valid(reg)      ((reg) & 0x010000)
-> +#define rts5264_reg_to_aspm(reg) \
-> +       (((~(reg) >> 28) & 0x02) | (((reg) >> 28) & 0x01))
-> +#define rts5264_reg_check_reverse_socket(reg)  ((reg) & 0x04)
-> +#define rts5264_reg_to_sd30_drive_sel_1v8(reg) (((reg) >> 22) & 0x03)
-> +#define rts5264_reg_to_sd30_drive_sel_3v3(reg) (((reg) >> 16) & 0x03)
-> +#define rts5264_reg_to_rtd3(reg)               ((reg) & 0x08)
-> +
-> +#define RTS5264_AUTOLOAD_CFG0          0xFF7B
-> +#define RTS5264_AUTOLOAD_CFG1          0xFF7C
-> +#define RTS5264_AUTOLOAD_CFG3          0xFF7E
-> +#define RTS5264_AUTOLOAD_CFG4          0xFF7F
-> +#define RTS5264_FORCE_PRSNT_LOW                (1 << 6)
-> +#define RTS5264_AUX_CLK_16M_EN         (1 << 5)
-> +#define RTS5264_F_HIGH_RC_MASK         (1 << 4)
-> +#define RTS5264_F_HIGH_RC_1_6M         (1 << 4)
-> +#define RTS5264_F_HIGH_RC_400K         (0 << 4)
-> +
-> +/* SSC_CTL2 0xFC12 */
-> +#define RTS5264_SSC_DEPTH_MASK         0x07
-> +#define RTS5264_SSC_DEPTH_DISALBE      0x00
-> +#define RTS5264_SSC_DEPTH_8M           0x01
-> +#define RTS5264_SSC_DEPTH_4M           0x02
-> +#define RTS5264_SSC_DEPTH_2M           0x03
-> +#define RTS5264_SSC_DEPTH_1M           0x04
-> +#define RTS5264_SSC_DEPTH_512K         0x05
-> +#define RTS5264_SSC_DEPTH_256K         0x06
-> +#define RTS5264_SSC_DEPTH_128K         0x07
-> +
-> +#define RTS5264_CARD_CLK_SRC2          0xFC2F
-> +#define RTS5264_REG_BIG_KVCO_A         0x20
-> +
-> +/* efuse control register*/
-> +#define RTS5264_EFUSE_CTL              0xFC30
-> +#define RTS5264_EFUSE_ENABLE           0x80
-> +/* EFUSE_MODE: 0=READ 1=PROGRAM */
-> +#define RTS5264_EFUSE_MODE_MASK                0x40
-> +#define RTS5264_EFUSE_PROGRAM          0x40
-> +
-> +#define RTS5264_EFUSE_ADDR             0xFC31
-> +#define        RTS5264_EFUSE_ADDR_MASK         0x3F
-> +
-> +#define RTS5264_EFUSE_WRITE_DATA       0xFC32
-> +#define RTS5264_EFUSE_READ_DATA                0xFC34
-> +
-> +#define RTS5264_SYS_DUMMY_1            0xFC35
-> +#define RTS5264_REG_BIG_KVCO           0x04
-> +
-> +/* DMACTL 0xFE2C */
-> +#define RTS5264_DMA_PACK_SIZE_MASK     0x70
-> +
-> +#define RTS5264_FW_CFG1                        0xFF55
-> +#define RTS5264_SYS_CLK_SEL_MCU_CLK    (0x01<<7)
-> +#define RTS5264_CRC_CLK_SEL_MCU_CLK    (0x01<<6)
-> +#define RTS5264_FAKE_MCU_CLOCK_GATING  (0x01<<5)
-> +#define RTS5264_MCU_BUS_SEL_MASK       (0x01<<4)
-> +
-> +/* FW status register */
-> +#define RTS5264_FW_STATUS              0xFF56
-> +#define RTS5264_EXPRESS_LINK_FAIL_MASK (0x01<<7)
-> +
-> +/* FW control register */
-> +#define RTS5264_FW_CTL                 0xFF5F
-> +#define RTS5264_INFORM_RTD3_COLD       (0x01<<5)
-> +
-> +#define RTS5264_REG_FPDCTL             0xFF60
-> +
-> +#define RTS5264_REG_LDO12_CFG          0xFF6E
-> +#define RTS5264_LDO12_SR_MASK          (0x03<<6)
-> +#define RTS5264_LDO12_SR_1_0_MS                (0x03<<6)
-> +#define RTS5264_LDO12_SR_0_5_MS                (0x02<<6)
-> +#define RTS5264_LDO12_SR_0_2_5_MS      (0x01<<6)
-> +#define RTS5264_LDO12_SR_0_0_MS                (0x00<<6)
-> +#define RTS5264_LDO12_VO_TUNE_MASK     (0x07<<1)
-> +#define RTS5264_LDO12_115              (0x03<<1)
-> +#define RTS5264_LDO12_120              (0x04<<1)
-> +#define RTS5264_LDO12_125              (0x05<<1)
-> +#define RTS5264_LDO12_130              (0x06<<1)
-> +#define RTS5264_LDO12_135              (0x07<<1)
-> +
-> +/* LDO control register */
-> +#define RTS5264_CARD_PWR_CTL           0xFD50
-> +#define RTS5264_SD_CLK_ISO             (0x01<<7)
-> +#define RTS5264_PAD_SD_DAT_FW_CTRL     (0x01<<6)
-> +#define RTS5264_PUPDC                  (0x01<<5)
-> +#define RTS5264_SD_CMD_ISO             (0x01<<4)
-> +
-> +#define RTS5264_OCP_VDD3_CTL           0xFD89
-> +#define SD_VDD3_DETECT_EN              0x08
-> +#define SD_VDD3_OCP_INT_EN             0x04
-> +#define SD_VDD3_OCP_INT_CLR            0x02
-> +#define SD_VDD3_OC_CLR                 0x01
-> +
-> +#define RTS5264_OCP_VDD3_STS           0xFD8A
-> +#define SD_VDD3_OCP_DETECT             0x08
-> +#define SD_VDD3_OC_NOW                 0x04
-> +#define SD_VDD3_OC_EVER                        0x02
-> +
-> +#define RTS5264_OVP_CTL                        0xFD8D
-> +#define RTS5264_OVP_TIME_MASK          0xF0
-> +#define RTS5264_OVP_TIME_DFT           0x50
-> +#define RTS5264_OVP_DETECT_EN          0x08
-> +#define RTS5264_OVP_INT_EN             0x04
-> +#define RTS5264_OVP_INT_CLR            0x02
-> +#define RTS5264_OVP_CLR                        0x01
-> +
-> +#define RTS5264_OVP_STS                        0xFD8E
-> +#define RTS5264_OVP_GLTCH_TIME_MASK    0xF0
-> +#define RTS5264_OVP_GLTCH_TIME_DFT     0x50
-> +#define RTS5264_VOVER_DET              0x08
-> +#define RTS5264_OVP_NOW                        0x04
-> +#define RTS5264_OVP_EVER               0x02
-> +
-> +#define RTS5264_CMD_OE_START_EARLY             0xFDCB
-> +#define RTS5264_CMD_OE_EARLY_LEAVE             0x08
-> +#define RTS5264_CMD_OE_EARLY_CYCLE_MASK                0x06
-> +#define RTS5264_CMD_OE_EARLY_4CYCLE            0x06
-> +#define RTS5264_CMD_OE_EARLY_3CYCLE            0x04
-> +#define RTS5264_CMD_OE_EARLY_2CYCLE            0x02
-> +#define RTS5264_CMD_OE_EARLY_1CYCLE            0x00
-> +#define RTS5264_CMD_OE_EARLY_EN                        0x01
-> +
-> +#define RTS5264_DAT_OE_START_EARLY             0xFDCC
-> +#define RTS5264_DAT_OE_EARLY_LEAVE             0x08
-> +#define RTS5264_DAT_OE_EARLY_CYCLE_MASK                0x06
-> +#define RTS5264_DAT_OE_EARLY_4CYCLE            0x06
-> +#define RTS5264_DAT_OE_EARLY_3CYCLE            0x04
-> +#define RTS5264_DAT_OE_EARLY_2CYCLE            0x02
-> +#define RTS5264_DAT_OE_EARLY_1CYCLE            0x00
-> +#define RTS5264_DAT_OE_EARLY_EN                        0x01
-> +
-> +#define RTS5264_LDO1233318_POW_CTL     0xFF70
-> +#define RTS5264_TUNE_REF_LDO3318       (0x03<<6)
-> +#define RTS5264_TUNE_REF_LDO3318_DFT   (0x02<<6)
-> +#define RTS5264_LDO3318_POWERON                (0x01<<3)
-> +#define RTS5264_LDO3_POWERON           (0x01<<2)
-> +#define RTS5264_LDO2_POWERON           (0x01<<1)
-> +#define RTS5264_LDO1_POWERON           (0x01<<0)
-> +#define RTS5264_LDO_POWERON_MASK       (0x0F<<0)
-> +
-> +#define RTS5264_DV3318_CFG             0xFF71
-> +#define RTS5264_DV3318_TUNE_MASK       (0x07<<4)
-> +#define RTS5264_DV3318_18              (0x02<<4)
-> +#define RTS5264_DV3318_19              (0x04<<4)
-> +#define RTS5264_DV3318_33              (0x07<<4)
-> +
-> +#define RTS5264_LDO1_CFG0              0xFF72
-> +#define RTS5264_LDO1_OCP_THD_MASK      (0x07 << 5)
-> +#define RTS5264_LDO1_OCP_EN            (0x01 << 4)
-> +#define RTS5264_LDO1_OCP_LMT_THD_MASK  (0x03 << 2)
-> +#define RTS5264_LDO1_OCP_LMT_EN                (0x01 << 1)
-> +
-> +#define RTS5264_LDO1_OCP_THD_850       (0x00<<5)
-> +#define RTS5264_LDO1_OCP_THD_950       (0x01<<5)
-> +#define RTS5264_LDO1_OCP_THD_1050      (0x02<<5)
-> +#define RTS5264_LDO1_OCP_THD_1100      (0x03<<5)
-> +#define RTS5264_LDO1_OCP_THD_1150      (0x04<<5)
-> +#define RTS5264_LDO1_OCP_THD_1200      (0x05<<5)
-> +#define RTS5264_LDO1_OCP_THD_1300      (0x06<<5)
-> +#define RTS5264_LDO1_OCP_THD_1350      (0x07<<5)
-> +
-> +#define RTS5264_LDO1_LMT_THD_1700      (0x00<<2)
-> +#define RTS5264_LDO1_LMT_THD_1800      (0x01<<2)
-> +#define RTS5264_LDO1_LMT_THD_1900      (0x02<<2)
-> +#define RTS5264_LDO1_LMT_THD_2000      (0x03<<2)
-> +
-> +#define RTS5264_LDO1_CFG1              0xFF73
-> +#define RTS5264_LDO1_TUNE_MASK         (0x07<<1)
-> +#define RTS5264_LDO1_18                        (0x05<<1)
-> +#define RTS5264_LDO1_33                        (0x07<<1)
-> +#define RTS5264_LDO1_PWD_MASK          (0x01<<0)
-> +
-> +#define RTS5264_LDO2_CFG0              0xFF74
-> +#define RTS5264_LDO2_OCP_THD_MASK      (0x07<<5)
-> +#define RTS5264_LDO2_OCP_EN            (0x01<<4)
-> +#define RTS5264_LDO2_OCP_LMT_THD_MASK  (0x03<<2)
-> +#define RTS5264_LDO2_OCP_LMT_EN                (0x01<<1)
-> +
-> +#define RTS5264_LDO2_OCP_THD_750       (0x00<<5)
-> +#define RTS5264_LDO2_OCP_THD_850       (0x01<<5)
-> +#define RTS5264_LDO2_OCP_THD_900       (0x02<<5)
-> +#define RTS5264_LDO2_OCP_THD_950       (0x03<<5)
-> +#define RTS5264_LDO2_OCP_THD_1050      (0x04<<5)
-> +#define RTS5264_LDO2_OCP_THD_1100      (0x05<<5)
-> +#define RTS5264_LDO2_OCP_THD_1150      (0x06<<5)
-> +#define RTS5264_LDO2_OCP_THD_1200      (0x07<<5)
-> +
-> +#define RTS5264_LDO2_LMT_THD_1700      (0x00<<2)
-> +#define RTS5264_LDO2_LMT_THD_1800      (0x01<<2)
-> +#define RTS5264_LDO2_LMT_THD_1900      (0x02<<2)
-> +#define RTS5264_LDO2_LMT_THD_2000      (0x03<<2)
-> +
-> +#define RTS5264_LDO2_CFG1              0xFF75
-> +#define RTS5264_LDO2_TUNE_MASK         (0x07<<1)
-> +#define RTS5264_LDO2_18                        (0x02<<1)
-> +#define RTS5264_LDO2_185               (0x03<<1)
-> +#define RTS5264_LDO2_19                        (0x04<<1)
-> +#define RTS5264_LDO2_195               (0x05<<1)
-> +#define RTS5264_LDO2_33                        (0x07<<1)
-> +#define RTS5264_LDO2_PWD_MASK          (0x01<<0)
-> +
-> +#define RTS5264_LDO3_CFG0              0xFF76
-> +#define RTS5264_LDO3_OCP_THD_MASK      (0x07<<5)
-> +#define RTS5264_LDO3_OCP_EN            (0x01<<4)
-> +#define RTS5264_LDO3_OCP_LMT_THD_MASK  (0x03<<2)
-> +#define RTS5264_LDO3_OCP_LMT_EN                (0x01<<1)
-> +
-> +#define RTS5264_LDO3_OCP_THD_610       (0x00<<5)
-> +#define RTS5264_LDO3_OCP_THD_630       (0x01<<5)
-> +#define RTS5264_LDO3_OCP_THD_670       (0x02<<5)
-> +#define RTS5264_LDO3_OCP_THD_710       (0x03<<5)
-> +#define RTS5264_LDO3_OCP_THD_750       (0x04<<5)
-> +#define RTS5264_LDO3_OCP_THD_770       (0x05<<5)
-> +#define RTS5264_LDO3_OCP_THD_810       (0x06<<5)
-> +#define RTS5264_LDO3_OCP_THD_850       (0x07<<5)
-> +
-> +#define RTS5264_LDO3_LMT_THD_1200      (0x00<<2)
-> +#define RTS5264_LDO3_LMT_THD_1300      (0x01<<2)
-> +#define RTS5264_LDO3_LMT_THD_1400      (0x02<<2)
-> +#define RTS5264_LDO3_LMT_THD_1500      (0x03<<2)
-> +
-> +#define RTS5264_LDO3_CFG1              0xFF77
-> +#define RTS5264_LDO3_TUNE_MASK         (0x07<<1)
-> +#define RTS5264_LDO3_12                        (0x02<<1)
-> +#define RTS5264_LDO3_125               (0x03<<1)
-> +#define RTS5264_LDO3_13                        (0x04<<1)
-> +#define RTS5264_LDO3_135               (0x05<<1)
-> +#define RTS5264_LDO3_33                        (0x07<<1)
-> +#define RTS5264_LDO3_PWD_MASK          (0x01<<0)
-> +
-> +#define RTS5264_REG_PME_FORCE_CTL      0xFF78
-> +#define FORCE_PM_CONTROL               0x20
-> +#define FORCE_PM_VALUE                 0x10
-> +#define REG_EFUSE_BYPASS               0x08
-> +#define REG_EFUSE_POR                  0x04
-> +#define REG_EFUSE_POWER_MASK           0x03
-> +#define REG_EFUSE_POWERON              0x03
-> +#define REG_EFUSE_POWEROFF             0x00
-> +
-> +#define RTS5264_PWR_CUT                        0xFF81
-> +#define RTS5264_CFG_MEM_PD             0xF0
-> +
-> +#define RTS5264_OVP_DET                        0xFF8A
-> +#define RTS5264_POW_VDET               0x04
-> +#define RTS5264_TUNE_VROV_MASK         0x03
-> +#define RTS5264_TUNE_VROV_2V           0x03
-> +#define RTS5264_TUNE_VROV_1V8          0x02
-> +#define RTS5264_TUNE_VROV_1V6          0x01
-> +#define RTS5264_TUNE_VROV_1V4          0x00
-> +
-> +#define RTS5264_CKMUX_MBIAS_PWR                0xFF8B
-> +#define RTS5264_NON_XTAL_SEL           0x80
-> +#define RTS5264_POW_CKMUX              0x40
-> +#define RTS5264_LVD_MASK               0x04
-> +#define RTS5264_POW_PSW_MASK           0x03
-> +#define RTS5264_POW_PSW_DFT            0x03
-> +
-> +/* Single LUN, support SD/SD EXPRESS */
-> +#define DEFAULT_SINGLE         0
-> +#define SD_LUN                 1
-> +#define SD_EXPRESS_LUN         2
-> +
-> +int rts5264_pci_switch_clock(struct rtsx_pcr *pcr, unsigned int card_clock,
-> +               u8 ssc_depth, bool initial_mode, bool double_clk, bool vpclk);
-> +
-> +#endif /* RTS5264_H */
-> diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-> index a30751ad3733..1a64364700eb 100644
-> --- a/drivers/misc/cardreader/rtsx_pcr.c
-> +++ b/drivers/misc/cardreader/rtsx_pcr.c
-> @@ -26,6 +26,7 @@
->  #include "rtsx_pcr.h"
->  #include "rts5261.h"
->  #include "rts5228.h"
-> +#include "rts5264.h"
->
->  static bool msi_en = true;
->  module_param(msi_en, bool, S_IRUGO | S_IWUSR);
-> @@ -54,6 +55,7 @@ static const struct pci_device_id rtsx_pci_ids[] = {
->         { PCI_DEVICE(0x10EC, 0x5260), PCI_CLASS_OTHERS << 16, 0xFF0000 },
->         { PCI_DEVICE(0x10EC, 0x5261), PCI_CLASS_OTHERS << 16, 0xFF0000 },
->         { PCI_DEVICE(0x10EC, 0x5228), PCI_CLASS_OTHERS << 16, 0xFF0000 },
-> +       { PCI_DEVICE(0x10EC, 0x5264), PCI_CLASS_OTHERS << 16, 0xFF0000 },
->         { 0, }
->  };
->
-> @@ -714,6 +716,9 @@ int rtsx_pci_switch_clock(struct rtsx_pcr *pcr, unsigned int card_clock,
->         if (PCI_PID(pcr) == PID_5228)
->                 return rts5228_pci_switch_clock(pcr, card_clock,
->                                 ssc_depth, initial_mode, double_clk, vpclk);
-> +       if (PCI_PID(pcr) == PID_5264)
-> +               return rts5264_pci_switch_clock(pcr, card_clock,
-> +                               ssc_depth, initial_mode, double_clk, vpclk);
->
->         if (initial_mode) {
->                 /* We use 250k(around) here, in initial stage */
-> @@ -987,7 +992,8 @@ static irqreturn_t rtsx_pci_isr(int irq, void *dev_id)
->
->         int_reg &= (pcr->bier | 0x7FFFFF);
->
-> -       if (int_reg & SD_OC_INT)
-> +       if ((int_reg & SD_OC_INT) ||
-> +                       ((int_reg & SD_OVP_INT) && (PCI_PID(pcr) == PID_5264)))
->                 rtsx_pci_process_ocp_interrupt(pcr);
->
->         if (int_reg & SD_INT) {
-> @@ -1159,7 +1165,9 @@ void rtsx_pci_enable_oobs_polling(struct rtsx_pcr *pcr)
->  {
->         u16 val;
->
-> -       if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
-> +       if ((PCI_PID(pcr) != PID_525A) &&
-> +               (PCI_PID(pcr) != PID_5260) &&
-> +               (PCI_PID(pcr) != PID_5264)) {
->                 rtsx_pci_read_phy_register(pcr, 0x01, &val);
->                 val |= 1<<9;
->                 rtsx_pci_write_phy_register(pcr, 0x01, val);
-> @@ -1175,7 +1183,9 @@ void rtsx_pci_disable_oobs_polling(struct rtsx_pcr *pcr)
->  {
->         u16 val;
->
-> -       if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
-> +       if ((PCI_PID(pcr) != PID_525A) &&
-> +               (PCI_PID(pcr) != PID_5260) &&
-> +               (PCI_PID(pcr) != PID_5264)) {
->                 rtsx_pci_read_phy_register(pcr, 0x01, &val);
->                 val &= ~(1<<9);
->                 rtsx_pci_write_phy_register(pcr, 0x01, val);
-> @@ -1226,7 +1236,7 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
->         rtsx_pci_enable_bus_int(pcr);
->
->         /* Power on SSC */
-> -       if (PCI_PID(pcr) == PID_5261) {
-> +       if ((PCI_PID(pcr) == PID_5261) || (PCI_PID(pcr) == PID_5264)) {
->                 /* Gating real mcu clock */
->                 err = rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
->                         RTS5261_MCU_CLOCK_GATING, 0);
-> @@ -1270,6 +1280,11 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
->         else if (PCI_PID(pcr) == PID_5228)
->                 rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF,
->                         RTS5228_SSC_DEPTH_2M);
-> +       else if (is_version(pcr, 0x5264, IC_VER_A))
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL1, SSC_RSTB, 0);
-> +       else if (PCI_PID(pcr) == PID_5264)
-> +               rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF,
-> +                       RTS5264_SSC_DEPTH_2M);
->         else
->                 rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF, 0x12);
->
-> @@ -1305,6 +1320,7 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
->         case PID_5260:
->         case PID_5261:
->         case PID_5228:
-> +       case PID_5264:
->                 rtsx_pci_write_register(pcr, PM_CLK_FORCE_CTL, 1, 1);
->                 break;
->         default:
-> @@ -1404,6 +1420,10 @@ static int rtsx_pci_init_chip(struct rtsx_pcr *pcr)
->         case 0x5228:
->                 rts5228_init_params(pcr);
->                 break;
-> +
-> +       case 0x5264:
-> +               rts5264_init_params(pcr);
-> +               break;
->         }
->
->         pcr_dbg(pcr, "PID: 0x%04x, IC version: 0x%02x\n",
-> @@ -1544,7 +1564,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
->         pcr->pci = pcidev;
->         dev_set_drvdata(&pcidev->dev, handle);
->
-> -       if (CHK_PCI_PID(pcr, 0x525A))
-> +       if ((CHK_PCI_PID(pcr, 0x525A)) || (CHK_PCI_PID(pcr, 0x5264)))
->                 bar = 1;
->         len = pci_resource_len(pcidev, bar);
->         base = pci_resource_start(pcidev, bar);
-> diff --git a/drivers/misc/cardreader/rtsx_pcr.h b/drivers/misc/cardreader/rtsx_pcr.h
-> index 37d1f316ae17..9215d66de00c 100644
-> --- a/drivers/misc/cardreader/rtsx_pcr.h
-> +++ b/drivers/misc/cardreader/rtsx_pcr.h
-> @@ -74,6 +74,7 @@ void rtl8411b_init_params(struct rtsx_pcr *pcr);
->  void rts5260_init_params(struct rtsx_pcr *pcr);
->  void rts5261_init_params(struct rtsx_pcr *pcr);
->  void rts5228_init_params(struct rtsx_pcr *pcr);
-> +void rts5264_init_params(struct rtsx_pcr *pcr);
->
->  static inline u8 map_sd_drive(int idx)
->  {
-> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> index 87d78432a1e0..7dfe7c4e0077 100644
-> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> @@ -7,6 +7,7 @@
->   *   Wei WANG <wei_wang@realsil.com.cn>
->   */
->
-> +#include <linux/pci.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/highmem.h>
-> @@ -947,7 +948,7 @@ static int sd_power_on(struct realtek_pci_sdmmc *host, unsigned char power_mode)
->         /* send at least 74 clocks */
->         rtsx_pci_write_register(pcr, SD_BUS_STAT, SD_CLK_TOGGLE_EN, SD_CLK_TOGGLE_EN);
->
-> -       if (PCI_PID(pcr) == PID_5261) {
-> +       if ((PCI_PID(pcr) == PID_5261) || (PCI_PID(pcr) == PID_5264)) {
->                 /*
->                  * If test mode is set switch to SD Express mandatorily,
->                  * this is only for factory testing.
-> @@ -1364,6 +1365,14 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
->         struct realtek_pci_sdmmc *host = mmc_priv(mmc);
->         struct rtsx_pcr *pcr = host->pcr;
->
-> +       if (PCI_PID(pcr) == PID_5264) {
-> +               pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
-> +                               PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_2_5GT);
-> +               pci_write_config_byte(pcr->pci, 0x80e, 0x02);
-> +               pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
-> +                               PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_5_0GT);
-> +       }
-> +
->         /* Set relink_time for changing to PCIe card */
->         relink_time = 0x8FFF;
->
-> @@ -1379,6 +1388,12 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
->         if (pcr->ops->disable_auto_blink)
->                 pcr->ops->disable_auto_blink(pcr);
->
-> +       if (PCI_PID(pcr) == PID_5264) {
-> +               rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG2,
-> +                       RTS5264_CHIP_RST_N_SEL, RTS5264_CHIP_RST_N_SEL);
-> +               rtsx_pci_write_register(pcr, GPIO_CTL, 0x02, 0x00);
-> +       }
-> +
->         /* For PCIe/NVMe mode can't enter delink issue */
->         pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
->         rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
-> diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
-> index 534038d962e4..4612ef09a0c7 100644
-> --- a/include/linux/rtsx_pci.h
-> +++ b/include/linux/rtsx_pci.h
-> @@ -60,6 +60,7 @@
->  #define   SD_EXIST                     (1 << 16)
->  #define   DELINK_INT                   GPIO0_INT
->  #define   MS_OC_INT                    (1 << 23)
-> +#define   SD_OVP_INT           (1 << 23)
->  #define   SD_OC_INT                    (1 << 22)
->
->  #define CARD_INT               (XD_INT | MS_INT | SD_INT)
-> @@ -80,6 +81,7 @@
->  #define   OC_INT_EN                    (1 << 23)
->  #define   DELINK_INT_EN                        GPIO0_INT_EN
->  #define   MS_OC_INT_EN                 (1 << 23)
-> +#define   SD_OVP_INT_EN                        (1 << 23)
->  #define   SD_OC_INT_EN                 (1 << 22)
->
->  #define RTSX_DUM_REG                   0x1C
-> @@ -583,6 +585,7 @@
->  #define   OBFF_DISABLE                 0x00
->
->  #define CDRESUMECTL                    0xFE52
-> +#define CDGW                           0xFE53
->  #define WAKE_SEL_CTL                   0xFE54
->  #define PCLK_CTL                       0xFE55
->  #define   PCLK_MODE_SEL                        0x20
-> @@ -764,6 +767,9 @@
->  #define   SD_VIO_LDO_1V8               0x40
->  #define   SD_VIO_LDO_3V3               0x70
->
-> +#define RTS5264_AUTOLOAD_CFG2          0xFF7D
-> +#define RTS5264_CHIP_RST_N_SEL         (1 << 6)
-> +
->  #define RTS5260_AUTOLOAD_CFG4          0xFF7F
->  #define   RTS5260_MIMO_DISABLE         0x8A
->  /*RTS5261*/
-> @@ -1261,6 +1267,7 @@ struct rtsx_pcr {
->         u8                              dma_error_count;
->         u8                      ocp_stat;
->         u8                      ocp_stat2;
-> +       u8                      ovp_stat;
->         u8                      rtd3_en;
->  };
->
-> @@ -1271,6 +1278,7 @@ struct rtsx_pcr {
->  #define PID_5260       0x5260
->  #define PID_5261       0x5261
->  #define PID_5228       0x5228
-> +#define PID_5264       0x5264
->
->  #define CHK_PCI_PID(pcr, pid)          ((pcr)->pci->device == (pid))
->  #define PCI_VID(pcr)                   ((pcr)->pci->vendor)
-> --
-> 2.25.1
+kernel test robot noticed a -32.0% improvement of autonuma-benchmark.numa01.seconds on:
+
+
+commit: f169c62ff7cd1acf8bac8ae17bfeafa307d9e6fa ("sched/numa: Complete scanning of inactive VMAs when there is no alternative")
+https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git sched/core
+
+testcase: autonuma-benchmark
+test machine: 96 threads 2 sockets Intel(R) Xeon(R) Platinum 8260L CPU @ 2.40GHz (Cascade Lake) with 128G memory
+parameters:
+
+	iterations: 4x
+	test: _HARD_BIND
+	cpufreq_governor: performance
+
+
+
+
+
+
+Details are as below:
+-------------------------------------------------------------------------------------------------->
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20231018/202310182223.6ef26fcb-oliver.sang@intel.com
+
+=========================================================================================
+compiler/cpufreq_governor/iterations/kconfig/rootfs/tbox_group/test/testcase:
+  gcc-12/performance/4x/x86_64-rhel-8.3/debian-11.1-x86_64-20220510.cgz/lkp-csl-2sp3/_HARD_BIND/autonuma-benchmark
+
+commit: 
+  b7a5b537c5 ("sched/numa: Complete scanning of partial VMAs regardless of PID activity")
+  f169c62ff7 ("sched/numa: Complete scanning of inactive VMAs when there is no alternative")
+
+b7a5b537c55c088d f169c62ff7cd1acf8bac8ae17bf 
+---------------- --------------------------- 
+         %stddev     %change         %stddev
+             \          |                \  
+      0.00 ± 58%   +3290.8%       0.06 ± 30%  vmstat.procs.b
+ 2.101e+10 ±  6%     -47.7%  1.099e+10 ±  5%  cpuidle..time
+  21679574 ±  6%     -47.8%   11321089 ±  5%  cpuidle..usage
+      2441           -25.2%       1826 ±  2%  uptime.boot
+     25666 ±  5%     -40.3%      15332 ±  3%  uptime.idle
+    208968 ±  8%     -11.6%     184676 ±  3%  meminfo.Active
+    208280 ±  8%     -11.7%     183990 ±  3%  meminfo.Active(anon)
+    221680 ±  8%     -11.7%     195741 ±  2%  meminfo.Shmem
+   3154708 ±  7%     -12.1%    2773727 ±  4%  numa-numastat.node0.local_node
+   3621021 ±  4%     -12.9%    3154008 ±  3%  numa-numastat.node0.numa_hit
+   3424075 ±  5%     -19.2%    2767342 ±  3%  numa-numastat.node1.local_node
+   3659250 ±  4%     -15.8%    3079449 ±  3%  numa-numastat.node1.numa_hit
+   3620012 ±  4%     -12.9%    3153670 ±  3%  numa-vmstat.node0.numa_hit
+   3153693 ±  7%     -12.1%    2773388 ±  4%  numa-vmstat.node0.numa_local
+   3657708 ±  4%     -15.8%    3078660 ±  3%  numa-vmstat.node1.numa_hit
+   3422533 ±  5%     -19.2%    2766552 ±  3%  numa-vmstat.node1.numa_local
+      0.03 ± 31%    +840.9%       0.29 ±179%  perf-sched.sch_delay.avg.ms.exit_to_user_mode_loop.exit_to_user_mode_prepare.syscall_exit_to_user_mode.do_syscall_64
+      2.34 ± 49%     -83.7%       0.38 ±194%  perf-sched.sch_delay.max.ms.__cond_resched.down_write_killable.setup_arg_pages.load_elf_binary.search_binary_handler
+    948.50 ± 16%     -30.3%     661.33 ± 20%  perf-sched.wait_and_delay.count.exit_to_user_mode_loop.exit_to_user_mode_prepare.syscall_exit_to_user_mode.do_syscall_64
+      1142 ±  9%     -24.3%     865.00 ±  9%  perf-sched.wait_and_delay.count.pipe_read.vfs_read.ksys_read.do_syscall_64
+      9.20 ±  6%      -2.8        6.43 ±  5%  mpstat.cpu.all.idle%
+      0.00 ± 14%      +0.0        0.03 ± 28%  mpstat.cpu.all.iowait%
+      2.25            -0.5        1.73        mpstat.cpu.all.irq%
+      0.08 ±  3%      -0.0        0.06 ±  2%  mpstat.cpu.all.soft%
+      2.18 ±  4%      +0.5        2.69 ±  2%  mpstat.cpu.all.sys%
+    474.78           -32.0%     322.76 ±  2%  autonuma-benchmark.numa01.seconds
+      2386           -25.7%       1774 ±  2%  autonuma-benchmark.time.elapsed_time
+      2386           -25.7%       1774 ±  2%  autonuma-benchmark.time.elapsed_time.max
+   1298583 ±  2%     -24.3%     983395 ±  3%  autonuma-benchmark.time.involuntary_context_switches
+   3120169            -6.0%    2932947        autonuma-benchmark.time.minor_page_faults
+      8443            +3.9%       8771        autonuma-benchmark.time.percent_of_cpu_this_job_got
+    197252           -23.2%     151486 ±  2%  autonuma-benchmark.time.user_time
+     26055           +45.4%      37896 ±  8%  autonuma-benchmark.time.voluntary_context_switches
+     42526 ±  9%     -15.6%      35892 ± 10%  turbostat.C1
+      0.03            +0.0        0.05 ± 20%  turbostat.C1E%
+  21430219 ±  6%     -48.2%   11099622 ±  5%  turbostat.C6
+      9.14 ±  6%      -2.7        6.40 ±  5%  turbostat.C6%
+      8.80 ±  6%     -31.1%       6.06 ±  5%  turbostat.CPU%c1
+  2.31e+08           -24.9%  1.735e+08 ±  2%  turbostat.IRQ
+     37846 ±  7%     -29.3%      26768 ±  9%  turbostat.POLL
+    283.70            +3.1%     292.44        turbostat.PkgWatt
+     63.32           +16.3%      73.65        turbostat.RAMWatt
+     52079 ±  8%     -11.6%      46034 ±  3%  proc-vmstat.nr_active_anon
+   1560738            -1.8%    1532470        proc-vmstat.nr_anon_pages
+      3000            -2.2%       2934        proc-vmstat.nr_anon_transparent_hugepages
+    754040            -0.9%     747564        proc-vmstat.nr_file_pages
+   1564055            -1.8%    1535343        proc-vmstat.nr_inactive_anon
+      3964            -1.4%       3911        proc-vmstat.nr_page_table_pages
+     55430 ±  8%     -11.7%      48954 ±  2%  proc-vmstat.nr_shmem
+     52079 ±  8%     -11.6%      46034 ±  3%  proc-vmstat.nr_zone_active_anon
+   1564055            -1.8%    1535343        proc-vmstat.nr_zone_inactive_anon
+     31021 ±  4%    +356.7%     141673 ±  3%  proc-vmstat.numa_hint_faults
+     26070 ± 14%    +232.5%      86687 ±  5%  proc-vmstat.numa_hint_faults_local
+   7281579           -14.4%    6235148        proc-vmstat.numa_hit
+      2255 ±  9%   +3726.0%      86295 ±  3%  proc-vmstat.numa_huge_pte_updates
+   6580091           -15.8%    5542759        proc-vmstat.numa_local
+    490705         +1551.4%    8103581 ±  3%  proc-vmstat.numa_pages_migrated
+   1256422 ±  9%   +3426.6%   44309531 ±  3%  proc-vmstat.numa_pte_updates
+   8560551           -16.7%    7127497        proc-vmstat.pgfault
+    490705         +1551.4%    8103581 ±  3%  proc-vmstat.pgmigrate_success
+    370032 ±  2%     -19.7%     296973 ±  2%  proc-vmstat.pgreuse
+    951.67         +1560.5%      15802 ±  3%  proc-vmstat.thp_migration_success
+  17842432           -25.5%   13288960 ±  2%  proc-vmstat.unevictable_pgs_scanned
+ 1.408e+08 ±  2%     -26.2%   1.04e+08 ±  2%  sched_debug.cfs_rq:/.avg_vruntime.avg
+ 1.476e+08 ±  2%     -27.3%  1.073e+08 ±  2%  sched_debug.cfs_rq:/.avg_vruntime.max
+ 1.252e+08           -24.9%   94038602 ±  3%  sched_debug.cfs_rq:/.avg_vruntime.min
+   4459866 ±  7%     -40.1%    2672703 ±  3%  sched_debug.cfs_rq:/.avg_vruntime.stddev
+      0.22 ±  4%     -10.8%       0.20 ±  3%  sched_debug.cfs_rq:/.h_nr_running.stddev
+ 1.408e+08 ±  2%     -26.2%   1.04e+08 ±  2%  sched_debug.cfs_rq:/.min_vruntime.avg
+ 1.476e+08 ±  2%     -27.3%  1.073e+08 ±  2%  sched_debug.cfs_rq:/.min_vruntime.max
+ 1.252e+08           -24.9%   94038602 ±  3%  sched_debug.cfs_rq:/.min_vruntime.min
+   4459866 ±  7%     -40.1%    2672703 ±  3%  sched_debug.cfs_rq:/.min_vruntime.stddev
+    131.57 ± 11%     -17.7%     108.34 ±  4%  sched_debug.cfs_rq:/.util_avg.stddev
+      6.43 ± 26%   +4528.1%     297.67 ±  3%  sched_debug.cfs_rq:/.util_est_enqueued.avg
+    289.38 ±  9%    +195.6%     855.43 ±  4%  sched_debug.cfs_rq:/.util_est_enqueued.max
+     37.21 ± 11%    +508.1%     226.25 ±  5%  sched_debug.cfs_rq:/.util_est_enqueued.stddev
+    827702 ±  3%     -12.7%     722480 ±  6%  sched_debug.cpu.avg_idle.min
+    306806 ±  5%     -18.8%     249093 ±  5%  sched_debug.cpu.avg_idle.stddev
+   1219552 ±  2%     -25.7%     906296 ±  2%  sched_debug.cpu.clock.avg
+   1219905 ±  2%     -25.7%     906607 ±  2%  sched_debug.cpu.clock.max
+   1219166 ±  2%     -25.7%     905967 ±  2%  sched_debug.cpu.clock.min
+    212.97 ±  6%     -13.3%     184.61 ± 11%  sched_debug.cpu.clock.stddev
+   1191500 ±  2%     -25.3%     890437 ±  2%  sched_debug.cpu.clock_task.avg
+   1199519 ±  2%     -25.6%     892331 ±  2%  sched_debug.cpu.clock_task.max
+   1176815 ±  2%     -25.1%     881433 ±  2%  sched_debug.cpu.clock_task.min
+      7162 ± 46%     -77.7%       1593 ± 19%  sched_debug.cpu.clock_task.stddev
+     28968 ±  4%     -16.3%      24235 ±  6%  sched_debug.cpu.curr->pid.avg
+     36717           -20.7%      29133 ±  2%  sched_debug.cpu.curr->pid.max
+      3810 ± 11%     -34.7%       2487 ± 11%  sched_debug.cpu.curr->pid.stddev
+   1074237           -17.0%     892137 ±  6%  sched_debug.cpu.max_idle_balance_cost.max
+    137289 ±  3%     -43.4%      77712 ± 11%  sched_debug.cpu.max_idle_balance_cost.stddev
+      0.00 ±  6%     -13.2%       0.00 ± 10%  sched_debug.cpu.next_balance.stddev
+      0.23 ±  3%     -10.5%       0.20 ±  4%  sched_debug.cpu.nr_running.stddev
+     22190 ±  2%     -23.8%      16898 ±  3%  sched_debug.cpu.nr_switches.avg
+      9201 ±  4%     -15.7%       7756 ±  6%  sched_debug.cpu.nr_switches.min
+     10098 ±  3%     -15.0%       8588 ±  7%  sched_debug.cpu.nr_switches.stddev
+      7.02 ± 10%     +43.9%      10.10 ± 12%  sched_debug.cpu.nr_uninterruptible.stddev
+   1219153 ±  2%     -25.7%     905956 ±  2%  sched_debug.cpu_clk
+   1218584 ±  2%     -25.7%     905387 ±  2%  sched_debug.ktime
+   1219711 ±  2%     -25.7%     906506 ±  2%  sched_debug.sched_clk
+     26.19           +28.8%      33.74        perf-stat.i.MPKI
+ 1.144e+08            +4.0%   1.19e+08        perf-stat.i.branch-instructions
+      1.46            -0.1        1.37        perf-stat.i.branch-miss-rate%
+     63.10            +3.1       66.21        perf-stat.i.cache-miss-rate%
+  14186186           +29.8%   18412463        perf-stat.i.cache-misses
+  22674336           +24.7%   28269331        perf-stat.i.cache-references
+    502.02            +2.0%     512.29        perf-stat.i.cpi
+ 2.643e+11            +3.9%  2.745e+11        perf-stat.i.cpu-cycles
+    126.73            +7.2%     135.83        perf-stat.i.cpu-migrations
+     21465           -23.4%      16442        perf-stat.i.cycles-between-cache-misses
+ 1.572e+08            +3.2%  1.623e+08        perf-stat.i.dTLB-loads
+      0.27            +0.0        0.29        perf-stat.i.dTLB-store-miss-rate%
+    223732            +9.2%     244255        perf-stat.i.dTLB-store-misses
+  88029014            +3.0%   90626204        perf-stat.i.dTLB-stores
+     80.17            +1.7       81.85        perf-stat.i.iTLB-load-miss-rate%
+    314646           -16.1%     263974 ±  5%  perf-stat.i.iTLB-loads
+ 5.846e+08            +3.7%  6.063e+08        perf-stat.i.instructions
+      1246 ±  2%     +13.7%       1416 ±  4%  perf-stat.i.instructions-per-iTLB-miss
+      2.75            +3.9%       2.86        perf-stat.i.metric.GHz
+      2.57            +9.1%       2.81        perf-stat.i.metric.M/sec
+      3527           +10.9%       3913        perf-stat.i.minor-faults
+    233066           +31.7%     306835        perf-stat.i.node-load-misses
+    238123           +13.9%     271245        perf-stat.i.node-loads
+   3112998           +44.6%    4502856 ±  2%  perf-stat.i.node-store-misses
+   9385414           +24.5%   11686725 ±  2%  perf-stat.i.node-stores
+      3527           +10.9%       3913        perf-stat.i.page-faults
+     24.08           +25.2%      30.16        perf-stat.overall.MPKI
+      1.54            -0.1        1.49        perf-stat.overall.branch-miss-rate%
+     63.01            +2.4       65.42        perf-stat.overall.cache-miss-rate%
+     19050           -20.6%      15118        perf-stat.overall.cycles-between-cache-misses
+      0.25            +0.0        0.27        perf-stat.overall.dTLB-store-miss-rate%
+     62.66            +2.2       64.86        perf-stat.overall.iTLB-load-miss-rate%
+      1161 ±  4%     +10.8%       1286 ±  4%  perf-stat.overall.instructions-per-iTLB-miss
+     49.19            +3.7       52.85        perf-stat.overall.node-load-miss-rate%
+     26.10            +2.6       28.67 ±  2%  perf-stat.overall.node-store-miss-rate%
+ 1.134e+08            +4.5%  1.185e+08        perf-stat.ps.branch-instructions
+  13962667           +30.4%   18209922        perf-stat.ps.cache-misses
+  22159412           +25.6%   27835158        perf-stat.ps.cache-references
+  2.66e+11            +3.5%  2.752e+11        perf-stat.ps.cpu-cycles
+    126.06            +7.4%     135.36        perf-stat.ps.cpu-migrations
+  1.56e+08            +3.6%  1.617e+08        perf-stat.ps.dTLB-loads
+    222631            +9.1%     242846        perf-stat.ps.dTLB-store-misses
+  87353212            +3.2%   90174337        perf-stat.ps.dTLB-stores
+    297718 ±  2%     -14.4%     254772 ±  5%  perf-stat.ps.iTLB-loads
+ 5.797e+08            +4.1%  6.038e+08        perf-stat.ps.instructions
+      3454           +11.6%       3856        perf-stat.ps.minor-faults
+    231688           +32.7%     307530        perf-stat.ps.node-load-misses
+    239364           +14.6%     274365 ±  2%  perf-stat.ps.node-loads
+   3208117           +42.8%    4581795 ±  2%  perf-stat.ps.node-store-misses
+   9084897           +25.5%   11404755 ±  2%  perf-stat.ps.node-stores
+      3455           +11.6%       3856        perf-stat.ps.page-faults
+ 1.384e+12           -22.6%  1.072e+12        perf-stat.total.instructions
+     45.09 ± 10%     -30.4       14.72 ± 55%  perf-profile.calltrace.cycles-pp.asm_sysvec_apic_timer_interrupt
+      4.07 ± 30%      -1.9        2.14 ± 40%  perf-profile.calltrace.cycles-pp.ret_from_fork_asm
+      4.07 ± 30%      -1.9        2.14 ± 40%  perf-profile.calltrace.cycles-pp.ret_from_fork.ret_from_fork_asm
+      4.07 ± 30%      -1.9        2.14 ± 40%  perf-profile.calltrace.cycles-pp.kthread.ret_from_fork.ret_from_fork_asm
+      1.74 ± 33%      -1.2        0.57 ± 72%  perf-profile.calltrace.cycles-pp.hpage_collapse_scan_pmd.khugepaged_scan_mm_slot.khugepaged.kthread.ret_from_fork
+      1.75 ± 33%      -1.2        0.58 ± 73%  perf-profile.calltrace.cycles-pp.khugepaged.kthread.ret_from_fork.ret_from_fork_asm
+      1.74 ± 33%      -1.2        0.58 ± 73%  perf-profile.calltrace.cycles-pp.khugepaged_scan_mm_slot.khugepaged.kthread.ret_from_fork.ret_from_fork_asm
+      1.69 ± 33%      -1.1        0.55 ± 72%  perf-profile.calltrace.cycles-pp.collapse_huge_page.hpage_collapse_scan_pmd.khugepaged_scan_mm_slot.khugepaged.kthread
+      1.58 ± 33%      -1.1        0.51 ± 72%  perf-profile.calltrace.cycles-pp.__collapse_huge_page_copy.collapse_huge_page.hpage_collapse_scan_pmd.khugepaged_scan_mm_slot.khugepaged
+      1.38 ± 32%      -0.9        0.45 ± 72%  perf-profile.calltrace.cycles-pp.copy_mc_fragile.__collapse_huge_page_copy.collapse_huge_page.hpage_collapse_scan_pmd.khugepaged_scan_mm_slot
+      1.90 ± 17%      -0.9        0.99 ± 54%  perf-profile.calltrace.cycles-pp.evsel__read_counter.read_counters.process_interval.dispatch_events.cmd_stat
+      1.20 ± 18%      -0.6        0.55 ± 75%  perf-profile.calltrace.cycles-pp.readn.evsel__read_counter.read_counters.process_interval.dispatch_events
+      1.20 ± 18%      -0.6        0.55 ± 75%  perf-profile.calltrace.cycles-pp.__libc_read.readn.evsel__read_counter.read_counters.process_interval
+      1.17 ± 19%      -0.6        0.54 ± 75%  perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.__libc_read.readn.evsel__read_counter.read_counters
+      1.17 ± 19%      -0.6        0.54 ± 75%  perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe.__libc_read.readn.evsel__read_counter
+     46.12 ± 10%     -30.1       15.98 ± 51%  perf-profile.children.cycles-pp.asm_sysvec_apic_timer_interrupt
+      4.07 ± 30%      -1.9        2.14 ± 40%  perf-profile.children.cycles-pp.kthread
+      1.74 ± 33%      -1.1        0.67 ± 42%  perf-profile.children.cycles-pp.hpage_collapse_scan_pmd
+      1.74 ± 33%      -1.1        0.67 ± 43%  perf-profile.children.cycles-pp.khugepaged_scan_mm_slot
+      1.75 ± 33%      -1.1        0.68 ± 43%  perf-profile.children.cycles-pp.khugepaged
+      1.69 ± 33%      -1.0        0.64 ± 41%  perf-profile.children.cycles-pp.collapse_huge_page
+      1.58 ± 33%      -1.0        0.60 ± 41%  perf-profile.children.cycles-pp.__collapse_huge_page_copy
+      1.90 ± 17%      -0.9        1.05 ± 42%  perf-profile.children.cycles-pp.evsel__read_counter
+      1.92 ± 18%      -0.8        1.10 ± 44%  perf-profile.children.cycles-pp.readn
+      1.92 ± 18%      -0.8        1.10 ± 44%  perf-profile.children.cycles-pp.__libc_read
+      0.87 ± 15%      -0.4        0.51 ± 38%  perf-profile.children.cycles-pp.do_anonymous_page
+      0.65 ± 16%      -0.2        0.42 ± 37%  perf-profile.children.cycles-pp.vma_alloc_folio
+      0.46 ± 26%      -0.2        0.23 ± 45%  perf-profile.children.cycles-pp.asm_sysvec_reschedule_ipi
+      0.44 ± 22%      -0.2        0.24 ± 46%  perf-profile.children.cycles-pp.mprotect_fixup
+      0.40 ± 18%      -0.2        0.21 ± 41%  perf-profile.children.cycles-pp.evlist__id2evsel
+      0.24 ± 46%      -0.2        0.07 ± 64%  perf-profile.children.cycles-pp.start_thread
+      0.23 ± 45%      -0.2        0.07 ± 64%  perf-profile.children.cycles-pp.perf_evlist__poll_thread
+      0.40 ± 17%      -0.2        0.25 ± 34%  perf-profile.children.cycles-pp.mas_store_prealloc
+      0.28 ± 19%      -0.1        0.14 ± 40%  perf-profile.children.cycles-pp.__fget_light
+      0.26 ± 32%      -0.1        0.13 ± 33%  perf-profile.children.cycles-pp.pte_alloc_one
+      0.18 ± 43%      -0.1        0.06 ± 80%  perf-profile.children.cycles-pp.__collapse_huge_page_copy_succeeded
+      0.16 ± 30%      -0.1        0.04 ±109%  perf-profile.children.cycles-pp.proc_pid_get_link
+      0.30 ± 21%      -0.1        0.19 ± 40%  perf-profile.children.cycles-pp.__mem_cgroup_charge
+      0.19 ± 16%      -0.1        0.09 ± 62%  perf-profile.children.cycles-pp.__perf_read_group_add
+      0.22 ± 22%      -0.1        0.12 ± 27%  perf-profile.children.cycles-pp.shift_arg_pages
+      0.15 ± 33%      -0.1        0.06 ± 71%  perf-profile.children.cycles-pp.xas_find
+      0.12 ± 26%      -0.1        0.03 ±101%  perf-profile.children.cycles-pp.folio_add_new_anon_rmap
+      0.15 ± 28%      -0.1        0.06 ± 63%  perf-profile.children.cycles-pp.switch_mm_irqs_off
+      0.14 ± 27%      -0.1        0.06 ± 71%  perf-profile.children.cycles-pp.try_charge_memcg
+      0.19 ± 29%      -0.1        0.11 ± 51%  perf-profile.children.cycles-pp.down_write
+      0.17 ± 32%      -0.1        0.09 ± 39%  perf-profile.children.cycles-pp.__pte_alloc
+      0.10 ± 32%      -0.1        0.03 ±101%  perf-profile.children.cycles-pp.blk_mq_queue_tag_busy_iter
+      0.15 ± 16%      -0.1        0.08 ± 54%  perf-profile.children.cycles-pp.vsnprintf
+      0.10 ± 32%      -0.1        0.04 ± 73%  perf-profile.children.cycles-pp.blk_mq_in_flight
+      0.12 ± 20%      -0.1        0.06 ± 48%  perf-profile.children.cycles-pp.slab_show
+      0.16 ± 24%      -0.1        0.10 ± 38%  perf-profile.children.cycles-pp.__get_free_pages
+      0.09 ± 35%      -0.1        0.04 ± 79%  perf-profile.children.cycles-pp.lookup_open
+      0.00            +0.3        0.27 ± 57%  perf-profile.children.cycles-pp.__sysvec_call_function
+      0.03 ±100%      +0.3        0.33 ± 50%  perf-profile.children.cycles-pp.__flush_smp_call_function_queue
+      0.00            +0.4        0.38 ± 53%  perf-profile.children.cycles-pp.sysvec_call_function
+      0.04 ± 80%      +1.6        1.67 ± 58%  perf-profile.children.cycles-pp.asm_sysvec_call_function
+     43.32 ± 10%     -29.9       13.42 ± 61%  perf-profile.self.cycles-pp.asm_sysvec_apic_timer_interrupt
+      0.40 ± 17%      -0.2        0.20 ± 41%  perf-profile.self.cycles-pp.evlist__id2evsel
+      0.28 ± 19%      -0.1        0.13 ± 40%  perf-profile.self.cycles-pp.__fget_light
+      0.24 ± 30%      -0.1        0.12 ± 29%  perf-profile.self.cycles-pp.zap_pte_range
+      0.14 ± 28%      -0.1        0.06 ± 76%  perf-profile.self.cycles-pp.evlist_cpu_iterator__next
+      0.13 ± 30%      -0.1        0.05 ± 75%  perf-profile.self.cycles-pp.try_charge_memcg
+      0.17 ± 27%      -0.1        0.10 ± 51%  perf-profile.self.cycles-pp.down_write
+      0.10 ± 31%      -0.1        0.03 ±102%  perf-profile.self.cycles-pp.blk_mq_queue_tag_busy_iter
+      0.13 ± 30%      -0.1        0.06 ± 65%  perf-profile.self.cycles-pp.switch_mm_irqs_off
+      0.11 ± 30%      -0.1        0.05 ± 75%  perf-profile.self.cycles-pp.mutex_lock
+
+
+
+
+Disclaimer:
+Results have been estimated based on internal Intel analysis and are provided
+for informational purposes only. Any difference in system hardware or software
+design or configuration may affect actual performance.
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
