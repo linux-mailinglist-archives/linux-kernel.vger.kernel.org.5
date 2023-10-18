@@ -2,181 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4397CEB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4CE7CEB08
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjJRWNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        id S231130AbjJRWO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRWNe (ORCPT
+        with ESMTP id S229924AbjJRWO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:13:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D276B6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697667212; x=1729203212;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J9MSXc9livi9wY04KjUidMwQUars9CGlH7kYAxX/wVI=;
-  b=ZuVr/Lv4fOg5ZkNeoSqHUf1zujScH0fVI6s1crQiIRriYzCcHwojnJWZ
-   HSaNmbcXtaT6q9MQdzSN7LLr5rXH8We8xmfEe4fVMcFzIFJHwCX1cSsiu
-   dqvjZDSttguz4w8iqoGTI6O+4WbYAnJLYiGiWh6OFh+zCUOFZkcjWs0ug
-   CnGhEBAWk/AS49taTV16MCMcMdSRnkE7rhUgx51lHYUezA6qTAxvQoVIK
-   exhW5mcLKazjyUEKxCZJUbcOl0y2lB+8MtwewE3ZBEDFz6TRnfeZGFHUs
-   5ZZazFWjrQqR9V2nukdkR2FvwK8gJimlQdFaWnjXnXJdEy+Zx393R0Qz3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="376497664"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="376497664"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:13:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="4713319"
-Received: from nurfahan-mobl3.gar.corp.intel.com (HELO intel.com) ([10.213.159.217])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:13:29 -0700
-Date:   Thu, 19 Oct 2023 00:13:17 +0200
-From:   Andi Shyti <andi.shyti@linux.intel.com>
-To:     Soumya Negi <soumya.negi97@gmail.com>
-Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
-        Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 2/2] staging: vme_user: Use __func__ instead of function
- name
-Message-ID: <ZTBYfbQy9SoUHyAI@ashyti-mobl2.lan>
-References: <cover.1697601942.git.soumya.negi97@gmail.com>
- <c553e5901f16b78681e74b2d77796f8fc102b602.1697601942.git.soumya.negi97@gmail.com>
- <ZS+6sTNNZ5KUzpd4@ashyti-mobl2.lan>
- <20231018203020.GB32553@Negi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018203020.GB32553@Negi>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 18:14:58 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A931C115
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:14:56 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7ed6903a6so111710727b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697667296; x=1698272096; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PlQsMleo8ndyb1BkvS8psG/NpipwSb1Ibvd6wvaptgE=;
+        b=rpD9nXDr8ZV4X1Zjrx1Lpkbi8PcVhM+FAsPQEkE/bgGqvJdPH1dZ/7vggwFyV7nhEA
+         X8bQ+c4ABe5Lv0Lx4UdVxd3dONLa3xGFTYGjnsytjjaPuWHDgsSwaDQqOqxNYmUHL3E8
+         fd6cI8mvnnYu0l+EvsSOxOG18UhCTsNL6jB/fhq9pjPCpnyyxwUQHxSZ87gnNTZIS6r+
+         iRqmgKZXyA5v+lImVMteIruljC+BI0JQ11H/uZKwoOFulZPDL9CV4UpMWYejLAO+vAfZ
+         /dHi5bk0o61IOex9EqNmqWyAwgpM35REgb1kPuw72D9Xa/TL/git7S9ZvXE7Ceui1EnK
+         6sYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697667296; x=1698272096;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PlQsMleo8ndyb1BkvS8psG/NpipwSb1Ibvd6wvaptgE=;
+        b=nq9CnByXr/798ODj/VQlAzdXLHO5zqK9joSo8R6PGS6PY9edQSAidNnEt4grslwe6v
+         ffuSilYDpzAArqj5NmaXICVTOTNvCDCO6O1PbZ7grPnQbJdGR7qxUUQSBBPfZqlxIqfl
+         +KKli2IxKHrH0gvkyGKjEO3Nw2n1aFGE8mFJalpLeXHcdnokMYM1+t715hzLjI66r/1L
+         Hu0qe8/kLe/nKFA18PipOUyr2ASODZ5qyyYh3oenAAoujpqGCItv8+Y3VoLi0svX8y+d
+         7cAbXnlshvGd7IagDqbIK/2v0zEaMoObCtf2Uf4ddOdjU1eiZ3D6CXi1fSl11+et9uau
+         Psmw==
+X-Gm-Message-State: AOJu0YwKYck43ERUfRtKzo7bJzGRtwhv+RI+ZitXH3Qq+yq1aE9PJ05+
+        WDQjTpeNfsi8dpRmg6R8kpw0YphhRovYtHrKbA==
+X-Google-Smtp-Source: AGHT+IFCGhabYMIAAC6XiL9TzzjSCY6BQgj3jImjG5X7Fcyl/tbrVb3NWUepotJZi0+qdYwrlX/ZrUxtd4WudCjg7Q==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a0d:d9d2:0:b0:5a7:be10:461d with SMTP
+ id b201-20020a0dd9d2000000b005a7be10461dmr15636ywe.2.1697667295839; Wed, 18
+ Oct 2023 15:14:55 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 22:14:55 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAN5YMGUC/x2NywrCMBAAf6Xs2YU8oIi/IlJCsqkLGsNuaJXSf
+ 2/qbeYys4GSMCnchg2EFlb+lC72MkB8hjITcuoOzjhvjb2iNimx/jAJLySKhRquaygo9a3zdOI Um7wwos+jMyHk5N0IPViFMn//s/tj3w8hAG6ffAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697667294; l=2364;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=+RiFAuTFDYeSx5+FsqkeyVgCujTXIxMDn3P2javi3XY=; b=123OWlCw+sopcVGOlRvo8H8eZ3pupMbwmZbCt7KUM82cnX6fdX3BK+EJUTP0xC4c1b3gbO3IB
+ 1w6u2cozf6AB/MUjQvfMIuLfOn9l4T+IXmXkdkHqvfMcPANOo65c801
+X-Mailer: b4 0.12.3
+Message-ID: <20231018-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v1-1-4e343270373a@google.com>
+Subject: [PATCH] net: wwan: replace deprecated strncpy with strscpy_pad
+From:   Justin Stitt <justinstitt@google.com>
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Soumya,
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-> > On Tue, Oct 17, 2023 at 09:36:33PM -0700, Soumya Negi wrote:
-> > > Replace function names in message strings with __func__ to fix
-> > > all checkpatch warnings like:
-> > > 
-> > >     WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
-> > >              this function's name, in a string
-> > > 
-> > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
-> > > ---
-> > >  drivers/staging/vme_user/vme.c | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > > index e8c2c1e77b7d..11c1df12b657 100644
-> > > --- a/drivers/staging/vme_user/vme.c
-> > > +++ b/drivers/staging/vme_user/vme.c
-> > > @@ -422,7 +422,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
-> > >  	image = list_entry(resource->entry, struct vme_slave_resource, list);
-> > >  
-> > >  	if (!bridge->slave_get) {
-> > > -		dev_err(bridge->parent, "vme_slave_get not supported\n");
-> > > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> > >  		return -EINVAL;
-> > >  	}
-> > >  
-> > > @@ -572,7 +572,7 @@ int vme_master_set(struct vme_resource *resource, int enabled,
-> > >  	image = list_entry(resource->entry, struct vme_master_resource, list);
-> > >  
-> > >  	if (!bridge->master_set) {
-> > > -		dev_warn(bridge->parent, "vme_master_set not supported\n");
-> > > +		dev_warn(bridge->parent, "%s not supported\n", __func__);
-> > 
-> > I wouldn't disagree if you made this dev_err() instead of
-> > dev_warn(). The reasoning behind is that if it's a warning you
-> > should not fail. But beacuse you are returning -EINVAL it means
-> > that you are failing, therefore you should use dev_err().
-> > 
-> > Others might object that the change I'm suggesting sohuld go in a
-> > different patch, which is also OK.
-> > 
-> > >  		return -EINVAL;
-> > 
-> > ... or, if you want to keep the dev_warn(), whou can consider
-> > removing the "return -EINVAL;". But this is an evaluation you
-> > should make in a different patch and mainly evaluate if it's
-> > OK to remove the error here.
-> 
-> I think it should be dev_err() too. The driver has inconsistently used
-> warn and err log levels in similar functions as well. But I was planning
-> to tackle those in a standalone patch after the printk's are gone. Or do
-> you think it should be part of this patchset?
+We expect chinfo.name to be NUL-terminated based on its use with format
+strings and sprintf:
+rpmsg/rpmsg_char.c
+165:            dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+368:    return sprintf(buf, "%s\n", eptdev->chinfo.name);
 
-OK... if you already noticed this and you are saying there are
-more cases, then it's better if you send a different patch.
+... and with strcmp():
+|  static struct rpmsg_endpoint *qcom_glink_create_ept(struct rpmsg_device *rpdev,
+|  						    rpmsg_rx_cb_t cb,
+|  						    void *priv,
+|  						    struct rpmsg_channel_info
+|  									chinfo)
+|  ...
+|  const char *name = chinfo.name;
+|  ...
+|  		if (!strcmp(channel->name, name))
 
-> > >  	if (!bridge->slot_get) {
-> > > -		dev_warn(bridge->parent, "vme_slot_num not supported\n");
-> > > +		dev_warn(bridge->parent, "%s not supported\n", __func__);
-> > >  		return -EINVAL;
-> > >  	}
-> > 
-> > Nothing wrong with the patch itself. But imagine if we end up in
-> > one of those printouts and, as a user, you read something like:
-> > 
-> >    ... vme_slot_num not supported
-> > 
-> > The message itself doesn't say much to the user. The perfect fix
-> > would be to re-write all these error messages with a proper
-> > meaningful sentence, like, e.g.:
-> > 
-> >    Can't retrieve the CS/CSR slot id
-> >
-> > (don't even know if it's fully correct). Anyway, I understand
-> > you don't have much time for such fine changes, so whatever you
-> > decide to do:
-> 
-> Got it. Thanks for the patch suggestion. Although yes, since I still have project
-> starter tasks pending for my outreachy application(will have to prioritize                           
-> them) I'm not sure if I will be able to get this done right away. Will try to
-> though.
+Moreover, as chinfo is not kzalloc'd, let's opt to NUL-pad the
+destination buffer
 
-yeah... nevermind.
+Similar change to:
+Commit 766279a8f85d ("rpmsg: qcom: glink: replace strncpy() with strscpy_pad()")
+and
+Commit 08de420a8014 ("rpmsg: glink: Replace strncpy() with strscpy_pad()")
 
-> > Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
-> > 
-> > Andi
-> 
-> Thanks for the ack. Since I'll have to revise and resend this patch as v2, 
-> should I not add your ack tag as the patch will be reviewed again? Just 
-> wondering what the etiquette is.
+Considering the above, a suitable replacement is `strscpy_pad` due to
+the fact that it guarantees both NUL-termination and NUL-padding on the
+destination buffer.
 
-You can keep my tag, unless you are making drastic changes.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-Nevertheless, the patch might be reviewed again.
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wwan/rpmsg_wwan_ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Though normally are patches supposed to be resent as new versions when adding
-> ack tags?
+diff --git a/drivers/net/wwan/rpmsg_wwan_ctrl.c b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+index 86b60aadfa11..39f5e780c478 100644
+--- a/drivers/net/wwan/rpmsg_wwan_ctrl.c
++++ b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+@@ -37,7 +37,7 @@ static int rpmsg_wwan_ctrl_start(struct wwan_port *port)
+ 		.dst = RPMSG_ADDR_ANY,
+ 	};
+ 
+-	strncpy(chinfo.name, rpwwan->rpdev->id.name, RPMSG_NAME_SIZE);
++	strscpy_pad(chinfo.name, rpwwan->rpdev->id.name, sizeof(chinfo.name));
+ 	rpwwan->ept = rpmsg_create_ept(rpwwan->rpdev, rpmsg_wwan_ctrl_callback,
+ 				       rpwwan, chinfo);
+ 	if (!rpwwan->ept)
 
-If someones acks or reviews the patches you don't need to resend
-just for adding the tags. There are tools doing it and
-maintainers take care of that.
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231018-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-3f620aafd326
 
-But, on the other hand, if you are going to resend anyway, for
-other reasons a new version, then you should add the tags
-yourself, otherwise they might be lost.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-If the new version changes considerably, then you might consider
-not adding any tags.
-
-Andi
