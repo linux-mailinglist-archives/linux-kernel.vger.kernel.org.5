@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D177CE1A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B087CE1A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344760AbjJRPtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S232174AbjJRPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbjJRPss (ORCPT
+        with ESMTP id S231764AbjJRPty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:48:48 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2062.outbound.protection.outlook.com [40.107.6.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C9A130
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:48:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SGrhov8fI6zL8mWhSFC88UxAjsDKtPSeyQIhcFXsNu0fTn9Th/GwutiML7b2b0izNTrRvjnHoRNy3dwmPrtw7liZuve4wOzSstPm45fWg0iWtch57UyyHC7K9+MKjE/bB+0Qg/D1ZwAcp7FcCn/Q3z7BhDVfUnr+ZYkCsE58mnUx8fMbvh5OgbPYkGNN780JAFjrEwovwv65AKO9A7DTNkswONpoz68aBFfl5it5oSrxp9k14k92dT1YsmVhAJbKBzgQ70VfTVZk/IHr55Q6kviuO59L9R3SG/BX6t2wBiHoBFB2G7zqeQ14RqfQZLG6qoeQKMKgqdWbhKQTgUgcLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HRiKdLELnJRJ0nyk972LH2tykiePszc/EPeBiGyUew8=;
- b=NsSBsUohwxo9xnO0SFbnH/gBNUk5jgf7tzmlREUaEkznvpaOGkyopvdc8tjs0sj6EfwI35m5Ijvd4YCGrLgfyVWE4pQ/vPnryTHSGlhHMk7X/cS++MN6lf5gJpmGwojwPlV6wb3DMTnzkyzeoJkeLga0F/5jNEnOt8TzI2UUDB+xI1+gPMh8AdWEsbCMf1SwehuEaQpharSvGIyXUWbgMCP4+g6BzQnh4l8jFI8JTrosCjrvESiz6ZKcCFUrruCCIiDST9jht1gmpQspUcs8n56GBwNyETo6DQpKWnBYx02vvZw4c/aVYO7YkQzyv643riOa3yPSK4l7QIhsgfi6Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HRiKdLELnJRJ0nyk972LH2tykiePszc/EPeBiGyUew8=;
- b=Wll0VfR3jRzEhCp4FzPqF9wn/ris6GnAoNHQ/v7ficZ8qc9ycRqux/h/ojMJA2wOSPLII/k7QDtmgMXSKxhNCMPBs4JDFBQ7Ujtq/I+BZU0/mZb9RZOpBOTEWBSA38O2jr0+pvRtFAeZOsAoQoHpHZrenPVz6Tkup0xEJd69TRY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by GVXPR04MB9777.eurprd04.prod.outlook.com (2603:10a6:150:115::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
- 2023 15:48:44 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
- 15:48:44 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     miquel.raynal@bootlin.com
-Cc:     Frank.Li@nxp.com, alexandre.belloni@bootlin.com,
-        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] i3c: master: svc: fix SDA keep low when polling IBIWON timeout happen
-Date:   Wed, 18 Oct 2023 11:48:09 -0400
-Message-Id: <20231018154809.3304558-7-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231018154809.3304558-1-Frank.Li@nxp.com>
-References: <20231018154809.3304558-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0087.namprd03.prod.outlook.com
- (2603:10b6:a03:331::32) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Wed, 18 Oct 2023 11:49:54 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ABB118;
+        Wed, 18 Oct 2023 08:49:45 -0700 (PDT)
+Received: from leknes.fjasle.eu ([94.134.20.103]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MsI8Y-1rgyEM38Ru-00tiyo; Wed, 18 Oct 2023 17:49:20 +0200
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id 517AF3F8DD; Wed, 18 Oct 2023 17:49:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1697644159; bh=OH+EicPc7UzPOZaWyDPdScV+4OFzA+p27aCYY2OdDVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TDhaXrLVKs6Z73PEcsZiScLBFOKbK3T2aAS5GNhPUaOXRB/yHkF1npRH2+wD2qh75
+         lLuF+dJVqiXlc2iPX+mvlKhqm+VvOb2cVZasXoZ7mlDSIM42UH+CwKnWvboFOMHH5O
+         pRsRVpa5lnsARqIeuLBqMi6j1ZRBCW3oXJml9Z7s=
+Date:   Wed, 18 Oct 2023 17:49:19 +0200
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>, bpf@vger.kernel.org
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+Message-ID: <ZS/+f1B049Z03ibU@fjasle.eu>
+References: <20231018151950.205265-1-masahiroy@kernel.org>
+ <20231018151950.205265-4-masahiroy@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|GVXPR04MB9777:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ced5ba4-5fa5-48b4-bf87-08dbcff1b55e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r7rB+zp2xEpftdMfpGDFhcqR1oOQQpS/M33D9/C06whG541Ky63FESVJxYqQJDxB/hxsK3B0KdZhB+maHpFgBJ/MHACzFE+YIie1ZotqKm0dRMSs4m6rasjVO4992ZSRqCAHTByGPDk3fLB5yKyZalNm/zqGChClEO31ei7Pq0XuSIQeNSGjxmD2GnJNFI1YBBluNHvSpC19j4wpZQEcf4a/7Nbf2BUE8raoRMhY9GhQ6kYE/NnZ6tyNf+wpniisqujoiaOEtGJy0Imu0RxAm4Vu5FferAhgqUma4QXIlXCb9GtDVBjC/m99tk6WnS2F9wZrDobQ+XXxnNeSkzKSyHP0v1QXRs736p8b5cVg+S4dOx3qq+r7ys6qNZdhOVtkI1egVvR5yI21EQG2P+gSH4GdfT+aWBgGSAqa8yNhg/9ytWhcpuPoD/GdBAe7cJFijLCpPN3jhwyxN/ATH6TkV02YLybGpnLIIuFIHWNKWS2V5YLIiCOvKGaTzsyVziLZl6x1KP+F1sUSUc9gdkoq4OGj3/We5dGY4xaSlh2M4emzjCt52xyVMppVe6C5au3Aw/k1bO79YzeNUJpzmdPlj8On3MY4C4yEVaU//ioFqqr0XCJjFFnVCNUPVVNAmmeh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(38350700005)(52116002)(6666004)(6486002)(6506007)(6512007)(478600001)(66556008)(6916009)(66476007)(316002)(66946007)(36756003)(2616005)(1076003)(83380400001)(26005)(41300700001)(38100700002)(5660300002)(4744005)(8936002)(4326008)(8676002)(2906002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rmakb5F2Gaiw/HJwAu8lZOW2FjbOSyvvMyZQUYamq2/rTF5E2aume+2b4pkB?=
- =?us-ascii?Q?KZIJ3PkEpR5bLc91CMNc2qbdcLTkF+8MClUpjGnDtQ5rUQujP8JbXNhcVih4?=
- =?us-ascii?Q?oqpXDrY0apzXFpyBtXeAh1BzoEpJZ9taKpuAbZB7rHarSPSJsE8AzyzlG+iB?=
- =?us-ascii?Q?ggkVph8yRrZvTTpPr8DUR1oT3PQqCTdlLvPTJfaBLufcvKi/rMHi6vnVyrnF?=
- =?us-ascii?Q?LTfvx9qFv5Uk4psCbDtDExYasGamrcst2U0UxWzGyQSHoUTId/B+zezeWxdI?=
- =?us-ascii?Q?U3D7uUDIk37oCC2mS52hEvWaWgWxoIYajFd8x4Jz/r0zsEb7iBybgs3e+/nt?=
- =?us-ascii?Q?gdf3iI5XKH1QDrCqnwVws+9Gf9/SrEZgqOghjLHLModR2rUwW5QdeYK07N9v?=
- =?us-ascii?Q?Jl57c5n7CuGrfzkOJoIcpcKIYvbxsFiQTqlyLll9J1KGduUDIaQu64sNFP3A?=
- =?us-ascii?Q?A5G/lEs0bKH8J1eUKCaPa8JrW8b8wXyfwNFbBOtDuQb+XepEjCpCbqYHwTsT?=
- =?us-ascii?Q?+4L/vHz56lsVvLqeC5Jzb3GOzw/NH/3SWy0RUl+R9rwNunM68QL1087yBpmS?=
- =?us-ascii?Q?RXoKT+dyt8GYraDDgYqqiSdf5DP1h3IiWG9WDK+a4xflWk+akoHrPorn9HHq?=
- =?us-ascii?Q?TkzNsWDVbIZOaJG93hxu6yPvgFh7bJsl7tUMEYLzxp6sRxfE5vCsRojQluoi?=
- =?us-ascii?Q?yZzAjSa6DzsNt07PgM6lo6+bivWqU7fh1d8UjXyLHt3kKKiF72KEQdGRAe2Z?=
- =?us-ascii?Q?1Ab8HL6uO1TvngoDYYSzJDIDwEsPXXtTZvwS+8+wcZvbDZmx4lrukeRkDFUS?=
- =?us-ascii?Q?RBw/OjLl3mTeJBSIALqwjzMwJOqc3Rgph+C8a+eUQ+6ueuIokjw8Ayut1RMV?=
- =?us-ascii?Q?3DbtmMnnXgUXaHcZQZN29nYLphi71TPAes+MhRNdADbXmrdLScugxSQ/uMLc?=
- =?us-ascii?Q?5CUMIl4QSk+m+/NFwErMWH0hf39KTy6si64+682h/zD4vPPQYH0DCiOS/q05?=
- =?us-ascii?Q?5mKnEydI3fEzo55v8wxkIdOX0MSb4NMuy+XcZn0O/uk0RUNO7EXRmKxHVlXg?=
- =?us-ascii?Q?B/61d47Vr7ggkBXsqvfQfXIGObb7j2bgmJmXlQMGCKHC8d+J4lU0R+dPCgJh?=
- =?us-ascii?Q?PhcQPfXUReyJPXVMNj3T5WQFFDV6Dz698DSUrkXW2m0qj3azvieKN01FC5XW?=
- =?us-ascii?Q?9vPxfX8qXe2ZvsISWwYgcC4SVEYjST6SvPD8GGkAF9FJWIDrbb8wVywjWcV6?=
- =?us-ascii?Q?RsfvI0y9ZpXgHj49X2Oh9YYDMmqTo0YmP9VlN4Xz2yh/gM/ZstvkPgPpyZSf?=
- =?us-ascii?Q?HcwHNTp3cWmhXBBQhM+wxfBafSs6retjBXhgCgv8xtjQkbfd+sFBfqJfUa2B?=
- =?us-ascii?Q?gm237ZztTdtJhrT5oeWnTiRPDA1iMTxythrOzKADZeH+BDtRzAEGoDmTHkPt?=
- =?us-ascii?Q?aCqQGjSr/swI2GY6OX7JYZrxQkCUU0C30JSpSP8e/fj+pvNCV6asSie5qhYc?=
- =?us-ascii?Q?xvDQUvDRAXkb8UIQX6GrNlw1xmXiSlorseficD7LNn5qH00eKffQ6T/W5SmN?=
- =?us-ascii?Q?ORBTV554vizIKXcIeWWdmTVHLbt/qQjzsmXcjXRa?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ced5ba4-5fa5-48b4-bf87-08dbcff1b55e
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 15:48:44.2846
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AbpqE8UHBIPP1/uHbGLSYPsaISRwc3jvcX/n2y6D2SyY5TyZzhRUHb4atlURTi/QlXz8vDTz+fBwNYhZqjfVkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9777
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231018151950.205265-4-masahiroy@kernel.org>
+X-Provags-ID: V03:K1:B4LQ7Ajm1gUh2v3KsatjhnDxISg3jTEx6iRLsNOe1KCfA0f33Je
+ k7sYIst9yV21BPxNZHntNYoCfMfBn9JJ7u7RJb1MlDLUBJRKI9QHHG/+Qdt8GrCelKyrfoT
+ jAaqgNcSyA5D0JtiGfbjKZ8PsxAMMrdWescAdP2w8NPlurLEVthJ35I8ul18GzB7Jp4SHGi
+ cEOs6JCOLKzpjMHCAIHZA==
+UI-OutboundReport: notjunk:1;M01:P0:7LyupFVRajo=;HaG9fJQ0BTCv8elAj/oujRlVEed
+ H0bsNRk9itF5/r8Z7MKQZ5nkkke+8lKX2mNGRimNJyjPj2+wb4kmr9soUVJ7EGraPNULJhB5S
+ 33TbPpaXZ3MrwhO4ndFg6MCPlkP6kbUHRxCKGMBQLAjlpYRri/+98/BiNnEdzvRO6549foUe7
+ vYHqrZjzobHfDTxKgOPWqlMzPcztS4UlrK5UDe0h+4H65TL481xSs+7qp0LWpAuEt7IQZvqsS
+ vwwv420UzQaor0EoL448LgY4bkrxnNZ/sRXrV/45xec068hK6WXjrLtcUoYhDzKTIBUTmYrxG
+ wdD7HhEKjjaOLZyXF4bHHwYFqinUVtqnI4YSBHEI4jDVc5plFaXjI/Fd/j0z9f3yBsw29ZyKQ
+ HGfH55Se24rOl8BPiNO0Y9HI0CcAPT9FmoRjWw5wcysXQchLlCIv7vONUa7KtIUHbcG3rTE2J
+ heNjHMu2BEDeGfrQj45/1XOQ89K7swRlWArL4nlUfDlqAjUloVkGvLWgxsoeRCgQ7HCbtj0B0
+ T5j/Zqdl6wuk8xjRE6dAJ27jcd6AP38w7q9avWbhRBmIAFSmD0Tskbo4+6SftVWVddIIipmKi
+ djyogVgs0xacZw6hT1l7nmHcLMipiIGVMYWAD2uFuHpeNTm0J0QPU+tC/v/DuxSEbAq6IIRuM
+ lkLbkHb5mmQy6Sh/DvbJvGteEx8SPt5n62yTmQTj+3XVo3ihQmAhJ+9cQAz3ehFvrgRQsaZ6r
+ QX3/VudGlm8FD+otBBmuyD+Vmxq3/j9d2iHRlPBXmw0P7BamYAUvZgMdgwaw+Z/mVfT2pMLU/
+ vrLnuOZ3u1IykRj7QJ1vzm2lC3lDZmG//7y15JIM4BYATN3gBOM6QTDhHlMoJpljWb8CPNqZ9
+ 1RixvbBQ+Wgzb5w==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,36 +69,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If IBIWON timeout happen, SDA line will always keep low because miss emit
-stop.
+On Thu, Oct 19, 2023 at 12:19:50AM +0900 Masahiro Yamada wrote:
+> newer_prereqs_except and if_changed_except are ugly hacks of the
+> newer-prereqs and if_changed in scripts/Kbuild.include.
+> 
+> Remove.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> Changes in v2:
+>   - Fix if_changed_except to if_changed
 
-Call svc_i3c_master_emit_stop() to let i3c bus come back to idle statue
-when IBIWON timeout happen.
+thanks
 
-Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
-Notes:
-    Change from v1 to v2
-    - Update commite message
 
- drivers/i3c/master/svc-i3c-master.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-index b113460f059c3..1a57fdebaa26d 100644
---- a/drivers/i3c/master/svc-i3c-master.c
-+++ b/drivers/i3c/master/svc-i3c-master.c
-@@ -404,6 +404,7 @@ static void svc_i3c_master_ibi_work(struct work_struct *work)
- 					 SVC_I3C_MSTATUS_IBIWON(val), 0, 1000);
- 	if (ret) {
- 		dev_err(master->dev, "Timeout when polling for IBIWON\n");
-+		svc_i3c_master_emit_stop(master);
- 		goto reenable_ibis;
- 	}
- 
+>  scripts/Makefile.modfinal | 25 ++++++-------------------
+>  1 file changed, 6 insertions(+), 19 deletions(-)
+> 
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 9fd7a26e4fe9..fc07854bb7b9 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -19,6 +19,9 @@ vmlinux :=
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>  ifneq ($(wildcard vmlinux),)
+>  vmlinux := vmlinux
+> +cmd_btf = ; \
+> +	LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+> +	$(RESOLVE_BTFIDS) -b vmlinux $@
+>  else
+>  $(warning Skipping BTF generation due to unavailability of vmlinux)
+>  endif
+> @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+>        cmd_ld_ko_o +=							\
+>  	$(LD) -r $(KBUILD_LDFLAGS)					\
+>  		$(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)		\
+> -		-T scripts/module.lds -o $@ $(filter %.o, $^)
+> +		-T scripts/module.lds -o $@ $(filter %.o, $^)		\
+> +	$(cmd_btf)
+>  
+> -quiet_cmd_btf_ko = BTF [M] $@
+> -      cmd_btf_ko = 							\
+> -		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+> -		$(RESOLVE_BTFIDS) -b vmlinux $@
+> -
+> -# Same as newer-prereqs, but allows to exclude specified extra dependencies
+> -newer_prereqs_except = $(filter-out $(PHONY) $(1),$?)
+> -
+> -# Same as if_changed, but allows to exclude specified extra dependencies
+> -if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+> -	$(cmd);                                                              \
+> -	printf '%s\n' 'savedcmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
+> -
+> -# Re-generate module BTFs if either module's .ko or vmlinux changed
+>  %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
+> -	+$(call if_changed_except,ld_ko_o,vmlinux)
+> -ifdef vmlinux
+> -	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+> -endif
+> +	+$(call if_changed,ld_ko_o)
+>  
+>  targets += $(modules:%.o=%.ko) $(modules:%.o=%.mod.o)
+>  
+> -- 
+> 2.40.1
+
 -- 
-2.34.1
-
+epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
+↳ gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
+     -- frykten for herren er opphav til kunnskap --
