@@ -2,131 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9707CD590
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DB77CD592
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344624AbjJRHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 03:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S1344584AbjJRHlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 03:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbjJRHkZ (ORCPT
+        with ESMTP id S229797AbjJRHk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 03:40:25 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2067.outbound.protection.outlook.com [40.107.249.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A98118;
-        Wed, 18 Oct 2023 00:40:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oT3DsigtCQXwT3iNF+WJ4d+o3WQ2o7zIGrKyN45gCnvUM4AwhjLYdOHepI/azTuQHMxBBjh5y/XYbv7DgYuEpT0UzSsKKYFpYeZJ8ybZhUNV9SzbYUm30lDqppwQcFOSpJY1yjYBT8QHUACBIsANFU2UgqX06R+XKc0vFGO+0P32EkkYfaIGqHs0o7Cl/xmXF6dwCY+uiNa8bbH0b8VUWsLgKM97EROcFIRkuQateoWYEEYyNaXgfDM/ivbgRxZ9xAFUfWU+4Lg0oGYfg8YnUEqCgXjGpiiM9MnzkobENU5sgHctdr/POY8lNugidN7Dc4otCLRAtKpXoH2JsgGPbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZDRnncul1oMKFpL3ZCNS1VcMBdf42KI80vDLKNw4EZk=;
- b=kR2RjMvUWe5EYfWOmmRa0cnPttPgdJv+yA2vobTSl6YgPBgH0KN9Lh0ughtw5radyceV2XxuaMAjraGPFtOk+uV5x+zDEZUpMflH2jy+JwtizUxy8d8nS62QQVCAed5LjbT4ViUCu7G3NC7xI9NrWGAruwOcMoWLNCnO69YLQTV7cWs7FaeVJowE1knGh6TUl4ftX/JFRpR9sg1NuGZZChtQcKmDqmS5gpT3HW00srkhkVmFsySaBb0E+AvQNdCjrl++BGPlCdmGbH3d2ya8Ud470mkLEk4PK0OLbTzbjERK8X4BBT+C1P1ROlvU+0tbxRztRfTjleVSdQ5+q8uE4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZDRnncul1oMKFpL3ZCNS1VcMBdf42KI80vDLKNw4EZk=;
- b=uECFKdEIsLn3YO7SSYJiriKfrg0JLJfDlbe4PfXFJBBGTgY/zs7PL+VyWlaEs8QeSndpORCk+hd8r07T3K8qTBB4jdxIVCvInwdkv0Itxvh31KziY+g2AQEpg2eFoH9JZfB4OaMUuyqI3VOUr5FLTy4hO55kZ/M8D9RdVHEmiC7SxWTnCUxuJzcixIasRlpWfLJDDutwg2qkuTMPiokzXGpwYqGdxdULNvCt7p+AwS1OxeYaBqWeIlCXlfoFSLHk5PYtgOEotpi9pATp80B/P5wx2SXgzCVKEIvM/zqAu36je30C4oAarHLgt8NwV+PYCiFSom0Sdl/xdgVVcPLdng==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by PAXPR04MB8573.eurprd04.prod.outlook.com (2603:10a6:102:214::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
- 2023 07:40:16 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
- 07:40:16 +0000
-Message-ID: <7ed3e212-caf0-4148-9d5e-27c14facaa05@suse.com>
-Date:   Wed, 18 Oct 2023 10:40:10 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 06/23] x86/virt/tdx: Add SEAMCALL error printing for
- module initialization
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, peterz@infradead.org,
-        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, bagasdotme@gmail.com,
-        sagis@google.com, imammedo@redhat.com
-References: <cover.1697532085.git.kai.huang@intel.com>
- <58c44258cb5b1009f0ddfe6b07ac986b9614b8b3.1697532085.git.kai.huang@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <58c44258cb5b1009f0ddfe6b07ac986b9614b8b3.1697532085.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR04CA0095.eurprd04.prod.outlook.com
- (2603:10a6:803:64::30) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Wed, 18 Oct 2023 03:40:57 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03425FF;
+        Wed, 18 Oct 2023 00:40:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b20a48522fso4172816b3a.1;
+        Wed, 18 Oct 2023 00:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697614854; x=1698219654; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0c9Xgu3uYqyEjnVJFwKD4KzaY8VpildpRVCGb9xxX8s=;
+        b=F/auiJ+WYlbPAWE3RvulS5C5CeyV6EOdsqo+u9noxj/ckyn+MGl2d3mo9EDXMrF42S
+         HpzjARR+uOT895kff572e2XsA9isenicYPw6i7israHKYJkP8zWd8GL6oq3YrxztGhRy
+         ipszDJP3PRTgS73Yx4mTqFfzLPSq/Y1BM5WOH/CHnSjDQxIs4ZThfmbsxC3kKuxL3cLt
+         Fho9Au9f1n5pWlrip2HQHeqe0x8sLNlHCTt4u/UOrfot5JGoKBmSENzLekbcKNUFvyGf
+         FLDOdLGz9JBqMlfn4Ls/ad2pzzjdIPk4pt2lzKWfs5hl55nQKxlyGwnYzZ0PZBc+XGys
+         kUHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697614854; x=1698219654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0c9Xgu3uYqyEjnVJFwKD4KzaY8VpildpRVCGb9xxX8s=;
+        b=kfbVNslJogRKivyt9AGtPdS+9U721PJ8tjCnouuKdYt03iDe/GaUZkSKyXqkK4MS6R
+         yySlCRKdzvb0vlZj5V7RlAG8oC+NFW3Gs4vQ3HM1EOy7Bhkew62YMuk52UmfUkcpi4j9
+         IYgehIgBcJM7QAidjVuTdm9q64vfjPROkSUR0hhOilFS1Mg8Y8VTh0eNpisPnmpM8vIK
+         x/TWxDU1Kp+I2wjVYi7wL1nlQj3S16K1PlvknYzRyippKObxjiUwx/3DAsuATRFEFfal
+         PMFyUA87MkQaG33GD/uV3NVaUyhs9460tFDoN0PZQeDQysFoD+dDAvfbGCIuDpTHrjo+
+         dgIA==
+X-Gm-Message-State: AOJu0YzQ8VZHsaqrlE5VgXrbVhCQVfSeP5puORHJn/xFIIG2N8iiuJvY
+        r7YqU8baFIraZOaIKpQke+Z0wYHIPc9Em0nvlB0=
+X-Google-Smtp-Source: AGHT+IFtVwZpxVMeutpWrG/OiXhi96Yt7OwGBlDumQA3qnGrD2yaEVi24BtQl6QwKGpoNH6uML5wxLPhxUXRHUEyUts=
+X-Received: by 2002:a05:6a20:441a:b0:140:c838:2b2e with SMTP id
+ ce26-20020a056a20441a00b00140c8382b2emr4931185pzb.22.1697614854309; Wed, 18
+ Oct 2023 00:40:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PAXPR04MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9c314209-4fee-4ec4-723c-08dbcfad7836
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Du3PaVvbTTC9oocnEKc2Mgcu8ChcqIXgy3gygDpvyMgPi/hRRseDwJhhTtzhlxdmbM2sNMw+pWII90WVf3PlOlu20QYiW+pySjVZ4HhAPQeSS4Ydc/or3BTOM7Ecu7QFRy99y+c8PT9V8muZ9hQwrztGWwI4HXoAy/UUrmv8F7XEDnJn8zKfKZg+FfIvBY4v8VMn4A5sUGi19niM0H1YeMm/EV62ff/9hRPVk3j+ayu1TJyxDVCyM8rzsPZszW5KwLc5gcurhYN17R+1Yba3mu3yrUMqhBa/F01slhmOddn/rkkz2V4pj6XqTKv7armXTzPqbebJoWjfSpFqtgN3UlDN2ik9/bkqia5cbiEZiK+W+6X5Zmf1+57/Qf8/ejulT5bNsSN7yekG1g+GA5CD/wtYNX0Ewq1ElVTf5UcALnwAwHlGOcq4s1CWaQ0jWKq4KHmfER+4YH0OzUvK6klquhsyuuCIaB2laPqzfVNUQLxG6TbvVk/fOC3pP5yvYrOUK6UKkOhfJ3wW0l35ZHHxhtNqm9WGtpbMvUfcN5VMDgt00P4mfaE51nDIw8itIc5T37XXmjMPBpPfQArMmqHndk0Uyza+dQkL/Ix8X1t9GlOgSqM63sKXwr8LBT6HqyuMdybFQNxzKtJPUJnTjTGiNQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(7416002)(4326008)(8936002)(8676002)(5660300002)(2906002)(31696002)(86362001)(36756003)(38100700002)(31686004)(6666004)(83380400001)(6506007)(6512007)(6486002)(478600001)(316002)(41300700001)(2616005)(66946007)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eDJmNk10M204S3U5R2oxNXBDeWdwSjdjcjUwcXAvUGZpaDBjanBBU1loa01N?=
- =?utf-8?B?QWNtNWVDcEVybEdXekFnT01yc1RQL1FadThLTEFLcllLSWlJeG5IcEpkM0g4?=
- =?utf-8?B?Z1R5VnkrSysyVjBaUEdUQU8yZzZUYi9kMWl4d0N0amNxcG1WSlhBblVCTGow?=
- =?utf-8?B?U2VEdXJVeFFnOUFVVTUrMUN5WWZmZS8zSzRhUTFBRlNOUEs2RDVWRVZ0aVFO?=
- =?utf-8?B?cUhNblkwUEoxNmg4cXBweWlvcFhXaUJZRWFLclhhclYzenQ5Q2N5TG1oSmRH?=
- =?utf-8?B?ZTQzakt4NnE2Qkd0M1lDejdsVVY5K2UxbmxRQ1lsYkhudlJDY04vcWV0aWg4?=
- =?utf-8?B?K09OdFdMU01VdVZkQmR6dklCTWhSSDJYbis4bVFnYXhWL0FUWkVkR2NKNk9k?=
- =?utf-8?B?cXpiUEpiNVpxR3haTDFiVUdlaHIyUG1WaXFCUGhNQkRkbkVubG5TRGVOYXN6?=
- =?utf-8?B?U2ZpWklyakdmZFN6WXR6VjhXelQwUEx6TWRkd3NEK2VaazQ2bnR1dE1sa3Vz?=
- =?utf-8?B?ZEIxZ281OGN6R3IyUWw3MHkxdXZSSU5Fc2ZPZldMaUhpZGxOYmJTTGYrRmVZ?=
- =?utf-8?B?Ukl6cWtMc2p2amQ3QjdZOUZUUWt1Z2FMN0dtTHNDQkVNVXpUcDRZdFcxQ2Fi?=
- =?utf-8?B?L09Ud3lReGxOUjlZLyswNTE2WFlmY2hOT3pDdDAydWNZamovbnNlL3BLUE5Q?=
- =?utf-8?B?YVNoajlqVFhzM1VLZEIxb0tPcTZuWWJwL0Z6bGJ4TGFSWWdtQmc3dyt1YlFo?=
- =?utf-8?B?VkNvMjRWN1VCdm4xck90L3UwQk1SRzlYNm5VcjZ6MFdmYW5xcWhHcStwSGdN?=
- =?utf-8?B?RGxFU2ZWTDhJMzQrOFFpb1U2MXlicEdqUWFDV3BmU3ZURS9IQUc5Y2hBTldz?=
- =?utf-8?B?bFlNL1EyblFDNm1objBHRFJLUHJUMVF1Q09aa2J0MkJVWElEU0RESitibkFi?=
- =?utf-8?B?eWljZkxBODBJMzZQZHA0eFVHR3ZZOWhDa0tEbTkwck8za2hzb0pKYWRVWWU5?=
- =?utf-8?B?SmpIc2JoUGJsN0h0aHc5ak50dDdldDl6eFI0Wi9KNFhNY2k4dU44NUQydm1h?=
- =?utf-8?B?L3EvNzZjUWtVbytJeXdnaEEyR2U3S2Z4U0Fjd1hXOFMvay9Sc2lETDZuSDJa?=
- =?utf-8?B?S2ZpYXZZT1phYVBGY1luMmhja2FTdUd6STA1Z0ZSMWlZN3pjaEtLanpnVmxy?=
- =?utf-8?B?bmtyeFZHaW5JUWFvc2FWNnZuZVloQTNIODFheWR6V21EWk9TQkh2ZEgvalJi?=
- =?utf-8?B?U2JHNk9Denl2N3VIMmptalJ4QWRqUDBIeE85NUR3czdHMFozd1UzTGo4bXJx?=
- =?utf-8?B?WUh5ZVdiSWg1NmU3WG1wcWtUUjBhSmg3dHh2aDJVa2FYQy8wby83OXJ2d1Jr?=
- =?utf-8?B?cFp3QURFTFFHUkc4YThwMWdaZ3R5RDhMSFUxNnBWakUwd0NPcVRva1lWaWRi?=
- =?utf-8?B?ZnpkVEZXVUk0bVpVVEoyRTBiUUNJdEl3RFNVYVVDYzhNVmNxUWNMd2J0bUdO?=
- =?utf-8?B?eHJheG1qUENESEY0VitBN3lEdUtCOGt1VCtnNzlCVWQ5U2xCQlV3Y1VkSk1w?=
- =?utf-8?B?a0pjSjk0Tm10K1dxZGYwbnk0UDA5UWQzQkRmMFlFU2ZZOW94a1grY01kaXc4?=
- =?utf-8?B?ZzRMR2ZONDE4cG95b2w0RGw5M0JQck02SnhHWGxHTjBnYnJVbDNUcHFKUnpl?=
- =?utf-8?B?RnVKOStVUjViei9OVytjREtvRWR2RVFEc2tVOS9kMUVnWlVoMUZ3bmpab2Fy?=
- =?utf-8?B?S1lIa1RFSkoxQTkxL1BDdzkrOFp4bnZrMFEvaFk1YUFRQ1FRcGhFamhIYUVv?=
- =?utf-8?B?SWd1blhtb2FXbnhrUGl2U1NMMFUxblc3eHB1OEpmOHNWSEtEOVlaL3A4YTdK?=
- =?utf-8?B?S0Rpa0xqL1k2TlFxY0lzVkJhcjhwSTc0MzhZcnM5Z1l5bzlvRjNRbEVqblp1?=
- =?utf-8?B?bE9UVkc1QWIyV2R4S3pYdkdLWk96Y285aENwMFVibzh0TXFvSzB4bS9vbk1t?=
- =?utf-8?B?ZEJsLy80L2FhZkMycWVFVGxkSFhiZUs5K2w4dUtEVEs5YmZQbWV1VHZ6UFBJ?=
- =?utf-8?B?UnRWNGFwQ0dKOEZod05IRCtzRmFteFNncHZwaERWQUxYVmdaNmM4UXp5dEVL?=
- =?utf-8?B?ZzJSN2JvZWVPVy9CYWpNVi9XK0pNY0Q1UDJhbkYrWTczTVdaUzdrb3lHbW93?=
- =?utf-8?Q?H5J5hUcXvgu1+E8vzB7B3sXHv9LCmkuruZHWECCYv1vt?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c314209-4fee-4ec4-723c-08dbcfad7836
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 07:40:16.0467
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7z3kB0GKkN7NSw+ZiGWWjRGsjV25SrMqLYDnkpsEKDhjirGR38yZ3n24S60cq8Bey8bXa/KkBJGwPm81MNQA4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8573
+References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
+ <1697185865-27528-10-git-send-email-shengjiu.wang@nxp.com>
+ <a0dfe959-3b32-4d03-9f1b-8f3c1054ecf7@xs4all.nl> <CAA+D8AP1a-Vioy2Cr7dZ4wErXpkm7g9Caw-yPKc9jbWpPnN0JQ@mail.gmail.com>
+ <0ae6d9e1-bdd9-45ab-9749-8b0cb5c624ff@xs4all.nl> <CAA+D8AMa9tpMq08XsUuAtV0DLWbLOwsfYjd30NJ3OBezkTs5YA@mail.gmail.com>
+ <CAA+D8AOJ=Akp5AmE4PCy=O=TGYaP3Cn0jLveL-aoqV3tFAVPSg@mail.gmail.com> <36360a55-4cb4-4494-aa69-96837ba7750d@xs4all.nl>
+In-Reply-To: <36360a55-4cb4-4494-aa69-96837ba7750d@xs4all.nl>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 18 Oct 2023 15:40:43 +0800
+Message-ID: <CAA+D8APMRpWXPy3VHPev5A+g8o6m5Tj4BKivSGk_SZAZsMoBAw@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 09/11] media: uapi: Add audio rate controls support
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -134,87 +78,466 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 3:31=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> On 18/10/2023 09:23, Shengjiu Wang wrote:
+> > On Wed, Oct 18, 2023 at 10:27=E2=80=AFAM Shengjiu Wang <shengjiu.wang@g=
+mail.com> wrote:
+> >>
+> >> On Tue, Oct 17, 2023 at 9:37=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.=
+nl> wrote:
+> >>>
+> >>> On 17/10/2023 15:11, Shengjiu Wang wrote:
+> >>>> On Mon, Oct 16, 2023 at 9:16=E2=80=AFPM Hans Verkuil <hverkuil@xs4al=
+l.nl> wrote:
+> >>>>>
+> >>>>> Hi Shengjiu,
+> >>>>>
+> >>>>> On 13/10/2023 10:31, Shengjiu Wang wrote:
+> >>>>>> Fixed point controls are used by the user to configure
+> >>>>>> the audio sample rate to driver.
+> >>>>>>
+> >>>>>> Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE
+> >>>>>> new IDs for ASRC rate control.
+> >>>>>>
+> >>>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> >>>>>> ---
+> >>>>>>  .../userspace-api/media/v4l/common.rst        |  1 +
+> >>>>>>  .../media/v4l/ext-ctrls-fixed-point.rst       | 36 ++++++++++++++=
++++++
+> >>>>>>  .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 +++
+> >>>>>>  .../media/v4l/vidioc-queryctrl.rst            |  7 ++++
+> >>>>>>  .../media/videodev2.h.rst.exceptions          |  1 +
+> >>>>>>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  5 +++
+> >>>>>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 +++
+> >>>>>>  include/media/v4l2-ctrls.h                    |  2 ++
+> >>>>>>  include/uapi/linux/v4l2-controls.h            | 13 +++++++
+> >>>>>>  include/uapi/linux/videodev2.h                |  3 ++
+> >>>>>>  10 files changed, 76 insertions(+)
+> >>>>>>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrl=
+s-fixed-point.rst
+> >>>>>>
+> >>>>>> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Do=
+cumentation/userspace-api/media/v4l/common.rst
+> >>>>>> index ea0435182e44..35707edffb13 100644
+> >>>>>> --- a/Documentation/userspace-api/media/v4l/common.rst
+> >>>>>> +++ b/Documentation/userspace-api/media/v4l/common.rst
+> >>>>>> @@ -52,6 +52,7 @@ applicable to all devices.
+> >>>>>>      ext-ctrls-fm-rx
+> >>>>>>      ext-ctrls-detect
+> >>>>>>      ext-ctrls-colorimetry
+> >>>>>> +    ext-ctrls-fixed-point
+> >>>>>
+> >>>>> Rename this to ext-ctrls-audio-m2m.
+> >>>>>
+> >>>>>>      fourcc
+> >>>>>>      format
+> >>>>>>      planar-apis
+> >>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-fixed=
+-point.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rs=
+t
+> >>>>>> new file mode 100644
+> >>>>>> index 000000000000..2ef6e250580c
+> >>>>>> --- /dev/null
+> >>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.=
+rst
+> >>>>>> @@ -0,0 +1,36 @@
+> >>>>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> >>>>>> +
+> >>>>>> +.. _fixed-point-controls:
+> >>>>>> +
+> >>>>>> +***************************
+> >>>>>> +Fixed Point Control Reference
+> >>>>>
+> >>>>> This is for audio controls. "Fixed Point" is just the type, and it =
+doesn't make
+> >>>>> sense to group fixed point controls. But it does make sense to grou=
+p the audio
+> >>>>> controls.
+> >>>>>
+> >>>>> V4L2 controls can be grouped into classes. Basically it is a way to=
+ put controls
+> >>>>> into categories, and for each category there is also a control that=
+ gives a
+> >>>>> description of the class (see 2.15.15 in
+> >>>>> https://linuxtv.org/downloads/v4l-dvb-apis-new/driver-api/v4l2-cont=
+rols.html#introduction)
+> >>>>>
+> >>>>> If you use e.g. 'v4l2-ctl -l' to list all the controls, then you wi=
+ll see that
+> >>>>> they are grouped based on what class of control they are.
+> >>>>>
+> >>>>> So I think it would be a good idea to create a new control class fo=
+r M2M audio controls,
+> >>>>> instead of just adding them to the catch-all 'User Controls' class.
+> >>>>>
+> >>>>> Search e.g. for V4L2_CTRL_CLASS_COLORIMETRY and V4L2_CID_COLORIMETR=
+Y_CLASS to see how
+> >>>>> it is done.
+> >>>>>
+> >>>>> M2M_AUDIO would probably be a good name for the class.
+> >>>>>
+> >>>>>> +***************************
+> >>>>>> +
+> >>>>>> +These controls are intended to support an asynchronous sample
+> >>>>>> +rate converter.
+> >>>>>
+> >>>>> Add ' (ASRC).' at the end to indicate the common abbreviation for
+> >>>>> that.
+> >>>>>
+> >>>>>> +
+> >>>>>> +.. _v4l2-audio-asrc:
+> >>>>>> +
+> >>>>>> +``V4L2_CID_ASRC_SOURCE_RATE``
+> >>>>>> +    sets the resampler source rate.
+> >>>>>> +
+> >>>>>> +``V4L2_CID_ASRC_DEST_RATE``
+> >>>>>> +    sets the resampler destination rate.
+> >>>>>
+> >>>>> Document the unit (Hz) for these two controls.
+> >>>>>
+> >>>>>> +
+> >>>>>> +.. c:type:: v4l2_ctrl_fixed_point
+> >>>>>> +
+> >>>>>> +.. cssclass:: longtable
+> >>>>>> +
+> >>>>>> +.. tabularcolumns:: |p{1.5cm}|p{5.8cm}|p{10.0cm}|
+> >>>>>> +
+> >>>>>> +.. flat-table:: struct v4l2_ctrl_fixed_point
+> >>>>>> +    :header-rows:  0
+> >>>>>> +    :stub-columns: 0
+> >>>>>> +    :widths:       1 1 2
+> >>>>>> +
+> >>>>>> +    * - __u32
+> >>>>>
+> >>>>> Hmm, shouldn't this be __s32?
+> >>>>>
+> >>>>>> +      - ``integer``
+> >>>>>> +      - integer part of fixed point value.
+> >>>>>> +    * - __s32
+> >>>>>
+> >>>>> and this __u32?
+> >>>>>
+> >>>>> You want to be able to use this generic type as a signed value.
+> >>>>>
+> >>>>>> +      - ``fractional``
+> >>>>>> +      - fractional part of fixed point value, which is Q31.
+> >>>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ct=
+rls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> >>>>>> index f9f73530a6be..1811dabf5c74 100644
+> >>>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> >>>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> >>>>>> @@ -295,6 +295,10 @@ still cause this situation.
+> >>>>>>        - ``p_av1_film_grain``
+> >>>>>>        - A pointer to a struct :c:type:`v4l2_ctrl_av1_film_grain`.=
+ Valid if this control is
+> >>>>>>          of type ``V4L2_CTRL_TYPE_AV1_FILM_GRAIN``.
+> >>>>>> +    * - struct :c:type:`v4l2_ctrl_fixed_point` *
+> >>>>>> +      - ``p_fixed_point``
+> >>>>>> +      - A pointer to a struct :c:type:`v4l2_ctrl_fixed_point`. Va=
+lid if this control is
+> >>>>>> +        of type ``V4L2_CTRL_TYPE_FIXED_POINT``.
+> >>>>>>      * - void *
+> >>>>>>        - ``ptr``
+> >>>>>>        - A pointer to a compound type which can be an N-dimensiona=
+l array
+> >>>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctr=
+l.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> >>>>>> index 4d38acafe8e1..9285f4f39eed 100644
+> >>>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> >>>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> >>>>>> @@ -549,6 +549,13 @@ See also the examples in :ref:`control`.
+> >>>>>>        - n/a
+> >>>>>>        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing A=
+V1 Film Grain
+> >>>>>>          parameters for stateless video decoders.
+> >>>>>> +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
+> >>>>>> +      - n/a
+> >>>>>> +      - n/a
+> >>>>>> +      - n/a
+> >>>>>> +      - A struct :c:type:`v4l2_ctrl_fixed_point`, containing para=
+meter which has
+> >>>>>> +        integer part and fractional part, i.e. audio sample rate.
+> >>>>>> +
+> >>>>>>
+> >>>>>>  .. raw:: latex
+> >>>>>>
+> >>>>>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exc=
+eptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> index e61152bb80d1..2faa5a2015eb 100644
+> >>>>>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:=
+type:`v4l2_ctrl_type`
+> >>>>>>  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_=
+ctrl_type`
+> >>>>>>  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
+> >>>>>>  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_t=
+ype`
+> >>>>>> +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type=
+`
+> >>>>>>
+> >>>>>>  # V4L2 capability defines
+> >>>>>>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+> >>>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/m=
+edia/v4l2-core/v4l2-ctrls-core.c
+> >>>>>> index a662fb60f73f..7a616ac91059 100644
+> >>>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> >>>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> >>>>>> @@ -1168,6 +1168,8 @@ static int std_validate_compound(const struc=
+t v4l2_ctrl *ctrl, u32 idx,
+> >>>>>>               if (!area->width || !area->height)
+> >>>>>>                       return -EINVAL;
+> >>>>>>               break;
+> >>>>>> +     case V4L2_CTRL_TYPE_FIXED_POINT:
+> >>>>>> +             break;
+> >>>>>
+> >>>>> Hmm, this would need this patch 'v4l2-ctrls: add support for V4L2_C=
+TRL_WHICH_MIN/MAX_VAL':
+> >>>>>
+> >>>>> https://patchwork.linuxtv.org/project/linux-media/patch/20231010022=
+136.1504015-7-yunkec@google.com/
+> >>>>>
+> >>>>> since min and max values are perfectly fine for a fixed point value=
+.
+> >>>>>
+> >>>>> Even a step value (currently not supported in that patch) would mak=
+e sense.
+> >>>>>
+> >>>>> But I wonder if we couldn't simplify this: instead of creating a v4=
+l2_ctrl_fixed_point,
+> >>>>> why not represent the fixed point value as a Q31.32. Then the stand=
+ard
+> >>>>> minimum/maximum/step values can be used, and it acts like a regular=
+ V4L2_TYPE_INTEGER64.
+> >>>>>
+> >>>>> Except that both userspace and drivers need to multiply it with 2^-=
+32 to get the actual
+> >>>>> value.
+> >>>>>
+> >>>>> So in enum v4l2_ctrl_type add:
+> >>>>>
+> >>>>>         V4L2_CTRL_TYPE_FIXED_POINT =3D 10,
+> >>>>>
+> >>>>> (10, because it is no longer a compound type).
+> >>>>
+> >>>> Seems we don't need V4L2_CTRL_TYPE_FIXED_POINT, just use V4L2_TYPE_I=
+NTEGER64?
+> >>>>
+> >>>> The reason I use the 'integer' and 'fractional' is that I want
+> >>>> 'integer' to be the normal sample
+> >>>> rate, for example 48kHz.  The 'fractional' is the difference with
+> >>>> normal sample rate.
+> >>>>
+> >>>> For example, the rate =3D 47998.12345.  so integer =3D 48000,  fract=
+ional=3D -1.87655.
+> >>>>
+> >>>> So if we use s64 for rate, then in driver need to convert the rate t=
+o
+> >>>> the closed normal
+> >>>> sample rate + fractional.
+> >>>
+> >>> That wasn't what the documentation said :-)
+> >>>
+> >>> So this is really two controls: one for the 'normal sample rate' (wha=
+tever 'normal'
+> >>> means in this context) and the offset to the actual sample rate.
+> >>>
+> >>> Presumably the 'normal' sample rate is set once, while the offset cha=
+nges
+> >>> regularly.
+> >>>
+> >>> But why do you need the 'normal' sample rate? With audio resampling I=
+ assume
+> >>> you resample from one rate to another, so why do you need a third 'no=
+rmal'
+> >>> rate?
+> >>>
+> >>
+> >> 'Normal' rate is used to select the prefilter table.
+> >>
+> >
+> > Currently I think we may define
+> > V4L2_CID_M2M_AUDIO_SOURCE_RATE
+> > V4L2_CID_M2M_AUDIO_DEST_RATE
+>
+> That makes sense.
+>
+> > V4L2_CID_M2M_AUDIO_ASRC_RATIO_MOD
+>
+> OK, can you document this control? Just write it down in the reply, I jus=
+t want
+> to understand how the integer value you set here is used.
+>
 
+It is Q31 value.   It is equal to:
+in_rate_new / out_rate_new -  in_rate_old / out_rate_old
 
-On 17.10.23 г. 13:14 ч., Kai Huang wrote:
-> The SEAMCALLs involved during the TDX module initialization are not
-> expected to fail.  In fact, they are not expected to return any non-zero
-> code (except the "running out of entropy error", which can be handled
-> internally already).
-> 
-> Add yet another set of SEAMCALL wrappers, which treats all non-zero
-> return code as error, to support printing SEAMCALL error upon failure
-> for module initialization.  Note the TDX module initialization doesn't
-> use the _saved_ret() variant thus no wrapper is added for it.
-> 
-> SEAMCALL assembly can also return kernel-defined error codes for three
-> special cases: 1) TDX isn't enabled by the BIOS; 2) TDX module isn't
-> loaded; 3) CPU isn't in VMX operation.  Whether they can legally happen
-> depends on the caller, so leave to the caller to print error message
-> when desired.
-> 
-> Also convert the SEAMCALL error codes to the kernel error codes in the
-> new wrappers so that each SEAMCALL caller doesn't have to repeat the
-> conversion.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
-> 
-> v13 -> v14:
->   - Use real functions to replace macros. (Dave)
->   - Moved printing error message for special error code to the caller
->     (internal)
->   - Added Kirill's tag
-> 
-> v12 -> v13:
->   - New implementation due to TDCALL assembly series.
-> 
-> ---
->   arch/x86/include/asm/tdx.h  |  1 +
->   arch/x86/virt/vmx/tdx/tdx.c | 52 +++++++++++++++++++++++++++++++++++++
->   2 files changed, 53 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index d624aa25aab0..984efd3114ed 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -27,6 +27,7 @@
->   /*
->    * TDX module SEAMCALL leaf function error codes
->    */
-> +#define TDX_SUCCESS		0ULL
->   #define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
->   
->   #ifndef __ASSEMBLY__
-> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-> index 13d22ea2e2d9..52fb14e0195f 100644
-> --- a/arch/x86/virt/vmx/tdx/tdx.c
-> +++ b/arch/x86/virt/vmx/tdx/tdx.c
-> @@ -20,6 +20,58 @@ static u32 tdx_global_keyid __ro_after_init;
->   static u32 tdx_guest_keyid_start __ro_after_init;
->   static u32 tdx_nr_guest_keyids __ro_after_init;
->   
-> +typedef void (*sc_err_func_t)(u64 fn, u64 err, struct tdx_module_args *args);
-> +
-> +static inline void seamcall_err(u64 fn, u64 err, struct tdx_module_args *args)
-> +{
-> +	pr_err("SEAMCALL (0x%llx) failed: 0x%llx\n", fn, err);
-> +}
-> +
-> +static inline void seamcall_err_ret(u64 fn, u64 err,
-> +				    struct tdx_module_args *args)
-> +{
-> +	seamcall_err(fn, err, args);
-> +	pr_err("RCX 0x%llx RDX 0x%llx R8 0x%llx R9 0x%llx R10 0x%llx R11 0x%llx\n",
-> +			args->rcx, args->rdx, args->r8, args->r9,
-> +			args->r10, args->r11);
-> +}
-> +
-> +static inline void seamcall_err_saved_ret(u64 fn, u64 err,
-> +					  struct tdx_module_args *args)
+Best regards
+Wang shengjiu
 
-This function remains unused throughout the whole series, remove it and 
-add it later when it's actually going to be useful.
-
-<snip>
+> Regards,
+>
+>         Hans
+>
+> >
+> > All of them can be V4L2_CTRL_TYPE_INTEGER.
+> >
+> > RATIO_MOD was defined in the very beginning version.
+> > I think it is better to let users calculate this value.
+> >
+> > The reason is:
+> > if we define the offset for source rate and dest rate in
+> > driver separately,  when offset of source rate is set,
+> > driver don't know if it needs to wait or not the dest rate
+> > offset,  then go to calculate the ratio_mod.
+> >
+> > best regards
+> > wang shengjiu
+> >
+> >> Best regards
+> >> Wang Shengjiu
+> >>
+> >>> Regards,
+> >>>
+> >>>         Hans
+> >>>
+> >>>>
+> >>>> best regards
+> >>>> wang shengjiu
+> >>>>
+> >>>>>
+> >>>>>>
+> >>>>>>       default:
+> >>>>>>               return -EINVAL;
+> >>>>>> @@ -1868,6 +1870,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struc=
+t v4l2_ctrl_handler *hdl,
+> >>>>>>       case V4L2_CTRL_TYPE_AREA:
+> >>>>>>               elem_size =3D sizeof(struct v4l2_area);
+> >>>>>>               break;
+> >>>>>> +     case V4L2_CTRL_TYPE_FIXED_POINT:
+> >>>>>> +             elem_size =3D sizeof(struct v4l2_ctrl_fixed_point);
+> >>>>>> +             break;
+> >>>>>>       default:
+> >>>>>>               if (type < V4L2_CTRL_COMPOUND_TYPES)
+> >>>>>>                       elem_size =3D sizeof(s32);
+> >>>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/m=
+edia/v4l2-core/v4l2-ctrls-defs.c
+> >>>>>> index 8696eb1cdd61..d8f232df6b6a 100644
+> >>>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>>>>> @@ -1602,6 +1602,10 @@ void v4l2_ctrl_fill(u32 id, const char **na=
+me, enum v4l2_ctrl_type *type,
+> >>>>>>       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+> >>>>>>               *type =3D V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+> >>>>>>               break;
+> >>>>>> +     case V4L2_CID_ASRC_SOURCE_RATE:
+> >>>>>> +     case V4L2_CID_ASRC_DEST_RATE:
+> >>>>>> +             *type =3D V4L2_CTRL_TYPE_FIXED_POINT;
+> >>>>>> +             break;
+> >>>>>>       default:
+> >>>>>>               *type =3D V4L2_CTRL_TYPE_INTEGER;
+> >>>>>>               break;
+> >>>>>> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls=
+.h
+> >>>>>> index 59679a42b3e7..645e4cccafc7 100644
+> >>>>>> --- a/include/media/v4l2-ctrls.h
+> >>>>>> +++ b/include/media/v4l2-ctrls.h
+> >>>>>> @@ -56,6 +56,7 @@ struct video_device;
+> >>>>>>   * @p_av1_tile_group_entry:  Pointer to an AV1 tile group entry s=
+tructure.
+> >>>>>>   * @p_av1_frame:             Pointer to an AV1 frame structure.
+> >>>>>>   * @p_av1_film_grain:                Pointer to an AV1 film grain=
+ structure.
+> >>>>>> + * @p_fixed_point:           Pointer to a struct v4l2_ctrl_fixed_=
+point.
+> >>>>>>   * @p:                               Pointer to a compound value.
+> >>>>>>   * @p_const:                 Pointer to a constant compound value=
+.
+> >>>>>>   */
+> >>>>>> @@ -89,6 +90,7 @@ union v4l2_ctrl_ptr {
+> >>>>>>       struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entr=
+y;
+> >>>>>>       struct v4l2_ctrl_av1_frame *p_av1_frame;
+> >>>>>>       struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
+> >>>>>> +     struct v4l2_ctrl_fixed_point *p_fixed_point;
+> >>>>>>       void *p;
+> >>>>>>       const void *p_const;
+> >>>>>>  };
+> >>>>>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/lin=
+ux/v4l2-controls.h
+> >>>>>> index c3604a0a3e30..91096259e3ea 100644
+> >>>>>> --- a/include/uapi/linux/v4l2-controls.h
+> >>>>>> +++ b/include/uapi/linux/v4l2-controls.h
+> >>>>>> @@ -112,6 +112,8 @@ enum v4l2_colorfx {
+> >>>>>>
+> >>>>>>  /* last CID + 1 */
+> >>>>>>  #define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44=
+)
+> >>>>>> +#define V4L2_CID_ASRC_SOURCE_RATE            (V4L2_CID_BASE + 45)
+> >>>>>> +#define V4L2_CID_ASRC_DEST_RATE                      (V4L2_CID_BA=
+SE + 46)
+> >>>>>
+> >>>>> This patch needs to be split in three parts:
+> >>>>>
+> >>>>> 1) Add the new M2M_AUDIO control class,
+> >>>>> 2) Add the new V4L2_CTRL_TYPE_FIXED_POINT type,
+> >>>>> 3) Add the new controls.
+> >>>>>
+> >>>>> These are all independent changes, so separating them makes it easi=
+er to
+> >>>>> review.
+> >>>>>
+> >>>>>>
+> >>>>>>  /* USER-class private control IDs */
+> >>>>>>
+> >>>>>> @@ -3488,4 +3490,15 @@ struct v4l2_ctrl_av1_film_grain {
+> >>>>>>  #define V4L2_CID_MPEG_MFC51_BASE        V4L2_CID_CODEC_MFC51_BASE
+> >>>>>>  #endif
+> >>>>>>
+> >>>>>> +/**
+> >>>>>> + * struct v4l2_ctrl_fixed_point - fixed point parameter.
+> >>>>>> + *
+> >>>>>> + * @rate_integer: integer part of fixed point value.
+> >>>>>> + * @rate_fractional: fractional part of fixed point value
+> >>>>>> + */
+> >>>>>> +struct v4l2_ctrl_fixed_point {
+> >>>>>> +     __u32 integer;
+> >>>>>
+> >>>>> __s32?
+> >>>>>
+> >>>>>> +     __u32 fractional;
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>  #endif
+> >>>>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/v=
+ideodev2.h
+> >>>>>> index 2ac7b989394c..3ef32c09c2fa 100644
+> >>>>>> --- a/include/uapi/linux/videodev2.h
+> >>>>>> +++ b/include/uapi/linux/videodev2.h
+> >>>>>> @@ -1888,6 +1888,7 @@ struct v4l2_ext_control {
+> >>>>>>               struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_=
+tile_group_entry;
+> >>>>>>               struct v4l2_ctrl_av1_frame __user *p_av1_frame;
+> >>>>>>               struct v4l2_ctrl_av1_film_grain __user *p_av1_film_g=
+rain;
+> >>>>>> +             struct v4l2_ctrl_fixed_point __user *p_fixed_point;
+> >>>>>>               void __user *ptr;
+> >>>>>>       };
+> >>>>>>  } __attribute__ ((packed));
+> >>>>>> @@ -1966,6 +1967,8 @@ enum v4l2_ctrl_type {
+> >>>>>>       V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY =3D 0x281,
+> >>>>>>       V4L2_CTRL_TYPE_AV1_FRAME            =3D 0x282,
+> >>>>>>       V4L2_CTRL_TYPE_AV1_FILM_GRAIN       =3D 0x283,
+> >>>>>> +
+> >>>>>> +     V4L2_CTRL_TYPE_FIXED_POINT          =3D 0x290,
+> >>>>>>  };
+> >>>>>>
+> >>>>>>  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
+> >>>>>
+> >>>>> Regards,
+> >>>>>
+> >>>>>         Hans
+> >>>
+>
