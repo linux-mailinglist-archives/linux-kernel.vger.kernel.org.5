@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B5A7CD46B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B047CD471
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbjJRGYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S1344550AbjJRGZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344634AbjJRGX6 (ORCPT
+        with ESMTP id S235217AbjJRGZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:23:58 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B072718;
-        Tue, 17 Oct 2023 23:21:59 -0700 (PDT)
-Received: from p200300ccff145f001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff14:5f00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qszw7-00580I-U3; Wed, 18 Oct 2023 08:21:44 +0200
-Date:   Wed, 18 Oct 2023 08:21:42 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        bcousson@baylibre.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-Message-ID: <20231018082142.5b7d3ad5@aktux>
-In-Reply-To: <20231018052345.GK34982@atomide.com>
-References: <20230705190324.355282-1-andreas@kemnade.info>
-        <20230705190324.355282-2-andreas@kemnade.info>
-        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
-        <20230920063353.GQ5285@atomide.com>
-        <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
-        <20230921121626.GT5285@atomide.com>
-        <20231006102348.GK34982@atomide.com>
-        <20231006213003.0fbac87a@aktux>
-        <20231007062518.GM34982@atomide.com>
-        <20231015234815.637f5c14@aktux>
-        <20231018052345.GK34982@atomide.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Wed, 18 Oct 2023 02:25:10 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABF2C6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:24:10 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so6336224a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697610248; x=1698215048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h0LSTDW6faOOZtWiReUGEV1kCZbo9a6/NHU8SOiXxrc=;
+        b=FLck6fm3Q50JXB/FT7td+1zfeI+Pj4RhU0M8Dt//vNxC6vtJw93rxQc6VSyEGKz1Tp
+         FOZan8trl2/3xGDNeX7Y/0qxJqIqCr50BIHBZOGf8iDwK+mZiwRGMYKMxmSJXoqC2XaO
+         ZnF/o1KGSZ/gn3Jj6V5YDJyw8vRrvwIGGIAnnTdx1r1w5n3N3cFJ/aNybbfETGPK6RD4
+         3uEHOajYE9VeDSwafuEC5eIAdsxqiEMB1KUKT60ZLyGdZf7iXgFf8xdPyJXYfppozTMJ
+         1P2o0VGytDp54t5YPwWsBmLKMZZa5mOEg2OTQ7723PQEx/6GKS8Y+GPs4knFTVHMWITH
+         xs1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697610248; x=1698215048;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h0LSTDW6faOOZtWiReUGEV1kCZbo9a6/NHU8SOiXxrc=;
+        b=aCVR34M4nLy4VRdHPtxRHzkJnRgWhLx0bwtCJCY50hfZeZZxokv5Ums8FY2joN7BEx
+         pfqGpFR9sF6lr3rlj2uyMAMT5bEAqWKBixRo5Lab/ib5G27PQBkhMeewwb2/77jAEd+L
+         HPm5pi5mdFUVzTxlSAJydbEv1nfZCec90hw2TLqRzpl2QrTPnJgBqJ20mFo+/eAyskCr
+         szCi3ozwgXQY88ErQfchJwD0gtlicA9wR/Df0haCO/NQ6FpR9tX06HanKomKVqSdG0up
+         RravFugP+19cK4fb08R+UY6IDcDCPSJ1smrXgJKGe8CWeKnfWXBRHXPo9SxL6iPcMucQ
+         ndPw==
+X-Gm-Message-State: AOJu0YySTOH5R5RKIotIrJ+++tagzUQpu7t/CsXEKFp2dwmDz8waDc83
+        2lWh9vZjrgfOUkIQVLOBpZEXmYOM6/v+zyZ/bKY=
+X-Google-Smtp-Source: AGHT+IFkxm1MnB5ryqx/bxdOF9swb/7TUQl4dvCNn74j4MyU/6anDE4hDdxSnnwnnJXSJnG7ob0naA==
+X-Received: by 2002:a05:6402:4314:b0:53e:1b:15f5 with SMTP id m20-20020a056402431400b0053e001b15f5mr3286742edc.39.1697610248609;
+        Tue, 17 Oct 2023 23:24:08 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id h15-20020a0564020e0f00b00530a9488623sm2242277edh.46.2023.10.17.23.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 23:24:08 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Raymond Hackley <raymondhackley@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 0/2] ARM: dts: samsung: exynos4412-midas: fix key-ok and use Linux event codes
+Date:   Wed, 18 Oct 2023 08:24:04 +0200
+Message-Id: <169761020952.14892.6591419387867673696.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231017101402.62740-1-raymondhackley@protonmail.com>
+References: <20231017101402.62740-1-raymondhackley@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 08:23:45 +0300
-Tony Lindgren <tony@atomide.com> wrote:
 
-> * Andreas Kemnade <andreas@kemnade.info> [231015 21:48]:
-> > On Sat, 7 Oct 2023 09:25:18 +0300
-> > Tony Lindgren <tony@atomide.com> wrote:  
-> > > If so then the following might be a fix, not familiar with runtime PM
-> > > done by ASoC though and not sure if some kind of locking would be
-> > > needed here.
-> > >   
-> > just checked: that one fixes the regression. runtime suspends again.  
+On Tue, 17 Oct 2023 10:16:37 +0000, Raymond Hackley wrote:
+> Input event code 139 stands for KEY_MENU, instead of KEY_OK as node name
+> key-ok inplies. Fix it with correct event code 0x160.
 > 
-> OK good to hear. So is there some fixes tag for this one or where did this
-> start happening? I'm not quite following how the dropping of platform data
-> could have affected this, maybe it just hid the problem because of
-> returning early?
+> Use event codes with linux-event-codes.h included for input keys on midas
+> in addition.
 > 
-yes I think so. From a perspective of OMAP[45] mith McBSP in master mode,
-applying  "clk: ti: Fix missing omap4 mcbsp functional clock and aliases"
-on top of "ASoC: ti: omap-mcbsp: Ignore errors for getting  fck_src"
-is a regression. For everyone else not. So 
-"clk: ti: Fix missing omap4 mcbsp functional clock and aliases"
-did uncover a hidden problem, but of course it is the right step
-forward.
 
-Regards
-Andreas
+Applied, thanks!
+
+It is however very late in the cycle, so there is a chance this will miss the
+merge window. If this happens, I will keep it for the next cycle (no need for
+resending).
+
+[1/2] ARM: dts: samsung: exynos4412-midas: fix key-ok event code
+      https://git.kernel.org/krzk/linux/c/25e20eedc1d63dcdf6f781588e8dbc37cd0aad16
+[2/2] ARM: dts: samsung: exynos4412-midas: use Linux event codes for input keys
+      https://git.kernel.org/krzk/linux/c/4a48fa417abc5b86da393c93ab63a9160076a248
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
