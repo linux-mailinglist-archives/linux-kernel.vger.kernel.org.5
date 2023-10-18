@@ -2,230 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0667CD36A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A3B7CD371
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjJRFLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S229552AbjJRFOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 01:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjJRFLK (ORCPT
+        with ESMTP id S229455AbjJRFOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:11:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F2C103
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697605868; x=1729141868;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=r5F/WiyvdrNAjPVwemI4owdYzICMknCvacYBMmUKzrY=;
-  b=BydrJt+GxFyaZAOnNQdKu5cDuWCLHRJ7t9wkBliahtgq7wAJ0QyEO/NX
-   hrWH3eYUDgQaZwPqePKz262aq/TDhcj+Rgf73VZgrraFQU0B6oC+Jugut
-   iElKh1YEVb24n3xMLrmZ3eODEbRsvPuC9YeACeOUeEVdvFyjrbe75CkI6
-   /331KoivJskw8biufTnkPFgV1nAIrssAJ3Or8twWCKxyKaxBJaKpV8qkb
-   JGXjH9e6wdtATyV/15jQ00axhyj5G3t69elqch1x8FL83bXlGgtQK4/j7
-   W3lONZthuO2LQPyI9112XRLaAKV0CHLDOVUPU662o/2TGzl+cIqrB5WST
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="389815367"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="389815367"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 22:11:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="900180605"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="900180605"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Oct 2023 22:08:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9F93B17F; Wed, 18 Oct 2023 08:10:58 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jani Nikula <jani.nikula@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Wed, 18 Oct 2023 01:14:19 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC02B0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:14:17 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HJwpYv015737;
+        Wed, 18 Oct 2023 05:14:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2023-03-30;
+ bh=iUNSO/bYR9F/qcPJc1+lRcxI13H2YKnKpW68eyRCbEo=;
+ b=0A+sh3TUnM6mQ083lKq3P5JZY8EsR8bCUvUfpFfFepiSG4V9WniDC8ua0ltWjsnAx8ih
+ 6tzYReL5bbPR+PmCWR/me7WXd0n9Ug3T5HwoAACq3vGFwU3wJrrD1j2QWYji3Fyb02ZF
+ obP4sgXYySfn4clhs1xunbcvKZDegr8N/R5yPyENWgU6yBlF50rROcn4a+24m1f3PiSB
+ jmQrEBKzx5qLSl+iUe1Un6jlqSKMP3bsPlL4WND3lpt0kLSMyPSOpC/Q9eX+WibQ45Sm
+ OZ0bP9ED+5YcJrquB6yzxyqjMhts0wn2OSKWOlE6iKjs+hvIqE0mx3tsT6LEIcjDcKmM cw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqjynepeu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 05:14:13 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39I49CXR021681;
+        Wed, 18 Oct 2023 05:14:12 GMT
+Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3trg51ycja-1;
+        Wed, 18 Oct 2023 05:14:12 +0000
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
+        sgarzare@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v1 2/2] drm/i915/dsi: Replace poking of VLV GPIOs behind the driver's back
-Date:   Wed, 18 Oct 2023 08:10:52 +0300
-Message-Id: <20231018051052.1328852-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20231018051052.1328852-1-andriy.shevchenko@linux.intel.com>
-References: <20231018051052.1328852-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: [RFC v2 PATCH] vdpa_sim: implement .reset_map support
+Date:   Tue, 17 Oct 2023 22:11:33 -0700
+Message-Id: <1697605893-30313-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310180044
+X-Proofpoint-GUID: 6TIiuHvcMa6pdS6WnxcIN-uqP71R4NJO
+X-Proofpoint-ORIG-GUID: 6TIiuHvcMa6pdS6WnxcIN-uqP71R4NJO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a dirty hack in the driver that pokes GPIO registers behind
-the driver's back. Moreoever it might be problematic as simultaneous
-I/O may hang the system, see the commit 40ecab551232 ("pinctrl:
-baytrail: Really serialize all register accesses") for the details.
-Taking all this into consideration replace the hack with proper
-GPIO APIs being used.
+RFC only. Not tested on vdpa-sim-blk with user virtual address.
+Works fine with vdpa-sim-net which uses physical address to map.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This patch is based on top of [1].
+
+[1] https://lore.kernel.org/virtualization/1696928580-7520-1-git-send-email-si-wei.liu@oracle.com/
+
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+
 ---
- drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 101 ++++++-------------
- 1 file changed, 31 insertions(+), 70 deletions(-)
+RFC v2:
+  - initialize iotlb to passthrough mode in device add
+---
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 34 ++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-index c3c3f4df9ac4..35ab4048029d 100644
---- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -55,43 +55,6 @@
- #define MIPI_VIRTUAL_CHANNEL_SHIFT	1
- #define MIPI_PORT_SHIFT			3
- 
--/* base offsets for gpio pads */
--#define VLV_GPIO_NC_0_HV_DDI0_HPD	0x4130
--#define VLV_GPIO_NC_1_HV_DDI0_DDC_SDA	0x4120
--#define VLV_GPIO_NC_2_HV_DDI0_DDC_SCL	0x4110
--#define VLV_GPIO_NC_3_PANEL0_VDDEN	0x4140
--#define VLV_GPIO_NC_4_PANEL0_BKLTEN	0x4150
--#define VLV_GPIO_NC_5_PANEL0_BKLTCTL	0x4160
--#define VLV_GPIO_NC_6_HV_DDI1_HPD	0x4180
--#define VLV_GPIO_NC_7_HV_DDI1_DDC_SDA	0x4190
--#define VLV_GPIO_NC_8_HV_DDI1_DDC_SCL	0x4170
--#define VLV_GPIO_NC_9_PANEL1_VDDEN	0x4100
--#define VLV_GPIO_NC_10_PANEL1_BKLTEN	0x40E0
--#define VLV_GPIO_NC_11_PANEL1_BKLTCTL	0x40F0
--
--#define VLV_GPIO_PCONF0(base_offset)	(base_offset)
--#define VLV_GPIO_PAD_VAL(base_offset)	((base_offset) + 8)
--
--struct gpio_map {
--	u16 base_offset;
--	bool init;
--};
--
--static struct gpio_map vlv_gpio_table[] = {
--	{ VLV_GPIO_NC_0_HV_DDI0_HPD },
--	{ VLV_GPIO_NC_1_HV_DDI0_DDC_SDA },
--	{ VLV_GPIO_NC_2_HV_DDI0_DDC_SCL },
--	{ VLV_GPIO_NC_3_PANEL0_VDDEN },
--	{ VLV_GPIO_NC_4_PANEL0_BKLTEN },
--	{ VLV_GPIO_NC_5_PANEL0_BKLTCTL },
--	{ VLV_GPIO_NC_6_HV_DDI1_HPD },
--	{ VLV_GPIO_NC_7_HV_DDI1_DDC_SDA },
--	{ VLV_GPIO_NC_8_HV_DDI1_DDC_SCL },
--	{ VLV_GPIO_NC_9_PANEL1_VDDEN },
--	{ VLV_GPIO_NC_10_PANEL1_BKLTEN },
--	{ VLV_GPIO_NC_11_PANEL1_BKLTCTL },
--};
--
- struct i2c_adapter_lookup {
- 	u16 slave_addr;
- 	struct intel_dsi *intel_dsi;
-@@ -269,52 +232,44 @@ static void soc_exec_gpio(struct intel_connector *connector, const char *con_id,
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 76d41058add9..2a0a6042d61d 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -151,13 +151,6 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim)
+ 				 &vdpasim->iommu_lock);
  	}
+ 
+-	for (i = 0; i < vdpasim->dev_attr.nas; i++) {
+-		vhost_iotlb_reset(&vdpasim->iommu[i]);
+-		vhost_iotlb_add_range(&vdpasim->iommu[i], 0, ULONG_MAX,
+-				      0, VHOST_MAP_RW);
+-		vdpasim->iommu_pt[i] = true;
+-	}
+-
+ 	vdpasim->running = true;
+ 	spin_unlock(&vdpasim->iommu_lock);
+ 
+@@ -259,8 +252,12 @@ struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr,
+ 	if (!vdpasim->iommu_pt)
+ 		goto err_iommu;
+ 
+-	for (i = 0; i < vdpasim->dev_attr.nas; i++)
++	for (i = 0; i < vdpasim->dev_attr.nas; i++) {
+ 		vhost_iotlb_init(&vdpasim->iommu[i], max_iotlb_entries, 0);
++		vhost_iotlb_add_range(&vdpasim->iommu[i], 0, ULONG_MAX, 0,
++				      VHOST_MAP_RW);
++		vdpasim->iommu_pt[i] = true;
++	}
+ 
+ 	for (i = 0; i < dev_attr->nvqs; i++)
+ 		vringh_set_iotlb(&vdpasim->vqs[i].vring, &vdpasim->iommu[0],
+@@ -637,6 +634,25 @@ static int vdpasim_set_map(struct vdpa_device *vdpa, unsigned int asid,
+ 	return ret;
  }
  
-+static struct gpiod_lookup_table vlv_gpio_table = {
-+	.dev_id = "0000:00:02.0",
-+	.table = {
-+		GPIO_LOOKUP_IDX("INT33FC:01", 0, "Panel NC", 0, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 1, "Panel NC", 1, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 2, "Panel NC", 2, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 3, "Panel NC", 3, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 4, "Panel NC", 4, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 5, "Panel NC", 5, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 6, "Panel NC", 6, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 7, "Panel NC", 7, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 8, "Panel NC", 8, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 9, "Panel NC", 9, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 10, "Panel NC", 10, GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("INT33FC:01", 11, "Panel NC", 11, GPIO_ACTIVE_HIGH),
-+		{ }
-+	},
-+};
++static int vdpasim_reset_map(struct vdpa_device *vdpa, unsigned int asid)
++{
++	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
 +
- static void vlv_exec_gpio(struct intel_connector *connector,
- 			  u8 gpio_source, u8 gpio_index, bool value)
++	if (asid >= vdpasim->dev_attr.nas)
++		return -EINVAL;
++
++	spin_lock(&vdpasim->iommu_lock);
++	if (vdpasim->iommu_pt[asid])
++		goto out;
++	vhost_iotlb_reset(&vdpasim->iommu[asid]);
++	vhost_iotlb_add_range(&vdpasim->iommu[asid], 0, ULONG_MAX,
++			      0, VHOST_MAP_RW);
++	vdpasim->iommu_pt[asid] = true;
++out:
++	spin_unlock(&vdpasim->iommu_lock);
++	return 0;
++}
++
+ static int vdpasim_bind_mm(struct vdpa_device *vdpa, struct mm_struct *mm)
  {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
--	struct gpio_map *map;
--	u16 pconf0, padval;
--	u32 tmp;
--	u8 port;
- 
--	if (gpio_index >= ARRAY_SIZE(vlv_gpio_table)) {
--		drm_dbg_kms(&dev_priv->drm, "unknown gpio index %u\n",
--			    gpio_index);
--		return;
--	}
--
--	map = &vlv_gpio_table[gpio_index];
--
--	if (connector->panel.vbt.dsi.seq_version >= 3) {
--		/* XXX: this assumes vlv_gpio_table only has NC GPIOs. */
--		port = IOSF_PORT_GPIO_NC;
--	} else {
--		if (gpio_source == 0) {
--			port = IOSF_PORT_GPIO_NC;
--		} else if (gpio_source == 1) {
-+	/* XXX: this assumes vlv_gpio_table only has NC GPIOs. */
-+	if (connector->panel.vbt.dsi.seq_version < 3) {
-+		if (gpio_source == 1) {
- 			drm_dbg_kms(&dev_priv->drm, "SC gpio not supported\n");
- 			return;
--		} else {
-+		}
-+		if (gpio_source > 1) {
- 			drm_dbg_kms(&dev_priv->drm,
- 				    "unknown gpio source %u\n", gpio_source);
- 			return;
- 		}
- 	}
- 
--	pconf0 = VLV_GPIO_PCONF0(map->base_offset);
--	padval = VLV_GPIO_PAD_VAL(map->base_offset);
--
--	vlv_iosf_sb_get(dev_priv, BIT(VLV_IOSF_SB_GPIO));
--	if (!map->init) {
--		/* FIXME: remove constant below */
--		vlv_iosf_sb_write(dev_priv, port, pconf0, 0x2000CC00);
--		map->init = true;
--	}
--
--	tmp = 0x4 | value;
--	vlv_iosf_sb_write(dev_priv, port, padval, tmp);
--	vlv_iosf_sb_put(dev_priv, BIT(VLV_IOSF_SB_GPIO));
-+	soc_exec_gpio(connector, "Panel NC", gpio_index, value);
- }
- 
- static void chv_exec_gpio(struct intel_connector *connector,
-@@ -974,6 +929,9 @@ void intel_dsi_vbt_gpio_init(struct intel_dsi *intel_dsi, bool panel_is_on)
- 	struct pinctrl *pinctrl;
- 	int ret;
- 
-+	if (IS_VALLEYVIEW(dev_priv))
-+		gpiod_add_lookup_table(&vlv_gpio_table);
-+
- 	if ((IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) &&
- 	    mipi_config->pwm_blc == PPS_BLC_PMIC) {
- 		gpiod_add_lookup_table(&pmic_panel_gpio_table);
-@@ -1043,4 +1001,7 @@ void intel_dsi_vbt_gpio_cleanup(struct intel_dsi *intel_dsi)
- 		pinctrl_unregister_mappings(soc_pwm_pinctrl_map);
- 		gpiod_remove_lookup_table(&soc_panel_gpio_table);
- 	}
-+
-+	if (IS_VALLEYVIEW(dev_priv))
-+		gpiod_remove_lookup_table(&vlv_gpio_table);
- }
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+@@ -759,6 +775,7 @@ static const struct vdpa_config_ops vdpasim_config_ops = {
+ 	.set_group_asid         = vdpasim_set_group_asid,
+ 	.dma_map                = vdpasim_dma_map,
+ 	.dma_unmap              = vdpasim_dma_unmap,
++	.reset_map              = vdpasim_reset_map,
+ 	.bind_mm		= vdpasim_bind_mm,
+ 	.unbind_mm		= vdpasim_unbind_mm,
+ 	.free                   = vdpasim_free,
+@@ -796,6 +813,7 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
+ 	.get_iova_range         = vdpasim_get_iova_range,
+ 	.set_group_asid         = vdpasim_set_group_asid,
+ 	.set_map                = vdpasim_set_map,
++	.reset_map              = vdpasim_reset_map,
+ 	.bind_mm		= vdpasim_bind_mm,
+ 	.unbind_mm		= vdpasim_unbind_mm,
+ 	.free                   = vdpasim_free,
 -- 
-2.40.0.1.gaa8946217a0b
+2.39.3
 
