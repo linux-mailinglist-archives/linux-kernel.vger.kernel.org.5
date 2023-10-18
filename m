@@ -2,95 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A38757CDD1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8847CDD25
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjJRNYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
+        id S231615AbjJRNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjJRNYT (ORCPT
+        with ESMTP id S230338AbjJRNZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:24:19 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB40B83;
-        Wed, 18 Oct 2023 06:24:16 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDMRVm009680;
-        Wed, 18 Oct 2023 13:24:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TiOX6dll2bvGdWalE9/Utntb+gAx0yYM4DDzC7MoWvI=;
- b=qqmQ6GQ8skPeKGNU7xDyOwp5sPN2w/xmnR/1t9AKSRONMnrj/iNWWvLPg9KJsLX8Fi1V
- 3dKaz1WYlPSQtfMQXyvBqgDRz2OLGDuw9xpvt7Ql5jFA5DRG4D0mYOMG3Y9n/SGxjIk3
- KR20neAE6ZGjKxYC6iyLUpmc9ql8+FP+h98AYBGXalanNlUnQ5N5IAWcFv+Bks7o6Qg5
- CN4zuIG+Jf3Xfb4+SY02mwF6FnrB9cLDpcj/Gh3L0btZ+YPWqvN2Qtsp84YIr4cHs/e8
- 7cWgmKT9OQrR/W9+WzKEDczz5eXcQU0zX/vMG5xbh36NFePqBeCxc4trZcc9/FbYH71w NQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg6g8396-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:24:13 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IDMWfV010043;
-        Wed, 18 Oct 2023 13:24:12 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg6g8382-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:24:12 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IBBhAx030719;
-        Wed, 18 Oct 2023 13:24:11 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr7hjrafv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:24:11 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IDO83n18088602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 13:24:08 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F11B20043;
-        Wed, 18 Oct 2023 13:24:08 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B039A20040;
-        Wed, 18 Oct 2023 13:24:07 +0000 (GMT)
-Received: from [9.152.224.54] (unknown [9.152.224.54])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 13:24:07 +0000 (GMT)
-Message-ID: <0d6c3a16-bba1-4f7d-bfbc-44efb7e73706@linux.ibm.com>
-Date:   Wed, 18 Oct 2023 15:24:07 +0200
+        Wed, 18 Oct 2023 09:25:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D1095
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:24:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29FF9C433CB
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697635498;
+        bh=y7R3Xc7b/dDNyN2IeFpAjUBAw7DegSFH5XvMPARiVk4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HqRRQnvPK9Llpsr83E0oTzhy/MdvDrNQkXWi1wfdt0swbneeg0G4qXpRNX0H2YOU8
+         2s/GzaMVN5v/JizxnGYjamOybkFMBWCSqMvH1s0EJKOBdkW0BIVnuibasbKNkxp2r1
+         Iwxr32Ep7jAMWk7Ii3r6oIFRubLOCdh50Mf2Bosg/+LM93+ZMNIQipIqrP4OpQuQVB
+         YQyqyXkE6wzhg/dconNrBQ1Mq6EzoUgRspIbWiMlvHn+DTtkk3XDou8f58qRH3rApf
+         FyJxSaDGH60zhVh5e+mCRFTEy1EmvbeeNGHgX7nXeq0waUYlQmVvdYKcmnHdCOhX0X
+         mdU01qZUKbTJw==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9338e4695so92284751fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:24:58 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyYnAQtFiia4UTlHUQdyMlny3rbyPJwan6pvscEphtAZsgMTuGf
+        LLyCBQQ5s3wDQbdtnEgO+siDPK3UG777aUmwhA==
+X-Google-Smtp-Source: AGHT+IE2erweQk78p2WZGcYNeJzi7UyNstiTigaugME3+3bf0yEm/om0FbaNsQp91jAtR+tU1eTO2SwDaQRNiTjDk+0=
+X-Received: by 2002:a2e:9457:0:b0:2b9:4b2e:5420 with SMTP id
+ o23-20020a2e9457000000b002b94b2e5420mr3825894ljh.52.1697635496365; Wed, 18
+ Oct 2023 06:24:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 10/18] net/smc: implement ID-related
- operations of loopback
-Content-Language: en-US
-To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
- <1695568613-125057-11-git-send-email-guwen@linux.alibaba.com>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1695568613-125057-11-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ugbjpdp0hi_8TGux2-ODi44VSmBAfyAA
-X-Proofpoint-GUID: i8QepzJQ-DOyQjH0mORVfHrOJtpPRnsK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_12,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=650 bulkscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 adultscore=0 impostorscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+References: <20230523104234.7849-1-angelogioacchino.delregno@collabora.com>
+ <20230915101124.283232-1-mwalle@kernel.org> <54a04d22-7ec1-473b-ab57-f6339b2cc782@collabora.com>
+In-Reply-To: <54a04d22-7ec1-473b-ab57-f6339b2cc782@collabora.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 18 Oct 2023 21:24:40 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_85g9bvVDUqK3ePd+7cWvqmVU4zRb=f4QxU_=A9eZaEpw@mail.gmail.com>
+Message-ID: <CAAOTY_85g9bvVDUqK3ePd+7cWvqmVU4zRb=f4QxU_=A9eZaEpw@mail.gmail.com>
+Subject: Re: [PATCH] drm: mediatek: mtk_dsi: Fix NO_EOT_PACKET settings/handling
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Michael Walle <mwalle@kernel.org>, airlied@gmail.com,
+        chunkuang.hu@kernel.org, ck.hu@mediatek.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, jitao.shi@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        p.zabel@pengutronix.de, shaoming.chen@mediatek.com,
+        yt.shen@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,13 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Angelo:
 
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> =E6=96=
+=BC
+2023=E5=B9=B410=E6=9C=8818=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:=
+21=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Il 15/09/23 12:11, Michael Walle ha scritto:
+> >> Due to the initial confusion about MIPI_DSI_MODE_EOT_PACKET, properly
+> >> renamed to MIPI_DSI_MODE_NO_EOT_PACKET, reflecting its actual meaning,
+> >> both the DSI_TXRX_CON register setting for bit (HSTX_)DIS_EOT and the
+> >> later calculation for horizontal sync-active (HSA), back (HBP) and
+> >> front (HFP) porches got incorrect due to the logic being inverted.
+> >>
+> >> This means that a number of settings were wrong because....:
+> >>   - DSI_TXRX_CON register setting: bit (HSTX_)DIS_EOT should be
+> >>     set in order to disable the End of Transmission packet;
+> >>   - Horizontal Sync and Back/Front porches: The delta used to
+> >>     calculate all of HSA, HBP and HFP should account for the
+> >>     additional EOT packet.
+> >>
+> >> Before this change...
+> >>   - Bit (HSTX_)DIS_EOT was being set when EOT packet was enabled;
+> >>   - For HSA/HBP/HFP delta... all three were wrong, as words were
+> >>     added when EOT disabled, instead of when EOT packet enabled!
+> >>
+> >> Invert the logic around flag MIPI_DSI_MODE_NO_EOT_PACKET in the
+> >> MediaTek DSI driver to fix the aforementioned issues.
+> >>
+> >> Fixes: 8b2b99fd7931 ("drm/mediatek: dsi: Fine tune the line time cause=
+d by EOTp")
+> >> Fixes: 2d52bfba09d1 ("drm/mediatek: add non-continuous clock mode and =
+EOT packet control")
+> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@c=
+ollabora.com>
+> >
+>
+> Hello CK,
+>
+> can you please pick this fix?
 
-On 24.09.23 17:16, Wen Gu wrote:
-> This patch implements GID/CHID/SEID related operations of SMC-D loopback device. In loopback device, GID is generated by UUIDv4 algorithm, CHID is reserved 0xFFFF, SEID is generated using the same algorithm as ISM device under s390 architecture, and is 0 and disabled under non-s390 architecture. Signed-off-by: Wen Gu <guwen@linux.alibaba.com> ---
+Applied with the changing
 
-IMO, get_system_eid should not be part of smcd_ops. And should not be provided by an smcd device.
-It is a system_eid is a global value that is valid for all smcd interfaces of this system (os instance).
-So I think it should be provided by the smc module. 
+Fixes: 2d52bfba09d1 ("drm/mediatek: add non-continuous clock mode and
+EOT packet control")
 
-I agree it needs to be architecture dependent and same as today for s390.
+to
+
+Fixes: c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register definition=
+")
+
+Regards,
+Chun-Kuang.
+
+>
+> Thanks,
+> Angelo
+>
