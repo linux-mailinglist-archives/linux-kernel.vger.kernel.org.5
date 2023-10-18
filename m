@@ -2,64 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E5F7CDAE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324CC7CDAE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjJRLpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S229993AbjJRLqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjJRLpB (ORCPT
+        with ESMTP id S230059AbjJRLpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:45:01 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A03ECFE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:44:57 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Dxl+g3xS9l3OAyAA--.62733S3;
-        Wed, 18 Oct 2023 19:44:55 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxE+Q2xS9lai0pAA--.23449S3;
-        Wed, 18 Oct 2023 19:44:55 +0800 (CST)
-Subject: Re: [PATCH v2 8/8] LoongArch: Add ORC unwinder support
-To:     kernel test robot <lkp@intel.com>,
+        Wed, 18 Oct 2023 07:45:49 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2218FE
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:45:44 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso611318a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697629543; x=1698234343; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VTINOs7IVK0NtmhaZm8Hxfp0zmQge6ZaL9u3C96Qtkk=;
+        b=RrSLeh03Z/Q/dAMWzai1S/m+J0txdbn5j10o+rQS7UxhfywO8gQb9hFuUcnmnWvQ1q
+         nrGatzVJl7/NZS4KwmmR5U2qc7kg34Cq1st3cCVLeO/xUKYXa5nqY6SSM2fdfuB3gl0r
+         9DIK3WoHBDO3WcbkF7fKFoQq94vtoAT43uXQI8OEC3kktqbpioVnX3d2eqmTD3UWR93Z
+         vOw12465Fe5SiSbwv6qRxmY7LujZcR1TACGrMNHByj+IQQCmr+XTVoJO+IwBTLZmBY77
+         YSoJD4EWNkhloUsCnZIXokTmn/Zg5YblrxAwFX3h+S77ev5XBoWM0sN4PtfmN0fqZh2T
+         nOlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697629543; x=1698234343;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VTINOs7IVK0NtmhaZm8Hxfp0zmQge6ZaL9u3C96Qtkk=;
+        b=M+/SLogiqbt701pbJxuLO213ndKelJ2oqfzvkLqJtVIKrCEECMz6VDzivs43gzKuW+
+         C2Z07UJJcHSQJvw6lfQspHMUQU5dQOJvPkKcAx1M8OHVPnrzXlfhF5Ul/332viBLVMdn
+         W+T/uM5jCUXNrvvJgJurT1aTX62EQnm6uA686n+XWR9tnquhEfVvR+c+F5cMM0JO5jyL
+         UMBVoXx+lb2iOtZqbFqq2GG9N9jaVr255Kj/R1nLcha/2kU3wFq6QHnOt+l/ZT2FZMj6
+         xivTvDCIYNWEj9o1wedNhq5pIIJ3wx0E+ZpSsXMxnQNaGyw3gROXvuiPjws4jnxsdPie
+         5IUg==
+X-Gm-Message-State: AOJu0YzwgNDtwrbv41XRgkOPsTZbVgVaJ7bvgyF5f5RgFbe2L28FC/fv
+        b1Gh3U42fUsHM+y10auhGlM=
+X-Google-Smtp-Source: AGHT+IGqXeNQawRBulQQP5v5T/ldgBTck2xmiz8UH0flZ10jQ2YZnQiB6VM/bXbO7Y22mMXA5ybPvg==
+X-Received: by 2002:a05:6402:4410:b0:530:bd6b:7a94 with SMTP id y16-20020a056402441000b00530bd6b7a94mr4825384eda.24.1697629543307;
+        Wed, 18 Oct 2023 04:45:43 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id t29-20020a50ab5d000000b0053ed70ebd7csm2720856edc.31.2023.10.18.04.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 04:45:42 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 13:45:40 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "H. Peter Anvin" <hpa@zytor.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     Hou Wenlong <houwenlong.hwl@antgroup.com>,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Huacai Chen <chenhuacai@kernel.org>
-References: <1696856590-30298-9-git-send-email-yangtiezhu@loongson.cn>
- <202310102113.bw7w3ZVv-lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <b30b034d-46ee-618b-5f92-b0f7dde1219a@loongson.cn>
-Date:   Wed, 18 Oct 2023 19:44:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>
+Subject: Re: [PATCH RFC 1/7] x86/head/64: Mark startup_gdt and
+ startup_gdt_descr as __initdata
+Message-ID: <ZS/FZAq6lbxXtBtB@gmail.com>
+References: <cover.1689130310.git.houwenlong.hwl@antgroup.com>
+ <c85903a7cfad37d14a7e5a4df9fc7119a3669fb3.1689130310.git.houwenlong.hwl@antgroup.com>
+ <ZS0lEmEpQOz4iQ4Q@gmail.com>
+ <20231017072311.GA46993@k08j02272.eu95sqa>
+ <ZS6F46vJfca5f6f8@gmail.com>
+ <77B66FD0-ED28-4D3F-8D28-467AC4FCD00D@zytor.com>
 MIME-Version: 1.0
-In-Reply-To: <202310102113.bw7w3ZVv-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxE+Q2xS9lai0pAA--.23449S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7CF45Aw1DGFy3Wr13tw4rtFc_yoW8XFW7pa
-        9Y93yIyryrWF18ua4DWr4UXw4jyr40ya4F9FyagryUA3ZIqFy3AFs2yrWY9ryUG3s7trZ5
-        KFWS9as8XF1UC3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
-        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcpBTUUUUU
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77B66FD0-ED28-4D3F-8D28-467AC4FCD00D@zytor.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,59 +90,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+* H. Peter Anvin <hpa@zytor.com> wrote:
 
-On 10/10/2023 09:46 PM, kernel test robot wrote:
-> Hi Tiezhu,
->
-> kernel test robot noticed the following build errors:
+> If the goal is better KASLR, then what we really should spend time on was 
+> Kristen Accardi's fgKASLR patches, which not only exponentially(!) 
+> increases the randomization entrophy but also *actually* avoids the "one 
+> leak and it's over" problem.
 
-...
+Agreed. Going by this version of function-granularity KASLR from 3 years 
+ago:
 
->    In file included from scripts/sorttable.c:201:
->>> scripts/sorttable.h:96:10: fatal error: 'asm/orc_types.h' file not found
->    #include <asm/orc_types.h>
->             ^~~~~~~~~~~~~~~~~
->    1 error generated.
+  https://lwn.net/Articles/824307/
+  https://lwn.net/ml/linux-kernel/20200623172327.5701-1-kristen@linux.intel.com/
 
-Thanks for your report, I can reproduce the error on x86:
+The fgKASLR feature looks entirely viable to me. Back then I presumed it 
+would get iterated beyond v3, and then it fell off my radar. :-/
 
-   make ARCH=x86_64 olddefconfig
-   make ARCH=x86_64 prepare
-
-The build error is related with "ARCH=x86_64", there is no error
-without "ARCH=x86_64" when build locally on x86.
-
-As described in Documentation/kbuild/makefiles.rst:
-
-   For example, you can pass in ARCH=i386, ARCH=x86_64, or ARCH=x86.
-   For all of them, SRCARCH=x86 because arch/x86/ supports both i386 and
-   x86_64.
-
-we should use SRCARCH instead of ARCH to specify the directory,
-like this:
-
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 576cf64..e4cca53 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -31,9 +31,12 @@ HOSTLDLIBS_sign-file = $(shell $(HOSTPKG_CONFIG) 
---libs libcrypto 2> /dev/null |
-
-  ifdef CONFIG_UNWINDER_ORC
-  ifeq ($(ARCH),x86_64)
--ARCH := x86
-+SRCARCH := x86
-  endif
--HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/x86/include
-+ifeq ($(ARCH),loongarch)
-+SRCARCH := loongarch
-+endif
-+HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/$(SRCARCH)/include
-  HOSTCFLAGS_sorttable.o += -DUNWINDER_ORC_ENABLED
-  endif
-
-I will update the related code of this patch in the next version.
+If Kristen or someone else would like to dust this off & submit a fresh 
+version it would be much appreciated!
 
 Thanks,
-Tiezhu
 
+	Ingo
