@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D401C7CDBB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2667CDBBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjJRMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        id S234971AbjJRMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjJRMcF (ORCPT
+        with ESMTP id S231755AbjJRMcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:32:05 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62AD131
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:32:00 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32caaa1c493so5307298f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697632319; x=1698237119; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6AC1mpiZBXNStM7oB6tiEEIW9Gl/xCSO0XdtqP4r9QI=;
-        b=L8d22yItLcD3kvHroT+xoauIb5VK1vhzjtzeVDcoK2ailNPr2Bu9eLvoBgfW8TQe8N
-         +hrIHtnHlhFoHLBRuhbOUpsT52VFVh/kvQ8+a5gb5lKraimWVS8josNmrObjjFMuwnQ+
-         mfeD9XTIEXX6Nj3pqhTXW+XLCzb16MUu58oJnLYzuV/mm748AX09EphEcWo34zDHy+Zy
-         8LnOQbWt5Bcq0AZTKEi+2uDHQnmfbGe5sYAQxnsyriGw4JkqF0e6rjeNGeC1nEC3/j8i
-         tRSggVRRYoQY48Wwr/IXQPqjfahXGfAB1bTugb7iIto4qDD+d9RRWhot4RsW7Z9f1jr5
-         wlSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697632319; x=1698237119;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6AC1mpiZBXNStM7oB6tiEEIW9Gl/xCSO0XdtqP4r9QI=;
-        b=CvAohKGzMw9mf5AnVv3BqTkXBV4z2trba2j0b19+O7fWZT+yu0aBrXIZ1rCaDLFrL9
-         T0Y0+8+RIMAQ3QK2Gbcqb2CgGQjtdsxE3h/cN6bCqssPBcDJBkXCpuUNXTUCM7bSi97n
-         UdtnPEmdLTljesAIRhMHM31a6hm9jLapBiqa8OFwTBiljW9FU/Ai/mFO1EaZcIcZpftX
-         W0j2XyRgYCgPz/Chxb2IQhZTy+DHTsGFtzcdyz2JPN1FdHp+28SSGgBc3Ctl5Wl3o/j9
-         MUOotaYTpZOJS3SYIpO3g+oy+B5Ycv6x4huZSNzMUFDEEFAOjGF8Oskj09yV+5hgBJiy
-         GROA==
-X-Gm-Message-State: AOJu0YzqJ0xJELpB9qJOxzVL7r4Ix7dVrpAWoidVB3Q5mT48L0T9+KsC
-        zVoaEM96sdK0EqJilJ3t1174cWUXNsGIpzl3fa0=
-X-Google-Smtp-Source: AGHT+IEKMMvf8PONXEFDRXM1+Ut4jcSZzuPmhpwwTC3gqdN5yY4vrMDr8Q0HEGp6r2Od+KtpVcDcVQ==
-X-Received: by 2002:a5d:508f:0:b0:32d:8469:4f64 with SMTP id a15-20020a5d508f000000b0032d84694f64mr3502040wrt.18.1697632319170;
-        Wed, 18 Oct 2023 05:31:59 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id b17-20020a05600010d100b003197869bcd7sm2021292wrx.13.2023.10.18.05.31.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 05:31:58 -0700 (PDT)
-Message-ID: <34d784f2-92d4-e06b-3596-36cf0d048f35@linaro.org>
-Date:   Wed, 18 Oct 2023 13:31:57 +0100
+        Wed, 18 Oct 2023 08:32:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F34BA3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697632370; x=1729168370;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=p1I1hBsZX/DQygdcRiZq5uN7j+ERHCkcuI4n04NmK9c=;
+  b=K0nCYnP5NSRPBkL21uQhH/VzDJmtUogm1wrUMF7ONevvInf05scGinF1
+   nAy18Rw4AsFAOwtBQNGrhHqxei/cU0e954Ju6bYDTfqGUVXvvl4zn03am
+   L1DF3/uuk75dXEmWkGzoEYZbENbNNPXT/5wSY3GAcDfOtpZE5c9Rma6gl
+   JUwKvcJu9tBerPEJi4iBhPy1Ih1VfYMUJznhEFxQgdL6kbQzCcNPOSSPK
+   fHU2pKN84teIqaNVs/VBJRXDn88SVFo+WV3Hc3EjvZuqY4yu92sSNrDsH
+   PMCjBhWlDbJursRuFJYGtTUefFdscO9Zd+jXVCN8qFiJUHS9YHeuvA6CR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="376374348"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="376374348"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 05:32:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="750079116"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="750079116"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 18 Oct 2023 05:32:47 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qt5jB-0000M0-1C;
+        Wed, 18 Oct 2023 12:32:45 +0000
+Date:   Wed, 18 Oct 2023 20:32:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ashish Mhetre <amhetre@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: drivers/memory/tegra/tegra186.c:74:49: warning: '%u' directive
+ output may be truncated writing between 1 and 10 bytes into a region of size
+ 6
+Message-ID: <202310182004.0XOYolzI-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
+commit: a7cffa11fa9232eabf0c4f441dc53002978ab526 memory: tegra: Add memory controller channels support
+date:   1 year, 5 months ago
+config: arm64-randconfig-r036-20230512 (https://download.01.org/0day-ci/archive/20231018/202310182004.0XOYolzI-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182004.0XOYolzI-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310182004.0XOYolzI-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/memory/tegra/tegra186.c: In function 'tegra186_mc_probe':
+>> drivers/memory/tegra/tegra186.c:74:49: warning: '%u' directive output may be truncated writing between 1 and 10 bytes into a region of size 6 [-Wformat-truncation=]
+      74 |                 snprintf(name, sizeof(name), "ch%u", i);
+         |                                                 ^~
+   drivers/memory/tegra/tegra186.c:74:46: note: directive argument in the range [0, 4294967294]
+      74 |                 snprintf(name, sizeof(name), "ch%u", i);
+         |                                              ^~~~~~
+   drivers/memory/tegra/tegra186.c:74:17: note: 'snprintf' output between 4 and 13 bytes into a destination of size 8
+      74 |                 snprintf(name, sizeof(name), "ch%u", i);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-On 18/10/2023 11:00, Krzysztof Kozlowski wrote:
-> On some boards with multiple WSA8840/WSA8845 speakers, the reset
-> (shutdown) GPIO is shared between two speakers.  Request it as
-> GPIOD_FLAGS_BIT_NONEXCLUSIVE to allow such configurations.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+vim +74 drivers/memory/tegra/tegra186.c
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+    48	
+    49	static int tegra186_mc_probe(struct tegra_mc *mc)
+    50	{
+    51		struct platform_device *pdev = to_platform_device(mc->dev);
+    52		unsigned int i;
+    53		char name[8];
+    54		int err;
+    55	
+    56		mc->bcast_ch_regs = devm_platform_ioremap_resource_byname(pdev, "broadcast");
+    57		if (IS_ERR(mc->bcast_ch_regs)) {
+    58			if (PTR_ERR(mc->bcast_ch_regs) == -EINVAL) {
+    59				dev_warn(&pdev->dev,
+    60					 "Broadcast channel is missing, please update your device-tree\n");
+    61				mc->bcast_ch_regs = NULL;
+    62				goto populate;
+    63			}
+    64	
+    65			return PTR_ERR(mc->bcast_ch_regs);
+    66		}
+    67	
+    68		mc->ch_regs = devm_kcalloc(mc->dev, mc->soc->num_channels, sizeof(*mc->ch_regs),
+    69					   GFP_KERNEL);
+    70		if (!mc->ch_regs)
+    71			return -ENOMEM;
+    72	
+    73		for (i = 0; i < mc->soc->num_channels; i++) {
+  > 74			snprintf(name, sizeof(name), "ch%u", i);
+    75	
+    76			mc->ch_regs[i] = devm_platform_ioremap_resource_byname(pdev, name);
+    77			if (IS_ERR(mc->ch_regs[i]))
+    78				return PTR_ERR(mc->ch_regs[i]);
+    79		}
+    80	
+    81	populate:
+    82		err = of_platform_populate(mc->dev->of_node, NULL, NULL, mc->dev);
+    83		if (err < 0)
+    84			return err;
+    85	
+    86		tegra186_mc_program_sid(mc);
+    87	
+    88		return 0;
+    89	}
+    90	
 
-
---srini
->   sound/soc/codecs/wsa884x.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-> index 993d76b18b53..bee6e763c700 100644
-> --- a/sound/soc/codecs/wsa884x.c
-> +++ b/sound/soc/codecs/wsa884x.c
-> @@ -1844,7 +1844,7 @@ static int wsa884x_probe(struct sdw_slave *pdev,
->   		return ret;
->   
->   	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
-> -						GPIOD_OUT_HIGH);
-> +						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
->   	if (IS_ERR(wsa884x->sd_n))
->   		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
->   				     "Shutdown Control GPIO not found\n");
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
