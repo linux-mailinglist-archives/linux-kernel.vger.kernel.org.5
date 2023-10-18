@@ -2,192 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF6A7CDF0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A69F7CDFD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344911AbjJROQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        id S235281AbjJRO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345102AbjJROPb (ORCPT
+        with ESMTP id S235251AbjJRO3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:15:31 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33390D61;
-        Wed, 18 Oct 2023 07:13:48 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f9675c6so7255130e87.2;
-        Wed, 18 Oct 2023 07:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697638426; x=1698243226; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PhyxmUtG7ajyW2SjJyU5m+NzLdFKfkutpPsZw1ffkps=;
-        b=eHO5mQcHxbbVmVyUsdm3qfVjWzY+w9bQtxkJI0c35p3h7lQuNTeztpOG0cCewLmQuG
-         iyppswWFa3ckyNVz0D8+6kc0j8xcKXiTQQbMURHfXFsDOwHYfaE7BpgLwPlNYk9+tPw8
-         cNaKtQLzF297Fz9NAEOSXHPETpsOBD0gY71efeG7QWATTM8vdNEfn1pmlpRpSKevgBTJ
-         WWmzeGmKu2bGtHxDAGw2A+eJBzqTfT06YOI/qf+kexkieSvNvJl58D/a+ArLKW1H7J+2
-         zyQWK3zyMhZg8GjkI//OR4U+hFyzBezK2KBL8iCMH9A+IHvLayLasYc4PBA7G+eQIR7r
-         kVvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697638426; x=1698243226;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PhyxmUtG7ajyW2SjJyU5m+NzLdFKfkutpPsZw1ffkps=;
-        b=VeY2PyfFfoU8cpkNx+Gr+tOKc40DRQ7Zp2cI45eMqkoFLHzDhGwmosRzx9cb1D71Ri
-         v6ZN4gf2S4SNYBFjPujRv5WTkxabvnpK6B9CurGZIjsgaX4raoBepcbgYYHAEDkhYi61
-         14CTVkFZD1SNcof0XIhSZ9M2K3tZFO5EKBtOgf2sSPMNlXLiN4MSyYJ0REPBOW+476cf
-         jkOJAaDCDX+3zxUK2/5Si0r2WNIinLimPc7iPvYjheuzpMIJK8mO7Ik7WGSor2zB5C0Q
-         Sq+obrz93GdkL+tnCH1agg5RHde/aqfcpl4X+bK+dIqqmHdSegYCfBExA6k/DNgKvLQa
-         qIkQ==
-X-Gm-Message-State: AOJu0Yzhm967Z1byeowY5wuOn3VIg7CHIPeWbOCr6b7cRLzan+cx1fsy
-        QeKkmVCVbQrIEN3yJpGxOGs=
-X-Google-Smtp-Source: AGHT+IFXuSn1gbUFD88OFr29Di5DE0IEbBaKZ3/Kw7Gmui5oNJaleutG9zWrKFBSC2OhiZQESHKcTw==
-X-Received: by 2002:ac2:548e:0:b0:507:9fa0:e244 with SMTP id t14-20020ac2548e000000b005079fa0e244mr3912595lfk.65.1697638425660;
-        Wed, 18 Oct 2023 07:13:45 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id k10-20020ac257ca000000b00500a4679148sm714150lfo.20.2023.10.18.07.13.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 07:13:45 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 17:13:41 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/2] PCI: dwc: Add new accessors to enable/disable DBI
- CS2 while setting the BAR size
-Message-ID: <rsv5vgle2d36skx75ds4hqzmlqwldmj4g4ghrlyfuu3ideb3rh@74mnro7qnp4v>
-References: <20231017-pcie-qcom-bar-v1-0-3e26de07bec0@linaro.org>
- <20231017-pcie-qcom-bar-v1-1-3e26de07bec0@linaro.org>
+        Wed, 18 Oct 2023 10:29:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4123257;
+        Wed, 18 Oct 2023 07:14:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740A5C433CD;
+        Wed, 18 Oct 2023 14:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697638460;
+        bh=o+7gCIMFWumcttxAXJYyOmrU3M5hjNZke0ch/ryC5EI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VPjsCjAdDVn8Mlxzqs28RVQatmCPs0I12BvYmIHefJxcgHg113VGypM37Ykf39EO9
+         QWEXqKv47Ml6eic0IraoACJkZ/Mt99Cm9GxslfRJnySTN/+ls0vLBOO4AQxm3Pf2QD
+         3T/WqzLvacxjBwJ91WN77+f1rhopMfAGYbeT4dekv6nOU38LlS6E1AwG/bwtLVN6bu
+         q2Bfz9MiBEoMF4meLhSWubY4UpJrFWsLs/cmhwJdhrrXYBIyQI1OoTbKP9aMmRNIZS
+         qlma2etsO77gFn293fZx0RbrBSfqKbGELv4ZMYtj15JNA9v7U5Bao3u/pOAXLjADtC
+         3kyGZNoLqEHUg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, herve.codina@bootlin.com,
+        spujar@nvidia.com, aidanmacdonald.0x0@gmail.com,
+        astrid.rost@axis.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.15 01/14] ASoC: simple-card: fixup asoc_simple_probe() error handling
+Date:   Wed, 18 Oct 2023 10:14:01 -0400
+Message-Id: <20231018141416.1335165-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017-pcie-qcom-bar-v1-1-3e26de07bec0@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.135
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 11:47:54AM +0530, Manivannan Sadhasivam wrote:
-> From: Manivannan Sadhasivam <mani@kernel.org>
-> 
-> As per the DWC databook v4.21a, section M.4.1, in order to write some read
-> only and shadow registers through application DBI, the device driver should
-> assert DBI Chip Select 2 (CS2) in addition to DBI Chip Select (CS).
-> 
-> This is a requirement at least on the Qcom platforms while programming the
-> BAR size, as the BAR mask registers are marked RO. So let's add two new
-> accessors dw_pcie_dbi_cs2_{en/dis} to enable/disable CS2 access in a vendor
-> specific way while programming the BAR size.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Emm, it's a known thing for all IP-core versions: dbi_cs2 must be
-asserted to access the shadow DW PCIe CSRs space for both RC and
-EP including the BARs mask and their enabling/disabling flag (there
-are many more shadow CSRs available on DW PCIe EPs, and a few in DW
-PCIe RCs). That's why the dw_pcie_ops->writel_dbi2 pointer has been
-defined in the first place (dbi2 suffix means dbi_cs2). You should use
-it to create the platform-specific dbi_cs2 write accessors like it's
-done in pci-keystone.c and pcie-bt1.c. For instance like this:
+[ Upstream commit 41bae58df411f9accf01ea660730649b2fab1dab ]
 
-static void qcom_pcie_write_dbi2(struct dw_pcie *pci, u32 reg, size_t size, u32 val)
-{
-	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
-	int ret;
+asoc_simple_probe() is used for both "DT probe" (A) and "platform probe"
+(B). It uses "goto err" when error case, but it is not needed for
+"platform probe" case (B). Thus it is using "return" directly there.
 
-	writel(1, pcie_ep->elbi + ELBI_CS2_ENABLE);
+	static int asoc_simple_probe(...)
+	{
+ ^		if (...) {
+ |			...
+(A)			if (ret < 0)
+ |				goto err;
+ v		} else {
+ ^			...
+ |			if (ret < 0)
+(B)				return -Exxx;
+ v		}
 
-	ret = dw_pcie_write(pci->dbi_base2 + reg, size, val);
-	if (ret)
-		dev_err(pci->dev, "write DBI address failed\n");
+		...
+ ^		if (ret < 0)
+(C)			goto err;
+ v		...
 
-	writel(0, pcie_ep->elbi + ELBI_CS2_ENABLE);
-}
+	err:
+(D)		simple_util_clean_reference(card);
 
-/* Common DWC controller ops */
-static const struct dw_pcie_ops pci_ops = {
-	.link_up = qcom_pcie_dw_link_up,
-	.start_link = qcom_pcie_dw_start_link,
-	.stop_link = qcom_pcie_dw_stop_link,
-	.write_dbi2 = qcom_pcie_write_dbi2,
-};
+		return ret;
+	}
 
-For that reason there is absolutely no need in adding the new
-callbacks.
+Both case are using (C) part, and it calls (D) when err case.
+But (D) will do nothing for (B) case.
+Because of these behavior, current code itself is not wrong,
+but is confusable, and more, static analyzing tool will warning on
+(B) part (should use goto err).
 
--Serge(y)
+To avoid static analyzing tool warning, this patch uses "goto err"
+on (B) part.
 
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c |  6 ++++++
->  drivers/pci/controller/dwc/pcie-designware.h    | 13 +++++++++++++
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index d34a5e87ad18..1874fb3d8df4 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -269,11 +269,17 @@ static int dw_pcie_ep_set_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  
->  	dw_pcie_dbi_ro_wr_en(pci);
->  
-> +	dw_pcie_dbi_cs2_en(pci);
->  	dw_pcie_writel_dbi2(pci, reg_dbi2, lower_32_bits(size - 1));
-> +	dw_pcie_dbi_cs2_dis(pci);
-> +
->  	dw_pcie_writel_dbi(pci, reg, flags);
->  
->  	if (flags & PCI_BASE_ADDRESS_MEM_TYPE_64) {
-> +		dw_pcie_dbi_cs2_en(pci);
->  		dw_pcie_writel_dbi2(pci, reg_dbi2 + 4, upper_32_bits(size - 1));
-> +		dw_pcie_dbi_cs2_dis(pci);
-> +
->  		dw_pcie_writel_dbi(pci, reg + 4, 0);
->  	}
->  
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 55ff76e3d384..3cba27b5bbe5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -379,6 +379,7 @@ struct dw_pcie_ops {
->  			     size_t size, u32 val);
->  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
->  			      size_t size, u32 val);
-> +	void	(*dbi_cs2_access)(struct dw_pcie *pcie, bool enable);
->  	int	(*link_up)(struct dw_pcie *pcie);
->  	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
->  	int	(*start_link)(struct dw_pcie *pcie);
-> @@ -508,6 +509,18 @@ static inline void dw_pcie_dbi_ro_wr_dis(struct dw_pcie *pci)
->  	dw_pcie_writel_dbi(pci, reg, val);
->  }
->  
-> +static inline void dw_pcie_dbi_cs2_en(struct dw_pcie *pci)
-> +{
-> +	if (pci->ops && pci->ops->dbi_cs2_access)
-> +		pci->ops->dbi_cs2_access(pci, true);
-> +}
-> +
-> +static inline void dw_pcie_dbi_cs2_dis(struct dw_pcie *pci)
-> +{
-> +	if (pci->ops && pci->ops->dbi_cs2_access)
-> +		pci->ops->dbi_cs2_access(pci, false);
-> +}
-> +
->  static inline int dw_pcie_start_link(struct dw_pcie *pci)
->  {
->  	if (pci->ops && pci->ops->start_link)
-> 
-> -- 
-> 2.25.1
-> 
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87o7hy7mlh.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 283aa21879aa5..95e4c53cd90c7 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -680,10 +680,12 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 		struct snd_soc_dai_link *dai_link = priv->dai_link;
+ 		struct simple_dai_props *dai_props = priv->dai_props;
+ 
++		ret = -EINVAL;
++
+ 		cinfo = dev->platform_data;
+ 		if (!cinfo) {
+ 			dev_err(dev, "no info for asoc-simple-card\n");
+-			return -EINVAL;
++			goto err;
+ 		}
+ 
+ 		if (!cinfo->name ||
+@@ -692,7 +694,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 		    !cinfo->platform ||
+ 		    !cinfo->cpu_dai.name) {
+ 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
+-			return -EINVAL;
++			goto err;
+ 		}
+ 
+ 		cpus			= dai_link->cpus;
+-- 
+2.40.1
+
