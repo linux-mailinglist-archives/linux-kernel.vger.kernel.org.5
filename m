@@ -2,136 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B437CD7D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84DF7CD7DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjJRJYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        id S229778AbjJRJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJRJY1 (ORCPT
+        with ESMTP id S229749AbjJRJYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:24:27 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1652102
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=P208vLuzeC8YOSU91aWKUZeFeNNRc/LChYsdSyHcihw=; b=DbizTzTHxEq6QnjO3POZXaRAUG
-        JzpvbT2+A8b/BahSr1jUiSnMmX/nfcRa48e5HhWwJOMDjR9KW2WP6CsIlu9pyLQBskrhkaL+hlN1v
-        gX4XqkdTxru1XwHVOhMbRY0ejXDICWzzxOyYO9bl/1WXoj93mYj5+ZiU+YAQKQr+xu0eZYrQ7VHIl
-        UVJfbcts5dagonxzaD2IXGgn+IBgdpzOgZ7Ijgp3N39igos1BfvNPEt5Ni3nUWAhknnOm6i228+wr
-        qCpqXxVCWWxj8Pd107RR7tSqvWytT/q/IHBhoNe+pS5axATprxbPufU+wp8uTzdnlaHSDpFWc6H4r
-        qfUUPzsA==;
-Received: from [192.168.1.4] (port=59019 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qt2mq-0003Ed-2S;
-        Wed, 18 Oct 2023 11:24:20 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 18 Oct 2023 11:24:20 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <netdev@vger.kernel.org>
-CC:     <woojung.huh@microchip.com>, <andrew@lunn.ch>,
-        <f.fainelli@gmail.com>, <olteanv@gmail.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <marex@denx.de>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>,
-        Ante Knezic <ante.knezic@helmholz.de>
-Subject: [PATCH net-next v3 2/2] net:dsa:microchip: add property to select internal RMII reference clock
-Date:   Wed, 18 Oct 2023 11:24:14 +0200
-Message-ID: <893a3ad19b28c6bb1bf5ea18dee2fa5855f0c207.1697620929.git.ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <351f7993397a496bf7d6d79b9096079a41157919.1697620929.git.ante.knezic@helmholz.de>
-References: <351f7993397a496bf7d6d79b9096079a41157919.1697620929.git.ante.knezic@helmholz.de>
+        Wed, 18 Oct 2023 05:24:33 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEA1FD;
+        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so5062178b3a.2;
+        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697621071; x=1698225871; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
+        b=EPTayhges6SubgIe2UQDVS+32aO3vGkKFe8kbYt7WgY5hcH5IN/IBe/xetyAZOouIf
+         LlNPKD+MK9kw0S1G9cJ46hqP5ipBjihPkUBJpN2h+tbZEZ0V6MIV3sY+bFu7VOcXgreS
+         IEee3cTr0iXdPN8+GmJUXgkwuCG3P05MGw4+vBL9al7KKq3AFkwSMQrO2cX2/Jk2Y+CE
+         mO1ehOBR0Fov9pdAkkmrnoZEY1+LqyCH/cho/jihaKRnRtl2iBKGU+2kNuevdoiB/s7N
+         1RAAdxgwIlbRZjJV2utvoYfz9HtlGmncc/Lli+GPOHffEiZrOW2LyRnuqHlN+MQIEK3P
+         uriA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697621071; x=1698225871;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
+        b=gmPPd5L32wREBlfvqCWqx2hUcUS07EvK7InIZKtmWAAzN7nrHQXnnylzuz/tMJfhSG
+         NhzhK0rLiE4GGsReWVqjeV4j2M57jCA9fW/Zc8tYpwFarzyTw4RdUw3sIB9BRM9jyhzj
+         5JWJaXbN9P5dfmKPTVa54uuOAj2n7r/ptPeDvee7e47cQG+tv9oPeVVSDWCiBAHYIJDI
+         su5/VmNrpP2c91NSnyWS+vhJTPn02Ni8TcEapWccFqlZAYPTTn2PUoUrsVernBw1s8wi
+         5leIY77do2xS085li/KKnMXFLj3Wa6ae8R1gro0z7Ej10XZu5t7o+ylItPoWVuLzqAmq
+         1aeA==
+X-Gm-Message-State: AOJu0Yw2u5JyP5V//GH0hPovQW7y6+SVdTs0wY0oL8UcVeAjwkH8Rkj2
+        IHwesTqlm6R/Yj3lfQ9bVsw=
+X-Google-Smtp-Source: AGHT+IHMtkomy48m2lIkAxF4mw34c4FzfowG/XQaP/plDDeQIwFErlB+vSFZKCbh1uGV3u+wOayZ5g==
+X-Received: by 2002:a05:6a00:218f:b0:68a:54e5:24e6 with SMTP id h15-20020a056a00218f00b0068a54e524e6mr5142412pfi.8.1697621071197;
+        Wed, 18 Oct 2023 02:24:31 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id n8-20020aa79848000000b00689f5940061sm2945737pfq.17.2023.10.18.02.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 02:24:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 17 Oct 2023 23:24:29 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH-cgroup 1/4] workqueue: Add
+ workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask
+Message-ID: <ZS-kTXgSZoc985ul@slm.duckdns.org>
+References: <20231013181122.3518610-1-longman@redhat.com>
+ <20231013181122.3518610-2-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013181122.3518610-2-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Microchip KSZ8863/KSZ8873 have the ability to select between internal
-and external RMII reference clock. By default, reference clock
-needs to be provided via REFCLKI_3 pin. If required, device can be
-setup to provide RMII clock internally so that REFCLKI_3 pin can be
-left unconnected.
-Add a new "microchip,rmii-clk-internal" property which will set
-RMII clock reference to internal. If property is not set, reference
-clock needs to be provided externally.
+Hello,
 
-Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
----
- drivers/net/dsa/microchip/ksz8795.c     | 10 +++++++++-
- drivers/net/dsa/microchip/ksz8795_reg.h |  3 +++
- drivers/net/dsa/microchip/ksz_common.h  |  1 +
- 3 files changed, 13 insertions(+), 1 deletion(-)
+On Fri, Oct 13, 2023 at 02:11:19PM -0400, Waiman Long wrote:
+> When the "isolcpus" boot command line option is used to add a set
+> of isolated CPUs, those CPUs will be excluded automatically from
+> wq_unbound_cpumask to avoid running work functions from unbound
+> workqueues.
+> 
+> Recently cpuset has been extended to allow the creation of partitions
+> of isolated CPUs dynamically. To make it closer to the "isolcpus"
+> in functionality, the CPUs in those isolated cpuset partitions should be
+> excluded from wq_unbound_cpumask as well. This can be done currently by
+> explicitly writing to the workqueue's cpumask sysfs file after creating
+> the isolated partitions. However, this process can be error prone.
+> Ideally, the cpuset code should be allowed to request the workqueue code
+> to exclude those isolated CPUs from wq_unbound_cpumask so that this
+> operation can be done automatically and the isolated CPUs will be returned
+> back to wq_unbound_cpumask after the destructions of the isolated
+> cpuset partitions.
+> 
+> This patch adds a new workqueue_unbound_exclude_cpumask() to enable
+> that. This new function will exclude the specified isolated CPUs
+> from wq_unbound_cpumask. To be able to restore those isolated CPUs
+> back after the destruction of isolated cpuset partitions, a new
+> wq_user_unbound_cpumask is added to store the user provided unbound
+> cpumask either from the boot command line options or from writing to
+> the cpumask sysfs file. This new cpumask provides the basis for CPU
+> exclusion.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 91aba470fb2f..b50ad9552c65 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1312,8 +1312,16 @@ void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
- 	ksz_port_cfg(dev, port, P_PRIO_CTRL, PORT_802_1P_ENABLE, true);
- 
- 	if (cpu_port) {
--		if (!ksz_is_ksz88x3(dev))
-+		if (!ksz_is_ksz88x3(dev)) {
- 			ksz8795_cpu_interface_select(dev, port);
-+		} else {
-+			dev->rmii_clk_internal = of_property_read_bool(dev->dev->of_node,
-+								       "microchip,rmii-clk-internal");
-+
-+			ksz_cfg(dev, KSZ88X3_REG_FVID_AND_HOST_MODE,
-+				KSZ88X3_PORT3_RMII_CLK_INTERNAL,
-+				dev->rmii_clk_internal);
-+		}
- 
- 		member = dsa_user_ports(ds);
- 	} else {
-diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
-index 3c9dae53e4d8..beca974e0171 100644
---- a/drivers/net/dsa/microchip/ksz8795_reg.h
-+++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-@@ -22,6 +22,9 @@
- #define KSZ8863_GLOBAL_SOFTWARE_RESET	BIT(4)
- #define KSZ8863_PCS_RESET		BIT(0)
- 
-+#define KSZ88X3_REG_FVID_AND_HOST_MODE  0xC6
-+#define KSZ88X3_PORT3_RMII_CLK_INTERNAL BIT(3)
-+
- #define REG_SW_CTRL_0			0x02
- 
- #define SW_NEW_BACKOFF			BIT(7)
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 8842efca0871..e5b0445fe2ca 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -163,6 +163,7 @@ struct ksz_device {
- 	phy_interface_t compat_interface;
- 	bool synclko_125;
- 	bool synclko_disable;
-+	bool rmii_clk_internal;
- 
- 	struct vlan_table *vlan_cache;
- 
+The behaviors around wq_unbound_cpumask is getting pretty inconsistent:
+
+1. Housekeeping excludes isolated CPUs on boot but allows user to override
+   it to include isolated CPUs afterwards.
+
+2. If an unbound wq's cpumask doesn't have any intersection with
+   wq_unbound_cpumask we ignore the per-wq cpumask and falls back to
+   wq_unbound_cpumask.
+
+3. You're adding a masking layer on top with exclude which fails to set if
+   the intersection is empty.
+
+Can we do the followings for consistency?
+
+1. User's requested_unbound_cpumask is stored separately (as in this patch).
+
+2. The effect wq_unbound_cpumask is determined by requested_unbound_cpumask
+   & housekeeping_cpumask & cpuset_allowed_cpumask. The operation order
+   matters. When an & operation yields an cpumask, the cpumask from the
+   previous step is the effective one.
+
+3. Expose these cpumasks in sysfs so that what's happening is obvious.
+
+> +int workqueue_unbound_exclude_cpumask(cpumask_var_t exclude_cpumask)
+> +{
+> +	cpumask_var_t cpumask;
+> +	int ret = 0;
+> +
+> +	if (!zalloc_cpumask_var(&cpumask, GFP_KERNEL))
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * The caller of this function may have called cpus_read_lock(),
+> +	 * use cpus_read_trylock() to avoid potential deadlock.
+> +	 */
+> +	if (!cpus_read_trylock())
+> +		return -EBUSY;
+
+This means that a completely unrelated cpus_write_lock() can fail this
+operation and thus cpuset config writes. Let's please not do this. Can't we
+just make sure that the caller holds the lock?
+
+> +	mutex_lock(&wq_pool_mutex);
+> +
+> +	if (!cpumask_andnot(cpumask, wq_user_unbound_cpumask, exclude_cpumask))
+> +		ret = -EINVAL;	/* The new cpumask can't be empty */
+
+For better or worse, the usual mode-of-failure for "no usable CPU" is just
+falling back to something which works rather than failing the operation.
+Let's follow that.
+
+Thanks.
+
 -- 
-2.11.0
-
+tejun
