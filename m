@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 427547CDEC2
+	by mail.lfdr.de (Postfix) with ESMTP id E9C487CDEC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbjJRONs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S231958AbjJRONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345012AbjJROMx (ORCPT
+        with ESMTP id S235225AbjJROM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:53 -0400
+        Wed, 18 Oct 2023 10:12:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECC8D5A;
-        Wed, 18 Oct 2023 07:12:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0464C433C9;
-        Wed, 18 Oct 2023 14:12:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24250D6A;
+        Wed, 18 Oct 2023 07:12:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C43C433CA;
+        Wed, 18 Oct 2023 14:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638368;
-        bh=o835cioGCeIzTvaQ/vboZK8CwlJSyJTR5vu8n4XyvDA=;
+        s=k20201202; t=1697638369;
+        bh=/o4D3CiiQwVmur8A7n+OX+pFGE+/0DOKTX2KzUcz84Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajn800bVBYoMeNYKkiG9lCQMtkp//mqh+9bDT2VdB98sE2B2v89LvUhcK+uK5XR5S
-         fWdcw8tWhoveRjHwVld4MVtMnp1/c+6cZJGmQyp2FaWL11aI7WuGEQproD7OgYLITP
-         mmf0hntEryHdiVZyJzX0mCeElFMbbSwH0cM4rNmMVv5N1B/ogVUaPE8wkqU6/g0UZ7
-         6lWk5kHJBbIMETqqGEjAD1ItxrrOwHINqWJDwRpIZ8a5mFSSa4hm9S0znSiPhA3co8
-         ozB3WQ61RgXjcN9NpgWhJsdQAlIDDPA4G4jaJXx+tN7HjeJf+S/EKQrOK+QIfv9PFT
-         oxEljDSDns/eg==
+        b=AM/euJk+T9jEZ5s9n5fee9bsYIIyu70p+ydQVu9lUQ3C7v4x+143g+IdB6/RnkKyF
+         8DGWw25UnQPJQ7HT2Vs5hwSZH76DRsRRVpQbztFcGCoyKcYpDwepMW7aHm4w7QjPU/
+         iO6w3YI+Z8ZgubnLllCAMz9SLDtC3bTNU7llJSC/1AQ5NsC4RWQJ9uN5cYWMAywDZw
+         ThbGUUpr8+La3IXJ9zvPyaLZDgkoPoTTdiOKkOVuA+QYJhg2829b36vQTOG1JBGHr8
+         wV01X9FAdYrmwvo19xpRxekMLMf3AQgxHhM859qq5NQMshnqhE1ETYD0/+q+qn4wIi
+         O21lm/I0i8GCA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christos Skevis <xristos.thes@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, peter.ujfalusi@linux.intel.com,
-        maciej.szmigiero@oracle.com, jussi@sonarnerd.net,
-        john@keeping.me.uk, whalechang@google.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 22/31] ALSA: usb-audio: Fix microphone sound on Nexigo webcam.
-Date:   Wed, 18 Oct 2023 10:11:39 -0400
-Message-Id: <20231018141151.1334501-22-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        August Wikerfors <git@augustwikerfors.se>,
+        Francesco <f.littarru@outlook.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 23/31] ACPI: resource: Add TongFang GM6BGEQ, GM6BG5Q and GM6BG0Q to irq1_edge_low_force_override[]
+Date:   Wed, 18 Oct 2023 10:11:40 -0400
+Message-Id: <20231018141151.1334501-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
 References: <20231018141151.1334501-1-sashal@kernel.org>
@@ -55,140 +55,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christos Skevis <xristos.thes@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 4a63e68a295187ae3c1cb3fa0c583c96a959714f ]
+[ Upstream commit f9b3ea02555e67e2e7bf95219953b88d122bd275 ]
 
-I own an external usb Webcam, model NexiGo N930AF, which had low mic volume and
-inconsistent sound quality. Video works as expected.
+The TongFang GM6BGEQ, GM6BG5Q and GM6BG0Q are 3 GPU variants of a TongFang
+barebone design which is sold under various brand names.
 
-(snip)
-[  +0.047857] usb 5-1: new high-speed USB device number 2 using xhci_hcd
-[  +0.003406] usb 5-1: New USB device found, idVendor=1bcf, idProduct=2283, bcdDevice=12.17
-[  +0.000007] usb 5-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  +0.000004] usb 5-1: Product: NexiGo N930AF FHD Webcam
-[  +0.000003] usb 5-1: Manufacturer: SHENZHEN AONI ELECTRONIC CO., LTD
-[  +0.000004] usb 5-1: SerialNumber: 20201217011
-[  +0.003900] usb 5-1: Found UVC 1.00 device NexiGo N930AF FHD Webcam (1bcf:2283)
-[  +0.025726] usb 5-1: 3:1: cannot get usb sound sample rate freq at ep 0x86
-[  +0.071482] usb 5-1: 3:2: cannot get usb sound sample rate freq at ep 0x86
-[  +0.004679] usb 5-1: 3:3: cannot get usb sound sample rate freq at ep 0x86
-[  +0.051607] usb 5-1: Warning! Unlikely big volume range (=4096), cval->res is probably wrong.
-[  +0.000005] usb 5-1: [7] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+The ACPI IRQ override for the keyboard IRQ must be used on these AMD Zen
+laptops in order for the IRQ to work.
 
-Set up quirk cval->res to 16 for 256 levels,
-Set GET_SAMPLE_RATE quirk flag to stop trying to get the sample rate.
-Confirmed that happened anyway later due to the backoff mechanism, after 3 failures
+Adjust the pcspecialist_laptop[] DMI match table for this:
 
-All audio stream on device interfaces share the same values,
-apart from wMaxPacketSize and tSamFreq :
+1. Drop the sys-vendor match from the existing PCSpecialist Elimina Pro 16
+   entry for the GM6BGEQ (RTX3050 GPU) model so that it will also match
+   the laptop when sold by other vendors such as hyperbook.pl.
 
-(snip)
-Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           8
-        bDelay                  1 frames
-        wFormatTag         0x0001 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        44100
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x005c  1x 92 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioStreaming Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay         0x0000
-(snip)
+2. Add board-name matches for the GM6BG5Q (RTX4050) and GM6B0Q (RTX4060)
+   models.
 
-Based on the usb data about manufacturer, SPCA2281B3 is the most likely controller IC
-Manufacturer does not provide link for datasheet nor detailed specs.
-No way to confirm if the firmware supports any other way of getting the sample rate.
+Note the .ident values of the dmi_system_id structs are left unset
+since these are not used.
 
-Testing patch provides consistent good sound recording quality and volume range.
-
-(snip)
-[  +0.045764] usb 5-1: new high-speed USB device number 2 using xhci_hcd
-[  +0.106290] usb 5-1: New USB device found, idVendor=1bcf, idProduct=2283, bcdDevice=12.17
-[  +0.000006] usb 5-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  +0.000004] usb 5-1: Product: NexiGo N930AF FHD Webcam
-[  +0.000003] usb 5-1: Manufacturer: SHENZHEN AONI ELECTRONIC CO., LTD
-[  +0.000004] usb 5-1: SerialNumber: 20201217011
-[  +0.043700] usb 5-1: set resolution quirk: cval->res = 16
-[  +0.002585] usb 5-1: Found UVC 1.00 device NexiGo N930AF FHD Webcam (1bcf:2283)
-
-Signed-off-by: Christos Skevis <xristos.thes@gmail.com>
-Link: https://lore.kernel.org/r/20231006155330.399393-1-xristos.thes@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Suggested-by: August Wikerfors <git@augustwikerfors.se>
+Reported-by: Francesco <f.littarru@outlook.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217394
+Link: https://laptopparts4less.frl/index.php?route=product/search&filter_name=GM6BG
+Link: https://hyperbook.pl/en/content/14-hyperbook-drivers
+Link: https://linux-hardware.org/?probe=bfa70344e3
+Link: https://bbs.archlinuxcn.org/viewtopic.php?id=13313
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c  | 7 +++++++
- sound/usb/quirks.c | 2 ++
- 2 files changed, 9 insertions(+)
+ drivers/acpi/resource.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 9105ec623120a..783a2493707ea 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1204,6 +1204,13 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 			cval->res = 16;
- 		}
- 		break;
-+	case USB_ID(0x1bcf, 0x2283): /* NexiGo N930AF FHD Webcam */
-+		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
-+			usb_audio_info(chip,
-+				"set resolution quirk: cval->res = 16\n");
-+			cval->res = 16;
-+		}
-+		break;
- 	}
- }
+diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
+index 32cfa3f4efd3d..f5ed33873dfde 100644
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -500,16 +500,23 @@ static const struct dmi_system_id maingear_laptop[] = {
  
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index d4bbef70d2f7b..4e64842245e19 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -2177,6 +2177,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_FIXED_RATE),
- 	DEVICE_FLG(0x0ecb, 0x2069, /* JBL Quantum810 Wireless */
- 		   QUIRK_FLAG_FIXED_RATE),
-+	DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */
-+		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ static const struct dmi_system_id pcspecialist_laptop[] = {
+ 	{
+-		.ident = "PCSpecialist Elimina Pro 16 M",
+-		/*
+-		 * Some models have product-name "Elimina Pro 16 M",
+-		 * others "GM6BGEQ". Match on board-name to match both.
+-		 */
++		/* TongFang GM6BGEQ / PCSpecialist Elimina Pro 16 M, RTX 3050 */
+ 		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "PCSpecialist"),
+ 			DMI_MATCH(DMI_BOARD_NAME, "GM6BGEQ"),
+ 		},
+ 	},
++	{
++		/* TongFang GM6BG5Q, RTX 4050 */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "GM6BG5Q"),
++		},
++	},
++	{
++		/* TongFang GM6BG0Q / PCSpecialist Elimina Pro 16 M, RTX 4060 */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "GM6BG0Q"),
++		},
++	},
+ 	{ }
+ };
  
- 	/* Vendor matches */
- 	VENDOR_FLG(0x045e, /* MS Lifecam */
 -- 
 2.40.1
 
