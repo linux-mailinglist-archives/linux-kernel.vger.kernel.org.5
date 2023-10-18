@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA77B7CD8FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1667CD8FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbjJRKRw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 06:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S230445AbjJRKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjJRKRu (ORCPT
+        with ESMTP id S229552AbjJRKTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:17:50 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1514103
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:17:48 -0700 (PDT)
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6c6591642f2so1565891a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:17:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697624268; x=1698229068;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nGu6HN6pIBhLjaRU06ecpopD+U32c6R7CbdSepUXSFc=;
-        b=gEGFRiBROkMeB3JX49khcXmNKxNpTpalB0O6Dqw0k7yHgTcvDARCT+SccgKGWa+plc
-         LkUwfmXcltegueGjmjrjWG5Q+B3QJmN2WtF7M/90271y3rfZvjx0Z7+bjzNin3EVBdpO
-         HF3CdUib1kF95rI2njWY9CEvMegy41WzKm8f5nRcCz0sUkGG7VlHsl/4AdACAgHGrlis
-         F3dwBhIii+vbMNLTLkSPh3rtzzEjrGAwycfABqppQXchersGuUKr7vRNSDbkGPIuSl5c
-         GqwgNcTbv9EzTBRcePJYWXOg6rSscxJulfiT1aNJuRMTrIcj7xQbMeCOJ+bEyYuVOoO5
-         pJ9w==
-X-Gm-Message-State: AOJu0YwaBLJ5CsMVvGmA3w5LG/VuX+DxREZwNxQt6SkECCDGS1VgzEKR
-        p1KhfYTBYB1qHSzZGhFiW2UUx5zdmlWaA2nIjhM=
-X-Google-Smtp-Source: AGHT+IHoL67m9mIkAvSmMZBkVkUJFfeW7GQx3J/CCJ4xbLbMuzKBSlYwdmaPaJKzCxI2iiOQjRLfjJFO7q6olVsQgEk=
-X-Received: by 2002:a4a:b304:0:b0:581:d5df:9cd2 with SMTP id
- m4-20020a4ab304000000b00581d5df9cd2mr4352079ooo.0.1697624268204; Wed, 18 Oct
- 2023 03:17:48 -0700 (PDT)
+        Wed, 18 Oct 2023 06:19:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12360BA;
+        Wed, 18 Oct 2023 03:19:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C089EC433C8;
+        Wed, 18 Oct 2023 10:19:17 +0000 (UTC)
+Message-ID: <0fb31f73-2743-44c0-af1b-ac30c582e45a@xs4all.nl>
+Date:   Wed, 18 Oct 2023 12:19:16 +0200
 MIME-Version: 1.0
-References: <20231018013851.3303928-1-saravanak@google.com>
-In-Reply-To: <20231018013851.3303928-1-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 18 Oct 2023 12:17:37 +0200
-Message-ID: <CAJZ5v0iJ+dy0u+ob72KfGMEmvqT25dr+05O5wkEryFH6zQhnMg@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Release all resources during unbind
- before updating device links
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        James Clark <james.clark@arm.com>, kernel-team@android.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 22/56] media: pci: tw686x: Set min_buffers_needed to 3
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
+ <20231017144756.34719-23-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231017144756.34719-23-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 3:38 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> This commit fixes a bug in commit 9ed9895370ae ("driver core: Functional
-> dependencies tracking support") where the device link status was
-> incorrectly updated in the driver unbind path before all the device's
-> resources were released.
->
-> Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
-> Reported-by: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> Closes: https://lore.kernel.org/all/20231014161721.f4iqyroddkcyoefo@pengutronix.de/
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Yang Yingliang <yangyingliang@huawei.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Matti Vaittinen <mazziesaccount@gmail.com>
-> Cc: James Clark <james.clark@arm.com>
-
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-
+On 17/10/2023 16:47, Benjamin Gaignard wrote:
+> vb2 queue_setup checks for a minimum number of buffers so set
+> min_buffers_needed to 3 and remove the useless check in
+> tw686x_queue_setup().
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 > ---
->  drivers/base/dd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index a528cec24264..0c3725c3eefa 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -1274,8 +1274,8 @@ static void __device_release_driver(struct device *dev, struct device *parent)
->                 if (dev->bus && dev->bus->dma_cleanup)
->                         dev->bus->dma_cleanup(dev);
->
-> -               device_links_driver_cleanup(dev);
->                 device_unbind_cleanup(dev);
-> +               device_links_driver_cleanup(dev);
->
->                 klist_remove(&dev->p->knode_driver);
->                 device_pm_check_callbacks(dev);
-> --
-> 2.42.0.655.g421f12c284-goog
->
+>  drivers/media/pci/tw686x/tw686x-video.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/media/pci/tw686x/tw686x-video.c b/drivers/media/pci/tw686x/tw686x-video.c
+> index 3ebf7a2c95f0..74cd864365aa 100644
+> --- a/drivers/media/pci/tw686x/tw686x-video.c
+> +++ b/drivers/media/pci/tw686x/tw686x-video.c
+> @@ -426,13 +426,6 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
+>  	unsigned int szimage =
+>  		(vc->width * vc->height * vc->format->depth) >> 3;
+>  
+> -	/*
+> -	 * Let's request at least three buffers: two for the
+> -	 * DMA engine and one for userspace.
+> -	 */
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> -
+>  	if (*nplanes) {
+>  		if (*nplanes != 1 || sizes[0] < szimage)
+>  			return -EINVAL;
+> @@ -1221,7 +1214,11 @@ int tw686x_video_init(struct tw686x_dev *dev)
+>  		vc->vidq.ops = &tw686x_video_qops;
+>  		vc->vidq.mem_ops = dev->dma_ops->mem_ops;
+>  		vc->vidq.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+> -		vc->vidq.min_buffers_needed = 2;
+> +		/*
+> +		 * Let's request at least three buffers: two for the
+> +		 * DMA engine and one for userspace.
+> +		 */
+> +		vc->vidq.min_buffers_needed = 3;
+
+Don't touch min_buffers_needed, just keep the current check in queue_setup.
+
+Regards,
+
+	Hans
+
+>  		vc->vidq.lock = &vc->vb_mutex;
+>  		vc->vidq.gfp_flags = dev->dma_mode != TW686X_DMA_MODE_MEMCPY ?
+>  				     GFP_DMA32 : 0;
+
