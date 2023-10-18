@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A4D7CE5F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FA87CE5F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjJRSKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        id S1344700AbjJRSKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjJRSKg (ORCPT
+        with ESMTP id S232030AbjJRSKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:10:36 -0400
-Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EDF98;
-        Wed, 18 Oct 2023 11:10:35 -0700 (PDT)
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1qtB03-009oaF-S1; Wed, 18 Oct 2023 18:10:32 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] arm64: dts: imx8mp-venice-gw74xx: remove unecessary propreties in tpm node
-Date:   Wed, 18 Oct 2023 11:10:28 -0700
-Message-Id: <20231018181028.2164419-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 18 Oct 2023 14:10:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E42798
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:10:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71AC1C433C8;
+        Wed, 18 Oct 2023 18:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697652642;
+        bh=LHAZNYWjlZE9o69WQzFu8+hQ8gDUBGEq47VgG8s8Jbo=;
+        h=From:Date:Subject:To:Cc:From;
+        b=d0NBQx/8FT0zlB+fVZUbNnWE/GyAwzzz7pIV+Dwma+/2ur8BYFMvKqPaXK0g+aC7k
+         YBJVOzNaTz1DHqUKaYKtJyRRqs7LX64eod8ISgBjcZtt6WRJ1lh0csPAddtxZILqVD
+         KH8fLCCEPUVZB3FKUQleCdKdFdvKLN4aS1tSeIWg2wfdrIKQinxiypcohiDmoIzTE6
+         sU+cn3arw3tF62wk26PoJm8PVoYHYwUHB+pL0B2PXJAADRblAlOruQxD+F0gwD3fuv
+         voo+23LmG60T4KDOrg2uh94e+PdZjzPVzSvnxW1XBEEAdw44g1BfP0ckogdqHE9coj
+         htOWjJ8BuMkGw==
+From:   Nathan Chancellor <nathan@kernel.org>
+Date:   Wed, 18 Oct 2023 11:10:31 -0700
+Subject: [PATCH] eventfs: Use ERR_CAST() in eventfs_create_events_dir()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231018-ftrace-fix-clang-randstruct-v1-1-338cb214abfb@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAJYfMGUC/x3MQQqEMAxA0atI1hNoK4rOVYZZ1Bg1IJ0hrSKId
+ ze4/PD4J2RW4Qzv6gTlXbL8koV/VUBLTDOjjNYQXKi98x1ORSMxTnIgrQZQYxpz0Y0KOhraru+
+ bUEcCO/yVzT33z/e6bhnL/RptAAAA
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     keescook@chromium.org, ndesaulniers@google.com, trix@redhat.com,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1442; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=LHAZNYWjlZE9o69WQzFu8+hQ8gDUBGEq47VgG8s8Jbo=;
+ b=owGbwMvMwCEmm602sfCA1DTG02pJDKkG8gtn+x73+DjpvvHTQGGfrms5qe6ib3NTH/5dYsv6e
+ 1MS01a2jlIWBjEOBlkxRZbqx6rHDQ3nnGW8cWoSzBxWJpAhDFycAjCRpxkM/9N3rpAIVniru/n1
+ zDihy8cf228q/74i7JGmWcvNc7s/Jl9j+MNb9fT7wmWy626JpE1h/3/Q+ovP4dfuoRysIREXG2d
+ 3L+EAAA==
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary #address-cells and #size-cells from tpm node.
+When building with clang and CONFIG_RANDSTRUCT_FULL=y, there is an error
+due to a cast in eventfs_create_events_dir():
 
-Fixes: commit 531936b218d8 ("arm64: dts: imx8mp-venice-gw74xx: update to revB PCB")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+  fs/tracefs/event_inode.c:734:10: error: casting from randomized structure pointer type 'struct dentry *' to 'struct eventfs_inode *'
+    734 |                 return (struct eventfs_inode *)dentry;
+        |                        ^
+  1 error generated.
+
+Use the ERR_CAST() function to resolve the error, as it was designed for
+this exact situation (casting an error pointer to another type).
+
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1947
+Fixes: 5790b1fb3d67 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts | 2 --
- 1 file changed, 2 deletions(-)
+ fs/tracefs/event_inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
-index 2ab9f4cc12cc..dcf9bababffc 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
-@@ -182,8 +182,6 @@ &ecspi1 {
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 1ccd100bc565..9f19b6608954 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -731,7 +731,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 		return NULL;
  
- 	tpm@0 {
- 		compatible = "tcg,tpm_tis-spi";
--		#address-cells = <0x1>;
--		#size-cells = <0x1>;
- 		reg = <0x0>;
- 		spi-max-frequency = <36000000>;
- 	};
+ 	if (IS_ERR(dentry))
+-		return (struct eventfs_inode *)dentry;
++		return ERR_CAST(dentry);
+ 
+ 	ei = kzalloc(sizeof(*ei), GFP_KERNEL);
+ 	if (!ei)
+
+---
+base-commit: 5ddd8baa4857709b4e5d84b376d735152851955b
+change-id: 20231018-ftrace-fix-clang-randstruct-0cb6899523ac
+
+Best regards,
 -- 
-2.25.1
+Nathan Chancellor <nathan@kernel.org>
 
