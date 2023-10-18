@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D43E07CE9DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455427CE9DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjJRVP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        id S230119AbjJRVQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbjJRVP0 (ORCPT
+        with ESMTP id S229963AbjJRVQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:15:26 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C75FE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:15:24 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7a6fd18abso112520037b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:15:24 -0700 (PDT)
+        Wed, 18 Oct 2023 17:16:50 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CACAB
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:16:48 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9b70b9671so18855ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697663723; x=1698268523; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DWFdITK9FYnC6ndQyLKptFhv/4XAT9ljqHM/fNT7TZM=;
-        b=OHA9bpChmrzhXQ0BWjrKQKkp/9+hMPyiDE8UJgC4rg8W7Lnu2OQadEKaLF9ebIptmv
-         6WPZif1jBHClBCzQMsj0tYvPwZ3I+ZEeqAWtwjp8pA93esxzXYkhGYu5jMaRfI4AjOKr
-         E7M3WLQiho9dRH8XeN5xS7t+sjMdKUvFLdaNsa6KasV629qTboz1II3Dpi+oYP8ech/t
-         sPlJvjdwXJRteDxEbO3D7Vk5GX/beZFZE1ewC2oAfhweZKOGhp3iogi8LCLWR2qiuzZH
-         Atics1pSevmExBk0TkkVxzU2IWWprGyBlxnAqyFuQhy3Q0gipUDHV+b3hvw+od3wrtkm
-         d16w==
+        d=google.com; s=20230601; t=1697663808; x=1698268608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZXQl4FJeerso8xaHvPc0My2Nlc3lIxYNlXOld63T454=;
+        b=ELymxinifaqzHuSn9yetEGtLu6qUesCDslTVHm/O9kGrPefss62InUdigcmEBmqA48
+         c0NZ3jtfxViTn4HlC9G+V3V+aXXL+Mp5dxo2QF90TmHO6mjRvTmEXRYZ6lm1k0gS+Pwx
+         o2bZYeWUD0hb4FWhTa0Pmx9+ZWe8WsbreMBy7hFAd2Xm+92WY8b6G4m8mNNumYv4A3wM
+         tq8wHw3PLp7pdovWLk6qpeCNtU996USOqJbBHFxKiERlSGzvKUhzppr/M2sBgpOatn/k
+         v/mIRdumza7t5DUkHV74Ende+m/P1PdugBoq8dt9scLP+QrD2IsFI2Yi1zQndqDs9xz+
+         GIVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697663723; x=1698268523;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DWFdITK9FYnC6ndQyLKptFhv/4XAT9ljqHM/fNT7TZM=;
-        b=MT3nf8lZtWnPS9AVxhYGjySgRpyxG6uugT2kwYR1BIKKSxcfJPS8zG4rPhTFTc92ab
-         aAyAdIL3RpTHaD2mdHGX4FGBHqDqzcQfUzXRZcdgEHmbcmxYESj1eTqzYvP00MJRS0vT
-         U8wCmWKRZnFgDklGXgV4juTT7yKi623dwLLeWamLd1swMoFpgqo/HxD21vHSBjcYZHSv
-         cBX6OIh3FOW+D2Q+LBIT8c8F5AqKgt2CWNQhNzPCZCLInsKfhJ150CJKHggb7WBnGXbN
-         H+uNqmcAC5IoowkYyD/LKeXJxc3vUHnxS1ZNExEeMGYreau3Q3d+77tXUwsHaArpUk8y
-         bTlw==
-X-Gm-Message-State: AOJu0Yw09wF7t3jmMSbA2nrjHXGqEC0+T6BVpIZpCeypHzA+NE7rl89J
-        t3BX20Wm6F7HaSyDwhK2efIkLqhQpR3QDmlmEA==
-X-Google-Smtp-Source: AGHT+IE98FBPpehxuSmAoDMMyrPO6eIxEf9m+v4GafxR/P68phKpdYLKbL9enPw6AIvI9BgsiyIo3/p7t7gXzQzvYg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:4215:0:b0:d9a:47ea:69a5 with SMTP
- id p21-20020a254215000000b00d9a47ea69a5mr13155yba.1.1697663723500; Wed, 18
- Oct 2023 14:15:23 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 21:15:23 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOpKMGUC/52NQQ6CMBBFr0K6dgxTghJX3sOwqO0Ik0BLpk2RE
- O5u9Qgu30/+e7uKJExR3apdCWWOHHwBfaqUHY0fCNgVVrrWDdZ4hZjE22UDJ5xJInhKsLLQRDF
- CYlgn1C3CbNiDhctTO9MhWWucKs5F6MXvX+/RFx45piDbL5/xu/5byggIjWltuXeamvY+hDBMd LZhVv1xHB9Bi0CG6wAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697663722; l=2913;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=yDbQL0fT5ECag/Hfa0melicYIqMQ//3xY2/rpNFfZOo=; b=iw2u/dbT5NFr1oMNr8mHNhtfVVlrHVDEyj+xyEAXaQhj7NdVCgY6R2c/BwjBfl2BSF93w/vCD
- qIz4P8kmKrDDoiAx7rQaljqwJ7AqZn07VHLp/I67Ngu6B4/Hxt+OECV
-X-Mailer: b4 0.12.3
-Message-ID: <20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com>
-Subject: [PATCH v2] wifi: wl1251: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697663808; x=1698268608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZXQl4FJeerso8xaHvPc0My2Nlc3lIxYNlXOld63T454=;
+        b=lWYCtoIsIIKQDvXy/YgnSHSGYd+EpFrv3dkF6p7Wcc0ZwDZWs0OyASe8Pvk9eM2s7W
+         Up71pKdWyMDRJpaEFLA4oamrKaFwzfnog5i3MlK5fNS0V0dX7TAQ+cgndsgnDd8xJxAm
+         XSQQ4O9D6jtRgJGrrRqsMIpVUu0hNc9DBtM5IPCMciFcEZasYtE9PpfOh0GuCScaP8US
+         Gl9zXOQ1EBMhPVj49dRNc5TPU7BWqy4JqsaRzZ8tGVQa54E3ZUyIjaAp9NZ90ek5vIni
+         0gdKggKSPXl+iYr5LlvikcX2tdDwAm1lfwIvj9ozDC0G14xqILoiJAprA5KRIO0TwATV
+         WImQ==
+X-Gm-Message-State: AOJu0YxwAZUFc0dhl0PGjAlho6ulMTYqeeV+H8sY58utldTJ2ucAP3Li
+        F5HljdMRKJv4gaggxomVpt78jMb5rlAYQJ7N2jnl/A==
+X-Google-Smtp-Source: AGHT+IFzKplRYoJdUaTdcUCowK6L66Ecq0Itp8rFun8vs+Mg/TDUC2gIcoUvRR2muiumjzezn7dhjMM5tw6RhMP1Prg=
+X-Received: by 2002:a17:903:138a:b0:1c1:f658:7d05 with SMTP id
+ jx10-20020a170903138a00b001c1f6587d05mr80341plb.18.1697663808064; Wed, 18 Oct
+ 2023 14:16:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-4-rananta@google.com>
+ <53546f35-f2cc-4c75-171c-26719550f7df@redhat.com> <CAJHc60wYyfsJPiFEyLYLyv9femNzDUXy+xFaGx59=2HrUGScyw@mail.gmail.com>
+ <34959db4-01e9-8c1e-110e-c52701e2fb19@redhat.com> <CAJHc60xc1dM_d4W+hOOnM5+DceF45htTfrbmdv=Q4vPf8T04Ow@mail.gmail.com>
+In-Reply-To: <CAJHc60xc1dM_d4W+hOOnM5+DceF45htTfrbmdv=Q4vPf8T04Ow@mail.gmail.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 18 Oct 2023 14:16:36 -0700
+Message-ID: <CAJHc60yr5U+sxSAaZipei_4TNaU0_EAWKLG8cr+5v_Z1WYRMuw@mail.gmail.com>
+Subject: Re: [PATCH v7 03/12] KVM: arm64: PMU: Clear PM{C,I}NTEN{SET,CLR} and
+ PMOVS{SET,CLR} on vCPU reset
+To:     Eric Auger <eauger@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,81 +84,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Oct 17, 2023 at 9:59=E2=80=AFAM Raghavendra Rao Ananta
+<rananta@google.com> wrote:
+>
+> Hi Eric,
+> On Tue, Oct 17, 2023 at 2:23=E2=80=AFAM Eric Auger <eauger@redhat.com> wr=
+ote:
+> >
+> > Hi,
+> > On 10/16/23 23:28, Raghavendra Rao Ananta wrote:
+> > > On Mon, Oct 16, 2023 at 12:45=E2=80=AFPM Eric Auger <eauger@redhat.co=
+m> wrote:
+> > >>
+> > >> Hi Raghavendra,
+> > >>
+> > >> On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
+> > >>> From: Reiji Watanabe <reijiw@google.com>
+> > >>>
+> > >>> On vCPU reset, PMCNTEN{SET,CLR}_EL0, PMINTEN{SET,CLR}_EL1, and
+> > >>> PMOVS{SET,CLR}_EL1 for a vCPU are reset by reset_pmu_reg().
+> > >> PMOVS{SET,CLR}_EL0?
+> > > Ah, yes. It should be PMOVS{SET,CLR}_EL0.
+> > >
+> > >>> This function clears RAZ bits of those registers corresponding
+> > >>> to unimplemented event counters on the vCPU, and sets bits
+> > >>> corresponding to implemented event counters to a predefined
+> > >>> pseudo UNKNOWN value (some bits are set to 1).
+> > >>>
+> > >>> The function identifies (un)implemented event counters on the
+> > >>> vCPU based on the PMCR_EL0.N value on the host. Using the host
+> > >>> value for this would be problematic when KVM supports letting
+> > >>> userspace set PMCR_EL0.N to a value different from the host value
+> > >>> (some of the RAZ bits of those registers could end up being set to =
+1).
+> > >>>
+> > >>> Fix this by clearing the registers so that it can ensure
+> > >>> that all the RAZ bits are cleared even when the PMCR_EL0.N value
+> > >>> for the vCPU is different from the host value. Use reset_val() to
+> > >>> do this instead of fixing reset_pmu_reg(), and remove
+> > >>> reset_pmu_reg(), as it is no longer used.
+> > >> do you intend to restore the 'unknown' behavior at some point?
+> > >>
+> > > I believe Reiji's (original author) intention was to keep them
+> > > cleared, which would still imply an 'unknown' behavior. Do you think
+> > > there's an issue with this?
+> > Then why do we bother using reset_unknown in the other places if
+> > clearing the bits is enough here?
+> >
+> Hmm. Good point. I can bring back reset_unknown to keep the original beha=
+vior.
+>
+I had a brief discussion about this with Oliver, and it looks like we
+might need a couple of additional changes for these register accesses:
+- For the userspace accesses, we have to implement explicit get_user
+and set_user callbacks that to filter out the unimplemented counters
+using kvm_pmu_valid_counter_mask().
+- For the guest accesses to be correct, we might have to apply the
+same mask while serving KVM_REQ_RELOAD_PMU.
 
-Based on other assignments of similar fw_version fields we can see that
-NUL-termination is required but not NUL-padding:
-ethernet/intel/ixgbe/ixgbe_ethtool.c
-1111:   strscpy(drvinfo->fw_version, adapter->eeprom_id,
-1112:           sizeof(drvinfo->fw_version));
+Thank you.
+Raghavendra
 
-ethernet/intel/igc/igc_ethtool.c
-147:    scnprintf(adapter->fw_version,
-148:              sizeof(adapter->fw_version),
-153:    strscpy(drvinfo->fw_version, adapter->fw_version,
-154:            sizeof(drvinfo->fw_version));
-
-wireless/broadcom/brcm80211/brcmfmac/core.c
-569:    strscpy(info->fw_version, drvr->fwver, sizeof(info->fw_version));
-
-wireless/broadcom/brcm80211/brcmsmac/main.c
-7867:           snprintf(wlc->wiphy->fw_version,
-7868:                    sizeof(wlc->wiphy->fw_version), "%u.%u", rev, patch);
-
-wireless/broadcom/b43legacy/main.c
-1765:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
-
-wireless/broadcom/b43/main.c
-2730:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
-
-wireless/intel/iwlwifi/dvm/main.c
-1465:   snprintf(priv->hw->wiphy->fw_version,
-1466:            sizeof(priv->hw->wiphy->fw_version),
-
-wireless/intel/ipw2x00/ipw2100.c
-5905:   snprintf(info->fw_version, sizeof(info->fw_version), "%s:%d:%s",
-
-A suitable replacement is `strscpy` due to the fact that it guarantees
-NUL-termination on the destination buffer without unnecessarily
-NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- fix subject (thanks Jeff)
-- Link to v1: https://lore.kernel.org/r/20231017-strncpy-drivers-net-wireless-ti-wl1251-main-c-v1-1-3a5c02382e35@google.com
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ti/wl1251/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ti/wl1251/main.c b/drivers/net/wireless/ti/wl1251/main.c
-index eded284af600..cd9a41f59f32 100644
---- a/drivers/net/wireless/ti/wl1251/main.c
-+++ b/drivers/net/wireless/ti/wl1251/main.c
-@@ -404,7 +404,7 @@ static int wl1251_op_start(struct ieee80211_hw *hw)
- 
- 	/* update hw/fw version info in wiphy struct */
- 	wiphy->hw_version = wl->chip_id;
--	strncpy(wiphy->fw_version, wl->fw_ver, sizeof(wiphy->fw_version));
-+	strscpy(wiphy->fw_version, wl->fw_ver, sizeof(wiphy->fw_version));
- 
- out:
- 	if (ret < 0)
-
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231017-strncpy-drivers-net-wireless-ti-wl1251-main-c-6b2da81eccad
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> Thank you.
+> Raghavendra
+> > Thanks
+> >
+> > Eric
+> > >
+> > > Thank you.
+> > > Raghavendra
+> > >> Thanks
+> > >>
+> > >> Eric
+> > >>>
+> > >>> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> > >>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > >>> ---
+> > >>>  arch/arm64/kvm/sys_regs.c | 21 +--------------------
+> > >>>  1 file changed, 1 insertion(+), 20 deletions(-)
+> > >>>
+> > >>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > >>> index 818a52e257ed..3dbb7d276b0e 100644
+> > >>> --- a/arch/arm64/kvm/sys_regs.c
+> > >>> +++ b/arch/arm64/kvm/sys_regs.c
+> > >>> @@ -717,25 +717,6 @@ static unsigned int pmu_visibility(const struc=
+t kvm_vcpu *vcpu,
+> > >>>       return REG_HIDDEN;
+> > >>>  }
+> > >>>
+> > >>> -static u64 reset_pmu_reg(struct kvm_vcpu *vcpu, const struct sys_r=
+eg_desc *r)
+> > >>> -{
+> > >>> -     u64 n, mask =3D BIT(ARMV8_PMU_CYCLE_IDX);
+> > >>> -
+> > >>> -     /* No PMU available, any PMU reg may UNDEF... */
+> > >>> -     if (!kvm_arm_support_pmu_v3())
+> > >>> -             return 0;
+> > >>> -
+> > >>> -     n =3D read_sysreg(pmcr_el0) >> ARMV8_PMU_PMCR_N_SHIFT;
+> > >>> -     n &=3D ARMV8_PMU_PMCR_N_MASK;
+> > >>> -     if (n)
+> > >>> -             mask |=3D GENMASK(n - 1, 0);
+> > >>> -
+> > >>> -     reset_unknown(vcpu, r);
+> > >>> -     __vcpu_sys_reg(vcpu, r->reg) &=3D mask;
+> > >>> -
+> > >>> -     return __vcpu_sys_reg(vcpu, r->reg);
+> > >>> -}
+> > >>> -
+> > >>>  static u64 reset_pmevcntr(struct kvm_vcpu *vcpu, const struct sys_=
+reg_desc *r)
+> > >>>  {
+> > >>>       reset_unknown(vcpu, r);
+> > >>> @@ -1115,7 +1096,7 @@ static bool access_pmuserenr(struct kvm_vcpu =
+*vcpu, struct sys_reg_params *p,
+> > >>>         trap_wcr, reset_wcr, 0, 0,  get_wcr, set_wcr }
+> > >>>
+> > >>>  #define PMU_SYS_REG(name)                                         =
+   \
+> > >>> -     SYS_DESC(SYS_##name), .reset =3D reset_pmu_reg,              =
+     \
+> > >>> +     SYS_DESC(SYS_##name), .reset =3D reset_val,                  =
+     \
+> > >>>       .visibility =3D pmu_visibility
+> > >>>
+> > >>>  /* Macro to expand the PMEVCNTRn_EL0 register */
+> > >>
+> > >
+> >
