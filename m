@@ -2,158 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0F27CDA95
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8762B7CDA9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjJRLgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S230292AbjJRLh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjJRLgC (ORCPT
+        with ESMTP id S229702AbjJRLhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:36:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CC1FE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:35:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC5E6C433C7;
-        Wed, 18 Oct 2023 11:35:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697628959;
-        bh=auqTNLipd3mDc/YcCEnSBeelbAAfYDDTuTo0Vv6a5uw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M+Wdr4Euwkm2PmwDzKVGLB7zKPMBqG+ksDsnufCKVlZ6EonsZSvD3BSiU/bWdstEp
-         UzDZ+9jBq9b8KdvbrVRIdd2UlsEA9S9jsX+okvK9KCpojusNi9AvAALCxzD3bOTI3W
-         C6VhTmhaQveG2DE4rqAKHUqsK4ms5HfOS9TSuBzlxn4nkdw1RjQYK08mDSYq0+IXBB
-         10JMFkBbldHjhABg4q0HmkYzc6oTVrcrbPFWuPHdKGubY+JB1N7k/5Ac7G/na/GxZT
-         l75r0CBVjOfG0mE503xqPVEDRvcBPVxyuwGbPWFOePw60azeQM+RwbytU7L98eOILR
-         m3m7YrOi2I3wQ==
-Date:   Wed, 18 Oct 2023 12:35:55 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v4 0/2] riscv: Add remaining module relocations and tests
-Message-ID: <20231018-smite-bungee-f46b15b4ce6f@spud>
-References: <20231017-module_relocations-v4-0-937f5ef316f0@rivosinc.com>
+        Wed, 18 Oct 2023 07:37:24 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FDA111
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:37:22 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a87ac9d245so39628347b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697629042; x=1698233842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ibBJyoflxMS2afxFGqsv5c5GwukKSXqA1+zh4x2as+k=;
+        b=q2lLG2lw8LkDsY/Fcj+qsMhuRDPN30MnTc6ddL82FBkdpEdyxTO4PwArBProNwvQtI
+         +fc3FHXUgjaej4mUJLCnu4N585chfulmBWStl9EsHShSPYBWn12H+t6ww4iV4rcIPOEm
+         eoM0abM+Y8ep7Uz47kZuBSFtq/6Ewd6Vk0/h/wYWplmFBrI32qMNYsGKsc1BFO6eqUph
+         HLLBZbrDSa+yFgW4Fx+MG4yjmcYrR/osRuEWbZTRvn8rsuW2X6N4fAdHqZHEltD2SN2P
+         150+rY5UVnzX2M/pAY+EJVkyavc3WSxk/rsqyPt5ouB4qsTi296AgTgVl6al03/WI7Sn
+         og1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697629042; x=1698233842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ibBJyoflxMS2afxFGqsv5c5GwukKSXqA1+zh4x2as+k=;
+        b=Biyx/WYxU2WVvcvfLTezOd0iE9qPwtrprTDmKE5Ch9T0+grIM7rG/3rkwRYPjivF2p
+         mIhu8ogwfEU/EvFpTt4PmBpz/C+S1OfxcMC1tzL897NLUSc0NaDssnJJYwgKY20MI1Uv
+         zH6kmZHieZC/FSh1FismSW852GjPyMX2yQmsLJSdu8ygG/goHJReocz+e3YYV/HlD1Yb
+         ptugZoixl9b1V3MqUs3NVuYiuWhEWOIsa4hSPZOGXxSbQs0Qg/EvaSr1d6dZHZCT96uu
+         ElyjgCYu/y8aqoc92EuBHlpd+E6xgGigUOEk1c6K4Tg55vfysW+CXsukxbkvg1fwDDvn
+         /Q9w==
+X-Gm-Message-State: AOJu0YzhrxygUp6nilP9lFoAU7KD/ddLgsLY8HPcIc4s7leZVB8lTM5m
+        ZhSRlJ5kE1OiDFv8hxkIDK7O4jw8grNu0KM5/fSKDA==
+X-Google-Smtp-Source: AGHT+IE75mXYYgUQv5l73Vl5L22dr+4CYg+Lk4Ei4q1AvQqBIy5FH+CDcNjtjq5F7t62tXm4y3QBwhP/N0B5gX/8qPo=
+X-Received: by 2002:a81:6dca:0:b0:5a7:a874:d83e with SMTP id
+ i193-20020a816dca000000b005a7a874d83emr4891684ywc.42.1697629041772; Wed, 18
+ Oct 2023 04:37:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1okcQQvN+RgqgcjX"
-Content-Disposition: inline
-In-Reply-To: <20231017-module_relocations-v4-0-937f5ef316f0@rivosinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-2-3ee0c67383be@linaro.org> <169762516741.391849.18342287891015837205.robh@kernel.org>
+In-Reply-To: <169762516741.391849.18342287891015837205.robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 18 Oct 2023 13:37:10 +0200
+Message-ID: <CACRpkdZff9fbeJdxqudCtjad=FVKTKQtvo_=GiEBOvnw5xQapw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/7] dt-bindings: net: mvusb: Fix up DSA example
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree@vger.kernel.org,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 12:32=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
 
---1okcQQvN+RgqgcjX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: /example=
+-0/usb/mdio@1/ethernet-switch@0: failed to match any schema with compatible=
+: ['marvell,mv88e6190']
 
-Hey Charlie,
+Isn't that just because the bindings now come last in the series.
+Which is in response to a review comment, hence this warning
+didn't appear before.
 
-On Tue, Oct 17, 2023 at 10:34:15PM -0700, Charlie Jenkins wrote:
-> A handful of module relocations were missing, this patch includes the
-> remaining ones. I also wrote some test cases to ensure that module
-> loading works properly. Some relocations cannot be supported in the
-> kernel, these include the ones that rely on thread local storage and
-> dynamic linking.
->=20
-> ULEB128 handling is a bit special because SET and SUB relocations must
-> happen together, and SET must happen before SUB. A psABI proposal [1]
-> mandates that the first SET_ULEB128 that appears before a SUB_ULEB128
-> is the associated SET_ULEB128.
->=20
-> This can be tested by enabling KUNIT, RUNTIME_KERNEL_TESTING_MENU, and
-> RISCV_MODULE_LINKING_KUNIT.
->=20
-> [1] https://github.com/riscv-non-isa/riscv-elf-psabi-doc/pull/403
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
-> Changes in v4:
-> - Complete removal of R_RISCV_RVC_LUI
-> - Fix bug in R_RISCV_SUB6 linking
-> - Only build ULEB128 tests if supported by toolchain
-> - Link to v3: https://lore.kernel.org/r/20231016-module_relocations-v3-0-=
-a667fd6071e9@rivosinc.com
-
-On patch 2/2:
-
-=2E./arch/riscv/kernel/tests/module_test/test_uleb128.S:18:17: error: unkno=
-wn relocation name
-=2E./arch/riscv/kernel/tests/module_test/test_uleb128.S:19:17: error: unkno=
-wn relocation name
-
-Same toolchain configuration in the patchwork automation as before.
-
-Cheers,
-Conor.
-
->=20
-> Changes in v3:
-> - Add prototypes to test_module_linking_main as recommended by intel
->   zero day bot
-> - Improve efficiency of ULEB128 pair matching
-> - Link to v2: https://lore.kernel.org/r/20231006-module_relocations-v2-0-=
-47566453fedc@rivosinc.com
->=20
-> Changes in v2:
-> - Added ULEB128 relocations
-> - Link to v1: https://lore.kernel.org/r/20230913-module_relocations-v1-0-=
-bb3d8467e793@rivosinc.com
->=20
-> ---
-> Charlie Jenkins (2):
->       riscv: Add remaining module relocations
->       riscv: Add tests for riscv module loading
->=20
->  arch/riscv/Kconfig.debug                           |   1 +
->  arch/riscv/include/uapi/asm/elf.h                  |   5 +-
->  arch/riscv/kernel/Makefile                         |   1 +
->  arch/riscv/kernel/module.c                         | 207 +++++++++++++++=
-+++---
->  arch/riscv/kernel/tests/Kconfig.debug              |  35 ++++
->  arch/riscv/kernel/tests/Makefile                   |   1 +
->  arch/riscv/kernel/tests/module_test/Makefile       |  15 ++
->  .../tests/module_test/test_module_linking_main.c   |  85 +++++++++
->  arch/riscv/kernel/tests/module_test/test_set16.S   |  23 +++
->  arch/riscv/kernel/tests/module_test/test_set32.S   |  20 ++
->  arch/riscv/kernel/tests/module_test/test_set6.S    |  23 +++
->  arch/riscv/kernel/tests/module_test/test_set8.S    |  23 +++
->  arch/riscv/kernel/tests/module_test/test_sub16.S   |  22 +++
->  arch/riscv/kernel/tests/module_test/test_sub32.S   |  22 +++
->  arch/riscv/kernel/tests/module_test/test_sub6.S    |  22 +++
->  arch/riscv/kernel/tests/module_test/test_sub64.S   |  27 +++
->  arch/riscv/kernel/tests/module_test/test_sub8.S    |  22 +++
->  arch/riscv/kernel/tests/module_test/test_uleb128.S |  20 ++
->  18 files changed, 548 insertions(+), 26 deletions(-)
-> ---
-> base-commit: 4d320c2d9a2b22f53523a1b012cda17a50220965
-> change-id: 20230908-module_relocations-f63ced651bd7
-> --=20
-> - Charlie
->=20
-
---1okcQQvN+RgqgcjX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS/DGwAKCRB4tDGHoIJi
-0gMDAP0WbgwU87WIuhP0GqZRc4filSavgJ3pf5gzvnAAYbBAPAEAuuKUU48p/pb4
-cjTzJOq1xJ30NhLxK8Npc0BLQvqxpwU=
-=tuJ6
------END PGP SIGNATURE-----
-
---1okcQQvN+RgqgcjX--
+Yours,
+Linus Walleij
