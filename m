@@ -2,276 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200FD7CD4B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DC37CD4B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbjJRG5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        id S1344419AbjJRG6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjJRG5P (ORCPT
+        with ESMTP id S229676AbjJRG6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:57:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179ECB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697612232; x=1729148232;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=5kCfENKLdy6RK47w9C+3d3YFaUvT9YppRcN0G7AScnU=;
-  b=ne61DFIdgcXKyNUwl4lC9knFXDsAXwgInxnxS5Kug6jTZuUiC8PaRRc5
-   dm1JzXcpkpxVJJFYz7MVDmchFUZevIGRCMIF2KJp0MY15XzY6KeNACPFp
-   T08N3+MFM6SmbCQqbYYyzkkKIHyaMF3Ch2ADKaZC0nwmss2xRlTvk8gcY
-   xqn+P191yvzszzf4YBsRBWpPV4jGxUs1sbncVF61PJdHocu2WuPVcPvkL
-   tGgtvLWFnBpIdGCKfy5f6dkIyLyxw+IhIK4QPgjMV+ZzyCHyTVHLGDHOp
-   QLUeMu9MBvzkgI4rC1UAIFyxrP2kIUz1Ucqk26X3a9JNrTqP0l1hkHcoY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365303861"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="365303861"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 23:57:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="880103185"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="880103185"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 23:57:07 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 2/2] mm: swap: Swap-out small-sized THP without
- splitting
-In-Reply-To: <20231017161302.2518826-3-ryan.roberts@arm.com> (Ryan Roberts's
-        message of "Tue, 17 Oct 2023 17:13:02 +0100")
-References: <20231017161302.2518826-1-ryan.roberts@arm.com>
-        <20231017161302.2518826-3-ryan.roberts@arm.com>
-Date:   Wed, 18 Oct 2023 14:55:06 +0800
-Message-ID: <87r0ls773p.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 18 Oct 2023 02:58:08 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE3B0;
+        Tue, 17 Oct 2023 23:58:06 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7c95b8d14so82809827b3.3;
+        Tue, 17 Oct 2023 23:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697612286; x=1698217086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kwC4vINsKq9AZoCiHY7v2qaBARUu3Ce9v82O1PQj3I8=;
+        b=YkcPy1I42u2qAWk/UMix0vDl8hSdVc25OHbDbszY7lMTuzdETKKoD9SOJHuzyMlFZI
+         jWYDEN5ZeJLNmFMbnDJryxJcDY2FZAaEdHsTMQd12rRIwU2t5Vfh4QLncREQf1OgshwB
+         sl7QyVlN60dAdhIkailca/lmeux4FhlHJ/WNjVBg+OnzZ5amEm0gTO3UdQGhAPF/ly0S
+         YC1WbzflWA9DGd8nHhvoBY2zVajeD/GXXAgKJj24VjSzsmxEWwEdA1at+pghOpVJOm4K
+         SwfphGgS0ksLEylGSJPkjJbAh6ZnH90M8EieeyzH/1XRh0JX1IzdVQCcxDtu8U6KxKJi
+         5B8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697612286; x=1698217086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kwC4vINsKq9AZoCiHY7v2qaBARUu3Ce9v82O1PQj3I8=;
+        b=SBlSWq2XjVhT4DJDwQ48uVkU5YMW6Wkm33+hS0+8Vy3pDtZOmmzrY8v5gTFTP9dZ0B
+         32SNExtNubCUbGHL/LkoxUi3/lkOQT7Ajk0OHom69CFQ7w6q3Pq+MVAVV83Yp6Stubx1
+         LOvrEZhxOqi3vNWicP1Pgku3okjbcdoadbyBSDKMBsnrbtprJHSmGlkXLxvA8YJIamyt
+         602+XcC0hxuW6OLOrD/pH8Dk2px113nneD4rShfhKQMuBPs1NuObNCBp3tpL6sWbWJrg
+         S5eIBb+SUGJ5ZvLyGdO5DUMYZo1yWLjDhtpzYjBW8KmLSjb4Z/QzFrU9HbhtCAtFLa+Y
+         eeqg==
+X-Gm-Message-State: AOJu0Yx5XaESVnYr5GT2Uiz6ILNWMLSIF7T+HpToVHUqRspsIwikqmy4
+        UwOKZkWC72DEl23AeJQzE/LRB9g+KFyW7+6VfeU=
+X-Google-Smtp-Source: AGHT+IE6HbcHtJGJ8vsAFILw76rUp7kVer/XFcoWhaAjgYaag/14z9b9gNxOtypzAhjLZ9R641Sfqma1OaIo29kRNNo=
+X-Received: by 2002:a25:8042:0:b0:d9a:baa8:30a2 with SMTP id
+ a2-20020a258042000000b00d9abaa830a2mr4263564ybn.8.1697612286050; Tue, 17 Oct
+ 2023 23:58:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org> <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org> <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <86wmxcejav.wl-maz@kernel.org> <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
+ <86pm2ye2si.wl-maz@kernel.org> <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
+ <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
+In-Reply-To: <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Wed, 18 Oct 2023 12:57:53 +0600
+Message-ID: <CAMpQs4+neiaJKp93UcemJbPPbhmf1B7WYNqKh=qx0avrbwW2cQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Jonas Gorski <jonas.gorski@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+On Tue, Oct 17, 2023 at 9:05=E2=80=AFPM Jonas Gorski <jonas.gorski@gmail.co=
+m> wrote:
+>
+> On Mon, 16 Oct 2023 at 13:26, Binbin Zhou <zhoubb.aaron@gmail.com> wrote:
+> >
+> > Hi all:
+> >
+> > Sorry, it's been a while since the last discussion.
+> >
+> > Previously, Krzysztof suggested using the standard "interrupt-map"
+> > attribute instead of the "loongson,parent_int_map" attribute, which I
+> > tried to implement, but the downside of this approach seems to be
+> > obvious.
+> >
+> > First of all, let me explain again the interrupt routing of the
+> > loongson liointc.
+> > For example, the Loongson-2K1000 has 64 interrupt sources, each with
+> > the following 8-bit interrupt routing registers (main regs attribute
+> > in dts):
+> >
+> > +----+-----------------------------------------------------------------=
+--+
+> > | bit  | description
+> >             |
+> > +----+-----------------------------------------------------------------=
+--+
+> > | 3:0 | Processor core to route                                        =
+   |
+> > | 7:4 | Routed processor core interrupt pins (INT0--INT3) |
+> > +-----+----------------------------------------------------------------=
+--+
+> >
+> > The "loongson,parent_int_map" attribute is to describe the routed
+> > interrupt pins to cpuintc.
+> >
+> > However, the "interrupt-map" attribute is not supposed to be used for
+> > interrupt controller in the normal case. Though since commit
+> > 041284181226 ("of/irq: Allow matching of an interrupt-map local to an
+> > interrupt controller"), the "interrupt-map" attribute can be used in
+> > interrupt controller nodes. Some interrupt controllers were found not
+> > to work properly later, so in commit de4adddcbcc2 ("of/irq: Add a
+> > quirk for controllers with their own definition of interrupt-map"), a
+> > quirk was added for these interrupt controllers. As we can see from
+> > the commit message, this is a bad solution in itself.
+> >
+> > Similarly, if we choose to use the "interrupt-map" attribute in the
+> > interrupt controller, we have to use this unfriendly solution (quirk).
+> > Because we hope of_irq_parse_raw() stops at the liointc level rather
+> > than goto its parent level.
+> >
+> > So, I don't think it's a good choice to use a bad solution as a replace=
+ment.
+> >
+> > Do you have any other ideas?
+>
+> Assuming this is changeable at runtime, this sounds to me like this
+> mapping/routing could easily be exposed as irqchip cpu affinity. Then
+> userspace can apply all the performance optimizations it wants (and
+> can easily update them without fiddling with the kernel/dts).
+>
+> And then there would be no need to hardcode/describe it in the dts(i) at =
+all.
 
-> The upcoming anonymous small-sized THP feature enables performance
-> improvements by allocating large folios for anonymous memory. However
-> I've observed that on an arm64 system running a parallel workload (e.g.
-> kernel compilation) across many cores, under high memory pressure, the
-> speed regresses. This is due to bottlenecking on the increased number of
-> TLBIs added due to all the extra folio splitting.
->
-> Therefore, solve this regression by adding support for swapping out
-> small-sized THP without needing to split the folio, just like is already
-> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
-> enabled, and when the swap backing store is a non-rotating block device.
-> These are the same constraints as for the existing PMD-sized THP
-> swap-out support.
->
-> Note that no attempt is made to swap-in THP here - this is still done
-> page-by-page, like for PMD-sized THP.
->
-> The main change here is to improve the swap entry allocator so that it
-> can allocate any power-of-2 number of contiguous entries between [4, (1
-> << PMD_ORDER)] (THP cannot support order-1 folios). This is done by
-> allocating a cluster for each distinct order and allocating sequentially
-> from it until the cluster is full. This ensures that we don't need to
-> search the map and we get no fragmentation due to alignment padding for
-> different orders in the cluster. If there is no current cluster for a
-> given order, we attempt to allocate a free cluster from the list. If
-> there are no free clusters, we fail the allocation and the caller falls
-> back to splitting the folio and allocates individual entries (as per
-> existing PMD-sized THP fallback).
->
-> The per-order current clusters are maintained per-cpu using the existing
-> percpu_cluster infrastructure. This is done to avoid interleving pages
-> from different tasks, which would prevent IO being batched. This is
-> already done for the order-0 allocations so we follow the same pattern.
->
-> As far as I can tell, this should not cause any extra fragmentation
-> concerns, given how similar it is to the existing PMD-sized THP
-> allocation mechanism. There could be up to (PMD_ORDER-2) * nr_cpus
-> clusters in concurrent use though, which in a pathalogical case (cluster
-> set aside for every order for every cpu and only one huge entry
-> allocated from it) would tie up ~12MiB of unused swap entries for these
-> high orders (assuming PMD_ORDER=9). In practice, the number of orders in
-> use will be small and the amount of swap space reserved is very small
-> compared to a typical swap file.
->
-> Note that PMD_ORDER is not compile-time constant on powerpc, so we have
-> to allocate the large_next[] array at runtime.
->
-> I've run the tests on Ampere Altra (arm64), set up with a 35G block ram
-> device as the swap device and from inside a memcg limited to 40G memory.
-> I've then run `usemem` from vm-scalability with 70 processes (each has
-> its own core), each allocating and writing 1G of memory. I've repeated
-> everything 5 times and taken the mean and stdev:
->
-> Mean Performance Improvement vs 4K/baseline
->
-> | alloc size |            baseline |       + this series |
-> |            |  v6.6-rc4+anonfolio |                     |
-> |:-----------|--------------------:|--------------------:|
-> | 4K Page    |                0.0% |                1.1% |
-> | 64K THP    |              -44.1% |                0.9% |
-> | 2M THP     |               56.0% |               56.4% |
->
-> So with this change, the regression for 64K swap performance goes away.
-> Both 4K and 64K benhcmarks are now bottlenecked on TLBI performance from
-> try_to_unmap_flush_dirty(), on arm64 at least. When using fewer cpus in
-> the test, I see upto 2x performance of 64K THP swapping compared to 4K.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  include/linux/swap.h |  6 ++++
->  mm/swapfile.c        | 74 +++++++++++++++++++++++++++++++++++---------
->  mm/vmscan.c          | 10 +++---
->  3 files changed, 71 insertions(+), 19 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index a073366a227c..35cbbe6509a9 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -268,6 +268,12 @@ struct swap_cluster_info {
->  struct percpu_cluster {
->  	struct swap_cluster_info index; /* Current cluster index */
->  	unsigned int next; /* Likely next allocation offset */
-> +	unsigned int large_next[];	/*
-> +					 * next free offset within current
-> +					 * allocation cluster for large folios,
-> +					 * or UINT_MAX if no current cluster.
-> +					 * Index is (order - 1).
-> +					 */
->  };
->
->  struct swap_cluster_list {
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index b83ad77e04c0..625964e53c22 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -987,35 +987,70 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
->  	return n_ret;
->  }
->
-> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
-> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
-> +			    unsigned int nr_pages)
+Hi Jonas:
 
-This looks hacky.  IMO, we should put the allocation logic inside
-percpu_cluster framework.  If percpu_cluster framework doesn't work for
-you, just refactor it firstly.
+Thanks for your reply.
 
->  {
-> +	int order_idx;
->  	unsigned long idx;
->  	struct swap_cluster_info *ci;
-> +	struct percpu_cluster *cluster;
->  	unsigned long offset;
+It is possible that my non-detailed explanation caused your misunderstandin=
+g.
+Allow me to explain again about the interrupt routing register above,
+which we know is divided into two parts:
+
++----+-------------------------------------------------------------------+
+| bit  | description |
++----+-------------------------------------------------------------------+
+| 3:0 | Processor core to route                                           |
+| 7:4 | Routed processor core interrupt pins (INT0--INT3) |
++-----+------------------------------------------------------------------+
+
+The first part "processor core" will be set to "boot_cpu_id" in the
+driver, which we assume is fixed and we don't need to care about it
+here.
+What we care about is the second part "mapping of device interrupts to
+processor interrupt pins", which is what we want to describe in
+dts(i).
+
+Let's take the Loongson-2K1000 as an example again, it has 64
+interrupt sources as inputs and 4 processor core interrupt pins as
+outputs.
+The sketch is shown below:
+
+Device Interrupts           Interrupt Pins
+                 +-------------+
+         0---->|                |--> INT0
+        ...       | Mapping |--> INT1
+        ...       |                |--> INT2
+        63--->|                |--> INT3
+                 +-------------+
+
+Therefore, this mapping relationship cannot be changed at runtime and
+needs to be hardcoded/described in dts(i).
+
+Thanks.
+Binbin
 >
->  	/*
->  	 * Should not even be attempting cluster allocations when huge
->  	 * page swap is disabled.  Warn and fail the allocation.
->  	 */
-> -	if (!IS_ENABLED(CONFIG_THP_SWAP)) {
-> +	if (!IS_ENABLED(CONFIG_THP_SWAP) ||
-> +	    nr_pages < 4 || nr_pages > SWAPFILE_CLUSTER ||
-> +	    !is_power_of_2(nr_pages)) {
->  		VM_WARN_ON_ONCE(1);
->  		return 0;
->  	}
->
-> -	if (cluster_list_empty(&si->free_clusters))
-> +	/*
-> +	 * Not using clusters so unable to allocate large entries.
-> +	 */
-> +	if (!si->cluster_info)
->  		return 0;
->
-> -	idx = cluster_list_first(&si->free_clusters);
-> -	offset = idx * SWAPFILE_CLUSTER;
-> -	ci = lock_cluster(si, offset);
-> -	alloc_cluster(si, idx);
-> -	cluster_set_count(ci, SWAPFILE_CLUSTER);
-> +	order_idx = ilog2(nr_pages) - 2;
-> +	cluster = this_cpu_ptr(si->percpu_cluster);
-> +	offset = cluster->large_next[order_idx];
-> +
-> +	if (offset == UINT_MAX) {
-> +		if (cluster_list_empty(&si->free_clusters))
-> +			return 0;
-> +
-> +		idx = cluster_list_first(&si->free_clusters);
-> +		offset = idx * SWAPFILE_CLUSTER;
->
-> -	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
-> +		ci = lock_cluster(si, offset);
-> +		alloc_cluster(si, idx);
-> +		cluster_set_count(ci, SWAPFILE_CLUSTER);
-> +
-> +		/*
-> +		 * If scan_swap_map_slots() can't find a free cluster, it will
-> +		 * check si->swap_map directly. To make sure this standby
-> +		 * cluster isn't taken by scan_swap_map_slots(), mark the swap
-> +		 * entries bad (occupied). (same approach as discard).
-> +		 */
-> +		memset(si->swap_map + offset + nr_pages, SWAP_MAP_BAD,
-> +			SWAPFILE_CLUSTER - nr_pages);
-
-There's an issue with this solution.  If the free space of swap device
-runs low, it's possible that
-
-- some cluster are put in the percpu_cluster of some CPUs
-  the swap entries there are marked as used
-
-- no free swap entries elsewhere
-
-- nr_swap_pages isn't 0
-
-So, we will still scan LRU, but swap allocation fails, although there's
-still free swap space.
-
-I think that we should follow the method we used for the original
-percpu_cluster.  That is, if all free swap entries are in
-percpu_cluster, we will start to allocate from percpu_cluster.
-
-> +	} else {
-> +		idx = offset / SWAPFILE_CLUSTER;
-> +		ci = lock_cluster(si, offset);
-> +	}
-> +
-> +	memset(si->swap_map + offset, SWAP_HAS_CACHE, nr_pages);
->  	unlock_cluster(ci);
-> -	swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
-> +	swap_range_alloc(si, offset, nr_pages);
->  	*slot = swp_entry(si->type, offset);
->
-> +	offset += nr_pages;
-> +	if (idx != offset / SWAPFILE_CLUSTER)
-> +		offset = UINT_MAX;
-> +	cluster->large_next[order_idx] = offset;
-> +
->  	return 1;
->  }
->
-
-[snip]
-
---
-Best Regards,
-Huang, Ying
+> Best Regards,
+> Jonas
