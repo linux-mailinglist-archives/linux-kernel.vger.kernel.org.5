@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9509E7CE0D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133B77CE0D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbjJRPLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
+        id S1345176AbjJRPMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345189AbjJRPLe (ORCPT
+        with ESMTP id S231260AbjJRPL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:11:34 -0400
+        Wed, 18 Oct 2023 11:11:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F75119;
-        Wed, 18 Oct 2023 08:11:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8981C433C8;
-        Wed, 18 Oct 2023 15:11:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063FB11A;
+        Wed, 18 Oct 2023 08:11:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 986F6C433C9;
+        Wed, 18 Oct 2023 15:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697641891;
-        bh=C7m9fDYT0joXqYIu3u06j8ma6FQv1VuJV51Xu0vTIqY=;
+        s=k20201202; t=1697641916;
+        bh=BVq5OWCZ6MZo+NxOIacDg9B+QepLIBDhicPyWTS22Ho=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Zy6i7MymdvB1KwBvVdO5Z6/e+/Ab0RQlko43oMW4jt2vEfPM6QrFB2utwdbijLHLs
-         ePtwaweOBz/sUx2zHoB1rLeI9h6Dpq5f8750OluWZbo9QOgMrcB6XNMMpCaU1bVMAQ
-         pzPeEeLJQsJtI50+KSBkXc0j9P0ofj+g1pPD8qyaXKx6307awuopkLmWTAwamofCz3
-         ltYx3LNJSkEwDvgV971pfbYfZ65QKLP29n34jCGKZEvHeDo1MIz9Fw1K5VE05oNzcw
-         n8UcdSvHR/SwlrI8LfzOT0AwLvRvaDhjMo333HhZnFiIJOFCoGuTe+/G1qZwYYL2x6
-         1tPriTpmeHSvA==
-Message-ID: <b24844da-f82c-448d-91bc-bc2a8d2053b1@kernel.org>
-Date:   Thu, 19 Oct 2023 00:11:27 +0900
+        b=kPyUensujQyhzDavNhfzNCC3xa026mleZdL6usRrJUyV9gZoDyN+xyQxU/VOfARpp
+         sstozxbKSHRfCHHGdIXhUhZQzAvCCHNhpJiS0ZETzay5HBxUzQgCxLwXRByW1b+3YE
+         R1gasmq7VIcvQqGqG+Op+33JNA+IlfemgNajT8mSeJQKCzi/soVwiZBqRcWYKwbkDw
+         1F04WLgKUo9pkK9Oz8d0n9fpqjXjYUMdDk5+9gcGHiRcZ67Z9DXfmeI1Q0W+CSpvcU
+         U9WNG3hz/FTRQpbBLPCFwiLyi0Z/a4Yz1huGRsOjjcVdk5cqBufrHeRB0Jhylh+JBR
+         uMWm5eJEPQ8wQ==
+Message-ID: <4f7d4701-d40c-4aa4-908a-7e8dd4206c01@kernel.org>
+Date:   Thu, 19 Oct 2023 00:11:52 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 17/26] PM / devfreq: rockchip-dfi: make register stride
- SoC specific
+Subject: Re: [PATCH v8 18/26] PM / devfreq: rockchip-dfi: account for multiple
+ DDRMON_CTRL registers
 Content-Language: en-US
 To:     Sascha Hauer <s.hauer@pengutronix.de>,
         linux-rockchip@lists.infradead.org
@@ -51,9 +51,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
 References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
- <20231018061714.3553817-18-s.hauer@pengutronix.de>
+ <20231018061714.3553817-19-s.hauer@pengutronix.de>
 From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231018061714.3553817-18-s.hauer@pengutronix.de>
+In-Reply-To: <20231018061714.3553817-19-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,12 +67,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23. 10. 18. 15:17, Sascha Hauer wrote:
-> The currently supported RK3399 has a stride of 20 between the channel
-> specific registers. Upcoming RK3588 has a different stride, so put
-> the stride into driver data to make it configurable.
-> While at it convert decimal 20 to hex 0x14 for consistency with RK3588
-> which has a register stride 0x4000 and we want to write that in hex
-> as well.
+> The currently supported RK3399 has a set of registers per channel, but
+> it has only a single DDRMON_CTRL register. With upcoming RK3588 this
+> will be different, the RK3588 has a DDRMON_CTRL register per channel.
+> 
+> Instead of expecting a single DDRMON_CTRL register, loop over the
+> channels and write the channel specific DDRMON_CTRL register. Break
+> out early out of the loop when there is only a single DDRMON_CTRL
+> register like on the RK3399.
 > 
 > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
@@ -81,59 +83,137 @@ On 23. 10. 18. 15:17, Sascha Hauer wrote:
 > 
 > Notes:
 >     Changes since v7:
->      - Initialize ddrmon_stride for RK3568 and explain why it's not needed
+>      - initialize ddrmon_ctrl_single for RK3568
 > 
->  drivers/devfreq/event/rockchip-dfi.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+>  drivers/devfreq/event/rockchip-dfi.c | 73 +++++++++++++++++++---------
+>  1 file changed, 49 insertions(+), 24 deletions(-)
 > 
 > diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 63977f9fc2693..a3d823ac68ace 100644
+> index a3d823ac68ace..bf38829a2a4af 100644
 > --- a/drivers/devfreq/event/rockchip-dfi.c
 > +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -113,6 +113,7 @@ struct rockchip_dfi {
->  	int active_events;
+> @@ -114,12 +114,13 @@ struct rockchip_dfi {
 >  	int burst_len;
 >  	int buswidth[DMC_MAX_CHANNELS];
-> +	int ddrmon_stride;
+>  	int ddrmon_stride;
+> +	bool ddrmon_ctrl_single;
 >  };
 >  
 >  static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
-> @@ -190,13 +191,13 @@ static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_coun
->  		if (!(dfi->channel_mask & BIT(i)))
->  			continue;
->  		res->c[i].read_access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_RD_NUM + i * 20);
-> +				DDRMON_CH0_RD_NUM + i * dfi->ddrmon_stride);
->  		res->c[i].write_access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_WR_NUM + i * 20);
-> +				DDRMON_CH0_WR_NUM + i * dfi->ddrmon_stride);
->  		res->c[i].access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> +				DDRMON_CH0_DFI_ACCESS_NUM + i * dfi->ddrmon_stride);
->  		res->c[i].clock_cycles = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_COUNT_NUM + i * 20);
-> +				DDRMON_CH0_COUNT_NUM + i * dfi->ddrmon_stride);
->  	}
->  }
+>  {
+>  	void __iomem *dfi_regs = dfi->regs;
+> -	int ret = 0;
+> +	int i, ret = 0;
 >  
-> @@ -664,6 +665,8 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
->  	dfi->buswidth[0] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH0, val) == 0 ? 4 : 2;
+>  	mutex_lock(&dfi->mutex);
+>  
+> @@ -133,29 +134,41 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
+>  		goto out;
+>  	}
+>  
+> -	/* clear DDRMON_CTRL setting */
+> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN | DDRMON_CTRL_SOFTWARE_EN |
+> -		       DDRMON_CTRL_HARDWARE_EN), dfi_regs + DDRMON_CTRL);
+> +	for (i = 0; i < dfi->max_channels; i++) {
+> +		u32 ctrl = 0;
+>  
+> -	/* set ddr type to dfi */
+> -	switch (dfi->ddr_type) {
+> -	case ROCKCHIP_DDRTYPE_LPDDR2:
+> -	case ROCKCHIP_DDRTYPE_LPDDR3:
+> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR23, DDRMON_CTRL_DDR_TYPE_MASK),
+> -			       dfi_regs + DDRMON_CTRL);
+> -		break;
+> -	case ROCKCHIP_DDRTYPE_LPDDR4:
+> -	case ROCKCHIP_DDRTYPE_LPDDR4X:
+> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR4, DDRMON_CTRL_DDR_TYPE_MASK),
+> -			       dfi_regs + DDRMON_CTRL);
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> +		if (!(dfi->channel_mask & BIT(i)))
+> +			continue;
+>  
+> -	/* enable count, use software mode */
+> -	writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
+> -		       dfi_regs + DDRMON_CTRL);
+> +		/* clear DDRMON_CTRL setting */
+> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN |
+> +			       DDRMON_CTRL_SOFTWARE_EN | DDRMON_CTRL_HARDWARE_EN),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		/* set ddr type to dfi */
+> +		switch (dfi->ddr_type) {
+> +		case ROCKCHIP_DDRTYPE_LPDDR2:
+> +		case ROCKCHIP_DDRTYPE_LPDDR3:
+> +			ctrl = DDRMON_CTRL_LPDDR23;
+> +			break;
+> +		case ROCKCHIP_DDRTYPE_LPDDR4:
+> +		case ROCKCHIP_DDRTYPE_LPDDR4X:
+> +			ctrl = DDRMON_CTRL_LPDDR4;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +
+> +		writel_relaxed(HIWORD_UPDATE(ctrl, DDRMON_CTRL_DDR_TYPE_MASK),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		/* enable count, use software mode */
+> +		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		if (dfi->ddrmon_ctrl_single)
+> +			break;
+> +	}
+>  out:
+>  	mutex_unlock(&dfi->mutex);
+>  
+> @@ -165,6 +178,7 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
+>  static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
+>  {
+>  	void __iomem *dfi_regs = dfi->regs;
+> +	int i;
+>  
+>  	mutex_lock(&dfi->mutex);
+>  
+> @@ -175,8 +189,17 @@ static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
+>  	if (dfi->usecount > 0)
+>  		goto out;
+>  
+> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
+> -		       dfi_regs + DDRMON_CTRL);
+> +	for (i = 0; i < dfi->max_channels; i++) {
+> +		if (!(dfi->channel_mask & BIT(i)))
+> +			continue;
+> +
+> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
+> +			      dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		if (dfi->ddrmon_ctrl_single)
+> +			break;
+> +	}
+> +
+>  	clk_disable_unprepare(dfi->clk);
+>  out:
+>  	mutex_unlock(&dfi->mutex);
+> @@ -666,6 +689,7 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
 >  	dfi->buswidth[1] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH1, val) == 0 ? 4 : 2;
 >  
-> +	dfi->ddrmon_stride = 0x14;
-> +
+>  	dfi->ddrmon_stride = 0x14;
+> +	dfi->ddrmon_ctrl_single = true;
+>  
 >  	return 0;
 >  };
->  
-> @@ -690,6 +693,8 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
->  
+> @@ -694,6 +718,7 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
 >  	dfi->buswidth[0] = FIELD_GET(RK3568_PMUGRF_OS_REG2_BW_CH0, reg2) == 0 ? 4 : 2;
 >  
-> +	dfi->ddrmon_stride = 0x0; /* not relevant, we only have a single channel on this SoC */
-> +
+>  	dfi->ddrmon_stride = 0x0; /* not relevant, we only have a single channel on this SoC */
+> +	dfi->ddrmon_ctrl_single = true;
+>  
 >  	return 0;
 >  };
->  
 
 Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
