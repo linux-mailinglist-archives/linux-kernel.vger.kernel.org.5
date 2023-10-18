@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528FC7CDF45
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248407CDF1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345269AbjJROSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S1344900AbjJRORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345273AbjJROST (ORCPT
+        with ESMTP id S1344961AbjJROQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:18:19 -0400
+        Wed, 18 Oct 2023 10:16:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496CBD5E;
-        Wed, 18 Oct 2023 07:15:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35874C433AB;
-        Wed, 18 Oct 2023 14:15:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B5F44B3;
+        Wed, 18 Oct 2023 07:15:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 563E6C43395;
+        Wed, 18 Oct 2023 14:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638551;
-        bh=xhe2Gk9/so7Dk4aG/o7O2fARwvb4ekg9Yn1UVfoNetc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JtgKlnQZLhkRaJ4tXrr7Ay95pAFRLkMkfSJEFyDMu1fCc/ESZZv97JG1PHHlZYd2g
-         KtErJ9E4Nz2LI0kBS4b6FLzW4oYO2soCgpfe3uHV8liXBom5dlEktKGozA7/tGsrN/
-         kmagNMxZQxBm2zlTZZbtWNagdiNYABBnE6BgerPP6MgxZCS6fJBWX1Asz7L/AFM56R
-         yZRluvCrFo6z1pEkIN4ZHe0UY9CddZyitlP8xdf/zA9qoBRgeHRCEahhyG+t9KExUN
-         5vU9mVmn2Nb0yxBTrBUr2y0DU/LPAiEkWCBfvIN82ywvblSId9Upe7Y0qGZ6bwr/Fy
-         62P1rnc+/dnnw==
+        s=k20201202; t=1697638555;
+        bh=2bx54VwMF1iHDXV/okdrIoKe/RI6wVQn1kXD8jwkoBI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YDV8nORLOyUbU4bFgDo31HUYj0MoauwhIeC/iLB966NaxwGN59dvAYf0Ibx3b5ZiF
+         M7fnm3JHPmSEvLX/kCsWszlZ+BqgqSZf8tJrn/RWE/KUG2oIEuEauduBOarqeNX681
+         9CjMmNUJNLZCSCBNMEwCZX4HN8EI0KzQwNwlh3PbJ3p3Pa9UOTeiaAVxdy0mgu33fc
+         mkyegBx1avnhYbCYrmsLRXAODAyI/7a/NuGV1TqrMH8Al0pe0gsRFTMo2V+PZZPbU4
+         HLJzFIsGWRi7BDeOql9HzlcMUgvWhnWKAb/vO2ZTBmfxIgsvFgdl9jUlpcl8WINix4
+         9p/GGjdWdiAWA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, herve.codina@bootlin.com,
-        spujar@nvidia.com, christophe.leroy@csgroup.eu,
-        astrid.rost@axis.com, aidanmacdonald.0x0@gmail.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: simple-card: fixup asoc_simple_probe() error handling
-Date:   Wed, 18 Oct 2023 10:15:40 -0400
-Message-Id: <20231018141548.1335665-1-sashal@kernel.org>
+Cc:     Szilard Fabian <szfabian@bluemarch.art>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 2/7] Input: i8042 - add Fujitsu Lifebook E5411 to i8042 quirk table
+Date:   Wed, 18 Oct 2023 10:15:41 -0400
+Message-Id: <20231018141548.1335665-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231018141548.1335665-1-sashal@kernel.org>
+References: <20231018141548.1335665-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -56,83 +52,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Szilard Fabian <szfabian@bluemarch.art>
 
-[ Upstream commit 41bae58df411f9accf01ea660730649b2fab1dab ]
+[ Upstream commit 80f39e1c27ba9e5a1ea7e68e21c569c9d8e46062 ]
 
-asoc_simple_probe() is used for both "DT probe" (A) and "platform probe"
-(B). It uses "goto err" when error case, but it is not needed for
-"platform probe" case (B). Thus it is using "return" directly there.
+In the initial boot stage the integrated keyboard of Fujitsu Lifebook E5411
+refuses to work and it's not possible to type for example a dm-crypt
+passphrase without the help of an external keyboard.
 
-	static int asoc_simple_probe(...)
-	{
- ^		if (...) {
- |			...
-(A)			if (ret < 0)
- |				goto err;
- v		} else {
- ^			...
- |			if (ret < 0)
-(B)				return -Exxx;
- v		}
+i8042.nomux kernel parameter resolves this issue but using that a PS/2
+mouse is detected. This input device is unused even when the i2c-hid-acpi
+kernel module is blacklisted making the integrated ELAN touchpad
+(04F3:308A) not working at all.
 
-		...
- ^		if (ret < 0)
-(C)			goto err;
- v		...
+Since the integrated touchpad is managed by the i2c_designware input
+driver in the Linux kernel and you can't find a PS/2 mouse port on the
+computer I think it's safe to not use the PS/2 mouse port at all.
 
-	err:
-(D)		simple_util_clean_reference(card);
-
-		return ret;
-	}
-
-Both case are using (C) part, and it calls (D) when err case.
-But (D) will do nothing for (B) case.
-Because of these behavior, current code itself is not wrong,
-but is confusable, and more, static analyzing tool will warning on
-(B) part (should use goto err).
-
-To avoid static analyzing tool warning, this patch uses "goto err"
-on (B) part.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87o7hy7mlh.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
+Link: https://lore.kernel.org/r/20231004011749.101789-1-szfabian@bluemarch.art
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 64bf3560c1d1c..7567ee380283e 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -404,10 +404,12 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	} else {
- 		struct asoc_simple_card_info *cinfo;
- 
-+		ret = -EINVAL;
-+
- 		cinfo = dev->platform_data;
- 		if (!cinfo) {
- 			dev_err(dev, "no info for asoc-simple-card\n");
--			return -EINVAL;
-+			goto err;
- 		}
- 
- 		if (!cinfo->name ||
-@@ -416,7 +418,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 		    !cinfo->platform ||
- 		    !cinfo->cpu_dai.name) {
- 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
--			return -EINVAL;
-+			goto err;
- 		}
- 
- 		card->name		= (cinfo->card) ? cinfo->card : cinfo->name;
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index 0cf9a37873261..2d4df82d65afe 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -613,6 +613,14 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
+ 		},
+ 		.driver_data = (void *)(SERIO_QUIRK_NOMUX)
+ 	},
++	{
++		/* Fujitsu Lifebook E5411 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU CLIENT COMPUTING LIMITED"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "LIFEBOOK E5411"),
++		},
++		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
++	},
+ 	{
+ 		/* Gigabyte M912 */
+ 		.matches = {
 -- 
 2.40.1
 
