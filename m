@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2317CDF82
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85267CE003
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345323AbjJROYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S1345921AbjJROff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345562AbjJROYE (ORCPT
+        with ESMTP id S235296AbjJROfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:24:04 -0400
+        Wed, 18 Oct 2023 10:35:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884AC1FD8;
-        Wed, 18 Oct 2023 07:15:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09FCDC116AD;
-        Wed, 18 Oct 2023 14:15:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A142448D;
+        Wed, 18 Oct 2023 07:15:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C9DC433BF;
+        Wed, 18 Oct 2023 14:15:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638531;
-        bh=D2Y1+vdKJaCYPuayHoy20Ku/DUvjq2SJUMc4827xxfo=;
+        s=k20201202; t=1697638532;
+        bh=qB7p11kq92ju5zQ1FFaqx18gv/GjAtoRJ9VDOf18Xv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFzdM6GfkTQ2DoWvCkBCzGCa1JDJW2N+lhttnV8z1fRAtjBTxM8poA0Aoz8tK+2XQ
-         Lmn4oTyUdYH/3yIzuTzFBqagC08g0gpHPv3BuwjubgCVpgioApuBFz+8Q4T7v3ZAaZ
-         Ls8trbsMCbpH7BYV+RyrqdvNALXSeV7G9GyU476zSHGSIrMGXY9cgdtSjEf6bvgJB4
-         AKUVJgdonjs/BOmQ7k1DTDPyKHV/XYS5NeBchkV8wnqMHakaMX88+F88TJwJ30wTdB
-         17TdrYyLx+Mept+ZTl+6xJ/Ll6LOUPIKAH0W1s5/O7R3vyjHVRT3RC32e+9xkF2g4v
-         N30gPCoR4s7JA==
+        b=Rk6O2KSvOapGmDA++Objf59wtxOFvrrvEI9LNulUjxNp4YLXtKsEvItjYrLPxSwwH
+         ni5FJm7s2pmI+TXS9S8dYdkBrvC7ilEflJ7zwcjcU2kr7BsdJxovrAhw6L7BMd2GC+
+         X5w0NhqXqeet5i+OArh5thvLYw74HBwBY/VOdptA0urZmShpehPbFDoXM8qU0eWqJu
+         Qm+K/5v1xnPSGLibrIB8T7eA1UN//pHfNyiLcTZYZWvIF+Roazn1nr3H6HB2btMKqd
+         DS/g2aVL7PH7xL2kMhuDHUI45EgOgzwio/IW5hwU2SSDvTFG++ctZujvcSX00ZX6RQ
+         QLYa7zlQBU7Dw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        tglx@linutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 3/7] irqchip/stm32-exti: add missing DT IRQ flag translation
-Date:   Wed, 18 Oct 2023 10:15:19 -0400
-Message-Id: <20231018141525.1335533-3-sashal@kernel.org>
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 4/7] dmaengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
+Date:   Wed, 18 Oct 2023 10:15:20 -0400
+Message-Id: <20231018141525.1335533-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141525.1335533-1-sashal@kernel.org>
 References: <20231018141525.1335533-1-sashal@kernel.org>
@@ -55,35 +53,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+From: Zhang Shurong <zhang_shurong@foxmail.com>
 
-[ Upstream commit 8554cba1d6dbd3c74e0549e28ddbaccbb1d6b30a ]
+[ Upstream commit 0618c077a8c20e8c81e367988f70f7e32bb5a717 ]
 
-The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
-flags specified in the device tree were being ignored. This was
-preventing the RTC alarm interrupt from working, because it must be set
-to trigger on the rising edge to function correctly.
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced according to context.
+We fix it by calling pm_runtime_disable when error returns.
 
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20231003162003.1649967-1-ben.wolsieffer@hefring.com
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/tencent_DD2D371DB5925B4B602B1E1D0A5FA88F1208@qq.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-stm32-exti.c | 1 +
+ drivers/dma/ste_dma40.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index a8322a4e18d36..df18465a0985f 100644
---- a/drivers/irqchip/irq-stm32-exti.c
-+++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -414,6 +414,7 @@ static const struct irq_domain_ops irq_exti_domain_ops = {
- 	.map	= irq_map_generic_chip,
- 	.alloc  = stm32_exti_alloc,
- 	.free	= stm32_exti_free,
-+	.xlate	= irq_domain_xlate_twocell,
- };
+diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
+index 96a808b487cbe..fa0ad8581edcc 100644
+--- a/drivers/dma/ste_dma40.c
++++ b/drivers/dma/ste_dma40.c
+@@ -3700,6 +3700,7 @@ static int __init d40_probe(struct platform_device *pdev)
+ 		regulator_disable(base->lcpa_regulator);
+ 		regulator_put(base->lcpa_regulator);
+ 	}
++	pm_runtime_disable(base->dev);
  
- static void stm32_irq_ack(struct irq_data *d)
+ 	kfree(base->lcla_pool.alloc_map);
+ 	kfree(base->lookup_log_chans);
 -- 
 2.40.1
 
