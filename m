@@ -2,189 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98CF7CEBFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678B77CEC03
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbjJRXZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 19:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
+        id S231802AbjJRX0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJRXZS (ORCPT
+        with ESMTP id S229632AbjJRX0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:25:18 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B81111
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:25:16 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9c2a0725825so658940266b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697671514; x=1698276314; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6OMMJzrM/r2QS69Np81LPWdTT/4PTGNitohtEO8snE=;
-        b=jwvCiUBSCWRNkc8wgOUTYcTlhDf++g0fneizrponvy/EF+KqB3XG9FY0upuwnBzUz7
-         TQwE6sY40GZropMM6B26pJ9Eg3vWsQEZFXFkM2xOnLK3N7qUJe1MMlqgD6MLga6xHJvR
-         g/UYhi7jofKgFugTP1fPxkESgzn+ec0Uf8kZF/fpay7k7fe5IIJCBMqL/5Xnv18QeGzN
-         dc0AYyh+EXRDtNDYDZ1kYnLoi96xubkKdw4AdlYbX1EYnmBvfFzrAIU5fYLAgQ6mj/Nq
-         WTrFFfgxcJ5O/XcSc/8W+1Fi1F6Usmm6plC7x1bc7OwItVkQbwQeuUZ3b7B91ZEFxblc
-         Jxhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697671514; x=1698276314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6OMMJzrM/r2QS69Np81LPWdTT/4PTGNitohtEO8snE=;
-        b=jNEyhPEWaD5n5DI5bKyeifdQaOFr0kd1r1FFhLL8epfbqwPEEM+R9CqGqjO4aRE1nW
-         zpueetfrtQnzGDEKKIuFTjI7vOjU/TvaUpf8a9iAFG8Pfu61G6GhVSdQ2fcLSd8CrzHb
-         pd+FsKuPOnBePrKRDwyvjSl7C9RtT8Yp6ljxrNczK/GGCphtiDurcSXoQ4xjkjyV8gGn
-         NRLdDMW4FKxYLG8VuZ27SzRJ5quRAlcGXoQEt/DnyUClD2eUl57K81LoHycnt75JnCMD
-         SYPuY+NI5ttpjBAVpwNEfB2Uok20zGuDVsk+64rQeJtvWZajgcgC/7juS9RW5sj6PHmV
-         XyMw==
-X-Gm-Message-State: AOJu0YxcmtxjZfxaPGpXqVmUUc6mi+u1p8/xtsTl0XnbTqDOukWGExQl
-        oHnvqYNsqHDdYU3C839v7A3ScOTtLVlgAejir6dT4A==
-X-Google-Smtp-Source: AGHT+IE+y7pOC7NjtyakaWbo9IfAWBZkUfM0P9ELvDGljkKBEfeMFmh8nYhFAgK2lWPGdLiHJT2IPkLHz3eNaWWPWXU=
-X-Received: by 2002:a17:906:dc91:b0:9bf:5df1:38d2 with SMTP id
- cs17-20020a170906dc9100b009bf5df138d2mr445791ejc.3.1697671514379; Wed, 18 Oct
- 2023 16:25:14 -0700 (PDT)
+        Wed, 18 Oct 2023 19:26:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0123BB6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:25:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 087FDC433C7;
+        Wed, 18 Oct 2023 23:25:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697671557;
+        bh=af17yLZpE3wW13wgbbG7qsclNS+Q+/70kryD8tR9vus=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dcC+16VZjCAqBhgmAGKfV0sppXpPVjtU9Hz+1b+ySEvlu/YldQfbU1aodtjPY+FnR
+         VMLblIq3AZjPdjrts4AaUBoCIbWuZwtbANJUyG7v3kq+KgvHB7gAOpWerlzcmNeNtu
+         15y4uPHEJCO8WXbGjotfhg5fsuINk8P56ChrxUdmSBmIpCr04BIzcce8J41D6fA4HQ
+         EH3f+CxzFjPmeBNEi7mcka0fO5tbPawT3ZI5WwQSlWkhkh/O76exOO04Zg64EHhB0R
+         V8PNt34ZvQRgFHgE3HqHXgpD9iXRkCliQ0mMVR26jeml47O95tKAryiL9ceZmk/036
+         I9i8UAQDGOk3Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 810FBCE0BB0; Wed, 18 Oct 2023 16:25:56 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 16:25:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>, urezki@gmail.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <63d6ddfa-16ca-4c19-b542-a95f27d72f96@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <87ttrngmq0.ffs@tglx>
+ <87jzshhexi.ffs@tglx>
+ <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
+ <87il74qghh.fsf@oracle.com>
+ <7520a5b9-b604-4da2-b874-32505f175f39@paulmck-laptop>
+ <875y334k6m.ffs@tglx>
 MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-4-nphamcs@gmail.com>
-In-Reply-To: <20231017232152.2605440-4-nphamcs@gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 18 Oct 2023 16:24:38 -0700
-Message-ID: <CAJD7tkbz1d-E-q0MphD=676-ftp-bmOOCFgVxq5mRKgbgGLuYA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] mm: memcg: add per-memcg zswap writeback stat
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875y334k6m.ffs@tglx>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
->
-> Since zswap now writes back pages from memcg-specific LRUs, we now need a
-> new stat to show writebacks count for each memcg.
->
-> Suggested-by: Nhat Pham <nphamcs@gmail.com>
-> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  include/linux/memcontrol.h |  2 ++
->  mm/memcontrol.c            | 15 +++++++++++++++
->  mm/zswap.c                 |  3 +++
->  3 files changed, 20 insertions(+)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 3de10fabea0f..7868b1e00bf5 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -38,6 +38,7 @@ enum memcg_stat_item {
->         MEMCG_KMEM,
->         MEMCG_ZSWAP_B,
->         MEMCG_ZSWAPPED,
-> +       MEMCG_ZSWAP_WB,
->         MEMCG_NR_STAT,
->  };
->
-> @@ -1884,6 +1885,7 @@ static inline void count_objcg_event(struct obj_cgr=
-oup *objcg,
->  bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
->  void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
->  void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-> +void obj_cgroup_report_zswap_wb(struct obj_cgroup *objcg);
->  #else
->  static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
->  {
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1bde67b29287..a9118871e5a6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1505,6 +1505,7 @@ static const struct memory_stat memory_stats[] =3D =
-{
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         { "zswap",                      MEMCG_ZSWAP_B                   }=
-,
->         { "zswapped",                   MEMCG_ZSWAPPED                  }=
-,
-> +       { "zswap_wb",                   MEMCG_ZSWAP_WB                  }=
-,
+On Thu, Oct 19, 2023 at 12:53:05AM +0200, Thomas Gleixner wrote:
+> On Wed, Oct 18 2023 at 10:51, Paul E. McKenney wrote:
+> > On Wed, Oct 18, 2023 at 05:09:46AM -0700, Ankur Arora wrote:
+> 
+> Can you folks please trim your replies. It's annoying to scroll
+> through hundreds of quoted lines to figure out that nothing is there.
+> 
+> >>  This probably allows for more configuration flexibility across archs?
+> >>  Would allow for TREE_RCU=y, for instance. That said, so far I've only
+> >>  been working with PREEMPT_RCU=y.)
+> >
+> > Then this is a bug that needs to be fixed.  We need a way to make
+> > RCU readers non-preemptible.
+> 
+> Why?
 
-zswap_writeback would be more consistent with file_writeback below.
+So that we don't get tail latencies from preempted RCU readers that
+result in memory-usage spikes on systems that have good and sufficient
+quantities of memory, but which do not have enough memory to tolerate
+readers being preempted.
 
-Taking a step back, this is not really a "state". We increment it by 1
-every time and never decrement it. Sounds awfully similar to events :)
-
-You can also use count_objcg_event() directly and avoid the need for
-obj_cgroup_report_zswap_wb() below.
-
->  #endif
->         { "file_mapped",                NR_FILE_MAPPED                  }=
-,
->         { "file_dirty",                 NR_FILE_DIRTY                   }=
-,
-> @@ -1541,6 +1542,7 @@ static int memcg_page_state_unit(int item)
->         switch (item) {
->         case MEMCG_PERCPU_B:
->         case MEMCG_ZSWAP_B:
-> +       case MEMCG_ZSWAP_WB:
->         case NR_SLAB_RECLAIMABLE_B:
->         case NR_SLAB_UNRECLAIMABLE_B:
->         case WORKINGSET_REFAULT_ANON:
-> @@ -7861,6 +7863,19 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *=
-objcg, size_t size)
->         rcu_read_unlock();
->  }
->
-> +void obj_cgroup_report_zswap_wb(struct obj_cgroup *objcg)
-> +{
-> +       struct mem_cgroup *memcg;
-> +
-> +       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +               return;
-> +
-> +       rcu_read_lock();
-> +       memcg =3D obj_cgroup_memcg(objcg);
-> +       mod_memcg_state(memcg, MEMCG_ZSWAP_WB, 1);
-> +       rcu_read_unlock();
-> +}
-> +
->  static u64 zswap_current_read(struct cgroup_subsys_state *css,
->                               struct cftype *cft)
->  {
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index d2989ad11814..15485427e3fa 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -704,6 +704,9 @@ static enum lru_status shrink_memcg_cb(struct list_he=
-ad *item, struct list_lru_o
->         }
->         zswap_written_back_pages++;
->
-> +       if (entry->objcg)
-> +               obj_cgroup_report_zswap_wb(entry->objcg);
-> +
->         /*
->          * Writeback started successfully, the page now belongs to the
->          * swapcache. Drop the entry from zswap - unless invalidate alrea=
-dy
-> --
-> 2.34.1
+							Thanx, Paul
