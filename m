@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF0A7CE4B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848057CE4BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbjJRRfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S230476AbjJRRh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjJRRe7 (ORCPT
+        with ESMTP id S231565AbjJRRhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:34:59 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47881B9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:31:34 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-77421a47db6so434573685a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:31:34 -0700 (PDT)
+        Wed, 18 Oct 2023 13:37:12 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F392F2D4B
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:33:12 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7af20c488so87741597b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697650293; x=1698255093; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9bLri2X0kCXBGV92nbDG6SwJM6GKrFdnsc241iebPNs=;
-        b=e4b8bsnwDiP7Pe4vbxOAOIEc2cAZ3heTaIZKK9z55sv1NUjixG2X+zDD3zV40Cei4z
-         OhE3q+V5cRAP5RU2afazYhPyY+dF9GrvVD8eQ9mJXuGfZWps6kdx5POtC7mS1Qha0mjg
-         CSuMs4gZ6H7FnJ2+xsRI+gASeS9ewtO533yVilTBHtL4Xiy/6yYjk7FrIYihAzCgbFeL
-         fLrkXp1dFCNwYhG2byuwW8eoXEYx7dNFluJkZsHtNzmsKTAw7bullw/S5dHX7+casfCI
-         m7bLTGsDrmHhAbh5TcMWdig2pidG49vvt9xTiIIT9HJwSnPguEmI3d2PZbT3I5Ekyj5V
-         RcjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697650293; x=1698255093;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697650391; x=1698255191; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9bLri2X0kCXBGV92nbDG6SwJM6GKrFdnsc241iebPNs=;
-        b=USEpW4gpeZrcLH3zwkGG1OsnU9Q8hwtuNaOT6/m+5HIW6VPYZghfregb3gZ+aZhn4f
-         WhOZrUp3JlYIW03gldDbsB0q+Ej2yrx/SOXtuu8+8/HBKtuzK6k+3RRTWHOt9C8OpiRn
-         REuMbdz4Na5kOTepKR/m39CavDP3Os+upLpDoNj+/orA9Gn23w8krQr1tkiSmtJ4mhna
-         G2nvUdGl6RUiqmVDLiw2wgG+4RUy4Fbtctov+rQt2mE17hQoA+1QjHxNctNdaqoAtZOi
-         NcwM8fH7ooCtujdfMTGyjsNf9VWAIFX75HOSwbLo8GrYUppX1/Qw/oK5QYJjvdRyT6tN
-         B77g==
-X-Gm-Message-State: AOJu0YyoSP3bJU+ixv7b0SNVlt9Q7gql7uyPleQCNGFrAg/YYefcxhPw
-        TEB1jK9BGGFAeFJ3kmtl0X7LSw==
-X-Google-Smtp-Source: AGHT+IFo+mjFtPxRpd0jIylF9fz6tknOGNAoG6F08LeZnO+TZslObXXsbTQ7uyBbn7ocgkka/c15Cw==
-X-Received: by 2002:a05:620a:3994:b0:775:9c22:e901 with SMTP id ro20-20020a05620a399400b007759c22e901mr5485542qkn.15.1697650293358;
-        Wed, 18 Oct 2023 10:31:33 -0700 (PDT)
-Received: from ghost ([208.116.208.98])
-        by smtp.gmail.com with ESMTPSA id g3-20020a05620a108300b007789a3499casm109418qkk.115.2023.10.18.10.31.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 10:31:32 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 10:31:29 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v4 0/2] riscv: Add remaining module relocations and tests
-Message-ID: <ZTAWcX1qVhkC71BJ@ghost>
-References: <20231017-module_relocations-v4-0-937f5ef316f0@rivosinc.com>
- <20231018-smite-bungee-f46b15b4ce6f@spud>
+        bh=29LMb17t2WvZXiqVSSxiSoW1baNgIMJCymPjPvWCVfk=;
+        b=FTJBCoZ44qIT4ic73E6chpWdRnXKvAZoGvTfgb6bX+NmZOwaUhMW6yeqiP0jNZVbFZ
+         14GhG46x7Ae0IMZSyiYrxjvQXs5/VoKSqz8r74YygIIMp3dn9WerIYK6+uhPJNxrrPCG
+         Qy/YfCICnO2kfyHVpMcXfIwCPzx4djAy/V6ohcNOKrNRIkxW4qQoya9y5mlXTU2bKS4l
+         0Nugw1nEElqdBN8ZHR3+knE1NELzJZuHAm3sXFdcU/+k7P4pR6t53kcwDvjn8c0wj8YD
+         jxKnAlQwzlf0lnc39K6k/5sZCdZu52zVXDzd1Obzv3NmAdFp3nhhSojyVs3YpFqJYfz4
+         24Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697650391; x=1698255191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=29LMb17t2WvZXiqVSSxiSoW1baNgIMJCymPjPvWCVfk=;
+        b=LWVwnH2qFVlJbx9iaunDDt7f8nXKaciPrNZruur3Yq1qqYEnNm+s1xH5R+/h9ImTs2
+         yHVM+bqnSH6h0+vyB1o0V+Yq2pFEKhQhvqGR+GZuSFQEM7CsBx9M0dWTpUZgEMUjzCaY
+         0a6NAYQ5A1UMAgOAzdowoh/DAOWC3kbr4NvQSgOjmbZmaLVUDIrsgXB7QzH2WJVV5zOw
+         w4sRkcXRbyqlcrnWZt7n9648RW3dyxdWgfjgVta1b9X3Mko6uWdhwpPbc+QNu4s29CNv
+         WYrP2bvhKhFEyB8QG2NdCUW8sHeikS8LbqreFXxp1NcljO/WAdEUEFBBn5/ODdWzZHL6
+         8XVA==
+X-Gm-Message-State: AOJu0YztLF297xRKsvWubuHW1qKaFag61ChYH+Ed/5egUtlQS/ucxo6I
+        TGKZmq1e9ge8RBnSzV3pc2gF3KMgDIiQIW3cBO+4EW2a
+X-Google-Smtp-Source: AGHT+IEHZ8IlhTaOwhvyH851RRGnxtg3fgGPAj6DCeEtPcTQdxNcOuQpijzhW6as7LqVPOX4nd/QZZ1aubAWOXFJVh8=
+X-Received: by 2002:a25:26d1:0:b0:d9b:2477:b624 with SMTP id
+ m200-20020a2526d1000000b00d9b2477b624mr17199ybm.64.1697650391317; Wed, 18 Oct
+ 2023 10:33:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018-smite-bungee-f46b15b4ce6f@spud>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231016200510.7387-1-vishal.moola@gmail.com> <20231016200510.7387-3-vishal.moola@gmail.com>
+ <CAHbLzkrTmt=5ECLG0ZQs=14BxHhKZtDY1DfG3mSau7LU-0PeKw@mail.gmail.com>
+In-Reply-To: <CAHbLzkrTmt=5ECLG0ZQs=14BxHhKZtDY1DfG3mSau7LU-0PeKw@mail.gmail.com>
+From:   Vishal Moola <vishal.moola@gmail.com>
+Date:   Wed, 18 Oct 2023 10:33:00 -0700
+Message-ID: <CAOzc2pw7K=6Vqp=ptZQDNOP1Q9g+oqViJnVus6RsUXuOJnJyuQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/khugepaged: Convert hpage_collapse_scan_pmd() to
+ use folios
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,89 +71,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 12:35:55PM +0100, Conor Dooley wrote:
-> Hey Charlie,
-> 
-> On Tue, Oct 17, 2023 at 10:34:15PM -0700, Charlie Jenkins wrote:
-> > A handful of module relocations were missing, this patch includes the
-> > remaining ones. I also wrote some test cases to ensure that module
-> > loading works properly. Some relocations cannot be supported in the
-> > kernel, these include the ones that rely on thread local storage and
-> > dynamic linking.
-> > 
-> > ULEB128 handling is a bit special because SET and SUB relocations must
-> > happen together, and SET must happen before SUB. A psABI proposal [1]
-> > mandates that the first SET_ULEB128 that appears before a SUB_ULEB128
-> > is the associated SET_ULEB128.
-> > 
-> > This can be tested by enabling KUNIT, RUNTIME_KERNEL_TESTING_MENU, and
-> > RISCV_MODULE_LINKING_KUNIT.
-> > 
-> > [1] https://github.com/riscv-non-isa/riscv-elf-psabi-doc/pull/403
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On Tue, Oct 17, 2023 at 1:41=E2=80=AFPM Yang Shi <shy828301@gmail.com> wrot=
+e:
+>
+> On Mon, Oct 16, 2023 at 1:06=E2=80=AFPM Vishal Moola (Oracle)
+> <vishal.moola@gmail.com> wrote:
+> >
+> > Replaces 5 calls to compound_head(), and removes 1466 bytes of kernel
+> > text.
+> >
+> > Previously, to determine if any pte was shared, the page mapcount
+> > corresponding exactly to the pte was checked. This gave us a precise
+> > number of shared ptes. Using folio_estimated_sharers() instead uses
+> > the mapcount of the head page, giving us an estimate for tail page ptes=
+.
+> >
+> > This means if a tail page's mapcount is greater than its head page's
+> > mapcount, folio_estimated_sharers() would be underestimating the number=
+ of
+> > shared ptes, and vice versa.
+> >
+> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 > > ---
-> > Changes in v4:
-> > - Complete removal of R_RISCV_RVC_LUI
-> > - Fix bug in R_RISCV_SUB6 linking
-> > - Only build ULEB128 tests if supported by toolchain
-> > - Link to v3: https://lore.kernel.org/r/20231016-module_relocations-v3-0-a667fd6071e9@rivosinc.com
-> 
-> On patch 2/2:
-> 
-> ../arch/riscv/kernel/tests/module_test/test_uleb128.S:18:17: error: unknown relocation name
-> ../arch/riscv/kernel/tests/module_test/test_uleb128.S:19:17: error: unknown relocation name
-> 
-> Same toolchain configuration in the patchwork automation as before.
-> 
-> Cheers,
-> Conor.
+> >  mm/khugepaged.c | 26 ++++++++++++--------------
+> >  1 file changed, 12 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > index 7a552fe16c92..67aac53b31c8 100644
+> > --- a/mm/khugepaged.c
+> > +++ b/mm/khugepaged.c
+> > @@ -1245,7 +1245,7 @@ static int hpage_collapse_scan_pmd(struct mm_stru=
+ct *mm,
+> >         pte_t *pte, *_pte;
+> >         int result =3D SCAN_FAIL, referenced =3D 0;
+> >         int none_or_zero =3D 0, shared =3D 0;
+> > -       struct page *page =3D NULL;
+> > +       struct folio *folio =3D NULL;
+> >         unsigned long _address;
+> >         spinlock_t *ptl;
+> >         int node =3D NUMA_NO_NODE, unmapped =3D 0;
+> > @@ -1316,13 +1316,13 @@ static int hpage_collapse_scan_pmd(struct mm_st=
+ruct *mm,
+> >                 if (pte_write(pteval))
+> >                         writable =3D true;
+> >
+> > -               page =3D vm_normal_page(vma, _address, pteval);
+> > -               if (unlikely(!page) || unlikely(is_zone_device_page(pag=
+e))) {
+> > +               folio =3D vm_normal_folio(vma, _address, pteval);
+> > +               if (unlikely(!folio) || unlikely(folio_is_zone_device(f=
+olio))) {
+> >                         result =3D SCAN_PAGE_NULL;
+> >                         goto out_unmap;
+> >                 }
+> >
+> > -               if (page_mapcount(page) > 1) {
+> > +               if (folio_estimated_sharers(folio) > 1) {
+>
+> This doesn't look correct. The max_ptes_shared is used to control the
+> cap of shared PTEs. IIRC, folio_estimated_sharers() just reads the
+> mapcount of the head page. If we set max_ptes_shared to 256, and just
+> the head page is shared, but "shared" will return 512 and prevent from
+> collapsing the area even though just one PTE is shared. This breaks
+> the semantics of max_ptes_shared.
 
-Where do you see this error? On Patchwork I see a success [1].
+In my testing this replacement appears to do the opposite (underestimating
+instead of overestimating), which admittedly still breaks the semantics of
+max_ptes_shared. It appears that this happens quite frequently in many
+regular use cases, so I'll go back to checking each individual subpage's
+mapcount in v2.
 
-[1] https://patchwork.kernel.org/project/linux-riscv/patch/20231017-module_relocations-v4-2-937f5ef316f0@rivosinc.com/
-
-> 
-> > 
-> > Changes in v3:
-> > - Add prototypes to test_module_linking_main as recommended by intel
-> >   zero day bot
-> > - Improve efficiency of ULEB128 pair matching
-> > - Link to v2: https://lore.kernel.org/r/20231006-module_relocations-v2-0-47566453fedc@rivosinc.com
-> > 
-> > Changes in v2:
-> > - Added ULEB128 relocations
-> > - Link to v1: https://lore.kernel.org/r/20230913-module_relocations-v1-0-bb3d8467e793@rivosinc.com
-> > 
-> > ---
-> > Charlie Jenkins (2):
-> >       riscv: Add remaining module relocations
-> >       riscv: Add tests for riscv module loading
-> > 
-> >  arch/riscv/Kconfig.debug                           |   1 +
-> >  arch/riscv/include/uapi/asm/elf.h                  |   5 +-
-> >  arch/riscv/kernel/Makefile                         |   1 +
-> >  arch/riscv/kernel/module.c                         | 207 ++++++++++++++++++---
-> >  arch/riscv/kernel/tests/Kconfig.debug              |  35 ++++
-> >  arch/riscv/kernel/tests/Makefile                   |   1 +
-> >  arch/riscv/kernel/tests/module_test/Makefile       |  15 ++
-> >  .../tests/module_test/test_module_linking_main.c   |  85 +++++++++
-> >  arch/riscv/kernel/tests/module_test/test_set16.S   |  23 +++
-> >  arch/riscv/kernel/tests/module_test/test_set32.S   |  20 ++
-> >  arch/riscv/kernel/tests/module_test/test_set6.S    |  23 +++
-> >  arch/riscv/kernel/tests/module_test/test_set8.S    |  23 +++
-> >  arch/riscv/kernel/tests/module_test/test_sub16.S   |  22 +++
-> >  arch/riscv/kernel/tests/module_test/test_sub32.S   |  22 +++
-> >  arch/riscv/kernel/tests/module_test/test_sub6.S    |  22 +++
-> >  arch/riscv/kernel/tests/module_test/test_sub64.S   |  27 +++
-> >  arch/riscv/kernel/tests/module_test/test_sub8.S    |  22 +++
-> >  arch/riscv/kernel/tests/module_test/test_uleb128.S |  20 ++
-> >  18 files changed, 548 insertions(+), 26 deletions(-)
-> > ---
-> > base-commit: 4d320c2d9a2b22f53523a1b012cda17a50220965
-> > change-id: 20230908-module_relocations-f63ced651bd7
-> > -- 
-> > - Charlie
-> > 
-
-
+> >                         ++shared;
+> >                         if (cc->is_khugepaged &&
+> >                             shared > khugepaged_max_ptes_shared) {
+> > @@ -1332,29 +1332,27 @@ static int hpage_collapse_scan_pmd(struct mm_st=
+ruct *mm,
+> >                         }
+> >                 }
+> >
+> > -               page =3D compound_head(page);
+> > -
+> >                 /*
+> >                  * Record which node the original page is from and save=
+ this
+> >                  * information to cc->node_load[].
+> >                  * Khugepaged will allocate hugepage from the node has =
+the max
+> >                  * hit record.
+> >                  */
+> > -               node =3D page_to_nid(page);
+> > +               node =3D folio_nid(folio);
+> >                 if (hpage_collapse_scan_abort(node, cc)) {
+> >                         result =3D SCAN_SCAN_ABORT;
+> >                         goto out_unmap;
+> >                 }
+> >                 cc->node_load[node]++;
+> > -               if (!PageLRU(page)) {
+> > +               if (!folio_test_lru(folio)) {
+> >                         result =3D SCAN_PAGE_LRU;
+> >                         goto out_unmap;
+> >                 }
+> > -               if (PageLocked(page)) {
+> > +               if (folio_test_locked(folio)) {
+> >                         result =3D SCAN_PAGE_LOCK;
+> >                         goto out_unmap;
+> >                 }
+> > -               if (!PageAnon(page)) {
+> > +               if (!folio_test_anon(folio)) {
+> >                         result =3D SCAN_PAGE_ANON;
+> >                         goto out_unmap;
+> >                 }
+> > @@ -1369,7 +1367,7 @@ static int hpage_collapse_scan_pmd(struct mm_stru=
+ct *mm,
+> >                  * has excessive GUP pins (i.e. 512).  Anyway the same =
+check
+> >                  * will be done again later the risk seems low.
+> >                  */
+> > -               if (!is_refcount_suitable(page)) {
+> > +               if (!is_refcount_suitable(&folio->page)) {
+> >                         result =3D SCAN_PAGE_COUNT;
+> >                         goto out_unmap;
+> >                 }
+> > @@ -1379,8 +1377,8 @@ static int hpage_collapse_scan_pmd(struct mm_stru=
+ct *mm,
+> >                  * enough young pte to justify collapsing the page
+> >                  */
+> >                 if (cc->is_khugepaged &&
+> > -                   (pte_young(pteval) || page_is_young(page) ||
+> > -                    PageReferenced(page) || mmu_notifier_test_young(vm=
+a->vm_mm,
+> > +                   (pte_young(pteval) || folio_test_young(folio) ||
+> > +                    folio_test_referenced(folio) || mmu_notifier_test_=
+young(vma->vm_mm,
+> >                                                                      ad=
+dress)))
+> >                         referenced++;
+> >         }
+> > @@ -1402,7 +1400,7 @@ static int hpage_collapse_scan_pmd(struct mm_stru=
+ct *mm,
+> >                 *mmap_locked =3D false;
+> >         }
+> >  out:
+> > -       trace_mm_khugepaged_scan_pmd(mm, page, writable, referenced,
+> > +       trace_mm_khugepaged_scan_pmd(mm, &folio->page, writable, refere=
+nced,
+> >                                      none_or_zero, result, unmapped);
+> >         return result;
+> >  }
+> > --
+> > 2.40.1
+> >
