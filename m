@@ -2,457 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 173ED7CDCC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924FC7CDCF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjJRNKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        id S230426AbjJRNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjJRNKP (ORCPT
+        with ESMTP id S230480AbjJRNP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:10:15 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B34115
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:10:12 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6JL-0003Re-QX; Wed, 18 Oct 2023 15:10:07 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6JL-002ZCt-Aw; Wed, 18 Oct 2023 15:10:07 +0200
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6JL-00GSzS-1a; Wed, 18 Oct 2023 15:10:07 +0200
-Date:   Wed, 18 Oct 2023 15:10:07 +0200
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Avichal Rakesh <arakesh@google.com>
-Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        etalvala@google.com, gregkh@linuxfoundation.org,
-        jchowdhary@google.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] usb: gadget: uvc: Fix use-after-free for inflight
- usb_requests
-Message-ID: <ZS/ZL8RMix7zppcP@pengutronix.de>
-References: <20230930184821.310143-1-arakesh@google.com>
- <20231012002451.254737-1-arakesh@google.com>
- <20231012002451.254737-3-arakesh@google.com>
+        Wed, 18 Oct 2023 09:15:27 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC7394
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:15:25 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso5322010a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697634924; x=1698239724; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=i6qXUWupsnmAOKBRrGWDX4ua1G1ZUx1AreCL3neAh1g=;
+        b=cJB4r0TsVa4RJfbuhDcQnhRBeXjyq54nYTheaqTzm500tiC6EC5TmhGd0mPo/290iL
+         TQpR/KabrBiSGYebD3+o2TQR7fexdRpzSZcnsfgucZztu0KvNkOuMXugLjl79of6/JWh
+         UWZWEp/rMLZDuJ6FackC10K2qH9eEfIN56eipWFmlJfvG23vucC9qb/N+sPmlgxHWq9g
+         +wFo31ujc6hZ+Cku0o9VYENGWgxMDaA+r1yH0RZJCwxyGB3py6nYk37tsKiMIxI2Jctj
+         t4MfENdMNGr5QReJS6Na9cHJSnarBlnvBperbTx7QdiVRI2Xfq/9uHOf1Coe/bA6nGFt
+         0VZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697634924; x=1698239724;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i6qXUWupsnmAOKBRrGWDX4ua1G1ZUx1AreCL3neAh1g=;
+        b=cVQE5hVNKVeMkXY0lz6Ldo7zL7wFOSzByNYellTGFMYV9I998TQL6Y8rdF3ppH3hxD
+         xmGpWcXrkkPxNKwghhIodyTKiwuYHMBW5DpUevIXACz2ELZ8Jc8t0jE6ZVSa+DKtsEAy
+         Di5zmt1YZMNizrtEPpUTw4xP9DeB4mUapDeNUBEh89aqN8OdDod00rybwHnQqGT5kANd
+         jVkiD+/tlL9+auldvfRfHvrsPZnQYBYn3SbK+xhUxC35kZamv7Xy5duWeyevfhwU4hSY
+         kzrqVj5BxPO3ywDRCS77GiPWOFJumqE2SwobLi01lBnRIxpK7+Bxt2YgSIrsj/TRu3vk
+         oVdQ==
+X-Gm-Message-State: AOJu0YxxavqGeyO6PHI4KpiOtN2lCegrxnPAnxvf/PtmU41PgxkXxDsw
+        8uF4n3qbQgRqbwRzPKsgWfo8+Bicr+qlB8xk7gg=
+X-Google-Smtp-Source: AGHT+IHszRkhrEgrvruAfqI5aBdEPLfp2YCjX6JO0wegVjzj8b/BTDoCIis9zHv3apNeeGxlsilkGaFIQpA31UhoH/Y=
+X-Received: by 2002:aa7:cd4d:0:b0:53e:1e7f:4835 with SMTP id
+ v13-20020aa7cd4d000000b0053e1e7f4835mr3803494edw.32.1697634923796; Wed, 18
+ Oct 2023 06:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1sv+Q8p5KINhrMnO"
-Content-Disposition: inline
-In-Reply-To: <20231012002451.254737-3-arakesh@google.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+In-Reply-To: <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 15:15:11 +0200
+Message-ID: <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: multipart/mixed; boundary="00000000000097e5270607fd6e2d"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---1sv+Q8p5KINhrMnO
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+--00000000000097e5270607fd6e2d
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 11, 2023 at 05:24:51PM -0700, Avichal Rakesh wrote:
->Currently, the uvc gadget driver allocates all uvc_requests as one array
->and deallocates them all when the video stream stops. This includes
->de-allocating all the usb_requests associated with those uvc_requests.
->This can lead to use-after-free issues if any of those de-allocated
->usb_requests were still owned by the usb controller.
+On Wed, Oct 18, 2023 at 2:14=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
 >
->This is patch 2 of 2 in fixing the use-after-free issue. It adds a new
->flag to uvc_video to track when frames and requests should be flowing.
->When disabling the video stream, the flag is tripped and, instead
->of de-allocating all uvc_requests and usb_requests, the gadget
->driver only de-allocates those usb_requests that are currently
->owned by it (as present in req_free). Other usb_requests are left
->untouched until their completion handler is called which takes care
->of freeing the usb_request and its corresponding uvc_request.
+> On Wed, Oct 18, 2023 at 12:54=E2=80=AFPM Nadav Amit <namit@vmware.com> wr=
+ote:
+> >
+> >
+> >
+> > > On Oct 18, 2023, at 12:04 PM, Uros Bizjak <ubizjak@gmail.com> wrote:
+> > >
+> > > Solved.
+> > >
+> > > All that is needed is to patch cpu_init() from
+> > > arch/x86/kernel/cpu/common.c with:
+> > >
+> > > --cut here--
+> > > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/commo=
+n.c
+> > > index b14fc8c1c953..61b6fcdf6937 100644
+> > > --- a/arch/x86/kernel/cpu/common.c
+> > > +++ b/arch/x86/kernel/cpu/common.c
+> > > @@ -2228,7 +2232,7 @@ void cpu_init_exception_handling(void)
+> > > */
+> > > void cpu_init(void)
+> > > {
+> > > -       struct task_struct *cur =3D current;
+> > > +       struct task_struct *cur =3D this_cpu_read_stable(pcpu_hot.cur=
+rent_task);
+> > >       int cpu =3D raw_smp_processor_id();
+> >
+> > Thanks for solving that, and sorry that I missed it.
+> >
+> > The reason I didn=E2=80=99t encounter it before is that in my original =
+patch I created
+> > a new compilation unit which only defined the alias.
+> >
+> > Since there might be additional problems (any =E2=80=9Ccurrent=E2=80=9D=
+ use in common.c is
+> > dangerous, even in included files), I think that while there may be add=
+itional
+> > solutions, defining the alias in a separate compilation unit - as I did=
+ before -
+> > is the safest.
 >
->Now that uvc_video does not depends on uvc->state, this patch removes
->unnecessary upates to uvc->state that were made to accomodate uvc_video
->logic. This should ensure that uvc gadget driver never accidentally
->de-allocates a usb_request that it doesn't own.
+> What happens here can be illustrated with the following testcase:
 >
->Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.=
-com
->Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->Signed-off-by: Avichal Rakesh <arakesh@google.com>
->---
->v1 -> v2: Rebased to ToT, and fixed deadlock reported in
->          https://lore.kernel.org/all/ZRv2UnKztgyqk2pt@pengutronix.de/
->v2 -> v3: Fix email threading goof-up
->v3 -> v4: re-rebase to ToT & moved to a uvc_video level lock
->          as discussed in
->          https://lore.kernel.org/b14b296f-2e08-4edf-aeea-1c5b621e2d0c@goo=
-gle.com/
-
-I tested this and I no longer saw any use after free
-errors anymore! :)
-
-Here comes some more review:
-
-> drivers/usb/gadget/function/uvc.h       |   1 +
-> drivers/usb/gadget/function/uvc_v4l2.c  |  12 +-
-> drivers/usb/gadget/function/uvc_video.c | 156 +++++++++++++++++++-----
-> 3 files changed, 128 insertions(+), 41 deletions(-)
+> --cut here--
+> int init_mm;
 >
->diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/functi=
-on/uvc.h
->index 993694da0bbc..be0d012aa244 100644
->--- a/drivers/usb/gadget/function/uvc.h
->+++ b/drivers/usb/gadget/function/uvc.h
->@@ -102,6 +102,7 @@ struct uvc_video {
-> 	unsigned int uvc_num_requests;
->
-> 	/* Requests */
->+	bool is_enabled; /* tracks whether video stream is enabled */
-> 	unsigned int req_size;
-> 	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
-> 	struct list_head req_free;
->diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/f=
-unction/uvc_v4l2.c
->index c0d77564a204..ded7d33c2a52 100644
->--- a/drivers/usb/gadget/function/uvc_v4l2.c
->+++ b/drivers/usb/gadget/function/uvc_v4l2.c
->@@ -451,8 +451,8 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4=
-l2_buf_type type)
-> 	 * Complete the alternate setting selection setup phase now that
-> 	 * userspace is ready to provide video frames.
-> 	 */
->-	uvc_function_setup_continue(uvc, 0);
-> 	uvc->state =3D UVC_STATE_STREAMING;
->+	uvc_function_setup_continue(uvc, 0);
->
-> 	return 0;
-> }
->@@ -468,12 +468,12 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum=
- v4l2_buf_type type)
-> 	if (type !=3D video->queue.queue.type)
-> 		return -EINVAL;
->
->-	uvc->state =3D UVC_STATE_CONNECTED;
-> 	ret =3D uvcg_video_enable(video, 0);
-> 	if (ret < 0) {
-> 		return ret;
-> 	}
->
->+	uvc->state =3D UVC_STATE_CONNECTED;
-> 	uvc_function_setup_continue(uvc, 1);
-> 	return 0;
-> }
->@@ -508,14 +508,6 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
-> static void uvc_v4l2_disable(struct uvc_device *uvc)
+> struct task_struct
 > {
-> 	uvc_function_disconnect(uvc);
->-	/*
->-	 * Drop uvc->state to CONNECTED if it was streaming before.
->-	 * This ensures that the usb_requests are no longer queued
->-	 * to the controller.
->-	 */
->-	if (uvc->state =3D=3D UVC_STATE_STREAMING)
->-		uvc->state =3D UVC_STATE_CONNECTED;
->-
-> 	uvcg_video_enable(&uvc->video, 0);
-> 	uvcg_free_buffers(&uvc->video.queue);
-> 	uvc->func_connected =3D false;
->diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/=
-function/uvc_video.c
->index b62b3de79153..05b89b5b6c48 100644
->--- a/drivers/usb/gadget/function/uvc_video.c
->+++ b/drivers/usb/gadget/function/uvc_video.c
->@@ -227,6 +227,9 @@ uvc_video_encode_isoc(struct usb_request *req, struct =
-uvc_video *video,
->  * Request handling
->  */
+>   int *active_mm;
+> };
 >
->+/**
->+ * Must be called with req_lock held as it modifies the list ureq is held=
- in
->+ */
-> static void
-> uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
+> struct task_struct init_task;
+>
+> struct pcpu_hot
 > {
->@@ -271,9 +274,25 @@ uvc_video_complete(struct usb_ep *ep, struct usb_requ=
-est *req)
-> 	struct uvc_request *ureq =3D req->context;
-> 	struct uvc_video *video =3D ureq->video;
-> 	struct uvc_video_queue *queue =3D &video->queue;
->-	struct uvc_device *uvc =3D video->uvc;
->+	struct uvc_buffer *last_buf =3D NULL;
-> 	unsigned long flags;
+>   struct task_struct *current_task;
+> };
 >
->+	spin_lock_irqsave(&video->req_lock, flags);
->+	if (!video->is_enabled) {
->+		/*
->+		 * When is_enabled is false, uvc_video_disable ensures that
->+		 * in-flight uvc_buffers are returned, so we can safely
->+		 * call free_request without worrying about last_buf.
->+		 */
->+		uvc_video_free_request(ureq, ep);
->+		spin_unlock_irqrestore(&video->req_lock, flags);
->+		return;
->+	}
->+
->+	last_buf =3D ureq->last_buf;
->+	ureq->last_buf =3D NULL;
->+	spin_unlock_irqrestore(&video->req_lock, flags);
->+
-> 	switch (req->status) {
-> 	case 0:
-> 		break;
->@@ -295,17 +314,26 @@ uvc_video_complete(struct usb_ep *ep, struct usb_req=
-uest *req)
-> 		uvcg_queue_cancel(queue, 0);
-> 	}
+> struct pcpu_hot pcpu_hot =3D { .current_task =3D &init_task };
 >
->-	if (ureq->last_buf) {
->-		uvcg_complete_buffer(&video->queue, ureq->last_buf);
->-		ureq->last_buf =3D NULL;
->+	if (last_buf) {
->+		spin_lock_irqsave(&queue->irqlock, flags);
->+		uvcg_complete_buffer(&video->queue, last_buf);
->+		spin_unlock_irqrestore(&queue->irqlock, flags);
-> 	}
+> extern const struct pcpu_hot __seg_gs const_pcpu_hot
+> __attribute__((alias("pcpu_hot")));
 >
-> 	spin_lock_irqsave(&video->req_lock, flags);
->-	list_add_tail(&req->list, &video->req_free);
->-	spin_unlock_irqrestore(&video->req_lock, flags);
->-
->-	if (uvc->state =3D=3D UVC_STATE_STREAMING)
->+	/*
->+	 * Video stream might have been disabled while we were
->+	 * processing the current usb_request. So make sure
->+	 * we're still streaming before queueing the usb_request
->+	 * back to req_free
->+	 */
->+	if (video->is_enabled) {
->+		list_add_tail(&req->list, &video->req_free);
-> 		queue_work(video->async_wq, &video->pump);
->+	} else {
->+		uvc_video_free_request(ureq, ep);
->+	}
->+	spin_unlock_irqrestore(&video->req_lock, flags);
+> void foo (void)
+> {
+>   struct task_struct *cur =3D const_pcpu_hot.current_task;
+>
+>   cur->active_mm =3D &init_mm;
 > }
+> --cut here--
 >
-> static int
->@@ -391,20 +419,22 @@ static void uvcg_video_pump(struct work_struct *work)
-> 	struct uvc_video_queue *queue =3D &video->queue;
-> 	/* video->max_payload_size is only set when using bulk transfer */
-> 	bool is_bulk =3D video->max_payload_size;
->-	struct uvc_device *uvc =3D video->uvc;
-> 	struct usb_request *req =3D NULL;
-> 	struct uvc_buffer *buf;
-> 	unsigned long flags;
-> 	bool buf_done;
-> 	int ret;
+> gcc -O2 -S:
 >
->-	while (uvc->state =3D=3D UVC_STATE_STREAMING && video->ep->enabled) {
->+	while(true) {
-
-Missing space after "while".
-
->+		if (!video->ep->enabled)
->+			return;
->+
-> 		/*
->-		 * Retrieve the first available USB request, protected by the
->-		 * request lock.
->+		 * Check is_enabled and retrieve the first available USB
->+		 * request, protected by the request lock.
-> 		 */
-> 		spin_lock_irqsave(&video->req_lock, flags);
->-		if (list_empty(&video->req_free)) {
->+		if (!video->is_enabled || list_empty(&video->req_free)) {
-> 			spin_unlock_irqrestore(&video->req_lock, flags);
-> 			return;
-> 		}
->@@ -486,9 +516,78 @@ static void uvcg_video_pump(struct work_struct *work)
-> 		return;
+> foo:
+>        movq    $init_mm, init_task(%rip)
+>        ret
 >
-> 	spin_lock_irqsave(&video->req_lock, flags);
->-	list_add_tail(&req->list, &video->req_free);
->+	if (video->is_enabled)
->+		list_add_tail(&req->list, &video->req_free);
->+	else
->+		uvc_video_free_request(req->context, video->ep);
->+	spin_unlock_irqrestore(&video->req_lock, flags);
->+}
->+
->+/*
->+ * Disable video stream
->+ */
->+static int
->+uvcg_video_disable(struct uvc_video *video) {
->+	unsigned long flags;
->+	struct list_head inflight_bufs;
->+	struct usb_request *req, *temp;
->+	struct uvc_buffer *buf, *btemp;
->+	struct uvc_request *ureq, *utemp;
->+
->+	INIT_LIST_HEAD(&inflight_bufs);
->+	spin_lock_irqsave(&video->req_lock, flags);
->+	video->is_enabled =3D false;
->+
->+	/*
->+	 * Remove any in-flight buffers from the uvc_requests
->+	 * because we want to return them before cancelling the
->+	 * queue. This ensures that we aren't stuck waiting for
->+	 * all complete callbacks to come through before disabling
->+	 * vb2 queue.
->+	 */
->+	list_for_each_entry(ureq, &video->ureqs, list) {
->+		if (ureq->last_buf) {
->+			list_add_tail(&ureq->last_buf->queue, &inflight_bufs);
->+			ureq->last_buf =3D NULL;
->+		}
->+	}
-> 	spin_unlock_irqrestore(&video->req_lock, flags);
->-	return;
->+
->+	cancel_work_sync(&video->pump);
->+	uvcg_queue_cancel(&video->queue, 0);
->+
->+	spin_lock_irqsave(&video->req_lock, flags);
->+	/*
->+	 * Remove all uvc_reqeusts from from ureqs with list_del_init
->+	 * This lets uvc_video_free_request correctly identify
->+	 * if the uvc_request is attached to a list or not when freeing
->+	 * memory.
->+	 */
->+	list_for_each_entry_safe(ureq, utemp, &video->ureqs, list)
->+		list_del_init(&ureq->list);
->+
->+	list_for_each_entry_safe(req, temp, &video->req_free, list) {
->+		list_del(&req->list);
->+		uvc_video_free_request(req->context, video->ep);
->+	}
->+
->+	INIT_LIST_HEAD(&video->ureqs);
->+	INIT_LIST_HEAD(&video->req_free);
->+	video->req_size =3D 0;
->+	spin_unlock_irqrestore(&video->req_lock, flags);
->+
->+	/*
->+	 * Return all the video buffers before disabling the queue.
->+	 */
->+	spin_lock_irqsave(&video->queue.irqlock, flags);
->+	list_for_each_entry_safe(buf, btemp, &inflight_bufs, queue) {
->+		list_del(&buf->queue);
->+		uvcg_complete_buffer(&video->queue, buf);
->+	}
->+	spin_unlock_irqrestore(&video->queue.irqlock, flags);
->+
->+	uvcg_queue_enable(&video->queue, 0);
->+	return 0;
-> }
+> Here, gcc optimizes the access to generic address space, which is
+> allowed to, since *we set the alias to pcpu_hot*, which is in the
+> generic address space. The compiler doesn't care that we actually
+> want:
 >
-> /*
->@@ -497,28 +596,22 @@ static void uvcg_video_pump(struct work_struct *work)
-> int uvcg_video_enable(struct uvc_video *video, int enable)
-> {
-> 	int ret;
->-	struct uvc_request *ureq;
+> foo:
+>        movq    %gs:const_pcpu_hot(%rip), %rax
+>        movq    $init_mm, (%rax)
 >
-> 	if (video->ep =3D=3D NULL) {
-> 		uvcg_info(&video->uvc->func,
-> 			  "Video enable failed, device is uninitialized.\n");
-> 		return -ENODEV;
-> 	}
->-
->-	if (!enable) {
->-		cancel_work_sync(&video->pump);
->-		uvcg_queue_cancel(&video->queue, 0);
->-
->-		list_for_each_entry(ureq, &video->ureqs, list) {
->-			if (ureq->req)
->-				usb_ep_dequeue(video->ep, ureq->req);
->-		}
->-
->-		uvc_video_free_requests(video);
->-		uvcg_queue_enable(&video->queue, 0);
->-		return 0;
->-	}
->-
->+	if (!enable)
->+		return uvcg_video_disable(video);
-
-Could you refactor this code as it is to an separate
-function and prepand this change as an extra patch
-to this one? It would make the changes in the functions
-more obvious and better to review.
-
->+
->+	/*
->+	 * Safe to access request related fields without req_lock because
->+	 * this is the only thread currently active, and no other
->+	 * request handling thread will become active until this function
->+	 * returns.
->+	 */
->+	video->is_enabled =3D true;
-
-Add an extra empty line.
-
-> 	if ((ret =3D uvcg_queue_enable(&video->queue, 1)) < 0)
-> 		return ret;
+> So yes, to prevent the optimization, we have to hide the alias in another=
+ TU.
 >
->@@ -544,6 +637,7 @@ int uvcg_video_enable(struct uvc_video *video, int ena=
-ble)
->  */
-> int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
-> {
->+	video->is_enabled =3D false;
-> 	INIT_LIST_HEAD(&video->ureqs);
-> 	INIT_LIST_HEAD(&video->req_free);
-> 	spin_lock_init(&video->req_lock);
->--
->2.42.0.609.gbb76f46606-goog
+> BTW: Clang creates:
 >
+> foo:
+>        movq    %gs:pcpu_hot(%rip), %rax
+>        movq    $init_mm, (%rax)
+>        retq
 >
+> It is a bit more conservative and retains the address space of the
+> aliasing symbol.
+>
+> Looks like another case of underspecified functionality where both
+> compilers differ. Luckily, both DTRT when aliases are hidden in
+> another TU.
 
-Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Attached is the prototype patch that works for me (together with
+Linus' FPU switching patch).
 
+Uros.
 
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+--00000000000097e5270607fd6e2d
+Content-Type: text/plain; charset="US-ASCII"; name="current.diff.txt"
+Content-Disposition: attachment; filename="current.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lnvrz6c80>
+X-Attachment-Id: f_lnvrz6c80
 
---1sv+Q8p5KINhrMnO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUv2SwACgkQC+njFXoe
-LGThRA/8DHI1OB19SEtUoniNF0R/ijUOfnrLmoWu7T+06rOpAIRmwMhpSHzB4ruR
-1Dn8dmPQqY4oh/8rmL2rM4dgdDApNjVTO9r0QxGpZSegxe8k+uHcJbVaai8MjcKm
-3+E2yiArBJwY24DKQ44if2gmTDJRYVEYXPpnKTeQkQ2GDB7b82ADS+Ww+VoMLlQ2
-JzRpEkEojaV3cbO5scozBTC9q6y0sq0060XpwDUS6I3TQqLi6W/UvztvI/9+21BO
-hYj10zZlndeFZstycPWGcZyV89c8WvDEsLvHwTQ351IKXKy0yXjJc41nQY/eckc3
-3ZqpDNGEe7FzsswIhPXs5SCcRFvA4eDa5kjLSkIZqGy34xUAr+oyy1+fVDlp6vYN
-fpVUuipm3z9bK5n6m+hLCLICJ4Yjm0jnD3l+Nx6+5AP2kN7AmtT6RKCCbPrdcYzm
-c92xkaFEm32y0rbwYJnrf/7bOehktRnthIsBiEOjsvbZ/eqIeUDNURkwD6CFcuB/
-JZ1WicFTyTGnZoQqLj6J658YLytQLQ7ONxrwnJgu6wYOgOTsG0oG3gqkcPeiaABe
-FOL2FnXkStBku0es1rvi1YJEXrgO0IzKjZ2WMPEfRxj59CHqBKAOecx+LiOEDYs/
-G6s0sS4wNPMRFE2W0QWacAYZDYi7pN6MajUm7F9sQP5tP1mveCw=
-=585t
------END PGP SIGNATURE-----
-
---1sv+Q8p5KINhrMnO--
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2N1cnJlbnQuaCBiL2FyY2gveDg2L2lu
+Y2x1ZGUvYXNtL2N1cnJlbnQuaAppbmRleCBhMTE2OGU3YjY5ZTUuLjIxZThiZDRlYTQ0ZSAxMDA2
+NDQKLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9hc20vY3VycmVudC5oCisrKyBiL2FyY2gveDg2L2lu
+Y2x1ZGUvYXNtL2N1cnJlbnQuaApAQCAtMzYsMTAgKzM2LDIzIEBAIHN0YXRpY19hc3NlcnQoc2l6
+ZW9mKHN0cnVjdCBwY3B1X2hvdCkgPT0gNjQpOwogCiBERUNMQVJFX1BFUl9DUFVfQUxJR05FRChz
+dHJ1Y3QgcGNwdV9ob3QsIHBjcHVfaG90KTsKIAorLyoKKyAqCisgKi8KK0RFQ0xBUkVfUEVSX0NQ
+VV9BTElHTkVEKGNvbnN0IHN0cnVjdCBwY3B1X2hvdCBfX3BlcmNwdV9zZWdfb3ZlcnJpZGUsCisJ
+CQljb25zdF9wY3B1X2hvdCk7CisKKyNpZmRlZiBDT05GSUdfVVNFX1g4Nl9TRUdfU1VQUE9SVAor
+c3RhdGljIF9fYWx3YXlzX2lubGluZSBzdHJ1Y3QgdGFza19zdHJ1Y3QgKmdldF9jdXJyZW50KHZv
+aWQpCit7CisJcmV0dXJuIGNvbnN0X3BjcHVfaG90LmN1cnJlbnRfdGFzazsKK30KKyNlbHNlCiBz
+dGF0aWMgX19hbHdheXNfaW5saW5lIHN0cnVjdCB0YXNrX3N0cnVjdCAqZ2V0X2N1cnJlbnQodm9p
+ZCkKIHsKIAlyZXR1cm4gdGhpc19jcHVfcmVhZF9zdGFibGUocGNwdV9ob3QuY3VycmVudF90YXNr
+KTsKIH0KKyNlbmRpZgogCiAjZGVmaW5lIGN1cnJlbnQgZ2V0X2N1cnJlbnQoKQogCmRpZmYgLS1n
+aXQgYS9hcmNoL3g4Ni9rZXJuZWwvY3B1L01ha2VmaWxlIGIvYXJjaC94ODYva2VybmVsL2NwdS9N
+YWtlZmlsZQppbmRleCA5M2VhYmY1NDQwMzEuLmExZDE3NTc4ZjVjMSAxMDA2NDQKLS0tIGEvYXJj
+aC94ODYva2VybmVsL2NwdS9NYWtlZmlsZQorKysgYi9hcmNoL3g4Ni9rZXJuZWwvY3B1L01ha2Vm
+aWxlCkBAIC0xOSw2ICsxOSw3IEBAIEtDU0FOX1NBTklUSVpFX2NvbW1vbi5vIDo9IG4KIAogb2Jq
+LXkJCQk6PSBjYWNoZWluZm8ubyBzY2F0dGVyZWQubyB0b3BvbG9neS5vCiBvYmoteQkJCSs9IGNv
+bW1vbi5vCitvYmoteQkJCSs9IHBlcmNwdS1ob3Qubwogb2JqLXkJCQkrPSByZHJhbmQubwogb2Jq
+LXkJCQkrPSBtYXRjaC5vCiBvYmoteQkJCSs9IGJ1Z3MubwpkaWZmIC0tZ2l0IGEvYXJjaC94ODYv
+a2VybmVsL2NwdS9jb21tb24uYyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvY29tbW9uLmMKaW5kZXgg
+YjE0ZmM4YzFjOTUzLi5mYjllMTA2NDY3YmEgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2tlcm5lbC9j
+cHUvY29tbW9uLmMKKysrIGIvYXJjaC94ODYva2VybmVsL2NwdS9jb21tb24uYwpAQCAtMjA0Mywx
+MyArMjA0Myw2IEBAIHN0YXRpYyBfX2luaXQgaW50IHNldHVwX2NsZWFyY3B1aWQoY2hhciAqYXJn
+KQogfQogX19zZXR1cCgiY2xlYXJjcHVpZD0iLCBzZXR1cF9jbGVhcmNwdWlkKTsKIAotREVGSU5F
+X1BFUl9DUFVfQUxJR05FRChzdHJ1Y3QgcGNwdV9ob3QsIHBjcHVfaG90KSA9IHsKLQkuY3VycmVu
+dF90YXNrCT0gJmluaXRfdGFzaywKLQkucHJlZW1wdF9jb3VudAk9IElOSVRfUFJFRU1QVF9DT1VO
+VCwKLQkudG9wX29mX3N0YWNrCT0gVE9QX09GX0lOSVRfU1RBQ0ssCi19OwotRVhQT1JUX1BFUl9D
+UFVfU1lNQk9MKHBjcHVfaG90KTsKLQogI2lmZGVmIENPTkZJR19YODZfNjQKIERFRklORV9QRVJf
+Q1BVX0ZJUlNUKHN0cnVjdCBmaXhlZF9wZXJjcHVfZGF0YSwKIAkJICAgICBmaXhlZF9wZXJjcHVf
+ZGF0YSkgX19hbGlnbmVkKFBBR0VfU0laRSkgX192aXNpYmxlOwpkaWZmIC0tZ2l0IGEvYXJjaC94
+ODYva2VybmVsL2NwdS9wZXJjcHUtaG90LmMgYi9hcmNoL3g4Ni9rZXJuZWwvY3B1L3BlcmNwdS1o
+b3QuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAwMDAuLmVjYTU1OGEzODQ1
+YQotLS0gL2Rldi9udWxsCisrKyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvcGVyY3B1LWhvdC5jCkBA
+IC0wLDAgKzEsMTUgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKworCisj
+aW5jbHVkZSA8bGludXgvc2NoZWQvdGFzay5oPgorI2luY2x1ZGUgPGFzbS9jdXJyZW50Lmg+CisK
+K0RFRklORV9QRVJfQ1BVX0FMSUdORUQoc3RydWN0IHBjcHVfaG90LCBwY3B1X2hvdCkgPSB7CisJ
+LmN1cnJlbnRfdGFzawk9ICZpbml0X3Rhc2ssCisJLnByZWVtcHRfY291bnQJPSBJTklUX1BSRUVN
+UFRfQ09VTlQsCisJLnRvcF9vZl9zdGFjawk9IFRPUF9PRl9JTklUX1NUQUNLLAorfTsKK0VYUE9S
+VF9QRVJfQ1BVX1NZTUJPTChwY3B1X2hvdCk7CisKK0RFQ0xBUkVfUEVSX0NQVV9BTElHTkVEKGNv
+bnN0IHN0cnVjdCBwY3B1X2hvdCBfX3BlcmNwdV9zZWdfb3ZlcnJpZGUsCisJCQljb25zdF9wY3B1
+X2hvdCkgX19hdHRyaWJ1dGVfXygoYWxpYXMoInBjcHVfaG90IikpKTsKK0VYUE9SVF9QRVJfQ1BV
+X1NZTUJPTChjb25zdF9wY3B1X2hvdCk7CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2NvbXBp
+bGVyLmggYi9pbmNsdWRlL2xpbnV4L2NvbXBpbGVyLmgKaW5kZXggZDc3NzlhMThiMjRmLi5iZjk4
+MTVlYWY0YWEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvY29tcGlsZXIuaAorKysgYi9pbmNs
+dWRlL2xpbnV4L2NvbXBpbGVyLmgKQEAgLTIxMiw3ICsyMTIsNyBAQCB2b2lkIGZ0cmFjZV9saWtl
+bHlfdXBkYXRlKHN0cnVjdCBmdHJhY2VfbGlrZWx5X2RhdGEgKmYsIGludCB2YWwsCiAgKi8KICNk
+ZWZpbmUgX19fQUREUkVTU0FCTEUoc3ltLCBfX2F0dHJzKSBcCiAJc3RhdGljIHZvaWQgKiBfX3Vz
+ZWQgX19hdHRycyBcCi0JCV9fVU5JUVVFX0lEKF9fUEFTVEUoX19hZGRyZXNzYWJsZV8sc3ltKSkg
+PSAodm9pZCAqKSZzeW07CisJX19VTklRVUVfSUQoX19QQVNURShfX2FkZHJlc3NhYmxlXyxzeW0p
+KSA9ICh2b2lkICopKHVpbnRwdHJfdCkmc3ltOwogI2RlZmluZSBfX0FERFJFU1NBQkxFKHN5bSkg
+XAogCV9fX0FERFJFU1NBQkxFKHN5bSwgX19zZWN0aW9uKCIuZGlzY2FyZC5hZGRyZXNzYWJsZSIp
+KQogCg==
+--00000000000097e5270607fd6e2d--
