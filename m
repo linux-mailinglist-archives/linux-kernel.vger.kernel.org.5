@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ED17CD632
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C1B7CD634
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjJRIRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
+        id S234509AbjJRISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbjJRIRf (ORCPT
+        with ESMTP id S230019AbjJRISW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:17:35 -0400
-Received: from out-194.mta1.migadu.com (out-194.mta1.migadu.com [95.215.58.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4648FB6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:17:33 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697617051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zy9fCLbPUi1k7I58SOVdMfFxEcUzWTJduGQe7dU0lhM=;
-        b=V7UUY9fYnMYUrI7HTAKqUnv8vta2FjvG4b4iEezqly4j9H/tCTnclqeth87vfr/Zr8iNZh
-        j+LhXB9jAox5w5tXgOmiWFuWSL1ovhPuXHaK8z/EqkN0Uys+PuPoR6aqGGjmct6VWFW4Ln
-        /us3zhaqmPTZXMPBmv8pWZb88wCzsGU=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] sched/rt: Redefine RR_TIMESLICE to 100 msecs
-Date:   Wed, 18 Oct 2023 16:17:09 +0800
-Message-Id: <20231018081709.2289264-1-yajun.deng@linux.dev>
+        Wed, 18 Oct 2023 04:18:22 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AB8C6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:18:19 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so7646412276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697617099; x=1698221899; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FaEmtppYZAhMsYDBHeyk5qHJOFganXNI4hJEHgjEbgc=;
+        b=xiFrIP6fjZCSXHuVPOgbEzSqeYUB+FMSEL4NRfS3k2N3TeUnHL3edBbvuS0YtdTTnL
+         l59zCNthfddQ/eXB8mq4AZmtREcp9+iNd15A4D+ofPxsKlZr7jxzHkd1xKwcnB5j7YCR
+         UNSbEZW9pvsVdV1PLJprETk8dDh8GGdLuMvdwQ8TwN/JrjZwn9HJAajPZtv6N5tEbsGB
+         pjP8dQ8hrDXRK4yTM3rZhWA4YIIophv6ZGypz/4Y+VY6fqziCcmAegx0GhgC4mMOiaBj
+         qM5c8OTDFZ/QjAGF7UPODPsi7XQn6XBPfBMkBkHCJrWUBMft7QvrxoH2U9m+OK/kZhzI
+         ltPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697617099; x=1698221899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FaEmtppYZAhMsYDBHeyk5qHJOFganXNI4hJEHgjEbgc=;
+        b=vyeCDTnDFMT9+55dRgL8hiS5g4OFF8mDclO+QA954VjQcMH3TcapxwdwqD+4+1MKAw
+         pwve+dXlig+1SBWzfuje6r1Rwh3+ctNuSZcVYbU7+qjE/EZ7ja8VHhDiHQkn8hA5leX8
+         U0n9FdAPJvRrksvNVyFpaW1yKECmotTPOxCjGdeeed02+PbhpXlBGKUCjOIRTSbbXKXK
+         m6TLc5WleVUY7/A6ARjwN5IMxTWUVkDjhsG9q5UysV4BtT7t0miXNbbIef5EItpIg5aR
+         OJMz0Z361cAvIytdMimP96D0s/7y171vBKUBGv7deJbZpE0iYnIIWWJ4sQASvitR6yy9
+         9lgA==
+X-Gm-Message-State: AOJu0YxK9pV/bxKeRQkQASCKFyFHsqc9D3Gw4g1gi2MnIQDQKn7XjmOI
+        hfKoYblS7CiMHYeQPNHbJ8Aj1vd7aKB1gPpmMKH5TeXV9Hv909NF
+X-Google-Smtp-Source: AGHT+IHS+aRA61sStPYBODFMrmmJRiulx2KlXd75EfRcMgJwP5MT9v5x1H3ytS7hzs2Li0IIu8G73H57gxRh3paxT6s=
+X-Received: by 2002:a25:db07:0:b0:d9b:5428:d601 with SMTP id
+ g7-20020a25db07000000b00d9b5428d601mr4246998ybf.21.1697617098878; Wed, 18 Oct
+ 2023 01:18:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231011090510.114476-1-ychuang570808@gmail.com>
+ <20231011090510.114476-3-ychuang570808@gmail.com> <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
+ <17a80031-98bf-48bf-8cea-c0ca4400f142@gmail.com> <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
+In-Reply-To: <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 18 Oct 2023 10:18:07 +0200
+Message-ID: <CACRpkdaiihOex19SavWwC+S8o5qp=F=XMNm9+UXh=q2nVbOFkA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jacky Huang <ychuang570808@gmail.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        schung@nuvoton.com, Jacky Huang <ychuang3@nuvoton.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RR_TIMESLICE is currently defined as the jiffies corresponding to
-100 msecs. And then sysctl_sched_rr_timeslice will convert RR_TIMESLICE
-to 100 msecs. These are opposite calculations.
+On Mon, Oct 16, 2023 at 9:52=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 
-There are msecs_to_jiffies and jiffies_to_msecs in sched_rr_handler.
-These are also opposite calculations.
+> > I noticed that 'xlnx,zynq-pinctrl.yaml' and 'xlnx,zynq-pinctrl.yaml' us=
+e
+> > 'power source' to specify the output voltage.  Should I follow their
+> > approach or define a vendor-specific one?
+>
+> Maybe Rob or Linus have here some recommendation, but I would suggest to
+> go either with rtd1319d-pinctrl.yaml approach or add a generic property
+> to pincfg-node expressed in real units like "io-microvolt".
+>
+> Rob, Linus, any ideas for generic property replacing register-specific
+> power-source?
 
-Redefine RR_TIMESLICE to 100 msecs, only sched_rr_timeslice needs to
-convert RR_TIMESLICE to jiffies.
+The existing power-source is generally used to select between (usually
+two) different chip-internal power rails, such as 1.8V and 3.3V.
+The format is a driver-specific enumerator.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- include/linux/sched/rt.h |  2 +-
- init/init_task.c         |  2 +-
- kernel/sched/rt.c        | 12 +++++-------
- 3 files changed, 7 insertions(+), 9 deletions(-)
+We *could* just patch the documentation for power-source to
+say that microvolts is the preferred format but legacy users may
+be using a custom enumerator.
 
-diff --git a/include/linux/sched/rt.h b/include/linux/sched/rt.h
-index b2b9e6eb9683..74f8f456a804 100644
---- a/include/linux/sched/rt.h
-+++ b/include/linux/sched/rt.h
-@@ -58,6 +58,6 @@ extern void normalize_rt_tasks(void);
-  * default timeslice is 100 msecs (used only for SCHED_RR tasks).
-  * Timeslices get refilled after they expire.
-  */
--#define RR_TIMESLICE		(100 * HZ / 1000)
-+#define RR_TIMESLICE		(100)
- 
- #endif /* _LINUX_SCHED_RT_H */
-diff --git a/init/init_task.c b/init/init_task.c
-index 5727d42149c3..86619a425342 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -94,7 +94,7 @@ struct task_struct init_task
- 	},
- 	.rt		= {
- 		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
--		.time_slice	= RR_TIMESLICE,
-+		.time_slice	= (RR_TIMESLICE * HZ) / MSEC_PER_SEC,
- 	},
- 	.tasks		= LIST_HEAD_INIT(init_task.tasks),
- #ifdef CONFIG_SMP
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6aaf0a3d6081..7c0e912094a9 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -4,7 +4,7 @@
-  * policies)
-  */
- 
--int sched_rr_timeslice = RR_TIMESLICE;
-+int sched_rr_timeslice = (RR_TIMESLICE * HZ) / MSEC_PER_SEC;
- /* More than 4 hours if BW_SHIFT equals 20. */
- static const u64 max_rt_runtime = MAX_BW;
- 
-@@ -25,7 +25,7 @@ int sysctl_sched_rt_period = 1000000;
- int sysctl_sched_rt_runtime = 950000;
- 
- #ifdef CONFIG_SYSCTL
--static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC * RR_TIMESLICE) / HZ;
-+static int sysctl_sched_rr_timeslice = RR_TIMESLICE;
- static int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos);
- static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
-@@ -3014,12 +3014,10 @@ static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
- 	 * Also, writing zero resets the timeslice to default:
- 	 */
- 	if (!ret && write) {
--		sched_rr_timeslice =
--			sysctl_sched_rr_timeslice <= 0 ? RR_TIMESLICE :
--			msecs_to_jiffies(sysctl_sched_rr_timeslice);
--
- 		if (sysctl_sched_rr_timeslice <= 0)
--			sysctl_sched_rr_timeslice = jiffies_to_msecs(RR_TIMESLICE);
-+			sysctl_sched_rr_timeslice = RR_TIMESLICE;
-+
-+		sched_rr_timeslice = msecs_to_jiffies(sysctl_sched_rr_timeslice);
- 	}
- 	mutex_unlock(&mutex);
- 
--- 
-2.25.1
+io-microvolt seems like a more long-term viable option if a wider
+range of voltages are to be supported so I'm happy with that if the
+DT folks think it's nicer. However notice that the power-source
+property is already being hard-coded into things such as SCMI
+and ACPI so it's not like it will ever be replaced by io-microvolt
+and phased out as far as Linux is concerned. Not the next 50
+years at least.
 
+Yours,
+Linus Walleij
