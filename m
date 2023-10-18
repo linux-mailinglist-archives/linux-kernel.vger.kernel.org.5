@@ -2,40 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67457CDD74
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA77CDD78
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjJRNi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        id S231792AbjJRNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjJRNiY (ORCPT
+        with ESMTP id S231549AbjJRNit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:38:24 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035A383;
-        Wed, 18 Oct 2023 06:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1697636297; bh=SQXJHzlVCZ+kYWZT9Te9C7HnjRuEi2KGjc05EKQtFt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4w4+U2/E5DnywuoQH/FgnG6hZ5cKSMxuJT1k/SbkEmUJeifryHWCPIiGBR+sg4Q2
-         AKpCw5gLzxb6jq0tay911J5qS8Gnq3KEuaxwJJQLwuvo+/G6c4AmrPQqmSBi2WmjMk
-         eVuyaXQWVlZJVUbw9FXqpGCBXfuhEjLXvJuEtWng=
-Date:   Wed, 18 Oct 2023 15:38:17 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Ai Chao <aichao@kylinos.cn>
-Cc:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
-        markgross@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v3] platform/x86: inspur-wmi: Add platform profile support
-Message-ID: <1d2e147d-8d93-4467-ac7c-199bfd887348@t-8ch.de>
-References: <20231018080014.536047-1-aichao@kylinos.cn>
+        Wed, 18 Oct 2023 09:38:49 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C811FEA;
+        Wed, 18 Oct 2023 06:38:47 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDRFJC003211;
+        Wed, 18 Oct 2023 13:38:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=yTe4txQ00IJpYvI/FnmR/a1c+Hzf7HhDQivEbN/WE+4=;
+ b=NPi41btQWe5Ls3Oskp95wgaE50lk6mxGX0RVzQOyYaZevVN4Zs/XP0qj8Tp6J9juKbSO
+ ya+mxDT9TsRh3MAH58oN1xb9ZZfdGZLZ8L675FmGCQXbRDwderWJ3rDAFFKG91bTiy53
+ 3kywRnI7gtXUhfuc+WZpuM7xE1PdWkz+22twMHRDOsi4ER5xXPVjOh70D7AOxpDJr6f0
+ hlUbuFfcU0UokVDv3GBYKIP2Ov8O9jtj2FDBfT/APdiaigCaMylRdjYshc+iEokBKejW
+ VghkrhoDsFWPOWgPuSO3xJk6zDXMdtp0YW7bjpuAxjOxFWTHB8Fx/Y/H8JgwBnUxP0xn 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg8v0mrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:38:47 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IDSS2u011530;
+        Wed, 18 Oct 2023 13:38:42 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg8v0mcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:38:42 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IBkUcF026870;
+        Wed, 18 Oct 2023 13:38:32 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr5ash1yx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:38:32 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IDcV0Z24052426
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 13:38:31 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E93758052;
+        Wed, 18 Oct 2023 13:38:31 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 507DF58045;
+        Wed, 18 Oct 2023 13:38:30 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.47.87])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Oct 2023 13:38:30 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com
+Subject: [PATCH v2 0/3] a couple of corrections to the IRQ enablement function
+Date:   Wed, 18 Oct 2023 09:38:22 -0400
+Message-ID: <20231018133829.147226-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018080014.536047-1-aichao@kylinos.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GqTUdrKVUEvn3E0Q82OU7N7gRo1qhCoS
+X-Proofpoint-GUID: Mi57UNRh19FmPeu1Irl-rH6p8lKNYHlz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_12,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 clxscore=1011 spamscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310180113
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,297 +89,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-18 16:00:14+0800, Ai Chao wrote:
-> Add support for Inspur platforms to used the platform profile feature.
-> 
-> This will allow users to determine and control the platform modes
-> between low-power, balanced and performance modes.
-> 
-> change for v3
-> - Remove input device
-> - Using the platform profile interface
-> 
-> change for v2
-> - Remove Event GUID, remove inspur_wmi_notify and inspur_wmi_notify.
-> - Add more explanation.
-> 
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-> ---
->  drivers/platform/x86/Kconfig      |  10 ++
->  drivers/platform/x86/Makefile     |   3 +
->  drivers/platform/x86/inspur-wmi.c | 215 ++++++++++++++++++++++++++++++
->  3 files changed, 228 insertions(+)
->  create mode 100644 drivers/platform/x86/inspur-wmi.c
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 2a1070543391..d7bd27c53751 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -988,6 +988,16 @@ config TOUCHSCREEN_DMI
->  	  the OS-image for the device. This option supplies the missing info.
->  	  Enable this for x86 tablets with Silead or Chipone touchscreens.
->  
-> +config INSPUR_WMI
-> +	tristate "Inspur WMI platform profile driver"
-> +	depends on ACPI_WMI
-> +	help
-> +	This will allow users to determine and control the platform modes
-> +	between low-power, balanced and performance modes.
-> +
-> +	To compile this driver as a module, choose M here: the module
-> +	will be called inspur-wmi.
-> +
->  source "drivers/platform/x86/x86-android-tablets/Kconfig"
->  
->  config FW_ATTR_CLASS
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index b457de5abf7d..9285c252757e 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -98,6 +98,9 @@ obj-$(CONFIG_TOSHIBA_WMI)	+= toshiba-wmi.o
->  # before toshiba_acpi initializes
->  obj-$(CONFIG_ACPI_TOSHIBA)	+= toshiba_acpi.o
->  
-> +# Inspur
-> +obj-$(CONFIG_INSPUR_WMI)	+= inspur-wmi.o
-> +
->  # Laptop drivers
->  obj-$(CONFIG_ACPI_CMPC)		+= classmate-laptop.o
->  obj-$(CONFIG_COMPAL_LAPTOP)	+= compal-laptop.o
-> diff --git a/drivers/platform/x86/inspur-wmi.c b/drivers/platform/x86/inspur-wmi.c
-> new file mode 100644
-> index 000000000000..d0c5ae2e3fcb
-> --- /dev/null
-> +++ b/drivers/platform/x86/inspur-wmi.c
-> @@ -0,0 +1,215 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Inspur WMI power mode
-> + *
-> + *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_profile.h>
-> +#include <linux/wmi.h>
-> +
-> +#define WMI_INSPUR_POWERMODE_BIOS_GUID "596C31E3-332D-43C9-AEE9-585493284F5D"
-> +
-> +enum inspur_wmi_method_ids {
-> +	INSPUR_WMI_GET_POWERMODE = 0x02,
-> +	INSPUR_WMI_SET_POWERMODE = 0x03,
-> +};
-> +
-> +/**
-> + * Power Mode:
-> + *           0x0: Balance Mode
-> + *           0x1: Performance Mode
-> + *           0x2: Power Saver Mode
-> + */
-> +enum inspur_tmp_profile {
-> +	INSPUR_TMP_PROFILE_BALANCE	= 0,
-> +	INSPUR_TMP_PROFILE_PERFORMANCE	= 1,
-> +	INSPUR_TMP_PROFILE_POWERSAVE	= 2,
-> +};
-> +
-> +struct inspur_wmi_priv {
-> +	struct wmi_device *wdev;
-> +	struct platform_profile_handler handler;
-> +};
-> +
-> +static int inspur_wmi_perform_query(struct wmi_device *wdev,
-> +				    enum inspur_wmi_method_ids query_id,
-> +				    void *buffer, size_t insize,
-> +				    size_t outsize)
-> +{
-> +	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	struct acpi_buffer input = { insize, buffer};
-> +	union acpi_object *obj;
-> +	acpi_status status;
-> +	int ret = 0;
-> +
-> +	status = wmidev_evaluate_method(wdev, 0, query_id, &input, &output);
-> +	if (ACPI_FAILURE(status)) {
-> +		dev_err(&wdev->dev, "EC Powermode control failed: %s\n",
-> +			acpi_format_exception(status));
-> +		return -EIO;
-> +	}
-> +
-> +	obj = output.pointer;
-> +	if (!obj)
-> +		return -EINVAL;
-> +
-> +	if (obj->type != ACPI_TYPE_BUFFER ||
-> +	    obj->buffer.length != outsize) {
-> +		ret = -EINVAL;
-> +		goto out_free;
-> +	}
-> +
-> +	memcpy(buffer, obj->buffer.pointer, obj->buffer.length);
-> +
-> +out_free:
-> +	kfree(obj);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * Set Power Mode to EC RAM. If Power Mode value greater than 0x3,
-> + * return error
-> + * Method ID: 0x3
-> + * Arg: 4 Bytes
-> + * Byte [0]: Power Mode:
-> + *         0x0: Balance Mode
-> + *         0x1: Performance Mode
-> + *         0x2: Power Saver Mode
-> + * Return Value: 4 Bytes
-> + * Byte [0]: Return Code
-> + *         0x0: No Error
-> + *         0x1: Error
-> + */
-> +static int inspur_platform_profile_set(struct platform_profile_handler *pprof,
-> +				       enum platform_profile_option profile)
-> +{
-> +	struct inspur_wmi_priv *priv = container_of(pprof, struct inspur_wmi_priv,
-> +						    handler);
-> +	u8 ret_code[4] = {0, 0, 0, 0};
-> +	int ret;
-> +
-> +	switch (profile) {
-> +	case PLATFORM_PROFILE_BALANCED:
-> +		ret_code[0] = INSPUR_TMP_PROFILE_BALANCE;
-> +		break;
-> +	case PLATFORM_PROFILE_PERFORMANCE:
-> +		ret_code[0] = INSPUR_TMP_PROFILE_PERFORMANCE;
-> +		break;
-> +	case PLATFORM_PROFILE_LOW_POWER:
-> +		ret_code[0] = INSPUR_TMP_PROFILE_POWERSAVE;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	ret = inspur_wmi_perform_query(priv->wdev, INSPUR_WMI_SET_POWERMODE,
-> +				       ret_code, sizeof(ret_code),
-> +				       sizeof(ret_code));
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +	else if (ret_code[0])
-> +		return -EBADRQC;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * Get Power Mode from EC RAM, If Power Mode value greater than 0x3,
-> + * return error
-> + * Method ID: 0x2
-> + * Return Value: 4 Bytes
-> + * Byte [0]: Return Code
-> + *         0x0: No Error
-> + *         0x1: Error
-> + * Byte [1]: Power Mode
-> + *         0x0: Balance Mode
-> + *         0x1: Performance Mode
-> + *         0x2: Power Saver Mode
-> + */
-> +static int inspur_platform_profile_get(struct platform_profile_handler *pprof,
-> +				       enum platform_profile_option *profile)
-> +{
-> +	struct inspur_wmi_priv *priv = container_of(pprof, struct inspur_wmi_priv,
-> +						    handler);
-> +	u8 ret_code[4] = {0, 0, 0, 0};
-> +	int ret;
-> +
-> +	ret = inspur_wmi_perform_query(priv->wdev, INSPUR_WMI_GET_POWERMODE,
-> +				       &ret_code, sizeof(ret_code),
-> +				       sizeof(ret_code));
-> +	if (ret < 0)
-> +		return ret;
-> +	else if (ret_code[0])
-> +		return -EBADRQC;
-> +
-> +	switch (ret_code[1]) {
-> +	case INSPUR_TMP_PROFILE_BALANCE:
-> +		*profile = PLATFORM_PROFILE_BALANCED;
-> +		break;
-> +	case INSPUR_TMP_PROFILE_PERFORMANCE:
-> +		*profile = PLATFORM_PROFILE_PERFORMANCE;
-> +		break;
-> +	case INSPUR_TMP_PROFILE_POWERSAVE:
-> +		*profile = PLATFORM_PROFILE_LOW_POWER;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int inspur_wmi_probe(struct wmi_device *wdev, const void *context)
-> +{
-> +	struct inspur_wmi_priv *priv;
-> +
-> +	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->wdev = wdev;
-> +	dev_set_drvdata(&wdev->dev, priv);
-> +
-> +	priv->handler.profile_get = inspur_platform_profile_get;
-> +	priv->handler.profile_set = inspur_platform_profile_set;
-> +
-> +	set_bit(PLATFORM_PROFILE_LOW_POWER, priv->handler.choices);
-> +	set_bit(PLATFORM_PROFILE_BALANCED, priv->handler.choices);
-> +	set_bit(PLATFORM_PROFILE_PERFORMANCE, priv->handler.choices);
-> +
-> +	platform_profile_register(&priv->handler);
-> +	return 0;
-> +}
-> +
-> +static void inspur_wmi_remove(struct wmi_device *wdev)
-> +{
-> +	platform_profile_remove();
-> +}
-> +
-> +static const struct wmi_device_id inspur_wmi_id_table[] = {
-> +	{ .guid_string = WMI_INSPUR_POWERMODE_BIOS_GUID },
-> +	{  }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(wmi, inspur_wmi_id_table);
-> +
-> +static struct wmi_driver inspur_wmi_driver = {
-> +	.driver = {
-> +		.name = "inspur-wmi",
-> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+This series corrects two issues related to enablement of interrupts in 
+response to interception of the PQAP(AQIC) command:
 
-Seems unnecessary.
-The docs say this should be used for "slow" devices.
-But the probe function here doesn't really do anything.
+1. Returning a status response code 06 (Invalid address of AP-queue 
+   notification byte) when the call to register a guest ISC fails makes no
+   sense.
+   
+2. The pages containing the interrupt notification-indicator byte are not
+   freed after a failure to register the guest ISC fails.
 
-> +	},
-> +	.id_table = inspur_wmi_id_table,
-> +	.probe = inspur_wmi_probe,
-> +	.remove = inspur_wmi_remove,
-> +};
-> +
-> +module_wmi_driver(inspur_wmi_driver);
-> +
-> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
-> +MODULE_DESCRIPTION("Inspur WMI hotkeys");
+Anthony Krowiak (2):
+  s390/vfio-ap: unpin pages on gisc registration failure
+  s390/vfio-ap: set status response code to 06 on gisc registration
+    failure
 
-There is no more hotkey functionality left.
-Kconfig says "Inspur WMI platform profile driver",
-should also be used here.
+Tony Krowiak (1):
+  s390/vfio-ap: improve reaction to response code 07 from PQAP(AQIC)
+    command
 
-If you are also going to submit the hotkey driver it may make sense to
-call this one inspur-wmi-platform-profile, or something similar unique.
+ drivers/s390/crypto/vfio_ap_ops.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.25.1
-> 
+-- 
+2.41.0
+
