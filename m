@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855FF7CE814
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C32F7CE816
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjJRTsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S231839AbjJRTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjJRTsl (ORCPT
+        with ESMTP id S231705AbjJRTsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:48:41 -0400
+        Wed, 18 Oct 2023 15:48:46 -0400
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F34112;
-        Wed, 18 Oct 2023 12:48:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2741A116;
+        Wed, 18 Oct 2023 12:48:44 -0700 (PDT)
 Received: from smtp.gmail.com (1.general.jsalisbury.us.vpn [10.172.66.188])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D9F3D41278;
-        Wed, 18 Oct 2023 19:48:35 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CAED941538;
+        Wed, 18 Oct 2023 19:48:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697658517;
-        bh=akRPdsuxgfM7TUpwqvyZcc5fI99VwIoThOnPdsadFUs=;
+        s=20210705; t=1697658519;
+        bh=mtPHQ5yHBOHSmjh1WF7JqZ4Wpj+oE6q9+cxhTmzOCaI=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=haOA7IU0Yctk9yWOwRriiqZYVQ1Y5ofoilUpG6CeNxv/Z+F6X4Oqxtpx0n0hnXTPj
-         SCyGRNZavw2ahrMYWci+37gkGp9yIJ7smfL/LZO6dCqbLZ833yRnaKEbZtrOC8lGdW
-         ++nLy5HOf2J/0GdzjOSvqEb/eTpxKgaPV4XV1neKY8yQ+XKrH4yMQooGESt2GZt0Tu
-         BYTUOSj1YLzAY5O6jC77mAp8gJz6IifrTAZB2GKgg7+ALdVe3Fy9Z3JGmfjXf6mLhQ
-         IKbsmmWy9E6bi2rm56jhLAT42CftAyJk51PwvlncqB0h7L5LONi1gOVhBdR2UYg3/V
-         26fleQ0Zi+uNA==
+        b=NQcJP978iEeyOSPVexS16F7tPRTFDui8bibK1SrJqrg90/+Ub9rnkOL93qo7O+0Gv
+         9jEVOqa7n3iRYD1PbCJk2hIJqwrejMggCM+Vqpdi+y1XbZKtUUP3/2UY5AtHITJGES
+         WnXZQ9aEfwEgFAisfcmCMeO38IPzOVrsWeOifOLARedPqlV5MaYsvVA/om0lXenhzi
+         lGDqw1iIDvZdEYzxXQQ82XVb5/HkOp5RDrdMPxyLwyywrt8++lOCxRk1TT84/HJnrs
+         NWQaepBgBaNoIcQz6wf0MAjuua6eB01SJZZJ/JpfXNq09ZmNEHVeaN3/VEYTBurFoV
+         Tb41+mONncNAg==
 From:   Joseph Salisbury <joseph.salisbury@canonical.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -45,10 +45,11 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>,
         Joseph Salisbury <joseph.salisbury@canonical.com>
-Cc:     Richard Weinberger <richard.weinberger@gmail.com>
-Subject: [PATCH RT 01/12] io-mapping: don't disable preempt on RT in io_mapping_map_atomic_wc().
-Date:   Wed, 18 Oct 2023 15:48:22 -0400
-Message-Id: <20231018194833.651674-2-joseph.salisbury@canonical.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH RT 02/12] locking/rwbase: Mitigate indefinite writer starvation
+Date:   Wed, 18 Oct 2023 15:48:23 -0400
+Message-Id: <20231018194833.651674-3-joseph.salisbury@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231018194833.651674-1-joseph.salisbury@canonical.com>
 References: <20231018194833.651674-1-joseph.salisbury@canonical.com>
@@ -72,89 +73,60 @@ If anyone has any objections, please let me know.
 -----------
 
 
-io_mapping_map_atomic_wc() disables preemption and pagefaults for
-historical reasons.  The conversion to io_mapping_map_local_wc(), which
-only disables migration, cannot be done wholesale because quite some call
-sites need to be updated to accommodate with the changed semantics.
+On PREEMPT_RT, rw_semaphore and rwlock_t locks are unfair to writers.
+Readers can indefinitely acquire the lock unless the writer fully acquired
+the lock, which might never happen if there is always a reader in the
+critical section owning the lock.
 
-On PREEMPT_RT enabled kernels the io_mapping_map_atomic_wc() semantics are
-problematic due to the implicit disabling of preemption which makes it
-impossible to acquire 'sleeping' spinlocks within the mapped atomic
-sections.
+Mel Gorman reported that since LTP-20220121 the dio_truncate test case
+went from having 1 reader to having 16 readers and that number of readers
+is sufficient to prevent the down_write ever succeeding while readers
+exist. Eventually the test is killed after 30 minutes as a failure.
 
-PREEMPT_RT replaces the preempt_disable() with a migrate_disable() for
-more than a decade.  It could be argued that this is a justification to do
-this unconditionally, but PREEMPT_RT covers only a limited number of
-architectures and it disables some functionality which limits the coverage
-further.
+Mel proposed a timeout to limit how long a writer can be blocked until
+the reader is forced into the slowpath.
 
-Limit the replacement to PREEMPT_RT for now.  This is also done
-kmap_atomic().
+Thomas argued that there is no added value by providing this timeout.  From
+a PREEMPT_RT point of view, there are no critical rw_semaphore or rwlock_t
+locks left where the reader must be preferred.
 
-Link: https://lkml.kernel.org/r/20230310162905.O57Pj7hh@linutronix.de
+Mitigate indefinite writer starvation by forcing the READER into the
+slowpath once the WRITER attempts to acquire the lock.
+
+Reported-by: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reported-by: Richard Weinberger <richard.weinberger@gmail.com>
-  Link: https://lore.kernel.org/CAFLxGvw0WMxaMqYqJ5WgvVSbKHq2D2xcXTOgMCpgq9nDC-MWTQ@mail.gmail.com
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-(cherry picked from commit 7eb16f23b9a415f062db22739e59bb144e0b24ab)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Link: https://lore.kernel.org/877cwbq4cq.ffs@tglx
+Link: https://lore.kernel.org/r/20230321161140.HMcQEhHb@linutronix.de
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+(cherry picked from commit 286deb7ec03d941664ac3ffaff58814b454adf65)
 Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
 ---
- include/linux/io-mapping.h | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ kernel/locking/rwbase_rt.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/include/linux/io-mapping.h b/include/linux/io-mapping.h
-index e9743cfd8585..b0f196e51dca 100644
---- a/include/linux/io-mapping.h
-+++ b/include/linux/io-mapping.h
-@@ -69,7 +69,10 @@ io_mapping_map_atomic_wc(struct io_mapping *mapping,
+diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+index 88191f6e252c..a28148a05383 100644
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -73,15 +73,6 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 	int ret;
  
- 	BUG_ON(offset >= mapping->size);
- 	phys_addr = mapping->base + offset;
--	preempt_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		preempt_disable();
-+	else
-+		migrate_disable();
- 	pagefault_disable();
- 	return __iomap_local_pfn_prot(PHYS_PFN(phys_addr), mapping->prot);
- }
-@@ -79,7 +82,10 @@ io_mapping_unmap_atomic(void __iomem *vaddr)
- {
- 	kunmap_local_indexed((void __force *)vaddr);
- 	pagefault_enable();
--	preempt_enable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		preempt_enable();
-+	else
-+		migrate_enable();
- }
+ 	raw_spin_lock_irq(&rtm->wait_lock);
+-	/*
+-	 * Allow readers, as long as the writer has not completely
+-	 * acquired the semaphore for write.
+-	 */
+-	if (atomic_read(&rwb->readers) != WRITER_BIAS) {
+-		atomic_inc(&rwb->readers);
+-		raw_spin_unlock_irq(&rtm->wait_lock);
+-		return 0;
+-	}
  
- static inline void __iomem *
-@@ -168,7 +174,10 @@ static inline void __iomem *
- io_mapping_map_atomic_wc(struct io_mapping *mapping,
- 			 unsigned long offset)
- {
--	preempt_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		preempt_disable();
-+	else
-+		migrate_disable();
- 	pagefault_disable();
- 	return io_mapping_map_wc(mapping, offset, PAGE_SIZE);
- }
-@@ -178,7 +187,10 @@ io_mapping_unmap_atomic(void __iomem *vaddr)
- {
- 	io_mapping_unmap(vaddr);
- 	pagefault_enable();
--	preempt_enable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		preempt_enable();
-+	else
-+		migrate_enable();
- }
- 
- static inline void __iomem *
+ 	/*
+ 	 * Call into the slow lock path with the rtmutex->wait_lock
 -- 
 2.34.1
 
