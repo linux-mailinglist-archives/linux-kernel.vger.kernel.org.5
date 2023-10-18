@@ -2,227 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF32B7CE353
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0967CE367
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjJRREu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S230437AbjJRRGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjJRREt (ORCPT
+        with ESMTP id S230246AbjJRRGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:04:49 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AEA5B0;
-        Wed, 18 Oct 2023 10:04:47 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IGgHhj030890;
-        Wed, 18 Oct 2023 17:04:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=UQ8bRRqWkcM/QrRf4fj3JJ71zdos9kuQtnHqJ+BFwHM=;
- b=dYA3PH53oRDIsPJWm5E6PMnA+4e3S1Pv1a3/MNJ2zzZt6O/hTbqZjfIw/yIG9MhpVEFl
- PqWwhGpvUvqsc7QKVmFrmRPXx1SzbAzeRYI6PLejNrlOt/vdC+XGRgfDZZ+jkGE/djIK
- Fl4PgCFvoCy9MG5pLadsy4NNsiEtEYyILYHQaXJ4oQOiAxjWu0ho12P5ULf5eElnSgKy
- 9a8gnfgUJNyEWfrRfIC3KmE7ob08HPgsqVLHbak0szdUh0WW8HyzxOGSjKvMrXppXWdk
- YslwG1RJUiB2HNu24v2MQBEAcoNsVE9deLMqi7kMNfS6zYtf5+7AAXucPyKcqe0BhKos xA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttk470yd1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 17:04:32 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IGg2Kj012949;
-        Wed, 18 Oct 2023 17:04:30 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr5pyjfwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 17:04:30 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IH4TLe22348288
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 17:04:30 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B61FE58060;
-        Wed, 18 Oct 2023 17:04:29 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 017E05803F;
-        Wed, 18 Oct 2023 17:04:24 +0000 (GMT)
-Received: from [9.171.21.120] (unknown [9.171.21.120])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 17:04:23 +0000 (GMT)
-Message-ID: <80a4706a-d33c-4a46-b93d-75b08aa5577e@linux.vnet.ibm.com>
-Date:   Wed, 18 Oct 2023 22:34:21 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXT] [Bisected] [efeda3bf912f] OOPS crash while performing Block
- device module parameter test [qla2xxx / FC]
-Content-Language: en-US
-To:     Nilesh Javali <njavali@marvell.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
-Cc:     Quinn Tran <qutran@marvell.com>,
-        "himanshu.madhani@oracle.com" <himanshu.madhani@oracle.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>,
-        "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
-        "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>
-References: <24a8559c-cd35-4828-9d1b-458d82e4f3ec@linux.vnet.ibm.com>
- <CO6PR18MB45000CADE930729578C4FA26AFD5A@CO6PR18MB4500.namprd18.prod.outlook.com>
-From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-In-Reply-To: <CO6PR18MB45000CADE930729578C4FA26AFD5A@CO6PR18MB4500.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: hMY1-JZeLz2wHK-JYuFyguCp7tJC0tGn
-X-Proofpoint-GUID: hMY1-JZeLz2wHK-JYuFyguCp7tJC0tGn
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 18 Oct 2023 13:06:12 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA1F113;
+        Wed, 18 Oct 2023 10:06:10 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7a66ff282baso22438639f.0;
+        Wed, 18 Oct 2023 10:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697648769; x=1698253569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDIMi3YYxbivuzog7Wd3D25OWadKQ7tl2Cz/eAegiFA=;
+        b=D4aBW6m/GnxuM+Ks5LZp9cNlw5t8ls9j6NeAIhoV6de9sYDI8r7sDRLYjQM4u1Dr9M
+         YjhjuHRd17zVvj4jT/y3xaCuHs+XYQgW5tmi7dSMmZVxtmbdsDsS4XJ1zcRlcAHF6MWp
+         FczcXNIFDtTYgkvx3XwvJWAZdEC3VHAEKvObUer50MOQ+6Gfyy5/GM1GJ1IZC6zSYwGf
+         0sgXxOHWMXFw0mx12aiwsYLN2f7kTbP2EQdt2O45JJluQzvdKdQx2vhLq1wnHQ8mKwoI
+         sY/hPHqOqgBuo3dddCdtIARRdM7j4FqpCg1uqOpsy6NYKVMOWNsxeWmAiktllJ7fZVJC
+         gK+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697648769; x=1698253569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iDIMi3YYxbivuzog7Wd3D25OWadKQ7tl2Cz/eAegiFA=;
+        b=r9YZS/aYcw1wIqCOELKoU4yGhN3XhMSyOrplIA//QklLJF9TSywhGnN2j4E+ghe9UY
+         WiqQyt3iTj2ggpqxH7QG7AZ3NvgmFg8SuHafrZ6O4tpc3tS2zOkdnSrVy8EQLLfC/agA
+         uC9QVKymvFo7xq1/Ka7tG+8PZq0/zxphYS61c8zKqRxDnTwX/K5M8OdVz1YV5+/9jnUh
+         bZgyXKdlJWGxxBDwYt/OPzRev/LMRpbPzjXnEQY/lnJ8gu/Q603LRPLD1Vmr4zi7DSAE
+         pfc0bb/tCPGGdt0ZOZr7TN0sPLxfGtRSVMJYmm/pODZNRC3mtKgfcNA8TYHK3RgQzvNk
+         K51w==
+X-Gm-Message-State: AOJu0YzoEsJEC09aL9Uh4+5DvWg53Wkzac084MvNNQC0ap6PrzDy+Dox
+        kauheEjfbLOmC3I0Nd41GX7XSnpgaTpsGQ==
+X-Google-Smtp-Source: AGHT+IHY3fLMgmqD0vaBDzNlt6Ab/WZIlFd+GwQzZq5a5ZGq5Q1cMEKfoCxtDKcSakkNW79Pxr+XDw==
+X-Received: by 2002:a05:6602:158d:b0:785:d5d4:9f26 with SMTP id e13-20020a056602158d00b00785d5d49f26mr5816215iow.9.1697648769301;
+        Wed, 18 Oct 2023 10:06:09 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id n4-20020a5d8244000000b0079fa1a7cd36sm1228944ioo.30.2023.10.18.10.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 10:06:08 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
+        gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
+        mcgrof@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
+        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
+        robdclark@gmail.com, groeck@google.com, yanivt@google.com,
+        bleung@google.com, rostedt@goodmis.org, linux-doc@vger.kernel.org,
+        Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v7c 00/24] fix DRM_USE_DYNAMIC_DEBUG=y regression
+Date:   Wed, 18 Oct 2023 11:05:40 -0600
+Message-ID: <20231018170604.569042-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_15,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxscore=0 mlxlogscore=999 spamscore=0 malwarescore=0 adultscore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180139
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Nilesh. The patch fixes the issue.
 
-On 10/18/23 19:59, Nilesh Javali wrote:
-> Hi Tasmiya,
->
->> -----Original Message-----
->> From: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
->> Sent: Wednesday, October 18, 2023 6:51 PM
->> To: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; linuxppc-
->> dev@lists.ozlabs.org; linux-block@vger.kernel.org; linux-next@vger.kernel.org
->> Cc: Quinn Tran <qutran@marvell.com>; Nilesh Javali <njavali@marvell.com>;
->> himanshu.madhani@oracle.com; martin.petersen@oracle.com; GR-QLogic-
->> Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>;
->> jejb@linux.ibm.com; abdhalee@linux.vnet.ibm.com; mputtash@linux.vnet.com;
->> sachinp@linux.vnet.com
->> Subject: [EXT] [Bisected] [efeda3bf912f] OOPS crash while performing Block
->> device module parameter test [qla2xxx / FC]
->>
->> External Email
->>
->> ----------------------------------------------------------------------
->> Greetings,
->>
->> OOPs Kernel crash while performing Block device module parameter test
->> [qla2xxx / FC] on linux-next 6.6.0-rc5-next-20231010
->>
->> --- Traces ---
->>
->> [30876.431678] Kernel attempted to read user page (30) - exploit
->> attempt? (uid: 0)
->> [30876.431687] BUG: Kernel NULL pointer dereference on read at 0x00000030
->> [30876.431692] Faulting instruction address: 0xc0080000018e3180
->> [30876.431697] Oops: Kernel access of bad area, sig: 11 [#1]
->> [30876.431700] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA
->> pSeries
->> [30876.431705] Modules linked in: qla2xxx(+) nvme_fc nvme_fabrics
->> nvme_core dm_round_robin dm_queue_length exfat vfat fat btrfs
->> blake2b_generic zstd_compress loop raid10 raid456 async_raid6_recov
->> async_memcpy async_pq async_xor async_tx xor raid6_pq raid1 linear xfs
->> libcrc32c raid0 nvram rpadlpar_io rpaphp xsk_diag bonding tls rfkill
->> vmx_crypto pseries_rng binfmt_misc ext4 mbcache jbd2 dm_service_time
->> sd_mod sg ibmvfc ibmveth t10_pi crc64_rocksoft crc64 scsi_transport_fc
->> dm_multipath dm_mirror dm_region_hash dm_log dm_mod fuse [last unloaded:
->> nvme_core]
->> [30876.431767] CPU: 0 PID: 1289400 Comm: kworker/0:2 Kdump: loaded Not
->> tainted 6.6.0-rc5-next-20231010-auto #1
->> [30876.431773] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200
->> 0xf000006 of:IBM,FW1030.30 (NH1030_062) hv:phyp pSeries
->> [30876.431779] Workqueue: events work_for_cpu_fn
->> [30876.431788] NIP:  c0080000018e3180 LR: c0080000018e3128 CTR:
->> c000000000513f80
->> [30876.431792] REGS: c000000062a8b930 TRAP: 0300   Not tainted
->> (6.6.0-rc5-next-20231010-auto)
->> [30876.431797] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>
->> CR: 28000482  XER: 2004000f
->> [30876.431811] CFAR: c0080000018e3138 DAR: 0000000000000030 DSISR:
->> 40000000 IRQMASK: 0
->> [30876.431811] GPR00: c0080000018e3128 c000000062a8bbd0
->> c008000000eb8300
->> 0000000000000000
->> [30876.431811] GPR04: 0000000000000000 0000000000000000
->> 0000000000000000
->> 000000000017bbac
->> [30876.431811] GPR08: 0000000000000000 0000000000000030
->> 0000000000000000
->> c0080000019a6d68
->> [30876.431811] GPR12: 0000000000000000 c000000002ff0000
->> c00000000019cb98
->> c000000082a97980
->> [30876.431811] GPR16: 0000000000000000 0000000000000000
->> 0000000000000000
->> c000000003071ab0
->> [30876.431811] GPR20: c000000003491c0d c000000063bb9a00
->> c000000063bb30c0
->> c0000001d8b52928
->> [30876.431811] GPR24: c008000000eb63a8 ffffffffffffffed c0000001d8b52000
->> 0000000000000102
->> [30876.431811] GPR28: c008000000ebaf00 c0000001d8b52890
->> 0000000000000000
->> c0000001d8b58000
->> [30876.431856] NIP [c0080000018e3180] qla2x00_mem_free+0x298/0x6b0
->> [qla2xxx]
->> [30876.431876] LR [c0080000018e3128] qla2x00_mem_free+0x240/0x6b0
->> [qla2xxx]
->> [30876.431895] Call Trace:
->> [30876.431897] [c000000062a8bbd0] [c0080000018e2f1c]
->> qla2x00_mem_free+0x34/0x6b0 [qla2xxx] (unreliable)
->> [30876.431917] [c000000062a8bc20] [c0080000018eed30]
->> qla2x00_probe_one+0x16d8/0x2640 [qla2xxx]
->> [30876.431937] [c000000062a8bd90] [c0000000008c589c]
->> local_pci_probe+0x6c/0x110
->> [30876.431943] [c000000062a8be10] [c000000000189ba8]
->> work_for_cpu_fn+0x38/0x60
->> [30876.431948] [c000000062a8be40] [c00000000018d0d0]
->> process_scheduled_works+0x230/0x4f0
->> [30876.431952] [c000000062a8bf10] [c00000000018fe14]
->> worker_thread+0x1e4/0x500
->> [30876.431955] [c000000062a8bf90] [c00000000019ccc8]
->> kthread+0x138/0x140
->> [30876.431960] [c000000062a8bfe0] [c00000000000df98]
->> start_kernel_thread+0x14/0x18
->> [30876.431965] Code: 4082000c a09f0198 78841b68 e8df0278 38e00000
->> 480c3b8d e8410018 39200000 e91f0178 f93f0280 f93f0278 39280030
->> <e9480030> 7fa95040 419e00b8 ebc80030
->> [30876.431977] ---[ end trace 0000000000000000 ]---
->> [30876.480385] pstore: backend (nvram) writing error (-1)
->>
->>
->> Git bisect points to below commit. Reverting this commit fixes the problem.
->> commit efeda3bf912f269bcae16816683f432f58d68075
->>       scsi: qla2xxx: Move resource to allow code reuse
->>
->> --
->> Regards,
->> Tasmiya Nalatwad
->> IBM Linux Technology Center
-> We have recently posted a fix for the commit that you have pointed here,
-> https://marc.info/?l=linux-scsi&m=169750508721982&w=2
->
-> Thanks,
-> Nilesh
+hi Jason, DRM-folk
+
+(v7c now with all checkpatch fixes)
+
+This patchest fixes the chicken-egg initialization problem in the 1st
+version of ddebug-class-maps, that DRM-CI uncovered.
+
+The root-problem was DECLARE_DYNDBG_CLASSMAP, which broke the K&R rule:
+"define once, refer many".  In patch 14 it is replaced by:
+
+ DYNDBG_CLASSMAP_DEFINE - define and export a struct ddebug_class_map
+ DYNDBG_CLASSMAP_USE - ref the exported struct
+
+test-dynamic-debug is also extended with a -submod.ko, in order to
+recapitulate the drm & drivers initialization scenario.
+
+They're on v6.6-rc6 now, and recently applied cleanly to drm-tip/drm-tip.
+
+Ive been running recent revs on rc3+, on my desktop and laptop.
+
+The final blocker was a missing __align(8) on the ddebug_class_user
+record inserted by DYNDBG_CLASSMAP_USE.  This caused DRM=y (builtin
+only) to have a corrupt record for drm_kms_helper (a builtin dependent).
+Curiously, a clang build did not exhibit this problem.
+
+Heres a part of dmesg, for a DRM=y kernel, booted with
+     dynamic_debug.verbose=3 drm.debug=0x10
+
+[    0.466747] dyndbg: add-module: drm 406 sites
+[    0.467569] dyndbg: classes[0]: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.467743] dyndbg: module:drm attached 1 classes
+[    0.468557] dyndbg: builtin class: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.468742] dyndbg:  found kp:drm.debug =0x10
+[    0.468743] dyndbg:   mapped to: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.469742] dyndbg:   drm.debug: classbits: 0x10
+[    0.470573] dyndbg: apply bitmap: 0x10 to: 0x0 for drm
+[    0.470743] dyndbg: query 0: "class DRM_UT_ATOMIC +p" mod:drm
+[    0.471743] dyndbg: split into words: "class" "DRM_UT_ATOMIC" "+p"
+[    0.472743] dyndbg: op='+' flags=0x1 maskp=0xffffffff
+[    0.473679] dyndbg: parsed: func="" file="" module="drm" format="" lineno=0-0 class=DRM_UT_ATOMIC
+[    0.473749] dyndbg: processed 1 queries, with 0 matches, 0 errs
+[    0.474742] dyndbg: bit_4: 0 matches on class: DRM_UT_ATOMIC -> 0x10
+[    0.475742] dyndbg: applied bitmap: 0x10 to: 0x0 for drm
+[    0.476686] dyndbg: 406 debug prints in module drm
+[    0.476743] dyndbg: add-module: drm_kms_helper 93 sites
+[    0.477727] dyndbg: class_ref[0] drm_kms_helper -> drm module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.477743] dyndbg: builtin class: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.478742] dyndbg:  found kp:drm.debug =0x10
+[    0.478743] dyndbg:   mapped to: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.479743] dyndbg:   drm.debug: classbits: 0x10
+[    0.480592] dyndbg: apply bitmap: 0x10 to: 0x0 for drm_kms_helper
+[    0.480743] dyndbg: query 0: "class DRM_UT_ATOMIC +p" mod:drm_kms_helper
+[    0.481743] dyndbg: split into words: "class" "DRM_UT_ATOMIC" "+p"
+[    0.482743] dyndbg: op='+' flags=0x1 maskp=0xffffffff
+[    0.483743] dyndbg: parsed: func="" file="" module="drm_kms_helper" format="" lineno=0-0 class=DRM_UT_ATOMIC
+[    0.484750] dyndbg: class-ref: drm_kms_helper.DRM_UT_ATOMIC  module:drm_kms_helper nd:93 nc:0 nu:1
+[    0.485809] dyndbg: processed 1 queries, with 44 matches, 0 errs
+[    0.486742] dyndbg: bit_4: 44 matches on class: DRM_UT_ATOMIC -> 0x10
+[    0.487742] dyndbg: applied bitmap: 0x10 to: 0x0 for drm_kms_helper
+[    0.488743] dyndbg: attach-client-module:  module:drm_kms_helper nd:93 nc:0 nu:1
+[    0.489742] dyndbg:  93 debug prints in module drm_kms_helper
+
+Widespread testing is appreciated.
+I have scripts if anyone wants them.
+lkp-robot reported success on dd-fix-7b, no report yet on 7c
+
+Patches are also at https://github.com/jimc/linux/tree/dd-fix-7c
+
+Jim Cromie (24):
+  test-dyndbg: fixup CLASSMAP usage error
+  dyndbg: reword "class unknown," to "class:_UNKNOWN_"
+  dyndbg: make ddebug_class_param union members same size
+  dyndbg: replace classmap list with a vector
+  dyndbg: ddebug_apply_class_bitmap - add module arg, select on it
+  dyndbg: split param_set_dyndbg_classes to module/wrapper fns
+  dyndbg: drop NUM_TYPE_ARRAY
+  dyndbg: reduce verbose/debug clutter
+  dyndbg: silence debugs with no-change updates
+  dyndbg: tighten ddebug_class_name() 1st arg type
+  dyndbg: tighten fn-sig of ddebug_apply_class_bitmap
+  dyndbg: reduce verbose=3 messages in ddebug_add_module
+  dyndbg-API: remove DD_CLASS_TYPE_(DISJOINT|LEVEL)_NAMES and code
+  dyndbg-API: fix CONFIG_DRM_USE_DYNAMIC_DEBUG regression
+  dyndbg: refactor ddebug_classparam_clamp_input
+  dyndbg-API: promote DYNDBG_CLASSMAP_PARAM to API
+  dyndbg-doc: add classmap info to howto
+  dyndbg: reserve flag bit _DPRINTK_FLAGS_PREFIX_CACHED
+  dyndbg: add _DPRINTK_FLAGS_INCL_LOOKUP
+  dyndbg: refactor *dynamic_emit_prefix
+  dyndbg: change WARN_ON to WARN_ON_ONCE
+  drm: use correct ccflags-y spelling
+  drm-drivers: DRM_CLASSMAP_USE in 2nd batch of drivers, helpers
+  drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG un-BROKEN
+
+ .../admin-guide/dynamic-debug-howto.rst       |  60 ++-
+ MAINTAINERS                                   |   2 +-
+ drivers/gpu/drm/Kconfig                       |   3 +-
+ drivers/gpu/drm/Makefile                      |   3 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  12 +-
+ drivers/gpu/drm/display/drm_dp_helper.c       |  12 +-
+ drivers/gpu/drm/drm_crtc_helper.c             |  12 +-
+ drivers/gpu/drm/drm_gem_shmem_helper.c        |   2 +
+ drivers/gpu/drm/drm_print.c                   |  35 +-
+ drivers/gpu/drm/gud/gud_drv.c                 |   2 +
+ drivers/gpu/drm/i915/i915_params.c            |  12 +-
+ drivers/gpu/drm/mgag200/mgag200_drv.c         |   2 +
+ drivers/gpu/drm/nouveau/nouveau_drm.c         |  12 +-
+ drivers/gpu/drm/qxl/qxl_drv.c                 |   2 +
+ drivers/gpu/drm/radeon/radeon_drv.c           |   2 +
+ drivers/gpu/drm/udl/udl_main.c                |   2 +
+ drivers/gpu/drm/vkms/vkms_drv.c               |   2 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   2 +
+ include/asm-generic/vmlinux.lds.h             |   1 +
+ include/drm/drm_print.h                       |  12 +-
+ include/linux/dynamic_debug.h                 | 121 +++--
+ kernel/module/main.c                          |   3 +
+ lib/Kconfig.debug                             |  24 +-
+ lib/Makefile                                  |   3 +
+ lib/dynamic_debug.c                           | 458 +++++++++++-------
+ lib/test_dynamic_debug.c                      | 131 ++---
+ lib/test_dynamic_debug_submod.c               |  17 +
+ 27 files changed, 584 insertions(+), 365 deletions(-)
+ create mode 100644 lib/test_dynamic_debug_submod.c
 
 -- 
-Regards,
-Tasmiya Nalatwad
-IBM Linux Technology Center
+2.41.0
 
