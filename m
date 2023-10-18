@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6AC7CE0BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315D47CE0C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjJRPH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
+        id S1345119AbjJRPIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbjJRPH4 (ORCPT
+        with ESMTP id S1345132AbjJRPID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:07:56 -0400
+        Wed, 18 Oct 2023 11:08:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EF6EA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:07:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80991C433CA;
-        Wed, 18 Oct 2023 15:07:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D268109
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:08:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74810C433C9;
+        Wed, 18 Oct 2023 15:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697641674;
-        bh=AtOhH7lCDZCWXMDhYUnp7kvc5xryvi7wRU9/sSDZbM8=;
+        s=k20201202; t=1697641682;
+        bh=mBkZiAJw0cAZ+8K45DFZn1KTs545PbO0X/BQKA3Y8Dw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rKxNL6HC3egcjSoE8gB1WKMIXHSToVFH10JGfwd+khfHfeAjYMSGVF9vkbkeg6Z43
-         mn1NlglNAEL5ItfLbpgEZA5mDfDdLeZcUWTiYwu1suW1BK3IXQE22sYtj57KFl5a4n
-         LD0FMcAVVVFQp40Jc8ksjWRNd2b3BqezFu/A1X+vgaoistq5dWPO55iUfL8jLW6KWt
-         sahgGL4TcNNStz12zDsA8S9Lz5l5ipurl3bcg7oRvQMfpTm23b6EJxhpmnEki8WFgr
-         NVM++6u479Rx32mtJWYegojl/m4HDD1ZeR5wUScY4N5CekPjG3Duy8bgEvcLx5b0gM
-         pcAKC9317P41w==
-Date:   Wed, 18 Oct 2023 16:07:50 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/9] dt-bindings: arm: mediatek: Add MT8186 Tentacruel /
- Tentacool Chromebooks
-Message-ID: <20231018-earpiece-dimmed-81c0f728d0b6@spud>
-References: <20231012230237.2676469-1-wenst@chromium.org>
- <20231012230237.2676469-3-wenst@chromium.org>
- <20231013-washer-mortally-b27c196ac50f@spud>
- <CAGXv+5GF7HfQSOg9c=G+c4DPUW24Ax7LX4raTynDbE3xc8iCdg@mail.gmail.com>
- <20231013-panic-vaseline-350c10e7d585@spud>
- <CAGXv+5EmLDWi3Lnca1vPft=9z9Cp2L2ee08in_b_21hipf9ieQ@mail.gmail.com>
- <20231014-proud-levers-eb03f30a0a9a@spud>
- <CAGXv+5F-x9m2WYZm-YLaxqio=VnfKkL26gLFbayJctBEJrSM6A@mail.gmail.com>
+        b=S25cZry5EckSmUckAngr1pga2GQsoTavq3XDjyGIfITI3GKBU5hevjH1UeUxdLi+b
+         7rRfl5IWifnWIWbjdDa7VWmTzC0LH+XUv5ccmYAdANSds74BzlmsPFhoFoAQeZgUaQ
+         H0OxSQKRl6Y1Hl+NHJD55QiSu4qf046Gwr3YvewnK38u33gWHDHcOtO2HC8nr2ZWsZ
+         2dDwLswfJMna47Sv2cg7IZOd4BgTGIUSV9x6NAP4MwtQtfAVL61tE9ED/HsWT1r/wp
+         4BBAoisf1U7RXpfoyiWEFAEEc0Kwomq5u6L6Lf1Vxp+OiPKhM7UR5NUN00zQdJWylR
+         3QRUeMEw9Y1bw==
+Date:   Wed, 18 Oct 2023 16:07:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
+Message-ID: <c17f56c1-a629-4b05-b807-42010f206f6c@sirena.org.uk>
+References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
+ <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
+ <84f9f1c4-0627-4986-8160-b4ab99469b81@linaro.org>
+ <b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk>
+ <b35a21a2-6e69-4033-8d51-2b67b08ac7b3@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FSanamN/VZcb42q0"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0DVAadVcjJVHZ/F3"
 Content-Disposition: inline
-In-Reply-To: <CAGXv+5F-x9m2WYZm-YLaxqio=VnfKkL26gLFbayJctBEJrSM6A@mail.gmail.com>
+In-Reply-To: <b35a21a2-6e69-4033-8d51-2b67b08ac7b3@linaro.org>
+X-Cookie: Santa Claus is watching!
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,157 +59,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---FSanamN/VZcb42q0
-Content-Type: text/plain; charset=utf-8
+--0DVAadVcjJVHZ/F3
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 15, 2023 at 11:15:22PM -0700, Chen-Yu Tsai wrote:
-> On Sat, Oct 14, 2023 at 6:40=E2=80=AFAM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Fri, Oct 13, 2023 at 11:19:16AM -0700, Chen-Yu Tsai wrote:
-> > > On Fri, Oct 13, 2023 at 10:55=E2=80=AFAM Conor Dooley <conor@kernel.o=
-rg> wrote:
-> > > >
-> > > > On Fri, Oct 13, 2023 at 10:29:25AM -0700, Chen-Yu Tsai wrote:
-> > > > > On Fri, Oct 13, 2023 at 8:11=E2=80=AFAM Conor Dooley <conor@kerne=
-l.org> wrote:
-> > > > > >
-> > > > > > On Fri, Oct 13, 2023 at 07:02:28AM +0800, Chen-Yu Tsai wrote:
-> > > > > > > Add entries for MT8186 based Tentacruel / Tentacool Chromeboo=
-ks. The two
-> > > > > > > are based on the same board design: the former is a convertib=
-le device
-> > > > > > > with a touchscreen, stylus, and some extra buttons; the latte=
-r is a
-> > > > > > > clamshell device and lacks these additional features.
-> > > > > > >
-> > > > > > > The two devices both have two variants. The difference is a s=
-econd
-> > > > > > > source touchpad controller that shares the same address as th=
-e original,
-> > > > > > > but is incompatible.
-> > > > > >
-> > > > > > > The extra SKU IDs for the Tentacruel devices map to different=
- sensor
-> > > > > > > components attached to the Embedded Controller. These are not=
- visible
-> > > > > > > to the main processor.
-> > > > > >
-> > > > > > Wha? Given your ordering, is a "google,tentacruel-sku262144" a =
-super-set
-> > > > > > of "google,tentacruel-sku262145"? If not, this compatible order=
-ing
-> > > > > > doesn't make sense. I can't tell from your description, and the
-> > > > > > absence of a
-> > > > > > items:
-> > > > > >           - const: google,tentacruel-sku262145
-> > > > > >           - const: google,tentacruel-sku262146
-> > > > > >           - const: google,tentacruel-sku262147
-> > > > > >           - const: google,tentacruel
-> > > > > >           - const: mediatek,mt8186
-> > > > > > suggests that there is no google,tentacruel-sku262145
-> > > > > > device?
-> > > > >
-> > > > > AFAIK all four SKUs exist. And as far as the main processor is co=
-ncerned,
-> > > > > they look completely identical, so they should share the same dev=
-ice tree.
-> > > > > As mentioned in the commit message, the differences are only visi=
-ble to
-> > > > > the embedded controller, which fuses the sensor inputs.
-> > > >
-> > > > Then it makes very little sense to write a binding like this.
-> > > > If this was just for the 252144 SKU, this would be fine.
-> > > > For the other SKUs, there is no way to uniquely identify them, as
-> > > > all four of google,tentacruel-sku262144, google,tentacruel-sku26214=
-5,
-> > > > google,tentacruel-sku262146 and google,tentacruel-sku262147 must be
-> > > > present.
-> > > > Given that, why even bother including the SKUs in the first place,
-> > > > since no information can be derived from them that cannot be derived
-> > > > from google,tentacruel?
-> > > > There's something that I am clearly missing here...
-> > >
-> > > There are incompatible variants of google,tentacruel. This is why this
-> > > patch has four google,tentacruel based entries. Of them, two are Tent=
-acool,
-> > > which are clamshell laptops, and two of them are Tentacruel, which are
-> > > convertibles.
-> > >
-> > > Within each group there are two variants: the second variant swaps out
-> > > the I2C touchpad controller. These two controllers use the same I2C
-> > > address but use different compatible strings, so it's not possible to
-> > > have them coexist within the same device tree file like we do for many
-> > > other second source components.
-> > >
-> > > So the relationship looks like the following:
-> > >
-> > > google,tentacruel --- Tentacruel --- google,tentacruel-sku26214[4567]
-> > >                    |              |
-> > >                    |              -- google,tentacruel-sku2621{48,49,=
-50,51}
-> > >                    |
-> > >                    -- Tentacool ---- google,tentacruel-sku327681
-> > >                                  |
-> > >                                  --- google,tentacruel-sku327683
-> > >
-> > > Also, the devices themselves only know their own SKU ID. The firmware
-> > > will generate a list of compatible strings like:
-> > >
-> > >   google,tentacruel-rev4-sku262144
-> > >   google,tentacruel-rev4
-> > >   google,tentacruel-sku262144
-> > >   google,tentacruel
-> > >
-> > > and try to find a match in the kernel FIT image. The method we curren=
-tly
-> > > use is to include all the applicable board compatible strings.
-> >
-> > Then it seems like what you need is something like
-> > oneOf:
-> >   - items:
-> >       - const: google,tentacruel-sku262144
-> >       - const: google,tentacruel
-> >       - const: mediatek,mt8186
-> >   - items:
-> >       - enum:
-> >           - google,tentacruel-sku262145
-> >           - google,tentacruel-sku262146
-> >           - google,tentacruel-sku262147
-> >       - const: google,tentacruel-sku262144
-> >       - const: google,tentacruel
-> >       - const: mediatek,mt8186
-> >
-> > What you have at the moment just seems like a hack because you want to
-> > stuff all of these compatible strings into a single dts.
->=20
-> It is. And it works OK downstream. The reason we want to stuff them in
-> one dts is because the firmware will not generate the fallback to
-> sku262144 as the scheme above suggests.
+On Wed, Oct 18, 2023 at 02:57:59PM +0200, Krzysztof Kozlowski wrote:
+> On 18/10/2023 14:56, Mark Brown wrote:
 
-I'm not going to ack the hack that you have here, sorry. Maybe Rob or
-Krzysztof will. The list your firmware generates above doesn't even
-match the contents of this patch, with the extra "rev-4" compatibles.
+> > I'd expect that the GPIO users should coordiante directly rather than
+> > rely on the GPIO API to do the coordination for them - there aren't
+> > enough semantics in the GPIO itself to do much more except possibly
+> > provide discovery services (which would be nice).  Look at how the
+> > regulator API manages multiple regulators sharing an enable GPIO for
+> > example, it adds an additional layer of reference counting when it
+> > identifies a shared GPIO.
 
-> Having three or four identical device trees just with different board
-> compatible string sequences to me seems a bit redundant, and it does
-> end up bloating our FIT image a bit, which impacts boot time.
+> OK, it is still regulator core, though. Not individual drivers problem.
 
-I'm not aware of the capabilities of your bootloader when it comes to
-setting properties before passing them to the kernel, but that is what I
-would be doing to cut down on having 4 different dtbs.
+> Several other existing drivers have the same issue, so this should be
+> solved in a generic or shared way.
 
---FSanamN/VZcb42q0
+Indeed.
+
+--0DVAadVcjJVHZ/F3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS/0xgAKCRB4tDGHoIJi
-0kndAP9mCU1KkF6zmF+udpc6vFsvJuy4oehTnrEgxb8UxCE1rgEAu1RSUGsi3wau
-liCFeiR+alAXLoxLrGhMO1rZRXVUSgs=
-=FbzG
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUv9MwACgkQJNaLcl1U
+h9Bv+Qf/Rvb5zyWFaHHrWVDS/7ye9dIL/po1Jvc9RP6d4AYn6QD0oyu/NbUNIHFm
+LeB/Xwa73t6cIk7NqGMfpiGr494gsJIZkIYFXA2sRbIViBed9lfXkPIp/lbosz5P
+sPjpR/gzT3+PqyyaRdEzXfmc2Ninu10PEvR1US8HUfNntlkGOjgnJLp8mXM0whUm
+U+Fbl5W2+2TrIstqes8bJRzBSzpZgM5EqkhXUapqmr0EBVHOn7OjfB1e2/DqA+PF
+k3ZedVR9V7xi7S3nhLurr5zS4E8OYUebnt61PfdxqsZjqlQNjEQrQfMtwALjarOg
+yOL/dyC9UX7+UUWQlxh5j1GOYjBCdA==
+=sw3k
 -----END PGP SIGNATURE-----
 
---FSanamN/VZcb42q0--
+--0DVAadVcjJVHZ/F3--
