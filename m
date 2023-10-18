@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C1B7CD634
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92687CD639
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbjJRISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S230064AbjJRITy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjJRISW (ORCPT
+        with ESMTP id S230001AbjJRITw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:18:22 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AB8C6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:18:19 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so7646412276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697617099; x=1698221899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FaEmtppYZAhMsYDBHeyk5qHJOFganXNI4hJEHgjEbgc=;
-        b=xiFrIP6fjZCSXHuVPOgbEzSqeYUB+FMSEL4NRfS3k2N3TeUnHL3edBbvuS0YtdTTnL
-         l59zCNthfddQ/eXB8mq4AZmtREcp9+iNd15A4D+ofPxsKlZr7jxzHkd1xKwcnB5j7YCR
-         UNSbEZW9pvsVdV1PLJprETk8dDh8GGdLuMvdwQ8TwN/JrjZwn9HJAajPZtv6N5tEbsGB
-         pjP8dQ8hrDXRK4yTM3rZhWA4YIIophv6ZGypz/4Y+VY6fqziCcmAegx0GhgC4mMOiaBj
-         qM5c8OTDFZ/QjAGF7UPODPsi7XQn6XBPfBMkBkHCJrWUBMft7QvrxoH2U9m+OK/kZhzI
-         ltPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697617099; x=1698221899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FaEmtppYZAhMsYDBHeyk5qHJOFganXNI4hJEHgjEbgc=;
-        b=vyeCDTnDFMT9+55dRgL8hiS5g4OFF8mDclO+QA954VjQcMH3TcapxwdwqD+4+1MKAw
-         pwve+dXlig+1SBWzfuje6r1Rwh3+ctNuSZcVYbU7+qjE/EZ7ja8VHhDiHQkn8hA5leX8
-         U0n9FdAPJvRrksvNVyFpaW1yKECmotTPOxCjGdeeed02+PbhpXlBGKUCjOIRTSbbXKXK
-         m6TLc5WleVUY7/A6ARjwN5IMxTWUVkDjhsG9q5UysV4BtT7t0miXNbbIef5EItpIg5aR
-         OJMz0Z361cAvIytdMimP96D0s/7y171vBKUBGv7deJbZpE0iYnIIWWJ4sQASvitR6yy9
-         9lgA==
-X-Gm-Message-State: AOJu0YxK9pV/bxKeRQkQASCKFyFHsqc9D3Gw4g1gi2MnIQDQKn7XjmOI
-        hfKoYblS7CiMHYeQPNHbJ8Aj1vd7aKB1gPpmMKH5TeXV9Hv909NF
-X-Google-Smtp-Source: AGHT+IHS+aRA61sStPYBODFMrmmJRiulx2KlXd75EfRcMgJwP5MT9v5x1H3ytS7hzs2Li0IIu8G73H57gxRh3paxT6s=
-X-Received: by 2002:a25:db07:0:b0:d9b:5428:d601 with SMTP id
- g7-20020a25db07000000b00d9b5428d601mr4246998ybf.21.1697617098878; Wed, 18 Oct
- 2023 01:18:18 -0700 (PDT)
+        Wed, 18 Oct 2023 04:19:52 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB939B6;
+        Wed, 18 Oct 2023 01:19:49 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39I8JVg1114036;
+        Wed, 18 Oct 2023 03:19:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697617171;
+        bh=KDxSzjo2VitRXjpaiHK9O5EJrXqIWmeH3Eersa64FuA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=xmKycoSSPuHLTwIkIHEaMn06eq06DZpf7LsjJAmgyy29Yo/UDB3D+nU4boa8VqfPe
+         +d1t5N32j1W4w3q54BudR+5vBUZpQvMxC57eK3nMXYjCXy1Nfs5L59jK5hlH8gbZM1
+         UmBa1mwR27jpkiaiwT8jFvniBJSNs3mP0El+TAGA=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39I8JUfF122418
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Oct 2023 03:19:31 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
+ Oct 2023 03:19:30 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 18 Oct 2023 03:19:30 -0500
+Received: from [172.24.227.83] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39I8JRSI029793;
+        Wed, 18 Oct 2023 03:19:28 -0500
+Message-ID: <c546f8e9-f6ba-41b8-7dff-4a7921b6705f@ti.com>
+Date:   Wed, 18 Oct 2023 13:49:26 +0530
 MIME-Version: 1.0
-References: <20231011090510.114476-1-ychuang570808@gmail.com>
- <20231011090510.114476-3-ychuang570808@gmail.com> <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
- <17a80031-98bf-48bf-8cea-c0ca4400f142@gmail.com> <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
-In-Reply-To: <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 18 Oct 2023 10:18:07 +0200
-Message-ID: <CACRpkdaiihOex19SavWwC+S8o5qp=F=XMNm9+UXh=q2nVbOFkA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jacky Huang <ychuang570808@gmail.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        schung@nuvoton.com, Jacky Huang <ychuang3@nuvoton.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x
+ SoC
+Content-Language: en-US
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>, <lpieralisi@kernel.org>,
+        <robh@kernel.org>, <kw@linux.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+References: <20231018075038.2740534-1-s-vadapalli@ti.com>
+From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20231018075038.2740534-1-s-vadapalli@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 9:52=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Siddharth,
 
-> > I noticed that 'xlnx,zynq-pinctrl.yaml' and 'xlnx,zynq-pinctrl.yaml' us=
-e
-> > 'power source' to specify the output voltage.  Should I follow their
-> > approach or define a vendor-specific one?
->
-> Maybe Rob or Linus have here some recommendation, but I would suggest to
-> go either with rtd1319d-pinctrl.yaml approach or add a generic property
-> to pincfg-node expressed in real units like "io-microvolt".
->
-> Rob, Linus, any ideas for generic property replacing register-specific
-> power-source?
 
-The existing power-source is generally used to select between (usually
-two) different chip-internal power rails, such as 1.8V and 3.3V.
-The format is a driver-specific enumerator.
+On 10/18/23 1:20 PM, Siddharth Vadapalli wrote:
+> The ks_pcie_v3_65_add_bus() member of "ks_pcie_ops" was added for
+> platforms using DW PCIe IP-core version 3.65a. The AM654x SoC uses
+> DW PCIe IP-core version 4.90a and ks_pcie_v3_65_add_bus() is not
+> applicable to it.
+> 
+> The commit which added support for the AM654x SoC has reused majority
+> of the functions with the help of the "is_am6" flag to handle AM654x
+> separately where applicable. Thus, make use of the "is_am6" flag and
+> change ks_pcie_v3_65_add_bus() to no-op for AM654x SoC.
+> 
+> Fixes: 18b0415bc802 ("PCI: keystone: Add support for PCIe RC in AM654x Platforms")
 
-We *could* just patch the documentation for power-source to
-say that microvolts is the preferred format but legacy users may
-be using a custom enumerator.
+6ab15b5e7057 (PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus)
+is that one that seems to have introduced this issue. 
 
-io-microvolt seems like a more long-term viable option if a wider
-range of voltages are to be supported so I'm happy with that if the
-DT folks think it's nicer. However notice that the power-source
-property is already being hard-coded into things such as SCMI
-and ACPI so it's not like it will ever be replaced by io-microvolt
-and phased out as far as Linux is concerned. Not the next 50
-years at least.
+ks_pcie_v3_65_scan_bus() was for IP version 3.65 and this was renamed and
+added to "ks_pcie_ops" which is used by other IP versions as well.
 
-Yours,
-Linus Walleij
+
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
+> Hello,
+> 
+> This patch is based on linux-next tagged next-20231018.
+> 
+> The v1 of this patch is at:
+> https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
+> 
+> While there are a lot of changes since v1 and this patch could have been
+> posted as a v1 patch itself, I decided to post it as the v2 of the patch
+> mentioned above since it aims to address the issue described by the v1
+> patch and is similar in that sense. However, the solution to the issue
+> described in the v1 patch appears to be completely different from what
+> was implemented in the v1 patch. Thus, the commit message and subject of
+> this patch have been modified accordingly.
+> 
+> Changes since v1:
+> - Updated patch subject and commit message.
+> - Determined that issue is not with the absence of Link as mentioned in
+>   v1 patch. Even with Link up and endpoint device connected, if
+>   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
+>   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
+>   AER and PME services. The all Fs return value indicates that the MSI-X
+>   configuration is failing even if Endpoint device is connected. This is
+>   because the ks_pcie_v3_65_add_bus() function is not applicable to the
+>   AM654x SoC which uses DW PCIe IP-core version 4.90a.
+> 
+> Regards,
+> Siddharth.
+> 
+>  drivers/pci/controller/dwc/pci-keystone.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 0def919f89fa..3abd59335574 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -459,7 +459,7 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+>  
+> -	if (!pci_is_root_bus(bus))
+> +	if (!pci_is_root_bus(bus) || ks_pcie->is_am6)
+>  		return 0;
+>  
+>  	/* Configure and set up BAR0 */
+
+-- 
+Regards,
+Ravi
