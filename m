@@ -2,228 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DB77CDC29
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC147CDC38
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjJRMpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S230426AbjJRMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjJRMp0 (ORCPT
+        with ESMTP id S230202AbjJRMrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:45:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECCF123
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697633124; x=1729169124;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=alldLmkQreYI4FeQqgnzSTJCYZ3EG4E1C8fJJzNjTp8=;
-  b=ftZmBzl6i4ebuxXcqu409wmQ7jIc+1lyz3hfFbx2qp2oZhKNrFkAoxPw
-   qnbi889jKDvBLsXFBrOqkd2yOZu59J3WMyVB49vHzoQX3XaGH+6p3WT4/
-   nN2E4wHaqcK7O+s1x6jhNu92XhhZD3UhGdWKzk1MHIRGd+21CZUc1j72O
-   nfXgTZx+PvX/drPYV+lpzuC8XCCYhGSJEj6TwRVU8TpwpN+3AdZCAMIkW
-   bZEklccCtdn/nVxNMpRL7BzY85LZMmJJc+6QWjiyrP+zG6vMLKg/Sc1Bm
-   KqrQILenlU0zJBmSyLXdz8uA1YgdOu5JHH3vImbN0Cppqx6Q9xFdl/bmQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365352704"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="365352704"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 05:45:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="785922328"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="785922328"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2023 05:45:23 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 18 Oct 2023 05:45:22 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 18 Oct 2023 05:45:22 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 18 Oct 2023 05:45:22 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 18 Oct 2023 05:45:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RW0fxH9mR35SJie8SMptpYlCfl6IG5pzJyKow4w1OuyJN+brEJvboAU/2BRJObO8L3bS8m7Wn8yBaHG93GQ8dqEJW2PmGyvtd4P8gPgfOd6CCKBmHbNwTxzuWjoXCOiAN3pPuXslegdpPRKthYCIuqXSY3rBS9ETKdy2o0nQCbs+8s8V215J2hxfVf1ULQIw4k+oFpxj57T2g+j0KYqreEyYkUZMd/cCv6FJ6+ruCh7euAUKuAqh2sIb+QP5qStDlEoXi2NDxcrk0L+CxlhqGsVUCPtcH4+I02WvHaqeE6xWvmVvbSA3s4DwYyNKDbthLBrp11rozgbcHMfUwDipcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nhu14WLj5yViqp4frJ2MfkDvKHqsvPy2Am6P4DKUNXY=;
- b=hM7n3jZb8RYmx+I9qR2pHKzcsdxnXyR5iY3YHDD4Bl3yEg2BBolakDVhcIRAXRHNpPcc1i+qjC9FeNj4Ex68fLz5NnLXQu+FwGFeb+hd9wzrZ/pqcTMyKkPi+HtBE2Ld8GL54J2s0gHNLQ3Np3R4RHr4mmn5qGTMvDVXDE3jfak1jE5GWbnAlKrOv+T+MXim6q30XYm3suEgmJl5OUqyNW19aTXRmBSwjuj0g/KJmK3DXyLhf4lHyzTLVOtZklhQWYwx06ySWt67GHACuVnF0vhvLbYW7WrcK46eoTJok4C10wDkellJ41islukyGIfOg13tKNbZk6EAN9aBm9kGZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
- by IA0PR11MB8397.namprd11.prod.outlook.com (2603:10b6:208:48b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Wed, 18 Oct
- 2023 12:45:20 +0000
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::f64:17c0:d3ab:196]) by BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::f64:17c0:d3ab:196%7]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
- 12:45:19 +0000
-Date:   Wed, 18 Oct 2023 20:45:08 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Baoquan He <bhe@redhat.com>
-CC:     Dan Carpenter <dan.carpenter@linaro.org>,
-        <oe-kbuild@lists.linux.dev>, Lorenzo Stoakes <lstoakes@gmail.com>,
-        <lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
- could be null (see line 3667)
-Message-ID: <ZS/TVMT9ed7OdyNy@rli9-mobl>
-References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
- <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
- <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
- <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
-X-ClientProxiedBy: SG2PR04CA0156.apcprd04.prod.outlook.com (2603:1096:4::18)
- To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+        Wed, 18 Oct 2023 08:47:51 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B1EA3;
+        Wed, 18 Oct 2023 05:47:49 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b44befac59so3872898b3a.0;
+        Wed, 18 Oct 2023 05:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697633269; x=1698238069; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9kzuTzxZVlGgh2f5mC3oIMplNBV8HnSfbYCkmlfvIO0=;
+        b=FghNIC/6Ky0TDrGA5L+6MIbYS4RZzOrcCQ/gvu+h3/36los+pKUA0A5Mhm1WOCz7IS
+         teerGv3bM5eUJ7csLv6Oi47uyim01+tB5nNTd17r+ulRBUqIIEscD39pnDRSTvAkatU3
+         2MqGzFLR7BMUVO75gqtjGdJbrEVEflCUNbNTEhqvw9lZDb8gDP3gyDfav/L9ohUExcgF
+         QAGAz2PMiEVU/trN9Ir0Zjc6sdqyYxcpsULMiTIJTM6V3SqgVi84m4q4veoBDCHsqKLv
+         eOG80aHVXHBIh/pYVzOeL37berqwA0Q6swHBd45EhS8x5DJvS5+0/1W02eewL1oLzo9j
+         lhMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697633269; x=1698238069;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9kzuTzxZVlGgh2f5mC3oIMplNBV8HnSfbYCkmlfvIO0=;
+        b=u40rByz1CfXpIApXfdLszdtmZAeiTWPwdnAwpnqMV/IkHTJ4ZunJC4Wyj6zUwsY3F3
+         7XLkDKTcwfnYBik7+uHZh+MHgZVm2IDjxwBHWmcEQh7VcL9QY4A+ar2KIzydodEmswxj
+         F0DpVUPQlkGK7BMOD/QAGpWEup6eTthwUuUzPZkbCNxnvJHox660Ve23nzhsKjbWwbGe
+         VVUo8I43cVo7Wy8yQHzwmo/vp6U8In98fnF+yY9Vhqg4NR0TkznyjdHeSwiDAdN9SsSa
+         UkjX8Mf39Hhp7t1DQHZrrRmP77UdaBAf7KQ7UTwS05C2PgXW5X3+eM69dlhblbbuqGKS
+         eoAA==
+X-Gm-Message-State: AOJu0YwVYjZs3z9WpmfvA9UqbhMiXxVaniZtx+wjkSQ/6/0Ao3IlPfR7
+        sWpszR4URTRAbp43sVyKEd+ZBkkTI/0RbQ==
+X-Google-Smtp-Source: AGHT+IGXGeVHsVlXRGS2m6a7frgX1L1AYtgLEn9FwtI5ugKjMogKB6UXepsFeotAkt1UZrRjKys6fw==
+X-Received: by 2002:a05:6a20:7288:b0:15d:4cf1:212e with SMTP id o8-20020a056a20728800b0015d4cf1212emr6856294pzk.4.1697633268764;
+        Wed, 18 Oct 2023 05:47:48 -0700 (PDT)
+Received: from thinkpad ([117.202.186.25])
+        by smtp.gmail.com with ESMTPSA id i13-20020a65484d000000b00578afd8e012sm1389183pgs.92.2023.10.18.05.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 05:47:48 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 18:17:41 +0530
+From:   Manivannan Sadhasivam <manivannanece23@gmail.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Can Guo <quic_cang@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
+ version detection
+Message-ID: <20231018124741.GA47321@thinkpad>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
+ <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
+ <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com>
+ <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
+ <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
+ <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
+ <20230919120829.GB4732@thinkpad>
+ <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
+ <20230920102327.GH4732@thinkpad>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|IA0PR11MB8397:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4754557-25b8-40ce-8add-08dbcfd8156e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XxBGY8VqUad7kqqMe+vsxF8YG9J8t1AoaAeXDrbyvuvE0o9QHR3KYgNNzvWodAX77Kyo26Jqr/C21PXV3t12BmXXa9md3vg1cSldy3U9jKGiJUpulBkj55An0XouqGe46daCkloR0mXqThQiHSLJj6N6qUJ2C98wFq9Ou+95GnL6c0XvS1CBRJGc4PFGqdoaBm4UieXkFHZ6KH3/175E8Y51YGkzI6z9hhosmUFuhWWUb5TmQvT7uNqbOPJ/GLTFCURMrhChkYBoX8YYo+BXQYu9o1bMjQaLyo2DWNMF3BbV/gukPQQofHWjlkeLp2yymImqqToa7Tt8APAjQsBtoJhiBYcFYf+uLjrO40biWAM2c1FjFzB5HIp5Wc0PnMAfDnJmpbUQfUnLJmHh7LG52Ml9pY9E85q5vZi7lsDqUcHt7JCj8t3wD7lrnFsV7YRSdPI91NCmrX9zmKOLvYofA72idNfcAHltPmGMlAlJtMEoLTeO96d84yKyG6FU138jMxqrNkpkm4GMWRS2U4uGO+hiOtaSmZMPYF04n8HOJ88h+Z3rMllJ6eVcaCdcUPNM5TU18+3lw7jRqWqTNnWAcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(366004)(396003)(136003)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(54906003)(66476007)(6916009)(316002)(66946007)(66556008)(86362001)(38100700002)(82960400001)(83380400001)(26005)(9686003)(6506007)(6512007)(6666004)(2906002)(41300700001)(6486002)(966005)(33716001)(478600001)(44832011)(4326008)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XMS6oohZHkDHc4eF9B1JLtXI9n2kQ9vhyXlTiSsbJduZwKouuELxxeX+Fl6Q?=
- =?us-ascii?Q?bo4rmad7jSMdsJLjdZ/5pm/yL0tBrmsP0CJJhio7Q98yBtqKTMKdXs+68isZ?=
- =?us-ascii?Q?MOP3wAaqBEF7RyNqyS5zJDuVLLNq17aRZ3bpw5GK4QJczPTYHERYqPU5xD/h?=
- =?us-ascii?Q?TqHITqksKIzt/wjKLSfZOkH2oGS86oQ2FrxqMvt6BjpmiRwrKG2eFqrS2SO/?=
- =?us-ascii?Q?L0lekmr2hYjs+zq5iy3L+yOkl1KZqLEFVIHycAUyAiiohEfojAWZMUD2aZgD?=
- =?us-ascii?Q?Fn/RMOTg0a2cBmTSGpbjq5yRT7Xhp4r6+2Rr/kGvt5TIXw70WKDsJuKe3LYl?=
- =?us-ascii?Q?3lOg9lakRUCQsdmZj/sfPrf/Y6v35MZP33QMYjpXtAL/991BK8gIe9Gc4oaW?=
- =?us-ascii?Q?JDPG/TQHLqEn1tgA2E4gNwZU2bvd2NAMC5qirgVsNFBAHpprBcUemIa+BMUA?=
- =?us-ascii?Q?EQZ4JbJ/08AXKY4HDdnrrYBeG+TiFQ3w001YFBhGxPGcT91nTXL8t0Ry5sCE?=
- =?us-ascii?Q?ZuGmckv7nEl77KlmonwGpf/pkIFv1rC84onBIXDM8+gsbzseu3YM7F4ttMP4?=
- =?us-ascii?Q?B/d1qEYgZxdcVfyJBfivto8d3GR6CIna7zouJD1QW2EgO7/VV00aKs53ww5C?=
- =?us-ascii?Q?6LHLlc/UkqXviS5/khZVmvQTy+x6VwsxyHt1pMktQqy8mX4GqKqo29k1edRD?=
- =?us-ascii?Q?qr8JjgXAbV7gAlRGqNLN7LPdy1LAzPVUOhKeH5Xi/ntmN7OZsgFneGj0I9A7?=
- =?us-ascii?Q?Y11wA9AM6HYCkish6+3MMKZ53pjHbMtftMJmt6YCRUJbZwo5pSCtlm1xMUg0?=
- =?us-ascii?Q?Ysc8t/OsG0U+oJBNSS50RuO5Pv7LmZM9EpfR71NP85XPO2wmQh8In1Ar8JUo?=
- =?us-ascii?Q?fcZ9vIQ9WvfooBRKuOdYB9gCesfXyC6aa9yVMuWhIEuPhkkZo+DX6PJ3d7sL?=
- =?us-ascii?Q?s7MnrKbmS/a8yuBlP1zCHo+I/EOVwHEsUgimABfz633n6T9+VQDUYgSsAGJp?=
- =?us-ascii?Q?4nf3deBxNikGRjUBDlbhB0tXqms42YqkV1LDw8z+OWv1ZnBlLvRX74PxjU2N?=
- =?us-ascii?Q?/JSZ8+YtGDUTRdiglKqk4UyubV+6i9E1YqZuw8pPhv39waZqS/qIe5/E/7zx?=
- =?us-ascii?Q?QfRbFoVVBozNnxkvNdpZyZwBPo5EQEe598i6DJo/nUPt/QXgivJRhiXrw2sG?=
- =?us-ascii?Q?Z332GPr+AxPM36HUXJOADFhFUHtdMotU4jv3RWp+WV9/oG4A0QbIKD4oN48j?=
- =?us-ascii?Q?LPL0ofYQL7NM3wNtRx4pkWGtrrqkG+MMPJdh2ei01IMTKGkuYSj9PIfgU3Sg?=
- =?us-ascii?Q?0uLb3k7VLnOCFVq8412n0M3jFEN+G+rZ2rAwWs81VWVLssYi6cJL2eWcA7qY?=
- =?us-ascii?Q?wf2o3B3APupq8XshT87b2fgRtZ2/y21+EpFr5nyas5dxZ5iUKbgiUiKCYOLF?=
- =?us-ascii?Q?FG5LLnIf+tT5Jh0e0IM4t/tCIRfEELjCB5iIYxFlb3/FrUCCt1fF73dXUY6x?=
- =?us-ascii?Q?Fiyhkk66YnVVXAjWfAaFpTDP6uYh/0MKAzGqjXH3teghI5Tdr2vFm0IfZXa5?=
- =?us-ascii?Q?d2FwVVlFXS7mRegH4qTYCEs931NXrPl8hDAFHTLz?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4754557-25b8-40ce-8add-08dbcfd8156e
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 12:45:19.1252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /7jFZX0OhiHjH2u3qQf/e5Jid1IFiLn6FqTMEHBwN5iMgnk8eGAvBPVcSeU7I2rNTvsX3dIoE+kQjPKH0hVVCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8397
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230920102327.GH4732@thinkpad>
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 08:12:30PM +0800, Baoquan He wrote:
-> Hi Dan,
-> 
-> On 10/18/23 at 01:32pm, Dan Carpenter wrote:
-> > On Wed, Oct 18, 2023 at 04:54:33PM +0800, Baoquan He wrote:
-> > > Hi,
-> > > 
-> > > On 10/17/23 at 05:26pm, Dan Carpenter wrote:
-> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > > > head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-> > > > commit: 4c91c07c93bbbdd7f2d9de2beb7ee5c2a48ad8e7 mm: vmalloc: convert vread() to vread_iter()
-> > > > config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/config)
-> > > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> > > > reproduce: (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/reproduce)
-> > > > 
-> > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > > the same patch/commit), kindly add following tags
-> > > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > > | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > > | Closes: https://lore.kernel.org/r/202310171600.WCrsOwFj-lkp@intel.com/
-> > > > 
-> > > > smatch warnings:
-> > > > mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
-> > > 
-> > > I see the code deficit, while the reproduce link seems to be unavilable.
-> > > Could you double check the link and provide a good one so that I can
-> > > verify the code fix?
+On Wed, Sep 20, 2023 at 12:23:27PM +0200, Manivannan Sadhasivam wrote:
+> On Wed, Sep 20, 2023 at 01:27:59AM +0300, Dmitry Baryshkov wrote:
+> > On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> wrote:
+> > >
+> > > On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
+> > > > On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc.com> wrote:
+> > > > >
+> > > > >On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
+> > > > >> On 11.09.2023 11:42, Can Guo wrote:
+> > > > >>> Hi Konrad,
+> > > > >>>
+> > > > >>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
+> > > > >>>> On 11.09.2023 07:59, Can Guo wrote:
+> > > > >>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+> > > > >>>>>
+> > > > >>>>> Retrieve UFS device version from UFS host controller's spare register
+> > > > >>>>> which is populated by bootloader, and use the UFS device version together
+> > > > >>>>> with host controller's HW version to decide the proper power modes which
+> > > > >>>>> should be used to configure the UFS PHY.
+> > > > >>>> That sounds a bit fishy.. is there no bootloader-independent
+> > > > >>>> solution to that? Can't we bring in the code that the bootloader
+> > > > >>>> uses to determine these values?
+> > > > >>>>
+> > > > >>>> Konrad
+> > > > >>>
+> > > > >>> Agree, it is.
+> > > > >>>
+> > > > >>>
+> > > > >>> All these complexities come from one request from PHY design team - power saving.
+> > > > >>>
+> > > > >>> And to achieve power saving, Qualcomm UFS developers are requested to use the
+> > > > >>>
+> > > > >>> lowest hanging PHY settings which can sustain the Max agreed HS Gear (btw host
+> > > > >>>
+> > > > >>> and UFS device) during UFS's lifecycle in High Level OS,  whereas the power saving
+> > > > >>>
+> > > > >>> request does not apply to bootloader, which works for only a few seconds during
+> > > > >>>
+> > > > >>> bootup. Hence, there is no such version detect code in bootloader -  it just uses the
+> > > > >>>
+> > > > >>> highest PHY settings to configure PHY, boot up UFS and put UFS device version in this
+> > > > >>>
+> > > > >>> register.
+> > > > >> First of all, your email client seems to be inserting 2 newlines
+> > > > >> instead of 1. If you're using thunderbird, you may want to edit:
+> > > > >>
+> > > > >> mail.identity.(default or your mail identity idx).default.compose_html
+> > > > >>
+> > > > >> to `false`
+> > > > >>
+> > > > >> and add that to your internal wiki page, as I see many @quic folks having
+> > > > >> this issue.
+> > > > >>
+> > > > >>
+> > > > >> Going back to the main topic, I don't think we understood each other.
+> > > > >> The commit message states:
+> > > > >>
+> > > > >>
+> > > > >> "Retrieve UFS device version from UFS host controller's spare register
+> > > > >> which is populated by bootloader"
+> > > > >>
+> > > > >>
+> > > > >> Which means the bootloader is able to somehow determine the value
+> > > > >> that's in the spare register and write it there.
+> > > > >>
+> > > > >> I'm asking whether we can take the logic behind this value and
+> > > > >> move it to Linux so that we don't depend on the bootloader to
+> > > > >> guarantee it (e.g. Chrome or some other devices with more exotic
+> > > > >> fw may not work this way).
+> > > > >>
+> > > > >>
+> > > > >> Konrad
+> > > > >
+> > > > >
+> > > > >There is no logic behind this value at all in bootloader, as I explained, after bootloader
+> > > > >
+> > > > >initializes UFS, bootloader simply reads UFS's device version (the value you are referring)
+> > > > >
+> > > > >and write it to the register. But in Linux kernel, we need (or want to know) this value
+> > > > >
+> > > > >BEFORE we initialize UFS host controller (and UFS device).
+> > > >
+> > > > Depending on the bootloader behaviour is not an option. For example the kernel might be started via kexec. Or via u-boot. Or grub. Or any other bootloader. So please duplicate the logic to read the UFS version instead.
+> > > >
+> > >
+> > > As Can said, there is no logic in the bootloader. What it does it, after doing
+> > > the UFS initialization, it writes the agreed gear (between host and the device)
+> > > to this register. And in linux, we use that value to initialize the device
+> > > (i.e., not doing init based on the min gear).
+> > >
+> > > But the important factor here is that, we use this gear value to program the PHY
+> > > init sequence. So if there is no hint from the bootloader, linux will program
+> > > the min phy sequence (G3/G4) and then once the gear scaling happens, it will
+> > > program the max phy sequence (G4/G5).
+> > >
+> > > Now on recent platforms, the init sequences are not compatible with each other
+> > > i.e., once the min seq. is programmed, then before programming max seq. the
+> > > registers not common to both seq. should be programmed to default value. In
+> > > other words, min seq. specific registers should be reset to the default value.
+> > > Otherwise, there will be stability issues in the PHY.
 > > 
-> > Here's a link.  :)
+> > I see nothing wrong with adding 'default' register programming to the
+> > gear tables. If we have to reset them to the default values to switch
+> > the PHY settings, these writes must be a part of the corresponding
+> > tables.
 > > 
-> > https://repo.or.cz/smatch.git/blob/HEAD:/Documentation/smatch.txt
+> 
+> Yep, that's what I initially proposed. But Qcom wanted to avoid the cost of
+> programming the reset tables in the PHY driver.
+> 
+> Can, could you please check if programming the additional sequence doesn't cause
+> any power/performance effect?
+> 
+
+I'd like to simplify this conversion as there has been some misunderstanding.
+
+First of all in linux, while probing the UFS device by the host controller, it
+needs to use _some_ gear. So far we were using HS_G2 as that gear and using the
+PHY init sequence of G3/G4 depending on the SoC. We do not need to use G2 init
+sequence because, there are only 2 init sequences available for any SoC and
+since the init sequences are backwards compatible, we mostly use the min init
+sequence, G3/G4. Even though this incurs slight power consumption during boot,
+the ufs host controller after probing the device will switch to max gear
+supported by both entities. If that max is G4/G5, then the respective init
+sequence will be programmed again.
+
+Now the issue is, for the automotive usecases, switching the gears 2 times
+during boot is affecting the boot KPI (Key Performance Inidicator). So the UFS
+team came with the idea of populating a spare register in the bootloader with
+the max gear info that the bootloader has already found out and using the same
+in the linux for first time itself. This helps linux in using a single gear
+during probe time.
+
+This is what this patch is doing. If for some reason, that register is not
+populated, then we default to the existing G2 gear and do init twice as the
+driver is doing currently.
+
+I hope this clarifies the intention of this patch.
+
+- Mani
+
+> - Mani
+> 
+> > >
+> > > So to avoid that, if we get the hint from bootloader (always the max supported
+> > > gear between host and device), then only one seq. will be programmed.
+> > >
+> > > Other way to solve this issue is to reset the non common registers in the init
+> > > seq. to default value. But that will be an additional overhead.
+> > >
+> > > But... if the bootloader doesn't populate this register (if the boot device is
+> > > not UFS, like in compute platforms), then this whole logic won't work. This
+> > > should also be taken into consideration.
 > > 
-> > Just build it and run:
+> > Yep, that's the dependency on the bootloader. Which we should avoid.
 > > 
-> > ~/smatch/smatch_scripts/kchecker drivers/whatever/file.c
+> > >
+> > > - Mani
+> > >
+> > > >
+> > > > P.S. you have been asked to fix your email client. Please do so. Or, if you are inserting these linebreaks manually, please stop.
+> > > >
+> > > > >Thanks,
+> > > > >
+> > > > >Can Guo.
+> > > > >
+> > > >
+> > >
+> > > --
+> > > மணிவண்ணன் சதாசிவம்
+> > 
+> > 
+> > 
+> > -- 
+> > With best wishes
+> > Dmitry
 > 
-> I don't know smatch and lkp well, and have no idea on how to use above
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
-Hi Baoquan, sorry there's issue in the generation of reproduce step, but even
-it is generated, it doesn't contain the detail to setup smatch. You can follow
-the smatch.txt to do the setup.
-
-> smatch.txt to build the target file.c. I meant in this lkp report, the
-> config file is available, however, the reproduce file is empty. Could
-> you help add an available reproduce file link? or give a little more
-> detail guiding me how to make use of above smatch file to build .c file?
-
-On the other side, Dan has added analysis to the report as below.
-It's possible to resolve the issue without running the smatch check.
-You can give this a try.
-
-	06c8994626d1b7 Baoquan He              2023-02-06  3657  		if (!vm && !flags)
-
-	NULL check
-
-	...
-
-	06c8994626d1b7 Baoquan He              2023-02-06 @3689  		else if (!(vm->flags & VM_IOREMAP))
-                                                                                   ^^^^^^^^^
-	Unchecked dereference
-
-> Thanks a lot in advance.
-> 
-> config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/config)
-> reproduce: (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/reproduce)
-
-Meanwhile, we will resolve the reproduce empty issue as early as possible.
-
-> 
-> Thanks
-> Baoquan
-> 
-> 
+-- 
+மணிவண்ணன் சதாசிவம்
