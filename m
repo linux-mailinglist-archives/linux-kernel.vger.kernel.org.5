@@ -2,207 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 233917CEC07
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1EB7CEC1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbjJRXad convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 19:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
+        id S231950AbjJRXde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbjJRXa3 (ORCPT
+        with ESMTP id S229679AbjJRXdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:30:29 -0400
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4C113;
-        Wed, 18 Oct 2023 16:30:26 -0700 (PDT)
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-584a761b301so5436316a12.3;
-        Wed, 18 Oct 2023 16:30:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697671826; x=1698276626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6x4MOo5/gvvDjdQbTbVRFsm6OAJqGdIH7cIh4FO9aMI=;
-        b=ai65WB9rtwIQ6y2fgJt5kn0OAUlTebSVaAVswjLRdPvLS/yM11Uu8JAhuBEv87bTlC
-         ZMUHmpzk/orNqAIzpyKUWfoxedM4hlL9k6eoNynYP9pr0z1r2N8dK2mYveYiBE0hAE/T
-         BlMHq3lujsWXEp/Wrx/SVgoe8phY4JU+yMrt8WNzv+WCrZ/I7KnynwMYwO1rDNUmAATL
-         +r+I4NESdP1ywE1spyhdClIkq74VAMv5vB4sxyO8CCyqZwspZoOvvalJxrm1K0qrx5bJ
-         uxoF4if2Eb/3GXpg68njvBPcE5XWOsvB6EAUn6VgkKQCJBi2LzQOUNtGFk/fMhoSaKrM
-         Bq4g==
-X-Gm-Message-State: AOJu0YxFKP1HEUT9LYtpvQgPnvdMCl9+egC432E1r0TW02FDv35SHUjS
-        R8/FaueE0Pgd68EVIXi/Lyj+UfcJYpJuPDut3bg=
-X-Google-Smtp-Source: AGHT+IHgipjxPBcfAIbKk9O2m4YkW5BgcpV1jfpiPcBoPEWVF5sMa8/z+Uxrtn2Sh7DA6NrF4CMrHQw+W5rMoBJZDic=
-X-Received: by 2002:a05:6a21:6da0:b0:14c:d494:77c5 with SMTP id
- wl32-20020a056a216da000b0014cd49477c5mr679241pzb.13.1697671826126; Wed, 18
- Oct 2023 16:30:26 -0700 (PDT)
+        Wed, 18 Oct 2023 19:33:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E16B6;
+        Wed, 18 Oct 2023 16:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697672012; x=1729208012;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=mufGButwLpL6uBFFn43+xl6wMGqTQF8VWI+npPtC0G4=;
+  b=AgEgG8UTP4ndxlQOZsDuoVvzMlbAg70DlpfM2vTnaY/bNsOVz5cnNYDN
+   HjscOcAzfWwy9rGWZ+8PxKMTh5V2r1kuuha3cjycVOCc3Y24jE6aen5bC
+   Os10UuJwCFues+DSiVsvocHI5jrsb3hi9ZUUUw2huO63fp3zhXdFNJq1z
+   bzYZoHxtHVT9kO7dmWrkND5QTVLs/dH/VlyK/BV7yfwwlk3t11IsHi8DH
+   BOzzKkE+z2Q2QWJSGAo8FNC7q+97CuIqm2UFICwlk2RwrFD9K79nq+WyT
+   bP9RZXhlbL7Xza1ZOtOkQA8TIqQdtQ8GpBnYJBBsKcGxfkZ6h3XPa/TN9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366380843"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="366380843"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 16:33:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="750293083"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="750293083"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.212.171.196])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 16:33:31 -0700
+Date:   Wed, 18 Oct 2023 16:33:29 -0700
+From:   Alison Schofield <alison.schofield@intel.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] block: replace deprecated strncpy with strscpy
+Message-ID: <ZTBrSb/h13YzE3Ws@aschofie-mobl2>
+References: <20231018-strncpy-drivers-nvdimm-btt-c-v1-1-58070f7dc5c9@google.com>
+ <CAFhGd8o-ftoGQ4qvrdGM2tSYWBqvYbF7Qb7O+UfsbzYxVmU6sA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-14-irogers@google.com>
-In-Reply-To: <20231012062359.1616786-14-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 18 Oct 2023 16:30:15 -0700
-Message-ID: <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8o-ftoGQ4qvrdGM2tSYWBqvYbF7Qb7O+UfsbzYxVmU6sA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
->
-> struct thread values hold onto references to mmaps, dsos, etc. When a
-> thread exits it is necessary to clean all of this memory up by
-> removing the thread from the machine's threads. Some tools require
-> this doesn't happen, such as perf report if offcpu events exist or if
-> a task list is being generated, so add a symbol_conf value to make the
-> behavior optional. When an exited thread is left in the machine's
-> threads, mark it as exited.
->
-> This change relates to commit 40826c45eb0b ("perf thread: Remove
-> notion of dead threads"). Dead threads were removed as they had a
-> reference count of 0 and were difficult to reason about with the
-> reference count checker. Here a thread is removed from threads when it
-> exits, unless via symbol_conf the exited thread isn't remove and is
-> marked as exited. Reference counting behaves as it normally does.
+On Wed, Oct 18, 2023 at 03:39:59PM -0700, Justin Stitt wrote:
+> I have a feeling I may have botched the subject line for this patch.
+> Can anyone confirm if it's good or not?
+> 
+> Automated tooling told me that this was the most common patch
+> prefix but it may be caused by large patch series that just
+> happened to touch this file once.
+> 
+> Should the subject be: nvdimm/btt: ... ?
+> 
+> Judging from [1] I see a few "block" and a few of nvdimm/btt.
 
-Maybe we can do it the other way around.  IOW tools can access
-dead threads for whatever reason if they are dealing with a data
-file.  And I guess the main concern is perf top to reduce memory
-footprint, right?  Then we can declare to remove the dead threads
-for perf top case only IMHO.
+Hi Justin,
 
-Thanks,
-Namhyung
+It should be nvdimm/btt because it only touches btt.c.
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-report.c   |  7 +++++++
->  tools/perf/util/machine.c     | 10 +++++++---
->  tools/perf/util/symbol_conf.h |  3 ++-
->  tools/perf/util/thread.h      | 14 ++++++++++++++
->  4 files changed, 30 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index dcedfe00f04d..749246817aed 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
->         if (ret < 0)
->                 goto exit;
->
-> +       /*
-> +        * tasks_mode require access to exited threads to list those that are in
-> +        * the data file. Off-cpu events are synthesized after other events and
-> +        * reference exited threads.
-> +        */
-> +       symbol_conf.keep_exited_threads = true;
-> +
->         annotation_options__init(&report.annotation_opts);
->
->         ret = perf_config(report__config, &report);
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 6ca7500e2cf4..5cda47eb337d 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *machine, union perf_event *event
->         if (dump_trace)
->                 perf_event__fprintf_task(event, stdout);
->
-> -       if (thread != NULL)
-> -               thread__put(thread);
-> -
-> +       if (thread != NULL) {
-> +               if (symbol_conf.keep_exited_threads)
-> +                       thread__set_exited(thread, /*exited=*/true);
-> +               else
-> +                       machine__remove_thread(machine, thread);
-> +       }
-> +       thread__put(thread);
->         return 0;
->  }
->
-> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-> index 2b2fb9e224b0..6040286e07a6 100644
-> --- a/tools/perf/util/symbol_conf.h
-> +++ b/tools/perf/util/symbol_conf.h
-> @@ -43,7 +43,8 @@ struct symbol_conf {
->                         disable_add2line_warn,
->                         buildid_mmap2,
->                         guest_code,
-> -                       lazy_load_kernel_maps;
-> +                       lazy_load_kernel_maps,
-> +                       keep_exited_threads;
->         const char      *vmlinux_name,
->                         *kallsyms_name,
->                         *source_prefix,
-> diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-> index e79225a0ea46..0df775b5c110 100644
-> --- a/tools/perf/util/thread.h
-> +++ b/tools/perf/util/thread.h
-> @@ -36,13 +36,22 @@ struct thread_rb_node {
->  };
->
->  DECLARE_RC_STRUCT(thread) {
-> +       /** @maps: mmaps associated with this thread. */
->         struct maps             *maps;
->         pid_t                   pid_; /* Not all tools update this */
-> +       /** @tid: thread ID number unique to a machine. */
->         pid_t                   tid;
-> +       /** @ppid: parent process of the process this thread belongs to. */
->         pid_t                   ppid;
->         int                     cpu;
->         int                     guest_cpu; /* For QEMU thread */
->         refcount_t              refcnt;
-> +       /**
-> +        * @exited: Has the thread had an exit event. Such threads are usually
-> +        * removed from the machine's threads but some events/tools require
-> +        * access to dead threads.
-> +        */
-> +       bool                    exited;
->         bool                    comm_set;
->         int                     comm_len;
->         struct list_head        namespaces_list;
-> @@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct thread *thread)
->         return &RC_CHK_ACCESS(thread)->refcnt;
->  }
->
-> +static inline void thread__set_exited(struct thread *thread, bool exited)
-> +{
-> +       RC_CHK_ACCESS(thread)->exited = exited;
-> +}
-> +
->  static inline bool thread__comm_set(const struct thread *thread)
->  {
->         return RC_CHK_ACCESS(thread)->comm_set;
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+Here's the old school way that I use to find prefixes. Maybe you can
+train your automated tooling to do this, and then share it with me ;)
+
+I do:
+
+~/git/linux/drivers/nvdimm$ git log --pretty=oneline --abbrev-commit btt.c
+
+3222d8c2a7f8 block: remove ->rw_page
+ba229aa8f249 nvdimm-btt: Use the enum req_op type
+86947df3a923 block: Change the type of the last .rw_page() argument
+8b9ab6266204 block: remove blk_cleanup_disk
+3205190655ea nvdimm-btt: use bvec_kmap_local in btt_rw_integrity
+322cbb50de71 block: remove genhd.h
+
+And I see a few choices, with 'block' being pretty common.
+I peek in those patches and see that block was used when the patch
+included files in drivers/block AND also in nvdimm/btt.
+
+Use nvdimm/btt for your patch.
+
+A bit more below -
+
+> 
+> On Wed, Oct 18, 2023 at 3:35 PM Justin Stitt <justinstitt@google.com> wrote:
+> >
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > We expect super->signature to be NUL-terminated based on its usage with
+> > memcpy against a NUL-term'd buffer:
+> > btt_devs.c:
+> > 253 | if (memcmp(super->signature, BTT_SIG, BTT_SIG_LEN) != 0)
+> > btt.h:
+> > 13  | #define BTT_SIG "BTT_ARENA_INFO\0"
+> >
+> > NUL-padding is not required as `super` is already zero-allocated:
+> > btt.c:
+> > 985 | super = kzalloc(sizeof(struct btt_sb), GFP_NOIO);
+> > ... rendering any additional NUL-padding superfluous.
+> >
+> > Considering the above, a suitable replacement is `strscpy` [2] due to
+> > the fact that it guarantees NUL-termination on the destination buffer
+> > without unnecessarily NUL-padding.
+> >
+> > Let's also use the more idiomatic strscpy usage of (dest, src,
+> > sizeof(dest)) instead of (dest, src, XYZ_LEN) for buffers that the
+> > compiler can determine the size of. This more tightly correlates the
+> > destination buffer to the amount of bytes copied.
+> >
+> > Side note, this pattern of memcmp() on two NUL-terminated strings should
+> > really be changed to just a strncmp(), if i'm not mistaken? I see
+> > multiple instances of this pattern in this system.
+
+I'm not following this note about memcmp() usage. Where is that?
+
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> >
+> > Found with: $ rg "strncpy\("
+
+How you found it goes in the commit log, not below the line.
+
+> > ---
+> >  drivers/nvdimm/btt.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+> > index d5593b0dc700..9372c36e8f76 100644
+> > --- a/drivers/nvdimm/btt.c
+> > +++ b/drivers/nvdimm/btt.c
+> > @@ -986,7 +986,7 @@ static int btt_arena_write_layout(struct arena_info *arena)
+> >         if (!super)
+> >                 return -ENOMEM;
+> >
+> > -       strncpy(super->signature, BTT_SIG, BTT_SIG_LEN);
+> > +       strscpy(super->signature, BTT_SIG, sizeof(super->signature));
+> >         export_uuid(super->uuid, nd_btt->uuid);
+> >         export_uuid(super->parent_uuid, parent_uuid);
+> >         super->flags = cpu_to_le32(arena->flags);
+> >
+> > ---
+> > base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+> > change-id: 20231018-strncpy-drivers-nvdimm-btt-c-15f93879989e
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
+> 
+> [1]: https://lore.kernel.org/all/?q=dfn%3Adrivers%2Fnvdimm%2Fbtt.c
+> 
+> Thanks
+> Justin
+> 
