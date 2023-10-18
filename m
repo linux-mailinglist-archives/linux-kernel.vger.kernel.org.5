@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B31147CE308
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A647CE2FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjJRQkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S230299AbjJRQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjJRQkp (ORCPT
+        with ESMTP id S230267AbjJRQjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:40:45 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759A8119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:40:42 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IGc6bO031967;
-        Wed, 18 Oct 2023 16:40:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=+9mWtK2LAk088BzZ2/UXjxJTYDJYHbNIVObLJlcqYas=;
- b=iDjPZBlNsA6fa6fXHtR8+hgx6dNjpHNn00I6o61O60isxONpCozYkcGo76U1boXHFd/b
- U7jp87pSET7xS3ulb6B8z0KjnWttjgOIvNLXDhlaefcewhpiS4en3QRkg+h4qfEyEQ9w
- vnY89TCKZ/g808wcxFhPHlnsz+RVuRemXoSnQFXFZgzf+fTy+rbBo/TS0zQ46e+9VzrR
- gYRoXC89KlGhlYgbUGZyWUSLACIWoFubMP/2HxPBFe5CSOQlE0OKMlI73V4A1l2PM8o8
- jGj6TnLJt2F8Kfnlh398AdZ3zyWo/MMIWGeV8GGhgIJynVuulJwXAYGwn3r6TJYFkw7Q JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjn41485-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 16:40:26 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IGcgZE003583;
-        Wed, 18 Oct 2023 16:40:20 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjn40xnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 16:40:19 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IG32YM026943;
-        Wed, 18 Oct 2023 16:38:30 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr5asjawh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 16:38:30 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IGcT4v12583508
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 16:38:29 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F04912004E;
-        Wed, 18 Oct 2023 16:38:28 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 35E2620040;
-        Wed, 18 Oct 2023 16:38:26 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.43.47.66])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 16:38:25 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Wed, 18 Oct 2023 12:39:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A03EA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697647120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oHj6EwFz8BHjW/yggtu6OM4m0PkCRoLlO9ayp66fdYs=;
+        b=JAGUYqzozHINk6HZ1d6kaVlZMxEkT0OiZ1kPREptYqo7hYMQx/1/42rXGoVWOGN7BYzTuQ
+        PNhYI/zww1bNnaJ84se8HcDUbBzkI4L9Zni7hxRtiSpoX4DF69tHMzmwPsRUsdSiOA1d0n
+        iFYmfAKPp7rf2CBEtJfstyd3HA4P88U=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-5rp-c6lCOFSw6oKsrXnmNw-1; Wed, 18 Oct 2023 12:38:34 -0400
+X-MC-Unique: 5rp-c6lCOFSw6oKsrXnmNw-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-66d38d57f49so50017216d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:38:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697647113; x=1698251913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oHj6EwFz8BHjW/yggtu6OM4m0PkCRoLlO9ayp66fdYs=;
+        b=EXWb0fFDQlZD1fGWrwbMgLBNo235R+v3SOH/ktdtf7bDrHjtHglZvVWWUPdDGOcgMS
+         UhJ4ajFWKpEnSZfIHBUBX2L8GMMA6oL0GucrFTPoczaCpfto/b5x61AE+8AhBoJHoVht
+         OPvbbXLICq0EkVsdzYSMY/j0rH8WIJOVCGdKyotAFkE/+ZA8M44o/QR+FjrUa/Npn3FL
+         EsMmxEN+e6U/90jo4VBlzqiHpEDeinF6osDhnVTNX8Zx8EJExR37wbeQrFT8kj4SHcxe
+         1WVkDxI2rpYNemCB0mR/aQJjMpB0aHHBTlW/3AQhKDFdgrzsGCCnzDviog0V1AMUwVbJ
+         d6ng==
+X-Gm-Message-State: AOJu0YzMWM8egSmiJL7DA82tgJWsu0WQu+vpP7XaiGKCMqbkbAHQswhD
+        tz8v83yauyCcWB7o6MWFc7ixef4rt80zkGuZ30VHpBZJtUmy02ayra8+1ueYlsuqpWT5+GkkkRH
+        KzzaeOUPMYZvyZicQ9Q77qeU=
+X-Received: by 2002:ad4:5b8b:0:b0:66d:43fd:f4e4 with SMTP id 11-20020ad45b8b000000b0066d43fdf4e4mr5312166qvp.45.1697647113740;
+        Wed, 18 Oct 2023 09:38:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFRD+Ge85kWm9yZdvPOOqG6RtGusTbEBje3/ErVCbJtUf+gccGOsYnKb7S21qIV56jPHTesKA==
+X-Received: by 2002:ad4:5b8b:0:b0:66d:43fd:f4e4 with SMTP id 11-20020ad45b8b000000b0066d43fdf4e4mr5312147qvp.45.1697647113412;
+        Wed, 18 Oct 2023 09:38:33 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-31-107.cust.vodafonedsl.it. [2.34.31.107])
+        by smtp.gmail.com with ESMTPSA id mi1-20020a056214558100b0066d15724ff7sm81896qvb.52.2023.10.18.09.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 09:38:33 -0700 (PDT)
+From:   Marco Pagani <marpagan@redhat.com>
+To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+Cc:     Marco Pagani <marpagan@redhat.com>, linux-fpga@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] powerpc/smp: Avoid asym packing within thread_group of a core
-Date:   Wed, 18 Oct 2023 22:07:46 +0530
-Message-ID: <20231018163751.2423181-7-srikar@linux.vnet.ibm.com>
+Subject: [PATCH] fpga: disable KUnit test suites when module support is enabled
+Date:   Wed, 18 Oct 2023 18:38:13 +0200
+Message-ID: <20231018163814.100803-1-marpagan@redhat.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
-References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5zcFTzW3cgn2tkT_kawQYByBZWYmIWuT
-X-Proofpoint-GUID: 3nPjRWY_fioBTO33AYGy4yBKjzx6YwO9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_15,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 bulkscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180135
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PowerVM Hypervisor will schedule at a core granularity. However each
-core can have more than one thread_groups. For better utilization in
-case of a shared processor, its preferable for the scheduler to pack to
-the lowest core. However there is no benefit of moving a thread between
-two thread groups of the same core.
+The fpga core currently assumes that all manager, bridge, and region
+devices have a parent device associated with a driver that can be used
+to take the module's refcount. This behavior causes the fpga test suites
+to crash with a null-ptr-deref since parent fake devices do not have a
+driver. This patch disables all fpga KUnit test suites when loadable
+module support is enabled until the fpga core is fixed. Test suites
+can still be run using the KUnit default UML kernel.
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
 ---
- arch/powerpc/kernel/smp.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/fpga/tests/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index b1eb11a66902..a710fb32a2a9 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1695,6 +1695,8 @@ void start_secondary(void *unused)
- 	BUG();
- }
- 
-+DEFINE_STATIC_KEY_FALSE(splpar_asym_pack);
-+
- static void __init fixup_topology(void)
- {
- 	int i;
-@@ -1704,6 +1706,7 @@ static void __init fixup_topology(void)
- 		static_branch_enable(&powerpc_asym_packing);
- 	} else if (is_shared_processor() && has_big_cores) {
- 		static_branch_enable(&powerpc_asym_packing);
-+		static_branch_enable(&splpar_asym_pack);
- 	}
- 
- #ifdef CONFIG_SCHED_SMT
-@@ -1758,6 +1761,19 @@ void __init smp_cpus_done(unsigned int max_cpus)
- 	set_sched_topology(powerpc_topology);
- }
- 
-+/*
-+ * For asym packing, by default lower numbered CPU has higher priority.
-+ * On shared processors, pack to lower numbered core. However avoid moving
-+ * between thread_groups within the same core.
-+ */
-+int arch_asym_cpu_priority(int cpu)
-+{
-+	if (static_branch_unlikely(&splpar_asym_pack))
-+		return -cpu / threads_per_core;
-+
-+	return -cpu;
-+}
-+
- #ifdef CONFIG_HOTPLUG_CPU
- int __cpu_disable(void)
- {
+diff --git a/drivers/fpga/tests/Kconfig b/drivers/fpga/tests/Kconfig
+index e4a64815f16d..d4e55204c092 100644
+--- a/drivers/fpga/tests/Kconfig
++++ b/drivers/fpga/tests/Kconfig
+@@ -1,6 +1,6 @@
+ config FPGA_KUNIT_TESTS
+-	tristate "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
+-	depends on FPGA && FPGA_REGION && FPGA_BRIDGE && KUNIT=y
++	bool "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
++	depends on FPGA=y && FPGA_REGION=y && FPGA_BRIDGE=y && KUNIT=y && MODULES=n
+ 	default KUNIT_ALL_TESTS
+         help
+           This builds unit tests for the FPGA subsystem
 -- 
-2.31.1
+2.41.0
 
