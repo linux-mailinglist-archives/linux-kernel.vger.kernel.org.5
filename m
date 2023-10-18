@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D4C7CE924
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846757CE92A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjJRUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        id S232625AbjJRUix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJRUiB (ORCPT
+        with ESMTP id S232008AbjJRUiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:38:01 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427C2A4;
-        Wed, 18 Oct 2023 13:38:00 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7FEE040E01AF;
-        Wed, 18 Oct 2023 20:37:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id YUPvjayGgkMM; Wed, 18 Oct 2023 20:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697661476; bh=Pm4YziE+m+355hgaPXWCNbxGtS+NNwjyA12sofw3mNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EdmGecDgTAXRw4mZx51qBJTV+XDxNBhWlpCwZvoSCw/PfR0gTsJOWAtNPor1mabaf
-         WBv2KPTCEyiA9kvoTXOM4eIklFh2ktN7BGwC0lUq97eXXL7bGCldr6sAaIS75nhtUv
-         LaC5GYLQFgbkJMk3FwpMm2KHYio3zywxCXWPaxMoB5CffLOEmkZEznKJBRARmqh9PN
-         aHPg/aBvqp6GwHYf7YqRPNX2Lur6FOuU1GrRDF4ozXjtykOVsFvyMNBqcgoqNjHMQ0
-         wKAUSL5ewCKClSGHDCJhxjL+Vh0xXh443F5+hd6okzLIU7UWHbbuzRhmSupGXlNCaU
-         1jLcoS60m5XCMFV675+lbESkeMoE3vo5fASodY1BgUq3hwlunEksL7z1xcSp27nlN8
-         PBHr87DzSRx5xeOgDbosquwa9tK9BoLZ8Y8/UDF/6Da1CTI4tYHiJnY++l2c6fT5zC
-         aflX7q1XRwG4QHbcb7Km5HgOPFsvuoeIEBr03KsF6si3uqux715F7cQ1Kl3DzDLYu4
-         dI249bYR8Ma2BXCgGLBNhyxsVuXl8qyqbV7363T31Ddc0deprt6Pf6jP9PkGQAzEMu
-         JyGbUJ9LjOlC9ImeQ4lr+0uhAnoF2br+5mONC102lghRQquXLMxFkSFvSeNG2p75qD
-         +ISRj56aOPYHN/VCaeOX+VS8=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9FCBA40E0196;
-        Wed, 18 Oct 2023 20:37:48 +0000 (UTC)
-Date:   Wed, 18 Oct 2023 22:37:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org,
-        David Kaplan <david.kaplan@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
- <ZS/f8DeEIWhBtBeb@gmail.com>
- <20231018151245.GCZS/17QhDGe7q6K+w@fat_crate.local>
- <20231018155433.z4auwckr5s27wnig@treble>
- <20231018175531.GEZTAcE2p92U1AuVp1@fat_crate.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231018175531.GEZTAcE2p92U1AuVp1@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 16:38:50 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38563118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:38:48 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7af53bde4so117852397b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697661527; x=1698266327; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2vuxwNUjHanOakE7PhkoyaYiDRMZoiUmEZlALcX3Sg=;
+        b=l+i9Vriy0mKx1DFwNLR091rbBl7Gh06KudCc9JqdnPeE8KS9Ebsh3yPobluCA3KD74
+         ejE2E2llS0Tr80hMVpEFqjah3b/WwZPhcSnPdRUdM9fjKIoBywLjkwfayb5prgOvxr4q
+         SI/9TG+hgffXekwBH+vdO9YHlZXuOirNZt6tHDsxvZlogHY9lkSqjpqaWSuxFWBs4Ey9
+         5YOn3NyYLchnZQdElAgeoDsfHA01EOfR//Pe1jfn5hcWQ4cO+WTbaDr+oJCjdqo9WAmI
+         4PTbTBNBwqR3ym1WzvHAad9PrD9HMcycXgxuuivNS1WI7Ijb5GUy69cG4MX9PCuVDPeg
+         F+FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697661527; x=1698266327;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2vuxwNUjHanOakE7PhkoyaYiDRMZoiUmEZlALcX3Sg=;
+        b=OGpeXJU+YEQKLni3xQ3ig0GQID9WXeaqaeO6G/i7YlN8s49M+po500fLhLjbpCZk+z
+         Es584nshdcM0QHiXF7Ysf+G1qw7YppAfvAreI+wRVy0uzFIJxZ1eV99ai1bYvVlXUB3+
+         O60qrZFRTRDoOYzowgLH92XH2Vb5KpseqvVKBOPG9xHtKR7sfk1JxPPzrgPdWig2Oxy1
+         osGpSZPs/ST3xnicrNYmNVJXLwTiVw1H5N7RroLINpzBirujyQGvpUKAGnBRGmIhC5BW
+         /WatWimUAolMVJz40Nx5aqHgNg81nUpGqSXQHECQjBBWfPmxJQd5gCkU/XPiFzo3FH6/
+         YvIg==
+X-Gm-Message-State: AOJu0YyIZid2ZV1U2opZQRpbM3E31106qeyxt9BD7d7acAPFw/EsVLaY
+        IopxI07daVWceoofWwkfQr/IV2WF6XQ=
+X-Google-Smtp-Source: AGHT+IGd6l8t7dSPqvjLwr1up5LbNppFyLB+KHswpcTN3MkRXf+fX3swfqUVEKJu/4yV2rYkq43dRov4EMo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d5ca:0:b0:5a8:7b96:23d8 with SMTP id
+ x193-20020a0dd5ca000000b005a87b9623d8mr9852ywd.3.1697661527331; Wed, 18 Oct
+ 2023 13:38:47 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 13:38:46 -0700
+In-Reply-To: <09556ee3-3d9c-0ecc-0b4a-3df2d6bb5255@amd.com>
+Mime-Version: 1.0
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-49-michael.roth@amd.com> <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+ <ZS614OSoritrE1d2@google.com> <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+ <ZS_iS4UOgBbssp7Z@google.com> <09556ee3-3d9c-0ecc-0b4a-3df2d6bb5255@amd.com>
+Message-ID: <ZTBCVpXaGcyFaozo@google.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
+ NAE event
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Alexey Kardashevskiy <aik@amd.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 07:55:31PM +0200, Borislav Petkov wrote:
-> And that happens because for whatever reason apply_returns() can't find
-> that last jmp __x86_return_thunk for %r15 and it barfs.
+On Wed, Oct 18, 2023, Ashish Kalra wrote:
+> > static int snp_handle_ext_guest_request(struct vcpu_svm *svm)
+> > {
+> > 	struct kvm_vcpu *vcpu = &svm->vcpu;
+> > 	struct kvm *kvm = vcpu->kvm;
+> > 	struct kvm_sev_info *sev;
+> > 	unsigned long exitcode;
+> > 	u64 data_gpa;
+> > 
+> > 	if (!sev_snp_guest(vcpu->kvm)) {
+> > 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_GUEST);
+> > 		return 1;
+> > 	}
+> > 
+> > 	data_gpa = vcpu->arch.regs[VCPU_REGS_RAX];
+> > 	if (!IS_ALIGNED(data_gpa, PAGE_SIZE)) {
+> > 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_ADDRESS);
+> > 		return 1;
+> > 	}
+> > 
+> > 	vcpu->run->hypercall.nr		 = KVM_HC_SNP_GET_CERTS;
+> > 	vcpu->run->hypercall.args[0]	 = data_gpa;
+> > 	vcpu->run->hypercall.args[1]	 = vcpu->arch.regs[VCPU_REGS_RBX];
+> > 	vcpu->run->hypercall.flags	 = KVM_EXIT_HYPERCALL_LONG_MODE;
+> > 	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_request;
+> > 	return 0;
+> > }
+> > 
+> 
+> IIRC, the important consideration here is to ensure that getting the
+> attestation report and retrieving the certificates appears atomic to the
+> guest. When SNP live migration is supported we don't want a case where the
+> guest could have migrated between the call to obtain the certificates and
+> obtaining the attestation report, which can potentially cause failure of
+> validation of the attestation report.
 
-Some more info on why it happens:
-
-something with gcc-13 or this config of whatever ends up generating
-this:
-
-ffffffff81d71200 <__x86_indirect_thunk_r14>:
-ffffffff81d71200:       e8 01 00 00 00          call   ffffffff81d71206 <__x86_indirect_thunk_r14+0x6>
-ffffffff81d71205:       cc                      int3
-ffffffff81d71206:       4c 89 34 24             mov    %r14,(%rsp)
-ffffffff81d7120a:       e9 91 00 00 00          jmp    ffffffff81d712a0 <__x86_return_thunk>
-^^^^^^^^^
-
-ffffffff81d7120f:       66 66 2e 0f 1f 84 00    data16 cs nopw 0x0(%rax,%rax,1)
-ffffffff81d71216:       00 00 00 00 
-ffffffff81d7121a:       66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
-
-ffffffff81d71220 <__x86_indirect_thunk_r15>:
-ffffffff81d71220:       e8 01 00 00 00          call   ffffffff81d71226 <__x86_indirect_thunk_r15+0x6>
-ffffffff81d71225:       cc                      int3
-ffffffff81d71226:       4c 89 3c 24             mov    %r15,(%rsp)
-ffffffff81d7122a:       eb 74                   jmp    ffffffff81d712a0 <__x86_return_thunk>
-^^^^^^^^^^
-
-notice the two JMP opcodes there.
-
-Now look at the code in apply_returns:
-
-                if (op == JMP32_INSN_OPCODE)
-                        dest = addr + insn.length + insn.immediate.value;
-
-with
-
-#define JMP32_INSN_OPCODE       0xE9
-
-And here's the fix:
-
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 73be3931e4f0..50d64f5226f4 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -748,14 +748,20 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
-                        continue;
- 
-                op = insn.opcode.bytes[0];
--               if (op == JMP32_INSN_OPCODE)
-+               if (op == JMP32_INSN_OPCODE || op == JMP8_INSN_OPCODE)
-                        dest = addr + insn.length + insn.immediate.value;
- 
-
-I'd still prefer the revert, though, that close to the MW. We can work
-at those things later, at leisure.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Where does "obtaining the attestation report" happen?  I see the guest request
+and the certificate stuff, I don't see anything about attestation reports (though
+I'm not looking very closely).
