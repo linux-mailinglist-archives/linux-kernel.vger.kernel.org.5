@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B2C7CE5C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E047CE5C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344716AbjJRSBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
+        id S232640AbjJRSBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbjJRSAn (ORCPT
+        with ESMTP id S232042AbjJRSA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:00:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2C313A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:00:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6858C433C7;
-        Wed, 18 Oct 2023 18:00:36 +0000 (UTC)
-Date:   Wed, 18 Oct 2023 14:00:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <20231018140035.107f5177@gandalf.local.home>
-In-Reply-To: <ff85b142-c833-4a79-970d-ff691f9b60b7@paulmck-laptop>
-References: <87ttrngmq0.ffs@tglx>
-        <87jzshhexi.ffs@tglx>
-        <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
-        <87pm1c3wbn.ffs@tglx>
-        <20231018103146.4856caa8@gandalf.local.home>
-        <ff85b142-c833-4a79-970d-ff691f9b60b7@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 18 Oct 2023 14:00:56 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA63A1B9;
+        Wed, 18 Oct 2023 11:00:53 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39II0aU5127006;
+        Wed, 18 Oct 2023 13:00:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697652036;
+        bh=YH8IQA8Foqx4OXaUGpFSL2kL5Irsm59+S3kAk/xw1sU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=YLTf2AmIaWAUeT2W0+o/As3KJ08JO7HjSvwipEIAPr8f7oK/lyZctHMUrbhSOi9LY
+         er2REnO9I4aMfkXfU2eE6i38r/hWCWy3qkuR3AwoXdRqplhAuZqGnTlNG9c+jZwPBi
+         7ZdRlkfsifayyCYBA4g7PIdWv6YpE+baLO7dp1yA=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39II0aNt089180
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Oct 2023 13:00:36 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
+ Oct 2023 13:00:35 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 18 Oct 2023 13:00:35 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39II0ZXL008590;
+        Wed, 18 Oct 2023 13:00:35 -0500
+Date:   Wed, 18 Oct 2023 13:00:35 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Ravi Gunasekaran <r-gunasekaran@ti.com>,
+        Neha Malcom Francis <n-francis@ti.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <rogerq@ti.com>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <horms@kernel.org>, <linux-omap@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <srk@ti.com>, Thejasvi Konduru <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>
+Subject: Re: [PATCH net-next] net: ethernet: ti: davinci_mdio: Fix the
+ revision string for J721E
+Message-ID: <20231018180035.saymfqwc2o3xpdf4@pretense>
+References: <20231018140009.1725-1-r-gunasekaran@ti.com>
+ <20231018154448.vlunpwbw67xeh4rj@unfasten>
+ <20231018105236.347b2354@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231018105236.347b2354@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 10:55:02 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> > If everything becomes PREEMPT_RCU, then the above should be able to be
-> > turned into just:
-> > 
-> >                 if (!disable_irq)
-> >                         local_irq_disable();
-> > 
-> >                 rcu_momentary_dyntick_idle();
-> > 
-> >                 if (!disable_irq)
-> >                         local_irq_enable();
-> > 
-> > And no cond_resched() is needed.  
+On 10:52-20231018, Jakub Kicinski wrote:
+> On Wed, 18 Oct 2023 10:44:48 -0500 Nishanth Menon wrote:
+> > A) netdev maintainers could provide me an rc1 based immutable tag
 > 
-> Even given that CONFIG_PREEMPT_RCU=n still exists, the fact that
-> run_osnoise() is running in kthread context with preemption and everything
-> else enabled (am I right?), then the change you suggest should work fine.
-
-There's a user space option that lets you run that loop with preemption and/or
-interrupts disabled.
-
+> FWIW that shouldn't be a problem, assuming my script to do so didn't
+> bit rot :)
 > 
-> > > Again. There is no non-preemtible RCU with this model, unless I'm
-> > > missing something important here.  
-> > 
-> > Daniel?  
-> 
-> But very happy to defer to Daniel.  ;-)
+> Does it really have to be rc1 or something more recent would work?
 
-But Daniel could also correct me ;-)
+Thanks Jakub. SoC tree needs me to send based off rc1 for new features.
+I'd rather not mess with that.
 
--- Steve
+Sure if we are doing an fixes pull, we can figure something out to
+sync. rc1 saves us the headache of conflict of me sending a PR merge
+while netdev maintainers aren't expecting it to be merged to master
+via soc tree.
+
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
