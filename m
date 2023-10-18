@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 899A27CE9D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9855E7CE9C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjJRVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S1344773AbjJRVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235133AbjJRVMb (ORCPT
+        with ESMTP id S233083AbjJRVLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:12:31 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2087.outbound.protection.outlook.com [40.107.15.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FF41FF5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:59:48 -0700 (PDT)
+        Wed, 18 Oct 2023 17:11:06 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2054.outbound.protection.outlook.com [40.107.8.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306AC111
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:00:04 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G2NaRYjuHV1EvSHL/hw3hETlT00k1NS/6//zpDf7x/597P6m1QzoSrM6cRjB8ZIQj53xTRvR9RNQFrhaUxNKw8lm/+1hkPTe7QwisN0AcWoHuiDhLxD8osbxC66+CEMF2SbCFWxRBhvXmKHReFAI1AVArcwQH6YePgtVy8+LRsLPj3HatqnFk2dQW8jVK78jWLTpXnD5ovGR3mouKbcxyzhKDl0omR9qU8lIcLrHtvy53o6QCDGGeUzmDy37OUJGNKZExF05w0EpMj4WPUY/a2ZIdZKok5wd06oAPhKSgPv07Xpl/lOWSgC/nRFclY3FJCQzsSOf2CYjNqG7B3v57Q==
+ b=bnoHfGes6zd4u8U2AOxHG2CvtC3lFVkMvxmnFl4OYrPNvMJR0mMYoYSvs3/FCClORrlynCRhvTFDBl3kYCS9la8V4ggjQ7RXM+7fPO1X+79l6X2VREFoXrSxAsraLispuqc0TEXiLAiQImdSDBNvDcxBMlgsSnvmCUu/bV3JAcCu6dJdMJarV/agImCXB5skM4MRhBH5C1fDwHtBCx8HG0Oxm2V7iV0xxjPWGvzD+nHKjKGyIdwtreyF4HVHhSDk6zgA/ZYe1R+XyxAU4lcxeAUeRGuiZD5GxZBXQ6S4cTwXkrN9UTI9hg4M0XCTPcUWuXbc3TU8XcMeF3qRcSO/Tg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4A7TUodxO7AkkBqM03CJiYKQDrUpiaHEzapJqI1G5GI=;
- b=A2WR9CNnEoqmo4YwDAemC0TyRT9jRHwMabDgdLJSy/TrXg78X/U4rTx2fbvYwA2jit7Nn4KN07Vp6WVAguhrr8sgMz9XehiKvfsD0p8+exAkpzFzKNZR7Lsq7teUuy8R5cdhKGEpbTlR1Rb9xWnqWM4uJ9R3mAqbKHmM31p2ygku6HGQVB5Jtk/+NVvFF8JysUujiMIV5Vq+Bal9y1XnjBqzEwEEoX0+kcxwFrzsjwjGTpQvHD4wihSpjItqzsQYSgp5F7q7e3CjvibxVvj3u8lBxd0mfOr+ERV1/o8kCVekzYuMLI0xxfe/UlmRscF6iSwxRS6MbeD7eHnUWhjR0A==
+ bh=sDlf4xSFouG1bOinSyyY0+9HL8i98T9MXvpDH0ZtEyI=;
+ b=ZSrHd3Kv2pxM7Buna4IKFGmK6BaayzbUyN2VocDevMDP/bzTvqtHe7IMegkOmD/8f+EY5PhB+V0wkJgHg5pJA32TRznNxLgYDXHeaM7CCq4T3t+Svfneb7l+4PxfvdNxm1ljir7wiX1L/86cufKhhz/N8Ic1io/RQclhOQqHH4aB3k1xiUNxemk7VBP0ebFKSU6jAelb2mvryD8R+/J8Qd8Fx+F5iQnEIfyfJdctyS2v0YacOizmE1zRc9BnNssoJHDs+dsaxAH9h0/jGyWVM5v2ZPJAGsMSLQ/j7MJOuy4uGKvF0vXqzBM/8bd8LgW+MNuROawcHUtep1zwa92+JQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4A7TUodxO7AkkBqM03CJiYKQDrUpiaHEzapJqI1G5GI=;
- b=qYevKj7LBUAd9OyGfZcamdFHtJBjLwbzRBrTz78iTGTMhi8I3TjjWiiTBNEFXncz0+MuhjQkKSotkvgFmVGW1DJC3UZGuy0W/9eEUd0YmKbufVhvelXTIymhHQhTF1barMW6VuTZnFHxtMHTuVy3kz6Tfz2tU1eF4wpCu4A4qmU=
+ bh=sDlf4xSFouG1bOinSyyY0+9HL8i98T9MXvpDH0ZtEyI=;
+ b=qvM+vtYSVT7iqOG//bJgA0yG3dNGajkOnC8wfRPun2mtCUXeQwsbDCFkDFWT9oNMLAfns61iw1grQuqiY8CatZjdkpNaCeC1facGhapmQVBf40xAox9ECKuzLybCVFoKEEzdRuW23hkhujF+yGoGUBRMSRAgzvZs4eCxDTDE2YM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
  by PAXPR04MB8653.eurprd04.prod.outlook.com (2603:10a6:102:21c::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
- 2023 20:59:45 +0000
+ 2023 20:59:48 +0000
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
- 20:59:45 +0000
+ 20:59:48 +0000
 From:   Frank Li <Frank.Li@nxp.com>
 To:     miquel.raynal@bootlin.com
 Cc:     Frank.Li@nxp.com, alexandre.belloni@bootlin.com,
         conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
         linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/6] i3c: master: some improvment for i3c master
-Date:   Wed, 18 Oct 2023 16:59:23 -0400
-Message-Id: <20231018205929.3435110-1-Frank.Li@nxp.com>
+Subject: [PATCH v2 1/6] i3c: master: add enable(disable) hot join in sys entry
+Date:   Wed, 18 Oct 2023 16:59:24 -0400
+Message-Id: <20231018205929.3435110-2-Frank.Li@nxp.com>
 X-Mailer: git-send-email 2.34.1
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20231018205929.3435110-1-Frank.Li@nxp.com>
+References: <20231018205929.3435110-1-Frank.Li@nxp.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: BY3PR10CA0027.namprd10.prod.outlook.com
  (2603:10b6:a03:255::32) To AM6PR04MB4838.eurprd04.prod.outlook.com
  (2603:10a6:20b:4::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: 47a15ac3-1438-4c2b-e7fd-08dbd01d2871
+X-MS-Office365-Filtering-Correlation-Id: abd18189-f3a1-4fc3-5fda-08dbd01d29ef
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zgviHGxxJg4ypZjgial0IdL6QpCvjZuVJRsnLkhMRdH06Et71Z+7sjY2LEjsVPWsepT9Bx8R30ZLqUmyddiRvRBfKTqRU2lqhk9QwlljmT5piu7c37WyIJ1GPS5SEJOr1sG2GQPGY5SemLbU6EW39OnpcP7L6mk9l57VMH6KkpvFUFHLYOuUZ/rZe/eIbO9sH0Q4FI+8O9N+nOkwROg/pFvEPTgsll5IQR8UYerDVk25lgPBRDyIpm1eAG4mus/JdT8DnwKSAHhHYWjUn5XPSrIb+h0R6taCWxr2lvJ8cy/c+qSURXBKVBMK1bSQW7cf2PQ41EwtyAv63DOtu0lvuQRzEk0xWljEayBNc8H26bZpE+p8K3BZSjA40jXmfkWVLfeAtdTGmep2BqqVpI9tALZe7RxgWvSaNTo/j411lg4szT9LFMkQq2XwJT3WyUKVL6e9buwV+0TOmxvWuxYqE4HcyAqntF57fUFnVJpz7nZj91QDtoEk/iQCF62w1dUV1LaEKO5HqEEqmdZRtLr5Xsrp91OCiAqvlbupxuYt8ycbMmlO1a4aIsjHwIzx5aXWzGfdQZiLS4d80xFFjNK3fqgj+8TqTOQiPUkTqYg/ue/QajkdYIJBDzHn4RSeP07q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(6666004)(6506007)(52116002)(2906002)(4326008)(41300700001)(478600001)(38350700005)(966005)(6486002)(1076003)(26005)(83380400001)(2616005)(36756003)(66476007)(66946007)(6916009)(316002)(66556008)(86362001)(8936002)(8676002)(38100700002)(5660300002)(42413004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RF09ZxiVNeSIRC55hGj8pNrI9yPilx+/CSCqq73QJggaocvl0CuCthZasWMBCwyDiDDnhSM9/D6M4Ak+/NzScVDSiUzIkbU9tjZaUmOuCaFWH0BZjnOedi16RF5tIuPcLggttyX93mgn2ifUaxNFeQnzNhZvgHnZsQLTqukl7MdZnUEIW3WG9C796WqkWCSa3MaUSSX9ZYK7qvEteiIVGw4Y4SO84cAIDLrktaTmvki26xnCezWlsWQPWDcJjXl2cQtlAgC/tzRUNPE1p4BQeU5k8uYw0mgXAf7jhcVD0Zotq5xZr+JBJRttoNaES6TnRXBv4z8Iedi+z9cr26KDaZF0Zy0mKkOIWTRjFUAjhInnKb93DLbI0nSNlRpR3jPNaa8Sgo2av7Ux08ua5xcendbAORNSqrIY39c04SGDsmrmyzeDwHd1AHeszpFjToAbwlBQkFg4GvC09ozt5pnEH2miArvV/zGn1C3jMm83DTUQS6tAUnb2/co2uU5iia2mjkCVxXu/eJFX3HKrVepncwipgNneUS+b9Y5kpGko3YCeC7hi2zE0CfnmzReWQWvFdnx5xSA58bgsNeKiYg4qc/7s5eA+DLP7D2L9RyLkVWsqwC/4OsYKUW4saSFsTQutb7pLJJz/sflet7fiD0TZow==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(6666004)(6506007)(52116002)(2906002)(4326008)(41300700001)(478600001)(38350700005)(6486002)(1076003)(26005)(83380400001)(2616005)(36756003)(66476007)(66946007)(6916009)(316002)(66556008)(86362001)(8936002)(8676002)(38100700002)(5660300002)(309714004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bElkcWpYS0ZaOTl6UUN3aEVoUWttT1RvZ1pJL2tzKzZyKy9mVmxKVjJpV29E?=
- =?utf-8?B?bzVEYjlRWTFYeTVmY0lTakFkQmdKcHVIdFFtWnVmNFFwQ3Nra2tGT0cvOXdD?=
- =?utf-8?B?Zk1GSVc0T0pBcGNCQWVNNDRxTVNYekFGQzE2RW9kSmExLzdFcG5rdjllYmNR?=
- =?utf-8?B?QWl0SjJJeFN5aVZxdkFVOU1FNmhvdi9XaVVQRGhYYWNBYS9PQ2dzMFpiRko2?=
- =?utf-8?B?RFlwQzA5R2tXVGt0dEtQdHpJOUlEVk4yWHdpK3hVV0NMUVNMTWxZdG9hMFFv?=
- =?utf-8?B?REJxMVZVTEw1ZEI1VHY5QnUwMlBXOEZUS29CWXk1WFk3RDFxWTN2RFFTd3h5?=
- =?utf-8?B?am5nZEwyZG1iT2JVSFlvUHlwZTJMalV2VnZ1a1E1WXpZZjM4aGhCMy9HZm4x?=
- =?utf-8?B?TXE5NGRZazJXWXgraHM5UEZVc2lmbmFsUTc0d3kxWWNyb3NTYWdXSnFhbENC?=
- =?utf-8?B?UllWaUNrV3VsR0pIQlZZNkRWUGpucTdNYnF3RlIzakhGd21UQTdtTW1tZjZx?=
- =?utf-8?B?cW92dUNnNFdiaWtaZmVHRVVVZEJKMWI1QUgzYkhLRjFQbDhSTU9hUGIxNnVB?=
- =?utf-8?B?aloyck10eExVTjVhTlJiL09VbjRuMjBXaXhKdnYwU3J2K2hDLy9QUXBJZEZx?=
- =?utf-8?B?MHpUcmY1WlRCNUR5OCtyWkRXUUtIUml6R01EMEtCRi9KVWVUVzJSZy9BV0Nj?=
- =?utf-8?B?Q0l0cU42bHFkYlBtL2hDSGlTV1Ira3MrQmNKdyt1SDE0YmM0b3VlOXlYbFEr?=
- =?utf-8?B?NmhCdnZESXV2SnRMQmxBNFFJaVE5L2EvNHBBbm5LZkxBT1Y4TUh0cjd0RFVt?=
- =?utf-8?B?dWpnL29GVUdwNkxHUW95Zk43RzJZc2JVNG9nWFJNZk1TSVZJMytoVDN5bXFB?=
- =?utf-8?B?ek5pSXEyMTNHRHR5MXY4Q1dHY1I2Z2VIb0dWUHFPd1hGUlZVc1pWUHNmcTZD?=
- =?utf-8?B?cWtWbDhSc0J0ZUp0VWNBQkhsMDRsczFuM3Q2T2dzcnRqK0tnUStOS2hlL3h2?=
- =?utf-8?B?b1ZJQU1nazNBclNncFVOOXhoQ3JFLzZISGZYRk1ZdmNNZmFlRUtidzBCTjFh?=
- =?utf-8?B?SzQ4QTd3RjhESCt4U0NPNjhhODJyc1JiNGQza2tTSVFxNXBNVWdXMUNPdU13?=
- =?utf-8?B?YmQzbkFlTVoyOHgyQlVlbXZGdTZKZk9sK25wc0dDeTdkQkV3M2lya3o2V3lo?=
- =?utf-8?B?bUxMRnYzTkxYSENzRThSa2EzVUY3Yk1ibDFJQzlyVk9Ha1JvbkdEZk43bXA2?=
- =?utf-8?B?Ym9Tdnkxb2hUZ0djOWNEdmttMHp3RFkxZmY4K2ZJeWp2dzdOV3BQa3pobWpB?=
- =?utf-8?B?Nk5aZ2hsMVl0dEYyYVhkeUJpd2VVcGJMY1hJRWNxRmZxR0pUWVVPNEdaVkpn?=
- =?utf-8?B?TmlUdllIakU0N0Q0UjlyQUxEK2ZLLzJ4bzIrYWJWYU5BSEhSa0dhRHF1bk5J?=
- =?utf-8?B?YU8zbmNEUnByNzVYSVhLTUdRZHhuL0R3RnNqV1h5MlUxRDBVajVFQ3hDaVFz?=
- =?utf-8?B?Qm1rc08zZ1VWTk9RSmV0enNveEFTWDQ5Q2NIZkNQZmxOUStWNVdIVGJwdHM4?=
- =?utf-8?B?OEhoMjdSRHNwaG05VjlTUVBwaW5MckNia2EzbVlaNCsyYTVkcTF1aFI0dURK?=
- =?utf-8?B?RUNrRjBTcXY2QWNrajBLcTlKcVU5QmhqSVhsUy9YQTQ0MklaL21KUGRFbWht?=
- =?utf-8?B?c1ZocTR6bFROcEk4L0gzMWhKNEIrRlBDUU9oTTZ4SGZDemx4ZVZIakZFK01x?=
- =?utf-8?B?OW4zdGJRWUQ5aFpBVlp5TmZuWUJFQTFBUUlEVDNGWlhVWDhNQWxERjR4dFRD?=
- =?utf-8?B?UHZFZHM4d0xZVjRuWFBtWmpQRHc2VENJZjNLUEVjM1V6UzJYek5UQ3lWdUpE?=
- =?utf-8?B?UDlTTURJT25kWThjWTBQMWgxVTExWHdMS0RwRmFES1B6UjR5WlZXdUlwMFpm?=
- =?utf-8?B?OUE3L28wU0hFTjVNbXNPSzYwdm5hWVZBM1J3UHZwTFlZMzBzbjd1THU4dFMy?=
- =?utf-8?B?Q0QrZmFaTzVzU0ZRaDNrT251dUNmOXR6MXZkWmJFL2NGalNKSFlRYUtOZXk5?=
- =?utf-8?B?SjRZbytEY1lIT0ZLN0xpRG5oNzJWUEdyQm5mTFpaMGlhUlZJYlptY1FOd3dC?=
- =?utf-8?Q?tulgMT4t4IURUx9667HjoakAP?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Px24vC+CvtzjwezD6mdI5X+kUJxf+XHoR9MF9z1PJWejZEDTy65opOKQaFuk?=
+ =?us-ascii?Q?bMiJhNDXOsDmRM4Y231VSeG1lREGF3YkCWG9SV6vej4DVJgn55B6/KpjFZDF?=
+ =?us-ascii?Q?cB2Zt4cDoB+Bb9adQnWgttF3sb/Gt7+nstWB8tnuhPijwHGQcSuPjeJUffGM?=
+ =?us-ascii?Q?YDLDKDy0PNvSxg3aW24TRSXy9nD6rHWXgQabL+Xa4A49hVMCAUF9zTeZKjOM?=
+ =?us-ascii?Q?0nYlmcqOoeRdfSot5z1Ljna62s4HmRv1/EEmFAJVgvWgZDrrdN88epBdTSyj?=
+ =?us-ascii?Q?CgxuegulmJatB1IVF051or6g3q/dfEQ8tGFimQwFSQ8XyMRwEzsjjSbmjJTK?=
+ =?us-ascii?Q?QGO9oPPmv9WiJDJqj2mIf/+ItJFzavbua7Covvq45yiPEsJTYQKhBkZCAuqQ?=
+ =?us-ascii?Q?1MJ1q6Wmj7x8J2pRZctY1rwu7EbnuogyavTIQ7u27ecF0+ZJGzTe8p+WYQhO?=
+ =?us-ascii?Q?afR9zXJnJc25nI+CssLbKhUbmCRCGn7p+RrxikKoz9ooFd56WtcCyurbNrZn?=
+ =?us-ascii?Q?Wha5uN8NHlHWXOEymXSjZCgG77zNywbF9zncezGX1rZsjLWm72KRm95jyd90?=
+ =?us-ascii?Q?x3HmwQEbvEKmI2S9q8KnOR+eZ31IAzhVczulA8e7UoZbiJboNHakp+9f1Rdw?=
+ =?us-ascii?Q?RL+3cu41NTRJA+gMtn3Rap6mj2wQSIvytOmIeVAgqM63Ai0Lz5zBa3fMUC99?=
+ =?us-ascii?Q?KuMzFi92ceelDYT6lB7rgy4+WeXDT8YcPSkThHiHtlXNmqTtN4O9KmFjJYMZ?=
+ =?us-ascii?Q?pynDqRPvtVfwSD0ZqJXYW+iL4tLkaV++IfcAlEQvAVAQNF9YBKa57jHh1/Lf?=
+ =?us-ascii?Q?T2ZUk7eHy5lhG8LyW1w6zzuiqr59wPOSXBmnpdZ7Z+uapnPusVYtJpBB4fjQ?=
+ =?us-ascii?Q?mKSN7FBV0oHImmePCXvFB0IRyb84xPat0VKGcmgt1HfC2D0iPH/cq/wlw1Co?=
+ =?us-ascii?Q?NojQyafHqruDHGiEisAgaMROAMqL7xv2/JM9RTW56z9L9OEyiHygyb7woxH0?=
+ =?us-ascii?Q?U4ksHVJNYNoyR5VB6YwHZcbqi1OeSH7pRuMO/xB+yPyjoV4yiKnQcyqNA0eq?=
+ =?us-ascii?Q?IVkv9c5v738Wp0yTpskBmgNKA3PYKrVoGXUSoV1RGtH9nQtKiqd119fMupVl?=
+ =?us-ascii?Q?JOGors8QWUYgzf9oqlZSKZdzYkSeb9bSAPmeXK8JoqDfmDB384CBpgWQda53?=
+ =?us-ascii?Q?5cN5d4n0LuTdHNa1dMlY6rQZsJEhhfkjUCaPUHHIvZI9Yr7wdq8SpbrChTxB?=
+ =?us-ascii?Q?m14q42cewQXNeolR554x1jRVwcy5fViM7ze3/i3ifJ0oF2kRq10/VuQNNXES?=
+ =?us-ascii?Q?rzoUJxv3x4jmP4mS/DEIuBPRUUH3vEL4Oj88Gl6A38UA4Pi+QshDYiPwjRkK?=
+ =?us-ascii?Q?+VCP7KYIzJ8y6G4YqxbVneGrqC7ljiqq7nHaMkTzaedmnP/C16Gw7LDogbsw?=
+ =?us-ascii?Q?NlWDLGzZZK3DFKSr/+4upzHK5Hkm6GS1jj23ziX1frtWs9iV7L5OTl6jOuSG?=
+ =?us-ascii?Q?7/C3zeIYOeUZ//nxijgvmoWSbxhlWcXZZT6bMn98kF15MKEe1svfQAPb6f6B?=
+ =?us-ascii?Q?Q6B7/abhgfSk0a4LLu0WJVMgP8dkAufjzBXMCdrO?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47a15ac3-1438-4c2b-e7fd-08dbd01d2871
+X-MS-Exchange-CrossTenant-Network-Message-Id: abd18189-f3a1-4fc3-5fda-08dbd01d29ef
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:59:45.6348
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:59:48.0674
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jSzJMD5uR9b0yB82a5XwVbHXQgGwVgyhkF17OPamT5hcUY4GGArU5vt0xl9XVj4iwA+Iu402wZ1SluGdVvm5cg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: qSwioh/k6nRm/vdWr2UV6OEh9NiCbomkw+qXpzK3egcGYKFgPZEGKZqjlWvIZbWETQFybFWm616bVmgLBBAzMw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8653
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -121,38 +114,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are dependent on bugs fixed serial: https://lore.kernel.org/imx/20231016153232.2851095-1-Frank.Li@nxp.com/T/#t
-There are three major improvement
+Add hotjoin entry in sys file system allow user enable/disable hotjoin
+feature.
 
-1. Add actual size in i3c_transfer because i3c allow target early termiate
-transfer.
-2. Add API for i3c_dev_gettstatus_format1 for i3c comand GET_STATUS.
-3. svc master enable hotjoin default
+Add (*enable(disable)_hotjoin)() to i3c_master_controller_ops.
+Add api i3c_master_enable(disable)_hotjoin();
 
-Change from v1 to v2.
-- Hotjoin control by sys entry, default enable hotjoin, which standard i3c
-feature, user can disable by echo 0 > /sys/bus/i3c/i3c-0/hotjoin
-- use actual_len, add document
-- using &xfers[i]
-- still keep check cmd->xfer because i2c and ccc transfer, xfer is NULL.
-- fixed issue found by checkpatch --strict
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ drivers/i3c/master.c       | 84 ++++++++++++++++++++++++++++++++++++++
+ include/linux/i3c/master.h |  5 +++
+ 2 files changed, 89 insertions(+)
 
-Frank Li (6):
-  i3c: master: add enable(disable) hot join in sys entry
-  i3c: master: svc: add hot join support
-  i3c: add actual_len in i3c_priv_xfer
-  i3c: svc: rename read_len as actual_len
-  i3c: master: svc return actual transfer data len
-  i3c: add API i3c_dev_gettstatus_format1() to get target device status
-
- drivers/i3c/device.c                |  24 ++++++
- drivers/i3c/internals.h             |   1 +
- drivers/i3c/master.c                | 110 ++++++++++++++++++++++++++++
- drivers/i3c/master/svc-i3c-master.c |  91 ++++++++++++++++++-----
- include/linux/i3c/device.h          |   3 +
- include/linux/i3c/master.h          |   5 ++
- 6 files changed, 217 insertions(+), 17 deletions(-)
-
+diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+index 08aeb69a78003..ed5e27cd20811 100644
+--- a/drivers/i3c/master.c
++++ b/drivers/i3c/master.c
+@@ -526,6 +526,89 @@ static ssize_t i2c_scl_frequency_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(i2c_scl_frequency);
+ 
++static int i3c_set_hotjoin(struct i3c_master_controller *master, bool enable)
++{
++	int ret;
++
++	if (!master ||
++	    !master->ops ||
++	    !master->ops->enable_hotjoin ||
++	    !master->ops->disable_hotjoin
++	   )
++		return -EINVAL;
++
++	i3c_bus_normaluse_lock(&master->bus);
++
++	if (enable)
++		ret = master->ops->enable_hotjoin(master);
++	else
++		ret = master->ops->disable_hotjoin(master);
++
++	master->hotjoin = enable;
++
++	i3c_bus_normaluse_unlock(&master->bus);
++
++	return ret;
++}
++
++static ssize_t hotjoin_store(struct device *dev, struct device_attribute *attr,
++			     const char *buf, size_t count)
++{
++	struct i3c_bus *i3cbus = dev_to_i3cbus(dev);
++	int ret;
++	long res;
++
++	if (!i3cbus->cur_master)
++		return -EINVAL;
++
++	if (kstrtol(buf, 10, &res))
++		return -EINVAL;
++
++	ret = i3c_set_hotjoin(i3cbus->cur_master->common.master, !!res);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
++/*
++ * i3c_master_enable_hotjoin - Enable hotjoin
++ * @master: I3C master object
++ *
++ * Return: a 0 in case of success, an negative error code otherwise.
++ */
++int i3c_master_enable_hotjoin(struct i3c_master_controller *master)
++{
++	return i3c_set_hotjoin(master, true);
++}
++EXPORT_SYMBOL_GPL(i3c_master_enable_hotjoin);
++
++/*
++ * i3c_master_disable_hotjoin - Disable hotjoin
++ * @master: I3C master object
++ *
++ * Return: a 0 in case of success, an negative error code otherwise.
++ */
++int i3c_master_disable_hotjoin(struct i3c_master_controller *master)
++{
++	return i3c_set_hotjoin(master, false);
++}
++EXPORT_SYMBOL_GPL(i3c_master_disable_hotjoin);
++
++static ssize_t hotjoin_show(struct device *dev, struct device_attribute *da, char *buf)
++{
++	struct i3c_bus *i3cbus = dev_to_i3cbus(dev);
++	ssize_t ret;
++
++	i3c_bus_normaluse_lock(i3cbus);
++	ret = sysfs_emit(buf, "%d\n", i3cbus->cur_master->common.master->hotjoin);
++	i3c_bus_normaluse_unlock(i3cbus);
++
++	return ret;
++}
++
++static DEVICE_ATTR_RW(hotjoin);
++
+ static struct attribute *i3c_masterdev_attrs[] = {
+ 	&dev_attr_mode.attr,
+ 	&dev_attr_current_master.attr,
+@@ -536,6 +619,7 @@ static struct attribute *i3c_masterdev_attrs[] = {
+ 	&dev_attr_pid.attr,
+ 	&dev_attr_dynamic_address.attr,
+ 	&dev_attr_hdrcap.attr,
++	&dev_attr_hotjoin.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(i3c_masterdev);
+diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
+index 0b52da4f23467..65b8965968af2 100644
+--- a/include/linux/i3c/master.h
++++ b/include/linux/i3c/master.h
+@@ -452,6 +452,8 @@ struct i3c_master_controller_ops {
+ 	int (*disable_ibi)(struct i3c_dev_desc *dev);
+ 	void (*recycle_ibi_slot)(struct i3c_dev_desc *dev,
+ 				 struct i3c_ibi_slot *slot);
++	int (*enable_hotjoin)(struct i3c_master_controller *master);
++	int (*disable_hotjoin)(struct i3c_master_controller *master);
+ };
+ 
+ /**
+@@ -487,6 +489,7 @@ struct i3c_master_controller {
+ 	const struct i3c_master_controller_ops *ops;
+ 	unsigned int secondary : 1;
+ 	unsigned int init_done : 1;
++	unsigned int hotjoin: 1;
+ 	struct {
+ 		struct list_head i3c;
+ 		struct list_head i2c;
+@@ -543,6 +546,8 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 			const struct i3c_master_controller_ops *ops,
+ 			bool secondary);
+ void i3c_master_unregister(struct i3c_master_controller *master);
++int i3c_master_enable_hotjoin(struct i3c_master_controller *master);
++int i3c_master_disable_hotjoin(struct i3c_master_controller *master);
+ 
+ /**
+  * i3c_dev_get_master_data() - get master private data attached to an I3C
 -- 
 2.34.1
 
