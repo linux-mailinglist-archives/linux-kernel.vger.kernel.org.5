@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9855E7CE9C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338417CE9CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344773AbjJRVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
+        id S235102AbjJRVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbjJRVLG (ORCPT
+        with ESMTP id S232387AbjJRVLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:11:06 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2054.outbound.protection.outlook.com [40.107.8.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306AC111
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:00:04 -0700 (PDT)
+        Wed, 18 Oct 2023 17:11:31 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2073.outbound.protection.outlook.com [40.107.8.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F06619BE
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:00:50 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bnoHfGes6zd4u8U2AOxHG2CvtC3lFVkMvxmnFl4OYrPNvMJR0mMYoYSvs3/FCClORrlynCRhvTFDBl3kYCS9la8V4ggjQ7RXM+7fPO1X+79l6X2VREFoXrSxAsraLispuqc0TEXiLAiQImdSDBNvDcxBMlgsSnvmCUu/bV3JAcCu6dJdMJarV/agImCXB5skM4MRhBH5C1fDwHtBCx8HG0Oxm2V7iV0xxjPWGvzD+nHKjKGyIdwtreyF4HVHhSDk6zgA/ZYe1R+XyxAU4lcxeAUeRGuiZD5GxZBXQ6S4cTwXkrN9UTI9hg4M0XCTPcUWuXbc3TU8XcMeF3qRcSO/Tg==
+ b=TgIE5LBE0S9YAQVupmGoa8SessBxqLxSBfgSp48a8wQAnGPzWxxG8NJI+w1yHfCwFt4kSnDjNV9M+yc5L63momZ8ufZqZe5O9U62LevizFPI1zove8lpWEFQsJ5G2ABGN1SMHrbvNWOBiVEqZCR2IY9kiro0BonoGkMNHI2Y02fuu79QX/CrdzDqpXizSTJ8Py8WR3eWM7VELVeq8LV1cmZzgnOItgFEnjzfe9FT/ExzZJpbxMK6Rm4qRGkI7qn819R+2gncNFlSz3A9gJaQhVLt5c8BlpVZ4xicsmd8ee7Cut/YCsN45eQhcyrszgd7b9Iw2RgWnNgL4GJlqYPu7g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sDlf4xSFouG1bOinSyyY0+9HL8i98T9MXvpDH0ZtEyI=;
- b=ZSrHd3Kv2pxM7Buna4IKFGmK6BaayzbUyN2VocDevMDP/bzTvqtHe7IMegkOmD/8f+EY5PhB+V0wkJgHg5pJA32TRznNxLgYDXHeaM7CCq4T3t+Svfneb7l+4PxfvdNxm1ljir7wiX1L/86cufKhhz/N8Ic1io/RQclhOQqHH4aB3k1xiUNxemk7VBP0ebFKSU6jAelb2mvryD8R+/J8Qd8Fx+F5iQnEIfyfJdctyS2v0YacOizmE1zRc9BnNssoJHDs+dsaxAH9h0/jGyWVM5v2ZPJAGsMSLQ/j7MJOuy4uGKvF0vXqzBM/8bd8LgW+MNuROawcHUtep1zwa92+JQ==
+ bh=aV5O+KnDC8aJlWmP/zQQ2IModh1TPKxQmPrXWRR1tDQ=;
+ b=A6Cv6QgD/rg1XofK+gttbGXlfuKpdcj3L5oaQhzL9+PKYz8b7rmjCEorm/Ez+9z8ow0Tav9I9EUvYjYxNj9s7jV7BrNgYMH4Wh7zuAXGQzXl0Xn11r3B2Qty2GKQpKLmsddh7EyqN813037StQ0WwAvTj1DFLryZENQWimG2VfTqBPgRJYwvidR/BbQAmEKDkjs70u9LsNyvz2wtrAYDxmkXx9cM07o5TiZS86ETEvM+yhJZ4/drjL5Er9POPfUxqHu072KFMQ+4tSWmOT7tzt6HZVrmKYFRUCTWZ2t0rmjmf+p4Jq/mBIR9LoUe5bcvCtxAcAk3nq567X0k/pQfAw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sDlf4xSFouG1bOinSyyY0+9HL8i98T9MXvpDH0ZtEyI=;
- b=qvM+vtYSVT7iqOG//bJgA0yG3dNGajkOnC8wfRPun2mtCUXeQwsbDCFkDFWT9oNMLAfns61iw1grQuqiY8CatZjdkpNaCeC1facGhapmQVBf40xAox9ECKuzLybCVFoKEEzdRuW23hkhujF+yGoGUBRMSRAgzvZs4eCxDTDE2YM=
+ bh=aV5O+KnDC8aJlWmP/zQQ2IModh1TPKxQmPrXWRR1tDQ=;
+ b=DsCmD1IAMIbrZuMZW9R+P4H3FeRde37EYq0mvG4iojuEjflS666cHEQ26Zo6eBuQBKYZXbEO1nppJndpMklSH1EzfHSg81y/tH7FfZ2UNRiZMA0HV8D2ShL6I00xPqUbe2DSKlmrAftvSMKUweUIDbh8fBLCyOYxevk8k/ZR/VE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
  by PAXPR04MB8653.eurprd04.prod.outlook.com (2603:10a6:102:21c::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
- 2023 20:59:48 +0000
+ 2023 20:59:50 +0000
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
- 20:59:48 +0000
+ 20:59:50 +0000
 From:   Frank Li <Frank.Li@nxp.com>
 To:     miquel.raynal@bootlin.com
 Cc:     Frank.Li@nxp.com, alexandre.belloni@bootlin.com,
         conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
         linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/6] i3c: master: add enable(disable) hot join in sys entry
-Date:   Wed, 18 Oct 2023 16:59:24 -0400
-Message-Id: <20231018205929.3435110-2-Frank.Li@nxp.com>
+Subject: [PATCH v2 2/6] i3c: master: svc: add hot join support
+Date:   Wed, 18 Oct 2023 16:59:25 -0400
+Message-Id: <20231018205929.3435110-3-Frank.Li@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231018205929.3435110-1-Frank.Li@nxp.com>
 References: <20231018205929.3435110-1-Frank.Li@nxp.com>
@@ -59,50 +59,50 @@ X-ClientProxiedBy: BY3PR10CA0027.namprd10.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: abd18189-f3a1-4fc3-5fda-08dbd01d29ef
+X-MS-Office365-Filtering-Correlation-Id: 2d712d90-3c47-4869-ebff-08dbd01d2b60
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RF09ZxiVNeSIRC55hGj8pNrI9yPilx+/CSCqq73QJggaocvl0CuCthZasWMBCwyDiDDnhSM9/D6M4Ak+/NzScVDSiUzIkbU9tjZaUmOuCaFWH0BZjnOedi16RF5tIuPcLggttyX93mgn2ifUaxNFeQnzNhZvgHnZsQLTqukl7MdZnUEIW3WG9C796WqkWCSa3MaUSSX9ZYK7qvEteiIVGw4Y4SO84cAIDLrktaTmvki26xnCezWlsWQPWDcJjXl2cQtlAgC/tzRUNPE1p4BQeU5k8uYw0mgXAf7jhcVD0Zotq5xZr+JBJRttoNaES6TnRXBv4z8Iedi+z9cr26KDaZF0Zy0mKkOIWTRjFUAjhInnKb93DLbI0nSNlRpR3jPNaa8Sgo2av7Ux08ua5xcendbAORNSqrIY39c04SGDsmrmyzeDwHd1AHeszpFjToAbwlBQkFg4GvC09ozt5pnEH2miArvV/zGn1C3jMm83DTUQS6tAUnb2/co2uU5iia2mjkCVxXu/eJFX3HKrVepncwipgNneUS+b9Y5kpGko3YCeC7hi2zE0CfnmzReWQWvFdnx5xSA58bgsNeKiYg4qc/7s5eA+DLP7D2L9RyLkVWsqwC/4OsYKUW4saSFsTQutb7pLJJz/sflet7fiD0TZow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(6666004)(6506007)(52116002)(2906002)(4326008)(41300700001)(478600001)(38350700005)(6486002)(1076003)(26005)(83380400001)(2616005)(36756003)(66476007)(66946007)(6916009)(316002)(66556008)(86362001)(8936002)(8676002)(38100700002)(5660300002)(309714004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: wRITWRfH++9ljcii91JTjetSDkweRHm3zGi9YCT0HRyw6lnccX55VGtZuQMN1wCUhqDsHKkJNggfXQzrwWWbFeKYSQApfn3Fot8zS4l2oV/ciwHQjJGgTFMqmV9wv8Icg9W+Oln4ISMfCo3w7wEwgwqkdSlwByu1EKO+l5swzfZqUqy7rawFOkxXNbYxk4gKXcTCdNDEJhJhWNedYCf4LDy3ZIVjV0yfoCBzQ2qDA/iXSuLxp2r6bBHLRR3F7xe1giwuyXqennxG0zGA4O6DLpwDMtjSlwRAO+Optj1qGITfk1+2s3uvdl8kQrZAL0tTcDPieUgUkzb9jaMtwDMuchMfyfzqqA6RqqZ0sJsxbQSX3yRZrXV+fET552zyHNA6nSmjF05DUQrtMqhWHHmjWETrmuvrF/rXkcAJuLSCURI0ZWR/FzWopqQQgktCxKYViCGXh+RY5z+Ip7Oy9CKGEsDDfardgYccLHp39EgMbW9QFKVxyB+/6MgyLwoLTxyxUtox0r4vXZbpzx2mauL8/srnGx6wO0zT1RuIjbQDoPlyVCUV2q3IXqk7wI+GorMC/GY/L1zWeQGb6EfoV8aGdoFYN/V4JaEkQ2xEKqKtiBOGIuOGv2la/QZs2Wv2gG4Y
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(6666004)(6506007)(52116002)(2906002)(4326008)(41300700001)(478600001)(38350700005)(6486002)(1076003)(26005)(83380400001)(2616005)(36756003)(66476007)(66946007)(6916009)(316002)(66556008)(86362001)(8936002)(8676002)(38100700002)(5660300002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Px24vC+CvtzjwezD6mdI5X+kUJxf+XHoR9MF9z1PJWejZEDTy65opOKQaFuk?=
- =?us-ascii?Q?bMiJhNDXOsDmRM4Y231VSeG1lREGF3YkCWG9SV6vej4DVJgn55B6/KpjFZDF?=
- =?us-ascii?Q?cB2Zt4cDoB+Bb9adQnWgttF3sb/Gt7+nstWB8tnuhPijwHGQcSuPjeJUffGM?=
- =?us-ascii?Q?YDLDKDy0PNvSxg3aW24TRSXy9nD6rHWXgQabL+Xa4A49hVMCAUF9zTeZKjOM?=
- =?us-ascii?Q?0nYlmcqOoeRdfSot5z1Ljna62s4HmRv1/EEmFAJVgvWgZDrrdN88epBdTSyj?=
- =?us-ascii?Q?CgxuegulmJatB1IVF051or6g3q/dfEQ8tGFimQwFSQ8XyMRwEzsjjSbmjJTK?=
- =?us-ascii?Q?QGO9oPPmv9WiJDJqj2mIf/+ItJFzavbua7Covvq45yiPEsJTYQKhBkZCAuqQ?=
- =?us-ascii?Q?1MJ1q6Wmj7x8J2pRZctY1rwu7EbnuogyavTIQ7u27ecF0+ZJGzTe8p+WYQhO?=
- =?us-ascii?Q?afR9zXJnJc25nI+CssLbKhUbmCRCGn7p+RrxikKoz9ooFd56WtcCyurbNrZn?=
- =?us-ascii?Q?Wha5uN8NHlHWXOEymXSjZCgG77zNywbF9zncezGX1rZsjLWm72KRm95jyd90?=
- =?us-ascii?Q?x3HmwQEbvEKmI2S9q8KnOR+eZ31IAzhVczulA8e7UoZbiJboNHakp+9f1Rdw?=
- =?us-ascii?Q?RL+3cu41NTRJA+gMtn3Rap6mj2wQSIvytOmIeVAgqM63Ai0Lz5zBa3fMUC99?=
- =?us-ascii?Q?KuMzFi92ceelDYT6lB7rgy4+WeXDT8YcPSkThHiHtlXNmqTtN4O9KmFjJYMZ?=
- =?us-ascii?Q?pynDqRPvtVfwSD0ZqJXYW+iL4tLkaV++IfcAlEQvAVAQNF9YBKa57jHh1/Lf?=
- =?us-ascii?Q?T2ZUk7eHy5lhG8LyW1w6zzuiqr59wPOSXBmnpdZ7Z+uapnPusVYtJpBB4fjQ?=
- =?us-ascii?Q?mKSN7FBV0oHImmePCXvFB0IRyb84xPat0VKGcmgt1HfC2D0iPH/cq/wlw1Co?=
- =?us-ascii?Q?NojQyafHqruDHGiEisAgaMROAMqL7xv2/JM9RTW56z9L9OEyiHygyb7woxH0?=
- =?us-ascii?Q?U4ksHVJNYNoyR5VB6YwHZcbqi1OeSH7pRuMO/xB+yPyjoV4yiKnQcyqNA0eq?=
- =?us-ascii?Q?IVkv9c5v738Wp0yTpskBmgNKA3PYKrVoGXUSoV1RGtH9nQtKiqd119fMupVl?=
- =?us-ascii?Q?JOGors8QWUYgzf9oqlZSKZdzYkSeb9bSAPmeXK8JoqDfmDB384CBpgWQda53?=
- =?us-ascii?Q?5cN5d4n0LuTdHNa1dMlY6rQZsJEhhfkjUCaPUHHIvZI9Yr7wdq8SpbrChTxB?=
- =?us-ascii?Q?m14q42cewQXNeolR554x1jRVwcy5fViM7ze3/i3ifJ0oF2kRq10/VuQNNXES?=
- =?us-ascii?Q?rzoUJxv3x4jmP4mS/DEIuBPRUUH3vEL4Oj88Gl6A38UA4Pi+QshDYiPwjRkK?=
- =?us-ascii?Q?+VCP7KYIzJ8y6G4YqxbVneGrqC7ljiqq7nHaMkTzaedmnP/C16Gw7LDogbsw?=
- =?us-ascii?Q?NlWDLGzZZK3DFKSr/+4upzHK5Hkm6GS1jj23ziX1frtWs9iV7L5OTl6jOuSG?=
- =?us-ascii?Q?7/C3zeIYOeUZ//nxijgvmoWSbxhlWcXZZT6bMn98kF15MKEe1svfQAPb6f6B?=
- =?us-ascii?Q?Q6B7/abhgfSk0a4LLu0WJVMgP8dkAufjzBXMCdrO?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G4oR+JQv6kj/xurRzPIelIvrmPF38BLfoALlENp7bleX51JRffNcMRy88ood?=
+ =?us-ascii?Q?J5bGxkYv4coNqH2QvQhCHxpemg7YCY1c3LN8feT5uUhXRuw99YnSoWTmMKZJ?=
+ =?us-ascii?Q?wzJhK5C3uiuJJIdW4W4APtXnalChf7BrrErS/k4u/5juEUw4WGKXb+dl7HWe?=
+ =?us-ascii?Q?CjKDwCZIe0lFQI15iMmQnVDMRL94BXXDyVpoNqkelf5+M7Mpd44o+4r9iOWX?=
+ =?us-ascii?Q?P5oL0iElTKdxsTHcUTBkMQMWT1KpnU9mhwBxHhyeNF21kGOXBebgFSXVgJ3D?=
+ =?us-ascii?Q?wr2sSRfopRrwXh+IHkej15YKOpg/LK6SAzHbZ2FqiwoiBzPVEFHubPB4l7b0?=
+ =?us-ascii?Q?SqSpzGV3Q8Ny6Mn03NMLmPwUjDwL6Xafx6niIYQKEKR2p+3s/1uoqcj7oSIk?=
+ =?us-ascii?Q?F246mSCDgqwrpLIY2BmQzT6g+kvgjKeOKNmntKZhzjHSkO9b8wKJJp75F7lu?=
+ =?us-ascii?Q?kPuS74CAcHTULLBsQXZxWMWZgvmzSwPOo33N71KfyAEuSxfec6mxcq5pMYbr?=
+ =?us-ascii?Q?REQD/9yJGgr7Gp9QQAEwqm5peRaM0la0vJiKrVCkks2Ok5LIj21MaS3KwldY?=
+ =?us-ascii?Q?aBrO31ln3Gduc9uMGl9OjpQxTTkxDqm77k9nItz2HK9J/ZtShaeVBtGkOMDe?=
+ =?us-ascii?Q?pftWisimzfvp6LQ2M0SP4auXXGmZYiea1Ff+ZZke9lBAehWC9OlPT4n3hZeB?=
+ =?us-ascii?Q?HOad6FEJ5+sgsT8AQoYzcKcPWdVuVih/L8aLk4/dxRKvBY26v7picBySV5t1?=
+ =?us-ascii?Q?SwEXvpzLJ2tJOL74x2Xshu+3uP+7/ALcMC6DbebtsZVQRjybE8cfJBQssJIQ?=
+ =?us-ascii?Q?+6PxZgfq4koJJjYkyRwW0j/85l/QweMx1bSXhcLn1ye1s5MSTslFKynyeJH5?=
+ =?us-ascii?Q?X8yf6bnxtT2VRpOghDzlYXxv3UGiwzlSeuL3eOxFZ60CJFgmfh9sKuF5gige?=
+ =?us-ascii?Q?aybOiu1bIFNtOoKmUuDm0Lo1rCJEgrt9uUGAeZrg5JRZUJynOtMJZGgxcmZy?=
+ =?us-ascii?Q?UDEMFcmw6pj/M9rZXlmRb1bYk8WzEKaUaLvgPHIFtPxGbeoifknzhAuBAngC?=
+ =?us-ascii?Q?sjSkndLPHW5wtszrusf+R/HcPgLiZwWZ/9OXlaGd3u7mo/p/G6Ynf9M431tG?=
+ =?us-ascii?Q?Gxdj1cQ9yqYA4tqApt65OmvOqF3+akFrcJOCwz+2UzmPXP4RmciX+DGdWULf?=
+ =?us-ascii?Q?8N/1/uXCLRnlB38WiskKmM+S8IuINZb9FC1BwCgFmnZBw465I4v5rMfyzC7+?=
+ =?us-ascii?Q?+IAr90KInF3sWIBmjaXBNfg4J+VLQrxb7ZRA+omlJ2w26qKEKL+Xi7DVlUas?=
+ =?us-ascii?Q?/bE4tHUDLruvFhO8VCgXE7ucjukz6I2rdl9Tm56pBswF+spFj73Pi9YQ5WTC?=
+ =?us-ascii?Q?0mVRYXPbjKQhOTE9wCI+LBRuBRR9P7w4l/uhB7Eph1xGOZ2H/X1EGmkE61wH?=
+ =?us-ascii?Q?rBjfF9rsr/GOkH/NUgayD1722mvS5Q2OPV/g+MYnSK/8R17OMH+a5NN4ZHZq?=
+ =?us-ascii?Q?GVdMBeVooq9v9wTge6p2AlS9jrG4GvEhO9/kFs3hgqIgyCgjLTsL0qqDtI3c?=
+ =?us-ascii?Q?umPPJvYmQHYXBqWxeHYYPt8c0ak6U/nyfDQ445jt?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: abd18189-f3a1-4fc3-5fda-08dbd01d29ef
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d712d90-3c47-4869-ebff-08dbd01d2b60
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:59:48.0674
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:59:50.5123
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qSwioh/k6nRm/vdWr2UV6OEh9NiCbomkw+qXpzK3egcGYKFgPZEGKZqjlWvIZbWETQFybFWm616bVmgLBBAzMw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: WparO/SF9wvAAJoIe98kF2U0Enb+Cnz+oqqt09Nfu4jG9BOBZEPXaUxTp+qvu24u2GZRrBl/6RKIN2zwr9IfXw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8653
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -114,150 +114,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hotjoin entry in sys file system allow user enable/disable hotjoin
-feature.
-
-Add (*enable(disable)_hotjoin)() to i3c_master_controller_ops.
-Add api i3c_master_enable(disable)_hotjoin();
+Add hot join support for svc master controller. Enable hot join defaultly.
+User can use sys entry to disable hot join.
 
 Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- drivers/i3c/master.c       | 84 ++++++++++++++++++++++++++++++++++++++
- include/linux/i3c/master.h |  5 +++
- 2 files changed, 89 insertions(+)
+ drivers/i3c/master/svc-i3c-master.c | 57 +++++++++++++++++++++++++++--
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 08aeb69a78003..ed5e27cd20811 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -526,6 +526,89 @@ static ssize_t i2c_scl_frequency_show(struct device *dev,
+diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+index fedb31e0076c4..d8467607602af 100644
+--- a/drivers/i3c/master/svc-i3c-master.c
++++ b/drivers/i3c/master/svc-i3c-master.c
+@@ -128,6 +128,9 @@
+ /* This parameter depends on the implementation and may be tuned */
+ #define SVC_I3C_FIFO_SIZE 16
+ 
++#define SVC_I3C_EVENT_IBI	BIT(0)
++#define SVC_I3C_EVENT_HOTJOIN	BIT(1)
++
+ struct svc_i3c_cmd {
+ 	u8 addr;
+ 	bool rnw;
+@@ -205,6 +208,7 @@ struct svc_i3c_master {
+ 		spinlock_t lock;
+ 	} ibi;
+ 	struct mutex lock;
++	int enabled_events;
+ };
+ 
+ /**
+@@ -425,13 +429,16 @@ static void svc_i3c_master_ibi_work(struct work_struct *work)
+ 	switch (ibitype) {
+ 	case SVC_I3C_MSTATUS_IBITYPE_IBI:
+ 		dev = svc_i3c_master_dev_from_addr(master, ibiaddr);
+-		if (!dev)
++		if (!dev || !(master->enabled_events & SVC_I3C_EVENT_IBI))
+ 			svc_i3c_master_nack_ibi(master);
+ 		else
+ 			svc_i3c_master_handle_ibi(master, dev);
+ 		break;
+ 	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
+-		svc_i3c_master_ack_ibi(master, false);
++		if (master->enabled_events & SVC_I3C_EVENT_HOTJOIN)
++			svc_i3c_master_ack_ibi(master, false);
++		else
++			svc_i3c_master_nack_ibi(master);
+ 		break;
+ 	case SVC_I3C_MSTATUS_IBITYPE_MASTER_REQUEST:
+ 		svc_i3c_master_nack_ibi(master);
+@@ -468,7 +475,9 @@ static void svc_i3c_master_ibi_work(struct work_struct *work)
+ 		svc_i3c_master_emit_stop(master);
+ 		break;
+ 	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
+-		queue_work(master->base.wq, &master->hj_work);
++		svc_i3c_master_emit_stop(master);
++		if (master->enabled_events & SVC_I3C_EVENT_HOTJOIN)
++			queue_work(master->base.wq, &master->hj_work);
+ 		break;
+ 	case SVC_I3C_MSTATUS_IBITYPE_MASTER_REQUEST:
+ 	default:
+@@ -1468,6 +1477,7 @@ static int svc_i3c_master_enable_ibi(struct i3c_dev_desc *dev)
+ 		return ret;
+ 	}
+ 
++	master->enabled_events |= SVC_I3C_EVENT_IBI;
+ 	svc_i3c_master_enable_interrupts(master, SVC_I3C_MINT_SLVSTART);
+ 
+ 	return i3c_master_enec_locked(m, dev->info.dyn_addr, I3C_CCC_EVENT_SIR);
+@@ -1479,7 +1489,9 @@ static int svc_i3c_master_disable_ibi(struct i3c_dev_desc *dev)
+ 	struct svc_i3c_master *master = to_svc_i3c_master(m);
+ 	int ret;
+ 
+-	svc_i3c_master_disable_interrupts(master);
++	master->enabled_events &= ~SVC_I3C_EVENT_IBI;
++	if (!master->enabled_events)
++		svc_i3c_master_disable_interrupts(master);
+ 
+ 	ret = i3c_master_disec_locked(m, dev->info.dyn_addr, I3C_CCC_EVENT_SIR);
+ 
+@@ -1489,6 +1501,39 @@ static int svc_i3c_master_disable_ibi(struct i3c_dev_desc *dev)
+ 	return ret;
  }
- static DEVICE_ATTR_RO(i2c_scl_frequency);
  
-+static int i3c_set_hotjoin(struct i3c_master_controller *master, bool enable)
++static int svc_i3c_master_enable_hotjoin(struct i3c_master_controller *m)
 +{
++	struct svc_i3c_master *master = to_svc_i3c_master(m);
 +	int ret;
 +
-+	if (!master ||
-+	    !master->ops ||
-+	    !master->ops->enable_hotjoin ||
-+	    !master->ops->disable_hotjoin
-+	   )
-+		return -EINVAL;
-+
-+	i3c_bus_normaluse_lock(&master->bus);
-+
-+	if (enable)
-+		ret = master->ops->enable_hotjoin(master);
-+	else
-+		ret = master->ops->disable_hotjoin(master);
-+
-+	master->hotjoin = enable;
-+
-+	i3c_bus_normaluse_unlock(&master->bus);
-+
-+	return ret;
-+}
-+
-+static ssize_t hotjoin_store(struct device *dev, struct device_attribute *attr,
-+			     const char *buf, size_t count)
-+{
-+	struct i3c_bus *i3cbus = dev_to_i3cbus(dev);
-+	int ret;
-+	long res;
-+
-+	if (!i3cbus->cur_master)
-+		return -EINVAL;
-+
-+	if (kstrtol(buf, 10, &res))
-+		return -EINVAL;
-+
-+	ret = i3c_set_hotjoin(i3cbus->cur_master->common.master, !!res);
-+	if (ret)
++	ret = pm_runtime_resume_and_get(master->dev);
++	if (ret < 0) {
++		dev_err(master->dev, "<%s> Cannot get runtime PM.\n", __func__);
 +		return ret;
++	}
 +
-+	return count;
++	master->enabled_events |= SVC_I3C_EVENT_HOTJOIN;
++
++	svc_i3c_master_enable_interrupts(master, SVC_I3C_MINT_SLVSTART);
++
++	return 0;
 +}
 +
-+/*
-+ * i3c_master_enable_hotjoin - Enable hotjoin
-+ * @master: I3C master object
-+ *
-+ * Return: a 0 in case of success, an negative error code otherwise.
-+ */
-+int i3c_master_enable_hotjoin(struct i3c_master_controller *master)
++static int svc_i3c_master_disable_hotjoin(struct i3c_master_controller *m)
 +{
-+	return i3c_set_hotjoin(master, true);
-+}
-+EXPORT_SYMBOL_GPL(i3c_master_enable_hotjoin);
++	struct svc_i3c_master *master = to_svc_i3c_master(m);
 +
-+/*
-+ * i3c_master_disable_hotjoin - Disable hotjoin
-+ * @master: I3C master object
-+ *
-+ * Return: a 0 in case of success, an negative error code otherwise.
-+ */
-+int i3c_master_disable_hotjoin(struct i3c_master_controller *master)
-+{
-+	return i3c_set_hotjoin(master, false);
-+}
-+EXPORT_SYMBOL_GPL(i3c_master_disable_hotjoin);
++	master->enabled_events &= ~SVC_I3C_EVENT_HOTJOIN;
 +
-+static ssize_t hotjoin_show(struct device *dev, struct device_attribute *da, char *buf)
-+{
-+	struct i3c_bus *i3cbus = dev_to_i3cbus(dev);
-+	ssize_t ret;
++	if (!master->enabled_events)
++		svc_i3c_master_disable_interrupts(master);
 +
-+	i3c_bus_normaluse_lock(i3cbus);
-+	ret = sysfs_emit(buf, "%d\n", i3cbus->cur_master->common.master->hotjoin);
-+	i3c_bus_normaluse_unlock(i3cbus);
++	pm_runtime_mark_last_busy(master->dev);
++	pm_runtime_put_autosuspend(master->dev);
 +
-+	return ret;
++	return 0;
 +}
 +
-+static DEVICE_ATTR_RW(hotjoin);
-+
- static struct attribute *i3c_masterdev_attrs[] = {
- 	&dev_attr_mode.attr,
- 	&dev_attr_current_master.attr,
-@@ -536,6 +619,7 @@ static struct attribute *i3c_masterdev_attrs[] = {
- 	&dev_attr_pid.attr,
- 	&dev_attr_dynamic_address.attr,
- 	&dev_attr_hdrcap.attr,
-+	&dev_attr_hotjoin.attr,
- 	NULL,
- };
- ATTRIBUTE_GROUPS(i3c_masterdev);
-diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-index 0b52da4f23467..65b8965968af2 100644
---- a/include/linux/i3c/master.h
-+++ b/include/linux/i3c/master.h
-@@ -452,6 +452,8 @@ struct i3c_master_controller_ops {
- 	int (*disable_ibi)(struct i3c_dev_desc *dev);
- 	void (*recycle_ibi_slot)(struct i3c_dev_desc *dev,
- 				 struct i3c_ibi_slot *slot);
-+	int (*enable_hotjoin)(struct i3c_master_controller *master);
-+	int (*disable_hotjoin)(struct i3c_master_controller *master);
+ static void svc_i3c_master_recycle_ibi_slot(struct i3c_dev_desc *dev,
+ 					    struct i3c_ibi_slot *slot)
+ {
+@@ -1515,6 +1560,8 @@ static const struct i3c_master_controller_ops svc_i3c_master_ops = {
+ 	.recycle_ibi_slot = svc_i3c_master_recycle_ibi_slot,
+ 	.enable_ibi = svc_i3c_master_enable_ibi,
+ 	.disable_ibi = svc_i3c_master_disable_ibi,
++	.enable_hotjoin = svc_i3c_master_enable_hotjoin,
++	.disable_hotjoin = svc_i3c_master_disable_hotjoin,
  };
  
- /**
-@@ -487,6 +489,7 @@ struct i3c_master_controller {
- 	const struct i3c_master_controller_ops *ops;
- 	unsigned int secondary : 1;
- 	unsigned int init_done : 1;
-+	unsigned int hotjoin: 1;
- 	struct {
- 		struct list_head i3c;
- 		struct list_head i2c;
-@@ -543,6 +546,8 @@ int i3c_master_register(struct i3c_master_controller *master,
- 			const struct i3c_master_controller_ops *ops,
- 			bool secondary);
- void i3c_master_unregister(struct i3c_master_controller *master);
-+int i3c_master_enable_hotjoin(struct i3c_master_controller *master);
-+int i3c_master_disable_hotjoin(struct i3c_master_controller *master);
+ static int svc_i3c_master_prepare_clks(struct svc_i3c_master *master)
+@@ -1627,6 +1674,8 @@ static int svc_i3c_master_probe(struct platform_device *pdev)
+ 	pm_runtime_mark_last_busy(&pdev->dev);
+ 	pm_runtime_put_autosuspend(&pdev->dev);
  
- /**
-  * i3c_dev_get_master_data() - get master private data attached to an I3C
++	i3c_master_enable_hotjoin(&master->base);
++
+ 	return 0;
+ 
+ rpm_disable:
 -- 
 2.34.1
 
