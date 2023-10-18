@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9285C7CEA1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B696D7CEA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235359AbjJRVjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
+        id S229894AbjJRVlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbjJRVhe (ORCPT
+        with ESMTP id S229456AbjJRVk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:37:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3702918F
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:36:58 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3942461aso10683133276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:36:58 -0700 (PDT)
+        Wed, 18 Oct 2023 17:40:58 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB30EA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:40:56 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso11482274a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:40:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697665017; x=1698269817; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Apw+K3wbh3OZXkFJF9ttgUhZ1/KMfhepE/h3Z/nrhhg=;
-        b=sOMYCpovTxS5U3soGKsPsDhphKBQqQ7pFNpxGbliZWa3duJDcX4NPvNvPCPZXc5TEO
-         ALx6sxQUupyBFqtPFN+2he6wwVGU5JmEP8y2OQx9ZpiAFKAT7r6RISQwkgOCFqZJc7Pg
-         YOzo5eY0/wAXmSfapFuUFRGYOcOq97e1ZjHM5UKmn+8DnWzki3O5Zh5KVJzpRuVvw2nB
-         WQsHhcBg8js8LLsPAWqNgyYRwlDwhskg9TQZ+8v3l0BY0DN6eWDiy9cIWnqzxZ1Rvt7S
-         55G4P82nmsJOcvks6cYr4CILy0q0d1IdAXorKwhVDNJglSMmBrnlrTRUJ5Y39P9eTboC
-         Nnag==
+        d=gmail.com; s=20230601; t=1697665255; x=1698270055; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=282qgW426ecEuopzF8jbvOzMje/HUlZNH6e92nVI8WY=;
+        b=ebRf3TFglxricBN6ZBjV8FRTGmgKBy1gDYqT1R+4XPopDYV7NPgknezC1ZjO1NZeIa
+         Jx6pgstOWXlso8nkjAQHYBTzTDE4IifM1HFa29DjaQ03n/OeLVpNrMOzkal+at7o0N6S
+         ansPExPFr6a8Teo9usdsQ87spZ6PqBtXORkXyEG8AdWRnzkuSewJ0NXOAibkLHhFbmIV
+         ubAejL8LKCKD5q8UbGnUYC7je9ZgLUrbnrNKY8XmyuI3/LXJhB/5waURTJtIhMq7Q2it
+         +zCkh7RhHqtb3uXMb54OmQKcFgJa4e4Gxm0STTOmO1J/UKAh8TduvDsmnYzQ5TF4PR+W
+         A34w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697665017; x=1698269817;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Apw+K3wbh3OZXkFJF9ttgUhZ1/KMfhepE/h3Z/nrhhg=;
-        b=Jx0AvPCjW/PpOtPaZ+//rbvXjqKThSATVOIkx/D1vHYBzR8z2oLTSENYi/KaHz6P4+
-         R8zA/z4N5p9G1ngZ7o5STK2GU4VZNCOrgSbD9y45njMGMFsIOvvrU2FM84QBJBhGuOiY
-         PZLZ/V3vI8xJ4mboVwYkWaGrAdvZdSnLZzO3TBnDNr6vVT+jY2oMCynr6Z7cdN7kAadN
-         r7tVVA+t7ZZs8ONzSOF5IIS+MO2a2KFxmgazdH6iMAVnx9l/+hOER+3mZywjp1nHNFW8
-         NSrwGEDfikFg6xTeZsphH53MD/RVxPXYd4wtajJ6lP3KJZUnM2Jgd4yD7nyiVoSWqHNX
-         7nXA==
-X-Gm-Message-State: AOJu0YxjEoxfV4ew4tQn/s7RdNEHEOPspPzSjP68fXCaxsWZnJNILqG8
-        Ra7lYgTZl5ANn6Ky5nozN5OryTo2Qvz+7J+CGA==
-X-Google-Smtp-Source: AGHT+IGSlprorlyl1mgbo8vGOacNcFePZOft5yeMt5sY8BpvBoW5KTqkMCOXwEmrGdwrXiVAPLHmL8tY9DH0ADPQMA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:3612:0:b0:d77:f6f9:159 with SMTP
- id d18-20020a253612000000b00d77f6f90159mr12678yba.9.1697665017365; Wed, 18
- Oct 2023 14:36:57 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 21:36:56 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPdPMGUC/x3NQQqDMBBG4avIrPuDUWjSXqV0oXHaDkgiM0Et4
- t0buvw27x1krMJG9+Yg5VVMcqpwl4biZ0hvhkzV1LVd71oXYEVTXL6YVFZWQ+KCTZRnNkMRbHP MyhhzLogYexeGcPXe33qqzUX5Jfv/93ie5w8UCQwlfwAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697665016; l=2407;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=1sn8QWCZ44RCQzErWJdYQ+n26NCaZzNSi8s/QrSSU98=; b=YvRIzw5H0MFncQuWWs8NbUgiTTAS31UhNBIMEPaFLJXfQmn3tCuNoRcDOJgfhNL1sZanZ+MIn
- k4D3fVgBDSWDd5XXtq+Z2KKqnyS9aoZg0rsaxahj8wROyIki3p5554Q
-X-Mailer: b4 0.12.3
-Message-ID: <20231018-strncpy-drivers-net-wireless-ti-wlcore-boot-c-v1-1-d3c6cc6b80fe@google.com>
-Subject: [PATCH] wifi: wlcore: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697665255; x=1698270055;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=282qgW426ecEuopzF8jbvOzMje/HUlZNH6e92nVI8WY=;
+        b=KnNQmERkdIku08sa97x9U929hD/vSk1FmYfrLmMyjXdg1AoLfGAigBpvnNr10pOZZB
+         xSiBRIadLMovD6fKefX68ke0RWDBwc393oHE38rR6ZqsmDo2OysXseBIRtMWES3iqGUU
+         jMKDmg+mv3DavBTMGdX1N86pZ7iKtQ9SM+tBDuF1opmljNj3t3Sl8S8YZN/PwubsQoZ3
+         uQf0RGZKsBKU3ayO5WpJyqONf3V7Peu4nwmHxDxTq0fCZUYN7YCFhRI+jz3AzfjKyhhj
+         /eyqI5WczKE3AfHCws0Xaez0hHCWkRj8RAYpP5yr/azaphwSngDqtkC+rhmqUdu1aRcv
+         CaRg==
+X-Gm-Message-State: AOJu0Yx647Nei+idaXgcHK2aMFsoVIO18SgEOrzhtt03W7Y77Z4cMFdi
+        Da8bTPmWAjsb4OyknQgeFp/819VW+OgdZ6rVhxM=
+X-Google-Smtp-Source: AGHT+IGGRL7L4GtDBt1y9EoDQOlzmdSzOspX1xwYnk5IFCr7di1DH+ySUWsnlX46grO7M+VMe2VHqNVoRLAqZxDGntw=
+X-Received: by 2002:a50:d79b:0:b0:53e:5cde:b3c6 with SMTP id
+ w27-20020a50d79b000000b0053e5cdeb3c6mr163892edi.31.1697665254606; Wed, 18 Oct
+ 2023 14:40:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com> <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 23:40:42 +0200
+Message-ID: <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,64 +103,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Wed, Oct 18, 2023 at 11:11=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, 18 Oct 2023 at 13:52, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > FYI: This is the reason RMW instructions in percpu.h are not (blindly)
+> > converted to C ops.  They will remain in their (volatile or not) asm
+> > form because of the above reason, and due to the fact that they don't
+> > combine with anything.
+>
+> Well, also because converting them to C would be HORRIBYL BUGGY.
+>
+> They absolutely have to be a single instruction. We have architectures
+> that can't do rmw instructions, and then they have to do lots of extra
+> horrid crud (disable interrupts or whatever) to make a percpu 'add' be
+> a valid thing.
+>
+>
+> > Actually, RMW insns are better written in asm, while simple "mov"
+> > should be converted to (volatile or not) memory access.
+>
+> No.
+>
+> This remat issue has convinced me that the *only* thing that should be
+> converted to a memory access is the "stable" case (which in practice
+> is mainly just 'current').
+>
+> Because if you make them 'volatile' memory instructions, then the
+> simple "mov" inline asm is simply better. It still allows CSE on the
+> asm (in the "raw" form).
 
-We expect wl->chip.fw_ver_str to be NUL-terminated based on its usage
-with DRIVER_STATE_PRINT_STR() in debugfs.c:
-491 | DRIVER_STATE_PRINT_STR(chip.fw_ver_str);
-... which uses DRIVER_STATE_PRINT():
-444 | #define DRIVER_STATE_PRINT_STR(x)  DRIVER_STATE_PRINT(x, "%s")
-... which relies on scnprintf:
-434 | #define DRIVER_STATE_PRINT(x, fmt)   \
-435 | 	(res += scnprintf(buf + res, DRIVER_STATE_BUF_LEN - res,\
-436 | 			  #x " = " fmt "\n", wl->x))
+The ones in "raw" form are not IRQ safe and these are implemented
+without volatile qualifier.
 
-Moreover, NUL-padding is not required.
+The safe variant are ones with "this" form. These were implemented as
+volatile-asm and are now implemented as volatile reads. They do not
+rematerialize, the number of memory accesses stays the same. They do
+not CSE (volatile-asm also doesn't), but they can propagate into
+follow-up instructions.
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
+> And if you make them memory instructions _without_ the 'volatile', the
+> memory access is simply buggy until we have some 'nomaterialize'
+> model.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Similar-to: https://lore.kernel.org/all/20231018-strncpy-drivers-net-wireless-ti-wl18xx-main-c-v2-1-ab828a491ce5@google.com/
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+This is the reason that almost all percpu access is implemented using
+this_* accessors. raw_* is a relaxed version without IRQ guarantees
+that should be (and is) used in a controlled manner in a special
+places:
 
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ti/wlcore/boot.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+https://elixir.bootlin.com/linux/latest/A/ident/this_cpu_read
+https://elixir.bootlin.com/linux/latest/A/ident/raw_cpu_read
 
-diff --git a/drivers/net/wireless/ti/wlcore/boot.c b/drivers/net/wireless/ti/wlcore/boot.c
-index 85abd0a2d1c9..f481c2e3dbc8 100644
---- a/drivers/net/wireless/ti/wlcore/boot.c
-+++ b/drivers/net/wireless/ti/wlcore/boot.c
-@@ -41,12 +41,9 @@ static int wlcore_boot_parse_fw_ver(struct wl1271 *wl,
- {
- 	int ret;
- 
--	strncpy(wl->chip.fw_ver_str, static_data->fw_version,
-+	strscpy(wl->chip.fw_ver_str, static_data->fw_version,
- 		sizeof(wl->chip.fw_ver_str));
- 
--	/* make sure the string is NULL-terminated */
--	wl->chip.fw_ver_str[sizeof(wl->chip.fw_ver_str) - 1] = '\0';
--
- 	ret = sscanf(wl->chip.fw_ver_str + 4, "%u.%u.%u.%u.%u",
- 		     &wl->chip.fw_ver[0], &wl->chip.fw_ver[1],
- 		     &wl->chip.fw_ver[2], &wl->chip.fw_ver[3],
+>
+> So the *only* situation where a memory access is better is that
+> 'stable' case. In all other cases they are the same or strictly worse
+> than 'asm'.
 
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231018-strncpy-drivers-net-wireless-ti-wlcore-boot-c-b318a8677793
+No, argument propagation is non-existent with "asm" version.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Uros.
