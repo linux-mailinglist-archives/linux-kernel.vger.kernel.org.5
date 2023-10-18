@@ -2,87 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B78E7CE0E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962347CE0E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345341AbjJRPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        id S1345188AbjJRPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345245AbjJRPND (ORCPT
+        with ESMTP id S235063AbjJRPNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:13:03 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC967109;
-        Wed, 18 Oct 2023 08:13:00 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3114840E01B1;
-        Wed, 18 Oct 2023 15:12:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id w5pvRjryP5Rh; Wed, 18 Oct 2023 15:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697641977; bh=EbtU4bQMd+SyYpD5u3uz+hfYsMOiiZYCWw2lQLB04mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cU4g+kNqdKE0MIQFRGKd4h8zzOaeguhBa82OzmBaOvpjLGvZl0/TAVrCD2B7RRWo3
-         8yhN7yJGW7A4BLWCx31WFG54VxA9SC+bf39gSBcDfhwKzxZNaHpaydBWX9M4iyLSD/
-         0ZzzMAodf12WAiM6wQYIa+4Ms/Hng+z/jVuPiVvCMxvji3twGX/T+GhV/q03scH0Bu
-         ombylMRUvy5lKii5pV8zbvsQ6fnRFgd86sgSbUdFEvf2M+YAs7miQovFHMUoLp6D8y
-         iYe2IJrBo0nOyDkFgq/PFq9X+A5YHiLIqRfx21yW3jJJ+9aDd1yZ/EIo6ib2t9NGZ3
-         uqCf2O17eks3O/koCkWdmh5gQxfjwFxVkMroLzSst550gxf2M/3xLZRhaxKJrUhy1R
-         GWFyyCigJqVNCupq8pZIA56Cy0PxjEiRAZClPcDmXKgxZ42iMOi9iO8S+f8cy2rd7l
-         qfYCBM0+YKtnytcvOKmEUz0V1D5GZVaeS81mrvy+FzgQiNfBO/SPONPtyRmnoZKySY
-         1R7To8Jg4N8WvxSI4HtKbMJguFt2lDqAxWsVHCYExk84UMOgKEVp68Ivlqh6SO/Mst
-         V71bdfDljPgggr1H0U6s9NrtJLrgL/SAKtg/tSeCKAJWFVZ2+6GYqqqbJDtyWKZ5Jj
-         ZmOrzgd5R0RyVJuyd0/ClU1Q=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F47740E0177;
-        Wed, 18 Oct 2023 15:12:50 +0000 (UTC)
-Date:   Wed, 18 Oct 2023 17:12:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        David Kaplan <david.kaplan@amd.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231018151245.GCZS/17QhDGe7q6K+w@fat_crate.local>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
- <ZS/f8DeEIWhBtBeb@gmail.com>
+        Wed, 18 Oct 2023 11:13:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC63EA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:12:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697641977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XWbCD44fa8QVirKg52i0pJ2hVvUN78k4QH9nUIrzJHg=;
+        b=GL9uRMXnFSpPUnyQNAWR7y2CRX+ET2BiPsHirmg3JfZFt+XKLeq9cdmHVUkI/110VEtK4Q
+        pgmlehtrcyBA02gLsQE7HSv4QBwWBLKZxw6TmyxEtQwaHoWtq4IEFs2dgfzPGNtFOmqMPL
+        52ys2nP9mZ9XxWwdEfvB0K3Nlt3UGwe4puHtMmZ7Pa2/MByBtmnnLEwa8lE1jVm1lz7ckW
+        fEA3z1sh4iAmCeNE5isRI1iVu2YKrD4u/+N7TUwhe0rhviRr+7xk+ksvIArHBjrM2BVyR9
+        IZk/VKcfgCxVIRDEObsJavElEWWtHLl2YXf7eUbhtwqYPmYXwVILQBbPjvufNg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697641977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XWbCD44fa8QVirKg52i0pJ2hVvUN78k4QH9nUIrzJHg=;
+        b=FwbseROgTqJr+slcTXr6QCw5kB9AwpvNLuGlrlaWhPiaxUFmDaCblnY5WR9SdZp5svE8+c
+        Hf1y5Ht4/GfeDqCA==
+To:     Eric Dumazet <edumazet@google.com>,
+        gus Gusenleitner Klaus <gus@keba.com>,
+        Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] amd64: Fix csum_partial_copy_generic()
+In-Reply-To: <CANn89iLSKJroojadGD2hvec8EyeUA5TPMKd=PmBzCJ7h2HF0zA@mail.gmail.com>
+References: <VI1PR0702MB3840EB26EF2A1A35BFEA53BFD9D5A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <CANn89iLSKJroojadGD2hvec8EyeUA5TPMKd=PmBzCJ7h2HF0zA@mail.gmail.com>
+Date:   Wed, 18 Oct 2023 17:12:57 +0200
+Message-ID: <87h6mo3qx2.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZS/f8DeEIWhBtBeb@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:38:56PM +0200, Ingo Molnar wrote:
-> If then WARN_ONCE().
+On Wed, Oct 18 2023 at 09:36, Eric Dumazet wrote:
+> On Wed, Oct 18, 2023 at 8:18=E2=80=AFAM gus Gusenleitner Klaus <gus@keba.=
+com> wrote:
+>>
+>> The checksum calculation is wrong in case of an source buffer
+>> containing zero bytes only. The expected return value is 0, the
+>> actual return value is 0xfffffff.
+>>
+>> This problem occurs when a ICMP echo reply is sent that has set
+>> zero identifier, sequence number and data.
+>>
+>> Signed-off-by: Klaus Gusenleitner <gus@keba.com>
+>> ---
+>>  arch/x86/lib/csum-copy_64.S | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/lib/csum-copy_64.S b/arch/x86/lib/csum-copy_64.S
+>> index d9e16a2cf285..c8391b4f3dea 100644
+>> --- a/arch/x86/lib/csum-copy_64.S
+>> +++ b/arch/x86/lib/csum-copy_64.S
+>> @@ -44,7 +44,7 @@ SYM_FUNC_START()
+>>         movq  %r13, 3*8(%rsp)
+>>         movq  %r15, 4*8(%rsp)
+>>
+>> -       movl  $-1, %eax
+>> +       movl  $0, %eax
 
-WARN_ONCE() is not enough considering that if this fires, it means we're
-not really properly protected against one of those RET-speculation
-things.
+I don't think this is correct. See below.
 
-It needs to be warning constantly but then still allow booting. I.e,
-a ratelimited warn of sorts but I don't think we have that... yet.
+>>         xorl  %r9d, %r9d
+>>         movl  %edx, %ecx
+>>         cmpl  $8, %ecx
+>> --
+>> 2.30.2
+>>
+>
+> Lets CC Noah Goldstein <goldstein.w.n@gmail.com> (I thought Noah wrote
+> some kunit tests, maybe I am wrong)
+>
+> When was this bug added ?
 
--- 
-Regards/Gruss,
-    Boris.
+AFAICT, this was introduced with:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+daf52375c19f ("amd64: switch csum_partial_copy_generic() to new calling con=
+ventions")
+
+> A Fixes: tag is very much needed, and would be a needed step to CC the
+> original author.
+
+Cc'ed Al.
+
+So the change in question is:
+
+-	movl  %ecx, %eax        // Original code stores ECX in EAX
++	movl  $-1, %eax         // EAX is preset with -1
+
+ECX (RCX) was the 4th parameter of the original ASM function call:
+
+extern __visible __wsum csum_partial_copy_generic(const void *src, const vo=
+id *dst,
+                                        int len, __wsum sum,
+                                        int *src_err_ptr, int *dst_err_ptr);
+
+I.e. it handed @sum into the function which means a caller provided
+seed.
+
+With the above patch the ASM function call was changed to
+
+extern __visible __wsum csum_partial_copy_generic(const void *src, void *ds=
+t, int len);
+
+I.e. the seed parameter was removed. AFAICT, all callers back then initiali=
+zed
+the seed parameter to 0 via the various wrapper interfaces which end up the=
+re.
+
+Al?
+
+Thanks,
+
+        tglx
