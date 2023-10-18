@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FCB7CE652
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9B17CE65B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjJRSYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S231435AbjJRS0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbjJRSYi (ORCPT
+        with ESMTP id S230296AbjJRS0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:24:38 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2082.outbound.protection.outlook.com [40.107.223.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79896116;
-        Wed, 18 Oct 2023 11:24:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k0RDx3bJPuCuBJ9wynzkEBReHn2FM01wskBg08zW4k9V4hjoGzIBZ6iWqadB9rnMDu5iGydNZifRhGoIs0GntiUGELwFhzErhpB/MJlAxySQbuhhLSfNYAUxBxULWIQYUz7c2l8HOJtACvchRpLS2NDaKhrrrLpGdPTQbHrnrV8zZ2f94jqYySiA5mBoBUbnnMZpvo9naN5JCddt/9cyKJnOloOY71iBQkU14nefjLTm0+dM77eKhrSbAgOWSFemktvUWCeh0R95oiGTU4hqyH92hmkpTWTzl7ghczUvV0dMpEMKWsVGwWGxTpFAOhea+IKryO6xhTW1JunwKAkH5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jScZYWimXlTit2PeLxDoPXYv52JO/PE1vC/Fa5Rnt0Y=;
- b=bj7Idmsu7l0NHk+AZki6axPNnT054dNkN7sk1ujZuZqO7z34bEbvvuNYxHXYKpx1nCV9eNJBzxmu9nbPQ97uyl1qkxB57dnrxplrvcn07BZ4u/hODkGJm3p6f+rmNXHfv1UCCJxhsdnMLL+baGOviKbiwH8iEuO2RRHuFNLy9E8eFBg5nMQaiRUAzu8pzQYqeDvpPZmVtWYBjF/5kFEXo8jT9HuxlrFBgmMvVdYrQVN2FXReZ54vmZWQMBfYXDWdPsYhYCWImxeYsKi9gXpxRZzJmKAPdvsh8PppizG3ut0v8ywjtIef5lckxMqnSFfmz/0BWem3JlxXu6ie1PzApQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jScZYWimXlTit2PeLxDoPXYv52JO/PE1vC/Fa5Rnt0Y=;
- b=syhjjikt4Yt/2efI3mWdo53bjjE5ZMpNojlmLNJtGqWdc2PfUQlkmR7dTruM9fTEwl40QULVVUf/wzR7M03+Ch5kX867fk6xTVfB45JyXMwLFsm+MNfXTeU8wpAazSzDI2dvEkln0ul5YmJewKsOuVcdyp2yUU4x8TJMDoen5g4=
-Received: from DM5PR07CA0118.namprd07.prod.outlook.com (2603:10b6:4:ae::47) by
- MW5PR12MB5624.namprd12.prod.outlook.com (2603:10b6:303:19d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Wed, 18 Oct
- 2023 18:24:34 +0000
-Received: from DS2PEPF00003441.namprd04.prod.outlook.com
- (2603:10b6:4:ae:cafe::57) by DM5PR07CA0118.outlook.office365.com
- (2603:10b6:4:ae::47) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23 via Frontend
- Transport; Wed, 18 Oct 2023 18:24:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003441.mail.protection.outlook.com (10.167.17.68) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Wed, 18 Oct 2023 18:24:33 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 18 Oct
- 2023 13:24:31 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        <stable@vger.kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "Boqun Feng" <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Li Hua <hucool.lihua@huawei.com>,
-        Alexander Potapenko <glider@google.com>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        Rae Moar <rmoar@google.com>, <rust-for-linux@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <llvm@lists.linux.dev>
-Subject: [PATCH] lib/Kconfig.debug: disable FRAME_WARN for kasan and kcsan
-Date:   Wed, 18 Oct 2023 14:24:11 -0400
-Message-ID: <20231018182412.80291-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 18 Oct 2023 14:26:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932B7B6;
+        Wed, 18 Oct 2023 11:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=99zA8o13/ejaEM2O9/K0kn45FaKKMRK+h1KEU8ji9+A=; b=V5phy8EHYfhtPfVyyG8Exv3G/r
+        Pw9Vvflf4+xBXK/uMwG2DGE/qdGXwm9pcyW6dJo/OOocmhxsI9aB14b3THWJ5W1/ENsEgMQCTzTY9
+        GArQsjXE+6rZK3EK6yo6y1moCF//BhGc72niOCUs2iMiRgRfcF9IGyKstZ+u/zQqjS+RcTwAJXFXy
+        iuhdOEie6GRBdLNWbiXAgStwO1jb6aHU7oGZeXrBUqhvyXbAaLTrEj18N40UvgmycR39epxmr0CNh
+        FZpRc55o2s6iaf3eR6T4bk/5j3m70Vbr3urwfCedbJ8nVpBqAg+9FJanWPIwETux/tFacgUggpkYr
+        Dna5ig9A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qtBEp-00FReC-07;
+        Wed, 18 Oct 2023 18:25:47 +0000
+Date:   Wed, 18 Oct 2023 11:25:46 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Manuel Lauss <manuel.lauss@gmail.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
+Subject: Re: [PATCH 5/5] modules: only allow symbol_get of EXPORT_SYMBOL_GPL
+ modules
+Message-ID: <ZTAjKv0FKAH+rePH@bombadil.infradead.org>
+References: <20230801173544.1929519-1-hch@lst.de>
+ <20230801173544.1929519-6-hch@lst.de>
+ <bf555c2a4df5196533b6e614cc57638004dfb426.camel@infradead.org>
+ <20231018053146.GA16765@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003441:EE_|MW5PR12MB5624:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1cee09fa-d92a-48b9-a4c4-08dbd0077a59
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2Vc+GWlelbTTNNamBK4X1a4rfZn66Ci9zkdzmBPKtU7edErhOLabCqUjeV5l9mgB+2h/nP1CNNYbYCF+nIi4eH/+WXoKgswnmlli1AMp2sj5KPKUzCqCcmugQ9vTfuyUcwguxar4mCJTD5TW3rxhjks2nEEoHXIkQZUtLBgL0XTi4R/rewaSBsjkC/IF3m+Y3XFC+7/deeTbSLen9eL5eDaJqLDALQvcuMlWbRJK+I/DtbDq20Jckeajx5a8YxEG5VrMsaoUhB6cC40Pl+h88PZJIsUHbvGluXtK6Zwc08v0Kk/xdxC2CSiVQXPW1phfznrEPGeztFilzzb8oUtPOwzYr9A5g27ViOmtHBXPzjpSI1OndLeEfijHzjZuyIBMloeTs55YotRbY/wgQN3bhODadfKFiWZbz6ZAIOyb9nD3phi8d3S4ggdXIeK28sJoWzyC3/YpIC/Mh9UiuWL1yF6aCT5Pmdzn7fsSVvpH3jd7P0YPm1oTXcuM/Fro0I82aH7sTCnYVGQWC/yEi0PV9fdWifGzCfh0i/x0AZTP0jCUYhs4EEQjCCr5WkWtcQZnVZgzdQQgjoB9cEJAACiBfAxvoy8nuqh94MaukuC8JooZs8WOLB/kxw2KEkQHs9YVUJtKh7O3WqiaBZ9AOBtA/2ZyS38OIPUufxQoDO/F2u8I3UvceItruwI5QorhQcwtVocTxx2jF1OTR8/mZ1a86bAdugbgLO47cIFBN3KzZE7ncEsgGGLwPtH6OlKSqHgAqTvFZvR/IPwEyWuZUZbtyU6RDOGuKqvqUU80SvC3JlXGQp/y8V/9kKXrDEYoEznd
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(186009)(1800799009)(64100799003)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(47076005)(4744005)(36860700001)(40460700003)(6666004)(7416002)(83380400001)(70586007)(70206006)(40480700001)(54906003)(6916009)(316002)(2906002)(41300700001)(8676002)(8936002)(4326008)(16526019)(26005)(356005)(44832011)(82740400003)(81166007)(86362001)(478600001)(5660300002)(336012)(36756003)(2616005)(1076003)(426003)(36900700001)(16060500005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 18:24:33.8319
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cee09fa-d92a-48b9-a4c4-08dbd0077a59
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003441.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR12MB5624
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018053146.GA16765@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With every release of LLVM, both of these sanitizers eat up more and
-more of the stack. So, set FRAME_WARN to 0 if either of them is enabled
-for a given build.
+On Wed, Oct 18, 2023 at 07:31:46AM +0200, Christoph Hellwig wrote:
+> On Wed, Oct 18, 2023 at 01:30:18AM +0100, David Woodhouse wrote:
+> > 
+> > But if we're going to tolerate the core kernel still exporting some
+> > stuff with EXPORT_SYMBOL, why isn't OK for a GPL-licensed module do to
+> > the same? Even an *in-tree* GPL-licensed module now can't export
+> > functionality with EXPORT_SYMBOL and have it used with symbol_get().
+> 
+> Anything using symbol_get is by intent very deeply internal for tightly
+> coupled modules working together, and thus not a non-GPL export.
+> 
+> In fact the current series is just a stepping stone.  Once some mess
+> in the kvm/vfio integration is fixed up we'll require a new explicit
+> EXPORT_SYMBOL variant as symbol_get wasn't ever intended to be used
+> on totally random symbols not exported for use by symbol_get.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- lib/Kconfig.debug | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The later patches in the series also show we could resolves most
+uses through Kconfig and at build time, it really begs the question
+if we even need it for any real valid uses.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 39d1d93164bd..15ad742729ca 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -429,11 +429,10 @@ endif # DEBUG_INFO
- config FRAME_WARN
- 	int "Warn for stack frames larger than"
- 	range 0 8192
--	default 0 if KMSAN
-+	default 0 if KASAN || KCSAN || KMSAN
- 	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
- 	default 2048 if PARISC
- 	default 1536 if (!64BIT && XTENSA)
--	default 1280 if KASAN && !64BIT
- 	default 1024 if !64BIT
- 	default 2048 if 64BIT
- 	help
--- 
-2.42.0
-
+  Luis
