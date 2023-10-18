@@ -2,161 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F317B7CE127
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EAC7CE133
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjJRP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S232333AbjJRP3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjJRP13 (ORCPT
+        with ESMTP id S231686AbjJRP3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:27:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742EAF7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:27 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 199AC1FD7C;
-        Wed, 18 Oct 2023 15:27:26 +0000 (UTC)
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AF8FE2C23A;
-        Wed, 18 Oct 2023 15:27:25 +0000 (UTC)
-Date:   Wed, 18 Oct 2023 17:27:25 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
-Message-ID: <ZS_5Xd7zPWvSHuqq@alley>
-References: <20231013204340.1112036-1-john.ogness@linutronix.de>
- <20231013204340.1112036-4-john.ogness@linutronix.de>
- <ZS5vrte2OZXcIc9L@alley>
- <87mswh6iwq.fsf@jogness.linutronix.de>
- <ZS_Vg4vvT29LxWSD@alley>
- <874jio6o2y.fsf@jogness.linutronix.de>
+        Wed, 18 Oct 2023 11:29:47 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E21911C;
+        Wed, 18 Oct 2023 08:29:43 -0700 (PDT)
+Received: from anderl.fritz.box ([31.220.117.52]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M6DrU-1qvJH9150C-006ipT; Wed, 18 Oct 2023 17:29:23 +0200
+From:   Andreas Klinger <ak@it-klinger.de>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>
+Subject: [PATCH] iio: bmp280: fix eoc interrupt usage
+Date:   Wed, 18 Oct 2023 17:28:16 +0200
+Message-Id: <20231018152816.56589-1-ak@it-klinger.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jio6o2y.fsf@jogness.linutronix.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 199AC1FD7C
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:nVIfArh+ACgV1NyAM+Org8TtE666lV4/Eim/mlj1rKNf9qDhtbe
+ uDDWUIn500623kjcT1k8VfMaRh96PF4JqMYueQar2YKbO4dBHB4MASJrgs6ChHZ6Nf77apg
+ q7bHS1wTw7L6YLT7OrO6Z9SvhWQi3rkGH2/gdJn7Hw+A4NsBbBbdEHJERN0jwsl3cUioAba
+ FuX53Ahl5tYJ4X1BOh3pA==
+UI-OutboundReport: notjunk:1;M01:P0:RIzKeBoNxnc=;WtVtJ/V5MjQ226125xic9IEFupG
+ KMIILVfmhzy2K6yAjPP+ql/HqFGkPFULubhTxHYN4KgQSWXzZB93A8GWiqp2BW2T0PzgRqIsG
+ rSDE3HAN90aCresdy36oBP3UuhKQCPSAlDCx+jz3jvg2z+SimiVGfaLfriw9wCWO4fSi6RKbW
+ WD51kD+vYYwy7WdhxsoQkVkczidHo1QoUFxOyh75I12LVnn/DJfUbYe5G3ygVVIlPQs7etbFr
+ y+hX7H2IytDha4V0CUmo1fozPn7xpG0d5fJ1vKo4k7DPfenGTAXMIpd5eflet5HAkYzP1Ifob
+ vpmPlmCKnvNeNjOAlY6qCm1Ulo0oOGzc3c7av1bU+d508x1XFFzfPmq/nWSOHydkT3mjFAInT
+ u0dzkFA7TiM5EjpSI90ZgzvMHwchT6JBQ+UOPbluWQEJBx9tNjuz8uwI7lCCM8YqWNZGzMCOj
+ EW6Qvg/xO/dmsVpfkeLpr77ULxaYprhb3kkh6hdvt2MxarrSLk/7hG7ix63DfOA9sJvkEyCyF
+ XsK1h60be35n4/buJZBmqz9XhUZVpGxj5EFfkI5/L4eM7CP1TVRInM71vCNVHQpw6V9UV8iLK
+ m5FFnepRUwmrfqfYnMCwvAxgO1t7xDCYewUibOEDpsGxNM3J/fzqY3L4mPwH6K9atEnVgS1KB
+ NaMIAwwJ/Gg48eDGY8IC3Ecs1Enc4fIGIOfYYfewVfxx4Y8NUiO7aH3D/7XP3zhSLaYEmuIQS
+ I6G+TC/R/ASTBhDQRrDXrGVbShCwsrjCwU6V8LK8ce5FMOnVo/IesKmZVuXMqYIoTIFlHe1SW
+ WJlUydrygy+Ar3+9+OgecxVxdsdmyZ8FpuYL5FQdGdo6bOWitMFR8ngL4azK1H74ln/dH0guQ
+ pzSF3vYBigRA1fA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,T_SPF_PERMERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2023-10-18 15:51:57, John Ogness wrote:
-> On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
-> > Wait! This means that your patch actually does not work. Here is the diff:
-> >
-> > --- a/kernel/printk/printk.c
-> > +++ b/kernel/printk/printk.c
-> > @@ -2815,8 +2815,19 @@ static bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
-> >  	else
-> >  		prb_rec_init_rd(&r, &info, outbuf, outbuf_sz);
-> >  
-> > -	if (!prb_read_valid(prb, seq, &r))
-> > -		return false;
-> > +	while (!prb_read_valid(prb, seq, &r)) {
-> > +		if (this_cpu_in_panic() && seq < prb_next_seq(prb)) {
-> > +			/*
-> > +			 * The record @seq is not finalized and there may be
-> > +			 * more records in the ringbuffer. Since this is the
-> > +			 * panic CPU, skip over the unfinalized record and
-> > +			 * try to read a finalized record that may follow.
-> > +			 */
-> > +			seq++;
-> > +		} else {
-> > +			return false;
-> > +		}
-> > +	}
-> >  
-> >  	pmsg->seq = r.info->seq;
-> >  	pmsg->dropped = r.info->seq - seq;
-> >
-> > It skips the invalid reads only when seq < prb_next_seq(). But
-> > prb_next_seq(prb) points to the 1st non-finalized record. And
-> > all records with seq < prb_next_seq() must be finalized!
-> 
-> Please take a look at prb_next_seq(). It _starts_ its search from:
-> 
->     id = atomic_long_read(&desc_ring->last_finalized_id);
+Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
+bmp085 and bmp180 share the same chip id. Therefore it's necessary to
+distinguish the case in which the interrupt is set.
 
-I see. And this this set in
+Fix the if statement so that only when the interrupt is set and the chip
+id is recognized the interrupt is requested.
 
-static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
-{
-[...]
+This bug exists since the support of EOC interrupt was introduced.
+Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
 
-	/* Best effort to remember the last finalized @id. */
-	atomic_long_set(&desc_ring->last_finalized_id, id);
-}
+Also add a link to bmp085 datasheet for reference.
 
-So it is the _last_ finalized id from the timing POV. If there are
-more CPUs storing and finalizing the messages in parallel then
-it might change forth and back. There might be earlier non-finalized
-records and newer finalized ones.
+Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+---
+ drivers/iio/pressure/bmp280-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-It means that prb_next_seq() really is the best effort and
-the description is not valid:
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index 6089f3f9d8f4..9b7beeb1c088 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -9,6 +9,7 @@
+  * Driver for Bosch Sensortec BMP180 and BMP280 digital pressure sensor.
+  *
+  * Datasheet:
++ * https://www.sparkfun.com/datasheets/Components/General/BST-BMP085-DS000-05.pdf
+  * https://cdn-shop.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf
+  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
+@@ -2179,7 +2180,7 @@ int bmp280_common_probe(struct device *dev,
+ 	 * however as it happens, the BMP085 shares the chip ID of BMP180
+ 	 * so we look for an IRQ if we have that.
+ 	 */
+-	if (irq > 0 || (chip_id  == BMP180_CHIP_ID)) {
++	if (irq > 0 && (chip_id  == BMP180_CHIP_ID)) {
+ 		ret = bmp085_fetch_eoc_irq(dev, name, irq, data);
+ 		if (ret)
+ 			return ret;
+-- 
+2.39.2
 
-/**
- * prb_next_seq() - Get the sequence number after the last available record.
- *
- * @rb:  The ringbuffer to get the sequence number from.
- *
- * This is the public function available to readers to see what the next
- * newest sequence number available to readers will be.
- *
- * This provides readers a sequence number to jump to if all currently
- * available records should be skipped.
-
-It is not guaranteed that it will be the last available record
-because there might be newer already finalized records with
-some non-finalized records in between.
-
-Also it is not guaranteed that it will be the next record available
-to readers because readers should stop on the 1st non-yet-finalized
-record and prb_next_seq() might be behind.
-
-It would be great to document these subtle details especially when
-we are going to depend on them.
-
-> For console_flush_on_panic(), @last_finalized_id will _always_ be set to
-> the last finalized message of the panic messages, being higher than any
-> non-finalized records that may exist. There are no other CPUs running
-> except the panic CPU.
-
-It is not guaranteed. It might be lower when some still running CPU
-manages to finalize an earlier record and there are later
-non-finalized records.
-
-But you are right, there is a very high chance that it will point
-behind the last message from panic() context sooner or later,
-especially after CPUs get stopped.
-
-Well, note that only NMI guarantees that CPUs get stopped. There
-are still architectures which stop CPUs using normal interrupts.
-
-> Unfortunately you are not reading the code correctly. (Or rather, you
-> are being misled by comments because you incorrectly associate "not
-> available to reader" to mean "valid record with an empty string".
-
-You are right. Well, it is really hard to put all the pieces together
-just by reading the code. And the unclear comments make it even worse.
-
-Best Regards,
-Petr
