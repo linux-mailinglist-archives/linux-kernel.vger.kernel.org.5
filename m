@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD34E7CDE9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FD07CDE9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344969AbjJROMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S1344923AbjJROM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbjJROMU (ORCPT
+        with ESMTP id S231951AbjJROMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:20 -0400
+        Wed, 18 Oct 2023 10:12:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA57E10E;
-        Wed, 18 Oct 2023 07:12:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB84C433C7;
-        Wed, 18 Oct 2023 14:12:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58749120;
+        Wed, 18 Oct 2023 07:12:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD250C433C9;
+        Wed, 18 Oct 2023 14:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638338;
-        bh=kqVry2L3oD34A/U2KY1CFVfYMWD9gqUl302hptEGTyg=;
+        s=k20201202; t=1697638339;
+        bh=W6B0ohHYlK6muxOBgLgKjoQuqemi4dkS+/r+S/hB0gE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UxGOMtzx917fBeHtX5hJWOl37bO7pG88zujPkS6OCccR+ldy2eOcDRWeeGL9XbazK
-         QdmqMhYU6+uyzVDk5GuX1clni86OiAKzVLfoEZAq//HieeEWClzXzcwlZuiowjZA6G
-         lDXL9Qe8aYQ9DM3KwFKGguWAxHi+JJovTkb62tEaOk0BrrmYxRQamz1xxdu+ogmxhy
-         XRrr0aYMuBZsjsUVoOYF+hcFp18hXtqjY6eHyH3PPKBNo+nCXK6Cm8DI/Jh+LGNq5+
-         De2yfPUTStC6Ip6g5tnOZunA8IPLinD77t95y1uqGfgfJddYAYpXyCNQ2LrHEJmaRo
-         ZlWGZwKpGImuw==
+        b=E4ES14m8meywHNfWZ/h7pzoHQ8aHj5KLCji9UVqgN5XDcaLdgs5GJ69yF/S8cvFai
+         qURbuF/3fKg7Sq7f3/c/KEExBPMiFlZlw4mOCJ+fktxY1uujSENGpN/ybKJF7VZlX+
+         Q76JU69i5M7y8rgZe8EUsD+0weZuJG4zPrtLjiukMeQBinvZOxWi/LY0V5lbZw35Wj
+         w/m65BUPnkIwSCYsefU8tTJch7GTTnT/QCeWxoKBqF/zROif/jbDcELFpltkwOie2O
+         2KelJEwZxm1r3Zn3niytGseeRoLmVrsCX2q9uq9m3CaVkoXjiZLuDB0PRSpnbVANYB
+         W1ercMMjuJyXw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Szilard Fabian <szfabian@bluemarch.art>,
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Michael Smith <1973.mjsmith@gmail.com>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, wse@tuxedocomputers.com,
-        hdegoede@redhat.com, jdenose@chromium.org, tiwai@suse.de,
+        Sasha Levin <sashal@kernel.org>, hadess@hadess.net,
         linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 10/31] Input: i8042 - add Fujitsu Lifebook E5411 to i8042 quirk table
-Date:   Wed, 18 Oct 2023 10:11:27 -0400
-Message-Id: <20231018141151.1334501-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 11/31] Input: goodix - ensure int GPIO is in input for gpio_count == 1 && gpio_int_idx == 0 case
+Date:   Wed, 18 Oct 2023 10:11:28 -0400
+Message-Id: <20231018141151.1334501-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
 References: <20231018141151.1334501-1-sashal@kernel.org>
@@ -54,50 +54,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Szilard Fabian <szfabian@bluemarch.art>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 80f39e1c27ba9e5a1ea7e68e21c569c9d8e46062 ]
+[ Upstream commit 423622a90abb243944d1517b9f57db53729e45c4 ]
 
-In the initial boot stage the integrated keyboard of Fujitsu Lifebook E5411
-refuses to work and it's not possible to type for example a dm-crypt
-passphrase without the help of an external keyboard.
+Add a special case for gpio_count == 1 && gpio_int_idx == 0 to
+goodix_add_acpi_gpio_mappings().
 
-i8042.nomux kernel parameter resolves this issue but using that a PS/2
-mouse is detected. This input device is unused even when the i2c-hid-acpi
-kernel module is blacklisted making the integrated ELAN touchpad
-(04F3:308A) not working at all.
+It seems that on newer x86/ACPI devices the reset and irq GPIOs are no
+longer listed as GPIO resources instead there is only 1 GpioInt resource
+and _PS0 does the whole reset sequence for us.
 
-Since the integrated touchpad is managed by the i2c_designware input
-driver in the Linux kernel and you can't find a PS/2 mouse port on the
-computer I think it's safe to not use the PS/2 mouse port at all.
+This means that we must call acpi_device_fix_up_power() on these devices
+to ensure that the chip is reset before we try to use it.
 
-Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
-Link: https://lore.kernel.org/r/20231004011749.101789-1-szfabian@bluemarch.art
+This part was already fixed in commit 3de93e6ed2df ("Input: goodix - call
+acpi_device_fix_up_power() in some cases") by adding a call to
+acpi_device_fix_up_power() to the generic "Unexpected ACPI resources"
+catch all.
+
+But it turns out that this case on some hw needs some more special
+handling. Specifically the firmware may bootup with the IRQ pin in
+output mode. The reset sequence from ACPI _PS0 (executed by
+acpi_device_fix_up_power()) should put the pin in input mode,
+but the GPIO subsystem has cached the direction at bootup, causing
+request_irq() to fail due to gpiochip_lock_as_irq() failure:
+
+[    9.119864] Goodix-TS i2c-GDIX1002:00: Unexpected ACPI resources: gpio_count 1, gpio_int_idx 0
+[    9.317443] Goodix-TS i2c-GDIX1002:00: ID 911, version: 1060
+[    9.321902] input: Goodix Capacitive TouchScreen as /devices/pci0000:00/0000:00:17.0/i2c_designware.4/i2c-5/i2c-GDIX1002:00/input/input8
+[    9.327840] gpio gpiochip0: (INT3453:00): gpiochip_lock_as_irq: tried to flag a GPIO set as output for IRQ
+[    9.327856] gpio gpiochip0: (INT3453:00): unable to lock HW IRQ 26 for IRQ
+[    9.327861] genirq: Failed to request resources for GDIX1002:00 (irq 131) on irqchip intel-gpio
+[    9.327912] Goodix-TS i2c-GDIX1002:00: request IRQ failed: -5
+
+Fix this by adding a special case for gpio_count == 1 && gpio_int_idx == 0
+which adds an ACPI GPIO lookup table for the int GPIO even though we cannot
+use it for reset purposes (as there is no reset GPIO).
+
+Adding the lookup will make the gpiod_int = gpiod_get(..., GPIOD_IN) call
+succeed, which will explicitly set the direction to input fixing the issue.
+
+Note this re-uses the acpi_goodix_int_first_gpios[] lookup table, since
+there is only 1 GPIO in the ACPI resources the reset entry in that
+lookup table will amount to a no-op.
+
+Reported-and-tested-by: Michael Smith <1973.mjsmith@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231003215144.69527-1-hdegoede@redhat.com
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-acpipnpio.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/input/touchscreen/goodix.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
-index 1724d6cb8649d..9c39553d30fa2 100644
---- a/drivers/input/serio/i8042-acpipnpio.h
-+++ b/drivers/input/serio/i8042-acpipnpio.h
-@@ -618,6 +618,14 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
- 		},
- 		.driver_data = (void *)(SERIO_QUIRK_NOMUX)
- 	},
-+	{
-+		/* Fujitsu Lifebook E5411 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU CLIENT COMPUTING LIMITED"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "LIFEBOOK E5411"),
-+		},
-+		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
-+	},
- 	{
- 		/* Gigabyte M912 */
- 		.matches = {
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index f5aa240739f97..0f727dbc7232f 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -900,6 +900,25 @@ static int goodix_add_acpi_gpio_mappings(struct goodix_ts_data *ts)
+ 		dev_info(dev, "No ACPI GpioInt resource, assuming that the GPIO order is reset, int\n");
+ 		ts->irq_pin_access_method = IRQ_PIN_ACCESS_ACPI_GPIO;
+ 		gpio_mapping = acpi_goodix_int_last_gpios;
++	} else if (ts->gpio_count == 1 && ts->gpio_int_idx == 0) {
++		/*
++		 * On newer devices there is only 1 GpioInt resource and _PS0
++		 * does the whole reset sequence for us.
++		 */
++		acpi_device_fix_up_power(ACPI_COMPANION(dev));
++
++		/*
++		 * Before the _PS0 call the int GPIO may have been in output
++		 * mode and the call should have put the int GPIO in input mode,
++		 * but the GPIO subsys cached state may still think it is
++		 * in output mode, causing gpiochip_lock_as_irq() failure.
++		 *
++		 * Add a mapping for the int GPIO to make the
++		 * gpiod_int = gpiod_get(..., GPIOD_IN) call succeed,
++		 * which will explicitly set the direction to input.
++		 */
++		ts->irq_pin_access_method = IRQ_PIN_ACCESS_NONE;
++		gpio_mapping = acpi_goodix_int_first_gpios;
+ 	} else {
+ 		dev_warn(dev, "Unexpected ACPI resources: gpio_count %d, gpio_int_idx %d\n",
+ 			 ts->gpio_count, ts->gpio_int_idx);
 -- 
 2.40.1
 
