@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC987CE470
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7BC7CE4AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjJRR2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        id S232277AbjJRRcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjJRR2m (ORCPT
+        with ESMTP id S231835AbjJRRcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:28:42 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B77449C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:40 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c515527310so60607911fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:39 -0700 (PDT)
+        Wed, 18 Oct 2023 13:32:22 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A8E44A9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:51 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so81783811fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697650118; x=1698254918; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697650130; x=1698254930; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1aOTkmKT0/VEUJ6dJSIOtEOBOATm/C2zJujpXbSsYL4=;
-        b=J91YWiTpOUljVB0NDiQmiEDOXThof4ceXwip6WNzLVeZp/5HavbZz/+HQfvgcr+doD
-         oRjHM/dSSnCZ8WOOn4BsH/inNo8Ot1EbXEAM3D3zg18KLEbOukvKewA4wXez2Iiw56SD
-         ciuMaCly+a//9EdYbcUFC+jLQDT4bFwWj43ARCAa5/C5wfqwbo27AGFM+Dv4R3NDOrzv
-         h41oCnUUCZDuQmmhEet3f0RVrX63zswaFU+yLKcrrd9gIx7kN/SrV0i7WNRU8RaGF/By
-         36P3NBACANBC+bGiEb0q6ggvJ6NH4RIXE+fxCd0fbYbBrCabTTQCnxWdhEBazQSdW/83
-         FHhA==
+        bh=XlxzenAtGOBBl5FAqiPH6k/I934Jd+ferEyJouIx4OM=;
+        b=jRZhIpRLvHx99GWRzosWKHGQA31uO+NHuBTXGM9WDScHZA7wl94szidBj3Qo1JDcAU
+         eWmU2ktDFVEbc7mC9J89bTay2mSkl9XYrk1EhglM0gDycQn7dHOKECNlUb35W9Ju9bqJ
+         DQhAoU8ZF2R83e4z0LPKTmACqRTB/vYcRVvoxAClPkbA5N5LCD5ZLi0qid5lY1QQ6eMC
+         gX75gtTppq9iz9RoAGNw9KUMFDn2bNhjtBJ0nmdSuTXUrgPKWnHpRHzWrAlmVthk8KFU
+         BavzRf0mwFWkq8QwnZyfGQzdXevjkfoxdIShIoN0hnU+ExhBBkQ3jjUwmW/S8r29wXKC
+         vb9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697650118; x=1698254918;
+        d=1e100.net; s=20230601; t=1697650130; x=1698254930;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1aOTkmKT0/VEUJ6dJSIOtEOBOATm/C2zJujpXbSsYL4=;
-        b=mP3gRgAvcN9KG/MRAy01rPQMpv+dI/J/bIFIBZlPVwvOxA+zwU92GfygM5sYbZB4Pf
-         UD33ZmVNZi7XWx0pNmx5YmNwq2TifAVJ2DojSpyyvdrCxY4byxH9xEc0BangI3ohdQf2
-         q+6nUhpjZmWJuO2vfm2P9sH7eJk8blUhfVj1AxXLy6bK7cOchEURnvsGcsG2+Cz5lDqQ
-         S2PFpXzm0+uSBXtECb1sIxQxWzygLZ3yzz3PqHmUlPEpq/mTLg1j/EAX9aB3aeo3TJ7q
-         1fpH53UhXCaiSepwjLpeMOrBAzec00FmRwdhPpT0Y06dlbeMK/uX3YGFGr4bt9sJCH2n
-         3veA==
-X-Gm-Message-State: AOJu0Yw5YzwKP40HgtZb141jumgHND5+IXBRl25Gr3WN1uQTMdcCGx9f
-        QHCG7anQ+oj5HxCRL+Jlmrhy/S1YC1YIKkFITcugSg==
-X-Google-Smtp-Source: AGHT+IEH/Te0HHRqLHxWdsHtRpbFbaOYrfrcIubs163vkWTt94hU44lu3W5dGfsp7LfIsZLKmD3tbWcSjooB4Tzx2jI=
-X-Received: by 2002:a2e:9916:0:b0:2b9:e831:f16a with SMTP id
- v22-20020a2e9916000000b002b9e831f16amr4058294lji.26.1697650118136; Wed, 18
- Oct 2023 10:28:38 -0700 (PDT)
+        bh=XlxzenAtGOBBl5FAqiPH6k/I934Jd+ferEyJouIx4OM=;
+        b=Zba703giyMC+yEhnh4RWTmwohKjbsnvgPrN6vX/kuRRyma/R27iqhfi8LxM8NQQlg/
+         hXbBIh4AM7y56YgPx2m0YBE/P/jGO7jFV9Mry3cIkL6BgHtHkS9KSan2Zi7fT/FwQKdN
+         yak7E7qE7cA/ycqASDqDO0zmmDsIJKyTlPSUAzBYYb3sphsvYVg3RdG2aYsSRDacUTqU
+         ZkyTEfN5hlGZOsbOTSUq027QR2Fyoc3CgvD79/dmBKPPsVHdfpTBmh8WaNgO9M7J+CFK
+         eC87CosE2dhzxwjnGMDKpWCIQyaP9ydpSlfvgyk/wjWQnvFjT441L5WkD7Q07TFqtwEB
+         CJ2g==
+X-Gm-Message-State: AOJu0Ywj8LhIdBFOJsKQQQah2L8FbcHZXJ/MaGJ+7M+Gi35nsJP643P4
+        djGw3OOosXR3pqPzu4M3u/JoV0Dzj/nSC+oJ39fJtA==
+X-Google-Smtp-Source: AGHT+IGHruj4vIi0kef+bVD+gPV4FxwyxPA0I1qw/x4/ZVHhtOHwosRH5M2N+IuPXDxc9LdApCvF7N2Iujro1xmxL7A=
+X-Received: by 2002:a2e:9107:0:b0:2c5:1c9d:7f81 with SMTP id
+ m7-20020a2e9107000000b002c51c9d7f81mr4392793ljg.32.1697650129601; Wed, 18 Oct
+ 2023 10:28:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-9-cleger@rivosinc.com>
-In-Reply-To: <20231017131456.2053396-9-cleger@rivosinc.com>
+References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-10-cleger@rivosinc.com>
+In-Reply-To: <20231017131456.2053396-10-cleger@rivosinc.com>
 From:   Evan Green <evan@rivosinc.com>
-Date:   Wed, 18 Oct 2023 10:28:02 -0700
-Message-ID: <CALs-HsvDtceutbdNXuBKtnTTKy_qZgzjKAi-XvwbYCYoLVRTxQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/19] riscv: add ISA extension parsing for Zfh/Zfhmin
+Date:   Wed, 18 Oct 2023 10:28:13 -0700
+Message-ID: <CALs-Hsu4_sJ-qPXdg--p6+u9Zu_+FFZVAPp=D7SEuR-XG_A-nw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/19] riscv: hwprobe: export Zfh/Zfhmin ISA extensions
 To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
 Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
@@ -80,8 +80,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
 osinc.com> wrote:
 >
-> Add parsing for Zvfh/Zfhmin ISA extensions[1].
-
-Typo: s/Zvfh/Zfh/. Other than that:
+> Export Zfh/Zfhmin ISA extensions[1] through hwprobe only if FPU support
+> is available.
+>
+> Link: https://drive.google.com/file/d/1z3tQQLm5ALsAD77PM0l0CHnapxWCeVzP/v=
+iew [1]
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
 
 Reviewed-by: Evan Green <evan@rivosinc.com>
