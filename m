@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75117CD941
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904E17CD946
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjJRKcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        id S234509AbjJRKdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJRKcw (ORCPT
+        with ESMTP id S230475AbjJRKc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:32:52 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A15BA;
-        Wed, 18 Oct 2023 03:32:50 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b2b1af09c5so2710888b6e.0;
-        Wed, 18 Oct 2023 03:32:50 -0700 (PDT)
+        Wed, 18 Oct 2023 06:32:56 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9B1EA;
+        Wed, 18 Oct 2023 03:32:54 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b2f2b9a176so25838b6e.0;
+        Wed, 18 Oct 2023 03:32:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697625170; x=1698229970;
+        d=1e100.net; s=20230601; t=1697625173; x=1698229973;
         h=date:subject:message-id:references:in-reply-to:cc:to:from
          :mime-version:content-transfer-encoding:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Dg5d8SDlSlp62Ln+IjkIa1gYxVR7adVppGs8QF8Exl4=;
-        b=K3pAfIWVRAhldE4tHtTLVoY503rA/kuzDmW0/8YZlVjOrsbcZeMCBghwUsoPoY5MMZ
-         bW6EdD4M+Wu3fKtgHDaC6f/g/yJnXYibLnEjBLLsh061KHbvHX+a8YsV5u6baRZnOLFn
-         Esao7dAigHk9mX3qYkzg3GCAtp2sPH9rIggZjTNDp5OtrzRHBKlIr81MdIbQGH5OqxmS
-         V11Dimrap+Nj/tnj4pKe7jrqL8qfZagkP7+PXbxI9fEc9wVPlbKCOsUDBN3AUrj/rKB1
-         q6MvVJsV9KvlLSgE2OcbHwHOugHW9D+dYXaJgJG7sVTZKw+uP4X6YbcgV1q66EHroQP2
-         ETzw==
-X-Gm-Message-State: AOJu0YwoQ6k/MMPt8Cj6QhLctAKILQiNBBEctwhqCMKZZzoBLTllnGA3
-        U3GdDJToMSo1uLvZMpqSkg==
-X-Google-Smtp-Source: AGHT+IHviX6UrIwh06mLdMonHxveecpCE8DWO90wIhrcz1SbC/uPTFpaZVLY5Sw4GTzxzyU2gDNwHA==
-X-Received: by 2002:a54:4693:0:b0:3a7:52b9:cbfe with SMTP id k19-20020a544693000000b003a752b9cbfemr4462272oic.32.1697625169886;
-        Wed, 18 Oct 2023 03:32:49 -0700 (PDT)
+        bh=UmbVrx3kvH0r68sBw/GJCPYCHWMUhOzKvn9kROVZewE=;
+        b=bsEEN0rjgjp0QWLZt17vhvxPBOhE5kTZNX1hW3AHnHtVjNsTjLorFpsKaWaQ33/c/R
+         nDAWyJOctkC8f3vJkhtVIQrgnVU6mILMeXXWg+Uk0n0naMmbRf1jMHHVZ5PQ1ySU8qsX
+         wU2l3tHqc0GlniqKZId73T7P0QdfVT5Lm7cX2qam1fWkKbLIvWmZG6ibMwwL7CNTe3EY
+         YfRQM02C7SvV7DHY6Eo+YZVS5hnUZdIyZNuQcXTBaf/qf0TZCCWN7fxSPbB5/WCQswCR
+         DnPiI+ZqSCoLdAVs/fNJpEutkVCZ+6Y13IPdZTkETQOoVwV1mHey2js21J6S9X29KH4W
+         rAbw==
+X-Gm-Message-State: AOJu0YyaKpi7/tRealCvXRXRrdHxM9egVM8zILEIiSOnXBKOZRv9Zg8k
+        N2icn7hKIthHmTQqLiN88A==
+X-Google-Smtp-Source: AGHT+IGguJvx7euIHkwYhW8loUuEySlqQJw1vUUYeEeRd6xi6pZbiyhYle0ERX9CZ29XjjXgVF4Lyg==
+X-Received: by 2002:a05:6870:310d:b0:1e9:9c39:a580 with SMTP id v13-20020a056870310d00b001e99c39a580mr5430942oaa.7.1697625173637;
+        Wed, 18 Oct 2023 03:32:53 -0700 (PDT)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id r24-20020a056808211800b003b2e2d134a5sm390772oiw.35.2023.10.18.03.32.48
+        by smtp.gmail.com with ESMTPSA id eg48-20020a05687098b000b001e9a253afa3sm636004oab.49.2023.10.18.03.32.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 03:32:49 -0700 (PDT)
-Received: (nullmailer pid 391914 invoked by uid 1000);
+        Wed, 18 Oct 2023 03:32:52 -0700 (PDT)
+Received: (nullmailer pid 391917 invoked by uid 1000);
         Wed, 18 Oct 2023 10:32:48 -0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
 From:   Rob Herring <robh@kernel.org>
 To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
         linux-arm-kernel@lists.infradead.org,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree@vger.kernel.org,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
         linux-kernel@vger.kernel.org,
-        Gregory Clement <gregory.clement@bootlin.com>
-In-Reply-To: <20231018-marvell-88e6152-wan-led-v4-1-3ee0c67383be@linaro.org>
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20231018-marvell-88e6152-wan-led-v4-2-3ee0c67383be@linaro.org>
 References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
- <20231018-marvell-88e6152-wan-led-v4-1-3ee0c67383be@linaro.org>
-Message-Id: <169762516670.391804.7528295251386913602.robh@kernel.org>
-Subject: Re: [PATCH net-next v4 1/7] dt-bindings: net: dsa: Require ports
- or ethernet-ports
+ <20231018-marvell-88e6152-wan-led-v4-2-3ee0c67383be@linaro.org>
+Message-Id: <169762516741.391849.18342287891015837205.robh@kernel.org>
+Subject: Re: [PATCH net-next v4 2/7] dt-bindings: net: mvusb: Fix up DSA
+ example
 Date:   Wed, 18 Oct 2023 05:32:48 -0500
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
@@ -79,44 +80,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 18 Oct 2023 11:03:40 +0200, Linus Walleij wrote:
-> Bindings using dsa.yaml#/$defs/ethernet-ports specify that
-> a DSA switch node need to have a ports or ethernet-ports
-> subnode, and that is actually required, so add requirements
-> using oneOf.
+On Wed, 18 Oct 2023 11:03:41 +0200, Linus Walleij wrote:
+> When adding a proper schema for the Marvell mx88e6xxx switch,
+> the scripts start complaining about this embedded example:
 > 
-> Suggested-by: Rob Herring <robh@kernel.org>
+>   dtschema/dtc warnings/errors:
+>   net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells'
+>   is a required property
+>   from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+>   net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells'
+>   is a required property
+>   from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+> 
+> Fix this up by extending the example with those properties in
+> the ports node.
+> 
+> While we are at it, rename "ports" to "ethernet-ports" and rename
+> "switch" to "ethernet-switch" as this is recommended practice.
+> 
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  Documentation/devicetree/bindings/net/marvell,mvusb.yaml | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/dsa/dsa.yaml:60:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
-./Documentation/devicetree/bindings/net/dsa/dsa.yaml:62:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 64, in <module>
-    ret |= check_doc(f)
-           ^^^^^^^^^^^^
-  File "/usr/local/bin/dt-doc-validate", line 32, in check_doc
-    for error in sorted(dtsch.iter_errors(), key=lambda e: e.linecol):
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/schema.py", line 125, in iter_errors
-    self.annotate_error(scherr, meta_schema, scherr.schema_path)
-  File "/usr/local/lib/python3.11/dist-packages/dtschema/schema.py", line 104, in annotate_error
-    schema = schema[p]
-             ~~~~~~^^^
-KeyError: 'type'
+Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: /example-0/usb/mdio@1/ethernet-switch@0: failed to match any schema with compatible: ['marvell,mv88e6190']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231018-marvell-88e6152-wan-led-v4-1-3ee0c67383be@linaro.org
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231018-marvell-88e6152-wan-led-v4-2-3ee0c67383be@linaro.org
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
