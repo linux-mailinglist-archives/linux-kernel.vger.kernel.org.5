@@ -2,110 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7797B7CE2C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C177CE2C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjJRQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S230237AbjJRQ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjJRQ3F (ORCPT
+        with ESMTP id S229694AbjJRQ2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:29:05 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F659FA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:29:02 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-419b53acc11so299391cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697646541; x=1698251341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NP8epScHrNgHZ84MxLEjBdBvtFkaSpGQFw1IMN4MPNo=;
-        b=EwJsb7Mj9rMz7vi3ocLoJpYksd2wJNBPiYfTs5tTcoBvo6bRv9mg3Sdj1cDlXsPjTE
-         Ic5LsgN19EvEThygVh2DRBgKgY4TTcJsFxeyAB0C5XP2JSsO5EH3R327EWLddCaJGVwu
-         /v0yaw3ub/VJ9N5qf6ed1ZlAiPvgG9+7Rb/H4enMvJhkAR059tDdPoZenOJcpC2avBlP
-         1/NK80j3ySdsGtUneqBRM9gr6cERg3q0P2Zq4YRXhFgpKBUdFBJPZdxdnli0/C6WvqHs
-         WPtXa4GEP2IdiWLRPuYHMaLFLyrJf3fauw95Jofzt/CNG7MFbXmxa0cO4lImO6KITLUb
-         XmGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697646541; x=1698251341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NP8epScHrNgHZ84MxLEjBdBvtFkaSpGQFw1IMN4MPNo=;
-        b=fwZpFRAKTzl5T4GpybUVq53lqVcqAzdn0p9413d4ouol7Fi3bGdvi9yrcTQiFlaKWr
-         05iQQ4hAOuotrtCOCMVeOUNkV0cRO9u0u0fhsSibNcXim5leSzdq2W/5Rb7GQFwt2hTq
-         WqW/HRiVQqLxQZxl1zaMRCmq0cDXy3KBrF8zviobycgp4I7UpAhTXVhGdgv7+hsGU39+
-         Uu8vzDS0SBt17pnTxfE6B5e7lWTvcWX6rHVGGeKv3R0gk6tFLx39FOfYp3EA7C2R8VZc
-         LZxgMmNCtBtP4s7LiXwGmBZA6sDnNW9zC4SaewONMJJa5GWfSbq8QhEop3gyYlOxM8mp
-         FGPA==
-X-Gm-Message-State: AOJu0YzlnsV+OM+NpgLVih7+oys7Rg0hh4BA1g0buWSEwaVoJ12V7uz7
-        BmaR1TkOSoi0gMzkcE8R2Db3J0wH/K0ENeBIX31/ZA==
-X-Google-Smtp-Source: AGHT+IEjZdE64AlO/kPu6yekVca1LeSJ4143bYX+rUPzxbvwQZgKxFi7LC3iGp1nmFLzzNVPtiFHfVLV7D6UhUO4iQY=
-X-Received: by 2002:a05:622a:4713:b0:404:8218:83da with SMTP id
- dn19-20020a05622a471300b00404821883damr251529qtb.1.1697646541251; Wed, 18 Oct
- 2023 09:29:01 -0700 (PDT)
+        Wed, 18 Oct 2023 12:28:43 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A08DB8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:28:42 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A5FFF40E0196;
+        Wed, 18 Oct 2023 16:28:39 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PLsE6ZBaTxvG; Wed, 18 Oct 2023 16:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697646517; bh=UUiIsufZNx2Skm3foRyePaxaxDvMuZzimTco0fIaIc8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T6mZPu/zSuWxFj1NloA7zaBpGr1NvlXIU/aYUsvBFrawnQfyA6NEiQ4NlV99fok9f
+         hAjLn939p5/YkD4Eog0EczFE1nS9HxgrsK9LqzwnRACuddZzu1DVOP/N90YeANW2hS
+         ++gQIdhmk/EJAfzMBD3uRYJsXabwXWENEMeI+luE8N2IFVipN5BvoLf7bSUJi2fcu7
+         WBX1WVcLfwI57NFWeoeETWV4/I5IsYOsoRZuE/9848GNcNL7tsYplcEdnemL2Fs9ZC
+         X8o3Y2QP+tuMi1+qD4DRNesg0TkR6N5GUnW5Pa4p1VGyvrCxRbKecjBifZ+c3aGlMV
+         3PnN3WAvlgZkVgMR1pjhz7B/V16a9mDIE2g3e/8CMZXhgTFzbL5yGIIFkk/rU/Muzo
+         S3Geqz29VKK2BTGF7gnR8p1oX7yvJoA+Sx2WJkQ8ohYN4IJzUvoxnhO4X4nNUOLD11
+         J04AwZtSjbEsJAqo1V54gSqHFhWYa2FyVC3YkWugaurF/m215cq7/lpvuZQEad7ADz
+         eZY2abhpd4E0t4HvUP1iYANxJnNOfoquWgxwDxmERvLWrAOb4rGiv/74PHkCBzrufV
+         l27cIV24WieZK69qwde3+htCvYAhfDsP2fwIW2TCgHRxWQqzyiGaLcUAYQ2fJ15T+6
+         aOEGInaH+l1EsbI2+paCtMik=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 57F7040E0193;
+        Wed, 18 Oct 2023 16:28:34 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 18:28:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+Subject: Re: [patch V5 03/39] x86/boot/32: De-uglify the 2/3 level paging
+ difference in mk_early_pgtbl_32()
+Message-ID: <20231018162827.GDZTAHq/Cid4gJJEiw@fat_crate.local>
+References: <20231017200758.877560658@linutronix.de>
+ <20231017211722.111059491@linutronix.de>
+ <20231018100023.GAZS+st5ePdAQjnO4z@fat_crate.local>
+ <87mswg3w51.ffs@tglx>
 MIME-Version: 1.0
-References: <20231018082104.3918770-1-link@vivo.com> <20231018082104.3918770-2-link@vivo.com>
-In-Reply-To: <20231018082104.3918770-2-link@vivo.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 18 Oct 2023 10:28:25 -0600
-Message-ID: <CAOUHufbc9j-6yfcm_4h_qD5L1oq6KRVXxA1u+mx0dXBqtghjYQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tracing: mm: multigen-lru: fix mglru trace
-To:     Huan Yang <link@vivo.com>, Jaewon Kim <jaewon31.kim@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87mswg3w51.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 2:22=E2=80=AFAM Huan Yang <link@vivo.com> wrote:
->
-> This patch add two reclaim stat:
-> nr_promote: nr_pages shrink before promote by folio_update_gen.
-> nr_demote: nr_pages NUMA demotion passed.
+On Wed, Oct 18, 2023 at 03:20:10PM +0200, Thomas Gleixner wrote:
+> Up to the point where the compiler complains about a missing prototype
+> for a global visible function, which will bring it back faster than you
+> think. :)
 
-The above isn't specific to MLGRU, so they should be in a separate patchset=
-.
+---
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 17 Oct 2023 23:23:26 +0200
+Subject: [PATCH] x86/boot/32: De-uglify the 2/3 level paging difference in
+ mk_early_pgtbl_32()
 
-> And then, use correct nr_scanned which evict_folios passed into
-> trace_mm_vmscan_lru_shrink_inactive.
->
-> Mistake info like this:
-> ```
-> kswapd0-89    [000]    64.887613: mm_vmscan_lru_shrink_inactive:
-> nid=3D0 nr_scanned=3D64 nr_reclaimed=3D0 nr_dirty=3D0 nr_writeback=3D0
-> nr_congested=3D0 nr_immediate=3D0 nr_activate_anon=3D0 nr_activate_file=
-=3D0
-> nr_ref_keep=3D0 nr_unmap_fail=3D0 priority=3D4
-> flags=3DRECLAIM_WB_FILE|RECLAIM_WB_ASYNC
-> ```
-> Correct info like this:
-> ```
->  <...>-9041  [006]    43.738481: mm_vmscan_lru_shrink_inactive:
->  nid=3D0 nr_scanned=3D13 nr_reclaimed=3D0 nr_dirty=3D0 nr_writeback=3D0
->  nr_congested=3D0 nr_immediate=3D0 nr_activate_anon=3D9 nr_activate_file=
-=3D0
->  nr_ref_keep=3D0 nr_unmap_fail=3D0 nr_promote=3D4 nr_demote=3D0 priority=
-=3D12
->  flags=3DRECLAIM_WB_ANON|RECLAIM_WB_ASYNC
-> ```
+Move the ifdeffery out of the function and use proper typedefs to make it
+work for both 2 and 3 level paging.
 
-Adding Jaewon & Kalesh to take a look.
+No functional change.
+
+  [ bp: Move mk_early_pgtbl_32() declaration into a header. ]
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231017211722.111059491@linutronix.de
+---
+ arch/x86/include/asm/setup.h |  1 +
+ arch/x86/kernel/head32.c     | 38 +++++++++++++++++++-----------------
+ 2 files changed, 21 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index f3495623ac99..bf483fcb4e57 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -126,6 +126,7 @@ void clear_bss(void);
+ #ifdef __i386__
+ 
+ asmlinkage void __init __noreturn i386_start_kernel(void);
++void __init mk_early_pgtbl_32(void);
+ 
+ #else
+ asmlinkage void __init __noreturn x86_64_start_kernel(char *real_mode);
+diff --git a/arch/x86/kernel/head32.c b/arch/x86/kernel/head32.c
+index 8fe0dd38fff0..2b6599807026 100644
+--- a/arch/x86/kernel/head32.c
++++ b/arch/x86/kernel/head32.c
+@@ -69,41 +69,43 @@ asmlinkage __visible void __init __noreturn i386_start_kernel(void)
+  * to the first kernel PMD. Note the upper half of each PMD or PTE are
+  * always zero at this stage.
+  */
+-void __init mk_early_pgtbl_32(void);
++#ifdef CONFIG_X86_PAE
++typedef pmd_t			pl2_t;
++#define pl2_base		initial_pg_pmd
++#define SET_PL2(val)		{ .pmd = (val), }
++#else
++typedef pgd_t			pl2_t;
++#define pl2_base		initial_page_table
++#define SET_PL2(val)		{ .pgd = (val), }
++#endif
+ 
+ void __init __no_stack_protector mk_early_pgtbl_32(void)
+ {
+-	pte_t pte, *ptep;
+-	int i;
+-	unsigned long *ptr;
+ 	/* Enough space to fit pagetables for the low memory linear map */
+ 	const unsigned long limit = __pa_nodebug(_end) +
+ 		(PAGE_TABLE_SIZE(LOWMEM_PAGES) << PAGE_SHIFT);
+-#ifdef CONFIG_X86_PAE
+-	pmd_t pl2, *pl2p = (pmd_t *)__pa_nodebug(initial_pg_pmd);
+-#define SET_PL2(pl2, val)    { (pl2).pmd = (val); }
+-#else
+-	pgd_t pl2, *pl2p = (pgd_t *)__pa_nodebug(initial_page_table);
+-#define SET_PL2(pl2, val)   { (pl2).pgd = (val); }
+-#endif
++	pte_t pte, *ptep = (pte_t *)__pa_nodebug(__brk_base);
++	pl2_t *pl2p = (pl2_t *)__pa_nodebug(pl2_base);
++	unsigned long *ptr;
++	int i;
+ 
+-	ptep = (pte_t *)__pa_nodebug(__brk_base);
+ 	pte.pte = PTE_IDENT_ATTR;
+ 
+ 	while ((pte.pte & PTE_PFN_MASK) < limit) {
++		pl2_t pl2 = SET_PL2((unsigned long)ptep | PDE_IDENT_ATTR);
+ 
+-		SET_PL2(pl2, (unsigned long)ptep | PDE_IDENT_ATTR);
+ 		*pl2p = pl2;
+-#ifndef CONFIG_X86_PAE
+-		/* Kernel PDE entry */
+-		*(pl2p +  ((PAGE_OFFSET >> PGDIR_SHIFT))) = pl2;
+-#endif
++
++		if (!IS_ENABLED(CONFIG_X86_PAE)) {
++			/* Kernel PDE entry */
++			*(pl2p +  ((PAGE_OFFSET >> PGDIR_SHIFT))) = pl2;
++		}
++
+ 		for (i = 0; i < PTRS_PER_PTE; i++) {
+ 			*ptep = pte;
+ 			pte.pte += PAGE_SIZE;
+ 			ptep++;
+ 		}
+-
+ 		pl2p++;
+ 	}
+ 
+-- 
+2.42.0.rc0.25.ga82fb66fed25
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
