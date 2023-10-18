@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735AE7CD760
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC617CD763
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjJRJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S229662AbjJRJC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJRJBG (ORCPT
+        with ESMTP id S229441AbjJRJCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:01:06 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB4EEA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:01:04 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50435ad51bbso8697736e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697619662; x=1698224462; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSpFNZO1arwmkyx+97hJB9n0j7JKmTEsg8eKLgN5W3I=;
-        b=QBfBTykd2rDw5LTViJaKIrH7Yyrlc6gb4trxw+kVNmq3CBwoHSHtAtP/oJBY4HBsTs
-         q7BlFyPorDiiKfuDxzNhJBp+EghGUTtwGaWNtAV2OFKPHkxj8PgbqntGhsutQDNPi/d8
-         ex9PKzVP1P9JZYB2Zr61GBhGbEqlOJFOoSDXvwOKz/Tq/3j2CV7dgp2olJJUBO/RagIH
-         ft5atq3CUUVMLVg1TOYepARRU+sy6oZ2ThGwK/1BufZHhQpZDCWBmJw4k3BK3lE5fiJ1
-         bcvrbt3s2dEluTP9axRs+zuz50yVhpE9M+66nZL6YVKjnRDpbM5Rzm1TafiEGQdbdf66
-         JW0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697619662; x=1698224462;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSpFNZO1arwmkyx+97hJB9n0j7JKmTEsg8eKLgN5W3I=;
-        b=vudIzRZ0hGkqy0EBKHsI0zBTtoHA8EDgoZct9kddI5TH3j2VUiopL1fFALXOGgDCIc
-         RoOUkx6F4n1ZZO9pRylotGS5ds37F1x/N6Vl8tB/kEKsCMGe4RbctwlradvA2rnWy/a9
-         NP73mBakcM3ioVazAGZz8i0VQThXYq0guKhlNK3V5qvT20qwPLdshmVIx+Fne7LLeha/
-         5wGFzhfYsYnyVWagiPr0iyim7IYaq4A2bv9Yw6NSWrUobep5r6Apd4U90/9nAsUmVppN
-         IPz41hnXymws1EkU8owzuTaUkO7H+FXTQQSbaE27MA/ADMjg1hkZ+mu5Q04123wA07Qc
-         1FUA==
-X-Gm-Message-State: AOJu0Yz+jAz1m/OOjtcfi/LUFVyVViEdTmskoV8ra4Olc0s1a/rqW8Rf
-        niV6iRlXiI2wkCRvpIEgNgaGOA==
-X-Google-Smtp-Source: AGHT+IHfuSChl3m67DXdnoev5ggVFiwYwf9ghGOeVq7b/O0ZW2jEVoLQJADhG06GtJH0kVLil/+4mg==
-X-Received: by 2002:ac2:4d86:0:b0:500:d970:6541 with SMTP id g6-20020ac24d86000000b00500d9706541mr3290410lfe.39.1697619662481;
-        Wed, 18 Oct 2023 02:01:02 -0700 (PDT)
-Received: from [172.30.204.55] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id h41-20020a0565123ca900b004fbc82dd1a5sm619906lfv.13.2023.10.18.02.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 02:01:02 -0700 (PDT)
-Message-ID: <62645ba4-ab4a-491e-a9d8-6b7faebbb8cd@linaro.org>
-Date:   Wed, 18 Oct 2023 11:00:59 +0200
+        Wed, 18 Oct 2023 05:02:24 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE77FEA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:02:22 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D091A3200B11;
+        Wed, 18 Oct 2023 05:02:21 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 18 Oct 2023 05:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1697619741; x=1697706141; bh=/6
+        9j3hXZYCUlxIkqapaFj++HVDN18WQt0u8wr2jBqgk=; b=sEk8LzaJPZfb+m2p5v
+        iCdapM+nd25Yef+7Tk94lj0d9hLBRZlqV1yTvs28bxDadWfxwoOQfADf846T1c8W
+        sPpgG6Io/uHToKsHBIf3wwVpTdLALYNUeAmWolqc+akZ8bTLtaS8kg6Fu/0jt703
+        mAOWCtkBST7iFTBR75zAfN2r8C1tk+vxesaGCISJIdv9Y6MKMURFd/RC6EjjfO7s
+        ihh1aLnLQGnf0lcWUjo/TDghSxvo1DLWZQuS4m/NJP8RduPIpa5Jut5ezZyLwbQc
+        DgS7C5RS4l+sUknr/+b4T206hCDJ4V8DOYvmIGB/f7NMNI8xfBzY7BDs1SBSEQBj
+        hiug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697619741; x=1697706141; bh=/69j3hXZYCUlx
+        IkqapaFj++HVDN18WQt0u8wr2jBqgk=; b=UWjoI0FfU1QSPibA547jAbuotqinO
+        DbIsH+hA36TfmPpjLdzmuW5yj3QWqYfk9JGQEFbKTVT2HovfNwF4SV3SYrY1kZaj
+        RYNELKy20J4mFEiBcSFdyMUI39+Km7nEkXn0OjWJ+aVcBPji7MrKiWm0diFV2XuD
+        xN3nHYialcbmu2US5ZB7Ukg38Bx0/6gxK1ZGTDJxfCkEypM3+4O18LP3C6d28hYL
+        aj8/lTLVUBUemvNFT2RGrJqT+q3ye7LrPIfY0wph4bwu9OHd9niHs6KrntpLryCh
+        oE1xwL8PnjDsHd4jEbkcen9i5FNHwN1ev43jxnGZOqJEYDLFIx8wUhUHw==
+X-ME-Sender: <xms:HZ8vZQSzZkUpxMR1sN2PVyoP57MHE1d4W8PXbseWWba2-wXW1BiLuQ>
+    <xme:HZ8vZdzsNZkpoUvsFxRdkIaeMA5Q_9T0M8R4CH4ZIw4Db2rSeksdBxpWFYI-Yy5di
+    579Ado9mqxTwc7IpLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeggddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:HZ8vZd3Z88heq_MYcYGPrlZJS_6mZQiv2EZRG9fSysCwAfpR-2sYPg>
+    <xmx:HZ8vZUC9L2gtdYB1KKCjNDKgcoH0X27EedPwXSjSzbwbo7aIlZczLQ>
+    <xmx:HZ8vZZjYnnNl9haceQxYiWRDIV9dyKP_sYV4YaRfJcVRLk9__-mGxw>
+    <xmx:HZ8vZZeyCnDJrGztA_Ier-ACNyqaJvlZzO9fgNplbjY2At8uSoAJnQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3394DB60089; Wed, 18 Oct 2023 05:02:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom: lpass-lpi: allow slew rate bit in
- main pin config register
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
- <20231013145935.220945-3-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231013145935.220945-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Message-Id: <6fb88a6a-dd66-4368-8da9-596f384fe5bc@app.fastmail.com>
+In-Reply-To: <20231018081941.475277-4-saeed@kernel.org>
+References: <20231018081941.475277-1-saeed@kernel.org>
+ <20231018081941.475277-4-saeed@kernel.org>
+Date:   Wed, 18 Oct 2023 11:02:00 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Saeed Mahameed" <saeed@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>, "Jiri Pirko" <jiri@nvidia.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>
+Subject: Re: [PATCH 3/5] misc: mlx5ctl: Add info ioctl
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023, at 10:19, Saeed Mahameed wrote:
 
+> Implement INFO ioctl to return the allocated UID and the capability flags
+> and some other useful device information such as the underlying ConnectX
+> device.
 
-On 10/13/23 16:59, Krzysztof Kozlowski wrote:
-> Existing Qualcomm SoCs have the LPASS pin controller slew rate control
-> in separate register, however this will change with upcoming Qualcomm
-> SoCs.  The slew rate will be part of the main register for pin
-> configuration, thus second device IO address space is not needed.
-> 
-> Prepare for supporting new SoCs by adding flag customizing the driver
-> behavior for slew rate.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Changes in v2:
-> 1. Reversed xmas tree
-> 
-> v1: https://lore.kernel.org/all/20230901090224.27770-1-krzysztof.kozlowski@linaro.org/
-> ---
-Only because I know it'll be used soon:
+I'm commenting on the ABI here, ignoring everything for the moment.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  static const struct file_operations mlx5ctl_fops = {
+>  	.owner = THIS_MODULE,
+>  	.open = mlx5ctl_open,
+>  	.release = mlx5ctl_release,
+> +	.unlocked_ioctl = mlx5ctl_ioctl,
+>  };
 
-Konrad
+There should be a .compat_ioctl entry as well, to allow 32-bit
+tasks to use the same interface.
+ 
+>  static int mlx5ctl_probe(struct auxiliary_device *adev,
+> diff --git a/include/uapi/misc/mlx5ctl.h b/include/uapi/misc/mlx5ctl.h
+> new file mode 100644
+> index 000000000000..81d89cd285fc
+> --- /dev/null
+> +++ b/include/uapi/misc/mlx5ctl.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB WITH Linux-syscall-note */
+> +/* Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
+> +
+> +#ifndef __MLX5CTL_IOCTL_H__
+> +#define __MLX5CTL_IOCTL_H__
+> +
+> +struct mlx5ctl_info {
+> +	__aligned_u64 flags;
+> +	__u32 size;
+> +	__u8 devname[64]; /* underlaying ConnectX device */
+> +	__u16 uctx_uid; /* current process allocated UCTX UID */
+
+I don't know what a UCTX UID is, but if this is related to
+uid_t, it has to be 32 bit wide.
+
+> +	__u16 reserved1;
+> +	__u32 uctx_cap; /* current process effective UCTX cap */
+> +	__u32 dev_uctx_cap; /* device's UCTX capabilities */
+> +	__u32 ucap; /* process user capability */
+> +	__u32 reserved2[4];
+> +};
+
+If I'm counting right, this structure has a size of
+108 bytes but an alignment of 8 bytes, so you end up with
+a 4-byte hole at the end, which introduces a risk of
+leaking kernel data. Maybe give it an extra reserved word?
+
+     Arnd
