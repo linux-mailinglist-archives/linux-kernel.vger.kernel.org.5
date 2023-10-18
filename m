@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5539F7CE187
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B78E7CE0E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbjJRPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S1345341AbjJRPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:13:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbjJRPMl (ORCPT
+        with ESMTP id S1345245AbjJRPND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:12:41 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2DE113
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:12:39 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1caaaa873efso4985155ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697641959; x=1698246759; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=evf98vIg4TK2MPQBLVBmj385x0hMw4FlsTtUwU11DSI=;
-        b=d51R1t+jYNyCrVgXhpOOE+dXe6Aovx8stHBG7TKoKEwls9axz0dTXnX4CDatWJDU+1
-         hvtIf/d1v+DG36x6GiTkAdnYOBkOYqMfm/EadTzUqYKRsi8pnLrN0nfkC77DrztuY5U1
-         hfG2E4dyIqMDIWCGEXjTNFNh+SDeDBP/WyfIhbHiXSSddfk6j2RRUpwCwA758UjJ6qMl
-         ITjlHy3V+vtSFCZKF+dVtD/BEB291uf+sJ3+kZTBUnn7twKO2FvI3Q7Sq+EkNjFs+kv8
-         q2YNnBUURURdeIED67nXUqWRObxPzaMLCo0z4jWPdKO4xYGwNR8BUj7wME172RUJQF9Q
-         m9Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697641959; x=1698246759;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=evf98vIg4TK2MPQBLVBmj385x0hMw4FlsTtUwU11DSI=;
-        b=tizg0D9vg8v1TvKQeofQx38nRQ1wPpYncrleYZLMuX4+eLmiFw7sTs3FSHq3HFAKME
-         7t/U/JgBVmWZCQJMbshi91l2/aA3QWbPezYAtjZXTME7pSX5WQ8NtkOwsyAXAO9WJc5t
-         3o76HDJAAPb6Cu0QSejZ7JOhMEcQH81kef9O9zrCGQdF081U1LSB341920EYIWXIV79a
-         efC0eJPYLpHsxq1yRUt+DBVBaUHdjf2Ul6QKbkUsr+8eoYzodM/j+sAFanzXJHPaMk6S
-         MtqtP3qnFkrnOY0jbnJac+eGCPb84aG2991fPhCIbLAD6jKIzEBz5DYXUNG2t6IiXVey
-         a1Tg==
-X-Gm-Message-State: AOJu0YyPbQsGCpLB03tSP2LevQMx3x4K7Wyq8hdzkB96J5tDozn8mSTZ
-        WhoOBHbOUiqd0adYJnAVwm36S3yErpc=
-X-Google-Smtp-Source: AGHT+IGGj6YD1tNGtkylhZ2TMrFEwNGuXiRirTZJm64uFeGyC2oRhC4jwU5nYGby5n/F7k9IPGht2AGbZO4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:328a:b0:1b8:8c7:31e6 with SMTP id
- jh10-20020a170903328a00b001b808c731e6mr130834plb.1.1697641958822; Wed, 18 Oct
- 2023 08:12:38 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 08:12:37 -0700
-In-Reply-To: <020adf4b-5fd9-4216-9dac-7dabe53617d5@intel.com>
-Mime-Version: 1.0
-References: <20231013070037.512051-1-xiaoyao.li@intel.com> <ZS7ERnnRqs8Fl0ZF@google.com>
- <020adf4b-5fd9-4216-9dac-7dabe53617d5@intel.com>
-Message-ID: <ZS_15SGIhtpzJ8Gr@google.com>
-Subject: Re: [PATCH] KVM: x86: Use the correct size of struct
- kvm_vcpu_pv_apf_data and fix the documentation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 11:13:03 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC967109;
+        Wed, 18 Oct 2023 08:13:00 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3114840E01B1;
+        Wed, 18 Oct 2023 15:12:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id w5pvRjryP5Rh; Wed, 18 Oct 2023 15:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697641977; bh=EbtU4bQMd+SyYpD5u3uz+hfYsMOiiZYCWw2lQLB04mo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cU4g+kNqdKE0MIQFRGKd4h8zzOaeguhBa82OzmBaOvpjLGvZl0/TAVrCD2B7RRWo3
+         8yhN7yJGW7A4BLWCx31WFG54VxA9SC+bf39gSBcDfhwKzxZNaHpaydBWX9M4iyLSD/
+         0ZzzMAodf12WAiM6wQYIa+4Ms/Hng+z/jVuPiVvCMxvji3twGX/T+GhV/q03scH0Bu
+         ombylMRUvy5lKii5pV8zbvsQ6fnRFgd86sgSbUdFEvf2M+YAs7miQovFHMUoLp6D8y
+         iYe2IJrBo0nOyDkFgq/PFq9X+A5YHiLIqRfx21yW3jJJ+9aDd1yZ/EIo6ib2t9NGZ3
+         uqCf2O17eks3O/koCkWdmh5gQxfjwFxVkMroLzSst550gxf2M/3xLZRhaxKJrUhy1R
+         GWFyyCigJqVNCupq8pZIA56Cy0PxjEiRAZClPcDmXKgxZ42iMOi9iO8S+f8cy2rd7l
+         qfYCBM0+YKtnytcvOKmEUz0V1D5GZVaeS81mrvy+FzgQiNfBO/SPONPtyRmnoZKySY
+         1R7To8Jg4N8WvxSI4HtKbMJguFt2lDqAxWsVHCYExk84UMOgKEVp68Ivlqh6SO/Mst
+         V71bdfDljPgggr1H0U6s9NrtJLrgL/SAKtg/tSeCKAJWFVZ2+6GYqqqbJDtyWKZ5Jj
+         ZmOrzgd5R0RyVJuyd0/ClU1Q=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F47740E0177;
+        Wed, 18 Oct 2023 15:12:50 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 17:12:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        David Kaplan <david.kaplan@amd.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20231018151245.GCZS/17QhDGe7q6K+w@fat_crate.local>
+References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+ <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
+ <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
+ <ZS/f8DeEIWhBtBeb@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZS/f8DeEIWhBtBeb@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023, Xiaoyao Li wrote:
-> On 10/18/2023 1:28 AM, Sean Christopherson wrote:
-> > On Fri, Oct 13, 2023, Xiaoyao Li wrote:
-> > > Fix the kvm_gfn_to_hva_cache_init() to use the correct size though KVM
-> > > only touches fist 8 bytes.
-> > 
-> > This isn't a fix.  There's actually meaningful value in precisely initializing the
-> > cache as it guards against KVM writing into the padding, e.g. this WARN would fire:
-> > 
-> > 	if (WARN_ON_ONCE(len + offset > ghc->len))
-> > 		return -EINVAL;
-> > 
-> > So it's a bit odd, but I would prefer to keep the current behavior of mapping only
-> > the first 8 bytes.
-> > 
-> > Here's what I'm thinking to clean up the enabled field (compile tested only,
-> > haven't touched the docs other than the obvious removal):
-> 
-> It looks better.
-> 
-> Will you send out a formal patch yourself? or leave it to me?
+On Wed, Oct 18, 2023 at 03:38:56PM +0200, Ingo Molnar wrote:
+> If then WARN_ONCE().
 
-Your call, I don't have a preference.  Just let me know which option you choose.
+WARN_ONCE() is not enough considering that if this fires, it means we're
+not really properly protected against one of those RET-speculation
+things.
+
+It needs to be warning constantly but then still allow booting. I.e,
+a ratelimited warn of sorts but I don't think we have that... yet.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
