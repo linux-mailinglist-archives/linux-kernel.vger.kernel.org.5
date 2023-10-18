@@ -2,143 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6067CE832
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB457CE833
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbjJRTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S231590AbjJRTxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjJRTws (ORCPT
+        with ESMTP id S231354AbjJRTxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:52:48 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A28AB
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:52:46 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31fa15f4cc6so6205120f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:52:46 -0700 (PDT)
+        Wed, 18 Oct 2023 15:53:06 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA13120
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:53:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so4104618b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697658765; x=1698263565; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=google.com; s=20230601; t=1697658783; x=1698263583; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=nm6W4GF2fEza/pR8Pn+Fd8sPcS6wBwKszXRTj0SkRso=;
-        b=Ube3Hd6VxLMlTIG6EmCWGG+t7tj7aN5QtTUx7Nor+iXdie4VQrXAvmK06sZIjDzI/p
-         CTaF3+V9p9XrzbyQL7eVjpfFjQc03KZBvZ/vP96wvy2jr0jGTUn40kGgSt/kEYdUUMO8
-         RqPvNMbhE/2gizPRdAqGfjRUpQ2yMrMpok3A+mSxCkMvFsuVmWk0jNdeGw4MiOlkWOTg
-         SAVyhf/tDHZJaKtKZcmzfg3q5IFPKp4CDw78HCPgLhupllxUPRTjAHFNNGeyJByNO4X1
-         8ArW7i5yzaZ0TDfk9U6iIDsCcEMIOVzHuyfPFk61DsmtEyscN7PavftxfQ5kqUQ1z6no
-         iOtQ==
+        bh=VhPjYIM8H5qvEYPlYZEBXrx9Vt3xsE9FG+Ow/kWUXwo=;
+        b=SqWRFDjfvQKJQK3yOZQVdCpCm5SqMeouHfhNuycb76ax1+4UweERnjbTFQXEfKoi/V
+         fph+qrNWvkU2vLlMgNtDj8c528Vy6ewG/hYo9GNtam6RNqB+MuAybMhBuVDNso1E3VM9
+         kU7HmOhOc/y/4ohdj1s9jLcsQjU/Wwn9mjNvZ3Nv5WfWE/Sg9fezU/NTPso39JGzkOCZ
+         CAL/u+TieKKMbDPZizGvuA/PmN5nZq2biM6R9qfF9dSH7XNk/eUE8v3b8YkJ6lIpzpR7
+         s366GxBNxx3n95aaoP10f7IkXHbexxqP7SjK4WWC/4IWzJ5IfOemMYwQqAayOYuG8CoI
+         ffAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697658765; x=1698263565;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697658783; x=1698263583;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nm6W4GF2fEza/pR8Pn+Fd8sPcS6wBwKszXRTj0SkRso=;
-        b=KVMzq8U0waa9UlgGT8T6AmAKVFHYdkefVjVycHWhdpWwhkfLkU1zLEFEcGKunbhpwD
-         C6VJgGFHqDIcynOifdnFq++a0OY7werxvupiN51/iWa4LUFwGn5WOOMY+NNQMPAgTn4m
-         Y4zwntOtmGyFlEzIQKNfNwtD1gw9jVBn5hLZE/drI6Kizx+6zyHI9FBgTA5U1jVxEnuF
-         RxnTIbCiFWxG3CWWBzz16o9VatBj/0giKiYfm6cMXdiaCqvmJyRlHarfZJDjkz1VgNL1
-         H5H0dlBJoKSOmRnmQ8IcL93ZrGr50E9cl27G07VSVohTbJY0rAme92Zj004+l99bZWHA
-         JLbw==
-X-Gm-Message-State: AOJu0YyPhR/nLiPtr7sM7uk38SXWAz9IHJVNW2NmSN/jXy8F5OO3qyS1
-        XzTT6gZ9I6rM9wqwk3EZVzb++A==
-X-Google-Smtp-Source: AGHT+IGxqL1+fgOdw1Qir7iE4fmFD3glIhrdd9CUL8vVbEGsIM1fBySeJk6KV1L3NeGH6cmML/TezA==
-X-Received: by 2002:adf:f492:0:b0:32d:b7d4:b90 with SMTP id l18-20020adff492000000b0032db7d40b90mr52515wro.39.1697658765025;
-        Wed, 18 Oct 2023 12:52:45 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.49])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b0032da7454ebesm2793693wrm.79.2023.10.18.12.52.43
+        bh=VhPjYIM8H5qvEYPlYZEBXrx9Vt3xsE9FG+Ow/kWUXwo=;
+        b=bbq/qqnwBVzdzymIN+6jxbe8uIpC89Tda2fcmEtbx+x8UkRO4FkOeZKNgjJzcECV5y
+         58PPTUJwUpm5RvBht14QLwTMSr2khYKNrPDFvcXk5xrlv385AtnGNsZMReHxI9L9jD7q
+         mlx2UAz35nOGBWir1xInP4/xLWYIZr929aCe1lnKG45fny9br1b9zCrSJeOQg8YsHs5u
+         YdM0gvN3xupXUyqNRUZyDK46+lZ5ThSQD/FXd44I6A3KYMxaKup8Y9Y4u30CAdQ6QRDO
+         1waZV/GVo8UoPOtczQA9P5pFtkleSNqVcv0xbql+8RZ2EX6Y/EU+IiV12HjVi8fHLydw
+         /yDg==
+X-Gm-Message-State: AOJu0YzIEoMRWHm6yi00ZnxPwT3FksfLLpI+goA8auU/5Z6TTLpDJeHa
+        1TW27+KsQ4LlEkQJN6x5tB7xkg==
+X-Google-Smtp-Source: AGHT+IEZDQQEu1s1N6RQnGEjs+T8AyfSPGxR6PSMDC9cwRc+b3s8mJdC0m9BpQfz/Zjsi0SMo+CnOg==
+X-Received: by 2002:a05:6a21:71c7:b0:17a:f1eb:e143 with SMTP id ay7-20020a056a2171c700b0017af1ebe143mr159582pzc.26.1697658783320;
+        Wed, 18 Oct 2023 12:53:03 -0700 (PDT)
+Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
+        by smtp.gmail.com with ESMTPSA id i16-20020a170902c95000b001ca86a9caccsm308796pla.228.2023.10.18.12.53.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 12:52:44 -0700 (PDT)
-Message-ID: <3360b33c-a6ce-463f-b2d8-43a08340f3c7@linaro.org>
-Date:   Wed, 18 Oct 2023 21:52:42 +0200
+        Wed, 18 Oct 2023 12:53:02 -0700 (PDT)
+Message-ID: <69f5791c-d428-494e-a944-824898e02801@google.com>
+Date:   Wed, 18 Oct 2023 12:53:01 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty: serial: samsung_tty: remove dead code
+Subject: Re: [PATCH v4 2/3] usb: gadget: uvc: Allocate uvc_requests one at a
+ time
 Content-Language: en-US
-To:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <git@andred.net>,
-        linux-kernel@vger.kernel.org
-Cc:     alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-References: <20231018105454.3911161-1-git@andred.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231018105454.3911161-1-git@andred.net>
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <20230930184821.310143-1-arakesh@google.com>
+ <20231012002451.254737-1-arakesh@google.com>
+ <20231012002451.254737-2-arakesh@google.com>
+ <ZS/XhFNvnevol9MP@pengutronix.de>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <ZS/XhFNvnevol9MP@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 12:54, André Draszik wrote:
-> From: André Draszik <andre.draszik@linaro.org>
+
+
+On 10/18/23 06:03, Michael Grzeschik wrote:
+> A short second review.
+
+Thank you for the review. Sent out a v5 with the comments 
+addressed!
+
 > 
-> When support for various old platforms was removed in commit
-> 1ea35b355722, s3c24xx_serial_ops also became unused here because
+> On Wed, Oct 11, 2023 at 05:24:50PM -0700, Avichal Rakesh wrote:
+>> Currently, the uvc gadget driver allocates all uvc_requests as one array
+>> and deallocates them all when the video stream stops. This includes
+>> de-allocating all the usb_requests associated with those uvc_requests.
+>> This can lead to use-after-free issues if any of those de-allocated
+>> usb_requests were still owned by the usb controller.
+>>
+>> This patch is 1 of 2 patches addressing the use-after-free issue.
+>> Instead of bulk allocating all uvc_requests as an array, this patch
+>> allocates uvc_requests one at a time, which should allows for similar
+>> granularity when deallocating the uvc_requests. This patch has no
+>> functional changes other than allocating each uvc_request separately,
+>> and similarly freeing each of them separately.
+>>
+>> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+>> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Signed-off-by: Avichal Rakesh <arakesh@google.com>
+>> ---
+>> v1 -> v2: Rebased to ToT
+>> v2 -> v3: Fix email threading goof-up
+>> v3 -> v4: Address review comments & re-rebase to ToT
+>>
+>> drivers/usb/gadget/function/uvc.h       |  3 +-
+>> drivers/usb/gadget/function/uvc_video.c | 87 ++++++++++++++-----------
+>> 2 files changed, 50 insertions(+), 40 deletions(-)
+>> -        if (video->ureq[i].req_buffer == NULL)
+>> +        ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
+>> +        if (ureq->req_buffer == NULL)
+> You could also use if (!ureq->req_buffer)
 
-Please use commit xyz ("foo") syntax as pointed out by checkpatch.
+Keeping this as is because I prefer `== NULL` check for readability.
+Didn't find any specific rules in the kernel codestyle, so sticking
+with the more readable option (in my opinion).
 
-> nothing sets port type TYPE_S3C24XX anymore.
 > 
-> Remove s3c24xx_serial_ops and all the code that's unreachable now.
+>>             goto error;
+>>
+>> -        video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+>> -        if (video->ureq[i].req == NULL)
+>> +        ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+>> +        if (ureq->req == NULL)
+>>             goto error;
+>>
+>> -        video->ureq[i].req->buf = video->ureq[i].req_buffer;
+>> -        video->ureq[i].req->length = 0;
+>> -        video->ureq[i].req->complete = uvc_video_complete;
+>> -        video->ureq[i].req->context = &video->ureq[i];
+>> -        video->ureq[i].video = video;
+>> -        video->ureq[i].last_buf = NULL;
+>> +        ureq->req->buf = ureq->req_buffer;
+>> +        ureq->req->length = 0;
+>> +        ureq->req->complete = uvc_video_complete;
+>> +        ureq->req->context = ureq;
+>> +        ureq->video = video;
+>> +        ureq->last_buf = NULL;
+>>
+>> -        list_add_tail(&video->ureq[i].req->list, &video->req_free);
+>> +        list_add_tail(&ureq->req->list, &video->req_free);
+>>         /* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+>> -        sg_alloc_table(&video->ureq[i].sgt,
+>> +        sg_alloc_table(&ureq->sgt,
+>>                    DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+>>                         PAGE_SIZE) + 2, GFP_KERNEL);
+>>     }
+>> @@ -489,8 +496,8 @@ static void uvcg_video_pump(struct work_struct *work)
+>>  */
+>> int uvcg_video_enable(struct uvc_video *video, int enable)
+>> {
+>> -    unsigned int i;
+>>     int ret;
+>> +    struct uvc_request *ureq;
+>>
+>>     if (video->ep == NULL) {
+>>         uvcg_info(&video->uvc->func,
+>> @@ -502,9 +509,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>>         cancel_work_sync(&video->pump);
+>>         uvcg_queue_cancel(&video->queue, 0);
+>>
+>> -        for (i = 0; i < video->uvc_num_requests; ++i)
+>> -            if (video->ureq && video->ureq[i].req)
+>> -                usb_ep_dequeue(video->ep, video->ureq[i].req);
+>> +        list_for_each_entry(ureq, &video->ureqs, list) {
+>> +            if (ureq->req)
+>> +                usb_ep_dequeue(video->ep, ureq->req);
+>> +        }
+>>
+>>         uvc_video_free_requests(video);
+>>         uvcg_queue_enable(&video->queue, 0);
+>> @@ -536,6 +544,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>>  */
+>> int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+>> {
+>> +    INIT_LIST_HEAD(&video->ureqs);
+>>     INIT_LIST_HEAD(&video->req_free);
+>>     spin_lock_init(&video->req_lock);
+>>     INIT_WORK(&video->pump, uvcg_video_pump);
+>> -- 
+>> 2.42.0.609.gbb76f46606-goog
+>>
+>>
 > 
-> Fixes: 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks")
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
-
-Rest looks good:
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
