@@ -2,130 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7197CDFBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FEB7CDFBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345108AbjJRO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
+        id S1345190AbjJRO2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344873AbjJRO2D (ORCPT
+        with ESMTP id S1344873AbjJRO2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:28:03 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F41189
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:01 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3ae30e1ad6cso10859070b6e.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:01 -0700 (PDT)
+        Wed, 18 Oct 2023 10:28:16 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A58211B
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7d1816bccso104968517b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697639293; x=1698244093; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d0L3+cFU4QsO14uhjYGccfA39wf1vKEGho7WfRP4LWs=;
+        b=vJ3le7qQhojZ3jig9CCsnVTkHz6sJkGyjuuD2EqBIjdd5kuDbLuVXl8Hg+HONy/hGg
+         owdLDe14zUs4iVL675sNDSLP/NsCHX3UXA5N86Vp1Tug17rocbzX8rogY1BKPMQ3ueOe
+         kPgmEL/F5sBGEX+Iy+1vbClB3nVhipQOUhZ658CVfJ/YJKSEJYkqSMrnyiB0jwpk6Qjn
+         149yl95Zm0so3x9OT9/HZQIyPBCG/A6ZoJ+PiwPJgnuxhyZP9jKTstr8qfs42/V87yoU
+         ifpl7FwdzuOqJkKn39IRmgETz8/5jMM2Fq9ioWwY2M1bnVvP7qHWUqkm9bgtxILfyVIl
+         mdwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697639280; x=1698244080;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdMBNL3S2x6JknCQNvPePRN6XZ2zBEfRh1DVc58bPSA=;
-        b=YrOMQsVnqxCaQI5XYPCDQTi/aZRVzHpuxfuKWDVcFfx4GwiNmmx99MqvWeFoKa1Kgo
-         hQlvNkSGic5+AsSNzIPShf7kkKu/8XyZd4IVjIhWgtiI3ATitqlulb3cCjfO6uorTU1/
-         Mh4RNUrK5L0qoxtIeI67bm/5lvAWTq6s/+tgEaZQ9cFiiT/SmuJl4UDpvWe3D6KgPT0V
-         l+/pZTtMM1O6HUYidEL6Ek7t+XamP7LBHfVUzmYG8kZMzHNhCLaJlEDS/wF+SZir0OJx
-         mLs7jIjxBzxeb4g7D9Hi0HEVppv4aWZukRN5utszOSjwRiw9mlv2M732KsrKILNfuOqR
-         4dmQ==
-X-Gm-Message-State: AOJu0YzcwQh/42hyp2yh8dTt1vQgGVc+OwKMriT/LI6AEoSEOwM629Xi
-        mmOGT+2FVPj7UrHq4C5w38Ax9JkBGRd0ombg55phlIrvNP40
-X-Google-Smtp-Source: AGHT+IH5x77WTQFzLiRumx9QRmlIW1x9csdWG+C9yZ4XNpdGNpfb61NuTSsTMsCGzbBMsDzUBEgm2yxf0y4jfQacuqmDkoK4xRm/
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:219b:b0:3b2:f40e:9493 with SMTP id
- be27-20020a056808219b00b003b2f40e9493mr13347oib.6.1697639280434; Wed, 18 Oct
- 2023 07:28:00 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 07:28:00 -0700
-In-Reply-To: <0000000000000c44b0060760bd00@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004467c80607fe72f1@google.com>
-Subject: Re: [syzbot] [gfs2?] WARNING: suspicious RCU usage in gfs2_permission
-From:   syzbot <syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, gfs2@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        postmaster@duagon.onmicrosoft.com, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1697639293; x=1698244093;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d0L3+cFU4QsO14uhjYGccfA39wf1vKEGho7WfRP4LWs=;
+        b=Q5OJ3R7zwhUrfDIwmbmS/ZYIVGNQqDB4a+/4EMIXEpkc+7SHdgbJh/mViy2K5rh5ya
+         IOf7Y6IzmtosNyyTiQ9qju+tWjfpcBH3rEZlT7Ur8R5cAxTSJlCSoaaB1OWXYJQ/cHn7
+         1hJxwzL9kT2/l/l5mxm5TIWXZcqFFsAqi4DDJ27R9Zv2e1Jzkp6A92RQ8z+/ebnsA9L6
+         R30p8Ho5UFCAN10IuA74BnN6DeKzikOwE20xmcscaaZfgQR6z5/qYii4nbPopEJalGrS
+         i/mBRiZrRF4rgnyFxorQetm7nV0jfwOrtfEFvEU+TaEIvsKt3KcKPxpYP1C5m5nejJ1G
+         d8Vw==
+X-Gm-Message-State: AOJu0YxqSUDs9PwNbONUHP4LbksVG8EmzTk9eMXOZGICpUkdqxPJLlT6
+        2Nvrlv41iAcTBoVHvvcmFI338K64kEo=
+X-Google-Smtp-Source: AGHT+IEbAz2u3aldbg+cvolfM3tRH+twFqSywuG35bwDq+oVphNk0bL2TVN80pFp9xSd7r3/Ptj8nJfKLTo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:cb4d:0:b0:592:7a39:e4b4 with SMTP id
+ n74-20020a0dcb4d000000b005927a39e4b4mr125401ywd.6.1697639293380; Wed, 18 Oct
+ 2023 07:28:13 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 07:28:11 -0700
+In-Reply-To: <9483638a-e34b-4e01-baa4-445a5984301c@gmail.com>
+Mime-Version: 1.0
+References: <20231017093335.18216-1-likexu@tencent.com> <ZS79MFkVB6A1N9AA@google.com>
+ <9483638a-e34b-4e01-baa4-445a5984301c@gmail.com>
+Message-ID: <ZS_rezh9cFeobEEz@google.com>
+Subject: Re: [PATCH] KVM: x86: Clean up included but non-essential header declarations
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Oct 18, 2023, Like Xu wrote:
+> On 18/10/2023 5:31 am, Sean Christopherson wrote:
+> > On Tue, Oct 17, 2023, Like Xu wrote:
+> > > From: Like Xu <likexu@tencent.com>
+> > > Removing these declarations as part of KVM code refactoring can also (when
+> > > the compiler isn't so smart) reduce compile time, compile warnings, and the
+> > 
+> > Really, warnings?  On what W= level?  W=1 builds just fine with KVM_WERROR=y.
+> > If any of the "supported" warn levels triggers a warn=>error, then we'll fix it.
+> > 
+> > > size of compiled artefacts, and more importantly can help developers better
+> > > consider decoupling when adding/refactoring unmerged code, thus relieving
+> > > some of the burden on the code review process.
+> > 
+> > Can you provide an example?  KVM certainly has its share of potential circular
+> > dependency pitfalls, e.g. it's largely why we have the ugly and seemingly
+> > arbitrary split between x86.h and asm/kvm_host.h.  But outside of legitimate
+> > collisions like that, I can't think of a single instance where superfluous existing
+> > includes caused problems.  On the other hand, I distinctly recall multiple
+> > instances where a header didn't include what it used and broke the build when the
+> > buggy header was included in a new file.
+> 
+> I've noticed that during patch iterations, developers add or forget to
+> remove header declarations from previous versions (just so the compiler
+> doesn't complain), and the status quo is that these header declarations
+> are rapidly ballooning.
 
-HEAD commit:    2dac75696c6d Add linux-next specific files for 20231018
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13af5fe5680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e5130844b0c0e2b4948
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101c8d09680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a07475680000
+That's hyperbolic BS.  Here's the diff of includes in x86.c from v2.6.38 to now.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2375f16ed327/disk-2dac7569.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c80aee6e2e6c/vmlinux-2dac7569.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/664dc23b738d/bzImage-2dac7569.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/5ce278ef6f36/mount_0.gz
+  @@ -1,20 +1,29 @@
+  +#include "ioapic.h"
+  +#include "kvm_emulate.h"
+  +#include "mmu/page_track.h"
+  +#include "cpuid.h"
+  +#include "pmu.h"
+  +#include "hyperv.h"
+  +#include "lapic.h"
+  +#include "xen.h"
+  +#include "smm.h"
+  
+  New KVM functionality and/or the result of refactoring code to break up large files.
+  
+  -#include <linux/module.h>
+  +#include <linux/export.h>
+  +#include <linux/moduleparam.h>
+  
+  Likely a refactoring of other code.  Basically a wash.
+  
+  -#include <linux/intel-iommu.h>
+  
+  Removal of an unnecessary vendor-specific include.
+  
+  +#include <linux/pci.h>
+  +#include <linux/timekeeper_internal.h>
+  
+  These two look dubious and probably can be removed.
+  
+  +#include <linux/pvclock_gtod.h>
+  +#include <linux/kvm_irqfd.h>
+  +#include <linux/irqbypass.h>
+  +#include <linux/sched/stat.h>
+  +#include <linux/sched/isolation.h>
+  +#include <linux/mem_encrypt.h>
+  +#include <linux/entry-kvm.h>
+  +#include <linux/suspend.h>
+  +#include <linux/smp.h>
+  +#include <trace/events/ipi.h>
+  
+  New functionality and/or refactoring.
+  
+  -#include <asm/mtrr.h>
+  -#include <asm/i387.h>
+  -#include <asm/xcr.h>
+  
+  Removal from refactoring.
+  
+  +#include <asm/pkru.h>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com
+  New functionality.
 
-gfs2: fsid=syz:syz.0: first mount done, others may mount
-=============================
-WARNING: suspicious RCU usage
-6.6.0-rc6-next-20231018-syzkaller #0 Not tainted
------------------------------
-fs/gfs2/inode.c:1877 suspicious rcu_dereference_check() usage!
+  +#include <linux/kernel_stat.h>
+  
+  This one looks dubious and probably can be removed.
+  
+  +#include <asm/fpu/api.h>
+  +#include <asm/fpu/xcr.h>
+  +#include <asm/fpu/xstate.h>
+  +#include <asm/irq_remapping.h>
+  +#include <asm/mshyperv.h>
+  +#include <asm/hypervisor.h>
+  
+  New functionality and/or refactoring.
+  
+  +#include <asm/tlbflush.h>
+  
+  The tlbflush.h include _might_ be stale now that x86.c doesn't use cr4_read_shadow(),
+  but it's also entirely possible there's a real need for it as tlbflush.h defines a
+  lot more than just TLB flush stuff.
+  
+  +#include <asm/intel_pt.h>
+  +#include <asm/emulate_prefix.h>
+  +#include <asm/sgx.h>
+  +#include <clocksource/hyperv_timer.h>
+  
+  New functionality and/or refactoring.
 
-other info that might help us debug this:
+So over the last *13 years*, x86.c has gained 3 includes that are likely now
+stale, and one that might be stale.  Yes, the total number of includes has roughly
+doubled, but so has the size of x86.c!
 
+arch/x86/include/asm/kvm_host.h is a similar story.  The number of includes has
+roughly doubled, but the size of kvm_host.h has nearly *tripled*.  And at a glance,
+every single new include is warranted.
 
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor120/5052.
+  @@ -3,12 +3,26 @@
+   #include <linux/mmu_notifier.h>
+   #include <linux/tracepoint.h>
+   #include <linux/cpumask.h>
+  +#include <linux/irq_work.h>
+  +#include <linux/irq.h>
+  +#include <linux/workqueue.h>
+   
+   #include <linux/kvm.h>
+   #include <linux/kvm_para.h>
+   #include <linux/kvm_types.h>
+  +#include <linux/perf_event.h>
+  +#include <linux/pvclock_gtod.h>
+  +#include <linux/clocksource.h>
+  +#include <linux/irqbypass.h>
+  +#include <linux/hyperv.h>
+  +#include <linux/kfifo.h>
+   
+  +#include <asm/apic.h>
+   #include <asm/pvclock-abi.h>
+   #include <asm/desc.h>
+   #include <asm/mtrr.h>
+   #include <asm/msr-index.h>
+  +#include <asm/asm.h>
+  +#include <asm/kvm_page_track.h>
+  +#include <asm/kvm_vcpu_regs.h>
+  +#include <asm/hyperv-tlfs.h>
 
-stack backtrace:
-CPU: 1 PID: 5052 Comm: syz-executor120 Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- lockdep_rcu_suspicious+0x20c/0x3b0 kernel/locking/lockdep.c:6711
- gfs2_permission+0x3f9/0x4c0 fs/gfs2/inode.c:1877
- do_inode_permission fs/namei.c:462 [inline]
- inode_permission fs/namei.c:529 [inline]
- inode_permission+0x384/0x5e0 fs/namei.c:504
- may_open+0x11c/0x400 fs/namei.c:3249
- do_open fs/namei.c:3619 [inline]
- path_openat+0x17aa/0x2ce0 fs/namei.c:3778
- do_filp_open+0x1de/0x430 fs/namei.c:3808
- do_sys_openat2+0x176/0x1e0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_openat fs/open.c:1471 [inline]
- __se_sys_openat fs/open.c:1466 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f5b23a31a11
-Code: 75 57 89 f0 25 00 00 41 00 3d 00 00 41 00 74 49 80 3d 7a 06 0b 00 00 74 6d 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 93 00 00 00 48 8b 54 24 28 64 48 2b 14 25
-RSP: 002b:00007ffe9ecd33a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007f5b23a31a11
-RDX: 0000000000010000 RSI: 0000000020037f80 RDI: 00000000ffffff9c
-RBP: 0000000020037f80 R08: 00007ffe9ecd3470 R09: 0000000000037f13
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-R13: 00007ffe9ecd3470 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
+I would hardly desribe either of those as "rapidly ballooning".
 
+> > >   43 files changed, 184 deletions(-)
+> > 
+> > NAK, I am not taking a wholesale purge of includes.  I have no objection to
+> > removing truly unnecessary includes, e.g. there are definitely some includes that
+> > are no longer necessary due to code being moved around.  But changes like the
+> > removal of all includes from tdp_mmu.h and smm.h are completely bogus.  If anything,
+> > smm.h clearly needs more includes, because it is certainly not including everything
+> > it is using.
+> 
+> Thanks, this patch being nak is to be expected. As you've noticed in the
+> smm.h story, sensible dependencies should appear in sensible header files,
+> and are assembled correctly to promote better understanding (the compiler
+> seems to be happy on weird dependency combinations and doesn't complain
+> until something goes wrong).
+> 
+> In addition to "x86.h and asm/kvm_host.h", we could have gone further in
+> the direction of "Make headers standalone", couldn't we ?
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+I honestly have no idea what point you're trying to make.  If you're asking
+"could be split up x86.h and asm/kvm_host.h into smaller headers", then the answer
+is "yes".  But that's not at all what your proposed patch does, and such cleanups
+are usually non-trivial and come with a cost, e.g. complicates backporting fixes
+to stable trees.
+
+I'm obviously not opposed to cleaning up and reducing unnecessary includes, e.g.
+see the recent work I put into arch/x86/include/asm/kvm_page_track.h.  But crap
+like this just wastes my time and makes me grumpy.
