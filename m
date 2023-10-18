@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E9B7CE904
+	by mail.lfdr.de (Postfix) with ESMTP id 887837CE905
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjJRUdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
+        id S231879AbjJRUdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjJRUdJ (ORCPT
+        with ESMTP id S231733AbjJRUdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:33:09 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1412A4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:33:07 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5a9bf4fbd3fso4482279a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:33:07 -0700 (PDT)
+        Wed, 18 Oct 2023 16:33:11 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C8EA4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:33:08 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5aa7172bafdso3794617a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697661187; x=1698265987; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697661188; x=1698265988; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VN0zp0snARiXWQz31GgzZoIBHJFk7ynRrvZrhH9BDQE=;
-        b=D2b1nL2Z0+kLLAkeFoJtazPKDb0mIfpq2MEulnM9kEayYpSPJ1BTw8TGMnUNwPXBrD
-         fxXfdeO0bOacNxms4BKe071MgSnu5Cwp1hZgSU+mJmqSZtSXTIeeGzvvEb5Q11pPXoBr
-         rXJw8Jv/yzKWyJM7yspm+cPXZ7CULsZ5qSs9pDytkKvogoXax7mQQRQXnC4LWkhnx4L8
-         dkVH/D49siXJuVfQeqSmJlNQhcEGOaFgMwkrqo6HcUFQsBKWMarlo+ZcZuwA84klrEQv
-         omP/zVxZloIagrKA9xMUwJ1BmdC82sYLzYVkIMSRcr8ksI2/tSEzVyYg9ueRxLMsSSIs
-         koiw==
+        bh=kOxvYaksrDFINgvTHvg7i3BLH6nikNi8tBwFFhT4+xI=;
+        b=eBS8PwTi2rwkAWHvhPW6qyWd7RE9bHyK24SfVJiOPrfr1Y+JvtZuNEBh/A1hcPgIoR
+         ZNUkfUu6kItbXORyqGHr+2BjIFQSMleNRHlF1kAPWDBCoZAju7t5bd0q9g/gPMfuDYQj
+         UXIj5PW58mXwMzZmZrUr04LgiDOAjR0daaNjjwyX0Xpivht7iPDnEKN0T75+mEKKfgfo
+         81dNZwvBSKT8pvOvoDue6Ne/Jb890BG0KK17BU6V43p5ibS2Wc5QUBVi7BTrc2HJXm6e
+         83BFNXUsZsLecdMy6wW0ceiaUqAE1iuCOuWsLbvVzbbb+Zr9yoLNy959Femp/B+zCgf4
+         Hd9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697661187; x=1698265987;
+        d=1e100.net; s=20230601; t=1697661188; x=1698265988;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VN0zp0snARiXWQz31GgzZoIBHJFk7ynRrvZrhH9BDQE=;
-        b=SFbG/fCzbpchebk0c6Bk8OGevZfJQULrHOKt2R3rFWsfETFmpsDlvRCOslJFw45H1d
-         H86xWYg0KkysX13EEtAQrxcXb1xEai561zkmOe/CfG429+vOxIERCB3uhUlHRfnv7ZaZ
-         HjH/FdW9gZ1k1PemodicfvDjbzo1Id3a+8VCt9j+8kbkx5Rn0YpsBHfHj7eXO3vIhAbw
-         ErJ9uLb3heKQNjSgiVlCpr6ecqRnRziDzl/mQlCqztBFfaKOULVrVr5v6U4JwUwS7Q6+
-         DWNNh92mxau45xiREF4WEHWrng35kJ4Rz6KQGEeCaClS0/N7IrPEc0UVnJ6CdGfMlr8/
-         mvrw==
-X-Gm-Message-State: AOJu0YyqxhlyM4ikECcL43zdRoz16yGajtb502BhlrpdG8c4Kq1+mMxH
-        WKqcQEWHaLwzmF2C6+rtKf4=
-X-Google-Smtp-Source: AGHT+IE6UrwDxrBBS7hjFHieWc31jxdejoBL6wMFdYPOtBiCq+4eALL+xiIct2VZuc3ylwqsKZTYgw==
-X-Received: by 2002:a05:6a21:6da0:b0:14c:d494:77c5 with SMTP id wl32-20020a056a216da000b0014cd49477c5mr307966pzb.13.1697661187061;
-        Wed, 18 Oct 2023 13:33:07 -0700 (PDT)
+        bh=kOxvYaksrDFINgvTHvg7i3BLH6nikNi8tBwFFhT4+xI=;
+        b=VTUaEsUeH0QNhfvy9JwBhbTSbgmvnqTM9VNyvbI7pOnJw8RNmngG26SpP3Q1nRGt4u
+         HlEWCI2hJ7Utj6sOP5D1TM37OwJjl9scGzX+7sakP2dEFq7Qk3uVpELUFxi18xjnLJ4C
+         Mj9TIQKSa4zw2wu5n9HBrp/69m20OK5pVVRLOr9JqdHiKm5cL0j6bfn6rmZB0nOeo4zV
+         BInvD130IHLvLWXPjg6YY2MNqrrgDTma6nvLlqJvOmEQXmL7audYs6GyovOEZ7lMFuro
+         w/sf8kIWLG7wSei9NgQBo93iGaTgU7bHoXVmjr0H5JRgVqwNt8KA5SkPTxdm47DA9SY/
+         0VyQ==
+X-Gm-Message-State: AOJu0YzTQdRZ06GjvRF74FY5OyTDPlBy1b4EeUfo1XVILffm/h6oyBp9
+        cjXdFlQ2MPOWUzisWnJZQFI=
+X-Google-Smtp-Source: AGHT+IGSy+gf+h7WIcfgpR19k4aoWiTB0tv72CZNC2cmYBpamwb6VVIlhQcsy15b27bnd2RjKzzbdg==
+X-Received: by 2002:a05:6a21:6d99:b0:14c:d494:77d1 with SMTP id wl25-20020a056a216d9900b0014cd49477d1mr327396pzb.10.1697661188209;
+        Wed, 18 Oct 2023 13:33:08 -0700 (PDT)
 Received: from fedora.. (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
-        by smtp.googlemail.com with ESMTPSA id w12-20020a170902d3cc00b001c61e628e9dsm354412plb.77.2023.10.18.13.33.06
+        by smtp.googlemail.com with ESMTPSA id w12-20020a170902d3cc00b001c61e628e9dsm354412plb.77.2023.10.18.13.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 13:33:06 -0700 (PDT)
+        Wed, 18 Oct 2023 13:33:07 -0700 (PDT)
 From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
         shy828301@gmail.com,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2 1/5] mm/khugepaged: Convert __collapse_huge_page_isolate() to use folios
-Date:   Wed, 18 Oct 2023 13:32:09 -0700
-Message-Id: <20231018203213.50224-2-vishal.moola@gmail.com>
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v2 2/5] mm/khugepaged: Convert hpage_collapse_scan_pmd() to use folios
+Date:   Wed, 18 Oct 2023 13:32:10 -0700
+Message-Id: <20231018203213.50224-3-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018203213.50224-1-vishal.moola@gmail.com>
 References: <20231018203213.50224-1-vishal.moola@gmail.com>
@@ -66,7 +65,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,107 +73,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces 11 calls to compound_head() with 1, and removes 1348 bytes of
-kernel text.
+Replaces 5 calls to compound_head(), and removes 1385 bytes of kernel
+text.
 
 Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- mm/khugepaged.c | 45 +++++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ mm/khugepaged.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 88433cc25d8a..500756604488 100644
+index 500756604488..6c4b5af43371 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -542,6 +542,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 					struct list_head *compound_pagelist)
- {
+@@ -1248,6 +1248,7 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
+ 	int result = SCAN_FAIL, referenced = 0;
+ 	int none_or_zero = 0, shared = 0;
  	struct page *page = NULL;
 +	struct folio *folio = NULL;
- 	pte_t *_pte;
- 	int none_or_zero = 0, shared = 0, result = SCAN_FAIL, referenced = 0;
- 	bool writable = false;
-@@ -576,7 +577,8 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 			goto out;
+ 	unsigned long _address;
+ 	spinlock_t *ptl;
+ 	int node = NUMA_NO_NODE, unmapped = 0;
+@@ -1334,29 +1335,28 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
+ 			}
  		}
  
--		VM_BUG_ON_PAGE(!PageAnon(page), page);
+-		page = compound_head(page);
+-
 +		folio = page_folio(page);
-+		VM_BUG_ON_FOLIO(!folio_test_anon(folio), folio);
- 
- 		if (page_mapcount(page) > 1) {
- 			++shared;
-@@ -588,16 +590,15 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 			}
- 		}
- 
--		if (PageCompound(page)) {
--			struct page *p;
--			page = compound_head(page);
-+		if (folio_test_large(folio)) {
-+			struct folio *f;
- 
- 			/*
- 			 * Check if we have dealt with the compound page
- 			 * already
- 			 */
--			list_for_each_entry(p, compound_pagelist, lru) {
--				if (page == p)
-+			list_for_each_entry(f, compound_pagelist, lru) {
-+				if (folio == f)
- 					goto next;
- 			}
- 		}
-@@ -608,7 +609,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 		 * is needed to serialize against split_huge_page
- 		 * when invoked from the VM.
+ 		/*
+ 		 * Record which node the original page is from and save this
+ 		 * information to cc->node_load[].
+ 		 * Khugepaged will allocate hugepage from the node has the max
+ 		 * hit record.
  		 */
--		if (!trylock_page(page)) {
-+		if (!folio_trylock(folio)) {
- 			result = SCAN_PAGE_LOCK;
- 			goto out;
+-		node = page_to_nid(page);
++		node = folio_nid(folio);
+ 		if (hpage_collapse_scan_abort(node, cc)) {
+ 			result = SCAN_SCAN_ABORT;
+ 			goto out_unmap;
  		}
-@@ -624,8 +625,8 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 		 * but not from this process. The other process cannot write to
- 		 * the page, only trigger CoW.
+ 		cc->node_load[node]++;
+-		if (!PageLRU(page)) {
++		if (!folio_test_lru(folio)) {
+ 			result = SCAN_PAGE_LRU;
+ 			goto out_unmap;
+ 		}
+-		if (PageLocked(page)) {
++		if (folio_test_locked(folio)) {
+ 			result = SCAN_PAGE_LOCK;
+ 			goto out_unmap;
+ 		}
+-		if (!PageAnon(page)) {
++		if (!folio_test_anon(folio)) {
+ 			result = SCAN_PAGE_ANON;
+ 			goto out_unmap;
+ 		}
+@@ -1371,7 +1371,7 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
+ 		 * has excessive GUP pins (i.e. 512).  Anyway the same check
+ 		 * will be done again later the risk seems low.
  		 */
 -		if (!is_refcount_suitable(page)) {
--			unlock_page(page);
 +		if (!is_refcount_suitable(&folio->page)) {
-+			folio_unlock(folio);
  			result = SCAN_PAGE_COUNT;
- 			goto out;
+ 			goto out_unmap;
  		}
-@@ -634,27 +635,27 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 		 * Isolate the page to avoid collapsing an hugepage
- 		 * currently in use by the VM.
- 		 */
--		if (!isolate_lru_page(page)) {
--			unlock_page(page);
-+		if (!folio_isolate_lru(folio)) {
-+			folio_unlock(folio);
- 			result = SCAN_DEL_PAGE_LRU;
- 			goto out;
- 		}
--		mod_node_page_state(page_pgdat(page),
--				NR_ISOLATED_ANON + page_is_file_lru(page),
--				compound_nr(page));
--		VM_BUG_ON_PAGE(!PageLocked(page), page);
--		VM_BUG_ON_PAGE(PageLRU(page), page);
-+		node_stat_mod_folio(folio,
-+				NR_ISOLATED_ANON + folio_is_file_lru(folio),
-+				folio_nr_pages(folio));
-+		VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
-+		VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
- 
--		if (PageCompound(page))
--			list_add_tail(&page->lru, compound_pagelist);
-+		if (folio_test_large(folio))
-+			list_add_tail(&folio->lru, compound_pagelist);
- next:
- 		/*
- 		 * If collapse was initiated by khugepaged, check that there is
+@@ -1381,8 +1381,8 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
  		 * enough young pte to justify collapsing the page
  		 */
  		if (cc->is_khugepaged &&
@@ -184,21 +147,14 @@ index 88433cc25d8a..500756604488 100644
 +		     folio_test_referenced(folio) || mmu_notifier_test_young(vma->vm_mm,
  								     address)))
  			referenced++;
- 
-@@ -668,13 +669,13 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 		result = SCAN_LACK_REFERENCED_PAGE;
- 	} else {
- 		result = SCAN_SUCCEED;
--		trace_mm_collapse_huge_page_isolate(page, none_or_zero,
-+		trace_mm_collapse_huge_page_isolate(&folio->page, none_or_zero,
- 						    referenced, writable, result);
- 		return result;
+ 	}
+@@ -1404,7 +1404,7 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
+ 		*mmap_locked = false;
  	}
  out:
- 	release_pte_pages(pte, _pte, compound_pagelist);
--	trace_mm_collapse_huge_page_isolate(page, none_or_zero,
-+	trace_mm_collapse_huge_page_isolate(&folio->page, none_or_zero,
- 					    referenced, writable, result);
+-	trace_mm_khugepaged_scan_pmd(mm, page, writable, referenced,
++	trace_mm_khugepaged_scan_pmd(mm, &folio->page, writable, referenced,
+ 				     none_or_zero, result, unmapped);
  	return result;
  }
 -- 
