@@ -2,210 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659737CE215
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B707CE1F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbjJRQCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
+        id S232471AbjJRP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjJRQCe (ORCPT
+        with ESMTP id S232220AbjJRP7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:02:34 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4F811A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:02:32 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IFtNpo010898;
-        Wed, 18 Oct 2023 16:02:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=CrA5ifTKPkXf2d1eQ8Ndso/nJHsoQI2THPTkwjlrOjw=;
- b=Burc6BeQGIMOJLHUCdPHIBtvoRLGrXKIt9sjlMUw4Co4p4AX62rZP2FaLhTrsEhnCuZo
- QIjW8JarQnsNrqE5uPHkFkt0/Odfbk04hT6zPch+tJhVfbNUV9tBzCiARAi4wNLKLAKv
- ccfEB0GLr4lSzr4IFpHVT1kX8ReGsWRHO4OHsKC1Bvl9kFsPVvmzd0Kr8mqnfLgolNh6
- gJcArKdO+9bfnttxuOJrXXmhyaipm4pn8FeS1f1N3jHiWCfsJf75xEALiFns2doG4IKY
- soRnAVtR7mqUSExwfzv/lOXzctM+YUwvjKqT7qa0FYlt6Ow78jNmtLMdcdRsuSKZ+PCG 9g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjdy83ek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 16:02:18 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IG2FG2027398;
-        Wed, 18 Oct 2023 16:02:15 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttjdy837a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 16:02:15 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IENL4k026885;
-        Wed, 18 Oct 2023 15:59:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr5asj0sy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 15:59:12 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IFxABD11731464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 15:59:10 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B86220049;
-        Wed, 18 Oct 2023 15:59:10 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B75D2004B;
-        Wed, 18 Oct 2023 15:59:07 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.43.47.66])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 15:59:07 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] powerpc/paravirt: Improve vcpu_is_preempted
-Date:   Wed, 18 Oct 2023 21:28:38 +0530
-Message-ID: <20231018155838.2332822-1-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OecCgnMb9qrF0Tvp8MK9i5rXUVnWzkAV
-X-Proofpoint-ORIG-GUID: Su2-Mapken8cEtKPTwg0JzpAAKihAm54
+        Wed, 18 Oct 2023 11:59:48 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE47116
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:59:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BBIxLMjS6juDiDwqMNG4163QzuLgz6MaJ1X1M9F7UspP76FQejTLYSHn4enVz77pTzE25mB6VoQRYuKB+MfctHv04kmgIlsY60C6MLzgaX7YN05ikQyuVwtpSDHtVT7r8F81mw6ScywcKunnLKZGyqdc4ZSQPtlUYVcTZ+bixuKsKHuOmP/BoY2nX3u9qhzfjC40Yd3oVgFteG7KWEOWh7LNCWJVgdqKV3eWpuuggsSmu2TDQYJVCldu660xuPoljcPP5bKtTETDodoKx/wCrmLJAGtE2EZHb/vbVguhuiTWz2xEZ3B1Nf2l3HX8ZWz0TMChuTia/MeNN8PUkZ6EGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gn2I1Ac2i9h01JOuAJ9cuH/paKtcsCnttLjp96r4TZM=;
+ b=gDoTk3oOzTKF6KM4us3KBmOiHRJCxuJ0t0bGQSn042v9B0zGtC0L+0hcP49b/RFfWNgySZWyxZnb47GZQWT0B32EllFwrbSHeZuZ/aw9oJzrADbPif7Vl6KddtXBizMz3Zst1FqBpXRkSg1nXgOQJeVt8UAbbLNLDHlFnfPFjkTzjwgEtm5fy9GlrMq9SVTtOm7912YHHXUf7zXZXhm37FF+D0rvHFDUegUvP/jnfwq4oZIRzp8HTDx3Os2YSTjB2AhYAJNFc/yOwqMkL3s0AG3Y0JtvC2Vf14Ln1CvNfVWRipGsUW22YuZ/aB+j5xxzvYnwk9mD1BkK5SK2cwQuKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gn2I1Ac2i9h01JOuAJ9cuH/paKtcsCnttLjp96r4TZM=;
+ b=VseUyNErH2+Yj/Oq32yl0Sf5IuBkx4tIwoCb68GdNQdXZ+aprThTeQecPhbC1yvmGlLlifYugcwnatRlOsHoZ6zKad8WJTe+QfDwe9V07mHNzU+goNdCA0smColiwne3EiiPyU3WeHSIZHMNzfEh9YLpYnq0wY2TUIV2QGzZcmM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PA4PR04MB7694.eurprd04.prod.outlook.com (2603:10a6:102:e7::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Wed, 18 Oct
+ 2023 15:59:42 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
+ 15:59:42 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     miquel.raynal@bootlin.com
+Cc:     Frank.Li@nxp.com, alexandre.belloni@bootlin.com,
+        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 Resent 0/6] i3c: master: svc: collection of bugs fixes
+Date:   Wed, 18 Oct 2023 11:59:20 -0400
+Message-Id: <20231018155926.3305476-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-ClientProxiedBy: SJ0PR05CA0210.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::35) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_14,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxscore=0 impostorscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 clxscore=1011 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PA4PR04MB7694:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9bd8d4e6-9209-46d5-943f-08dbcff33d93
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cTb2s6pT9D4aIasjS4YQSaU1vMBGHur3pt+OHpWVW3fGcgljTaAUlVs0XwlKPFxvFakr2HdtNEK2eBD3jVrv3VChLjIxm0ErUE0lxbIoODXxM4ltE1nPHR47/Mj63KmCbaQ8+TbJCX1Po3sYy0HUtZomF+VAUD2+RinRVfyK+w7ikuXnou+duza6+Y0aW7J3Jwjlv24rzRKmtzqU0teQmf3oCWuA8ozwSp0m7+JC4mONH1J4xUeHkFW2eJhUA/+TzwUSCikaZMKhl4cZJZA9vjFbWVjTW0Qj0ntlA30YEu+cC+w7rVNAub36FVJn7HYQBHv30HSmhuyH7ERKP8aER9cCHxX8JfP8H2ugdRl+jINqFw58CvYTZyXqaC+blFpuIYXIJrNjSmWRFII2bzvw71KQdeFS7TviYFwJy31eWR03M6N6qnZZ1aMgaNomRlnT/4Hi0uOPrJs+VYVBcwlCY8LnjMDay4MAEUjSQ3QVOZgY7HTgbZwvr8vYDoe4CtccSej9hI8fMdEJlvFDI5hTCYTUheohzTwYxE7R6Bhig5dayTUyVmfS1goR1eM5vz8DCEk460cCWKDorvDqn28xAzrcRenxR/JzwgAZX2WbfzTVJ/xqiS9hfg7C4sWxeERE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39860400002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(66556008)(66476007)(66946007)(6916009)(316002)(6486002)(478600001)(6666004)(2906002)(38350700005)(36756003)(86362001)(5660300002)(4744005)(8676002)(8936002)(4326008)(41300700001)(26005)(1076003)(2616005)(83380400001)(38100700002)(6512007)(52116002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N1p3a0EzNzVuYTUvV0ppTW90dnl0T1RTelNqWGRmZUJrNUFZSDloM3JZYk50?=
+ =?utf-8?B?eGlpT21QdnllOWllRDdrT2hNUlIrUDlvdnlCaSt2SzUwZzZhc3JGc3M3WUpv?=
+ =?utf-8?B?ZWFGWUZZazRpQTloQUdjczhnSDg5a2cwZXhHUjFjT2laNW1rMWdvUTlaVGho?=
+ =?utf-8?B?ZXQrZW05N3FxU2dQSjJkdmh2ZDFVSkYxSDJWWUpVSExaZXRkWTIzcWZ3aU5h?=
+ =?utf-8?B?QmZISHI0NVA2M1lEOUhzaXN4VzdlYWVpUUFLZUtnaWEvZ1Y0NDdaVUJNNk1o?=
+ =?utf-8?B?S00zNmxPSUxWQWd3WUlwQ2l1d0dkZFEwd2FuS1AwWWh6cXhWaHdUSjVYaEJP?=
+ =?utf-8?B?VjJoTWl2dnFFT0I2M2pQQ2ZHYWlhbUI3TkdqaEUybFJGb1lFM0dIZ1Q1QTNP?=
+ =?utf-8?B?b2dDemNvVTR0YmdhN0VhUFlpZ2N0SHFwUW1IUVBWOHFONUV4d0VNZVp4VWFk?=
+ =?utf-8?B?bWJmK0dERjRUdEpTYTN3Z3ZNN2ZuRzBHcHJZUWNnQWtjSXQxdVlWUHZEZDU0?=
+ =?utf-8?B?VXVyMldoK2hwaXlwRzJqWEpQRHhyRC9uL2kxamJRdzUzdkpKRlUvMkNLTWZY?=
+ =?utf-8?B?RjduT05GRGJPeW9sQlVBa0t6S2FXTkZsMXVySWp4Ni81bGJqbE04d1d5dkhj?=
+ =?utf-8?B?aUg0NGRxREN6d0hMdyt5NTAyYnduRFIxa3UreHlmWW1uL3FoVzcySURiRmtp?=
+ =?utf-8?B?QTVJbE9KSG5KKzFsbG43MFdXSmoxTC9ELytFeHMwYWErVllsUk1pYUdFWFV0?=
+ =?utf-8?B?aGNobmZCc3NvanJUYmlHeVo2d2dpZzhwYjBaTldRV2NmQlVqOHkwRzNLb0pv?=
+ =?utf-8?B?bDBUTlBQbXJLNS9DcUJuRGE1REhrczBWZVhSWmk2em1RWm54Y3JxWTAwTkZY?=
+ =?utf-8?B?akUxNDVBeTNGMEJuUjdqU0hnby83b0U0ZEJZTUFOckV2V2xqMDJTYUxiVEox?=
+ =?utf-8?B?WTRXc3Zaam5hSDZuWmJVVGZQV1ZhejA2azR1aG52dzE3eVdpMUh1NmljdGNi?=
+ =?utf-8?B?ZzUrdWw0cEJCMDcvTEszZzBBR0pQaGZoWEsrSmIvNnY3YTVUT2RzWDV2SHJ3?=
+ =?utf-8?B?VXJhN2R6aXJlc3hrYkZmMEl4NUZ0azR1eHRGZjZFMmhPZk9Mcm1oM1VzdXRZ?=
+ =?utf-8?B?QVEzQ2dzcDg2cm5uQTMzdGJCTzh5ZjRaTE1aZTg0MUVuMTFqcnlNc3lhUzhX?=
+ =?utf-8?B?RkM3QVNibVFsZVovalREakhwdllET3cxdkM2TFZRN2pmbUpzeEZBbjlidXlB?=
+ =?utf-8?B?YkxwOVlpVTNRYUlWazlON3pQTGF5U0wxeC9zTWlmRDA1WHhtSDd6RE1YN0dr?=
+ =?utf-8?B?RjhCN0VIMGVTTWVDc0dMVGxxeVg4eEFEcmNuTmdQR3B6N1RvT1dSZGVId2li?=
+ =?utf-8?B?MGZqTkkyTjNVZHA5MUsvSm1uWENhSEtLUmsrYmh5Y0dTZUR2SnRJMHh1UGNC?=
+ =?utf-8?B?UUIybzFiSEpiRGZpeGlqazRDbXg0RXZpZEk3UDY5UDlwT0hxbkRBVlZFVEJz?=
+ =?utf-8?B?Vi9ZSmM5c0lNQ1NYY1l3UTJ4YTdoMVJRRE4xeWd0SHF1U0Z0Qi9OZ2JyTmtz?=
+ =?utf-8?B?dEFwSTZrOUMxRWVUdi8zUndHYjZnVVdvS2dkZ3Z4VXBVRW9aTnRRczdIODU0?=
+ =?utf-8?B?YVdoRUNGSjBZWFBuZlk5MFNoU05tQllpRU44WmsrT09QZVNVODV0TW1CVzR0?=
+ =?utf-8?B?bS85ZUpVbUFSajFKUUpzWEFETWNDaWxWSnZxVmR3L0RQZkpjUythcHBNNmFj?=
+ =?utf-8?B?UG1qMXBsMDV2UEJyZWFSNkVFU050Zm80Z3BVUGNPeXl4YkR0cHUvdy8wK0Nw?=
+ =?utf-8?B?dDExYTZYOEI0UVpDK3dLVmJ3TVIyOXhnbkpyQUkzWEhkeWVGL2R6bmdDbk5C?=
+ =?utf-8?B?K0JXc1Bjb3BYdUpsZThkbHV0NUVteTAyUmpzVjM1cnhOWXNIamdoVk5leEwz?=
+ =?utf-8?B?ZEtNT0doQ0VWbS8rZjhNbVVHK1RQdnI0YnhuR3RDQ1dpb1hkVno1YVRzV084?=
+ =?utf-8?B?Zlczc0tVdzJOems2eW9vVjEwR1BNZ0xLNWEyMHFPeVBaYmVWYVZkekhoMkJu?=
+ =?utf-8?B?RUZpbnA4a0FiMzhralpBK2VNMVJXUUI0cHF0T1hHN1hMNC8yNFhXV0swT2Jz?=
+ =?utf-8?Q?MiQEaX3LqhsNC5Kasadhm/Y8O?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bd8d4e6-9209-46d5-943f-08dbcff33d93
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 15:59:42.3045
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cTsQj+D4nuPhRAMrXIu+jJgK3wbH1WEBHVfFY9H7MuqD16zc0Wd8YfCHkScagp5Z67X+1r2qI1+73bA8E5pzgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7694
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PowerVM Hypervisor dispatches on a whole core basis. In a shared LPAR, a
-CPU from a core that is CEDED or preempted may have a larger latency. In
-such a scenario, its preferable to choose a different CPU to run.
+Each patch is indepedents. See commit message for detail.
 
-If one of the CPUs in the core is active, i.e neither CEDED nor
-preempted, then consider this CPU as not preempted.
+Change from v1 to v2.
+See each patch notes
 
-Also if any of the CPUs in the core has yielded but OS has not requested
-CEDE or CONFER, then consider this CPU to be preempted.
+Frank Li (6):
+  i3c: master: svc: fix race condition in ibi work thread
+  i3c: master: svc: fix wrong data return when IBI happen during start
+    frame
+  i3c: master: svc: fix ibi may not return mandatory data byte
+  i3c: master: svc: fix check wrong status register in irq handler
+  i3c: master: svc: fix SDA keep low when polling IBIWON timeout happen
+  i3c: master: svc: fix random hot join failure since timeout error
 
-Correct detection of preempted CPUs is important for detecting idle
-CPUs/cores in task scheduler.
+ drivers/i3c/master/svc-i3c-master.c | 51 ++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
 
-Changelog:
-v1 -> v2: Handle lppaca_of(cpu) in !PPC_SPLPAR case.
-v1: https://lore.kernel.org/r/20231009051740.17683-1-srikar%40linux.vnet.ibm.com
-1. Fixed some compilation issues reported by kernelbot
-a. https://lore.kernel.org/oe-kbuild-all/202310102341.K0sgoqQL-lkp@intel.com/
-b.  https://lore.kernel.org/oe-kbuild-all/202310091636.lElmJkYV-lkp@intel.com/
-2. Resolved comments from Shrikanth
-
-Tested-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
-Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- arch/powerpc/include/asm/paravirt.h | 42 ++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index e08513d73119..0372b0093f72 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -71,6 +71,11 @@ static inline void yield_to_any(void)
- {
- 	plpar_hcall_norets_notrace(H_CONFER, -1, 0);
- }
-+
-+static inline bool is_vcpu_idle(int vcpu)
-+{
-+	return lppaca_of(vcpu).idle;
-+}
- #else
- static inline bool is_shared_processor(void)
- {
-@@ -100,6 +105,10 @@ static inline void prod_cpu(int cpu)
- 	___bad_prod_cpu(); /* This would be a bug */
- }
- 
-+static inline bool is_vcpu_idle(int vcpu)
-+{
-+	return false;
-+}
- #endif
- 
- #define vcpu_is_preempted vcpu_is_preempted
-@@ -121,9 +130,19 @@ static inline bool vcpu_is_preempted(int cpu)
- 	if (!is_shared_processor())
- 		return false;
- 
-+	if (!(yield_count_of(cpu) & 1))
-+		return false;
-+
-+	/*
-+	 * If CPU has yielded to Hypervisor but OS has not requested idle
-+	 * then this CPU is definitely preempted.
-+	 */
-+	if (!is_vcpu_idle(cpu))
-+		return true;
-+
- #ifdef CONFIG_PPC_SPLPAR
- 	if (!is_kvm_guest()) {
--		int first_cpu;
-+		int first_cpu, i;
- 
- 		/*
- 		 * The result of vcpu_is_preempted() is used in a
-@@ -149,11 +168,28 @@ static inline bool vcpu_is_preempted(int cpu)
- 		 */
- 		if (cpu_first_thread_sibling(cpu) == first_cpu)
- 			return false;
-+
-+		/*
-+		 * If any of the threads of this core is not preempted or
-+		 * ceded, then consider this CPU to be non-preempted
-+		 */
-+		first_cpu = cpu_first_thread_sibling(cpu);
-+		for (i = first_cpu; i < first_cpu + threads_per_core; i++) {
-+			if (i == cpu)
-+				continue;
-+			if (!(yield_count_of(i) & 1))
-+				return false;
-+			if (!is_vcpu_idle(i))
-+				return true;
-+		}
- 	}
- #endif
- 
--	if (yield_count_of(cpu) & 1)
--		return true;
-+	/*
-+	 * None of the threads in this core are running but none of
-+	 * them were preempted too. Hence assume the thread to be
-+	 * non-preempted.
-+	 */
- 	return false;
- }
- 
-
-base-commit: eddc90ea2af5933249ea1a78119f2c8ef8d07156
 -- 
-2.31.1
+2.34.1
 
