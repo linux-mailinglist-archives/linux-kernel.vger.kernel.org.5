@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBC07CD7BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01877CD7C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjJRJUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        id S229749AbjJRJUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjJRJUg (ORCPT
+        with ESMTP id S229730AbjJRJUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:20:36 -0400
+        Wed, 18 Oct 2023 05:20:39 -0400
 Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2072.outbound.protection.outlook.com [40.107.255.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8BCFD;
-        Wed, 18 Oct 2023 02:20:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801C910F;
+        Wed, 18 Oct 2023 02:20:36 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I6+OOfz9g1+9gu0ca++1OmuuaSCdfRerr/gYitPpUUVNzqVj5PSZe82Ju8znAPYp65y9mKtw9d/qbllOs3hkUUIKJJZ232jPVl/48vbxk3hA9w1HnLlkplSNXWbdHNf7IN+qTpAtEOXgXW5Ml0q1hiH7Fha8IW4e9s49lX4KnlZel0jfmLjoM2Z0USjq1CB79MqZ4XH7TVS6S/71udm7PAoCtqMCT5vlWrS+21EwTiXJkkbHLP+TBZkT2ru9eWxNjDFS3bDMdFbTmk8EE7dXwC068MCqb0YX0UmjnFnodHy47WArYM4dAza0UDJDIKLVSMbzkaJDupz3m7utVhqyPQ==
+ b=mDJDBVckLy1K8NEikbabVdKnFaH0dyv90IuR3/LzyE+1jTGiPoXZBHAG9SXsNsPPu/ZKOKTvCSJpJWZp+Zymb41lB1q/IYxA/HYuingv+EobhRDdcQQiLmp84h/lelfSk7hZxMQtsXs9eJFxl5sbZ69EzOOvP6MLYFUl2waIawVFz80xtfgiq0JjrNkJDyFjzFB2ZvD92wSOjzYhtpAQn6crRH0oohDwhEO5Qt/dSozSyAGtdoQHaOi99/ishozu0omvjI+wUTQX01i7tfbKIZpSxzF6sWGXrEAumjF1Nn2Jc+ar8FiItwF60XlJDjVJTeGwVCl5FyyMtf+0JqutQg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u8kGnQIN9xTda2TecGUIMThjM/i+v1RzDeWOCSj3ze8=;
- b=m6iue2CxBG4gNtIpi2C7ZLl0Rv5ATX3oJP1MyNrY6PutG+jWBA3PA6s+Fw7uUNIucUNNhlKrK3/srTDr9lKa7iEoRFoDLA0i6sFlYXPQ6OldHAfbLpiVH7dBiIwVSnJ+Kam2ShFnUzlHh7SWdlZ9WxXiIHeUDRPa+IUbDSK8GiVKErWPXvZ9czQDBvyfip69nPEGj+CTZK6z51Ps/SujORZ6Zah7UsK+sTXteK2FNPXuHSL/m3F1IYpTuHWdfEmIVDQ2Hb8PknceczyvB4bsoUqq0dsOP1aNK9T3osU7sevKsnCcKZWN6LGUocIkTiIKr2K2FYcFGpRyCSp5N+XE9A==
+ bh=Oodax8TYaAzJcHOXnEnNzRPLBGK1BDY6xVNguxVBo6A=;
+ b=cAVGj/6NHdGgeNoUZReLWkYlkqse5np4cW4sByvyb3YnDFl8P9shYjBnkdsmh6LsBaDY+LRCT83lTZoyayToObN+A6/lQXADpeOe0KG+SVFtBoLpoqYyW0Xzvkz3KmaruawpNnkZwk8ud3xcHPxmZtH9QLchT90pmPxHQnoO2qTQR9fIXL62JGVlcPyxGpWnxMW43UsBYoKIYy7caP6tjsKBtbk21TE4pxR+lB3r9RxRvPPDHgj/PQ1Aq8JnsW5A6XWj3xszC6Ut00gyDVQD4+NO83BN97ZE6H8eQ7S9HNV9Ba2GuwNVmzs+y5tfTpKM/stm7/jvK8Ji4z7NSVIUFw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
  dkim=pass header.d=moxa.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u8kGnQIN9xTda2TecGUIMThjM/i+v1RzDeWOCSj3ze8=;
- b=WgWC1KazbsDum1ETsjgwQvPqOtbqxnoFAB7d47hCYzMQLjICk6MtQpizrPoAMa+XyOclNpKDxyIfXvDpTxQyB4SlfDC4zOnSHZKbvS7/qv3smCuksRSH29C4UIdZf6WdUG7xCb5Yy0pN1A8Guxt9voT77kSP28IaE756yzZFbKA=
+ bh=Oodax8TYaAzJcHOXnEnNzRPLBGK1BDY6xVNguxVBo6A=;
+ b=cARu6GaM6p/ufDLEtiQrIe9qOnJ4bdl3/OOhcVnrGpIB85OfEPc/UAY247yvjz58LFSIEIyJjKJAdtUA2EGa1/FStl9PNQ5FrtYLBZqWeIVsw1//v9BudhveayJCdYWN24LNJWp0oyGcogX2XHLgZDLa4Q6475TXQJZ+g3CMSwo=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=moxa.com;
 Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
  (2603:1096:301:115::14) by SEZPR01MB4134.apcprd01.prod.exchangelabs.com
  (2603:1096:101:46::5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
- 2023 09:20:28 +0000
+ 2023 09:20:34 +0000
 Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
  ([fe80::3f1:6c0e:dec3:714b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
  ([fe80::3f1:6c0e:dec3:714b%5]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
- 09:20:27 +0000
+ 09:20:34 +0000
 From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
         Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-Subject: [PATCH v3 0/6] tty: serial: 8250: Changes of MOXA PCIe boards in 8250_pci.c
-Date:   Wed, 18 Oct 2023 17:17:33 +0800
-Message-Id: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
+Subject: [PATCH v3 1/6] tty: serial: 8250: Modify MOXA enum name within 8250_pci.c
+Date:   Wed, 18 Oct 2023 17:17:34 +0800
+Message-Id: <20231018091739.10125-2-crescentcy.hsieh@moxa.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
+References: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: TYCP286CA0015.JPNP286.PROD.OUTLOOK.COM
@@ -57,51 +59,51 @@ X-ClientProxiedBy: TYCP286CA0015.JPNP286.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|SEZPR01MB4134:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23e76b50-f07f-404b-1f90-08dbcfbb77a8
+X-MS-Office365-Filtering-Correlation-Id: 954625ac-2f3d-45e1-353f-08dbcfbb7bcd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f1+uSo67SAq/xF4kg/OBsiwYLL/WwhZPw876B2/w20pLnl4Oy5s4y6eOpJVCdosIu1ZMKv6l+WaWdFkSHboj8NSzWHwvvS7d0sfXbmizfL/T7BnKkusfHvVwX3ycTcY5xMIltpk7DAcWhr6KMsnFEr8PR+gCsBFHN5J3ev277srUzLuDg6tItK1yp1v32boyew+tMKuyQ4TJjFLdxebJW2xaQzI5JInlG79JoDtmzc41BHwtWW3SYkzt//SYfGyaCMKdAflXwjnIQr8HFIyhlgXcUJ6cUmwxYHzl3PsI5RQd3ntyxM4Sum5fi76aPtllsq2hUbbj5YB6Lv77s5EF5Tg3R9ScCBEiYa4mhJojBdn7/oMuvaxxi4Mn/XYfA7KFTvUCLnSbfkEwp5NQ79oyMVMfBwznH+h62Ipwi/Kwpai8K7chQlRe7qkRMgiJy/76ne1vXfPXwRL8u+mcjwl5eyrlc3s3UGAfEaZxA4GDEwsmfCDUDBzlkOavyLxUH6vbAAha01UO0h08cNtfANEiZyVQdks/aTriTutggXRIVN2MzbD7nTCBfTxFGCqDembji+LHY2Wp2gjXL30Cd4UWv03GECfYbStEa42oSO5QhU0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(107886003)(38350700005)(6666004)(6506007)(52116002)(6512007)(966005)(6486002)(508600001)(66476007)(110136005)(316002)(26005)(36756003)(83380400001)(1076003)(66556008)(66946007)(2616005)(41300700001)(38100700002)(5660300002)(8936002)(4326008)(8676002)(2906002)(86362001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 6b8oVn1HwT+1/kh1l/FMXfQ3f3QbIDi7RfXFApn3gKh3K+BR10edVHEhD/9/gCgGBdYegTth0Ih8cIxUzWeMYEkwjtHdt9YkQssDNbkASRfKEVEZZ1kcSbyUO55cVc40J58OEfLO6VXfZGRBv3z6eT606oJcnUX5KRhHQtRLlskznf0Ul3Z4JRVWAFmSYHzekw/IjAd1twvACmEGJG3o81plQuCkBTUkLlSsk/rktcaJuEKl7sNO+x54FkODtHXn8QxyzUOkGYYrFc62QK5ZrCiwUkwXp8H8Ha3Wz1bfWPndkSGr6XFUFt9KYMF2mVJPcVSEV7Vlvp2ewHXD9oTDdFBiKxli9l7nya2RwqHMYVOdJBizPnoSdX3ekjiC48qmE2KV4e/PGSekmJc9pq8N++GXQn8wZaMCUN8lFSuLKwnlyH1VDcR6g+DYZTt8eaCM0w+vxYBOU6KLc6eey00/XLeGX/fNqz6VusJ7atJKE86zoIN83YH9C/FA41UUWQGFdlW97KwYCyTaizX10fty+/nmRrfXX67KKAwmQ0i4w/hQKrLf/fK8R0O3XZa+Shewa8B2UqT/GjH33I74O4ouDh46/nut/6CbOYkoOyfkqCbTGpWqrPxM1xzrytfJ9rSw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(107886003)(38350700005)(6506007)(52116002)(6512007)(6486002)(508600001)(66476007)(110136005)(316002)(26005)(36756003)(83380400001)(1076003)(66556008)(66946007)(2616005)(41300700001)(38100700002)(5660300002)(8936002)(4326008)(8676002)(2906002)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HLAmFYCq61/FlHIIJp1EGBSI6WFW8YD9MOXpiOnKnLzWnOvpokh3syBbIIUK?=
- =?us-ascii?Q?z9qMYVgS5xIO+7kuy7i8JD5Ce1SpDeokdvf5fQAvJZCH/Ibg+hcvSXRdQ66D?=
- =?us-ascii?Q?gNAyYSr8sWcpcfztH0eKCluX6DTBuwsEoe0/TO1kT6N+4h8dnYtnCmRRVnHr?=
- =?us-ascii?Q?NJX23goSPmwzZ1mL1HXS+IV5ib922PAsReKsgAtnneKFFzOgKhhErQcU0rjQ?=
- =?us-ascii?Q?S6BZOMuMzgw1iXC25Fsr6hyAFT6A7pSgknMYpwxQjdzKQL3lAzf96BrEkRFx?=
- =?us-ascii?Q?bhF9Eh1eNyA1Miq07jEswpPH74pp4WGf8Rdu+RPMOo1ibiTvlZPzwDSJ+bUy?=
- =?us-ascii?Q?5dq1zU5S/JHiyMvveycyOE4SR/1VO/i0zO0qCEYP6KnG9hcVpbdvCyHewmgl?=
- =?us-ascii?Q?Mt/IEFQ0fwLn6iVGx+onzC/05uSShaMOdXe9icO4jQremrg/KfHmDyEzLmNo?=
- =?us-ascii?Q?Y1TNKDrXL5Thl0BZyoeRO3c8R1bTeG/wm8w6x2oqYq84JT64sX5uxFSe/9DD?=
- =?us-ascii?Q?Htb4ePniuHAlurtJ1sAPlZnK7ExPgmHVx6+4rc2bNNbRNTtcHu7/e71LQDQ+?=
- =?us-ascii?Q?o6g81eR7UUn9w6/e57DBp0/p+tLbfVyW7lf/+mpXMjXY1jTNVCtuk2axSbkb?=
- =?us-ascii?Q?jEa9Yaj8CWekDzdZPSsjYojktHmUsO4ZA0kqYYxqR4sAwNJyYJ7LKloHdjMm?=
- =?us-ascii?Q?tNs/dZc4niZsYXqHmxQnQyX+cpdXCUquIqB6Q+djzhNFdsN0a8fO3em4URCm?=
- =?us-ascii?Q?pMh/Hvd4kHldll7pu1VzP0Wu+QIvlyQmjLqSVwwF+3LmjnHgAM+sISJQkRfe?=
- =?us-ascii?Q?cnwS1HyGH1ge+azadiBRz9wRHkICFaUdF2BATsH+6n0PG40gqBXN8c5iXXw4?=
- =?us-ascii?Q?hBJCyWSKti1UGQVYhpz9G5zNvdmv4Jb8ZO1TiHZdu/Ut+kEtXT/Fz7cMhyHc?=
- =?us-ascii?Q?dqbNIOOy0Qdit/gu0A83ZAjTawNrV6twsqx6vtybCGw7eF2mPovuKj8jIRPC?=
- =?us-ascii?Q?vxuFUSShd8uVFE83xNtPeIj6pX2hZoRxfPPrGVp4BmJZvjoBOTUzvv9qX7PM?=
- =?us-ascii?Q?iey1iuI5FlS+JE2bypdrnjxlaGwJMOn2tqHUXtccT2R/PrvLAyFFwlDnhM5q?=
- =?us-ascii?Q?m86/LWfw+d2vJj32QYPps/z8OmmseyPKOMtKZ/yKiA0+cC963YQxLcynL6ki?=
- =?us-ascii?Q?9K3EXIhl2lnvDYZ7SpK2gimqDgwFOCiy2WjsfbrmRBDwGs9w6OV2Z3MkiRFg?=
- =?us-ascii?Q?3evgJRJytpQD8rx2Sqmk05D7oig9dkM6X4c7Dlhc/goLmQZrwWHCew47yYqz?=
- =?us-ascii?Q?WCQTkvj2GooDWtcvRiBqDuuiEKnMIfHCHgTdRXlNBVIPVKK2wAk2GqgOssc1?=
- =?us-ascii?Q?A/eZ8YG3P8uk9di8aJrJEIxkJDWTnUqmpq0/2dY+yKJPqfpM5fPD/nI02nz+?=
- =?us-ascii?Q?LSMzQLatlItD6xW9MiEEz2WNVglygXevocJjsuyYUvUw76AJDIldiv0LSoBH?=
- =?us-ascii?Q?ku/NebEKdayULz9GOA8DTyDBdiu9/GPzswV9I7uFRdEpPdU41FQt51gN2x8I?=
- =?us-ascii?Q?eV4YJouDK4peRha7nxreXDbxNeBeD+P6hf5vraI0tPy/3rNVzg4wUu2GPgbR?=
- =?us-ascii?Q?6A=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TK0JNDWCD86ocSQs3g1M8GgB40zBSZ1+T/9L3UkZ0kyHAPvu7fuiSSTHP7mB?=
+ =?us-ascii?Q?Nzdw0Oci2k6eYSJCfcVM7FY6XQDiUnyGqm18xmyKm/bcBIL9Cz+YJch+EHNM?=
+ =?us-ascii?Q?FJPgU9IcNL3xhra5oVgdEDCikehaZqokuXroLEJt/AjgO9jOPDpqWGX4Gs7N?=
+ =?us-ascii?Q?FUgHrVCHgIj1rlKUR3lkqacNHd8h5vaIe1NokT+5pvGN9Kv3YRfj4yBaH8sS?=
+ =?us-ascii?Q?gt4tVtReb2JhbPFmNsFPwLNU5fC9xJBv0eLGt3ewataYbnPejqB64mu8HfYG?=
+ =?us-ascii?Q?hjAm9zgy3crFrDpq7QV0fk+sGqmnvUKBrZ7Cv6cVY8SWy0YNVVK1BhTzus+t?=
+ =?us-ascii?Q?23EsfNywdqgUMyC9B//cJ8oLKUXnvoQUZHEe4pIKvQjJlrR/aYdrj90mH6aa?=
+ =?us-ascii?Q?PM25ZIKRhqYJwS2zKYthIFEE7o1x1nAKr++T0nIEe8q2qoXtEyaynKMqGI+m?=
+ =?us-ascii?Q?JN0BWQNT3EiZ+j3gnhRz5Fr9UHZcSELEyJVp0jUHxHpy8AqVqjn6UlYD0X9X?=
+ =?us-ascii?Q?jw0tyWVhK49yKY0vmVlziRQaAzKn8MiEo2whkIgqaaAbMjUCMaQ+4la8C22Q?=
+ =?us-ascii?Q?Yd9BCaHHPwOHu+83xw+rqzkPzoY9XxH383NL2T9CWuivOucwsm+0qSK5WsUE?=
+ =?us-ascii?Q?hJSJgkMHG3dyC0cuZGTGnfJzHN+2+4Ni/tJdvEf6wGwrI0ZqSdo8fl518sba?=
+ =?us-ascii?Q?ili3HsoV4G3HMPma0Z/y7rza7Z2fU4LlaghdB31G1lW6P2gKDcivyR4wYPby?=
+ =?us-ascii?Q?u5Bp1fbGr7CWAXZuQDrp2KPZjroHoF9f2Mwmwh45ys+X5YIqgUxKAy1zvltX?=
+ =?us-ascii?Q?92eZ1ZUvKlY81gCSG2eo/14V0GdxRtsKT/M0IC3kwQ/GNPcVyIUydbjaO8g3?=
+ =?us-ascii?Q?Rx17gkgfNTjVrYYoxqbap2aUNNFd4Fk+Jwgc+kyMPv8LVkS4FxVRdVCXmR76?=
+ =?us-ascii?Q?Pc9fTkdXQHCf4TyxnEoVe8PPmyeFThRiOlBI25MtwR8/Ghi0IempcjM7MrcC?=
+ =?us-ascii?Q?sX8boufv7xIC8cARW8bG0VZB+BSHSU7P0Le2g0lmHJjfz+JcaWZQbVqz0L+e?=
+ =?us-ascii?Q?JzMqD/NaoMAH12LzmCaw6JgTzzuVyPGezGS8PzPZhEX+FqZApBwr6ACLgly3?=
+ =?us-ascii?Q?qOsbCe6fqnuuwkTfFfzTEx1EBbVrgcPnvcKnhnyR+gOBURzWezDnVbh2xWH8?=
+ =?us-ascii?Q?m4xK05bgbiAZbZzJtktiJpscD0mnjg5OKcAoZ2mezkmRqHL36KB6QSBvdt9f?=
+ =?us-ascii?Q?XATyVTmj/ClxQ9qXBs7GTM/hb6SRjPdUwyvHB4UaG9ZeXFdQ43BacaASDmIt?=
+ =?us-ascii?Q?U/d833X/KhbLMUzJgqBHzK9p0vj81iWt2LQdAaSlfsyMKl47QdeeuhXTmres?=
+ =?us-ascii?Q?ZTe0HJPvtJXULXJIZ8fMD98BBYl0kJNkjNIdkv3Qf045zSKAQO4UOffn0zqE?=
+ =?us-ascii?Q?aT+g+Rk56trjB7R9yQ9Kh/j/yfElJvmEhNTiIkYyKbwHxyVIgr2Cazciymx/?=
+ =?us-ascii?Q?+d/1mF7AW9nxDU/ecrKPhQQT4bJHyHaz3v/WjP8G1+kxQHFG3+TqS6Ix+g3X?=
+ =?us-ascii?Q?5PgIzHSr1pxrwtD7pSOHR2o2OjhZYX75+/eWtBxg9Uko85KwQu8njgTbzzVL?=
+ =?us-ascii?Q?eQ=3D=3D?=
 X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23e76b50-f07f-404b-1f90-08dbcfbb77a8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 954625ac-2f3d-45e1-353f-08dbcfbb7bcd
 X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 09:20:27.8574
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 09:20:34.7084
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i36wwUU2IPi0i3ZthmOMemXQI2UhJbYeF7lyb5p2BNNvnHiMeXuXk4yQvAz39dKsuW+U5GC9uds8857TTXZmUe6zf8SKAwe6TrAo1r0ep6M=
+X-MS-Exchange-CrossTenant-UserPrincipalName: tuKw96f7kepiEouojW0YhrukvutX3vx/o3g+lmmwkGBqhNKQmo95iZLv+FP7H7bDXk8+9sJK4vBYDYRD4RXCDo+ZKgOOwl+r5EjBjFz2QCM=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR01MB4134
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -113,63 +115,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patch series do some changes to MOXA PCIe boards in 8250_pci.c,
-including:
+To improve clarity, modify the MOXA enum name within pci_board_num_t.
 
-- Modify MOXA enum name within 8250_pci.c
-- Cleanup MOXA configurations within 8250_pci.c
-- Relocate macros within 8250_pci.c
-- Add support for MOXA Mini PCIe boards
-- Fix MOXA RS422/RS485 boards not function by default
-- Add support for MOXA PCIe boards to switch between different serial
-  interfaces
-
-Each patch depends on previous one.
-
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 ---
-Changes in v3:
-- Add reviewer tag in first 4 patches.
-- [PATCH v3 2/6]:
-	- Make commit message clearer.
-- [PATCH v3 5/6]:
-	- Delete pci_moxa_match_x3xx() function.
-	- Introduce pci_moxa_match_second_digit() function.
-- [PATCH v3 6/6]:
-	- Delete pci_moxa_match_x1xx() function.
-	- Replace pci_moxa_match_x1xx() and pci_moxa_match_x3xx() with
-	  pci_moxa_match_second_digit().
-	- Add comment at pci_moxa_rs485_config().
-	- Revise comment and return value where device not support RS232
-	  interface.
+ drivers/tty/serial/8250/8250_pci.c | 36 +++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-Changes in v2:
-- Split cleanup patch into first 2 patches of this patch series.
-- Reposition macro list to the top of the code.
-- Use PCI_VDEVICE() instead of PCI_DEVICE() in serial_pci_tbl[].
-- Replace some C99 types with kernel types.
-- Introduce functions for checking device ID pattern.
-- Replace magic constant with BIT().
-- Sort macros into pre-existing macro list.
-- Rewrite set_interface condition architecture.
-- Utilize unused flag to represent RS422 interface instead of adding a
-  new one.
-
-v2: https://lore.kernel.org/all/20231016033705.20669-1-crescentcy.hsieh@moxa.com/
-v1: https://lore.kernel.org/all/20231002015702.30509-1-crescentcy.hsieh@moxa.com/
-
-Crescent CY Hsieh (6):
-  tty: serial: 8250: Modify MOXA enum name within 8250_pci.c
-  tty: serial: 8250: Cleanup MOXA configurations within 8250_pci.c
-  tty: serial: 8250: Relocate macros within 8250_pci.c
-  tty: serial: 8250: Add support for MOXA Mini PCIe boards
-  tty: serial: 8250: Fix MOXA RS422/RS485 PCIe boards not work by
-    default
-  tty: serial: 8250: Add support for MOXA PCIe boards to switch
-    interface between RS422/RS485
-
- drivers/tty/serial/8250/8250_pci.c | 370 ++++++++++++++++++++---------
- 1 file changed, 256 insertions(+), 114 deletions(-)
-
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index d2d547b5d..b052b286d 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -2852,9 +2852,9 @@ enum pci_board_num_t {
+ 	pbn_titan_2_4000000,
+ 	pbn_titan_4_4000000,
+ 	pbn_titan_8_4000000,
+-	pbn_moxa8250_2p,
+-	pbn_moxa8250_4p,
+-	pbn_moxa8250_8p,
++	pbn_moxa_2,
++	pbn_moxa_4,
++	pbn_moxa_8,
+ };
+ 
+ /*
+@@ -3626,19 +3626,19 @@ static struct pciserial_board pci_boards[] = {
+ 		.uart_offset	= 0x200,
+ 		.first_offset	= 0x1000,
+ 	},
+-	[pbn_moxa8250_2p] = {
++	[pbn_moxa_2] = {
+ 		.flags		= FL_BASE1,
+ 		.num_ports      = 2,
+ 		.base_baud      = 921600,
+ 		.uart_offset	= 0x200,
+ 	},
+-	[pbn_moxa8250_4p] = {
++	[pbn_moxa_4] = {
+ 		.flags		= FL_BASE1,
+ 		.num_ports      = 4,
+ 		.base_baud      = 921600,
+ 		.uart_offset	= 0x200,
+ 	},
+-	[pbn_moxa8250_8p] = {
++	[pbn_moxa_8] = {
+ 		.flags		= FL_BASE1,
+ 		.num_ports      = 8,
+ 		.base_baud      = 921600,
+@@ -5349,40 +5349,40 @@ static const struct pci_device_id serial_pci_tbl[] = {
+ 	 */
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP102E,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_2p },
++		pbn_moxa_2 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP102EL,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_2p },
++		pbn_moxa_2 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP104EL_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_4p },
++		pbn_moxa_4 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP114EL,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_4p },
++		pbn_moxa_4 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP116E_A_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP116E_A_B,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP118EL_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP118E_A_I,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP132EL,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_2p },
++		pbn_moxa_2 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP134EL_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_4p },
++		pbn_moxa_4 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP138E_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 	{	PCI_VENDOR_ID_MOXA, PCI_DEVICE_ID_MOXA_CP168EL_A,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+-		pbn_moxa8250_8p },
++		pbn_moxa_8 },
+ 
+ 	/*
+ 	* ADDI-DATA GmbH communication cards <info@addi-data.com>
 -- 
 2.34.1
 
