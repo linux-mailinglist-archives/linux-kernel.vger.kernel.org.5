@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BAC7CE1B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B0F7CE1BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344759AbjJRPwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
+        id S1344826AbjJRPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbjJRPw3 (ORCPT
+        with ESMTP id S232289AbjJRPwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:52:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0F89F;
-        Wed, 18 Oct 2023 08:52:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7106821855;
-        Wed, 18 Oct 2023 15:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697644345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m3Va38a8sZL3iVjAWsTHHzZGt8WWZ+pcUoedGjqgQR0=;
-        b=g9UH8xytD9YucQsxopJFs9GuKq5iUz2a8QIb7sS/H33jKkzP3mmDW2TKVBZrgGO6yfOudr
-        sKHARkYPO34cJIoI6JqjFrRFRM0YTg5yQTMJOZ1vyW4tqcR2BJ+4biBpXzPQlUEzbtihgu
-        9AJEbM9oDqICRMHlLXdW26ErRDoS4fY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CC6213915;
-        Wed, 18 Oct 2023 15:52:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dSRSBjn/L2X7BgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 18 Oct 2023 15:52:25 +0000
-Date:   Wed, 18 Oct 2023 17:52:23 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Message-ID: <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
-References: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
- <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
- <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
- <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
- <op.2c0nt109wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sfycubn7gx2ldoil"
-Content-Disposition: inline
-In-Reply-To: <7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -12.53
-X-Spamd-Result: default: False [-12.53 / 50.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[22];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.83)[99.27%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 11:52:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9A9123
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:52:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CE7C433C8;
+        Wed, 18 Oct 2023 15:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1697644370;
+        bh=b8LsAR2QdX3IC2gaSa678S7SamLDd+g6f++6ZqtXOmU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DDurZJ/tH9/Dcq2NUUAnR7bwtgDl5thIrctfw+s4q4F7B9z+LCEL9V4leztRfz6Oy
+         QN+ti9o7Lk4il2Xp2hnzjsN60DUZJkyYwxwhGWgCcp/J6tv9XrZpdoii3QHMM6q8IS
+         FBIF1WP+glbZTrUhUIkqwPEPvI4kpzhkxsSOShA4=
+Date:   Wed, 18 Oct 2023 08:52:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Philip Li <philip.li@intel.com>, oe-kbuild@lists.linux.dev,
+        Lorenzo Stoakes <lstoakes@gmail.com>, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed
+ 'vm' could be null (see line 3667)
+Message-Id: <20231018085248.6f3f36101cbdfe0990c8b467@linux-foundation.org>
+In-Reply-To: <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
+References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
+        <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
+        <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
+        <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
+        <ZS/TVMT9ed7OdyNy@rli9-mobl>
+        <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 18 Oct 2023 23:15:31 +0800 Baoquan He <bhe@redhat.com> wrote:
 
---sfycubn7gx2ldoil
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Baoquan He <bhe@redhat.com>
+> Date: Wed, 18 Oct 2023 22:50:14 +0800
+> Subject: [PATCH] mm/vmalloc: fix the unchecked dereference warning in vread_iter()
+> Content-type: text/plain
+> 
+> LKP reported smatch warning as below:
+> 
+> ===================
+> smatch warnings:
+> mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
+> ......
+> 06c8994626d1b7  @3667 size = vm ? get_vm_area_size(vm) : va_size(va);
+> ......
+> 06c8994626d1b7  @3689 else if (!(vm->flags & VM_IOREMAP))
+>                                  ^^^^^^^^^
+> Unchecked dereference
+> =====================
+> 
+> So add checking on whether 'vm' is not null when dereferencing it in
+> vread_iter(). This mutes smatch complaint.
+> 
+> ...
+>
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3813,7 +3813,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+>  
+>  		if (flags & VMAP_RAM)
+>  			copied = vmap_ram_vread_iter(iter, addr, n, flags);
+> -		else if (!(vm->flags & VM_IOREMAP))
+> +		else if (!(vm && (vm->flags & VM_IOREMAP)))
+>  			copied = aligned_vread_iter(iter, addr, n);
+>  		else /* IOREMAP area is treated as memory hole */
+>  			copied = zero_iter(iter, n);
 
-On Wed, Oct 18, 2023 at 08:37:25AM -0700, Dave Hansen <dave.hansen@intel.co=
-m> wrote:
-> 1. Admin sets a limit
-> 2. Enclave is created
-> 3. Enclave hits limit, allocation fails
+So is this not a real runtime bug?  We're only doing this to suppress a
+smatch warning?
 
-I was actually about to suggest reorganizing the series to a part
-implementing this simple limiting and a subsequent part with the reclaim
-stuff for easier digestability.=20
-
-> Nothing else matters.
-
-If the latter part is an unncessary overkill, it's even better.
-
-Thanks,
-Michal
-
---sfycubn7gx2ldoil
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS//NQAKCRAGvrMr/1gc
-jjuFAQD2xyk+E8YDQEiLZRkzZgLNNa9uj65olyt01GBofYgW0wD/WHDRxDomdgb3
-KyYKGF1P6hM7GDWbgwRHcCg5PSgE/gE=
-=+mep
------END PGP SIGNATURE-----
-
---sfycubn7gx2ldoil--
+If so, can we please include a description of *why* this wasn't a bug? 
+What conditions ensure that vm!=NULL at this point?
