@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461667CDFC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D907CDF5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345528AbjJRO32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S1345017AbjJROT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345529AbjJRO3P (ORCPT
+        with ESMTP id S1345251AbjJROS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:29:15 -0400
+        Wed, 18 Oct 2023 10:18:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7733C38;
-        Wed, 18 Oct 2023 07:15:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3764DC07615;
-        Wed, 18 Oct 2023 14:15:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24013198E;
+        Wed, 18 Oct 2023 07:15:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63319C433B8;
+        Wed, 18 Oct 2023 14:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638500;
-        bh=ft0/AN53UTiaKPN+jKMpJOtNFNfwVuQDgWaTMpXOFB8=;
+        s=k20201202; t=1697638502;
+        bh=xy0und2VcakheirJV0c6hG+0kAcTtMq5FhL6pfxaVjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BvaAbrRxBx5nSPtFHOyv4j/dsMHtMM6QfzFnBDfksRWqjO4Iu6V+AvFp6k2tQElCh
-         97fgGzv4XAQycDVZLDFdePvujMnuO548U6TvrxWkinKYt3bNT+CZW5DvYfKIYEtR9G
-         p6fmYMmiZGj0n7dov0kqVs0EYzPXnq28zoiuybIxOk9T1hwwYM5/n0FXoB1eZiyUgV
-         932RtZjK0fOCNqs0lPE1E/1LWU7bTEhhkf4fDELd30H8grwpNXRbYBUMfklDqT8brT
-         qq398+QXc+6Xa7TYhKq0kCcGMFqjB3vBGwahX5FNoEAfZGFLNz37i3tH1BvSvL7EYy
-         vGH+zmkz/8+rQ==
+        b=fTG7M21/XvidGE+zoZZP0dHRTW567Qq+75y+bFfmvs9Jp8pRTedHiqVR+OmdsGpyR
+         SlRk7Xyp0kIqydrEpb0QSzptvGjc0IvQPAaruuZD8/AUVPlZ96ATAN4XUDGJbjj5PK
+         PAmd8I31M3e8r3iDlAaJ/TCToCc+XzbSaFXRL00iODrAHfarrg2n0q3U1hRkeOmrn0
+         VvhtrO/zvP7TMpo46ewwkXVMTOgom4xGyR2HpqbjAaGL8nF1h0nqZcY3ONvb1qNYnF
+         oNY0PdnMgrPAtD8q/ZMUYDfyePLveLiMeFAZBXSuft5r4Cr/3J/xaZ/ahRY5it2z7Q
+         kRmHAthWwt2+g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zqiang <qiang.zhang1211@gmail.com>,
-        syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 03/11] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-Date:   Wed, 18 Oct 2023 10:14:45 -0400
-Message-Id: <20231018141455.1335353-3-sashal@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alejandro Colomar <alx@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 04/11] net: sched: cls_u32: Fix allocation size in u32_init()
+Date:   Wed, 18 Oct 2023 10:14:46 -0400
+Message-Id: <20231018141455.1335353-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141455.1335353-1-sashal@kernel.org>
 References: <20231018141455.1335353-1-sashal@kernel.org>
@@ -52,113 +56,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-[ Upstream commit 643445531829d89dc5ddbe0c5ee4ff8f84ce8687 ]
+[ Upstream commit c4d49196ceec80e30e8d981410d73331b49b7850 ]
 
-Currently, for UNBOUND wq, if the apply_wqattrs_prepare() return error,
-the apply_wqattr_cleanup() will be called and use the pwq_release_worker
-kthread to release resources asynchronously. however, the kfree(wq) is
-invoked directly in failure path of alloc_workqueue(), if the kfree(wq)
-has been executed and when the pwq_release_workfn() accesses wq, this
-leads to the following scenario:
+commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
+with flexible-array member") incorrecly replaced an instance of
+`sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
+in a an over-allocation of 8 bytes.
 
-BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
-Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
+This change is wrong because `hlist` in `struct tc_u_common` is a
+pointer:
 
-CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
- kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+net/sched/cls_u32.c:
+struct tc_u_common {
+        struct tc_u_hnode __rcu *hlist;
+        void                    *ptr;
+        int                     refcnt;
+        struct idr              handle_idr;
+        struct hlist_node       hnode;
+        long                    knodes;
+};
 
-Allocated by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+So, the use of `struct_size()` makes no sense: we don't need to allocate
+any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine.
 
-Freed by task 5054:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
- kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
- kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
- kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
- kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+So, `struct_size(tp_c, hlist->ht, 1)` translates to:
 
-This commit therefore flush pwq_release_worker in the alloc_and_link_pwqs()
-before invoke kfree(wq).
+sizeof(*tp_c) + sizeof(tp_c->hlist->ht) ==
+sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) ==
+						144 + 8  == 0x98 (byes)
+						     ^^^
+						      |
+						unnecessary extra
+						allocation size
 
-Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+$ pahole -C tc_u_common net/sched/cls_u32.o
+struct tc_u_common {
+	struct tc_u_hnode *        hlist;                /*     0     8 */
+	void *                     ptr;                  /*     8     8 */
+	int                        refcnt;               /*    16     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	struct idr                 handle_idr;           /*    24    96 */
+	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
+	struct hlist_node          hnode;                /*   120    16 */
+	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+	long int                   knodes;               /*   136     8 */
+
+	/* size: 144, cachelines: 3, members: 6 */
+	/* sum members: 140, holes: 1, sum holes: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+And with `sizeof(*tp_c)`, we have:
+
+	sizeof(*tp_c) == sizeof(struct tc_u_common) == 144 == 0x90 (bytes)
+
+which is the correct and original allocation size.
+
+Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
+`sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
+
+The following difference in binary output is expected and reflects the
+desired change:
+
+| net/sched/cls_u32.o
+| @@ -6148,7 +6148,7 @@
+| include/linux/slab.h:599
+|     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
+|                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
+|-    2cfc:      mov    $0x98,%edx
+|+    2cfc:      mov    $0x90,%edx
+
+Reported-by: Alejandro Colomar <alx@kernel.org>
+Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/sched/cls_u32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index fa0a0e59b3851..09031f48f447a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4212,6 +4212,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
- 	}
- 	put_online_cpus();
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index b2d2ba561eba1..f2a0c10682fc8 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -364,7 +364,7 @@ static int u32_init(struct tcf_proto *tp)
+ 	idr_init(&root_ht->handle_idr);
  
-+	/* for unbound pwq, flush the pwq_release_worker ensures that the
-+	 * pwq_release_workfn() completes before calling kfree(wq).
-+	 */
-+	if (ret)
-+		kthread_flush_worker(pwq_release_worker);
-+
- 	return ret;
- }
- 
+ 	if (tp_c == NULL) {
+-		tp_c = kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KERNEL);
++		tp_c = kzalloc(sizeof(*tp_c), GFP_KERNEL);
+ 		if (tp_c == NULL) {
+ 			kfree(root_ht);
+ 			return -ENOBUFS;
 -- 
 2.40.1
 
