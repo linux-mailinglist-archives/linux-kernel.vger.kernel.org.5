@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E937CE188
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A1E7CDFCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbjJRPqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
+        id S1345774AbjJRO3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345491AbjJROX7 (ORCPT
+        with ESMTP id S1345557AbjJRO3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:23:59 -0400
+        Wed, 18 Oct 2023 10:29:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9E149E5;
-        Wed, 18 Oct 2023 07:16:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C49EC433AB;
-        Wed, 18 Oct 2023 14:16:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B98FD53;
+        Wed, 18 Oct 2023 07:16:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69571C433B7;
+        Wed, 18 Oct 2023 14:16:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638580;
-        bh=Dk1+LQnP+E06Ck6myLrdz4ZsGhgHAwmXGphr63baUqA=;
+        s=k20201202; t=1697638581;
+        bh=qjvN2bnmMbmAA4PUT4YieRCvJ+HkSdtm5o9amMQbses=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p0bDhypb8kGD3GPug6mUG3PUz7OmAv85JUM6dQciNQ3FnICY80jvRmfvrmIUN5tfX
-         VxHtMA4x3N8kplvL5ShKFoGfXydxTE7f5PW2Xf5414f6XzSpYzSGOd7skUvGIXekAW
-         hWNlav7BWBVrtmY6KlRHbf1Sv8pbIK9aqTj2yqHu1G74nYfltIb3O1z/Aok7H730pL
-         yDHNCeJu6ghfCOIIwrhkWOF0X1zaf/1+izQoj7bcbu+np0HAj+M1JnanghyJjuCMPf
-         U2nTYNbHmoSiJfv2NM7Qt7f7uZKthPHRTagZE3N3DTEjOiUS5yoorGq9Ssxjf4r8bK
-         P9+OO3EtE26OQ==
+        b=nF8s0tnlyPu8FIXF6K3xHUMI2TbVfJ97XVohcpPzkD+wn8sGabqW65T/N31X/3pDm
+         sI8Yb+OspWfFWIvjyYFT0kurQloFYxK1XyYI9T1NgQv0VtGYIKmcPyCfyMeB9yDG99
+         b9Esde6Wglakih1JcL7bzi461zHNsMPUEIXCWkUemjNO2qQDTxPbmTq7TkIB0pgKvv
+         eLDjvODkxwMQRwVWDOAf8/GoF0IwJ4u06PBauXywf+3Xp86Mgn64HvXrhCw+He47c/
+         hjd2Mv7arVIO9DXJ8YP0ZKgxE6DlpHnpROa8WcTatYGMYKT9tPrI4LOnWB8faoP9Ov
+         9V1w4PRQM2jCw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Szilard Fabian <szfabian@bluemarch.art>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/7] Input: i8042 - add Fujitsu Lifebook E5411 to i8042 quirk table
-Date:   Wed, 18 Oct 2023 10:16:07 -0400
-Message-Id: <20231018141613.1335848-2-sashal@kernel.org>
+Cc:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        tglx@linutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 3/7] irqchip/stm32-exti: add missing DT IRQ flag translation
+Date:   Wed, 18 Oct 2023 10:16:08 -0400
+Message-Id: <20231018141613.1335848-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141613.1335848-1-sashal@kernel.org>
 References: <20231018141613.1335848-1-sashal@kernel.org>
@@ -43,54 +46,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.14.327
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Szilard Fabian <szfabian@bluemarch.art>
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 
-[ Upstream commit 80f39e1c27ba9e5a1ea7e68e21c569c9d8e46062 ]
+[ Upstream commit 8554cba1d6dbd3c74e0549e28ddbaccbb1d6b30a ]
 
-In the initial boot stage the integrated keyboard of Fujitsu Lifebook E5411
-refuses to work and it's not possible to type for example a dm-crypt
-passphrase without the help of an external keyboard.
+The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
+flags specified in the device tree were being ignored. This was
+preventing the RTC alarm interrupt from working, because it must be set
+to trigger on the rising edge to function correctly.
 
-i8042.nomux kernel parameter resolves this issue but using that a PS/2
-mouse is detected. This input device is unused even when the i2c-hid-acpi
-kernel module is blacklisted making the integrated ELAN touchpad
-(04F3:308A) not working at all.
-
-Since the integrated touchpad is managed by the i2c_designware input
-driver in the Linux kernel and you can't find a PS/2 mouse port on the
-computer I think it's safe to not use the PS/2 mouse port at all.
-
-Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
-Link: https://lore.kernel.org/r/20231004011749.101789-1-szfabian@bluemarch.art
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20231003162003.1649967-1-ben.wolsieffer@hefring.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/irqchip/irq-stm32-exti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index c218e107c0c8f..064b20c914e45 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -174,6 +174,14 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "M606"),
- 		},
- 	},
-+	{
-+		/* Fujitsu Lifebook E5411 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU CLIENT COMPUTING LIMITED"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "LIFEBOOK E5411"),
-+		},
-+		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
-+	},
- 	{
- 		/* Gigabyte M912 */
- 		.matches = {
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 45363ff8d06f0..1b55199ea1b4a 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -127,6 +127,7 @@ struct irq_domain_ops irq_exti_domain_ops = {
+ 	.xlate	= irq_domain_xlate_onetwocell,
+ 	.alloc  = stm32_exti_alloc,
+ 	.free	= stm32_exti_free,
++	.xlate	= irq_domain_xlate_twocell,
+ };
+ 
+ static int __init stm32_exti_init(struct device_node *node,
 -- 
 2.40.1
 
