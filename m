@@ -2,87 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794C97CDBC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7B77CDBCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344600AbjJRMfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S1344651AbjJRMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbjJRMfu (ORCPT
+        with ESMTP id S1344518AbjJRMgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:35:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FDC10F
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:35:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C09C433C8;
-        Wed, 18 Oct 2023 12:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697632548;
-        bh=IzeKyhweq1AWLlQfKTFic0Ns1rUrAh3cIE6nERCkITs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YcSC7Jo657eM8tIi2pAedw6dTC23LfnzfpUvTnfeYeQryq56M5FX0LWqykW3Zde5z
-         kPhKUcFnZFggluYnd5Tf7P2YG8mQQ/Ite0cCrmrMoVBexhmbne4X77jfbLSXIeXOEd
-         1pXGEFi6RIx665WWvDBavqie2GpwxSnYLet1H/dgt+VzIn4cvfzggZJzx0QmQi8f5P
-         oTLz6+l6fT9mpgEH0b8ubg0NM7CO2+QIN7qVAEhw3xgEZN/Wt8dfXo46KDSmoNL25N
-         WesDoXZstkDvoTc1jWXMCwS9NRKwFJAlLC0OFNnsu7yFE+gv2CB7/Vgexi5Xpqckm0
-         yZRIlD62AsWNw==
-Date:   Wed, 18 Oct 2023 13:35:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
-Message-ID: <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
-References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
+        Wed, 18 Oct 2023 08:36:01 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00D710F;
+        Wed, 18 Oct 2023 05:35:58 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso10049875e9.0;
+        Wed, 18 Oct 2023 05:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697632557; x=1698237357; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+z2DeuWbLpI7AEzz9he/oetq9pODDYK4Bo2MZwm1LlY=;
+        b=kznUucxN6CW1QLdzL9Q9cLnndx4jBo8J/iAytD6q6kEyJCUN/o6yzcImP3lQvZ93ri
+         9130pjTDDxhA0Q5Cxm+Im2vENF2tlQRlIEEYdsDcdcnI1+PNwAA/r7XtUbPHQqmGf9+J
+         yMSsQ84WSU+imrHsKbuaRRtoBFyjJ0RX1sxpjJ1M+52XiguiPbfrmRZR410lKLkTO8Ni
+         yNJp8gItC0nb3NFnfTS1WQluVdenO/nLWGbtybqpaCW6pZbpfXgFFPVCAOhU2f+DFZ6B
+         FTk6y7xQ8V4wg5M3VcnALZTprrM7z6xZtexIGYpxRi7XKAXRoar85wb1T7TTXl+Ztp4C
+         u/4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697632557; x=1698237357;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+z2DeuWbLpI7AEzz9he/oetq9pODDYK4Bo2MZwm1LlY=;
+        b=OwGgJ/iA//+hhTRhZxry9khxURYndmFIsZhV6sipskl/LaN2tt37N3T9w0NrbxV2J9
+         sn8yqmN3kh0+3w4uMRkImNtEjNOMWDnKDmLzMYCJR+mrOP6hrm+3Amd2hbQVXyW4uHlf
+         3bZYBz6WqBpISBCe7/unXn9Wm70DgMR7dFDIbM/2uMieiG8ApraHJUYnRZNDiAVa3V+U
+         Saiu8w9pLl54kvv3shKnuKuSHpDX9A7BuYJCpYKUFj0+fs8A1uc0z722eAPc1kijb/88
+         tNP6/CHRqkkTBJ3Y1npaP1BacHQDIAYJQExskQb8f8sqPKoX3pm3uCHALlT//ud1FRhb
+         Moyw==
+X-Gm-Message-State: AOJu0Ywy9/hXPi71bkDBwbcssCGNyBAbAe1lxwaMcVpVJ6jEDIB0equH
+        CG2S/xDBHIwNIcbC99Va7kE=
+X-Google-Smtp-Source: AGHT+IHi7O1ZsGGb+3ZGVPAoATB5PmPAZWxpAXGDGRKLUdLuB4yOu6xE3tV0+2ka93mWmWLL4vJhfw==
+X-Received: by 2002:adf:9b95:0:b0:31f:fc9a:a03 with SMTP id d21-20020adf9b95000000b0031ffc9a0a03mr4367013wrc.20.1697632556892;
+        Wed, 18 Oct 2023 05:35:56 -0700 (PDT)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id q28-20020adfab1c000000b003248a490e3asm2048211wrc.39.2023.10.18.05.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 05:35:56 -0700 (PDT)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v4 0/4] net: stmmac: improve tx timer logic
+Date:   Wed, 18 Oct 2023 14:35:46 +0200
+Message-Id: <20231018123550.27110-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p00VV8kk1vH04gU8"
-Content-Disposition: inline
-In-Reply-To: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
-X-Cookie: Santa Claus is watching!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series comes with the intention of restoring original performance
+of stmmac on some router/device that used the stmmac driver to handle
+gigabit traffic.
 
---p00VV8kk1vH04gU8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+More info are present in patch 3. This cover letter is to show results
+and improvements of the following change.
 
-On Wed, Oct 18, 2023 at 12:00:55PM +0200, Krzysztof Kozlowski wrote:
-> On some boards with multiple WSA8840/WSA8845 speakers, the reset
-> (shutdown) GPIO is shared between two speakers.  Request it as
-> GPIOD_FLAGS_BIT_NONEXCLUSIVE to allow such configurations.
+The move to hr_timer for tx timer and commit 8fce33317023 ("net: stmmac:
+Rework coalesce timer and fix multi-queue races") caused big performance
+regression on these kind of device.
 
->  	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
-> -						GPIOD_OUT_HIGH);
-> +						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
+This was observed on ipq806x that after kernel 4.19 couldn't handle
+gigabit speed anymore.
 
-How do the speakers coordinate?
+The following series is currently applied and tested in OpenWrt SNAPSHOT
+and have great performance increase. (the scenario is qca8k switch +
+stmmac dwmac1000) Some good comparison can be found here [1].
 
---p00VV8kk1vH04gU8
-Content-Type: application/pgp-signature; name="signature.asc"
+The difference is from a swconfig scenario (where dsa tagging is not
+used so very low CPU impact in handling traffic) and DSA scenario where
+tagging is used and there is a minimal impact in the CPU. As can be
+notice even with DSA in place we have better perf.
 
------BEGIN PGP SIGNATURE-----
+It was observed by other user that also SQM scenario with cake scheduler
+were improved in the order of 100mbps (this scenario is CPU limited and
+any increase of perf is caused by removing load on the CPU)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUv0R4ACgkQJNaLcl1U
-h9DM3wf+Ox6S1h4qHtk5rsc4MfEIG9YfVXZ2Dbwm1s+8OKlAzkmarLvnx7aIoe6A
-K7KDIqZa56KFb5V98aCgLdOrKReHACqAd3aQxqyP3I+lNkaKS+hSywdGJfCS/+ze
-IUGmrH7xrcdfLpNb1K5vbq1Y4xsvoczcLcd76kV2FO/vx6NYlivAmMA6+m7LXdoo
-XXNG4DCilqMpUtNPjNaw3CFI7/X2O7s5Mb/blmWAB6neNbAJEc+vefr3gnmR7JQU
-j/TjQY/kXSUJHeRt3l6Kdrkot+xgKL6XsgUKFzhyv1FsJcIEOJ47nZcjyHlkFMK+
-padfziLK0UyF/yTXkDl8uHDep4q/aw==
-=nLXY
------END PGP SIGNATURE-----
+Been at least 15 days that this is in use without any complain or bug
+reported about queue timeout. (was the case with v1 before the
+additional patch was added, only appear on real world tests and not on
+iperf tests)
 
---p00VV8kk1vH04gU8--
+[1] https://forum.openwrt.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/3427?u=ansuel
+
+Changes v4:
+- Fix W=1 warning for missing define of pending_packets
+Changes v3:
+- Fix compilation error for missing comma
+Changes v2:
+- Add patch to move tx timer arm outside tx clean.
+
+Christian Marangi (4):
+  net: introduce napi_is_scheduled helper
+  net: stmmac: improve TX timer arm logic
+  net: stmmac: move TX timer arm after DMA enable
+  net: stmmac: increase TX coalesce timer to 5ms
+
+ drivers/net/ethernet/chelsio/cxgb3/sge.c      |  8 ----
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 40 +++++++++++++++----
+ drivers/net/wireless/realtek/rtw89/core.c     |  2 +-
+ include/linux/netdevice.h                     | 23 +++++++++++
+ net/core/dev.c                                |  2 +-
+ 6 files changed, 59 insertions(+), 18 deletions(-)
+
+-- 
+2.40.1
+
