@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDB07CE17D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B829E7CDF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344730AbjJRPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:46:01 -0400
+        id S1345613AbjJROYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:24:48 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345435AbjJROX4 (ORCPT
+        with ESMTP id S1345710AbjJROYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:23:56 -0400
+        Wed, 18 Oct 2023 10:24:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F071999;
-        Wed, 18 Oct 2023 07:15:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB807C4167D;
-        Wed, 18 Oct 2023 14:15:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CFF919B0;
+        Wed, 18 Oct 2023 07:15:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93271C4339A;
+        Wed, 18 Oct 2023 14:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638508;
-        bh=Xpvl+g0oNeFoWTwknJBrTtcMvQrL8AL0rpbHBPxgMAU=;
+        s=k20201202; t=1697638514;
+        bh=n40cQpxpuWHnO3NK2KNi/WhjJdwRT4z/ju0V4Y+coY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ht7n8uxp5nPUteoKrTJEgRgLWvYsM8zdvEHp8uKxIVkQ4QPTQYfR1nEQcK7Pux6N2
-         UJloOZbK8+RIoaryUNKMQSZ+Sk64IFovezKZNBIuhHiYSpyeVj0SryJajs+St/zZC2
-         YdvQBx4zG7ZLutqQdYX2nTP/NvdvVoGnQMPLTXUgh6iaAAFVlWF65j0mi/+IlY+Jmz
-         2vM0okQM6GK8WzcdnTtYzAc9/qXRkov5HR6MO2lrHfuyze8RIOV6TogBDVhXpfMDuP
-         0veAFouKR1920ddGJeyh1OqZtDrCeFDGVtcOY9/inFOr0PtbCeHFeroGuFcv2KD2VX
-         6ZUhbPz8mitMg==
+        b=SxVJA9r4bq208SR0vorAFmLqKPyAK1i/MxjdnR2ha+Vc2AUcGqAWgIMOJYyaXxT/1
+         V5v2oRL00sUA0IB9vEEbmTFeNYurgvU1HweOzqcS4cAILaIOelse5nXGqj+ZS+vZa6
+         jbolMPl2RnGF8zihB53Jk4y4ceSVsGtXRwcMGwmpombDT3tdyhFp4SXHd1xY37wtyu
+         QJJWEtPAqrP1FZ/Uu7Spt+P5d1RAOaHlajZ1kTNtYJ6tQpWK4kAzRORWFG3G1HAFYA
+         JpXIE8S1kxcdnIk0uzVD8AffbwU4Akj9RZZr6BAI5nxY6KOw8G69GeB7UEAKuM/+iE
+         r/IWsEhaMbAhQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 08/11] net: macsec: indicate next pn update when offloading
-Date:   Wed, 18 Oct 2023 10:14:50 -0400
-Message-Id: <20231018141455.1335353-8-sashal@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jeffery Miller <jefferymiller@google.com>,
+        Sasha Levin <sashal@kernel.org>, rrangel@chromium.org,
+        u.kleine-koenig@pengutronix.de, Jonathan.Cameron@huawei.com,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 09/11] Input: synaptics-rmi4 - handle reset delay when using SMBus trsnsport
+Date:   Wed, 18 Oct 2023 10:14:51 -0400
+Message-Id: <20231018141455.1335353-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141455.1335353-1-sashal@kernel.org>
 References: <20231018141455.1335353-1-sashal@kernel.org>
@@ -45,74 +45,142 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.198
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 0412cc846a1ef38697c3f321f9b174da91ecd3b5 ]
+[ Upstream commit 5030b2fe6aab37fe42d14f31842ea38be7c55c57 ]
 
-Indicate next PN update using update_pn flag in macsec_context.
-Offloaded MACsec implementations does not know whether or not the
-MACSEC_SA_ATTR_PN attribute was passed for an SA update and assume
-that next PN should always updated, but this is not always true.
+Touch controllers need some time after receiving reset command for the
+firmware to finish re-initializing and be ready to respond to commands
+from the host. The driver already had handling for the post-reset delay
+for I2C and SPI transports, this change adds the handling to
+SMBus-connected devices.
 
-The PN can be reset to its initial value using the following command:
-$ ip macsec set macsec0 tx sa 0 off #octeontx2-pf case
+SMBus devices are peculiar because they implement legacy PS/2
+compatibility mode, so reset is actually issued by psmouse driver on the
+associated serio port, after which the control is passed to the RMI4
+driver with SMBus companion device.
 
-Or, the update PN command will succeed even if the driver does not support
-PN updates.
-$ ip macsec set macsec0 tx sa 0 pn 1 on #mscc phy driver case
+Note that originally the delay was added to psmouse driver in
+92e24e0e57f7 ("Input: psmouse - add delay when deactivating for SMBus
+mode"), but that resulted in an unwanted delay in "fast" reconnect
+handler for the serio port, so it was decided to revert the patch and
+have the delay being handled in the RMI4 driver, similar to the other
+transports.
 
-Comparing the initial PN with the new PN value is not a solution. When
-the user updates the PN using its initial value the command will
-succeed, even if the driver does not support it. Like this:
-$ ip macsec add macsec0 tx sa 0 pn 1 on key 00 \
-ead3664f508eb06c40ac7104cdae4ce5
-$ ip macsec set macsec0 tx sa 0 pn 1 on #mlx5 case
-
-Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Tested-by: Jeffery Miller <jefferymiller@google.com>
+Link: https://lore.kernel.org/r/ZR1yUFJ8a9Zt606N@penguin
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/macsec.c | 2 ++
- include/net/macsec.h | 1 +
- 2 files changed, 3 insertions(+)
+ drivers/input/mouse/synaptics.c |  1 +
+ drivers/input/rmi4/rmi_smbus.c  | 50 ++++++++++++++++++---------------
+ 2 files changed, 29 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
-index 4fb58fc5ec95a..0ffcef2fa10af 100644
---- a/drivers/net/macsec.c
-+++ b/drivers/net/macsec.c
-@@ -2414,6 +2414,7 @@ static int macsec_upd_txsa(struct sk_buff *skb, struct genl_info *info)
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index 82577095e175e..34b24faed2ece 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -1748,6 +1748,7 @@ static int synaptics_create_intertouch(struct psmouse *psmouse,
+ 		psmouse_matches_pnp_id(psmouse, topbuttonpad_pnp_ids) &&
+ 		!SYN_CAP_EXT_BUTTONS_STICK(info->ext_cap_10);
+ 	const struct rmi_device_platform_data pdata = {
++		.reset_delay_ms = 30,
+ 		.sensor_pdata = {
+ 			.sensor_type = rmi_sensor_touchpad,
+ 			.axis_align.flip_y = true,
+diff --git a/drivers/input/rmi4/rmi_smbus.c b/drivers/input/rmi4/rmi_smbus.c
+index 2407ea43de59b..f38bf9a5f599d 100644
+--- a/drivers/input/rmi4/rmi_smbus.c
++++ b/drivers/input/rmi4/rmi_smbus.c
+@@ -235,12 +235,29 @@ static void rmi_smb_clear_state(struct rmi_smb_xport *rmi_smb)
  
- 		ctx.sa.assoc_num = assoc_num;
- 		ctx.sa.tx_sa = tx_sa;
-+		ctx.sa.update_pn = !!prev_pn.full64;
- 		ctx.secy = secy;
+ static int rmi_smb_enable_smbus_mode(struct rmi_smb_xport *rmi_smb)
+ {
+-	int retval;
++	struct i2c_client *client = rmi_smb->client;
++	int smbus_version;
++
++	/*
++	 * psmouse driver resets the controller, we only need to wait
++	 * to give the firmware chance to fully reinitialize.
++	 */
++	if (rmi_smb->xport.pdata.reset_delay_ms)
++		msleep(rmi_smb->xport.pdata.reset_delay_ms);
  
- 		ret = macsec_offload(ops->mdo_upd_txsa, &ctx);
-@@ -2507,6 +2508,7 @@ static int macsec_upd_rxsa(struct sk_buff *skb, struct genl_info *info)
+ 	/* we need to get the smbus version to activate the touchpad */
+-	retval = rmi_smb_get_version(rmi_smb);
+-	if (retval < 0)
+-		return retval;
++	smbus_version = rmi_smb_get_version(rmi_smb);
++	if (smbus_version < 0)
++		return smbus_version;
++
++	rmi_dbg(RMI_DEBUG_XPORT, &client->dev, "Smbus version is %d",
++		smbus_version);
++
++	if (smbus_version != 2 && smbus_version != 3) {
++		dev_err(&client->dev, "Unrecognized SMB version %d\n",
++				smbus_version);
++		return -ENODEV;
++	}
  
- 		ctx.sa.assoc_num = assoc_num;
- 		ctx.sa.rx_sa = rx_sa;
-+		ctx.sa.update_pn = !!prev_pn.full64;
- 		ctx.secy = secy;
+ 	return 0;
+ }
+@@ -253,11 +270,10 @@ static int rmi_smb_reset(struct rmi_transport_dev *xport, u16 reset_addr)
+ 	rmi_smb_clear_state(rmi_smb);
  
- 		ret = macsec_offload(ops->mdo_upd_rxsa, &ctx);
-diff --git a/include/net/macsec.h b/include/net/macsec.h
-index d6fa6b97f6efa..0dc4303329391 100644
---- a/include/net/macsec.h
-+++ b/include/net/macsec.h
-@@ -240,6 +240,7 @@ struct macsec_context {
- 	struct macsec_secy *secy;
- 	struct macsec_rx_sc *rx_sc;
- 	struct {
-+		bool update_pn;
- 		unsigned char assoc_num;
- 		u8 key[MACSEC_MAX_KEY_LEN];
- 		union {
+ 	/*
+-	 * we do not call the actual reset command, it has to be handled in
+-	 * PS/2 or there will be races between PS/2 and SMBus.
+-	 * PS/2 should ensure that a psmouse_reset is called before
+-	 * intializing the device and after it has been removed to be in a known
+-	 * state.
++	 * We do not call the actual reset command, it has to be handled in
++	 * PS/2 or there will be races between PS/2 and SMBus. PS/2 should
++	 * ensure that a psmouse_reset is called before initializing the
++	 * device and after it has been removed to be in a known state.
+ 	 */
+ 	return rmi_smb_enable_smbus_mode(rmi_smb);
+ }
+@@ -273,7 +289,6 @@ static int rmi_smb_probe(struct i2c_client *client,
+ {
+ 	struct rmi_device_platform_data *pdata = dev_get_platdata(&client->dev);
+ 	struct rmi_smb_xport *rmi_smb;
+-	int smbus_version;
+ 	int error;
+ 
+ 	if (!pdata) {
+@@ -312,18 +327,9 @@ static int rmi_smb_probe(struct i2c_client *client,
+ 	rmi_smb->xport.proto_name = "smb";
+ 	rmi_smb->xport.ops = &rmi_smb_ops;
+ 
+-	smbus_version = rmi_smb_get_version(rmi_smb);
+-	if (smbus_version < 0)
+-		return smbus_version;
+-
+-	rmi_dbg(RMI_DEBUG_XPORT, &client->dev, "Smbus version is %d",
+-		smbus_version);
+-
+-	if (smbus_version != 2 && smbus_version != 3) {
+-		dev_err(&client->dev, "Unrecognized SMB version %d\n",
+-				smbus_version);
+-		return -ENODEV;
+-	}
++	error = rmi_smb_enable_smbus_mode(rmi_smb);
++	if (error)
++		return error;
+ 
+ 	i2c_set_clientdata(client, rmi_smb);
+ 
 -- 
 2.40.1
 
