@@ -2,257 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AAE7CDFF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34F37CE18B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345009AbjJROe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        id S232458AbjJRPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235335AbjJROdn (ORCPT
+        with ESMTP id S1346035AbjJROeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:33:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68DA12B;
-        Wed, 18 Oct 2023 07:30:27 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 16:30:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697639425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pkP/X9V4BRzXP+KA1z4swAloH4uUhoVIL/ZvP/gPtak=;
-        b=e2A9kBAAPgYWoXZFBb2SNE2WNH+qQChpdp6gtfb+Dpq57XasHpfr7ypk0yDLnx3U0lev56
-        Z9JoQ1NPvfzYA6vZSZEN9QEic8OC/GcHslM15bQqODgFr8Mfniq29pI1kw7vCcSqkqE/oz
-        hsLjXfeJhMbrrE7+LTnVV7HIjtJfHPEPoJdR1xkYsZ3HnC/hMQLtJcEE4NPKBJwVA8Qgce
-        AE9wPhqHrNUA5+Ge/SfvuawbBLunPMBjoH3UHwZMKXsuubVH8+WSNVrXOC1bxA/CZm2yi8
-        bi3vToU48VTFXaHh/rm2CEcnCHxqbUPXPLaTLGKrIyYgke7IydrExtJHCfDy2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697639425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pkP/X9V4BRzXP+KA1z4swAloH4uUhoVIL/ZvP/gPtak=;
-        b=IKikuqjrWpHbH1cMa7lab7VCZmDwnr16FJkdnMgVtJs9LwL7yw++CuM59yrBBs/y5OK+Sh
-        mUpARtNF8jm6CBDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Pierre Gondois <pierre.gondois@arm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v6.6-rc4-rt7
-Message-ID: <20231018143024.79vRO3R3@linutronix.de>
-References: <20231004160655.0D-7XFo_@linutronix.de>
- <70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com>
+        Wed, 18 Oct 2023 10:34:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E737F3861
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697639520; x=1729175520;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=cI0tmLdbuWQGwpEV+BxG1jpYJoRLxe62keccvXhW5kI=;
+  b=HuqM10/L1Pv20S2Zmw5U0ihgzWkDemYq0S5m4JL0eXOisoNIpv8EIyCx
+   axyrqDfr6PKIerzQpKjHhK55+3sUuNekrMF0OCd/9LX7aaEzoQiOzDrdV
+   E7c+aAxwnsOtoLZb5A67J4tuevQJ+PGQs3Wd3yLwKwYfUcd216+9aAPlu
+   M5103N5SPcyOIYBeH7PW81rTUJtWdnC1VSsH+9MLnqZDHa4qr2Ulz2Qrl
+   uN0/QJG18Uj+sN++BdO/fHbSd80+Nkg6EM5ITlwV4ibva5oLRcuIJkwYj
+   WFUb7oMo2vuSfXEl7q3MJ1zGiYEXPPO9cHqohyADEEyLW8oljdTbh08xo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="417136847"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="417136847"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:32:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900366693"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="900366693"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Oct 2023 07:29:55 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qt7aX-0000Vl-1W;
+        Wed, 18 Oct 2023 14:31:57 +0000
+Date:   Wed, 18 Oct 2023 22:31:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/ata/pata_it821x.c:635:41: warning: 'snprintf' output may be
+ truncated before the last format character
+Message-ID: <202310182207.cEZtAkiP-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-10 11:23:59 [+0200], Pierre Gondois wrote:
-> Hello,
-Hi,
+Hi Heiko,
 
-> The issue seems to be related to this patchset:
-> https://lore.kernel.org/all/20230112194314.845371875@infradead.org/
-> but as I was unable to really diagnose the issue, it might aswell be
-> something else.
+FYI, the error/warning still remains.
 
-Is it easy to figure when this faulty behaviour was introduced?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
+commit: 6ef55060a1cc29dd54ff390f22cb3de266dab2b0 s390: make use of CONFIG_FUNCTION_ALIGNMENT
+date:   7 months ago
+config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20231018/202310182207.cEZtAkiP-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182207.cEZtAkiP-lkp@intel.com/reproduce)
 
-> It seems the memory/registers get corrupted, cf the recurring error
-> messages:
-> - Undefined instruction
-> - Unable to handle kernel paging request at virtual address
-> - Mem abort info
-> Splats seem to happen while taking IRQs while going out of idle or
-> when handling a syscall. More splat variations could be generated,
-> but 5 should be enough I believe.
->=20
-> When running a non-PREEMPT_RT kernel, splats don't appear, so the issue
-> might be related to the way locks are handled in PREEMPT_RT. I don't
-> deeply understand the relation between rcu/irq/tracing so far, if someone
-> has an idea of what could happen, this would be helpful :)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310182207.cEZtAkiP-lkp@intel.com/
 
-I've been looking at these splats. Do you have auth-pointer or shadow
-stack enabled?
+All warnings (new ones prefixed by >>):
 
-> Regards,
-> Pierre
->=20
-> Splats:
-> [splat-1]
-> [...] Internal error: Oops - Undefined instruction: 0000000002000000 [#1]=
- PREEMPT_RT SMP
-=E2=80=A6
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   a8c47bfd        ldp     x29, x30, [sp], #64
->    4:   d50323bf        autiasp
->    8:   d65f03c0        ret
->    c:   d503201f        nop
->   10:*  d503233f        paciasp         <-- trapping instruction
+   drivers/ata/pata_it821x.c: In function 'it821x_probe_firmware':
+>> drivers/ata/pata_it821x.c:635:41: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+     635 |                 snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
+         |                                         ^
+   In function 'it821x_display_disk',
+       inlined from 'it821x_probe_firmware' at drivers/ata/pata_it821x.c:721:4:
+   drivers/ata/pata_it821x.c:635:17: note: 'snprintf' output between 7 and 9 bytes into a destination of size 8
+     635 |                 snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-paciasp is the undefined instruction. I don't see paciasp to be patched
-out if not supported by the CPU so it is a NOP if not supported. What
-could go wrong here?
 
-> [splat-2]
-> [...] Unable to handle kernel paging request at virtual address 001c71c71=
-c71d434
-=E2=80=A6
-> [...] pc : ttwu_do_activate (kernel/sched/core.c:3855)
-> [...] lr : ttwu_do_activate (kernel/sched/sched.h:1363 kernel/sched/sched=
-=2Eh:1507 kernel/sched/core.c:3846)
-=E2=80=A6
-> [...] x20: ffff80008000bcd8 x19: ffff00097eedebc0 x18: 071c71c71c71c71c
-> [...] x8 : 00000000000645ab x7 : ffff800080149d58 x6 : 0000000000000000
+vim +/snprintf +635 drivers/ata/pata_it821x.c
 
-=E2=80=A6
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   f001dd89        adrp    x9, 0x3bb3000
->    4:   f9068668        str     x8, [x19, #3336]
->    8:   f9418129        ldr     x9, [x9, #768]
->    c:   d341fd08        lsr     x8, x8, #1
->   10:*  f9068e68        str     x8, [x19, #3352]                <-- trapp=
-ing instruction
+669a5db411d85a Jeff Garzik     2006-08-29  595  
+963e4975c6f93c Alan Cox        2008-07-24  596  /**
+963e4975c6f93c Alan Cox        2008-07-24  597   *	it821x_display_disk	-	display disk setup
+3697aaafc368b6 Hannes Reinecke 2021-12-21  598   *	@ap: ATA port
+963e4975c6f93c Alan Cox        2008-07-24  599   *	@n: Device number
+963e4975c6f93c Alan Cox        2008-07-24  600   *	@buf: Buffer block from firmware
+963e4975c6f93c Alan Cox        2008-07-24  601   *
+963e4975c6f93c Alan Cox        2008-07-24  602   *	Produce a nice informative display of the device setup as provided
+963e4975c6f93c Alan Cox        2008-07-24  603   *	by the firmware.
+963e4975c6f93c Alan Cox        2008-07-24  604   */
+963e4975c6f93c Alan Cox        2008-07-24  605  
+3697aaafc368b6 Hannes Reinecke 2021-12-21  606  static void it821x_display_disk(struct ata_port *ap, int n, u8 *buf)
+963e4975c6f93c Alan Cox        2008-07-24  607  {
+963e4975c6f93c Alan Cox        2008-07-24  608  	unsigned char id[41];
+963e4975c6f93c Alan Cox        2008-07-24  609  	int mode = 0;
+3a53b3bcc7af2f LABBE Corentin  2015-10-14  610  	const char *mtype = "";
+963e4975c6f93c Alan Cox        2008-07-24  611  	char mbuf[8];
+3a53b3bcc7af2f LABBE Corentin  2015-10-14  612  	const char *cbl = "(40 wire cable)";
+963e4975c6f93c Alan Cox        2008-07-24  613  
+963e4975c6f93c Alan Cox        2008-07-24  614  	static const char *types[5] = {
+1c30c02757027e Jean Delvare    2011-07-04  615  		"RAID0", "RAID1", "RAID 0+1", "JBOD", "DISK"
+963e4975c6f93c Alan Cox        2008-07-24  616  	};
+963e4975c6f93c Alan Cox        2008-07-24  617  
+963e4975c6f93c Alan Cox        2008-07-24  618  	if (buf[52] > 4)	/* No Disk */
+963e4975c6f93c Alan Cox        2008-07-24  619  		return;
+963e4975c6f93c Alan Cox        2008-07-24  620  
+963e4975c6f93c Alan Cox        2008-07-24  621  	ata_id_c_string((u16 *)buf, id, 0, 41);
+963e4975c6f93c Alan Cox        2008-07-24  622  
+963e4975c6f93c Alan Cox        2008-07-24  623  	if (buf[51]) {
+963e4975c6f93c Alan Cox        2008-07-24  624  		mode = ffs(buf[51]);
+963e4975c6f93c Alan Cox        2008-07-24  625  		mtype = "UDMA";
+963e4975c6f93c Alan Cox        2008-07-24  626  	} else if (buf[49]) {
+963e4975c6f93c Alan Cox        2008-07-24  627  		mode = ffs(buf[49]);
+963e4975c6f93c Alan Cox        2008-07-24  628  		mtype = "MWDMA";
+963e4975c6f93c Alan Cox        2008-07-24  629  	}
+963e4975c6f93c Alan Cox        2008-07-24  630  
+963e4975c6f93c Alan Cox        2008-07-24  631  	if (buf[76])
+963e4975c6f93c Alan Cox        2008-07-24  632  		cbl = "";
+963e4975c6f93c Alan Cox        2008-07-24  633  
+963e4975c6f93c Alan Cox        2008-07-24  634  	if (mode)
+963e4975c6f93c Alan Cox        2008-07-24 @635  		snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
+963e4975c6f93c Alan Cox        2008-07-24  636  	else
+963e4975c6f93c Alan Cox        2008-07-24  637  		strcpy(mbuf, "PIO");
+963e4975c6f93c Alan Cox        2008-07-24  638  	if (buf[52] == 4)
+3697aaafc368b6 Hannes Reinecke 2021-12-21  639  		ata_port_info(ap, "%d: %-6s %-8s          %s %s\n",
+963e4975c6f93c Alan Cox        2008-07-24  640  				n, mbuf, types[buf[52]], id, cbl);
+963e4975c6f93c Alan Cox        2008-07-24  641  	else
+3697aaafc368b6 Hannes Reinecke 2021-12-21  642  		ata_port_info(ap, "%d: %-6s %-8s Volume: %1d %s %s\n",
+963e4975c6f93c Alan Cox        2008-07-24  643  				n, mbuf, types[buf[52]], buf[53], id, cbl);
+963e4975c6f93c Alan Cox        2008-07-24  644  	if (buf[125] < 100)
+3697aaafc368b6 Hannes Reinecke 2021-12-21  645  		ata_port_info(ap, "%d: Rebuilding: %d%%\n", n, buf[125]);
+963e4975c6f93c Alan Cox        2008-07-24  646  }
+963e4975c6f93c Alan Cox        2008-07-24  647  
 
-So this reads as
-	store x8 to x19 + #3352, 0xffff00097eedebc0 + 3352
-	store 0x00000000000645ab to 0xffff00097eedf8d8
+:::::: The code at line 635 was first introduced by commit
+:::::: 963e4975c6f93c148ca809d986d412201df9af89 pata_it821x: Driver updates and reworking
 
-But the kernel complains about 001c71c71c71d434 which is not exactly
-what I computed. But it is familiar to x18. Looking at those two
- 0x07 1c71c71c71 c71c
- 0x00 1c71c71c71 d434
+:::::: TO: Alan Cox <alan@lxorguk.ukuu.org.uk>
+:::::: CC: Jeff Garzik <jgarzik@redhat.com>
 
-the pattern in the middle is the same. And 0xd434 - 0xc71c =3D 0xd18 which
-is 3352.=20
-
-x18 is the shadow stack (?) and contains the same value in splat-1 and
-is zero in splat-3 and splat-4.
-
-> [splat-3]
-> [...] Mem abort info:
-> [...]   ESR =3D 0x0000000096000045
-> [...]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> [...]   SET =3D 0, FnV =3D 0
-> [...]   EA =3D 0, S1PTW =3D 0
-> [...]   FSC =3D 0x05: level 1 translation fault
-> [...] Data abort info:
-> [...]   ISV =3D 0, ISS =3D 0x00000045, ISS2 =3D 0x00000000
-> [...]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
-> [...]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> [...] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D00000000ed344000
-> [...] [ffff800886adb8b8] pgd=3D10000009fffff003, p4d=3D10000009fffff003, =
-pud=3D0000000000000000
-> [...] Internal error: Oops: 0000000096000045 [#1] PREEMPT_RT SMP
-> [...] Modules linked in:
-> [...] CPU: 1 PID: 264 Comm: rtla-static Not tainted 6.6.0-rc4-rt8-00102-g=
-97b0e2d47443 #1193
-> [...] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Devel=
-opment Platform, BIOS EDK II Oct  4 2023
-> [...] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> [...] pc : rcu_is_watching (kernel/rcu/tree.c:695)
-> [...] lr : trace_irq_disable (./include/trace/events/preemptirq.h:36)
-> [...] sp : ffff800086adb8d0
-> [...] x29: ffff800086adb8e0 x28: ffff0008062a4ec0 x27: 0000000000000030
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   54fffb61        b.ne    0xffffffffffffff6c  // b.any
->    4:   17ffffe4        b       0xffffffffffffff94
->    8:   d503201f        nop
->    c:   d503233f        paciasp
->   10:*  a9be7bfd        stp     x29, x30, [sp, #-32]!           <-- trapp=
-ing instruction
-
-This looks like a stack entry. So this looks sane and if SP is correct
-then nothing should go wrong. The fault says "translation fault" so my
-guess would be that SP is not correct and we have to page tables backing
-ffff800086adb8d0.
-
-> [splat-4]
-> [...] Mem abort info:
-> [...]   ESR =3D 0x0000000096000045
-> [...]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> [...]   SET =3D 0, FnV =3D 0
-> [...]   EA =3D 0, S1PTW =3D 0
-> [...]   FSC =3D 0x05: level 1 translation fault
-> [...] Data abort info:
-> [...]   ISV =3D 0, ISS =3D 0x00000045, ISS2 =3D 0x00000000
-> [...]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
-> [...]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-=E2=80=A6
-> [...] lr : trace_irq_disable (./include/trace/events/preemptirq.h:36)
-> [...] sp : ffff800086adb8d0
-> [...] x29: ffff800086adb8e0 x28: ffff0008062a4ec0 x27: 0000000000000030
-=E2=80=A6
->    c:   d503233f        paciasp
->   10:*  a9be7bfd        stp     x29, x30, [sp, #-32]!           <-- trapp=
-ing instruction
-
-This seems to be same as splat-3 including register.
-
-> [splat-5]
-> [...] Internal error: Oops - Undefined instruction: 0000000002000000 [#1]=
- PREEMPT_RT SMP
-> [...] Modules linked in:
-> [...] CPU: 2 PID: 40 Comm: rcuc/2 Not tainted 6.6.0-rc4-rt8-00102-g97b0e2=
-d47443 #1194
-> [...] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Devel=
-opment Platform, BIOS EDK II Oct  4 2023
-> [...] pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> [...] pc : trace_pelt_irq_tp (./include/trace/events/sched.h:?)
-> [...] lr : irqtime_account_irq (kernel/sched/cputime.c:64)
-> [...] sp : ffff8000851d3ce0
-> [...] x29: ffff8000851d3ce0 x28: 0000000000000020 x27: ffff800083ce4e80
-> [...] x26: ffff800083d46180 x25: 000000000000000a x24: 0000000000000000
-> [...] x23: 0000000000000007 x22: 0000000000000000 x21: ffff00097eeebf50
-> [...] x20: 0000000000002a08 x19: ffff00080092b480 x18: ffff8000850fd038
-> [...] x17: ffff800084e05000 x16: ffff800084445bf0 x15: 0000000008a87beb
-> [...] x14: 000000003bb0a251 x13: 0000000000000006 x12: 0000000934346b33
-> [...] x11: 0000000100000000 x10: 0000000000000001 x9 : 0000000014443054
-> [...] x8 : ffff00097eeebeb0 x7 : ffff80008012d608 x6 : 0000000000000000
-> [...] x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff8000851d3d80
-> [...] x2 : ffff00080092b480 x1 : 0000000000000000 x0 : 000000b814aa1780
-> [...] Call trace:
-> [...] trace_pelt_irq_tp (./include/trace/events/sched.h:?)
-> [...] __do_softirq (./include/linux/vtime.h:? kernel/softirq.c:593)
-> [...] __local_bh_enable_ip (kernel/softirq.c:?)
-> [...] local_bh_enable (./include/linux/bottom_half.h:34)
-> [...] rcu_cpu_kthread (kernel/rcu/tree.c:2493)
-> [...] smpboot_thread_fn (kernel/smpboot.c:?)
-> [...] kthread (kernel/kthread.c:389)
-> [...] ret_from_fork (arch/arm64/kernel/entry.S:854)
-> [...] Code: 17ffffc2 d4210000 17ffffe4 d503201f (819e3608)
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   17ffffc2        b       0xffffffffffffff08
->    4:   d4210000        brk     #0x800
->    8:   17ffffe4        b       0xffffffffffffff98
->    c:   d503201f        nop
->   10:*  819e3608        .inst   0x819e3608 ; undefined          <-- trapp=
-ing instruction
-
-Knowing what PC is could help to figure out if this is really
-trace_pelt_irq_tp. The brk opcode could be a warning since it jumps back
-afterwards. But the trapping code a different/ wrong page that is mapped
-here. Or it jumped too far.
-I don't know why trace_pelt_irq_tp is visible here. This should be just
-a nop which is patched at runtime to some underscroll function ;) I
-might be missing something.
-
-Sebastian
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
