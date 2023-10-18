@@ -2,144 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1EA7CE4BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C548F7CE4BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjJRRhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        id S231152AbjJRRiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjJRRhh (ORCPT
+        with ESMTP id S230234AbjJRRho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:37:37 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B221731;
-        Wed, 18 Oct 2023 10:36:12 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50cf61f6dso77264451fa.2;
-        Wed, 18 Oct 2023 10:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697650571; x=1698255371; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3zNWTtFsvzJ0eNT/uIt33iHUybx+dKwdPOpAnNRdODg=;
-        b=l5Mqk/umuELxSTC+mpKTL7xGC7u24NsL8/ImB4/daJFFc+mkDpk1lC999kKr2jgk+4
-         WlE56zEJALvVLtWztkiOcwINn+68swbemyT9/6d4nEODepkrfscpOIvFUhIci2gux9TD
-         X8w8ngQaOy3LcKnZEABMqxGG1uAkHUJbJ3UbgYPKQzNmva8ZSndvauC4YMqY6B0zgYbj
-         vAtGY3KopiyxcxLo3Jx3+KP0/CbOeXkkqv+d1pu55vvpUX45DoKYPmtKNAYgSLlcyFi4
-         u5Nivtw4XAekwTYOUCtNEpcF/YKfVQV72Nvd6PzUt63lupYVYosAfE3Uyw0KZ0sqdPue
-         gVjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697650571; x=1698255371;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3zNWTtFsvzJ0eNT/uIt33iHUybx+dKwdPOpAnNRdODg=;
-        b=MIpg5jccsLOYH27InGilQ76QYy22gyID5w4fcdWonbLHCVT+US2Q2/mCimGsJfozAt
-         zNT9Lt2jJwyQ4Q0qcjsNliJiR01032Dr9EJ7ij5DZZngxdJBZuws8nfnWmOFhPXTfhzy
-         igNX8YAetxmzTDJGFtJEy9Bo+z2h3qOwmot4kTwCiD8efPJd/LOwDuF7PZ2jNI/0TKbU
-         Q7vItf4Vp34ta+E/ixeK/W1TyhKAnhGT7NHgLVOCoWkt1XbsQeq+DodEf1gvUtZxs119
-         uS1HL9qSgpe8WGOXBIw2cFZGuIfo5u2gaY3ul4er0C9W76P+3ksGeOZizSmdqCF8jeJZ
-         +qKA==
-X-Gm-Message-State: AOJu0Yy5KF8iwdP7z83FiNxk2HVimuFHnmcxKr/IjKHsBf3cBgj9NdEV
-        zu0h9hW+oHSWtNsjsGiNcE4=
-X-Google-Smtp-Source: AGHT+IGVQtL8EluxnF0x/e8D/MLdBDQhng6Owp44Md2QV0nA6QS92mV/0/de3DP2RdtvenoFpguhjg==
-X-Received: by 2002:a2e:bc12:0:b0:2c5:9a5:a1c2 with SMTP id b18-20020a2ebc12000000b002c509a5a1c2mr7171059ljf.30.1697650570471;
-        Wed, 18 Oct 2023 10:36:10 -0700 (PDT)
-Received: from pc636 (host-90-233-215-212.mobileonline.telia.com. [90.233.215.212])
-        by smtp.gmail.com with ESMTPSA id v14-20020a2e990e000000b002c00e475e23sm780606lji.131.2023.10.18.10.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 10:36:10 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 18 Oct 2023 19:36:07 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZTAXh1ifgAAF0GsW@pc636>
-References: <20231016173004.14148-1-urezki@gmail.com>
- <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
- <ZS6U5SgvGcmdE_DA@pc636>
- <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
+        Wed, 18 Oct 2023 13:37:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD92122
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:37:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1483BC433C8;
+        Wed, 18 Oct 2023 17:37:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697650624;
+        bh=oFj2hOD0FJcu+azHgKmYICzh2htgdd2Wv5h+L8tXxW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PGoxBFH7kFpGXuNXarPS4c99yt2NmcMHGAG61xiXgEWbuhSQUwdufy6ZcWmie//K6
+         2jQuz48qza50itX3m+nM3m+zLLxqwx5TNu/1H8FtrTLZESdAtSePpowbxfuT5Som1/
+         QPL/LCRRiN+oL3q8cCeBAmbndhX3IOgO4kT4U2yMaWE5XkgV9R+nRpulbZ124R93cJ
+         ungaM9yiPw1lhiU37GjtiwsYnLFvTSZ0OBc7Sy8iwKvJ72tQYuRo9EIulRnA6DnKE0
+         A219HIJQcfYQmv5RCfbfUtzRYWo0CbTk1gzcwIa6Ca9T1AZrZdCczZZ1/wFytbveoI
+         7iGVvpM33p3iQ==
+Date:   Wed, 18 Oct 2023 18:36:59 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension
+ reporting
+Message-ID: <20231018-flagpole-footpad-07a6228485f3@spud>
+References: <20231017131456.2053396-1-cleger@rivosinc.com>
+ <20231017131456.2053396-2-cleger@rivosinc.com>
+ <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
+ <20231018-scrap-bankable-a0f321d97a46@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cYWeMTHrHEjyZ4VV"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231018-scrap-bankable-a0f321d97a46@spud>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:32:22AM -0400, Joel Fernandes wrote:
-> On Tue, Oct 17, 2023 at 10:06 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> [...]
-> > > > +
-> > > > +       /* Finally. */
-> > > > +       complete(&rs->completion);
-> > > > +}
-> > > > +
-> > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > > +{
-> > > > +       struct llist_node *done, *rcu, *next;
-> > > > +
-> > > > +       done = llist_del_all(&sr.done);
-> > > > +       if (!done)
-> > > > +               return;
-> > > > +
-> > > > +       llist_for_each_safe(rcu, next, done)
-> > > > +               rcu_sr_normal_complete(rcu);
-> > > > +}
-> > > [...]
-> > > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > > > +{
-> > > > +       atomic_inc(&sr.active);
-> > > > +       if (llist_add((struct llist_node *) &rs->head, &sr.curr))
-> > > > +               /* Set the tail. Only first and one user can do that. */
-> > > > +               WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
-> > > > +       atomic_dec(&sr.active);
+
+--cYWeMTHrHEjyZ4VV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 18, 2023 at 06:33:34PM +0100, Conor Dooley wrote:
+> On Wed, Oct 18, 2023 at 10:24:15AM -0700, Evan Green wrote:
+> > On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger=
+@rivosinc.com> wrote:
 > > >
-> > > Here there is no memory ordering provided by the atomic ops. Is that really Ok?
+> > > Factorize ISA extension reporting by using a macro rather than
+> > > copy/pasting extension names. This will allow adding new extensions m=
+ore
+> > > easily.
 > > >
-> > This needs to be reworked since there is no ordering guaranteed. I think
-> > there is a version of "atomic_inc_something" that guarantees it?
-> 
-> Yeah there is atomic_fetch_{inc,dec}{_acquire,_release}()
-> 
-> Or:
->   atomic_inc(&sr.active);
->   smp_mb__after_atomic();
-> 
->   smp_mb__before_atomic();
->   atomic_dec(&sr.active);
-> 
-> ?
->
-> That's probably better because we don't need ordering before the inc
-> or after the dec, AFAICS.
-> 
-There are two variants, atomic_inc_return() and atomic_dec_return()
-which are fully ordered. Any thoughts about them? One line instead of
-two as in your case.
+> > > Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> > > ---
+> > >  arch/riscv/kernel/sys_riscv.c | 32 ++++++++++++++++++--------------
+> > >  1 file changed, 18 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_ri=
+scv.c
+> > > index 473159b5f303..e207874e686e 100644
+> > > --- a/arch/riscv/kernel/sys_riscv.c
+> > > +++ b/arch/riscv/kernel/sys_riscv.c
+> > > @@ -145,20 +145,24 @@ static void hwprobe_isa_ext0(struct riscv_hwpro=
+be *pair,
+> > >         for_each_cpu(cpu, cpus) {
+> > >                 struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
+> > >
+> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBA))
+> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBA;
+> > > -               else
+> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBA;
+> > > -
+> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBB))
+> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBB;
+> > > -               else
+> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBB;
+> > > -
+> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBS))
+> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBS;
+> > > -               else
+> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBS;
+> > > +#define CHECK_ISA_EXT(__ext)                                        =
+           \
+> > > +               do {                                                 =
+           \
+> > > +                       if (riscv_isa_extension_available(isainfo->is=
+a, __ext)) \
+> > > +                               pair->value |=3D RISCV_HWPROBE_EXT_##=
+__ext;       \
+> > > +                       else                                         =
+           \
+> > > +                               missing |=3D RISCV_HWPROBE_EXT_##__ex=
+t;           \
+> > > +               } while (false)
+> > > +
+> > > +               /*
+> > > +                * Only use CHECK_ISA_EXT() for extensions which can =
+be exposed
+> > > +                * to userspace, regardless of the kernel's configura=
+tion, as no
+> > > +                * other checks, besides presence in the hart_isa bit=
+map, are
+> > > +                * made.
+> >=20
+> > This comment alludes to a dangerous trap, but I'm having trouble
+> > understanding what it is.
+>=20
+> You cannot, for example, use this for communicating the presence of F or
+> D, since they require a config option to be set before their use is
+> safe.
 
-Your concern is about, that atomic_inc() can be reodered? There is a
-llist_add() that has inside the try_cmpxchg() that should have barrier.
+Funnily enough, this comment is immediately contradicted by the vector
+subset extensions, where these CHECK_ISA_EXT() macros are used wrapped
+in has_vector(). The code looks valid to me, since has_vector() contains
+the Kconfig check, but does fly in the face of this comment.
 
-Any thoughts?
+>=20
+> > Perhaps some rewording to more explicitly
+> > state the danger would be appropriate. Other than that:
+> >=20
+> > Reviewed-by: Evan Green <evan@rivosinc.com>
 
-Thank you for the review and help, Joel!
 
---
-Uladzislau Rezki
+
+--cYWeMTHrHEjyZ4VV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTAXuwAKCRB4tDGHoIJi
+0ssgAQCFsE/VyWSVFRI6XGd2p+Q+D0bkhT1pEi2sRvGHdVIbwAEAlRpXF0hcPhDv
+uK+YFm8QJY4dKBMhZ6EtzbVoIv6ctA8=
+=a1cl
+-----END PGP SIGNATURE-----
+
+--cYWeMTHrHEjyZ4VV--
