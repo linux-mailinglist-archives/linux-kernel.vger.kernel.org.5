@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7931D7CD7AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4A07CD79F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbjJRJQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
+        id S229582AbjJRJPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjJRJQa (ORCPT
+        with ESMTP id S229482AbjJRJPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:16:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F168D127
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:16:21 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507ac66a969so4113375e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:16:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697620580; x=1698225380; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AZ41pRho0HuiZRS9gRgVWISrteNQCafxPgDs5lLN4nQ=;
-        b=SWsNyyAC/BpKYxfAc+tWplOzVjgCRz2e+p9hX9/stjmqYjPVT0orwKzcHOBqWxYfIy
-         yYl5hZljMrposxTNdPls4ifEvAAwZt2j1GDrDrpnzOtPcIeINpU3CrbDPiT6eLGuvZGH
-         1goUVKPrRApJuci57HPwjt6xJORU+kaHnGoFiSvevASNmFpU/Sxy6HuyLrf3ZL7tDtqt
-         0snjwwSxvK918bJi4kXccyOsaX6K1Zv7uT1peNCx8MmawtyfT6NPEaL/bgDvDNCplmx9
-         U9F7Jmwqlpz/9NUHfmNIQIIXYSjNdZbscyAPW2PkOb7msBO3hgmCHErqv3LBFmyXimzc
-         vtSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697620580; x=1698225380;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZ41pRho0HuiZRS9gRgVWISrteNQCafxPgDs5lLN4nQ=;
-        b=eWFwro6WdlJLutAkwtsI4QqWLLEvFmu5x4fzxwyIeyu9HQqBzEPoQ5szKgAOwkg6eQ
-         esXa3TojafE7VCTbj9BrWNq3AG7jDfnM14+VfkhIfw1p4A6C7ok2TweOYy0MqcHb9Gyb
-         dGhKIoF3QyntPTreo6f+/oihZ7880GwpdxvJ5zM650MPN4IUbFDpfllFj98HI7oOBt7u
-         SddADQkKff0G4PwB78ZVb16oZuyIP9jOmE8eBVSNZE+ma6iqt+KEe1Qgmx4Yif7u03ME
-         wvileMR7INhlXPteTe7V7SS5yDJ7OPF/zo2ST0+heYNHZbrVrZ2SzoxxUIRNxKhG2m7h
-         M33A==
-X-Gm-Message-State: AOJu0YxRNJauxTEj3aFcdhyCevBbjkYRU5vAiZ+5pidrqUsQ4klxG4Is
-        rPcWQx+D5gZADbY0aYW440tzJw==
-X-Google-Smtp-Source: AGHT+IGfutiJM8gG/RzWIslBZtWh5qieWDLLmmPzfMwJAmj4O9Zs/iCZCRzPD03dztF50asWIr/W8A==
-X-Received: by 2002:a19:e041:0:b0:503:99d:5a97 with SMTP id g1-20020a19e041000000b00503099d5a97mr3576574lfj.20.1697620580116;
-        Wed, 18 Oct 2023 02:16:20 -0700 (PDT)
-Received: from [172.30.204.55] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id b22-20020a0565120b9600b004edc72be17csm619367lfv.2.2023.10.18.02.16.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 02:16:19 -0700 (PDT)
-Message-ID: <4469ff06-fcb1-400d-848f-77c4b139a20d@linaro.org>
-Date:   Wed, 18 Oct 2023 11:16:16 +0200
+        Wed, 18 Oct 2023 05:15:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 405F0F9;
+        Wed, 18 Oct 2023 02:15:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC89F2F4;
+        Wed, 18 Oct 2023 02:16:17 -0700 (PDT)
+Received: from [10.57.81.189] (unknown [10.57.81.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6462B3F64C;
+        Wed, 18 Oct 2023 02:15:32 -0700 (PDT)
+Message-ID: <d2ac3963-9c91-4256-a1e3-ea5990848c1e@arm.com>
+Date:   Wed, 18 Oct 2023 10:16:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8953: add SPI interfaces
+Subject: Re: [PATCH v2 5/6] energy_model: use a fixed reference frequency
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     dietmar.eggemann@arm.com, bristot@redhat.com,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, conor.dooley@microchip.com,
+        rostedt@goodmis.org, juri.lelli@redhat.com,
+        viresh.kumar@linaro.org, suagrfillet@gmail.com,
+        linux-pm@vger.kernel.org, ionela.voinescu@arm.com,
+        vschneid@redhat.com, ajones@ventanamicro.com,
+        catalin.marinas@arm.com, linux@armlinux.org.uk,
+        linux-riscv@lists.infradead.org, pierre.gondois@arm.com,
+        lftan@kernel.org, linux-kernel@vger.kernel.org, bsegall@google.com,
+        mingo@redhat.com, rafael@kernel.org,
+        linux-arm-kernel@lists.infradead.org, peterz@infradead.org,
+        gregkh@linuxfoundation.org, mgorman@suse.de, will@kernel.org,
+        sudeep.holla@arm.com
+References: <20231009103621.374412-1-vincent.guittot@linaro.org>
+ <20231009103621.374412-6-vincent.guittot@linaro.org>
 Content-Language: en-US
-To:     Gianluca Boiano <morf3089@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231013110531.84140-1-morf3089@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231013110531.84140-1-morf3089@gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231009103621.374412-6-vincent.guittot@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vincent,
 
 
-On 10/13/23 13:05, Gianluca Boiano wrote:
-> This change add spi_3, spi_5 and spi_6 interfaces to
-> MSM8953 devices.
+On 10/9/23 11:36, Vincent Guittot wrote:
+> The last item of a performance domain is not always the performance point
+> that has been used to compute CPU's capacity. This can lead to different
+> target frequency compared with other part of the system like schedutil and
+> would result in wrong energy estimation.
 > 
-> Signed-off-by: Gianluca Boiano <morf3089@gmail.com>
+> A new arch_scale_freq_ref() is available to return a fixed and coherent
+> frequency reference that can be used when computing the CPU's frequency
+> for an level of utilization. Use this function to get this reference
+> frequency.
+> 
+> Energy model is never used without defining arch_scale_freq_ref() but
+> can be compiled. Define a default arch_scale_freq_ref() returning 0
+> in such case.
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > ---
-Generally when you resend an email, you should edit the subject to 
-include the word "RESEND" and state the reason under the --- line.
+>   include/linux/energy_model.h | 14 +++++++++++---
+>   1 file changed, 11 insertions(+), 3 deletions(-)
+> 
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+LGTM, taking into account the patch 2/6 that we don't include any
+boost freq (so no changes w.r.t. current EAS situation)
 
-Konrad
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
