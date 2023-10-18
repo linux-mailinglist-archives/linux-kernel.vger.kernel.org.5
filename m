@@ -2,483 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A2A7CD244
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B017CD249
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbjJRC1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 22:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
+        id S1344332AbjJRC3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 22:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJRC1T (ORCPT
+        with ESMTP id S229455AbjJRC3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 22:27:19 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B409BF7;
-        Tue, 17 Oct 2023 19:27:16 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27db9fdec0dso1259915a91.0;
-        Tue, 17 Oct 2023 19:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697596036; x=1698200836; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fpapaPVduYgFxDQdAXiTKPpqkL0RWX3+eE48j4c0f2E=;
-        b=N+UYbIDpAzQtswXiomQJ0FmaDE3CI70Rl5zJ/yhMQzQctTHHPIlEvgQlLkA05q4c+s
-         RWEQ9aVVs9mITnp+VK68V4La+HeBRvi2EJFG3pd8PpuqkbMZMm4CVZR1RURnLpIthkD4
-         YVfCJ2WfcPJUsTK2lVzsBVHkc39vL+KJNHKDjQ67HLy7tNoHlx63PjTZz+6D3MWBOL0p
-         h7vHVxRv6c9Oeq+gHNR2rJULgVPgkS8nYdxcQyu4DRn30zzRHKtT5Au0ROIxuLfJx/qb
-         HrIoiDlQmZnw/d5B/ec1+6bhW8Mgtq6O6EzNxjLatVzg+/iSG/ZSYpsCAjnC/O13oBxG
-         f01Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697596036; x=1698200836;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fpapaPVduYgFxDQdAXiTKPpqkL0RWX3+eE48j4c0f2E=;
-        b=YMNXhOJz+Uqqa0tC59jkG450EhifxVz+6TOn58RfDIONI5oVZWRREN8vwa3R8yR552
-         uenO5zcJRmeocyHwEhNJLF/K8+1hyAhAdXihY/oAe/Y7nIQYk+jUWnquDGZmaGFGpZZ8
-         HvoIeAbEUnSI4d4qJRUkjlzuidIR0CD+d/FuEKIly80QxgC6ztDoAK1/ZoqPILSY90Rf
-         um7NH417BH9JQtiek1BrFuIlv9DA02Y4B3/CIM8VXFL81ggNpjXUCFoQk/SFvMTsWxDb
-         FUeu5pzOxAW7jMG4YG4AfIKLbt0UKyJJmNCX83zweKYoCj5EDmD0a5UvoklpLYyfj9QG
-         rjcA==
-X-Gm-Message-State: AOJu0Yx2CYoALB+ILbErc2PXlWPBMMCXiuIZrL78mNnm4mAdyX4Q95IN
-        HJwAKo+hYhs3G3mVWMqSqtV2RxzZI6jIQluSqmQ=
-X-Google-Smtp-Source: AGHT+IG8cbFhti3tqgv18BFt1md7TxeyETFpz97wYeQCp+1Y6Drj5dLwKZs95ptutOxSLoxUAgMO5sEkidOsPguKlsg=
-X-Received: by 2002:a17:90a:d404:b0:27c:e062:c464 with SMTP id
- r4-20020a17090ad40400b0027ce062c464mr4062788pju.37.1697596035916; Tue, 17 Oct
- 2023 19:27:15 -0700 (PDT)
+        Tue, 17 Oct 2023 22:29:23 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2067.outbound.protection.outlook.com [40.107.243.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E36AB;
+        Tue, 17 Oct 2023 19:29:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f9rIP5BbP5hWWIZBSTm4Jlzx1IUMRhqa0edVRUhXV8D9zcH3AFP1U1Utmo5mV1xryglVK7a9how/ARGl+Y6u0auWbczuNFS4ecdbNyvJC5gAr+TT6ihFWy1g575Lw/a6f/eG6X9ByLQs6QkxFxGBldUiYwUwlAoZPh24Mx9O8vzZwOKF44m81mVhZ0RVdT8++IwspL960f315lexQxnBFIDkM7I32bPfHTDChQuCGUj1uuR8QsquJuhQ0WCalCFwfl+KSxmChULmHlC9um9TyjxAuBDOXOfyxAQgs8cCfBLw8BmUTlvbXoDbItZyVT/WTokkqC4wFdooJdiaESqJrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rdunNkpg1VSqiYJ/aevxDaNiul6VMkZa9I8gV6/jsnE=;
+ b=lHIe+oncHLapMKs/Wn0E2Pu/7L+UpNxTqMDgUANGUzRazcmuJNh2v1ydQX+Hn2Xy0cWR0Y1CFG8gwgHq0SaR4HBbKoh7Q3gq07VHy9SUVIHuMi1Y58yEezkZmWSzaSqV/zybgxyDu3htxv9cyAhf0+OgUciXL/EDuFctS+1wHEmiOlumDRkO3PHPWyZoIKDD1+jQfVxgdAOOm+zWC65Tr2Ca+oKW5OGaKrWetNqRNaWF9Fl0W8uXerCAGxYPJUcCF/eb9Y5846GimjFYHBJHKuxu/fzJqdSeE4trI8rG0DMc/JcGRSn6m7hVV5Fg7TST95swjYhx1/Z6cQoBpdgYSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rdunNkpg1VSqiYJ/aevxDaNiul6VMkZa9I8gV6/jsnE=;
+ b=lCjJAKmRXMxr+4dy8czH1G4oPaPnPvUxvPBI1XTYP6ZG5WD7rMErvL6Sa2j39qxkOrN3Uxs3+W3TMmpi5GpcBDIT5vAwQyMXD4z3+avse1XIWg3WBJIsP/ZdDOPDToEhbNUAH0jSXXfeDufr+Yf+up8QRHcDIBxvzqMKTUi5KZM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
+ by BN9PR12MB5292.namprd12.prod.outlook.com (2603:10b6:408:105::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
+ 2023 02:29:18 +0000
+Received: from CH3PR12MB9194.namprd12.prod.outlook.com
+ ([fe80::16da:8b28:d454:ad5a]) by CH3PR12MB9194.namprd12.prod.outlook.com
+ ([fe80::16da:8b28:d454:ad5a%3]) with mapi id 15.20.6863.043; Wed, 18 Oct 2023
+ 02:29:18 +0000
+Message-ID: <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+Date:   Wed, 18 Oct 2023 13:28:50 +1100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
+ NAE event
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-49-michael.roth@amd.com>
+ <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+ <ZS614OSoritrE1d2@google.com>
+From:   Alexey Kardashevskiy <aik@amd.com>
+In-Reply-To: <ZS614OSoritrE1d2@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SY5P282CA0006.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:208::11) To CH3PR12MB9194.namprd12.prod.outlook.com
+ (2603:10b6:610:19f::7)
 MIME-Version: 1.0
-References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-10-git-send-email-shengjiu.wang@nxp.com>
- <a0dfe959-3b32-4d03-9f1b-8f3c1054ecf7@xs4all.nl> <CAA+D8AP1a-Vioy2Cr7dZ4wErXpkm7g9Caw-yPKc9jbWpPnN0JQ@mail.gmail.com>
- <0ae6d9e1-bdd9-45ab-9749-8b0cb5c624ff@xs4all.nl>
-In-Reply-To: <0ae6d9e1-bdd9-45ab-9749-8b0cb5c624ff@xs4all.nl>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 18 Oct 2023 10:27:04 +0800
-Message-ID: <CAA+D8AMa9tpMq08XsUuAtV0DLWbLOwsfYjd30NJ3OBezkTs5YA@mail.gmail.com>
-Subject: Re: [RFC PATCH v6 09/11] media: uapi: Add audio rate controls support
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|BN9PR12MB5292:EE_
+X-MS-Office365-Filtering-Correlation-Id: aca489fc-b572-4a17-7ac1-08dbcf82075c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LbmdoO3EzPKqoaRcScNp5kqXmcbqUH6XxayKGhGlhUYOoUcaddZrXDd3mrLx6mWxRKs1+0nEznGDz+xBH3qb3ivKTxrorI/j+TBlBhO7yPy+TIfZTjEqeRZIpd3zRg2dUxd0dY7Xf/qfdKQatOaA7IXbJSNyfrkFii/0aLTYVXpkIKRYW5rHVHX5JdfV6pb2Y/TuZGFHCoS2hZN6Z85iPJJ4TqJ9hrIlP7AtGsCX5xYiWd5WhQrE0/3NdrsSfpOVzIKKYEX+3Vv7GfA4MDXRb7gKDwLwSCaWCeL+RsPcgA7Q6y7RfjZfctpRXXKMdh5iEe8B5j3T53SWRhebJxr1SectWXjgQs4w4EtflsjZgirhtUKE2KUas5ZoIovwH8UAjXewx59QdREjcFxizltau+1UIv+VJFW2m6HkxE7EfTfcrhG7096UAkCindfv6L5cqE8okGHhICnOyI59UPQFlSthZs7jS0gisnpFMkDXOzR9kxWkEc85miULYzj4lnkuerwnZ2BdxaAFTGX+aIlzSgNeJLLmBvJWyHe7pUr/BWlMNASidcb2RQnIkso2MK2g81b16ZXJARjy6v43mOw/CzWc/Yigvfi2ANHY8uQZFDeYnQi84Zk30xbPu6HJZXy1b6Ml1XOiufW2h+VRLOmA6Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(36756003)(31686004)(66476007)(66946007)(110136005)(54906003)(66556008)(38100700002)(31696002)(53546011)(83380400001)(6666004)(2616005)(26005)(6506007)(6512007)(8936002)(316002)(2906002)(478600001)(6486002)(7416002)(7406005)(5660300002)(8676002)(4326008)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Vm5OM08rNkFBR0RZYytSRE13UEhlUlM1K0FJMFNNN3pvZm94eHRJZ0g2SnR1?=
+ =?utf-8?B?UlZUeWo3SWd1MXozL2w0QndPQ0g4T1VPazYxUmRrZS9ndjhhQ25RaSs4dWdH?=
+ =?utf-8?B?dmx5RXRTbDBIWTZEUFI2bFJCR1dXblE3UHkxcnV2NStRak94cjRsL0VCRUpu?=
+ =?utf-8?B?S0daRmxUT09XVThRRm1RTWtaR1pucitqNXVneThobGlZaXdwMzk5N1F1Vk5r?=
+ =?utf-8?B?MzQ5d1ZaN1RMOVByUGlxVFEzQjNoMDk0ZzgxU3BCeHJmYWU3Z0NOSTFGOWtZ?=
+ =?utf-8?B?UlZ6VjNRMlViYUtkdHNHWDVHZVlRVHFqWVErdEdLOWhsRkU2WGtyUWZxZXc5?=
+ =?utf-8?B?RUlrM3lmVm1BR1I1amFoOHoyam9aQVNhaG1FeDZtSG1JbHRCeFNpUTgwekdE?=
+ =?utf-8?B?R3pZeGtXYWU3WldYVGVOQ0s1cTI0bElXQ3hJWVo3QWRwNHQ4OW1PYng1WStM?=
+ =?utf-8?B?UW9pUjZ5MkQ0TGtySEROdzhXV0NVWUt5aUxSclFBZ3BGU1VCeWs5NTlWQnIx?=
+ =?utf-8?B?Tml1blhudUJkbkRZV0FLS242dk9yYzFyWk1sWHRaRWdnMUxiRVZMbk1taVRn?=
+ =?utf-8?B?YTZYTm5kY012Z0NIVkRJelJYYUFOdHRjUkVTallYN2o3U3hqdDRBSWJxcXM2?=
+ =?utf-8?B?MzVIaUx2OWVJN3NYOUVSVEtwd253RU5TdlhwYUVadHl1dm1qKzh4OWFCN2ZW?=
+ =?utf-8?B?ZnEwblRzWG5UdzVUSkpTN3I2MXAyTUNIMHQwMHZ3NFdZUjVpUVhiMHUxNUtD?=
+ =?utf-8?B?Um1wVTZqME1zL1lEWXdqRDM4UWNsTDJkSU8veDJ2ZzAwUlV1ZnhaaVBmTFZF?=
+ =?utf-8?B?dFpLaEhzd1UvTjRxSG03ZXhPSUEyUVRENktQVTByL2ZZYjk4SUoxMGhNSERD?=
+ =?utf-8?B?QkZaYVF5VGVpbmxqYlJjUE5aaVMveDlHK1dITWN2UHo2SW1tNmhXcnJaY2pT?=
+ =?utf-8?B?dWJIbUR1NXU3MmpoVm1IZmFBYW9kb1lnZ2trRzc0aU1rbDRvZXBWaTlzNTQr?=
+ =?utf-8?B?citydFpuK29yVUttMnRKMWxPZkdudTUzMEJ5b1BBbStsNnpvVFpqOXZGZ3lU?=
+ =?utf-8?B?V0w5dEhWd3R0T25KSU9XSFRDRnBRdWhWdFdSVEVveDZ4MnRLTjYyNTZQWWll?=
+ =?utf-8?B?WHRnaDRnUTY3R2ZFM1FSOGVtRmlzRWhwNzNZeUNqbkhhVHhhZlROREVXMUFp?=
+ =?utf-8?B?NVpSTVo5SElBYXlQRW1RTlZQbVA1bHg1ZXJnQ2ZWUXdZd1Rabk5NVTEyamN1?=
+ =?utf-8?B?MkVXaTYxdXhhLzNSS0JzQ1p4RjRDNllKbDcvbE5uVDZCZFZBajdFQjRZZUEw?=
+ =?utf-8?B?UDQ0c210aHQxeUJoRDJ0c1RnU0pmbXRNTll0L3BoWkVMUitIU245cjRyT2I2?=
+ =?utf-8?B?dTBQWDErR01NSnNLZUlBTDg3TzVTMkMyQWMrdVR4SkhnYU1mdmRjZDlETkI0?=
+ =?utf-8?B?eFNjWU05Y2NGSnZzZU4zbytyVzY2TWtUTEo0QklhY29TRm9QQnNNUS9HTlI3?=
+ =?utf-8?B?N2dBS0F0T3d6U2xWbXJhT0Nveld2RG5aRHdJKy9Ob0srQjhQSDZuS00xNkRY?=
+ =?utf-8?B?S3FORzU4djBWZDNmVkxxS2V6UURLem5pZ09IRlRoWHo5YXFGR1pCbW9ITGlG?=
+ =?utf-8?B?S3BnSWVwOW51TG8xS3ZCTzhwa1Z1NFNvUDBTNmhwRFpwWThEaXVLZlVZTmpm?=
+ =?utf-8?B?Q2Y5SVVZcEt1Y3AvSmVieE5pUmpJeiszOGpaNUt2aTRGWHFYejFIK1R2QkFi?=
+ =?utf-8?B?RnlSM0ZLRzJsMmJMeGFVNnZFeWFpSXZmeWxYWUJrQStWNTFFS21GVkM5OEZJ?=
+ =?utf-8?B?MUY0a2JNNUduM3FtVmlhOFZoYkM0ZnJyaGtvMEZQTG9TZGd3YXh3Rk9SZnd0?=
+ =?utf-8?B?cTdaaDlmNlVaT0VkSmtJc2x0cGx1UnNnYVI3elAxR2MwTWdseUViK3ltUG9v?=
+ =?utf-8?B?NW4zMnd0K0pBOERtamxJNnl6cmcvQkJWVm93STZMcHRTUUZzWjdlOWFPWWJP?=
+ =?utf-8?B?a3IvOTJBYmpiQzQrODRaL25IUkhvSUpEQTRRS1RJb3ZpcXhtRHhxT29pYngv?=
+ =?utf-8?B?TkllY3lFeEhwUWxQaTJ3UVg5bEUxNmN5Z3VxSnRHQ29UOE4wQTZydWNNckxB?=
+ =?utf-8?Q?m1PYd3hdcOg68yb74h9LZ4X6t?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aca489fc-b572-4a17-7ac1-08dbcf82075c
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 02:29:18.2565
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qhtNQlgh8nOAm1RVarS+kyNvIFvEraSvZW1T7W59XmKoE6qH1KHZm6sph9gfhglEjghbDrmWWMsKSEEqQaRUZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5292
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 9:37=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
-rote:
->
-> On 17/10/2023 15:11, Shengjiu Wang wrote:
-> > On Mon, Oct 16, 2023 at 9:16=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.n=
-l> wrote:
-> >>
-> >> Hi Shengjiu,
-> >>
-> >> On 13/10/2023 10:31, Shengjiu Wang wrote:
-> >>> Fixed point controls are used by the user to configure
-> >>> the audio sample rate to driver.
-> >>>
-> >>> Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE
-> >>> new IDs for ASRC rate control.
-> >>>
-> >>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> >>> ---
-> >>>  .../userspace-api/media/v4l/common.rst        |  1 +
-> >>>  .../media/v4l/ext-ctrls-fixed-point.rst       | 36 +++++++++++++++++=
-++
-> >>>  .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 +++
-> >>>  .../media/v4l/vidioc-queryctrl.rst            |  7 ++++
-> >>>  .../media/videodev2.h.rst.exceptions          |  1 +
-> >>>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  5 +++
-> >>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 +++
-> >>>  include/media/v4l2-ctrls.h                    |  2 ++
-> >>>  include/uapi/linux/v4l2-controls.h            | 13 +++++++
-> >>>  include/uapi/linux/videodev2.h                |  3 ++
-> >>>  10 files changed, 76 insertions(+)
-> >>>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-f=
-ixed-point.rst
-> >>>
-> >>> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Docum=
-entation/userspace-api/media/v4l/common.rst
-> >>> index ea0435182e44..35707edffb13 100644
-> >>> --- a/Documentation/userspace-api/media/v4l/common.rst
-> >>> +++ b/Documentation/userspace-api/media/v4l/common.rst
-> >>> @@ -52,6 +52,7 @@ applicable to all devices.
-> >>>      ext-ctrls-fm-rx
-> >>>      ext-ctrls-detect
-> >>>      ext-ctrls-colorimetry
-> >>> +    ext-ctrls-fixed-point
-> >>
-> >> Rename this to ext-ctrls-audio-m2m.
-> >>
-> >>>      fourcc
-> >>>      format
-> >>>      planar-apis
-> >>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-po=
-int.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst
-> >>> new file mode 100644
-> >>> index 000000000000..2ef6e250580c
-> >>> --- /dev/null
-> >>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst
-> >>> @@ -0,0 +1,36 @@
-> >>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> >>> +
-> >>> +.. _fixed-point-controls:
-> >>> +
-> >>> +***************************
-> >>> +Fixed Point Control Reference
-> >>
-> >> This is for audio controls. "Fixed Point" is just the type, and it doe=
-sn't make
-> >> sense to group fixed point controls. But it does make sense to group t=
-he audio
-> >> controls.
-> >>
-> >> V4L2 controls can be grouped into classes. Basically it is a way to pu=
-t controls
-> >> into categories, and for each category there is also a control that gi=
-ves a
-> >> description of the class (see 2.15.15 in
-> >> https://linuxtv.org/downloads/v4l-dvb-apis-new/driver-api/v4l2-control=
-s.html#introduction)
-> >>
-> >> If you use e.g. 'v4l2-ctl -l' to list all the controls, then you will =
-see that
-> >> they are grouped based on what class of control they are.
-> >>
-> >> So I think it would be a good idea to create a new control class for M=
-2M audio controls,
-> >> instead of just adding them to the catch-all 'User Controls' class.
-> >>
-> >> Search e.g. for V4L2_CTRL_CLASS_COLORIMETRY and V4L2_CID_COLORIMETRY_C=
-LASS to see how
-> >> it is done.
-> >>
-> >> M2M_AUDIO would probably be a good name for the class.
-> >>
-> >>> +***************************
-> >>> +
-> >>> +These controls are intended to support an asynchronous sample
-> >>> +rate converter.
-> >>
-> >> Add ' (ASRC).' at the end to indicate the common abbreviation for
-> >> that.
-> >>
-> >>> +
-> >>> +.. _v4l2-audio-asrc:
-> >>> +
-> >>> +``V4L2_CID_ASRC_SOURCE_RATE``
-> >>> +    sets the resampler source rate.
-> >>> +
-> >>> +``V4L2_CID_ASRC_DEST_RATE``
-> >>> +    sets the resampler destination rate.
-> >>
-> >> Document the unit (Hz) for these two controls.
-> >>
-> >>> +
-> >>> +.. c:type:: v4l2_ctrl_fixed_point
-> >>> +
-> >>> +.. cssclass:: longtable
-> >>> +
-> >>> +.. tabularcolumns:: |p{1.5cm}|p{5.8cm}|p{10.0cm}|
-> >>> +
-> >>> +.. flat-table:: struct v4l2_ctrl_fixed_point
-> >>> +    :header-rows:  0
-> >>> +    :stub-columns: 0
-> >>> +    :widths:       1 1 2
-> >>> +
-> >>> +    * - __u32
-> >>
-> >> Hmm, shouldn't this be __s32?
-> >>
-> >>> +      - ``integer``
-> >>> +      - integer part of fixed point value.
-> >>> +    * - __s32
-> >>
-> >> and this __u32?
-> >>
-> >> You want to be able to use this generic type as a signed value.
-> >>
-> >>> +      - ``fractional``
-> >>> +      - fractional part of fixed point value, which is Q31.
-> >>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls=
-.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> >>> index f9f73530a6be..1811dabf5c74 100644
-> >>> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> >>> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> >>> @@ -295,6 +295,10 @@ still cause this situation.
-> >>>        - ``p_av1_film_grain``
-> >>>        - A pointer to a struct :c:type:`v4l2_ctrl_av1_film_grain`. Va=
-lid if this control is
-> >>>          of type ``V4L2_CTRL_TYPE_AV1_FILM_GRAIN``.
-> >>> +    * - struct :c:type:`v4l2_ctrl_fixed_point` *
-> >>> +      - ``p_fixed_point``
-> >>> +      - A pointer to a struct :c:type:`v4l2_ctrl_fixed_point`. Valid=
- if this control is
-> >>> +        of type ``V4L2_CTRL_TYPE_FIXED_POINT``.
-> >>>      * - void *
-> >>>        - ``ptr``
-> >>>        - A pointer to a compound type which can be an N-dimensional a=
-rray
-> >>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.r=
-st b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> >>> index 4d38acafe8e1..9285f4f39eed 100644
-> >>> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> >>> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> >>> @@ -549,6 +549,13 @@ See also the examples in :ref:`control`.
-> >>>        - n/a
-> >>>        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 =
-Film Grain
-> >>>          parameters for stateless video decoders.
-> >>> +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
-> >>> +      - n/a
-> >>> +      - n/a
-> >>> +      - n/a
-> >>> +      - A struct :c:type:`v4l2_ctrl_fixed_point`, containing paramet=
-er which has
-> >>> +        integer part and fractional part, i.e. audio sample rate.
-> >>> +
-> >>>
-> >>>  .. raw:: latex
-> >>>
-> >>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.except=
-ions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >>> index e61152bb80d1..2faa5a2015eb 100644
-> >>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >>> @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:typ=
-e:`v4l2_ctrl_type`
-> >>>  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctr=
-l_type`
-> >>>  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
-> >>>  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type=
-`
-> >>> +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
-> >>>
-> >>>  # V4L2 capability defines
-> >>>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
-> >>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/medi=
-a/v4l2-core/v4l2-ctrls-core.c
-> >>> index a662fb60f73f..7a616ac91059 100644
-> >>> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> >>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> >>> @@ -1168,6 +1168,8 @@ static int std_validate_compound(const struct v=
-4l2_ctrl *ctrl, u32 idx,
-> >>>               if (!area->width || !area->height)
-> >>>                       return -EINVAL;
-> >>>               break;
-> >>> +     case V4L2_CTRL_TYPE_FIXED_POINT:
-> >>> +             break;
-> >>
-> >> Hmm, this would need this patch 'v4l2-ctrls: add support for V4L2_CTRL=
-_WHICH_MIN/MAX_VAL':
-> >>
-> >> https://patchwork.linuxtv.org/project/linux-media/patch/20231010022136=
-.1504015-7-yunkec@google.com/
-> >>
-> >> since min and max values are perfectly fine for a fixed point value.
-> >>
-> >> Even a step value (currently not supported in that patch) would make s=
-ense.
-> >>
-> >> But I wonder if we couldn't simplify this: instead of creating a v4l2_=
-ctrl_fixed_point,
-> >> why not represent the fixed point value as a Q31.32. Then the standard
-> >> minimum/maximum/step values can be used, and it acts like a regular V4=
-L2_TYPE_INTEGER64.
-> >>
-> >> Except that both userspace and drivers need to multiply it with 2^-32 =
-to get the actual
-> >> value.
-> >>
-> >> So in enum v4l2_ctrl_type add:
-> >>
-> >>         V4L2_CTRL_TYPE_FIXED_POINT =3D 10,
-> >>
-> >> (10, because it is no longer a compound type).
-> >
-> > Seems we don't need V4L2_CTRL_TYPE_FIXED_POINT, just use V4L2_TYPE_INTE=
-GER64?
-> >
-> > The reason I use the 'integer' and 'fractional' is that I want
-> > 'integer' to be the normal sample
-> > rate, for example 48kHz.  The 'fractional' is the difference with
-> > normal sample rate.
-> >
-> > For example, the rate =3D 47998.12345.  so integer =3D 48000,  fraction=
-al=3D -1.87655.
-> >
-> > So if we use s64 for rate, then in driver need to convert the rate to
-> > the closed normal
-> > sample rate + fractional.
->
-> That wasn't what the documentation said :-)
->
-> So this is really two controls: one for the 'normal sample rate' (whateve=
-r 'normal'
-> means in this context) and the offset to the actual sample rate.
->
-> Presumably the 'normal' sample rate is set once, while the offset changes
-> regularly.
->
-> But why do you need the 'normal' sample rate? With audio resampling I ass=
-ume
-> you resample from one rate to another, so why do you need a third 'normal=
-'
-> rate?
->
 
-'Normal' rate is used to select the prefilter table.
+On 18/10/23 03:27, Sean Christopherson wrote:
+> On Mon, Oct 16, 2023, Dionna Amalie Glaze wrote:
+>>> +
+>>> +       /*
+>>> +        * If a VMM-specific certificate blob hasn't been provided, grab the
+>>> +        * host-wide one.
+>>> +        */
+>>> +       snp_certs = sev_snp_certs_get(sev->snp_certs);
+>>> +       if (!snp_certs)
+>>> +               snp_certs = sev_snp_global_certs_get();
+>>> +
+>>
+>> This is where the generation I suggested adding would get checked. If
+>> the instance certs' generation is not the global generation, then I
+>> think we need a way to return to the VMM to make that right before
+>> continuing to provide outdated certificates.
+>> This might be an unreasonable request, but the fact that the certs and
+>> reported_tcb can be set while a VM is running makes this an issue.
+> 
+> Before we get that far, the changelogs need to explain why the kernel is storing
+> userspace blobs in the first place.  The whole thing is a bit of a mess.
+> 
+> sev_snp_global_certs_get() has data races that could lead to variations of TOCTOU
+> bugs: sev_ioctl_snp_set_config() can overwrite psp_master->sev_data->snp_certs
+> while sev_snp_global_certs_get() is running.  If the compiler reloads snp_certs
+> between bumping the refcount and grabbing the pointer, KVM will end up leaking a
+> refcount and consuming a pointer without a refcount.
+> 
+> 	if (!kref_get_unless_zero(&certs->kref))
+> 		return NULL;
+> 
+> 	return certs;
 
-Best regards
-Wang Shengjiu
+I'm missing something here. The @certs pointer is on the stack, if it is 
+being released elsewhere - kref_get_unless_zero() is going to fail and 
+return NULL. How can this @certs not have the refcount incremented?
 
-> Regards,
->
->         Hans
->
-> >
-> > best regards
-> > wang shengjiu
-> >
-> >>
-> >>>
-> >>>       default:
-> >>>               return -EINVAL;
-> >>> @@ -1868,6 +1870,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v=
-4l2_ctrl_handler *hdl,
-> >>>       case V4L2_CTRL_TYPE_AREA:
-> >>>               elem_size =3D sizeof(struct v4l2_area);
-> >>>               break;
-> >>> +     case V4L2_CTRL_TYPE_FIXED_POINT:
-> >>> +             elem_size =3D sizeof(struct v4l2_ctrl_fixed_point);
-> >>> +             break;
-> >>>       default:
-> >>>               if (type < V4L2_CTRL_COMPOUND_TYPES)
-> >>>                       elem_size =3D sizeof(s32);
-> >>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/medi=
-a/v4l2-core/v4l2-ctrls-defs.c
-> >>> index 8696eb1cdd61..d8f232df6b6a 100644
-> >>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> >>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> >>> @@ -1602,6 +1602,10 @@ void v4l2_ctrl_fill(u32 id, const char **name,=
- enum v4l2_ctrl_type *type,
-> >>>       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
-> >>>               *type =3D V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
-> >>>               break;
-> >>> +     case V4L2_CID_ASRC_SOURCE_RATE:
-> >>> +     case V4L2_CID_ASRC_DEST_RATE:
-> >>> +             *type =3D V4L2_CTRL_TYPE_FIXED_POINT;
-> >>> +             break;
-> >>>       default:
-> >>>               *type =3D V4L2_CTRL_TYPE_INTEGER;
-> >>>               break;
-> >>> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-> >>> index 59679a42b3e7..645e4cccafc7 100644
-> >>> --- a/include/media/v4l2-ctrls.h
-> >>> +++ b/include/media/v4l2-ctrls.h
-> >>> @@ -56,6 +56,7 @@ struct video_device;
-> >>>   * @p_av1_tile_group_entry:  Pointer to an AV1 tile group entry stru=
-cture.
-> >>>   * @p_av1_frame:             Pointer to an AV1 frame structure.
-> >>>   * @p_av1_film_grain:                Pointer to an AV1 film grain st=
-ructure.
-> >>> + * @p_fixed_point:           Pointer to a struct v4l2_ctrl_fixed_poi=
-nt.
-> >>>   * @p:                               Pointer to a compound value.
-> >>>   * @p_const:                 Pointer to a constant compound value.
-> >>>   */
-> >>> @@ -89,6 +90,7 @@ union v4l2_ctrl_ptr {
-> >>>       struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
-> >>>       struct v4l2_ctrl_av1_frame *p_av1_frame;
-> >>>       struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
-> >>> +     struct v4l2_ctrl_fixed_point *p_fixed_point;
-> >>>       void *p;
-> >>>       const void *p_const;
-> >>>  };
-> >>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/=
-v4l2-controls.h
-> >>> index c3604a0a3e30..91096259e3ea 100644
-> >>> --- a/include/uapi/linux/v4l2-controls.h
-> >>> +++ b/include/uapi/linux/v4l2-controls.h
-> >>> @@ -112,6 +112,8 @@ enum v4l2_colorfx {
-> >>>
-> >>>  /* last CID + 1 */
-> >>>  #define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
-> >>> +#define V4L2_CID_ASRC_SOURCE_RATE            (V4L2_CID_BASE + 45)
-> >>> +#define V4L2_CID_ASRC_DEST_RATE                      (V4L2_CID_BASE =
-+ 46)
-> >>
-> >> This patch needs to be split in three parts:
-> >>
-> >> 1) Add the new M2M_AUDIO control class,
-> >> 2) Add the new V4L2_CTRL_TYPE_FIXED_POINT type,
-> >> 3) Add the new controls.
-> >>
-> >> These are all independent changes, so separating them makes it easier =
-to
-> >> review.
-> >>
-> >>>
-> >>>  /* USER-class private control IDs */
-> >>>
-> >>> @@ -3488,4 +3490,15 @@ struct v4l2_ctrl_av1_film_grain {
-> >>>  #define V4L2_CID_MPEG_MFC51_BASE        V4L2_CID_CODEC_MFC51_BASE
-> >>>  #endif
-> >>>
-> >>> +/**
-> >>> + * struct v4l2_ctrl_fixed_point - fixed point parameter.
-> >>> + *
-> >>> + * @rate_integer: integer part of fixed point value.
-> >>> + * @rate_fractional: fractional part of fixed point value
-> >>> + */
-> >>> +struct v4l2_ctrl_fixed_point {
-> >>> +     __u32 integer;
-> >>
-> >> __s32?
-> >>
-> >>> +     __u32 fractional;
-> >>> +};
-> >>> +
-> >>>  #endif
-> >>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/vide=
-odev2.h
-> >>> index 2ac7b989394c..3ef32c09c2fa 100644
-> >>> --- a/include/uapi/linux/videodev2.h
-> >>> +++ b/include/uapi/linux/videodev2.h
-> >>> @@ -1888,6 +1888,7 @@ struct v4l2_ext_control {
-> >>>               struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_til=
-e_group_entry;
-> >>>               struct v4l2_ctrl_av1_frame __user *p_av1_frame;
-> >>>               struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grai=
-n;
-> >>> +             struct v4l2_ctrl_fixed_point __user *p_fixed_point;
-> >>>               void __user *ptr;
-> >>>       };
-> >>>  } __attribute__ ((packed));
-> >>> @@ -1966,6 +1967,8 @@ enum v4l2_ctrl_type {
-> >>>       V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY =3D 0x281,
-> >>>       V4L2_CTRL_TYPE_AV1_FRAME            =3D 0x282,
-> >>>       V4L2_CTRL_TYPE_AV1_FILM_GRAIN       =3D 0x283,
-> >>> +
-> >>> +     V4L2_CTRL_TYPE_FIXED_POINT          =3D 0x290,
-> >>>  };
-> >>>
-> >>>  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
-> >>
-> >> Regards,
-> >>
-> >>         Hans
->
+
+> If allocating memory for the certs fails, the kernel will have set the config
+> but not store the corresponding certs.
+
+
+Ah true.
+
+> 	ret = __sev_do_cmd_locked(SEV_CMD_SNP_CONFIG, &config, &argp->error);
+> 		if (ret)
+> 			goto e_free;
+> 
+> 		memcpy(&sev->snp_config, &config, sizeof(config));
+> 	}
+> 
+> 	/*
+> 	 * If the new certs are passed then cache it else free the old certs.
+> 	 */
+> 	if (input.certs_len) {
+> 		snp_certs = sev_snp_certs_new(certs, input.certs_len);
+> 		if (!snp_certs) {
+> 			ret = -ENOMEM;
+> 			goto e_free;
+> 		}
+> 	}
+> 
+> Reasoning about ordering is also difficult, e.g. what is KVM's contract with
+> userspace in terms of recognizing new global certs?
+ >
+> I don't understand why the kernel needs to manage the certs.  AFAICT the so called
+> global certs aren't an input to SEV_CMD_SNP_CONFIG, i.e. SNP_SET_EXT_CONFIG is
+> purely a software defined thing.
+> > The easiest solution I can think of is to have KVM provide a chunk of 
+memory in
+> kvm_sev_info for SNP guests that userspace can mmap(), a la vcpu->run.
+> 
+> 	struct sev_snp_certs {
+> 		u8 data[KVM_MAX_SEV_SNP_CERT_SIZE];
+> 		u32 size;
+> 		u8 pad[<size to make the struct page aligned>];
+> 	};
+> 
+> When the guest requests the certs, KVM does something like:
+> 
+> 	certs_size = READ_ONCE(sev->snp_certs->size);
+> 	if (certs_size > sizeof(sev->snp_certs->data) ||
+> 	    !IS_ALIGNED(certs_size, PAGE_SIZE))
+> 		certs_size = 0;
+> 
+> 	if (certs_size && (data_npages << PAGE_SHIFT) < certs_size) {
+> 		vcpu->arch.regs[VCPU_REGS_RBX] = certs_size >> PAGE_SHIFT;
+> 		exitcode = SNP_GUEST_VMM_ERR(SNP_GUEST_VMM_ERR_INVALID_LEN);
+> 		goto cleanup;
+> 	}
+> 
+> 	...
+> 
+> 	if (certs_size &&
+> 	    kvm_write_guest(kvm, data_gpa, sev->snp_certs->data, certs_size))
+> 		exitcode = SEV_RET_INVALID_ADDRESS;
+> 
+> If userspace wants to provide garbage to the guest, so be it, not KVM's problem.
+> That way, whether the VM gets the global cert or a per-VM cert is purely a userspace
+> concern.
+
+The global cert lives in CCP (/dev/sev), the per VM cert lives in 
+kvmvm_fd. "A la vcpu->run" is fine for the latter but for the former we 
+need something else. And there is scenario when one global certs blob is 
+what is needed and copying it over multiple VMs seems suboptimal.
+
+> If userspace needs to *stall* cert requests, e.g. while the certs are being updated,
+
+afaik it does not need to.
+
+> then that's a different issue entirely.  If the GHCB allows telling the guest to
+> retry the request, then it should be trivially easy to solve, e.g. add a flag in
+> sev_snp_certs.  If KVM must "immediately" handle the request, then we'll need more
+> elaborate uAPI.
+
+
+-- 
+Alexey
+
+
