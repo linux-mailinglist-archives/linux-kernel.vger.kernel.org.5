@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A485E7CE9CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315D87CE9CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbjJRVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        id S232453AbjJRVLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235065AbjJRVME (ORCPT
+        with ESMTP id S232738AbjJRVLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:12:04 -0400
-Received: from out-199.mta0.migadu.com (out-199.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6E34699
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:05:02 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 17:04:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697663100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/1ArYLLOZBAUcL76jk5+IqwZHBWHE65QdqzM7Jwfn30=;
-        b=PUZ5sZGnRytk4geioVimacEw2cEuvdXKXjA5NiIVXtas9kSdhr6BFkPxNbVKPSrukOW87F
-        F71gKsf1bZPDpHFT6N0KA2B5Fx+VMtGdZDzbT0nStxQme5LPclO6KxT+fTjoo57XsVndUG
-        Shn/ZsqKI1EPv+jv39uCiZhMgQZ+Iow=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>, linux-bcachefs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [NAK] Re: [PATCH 11/20] locking/osq: Export osq_(lock|unlock)
-Message-ID: <20231018210456.lgdicnuekvmvcgvm@moria.home.lan>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-12-kent.overstreet@linux.dev>
- <bb77f456-8804-b63a-7868-19e0cd9e697f@redhat.com>
- <20230802204407.lk5mnj7ua6idddbd@moria.home.lan>
- <11d39248-31fc-c625-7c06-341f0146bd67@redhat.com>
- <20230802214211.y3x3swic4jbphmtg@moria.home.lan>
- <ZSUGwr5S5Nflbiay@gmail.com>
+        Wed, 18 Oct 2023 17:11:12 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403334783;
+        Wed, 18 Oct 2023 14:05:50 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7af20c488so90300067b3.1;
+        Wed, 18 Oct 2023 14:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697663149; x=1698267949; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cXgwpoEmQGe1TS0FZv1gFNd3LQ65wOIduIw3gMeeQsU=;
+        b=MsmOaVR4VVJTJbE6+sqdD70wKsr0CnWf4GDDoyWDe6iEtbR+fLHHUjodpUnvhhAw2r
+         KxsABYqwhAi70YZCKo5ecirsullL321EAf0uLq8cKdMWVFVCej+uU+TW2RA8n2r6jDCU
+         UY+4RDEyZlgHQuToaXDCOGuGL8XZPmXjW+VdBXxFmVWXL1b9jtTwmWYw5lvBcYIgc9Gp
+         qiNlwOyC5Kj75bKhbvIVR7/4ZCunNRA/hcaYghP9P781DSvXntI0rnSjy77pGshxAdiD
+         IhGgEgQw8AwEHOF1xJSDLSZ22u5Zqxxn2sexQ8S9/VuIDYIozS+panfINuVfzXlN3FRP
+         kgxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697663149; x=1698267949;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cXgwpoEmQGe1TS0FZv1gFNd3LQ65wOIduIw3gMeeQsU=;
+        b=Wdswo+WgC27iYoLPFAKoXbN6G0JftaqtZOpbAw4fx9CKM6en+WU+aCmzrbre0Whv6t
+         2QiOueSjVv/t7ONRKVgBV5Vjap3TMM8TvO8e7gGwnQfi5AXT0rB9G2pXPlYNAmJ5csy8
+         ZyB/BAUBE1nMYuEgyydJ033N8MiQVgWQPA54h02iO+4oscNc5nTsOwT++dtkxLA9/vlL
+         cR+b+5HdS0oyChpYwDjoNDSzMq8hAx7VzCKhYn02I8s9dw8TwnjetSLiYTAbVt46YLju
+         hgdvz33aRXEhLe67Eo/0CJQyFipxDXWdCGaRa8hmbOeCDZRUis92dAcAJPYvo5W4YX9u
+         0QBw==
+X-Gm-Message-State: AOJu0YzYMQXOMEu+jpTQTBVmmizIu18UtNcUChI5Jp7UEqWii8BPi72Y
+        0V6q84/p9qNtEIpCHbnfkHh2XAnXt8oQzSp74To=
+X-Google-Smtp-Source: AGHT+IGcIykGrNxI2WdLHRb+V3eXK86nmXV/VsdlJY1JvwzKBV7IrtCvoDXzBglo1nYM4Mc9IH/xMBMekjcxEFHS5bo=
+X-Received: by 2002:a81:b40e:0:b0:59b:c6a4:15c7 with SMTP id
+ h14-20020a81b40e000000b0059bc6a415c7mr406578ywi.46.1697663149202; Wed, 18 Oct
+ 2023 14:05:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSUGwr5S5Nflbiay@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20231018160922.1018962-1-ojeda@kernel.org> <d47553f1-1832-4c69-8a8c-71c58048ff30@lunn.ch>
+ <CANiq72=E7TPLcq-yiQF9E8a33ghbogPcbv-yMqFKBxMQ0oOxNQ@mail.gmail.com>
+In-Reply-To: <CANiq72=E7TPLcq-yiQF9E8a33ghbogPcbv-yMqFKBxMQ0oOxNQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 18 Oct 2023 23:05:37 +0200
+Message-ID: <CANiq72nmtkupLXiCVyTivS2QL_UeXu5y5g=JBra6Wik1a7E5dA@mail.gmail.com>
+Subject: Re: [PATCH] docs: rust: add "The Rust experiment" section
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>, linux-doc@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:09:38AM +0200, Ingo Molnar wrote:
-> > Waiman, if you think you can add all the features of six locks to rwsem,
-> > knock yourself out - but right now this is a vaporware idea for you, not
-> > something I can seriously entertain. I'm looking to merge bcachefs next
-> > cycle, not sit around and bikeshed for the next six months.
-> 
-> That's an entirely inappropriate response to valid review feedback.
-> 
-> Not having two overlapping locking facilities is not 'bikeshedding' at all ...
+On Wed, Oct 18, 2023 at 6:41=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> We can add a note to the Kconfig symbol too -- would that be OK with you?
 
-Well, there was already a long off-list discussion about adding six lock
-features to rwsem.
+Or do you mean you think the Quick Start guide would be a better place
+given that is perhaps more likely to be read by end users that want to
+just compile the kernel?
 
-Basically, it looks to me like a total redesign of rwsem in order to do
-it correctly, and I don't think that would fly. The rwsem code has
-separate entrypoints for every lock state, and adding a third lock state
-would at a minimum add a lot of new - nearly duplicate - code.
+If so, I am happy to move it there.
 
-There's also features and optimizations in six locks that rwsem doesn't
-have, and it's not clear to me that it would be appropriate to add them
-to rwsem - each of them would need real discussion. The big ones are:
-
- - percpu reader mode, used for locks for interior nodes and subvolume
-   keys in bcachefs
- - exposing of waitlist entries (and this requires nontrivial guarantees
-   to do correctly!), so that bcachefs can do cycle detection deadlock
-   avoidance on top.
-
-In short, this would _not_ be a small project, and I think the saner
-approach if we really did want to condense down to a single locking
-implementation would be to replace rwsem with six locks. But before even
-contemplating that we'd want to see six locks getting wider usage and
-testing first.
-
-Hence why we're at leaving six locks in fs/bcachefs/ for now.
-
-> > If you start making a serious effort on adding those features to rwsem
-> > I'll start walking you through everything six locks has, but right now
-> > this is a major digression on a patch that just exports two symbols.
-> 
-> In Linux the burden of work is on people submitting new code, not on 
-> reviewers. The rule is that you should not reinvent the wheel in new
-> features - extend existing locking facilities please.
-> 
-> Waiman gave you some pointers as to how to extend rwsems.
-> 
-> Meanwhile, NAK on the export of osq_(lock|unlock):
-
-Perhaps we could get some justification for why you want osq locks to be
-private?
-
-My initial pull request had six locks in kernel/locking/, specifically
-to keep osq locks private, as requested by locking people (some years
-back). But since Linus shot that down, I need an alternative.
-
-If you're really dead set against exporting osq locks (and again, why?),
-my only alternative will be to either take optimistic spinning out of
-six locks, or implement optimistic spinning another way (which is
-something I was already looking at before; the way lock handoff works in
-six locks now makes that an attractive idea anyways, but of course the
-devil is in the details with locking code).
+Cheers,
+Miguel
