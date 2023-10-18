@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA417CD9D5
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB227CD9D6
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjJRK5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S230044AbjJRK5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjJRK5H (ORCPT
+        with ESMTP id S229918AbjJRK5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:57:07 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F054D10F;
+        Wed, 18 Oct 2023 06:57:06 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C18112;
         Wed, 18 Oct 2023 03:57:00 -0700 (PDT)
 Received: from weisslap.aisec.fraunhofer.de ([91.67.186.133]) by
  mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MMH2M-1r95ee1XaI-00JFRa; Wed, 18 Oct 2023 12:50:58 +0200
+ id 1M9Ib1-1qvWya16jX-006PWF; Wed, 18 Oct 2023 12:50:59 +0200
 From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
 To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
         Christian Brauner <brauner@kernel.org>,
@@ -39,33 +39,33 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         gyroidos@aisec.fraunhofer.de,
         =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: [RFC PATCH v2 05/14] device_cgroup: Implement dev_permission() hook
-Date:   Wed, 18 Oct 2023 12:50:24 +0200
-Message-Id: <20231018105033.13669-6-michael.weiss@aisec.fraunhofer.de>
+Subject: [RFC PATCH v2 06/14] block: Switch from devcgroup_check_permission to security hook
+Date:   Wed, 18 Oct 2023 12:50:25 +0200
+Message-Id: <20231018105033.13669-7-michael.weiss@aisec.fraunhofer.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
 References: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:6fQpbyJ4yqJDdtOE6U4o2qVRNJKIJVyBf29udf+uc+/N6tF9IoH
- 8t1C1cC3mS3KGqZ/fM8NSuVnL6Vku/6d75OreD1W+PTZyYWT+AMUoZD8nvd5WUkz4It8oYV
- mgBzW/YuC1VAn4JxY8EG2yvXiiH+neM+67Kx7SQvAdbY4iqGXZEZfndLZ2yjmFqmQKH7x7O
- WCKWWnxi80y53tE+xJeDQ==
-UI-OutboundReport: notjunk:1;M01:P0:KPld94mI8N4=;N5vkTOFrb90fmkbkDDAVyBwDY1S
- iSSlHRHjf4q3fcYpQi2uV4atpZakxYxRd5K/nnE5ZtC5OHztPnS+HrvCIicEdHDg0+dFvoP10
- 9+osU9/vMqFSITdyeVzNKkDAcnG1s+80I0sonWh4ew4v/+uO9NOcfPV41jbKxk9finPj+wCYx
- Kf/R8sfgSSQdwc5WD7Jf912gqMx8ZJCk832N1cOv1dJta18N5Fp5zugPTrbgJ4nBN8VF1Dp34
- deE1sQxseptMz9Nu/2Jaq/FgSikZltEcyTYxvgLdpjKrCgt0yAzYk0mRp6qzZxldPIhp72DqE
- oCmYvd15SWqbRtsAk8Kosrwm2aOsaf63lOBgYL3TwYACa6U6jA/RlGVr7/0zNrLqJGSfXOHew
- Fija+0MTBFjwPztpJjjuRe/UV5oVpRqo+R/RpPbX6ZVtZlIJNO0j7V2HUqqGIvXDHqKDdhBDV
- 0+qNsqdffVqcNUEzfM2SFk/ldpy6XAwm/rtuqhLPN8eDNdAGThTMVwHZrv1Tk2UiZ+ITMhjU+
- 54q4O5fgJvI1Z/m3dfpahcZNyaPh9rJp+4EkzdtRthcZbK+aNpVtL2+3GQPYeuXNwzjMqS3+j
- 0uL1A59J6xyLXFa0hBymQ7mB7SyOMUDCbwK9HxPrxBW3v3Q/E+d39PNe1+l/TKGp8a3nTEMVg
- ENSiswgiFJ0GYnRIDO85VWmEue6ZDo0jLMR0+vJOOJNY7+wGCpawu+w1R1VYSVhhto1BWjz9d
- 1I99ijX+DKqk0YMLZchWWuaUpjODgCG4U2v/OEhdR74RUTdLqtIapgRVU5F5+zBjHm2QlrYC2
- SbQE1DWntVeHqDajVQJBuN4lODsT3u+riJIlOMK7El+bDwq+ZtxUxaweSmGRJYJYYa8ut2Y01
- Y1xFRIGWq0aAocm8sER2aELs2LbzJwq4bxJw=
+X-Provags-ID: V03:K1:g2BQi8jhy6myxnCus8ZQPoNW58k4bHpqaw0EG5w9henscj1hzwh
+ +LRuATaGTnBWBWkD6WqjEFcQ2oo8oocdg45yWtogdxsTACLQLaTrVi/wC0nt3/pzp/HwB7l
+ WbXaEvirGLkTgf1rTZHblrr/Ij+/xiLQhErhPbKLn88BU0G2c8pYTNh6rS+z1bruMVDNP6g
+ fHJxRmLTFHsoJ8N+Aq7ww==
+UI-OutboundReport: notjunk:1;M01:P0:JXHVyhNThiA=;cyZuFiGGc0TW4/kMx14p4/R+huY
+ yNY4t5YbgqKc/8n6xoDjinZccz47BgP5UVdZxa85ZQt9DYeKBataf98xF8MxWxynC/YhUweXI
+ M48qBzu6COM3TvjVWMzzB7BxmpevoBQlmdSMX5vHwq3NYj2ZyuCheQT17No7DsfVHw9IFBAkA
+ v/grs9MhuLPTciXhgYjTvWv0deyNIkjiakQRLjUayb7a9vA41LeoOsceIHVfo2Poym9T/SV0O
+ P7zqahNznxNAOYRtBTEmEKqjHhJYy1JfaK+bBU2FC3tndeb5YBQo7ge8x9eRPmlre0+NQmKHX
+ 8RPAyzvuRgBukbLPlk2kTbU/I/nnsyk7Qq9v+fBBPVQmLj0jC9dwITHFzyulC1qeDpjx4MAit
+ qFctqbf8B5L2HgSJ5OTnBYtVA5wnL6u4Swi5qCrEplqVYNScX6UoWsTf+tj+BOGEYGNhSO0xe
+ 1EabzTnaK5SLzISTInCVw3v+Av0SewD5io4bpLZIqveLkZLrMDK08U/SiDgj0t6wZfvtk4mik
+ k9O/etP0/M10ZGqFi0Ty4ZRiR3c0r2GLiWreIgO/WWLzP6YoMBADEdRWzzHK4tP9rqlghlKzu
+ 0/6gxAWsJqykevu/GbFjp0BUyWuU5bR84YiO06z9H5HW1M8kGam1MUwBl5cKmqup9wQrO9Exx
+ kWU8cT+oQHJf9GT9IErHeV9uYHZdK0ZfEH7PwgJsuVJ1gItz7Mxwa13JYKGqwoAlAD7kx049H
+ 5AywXgxU3wvNGP9lVGRvEDsPVCkGoiy12bJlR2fUy5p8+35ks7NZeBihThQ9hdtI695zc3vvH
+ b48pbPFaKeeRxoPb+uXfkhT3zIdIKX3m7e6AJ8nxGwXnTz5nYsyRNhOtY3n6sfhl2N6/wG9r/
+ f4q9SG0yLyvLSog==
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
@@ -76,68 +76,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap devcgroup_check_permission() by implementing the new security
-hook dev_permission().
+The new lsm-based cgroup device access control provides an
+equivalent hook to check device permission. Thus, switch to the
+more generic security hook security_dev_permission() instead of
+directly calling devcgroup_check_permission().
 
 Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
 ---
- security/device_cgroup/lsm.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ block/bdev.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/security/device_cgroup/lsm.c b/security/device_cgroup/lsm.c
-index ef30cff1f610..987d2c20a577 100644
---- a/security/device_cgroup/lsm.c
-+++ b/security/device_cgroup/lsm.c
-@@ -14,29 +14,32 @@
- #include <linux/device_cgroup.h>
- #include <linux/lsm_hooks.h>
+diff --git a/block/bdev.c b/block/bdev.c
+index f3b13aa1b7d4..fc6de4e2a80b 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -10,7 +10,6 @@
+ #include <linux/slab.h>
+ #include <linux/kmod.h>
+ #include <linux/major.h>
+-#include <linux/device_cgroup.h>
+ #include <linux/blkdev.h>
+ #include <linux/blk-integrity.h>
+ #include <linux/backing-dev.h>
+@@ -27,6 +26,7 @@
+ #include <linux/part_stat.h>
+ #include <linux/uaccess.h>
+ #include <linux/stat.h>
++#include <linux/security.h>
+ #include "../fs/internal.h"
+ #include "blk.h"
  
--static int devcg_inode_permission(struct inode *inode, int mask)
-+static int devcg_dev_permission(umode_t mode, dev_t dev, int mask)
- {
- 	short type, access = 0;
+@@ -757,10 +757,9 @@ struct block_device *blkdev_get_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 	struct gendisk *disk;
+ 	int ret;
  
--	if (likely(!inode->i_rdev))
--		return 0;
--
--	if (S_ISBLK(inode->i_mode))
-+	if (S_ISBLK(mode))
- 		type = DEVCG_DEV_BLOCK;
--	else if (S_ISCHR(inode->i_mode))
--		type = DEVCG_DEV_CHAR;
- 	else
--		return 0;
-+		type = DEVCG_DEV_CHAR;
+-	ret = devcgroup_check_permission(DEVCG_DEV_BLOCK,
+-			MAJOR(dev), MINOR(dev),
+-			((mode & BLK_OPEN_READ) ? DEVCG_ACC_READ : 0) |
+-			((mode & BLK_OPEN_WRITE) ? DEVCG_ACC_WRITE : 0));
++	ret = security_dev_permission(S_IFBLK, dev,
++			((mode & BLK_OPEN_READ) ? MAY_READ : 0) |
++			((mode & BLK_OPEN_WRITE) ? MAY_WRITE : 0));
+ 	if (ret)
+ 		return ERR_PTR(ret);
  
- 	if (mask & MAY_WRITE)
- 		access |= DEVCG_ACC_WRITE;
- 	if (mask & MAY_READ)
- 		access |= DEVCG_ACC_READ;
- 
--	return devcgroup_check_permission(type, imajor(inode), iminor(inode),
-+	return devcgroup_check_permission(type, MAJOR(dev), MINOR(dev),
- 					  access);
- }
- 
-+static int devcg_inode_permission(struct inode *inode, int mask)
-+{
-+	if (likely(!inode->i_rdev))
-+		return 0;
-+
-+	return devcg_dev_permission(inode->i_mode, inode->i_rdev, mask);
-+}
-+
- static int __devcg_inode_mknod(int mode, dev_t dev, short access)
- {
- 	short type;
-@@ -65,6 +68,7 @@ static int devcg_inode_mknod(struct inode *dir, struct dentry *dentry,
- static struct security_hook_list devcg_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(inode_permission, devcg_inode_permission),
- 	LSM_HOOK_INIT(inode_mknod, devcg_inode_mknod),
-+	LSM_HOOK_INIT(dev_permission, devcg_dev_permission),
- };
- 
- static int __init devcgroup_init(void)
 -- 
 2.30.2
 
