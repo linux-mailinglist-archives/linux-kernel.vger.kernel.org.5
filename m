@@ -2,123 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15737CDD16
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A167CDD2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbjJRNVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
+        id S231659AbjJRN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjJRNVE (ORCPT
+        with ESMTP id S231614AbjJRN0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:21:04 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33AC106
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bcef66f9caso872988b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697635244; x=1698240044; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jsB+lRYTRRvaUitJgzAnKBU70t8lyjCSo9aQyw6SOfw=;
-        b=bzVmGH78e6pka91YRvIYgBqGSRTR2ONDbeEcFDlO52AJPxv3T2+ps3moO9z4fyqB0G
-         GD7LkmbvTvYDkKBpQk4VF1N9tZNzE7vutLcobSiK8IsxSkfB8TwzqRniJy4v/57jqK+O
-         gdJulyepI+tsOSFnltoaY1UbNcV3HOat5KbF8wbpwhw+knLQhFyBJ+fDxm9dgQSgXykp
-         fwYsP+jv0aRDb/oh0OlpMAqA5qOSUXP7CWD5ChSEtKB6KknGnuEI7771ViyL7FoaOxkB
-         V8hi25YHwr6fcwC+XuuP6RzBQOGpigaj6R5biu6eo3nzR/tRnwDxb8464B4J73KyXe0R
-         ffzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697635244; x=1698240044;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsB+lRYTRRvaUitJgzAnKBU70t8lyjCSo9aQyw6SOfw=;
-        b=gwjq6CbkcarR5WpaOCOKS88jJBDt6xJJAWVwz+01O7/gk+UwML5O/emy25OOW1Uwjr
-         jj8dgSxrbehCjVaWGAIvD6uX+ploh5TyRq+g8NO7BWUy746B9Z/c9Bta7LEAVN++cmh8
-         qRRitVjYLO1ek7brPtOL+XlEnwkeC44v8nZUGNH+J8+P+2wuR073wwMrvyZQDRbdTUqW
-         Vn2gYS+jw0mV79NJ/lIR4QM5xdjxBxsA5HCKMUhpg7UTRD88If0+tvX8AdYbVW1gXuWX
-         wnbJO3sfyaM88e483awNpjNJrkjEUGMja98eUje83ZtQgAyfSLxcK7brj96/TA7HQIJ0
-         3E7A==
-X-Gm-Message-State: AOJu0Yz0+mHfC6kVLHG0j0uT/o03MIeEilZPmqt91nhXyrDNIwzoatXg
-        DfDFqAfq539b8b49XSKZEhTnDg==
-X-Google-Smtp-Source: AGHT+IHJWMqg9DynKVfw+VevW/0B2muzXXfJF3DYtTbWzeIlrB3r7fqD0vMtrfHgsqLSQdZp0sycLQ==
-X-Received: by 2002:a05:6a00:1d12:b0:6b2:51a0:e1c9 with SMTP id a18-20020a056a001d1200b006b251a0e1c9mr5330389pfx.1.1697635244153;
-        Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
-Received: from [10.84.155.153] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id q25-20020aa79619000000b006b76cb6523dsm3294388pfg.165.2023.10.18.06.20.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 06:20:43 -0700 (PDT)
-Message-ID: <35bd1d51-35ac-3ee6-e068-f50dff7774bf@bytedance.com>
-Date:   Wed, 18 Oct 2023 21:20:37 +0800
+        Wed, 18 Oct 2023 09:26:00 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A3A113;
+        Wed, 18 Oct 2023 06:25:58 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDA3xL002615;
+        Wed, 18 Oct 2023 13:24:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : from : subject : to : cc : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=i3pHYtqA1EYBkCpSAhwtuUNXDm3rtYnLznI8d1up1b0=;
+ b=r0ojUtnLEJo7Vipyy+xl8OXohvmvDyu1PpN4mKcaOF/x+4gvx80NY717qP2SKtUqOxvN
+ GIJxTpXaodjcd8lXa5XOYDbPxLvMuvayWnuQ3z04SzabjkF7qItHDWEatu/pci/kUPEC
+ LWFfhb9jCAmFDn1CeXzqQ5j7iD1tU/ZIo4nMORse9Qi1rqAtL+XB/OhuHMlhAXojaS9L
+ qvto34CBqUSih0g7J//b9vGYmCLPIEXvfwQSy3BrzBB6JPdCOdPKjkJccT31iLVgKUsI
+ HgQIEeKnf26ZxfHsH1InZaGUMX3sL1tOede6GC96L6bH8wYeBh+O3+GPU9W04TGQB+YB rg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttg0pgjat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:24:43 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39ICSFQL012949;
+        Wed, 18 Oct 2023 13:21:24 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr5pygtnm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 13:21:24 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IDLNWJ28705484
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 13:21:24 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACC5758055;
+        Wed, 18 Oct 2023 13:21:23 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED2CD58043;
+        Wed, 18 Oct 2023 13:21:18 +0000 (GMT)
+Received: from [9.171.57.96] (unknown [9.171.57.96])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Oct 2023 13:21:18 +0000 (GMT)
+Message-ID: <24a8559c-cd35-4828-9d1b-458d82e4f3ec@linux.vnet.ibm.com>
+Date:   Wed, 18 Oct 2023 18:51:17 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v2] x86/mm: Drop 4MB restriction on minimal NUMA node
- memory size
+User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231017062215.171670-1-rppt@kernel.org>
- <ZS+2qqjEO5/867br@gmail.com>
- <605cc166-e731-e7d1-25d7-b6797a802e6f@bytedance.com>
- <ZS/TRNf02Un8IOTK@gmail.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZS/TRNf02Un8IOTK@gmail.com>
+From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Subject: [Bisected] [efeda3bf912f] OOPS crash while performing Block device
+ module parameter test [qla2xxx / FC]
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-block@vger.kernel.org,
+        linux-next@vger.kernel.org
+Cc:     qutran@marvell.com, njavali@marvell.com,
+        himanshu.madhani@oracle.com, martin.petersen@oracle.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        abdhalee@linux.vnet.ibm.com, mputtash@linux.vnet.com,
+        sachinp@linux.vnet.com
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6KZW5X3-n2EYs9gdinBJ9K_PWKOk4oh8
+X-Proofpoint-ORIG-GUID: 6KZW5X3-n2EYs9gdinBJ9K_PWKOk4oh8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_12,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310180111
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
+Greetings,
 
-On 2023/10/18 20:44, Ingo Molnar wrote:
-> 
-> * Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> 
->>> While I agree with dropping the limitation, and I agree that
->>> 9391a3f9c7f1 should have provided more of a justification, I believe a
->>> core MM fix is in order as well, for it to not crash. [ If it's fixed
->>> upstream already, please reference the relevant commit ID. ]
->>
->> Agree. I posted a fixed patchset[1] before, maybe we can reconsider it.
->> :)
->>
->> [1]. https://lore.kernel.org/lkml/20230215152412.13368-1-zhengqi.arch@bytedance.com/
->>
->> For memoryless node, this patchset skip it and fallback to other nodes
->> when build its zonelists.
-> 
-> Mind resubmitting that to the MM folks, with the NULL dereference crash
-> mentioned prominently? Feel free to Cc: me.
+OOPs Kernel crash while performing Block device module parameter test 
+[qla2xxx / FC] on linux-next 6.6.0-rc5-next-20231010
 
-OK, I will resend it if no one else objects. :)
+--- Traces ---
 
-Thanks,
-Qi
+[30876.431678] Kernel attempted to read user page (30) - exploit 
+attempt? (uid: 0)
+[30876.431687] BUG: Kernel NULL pointer dereference on read at 0x00000030
+[30876.431692] Faulting instruction address: 0xc0080000018e3180
+[30876.431697] Oops: Kernel access of bad area, sig: 11 [#1]
+[30876.431700] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
+[30876.431705] Modules linked in: qla2xxx(+) nvme_fc nvme_fabrics 
+nvme_core dm_round_robin dm_queue_length exfat vfat fat btrfs 
+blake2b_generic zstd_compress loop raid10 raid456 async_raid6_recov 
+async_memcpy async_pq async_xor async_tx xor raid6_pq raid1 linear xfs 
+libcrc32c raid0 nvram rpadlpar_io rpaphp xsk_diag bonding tls rfkill 
+vmx_crypto pseries_rng binfmt_misc ext4 mbcache jbd2 dm_service_time 
+sd_mod sg ibmvfc ibmveth t10_pi crc64_rocksoft crc64 scsi_transport_fc 
+dm_multipath dm_mirror dm_region_hash dm_log dm_mod fuse [last unloaded: 
+nvme_core]
+[30876.431767] CPU: 0 PID: 1289400 Comm: kworker/0:2 Kdump: loaded Not 
+tainted 6.6.0-rc5-next-20231010-auto #1
+[30876.431773] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 
+0xf000006 of:IBM,FW1030.30 (NH1030_062) hv:phyp pSeries
+[30876.431779] Workqueue: events work_for_cpu_fn
+[30876.431788] NIP:  c0080000018e3180 LR: c0080000018e3128 CTR: 
+c000000000513f80
+[30876.431792] REGS: c000000062a8b930 TRAP: 0300   Not tainted 
+(6.6.0-rc5-next-20231010-auto)
+[30876.431797] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  
+CR: 28000482  XER: 2004000f
+[30876.431811] CFAR: c0080000018e3138 DAR: 0000000000000030 DSISR: 
+40000000 IRQMASK: 0
+[30876.431811] GPR00: c0080000018e3128 c000000062a8bbd0 c008000000eb8300 
+0000000000000000
+[30876.431811] GPR04: 0000000000000000 0000000000000000 0000000000000000 
+000000000017bbac
+[30876.431811] GPR08: 0000000000000000 0000000000000030 0000000000000000 
+c0080000019a6d68
+[30876.431811] GPR12: 0000000000000000 c000000002ff0000 c00000000019cb98 
+c000000082a97980
+[30876.431811] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+c000000003071ab0
+[30876.431811] GPR20: c000000003491c0d c000000063bb9a00 c000000063bb30c0 
+c0000001d8b52928
+[30876.431811] GPR24: c008000000eb63a8 ffffffffffffffed c0000001d8b52000 
+0000000000000102
+[30876.431811] GPR28: c008000000ebaf00 c0000001d8b52890 0000000000000000 
+c0000001d8b58000
+[30876.431856] NIP [c0080000018e3180] qla2x00_mem_free+0x298/0x6b0 [qla2xxx]
+[30876.431876] LR [c0080000018e3128] qla2x00_mem_free+0x240/0x6b0 [qla2xxx]
+[30876.431895] Call Trace:
+[30876.431897] [c000000062a8bbd0] [c0080000018e2f1c] 
+qla2x00_mem_free+0x34/0x6b0 [qla2xxx] (unreliable)
+[30876.431917] [c000000062a8bc20] [c0080000018eed30] 
+qla2x00_probe_one+0x16d8/0x2640 [qla2xxx]
+[30876.431937] [c000000062a8bd90] [c0000000008c589c] 
+local_pci_probe+0x6c/0x110
+[30876.431943] [c000000062a8be10] [c000000000189ba8] 
+work_for_cpu_fn+0x38/0x60
+[30876.431948] [c000000062a8be40] [c00000000018d0d0] 
+process_scheduled_works+0x230/0x4f0
+[30876.431952] [c000000062a8bf10] [c00000000018fe14] 
+worker_thread+0x1e4/0x500
+[30876.431955] [c000000062a8bf90] [c00000000019ccc8] kthread+0x138/0x140
+[30876.431960] [c000000062a8bfe0] [c00000000000df98] 
+start_kernel_thread+0x14/0x18
+[30876.431965] Code: 4082000c a09f0198 78841b68 e8df0278 38e00000 
+480c3b8d e8410018 39200000 e91f0178 f93f0280 f93f0278 39280030 
+<e9480030> 7fa95040 419e00b8 ebc80030
+[30876.431977] ---[ end trace 0000000000000000 ]---
+[30876.480385] pstore: backend (nvram) writing error (-1)
 
-> 
-> Fixing hypothetical robustness problems is good, fixing specific crashes is
-> better. :-)
-> 
-> Thanks,
-> 
-> 	Ingo
+
+Git bisect points to below commit. Reverting this commit fixes the problem.
+commit efeda3bf912f269bcae16816683f432f58d68075
+     scsi: qla2xxx: Move resource to allow code reuse
+
+-- 
+Regards,
+Tasmiya Nalatwad
+IBM Linux Technology Center
+
