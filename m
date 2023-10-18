@@ -2,47 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994E27CD809
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6A47CD9C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjJRJau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S229977AbjJRKz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJRJaZ (ORCPT
+        with ESMTP id S230013AbjJRJk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:30:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3840F9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:30:23 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9QVf0nMPzrTNn;
-        Wed, 18 Oct 2023 17:27:38 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
- 2023 17:30:20 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Patrick Wang <patrick.wang.shcn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH v3 7/7] mm/kmemleak: fix partially freeing unknown object warning
-Date:   Wed, 18 Oct 2023 18:29:52 +0800
-Message-ID: <20231018102952.3339837-8-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231018102952.3339837-1-liushixin2@huawei.com>
-References: <20231018102952.3339837-1-liushixin2@huawei.com>
+        Wed, 18 Oct 2023 05:40:27 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868F5FA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:40:24 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9QkC1clCz15NY3;
+        Wed, 18 Oct 2023 17:37:39 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 18 Oct 2023 17:40:21 +0800
+CC:     <peterz@infradead.org>, <mingo@redhat.com>,
+        <juri.lelli@redhat.com>, <dietmar.eggemann@arm.com>,
+        <tim.c.chen@linux.intel.com>, <yu.c.chen@intel.com>,
+        <gautham.shenoy@amd.com>, <mgorman@suse.de>, <vschneid@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
+        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
+        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
+        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>,
+        <yangyicong@hisilicon.com>
+Subject: Re: [PATCH v10 3/3] sched/fair: Use candidate prev/recent_used CPU if
+ scanning failed for cluster wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+References: <20231012121707.51368-1-yangyicong@huawei.com>
+ <20231012121707.51368-4-yangyicong@huawei.com>
+ <CAKfTPtAdtjZobtrf846kDzscAZTrFxw21SQJbbHU0Cw35vggEQ@mail.gmail.com>
+ <33d8d0c1-da40-278b-5b84-ecb983ee9d34@huawei.com>
+ <CAKfTPtD2b6Ky+fqZoCEs5oy+d_c3KLCwmSdSfusEKUwAKZ1R_g@mail.gmail.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <c82d8cb4-97eb-b5c5-36f4-d9477da045aa@huawei.com>
+Date:   Wed, 18 Oct 2023 17:40:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
+In-Reply-To: <CAKfTPtD2b6Ky+fqZoCEs5oy+d_c3KLCwmSdSfusEKUwAKZ1R_g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
+ canpemm500009.china.huawei.com (7.192.105.203)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,115 +64,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-delete_object_part() can be called by multiple callers in the
-same time. If an object is found and removed by a caller, and
-then another caller try to find it too, it failed and return
-directly. It still be recorded by kmemleak even if it has already
-been freed to buddy. With DEBUG on, kmemleak will report the
-following warning,
+On 2023/10/17 23:23, Vincent Guittot wrote:
+> On Mon, 16 Oct 2023 at 14:55, Yicong Yang <yangyicong@huawei.com> wrote:
+>>
+>> Hi Vincent,
+>>
+>> On 2023/10/13 23:04, Vincent Guittot wrote:
+>>> On Thu, 12 Oct 2023 at 14:19, Yicong Yang <yangyicong@huawei.com> wrote:
+>>>>
+>>>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>>>
+>>>> Chen Yu reports a hackbench regression of cluster wakeup when
+>>>> hackbench threads equal to the CPU number [1]. Analysis shows
+>>>> it's because we wake up more on the target CPU even if the
+>>>> prev_cpu is a good wakeup candidate and leads to the decrease
+>>>> of the CPU utilization.
+>>>>
+>>>> Generally if the task's prev_cpu is idle we'll wake up the task
+>>>> on it without scanning. On cluster machines we'll try to wake up
+>>>> the task in the same cluster of the target for better cache
+>>>> affinity, so if the prev_cpu is idle but not sharing the same
+>>>> cluster with the target we'll still try to find an idle CPU within
+>>>> the cluster. This will improve the performance at low loads on
+>>>> cluster machines. But in the issue above, if the prev_cpu is idle
+>>>> but not in the cluster with the target CPU, we'll try to scan an
+>>>> idle one in the cluster. But since the system is busy, we're
+>>>> likely to fail the scanning and use target instead, even if
+>>>> the prev_cpu is idle. Then leads to the regression.
+>>>>
+>>>> This patch solves this in 2 steps:
+>>>> o record the prev_cpu/recent_used_cpu if they're good wakeup
+>>>>   candidates but not sharing the cluster with the target.
+>>>> o on scanning failure use the prev_cpu/recent_used_cpu if
+>>>>   they're still idle
+>>>>
+>>>> [1] https://lore.kernel.org/all/ZGzDLuVaHR1PAYDt@chenyu5-mobl1/
+>>>> Reported-by: Chen Yu <yu.c.chen@intel.com>
+>>>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>>>> ---
+>>>>  kernel/sched/fair.c | 19 ++++++++++++++++++-
+>>>>  1 file changed, 18 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>>> index 4039f9b348ec..f1d94668bd71 100644
+>>>> --- a/kernel/sched/fair.c
+>>>> +++ b/kernel/sched/fair.c
+>>>> @@ -7392,7 +7392,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>         bool has_idle_core = false;
+>>>>         struct sched_domain *sd;
+>>>>         unsigned long task_util, util_min, util_max;
+>>>> -       int i, recent_used_cpu;
+>>>> +       int i, recent_used_cpu, prev_aff = -1;
+>>>>
+>>>>         /*
+>>>>          * On asymmetric system, update task utilization because we will check
+>>>> @@ -7425,6 +7425,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>
+>>>>                 if (cpus_share_resources(prev, target))
+>>>>                         return prev;
+>>>> +
+>>>> +               prev_aff = prev;
+>>>>         }
+>>>>
+>>>>         /*
+>>>> @@ -7457,6 +7459,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>
+>>>>                 if (cpus_share_resources(recent_used_cpu, target))
+>>>>                         return recent_used_cpu;
+>>>> +       } else {
+>>>> +               recent_used_cpu = -1;
+>>>>         }
+>>>>
+>>>>         /*
+>>>> @@ -7497,6 +7501,19 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>         if ((unsigned)i < nr_cpumask_bits)
+>>>>                 return i;
+>>>>
+>>>> +       /*
+>>>> +        * For cluster machines which have lower sharing cache like L2 or
+>>>> +        * LLC Tag, we tend to find an idle CPU in the target's cluster
+>>>> +        * first. But prev_cpu or recent_used_cpu may also be a good candidate,
+>>>> +        * use them if possible when no idle CPU found in select_idle_cpu().
+>>>> +        */
+>>>> +       if ((unsigned int)prev_aff < nr_cpumask_bits &&
+>>>> +           (available_idle_cpu(prev_aff) || sched_idle_cpu(prev_aff)))
+>>>
+>>> Hasn't prev_aff (i.e. prev) been already tested as idle ?
+>>>
+>>>> +               return prev_aff;
+>>>> +       if ((unsigned int)recent_used_cpu < nr_cpumask_bits &&
+>>>> +           (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)))
+>>>> +               return recent_used_cpu;
+>>>
+>>> same here
+>>>
+>>
+>> It was thought that there maybe a small potential race window here that the prev/recent_used
+>> CPU becoming non-idle after scanning, discussed in [1]. I think the check here won't be
+>> expensive so added it here. It should be redundant and can be removed.
+> 
+> I agree that there is a race but the whole function
+> select_idle_sibling() is made of possible races because by the time it
+> selects a CPU this one can become non-idle. It would be good to have
+> some figures showing that these redundant checks make a difference.
+> 
 
- kmemleak: Partially freeing unknown object at 0xa1af86000 (size 4096)
- CPU: 0 PID: 742 Comm: test_huge Not tainted 6.6.0-rc3kmemleak+ #54
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x37/0x50
-  kmemleak_free_part_phys+0x50/0x60
-  hugetlb_vmemmap_optimize+0x172/0x290
-  ? __pfx_vmemmap_remap_pte+0x10/0x10
-  __prep_new_hugetlb_folio+0xe/0x30
-  prep_new_hugetlb_folio.isra.0+0xe/0x40
-  alloc_fresh_hugetlb_folio+0xc3/0xd0
-  alloc_surplus_hugetlb_folio.constprop.0+0x6e/0xd0
-  hugetlb_acct_memory.part.0+0xe6/0x2a0
-  hugetlb_reserve_pages+0x110/0x2c0
-  hugetlbfs_file_mmap+0x11d/0x1b0
-  mmap_region+0x248/0x9a0
-  ? hugetlb_get_unmapped_area+0x15c/0x2d0
-  do_mmap+0x38b/0x580
-  vm_mmap_pgoff+0xe6/0x190
-  ksys_mmap_pgoff+0x18a/0x1f0
-  do_syscall_64+0x3f/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+Got it. Actually I see no difference for these two checks on my machine. So I would like
+to remove this.
 
-Expand __create_object() and move __alloc_object() to the beginning.
-Then use kmemleak_lock to protect __find_and_remove_object() and
-__link_object() as a whole, which can guarantee all objects are
-processed sequentialally.
+Thanks.
 
-Fixes: 53238a60dd4a ("kmemleak: Allow partial freeing of memory blocks")
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- mm/kmemleak.c | 42 +++++++++++++++++++++++++++++++-----------
- 1 file changed, 31 insertions(+), 11 deletions(-)
-
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index 7c9125c18956..a956b2734324 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -816,16 +816,25 @@ static void delete_object_full(unsigned long ptr)
-  */
- static void delete_object_part(unsigned long ptr, size_t size, bool is_phys)
- {
--	struct kmemleak_object *object;
--	unsigned long start, end;
-+	struct kmemleak_object *object, *object_l, *object_r;
-+	unsigned long start, end, flags;
-+
-+	object_l = __alloc_object(GFP_KERNEL);
-+	if (!object_l)
-+		return;
- 
--	object = find_and_remove_object(ptr, 1, is_phys);
-+	object_r = __alloc_object(GFP_KERNEL);
-+	if (!object_r)
-+		goto out;
-+
-+	raw_spin_lock_irqsave(&kmemleak_lock, flags);
-+	object = __find_and_remove_object(ptr, 1, is_phys);
- 	if (!object) {
- #ifdef DEBUG
- 		kmemleak_warn("Partially freeing unknown object at 0x%08lx (size %zu)\n",
- 			      ptr, size);
- #endif
--		return;
-+		goto unlock;
- 	}
- 
- 	/*
-@@ -835,14 +844,25 @@ static void delete_object_part(unsigned long ptr, size_t size, bool is_phys)
- 	 */
- 	start = object->pointer;
- 	end = object->pointer + object->size;
--	if (ptr > start)
--		__create_object(start, ptr - start, object->min_count,
--			      GFP_KERNEL, is_phys);
--	if (ptr + size < end)
--		__create_object(ptr + size, end - ptr - size, object->min_count,
--			      GFP_KERNEL, is_phys);
-+	if ((ptr > start) &&
-+	    !__link_object(object_l, start, ptr - start,
-+			   object->min_count, is_phys))
-+		object_l = NULL;
-+	if ((ptr + size < end) &&
-+	    !__link_object(object_r, ptr + size, end - ptr - size,
-+			   object->min_count, is_phys))
-+		object_r = NULL;
-+
-+unlock:
-+	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
-+	if (object)
-+		__delete_object(object);
- 
--	__delete_object(object);
-+out:
-+	if (object_l)
-+		mem_pool_free(object_l);
-+	if (object_r)
-+		mem_pool_free(object_r);
- }
- 
- static void __paint_it(struct kmemleak_object *object, int color)
--- 
-2.25.1
-
+>>
+>> [1] https://lore.kernel.org/all/ZIams6s+qShFWhfQ@BLR-5CG11610CF.amd.com/
+>>
+>> Thanks.
+>>
+>>>
+>>>> +
+>>>>         return target;
+>>>>  }
+>>>>
+>>>> --
+>>>> 2.24.0
+>>>>
+>>>
