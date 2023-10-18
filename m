@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD577CE744
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29877CE74A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbjJRS5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S230192AbjJRTFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjJRS5W (ORCPT
+        with ESMTP id S229897AbjJRTFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:57:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFB9109;
-        Wed, 18 Oct 2023 11:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=f3MJHUypIUbvYleDUYDG7dFj+nvRTwWrjAosy0aGi4s=; b=Dc6sZ40Emywz0YzszH3PaBlZBi
-        grqQDtPJxA9YZZJg6ZpJkscr0bDkC9pP2+XiS8FE4Fv1tSB6M25b2edSMnm60rE7PiA8eyMN50U+V
-        guTPbveTyn7z008mC+lJVCdOFYnv8eJY8FeuY7UtEL3oQ50pKuuxbDYoNqJzlqdqfDfNyygMvncM3
-        QJz+ofQBmPRD2IxAtjglQ95JqGuF10VkZvI+oP/pjRIyWlrzYpxkisohVAEmSRDsNKGk26IRBY9w1
-        u2NcNkvPPUzKXQAQrjsFdaxLTkxflGXlYf2xI4HWJq11/D7BXP17ycAyG1+GSGw8WOCT5G79AneM2
-        kIezX0Ig==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37734)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qtBjF-0005gt-2K;
-        Wed, 18 Oct 2023 19:57:13 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qtBjF-00081P-EL; Wed, 18 Oct 2023 19:57:13 +0100
-Date:   Wed, 18 Oct 2023 19:57:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net] net: mdio-mux: fix C45 access returning -EIO
- after API change
-Message-ID: <ZTAqiURI+MBRdUYm@shell.armlinux.org.uk>
-References: <20231017143144.3212657-1-vladimir.oltean@nxp.com>
+        Wed, 18 Oct 2023 15:05:48 -0400
+X-Greylist: delayed 479 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Oct 2023 12:05:46 PDT
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A319111A
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:05:46 -0700 (PDT)
+Received: by nikam.ms.mff.cuni.cz (Postfix, from userid 2587)
+        id D30DF285CBB; Wed, 18 Oct 2023 20:57:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1697655464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9yn0OXAnCmzY7lwJFXFn0AYA1B5/mgOyTt1zP0XDe1s=;
+        b=atlX/S08wMu4qfLN9tzNTeUTckS79Ye3IgfKRXMHMe0f/5GsLxKkkHaHoYK/UbMhwhoJgq
+        W9upKIITPTVrtI9S/mOG28mrmcNyeYPPlgYMcWMw1q0zsyKnL0IBRlul3n83DbHmo9MKNX
+        /PYIBQU7B3DIds/F236qhaa+4yglgT8=
+Date:   Wed, 18 Oct 2023 20:57:44 +0200
+From:   Martin =?utf-8?B?TWFyZcWh?= <mj@ucw.cz>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Mateusz Nowicki <mateusz.nowicki@solidigm.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 0/8] lspci: Decode more DevCtl2 fields
+Message-ID: <mj+md-20231018.185736.16705.nikam@ucw.cz>
+References: <20231018160836.1361510-1-helgaas@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017143144.3212657-1-vladimir.oltean@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20231018160836.1361510-1-helgaas@kernel.org>
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 05:31:44PM +0300, Vladimir Oltean wrote:
-> The mii_bus API conversion to read_c45() and write_c45() did not cover
-> the mdio-mux driver before read() and write() were made C22-only.
-> 
-> This broke arch/arm64/boot/dts/freescale/fsl-ls1028a-qds-13bb.dtso.
-> The -EOPNOTSUPP from mdiobus_c45_read() is transformed by
-> get_phy_c45_devs_in_pkg() into -EIO, is further propagated to
-> of_mdiobus_register() and this makes the mdio-mux driver fail to probe
-> the entire child buses, not just the PHYs that cause access errors.
-> 
-> Fix the regression by introducing special c45 read and write accessors
-> to mdio-mux which forward the operation to the parent MDIO bus.
-> 
-> Fixes: db1a63aed89c ("net: phy: Remove fallback to old C45 method")
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Hi!
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Decode several more DevCtl2 fields and show Interrupt Message Numbers more
+> consistently.
+> 
+> Bjorn Helgaas (8):
+>   lspci: Reorder PCIe DevCtl2 fields to match spec
+>   lspci: Decode PCIe DevCtl2 ID-Based Ordering Enables
+>   lspci: Decode PCIe DevCtl2 Emergency Power Reduction Request
+>   lspci: Decode PCIe DevCtl2 End-to-End TLP Prefix Blocking
+>   lspci: Decode PCIe LnkCtl Link Disable as 'LnkDisable'
+>   lspci: Print PCIe Interrupt Message Numbers consistently
+>   lspci: Remove spurious colon (':') from PCIe PTM decoding
+>   setpci: Fix man page typo
 
-Thanks!
+Thanks, applied.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+				Martin
