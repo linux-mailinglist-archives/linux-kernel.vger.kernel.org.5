@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B567CE7AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEA67CE7AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbjJRT0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        id S229955AbjJRT1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjJRT0E (ORCPT
+        with ESMTP id S229552AbjJRT1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:26:04 -0400
+        Wed, 18 Oct 2023 15:27:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCA1114;
-        Wed, 18 Oct 2023 12:26:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73075C433C7;
-        Wed, 18 Oct 2023 19:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697657162;
-        bh=KdcsujksQHyrzxhuXt0JsGbIZwYjzMf7Cl5PwnuaNfo=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D330E109;
+        Wed, 18 Oct 2023 12:27:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22244C433C8;
+        Wed, 18 Oct 2023 19:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1697657257;
+        bh=1rqOwZjRE1nbagNyIX9i1zuz/F+kupl3lvfqaew4Dl4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QCOCwf50YrIZn7X8ONxC2wDPaQeZrid9Q64Vtt/ze5RTK2wOgCFRIGkiaaY6A9hku
-         74BM9XqFpJe+GuPYX2peUYrB2zAv+hCbA6ehcAVR1Qw6AAvFEy3SRzr9ap3GvBIVgg
-         F9kZpitxS3szsuI7bBWpUSk2k4Dudnf4WUIRvHBNpd8y8vsBJwy2ojZhYVQ/UAHHcE
-         JYcncAAMq++oSMsfVX4SyHtGvEGD4G0z23qqu0X/i1G/VCivG+WGkh0ijdNkdoxgjl
-         B7+TRt7W6Z8ewrW4Avof17k57353fWS76eMWJvSmiofzfYRiphlNiQJKKFBE0JEFi9
-         UWtqBIYcHIP+g==
-Date:   Wed, 18 Oct 2023 20:26:22 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Hennerich, Michael" <Michael.Hennerich@analog.com>
-Cc:     David Lechner <dlechner@baylibre.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: resolver: ad2s1210: add reset gpio support
-Message-ID: <20231018202622.335331d3@jic23-huawei>
-In-Reply-To: <SN7PR03MB7132A5B955A660700220ADA78ED6A@SN7PR03MB7132.namprd03.prod.outlook.com>
-References: <20231016154311.38547-1-dlechner@baylibre.com>
-        <SN7PR03MB7132A5B955A660700220ADA78ED6A@SN7PR03MB7132.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        b=C+Tu235fFZ9ShVy1YAybs9EPC7bM8MDFacJsq5th4+oYT8RpPrUNEGKRnllQfBjNd
+         tswotbPOIfdrDpHPMfTpCIsSF2Fjzo7dLnS28BR6NqqUjGTNupAWlpBf6EK1oIUAo0
+         PnYCoah04uvXQ9UbUW/isQiAsUWKJXjrwFucbmZk=
+Date:   Wed, 18 Oct 2023 12:27:36 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal =?UTF-8?B?S291dG7DvQ==?= <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+Message-Id: <20231018122736.9a2b6abd4f0a1112144503ae@linux-foundation.org>
+In-Reply-To: <CAJD7tkZaWVhedgVAU+6WUk08V5AW=fmtken5rZJyQm+JhoDs9w@mail.gmail.com>
+References: <20230922175741.635002-1-yosryahmed@google.com>
+        <20230922175741.635002-2-yosryahmed@google.com>
+        <lflzirgjvnodndnuncbulipka6qcif5yijtbqpvbcr3zp3532u@6b37ks523gnt>
+        <CAJD7tkbfq8P514-8Y1uZG9E0fMN2HwEaBmxEutBhjVtbtyEdCQ@mail.gmail.com>
+        <vet5qmfj5xwge4ebznzihknxvpmrmkg6rndhani3fk75oo2rdm@lk3krzcresap>
+        <20231004183619.GB39112@cmpxchg.org>
+        <542ggmgjc27yoosxg466c6n4mzcad2z63t3wdbzevzm43g7xlt@5l7qaepzbth6>
+        <CAJD7tkbaTRu838U=e_A+89PY1t4K+t_G1qkYq84BSDO7wAEtEg@mail.gmail.com>
+        <4h5uae72ti6jyiibcyfg2bytooy6d6ggtkrgod5a6rmpateyra@4setu5jmd5kn>
+        <CAJD7tkZaWVhedgVAU+6WUk08V5AW=fmtken5rZJyQm+JhoDs9w@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,72 +61,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 13:46:51 +0000
-"Hennerich, Michael" <Michael.Hennerich@analog.com> wrote:
+On Thu, 5 Oct 2023 10:30:36 -0700 Yosry Ahmed <yosryahmed@google.com> wrote:
 
-> > -----Original Message-----
-> > From: David Lechner <dlechner@baylibre.com>
-> > Sent: Montag, 16. Oktober 2023 17:43
-> > To: linux-iio@vger.kernel.org
-> > Cc: David Lechner <dlechner@baylibre.com>; Jonathan Cameron
-> > <jic23@kernel.org>; Hennerich, Michael <Michael.Hennerich@analog.com>;
-> > Sa, Nuno <Nuno.Sa@analog.com>; linux-kernel@vger.kernel.org
-> > Subject: [PATCH] iio: resolver: ad2s1210: add reset gpio support
-> > 
-> > 
-> > This adds support for the optional reset gpio to the ad2s1210 resolver driver. If
-> > the gpio is present in the device tree, it is toggled during driver probe before the
-> > reset of the device initialization. As per the devicetree bindings, it is expected for
-> > the gpio to configured as active low.
-> > 
-> > Suggested-by: Michael Hennerich <Michael.Hennerich@analog.com>
-> > Signed-off-by: David Lechner <dlechner@baylibre.com>
-> > ---  
+> On Thu, Oct 5, 2023 at 9:30 AM Michal Koutný <mkoutny@suse.com> wrote:
+> >
+> > On Thu, Oct 05, 2023 at 02:31:03AM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > I am not really sure what you mean here.
+> >
+> > My "vision" is to treat WORKINGSET_ entries as events.
+> > That would mean implementing per-node tracking for vm_event_item
+> > (costlier?).
+> > That would mean node_stat_item and vm_event_item being effectively
+> > equal, so they could be merged in one.
+> > That would be situation to come up with new classification based on use
+> > cases (e.g. precision/timeliness requirements, state vs change
+> > semantics).
+> >
+> > (Do not take this as blocker of the patch 1/2, I rather used the
+> > opportunity to discuss a greater possible cleanup.)
 > 
-> Acked-by: Michael Hennerich <michael.hennerich@analog.com>
-Applied and pushed out as testing for 0-day to poke at it.
+> Yeah ideally we can clean this up separately. I would be careful about
+> userspace exposure though. It seems like CONFIG_VM_EVENT_COUNTERS is
+> used to control tracking events and displaying them in vmstat, so
+> moving items between node_stat_item and vm_event_item (or merging
+> them) won't be easy.
 
-Thanks,
-
-Jonathan
-
-> 
-> >  drivers/iio/resolver/ad2s1210.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2s1210.c
-> > index 8646389ec88d..a414eef12e5e 100644
-> > --- a/drivers/iio/resolver/ad2s1210.c
-> > +++ b/drivers/iio/resolver/ad2s1210.c
-> > @@ -1426,6 +1426,7 @@ static int ad2s1210_setup_gpios(struct
-> > ad2s1210_state *st)  {
-> >  	struct device *dev = &st->sdev->dev;
-> >  	struct gpio_descs *resolution_gpios;
-> > +	struct gpio_desc *reset_gpio;
-> >  	DECLARE_BITMAP(bitmap, 2);
-> >  	int ret;
-> > 
-> > @@ -1481,6 +1482,17 @@ static int ad2s1210_setup_gpios(struct
-> > ad2s1210_state *st)
-> >  					     "failed to set resolution gpios\n");
-> >  	}
-> > 
-> > +	/* If the optional reset GPIO is present, toggle it to do a hard reset. */
-> > +	reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> > GPIOD_OUT_HIGH);
-> > +	if (IS_ERR(reset_gpio))
-> > +		return dev_err_probe(dev, PTR_ERR(reset_gpio),
-> > +				     "failed to request reset GPIO\n");
-> > +
-> > +	if (reset_gpio) {
-> > +		udelay(10);
-> > +		gpiod_set_value(reset_gpio, 0);
-> > +	}
-> > +
-> >  	return 0;
-> >  }
-> > 
-> > --
-> > 2.42.0  
-> 
+I like the word "separately".  This series has been in mm-unstable for
+nearly a month, so I'll move it into mm-stable as-is,
 
