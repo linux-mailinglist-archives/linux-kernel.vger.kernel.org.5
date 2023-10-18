@@ -2,238 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA68E7CE949
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF02E7CE94F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjJRUpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S231984AbjJRUqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjJRUpM (ORCPT
+        with ESMTP id S229757AbjJRUq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:45:12 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781579B
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:45:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697661906;
-        bh=Aq04UeYFx+3aZMpLyeXK/SZOdncMqmG/DlwsJlY+Z28=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=foROnsDqkogW6kxA5rSppgT/KlZWF0Ka4YanXTS5GSoKIHTtY+yNTkrc1em2C/A8y
-         oFFkCZhND9AK6Ev1XkFo9P9H6GEoOacqWXdlUhz9j51JdsIZGxFHpzK/izaait5Aqr
-         XQgm4HEVn0mDf+lJ0IhHc1ZY5iWxuX5doTLHKskwq4RgOhlqe7PEreTaItuPfCuA04
-         MzXV8izmeTgKnzzDOg/fSBkSLnDwBk1qN3S0EQ4Z1Ll5/VLjuWKkwDiqOiOpEeWrHC
-         21EOTtqFYWNaUpUGxS7Q14rBV836WjmyYZIz7S18zeMoZpkjwn2GPPEmYcSzE2u+O7
-         dYSFixDbDTAVQ==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S9jXK5lmtz1Xqf;
-        Wed, 18 Oct 2023 16:45:05 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH 2/2] sched/fair: Introduce SELECT_BIAS_PREV to reduce migrations
-Date:   Wed, 18 Oct 2023 16:45:11 -0400
-Message-Id: <20231018204511.1563390-3-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231018204511.1563390-1-mathieu.desnoyers@efficios.com>
-References: <20231018204511.1563390-1-mathieu.desnoyers@efficios.com>
+        Wed, 18 Oct 2023 16:46:29 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BD7A4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:46:27 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtDQh-0000gU-1z; Wed, 18 Oct 2023 22:46:11 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtDQf-002dSA-0e; Wed, 18 Oct 2023 22:46:09 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtDQe-001EpL-N1; Wed, 18 Oct 2023 22:46:08 +0200
+Date:   Wed, 18 Oct 2023 22:46:08 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Devi Priya <quic_devipriy@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        thierry.reding@gmail.com, ndesaulniers@google.com, trix@redhat.com,
+        baruch@tkos.co.il, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-pwm@vger.kernel.org, nathan@kernel.org
+Subject: Re: [PATCH V15 2/4] dt-bindings: pwm: add IPQ6018 binding
+Message-ID: <20231018204608.qyifcnnzgi2bgzn6@pengutronix.de>
+References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
+ <20231005160550.2423075-3-quic_devipriy@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xtsetqyrpzzycxzw"
+Content-Disposition: inline
+In-Reply-To: <20231005160550.2423075-3-quic_devipriy@quicinc.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the SELECT_BIAS_PREV scheduler feature to reduce the task
-migration rate.
 
-It needs to be used with the UTIL_FITS_CAPACITY scheduler feature to
-show benchmark improvements.
+--xtsetqyrpzzycxzw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For scenarios where the system is under-utilized (CPUs are partly idle),
-eliminate frequent task migrations from CPUs with sufficient remaining
-capacity left to completely idle CPUs by introducing a bias towards the
-previous CPU if it is idle or has enough capacity left.
+Hello,
 
-For scenarios where the system is fully or over-utilized (CPUs are
-almost never idle), favor the previous CPU (rather than the target CPU)
-if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
+On Thu, Oct 05, 2023 at 09:35:48PM +0530, Devi Priya wrote:
+> DT binding for the PWM block in Qualcomm IPQ6018 SoC.
+>=20
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
+> Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+> ---
+> v15:
+>=20
+>   No change
+>=20
+> v14:
+>=20
+>   Picked up the R-b tag
+>=20
+> v13:
+>=20
+>   Updated the file name to match the compatible
+>  =20
+>   Sorted the properties and updated the order in the required field
+>=20
+>   Dropped the syscon node from examples
+>=20
+> v12:
+>=20
+>   Picked up the R-b tag
+>=20
+> v11:
+>=20
+>   No change
+>=20
+> v10:
+>=20
+>   No change
+>=20
+> v9:
+>=20
+>   Add 'ranges' property to example (Rob)
+>=20
+>   Drop label in example (Rob)
+>=20
+> v8:
+>=20
+>   Add size cell to 'reg' (Rob)
+>=20
+> v7:
+>=20
+>   Use 'reg' instead of 'offset' (Rob)
+>=20
+>   Drop 'clock-names' and 'assigned-clock*' (Bjorn)
+>=20
+>   Use single cell address/size in example node (Bjorn)
+>=20
+>   Move '#pwm-cells' lower in example node (Bjorn)
+>=20
+>   List 'reg' as required
+>=20
+> v6:
+>=20
+>   Device node is child of TCSR; remove phandle (Rob Herring)
+>=20
+>   Add assigned-clocks/assigned-clock-rates (Uwe Kleine-K=F6nig)
+>=20
+> v5: Use qcom,pwm-regs for phandle instead of direct regs (Bjorn
+>     Andersson, Kathiravan T)
+>=20
+> v4: Update the binding example node as well (Rob Herring's bot)
+>=20
+> v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
+>=20
+> v2: Make #pwm-cells const (Rob Herring)
+>=20
+>  .../bindings/pwm/qcom,ipq6018-pwm.yaml        | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-pw=
+m.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml =
+b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
+> new file mode 100644
+> index 000000000000..6d0d7ed271f7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/qcom,ipq6018-pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm IPQ6018 PWM controller
+> +
+> +maintainers:
+> +  - Baruch Siach <baruch@tkos.co.il>
 
-The following benchmarks are performed on a v6.5.5 kernel with
-mitigations=off.
+Not being very fluent in dt and binding yaml I wonder if adding
 
-This speeds up the following hackbench workload on a 192 cores AMD EPYC
-9654 96-Core Processor (over 2 sockets):
+	allOf:
+	  - $ref: pwm.yaml#
 
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+would be beneficial?!
 
-from 49s to 26s. (47% speedup)
+> +properties:
+> +  compatible:
+> +    const: qcom,ipq6018-pwm
+> +
+> +  reg:
+> +    description: Offset of PWM register in the TCSR block.
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  "#pwm-cells":
+> +    const: 2
 
-Elapsed time comparison:
+The driver only supports normal polarity. Is this a shortcoming of the
+driver, or is the hardware incapable to do that, too?
 
-Baseline:                               48-49 s
-UTIL_FITS_CAPACITY:                     45-50 s
-SELECT_BIAS_PREV:                       48-50 s
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    26-27 s
+If it's only the former I'd want #pwm-cells =3D <3> here. For ease of use
+I'd not oppose if you pick #pwm-cells =3D <3> even if the hardware can
+only do normal polarity.
 
-We can observe that the number of migrations is reduced significantly
-(-93%) with this patch, which may explain the speedup:
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - "#pwm-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-ipq6018.h>
+> +
+> +    pwm: pwm@a010 {
+> +        compatible =3D "qcom,ipq6018-pwm";
+> +        reg =3D <0xa010 0x20>;
+> +        clocks =3D <&gcc GCC_ADSS_PWM_CLK>;
+> +        assigned-clocks =3D <&gcc GCC_ADSS_PWM_CLK>;
+> +        assigned-clock-rates =3D <100000000>;
+> +        #pwm-cells =3D <2>;
+> +    };
 
-Baseline:                               117M cpu-migrations  (9.355 K/sec)
-UTIL_FITS_CAPACITY:                      67M cpu-migrations  (5.470 K/sec)
-SELECT_BIAS_PREV:                        75M cpu-migrations  (5.674 K/sec)
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:      8M cpu-migrations  (0.928 K/sec)
+Best regards
+Uwe
 
-The CPU utilization is also improved:
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Baseline:                            253.275 CPUs utilized
-UTIL_FITS_CAPACITY:                  223.130 CPUs utilized
-SELECT_BIAS_PREV:                    276.526 CPUs utilized
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV: 309.872 CPUs utilized
+--xtsetqyrpzzycxzw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Interestingly, the rate of context switch increases with the patch, but
-it does not appear to be an issue performance-wise:
+-----BEGIN PGP SIGNATURE-----
 
-Baseline:                               445M context-switches (35.516 K/sec)
-UTIL_FITS_CAPACITY:                     581M context-switches (47.548 K/sec)
-SELECT_BIAS_PREV:                       655M context-switches (49.074 K/sec)
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    597M context-switches (35.516 K/sec)
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUwRA8ACgkQj4D7WH0S
+/k4+QAf/WN6mLqG3+DlwosYZcJESOcX2S6K+CSxJ+01EkCGvXaNAPnaNasVmGzCa
+iWvYmgoRhuFYuzrppCsUER6+lrHZz/C4HfnOsQlsVfjRIm/Si4qelPWc0jKfvsQ9
+EV82d4hR/X2OT0ujmOcJZvwTMaITfER4B+9lzkVE0NvDzUIxzjZRgLDUX1j75All
+994dvdSy0b6x3NHnCuryt4ORwe8cIj866wXsJgrSC/Cg+9kyqW7UXWriTGQNAcfT
+0cfY92KCimjFjqfCuanOyBBN+41jlwwaiUnsB4gx8ZEh1mFgE50OXX9QK8eEgzzl
+56qTKAjNGv8LdOd+XgAiPuVPd0+6yg==
+=Vd7V
+-----END PGP SIGNATURE-----
 
-This was developed as part of the investigation into a weird regression
-reported by AMD where adding a raw spinlock in the scheduler context
-switch accelerated hackbench. It turned out that changing this raw
-spinlock for a loop of 10000x cpu_relax within do_idle() had similar
-benefits.
-
-This patch achieves a similar effect without the busy-waiting by
-allowing select_task_rq to favor the previously used CPUs based on the
-utilization of that CPU.
-
-Feedback is welcome. I am especially interested to learn whether this
-patch has positive or detrimental effects on performance of other
-workloads.
-
-Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
-Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
-Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
-Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231017221204.1535774-1-mathieu.desnoyers@efficios.com/
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
-Cc: x86@kernel.org
----
- kernel/sched/fair.c     | 28 ++++++++++++++++++++++++++--
- kernel/sched/features.h |  6 ++++++
- 2 files changed, 32 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8058058afb11..741d53b18d23 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7173,15 +7173,30 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
-+	/*
-+	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine and the task fits within the prev cpu capacity,
-+	 * prefer the previous CPU to the target CPU to inhibit costly
-+	 * task migration.
-+	 */
-+	if (sched_feat(SELECT_BIAS_PREV) &&
-+	    (prev == target || cpus_share_cache(prev, target)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
-+	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
-+	    asym_fits_cpu(task_util, util_min, util_max, prev))
-+		return prev;
-+
- 	if ((available_idle_cpu(target) || sched_idle_cpu(target) ||
- 	    task_fits_remaining_cpu_capacity(task_util, target)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, target))
- 		return target;
- 
- 	/*
--	 * If the previous CPU is cache affine and idle, don't be stupid:
-+	 * Without the SELECT_BIAS_PREV feature, use the previous CPU if
-+	 * it is cache affine and idle if the target cpu is not idle.
- 	 */
--	if (prev != target && cpus_share_cache(prev, target) &&
-+	if (!sched_feat(SELECT_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target) &&
- 	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
- 	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
-@@ -7254,6 +7269,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine, prefer the previous CPU when all CPUs are busy
-+	 * to inhibit migration.
-+	 */
-+	if (sched_feat(SELECT_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target))
-+		return prev;
-+
- 	return target;
- }
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 9a84a1401123..a56d6861c553 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -103,6 +103,12 @@ SCHED_FEAT(UTIL_EST_FASTUP, true)
-  */
- SCHED_FEAT(UTIL_FITS_CAPACITY, true)
- 
-+/*
-+ * Bias runqueue selection towards the previous runqueue over the target
-+ * runqueue.
-+ */
-+SCHED_FEAT(SELECT_BIAS_PREV, true)
-+
- SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
--- 
-2.39.2
-
+--xtsetqyrpzzycxzw--
