@@ -2,76 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9276B7CD59C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E937CD5A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjJRHpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 03:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        id S1344604AbjJRHre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 03:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJRHp2 (ORCPT
+        with ESMTP id S229912AbjJRHra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 03:45:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A177C6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 00:45:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ADDCC433C7;
-        Wed, 18 Oct 2023 07:45:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697615126;
-        bh=jN8Gu0zwwTk2T/Rm8uUvwNo07IXv7bqneP/+YCv2VHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D77LelGsNGyGVb9jo8+wvAZ2dDN75xuAR6+LAhtrECuKhbwTICV1u0ZPKXMlFyZ2P
-         Zrbk4WK7WUV33L7GsRMnzGpFw9yJfCdtkdne6E6aENB7cKVmGY7hhz8/hyHeJ/Uf/k
-         X5vUYRMt/XcmitzIMTFrT1dJVGFZVZqGtk72jkfs=
-Date:   Wed, 18 Oct 2023 09:45:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Karolina Stolarek <karolina.stolarek@intel.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        kenechukwu maduechesi <maduechesik@gmail.com>,
-        outreachy@lists.linux.dev, shreeya.patel23498@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rts5208: Replace delay function.
-Message-ID: <2023101853-axis-stylist-f1b9@gregkh>
-References: <20231018004300.GA3189@ubuntu>
- <7bc719c4-459f-3d8-7ed-b1e1adf158@inria.fr>
- <1118ec6d-e1e7-79f3-08e4-9a79c996eed1@intel.com>
+        Wed, 18 Oct 2023 03:47:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB2100;
+        Wed, 18 Oct 2023 00:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697615249; x=1729151249;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=h4XVZHdvlqX9EhvYBVM6hRqpG6MuHehCUD0ZGVf9mxo=;
+  b=nwGhBag7Umuj9lVlVHubj3mtv7m/PAUCe1g1045dsouKOV6i7Rl3jvVM
+   nv+8yCxWRHgUlfv44L3jrCMm64f4NVjWu4QXbhDf1VMnOmnamR/x+6Bar
+   RFxQlP9CvTrkrCrI5bGg8Zj7s2RRYY9escvec9ofvNvJBbINIF2e3OLct
+   8muC2TP0HwHGEsYRDdR+ZWHJ5fKXVXHcMDioYFao2Rvu+4QSz+f9LRNUU
+   ieV22hAXO2OszHPx18NRCHM7PxE11LAzDuXkWY5QaTf9YemgNG4fW66LR
+   9/GJAIMoasLZ22GsDMbzJ3TXbb/JZd2CTXbAxkRB81sSLPJ/0Cn9ug0hn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="388823972"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="388823972"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 00:47:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="785795153"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="785795153"
+Received: from 001b21e7c6a0.jf.intel.com ([10.165.56.54])
+  by orsmga008.jf.intel.com with ESMTP; 18 Oct 2023 00:47:27 -0700
+From:   Chen Hu <hu1.chen@intel.com>
+To:     miklos@szeredi.hu, amir73il@gmail.com
+Cc:     malini.bhandaru@intel.com, tim.c.chen@intel.com,
+        mikko.ylinen@intel.com, lizhen.you@intel.com,
+        vinicius.gomes@intel.com, hu1.chen@intel.com,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: ovl: ovl_fs::creator_cred::usage scalability issues
+Date:   Wed, 18 Oct 2023 00:45:53 -0700
+Message-Id: <20231018074553.41333-1-hu1.chen@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1118ec6d-e1e7-79f3-08e4-9a79c996eed1@intel.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 09:32:46AM +0200, Karolina Stolarek wrote:
-> On 18.10.2023 09:03, Julia Lawall wrote:
-> > 
-> > 
-> > On Tue, 17 Oct 2023, kenechukwu maduechesi wrote:
-> > 
-> > > Replace udelay() with usleep_range() for more precise delay handling.
-> > > 
-> > > Reported by checkpatch:
-> > > 
-> > > CHECK: usleep_range is preferred over udelay
-> > 
-> > This message is typically not a good candidate for outreachy patches,
-> > because you need access to the device to be sure that any change is
-> > correct.
-> 
-> Could we add a paragraph on how to pick good checkpatch.pl error to fix to
-> the Outreachyfirstpatch docs? This could go to "Find a driver to clean up"
-> section, for example.
+*Problem*
+ovl_permission() checks the underlying inode with the credential of mounter.
+The cred, struct ovl_fs::creator_cred, is somewhat global per overlayfs
+superblock. Performance degrades when concurrency increases on the cred, to be
+specific, on ovl_fs::creator_cred::usage.
 
-The ability to find a "good" error changes over time, so this might be
-hard to do.
+This happens when there are massive file access inside container, especially
+on SoC with many cores. With Linux 6.6.0-rc2, we run a web workload container
+on Intel 4th Xeon Sapphire Rapids which has 56 cores. Perf reports that 5.7%
+(2.50% + 1.87% + 1.33%) CPU stall in overlayfs:
+Self    Command       Shared Object            Symbol
+2.50%   foo           [kernel.vmlinux]         [k] override_creds
+1.87%   foo           [kernel.vmlinux]         [k] revert_creds
+1.33%   foo           [kernel.vmlinux]         [k] generic_permission
 
-good luck!
+On Soc with more than 100 cores, we can even observe ~30% CPU stalled!
 
-greg k-h
+This scalability issue is caused by two factors:
+1) Contention on creator_cred::usage
+   creator_cred::usage is atomic_t and is inc/dec atomically during every file
+   access. So HW acquires the corresponding cache line exclusively. This
+   operataiton is expensive and gets worse when contention is heavy.
+   Call chain:
+      ovl_permission()
+      -> ovl_override_creds()
+      -> override_creds()
+      -> get_new_cred()
+      -> atomic_inc(&cred->usage);
+
+      ovl_permission()
+      -> revert_creds()
+      -> put_cred()
+      -> atomic_dec_and_test(&(cred)->usage))
+
+2) False sharing
+   `perf c2c` shows false sharing issue between cred::usage and cred::fsuid.
+   This is why generic_permission() stalls 1.33% CPU in above perf report.
+   ovl_permission() updates cred::usage and it also reads cred::fsuid.
+   Unfortunately, they locate in the same cache line and thus false sharing
+   occurs. cred::fsuid is read at:
+      ovl_permission()
+      -> inode_permission()
+      -> generic_permission()
+      -> acl_permission_check()
+      -> current_fsuid()
+
+*Mitigations we tried*
+We tried several mitigations but are not sure if it can be a fix or just
+workaround / hack. So we report this and want to have some discussions.
+
+Our mitigations aims to eliminate the contention on creator_cred->usage.
+Without contention, the false sharing will be tiny and no need to handle. The
+mitigations we tested are:
+   1) Check underlying inode once in its lifetime. 
+   OR
+   2) In ovl_permission(), copy global creator_cred to a local variable to
+      avoid concurrency.
+
+With any mitigations above, CPU will not stall on overlayfs.
+
+Paste mitigation 1 below.
+
+From 472bd18eaabcde0d41e450f556691151b1bdb64e Mon Sep 17 00:00:00 2001
+From: Chen Hu <hu1.chen@intel.com>
+Date: Fri, 1 Sep 2023 15:03:28 +0800
+Subject: [RFC PATCH] ovl: check underlying upper inode once in its lifetime
+
+ovl_permission() checks the underlying inode with the credential of
+mounter. The cred, struct ovl_fs::creator_cred, is global per overlayfs
+superblock. Performance degrades when concurrency increases on the cred,
+to be specific, on ovl_fs::creator_cred::usage.
+
+This patch (or hack to some extent) checks underlying upper inode once
+in its lifetime, eliminates the cache line contention on
+creator_cred::usage and gets 40%+ perf improvement on a 128 cores CPU.
+
+CAUTION:
+this may compromise the file permission check. Need to talk with
+overlayfs experts.
+
+Signed-off-by: Chen Hu <hu1.chen@intel.com>
+---
+ fs/overlayfs/inode.c     | 5 ++++-
+ fs/overlayfs/overlayfs.h | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index 83ef66644c21..62ec99316c7a 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -307,7 +307,7 @@ int ovl_permission(struct mnt_idmap *idmap,
+ 	 * with creds of mounter
+ 	 */
+ 	err = generic_permission(&nop_mnt_idmap, inode, mask);
+-	if (err)
++	if (err || ovl_test_flag(OVL_FASTPERM, inode))
+ 		return err;
+ 
+ 	old_cred = ovl_override_creds(inode->i_sb);
+@@ -318,6 +318,9 @@ int ovl_permission(struct mnt_idmap *idmap,
+ 		mask |= MAY_READ;
+ 	}
+ 	err = inode_permission(mnt_idmap(realpath.mnt), realinode, mask);
++	if (err == 0 && upperinode)
++		/* This gets set once for the upper inode lifetime */
++		ovl_set_flag(OVL_FASTPERM, inode);
+ 	revert_creds(old_cred);
+ 
+ 	return err;
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+index 9817b2dcb132..5b71aaa8f77c 100644
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
+@@ -53,6 +53,7 @@ enum ovl_inode_flag {
+ 	OVL_CONST_INO,
+ 	OVL_HAS_DIGEST,
+ 	OVL_VERIFIED_DIGEST,
++	OVL_FASTPERM,
+ };
+ 
+ enum ovl_entry_flag {
+-- 
+2.34.1
+
