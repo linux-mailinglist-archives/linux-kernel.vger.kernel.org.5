@@ -2,115 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA127CD5F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7E07CD5F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbjJRIFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+        id S229901AbjJRIEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbjJRIFM (ORCPT
+        with ESMTP id S229948AbjJRIEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:05:12 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAF5B6;
-        Wed, 18 Oct 2023 01:05:10 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507bd64814fso2217669e87.1;
-        Wed, 18 Oct 2023 01:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697616308; x=1698221108; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMNVGJeJs6tC6fM9RWBX9uPuEFgE2XkieCrcZbldbM4=;
-        b=kr6TE3GLsgcpvXPIXYqqoYgo8ImXDuM87j4dBeJDV7muAHuTzMYjt1ysvSQBUsXmHi
-         a5v4W4MZZ/LGhQbMCQdent+OHYntclCYHMe17fybygWcxNY+EOCqhHWhrjpmw6y3+aBO
-         t68GV+3+lhUX5EsQxqXWlbpya5K8HNoXqXMH+bgyQ3PHuVZQByfS4Scgfxx+OVKvXM67
-         QrTjYin8ho+f7K1uEAzCX6U5Jtt8P/Q4nS4bYdpOCqxNC4QHVsPiXV/dNsWFGi2QJOwd
-         99KoxGLfDCZcgaA/+nzrcLYiUH0eItVp6GAVZ9aJD107p9NF0pJ6PqR+o0U5NLyF6yu6
-         BsLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697616308; x=1698221108;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OMNVGJeJs6tC6fM9RWBX9uPuEFgE2XkieCrcZbldbM4=;
-        b=HtXjYgN8NG/Su5LScAc3PpejFIzovmX/q6/a4E9xQNsqC6m2m+0sNRgA6bX9qBqAy6
-         aVXOcsZJauuzIzS5sSz1LXd7W8FBRZQL2nn+UDApbO7W7+eIV86I+YruRXx6WBLqy492
-         RQlA12WBmAakAalDn8PRaJI5nh4sGrzYK4tD0aNP4Ur67LAnzCp0RgyAx6UHlM+30By/
-         Sg8Cmh3bbmuguBx4oEGzuodevyMfbf33XfDpQqyCIseeO9mCztBmtsvYGGiz7Q7zTUaP
-         rYWhWKFSR2I4aJhPf0BYHwLSGDxtETuF995B/G/lxkRkr4NUJMUsKlAst6Vynmno7dFF
-         Zo6w==
-X-Gm-Message-State: AOJu0YxvE9LjOCKGpzFfXkuT4OMCfhn70UpJZN416sD1gwWPtG+SNIM2
-        Lmaa4Fagu+0LBkKzUiwdagWkOWewiICmnDw=
-X-Google-Smtp-Source: AGHT+IEOoxnYTOtBclV4vk36arcwft7QKDtzgJRUNRHK+278x59Pnk7rzDUe855MTH5QEDI9sLxiLA==
-X-Received: by 2002:ac2:52a9:0:b0:507:9618:d446 with SMTP id r9-20020ac252a9000000b005079618d446mr2950797lfm.61.1697616308093;
-        Wed, 18 Oct 2023 01:05:08 -0700 (PDT)
-Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.0.227])
-        by smtp.gmail.com with ESMTPSA id i6-20020adfe486000000b0032415213a6fsm1484548wrm.87.2023.10.18.01.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 01:05:07 -0700 (PDT)
-From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
-Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
-        julia.lawall@inria.fr, dan.carpenter@linaro.org,
-        andi.shyti@linux.intel.com,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Staging: sm750fb: Rename display_control_adjust_sm750LE
-Date:   Wed, 18 Oct 2023 11:04:08 +0300
-Message-ID: <20231018080416.25931-2-anonolitunya@gmail.com>
-X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
+        Wed, 18 Oct 2023 04:04:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A891C101
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:04:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1061C433C9;
+        Wed, 18 Oct 2023 08:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697616269;
+        bh=lEWI9sovEjua5wyv2AzGJds6zMhreikL8LH3EN5NVGE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rHUZvJGdnz6huIW+8MkUHjCMaph//qScKrFtRHsm4tO1E0AsmQCIjsqwxcS6/lo6Q
+         7h6rYSXrRxgpoAT0hhEbwiUBrXshjUQA1FpayDaoiGbtwXlTPCqeashxp3+ZbDwCAc
+         LmLSPxF1H64KhheOI0FST5CVd1vlNapLueKUuwW8=
+Date:   Wed, 18 Oct 2023 10:04:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Charles Yi <be286@163.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] usb: gadget: f_uac1: add adaptive sync support for
+ capture
+Message-ID: <2023101801-truth-sculpture-5dcb@gregkh>
+References: <20231018074739.1234394-1-be286@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018074739.1234394-1-be286@163.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename function display_control_adjust_sm750LE to
-display_control_adjust_sm750le. This further enforces snakecase naming
-convention for consistent naming style throughout entire file.
+On Wed, Oct 18, 2023 at 03:47:39PM +0800, Charles Yi wrote:
+> UAC1 has it's own freerunning clock and can update Host about
+> real clock frequency through feedback endpoint so Host can align
+> number of samples sent to the UAC1 to prevent overruns/underruns.
+> 
+> Change UAC1 driver to make it configurable through additional
+> 'c_sync' configfs file.
+> 
+> Default remains 'asynchronous' with possibility to switch it
+> to 'adaptive'.
+> 
+> Changes in V2:
+> - Updated the indentation of commit message.
+> 
+> Signed-off-by: Charles Yi <be286@163.com>
+> ---
+>  drivers/usb/gadget/function/f_uac1.c | 30 ++++++++++++++++++++++++++++
+>  drivers/usb/gadget/function/u_uac1.h |  2 ++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
+> index 6f0e1d803dc2..7a6fcb40bb46 100644
+> --- a/drivers/usb/gadget/function/f_uac1.c
+> +++ b/drivers/usb/gadget/function/f_uac1.c
+> @@ -33,6 +33,8 @@
+>  #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
+>  			|| (_opts)->c_volume_present)
+>  
+> +#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
+> +
+>  struct f_uac1 {
+>  	struct g_audio g_audio;
+>  	u8 ac_intf, as_in_intf, as_out_intf;
+> @@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
+>  	.wLockDelay =		cpu_to_le16(1),
+>  };
+>  
+> +static struct usb_endpoint_descriptor as_fback_ep_desc = {
+> +	.bLength = USB_DT_ENDPOINT_SIZE,
+> +	.bDescriptorType = USB_DT_ENDPOINT,
+> +
+> +	.bEndpointAddress = USB_DIR_IN,
+> +	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
+> +	.wMaxPacketSize = cpu_to_le16(3),
+> +	.bInterval = 1,
+> +};
+> +
+>  static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
+>  	.bLength =		0, /* filled on rate setup */
+>  	.bDescriptorType =	USB_DT_CS_INTERFACE,
+> @@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
+>  
+>  	(struct usb_descriptor_header *)&as_out_ep_desc,
+>  	(struct usb_descriptor_header *)&as_iso_out_desc,
+> +	(struct usb_descriptor_header *)&as_fback_ep_desc,
+>  
+>  	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
+>  	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
+> @@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
+>  		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
+>  		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
+>  		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
+> +		if (EPOUT_FBACK_IN_EN(opts)) {
+> +			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
+> +		}
+>  	}
+>  	if (EPIN_EN(opts)) {
+>  		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
+> @@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+>  		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
+>  		uac1->as_out_intf = status;
+>  		uac1->as_out_alt = 0;
+> +
+> +		if (EPOUT_FBACK_IN_EN(audio_opts)) {
+> +			as_out_ep_desc.bmAttributes =
+> +			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
+> +			as_out_interface_alt_1_desc.bNumEndpoints++;
+> +		}
+>  	}
+>  
+>  	if (EPIN_EN(audio_opts)) {
+> @@ -1354,6 +1376,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+>  			goto err_free_fu;
+>  		audio->out_ep = ep;
+>  		audio->out_ep->desc = &as_out_ep_desc;
+> +		if (EPOUT_FBACK_IN_EN(audio_opts)) {
+> +			audio->in_ep_fback = usb_ep_autoconfig(gadget, &as_fback_ep_desc);
+> +			if (!audio->in_ep_fback) {
+> +				goto err_free_fu;
+> +			}
+> +		}
+>  	}
+>  
+>  	if (EPIN_EN(audio_opts)) {
+> @@ -1685,6 +1713,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
+>  
+>  	opts->req_number = UAC1_DEF_REQ_NUM;
+>  
+> +	opts->c_sync = UAC1_DEF_CSYNC;
+> +
+>  	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
+>  
+>  	return &opts->func_inst;
+> diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
+> index f7a616760e31..c6e2271e8cdd 100644
+> --- a/drivers/usb/gadget/function/u_uac1.h
+> +++ b/drivers/usb/gadget/function/u_uac1.h
+> @@ -27,6 +27,7 @@
+>  #define UAC1_DEF_MAX_DB		0		/* 0 dB */
+>  #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
+>  
+> +#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ASYNC
+>  
+>  struct f_uac1_opts {
+>  	struct usb_function_instance	func_inst;
+> @@ -56,6 +57,7 @@ struct f_uac1_opts {
+>  
+>  	struct mutex			lock;
+>  	int				refcnt;
+> +	int				c_sync;
+>  };
+>  
+>  #endif /* __U_UAC1_H */
+> -- 
+> 2.34.1
+> 
 
-This change was suggested by Andi Shyti <andi.shyti@linux.intel.com>
+Hi,
 
-Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
----
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-v2: Correctly spells Andi Shyti's name
+You are receiving this message because of the following common error(s)
+as indicated below:
 
- drivers/staging/sm750fb/ddk750_mode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
 
-diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-index f3f354831617..bcdd291d25c9 100644
---- a/drivers/staging/sm750fb/ddk750_mode.c
-+++ b/drivers/staging/sm750fb/ddk750_mode.c
-@@ -14,7 +14,7 @@
-  * in bit 29:27 of Display Control register.
-  */
- static unsigned long
--display_control_adjust_SM750LE(struct mode_parameter *mode_param,
-+display_control_adjust_sm750le(struct mode_parameter *mode_param,
- 			       unsigned long disp_control)
- {
- 	unsigned long x, y;
-@@ -125,7 +125,7 @@ static int program_mode_registers(struct mode_parameter *mode_param,
- 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
- 
- 		if (sm750_get_chip_type() == SM750LE) {
--			display_control_adjust_SM750LE(mode_param, tmp);
-+			display_control_adjust_sm750le(mode_param, tmp);
- 		} else {
- 			reg = peek32(CRT_DISPLAY_CTRL) &
- 				~(DISPLAY_CTRL_VSYNC_PHASE |
--- 
-2.42.0.345.gaab89be2eb
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
+thanks,
+
+greg k-h's patch email bot
