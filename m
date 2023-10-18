@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467337CE166
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3055B7CE16E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344692AbjJRPnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S1344773AbjJRPpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbjJRPnI (ORCPT
+        with ESMTP id S232427AbjJRPpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:43:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFB1118
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:43:06 -0700 (PDT)
+        Wed, 18 Oct 2023 11:45:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499A511B
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697643786; x=1729179786;
+  t=1697643906; x=1729179906;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cAf5Ji2j36cqM4XbqEvEUweS4HwzbBeSDrHrEamrOmc=;
-  b=EMQf41eNnxOmN7e6oX75M1aV+IWVVwGO0VoWlOfP6TeXAOcrW5YnEmMV
-   uNQ7EvRvDR7tqUfvApY10HLCm8CPyKaKBZpTd6I6YbQBF7VgLId08tP/k
-   LuLyPNmmbxB7SAOe8fVQprn2Xll5tM2cfeAl373nFqHcJJqBwRQF7XMho
-   +ebhqGLPkIeYjmxkuh3sIg5nAqEsgi/akT4YXPIS0O+RLiZm1O2AEnWnJ
-   v0MjpxZgGSNJqUFdlcOhNJNzMgoi81gT+FLq6qNyV0s3W2JrJQfMv+bNg
-   HnBWX4Gd2PEdIeZFDM+E5SogXgL0+S0/DQAt4/kDK2R4Cx8FK/59NQZcF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="365391093"
+  bh=MP10YohGiPP+OhqmtVYeRkq3ED2HUZXN0Rbya0uXRZY=;
+  b=eXV2+k3yNcQcBYygavRyPZOPzn6zpxoR5g9BX9BJm0sy/nd/EXCBi910
+   PZu9zbBaRK8GPNABi+5Ez+BTg33B0OO1YxBzQDzGz2fhdZyTQeX+8N3po
+   ENEo70U90r1TYQaC37liUGNs3vp1mWR4DKsBf92vTOAe9PwACVRWTmnR6
+   nGaws2ZUKgq/pamaqaIYPMGLNIxtsCh0C4H66HjbGhEu8irgZD/wDmhdi
+   5ISY4np1Eio02HqQR19AQeQpm15dSCzo0Jc48JhWgMfG2Yqy9mV0rpBUp
+   iHem+0ITzhj0rmgfXGsbeTgYfaJMmFmEtuHp2JyPopDcvXmgTUwqsH+2e
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="383263398"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="365391093"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 08:43:06 -0700
+   d="scan'208";a="383263398"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 08:45:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756629303"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756629303"
+   d="scan'208";a="4587033"
 Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 18 Oct 2023 08:43:04 -0700
+  by fmviesa001.fm.intel.com with ESMTP; 18 Oct 2023 08:45:08 -0700
 Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qt8hJ-0000bM-23;
-        Wed, 18 Oct 2023 15:43:01 +0000
-Date:   Wed, 18 Oct 2023 23:42:30 +0800
+        id 1qt8jF-0000bQ-2A;
+        Wed, 18 Oct 2023 15:45:01 +0000
+Date:   Wed, 18 Oct 2023 23:44:16 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/smu_v11_0.c:110:54:
- warning: '.bin' directive output may be truncated writing 4 bytes into a
- region of size between 0 and 29
-Message-ID: <202310182332.OXIRVcAe-lkp@intel.com>
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s'
+ directive argument is null
+Message-ID: <202310182347.zS9BxqD4-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,80 +65,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: 6b54496238cc81792f697e7b21c452cdcdbb4ac5 drm/amd: Convert SMUv11 microcode to use `amdgpu_ucode_ip_version_decode`
-date:   9 months ago
-config: x86_64-randconfig-r006-20230904 (https://download.01.org/0day-ci/archive/20231018/202310182332.OXIRVcAe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182332.OXIRVcAe-lkp@intel.com/reproduce)
+commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
+date:   5 months ago
+config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20231018/202310182347.zS9BxqD4-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182347.zS9BxqD4-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310182332.OXIRVcAe-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310182347.zS9BxqD4-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/smu_v11_0.c: In function 'smu_v11_0_init_microcode':
->> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/smu_v11_0.c:110:54: warning: '.bin' directive output may be truncated writing 4 bytes into a region of size between 0 and 29 [-Wformat-truncation=]
-     110 |         snprintf(fw_name, sizeof(fw_name), "amdgpu/%s.bin", ucode_prefix);
-         |                                                      ^~~~
-   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/smu_v11_0.c:110:9: note: 'snprintf' output between 12 and 41 bytes into a destination of size 36
-     110 |         snprintf(fw_name, sizeof(fw_name), "amdgpu/%s.bin", ucode_prefix);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/net/wireless/intel/iwlwifi/fw/acpi.c:9:
+   drivers/net/wireless/intel/iwlwifi/fw/acpi.c: In function 'iwl_acpi_is_ppag_approved':
+>> drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s' directive argument is null [-Wformat-overflow=]
+    1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/iwl-debug.h:91:56: note: in definition of macro '__IWL_DEBUG_DEV'
+      91 |                 __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
+         |                                                        ^~~
+   drivers/net/wireless/intel/iwlwifi/iwl-debug.h:209:41: note: in expansion of macro 'IWL_DEBUG'
+     209 | #define IWL_DEBUG_RADIO(p, f, a...)     IWL_DEBUG(p, IWL_DL_RADIO, f, ## a)
+         |                                         ^~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1189:17: note: in expansion of macro 'IWL_DEBUG_RADIO'
+    1189 |                 IWL_DEBUG_RADIO(fwrt,
+         |                 ^~~~~~~~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:41: note: format string is defined here
+    1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
+         |                                         ^~
+--
+   In file included from drivers/net/wireless/intel/iwlwifi/mvm/../iwl-trans.h:15,
+                    from drivers/net/wireless/intel/iwlwifi/mvm/fw.c:11:
+   drivers/net/wireless/intel/iwlwifi/mvm/fw.c: In function 'iwl_mvm_tas_init':
+>> drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1167:33: warning: '%s' directive argument is null [-Wformat-overflow=]
+    1167 |                                 "System vendor '%s' is not in the approved list, disabling TAS in US and Canada.\n",
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/mvm/../iwl-debug.h:91:56: note: in definition of macro '__IWL_DEBUG_DEV'
+      91 |                 __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
+         |                                                        ^~~
+   drivers/net/wireless/intel/iwlwifi/mvm/../iwl-debug.h:209:41: note: in expansion of macro 'IWL_DEBUG'
+     209 | #define IWL_DEBUG_RADIO(p, f, a...)     IWL_DEBUG(p, IWL_DL_RADIO, f, ## a)
+         |                                         ^~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1166:17: note: in expansion of macro 'IWL_DEBUG_RADIO'
+    1166 |                 IWL_DEBUG_RADIO(mvm,
+         |                 ^~~~~~~~~~~~~~~
+   drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1167:49: note: format string is defined here
+    1167 |                                 "System vendor '%s' is not in the approved list, disabling TAS in US and Canada.\n",
+         |                                                 ^~
 
 
-vim +110 drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/smu_v11_0.c
+vim +1190 drivers/net/wireless/intel/iwlwifi/fw/acpi.c
 
-    92	
-    93	int smu_v11_0_init_microcode(struct smu_context *smu)
-    94	{
-    95		struct amdgpu_device *adev = smu->adev;
-    96		char ucode_prefix[30];
-    97		char fw_name[SMU_FW_NAME_LEN];
-    98		int err = 0;
-    99		const struct smc_firmware_header_v1_0 *hdr;
-   100		const struct common_firmware_header *header;
-   101		struct amdgpu_firmware_info *ucode = NULL;
-   102	
-   103		if (amdgpu_sriov_vf(adev) &&
-   104		    ((adev->ip_versions[MP1_HWIP][0] == IP_VERSION(11, 0, 9)) ||
-   105		     (adev->ip_versions[MP1_HWIP][0] == IP_VERSION(11, 0, 7))))
-   106			return 0;
-   107	
-   108		amdgpu_ucode_ip_version_decode(adev, MP1_HWIP, ucode_prefix, sizeof(ucode_prefix));
-   109	
- > 110		snprintf(fw_name, sizeof(fw_name), "amdgpu/%s.bin", ucode_prefix);
-   111	
-   112		err = request_firmware(&adev->pm.fw, fw_name, adev->dev);
-   113		if (err)
-   114			goto out;
-   115		err = amdgpu_ucode_validate(adev->pm.fw);
-   116		if (err)
-   117			goto out;
-   118	
-   119		hdr = (const struct smc_firmware_header_v1_0 *) adev->pm.fw->data;
-   120		amdgpu_ucode_print_smc_hdr(&hdr->header);
-   121		adev->pm.fw_version = le32_to_cpu(hdr->header.ucode_version);
-   122	
-   123		if (adev->firmware.load_type == AMDGPU_FW_LOAD_PSP) {
-   124			ucode = &adev->firmware.ucode[AMDGPU_UCODE_ID_SMC];
-   125			ucode->ucode_id = AMDGPU_UCODE_ID_SMC;
-   126			ucode->fw = adev->pm.fw;
-   127			header = (const struct common_firmware_header *)ucode->fw->data;
-   128			adev->firmware.fw_size +=
-   129				ALIGN(le32_to_cpu(header->ucode_size_bytes), PAGE_SIZE);
-   130		}
-   131	
-   132	out:
-   133		if (err) {
-   134			DRM_ERROR("smu_v11_0: Failed to load firmware \"%s\"\n",
-   135				  fw_name);
-   136			release_firmware(adev->pm.fw);
-   137			adev->pm.fw = NULL;
-   138		}
-   139		return err;
-   140	}
-   141	
+e8e10a37c51c08 Matt Chen 2022-03-04  1187  
+e8e10a37c51c08 Matt Chen 2022-03-04  1188  	if (!dmi_check_system(dmi_ppag_approved_list)) {
+e8e10a37c51c08 Matt Chen 2022-03-04  1189  		IWL_DEBUG_RADIO(fwrt,
+e8e10a37c51c08 Matt Chen 2022-03-04 @1190  			"System vendor '%s' is not in the approved list, disabling PPAG.\n",
+
+:::::: The code at line 1190 was first introduced by commit
+:::::: e8e10a37c51c08b99d272b2e1b3ef70fcd38f9e8 iwlwifi: acpi: move ppag code from mvm to fw/acpi
+
+:::::: TO: Matt Chen <matt.chen@intel.com>
+:::::: CC: Luca Coelho <luciano.coelho@intel.com>
 
 -- 
 0-DAY CI Kernel Test Service
