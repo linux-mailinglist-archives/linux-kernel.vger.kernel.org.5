@@ -2,143 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92687CD639
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532787CD63C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjJRITy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S235094AbjJRIU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjJRITw (ORCPT
+        with ESMTP id S230031AbjJRIUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:19:52 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB939B6;
-        Wed, 18 Oct 2023 01:19:49 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39I8JVg1114036;
-        Wed, 18 Oct 2023 03:19:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697617171;
-        bh=KDxSzjo2VitRXjpaiHK9O5EJrXqIWmeH3Eersa64FuA=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=xmKycoSSPuHLTwIkIHEaMn06eq06DZpf7LsjJAmgyy29Yo/UDB3D+nU4boa8VqfPe
-         +d1t5N32j1W4w3q54BudR+5vBUZpQvMxC57eK3nMXYjCXy1Nfs5L59jK5hlH8gbZM1
-         UmBa1mwR27jpkiaiwT8jFvniBJSNs3mP0El+TAGA=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39I8JUfF122418
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Oct 2023 03:19:31 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
- Oct 2023 03:19:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 18 Oct 2023 03:19:30 -0500
-Received: from [172.24.227.83] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39I8JRSI029793;
-        Wed, 18 Oct 2023 03:19:28 -0500
-Message-ID: <c546f8e9-f6ba-41b8-7dff-4a7921b6705f@ti.com>
-Date:   Wed, 18 Oct 2023 13:49:26 +0530
+        Wed, 18 Oct 2023 04:20:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F4BB6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:20:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F510C433CC;
+        Wed, 18 Oct 2023 08:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697617221;
+        bh=kAQb1Dauqk/QmzH5qzVaRj1IjK5Gc50QF1fiNXcjCvg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NpVviRdtHRVoKEz8+v/XeRzsmtBxXo6p6FdYbxN1CAH3LiF6E7SLbpR5QjiICYSlJ
+         VYrwkTxRrDlA//QFpH+j4HuUy3inTYg5TKbIVzoeZqXscZXbBlhVN4RRNj5AT8zI50
+         v4sNRLq7jS9besmy9bcpCnejfDVEq+UvGP2osZB1SC7T6GuS7Bt3lBPB/c+3vAwZ2d
+         BSnt84RfYVZSMslz8CTIYga64p+IeGakRUTx38AnZ3TsrThi1huQrHkTSJI3W55n5m
+         c7lZWP+3yzZkWwnypG2WFtgBf1iwfSigW955I16oA67UPvZ5yOgqmO4Llf51IXhDcM
+         k4GuEa3oUkrwg==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 0/5] mlx5 ConnectX diagnostic misc driver
+Date:   Wed, 18 Oct 2023 01:19:36 -0700
+Message-ID: <20231018081941.475277-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x
- SoC
-Content-Language: en-US
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>, <lpieralisi@kernel.org>,
-        <robh@kernel.org>, <kw@linux.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-References: <20231018075038.2740534-1-s-vadapalli@ti.com>
-From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
-In-Reply-To: <20231018075038.2740534-1-s-vadapalli@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Siddharth,
+From: Saeed Mahameed <saeedm@nvidia.com>
 
+Hello Greg and Arnd,
 
-On 10/18/23 1:20 PM, Siddharth Vadapalli wrote:
-> The ks_pcie_v3_65_add_bus() member of "ks_pcie_ops" was added for
-> platforms using DW PCIe IP-core version 3.65a. The AM654x SoC uses
-> DW PCIe IP-core version 4.90a and ks_pcie_v3_65_add_bus() is not
-> applicable to it.
-> 
-> The commit which added support for the AM654x SoC has reused majority
-> of the functions with the help of the "is_am6" flag to handle AM654x
-> separately where applicable. Thus, make use of the "is_am6" flag and
-> change ks_pcie_v3_65_add_bus() to no-op for AM654x SoC.
-> 
-> Fixes: 18b0415bc802 ("PCI: keystone: Add support for PCIe RC in AM654x Platforms")
+The ConnectX HW family supported by the mlx5 drivers uses an architecture
+where a FW component executes "mailbox RPCs" issued by the driver to make
+changes to the device. This results in a complex debugging environment
+where the FW component has information and complex low level state that
+needs to be accessed to userspace for debugging purposes.
 
-6ab15b5e7057 (PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus)
-is that one that seems to have introduced this issue. 
+Historically a userspace program was used that accessed the PCI register
+and config space directly through /sys/bus/pci/.../XXX and could operate
+these debugging interfaces in parallel with the running driver.
+This approach is incompatible with secure boot and kernel lockdown so this
+driver provides a secure and restricted interface to that.
 
-ks_pcie_v3_65_scan_bus() was for IP version 3.65 and this was renamed and
-added to "ks_pcie_ops" which is used by other IP versions as well.
+To solve this we add a misc driver "mlx5ctl" that would interface with
+mlx5_core ConnectX driver to access the underlaying device debug
+information. 
 
+1) The first patch in the series introduces the main driver file with the
+implementation of a new mlx5 auxiliary device driver to run on top
+mlx5_core device instances, on probe it creates a new misc device and in
+this patch we implement the open and release fops, On open the driver
+would allocate a special FW UID (user context ID) restricted to debug
+RPCs only, where all user debug RPCs will be executed under this UID,
+and on release the UID will be freed.
 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
-> Hello,
-> 
-> This patch is based on linux-next tagged next-20231018.
-> 
-> The v1 of this patch is at:
-> https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
-> 
-> While there are a lot of changes since v1 and this patch could have been
-> posted as a v1 patch itself, I decided to post it as the v2 of the patch
-> mentioned above since it aims to address the issue described by the v1
-> patch and is similar in that sense. However, the solution to the issue
-> described in the v1 patch appears to be completely different from what
-> was implemented in the v1 patch. Thus, the commit message and subject of
-> this patch have been modified accordingly.
-> 
-> Changes since v1:
-> - Updated patch subject and commit message.
-> - Determined that issue is not with the absence of Link as mentioned in
->   v1 patch. Even with Link up and endpoint device connected, if
->   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
->   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
->   AER and PME services. The all Fs return value indicates that the MSI-X
->   configuration is failing even if Endpoint device is connected. This is
->   because the ks_pcie_v3_65_add_bus() function is not applicable to the
->   AM654x SoC which uses DW PCIe IP-core version 4.90a.
-> 
-> Regards,
-> Siddharth.
-> 
->  drivers/pci/controller/dwc/pci-keystone.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> index 0def919f89fa..3abd59335574 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -459,7 +459,7 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
->  
-> -	if (!pci_is_root_bus(bus))
-> +	if (!pci_is_root_bus(bus) || ks_pcie->is_am6)
->  		return 0;
->  
->  	/* Configure and set up BAR0 */
+2) The second patch adds an info ioctl that will show the allocated UID
+and the available capability masks of the device and the current UID, and
+some other useful device information such as the underlying ConnectX
+device
+
+Example:
+    $ mlx5ctl mlx5_core.ctl.0
+    mlx5dev: 0000:00:04.0
+    UCTX UID: 1
+    UCTX CAP: 0x3
+    DEV UCTX CAP: 0x3
+    USER CAP: 0x1d
+
+3) Third patch adds RPC ioctl to execute debug RPCs under the
+special UID.
+
+In the mlx5 architecture the FW RPC commands are of the format of
+inbox and outbox buffers. The inbox buffer contains the command
+rpc layout as described in the ConnectX Programmers Reference Manual
+(PRM) document and as defined in linux/include/mlx5/mlx5_ifc.h.
+
+On success the user outbox buffer will be filled with the device's rpc
+response.
+
+For example to query device capabilities:
+a user fills out an inbox buffer with the inbox layout:
+    struct mlx5_ifc_query_hca_cap_in_bits
+and expects an outbox buffer with the layout:
+     struct mlx5_ifc_cmd_hca_cap_bits
+
+4) The fourth patch adds the ability to register user memory into the
+ConntectX device and create a umem object that points to that memory.
+
+Command rpc outbox buffer is limited in size, which can be very
+annoying when trying to pull large traces out of the device.
+Many rpcs offer the ability to scatter output traces, contexts
+and logs directly into user space buffers in a single shot.
+
+The registered/pinned memory will be described by a device UMEM object
+which has a unique umem_id, this umem_id can be later used in the rpc
+inbox to tell the device where to populate the response output,
+e.g HW traces and other debug object queries.
+
+Example usecase, a ConnectX device coredump can be as large as 2MB.
+Using inline rpcs will take thousands of rpcs to get the full
+coredump which can consume multiple seconds.
+
+With UMEM, it can be done in a single rpc, using 2MB of umem user buffer.
+
+Other usecases with umem:
+  - dynamic HW and FW trace monitoring
+  - high frequency diagnostic counters sampling
+  - batched objects and resource dumps
+
+See links below for information about user-space tools that use this
+interface:
+
+[1] https://github.com/saeedtx/mlx5ctl
+
+[2] https://github.com/Mellanox/mstflint
+see:
+    d) mstregdump utility
+      This utility dumps hardware registers from Mellanox hardware
+      for later analysis by Mellanox.
+
+    g) mstconfig
+      This tool sets or queries non-volatile configurable options
+
+    i) mstreg
+      The mlxreg utility allows users to obtain information
+      regarding supported access registers, such as their fields
+
+Saeed Mahameed (5):
+  mlx5: Add aux dev for ctl interface
+  misc: mlx5ctl: Add mlx5ctl misc driver
+  misc: mlx5ctl: Add info ioctl
+  misc: mlx5ctl: Add command rpc ioctl
+  misc: mlx5ctl: Add umem reg/unreg ioctl
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/misc/Kconfig                          |   1 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/mlx5ctl/Kconfig                  |  14 +
+ drivers/misc/mlx5ctl/Makefile                 |   5 +
+ drivers/misc/mlx5ctl/main.c                   | 528 ++++++++++++++++++
+ drivers/misc/mlx5ctl/umem.c                   | 325 +++++++++++
+ drivers/misc/mlx5ctl/umem.h                   |  17 +
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c |   8 +
+ include/uapi/misc/mlx5ctl.h                   |  51 ++
+ 10 files changed, 951 insertions(+)
+ create mode 100644 drivers/misc/mlx5ctl/Kconfig
+ create mode 100644 drivers/misc/mlx5ctl/Makefile
+ create mode 100644 drivers/misc/mlx5ctl/main.c
+ create mode 100644 drivers/misc/mlx5ctl/umem.c
+ create mode 100644 drivers/misc/mlx5ctl/umem.h
+ create mode 100644 include/uapi/misc/mlx5ctl.h
 
 -- 
-Regards,
-Ravi
+2.41.0
+
