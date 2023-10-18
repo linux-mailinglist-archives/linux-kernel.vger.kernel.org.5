@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FAF7CD935
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5A47CD938
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjJRKao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
+        id S229510AbjJRKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjJRKai (ORCPT
+        with ESMTP id S230483AbjJRKbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:30:38 -0400
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ED9FE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:30:35 -0700 (PDT)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1e9c1e06ce9so7777379fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:30:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697625035; x=1698229835;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEOUFvFLj8BGIeeDw6dbDN1dpAqq/KfWUcaxHojzWJo=;
-        b=ZxBmatEl4ekdTqB6K7iz+Rq73rW+Z/drM53x9/jY3Pml36kR2UgyDTQ47GPwc3txC1
-         1EkeVlbSoOJEm35cV7D59ZV60pio7uQS5QKUdgjfU9fJhpB0nwMkmOopmKEOzBcGQ+m6
-         7jCU2+y7ax/UHDXM0G3tp9xeMIt3bENWXBVZiC8ESfeYVe98l7mn8j2qEk8HLXwMczu/
-         d8n/85k5Rl92YTsAZpRkmNzO1Z6Jc4TiEaXyzBcKRbPPmlHExzeXA+IQF12xXIzM/LUH
-         YYdmA6TA6WxPpZxnXXBBDNF/stMBYgIaUuGV8OWAEIg+IENbR4aKEzxmRA7W8Y+RJtMy
-         WXyA==
-X-Gm-Message-State: AOJu0YyCPVq5jvcR00f7tcFa4bhDPsTYBYcU9U2NV8sLTfxAD+TAYHSw
-        oX/S/kPg4ibJpCaRx3qIBA33wEkF2C4SCjj0l2s5oHZKK0Yp
-X-Google-Smtp-Source: AGHT+IFrcWUt2XQ7APuRZBXOaspIaSCG1TmV5W/FBR2ZFo2UKJYfeGEIbuwQMt4XFWTWRYI3xdRZdkFDjTElmSGYtyLsVenMinzO
+        Wed, 18 Oct 2023 06:31:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9733610E;
+        Wed, 18 Oct 2023 03:31:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A5CC433C7;
+        Wed, 18 Oct 2023 10:31:00 +0000 (UTC)
+Message-ID: <7e3a9531-f48d-4ba6-b1ba-5c44c8e9bd98@xs4all.nl>
+Date:   Wed, 18 Oct 2023 12:31:00 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9113:b0:1dc:709b:4d3a with SMTP id
- o19-20020a056870911300b001dc709b4d3amr2072102oae.11.1697625034911; Wed, 18
- Oct 2023 03:30:34 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 03:30:34 -0700
-In-Reply-To: <dc016529-51f7-4a8a-8c67-54a15b19b78b@collabora.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002af93d0607fb2163@google.com>
-Subject: Re: [syzbot] [usb?] INFO: task hung in usbdev_open (2)
-From:   syzbot <syzbot+b73659f5bb96fac34820@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jeremy.linton@arm.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        usama.anjum@collabora.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 36/56] media: nuvoton: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, Joseph Liu <kwliu@nuvoton.com>,
+        Marvin Lin <kflin@nuvoton.com>
+References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
+ <20231017144756.34719-37-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231017144756.34719-37-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 17/10/2023 16:47, Benjamin Gaignard wrote:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> futur.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+futur -> future
 
-Reported-and-tested-by: syzbot+b73659f5bb96fac34820@syzkaller.appspotmail.com
+This is probably spelled wrong in other places, please check!
 
-Tested on:
+Regards,
 
-commit:         2dac7569 Add linux-next specific files for 20231018
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git next-20231018
-console output: https://syzkaller.appspot.com/x/log.txt?x=161f5833680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b9f4d682cd6282b3
-dashboard link: https://syzkaller.appspot.com/bug?extid=b73659f5bb96fac34820
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+	Hans
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: Joseph Liu <kwliu@nuvoton.com>
+> CC: Marvin Lin <kflin@nuvoton.com>
+> ---
+>  drivers/media/platform/nuvoton/npcm-video.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
+> index b9e6782f59b4..f9b4e36a5175 100644
+> --- a/drivers/media/platform/nuvoton/npcm-video.c
+> +++ b/drivers/media/platform/nuvoton/npcm-video.c
+> @@ -393,7 +393,7 @@ static void npcm_video_free_diff_table(struct npcm_video *video)
+>  	struct rect_list *tmp;
+>  	unsigned int i;
+>  
+> -	for (i = 0; i < video->queue.num_buffers; i++) {
+> +	for (i = 0; i < vb2_get_num_buffers(&video->queue); i++) {
+>  		head = &video->list[i];
+>  		list_for_each_safe(pos, nx, head) {
+>  			tmp = list_entry(pos, struct rect_list, list);
+
