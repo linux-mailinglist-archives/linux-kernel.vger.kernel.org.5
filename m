@@ -2,201 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9C87CE8B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857827CE8B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjJRUWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        id S231556AbjJRU0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJRUWm (ORCPT
+        with ESMTP id S229605AbjJRU0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:22:42 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF08A4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:22:40 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso163430a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697660559; x=1698265359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=si+9ASsp5/K6lChVtwpu5ExRbuaOYMu1IyUvA2qgc/c=;
-        b=Q+lwgxiowYaKVN0Z1P7/9e2F6ryIx13JkBLjHGASOQIRO39ec5msmgTnzBuOr1z+VL
-         mPkZQcMrFNr+VR1M/Q4u7D0mzAH8ef9KGMTtFMSjhza6W4qITDI7ZrNHD5KLWpzAYEiU
-         5rVqNnjFuTPprSKB2x8LEs1hJygEaWrQ1nGCw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697660559; x=1698265359;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=si+9ASsp5/K6lChVtwpu5ExRbuaOYMu1IyUvA2qgc/c=;
-        b=Ef8/HtaNcFttzNsXz261WCyT18+1xgRov+MTqbmQqOT84vvbhQg2wqPiBbVxX7Iqva
-         zQj1xNIVzNIbE+QPAEtgo1FHKkkLcB2Gfogg+A13Ygm+heTMTYV9IagDQLqCpjGoIVLe
-         k1md5AmvL954flJ+riQJctC+I5uMSrz2pQc1eLkcTZjQOSfi2dLrFijegjb8zBqqeNpE
-         dLNr0TYaYBGF9wiW29VsxzorQ7+ezEImhbCQFjMRAKr2tJ5gMBHNuV/t72fsBlczGPmV
-         R42nfNZ7jmk3W+cyLiKOVTaayf6U8MW5QMJBYiRLq1zmnlpT0nd0VPM23seXAyOl6j9X
-         2mxA==
-X-Gm-Message-State: AOJu0Yyqf3096WIFb3V3PvfPPdAej2r+kiNZjwB2Fialf5gpZ8jb8Q0w
-        lbXLzsqhUv1F5Cpm45uaKte0aAUqDWoqIUr81MQFMVvj
-X-Google-Smtp-Source: AGHT+IE+567VvLQJUG6eZ93pQOIqEuG0U/0T4lwwbsR8Krm75Xgo7esVdQCia6U18V8/DL6LqPX5VQ==
-X-Received: by 2002:a05:6402:42c9:b0:53d:fc49:49e9 with SMTP id i9-20020a05640242c900b0053dfc4949e9mr428349edc.6.1697660558955;
-        Wed, 18 Oct 2023 13:22:38 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id fj27-20020a0564022b9b00b005309eb7544fsm3268975edb.45.2023.10.18.13.22.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 13:22:38 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9c3aec5f326so15182466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:22:38 -0700 (PDT)
-X-Received: by 2002:a17:907:1c20:b0:9bd:81c3:2a85 with SMTP id
- nc32-20020a1709071c2000b009bd81c32a85mr5443762ejc.32.1697660557766; Wed, 18
- Oct 2023 13:22:37 -0700 (PDT)
+        Wed, 18 Oct 2023 16:26:18 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2076.outbound.protection.outlook.com [40.107.22.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1A0A4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:26:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QDtLtuggljtYbuTHxZJ7ELEU7E02s8W2LKZgzs63bUPhTF0hBs/8wtEqUisT1yd0ub1eAbbRjILdkPpHPwfFxUVxYaLEJ7Ft7KVzP3xnSBqtphMYq8lY6ZDV8U776dSCN6KVo/fO4feC9dpR/bIhSxpiT+1KEfKoBQ9qN/D7bUMrIyxBBuMSASlzN4viZfrxRjejUDWr2RM+a86IkvwPIo0mUgJBUSpkWT1cSfIIeWAW+izhibbPZwmceWCUliWZ7huOu1vw4IisrnL00CSFDE8SJrRiX7zzt/iul81lyxkRkFOWvNiclV7oZMKwMclG2BdJDL05gEq34KQ8LVDGIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8R8QGutBQBbPOEgDJuZhR2Q2xgAwuyyjCCxrmT8O8mM=;
+ b=PO47qFkRA78Ae4xH3iZgl4F/WaZiDzgF0VHsv1czMufvjTcIrtk8kaow5zXOjZAnwrUFeWLDI7vLGYqaRbtVFtbCEssNmd/3/5zjDL9ahrKXf4ATtvMz+mAhXkkzzLOO7DNYMiqExJCAbDhgIwPCOkCKeOtYbg+Xx98XZ0ZzZleCL7L7eG3/JFzUSAZngb5oFBRn6EOZGGPLCNpOeRdZ3kZxsZByK0UtLmy6HGUxyClUvNKfJQbPY2VLQvr9KHD2EyZFhidy0Hmh+/CGe0MsWM+K6PM7HgyB8cD8vxHcybIhRN4lJ7843Gr/fNIhdLU1Wl8cJjfM73hz7kx8xqa0nQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8R8QGutBQBbPOEgDJuZhR2Q2xgAwuyyjCCxrmT8O8mM=;
+ b=mp0+YIDuAfusFPdZo0kypN+nsMqAbago5MzWo0wxf4tO/cDhN56OPkhDkc+u472rULyV0B2PRni13AcV2W9SdQ57EYV1xoWqHLvUJDrsgOPxik1gYx51QkTvsfuhe02VvOvDz5AovsZLMuyPYPi/r7blGiFDYAa8bu/Xt32gA/o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB8401.eurprd04.prod.outlook.com (2603:10a6:20b:3f3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
+ 2023 20:26:13 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
+ 20:26:13 +0000
+Date:   Wed, 18 Oct 2023 16:26:07 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH 4/5] i3c: master: svc return actual transfer data len
+Message-ID: <ZTA/X333KBXDN49p@lizhi-Precision-Tower-5810>
+References: <20231016154632.2851957-1-Frank.Li@nxp.com>
+ <20231016154632.2851957-5-Frank.Li@nxp.com>
+ <20231017161007.146a5199@xps-13>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231017161007.146a5199@xps-13>
+X-ClientProxiedBy: SJ0PR13CA0062.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::7) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
- <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
- <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
- <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
- <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
- <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
- <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
- <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
- <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
- <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
- <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
- <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
- <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
- <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com> <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
-In-Reply-To: <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 18 Oct 2023 13:22:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
-Message-ID: <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Nadav Amit <namit@vmware.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB8401:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6940017-9d14-4f2f-cfbf-08dbd0187912
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +9bMSWmz/qbUhs8OoQ9SMGrnNj4u9E+r5ePqLHYVxYccLJuaV9WS4Gd2rlTGHnBMVo51cLGGVyyWV5nmAjRFVKKjERwSZ17tPR046vGX6zgRILgI8q7xn0ZxlzypKKR5nmNt0FP3sInmZVtdEggBAK3gfoyi8UPRTZ61oOE1OL0G5utupDuNwvMKEiC352HVDUJ+9nqDY3xOFj4lY5ey37Z7C8dF9iYRMcRAk01SoS90V0jNRdT4FAXlmk3WR7moPbsM1nPy38xMsKxg1BuHIDm8waSO26+PKQr8BLiXJ6U3y8ghFel4jHnXP5R8PzMhpuFvdbBoEvMofx5mTQYj4JjST3UIKCwV5/TyTPmgH/Laf218WgkAmtBOaXKSsIDfMRDynyEWX5a8C/pLIb4aIetX75T7+vBq3qzXr2TARiETJZNAPRo96f4O0gTZbz7ufrYequCECmaDF1LbJ/ePbBay/glZerFh+jJ3WLinnNlfOuYFVhf7nDi1Pc6gqiliuvUZ28HKiJf4wDT4I37DzMdX+U2GR9jSf9RtK6BEhjxiX4a1UabGx6Wzdu5PrZ2FPOOjYFIINCIZBJDEvXcQyoSfZIeVt702ko+UigKuTug3g9z9Jod1GqkeAunVW4Xi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(39860400002)(396003)(136003)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(83380400001)(38100700002)(4326008)(9686003)(6512007)(33716001)(86362001)(2906002)(66476007)(316002)(66556008)(66946007)(5660300002)(8936002)(8676002)(6666004)(6506007)(52116002)(41300700001)(6486002)(478600001)(6916009)(66574015)(26005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?nN2nxMxFiLL8+x16i8MhLfTaV4Ufum6T8fg5Cta2Wb9G2I9jd4e8tLaret?=
+ =?iso-8859-1?Q?EzTxqF4qyFO066jzv/RzxOKI2M3ULPPbj07/6KJr0LLqEK+NI3uJmdfba9?=
+ =?iso-8859-1?Q?0QbYJTXCDzBUNOanFf/4rjEbInhtr+uPmr6t5la/7ijgm+e49HFMFirFdv?=
+ =?iso-8859-1?Q?7g5tHNs6kAyEkGdTk3VIJ96kc0kLb2dvjS1wQRTPSBnuaDQySGcSCy/MXR?=
+ =?iso-8859-1?Q?rE45d5lDDopAE+TWeEk3SBeJNZGt3sKwbybTlZo+NtfEbhJvScdJifvI4K?=
+ =?iso-8859-1?Q?bJBBnOcMW5ganB0QDejLpl1iElohD4m9MgUCbTMI50gz+wXb/QlzlEK4v5?=
+ =?iso-8859-1?Q?SNIrawPW1rjLWaJE983Ml7TmiW2AE/EYZgKhMW9bNvlpUBJy9cyNJE0j4M?=
+ =?iso-8859-1?Q?/THIQ9i+eIYUFDkpgZR4MYuGHrxthLg3ALYRjkkV82ErJ/UWqHZUCLwA1C?=
+ =?iso-8859-1?Q?Jve84W8Mxc849UoB1mds4JNEUbqtPw3zgj8y8l0IyCkdpARYbY08B28OUT?=
+ =?iso-8859-1?Q?j0pJwXYVO+17VjE8ts/ag4RrrZYYqRQ+Tf4DA7diZOmsqB0cJG4bUo4edJ?=
+ =?iso-8859-1?Q?/t49mp5xJNYxMMAvxjnofY5lX9WDXdgV/VhWfjCWJsZtoNd0gUCT35CwJb?=
+ =?iso-8859-1?Q?VjBExrwrbi4wQgomFsFg4aGivJglssz52u5TqjENXDS2jt+7XO75vwnNum?=
+ =?iso-8859-1?Q?BpLyo/gffoAnJ1enfXrJJZr7MCv4uX2PYp20hUuOtdww4RId5a6nCm+bot?=
+ =?iso-8859-1?Q?ajSOirxZc4c9gJjFJhHFnpyZsXN4fwmtCXbFPr17Urs878IV77L+B//EAL?=
+ =?iso-8859-1?Q?QdlnSXnFql2JYAURE2QJP0WdzQUgrPo2W/YEFjRVVRhElNTNM1ZRQIclzw?=
+ =?iso-8859-1?Q?uZE89O2Qjdv9fMyDqew6W1lY6q+pIirunsnK7yUH0hmllo0G6GhwZ1bp80?=
+ =?iso-8859-1?Q?rT5HbruFni7lC888KDpxnt2q9R8J9/a9OZedQ2e+yW4scLftWI3XPO7+ug?=
+ =?iso-8859-1?Q?lI70zfDz4m+rIUIFLzv4DezhYy3h9mGGwvrQYLblNdmNS7fCCQ8BsGzv4g?=
+ =?iso-8859-1?Q?SOPFaTy9pn99p0zZgAlsdY5pqjmPFA4tJ3kCRPQGVB16y9h6F2HqLuFr05?=
+ =?iso-8859-1?Q?0Hb02b6VKKmCezuSz1pHKkxJrbD2Lmp9ZwFu2vSOTsveN9+RLvbSf66NWp?=
+ =?iso-8859-1?Q?Xwh2cy91VDYBuRcEiBme9MhrglU9Fu9ACYHprViSo8uQmMEqlMMVWJmeJT?=
+ =?iso-8859-1?Q?nGZlv5r4BlZtuRhfkfbnJWx2YdJWpAOeHtMsOMREr4qrUt1abybPzpNGwk?=
+ =?iso-8859-1?Q?SsUlVHOk7dldYN03qYKlujY59UtCNOpb1K2bA1B2ZNHqF44OCKw5R0kqwB?=
+ =?iso-8859-1?Q?nM6Wf9kJZbbjdfuzJDzKPv+VKjhlGpOWUncuuA7XPfXqqCavgasBafeKXz?=
+ =?iso-8859-1?Q?avpUKQbZzfbfshCSHukKPSjvMGw2l2gFaDanfXu1xjPnYj4YI+jwD1WhQP?=
+ =?iso-8859-1?Q?k/ToCMbwmxRnpS35t9Wk+1ajH4Ei1OlGqYtnRawqBBHJxoQLqbOtzA6XE+?=
+ =?iso-8859-1?Q?vrxNR+FMAvXGY2cyYmy6maL+ByAPzSUV72RMJLoihK96+f5a1/ARYEct0o?=
+ =?iso-8859-1?Q?YpJgI4/2VONZxVJzgXoksw3MDSsqBzg3Cm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6940017-9d14-4f2f-cfbf-08dbd0187912
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 20:26:13.4653
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: inrwIGaTDtzfr20OPzwJ4mk7XAgEwxr+SDyVv1+mT6pxC3mVVAFIQGo58kW/ldqQQQ2OOpecqipaJKUNOO4hdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8401
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 at 12:33, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> This pach works for me:
+On Tue, Oct 17, 2023 at 04:10:07PM +0200, Miquel Raynal wrote:
+> Hi Frank,
+> 
+> Frank.Li@nxp.com wrote on Mon, 16 Oct 2023 11:46:31 -0400:
+> 
+> > I3C allow devices early terminate data transfer. So set "actual" to
+> > indicate how much data get by i3c_priv_xfer.
+> > 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> >  drivers/i3c/master/svc-i3c-master.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+> > index 3570b709cf60..444825aafa6f 100644
+> > --- a/drivers/i3c/master/svc-i3c-master.c
+> > +++ b/drivers/i3c/master/svc-i3c-master.c
+> > @@ -138,6 +138,7 @@ struct svc_i3c_cmd {
+> >  	const void *out;
+> >  	unsigned int len;
+> >  	unsigned int actual_len;
+> > +	struct i3c_priv_xfer *xfer;
+> >  	bool continued;
+> >  };
+> >  
+> > @@ -1045,6 +1046,7 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
+> >  
+> >  	if (readl(master->regs + SVC_I3C_MERRWARN) & SVC_I3C_MERRWARN_NACK) {
+> >  		ret = -ENXIO;
+> > +		*actual_len = 0;
+> >  		goto emit_stop;
+> >  	}
+> >  
+> > @@ -1062,6 +1064,7 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
+> >  	 */
+> >  	if (SVC_I3C_MSTATUS_IBIWON(reg)) {
+> >  		ret = -ENXIO;
+> > +		*actual_len = 0;
+> >  		goto emit_stop;
+> >  	}
+> >  
+> > @@ -1157,6 +1160,9 @@ static void svc_i3c_master_start_xfer_locked(struct svc_i3c_master *master)
+> >  					  cmd->addr, cmd->in, cmd->out,
+> >  					  cmd->len, &cmd->actual_len,
+> >  					  cmd->continued);
+> > +		if (cmd->xfer)
+> > +			cmd->xfer->actual = cmd->actual_len;
+> 
+> Just to be sure, wouldn't it be more natural to always fill cmd->xfer
+> rather than checking it here?
 
-Looks fine.
+cmd->xfer is NULL for i2c and ccc transfer. So need check it. 
+I will add comments here
 
-But you actually bring up another issue:
-
-> BTW: I also don't understand the comment from include/linux/smp.h:
->
-> /*
->  * Allow the architecture to differentiate between a stable and unstable read.
->  * For example, x86 uses an IRQ-safe asm-volatile read for the unstable but a
->  * regular asm read for the stable.
-
-I think the comment is badly worded, but I think the issue may actually be real.
-
-One word: rematerialization.
-
-The thing is, turning inline asm accesses to regular compiler loads
-has a *very* bad semantic problem: the compiler may now feel like it
-can not only combine the loads (ok), but also possibly rematerialize
-values by re-doing the loads (NOT OK!).
-
-IOW, the kernel often has very strict requirements of "at most once"
-behavior, because doing two loads might give different results.
-
-The cpu number is a good example of this.
-
-And yes, sometimes we use actual volatile accesses for them
-(READ_ONCE() and WRITE_ONCE()) but those are *horrendous* in general,
-and are much too strict. Not only does gcc generally lose its mind
-when it sees volatile (ie it stops doing various sane combinations
-that would actually be perfectly valid), but it obviously also stops
-doing CSE on the loads (as it has to).
-
-So the "non-volatile asm" has been a great way to get the "at most
-one" behavior: it's safe wrt interrupts changing the value, because
-you will see *one* value, not two. As far as we know, gcc never
-rematerializes the output of an inline asm. So when you use an inline
-asm, you may have the result CSE'd, but you'll never see it generate
-more than *one* copy of the inline asm.
-
-(Of course, as with so much about inline asm, that "knowledge" is not
-necessarily explicitly spelled out anywhere, and it's just "that's how
-it has always worked").
-
-IOW, look at code like the one in swiotlb_pool_find_slots(), which does this:
-
-        int start = raw_smp_processor_id() & (pool->nareas - 1);
-
-and the use of 'start' really is meant to be just a good heuristic, in
-that different concurrent CPU's will start looking in different pools.
-So that code is basically "cpu-local by default", but it's purely
-about locality, it's not some kind of correctness issue, and it's not
-necessarily run when the code is *tied* to a particular CPU.
-
-But what *is* important is that 'start' have *one* value, and one
-value only. So look at that loop, which hasically does
-
-        do {
-                  .. use the 'i' based on 'start' ..
-                if (++i >= pool->nareas)
-                        i = 0;
-        } while (i != start);
-
-and it is very important indeed that the compiler does *not* think
-"Oh, I can rematerialize the 'start' value".
-
-See what I'm saying? Using 'volatile' for loading the current CPU
-value would be bad for performance for no good reason. But loading it
-multiple times would be a *bug*.
-
-Using inline asm is basically perfect here: the compiler can *combine*
-two inline asms into one, but once we have a value for 'start', it
-won't change, because the compiler is not going to decide "I can drop
-this value, and just re-do the inline asm to rematerialize it".
-
-This all makes me worried about the __seg_fs thing.
-
-For 'current', this is all perfect. Rematerializing current is
-actually better than spilling and reloading the value.
-
-But for something like raw_smp_processor_id(), rematerializing would
-be a correctness problem, and a really horrible one (because in
-practice, the code would work 99.9999% of the time, and then once in a
-blue moon, it would rematerialize a different value).
-
-See the problem?
-
-I guess we could use the stdatomics to try to explain these issues to
-the compiler, but I don't even know what the C interfaces look like or
-whether they are stable and usable across the range of compilers we
-use.
-
-               Linus
+Frank
+> 
+> > +
+> >  		if (ret)
+> >  			break;
+> >  	}
+> > @@ -1344,6 +1350,7 @@ static int svc_i3c_master_priv_xfers(struct i3c_dev_desc *dev,
+> >  	for (i = 0; i < nxfers; i++) {
+> >  		struct svc_i3c_cmd *cmd = &xfer->cmds[i];
+> >  
+> > +		cmd->xfer = xfers + i;
+> 
+> Please follow the same pattern as below: = &xfers[i]
+> 
+> >  		cmd->addr = master->addrs[data->index];
+> >  		cmd->rnw = xfers[i].rnw;
+> >  		cmd->in = xfers[i].rnw ? xfers[i].data.in : NULL;
+> 
+> 
+> Thanks,
+> Miquèl
