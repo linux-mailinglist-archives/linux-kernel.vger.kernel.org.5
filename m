@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FBE7CE099
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B399D7CE09B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345049AbjJRPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        id S230246AbjJRPBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235172AbjJRPAk (ORCPT
+        with ESMTP id S229552AbjJRPBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:00:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAC9FA;
-        Wed, 18 Oct 2023 08:00:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1697641224; x=1698246024; i=wahrenst@gmx.net;
- bh=GDar9dZjM0ZvuhoK58WEFzyU2IPAt9QK5mAfWpC2khQ=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=ZcTQu3x/trrwEsvTI4kkQAzZ6CLra65DvTZ9Qz2xYiAZerayDEHPij6JGoinAIkSbjPwHMf1q1f
- zkCWZ1PRQroxju15eMziFMHOVI3GL/hIEpLW4KFyrR78lI6yMBoFo+sOUiTG7GUGTgvNd7TcANH6j
- 8wX158aupJl+oZcn3K/cOnOPTIEFDUPpdAfblOvYVBsj9wVhSllz9UJUwSrdsQM+WTb4mE2IkUVwS
- ct2G1FIxiimjqaxVJ14RAOiUmhM07+TCZPjziowUPc45xseeVtNbi5M5ZJno88CNzy5EdLWfMA+pF
- QvDY1oV6cDcQ75ZmxNoz++LotucKmxPcwtCA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1McH5Q-1rOu0q1zm0-00chvT; Wed, 18
- Oct 2023 17:00:24 +0200
-Message-ID: <53534015-07ab-4d43-8dcb-be3a08ee6339@gmx.net>
-Date:   Wed, 18 Oct 2023 17:00:23 +0200
+        Wed, 18 Oct 2023 11:01:05 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB47BA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:01:03 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40837124e1cso75685e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697641261; x=1698246061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fk+MM8czq8tgZOqn2VBLd0vJ/2zm2P/1DV6ZL3LXnqE=;
+        b=aAV69AUYEaScpeEE4dqzuh1sZIvqWOPFIphoLC8aRoiaT8GrEqautZKWObyyzrjvRn
+         UrWfntfBBY3PlHLKvBFHO236zsWpGT0Femg6Be9eC6TBUmHlc8t7TsbecToKqBPscogd
+         H7YSZJhIi4H8Wh+WVhIHRnoHT1pyU3L88I+Ovu9kOn+vcuc2Cvl83DFithEHOu3j2/ie
+         DUth8KVwby4BnASthE5KHIb82K53Ao4D1hIy7LXlZU1GmVhymlbIi/WqfyirYlE/rSD2
+         wG5mrjVNMVoqqThc3pyQ2u8OD4SWfUDDQTp9C2QuSJZFGbHKt1Tss4cVXcpUFYiVcm24
+         aREg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697641261; x=1698246061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fk+MM8czq8tgZOqn2VBLd0vJ/2zm2P/1DV6ZL3LXnqE=;
+        b=jyP91GzeYtjzy9aO4LtHL/P8rgvFU+sfIA20HhUZ6m8SwbG1CrluXUYzp9C2t3jUTw
+         QaB9O0Vcehvo02iRieWfFiMV04qUjs2GofyAZFRJ9hqdHBhY9t1MRG6kWV9Lhoe8vh/y
+         6iu7a2I1/gGROcX6HYHUWurd9xfq3LY51ubtmgtlEAw/IPvxvU8QwYfosS7l/kXCVwtr
+         9+DOAbUGKfu/SPeAE9RhrEj5i/c/8a6dy8ubPtZbFgI/h2+3Mt/FocgAI06BABtsFldG
+         cJ3GavkADFT3DRB2+403nP1Ge2zXyVqpd9OivsNKe+HGpGOxmS/xjnrwIOg2t3dgk4KG
+         vrOw==
+X-Gm-Message-State: AOJu0YySmfugbNCvN+On8TJuWeTixiD8Gf4P8EhkIZk4T8CNecBukXS/
+        MwytAuKNpyNtYZbvWHicsTyFArs6Qb3sJ7H7/gRYrg==
+X-Google-Smtp-Source: AGHT+IFWwSb1RVFY6lDcXkgSyswXKbEpQdqRJL3k+/d4+rZy2CE3vpR2U4Gis3Ebw3YUMony2CiNFuWPAhLI9dg3x/Q=
+X-Received: by 2002:a1c:790b:0:b0:405:38d1:e146 with SMTP id
+ l11-20020a1c790b000000b0040538d1e146mr135173wme.4.1697641261203; Wed, 18 Oct
+ 2023 08:01:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-Content-Language: en-US
-To:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1697534024.git.sean@mess.org>
- <c826281c0ceab8ce8fcc453a5ce777444349ff9a.1697534024.git.sean@mess.org>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <c826281c0ceab8ce8fcc453a5ce777444349ff9a.1697534024.git.sean@mess.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20231016125934.1970789-1-vschneid@redhat.com> <CANn89i+pQ3j+rb2SjFWjCU7BEges3TADDes5+csEr1JJamtzPQ@mail.gmail.com>
+ <xhsmhil74m10c.mognet@vschneid.remote.csb>
+In-Reply-To: <xhsmhil74m10c.mognet@vschneid.remote.csb>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 18 Oct 2023 17:00:46 +0200
+Message-ID: <CANn89iJUicsEdbp7qrsaSUg8jQ=dBUr0nK296LxXp5rnPrw8cA@mail.gmail.com>
+Subject: Re: [RFC PATCH] tcp/dcpp: Un-pin tw_timer
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fMFJLpAqXQ6jJOG7cYeOeJ8OxpduwKPNkt11zixVTbuzRPagIJs
- 7VHxVL14qyMYdpVzsd7lYy7J+fx090g1aoYLxg1frOHVpxo1/aSq22lVtpw1ipNXEi6gCq+
- EA8vHxRkNTnjg482vruZwP9eHVXb4kqRUungCx9TJ570ztC6GwZlJPa+faCgvlN4petl/36
- o8lD/slvBXUjHgt8knX1w==
-UI-OutboundReport: notjunk:1;M01:P0:WOhQHSskp6Y=;m5xvyugjfcMtJR18+ktj9xTeyUU
- 5LMVoKQRSrUpMZFXvHp8dsexhJ5wnd6O6jf3WTGfY5dVelqtPO6Zffanli9qVVMtyfdHfyOiq
- U/m/XkXFXgY9iXuQWst/rRnaf1WzVLM3lDJoHVlg6d6k7BLwQxhnQmeVRfvYO1FkejCGb5RlO
- naKPW8FGFhyfwTUijSg9Nv+PSFzeirEBPeNPV4yczl62hsF9oSv28ZWU6/cXt1Pu4QuDN1n/0
- VygRz/bkqJNt6oQdIstPJvgaDlJA/l5pZZAZn4x62TKBYSCyjWmbxLpAPopuyxmpWmVtB7zwG
- yKab3Kd9kmwrorriEdbjjxriqqeyCgp6xUmpAK25RZmGcmo/X6JVv8tT9i8omaSYV+JxBP+NO
- 3S9bYFBxgLZEHn78q8ywS62aPRDFqhOXYwwfpb5FC6Jk9x7nEe3GsMQrP2IEBpX8IB6MJGqQG
- 0EemSWH8tGc+zELC54VGn6oi1zT/og10+9JzW9m3jOLSwr5K/rRK+LpEHqdd/iFKljotIeGxA
- ft50/JSvR6Kj5J2QxhLBN7i6X9vjwa7vG6wKtpJb+bgZSvOMbKEYHF/YRL/+9DtEdFefJ+IbF
- rEwMixKivPFiuKScZKuVTgKpLeMS+9mZZWQh32dpAc4toqOCGkkUS0ERy94eUUxmCVlhd+39/
- 2WTP9W07C6NAYDwct15MY9kjv3+fEHODjr90avlNfkqUGhwVERRhjyV+8FpzanA3HPWvT/oOb
- oz+UV4pbXdoUlubhfLdlo662uz2QBUmqMzGB/4imUQXAA/JSc9j7wHq0MJVbzA4U1mO0oYYjJ
- Oojbmsd/HNkApc8DYVVvzGLNGUaVRnPKoDKNin85qJAyNxvM0NuprVWKz0snljspdY/zmE5JQ
- l917JEWlTR0ItX1PjTyXXOtROxVTkzlmp/ePGaFJHghYwmHwPVvn/yzuA+DswMKg+uKunJTOo
- 5mgjQ5DWyRhGPmulETSp5VeVIKo=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On Wed, Oct 18, 2023 at 4:57=E2=80=AFPM Valentin Schneider <vschneid@redhat=
+.com> wrote:
 
-Am 17.10.23 um 11:17 schrieb Sean Young:
-> clk_get_rate() may do a mutex lock. Since the clock rate cannot change o=
-n
-> an rpi, simply fetch it once.
-the driver changes looks good to me, but could you please adapt the
-commit message to your recent changes.
+>
+> Looks reasonable to me, I'll go write v2.
+>
+> Thanks for the help!
 
-Best regards
->
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->
+Sure thing !
+
+BTW, we also use TIMER_PINNED for req->rsk_timer, are you working on it too=
+ ?
