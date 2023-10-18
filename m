@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF2C7CE078
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4527CE07B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344996AbjJRO4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S1344988AbjJRO5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjJRO4x (ORCPT
+        with ESMTP id S231901AbjJRO5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:56:53 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C4694;
-        Wed, 18 Oct 2023 07:56:51 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IEuZk3084757;
-        Wed, 18 Oct 2023 09:56:35 -0500
+        Wed, 18 Oct 2023 10:57:44 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6316C94;
+        Wed, 18 Oct 2023 07:57:42 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IEvW5a068968;
+        Wed, 18 Oct 2023 09:57:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697640995;
-        bh=CaUGr/SqVLiuQktYdevT1SsMh913EJz5Ua6xquJgvYI=;
+        s=ti-com-17Q1; t=1697641052;
+        bh=iNQVmJ0xAkdsWhG7JTPi/JY1huhFFvj6B1R5uV3bZSk=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=JSWhCqXWSgFhQqUVrr4zuDcnE3fR2/upXRmn7nmHK+9qb+KplUAAlDrvhjtGGedkQ
-         lUHnCUMxjQAg+onHA/F1PlkxiDNwXSpd9jH3SFihnRVCp28rWT6jVmIQQlvZ/NcvJq
-         IjmFFdR0cCNHBNZvRodl66kVo7aMmfTNVyhHA3wE=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IEuZtj077864
+        b=nVtr4JQhwOyVYDqtuWJOIVlzT7gW61a/6njuGQFXkwjl58bG0Xdm/7QfSa9uxzKXt
+         PL+LThAB9aJYwflcghkcoB58EJRzA9QwXe6SDA/Ev6D60Q2upZ70xuCA3wGrCNRi92
+         ITgQXnPmvHObGn3nLwLqiqmt9oitm8HSfYXeg3SI=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IEvWC7121543
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Oct 2023 09:56:35 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 18 Oct 2023 09:57:32 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
- Oct 2023 09:56:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 09:57:32 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 18 Oct 2023 09:56:34 -0500
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IEuTth012015;
-        Wed, 18 Oct 2023 09:56:30 -0500
+ Frontend Transport; Wed, 18 Oct 2023 09:57:31 -0500
+Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IEvSbp022136;
+        Wed, 18 Oct 2023 09:57:29 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Jai Luthra <j-luthra@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+To:     <robh+dt@kernel.org>, <nm@ti.com>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        Keerthy <j-keerthy@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, <u-kumar1@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devarsht@ti.com>, <a-bhatia1@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Julien Panis <jpanis@baylibre.com>,
-        Esteban Blanc <eblanc@baylibre.com>
-Subject: Re: (subset) [PATCH v3 0/6] arm64: ti: Enable audio on AM62A
-Date:   Wed, 18 Oct 2023 20:26:05 +0530
-Message-ID: <169764092458.296431.7774477701043594499.b4-ty@ti.com>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 0/7] arm64: ti: k3-j7: Add the ESM & main domain watchdog nodes
+Date:   Wed, 18 Oct 2023 20:27:26 +0530
+Message-ID: <169764101787.299606.2870832744489194714.b4-ty@ti.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
-References: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
+In-Reply-To: <20231008044657.25788-1-j-keerthy@ti.com>
+References: <20231008044657.25788-1-j-keerthy@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jai Luthra,
+Hi Keerthy,
 
-On Tue, 03 Oct 2023 14:41:29 +0530, Jai Luthra wrote:
-> This patch series adds support for audio via headphone jack on
-> SK-AM62A-LP. The jack is wired to TLV320AIC3106 (codec), which is
-> connected to McASP1 (serializer) on the SoC.
+On Sun, 08 Oct 2023 10:16:50 +0530, Keerthy wrote:
+> The series add the ESM & main domain watchdog nodes for j721s2,
+> j784s4 SOCs.
 > 
-> The TRRS 3.5mm jack can be used for simultaneous playback and recording.
+> Changes in v8:
 > 
+> 	* Changed the status of non-MPU nodes from disabled to reserved
+> 	* Added inline comments to the reserved RTI nodes
 > 
 > [...]
 
-I have applied the following to branch ti-k3-config-next on [1].
+I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[6/6] arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
-      commit: f9010eb938beb9a58c640b50d2fe65e4187c1fde
+[1/7] arm64: dts: ti: k3-j721s2: Add ESM instances
+      commit: dbf02264de7ab28933c152a2e5751f7ce9cd8c3d
+[2/7] arm64: dts: ti: k3-j784s4: Add ESM instances
+      commit: 1c4cc4ca5aff237544c502e6e5ffbe13f4c372fa
+[3/7] arm64: dts: ti: k3-j7200: Add MCU domain ESM instance
+      commit: 81be795bb3eac1a8cdbd5adb862044c12dc2b744
+[4/7] arm64: dts: ti: k3-j784s4-main: Add the main domain watchdog instances
+      commit: caae599de8c6cc7405dcfd3bcd66a467eee23d2b
+[5/7] arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain watchdog instances
+      commit: 9ac8006abcda58c0fd866f967b1a6a05aa3c6b48
+[6/7] arm64: dts: ti: k3-j721s2-main: Add the main domain watchdog instances
+      commit: eb4c9909dc49f742bdbb9e5d411a4ac1df1cb6d6
+[7/7] arm64: dts: ti: k3-j712s2-mcu: Add the mcu domain watchdog instances
+      commit: 56bc311585206a8955de793301d4f84fb4ad2ee6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
