@@ -2,212 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8147CDA21
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859D87CDA22
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjJRLRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S230025AbjJRLRq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 07:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjJRLR3 (ORCPT
+        with ESMTP id S230258AbjJRLRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:17:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CA6109;
-        Wed, 18 Oct 2023 04:17:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA9FC433C8;
-        Wed, 18 Oct 2023 11:17:23 +0000 (UTC)
-Message-ID: <ffb32ac3-67ce-4401-9750-6c97ba28d051@xs4all.nl>
-Date:   Wed, 18 Oct 2023 13:17:21 +0200
+        Wed, 18 Oct 2023 07:17:45 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6324A114;
+        Wed, 18 Oct 2023 04:17:43 -0700 (PDT)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6bc57401cb9so1589794a34.0;
+        Wed, 18 Oct 2023 04:17:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697627862; x=1698232662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2lDaOWpU3gP80StErKNHaaeq4NqieF2HqKjhl1efd+s=;
+        b=FloK6dG9baKNbjkZnq6kMEngkHvyGn4334MPwdLKsO0bN7pnO2Nk/fYkwkXW94Upwi
+         UqCicohQCc6n+5+jpprMdLQ/rrpFIMGEKsQos5T0Oa/Rz0d0fda4/UnyYFezj6Tg0kbY
+         uADqyrf9dioX/eOJkw/GgqdIeN2w+mu7SP9En6QWrqIlD0fW/tj+z+IvarcINjHlxpFm
+         sn0G/5/rnH2+mlZdBPOTPvHA0dAFFiduu9gpnLVep2G7E2Kpro2q4OfXsp3MUISfeJLC
+         S2VAYkwaaMbQCf1Re/Do/K+Wz8nfeX63TXoZKLmiM9NWow5G9n8CW4CohMNPh0sB5qiQ
+         mfkg==
+X-Gm-Message-State: AOJu0YyvpXnEUp8LzCSgrs6ZasFUTSesLcIvTg7yZiBcrW4NVlt6xJgu
+        bWoQ3mLRYdZSfIwtCGRYypLD4grVy4RpytUggOZ9EiBL
+X-Google-Smtp-Source: AGHT+IFBzvL59X17lCp+HOvRqrxJ1GAaPlm2t48L9i/AjyWSD9jvbUKaFNksxYScxFhEUM0pwyn7iIFXnr1zSQ9p4fI=
+X-Received: by 2002:a4a:b304:0:b0:581:d5df:9cd2 with SMTP id
+ m4-20020a4ab304000000b00581d5df9cd2mr4478820ooo.0.1697627862476; Wed, 18 Oct
+ 2023 04:17:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 44/56] media: core: Report the maximum possible number
- of buffers for the queue
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
- <20231017144756.34719-45-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231017144756.34719-45-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012215903.2104652-1-visitorckw@gmail.com> <20231013122236.2127269-1-visitorckw@gmail.com>
+In-Reply-To: <20231013122236.2127269-1-visitorckw@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Oct 2023 13:17:31 +0200
+Message-ID: <CAJZ5v0gSB_ACBpK1nKu3sbA0HQ1xsk2mn3oc9AjpoFtge9Opdw@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: NFIT: Optimize nfit_mem_cmp() for efficiency
+To:     Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, rafael@kernel.org,
+        lenb@kernel.org, nvdimm@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 16:47, Benjamin Gaignard wrote:
-> Use one of the struct v4l2_create_buffers reserved bytes to report
-> the maximum possible number of buffers for the queue.
-> V4l2 framework set V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS flags in queue
-> capabilities so userland can know when the field is valid.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+On Fri, Oct 13, 2023 at 2:22 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+>
+> The original code used conditional branching in the nfit_mem_cmp
+> function to compare two values and return -1, 1, or 0 based on the
+> result. However, the list_sort comparison function only needs results
+> <0, >0, or =0. This patch optimizes the code to make the comparison
+> branchless, improving efficiency and reducing code size. This change
+> reduces the number of comparison operations from 1-2 to a single
+> subtraction operation, thereby saving the number of instructions.
+>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 > ---
->  .../userspace-api/media/v4l/vidioc-create-bufs.rst        | 8 ++++++--
->  Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst  | 1 +
->  drivers/media/common/videobuf2/videobuf2-v4l2.c           | 2 ++
->  drivers/media/v4l2-core/v4l2-ioctl.c                      | 4 ++--
->  include/uapi/linux/videodev2.h                            | 7 ++++++-
->  5 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> index a048a9f6b7b6..380195c2a00a 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> @@ -116,9 +116,13 @@ than the number requested.
->        - ``flags``
->        - Specifies additional buffer management attributes.
->  	See :ref:`memory-flags`.
-> -
->      * - __u32
-> -      - ``reserved``\ [6]
-> +      - ``max_num_buffers``
-> +      - If V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+> v1 -> v2:
+> - Add explicit type cast in case the sizes of u32 and int differ.
+>
+>  drivers/acpi/nfit/core.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+> index f96bf32cd368..563a32eba888 100644
+> --- a/drivers/acpi/nfit/core.c
+> +++ b/drivers/acpi/nfit/core.c
+> @@ -1138,11 +1138,7 @@ static int nfit_mem_cmp(void *priv, const struct list_head *_a,
+>
+>         handleA = __to_nfit_memdev(a)->device_handle;
+>         handleB = __to_nfit_memdev(b)->device_handle;
+> -       if (handleA < handleB)
+> -               return -1;
+> -       else if (handleA > handleB)
+> -               return 1;
+> -       return 0;
+> +       return (int)handleA - (int)handleB;
 
-If -> If the
+Are you sure that you are not losing bits in these conversions?
 
-> +        this field indicate the maximum possible number of buffers
-
-indicate -> indicates
-
-> +        for this queue.
-> +    * - __u32
-> +      - ``reserved``\ [5]
->        - A place holder for future extensions. Drivers and applications
->  	must set the array to zero.
->  
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> index 099fa6695167..0b3a41a45d05 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> @@ -120,6 +120,7 @@ aborting or finishing any DMA in progress, an implicit
->  .. _V4L2-BUF-CAP-SUPPORTS-ORPHANED-BUFS:
->  .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
->  .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
-> +.. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
->  
->  .. raw:: latex
->  
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index f3cf4b235c1f..201438ffd13f 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -680,6 +680,7 @@ EXPORT_SYMBOL(vb2_querybuf);
->  static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
->  {
->  	*caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
-> +	*caps |= V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS;
-
-Hmm. This flag is set for both VIDIOC_REQBUFS and _CREATE_BUFS, but the
-max_num_buffers field is only reported through VIDIOC_CREATE_BUFS.
-
-I think this flag should be set in vb2_create_bufs() only.
-
-Alternatively, we add a max_num_buffers field to struct v4l2_requestbuffers
-as well:
-
-struct v4l2_requestbuffers {
-        __u32                   count;
-        __u32                   type;           /* enum v4l2_buf_type */
-        __u32                   memory;         /* enum v4l2_memory */
-        __u32                   capabilities;
-        __u8                    flags;
-        __u8                    reserved[1];
-	__u16			max_num_buffers;
-};
-
-Since 32768 is the max for max_num_buffers, this will fit in a u16.
-
-I'm not sure it is worth the effort, though. How likely is it that there
-is a driver supporting more than 32 buffers, yet does not support CREATE_BUFS?
-
-So for now, I think it is best to just set this BUF_CAP flag in vb2_create_bufs()
-only. But if you have better suggestions, then let me know!
-
-Regards,
-
-	Hans
-
->  	if (q->io_modes & VB2_MMAP)
->  		*caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
->  	if (q->io_modes & VB2_USERPTR)
-> @@ -762,6 +763,7 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->  	fill_buf_caps(q, &create->capabilities);
->  	validate_memory_flags(q, create->memory, &create->flags);
->  	create->index = vb2_get_num_buffers(q);
-> +	create->max_num_buffers = q->max_num_buffers;
->  	if (create->count == 0)
->  		return ret != -EBUSY ? ret : 0;
->  
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 9b1de54ce379..628b013ca0c4 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -483,9 +483,9 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
->  {
->  	const struct v4l2_create_buffers *p = arg;
->  
-> -	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, ",
-> +	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, max buffers=%u",
->  		p->index, p->count, prt_names(p->memory, v4l2_memory_names),
-> -		p->capabilities);
-> +		p->capabilities, p->max_num_buffers);
->  	v4l_print_format(&p->format, write_only);
 >  }
->  
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index c3d4e490ce7c..13ddb5abf584 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -1035,6 +1035,7 @@ struct v4l2_requestbuffers {
->  #define V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS		(1 << 4)
->  #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF	(1 << 5)
->  #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS		(1 << 6)
-> +#define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS		(1 << 7)
->  
->  /**
->   * struct v4l2_plane - plane info for multi-planar buffers
-> @@ -2605,6 +2606,9 @@ struct v4l2_dbg_chip_info {
->   * @flags:	additional buffer management attributes (ignored unless the
->   *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
->   *		and configured for MMAP streaming I/O).
-> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
-
-if -> if the
-
-> + *		this field indicate the maximum possible number of buffers
-
-indicate -> indicates
-
-> + *		for this queue.
->   * @reserved:	future extensions
->   */
->  struct v4l2_create_buffers {
-> @@ -2614,7 +2618,8 @@ struct v4l2_create_buffers {
->  	struct v4l2_format	format;
->  	__u32			capabilities;
->  	__u32			flags;
-> -	__u32			reserved[6];
-> +	__u32			max_num_buffers;
-> +	__u32			reserved[5];
->  };
->  
->  /*
-
-Regards,
-
-	Hans
+>
+>  static int nfit_mem_init(struct acpi_nfit_desc *acpi_desc)
+> --
