@@ -2,316 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3DA7CDC8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BE17CDC96
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjJRNDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        id S230515AbjJRNEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjJRNDL (ORCPT
+        with ESMTP id S230296AbjJRNEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:03:11 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27FE106
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:03:07 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6CT-0001xG-9l; Wed, 18 Oct 2023 15:03:01 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6CS-002Z9l-RJ; Wed, 18 Oct 2023 15:03:00 +0200
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qt6CS-00GSw6-Hl; Wed, 18 Oct 2023 15:03:00 +0200
-Date:   Wed, 18 Oct 2023 15:03:00 +0200
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Avichal Rakesh <arakesh@google.com>
-Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        etalvala@google.com, gregkh@linuxfoundation.org,
-        jchowdhary@google.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] usb: gadget: uvc: Allocate uvc_requests one at a
- time
-Message-ID: <ZS/XhFNvnevol9MP@pengutronix.de>
-References: <20230930184821.310143-1-arakesh@google.com>
- <20231012002451.254737-1-arakesh@google.com>
- <20231012002451.254737-2-arakesh@google.com>
+        Wed, 18 Oct 2023 09:04:43 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7777E106
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:04:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VuR0XGI_1697634275;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuR0XGI_1697634275)
+          by smtp.aliyun-inc.com;
+          Wed, 18 Oct 2023 21:04:36 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     mgorman@techsingularity.net, hughd@google.com, vbabka@suse.cz,
+        ying.huang@intel.com, ziy@nvidia.com,
+        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: migrate: record the mlocked page status to remove unnecessary lru drain
+Date:   Wed, 18 Oct 2023 21:04:32 +0800
+Message-Id: <64899ad0bb78cde88b52abed1a5a5abbc9919998.1697632761.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Uw2wfuFtST6tVRQh"
-Content-Disposition: inline
-In-Reply-To: <20231012002451.254737-2-arakesh@google.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When doing compaction, I found the lru_add_drain() is an obvious hotspot
+when migrating pages. The distribution of this hotspot is as follows:
+   - 18.75% compact_zone
+      - 17.39% migrate_pages
+         - 13.79% migrate_pages_batch
+            - 11.66% migrate_folio_move
+               - 7.02% lru_add_drain
+                  + 7.02% lru_add_drain_cpu
+               + 3.00% move_to_new_folio
+                 1.23% rmap_walk
+            + 1.92% migrate_folio_unmap
+         + 3.20% migrate_pages_sync
+      + 0.90% isolate_migratepages
 
---Uw2wfuFtST6tVRQh
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
+__unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
+immediately, to help to build up the correct newpage->mlock_count in
+remove_migration_ptes() for mlocked pages. However, if there are no mlocked
+pages are migrating, then we can avoid this lru drain operation, especailly
+for the heavy concurrent scenarios.
 
-A short second review.
+So we can record the source pages' mlocked status in migrate_folio_unmap(),
+and only drain the lru list when the mlocked status is set in migrate_folio_move().
+In addition, the page was already isolated from lru when migrating, so we
+check the mlocked status is stable by folio_test_mlocked() in migrate_folio_unmap().
 
-On Wed, Oct 11, 2023 at 05:24:50PM -0700, Avichal Rakesh wrote:
->Currently, the uvc gadget driver allocates all uvc_requests as one array
->and deallocates them all when the video stream stops. This includes
->de-allocating all the usb_requests associated with those uvc_requests.
->This can lead to use-after-free issues if any of those de-allocated
->usb_requests were still owned by the usb controller.
->
->This patch is 1 of 2 patches addressing the use-after-free issue.
->Instead of bulk allocating all uvc_requests as an array, this patch
->allocates uvc_requests one at a time, which should allows for similar
->granularity when deallocating the uvc_requests. This patch has no
->functional changes other than allocating each uvc_request separately,
->and similarly freeing each of them separately.
->
->Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.=
-com
->Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->Signed-off-by: Avichal Rakesh <arakesh@google.com>
->---
->v1 -> v2: Rebased to ToT
->v2 -> v3: Fix email threading goof-up
->v3 -> v4: Address review comments & re-rebase to ToT
->
-> drivers/usb/gadget/function/uvc.h       |  3 +-
-> drivers/usb/gadget/function/uvc_video.c | 87 ++++++++++++++-----------
-> 2 files changed, 50 insertions(+), 40 deletions(-)
->
->diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/functi=
-on/uvc.h
->index 989bc6b4e93d..993694da0bbc 100644
->--- a/drivers/usb/gadget/function/uvc.h
->+++ b/drivers/usb/gadget/function/uvc.h
->@@ -81,6 +81,7 @@ struct uvc_request {
-> 	struct sg_table sgt;
-> 	u8 header[UVCG_REQUEST_HEADER_LEN];
-> 	struct uvc_buffer *last_buf;
->+	struct list_head list;
-> };
->
-> struct uvc_video {
->@@ -102,7 +103,7 @@ struct uvc_video {
->
-> 	/* Requests */
-> 	unsigned int req_size;
->-	struct uvc_request *ureq;
->+	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
-> 	struct list_head req_free;
-> 	spinlock_t req_lock;
->
->diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/=
-function/uvc_video.c
->index c334802ac0a4..b62b3de79153 100644
->--- a/drivers/usb/gadget/function/uvc_video.c
->+++ b/drivers/usb/gadget/function/uvc_video.c
->@@ -227,6 +227,24 @@ uvc_video_encode_isoc(struct usb_request *req, struct=
- uvc_video *video,
->  * Request handling
->  */
->
->+static void
->+uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
->+{
->+	sg_free_table(&ureq->sgt);
->+	if (ureq->req && ep) {
->+		usb_ep_free_request(ep, ureq->req);
->+		ureq->req =3D NULL;
->+	}
->+
->+	kfree(ureq->req_buffer);
->+	ureq->req_buffer =3D NULL;
->+
->+	if (!list_empty(&ureq->list))
->+		list_del_init(&ureq->list);
->+
->+	kfree(ureq);
->+}
->+
-> static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_reques=
-t *req)
-> {
-> 	int ret;
->@@ -293,27 +311,12 @@ uvc_video_complete(struct usb_ep *ep, struct usb_req=
-uest *req)
-> static int
-> uvc_video_free_requests(struct uvc_video *video)
-> {
->-	unsigned int i;
->+	struct uvc_request *ureq, *temp;
->
->-	if (video->ureq) {
->-		for (i =3D 0; i < video->uvc_num_requests; ++i) {
->-			sg_free_table(&video->ureq[i].sgt);
->-
->-			if (video->ureq[i].req) {
->-				usb_ep_free_request(video->ep, video->ureq[i].req);
->-				video->ureq[i].req =3D NULL;
->-			}
->-
->-			if (video->ureq[i].req_buffer) {
->-				kfree(video->ureq[i].req_buffer);
->-				video->ureq[i].req_buffer =3D NULL;
->-			}
->-		}
->-
->-		kfree(video->ureq);
->-		video->ureq =3D NULL;
->-	}
->+	list_for_each_entry_safe(ureq, temp, &video->ureqs, list)
->+		uvc_video_free_request(ureq, video->ep);
->
->+	INIT_LIST_HEAD(&video->ureqs);
-> 	INIT_LIST_HEAD(&video->req_free);
-> 	video->req_size =3D 0;
-> 	return 0;
->@@ -322,6 +325,7 @@ uvc_video_free_requests(struct uvc_video *video)
-> static int
-> uvc_video_alloc_requests(struct uvc_video *video)
-> {
->+	struct uvc_request *ureq;
-> 	unsigned int req_size;
-> 	unsigned int i;
-> 	int ret =3D -ENOMEM;
->@@ -332,29 +336,32 @@ uvc_video_alloc_requests(struct uvc_video *video)
-> 		 * max_t(unsigned int, video->ep->maxburst, 1)
-> 		 * (video->ep->mult);
->
->-	video->ureq =3D kcalloc(video->uvc_num_requests, sizeof(struct uvc_reque=
-st), GFP_KERNEL);
->-	if (video->ureq =3D=3D NULL)
->-		return -ENOMEM;
->+	INIT_LIST_HEAD(&video->ureqs);
->+	for (i =3D 0; i < video->uvc_num_requests; i++) {
->+		ureq =3D kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
->+		if (ureq =3D=3D NULL)
->+			goto error;
-Please add an empty line here.
->+		INIT_LIST_HEAD(&ureq->list);
+After this patch, I can see the hotpot of the lru_add_drain() is gone:
+   - 9.41% migrate_pages_batch
+      - 6.15% migrate_folio_move
+         - 3.64% move_to_new_folio
+            + 1.80% migrate_folio_extra
+            + 1.70% buffer_migrate_folio
+         + 1.41% rmap_walk
+         + 0.62% folio_add_lru
+      + 3.07% migrate_folio_unmap
 
-Please add an empty line here.
+Meanwhile, the compaction latency shows some improvements when running
+thpscale:
+                            base                   patched
+Amean     fault-both-1      1131.22 (   0.00%)     1112.55 *   1.65%*
+Amean     fault-both-3      2489.75 (   0.00%)     2324.15 *   6.65%*
+Amean     fault-both-5      3257.37 (   0.00%)     3183.18 *   2.28%*
+Amean     fault-both-7      4257.99 (   0.00%)     4079.04 *   4.20%*
+Amean     fault-both-12     6614.02 (   0.00%)     6075.60 *   8.14%*
+Amean     fault-both-18    10607.78 (   0.00%)     8978.86 *  15.36%*
+Amean     fault-both-24    14911.65 (   0.00%)    11619.55 *  22.08%*
+Amean     fault-both-30    14954.67 (   0.00%)    14925.66 *   0.19%*
+Amean     fault-both-32    16654.87 (   0.00%)    15580.31 *   6.45%*
 
->+		list_add_tail(&ureq->list, &video->ureqs);
->
->-	for (i =3D 0; i < video->uvc_num_requests; ++i) {
->-		video->ureq[i].req_buffer =3D kmalloc(req_size, GFP_KERNEL);
->-		if (video->ureq[i].req_buffer =3D=3D NULL)
->+		ureq->req_buffer =3D kmalloc(req_size, GFP_KERNEL);
->+		if (ureq->req_buffer =3D=3D NULL)
-You could also use if (!ureq->req_buffer)
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ mm/migrate.c | 50 ++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 38 insertions(+), 12 deletions(-)
 
-> 			goto error;
->
->-		video->ureq[i].req =3D usb_ep_alloc_request(video->ep, GFP_KERNEL);
->-		if (video->ureq[i].req =3D=3D NULL)
->+		ureq->req =3D usb_ep_alloc_request(video->ep, GFP_KERNEL);
->+		if (ureq->req =3D=3D NULL)
-> 			goto error;
->
->-		video->ureq[i].req->buf =3D video->ureq[i].req_buffer;
->-		video->ureq[i].req->length =3D 0;
->-		video->ureq[i].req->complete =3D uvc_video_complete;
->-		video->ureq[i].req->context =3D &video->ureq[i];
->-		video->ureq[i].video =3D video;
->-		video->ureq[i].last_buf =3D NULL;
->+		ureq->req->buf =3D ureq->req_buffer;
->+		ureq->req->length =3D 0;
->+		ureq->req->complete =3D uvc_video_complete;
->+		ureq->req->context =3D ureq;
->+		ureq->video =3D video;
->+		ureq->last_buf =3D NULL;
->
->-		list_add_tail(&video->ureq[i].req->list, &video->req_free);
->+		list_add_tail(&ureq->req->list, &video->req_free);
-> 		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
->-		sg_alloc_table(&video->ureq[i].sgt,
->+		sg_alloc_table(&ureq->sgt,
-> 			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
-> 					    PAGE_SIZE) + 2, GFP_KERNEL);
-> 	}
->@@ -489,8 +496,8 @@ static void uvcg_video_pump(struct work_struct *work)
->  */
-> int uvcg_video_enable(struct uvc_video *video, int enable)
-> {
->-	unsigned int i;
-> 	int ret;
->+	struct uvc_request *ureq;
->
-> 	if (video->ep =3D=3D NULL) {
-> 		uvcg_info(&video->uvc->func,
->@@ -502,9 +509,10 @@ int uvcg_video_enable(struct uvc_video *video, int en=
-able)
-> 		cancel_work_sync(&video->pump);
-> 		uvcg_queue_cancel(&video->queue, 0);
->
->-		for (i =3D 0; i < video->uvc_num_requests; ++i)
->-			if (video->ureq && video->ureq[i].req)
->-				usb_ep_dequeue(video->ep, video->ureq[i].req);
->+		list_for_each_entry(ureq, &video->ureqs, list) {
->+			if (ureq->req)
->+				usb_ep_dequeue(video->ep, ureq->req);
->+		}
->
-> 		uvc_video_free_requests(video);
-> 		uvcg_queue_enable(&video->queue, 0);
->@@ -536,6 +544,7 @@ int uvcg_video_enable(struct uvc_video *video, int ena=
-ble)
->  */
-> int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
-> {
->+	INIT_LIST_HEAD(&video->ureqs);
-> 	INIT_LIST_HEAD(&video->req_free);
-> 	spin_lock_init(&video->req_lock);
-> 	INIT_WORK(&video->pump, uvcg_video_pump);
->--
->2.42.0.609.gbb76f46606-goog
->
->
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 4caf405b6504..32c96f89710f 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1027,22 +1027,32 @@ union migration_ptr {
+ 	struct anon_vma *anon_vma;
+ 	struct address_space *mapping;
+ };
++
++enum {
++	PAGE_WAS_MAPPED = 1 << 0,
++	PAGE_WAS_MLOCKED = 1 << 1,
++};
++
+ static void __migrate_folio_record(struct folio *dst,
+-				   unsigned long page_was_mapped,
++				   unsigned long page_flags,
+ 				   struct anon_vma *anon_vma)
+ {
+ 	union migration_ptr ptr = { .anon_vma = anon_vma };
+ 	dst->mapping = ptr.mapping;
+-	dst->private = (void *)page_was_mapped;
++	dst->private = (void *)page_flags;
+ }
+ 
+ static void __migrate_folio_extract(struct folio *dst,
+ 				   int *page_was_mappedp,
++				   int *page_was_mlocked,
+ 				   struct anon_vma **anon_vmap)
+ {
+ 	union migration_ptr ptr = { .mapping = dst->mapping };
++	unsigned long page_flags = (unsigned long)dst->private;
++
+ 	*anon_vmap = ptr.anon_vma;
+-	*page_was_mappedp = (unsigned long)dst->private;
++	*page_was_mappedp = page_flags & PAGE_WAS_MAPPED ? 1 : 0;
++	*page_was_mlocked = page_flags & PAGE_WAS_MLOCKED ? 1 : 0;
+ 	dst->mapping = NULL;
+ 	dst->private = NULL;
+ }
+@@ -1103,7 +1113,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ {
+ 	struct folio *dst;
+ 	int rc = -EAGAIN;
+-	int page_was_mapped = 0;
++	int page_was_mapped = 0, page_was_mlocked = 0;
+ 	struct anon_vma *anon_vma = NULL;
+ 	bool is_lru = !__folio_test_movable(src);
+ 	bool locked = false;
+@@ -1157,6 +1167,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 		folio_lock(src);
+ 	}
+ 	locked = true;
++	page_was_mlocked = folio_test_mlocked(src);
+ 
+ 	if (folio_test_writeback(src)) {
+ 		/*
+@@ -1206,7 +1217,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 	dst_locked = true;
+ 
+ 	if (unlikely(!is_lru)) {
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		__migrate_folio_record(dst, 0, anon_vma);
+ 		return MIGRATEPAGE_UNMAP;
+ 	}
+ 
+@@ -1236,7 +1247,13 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 	}
+ 
+ 	if (!folio_mapped(src)) {
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		unsigned int page_flags = 0;
++
++		if (page_was_mapped)
++			page_flags |= PAGE_WAS_MAPPED;
++		if (page_was_mlocked)
++			page_flags |= PAGE_WAS_MLOCKED;
++		__migrate_folio_record(dst, page_flags, anon_vma);
+ 		return MIGRATEPAGE_UNMAP;
+ 	}
+ 
+@@ -1261,12 +1278,13 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 			      struct list_head *ret)
+ {
+ 	int rc;
+-	int page_was_mapped = 0;
++	int page_was_mapped = 0, page_was_mlocked = 0;
+ 	struct anon_vma *anon_vma = NULL;
+ 	bool is_lru = !__folio_test_movable(src);
+ 	struct list_head *prev;
+ 
+-	__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
++	__migrate_folio_extract(dst, &page_was_mapped,
++				&page_was_mlocked, &anon_vma);
+ 	prev = dst->lru.prev;
+ 	list_del(&dst->lru);
+ 
+@@ -1287,7 +1305,7 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 	 * isolated from the unevictable LRU: but this case is the easiest.
+ 	 */
+ 	folio_add_lru(dst);
+-	if (page_was_mapped)
++	if (page_was_mlocked)
+ 		lru_add_drain();
+ 
+ 	if (page_was_mapped)
+@@ -1321,8 +1339,15 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 	 * right list unless we want to retry.
+ 	 */
+ 	if (rc == -EAGAIN) {
++		unsigned int page_flags = 0;
++
++		if (page_was_mapped)
++			page_flags |= PAGE_WAS_MAPPED;
++		if (page_was_mlocked)
++			page_flags |= PAGE_WAS_MLOCKED;
++
+ 		list_add(&dst->lru, prev);
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		__migrate_folio_record(dst, page_flags, anon_vma);
+ 		return rc;
+ 	}
+ 
+@@ -1799,10 +1824,11 @@ static int migrate_pages_batch(struct list_head *from,
+ 	dst = list_first_entry(&dst_folios, struct folio, lru);
+ 	dst2 = list_next_entry(dst, lru);
+ 	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
+-		int page_was_mapped = 0;
++		int page_was_mapped = 0, page_was_mlocked = 0;
+ 		struct anon_vma *anon_vma = NULL;
+ 
+-		__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
++		__migrate_folio_extract(dst, &page_was_mapped,
++					&page_was_mlocked, &anon_vma);
+ 		migrate_folio_undo_src(folio, page_was_mapped, anon_vma,
+ 				       true, ret_folios);
+ 		list_del(&dst->lru);
+-- 
+2.39.3
 
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---Uw2wfuFtST6tVRQh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUv14EACgkQC+njFXoe
-LGQsXxAAgJzuAfJI4eaYoBkWZnw+RJT0FyIK3gGZBHGMtsnIdkGZBx5wlFSW38SJ
-/ckyn+QdUy0gIBO4XCfQdkLcRM2W3IoUrT0R7I/0nMVDxCjt+FUE3hU27miGiDcn
-RN6usaLp9mp/dupy/KRxWct//TchEji8xP7JzBXnrKSzMqfbe8C8c1NFTECueyo+
-IZq6SvtlkDI1unMXU/SabSpgin8JrvQ7f8geC63y2ypGhVLa9o2+INrefDM4USO6
-vCOKziXRJsmyjWYVAOISsFLtSSIV3PXBM0F3kkpnPvpvaKTRfK7jL5/AZEYiNeO0
-EVH4mIdYPhnTNHlLe2F5Aj3bEqD+RysAp9Xx8vfCOslQdWQdcUUbUBIis5QiEL/k
-MPqKsDWshM/YZKSd/Udas+01kZpOtdqYquEIpEmWvSwC1QCEYsaCY6+s5OAGa5to
-7qsHcNvJETD8nipzH1JKrQNbUsgJ+wRcHOH+ovktnywq6tqKzbKn7e/B29Df8rEf
-PDQvl0BECUJQU1YCY7z0007e8WCaWyR1E5PggXhqCkWJLtmVkE12d8rqdgXNRosf
-VZFru5YScyk6SwAFki1CH07j1C7DS70l/Oro3RpzAupf/5P/1StPkTznLfYZu5SY
-M1SvSDyFZGfM9KZdy/Yz5qbBln7EiO7q8nDP8YsmS2UrdvF3OtU=
-=1ddM
------END PGP SIGNATURE-----
-
---Uw2wfuFtST6tVRQh--
