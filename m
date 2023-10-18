@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B34B7CE7FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CEE7CE802
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjJRToU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        id S231523AbjJRTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbjJRToS (ORCPT
+        with ESMTP id S229695AbjJRTpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:44:18 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE31114;
-        Wed, 18 Oct 2023 12:44:17 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IJc8HK014172;
-        Wed, 18 Oct 2023 19:44:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=AjO0+DMZK14GwTlpeBi1dhU00X8CMlyCeEpqSlp6+ks=;
- b=Iaarea27KH35WAJCF6v7BuQkObgbCzHIS2ey8QWyJuxCP4noy3JCBTHUBSP5NUBwt5+p
- kUXvziR5vcaNwLhnk/eOL8w/cijKoGkXE5YaU0Jm/uuAo1aUgzw7QoBS/eWPb7OZoZTe
- riN1H5EQ2hvNCUWCPko+KcqOranHWNQyNcK2WeVLWG/hohvfATqC7nsYrvuUJzE0lV5+
- nMqS4pnvUfTdmaoiGflmTUTw8pnNpZ4S5/FTqW2PhfOrRIaMbGhZbW3FCwFbbxSIWgZX
- XIdcxTZ3ip7D33IXOKh9tPVqiyranCdWdCTQcQG8zJqRWHYaXATSsu6VxqwVSCX0glXh Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttnpdr9xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:44:14 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IJcJlg014497;
-        Wed, 18 Oct 2023 19:44:13 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttnpdr9qh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:44:13 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IJ75aj020486;
-        Wed, 18 Oct 2023 19:44:08 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6anbf6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:44:08 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IJi79517302174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 19:44:07 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9257458056;
-        Wed, 18 Oct 2023 19:44:07 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 022675804E;
-        Wed, 18 Oct 2023 19:44:05 +0000 (GMT)
-Received: from [9.171.53.134] (unknown [9.171.53.134])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 19:44:04 +0000 (GMT)
-Message-ID: <f67f97e0-b298-4fcb-ad23-4af389f255b5@linux.ibm.com>
-Date:   Wed, 18 Oct 2023 21:44:04 +0200
+        Wed, 18 Oct 2023 15:45:09 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D038F95;
+        Wed, 18 Oct 2023 12:45:07 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1ca3a54d2c4so37721605ad.3;
+        Wed, 18 Oct 2023 12:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697658307; x=1698263107; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mJVlIUOl8W19bUYlGTLgzwgWuuHldRueu5Ig9o95wVc=;
+        b=Lcst5eYYgfbeXCZtjKJDL0x3phjyHhYq5funnepadWEsshbkMBXKF5KNgApUewrFlm
+         p4248iWRfZRcoRgNRow/WjQ2o1wfnKwX/upVcmMOzY9/eG6ABZtQkFQ0GUuQ2vPQcb9B
+         qSr94jJz556dFCRbv9gLdh2IqjTymOyPyEnOnJqoGW3t1EYfQjYtfPqhUQlDblEgcWwl
+         6jO5tleLDg1S8MYjgxa+3axD7klbU17qfZG8JxhtiHLx0PqKGssNGKv4dWYVNdC+qf/j
+         C1Bk7dS0VZ+/XSmRXxmBadjzndRmS9mYn61SoXM7HcWBqNXEGQH6+Ueb+Xa6ssYS36c5
+         SvGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697658307; x=1698263107;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mJVlIUOl8W19bUYlGTLgzwgWuuHldRueu5Ig9o95wVc=;
+        b=m4EuAzARaR2GnAWU7FTxx+zBmvKg1g2Ze9NWupENFXHSvzei2OmDIrtWaOhKZDHjx2
+         7NTYECu8PCug9RKnG4CpKRy+0wB/RbC0nfDdwDM0QgOHdXzXebRwVwJie31S5W9lRSn8
+         MXlfbXXU2VFSqDNo1zUAqK6z+D6RjL7zOkXKrl/rtfhqGMmXLGtkjUjt7Cllw5h0ddSq
+         OVib2Jf4fYtn2g2GSomxfJwUZO+kus4Mpzyo++VhhQk44aLLsfB5bTAefr5DWnCBj0Im
+         zQMyCh3o8D8NdonpwvDdq6BR+pSIrfUPiS52tf7nUOSdFKJl5l16eKCzd3ahpIQ0t4OA
+         IsYw==
+X-Gm-Message-State: AOJu0YwyRSCUZxo0hSoSbSdcZpwClDMecQ51/MLRMLJv1U6qVkQFatMN
+        3g96TU1eQIMWxq3/bugmx5k=
+X-Google-Smtp-Source: AGHT+IEnw2GODP2TQr19/yPsWRkrHfroOFGXjYru419Vfac6A+miAjMgQVaT1L7BpSorND7kMv9b5w==
+X-Received: by 2002:a17:902:7590:b0:1bf:4a1f:2b57 with SMTP id j16-20020a170902759000b001bf4a1f2b57mr366891pll.13.1697658307146;
+        Wed, 18 Oct 2023 12:45:07 -0700 (PDT)
+Received: from ubuntu ([223.226.54.200])
+        by smtp.gmail.com with ESMTPSA id f18-20020a170902ce9200b001bc18e579aesm305786plg.101.2023.10.18.12.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 12:45:06 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 12:45:01 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     kumaran.4353@gmail.com
+Subject: [PATCH v2 0/2] staging: qlge: Replace the occurrences of (1<<x) by
+ BIT(x)
+Message-ID: <cover.1697657604.git.nandhakumar.singaram@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/2] net/smc: change function name from
- smc_find_ism_store_rc to smc_find_device_store_rc
-Content-Language: en-GB
-To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
-        kgraul@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231017124234.99574-1-guangguan.wang@linux.alibaba.com>
- <20231017124234.99574-2-guangguan.wang@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20231017124234.99574-2-guangguan.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: o8yaggoV8SLYYU4-l2Q07Dqg8UOWNx3j
-X-Proofpoint-GUID: DS2PTqMOHC6oXwDZNB4LKgcS6mDXPAvS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_18,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=911 mlxscore=0 bulkscore=0 clxscore=1015
- adultscore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180162
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset performs code cleanup in qlge driver as per
+linux coding style and may be applied in any sequence.
 
+v2: Ammended wording in subject line for all the patches
+    Suggested by Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-On 17.10.23 14:42, Guangguan Wang wrote:
-> The function smc_find_ism_store_rc is not only used for ism, so it is
-> reasonable to change the function name to smc_find_device_store_rc.
-> 
-> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Nandha Kumar Singaram (2):
+  staging: qlge: Fix coding style in qlge.h
+  staging: qlge: Prefer using the BIT macro
 
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+ drivers/staging/qlge/qlge.h      | 388 +++++++++++++++----------------
+ drivers/staging/qlge/qlge_main.c |   8 +-
+ drivers/staging/qlge/qlge_mpi.c  |   2 +-
+ 3 files changed, 199 insertions(+), 199 deletions(-)
+
+-- 
+2.25.1
+
