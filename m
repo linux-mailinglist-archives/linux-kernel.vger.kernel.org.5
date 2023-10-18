@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E41B7CD613
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618027CD614
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbjJRIGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        id S235260AbjJRIHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235140AbjJRIGX (ORCPT
+        with ESMTP id S235226AbjJRIG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:06:23 -0400
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE55B6;
-        Wed, 18 Oct 2023 01:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-        Reply-To:Content-ID:Content-Description;
-        bh=ee24+roHTQoZFVVx9N6XyCjPrXcrkPUK4h/ySpFKwAE=; b=E8hYlVyQjRGKI6S6CFOVTWmLv0
-        u1noWkd7WbREf8IDFxc3ASV7K98mS5tsuyz7DBkjFK1N79sPydTwMFOj1jKBOJMqKzR/ebbGD0s7W
-        rbtrtcYnhVUcTicO2fkP54Q10a+qmG4xi2ZHBU1qt0raBvMZqD9k4CY2S4uC/uJ5lVz1DukCikS3T
-        OYvvSe26D6JTG9baPfxYSUWDdOiI+vRrTPus2e2AAlrjkHTRyD9/aakqrCiXCsZtVFtxdN21cZUi2
-        TaOBJ6E163ozo3ZsCz2ipEVUXXkAU629XOob2i2URidTsSjyeXadkZFvfZhzadfEg9ijMvcQyfvxv
-        OIlhX4gA==;
-Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qt1ZI-009lIU-1g;
-        Wed, 18 Oct 2023 10:06:16 +0200
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Wed, 18 Oct 2023 10:06:04 +0200
-Subject: [PATCH v2 3/3] cpufreq: qcom-nvmem: Add MSM8909
+        Wed, 18 Oct 2023 04:06:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB298D49;
+        Wed, 18 Oct 2023 01:06:46 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 49E9B66072ED;
+        Wed, 18 Oct 2023 09:06:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697616405;
+        bh=SKaYS5DAqe/a4E7/c1VcAilMd6UWMjFFf0Epels2xL8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MdDYz9WoTVlY4oHxVt/oTkSzcqWPK4ev+LKCoza0HMj4mlY/URh65GQQnpkGFSbKm
+         d70v6ajl9K5xhqr31MT4u0bOUHhNp+n9lsVauYGHkUwIf94Aww1rLE6s6Oii18jTzk
+         S5CT8aHpkM+eJHZx/uMWa0zHaO6/zd96sHtdTnVYQARLFR14TPUyCnus1lBuRznKlN
+         Nd4EDwW2Nw1L7eKwPZOC/SyxJT7Wpu3Zv9mLxDoK+pPhpjgAGcBqG9YCU4yY8c5AF7
+         ovsMKvKyFGqczaHX4eFSW0GW/kBc4PICK6/qVmEiISwQe67T5d7DTFSV1hHGugCHl8
+         YDC4GBzuJPfkQ==
+Message-ID: <4e402da6-f6ba-4200-9cbb-47d2b117aa91@collabora.com>
+Date:   Wed, 18 Oct 2023 10:06:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231018-msm8909-cpufreq-v2-3-0962df95f654@kernkonzept.com>
-References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
-In-Reply-To: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 22/23] drm/mediatek: Power on devices in OVL adaptor
+ when atomic enable
+Content-Language: en-US
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-X-Mailer: b4 0.12.3
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Nathan Lu <nathan.lu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231018043650.22532-1-shawn.sung@mediatek.com>
+ <20231018043650.22532-23-shawn.sung@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231018043650.22532-23-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,94 +73,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the MSM8909 SoC is used together with the PM8909 PMIC the primary
-power supply for the CPU (VDD_APC) is shared with other components to
-the SoC, namely the VDD_CX power domain typically supplied by the PM8909
-S1 regulator. This means that all votes for necessary performance states
-go via the RPM firmware which collects the requirements from all the
-processors in the SoC. The RPM firmware then chooses the actual voltage
-based on the performance states ("corners"), depending on calibration
-values in the NVMEM and other factors.
+Il 18/10/23 06:36, Hsiao Chien Sung ha scritto:
+> Different from OVL, OVL adaptor is a pseudo device so we didn't
+> define it in the device tree, consequently, pm_runtime_resume_and_get()
+> called by .atomic_enable() powers on no device in OVL adaptor and
+> leads to power outage in the corresponding IOMMU.
+> 
+> To resolve the issue, we implement a function to power on the RDMAs
+> in OVL adaptor, and the system will make sure the IOMMU is powered on
+> as well because of the device link (iommus) in the RDMA nodes in DTS.
+> 
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 
-The MSM8909 SoC is also sometimes used with the PM8916 or PM660 PMIC.
-In that case there is a dedicated regulator connected to VDD_APC and
-Linux is responsible to do adaptive voltage scaling using CPR (similar
-to the existing code for QCS404).
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-This difference can be described in the device tree, by either assigning
-the CPU a power domain from RPMPD or from the CPR driver.
-
-Describe this using "perf" as generic power domain name, which is also
-used already for SCMI based platforms.
-
-Also add a simple function that reads the speedbin from a NVMEM cell
-and sets it as-is for opp-supported-hw. The actual bit position can be
-described in the device tree without additional driver changes.
-
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
----
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index 3794390089b0..e52031863350 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -59,6 +59,24 @@ struct qcom_cpufreq_drv {
- 
- static struct platform_device *cpufreq_dt_pdev, *cpufreq_pdev;
- 
-+static int qcom_cpufreq_simple_get_version(struct device *cpu_dev,
-+					   struct nvmem_cell *speedbin_nvmem,
-+					   char **pvs_name,
-+					   struct qcom_cpufreq_drv *drv)
-+{
-+	u8 *speedbin;
-+
-+	*pvs_name = NULL;
-+	speedbin = nvmem_cell_read(speedbin_nvmem, NULL);
-+	if (IS_ERR(speedbin))
-+		return PTR_ERR(speedbin);
-+
-+	dev_dbg(cpu_dev, "speedbin: %d\n", *speedbin);
-+	drv->versions = 1 << *speedbin;
-+	kfree(speedbin);
-+	return 0;
-+}
-+
- static void get_krait_bin_format_a(struct device *cpu_dev,
- 					  int *speed, int *pvs, int *pvs_ver,
- 					  u8 *buf)
-@@ -252,6 +270,8 @@ static int qcom_cpufreq_ipq8074_name_version(struct device *cpu_dev,
- 	return 0;
- }
- 
-+static const char *generic_genpd_names[] = { "perf", NULL };
-+
- static const struct qcom_cpufreq_match_data match_data_kryo = {
- 	.get_version = qcom_cpufreq_kryo_name_version,
- };
-@@ -260,6 +280,11 @@ static const struct qcom_cpufreq_match_data match_data_krait = {
- 	.get_version = qcom_cpufreq_krait_name_version,
- };
- 
-+static const struct qcom_cpufreq_match_data match_data_msm8909 = {
-+	.get_version = qcom_cpufreq_simple_get_version,
-+	.genpd_names = generic_genpd_names,
-+};
-+
- static const char *qcs404_genpd_names[] = { "cpr", NULL };
- 
- static const struct qcom_cpufreq_match_data match_data_qcs404 = {
-@@ -434,6 +459,7 @@ static struct platform_driver qcom_cpufreq_driver = {
- 
- static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
- 	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
-+	{ .compatible = "qcom,msm8909", .data = &match_data_msm8909 },
- 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
- 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
- 	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
-
--- 
-2.39.2
 
