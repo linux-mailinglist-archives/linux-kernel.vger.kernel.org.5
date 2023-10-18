@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11FB7CDD13
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15737CDD16
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjJRNUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        id S231472AbjJRNVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjJRNUO (ORCPT
+        with ESMTP id S231159AbjJRNVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:20:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3925383
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:20:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697635211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MVR+ADnAzu3IGVyOn/9fY32v046O2wGqRN2Zyaap7Q=;
-        b=pBwrt03+GeAi+FQfUhEzYlJyTDBHynbcTfzFBneHaNp5cVzoz6o9GDl0n7jEtP4W1be1o5
-        e9YgTSvMzOt8OPfU24bDmac44M+y9Af2WSI9cl+xld0M8U96INTYo/+masnfS5bqh3SkRG
-        u+ksy29pw6eGpL4vckmofqZfX2BYBUqDtPNh3/DAA5kAESEy6xrSh/JGPJ5ocx6jryQoou
-        vdc6WPZFdlKSxZWxFPDvwZ9BgfSqAo7uDIUFLCVHEuJnv7GJGmn53gqs4qKxs5L1jwWkBJ
-        OMZJ0rPzzDfNMfOUhuK8ufaGunymoWc866q7nxUlvHgccQPWYVuyCpBl7insgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697635211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MVR+ADnAzu3IGVyOn/9fY32v046O2wGqRN2Zyaap7Q=;
-        b=J3c0F6Hq6HOJlQxcnCHwK1Kplqf9c2eGYCph997j1TjdQeVGV5uTEVmLVaHEb6ketau6do
-        VeoOhUJ3DWb/ZTDg==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
-Subject: Re: [patch V5 03/39] x86/boot/32: De-uglify the 2/3 level paging
- difference in mk_early_pgtbl_32()
-In-Reply-To: <20231018100023.GAZS+st5ePdAQjnO4z@fat_crate.local>
-References: <20231017200758.877560658@linutronix.de>
- <20231017211722.111059491@linutronix.de>
- <20231018100023.GAZS+st5ePdAQjnO4z@fat_crate.local>
-Date:   Wed, 18 Oct 2023 15:20:10 +0200
-Message-ID: <87mswg3w51.ffs@tglx>
+        Wed, 18 Oct 2023 09:21:04 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33AC106
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bcef66f9caso872988b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697635244; x=1698240044; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jsB+lRYTRRvaUitJgzAnKBU70t8lyjCSo9aQyw6SOfw=;
+        b=bzVmGH78e6pka91YRvIYgBqGSRTR2ONDbeEcFDlO52AJPxv3T2+ps3moO9z4fyqB0G
+         GD7LkmbvTvYDkKBpQk4VF1N9tZNzE7vutLcobSiK8IsxSkfB8TwzqRniJy4v/57jqK+O
+         gdJulyepI+tsOSFnltoaY1UbNcV3HOat5KbF8wbpwhw+knLQhFyBJ+fDxm9dgQSgXykp
+         fwYsP+jv0aRDb/oh0OlpMAqA5qOSUXP7CWD5ChSEtKB6KknGnuEI7771ViyL7FoaOxkB
+         V8hi25YHwr6fcwC+XuuP6RzBQOGpigaj6R5biu6eo3nzR/tRnwDxb8464B4J73KyXe0R
+         ffzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697635244; x=1698240044;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jsB+lRYTRRvaUitJgzAnKBU70t8lyjCSo9aQyw6SOfw=;
+        b=gwjq6CbkcarR5WpaOCOKS88jJBDt6xJJAWVwz+01O7/gk+UwML5O/emy25OOW1Uwjr
+         jj8dgSxrbehCjVaWGAIvD6uX+ploh5TyRq+g8NO7BWUy746B9Z/c9Bta7LEAVN++cmh8
+         qRRitVjYLO1ek7brPtOL+XlEnwkeC44v8nZUGNH+J8+P+2wuR073wwMrvyZQDRbdTUqW
+         Vn2gYS+jw0mV79NJ/lIR4QM5xdjxBxsA5HCKMUhpg7UTRD88If0+tvX8AdYbVW1gXuWX
+         wnbJO3sfyaM88e483awNpjNJrkjEUGMja98eUje83ZtQgAyfSLxcK7brj96/TA7HQIJ0
+         3E7A==
+X-Gm-Message-State: AOJu0Yz0+mHfC6kVLHG0j0uT/o03MIeEilZPmqt91nhXyrDNIwzoatXg
+        DfDFqAfq539b8b49XSKZEhTnDg==
+X-Google-Smtp-Source: AGHT+IHJWMqg9DynKVfw+VevW/0B2muzXXfJF3DYtTbWzeIlrB3r7fqD0vMtrfHgsqLSQdZp0sycLQ==
+X-Received: by 2002:a05:6a00:1d12:b0:6b2:51a0:e1c9 with SMTP id a18-20020a056a001d1200b006b251a0e1c9mr5330389pfx.1.1697635244153;
+        Wed, 18 Oct 2023 06:20:44 -0700 (PDT)
+Received: from [10.84.155.153] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id q25-20020aa79619000000b006b76cb6523dsm3294388pfg.165.2023.10.18.06.20.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 06:20:43 -0700 (PDT)
+Message-ID: <35bd1d51-35ac-3ee6-e068-f50dff7774bf@bytedance.com>
+Date:   Wed, 18 Oct 2023 21:20:37 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2] x86/mm: Drop 4MB restriction on minimal NUMA node
+ memory size
+Content-Language: en-US
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231017062215.171670-1-rppt@kernel.org>
+ <ZS+2qqjEO5/867br@gmail.com>
+ <605cc166-e731-e7d1-25d7-b6797a802e6f@bytedance.com>
+ <ZS/TRNf02Un8IOTK@gmail.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZS/TRNf02Un8IOTK@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18 2023 at 12:00, Borislav Petkov wrote:
-> On Tue, Oct 17, 2023 at 11:23:26PM +0200, Thomas Gleixner wrote:
->> Move the ifdeffery out of the function and use proper typedefs to make it
->> work for both 2 and 3 level paging.
->> 
->> No functional change.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> ---
->> V5: New patch
->> ---
->>  arch/x86/kernel/head32.c |   38 +++++++++++++++++++++-----------------
->>  1 file changed, 21 insertions(+), 17 deletions(-)
->> 
->> --- a/arch/x86/kernel/head32.c
->> +++ b/arch/x86/kernel/head32.c
->> @@ -71,39 +71,43 @@ asmlinkage __visible void __init __noret
->>   */
->>  void __init mk_early_pgtbl_32(void);
->
-> Lemme zap that forward declaration too - it looks redundant.
+Hi Ingo,
 
-Up to the point where the compiler complains about a missing prototype
-for a global visible function, which will bring it back faster than you
-think. :)
+On 2023/10/18 20:44, Ingo Molnar wrote:
+> 
+> * Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+>>> While I agree with dropping the limitation, and I agree that
+>>> 9391a3f9c7f1 should have provided more of a justification, I believe a
+>>> core MM fix is in order as well, for it to not crash. [ If it's fixed
+>>> upstream already, please reference the relevant commit ID. ]
+>>
+>> Agree. I posted a fixed patchset[1] before, maybe we can reconsider it.
+>> :)
+>>
+>> [1]. https://lore.kernel.org/lkml/20230215152412.13368-1-zhengqi.arch@bytedance.com/
+>>
+>> For memoryless node, this patchset skip it and fallback to other nodes
+>> when build its zonelists.
+> 
+> Mind resubmitting that to the MM folks, with the NULL dereference crash
+> mentioned prominently? Feel free to Cc: me.
+
+OK, I will resend it if no one else objects. :)
+
+Thanks,
+Qi
+
+> 
+> Fixing hypothetical robustness problems is good, fixing specific crashes is
+> better. :-)
+> 
+> Thanks,
+> 
+> 	Ingo
