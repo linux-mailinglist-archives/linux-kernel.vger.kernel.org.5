@@ -2,171 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4267CE0DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5539F7CE187
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345191AbjJRPMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        id S232030AbjJRPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344665AbjJRPMc (ORCPT
+        with ESMTP id S235263AbjJRPMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:12:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E02AB;
-        Wed, 18 Oct 2023 08:12:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 629BFC433C8;
-        Wed, 18 Oct 2023 15:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697641950;
-        bh=FQeLVQ03xYeQQtOosvC2A7mk735Ug07ldWBeoCuDr3s=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lc5skqHjb9nLqfPWMcQdGrtNQbKYW7tLWgJ7EmXjCYfOth4McrikeqUJJSx3Nk7gS
-         PMtid+U3FzR+w7VBzky/ruQEJE5Q1n8a+QJUzZnFdjW0/Y4BsEeuNZd37cyPMQvBmf
-         BGVWFvVYQj8Wn5+SgMBw9lc+sR6aIdHWFBMpBD+TE5CzaYwkQYdrPn8VoRh0wDjS2m
-         IHlr9OQQKVcZvfrwQ3INzwWQIw/DYkdScfX0rRAzc1Y4BK14McX6IpQSx/dfkRk6+f
-         cYD2Hic3sozJpE6cWTHNbSIH+ro1IknzQV/m8rd6MBsx63solU9VbxJlis/z62sqRg
-         oTjbGS7llg3OQ==
-Message-ID: <ffcf4521-5bf0-4933-a25c-22574035f774@kernel.org>
-Date:   Thu, 19 Oct 2023 00:12:26 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 19/26] PM / devfreq: rockchip-dfi: add support for
- RK3588
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
- <20231018061714.3553817-20-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231018061714.3553817-20-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 18 Oct 2023 11:12:41 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2DE113
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:12:39 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1caaaa873efso4985155ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697641959; x=1698246759; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=evf98vIg4TK2MPQBLVBmj385x0hMw4FlsTtUwU11DSI=;
+        b=d51R1t+jYNyCrVgXhpOOE+dXe6Aovx8stHBG7TKoKEwls9axz0dTXnX4CDatWJDU+1
+         hvtIf/d1v+DG36x6GiTkAdnYOBkOYqMfm/EadTzUqYKRsi8pnLrN0nfkC77DrztuY5U1
+         hfG2E4dyIqMDIWCGEXjTNFNh+SDeDBP/WyfIhbHiXSSddfk6j2RRUpwCwA758UjJ6qMl
+         ITjlHy3V+vtSFCZKF+dVtD/BEB291uf+sJ3+kZTBUnn7twKO2FvI3Q7Sq+EkNjFs+kv8
+         q2YNnBUURURdeIED67nXUqWRObxPzaMLCo0z4jWPdKO4xYGwNR8BUj7wME172RUJQF9Q
+         m9Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697641959; x=1698246759;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=evf98vIg4TK2MPQBLVBmj385x0hMw4FlsTtUwU11DSI=;
+        b=tizg0D9vg8v1TvKQeofQx38nRQ1wPpYncrleYZLMuX4+eLmiFw7sTs3FSHq3HFAKME
+         7t/U/JgBVmWZCQJMbshi91l2/aA3QWbPezYAtjZXTME7pSX5WQ8NtkOwsyAXAO9WJc5t
+         3o76HDJAAPb6Cu0QSejZ7JOhMEcQH81kef9O9zrCGQdF081U1LSB341920EYIWXIV79a
+         efC0eJPYLpHsxq1yRUt+DBVBaUHdjf2Ul6QKbkUsr+8eoYzodM/j+sAFanzXJHPaMk6S
+         MtqtP3qnFkrnOY0jbnJac+eGCPb84aG2991fPhCIbLAD6jKIzEBz5DYXUNG2t6IiXVey
+         a1Tg==
+X-Gm-Message-State: AOJu0YyPbQsGCpLB03tSP2LevQMx3x4K7Wyq8hdzkB96J5tDozn8mSTZ
+        WhoOBHbOUiqd0adYJnAVwm36S3yErpc=
+X-Google-Smtp-Source: AGHT+IGGj6YD1tNGtkylhZ2TMrFEwNGuXiRirTZJm64uFeGyC2oRhC4jwU5nYGby5n/F7k9IPGht2AGbZO4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:328a:b0:1b8:8c7:31e6 with SMTP id
+ jh10-20020a170903328a00b001b808c731e6mr130834plb.1.1697641958822; Wed, 18 Oct
+ 2023 08:12:38 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 08:12:37 -0700
+In-Reply-To: <020adf4b-5fd9-4216-9dac-7dabe53617d5@intel.com>
+Mime-Version: 1.0
+References: <20231013070037.512051-1-xiaoyao.li@intel.com> <ZS7ERnnRqs8Fl0ZF@google.com>
+ <020adf4b-5fd9-4216-9dac-7dabe53617d5@intel.com>
+Message-ID: <ZS_15SGIhtpzJ8Gr@google.com>
+Subject: Re: [PATCH] KVM: x86: Use the correct size of struct
+ kvm_vcpu_pv_apf_data and fix the documentation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 18. 15:17, Sascha Hauer wrote:
-> Add support for the RK3588 to the driver. The RK3588 has four DDR
-> channels with a register stride of 0x4000 between the channel
-> registers, also it has a DDRMON_CTRL register per channel.
+On Wed, Oct 18, 2023, Xiaoyao Li wrote:
+> On 10/18/2023 1:28 AM, Sean Christopherson wrote:
+> > On Fri, Oct 13, 2023, Xiaoyao Li wrote:
+> > > Fix the kvm_gfn_to_hva_cache_init() to use the correct size though KVM
+> > > only touches fist 8 bytes.
+> > 
+> > This isn't a fix.  There's actually meaningful value in precisely initializing the
+> > cache as it guards against KVM writing into the padding, e.g. this WARN would fire:
+> > 
+> > 	if (WARN_ON_ONCE(len + offset > ghc->len))
+> > 		return -EINVAL;
+> > 
+> > So it's a bit odd, but I would prefer to keep the current behavior of mapping only
+> > the first 8 bytes.
+> > 
+> > Here's what I'm thinking to clean up the enabled field (compile tested only,
+> > haven't touched the docs other than the obvious removal):
 > 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 36 +++++++++++++++++++++++++++-
->  include/soc/rockchip/rk3588_grf.h    | 18 ++++++++++++++
->  2 files changed, 53 insertions(+), 1 deletion(-)
->  create mode 100644 include/soc/rockchip/rk3588_grf.h
+> It looks better.
 > 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index bf38829a2a4af..794f36e7eebd1 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -26,8 +26,9 @@
->  #include <soc/rockchip/rockchip_grf.h>
->  #include <soc/rockchip/rk3399_grf.h>
->  #include <soc/rockchip/rk3568_grf.h>
-> +#include <soc/rockchip/rk3588_grf.h>
->  
-> -#define DMC_MAX_CHANNELS	2
-> +#define DMC_MAX_CHANNELS	4
->  
->  #define HIWORD_UPDATE(val, mask)	((val) | (mask) << 16)
->  
-> @@ -723,9 +724,42 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
->  	return 0;
->  };
->  
-> +static int rk3588_dfi_init(struct rockchip_dfi *dfi)
-> +{
-> +	struct regmap *regmap_pmu = dfi->regmap_pmu;
-> +	u32 reg2, reg3, reg4;
-> +
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG2, &reg2);
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG3, &reg3);
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG4, &reg4);
-> +
-> +	/* lower 3 bits of the DDR type */
-> +	dfi->ddr_type = FIELD_GET(RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO, reg2);
-> +
-> +	/*
-> +	 * For version three and higher the upper two bits of the DDR type are
-> +	 * in RK3588_PMUGRF_OS_REG3
-> +	 */
-> +	if (FIELD_GET(RK3588_PMUGRF_OS_REG3_SYSREG_VERSION, reg3) >= 0x3)
-> +		dfi->ddr_type |= FIELD_GET(RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3, reg3) << 3;
-> +
-> +	dfi->buswidth[0] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH0, reg2) == 0 ? 4 : 2;
-> +	dfi->buswidth[1] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg2) == 0 ? 4 : 2;
-> +	dfi->buswidth[2] = FIELD_GET(RK3568_PMUGRF_OS_REG2_BW_CH0, reg4) == 0 ? 4 : 2;
-> +	dfi->buswidth[3] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg4) == 0 ? 4 : 2;
-> +	dfi->channel_mask = FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg2) |
-> +			    FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg4) << 2;
-> +	dfi->max_channels = 4;
-> +
-> +	dfi->ddrmon_stride = 0x4000;
-> +
-> +	return 0;
-> +};
-> +
->  static const struct of_device_id rockchip_dfi_id_match[] = {
->  	{ .compatible = "rockchip,rk3399-dfi", .data = rk3399_dfi_init },
->  	{ .compatible = "rockchip,rk3568-dfi", .data = rk3568_dfi_init },
-> +	{ .compatible = "rockchip,rk3588-dfi", .data = rk3588_dfi_init },
->  	{ },
->  };
->  
-> diff --git a/include/soc/rockchip/rk3588_grf.h b/include/soc/rockchip/rk3588_grf.h
-> new file mode 100644
-> index 0000000000000..630b35a550640
-> --- /dev/null
-> +++ b/include/soc/rockchip/rk3588_grf.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +#ifndef __SOC_RK3588_GRF_H
-> +#define __SOC_RK3588_GRF_H
-> +
-> +#define RK3588_PMUGRF_OS_REG2		0x208
-> +#define RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO		GENMASK(15, 13)
-> +#define RK3588_PMUGRF_OS_REG2_BW_CH0			GENMASK(3, 2)
-> +#define RK3588_PMUGRF_OS_REG2_BW_CH1                    GENMASK(19, 18)
-> +#define RK3588_PMUGRF_OS_REG2_CH_INFO                   GENMASK(29, 28)
-> +
-> +#define RK3588_PMUGRF_OS_REG3		0x20c
-> +#define RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3		GENMASK(13, 12)
-> +#define RK3588_PMUGRF_OS_REG3_SYSREG_VERSION		GENMASK(31, 28)
-> +
-> +#define RK3588_PMUGRF_OS_REG4           0x210
-> +#define RK3588_PMUGRF_OS_REG5           0x214
-> +
-> +#endif /* __SOC_RK3588_GRF_H */
+> Will you send out a formal patch yourself? or leave it to me?
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+Your call, I don't have a preference.  Just let me know which option you choose.
