@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43047CD873
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7ED7CD87B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjJRJni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        id S229730AbjJRJon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjJRJng (ORCPT
+        with ESMTP id S229510AbjJRJol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:43:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEECBB0;
-        Wed, 18 Oct 2023 02:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697622214; x=1729158214;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lUn6JpAPKKSIZ1ASBuCSirxJ4jfSQf5dEj038QniKAs=;
-  b=UQji0hUwtoFO3XYfaHWxjo2Y8wqWr5l3/Pl6X1+lRWPwzJXA9Gz9xqeo
-   xkePDN+ApDVabaSYH+IHWrj9kB2iWldO1RoftrGTYXG9VqEGc10nfvP5h
-   DtwpAAwZuTRU640BXTk4llyWVeqLAAUQMrbffCK/kymroa/68y8+CRrwI
-   PGrlWU1gf/YRh2tpMMylfFWFz2kusgJ+UpLS6eyh4WGBTsbXwBlCDHEBS
-   +T3FvijBMjDr6B2PDP+1hDP7PK+f09TtLgz8xGmrYowJhucQ64iEaxcgG
-   pbCOAQf5/osRhJj7ZOvdc8ytOXoB06d7iLSUJfpMMp1uvYlGyKfvt2gYd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="371041688"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="371041688"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 02:43:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791560139"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="791560139"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 18 Oct 2023 02:43:30 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qt35M-0000CS-0X;
-        Wed, 18 Oct 2023 09:43:28 +0000
-Date:   Wed, 18 Oct 2023 17:43:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        robdclark@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, freedreno@lists.freedesktop.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        sean@poorly.run, Abaci Robot <abaci@linux.alibaba.com>,
-        quic_abhinavk@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmitry.baryshkov@linaro.org, marijn.suijten@somainline.org
-Subject: Re: [PATCH] drm/msm/a6xx: Remove some unused functions
-Message-ID: <202310181742.3qvtq78e-lkp@intel.com>
-References: <20231012024421.102832-1-jiapeng.chong@linux.alibaba.com>
+        Wed, 18 Oct 2023 05:44:41 -0400
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B4EB0;
+        Wed, 18 Oct 2023 02:44:38 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 349ED100AF921;
+        Wed, 18 Oct 2023 11:44:36 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 0525E30EFD; Wed, 18 Oct 2023 11:44:36 +0200 (CEST)
+Date:   Wed, 18 Oct 2023 11:44:35 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Ricky WU <ricky_wu@realtek.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on
+ PCIe Link Down
+Message-ID: <20231018094435.GA21090@wunner.de>
+References: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+ <20231016093210.GA22952@wunner.de>
+ <263982e90fc046cf977ecb8727003690@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012024421.102832-1-jiapeng.chong@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <263982e90fc046cf977ecb8727003690@realtek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiapeng,
+[cc -= unrelated mailing lists bpf, kernel-hardening]
 
-kernel test robot noticed the following build warnings:
+On Tue, Oct 17, 2023 at 10:25:39AM +0000, Ricky WU wrote:
+> > On Mon, Oct 16, 2023 at 12:01:31PM +0800, Kai-Heng Feng wrote:
+> > > When inserting an SD7.0 card to Realtek card reader, it can trigger
+> > > PCI slot Link down and causes the following error:
+> > 
+> > Why does *inserting* a card cause a Link Down?
+> > 
+> > 
+> > > [   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> > > [   63.912118] BUG: unable to handle page fault for address:
+> > ffffb24d403e5010
+> > [...]
+> > > [   63.912198]  ? asm_exc_page_fault+0x27/0x30
+> > > [   63.912203]  ? ioread32+0x2e/0x70
+> > > [   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> > > [   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> > > [   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> > > [   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> > > [   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> > > [   63.912246]  pci_pm_runtime_idle+0x34/0x70
+> > > [   63.912248]  rpm_idle+0xc4/0x2b0
+> > > [   63.912251]  pm_runtime_work+0x93/0xc0
+> > > [   63.912254]  process_one_work+0x21a/0x430
+> > > [   63.912258]  worker_thread+0x4a/0x3c0
+> > 
+> > This looks like pcr->remap_addr is accessed after it has been iounmap'ed in
+> > rtsx_pci_remove() or before it has been iomap'ed in rtsx_pci_probe().
+> > 
+> > Is the card reader itself located below a hotplug port and unplugged here?
+> 
+> Yes it is card reader unplug itself, because sd7.0 card is not used
+> rtsx_pcr, it use nvme driver
 
-[auto build test WARNING on next-20231016]
-[cannot apply to drm-misc/drm-misc-next v6.6-rc6 v6.6-rc5 v6.6-rc4 linus/master v6.6-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I can only guess here as the dmesg and lspci output I requested
+hasn't been provided:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiapeng-Chong/drm-msm-a6xx-Remove-some-unused-functions/20231017-102229
-base:   next-20231016
-patch link:    https://lore.kernel.org/r/20231012024421.102832-1-jiapeng.chong%40linux.alibaba.com
-patch subject: [PATCH] drm/msm/a6xx: Remove some unused functions
-config: loongarch-randconfig-001-20231018 (https://download.01.org/0day-ci/archive/20231018/202310181742.3qvtq78e-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310181742.3qvtq78e-lkp@intel.com/reproduce)
+I assume that this card reader may contain a PCIe switch with a
+regular SD card reader below a first Downstream Port (which is
+hotplug-capable).  If an SD express card is inserted, the regular
+SD card reader disappears from the Downstream Port and the
+inserted card appears as an NVMe drive (possibly below a
+second Downstream Port, or below the first Downstream Port).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310181742.3qvtq78e-lkp@intel.com/
+The commit message is somewhat misleading in that it links the
+unhandled page fault to card insertion.  That may be the trigger,
+but the root cause appears to be that a runtime PM request is
+performed asynchronously after the SD card reader has iounmap'ed
+pcr->remap_addr.
 
-All warnings (new ones prefixed by >>):
+If that is indeed the root cause (as I suspect), the fix needs to
+be placed somewhere else.
 
-   In file included from drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:8:
->> drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h:348:18: warning: 'a7xx_gbif_registers' defined but not used [-Wunused-const-variable=]
-     348 | static const u32 a7xx_gbif_registers[] = {
-         |                  ^~~~~~~~~~~~~~~~~~~
->> drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h:341:18: warning: 'a7xx_ahb_registers' defined but not used [-Wunused-const-variable=]
-     341 | static const u32 a7xx_ahb_registers[] = {
-         |                  ^~~~~~~~~~~~~~~~~~
+pciehp is only one of several hotplug drivers and fixing this only
+in pciehp may leave the other hotplug drivers vulnerable to the same
+issue.
 
+Unfortunately the information provided so far is insufficient to
+recommend a better fix.  It would be necessary to debug why the
+asynchronous RPM request is not canceled even though rtsx_pci_remove()
+runtime resumes the device before iounmap'ing pcr->remap_addr.
+Perhaps there's a bug in runtime PM code that causes asynchronous
+requests to not be canceled upon a pm_runtime_get_sync()?
+Or perhaps a wmb() is necessary in pci_device_remove() after setting
+pci_dev->driver = NULL?
 
-vim +/a7xx_gbif_registers +348 drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+Thanks,
 
-1707add815519d Jordan Crouse  2018-11-02  334  
-a5ab31767c7782 Sharat Masetty 2019-12-03  335  static const struct a6xx_registers a6xx_vbif_reglist =
-a5ab31767c7782 Sharat Masetty 2019-12-03  336  			REGS(a6xx_vbif_registers, 0, 0);
-a5ab31767c7782 Sharat Masetty 2019-12-03  337  
-a5ab31767c7782 Sharat Masetty 2019-12-03  338  static const struct a6xx_registers a6xx_gbif_reglist =
-a5ab31767c7782 Sharat Masetty 2019-12-03  339  			REGS(a6xx_gbif_registers, 0, 0);
-a5ab31767c7782 Sharat Masetty 2019-12-03  340  
-e997ae5f45caf7 Konrad Dybcio  2023-09-25 @341  static const u32 a7xx_ahb_registers[] = {
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  342  	/* RBBM_STATUS */
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  343  	0x210, 0x210,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  344  	/* RBBM_STATUS2-3 */
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  345  	0x212, 0x213,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  346  };
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  347  
-e997ae5f45caf7 Konrad Dybcio  2023-09-25 @348  static const u32 a7xx_gbif_registers[] = {
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  349  	0x3c00, 0x3c0b,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  350  	0x3c40, 0x3c42,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  351  	0x3c45, 0x3c47,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  352  	0x3c49, 0x3c4a,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  353  	0x3cc0, 0x3cd1,
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  354  };
-e997ae5f45caf7 Konrad Dybcio  2023-09-25  355  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Lukas
