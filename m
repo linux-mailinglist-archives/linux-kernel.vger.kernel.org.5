@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 356527CD7E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379B77CD7ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjJRJ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S229908AbjJRJ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJRJ0T (ORCPT
+        with ESMTP id S229840AbjJRJ0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:26:19 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062A3FD;
-        Wed, 18 Oct 2023 02:26:18 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c9e95aa02dso44166155ad.0;
-        Wed, 18 Oct 2023 02:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697621177; x=1698225977; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DoC9cEOpVyHe6rQ4YNPNMkBTm2d/jp8/btvfUz5j+5E=;
-        b=MPXoftSN46r1r+3kEHsMqWLFmWV0JRMilkPXtbllzI0wHePNkTXSDu13DnpvYNxgg1
-         ZaXiPQTEx/Cs6PRu/OwDUlsPQkYsIyJYNl5znmr0iqRl3I06mtGCMORmbmJ3e95X0E2g
-         Blw79yVmuctoAAW3maKAT6KxMo6mmH+4oi8rdLM1yhvRNTuhvt0hEZVtd51n+n1BZh0o
-         +FuMxGbGnsuHaIASdEtv9rK1oVM3FAHAMXi7V9xUE35sZhfn06je2UQ16/hN6xM2LMEK
-         p3X7VjG1D8KijWY8vAi2gWDdQCwXDVMukf67soZDWaKgD3sSs0AdiQlOgtFb5Pm0pQJG
-         avmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697621177; x=1698225977;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DoC9cEOpVyHe6rQ4YNPNMkBTm2d/jp8/btvfUz5j+5E=;
-        b=hlvJmLmdOhZbPdk20D0bBNn3xVCI+nTN49bZ+GuABEyB+ufoOsREZVfLOWLvC6RiNn
-         xzFycHsW/U5KgkBsGgB8ccVkyNavpxxSMW/BuqgUSIxgBSdfy9LNh8ZA7fByMDhISt1g
-         ssuVXyVG+vYmA6qWAfBcN18q74QANQVdd+wMGLmsnbe2to3Og1/d9L3DcdtSC3ukepPD
-         bHei2r04vDQOlic1WgmaTlRk3Xv2yFRXtAZtAgXYcCXwxU04exHu7uTzJPJNFPAw5Aym
-         W9LKdYDsCCiAf7M4ZP3zeozDId8c12FlDjujN4zogZ8Q852yd2uyUb7MEatbwCUAK9WF
-         l2Pg==
-X-Gm-Message-State: AOJu0YySjaKL/QYLHc0PeDfJxGNQqifNnLpjix6LUAPJ0Qst0dRrTjmo
-        aESQHakjexIvBz9gXMgS2u4=
-X-Google-Smtp-Source: AGHT+IG0urvGJ1LbGmBoSOLCgMNs6ixDrKXCnQCLCyYaWGrnKCurREGxlCTFq78k2qT32KhXjGiryw==
-X-Received: by 2002:a17:903:60b:b0:1ca:15ad:1c5 with SMTP id kg11-20020a170903060b00b001ca15ad01c5mr4812195plb.6.1697621177413;
-        Wed, 18 Oct 2023 02:26:17 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id x18-20020a17090300d200b001bdd7579b5dsm3072041plc.240.2023.10.18.02.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 02:26:17 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 17 Oct 2023 23:26:15 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH-cgroup 3/4] cgroup/cpuset: Keep track of CPUs in isolated
- partitions
-Message-ID: <ZS-kt6X5Dd1lktAw@slm.duckdns.org>
-References: <20231013181122.3518610-1-longman@redhat.com>
- <20231013181122.3518610-4-longman@redhat.com>
+        Wed, 18 Oct 2023 05:26:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1107D10B;
+        Wed, 18 Oct 2023 02:26:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B0FC433C9;
+        Wed, 18 Oct 2023 09:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697621196;
+        bh=A80ZhPjQi2rG5AAi+IIdfwA8t+4osyNzDn4honhOq4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Aijq9lDLgQi15TEZWb3Xi/+6RTJUYm+sEGq/ovK1hLkZAFMC6A/2EakSkeCy8T4Va
+         O0nQpEiDHZcFrXcnoFNj32Ac52d7YPv8iUA8PmWawvMVu+H3UVLWkXoAeiXvBO4o2/
+         Wql91yJBXg2BTvNIskXntHF/A0/JizI0KyAtxmBc=
+Date:   Wed, 18 Oct 2023 11:26:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dorcas AnonoLitunya <anonolitunya@gmail.com>
+Cc:     outreachy@lists.linux.dev, julia.lawall@inria.fr,
+        dan.carpenter@linaro.org, andi.shyti@linux.intel.com,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] staging: sm750fb: Remove unused return value in
+ program_mode_registers()
+Message-ID: <2023101846-synopses-paralyses-d1ee@gregkh>
+References: <cover.1697619623.git.anonolitunya@gmail.com>
+ <492e63bbc58147fb534930ef9e1fb5d844ae8769.1697619623.git.anonolitunya@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231013181122.3518610-4-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <492e63bbc58147fb534930ef9e1fb5d844ae8769.1697619623.git.anonolitunya@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 02:11:21PM -0400, Waiman Long wrote:
-...
-> @@ -3875,6 +3931,13 @@ static struct cftype dfl_files[] = {
->  		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
->  	},
+On Wed, Oct 18, 2023 at 12:07:38PM +0300, Dorcas AnonoLitunya wrote:
+> Modifies the return type of program_mode_registers()
+> to void from int as the return value is being ignored in
+> all subsequent function calls.
+> 
+> This improves code readability and maintainability.
+> 
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
+> ---
+>  drivers/staging/sm750fb/ddk750_mode.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
+> index 83ace6cc9583..e15039238232 100644
+> --- a/drivers/staging/sm750fb/ddk750_mode.c
+> +++ b/drivers/staging/sm750fb/ddk750_mode.c
+> @@ -73,8 +73,8 @@ display_control_adjust_sm750le(struct mode_parameter *mode_param,
+>  }
 >  
-> +	{
-> +		.name = "cpus.isolated",
-> +		.seq_show = cpuset_common_seq_show,
-> +		.private = FILE_ISOLATED_CPULIST,
-> +		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
-> +	},
+>  /* only timing related registers will be  programed */
+> -static int program_mode_registers(struct mode_parameter *mode_param,
+> -				  struct pll_value *pll)
+> +static void program_mode_registers(struct mode_parameter *mode_param,
+> +				   struct pll_value *pll)
+>  {
+>  	int ret = 0;
+>  	int cnt = 0;
+> @@ -202,7 +202,6 @@ static int program_mode_registers(struct mode_parameter *mode_param,
+>  	} else {
+>  		ret = -1;
 
-I'd much rather show this in a wq sysfs file along with other related masks,
-and not in a DEBUG file.
+Why are you still setting the 'ret' variable if you are not doing
+anything with it anymore?
 
-Thanks.
+>  	}
+> -	return ret;
 
--- 
-tejun
+Are you sure that the caller shouldn't be checking for errors instead of
+dropping the return value?  If so, document that in the changelog too.
+
+thanks,
+
+greg k-h
