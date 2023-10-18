@@ -2,179 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1605B7CD8AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DAE7CD8B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjJRJ4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
+        id S229717AbjJRJ4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjJRJ4P (ORCPT
+        with ESMTP id S229482AbjJRJ4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:56:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C942B0;
-        Wed, 18 Oct 2023 02:56:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BB26C433C7;
-        Wed, 18 Oct 2023 09:56:10 +0000 (UTC)
-Message-ID: <ed3e726e-4a33-4597-9617-5c380d767fbe@xs4all.nl>
-Date:   Wed, 18 Oct 2023 11:56:08 +0200
+        Wed, 18 Oct 2023 05:56:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA77BA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:56:51 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CE7651F383;
+        Wed, 18 Oct 2023 09:56:46 +0000 (UTC)
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6A7432C16F;
+        Wed, 18 Oct 2023 09:56:46 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 11:56:45 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 4/4] printk: Ignore waiter on panic
+Message-ID: <ZS-r3QnpKzm7UVip@alley>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
+ <20231013204340.1112036-5-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
-Content-Language: en-US, nl
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com
-References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
- <98297bfc-ab81-4bb5-acc3-619fdf879276@xs4all.nl>
- <bb5b776c-f1dd-f53e-079c-8048af2e73f1@starfivetech.com>
- <4a74a40c-ee3c-4563-87d1-27e859eb6982@xs4all.nl>
- <687a4c58-3666-1c7b-fcfd-d586c28dea35@starfivetech.com>
- <56a09e21-5f43-4d0d-b603-777bbfd1885f@xs4all.nl>
- <6f5da0fa-9c01-dab2-647e-2a3c0a50b316@starfivetech.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <6f5da0fa-9c01-dab2-647e-2a3c0a50b316@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013204340.1112036-5-john.ogness@linutronix.de>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out2.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         ARC_NA(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         CLAM_VIRUS_FAIL(0.00)[failed to scan and retransmits exceed];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         RCPT_COUNT_FIVE(0.00)[5];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         R_DKIM_NA(0.20)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: CE7651F383
+X-Spam: Yes
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 11:52, Jack Zhu wrote:
+On Fri 2023-10-13 22:49:40, John Ogness wrote:
+> Commit d51507098ff91 ("printk: disable optimistic spin during
+> panic") added checks to avoid becoming a console waiter if a
+> panic is in progress. However, the transition to panic can occur
+> while there is already a waiter. If the panic occurred in a
+> context that does not support printing from the printk() caller
+> context, the waiter CPU may become stopped while still stored as
+> @console_waiter.
+
+I guess that "context that does not support printing" is NMI
+or printk_safe when the console handling is deferred().
+
+Another scenario is when the current owner gets stopped
+or blocked so that it actually can't pass the lock to
+the waiter.
+
+> the panic CPU will see @console_waiter and handover to the
+> stopped CPU.
 > 
+> Here a simple example:
 > 
-> On 2023/10/18 17:31, Hans Verkuil wrote:
->> On 18/10/2023 11:25, Jack Zhu wrote:
->>>
->>>
->>> On 2023/10/18 16:50, Hans Verkuil wrote:
->>>> Hi Jack,
->>>>
->>>> On 18/10/2023 04:37, Jack Zhu wrote:
->>>>
->>>> <snip>
->>>>
->>>>>>> --------------------------------------------------------------------------------
->>>>>>> Compliance test for device /dev/v4l-subdev1:
->>>>>>>
->>>>>>> Driver Info:
->>>>>>> 	Driver version   : 6.6.0
->>>>>>> 	Capabilities     : 0x00000000
->>>>>>
->>>>>> But this does not appear for v4l-subdev1.
->>>>>>
->>>>>> I can't really tell why it doesn't show that. Can you debug a little bit?
->>>>>> The code is in v4l2-compliance.cpp, line 1086:
->>>>>>
->>>>>> ent_id = mi_media_info_for_fd(media_fd, node.g_fd(), &is_invalid, &node.function);
->>>>>>
->>>>>> The mi_media_info_for_fd() function calls ioctl(media_fd, MEDIA_IOC_DEVICE_INFO, &mdinfo),
->>>>>> and that fails for some reason. It could be that media_fd is invalid (would be weird).
->>>>>>
->>>>>> This could well be a v4l2-compliance bug that you hit with this driver.
->>>>>>
->>>>>
->>>>> On the test board, /dev/v4l-subdev1 is imx219, and the corresponding directory is
->>>>> /sys/dev/char/81:3/device. Media0 does not exist in this directory. Therefore, the media_fd
->>>>> obtained through mi_get_media_fd(node.g_fd(), node.bus_info) is invalid.
->>>>>
->>>>> I don't know why media0 does not exist in /sys/dev/char/81:3/device?
->>>>>
->>>>
->>>> Can you try again with this v4l2-compliance patch?
->>>>
->>>> I need to dig a bit deeper as to why media0 is missing, but for now try this.
->>>>
->>>> Regards,
->>>>
->>>> 	Hans
->>>>
->>>> diff --git a/utils/v4l2-compliance/v4l2-compliance.cpp b/utils/v4l2-compliance/v4l2-compliance.cpp
->>>> index 7169eefe..29475d6b 100644
->>>> --- a/utils/v4l2-compliance/v4l2-compliance.cpp
->>>> +++ b/utils/v4l2-compliance/v4l2-compliance.cpp
->>>> @@ -968,7 +968,7 @@ err:
->>>>  }
->>>>
->>>>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
->>>> -	      unsigned frame_count, unsigned all_fmt_frame_count)
->>>> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd)
->>>>  {
->>>>  	struct node node2;
->>>>  	struct v4l2_capability vcap = {};
->>>> @@ -997,8 +997,12 @@ void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_
->>>>  		memset(&vcap, 0, sizeof(vcap));
->>>>  	}
->>>>
->>>> -	if (!node.is_media())
->>>> -		media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
->>>> +	if (!node.is_media()) {
->>>> +		if (parent_media_fd >= 0)
->>>> +			media_fd = parent_media_fd;
->>>> +		else
->>>> +			media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
->>>> +	}
->>>>
->>>>  	int fd = node.is_media() ? node.g_fd() : media_fd;
->>>>  	if (fd >= 0) {
->>>> diff --git a/utils/v4l2-compliance/v4l2-compliance.h b/utils/v4l2-compliance/v4l2-compliance.h
->>>> index 7caf254b..c47f25f5 100644
->>>> --- a/utils/v4l2-compliance/v4l2-compliance.h
->>>> +++ b/utils/v4l2-compliance/v4l2-compliance.h
->>>> @@ -308,7 +308,7 @@ int check_ustring(const __u8 *s, int len);
->>>>  int check_0(const void *p, int len);
->>>>  int restoreFormat(struct node *node);
->>>>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
->>>> -	      unsigned frame_count, unsigned all_fmt_frame_count);
->>>> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd = -1);
->>>>  std::string stream_from(const std::string &pixelformat, bool &use_hdr);
->>>>
->>>>  // Media Controller ioctl tests
->>>>
->>>
->>> From the log, there is no change.
->>
->> Oops, my mistake. Also apply this change:
->>
->> diff --git a/utils/v4l2-compliance/v4l2-test-media.cpp b/utils/v4l2-compliance/v4l2-test-media.cpp
->> index 0195ac58..52ab7fb8 100644
->> --- a/utils/v4l2-compliance/v4l2-test-media.cpp
->> +++ b/utils/v4l2-compliance/v4l2-test-media.cpp
->> @@ -612,7 +612,7 @@ void walkTopology(struct node &node, struct node &expbuf_node,
->>  		}
->>
->>  		testNode(test_node, test_node, expbuf_node, type,
->> -			 frame_count, all_fmt_frame_count);
->> +			 frame_count, all_fmt_frame_count, node.g_fd());
->>  		test_node.close();
->>  	}
->>  }
->>
+> CPU0                                CPU1
+> ----                                ----
+> console_lock_spinning_enable()
+>                                     console_trylock_spinning()
+>                                       [set as console waiter]
+> NMI: panic()
+> panic_other_cpus_shutdown()
+>                                     [stopped as console waiter]
+> console_flush_on_panic()
+>   console_lock_spinning_enable()
+>     [print 1 record]
+>   console_lock_spinning_disable_and_check()
+>     [handover to stopped CPU1]
 > 
-> Can see relevant Info in the log.
+> This results in panic() not flushing the panic messages.
 
-Great! Can you do one more thing? Please run 'v4l2-compliance -m /dev/media0 --verbose'
-and mail the output to me. It's pretty big, so just email it to me, without CCs.
+Great catch!
 
-I want to take a closer look at the output to see why this patch is needed.
+> Fix this by ignoring any console waiter if the panic CPU is
+> printing.
+> 
+> Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  kernel/printk/printk.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 56d9b4acbbf2..cd6493f12970 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1904,7 +1904,8 @@ static int console_lock_spinning_disable_and_check(int cookie)
+>  	console_owner = NULL;
+>  	raw_spin_unlock(&console_owner_lock);
+>  
+> -	if (!waiter) {
+> +	/* Waiters are ignored by the panic CPU. */
+> +	if (!waiter || this_cpu_in_panic()) {
+>  		spin_release(&console_owner_dep_map, _THIS_IP_);
+>  		return 0;
+>  	}
 
-Regards,
+This seems to work.
 
-	Hans
+Well, I have spent some time thinking about possible scenarios and I would
+go even further. I would block also console_lock_spinning_enable()
+Also I would do the checks before taking console_owner_lock.
+
+It would make the behavior symmetric. And more importantly, it would prevent
+possible deadlocks caused by console_owner_lock.
+
+See the proposed patch below. I created it to see the changes in the
+code. Also I added info about possible scenarios and effects.
+
+Here we go:
+
+From 2b6e2b58df737e3a3e0f86134a53f560539be813 Mon Sep 17 00:00:00 2001
+From: Petr Mladek <pmladek@suse.com>
+Date: Wed, 18 Oct 2023 10:04:17 +0200
+Subject: [PATCH] printk: Disable passing console lock owner completely during
+ panic()
+
+The commit d51507098ff91 ("printk: disable optimistic spin during panic")
+added checks to avoid becoming a console waiter if a panic is in progress.
+
+However, the transition to panic can occur while there is already waiter.
+The current owner should not pass the lock to the waiter because it might
+get stopped or blocked anytime.
+
+Also the panic context might pass the console lock owner to an already
+stopped waiter by mistake. It might happen when console_flush_on_panic()
+ignores the current lock owner, for example:
+
+CPU0                                CPU1
+----                                ----
+console_lock_spinning_enable()
+                                    console_trylock_spinning()
+                                      [set as console waiter]
+NMI: panic()
+panic_other_cpus_shutdown()
+                                    [stopped as console waiter]
+console_flush_on_panic()
+  console_lock_spinning_enable()
+    [print 1 record]
+  console_lock_spinning_disable_and_check()
+    [handover to stopped CPU1]
+
+This results in panic() not flushing the panic messages.
+
+Fix these problems by disabling all spinning operations completely
+during panic().
+
+Another advantage is that it prevents possible deadlocks caused by
+"console_owner_lock". The panic() context does not need to take it
+any longer. The lockless checks are safe because the functions become
+NOPs when they see the panic in progress. All operations manipulating
+the state are still synchronized by the lock even when non-panic CPUs
+would notice the panic synchronously.
+
+The current owner might stay spinning. But non-panic() CPUs would get
+stopped anyway and the panic context will never start spinning.
+
+Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 26a76b167ea6..fbe0dc1ca416 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1847,10 +1847,23 @@ static bool console_waiter;
+  */
+ static void console_lock_spinning_enable(void)
+ {
++	/*
++	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
++	 * Non-panic CPUs abandon the flush anyway.
++	 *
++	 * Just keep the lockdep annotation. The panic-CPU should avoid
++	 * taking console_owner_lock because it might cause a deadlock.
++	 * This looks like the easiest way how to prevent false lockdep
++	 * reports without handling races a lockless way.
++	 */
++	if (panic_in_progress())
++		goto lockdep;
++
+ 	raw_spin_lock(&console_owner_lock);
+ 	console_owner = current;
+ 	raw_spin_unlock(&console_owner_lock);
+ 
++lockdep:
+ 	/* The waiter may spin on us after setting console_owner */
+ 	spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_);
+ }
+@@ -1875,6 +1888,22 @@ static int console_lock_spinning_disable_and_check(int cookie)
+ {
+ 	int waiter;
+ 
++	/*
++	 * Ignore spinning waiters during panic() because they might get stopped
++	 * or blocked at any time,
++	 *
++	 * It is safe because nobody is allowed to start spinning during panic
++	 * in the first place. If there has been a waiter then non panic CPUs
++	 * might stay spinning. They would get stopped anyway. The panic context
++	 * will never start spinning and an interrupted spin on panic CPU will
++	 * never continue.
++	 */
++	if (panic_in_progress()) {
++		/* Keep lockdep happy. */
++		spin_release(&console_owner_dep_map, _THIS_IP_);
++		return 0;
++	}
++
+ 	raw_spin_lock(&console_owner_lock);
+ 	waiter = READ_ONCE(console_waiter);
+ 	console_owner = NULL;
+-- 
+2.35.3
 
