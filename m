@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF477CDD7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5407CDD81
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344724AbjJRNi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        id S1344750AbjJRNjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbjJRNit (ORCPT
+        with ESMTP id S1344723AbjJRNjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:38:49 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7A883;
-        Wed, 18 Oct 2023 06:38:48 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDWKad010627;
-        Wed, 18 Oct 2023 13:38:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ABZn9qKONJ6zRIGJSu6qk4lm2aWQ1K7ZAdwLu4s+AL0=;
- b=mo9J+5Vk7So4y48hPVocFSubGUnNGthROWMwD83Ew+EuSbRpCKzYK70VXPbN/IC0zLK0
- 0SIxmXNCyW9wDOK3VSGOsiU9IjyCtxEiPY+bYamdqHIPgmas88Ec+nsvXPiJAUDaCj9b
- hUPHiFaUaNK6L6tNxkPaREi7JtH8Guu5dNfJobEiUTRcht7mB9/xh7OGGYgEDyU/jnM7
- DPr1cLkj+oWhV/UupfNbHACx3faIIzKwO20pkxymi0/7i+ysGjvdAQqq9ADmt3EgXTaW
- tofe2spDPsPFBki01iKEMzarDJFOmBcKJVxn3rG1T0TdjQdXGHvb8iYtWsFlhjXiXdbr nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttgb389ws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:38:47 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IDWROJ011520;
-        Wed, 18 Oct 2023 13:38:46 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttgb389gy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:38:45 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39IDOoQc027190;
-        Wed, 18 Oct 2023 13:38:36 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tkgkwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 13:38:36 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IDcZAW17826394
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 13:38:35 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74A3858050;
-        Wed, 18 Oct 2023 13:38:35 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6216B5805E;
-        Wed, 18 Oct 2023 13:38:34 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.47.87])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 13:38:34 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-Subject: [PATCH v2 3/3] s390/vfio-ap: improve reaction to response code 07 from PQAP(AQIC) command
-Date:   Wed, 18 Oct 2023 09:38:25 -0400
-Message-ID: <20231018133829.147226-4-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231018133829.147226-1-akrowiak@linux.ibm.com>
-References: <20231018133829.147226-1-akrowiak@linux.ibm.com>
+        Wed, 18 Oct 2023 09:39:06 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126EA10F;
+        Wed, 18 Oct 2023 06:39:01 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9be3b66f254so731386266b.3;
+        Wed, 18 Oct 2023 06:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697636339; x=1698241139; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2pm6XMnF0LkLiGv//V6H7WXNTlx5q7g2HU2tHJ2BwW4=;
+        b=l2/7NsbSg174PJNclPIcVsTDKCPtl2gAdC6DV3NWDsd3alf1Y1S2Te6AtBFRbpo2Hu
+         cFa+9V9m6XumETo+wGp0c32Mff3crXQxvZFMShP9VkNSppIKX0yPZ/SOWp3F32wASpyF
+         SbTN5SeIpIVQIvXZf3wJC9jR2oNHPktiIX2RI/DTgdp2LcTjPeYfO3FnOcjoCnirc9nP
+         oiwOqVZWJ042DQxz8OfaoBReJ4FbGdq2w7YAZBdMowBxRVJD2gGUFRvHqlhvBRpKpX4r
+         DuZR/4GPkhCPVeB8mEclp0neFZwwC9ZToIDgOdKcJb22VLPD5P3c6lZrjlPX8FhTfwm1
+         YEzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697636339; x=1698241139;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2pm6XMnF0LkLiGv//V6H7WXNTlx5q7g2HU2tHJ2BwW4=;
+        b=Omw9EGpDmJ7SrEyUQznRJjEE/qKEQrQiZpBaJOKLtmarY3C099zM88Jt2kBOqhvDEV
+         AeJkFFsTUzycsnIuZQkxM46AHaEMmfPD9xpj6PLJYq+J0xgumUnN4zvf+ySksYRRTdTN
+         KzqgCBZ+BFRRxNK95lspANrXVlEUiEwUZcsq58/yT0cMechWp5eG1qm6uWxX+J9d81Js
+         AvpMAEWmTkhtjz6v4VUQFR/EplZ42t0uiQXpEewc8M64k9e2tAAMf6KdjEgaaFCXy8HA
+         +TLrhs2K//YD8KmJnb87oYRep+W5lC8QyNvD3gH4Mwwo3bJLBQkROvSEH6xSrKXgE0p5
+         s+uA==
+X-Gm-Message-State: AOJu0YxI6QdOb3uHUPR+ASnG5DUYRe9MW3MVtZL+DyB0RWEJCNSmjX45
+        9VyrK45YQNa7tv71XA/a+2ylVgvQQhs=
+X-Google-Smtp-Source: AGHT+IFDqfZgAY2jM1OJYiTRT4h2u9L2KclhpnC2f5LMyn2k1W2N08R04lVtmG4J3ddx3rkdU8uY7g==
+X-Received: by 2002:a17:907:1ca0:b0:9c1:9b3a:4cd1 with SMTP id nb32-20020a1709071ca000b009c19b3a4cd1mr3925459ejc.3.1697636339234;
+        Wed, 18 Oct 2023 06:38:59 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id bn4-20020a170906c0c400b0099cb0a7098dsm1749327ejb.19.2023.10.18.06.38.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 06:38:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 15:38:56 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        David Kaplan <david.kaplan@amd.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <ZS/f8DeEIWhBtBeb@gmail.com>
+References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+ <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
+ <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ioNrpGu6ssS0kVVyUCM67ZswCA7AbsdL
-X-Proofpoint-GUID: k7QBsco6NLprPtkV1jcDNk8PzfILkzmP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_12,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 mlxscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310180113
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's improve the vfio_ap driver's reaction to reception of response code
-07 from the PQAP(AQIC) command when enabling interrupts on behalf of a
-guest:
 
-* Unregister the guest's ISC before the pages containing the notification
-  indicator bytes are unpinned.
+* Borislav Petkov <bp@alien8.de> wrote:
 
-* Capture the return code from the kvm_s390_gisc_unregister function and
-  log a DBF warning if it fails.
+> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+> index bb0ab8466b91..e4b2dfbf3de5 100644
+> --- a/arch/x86/kernel/cpu/bugs.c
+> +++ b/arch/x86/kernel/cpu/bugs.c
+> @@ -2849,3 +2849,8 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
+>  	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
+>  }
+>  #endif
+> +
+> +void check_thunks(void)
+> +{
+> +	WARN(1, "Unconverted return thunk\n");
 
-Suggested-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+If then WARN_ONCE().
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 25d7ce2094f8..4e80c211ba47 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -476,8 +476,11 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
- 		break;
- 	case AP_RESPONSE_OTHERWISE_CHANGED:
- 		/* We could not modify IRQ settings: clear new configuration */
-+		ret = kvm_s390_gisc_unregister(kvm, isc);
-+		if (ret)
-+			VFIO_AP_DBF_WARN("%s: kvm_s390_gisc_unregister: rc=%d isc=%d, apqn=%#04x\n",
-+					 __func__, ret, isc, q->apqn);
- 		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
--		kvm_s390_gisc_unregister(kvm, isc);
- 		break;
- 	default:
- 		pr_warn("%s: apqn %04x: response: %02x\n", __func__, q->apqn,
--- 
-2.41.0
+Thanks,
 
+	Ingo
