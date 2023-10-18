@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CC77CE93B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C61D7CE93F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjJRUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S231470AbjJRUm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRUmZ (ORCPT
+        with ESMTP id S229552AbjJRUm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:42:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C53A4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:42:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC79C433C8;
-        Wed, 18 Oct 2023 20:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697661742;
-        bh=RjEGy53VoxaTJ1W6q5mGi360GS1eyr9FMldrIArMCz0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=j1kPeGY/78hSmBnfGznQt/X0aWbRWjTb5Jo/tG0k2OJ3xWc6Bdz7hcBQmtzA6iyZI
-         o3qjzKTMKLpNyH4Y/8apcZ7gq15w2Jix0s+XQGITfm4+u/QogDr94TL/KWL9zeD71M
-         Oy9n+di9RLmXc+cLpR8i6Ubt5OjRuvBy+eDZynYk/Ftg5RItc95wZ6DeNSSRFasuVA
-         64gTJN56FCsK1JermJPfkAJ/yyEzphkCoS1LoOKoI9aoHpbClodn7CGvCPLuVPM5ly
-         eZteM358//nFpcTn51vxpXq/2xqZWgLGpnoZd+VvNrRDMPaSIwspgPtpvGajixWRtD
-         GpDcv8xJWVguw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DBF3ECE0BB0; Wed, 18 Oct 2023 13:42:21 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 13:42:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <ebfe3ca1-2f48-42ce-9d03-513a8c1bc530@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <87ttrngmq0.ffs@tglx>
- <87jzshhexi.ffs@tglx>
- <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
- <87pm1c3wbn.ffs@tglx>
- <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
- <87r0lroffj.fsf@oracle.com>
+        Wed, 18 Oct 2023 16:42:57 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73665F7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:42:55 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a3b8b113so6276858e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697661773; x=1698266573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kGOrB8Us1nq+13prI6dQEJa6mUAXJWRLbgqTNy7bc8g=;
+        b=jNyP4EZDXprW43nlh/UR+UJRJozBSVrmIdeF9G7nRddzIG91Lz/LsL7mrwmbBEP22C
+         NMuOF8cdphQGtJdORzPQW8Nkh5BRDfCw2wIpsdiMzZzwI/t1MTzg1JazahJmPgu4bUgz
+         2iIuQ04FvRmC/hVtn8pG8GsEBUtvYDJiZVkViDOa3FjY51nJL9C+eHc+LUpo84iwGEVs
+         bhC8ccggmrtLdRnl4+QB6t1gdmRAjVv7H5zVLZldduZI4hCenN9BYZXQinMvG73e4gcj
+         DQTAihLT5vk82Sb9KPOp8nLyMmscFhrHbZcmTzJ5XRvR63CX5cPv9wMg4hlRq4GEPnvQ
+         wiOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697661773; x=1698266573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kGOrB8Us1nq+13prI6dQEJa6mUAXJWRLbgqTNy7bc8g=;
+        b=u4MABHQF2Y1/VTisOB3x5uG2ncEBGbdLJIA9kxF+JxdLMbNXF3EnbdTfc/KBD0FhCu
+         7hNrMN3wNmnIR0L3iIipbo/RU7uw5GyuAP9XPhuptGCgdvQwTD/H5CLvMUyH/tzqxcBa
+         +fmAeLMwmoseuXOccptUZ8Y60rFw0BOkNwqheOKbT3QR1565NZJJXMLwnYECA7sUinbK
+         NbqWfWQSGW7W1hjB5RyijBIYhRO558N0Fpb9nq9fWpkWay1fgkl3oF4imSKvJTAZiFKD
+         7HzGeHuQEANto7aIDIsBaTdZIx59qWGhEgy9jY/PewDti2T4Uj6DlXOFZ6GaCDjLGBqU
+         6osQ==
+X-Gm-Message-State: AOJu0Yx8fUVKNWjpbUnuV0Wyg/FEkk8qnTVvRWP23M886wrNAhnS8dp0
+        7dwZ8OferSW6ZonmgZaNHLFDSJE3p+iQzulEiPM=
+X-Google-Smtp-Source: AGHT+IH1WnjRORTUGihuIF1WYaac60UsHMmKzw/YAro1x1gtqmAAu8hzgDxks3LDvxghdvQshN/UhFxBi3eHBXlPR/I=
+X-Received: by 2002:ac2:53a4:0:b0:507:a908:4a93 with SMTP id
+ j4-20020ac253a4000000b00507a9084a93mr70822lfh.61.1697661773227; Wed, 18 Oct
+ 2023 13:42:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r0lroffj.fsf@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com> <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 22:42:40 +0200
+Message-ID: <CAFULd4bK=uw5V96G2+rB_kfGO3b2OKcaYWsDpXFt7FTO2xNnnw@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,123 +100,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 01:15:28PM -0700, Ankur Arora wrote:
-> 
-> Paul E. McKenney <paulmck@kernel.org> writes:
-> 
-> > On Wed, Oct 18, 2023 at 03:16:12PM +0200, Thomas Gleixner wrote:
-> >> Paul!
-> >>
-> >> On Tue, Oct 17 2023 at 18:03, Paul E. McKenney wrote:
-> >> > Belatedly calling out some RCU issues.  Nothing fatal, just a
-> >> > (surprisingly) few adjustments that will need to be made.  The key thing
-> >> > to note is that from RCU's viewpoint, with this change, all kernels
-> >> > are preemptible, though rcu_read_lock() readers remain
-> >> > non-preemptible.
-> >>
-> >> Why? Either I'm confused or you or both of us :)
+On Wed, Oct 18, 2023 at 10:22=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, 18 Oct 2023 at 12:33, Uros Bizjak <ubizjak@gmail.com> wrote:
 > >
-> > Isn't rcu_read_lock() defined as preempt_disable() and rcu_read_unlock()
-> > as preempt_enable() in this approach?  I certainly hope so, as RCU
-> > priority boosting would be a most unwelcome addition to many datacenter
-> > workloads.
-> 
-> No, in this approach, PREEMPT_AUTO selects PREEMPTION and thus
-> PREEMPT_RCU so rcu_read_lock/unlock() would touch the
-> rcu_read_lock_nesting.  Which is identical to what PREEMPT_DYNAMIC does.
-
-Understood.  And we need some way to build a kernel such that RCU
-read-side critical sections are non-preemptible.  This is a hard
-requirement that is not going away anytime soon.
-
-> >> With this approach the kernel is by definition fully preemptible, which
-> >> means means rcu_read_lock() is preemptible too. That's pretty much the
-> >> same situation as with PREEMPT_DYNAMIC.
+> > This pach works for me:
+>
+> Looks fine.
+>
+> But you actually bring up another issue:
+>
+> > BTW: I also don't understand the comment from include/linux/smp.h:
 > >
-> > Please, just no!!!
-> >
-> > Please note that the current use of PREEMPT_DYNAMIC with preempt=none
-> > avoids preempting RCU read-side critical sections.  This means that the
-> > distro use of PREEMPT_DYNAMIC has most definitely *not* tested preemption
-> > of RCU readers in environments expecting no preemption.
-> 
-> Ah. So, though PREEMPT_DYNAMIC with preempt=none runs with PREEMPT_RCU,
-> preempt=none stubs out the actual preemption via __preempt_schedule.
-> 
-> Okay, I see what you are saying.
+> > /*
+> >  * Allow the architecture to differentiate between a stable and unstabl=
+e read.
+> >  * For example, x86 uses an IRQ-safe asm-volatile read for the unstable=
+ but a
+> >  * regular asm read for the stable.
+>
+> I think the comment is badly worded, but I think the issue may actually b=
+e real.
+>
+> One word: rematerialization.
+>
+> The thing is, turning inline asm accesses to regular compiler loads
+> has a *very* bad semantic problem: the compiler may now feel like it
+> can not only combine the loads (ok), but also possibly rematerialize
+> values by re-doing the loads (NOT OK!).
+>
+> IOW, the kernel often has very strict requirements of "at most once"
+> behavior, because doing two loads might give different results.
+>
+> The cpu number is a good example of this.
+>
+> And yes, sometimes we use actual volatile accesses for them
+> (READ_ONCE() and WRITE_ONCE()) but those are *horrendous* in general,
+> and are much too strict. Not only does gcc generally lose its mind
+> when it sees volatile (ie it stops doing various sane combinations
+> that would actually be perfectly valid), but it obviously also stops
+> doing CSE on the loads (as it has to).
+>
+> So the "non-volatile asm" has been a great way to get the "at most
+> one" behavior: it's safe wrt interrupts changing the value, because
+> you will see *one* value, not two. As far as we know, gcc never
+> rematerializes the output of an inline asm. So when you use an inline
+> asm, you may have the result CSE'd, but you'll never see it generate
+> more than *one* copy of the inline asm.
+>
+> (Of course, as with so much about inline asm, that "knowledge" is not
+> necessarily explicitly spelled out anywhere, and it's just "that's how
+> it has always worked").
+>
+> IOW, look at code like the one in swiotlb_pool_find_slots(), which does t=
+his:
+>
+>         int start =3D raw_smp_processor_id() & (pool->nareas - 1);
+>
+> and the use of 'start' really is meant to be just a good heuristic, in
+> that different concurrent CPU's will start looking in different pools.
+> So that code is basically "cpu-local by default", but it's purely
+> about locality, it's not some kind of correctness issue, and it's not
+> necessarily run when the code is *tied* to a particular CPU.
+>
+> But what *is* important is that 'start' have *one* value, and one
+> value only. So look at that loop, which hasically does
+>
+>         do {
+>                   .. use the 'i' based on 'start' ..
+>                 if (++i >=3D pool->nareas)
+>                         i =3D 0;
+>         } while (i !=3D start);
+>
+> and it is very important indeed that the compiler does *not* think
+> "Oh, I can rematerialize the 'start' value".
+>
+> See what I'm saying? Using 'volatile' for loading the current CPU
+> value would be bad for performance for no good reason. But loading it
+> multiple times would be a *bug*.
+>
+> Using inline asm is basically perfect here: the compiler can *combine*
+> two inline asms into one, but once we have a value for 'start', it
+> won't change, because the compiler is not going to decide "I can drop
+> this value, and just re-do the inline asm to rematerialize it".
+>
+> This all makes me worried about the __seg_fs thing.
 
-More to the point, currently, you can build with CONFIG_PREEMPT_DYNAMIC=n
-and CONFIG_PREEMPT_NONE=y and have non-preemptible RCU read-side critical
-sections.
+Please note that there is a difference between this_*  and raw_*
+accessors. this_* has "volatile" qualification, and for sure it won't
+ever be rematerialized (this would defeat the purpose of "volatile").
+Previously, this_* was defined as asm-volatile, and now it is defined
+as a volatile memory access. GCC will disable almost all optimizations
+when volatile memory is accessed. IIRC, volatile-asm also won't be
+combined, since the compiler does not know about secondary effects of
+asm.
 
-> (Side issue: but this means that even for PREEMPT_DYNAMIC preempt=none,
-> _cond_resched() doesn't call rcu_all_qs().)
+Side note: The raw_smp_processor_id() uses this_, so it has volatile
+qualification.  Perhaps we can do
 
-I have no idea if anyone runs with CONFIG_PREEMPT_DYNAMIC=y and
-preempt=none.  We don't do so.  ;-)
++#define __smp_processor_id()   raw_cpu_read(pcpu_hot.cpu_number)
 
-> >> For throughput sake this fully preemptible kernel provides a mechanism
-> >> to delay preemption for SCHED_OTHER tasks, i.e. instead of setting
-> >> NEED_RESCHED the scheduler sets NEED_RESCHED_LAZY.
-> >>
-> >> That means the preemption points in preempt_enable() and return from
-> >> interrupt to kernel will not see NEED_RESCHED and the tasks can run to
-> >> completion either to the point where they call schedule() or when they
-> >> return to user space. That's pretty much what PREEMPT_NONE does today.
-> >>
-> >> The difference to NONE/VOLUNTARY is that the explicit cond_resched()
-> >> points are not longer required because the scheduler can preempt the
-> >> long running task by setting NEED_RESCHED instead.
-> >>
-> >> That preemption might be suboptimal in some cases compared to
-> >> cond_resched(), but from my initial experimentation that's not really an
-> >> issue.
-> >
-> > I am not (repeat NOT) arguing for keeping cond_resched().  I am instead
-> > arguing that the less-preemptible variants of the kernel should continue
-> > to avoid preempting RCU read-side critical sections.
-> 
-> [ snip ]
-> 
-> >> In the end there is no CONFIG_PREEMPT_XXX anymore. The only knob
-> >> remaining would be CONFIG_PREEMPT_RT, which should be renamed to
-> >> CONFIG_RT or such as it does not really change the preemption
-> >> model itself. RT just reduces the preemption disabled sections with the
-> >> lock conversions, forced interrupt threading and some more.
-> >
-> > Again, please, no.
-> >
-> > There are situations where we still need rcu_read_lock() and
-> > rcu_read_unlock() to be preempt_disable() and preempt_enable(),
-> > repectively.  Those can be cases selected only by Kconfig option, not
-> > available in kernels compiled with CONFIG_PREEMPT_DYNAMIC=y.
-> 
-> As far as non-preemptible RCU read-side critical sections are concerned,
-> are the current
-> - PREEMPT_DYNAMIC=y, PREEMPT_RCU, preempt=none config
->   (rcu_read_lock/unlock() do not manipulate preempt_count, but do
->    stub out preempt_schedule())
-> - and PREEMPT_NONE=y, TREE_RCU config (rcu_read_lock/unlock() manipulate
->    preempt_count)?
-> 
-> roughly similar or no?
+as this seems like the relaxed version of smp_processor_id().
 
-No.
+So, guarantees of asm-volatile are the same as guarantees of volatile
+memory access.
 
-There is still considerable exposure to preemptible-RCU code paths,
-for example, when current->rcu_read_unlock_special.b.blocked is set.
-
-> >> > I am sure that I am missing something, but I have not yet seen any
-> >> > show-stoppers.  Just some needed adjustments.
-> >>
-> >> Right. If it works out as I think it can work out the main adjustments
-> >> are to remove a large amount of #ifdef maze and related gunk :)
-> >
-> > Just please don't remove the #ifdef gunk that is still needed!
-> 
-> Always the hard part :).
-
-Hey, we wouldn't want to insult your intelligence by letting you work
-on too easy of a problem!  ;-)
-
-						Thanx, Paul
+Uros.
+>
+> For 'current', this is all perfect. Rematerializing current is
+> actually better than spilling and reloading the value.
+>
+> But for something like raw_smp_processor_id(), rematerializing would
+> be a correctness problem, and a really horrible one (because in
+> practice, the code would work 99.9999% of the time, and then once in a
+> blue moon, it would rematerialize a different value).
+>
+> See the problem?
+>
+> I guess we could use the stdatomics to try to explain these issues to
+> the compiler, but I don't even know what the C interfaces look like or
+> whether they are stable and usable across the range of compilers we
+> use.
+>
+>                Linus
