@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92A27CD378
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CD57CD37A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjJRFUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S1343895AbjJRFVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 01:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJRFU3 (ORCPT
+        with ESMTP id S229537AbjJRFVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:20:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C81BA;
-        Tue, 17 Oct 2023 22:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697606428; x=1729142428;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ljGA96pJdhn4htcQFUZHNLFUU0HFsDrmUML7iu2lJmM=;
-  b=NkDGnyUEoN3R4PBGmK+1jisLWPwnhyVT95AKBftggPqC766zp9TH9Apw
-   sfMqh2hbaJ1Zahas3TA7WlRBuTz+ubApQiWo7UPoHuQ1la/uhcFTMadUi
-   oJ24oNrmwqctlO5457nqyHHB2Nr7A0Cqkh30tVJhX5QZxrE9AiF4yt4f4
-   GLPK8guQuRhh2z86ReowICCrxc08XKljjGFOYN7duajz4kizEzrnSAb2a
-   X8qjymA4Xd2W+vB1dtgmY+c+LTJrem2Z0LVsXZ1cEd3m2hJeVyHLwfJMu
-   c38W6dKtAhGpto9xwNBek4051n2RGpjEgxGp9nSBbZTyKmjle+47T+lPw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="371003324"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="371003324"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 22:20:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="822291496"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="822291496"
-Received: from jysong-mobl1.amr.corp.intel.com (HELO [10.251.4.174]) ([10.251.4.174])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 22:20:26 -0700
-Message-ID: <3133a1a5-58c0-4b31-89fe-e86ffa12a342@linux.intel.com>
-Date:   Tue, 17 Oct 2023 22:20:25 -0700
+        Wed, 18 Oct 2023 01:21:02 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38B9CBA;
+        Tue, 17 Oct 2023 22:21:01 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 843818027;
+        Wed, 18 Oct 2023 05:21:00 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 08:20:59 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andrew Davis <afd@ti.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm: dts: omap: Apply am57xx-idk overlays to base dtbs
+Message-ID: <20231018052059.GJ34982@atomide.com>
+References: <20231010211925.1629653-1-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/10] kvmclock: Use free_decrypted_pages()
-Content-Language: en-US
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, kirill.shutemov@linux.intel.com,
-        elena.reshetova@intel.com, isaku.yamahata@intel.com,
-        seanjc@google.com, Michael Kelley <mikelley@microsoft.com>,
-        thomas.lendacky@amd.com, decui@microsoft.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
- <20231017202505.340906-4-rick.p.edgecombe@intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231017202505.340906-4-rick.p.edgecombe@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010211925.1629653-1-robh@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/17/2023 1:24 PM, Rick Edgecombe wrote:
-> On TDX it is possible for the untrusted host to cause
-> set_memory_encrypted() or set_memory_decrypted() to fail such that an
-> error is returned and the resulting memory is shared. Callers need to take
-> care to handle these errors to avoid returning decrypted (shared) memory to
-> the page allocator, which could lead to functional or security issues.
+* Rob Herring <robh@kernel.org> [231011 00:19]:
+> DT overlays in tree need to be applied to a base DTB to validate they
+> apply, to run schema checks on them, and to catch any errors at compile
+> time.
 > 
-> Kvmclock could free decrypted/shared pages if set_memory_decrypted() fails.
-> Use the recently added free_decrypted_pages() to avoid this.
-> 
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: kvm@vger.kernel.org
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
+> v2:
+>  - Only test applying overlays when building all DTBs
 
-Since it a fix, do you want to add Fixes tag?
+Andrew, any comments or care to ack?
 
-Otherwise, it looks good to me.
+Regards,
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Tony
 
-
->  arch/x86/kernel/kvmclock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  arch/arm/boot/dts/ti/omap/Makefile | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index fb8f52149be9..587b159c4e53 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -227,7 +227,7 @@ static void __init kvmclock_init_mem(void)
->  		r = set_memory_decrypted((unsigned long) hvclock_mem,
->  					 1UL << order);
->  		if (r) {
-> -			__free_pages(p, order);
-> +			free_decrypted_pages((unsigned long)hvclock_mem, order);
->  			hvclock_mem = NULL;
->  			pr_warn("kvmclock: set_memory_decrypted() failed. Disabling\n");
->  			return;
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> diff --git a/arch/arm/boot/dts/ti/omap/Makefile b/arch/arm/boot/dts/ti/omap/Makefile
+> index d2b590004fed..d6ee4a247100 100644
+> --- a/arch/arm/boot/dts/ti/omap/Makefile
+> +++ b/arch/arm/boot/dts/ti/omap/Makefile
+> @@ -129,6 +129,16 @@ dtb-$(CONFIG_SOC_AM43XX) += \
+>  am57xx-evm-dtbs := am57xx-beagle-x15.dtb am57xx-evm.dtbo
+>  am57xx-evm-reva3-dtbs := am57xx-beagle-x15-revc.dtb am57xx-evm.dtbo
+>  
+> +am571x-idk-overlays-dtbs := am571x-idk.dtb \
+> +	am571x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2587.dtbo
+> +am572x-idk-overlays-dtbs := am572x-idk.dtb \
+> +	am572x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2045.dtbo
+> +
+> +# Build time test only, enabled by CONFIG_OF_ALL_DTBS
+> +dtb- += \
+> +	am571x-idk-overlays.dtb \
+> +	am572x-idk-overlays.dtb
+> +
+>  dtb-$(CONFIG_SOC_DRA7XX) += \
+>  	am57xx-beagle-x15.dtb \
+>  	am57xx-beagle-x15-revb1.dtb \
+> -- 
+> 2.42.0
+> 
