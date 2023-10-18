@@ -2,145 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0F67CE7F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013527CE7F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjJRTmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        id S231354AbjJRTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjJRTmW (ORCPT
+        with ESMTP id S229694AbjJRTmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:42:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF00C95
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697658140; x=1729194140;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=u0LzV726fdVrL0k7KLW+ApC3rr1/NTaEs/ySkF4vnC4=;
-  b=UwU8PhI5lPX238Jbv3IaxB8hhiJ8Vsx3Vt2HzVO6AkuJi3WgC/UMNIae
-   rTiESq0nsSrIUkqrqW3Ctn6vvcAB6iTuaGIZN5bkHXXzfWGXaJIkZEhhT
-   o6hO0RTUjRa0iHNOcf6vE/p/5ithqlbyzudQ+1bNpriJOeTaErfBjtG2p
-   Af4EVenzCW6nyOuWy6SO2JdD4ajAqrtf4RYB2fSRrNwTINNK1nBLs8Hf8
-   hF7rLiYplkFmr1KHqpK03wRb4FfZbAO3mMeUTjUVnIjHm/qSoSj6+pTah
-   A1suzDlf7HWx6HTnMUwUaDpwbzmUmmELD7iI+HjpL22eu6gF5lZKheZNY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="452567179"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="452567179"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:42:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1003920940"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="1003920940"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Oct 2023 12:42:18 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtCQq-0000va-39;
-        Wed, 18 Oct 2023 19:42:16 +0000
-Date:   Thu, 19 Oct 2023 03:41:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Alex Maftei (amaftei)" <amaftei@solarflare.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/sfc/ethtool_common.c:170:32: warning: '%-24s'
- directive output may be truncated writing between 24 and 31 bytes into a
- region of size between 0 and 25
-Message-ID: <202310190356.CiGFsxM8-lkp@intel.com>
+        Wed, 18 Oct 2023 15:42:32 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA728120;
+        Wed, 18 Oct 2023 12:42:29 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 07C3260182;
+        Wed, 18 Oct 2023 21:42:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697658148; bh=oVm2UeTLL1+gXo5SxwvlDU0UvwNzbsB+IW0yF0pXPtE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=wrodZjX8+R/BMPVdgayyc/4NK7tvEvWy6hQD0uLMDqL1dTY8cmDiMgyMF7Vu1sdoL
+         r5Y57l15wv9sNLLUbrDKnFqIxJkUMD4BiPs4haSmXWnnK495TZr6bko5A3IO0i8LwN
+         gdyWC6Bxk6axl57KR8K9eo9xe3+1Y5CE+9eJ5h845bYkzhPqUAycb4uVTFiF26aaMB
+         TT3CA/T/Vt1sqXBIlxuW24FjEvTXP1C7Kr91rgBmEmOvz6+q/TMd7GRbrgcxdfkJS1
+         BD4JfBkSC0bX5av+Z8aTvBAczHbFniZa9O/bGtFKH0PPtqTRv9hduI0CQuqDzpOb/Y
+         pQ3EHcEcPyrXw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QKjniq1WPAhA; Wed, 18 Oct 2023 21:42:25 +0200 (CEST)
+Received: from [192.168.1.6] (78-2-200-105.adsl.net.t-com.hr [78.2.200.105])
+        by domac.alu.hr (Postfix) with ESMTPSA id 677186017E;
+        Wed, 18 Oct 2023 21:42:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697658145; bh=oVm2UeTLL1+gXo5SxwvlDU0UvwNzbsB+IW0yF0pXPtE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L6lImKQBvvzlVF7shHHFNP+irS8udWamxDfliouuUsqHppJr8SlkcJl4JKvm9qRT0
+         Es+X+qTzqnQPHEDm/1TXMbLGUs5gTXWAu+cX4tqmPhcA8Vxe8E8Gl5rJ1yDSvPYLEb
+         TVokCvYWEqRTEYLHVIz/G0C/H4DBYlhNJKNwgU8HlyHre6srTe/OWAuWxTLk4mvv0l
+         zpC1ptnCGyJp/Cs/5aZIm5gdyZUfARMeO/PouoZrAfyz8uLxblMM2wZKKP+nJkk99b
+         5wlidJ6TbvcGZGuaCQppwS0RaylcyXgoEREP/QaD7tfKJb8+ARsdFoLrnX4A7v106T
+         Pf+rnS9oGW7/Q==
+Message-ID: <0ee096e8-8a72-40fc-824d-aaacfbd12dec@alu.unizg.hr>
+Date:   Wed, 18 Oct 2023 21:42:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] r8169: fix the KCSAN reported data-race in rtl_tx
+ while reading TxDescArray[entry].opts1
+To:     Simon Horman <horms@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
+References: <20231016214753.175097-1-mirsad.todorovac@alu.unizg.hr>
+ <20231016214753.175097-3-mirsad.todorovac@alu.unizg.hr>
+ <20231017200138.GB1940501@kernel.org>
+ <992dcaf7-2b24-4e91-8c69-a5471da209ae@alu.unizg.hr>
+ <20231018135628.GQ1940501@kernel.org>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20231018135628.GQ1940501@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   dd72f9c7e512da377074d47d990564959b772643
-commit: 3653954da498fc80c5da3642ae3f8d8168d7f820 sfc: move some ethtool code
-date:   3 years, 9 months ago
-config: sparc64-allyesconfig (https://download.01.org/0day-ci/archive/20231019/202310190356.CiGFsxM8-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310190356.CiGFsxM8-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310190356.CiGFsxM8-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/net/ethernet/sfc/ethtool_common.c:150:6: warning: no previous prototype for 'efx_fill_test' [-Wmissing-prototypes]
-     150 | void efx_fill_test(unsigned int test_index, u8 *strings, u64 *data,
-         |      ^~~~~~~~~~~~~
-   drivers/net/ethernet/sfc/ethtool_common.c:192:5: warning: no previous prototype for 'efx_fill_loopback_test' [-Wmissing-prototypes]
-     192 | int efx_fill_loopback_test(struct efx_nic *efx,
-         |     ^~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/sfc/ethtool_common.c:296:8: warning: no previous prototype for 'efx_describe_per_queue_stats' [-Wmissing-prototypes]
-     296 | size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
-         |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/sfc/ethtool_common.c: In function 'efx_fill_test':
->> drivers/net/ethernet/sfc/ethtool_common.c:170:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size between 0 and 25 [-Wformat-truncation=]
-     170 |                          "%-6s %-24s", unit_str, test_str);
-         |                                ^~~~~             ~~~~~~~~
-   drivers/net/ethernet/sfc/ethtool_common.c:168:17: note: 'snprintf' output between 32 and 64 bytes into a destination of size 32
-     168 |                 snprintf(strings + test_index * ETH_GSTRING_LEN,
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     169 |                          ETH_GSTRING_LEN,
-         |                          ~~~~~~~~~~~~~~~~
-     170 |                          "%-6s %-24s", unit_str, test_str);
-         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-vim +170 drivers/net/ethernet/sfc/ethtool_common.c
+On 10/18/23 15:56, Simon Horman wrote:
+> On Tue, Oct 17, 2023 at 10:43:36PM +0200, Mirsad Todorovac wrote:
+>> On 10/17/23 22:01, Simon Horman wrote:
+>>> On Mon, Oct 16, 2023 at 11:47:56PM +0200, Mirsad Goran Todorovac wrote:
+>>>> KCSAN reported the following data-race:
+>>>>
+>>>> ==================================================================
+>>>> BUG: KCSAN: data-race in rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+>>>>
+>>>> race at unknown origin, with read to 0xffff888140d37570 of 4 bytes by interrupt on cpu 21:
+>>>> rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+>>>> __napi_poll (net/core/dev.c:6527)
+>>>> net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+>>>> __do_softirq (kernel/softirq.c:553)
+>>>> __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+>>>> irq_exit_rcu (kernel/softirq.c:647)
+>>>> sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1074 (discriminator 14))
+>>>> asm_sysvec_apic_timer_interrupt (./arch/x86/include/asm/idtentry.h:645)
+>>>> cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+>>>> cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+>>>> call_cpuidle (kernel/sched/idle.c:135)
+>>>> do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+>>>> cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+>>>> start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+>>>> secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+>>>>
+>>>> value changed: 0xb0000042 -> 0x00000000
+>>>>
+>>>> Reported by Kernel Concurrency Sanitizer on:
+>>>> CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+>>>> Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>>>> ==================================================================
+>>>>
+>>>> The read side is in
+>>>>
+>>>> drivers/net/ethernet/realtek/r8169_main.c
+>>>> =========================================
+>>>>      4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+>>>>      4356                    int budget)
+>>>>      4357 {
+>>>>      4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
+>>>>      4359         struct sk_buff *skb;
+>>>>      4360
+>>>>      4361         dirty_tx = tp->dirty_tx;
+>>>>      4362
+>>>>      4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+>>>>      4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
+>>>>      4365                 u32 status;
+>>>>      4366
+>>>>    → 4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
+>>>>      4368                 if (status & DescOwn)
+>>>>      4369                         break;
+>>>>      4370
+>>>>      4371                 skb = tp->tx_skb[entry].skb;
+>>>>      4372                 rtl8169_unmap_tx_skb(tp, entry);
+>>>>      4373
+>>>>      4374                 if (skb) {
+>>>>      4375                         pkts_compl++;
+>>>>      4376                         bytes_compl += skb->len;
+>>>>      4377                         napi_consume_skb(skb, budget);
+>>>>      4378                 }
+>>>>      4379                 dirty_tx++;
+>>>>      4380         }
+>>>>      4381
+>>>>      4382         if (tp->dirty_tx != dirty_tx) {
+>>>>      4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
+>>>>      4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
+>>>>      4385
+>>>>      4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
+>>>>      4387                                               rtl_tx_slots_avail(tp),
+>>>>      4388                                               R8169_TX_START_THRS);
+>>>>      4389                 /*
+>>>>      4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
+>>>>      4391                  * too close. Let's kick an extra TxPoll request when a burst
+>>>>      4392                  * of start_xmit activity is detected (if it is not detected,
+>>>>      4393                  * it is slow enough). -- FR
+>>>>      4394                  * If skb is NULL then we come here again once a tx irq is
+>>>>      4395                  * triggered after the last fragment is marked transmitted.
+>>>>      4396                  */
+>>>>      4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+>>>>      4398                         rtl8169_doorbell(tp);
+>>>>      4399         }
+>>>>      4400 }
+>>>>
+>>>> tp->TxDescArray[entry].opts1 is reported to have a data-race and READ_ONCE() fixes
+>>>> this KCSAN warning.
+>>>>
+>>>>      4366
+>>>>    → 4367                 status = le32_to_cpu(READ_ONCE(tp->TxDescArray[entry].opts1));
+>>>>      4368                 if (status & DescOwn)
+>>>>      4369                         break;
+>>>>      4370
+>>>>
+>>>> Fixes: ^1da177e4c3f4 ("initial git repository build")
+>>>
+>>> Hi Mirsad,
+>>>
+>>> The fixes tag above seems wrong.
+>>
+>> Hi, Simon,
+>>
+>> It is taken directly from "git blame" as you can check for yourself.
+>>
+>> It is supposed to tag the commits prior to the introduction of git.
+>>
+>> If you have a better idea how to denote those, I will be happy to learn,
+>> but I have no better clue than what "git blame" gives ...
+> 
+> Interesting, thanks for the explanation.
+> I do think it's more usual, in such cases, to use the following.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 
-   136	
-   137	/**
-   138	 * efx_fill_test - fill in an individual self-test entry
-   139	 * @test_index:		Index of the test
-   140	 * @strings:		Ethtool strings, or %NULL
-   141	 * @data:		Ethtool test results, or %NULL
-   142	 * @test:		Pointer to test result (used only if data != %NULL)
-   143	 * @unit_format:	Unit name format (e.g. "chan\%d")
-   144	 * @unit_id:		Unit id (e.g. 0 for "chan0")
-   145	 * @test_format:	Test name format (e.g. "loopback.\%s.tx.sent")
-   146	 * @test_id:		Test id (e.g. "PHYXS" for "loopback.PHYXS.tx_sent")
-   147	 *
-   148	 * Fill in an individual self-test entry.
-   149	 */
-   150	void efx_fill_test(unsigned int test_index, u8 *strings, u64 *data,
-   151			   int *test, const char *unit_format, int unit_id,
-   152			   const char *test_format, const char *test_id)
-   153	{
-   154		char unit_str[ETH_GSTRING_LEN], test_str[ETH_GSTRING_LEN];
-   155	
-   156		/* Fill data value, if applicable */
-   157		if (data)
-   158			data[test_index] = *test;
-   159	
-   160		/* Fill string, if applicable */
-   161		if (strings) {
-   162			if (strchr(unit_format, '%'))
-   163				snprintf(unit_str, sizeof(unit_str),
-   164					 unit_format, unit_id);
-   165			else
-   166				strcpy(unit_str, unit_format);
-   167			snprintf(test_str, sizeof(test_str), test_format, test_id);
-   168			snprintf(strings + test_index * ETH_GSTRING_LEN,
-   169				 ETH_GSTRING_LEN,
- > 170				 "%-6s %-24s", unit_str, test_str);
-   171		}
-   172	}
-   173	
+Objection noted, thanks.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+As the Linux kernel development deserves our best, I have submitted the v4 of the patch
+series.
+
+Best regards,
+Mirsad Todorovac
+
+>> Best regards,
+>> Mirsad Todorovac
+>>>> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+>>>> Cc: nic_swsd@realtek.com
+>>>> Cc: "David S. Miller" <davem@davemloft.net>
+>>>> Cc: Eric Dumazet <edumazet@google.com>
+>>>> Cc: Jakub Kicinski <kuba@kernel.org>
+>>>> Cc: Paolo Abeni <pabeni@redhat.com>
+>>>> Cc: Marco Elver <elver@google.com>
+>>>> Cc: netdev@vger.kernel.org
+>>>> Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
+>>>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>>>> Acked-by: Marco Elver <elver@google.com>
+>>>
+>>> ...
+>>
