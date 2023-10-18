@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92ED7CDC65
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBED7CDC71
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjJRM4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        id S231159AbjJRM5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjJRM4W (ORCPT
+        with ESMTP id S229537AbjJRM5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:56:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24A6A3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697633780; x=1729169780;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c8mxHA+E1x8eDcLDLE3ni7UvknH57dwh7FXKHdFgtTk=;
-  b=YjLP/ZnuQCp2LD9L1N5qthLa+5G9dDEFLew9xv5KOTi7+Eh+atqqf12r
-   YBpsFMtRsgxl5H34Y7WTlsasJfDNDI9XDtpkuGxqVZOMtvfnmd9zi1Jv/
-   UBF3fWNuRK/Enf58LFoW9x4Vm26AaQHQqopJlnZp76uEFhLtm3HD2nNZ1
-   Kzzrk2fEgCjP/eyfFivPBcfa4nFWBY3n0DSVh2YKXtPDi8aqx7yc1GSIW
-   JrIlHSlK9qu8JD/Jkgjif88fMiQkB8p56UsniGvoTxnLvShHeaQwb/+sE
-   +pNE1I83zvUDmjOIjQhp63kEQfd/+vgU0sMnqvFIJqeicJS3IEqZvb8Vl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="450228519"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="450228519"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 05:56:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="930177872"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="930177872"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 05:56:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qt65v-00000006amG-0jc3;
-        Wed, 18 Oct 2023 15:56:15 +0300
-Date:   Wed, 18 Oct 2023 15:56:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     pmladek@suse.com, rostedt@goodmis.org, linux@rasmusvillemoes.dk,
-        senozhatsky@chromium.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] lib/vsprintf: Remove redundant code
-Message-ID: <ZS/V7uS/7cGMpDJD@smile.fi.intel.com>
-References: <20231018064817.86721-1-jiapeng.chong@linux.alibaba.com>
+        Wed, 18 Oct 2023 08:57:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AEC40106
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:57:04 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82DAE2F4;
+        Wed, 18 Oct 2023 05:57:45 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.158])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 809553F762;
+        Wed, 18 Oct 2023 05:57:03 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 13:57:00 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andrea della Porta <andrea.porta@suse.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nik.borisov@suse.com
+Subject: Re: [PATCH 3/4] arm64/entry-common: Make Aarch32 syscalls'
+ availability depend on aarch32_enabled()
+Message-ID: <ZS_WHHnWzfkKtJWs@FVFF77S0Q05N.cambridge.arm.com>
+References: <cover.1697614386.git.andrea.porta@suse.com>
+ <88bdea628a13747bff32c0c3055d6d6ef7264d96.1697614386.git.andrea.porta@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231018064817.86721-1-jiapeng.chong@linux.alibaba.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <88bdea628a13747bff32c0c3055d6d6ef7264d96.1697614386.git.andrea.porta@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 02:48:17PM +0800, Jiapeng Chong wrote:
-> When variable needcolon is assigned a value of false, it must be
-> assigned a value of true later on, which is redundant code.
+On Wed, Oct 18, 2023 at 01:13:21PM +0200, Andrea della Porta wrote:
+> Another major aspect of supporting running of 32bit processes is the
+> ability to access 32bit syscalls. Such syscalls can be invoked by
+> using the svc instruction.
 > 
-> lib/vsprintf.c:1411:4: warning: Value stored to 'needcolon' is never read.
+> If Aarch32 emulation is disabled ensure that calling svc results
+> in the same behavior as if CONFIG_COMPAT has not been enabled (i.e.
+> a kernel panic).
 
-...
+It's not "emulation" it's directly supported by the hardware.
 
-> @@ -1406,10 +1406,9 @@ char *ip6_compressed_string(char *p, const char *addr)
->  			i += longest - 1;
->  			continue;
->  		}
-> -		if (needcolon) {
-> +		if (needcolon)
->  			*p++ = ':';
-> -			needcolon = false;
-> -		}
+> 
+> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> ---
+>  arch/arm64/kernel/entry-common.c | 25 ++++++++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 69ff9b8c0bde..32761760d9dd 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -802,6 +802,11 @@ asmlinkage void noinstr el0t_64_error_handler(struct pt_regs *regs)
+>  }
+>  
+>  #ifdef CONFIG_COMPAT
+> +UNHANDLED(el0t, 32, sync_ni)
+> +UNHANDLED(el0t, 32, irq_ni)
+> +UNHANDLED(el0t, 32, fiq_ni)
+> +UNHANDLED(el0t, 32, error_ni)
+
+IRQ, FIQ, and SError are not syscalls, so the commit title is bad.
+
 > +
->  		/* hex u16 without leading 0s */
->  		word = ntohs(in6.s6_addr16[i]);
->  		hi = word >> 8;
+>  static void noinstr el0_cp15(struct pt_regs *regs, unsigned long esr)
+>  {
+>  	enter_from_user_mode(regs);
+> @@ -821,6 +826,11 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
+>  
+>  asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
+>  {
+> +	if (!aarch32_enabled()) {
+> +		el0t_32_sync_ni_handler(regs);
+> +		return;
+> +	}
 
-Logically you may remove then the assignment to true as well.
+Why do we have to do this at all?
 
-But I would double check if it's not a continue missing somewhere or so.
+If we don't have AArch32 tasks, these paths are unreachable. Why do we need to
+check that they aren't called?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Mark.
 
-
+> +
+>  	unsigned long esr = read_sysreg(esr_el1);
+>  
+>  	switch (ESR_ELx_EC(esr)) {
+> @@ -865,17 +875,26 @@ asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
+>  
+>  asmlinkage void noinstr el0t_32_irq_handler(struct pt_regs *regs)
+>  {
+> -	__el0_irq_handler_common(regs);
+> +	if (!aarch32_enabled())
+> +		el0t_32_irq_ni_handler(regs);
+> +	else
+> +		__el0_irq_handler_common(regs);
+>  }
+>  
+>  asmlinkage void noinstr el0t_32_fiq_handler(struct pt_regs *regs)
+>  {
+> -	__el0_fiq_handler_common(regs);
+> +	if (!aarch32_enabled())
+> +		el0t_32_fiq_ni_handler(regs);
+> +	else
+> +		__el0_fiq_handler_common(regs);
+>  }
+>  
+>  asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
+>  {
+> -	__el0_error_handler_common(regs);
+> +	if (!aarch32_enabled())
+> +		el0t_32_error_ni_handler(regs);
+> +	else
+> +		__el0_error_handler_common(regs);
+>  }
+>  
+>  bool __aarch32_enabled __ro_after_init = true;
+> -- 
+> 2.35.3
+> 
