@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDC67CD913
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421B57CD916
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjJRKWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        id S230402AbjJRKWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjJRKWQ (ORCPT
+        with ESMTP id S230407AbjJRKW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:22:16 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE9BB0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:12 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3296b49c546so5218728f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:12 -0700 (PDT)
+        Wed, 18 Oct 2023 06:22:28 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3BCEA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:26 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9be7e3fa1daso689483066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697624531; x=1698229331; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697624545; x=1698229345; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+YPVxhrij/9yyiFDCmXjbqG79WA01Bk0XowWcY3BL1k=;
-        b=u8MnSC4Akx15maRa8AfHyPDBL6WFX+JbB1iqRyNbXnfBJla+Dknx/hpbkzMShQg0ix
-         JGDJEHj4OHD9ZKVKdIwrPSta8stYmw0R9hESjC/bV1nATMtp5JEu1Q8J6K5yZ8Gan7hG
-         ghS+SCFJNIE1b1WaFj1wBTQ/98kXh3OW+J1ev3vn3QfKi28lFpTgxnLtYxxytAhmpuHy
-         wx0rlDssLQvm7FE6FGxUelIavCrdPTIdC8YeqvvTGelFZlVvTzsT7dXRCzo0FHKQxCRB
-         MWHWYQ0h3SEnCK9GoGOgseNoYDM/giAw/c4MOYBktLBsnWAGRMcO/1biX66Z3s45+QIA
-         TsYg==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7vRlhn6zJXKGhkaRHFdbQmiYpJ9J9KHu/JlP2a3//gU=;
+        b=kTjNX1+/MtxzUAcig7R33bXUkXSieuj0RKvPFwFtZPbVXsP/+Qg7nacvqoPpan5wPw
+         gxgyMPW80jWfvIT37TUVlbY642ti9IO9SF05HV6hwtnzViPX6RFI0aEMqJ0qqP0B8TOH
+         MGBX6MLpEbCik1E+cw4AUiZ9ytOmqQC+VpP8u+6EBGsJYAp2nbNu+CGotLZVZLM47FJa
+         OE72KLzHkcLyXg18P2Unbz4/1NWWtpI9RSB6zSkYzKImNTwwsbo4goQ38ySi4swW/iaD
+         1TGG3E7tHhqssUar37CfbbeAVjkjLHUCZ9U+7oQ18UaRyK+BkFeiIvcBPYchicLFFnuC
+         KU3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697624531; x=1698229331;
+        d=1e100.net; s=20230601; t=1697624545; x=1698229345;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+YPVxhrij/9yyiFDCmXjbqG79WA01Bk0XowWcY3BL1k=;
-        b=u5OxA9gKwdmRQB9OkFX0F8ExrzjckXhWcm1sPu5LbAcXMS1XXxEbBSJOeeNATW5oe3
-         ZiBfMooNGF+HQyO2n8kXKhmk5yK0SihPkk/ag2+z9FKosgraZEQPPgsXY7DyBFW/8vLj
-         4AyeGbHvJQgL2bKChrI736SmIhfwMH0lYeaVmZ25kQEEmqMmP38dudlfLg0NFoXaXYn1
-         pi+fHetgvVygJFNga5i3VKVaHHYaQW0njUAVdroUFaTaiAJP7ql9R+hElMLOHaIWcckc
-         /z6evPfz555+AngVyACHOCpOxeAovS2GAzaDvtCj9O4r9y9lVQwf6VRyg3bx7+wsPEcB
-         gY0A==
-X-Gm-Message-State: AOJu0YyKcYeyBhY0jd2Ns/hTH5eOjK2pfAUWDJp83se4oM+i+SfEaS1R
-        vMcFzfkNgGtA/SLAgewXecQUnQ==
-X-Google-Smtp-Source: AGHT+IFblBhRhzmDzaS+pqwHqudeZroQ2KZlSAXVw5pwCj/0sJY/9y88i/ThbUt7ShHZ/AFjgg/51g==
-X-Received: by 2002:a5d:4e90:0:b0:32d:a4c4:f700 with SMTP id e16-20020a5d4e90000000b0032da4c4f700mr3953978wru.38.1697624531035;
-        Wed, 18 Oct 2023 03:22:11 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id c5-20020adfef45000000b0032da4c98ab2sm1796413wrp.35.2023.10.18.03.22.09
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7vRlhn6zJXKGhkaRHFdbQmiYpJ9J9KHu/JlP2a3//gU=;
+        b=EB3Y+KJl/hlogw8STJ73JVT4zaY+eARNEbmpBv7onc535mQ+9yaMt0TNlfXBWppJY1
+         QRtqIP3Ss5RiXWK+3bFGF/JG+N0yG/bW7NkJgn7F67T/UB2x3SebZPlV5ly+ohsUUI6A
+         kisPFUvZ84dcZDflSuYYrkz29Njd2XTum81MbjzkRj9p5FpWl0vjE87pUfa+Bk3s45nS
+         cFK00vZYiTlB0MIQyG1iuFAgJOBkw5LUBuBaJbtBBFtF+VGMAU106s7o0/drmZfF1yp4
+         CeOXovyJ03c4cx385hlUwxgr2tzJUOQKf4+sGGYoHm8QPOez11k9ZySDsnBiRUALmMM/
+         jS0A==
+X-Gm-Message-State: AOJu0YyPVGlsyRhFqllXFtfuvylNtqDDhoJ8ww6SMfv/kgDHE73kALtK
+        Q9wXMRhqioi6QEWu+/GyyNk=
+X-Google-Smtp-Source: AGHT+IGzGWucR9AqXhPj7ajEWS2SbU8ETXcoq6xPSqSMzFvzMHyNnrZ3IV0hx/dKqSE+x1/PGqhf6g==
+X-Received: by 2002:a17:906:dc8b:b0:99b:ed44:1a79 with SMTP id cs11-20020a170906dc8b00b0099bed441a79mr3988509ejc.3.1697624544984;
+        Wed, 18 Oct 2023 03:22:24 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170906224200b009c6e58437dasm1387420ejr.37.2023.10.18.03.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 03:22:10 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 13:22:06 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Calvince Otieno <calvncce@gmail.com>
-Cc:     gustavo@embeddedor.com, outreachy@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH V2] staging: vme_user: replace strcpy with strscpy
-Message-ID: <8a1d6d6f-b650-4aad-9b31-07a0a8acf45c@kadam.mountain>
-References: <ZS+c7NtfEw5ne2Oj@lab-ubuntu>
+        Wed, 18 Oct 2023 03:22:24 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 12:22:22 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Hou Wenlong <houwenlong.hwl@antgroup.com>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steve Rutherford <srutherford@google.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/2] x86/sme: Mark the code as __head in
+ mem_encrypt_identity.c
+Message-ID: <ZS+x3oi0N6d3MZ8b@gmail.com>
+References: <cover.1697525407.git.houwenlong.hwl@antgroup.com>
+ <b2670a8a79a7b4a5c8993fb916904af7c675b7f8.1697525407.git.houwenlong.hwl@antgroup.com>
+ <ZS6DngTm9ILei4dM@gmail.com>
+ <874jip58pp.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZS+c7NtfEw5ne2Oj@lab-ubuntu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <874jip58pp.ffs@tglx>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 11:53:00AM +0300, Calvince Otieno wrote:
-> Checkpatch suggests using strscpy() instead of strcpy().
+
+* Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> On Tue, Oct 17 2023 at 14:52, Ingo Molnar wrote:
+> > * Hou Wenlong <houwenlong.hwl@antgroup.com> wrote:
+> >> -static inline void __init sme_encrypt_kernel(struct boot_params *bp) { }
+> >> -static inline void __init sme_enable(struct boot_params *bp) { }
+> >> +static inline void sme_encrypt_kernel(struct boot_params *bp) { }
+> >> +static inline void sme_enable(struct boot_params *bp) { }
+> >
+> > So I think we should preserve the previous convention of marking functions 
+> > __init in the header-declaration and at the definition site as well, and do 
+> > the same with __head as well?
 > 
-> The advantages of strscpy() are that it always adds a NUL terminator
-> and prevents read overflows if the source string is not properly
-> terminated.
+> I'm not convinced about the value of prototype annotations, but have no
+> strong preference either.
 
-strcpy() also always adds a NUL terminator.
+So it has some minor documentation purpose: when someone looks up a 
+function via the header only (I do that frequently), __init-alike 
+annotations really show the intended boot-only limitations of the API.
 
-With strcpy() both read overflows and write overflows are an issue but
-write overflows are sooooooo much more serious that we don't worry about
-read overflow.
+But that's a really minor Nth order benefit, I have no strong preference 
+either.
 
-> One potential disadvantage is that it doesn't zero pad the
-> string like strcpy() does.
+Thanks,
 
-strcpy() does not zero pad anything.  You're resending patches too
-quickly.  You should wait a day between resends.
-
-
-> 
-> In this specific context, both strscpy and strcpy performs the same
-> operation without any functional difference.
-> 
-> The reason for this equivalence is that the driver_name string "vme_fake"
-> is shorter than the size of the fake_bridge->name array which is defined
-> as 16 characters (struct vme_bridge {char name[VMENAMSIZ];...}). Thus,
-> there is no risk of buffer overflow in either case. VMENAMSIZ variable
-> holds a constant value of 16 (#define VMENAMSIZ 16)
-
-This paragraph is good and sufficient.
-
-> 
-> The null-terminated "vme_fake" string
-> (static const char driver_name[] = "vme_fake";) can be safely copied into
-> fake_bridge->name using either strscpy or strcpy.
-> 
-> While using strscpy() does not address any bugs, it is considered a better
-> practice and aligns with checkpatch recommendations.
-> 
-> Signed-off-by: Calvince Otieno <calvncce@gmail.com>
-
-
-Okay.  Good.  Re-write the commit message and resend it tomorrow.
-
-regards,
-dan carpenter
-
-
+	Ingo
