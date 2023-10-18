@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34F37CE18B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F43B7CDFF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbjJRPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S1345739AbjJROdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346035AbjJROeO (ORCPT
+        with ESMTP id S235255AbjJROdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:34:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E737F3861
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697639520; x=1729175520;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cI0tmLdbuWQGwpEV+BxG1jpYJoRLxe62keccvXhW5kI=;
-  b=HuqM10/L1Pv20S2Zmw5U0ihgzWkDemYq0S5m4JL0eXOisoNIpv8EIyCx
-   axyrqDfr6PKIerzQpKjHhK55+3sUuNekrMF0OCd/9LX7aaEzoQiOzDrdV
-   E7c+aAxwnsOtoLZb5A67J4tuevQJ+PGQs3Wd3yLwKwYfUcd216+9aAPlu
-   M5103N5SPcyOIYBeH7PW81rTUJtWdnC1VSsH+9MLnqZDHa4qr2Ulz2Qrl
-   uN0/QJG18Uj+sN++BdO/fHbSd80+Nkg6EM5ITlwV4ibva5oLRcuIJkwYj
-   WFUb7oMo2vuSfXEl7q3MJ1zGiYEXPPO9cHqohyADEEyLW8oljdTbh08xo
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="417136847"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="417136847"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:32:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900366693"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="900366693"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Oct 2023 07:29:55 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qt7aX-0000Vl-1W;
-        Wed, 18 Oct 2023 14:31:57 +0000
-Date:   Wed, 18 Oct 2023 22:31:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/ata/pata_it821x.c:635:41: warning: 'snprintf' output may be
- truncated before the last format character
-Message-ID: <202310182207.cEZtAkiP-lkp@intel.com>
+        Wed, 18 Oct 2023 10:33:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DEC19A8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:30:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7317BC433C7;
+        Wed, 18 Oct 2023 14:30:07 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 10:31:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     paulmck@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20231018103146.4856caa8@gandalf.local.home>
+In-Reply-To: <87pm1c3wbn.ffs@tglx>
+References: <87ttrngmq0.ffs@tglx>
+        <87jzshhexi.ffs@tglx>
+        <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
+        <87pm1c3wbn.ffs@tglx>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Wed, 18 Oct 2023 15:16:12 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-FYI, the error/warning still remains.
+> > 14.	The kernel/trace/trace_osnoise.c file's run_osnoise() function
+> > 	might need to do something for non-preemptible RCU to make
+> > 	up for the lack of cond_resched() calls.  Maybe just drop the
+> > 	"IS_ENABLED()" and execute the body of the current "if" statement
+> > 	unconditionally.  
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: 6ef55060a1cc29dd54ff390f22cb3de266dab2b0 s390: make use of CONFIG_FUNCTION_ALIGNMENT
-date:   7 months ago
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20231018/202310182207.cEZtAkiP-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182207.cEZtAkiP-lkp@intel.com/reproduce)
+Right.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310182207.cEZtAkiP-lkp@intel.com/
+I'm guessing you are talking about this code:
 
-All warnings (new ones prefixed by >>):
+                /*
+                 * In some cases, notably when running on a nohz_full CPU with
+                 * a stopped tick PREEMPT_RCU has no way to account for QSs.
+                 * This will eventually cause unwarranted noise as PREEMPT_RCU
+                 * will force preemption as the means of ending the current
+                 * grace period. We avoid this problem by calling
+                 * rcu_momentary_dyntick_idle(), which performs a zero duration
+                 * EQS allowing PREEMPT_RCU to end the current grace period.
+                 * This call shouldn't be wrapped inside an RCU critical
+                 * section.
+                 *
+                 * Note that in non PREEMPT_RCU kernels QSs are handled through
+                 * cond_resched()
+                 */
+                if (IS_ENABLED(CONFIG_PREEMPT_RCU)) {
+                        if (!disable_irq)
+                                local_irq_disable();
 
-   drivers/ata/pata_it821x.c: In function 'it821x_probe_firmware':
->> drivers/ata/pata_it821x.c:635:41: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
-     635 |                 snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
-         |                                         ^
-   In function 'it821x_display_disk',
-       inlined from 'it821x_probe_firmware' at drivers/ata/pata_it821x.c:721:4:
-   drivers/ata/pata_it821x.c:635:17: note: 'snprintf' output between 7 and 9 bytes into a destination of size 8
-     635 |                 snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                        rcu_momentary_dyntick_idle();
+
+                        if (!disable_irq)
+                                local_irq_enable();
+                }
+
+                /*
+                 * For the non-preemptive kernel config: let threads runs, if
+                 * they so wish, unless set not do to so.
+                 */
+                if (!disable_irq && !disable_preemption)
+                        cond_resched();
 
 
-vim +/snprintf +635 drivers/ata/pata_it821x.c
 
-669a5db411d85a Jeff Garzik     2006-08-29  595  
-963e4975c6f93c Alan Cox        2008-07-24  596  /**
-963e4975c6f93c Alan Cox        2008-07-24  597   *	it821x_display_disk	-	display disk setup
-3697aaafc368b6 Hannes Reinecke 2021-12-21  598   *	@ap: ATA port
-963e4975c6f93c Alan Cox        2008-07-24  599   *	@n: Device number
-963e4975c6f93c Alan Cox        2008-07-24  600   *	@buf: Buffer block from firmware
-963e4975c6f93c Alan Cox        2008-07-24  601   *
-963e4975c6f93c Alan Cox        2008-07-24  602   *	Produce a nice informative display of the device setup as provided
-963e4975c6f93c Alan Cox        2008-07-24  603   *	by the firmware.
-963e4975c6f93c Alan Cox        2008-07-24  604   */
-963e4975c6f93c Alan Cox        2008-07-24  605  
-3697aaafc368b6 Hannes Reinecke 2021-12-21  606  static void it821x_display_disk(struct ata_port *ap, int n, u8 *buf)
-963e4975c6f93c Alan Cox        2008-07-24  607  {
-963e4975c6f93c Alan Cox        2008-07-24  608  	unsigned char id[41];
-963e4975c6f93c Alan Cox        2008-07-24  609  	int mode = 0;
-3a53b3bcc7af2f LABBE Corentin  2015-10-14  610  	const char *mtype = "";
-963e4975c6f93c Alan Cox        2008-07-24  611  	char mbuf[8];
-3a53b3bcc7af2f LABBE Corentin  2015-10-14  612  	const char *cbl = "(40 wire cable)";
-963e4975c6f93c Alan Cox        2008-07-24  613  
-963e4975c6f93c Alan Cox        2008-07-24  614  	static const char *types[5] = {
-1c30c02757027e Jean Delvare    2011-07-04  615  		"RAID0", "RAID1", "RAID 0+1", "JBOD", "DISK"
-963e4975c6f93c Alan Cox        2008-07-24  616  	};
-963e4975c6f93c Alan Cox        2008-07-24  617  
-963e4975c6f93c Alan Cox        2008-07-24  618  	if (buf[52] > 4)	/* No Disk */
-963e4975c6f93c Alan Cox        2008-07-24  619  		return;
-963e4975c6f93c Alan Cox        2008-07-24  620  
-963e4975c6f93c Alan Cox        2008-07-24  621  	ata_id_c_string((u16 *)buf, id, 0, 41);
-963e4975c6f93c Alan Cox        2008-07-24  622  
-963e4975c6f93c Alan Cox        2008-07-24  623  	if (buf[51]) {
-963e4975c6f93c Alan Cox        2008-07-24  624  		mode = ffs(buf[51]);
-963e4975c6f93c Alan Cox        2008-07-24  625  		mtype = "UDMA";
-963e4975c6f93c Alan Cox        2008-07-24  626  	} else if (buf[49]) {
-963e4975c6f93c Alan Cox        2008-07-24  627  		mode = ffs(buf[49]);
-963e4975c6f93c Alan Cox        2008-07-24  628  		mtype = "MWDMA";
-963e4975c6f93c Alan Cox        2008-07-24  629  	}
-963e4975c6f93c Alan Cox        2008-07-24  630  
-963e4975c6f93c Alan Cox        2008-07-24  631  	if (buf[76])
-963e4975c6f93c Alan Cox        2008-07-24  632  		cbl = "";
-963e4975c6f93c Alan Cox        2008-07-24  633  
-963e4975c6f93c Alan Cox        2008-07-24  634  	if (mode)
-963e4975c6f93c Alan Cox        2008-07-24 @635  		snprintf(mbuf, 8, "%5s%d", mtype, mode - 1);
-963e4975c6f93c Alan Cox        2008-07-24  636  	else
-963e4975c6f93c Alan Cox        2008-07-24  637  		strcpy(mbuf, "PIO");
-963e4975c6f93c Alan Cox        2008-07-24  638  	if (buf[52] == 4)
-3697aaafc368b6 Hannes Reinecke 2021-12-21  639  		ata_port_info(ap, "%d: %-6s %-8s          %s %s\n",
-963e4975c6f93c Alan Cox        2008-07-24  640  				n, mbuf, types[buf[52]], id, cbl);
-963e4975c6f93c Alan Cox        2008-07-24  641  	else
-3697aaafc368b6 Hannes Reinecke 2021-12-21  642  		ata_port_info(ap, "%d: %-6s %-8s Volume: %1d %s %s\n",
-963e4975c6f93c Alan Cox        2008-07-24  643  				n, mbuf, types[buf[52]], buf[53], id, cbl);
-963e4975c6f93c Alan Cox        2008-07-24  644  	if (buf[125] < 100)
-3697aaafc368b6 Hannes Reinecke 2021-12-21  645  		ata_port_info(ap, "%d: Rebuilding: %d%%\n", n, buf[125]);
-963e4975c6f93c Alan Cox        2008-07-24  646  }
-963e4975c6f93c Alan Cox        2008-07-24  647  
+If everything becomes PREEMPT_RCU, then the above should be able to be
+turned into just:
 
-:::::: The code at line 635 was first introduced by commit
-:::::: 963e4975c6f93c148ca809d986d412201df9af89 pata_it821x: Driver updates and reworking
+                if (!disable_irq)
+                        local_irq_disable();
 
-:::::: TO: Alan Cox <alan@lxorguk.ukuu.org.uk>
-:::::: CC: Jeff Garzik <jgarzik@redhat.com>
+                rcu_momentary_dyntick_idle();
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+                if (!disable_irq)
+                        local_irq_enable();
+
+And no cond_resched() is needed.
+
+> 
+> Again. There is no non-preemtible RCU with this model, unless I'm
+> missing something important here.
+
+Daniel?
+
+-- Steve
