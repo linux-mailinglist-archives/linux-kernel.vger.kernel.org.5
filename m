@@ -2,133 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 739477CD32A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE9F7CD331
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbjJREih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 00:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        id S229585AbjJREjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 00:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235051AbjJREhS (ORCPT
+        with ESMTP id S235197AbjJREh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 00:37:18 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DA6109;
-        Tue, 17 Oct 2023 21:37:08 -0700 (PDT)
-X-UUID: f7ffe6ea6d6f11ee8051498923ad61e6-20231018
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=7C1sDzO4W4A9cu2M5CMOj2+5Gzk6upR7EYFW5XCk6Jg=;
-        b=DEC5TbTwyQU1royr7Hk0I++V1gtcTBPLDgvmVS5tWaSb/UtnQVIf4cF4fKNvwSWkwArnDqGxNbnqlADJmhGEqI2cvGfwka7AA0tkXFCCqEXK7+E79u9/4jKTpA0abqvjdDeGh7wU6akaDqdicbjCbK203Nc225i1GjsjvPHWWDE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:061c0fdc-15d2-41b0-94ce-cd1793aa42f9,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:5f78ec9,CLOUDID:0d2341c4-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: f7ffe6ea6d6f11ee8051498923ad61e6-20231018
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 752368458; Wed, 18 Oct 2023 12:36:56 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 18 Oct 2023 12:36:55 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 18 Oct 2023 12:36:55 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "CK Hu" <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v9 23/23] drm/mediatek: Support MT8188 VDOSYS1 in display driver
-Date:   Wed, 18 Oct 2023 12:36:50 +0800
-Message-ID: <20231018043650.22532-24-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231018043650.22532-1-shawn.sung@mediatek.com>
-References: <20231018043650.22532-1-shawn.sung@mediatek.com>
+        Wed, 18 Oct 2023 00:37:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455EED5E;
+        Tue, 17 Oct 2023 21:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697603850; x=1729139850;
+  h=cc:references:subject:to:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=lIB89A9HTSI42WxpivOXWDogJZFBgaPgowbpA6kdqGg=;
+  b=hwn/t0gUbNYQrhl42XDvhJHb/NQQRrSUNztGNkxP3YLK6Z8mRaF/JSMB
+   rnY5OPX0uy5xdoU+D7VzFMQHWhtKvyXxqnW809V4qkS92Wf+LmmYmII6D
+   lo8yGMrJVgrQCqVmoipKupBCBgVWsdJ+E9FbNSlHu74V4niNMiktx1geO
+   3tm3bZ7N6PYRM9lvcqdkY1PVtsXOqVXcRfByr3pzM+xjRCIy5pesOKAhi
+   7resV/5PlKenMPvJGUovvNdWyr7G6bIdpKlfSqHFFfNSgAF5GrATHRNhl
+   kpc5ygticPLRzPFHsQC28zh2LwRODPOBWyDWFAkStTGte2n9a5xy/ermO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383158038"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="383158038"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 21:37:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791452733"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="791452733"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Oct 2023 21:37:25 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Date:   Tue, 17 Oct 2023 23:37:23 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.544100-8.000000
-X-TMASE-MatchedRID: k6EjByr1NNCA1UdczcLx7jvfsoCuAcP+uLwbhNl9B5VcKZwALwMGs43y
-        qnCHUnfZLYexjI/F2s67aBKK8e6y8yUtdpGicV4RKaMQ6tw7oDJMkOX0UoduuQqiCYa6w8tv5pf
-        3ZiBJgsHc0NDBaoYShZjXlVZ6P0cvj2hRzH1UwuAURSScn+QSXt0H8LFZNFG7bkV4e2xSge4sw3
-        GEmIriBSUhMPBH5sX4M517nGGNRDAnSTeZe+bs5kuFvzEYSdV+
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.544100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 6E07A7877B63CCB3C2FBE579486332D138706BCC3CB03C55AC1BDD9B991DECE02000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- The mmsys_dev_num in MT8188 VDOSYS0 was set to 1 since
-  VDOSYS1 was not available before. Increase it to support
-  VDOSYS1 in display driver.
-- Add compatible name for MT8188 VDOSYS1
-  (shares the same driver data with MT8195 VDOSYS1)
+Hi Michal,
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, 17 Oct 2023 13:54:46 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 62e6e9785443..eecfeb8fbde1 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -303,7 +303,7 @@ static const struct mtk_mmsys_driver_data mt8188_vdosys0_driver_data = {
- 	.main_len = ARRAY_SIZE(mt8188_mtk_ddp_main),
- 	.conn_routes = mt8188_mtk_ddp_main_routes,
- 	.conn_routes_num = ARRAY_SIZE(mt8188_mtk_ddp_main_routes),
--	.mmsys_dev_num = 1,
-+	.mmsys_dev_num = 2,
- };
- 
- static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-@@ -344,6 +344,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt8186_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8188-vdosys0",
- 	  .data = &mt8188_vdosys0_driver_data},
-+	{ .compatible = "mediatek,mt8188-vdosys1",
-+	  .data = &mt8195_vdosys1_driver_data},
- 	{ .compatible = "mediatek,mt8192-mmsys",
- 	  .data = &mt8192_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8195-mmsys",
--- 
-2.18.0
+> Hello Haitao.
+>
+> On Tue, Oct 17, 2023 at 07:58:02AM -0500, Haitao Huang  =
 
+> <haitao.huang@linux.intel.com> wrote:
+>> AFAIK, before we introducing max_write() callback in this series, no =
+ =
+
+>> misc
+>> controller would possibly enforce the limit when misc.max is reduced.=
+  =
+
+>> e.g. I
+>> don't think CVMs be killed when ASID limit is reduced and the cgroup =
+was
+>> full before limit is reduced.
+>
+> Yes, misccontroller was meant to be simple, current >=3D max serves to=
+
+> prevent new allocations.
+>
+Thanks for confirming. Maybe another alternative we just keep max_write
+non-preemptive. No need to add max_write() callback.
+
+The EPC controller only triggers reclaiming on new allocations or return=
+
+NOMEM if no more to reclaim. Reclaiming here includes normal EPC page  =
+
+reclaiming and killing enclaves in out of EPC cases. vEPCs assigned to  =
+
+guests are basically carved out and never reclaimable by the host.
+
+As we no longer enforce limits on max_write a lower value, user should n=
+ot  =
+
+expect cgroup to force reclaim pages from enclave or kill VMs/enclaves a=
+s  =
+
+a result of reducing limits 'in-place'. User should always create cgroup=
+s,  =
+
+set limits, launch enclave/VM into the groups created.
+
+> FTR, at some point in time memory.max was considered for reclaim contr=
+ol
+> of regular pages but it turned out to be too coarse (and OOM killing
+> processes if amount was not sensed correctly) and this eventually
+> evolved into specific mechanism of memory.reclaim.
+> So I'm mentioning this should that be an interface with better semanti=
+c
+> for your use case (and misc.max writes can remain non-preemptive).
+>
+
+Yes we can introduce misc.reclaim to give user a knob to forcefully  =
+
+reducing usage if
+that is really needed in real usage. The semantics would make force-kill=
+  =
+
+VMs explicit to user.
+
+> One more note -- I was quite confused when I read in the rest of the
+> series about OOM and _kill_ing but then I found no such measure in the=
+
+> code implementation. So I would suggest two terminological changes:
+>
+> - the basic premise of the series (00/18) is that EPC pages are a
+>   different resource than memory, hence choose a better suiting name
+>   than OOM (out of memory) condition,
+
+I couldn't come up a good name. Out of EPC (OOEPC) maybe? I feel OOEPC  =
+
+would be hard to read in code though. OOM was relatable as it is similar=
+  =
+
+to normal OOM but special kind of memory :-) I'm open to any better  =
+
+suggestions.
+
+> - killing -- (unless you have an intention to implement process
+>   termination later) My current interpretation that it is rather some
+>   aggressive unmapping within address space, so less confusing name fo=
+r
+>   that would be "reclaim".
+>
+
+yes. Killing here refers to killing enclave, analogous to killing proces=
+s,
+not just 'reclaim' though. I can change to always use 'killing enclave' =
+ =
+
+explicitly.
+
+>
+>> I think EPC pages to VMs could have the same behavior, once they are =
+ =
+
+>> given
+>> to a guest, never taken back by the host. For enclaves on host side, =
+ =
+
+>> pages
+>> are reclaimable, that allows us to enforce in a similar way to memcg.=
+
+>
+> Is this distinction between preemptability of EPC pages mandated by th=
+e
+> HW implementation? (host/"process" enclaves vs VM enclaves) Or do have=
+
+> users an option to lock certain pages in memory that yields this
+> difference?
+>
+
+The difference is really a result of current vEPC implementation. Becaus=
+e
+enclave pages once in use contains confidential content, they need speci=
+al
+process to reclaim. So it's complex to implement host reclaiming guest E=
+PCs
+gracefully.
+
+Thanks
+Haitao
