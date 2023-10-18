@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB7C7CE58D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE497CE592
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344688AbjJRR5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        id S232619AbjJRR5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjJRR5C (ORCPT
+        with ESMTP id S232372AbjJRR5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:57:02 -0400
-Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498BA12E;
-        Wed, 18 Oct 2023 10:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=j0ePCYNkPHfa3H9jsrngby8guSC1IWe7RaxvVj9+FaY=; b=MsbIat7TOKssl45DTO3nM5wmxE
-        y4eZYVNBvf4HdsA/3JbF4kBevsI3uOGqi7wrPp0pRp/d6ryREYJXDTdJdWzIaQxu18ck1G82Mar+c
-        LZQXGdbeMAvIekOsX4xhUaF8UJiSQ9x28NaWzp80FlmEWWQMFsWE/aJQClvEnikF7I3Q=;
-Received: from [88.117.60.21] (helo=[10.0.0.160])
-        by mx05lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1qtAmk-00007M-2X;
-        Wed, 18 Oct 2023 19:56:46 +0200
-Message-ID: <27912b49-eb1a-4100-a260-03299e8efdd4@engleder-embedded.com>
-Date:   Wed, 18 Oct 2023 19:56:45 +0200
+        Wed, 18 Oct 2023 13:57:13 -0400
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4EC12B
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1697651829; x=1697911029;
+        bh=qg1FOCAW/ZNkhfLQUnB0m1HTCb5NKmRZ0oWQUjY7kLg=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=dRboJLM1CQ7qc7Ug/4scXZzoRb9hNkHsaj9XBRiea/xBLmykdWwbhiKlXU76Dejed
+         VgYNU5sYzH4B9vsaN5hdD4+d+lAh80rnEv6cz39rsAKQmutnyzTZ4mtBY/lP3o2c/5
+         vUHggxRe6+ySvwT4+bhYAsZK2PHJDNsi7kBzDrq8EfjyngIrpl9HeeMCt9lcIhJxev
+         +hQvHB2F4xYhF5QNit1eV/3papqbnSyhxlERLL64JKpA/WMaAj8MPsg0+f3RXGEOJb
+         TcHo76ycjFm4JWw85xzXPrnec1QDUpdtkZ937skpFLg6OgKAyFIknAuF8GfLopu0Ol
+         ZrzHtuXnwUdqg==
+Date:   Wed, 18 Oct 2023 17:56:52 +0000
+To:     Miguel Ojeda <ojeda@kernel.org>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: remove old Rust docs output path
+Message-ID: <c-GFV2p1lETIN6czmE3f0YFrusVTJ6kuiZXx_UA3FC_f6ORK3uGdQ5z_mCxLVkg4xktI79_Df3f-bTwhHUfzocoKJ8Go5TR4GRlcKxxMrrA=@proton.me>
+In-Reply-To: <20231018160145.1017340-2-ojeda@kernel.org>
+References: <20231018160145.1017340-1-ojeda@kernel.org> <20231018160145.1017340-2-ojeda@kernel.org>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/1] taprio: Add boundary check for
- sched-entry values
-To:     Lai Peter Jun Ann <jun.ann.lai@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1697599707-3546-1-git-send-email-jun.ann.lai@intel.com>
-Content-Language: en-US
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <1697599707-3546-1-git-send-email-jun.ann.lai@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,56 +64,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.10.23 05:28, Lai Peter Jun Ann wrote:
-> Adds boundary checks for the gatemask provided against the number of
-> traffic class defined for each sched-entry.
-> 
-> Without this check, the user would not know that the gatemask provided is
-> invalid and the driver has already truncated the gatemask provided to
-> match the number of traffic class defined.
-> 
-> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-> Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
-> ---
->   net/sched/sch_taprio.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-> index 1cb5e41..44b9e21 100644
-> --- a/net/sched/sch_taprio.c
-> +++ b/net/sched/sch_taprio.c
-> @@ -102,6 +102,7 @@ struct taprio_sched {
->   	u32 max_sdu[TC_MAX_QUEUE]; /* save info from the user */
->   	u32 fp[TC_QOPT_MAX_QUEUE]; /* only for dump and offloading */
->   	u32 txtime_delay;
-> +	u8 num_tc;
->   };
->   
->   struct __tc_taprio_qopt_offload {
-> @@ -1063,6 +1064,11 @@ static int fill_sched_entry(struct taprio_sched *q, struct nlattr **tb,
->   		return -EINVAL;
->   	}
->   
-> +	if (entry->gate_mask >= q->num_tc) {
+On 18.10.23 18:01, Miguel Ojeda wrote:
+> The Rust code documentation output path moved from `rust/doc` to
+> `Documentation/output/rust/rustdoc`. The `make cleandocs` target
+> takes care of cleaning it now since it is integrated with the rest
+> of the documentation.
+>=20
+> Thus remove the old reference.
+>=20
+> Fixes: 48fadf440075 ("docs: Move rustdoc output, cross-reference it")
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-As far as I know within gate_mask every bit represents a traffic class.
-So for 3 traffic classes at gate_mask of 0x7 is valid but this check
-fails with 0x7 >= 3.
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-> +		NL_SET_ERR_MSG(extack, "Traffic Class defined less than gatemask");
-> +		return -EINVAL;
-> +	}
-> +
->   	entry->interval = interval;
->   
->   	return 0;
-> @@ -1913,6 +1919,8 @@ static int taprio_change(struct Qdisc *sch, struct nlattr *opt,
->   		for (i = 0; i <= TC_BITMASK; i++)
->   			netdev_set_prio_tc_map(dev, i,
->   					       mqprio->prio_tc_map[i]);
-> +
-> +		q->num_tc = mqprio->num_tc;
->   	}
->   
->   	err = parse_taprio_schedule(q, tb, new_admin, extack);
+--=20
+Cheers,
+Benno
