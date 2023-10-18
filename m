@@ -2,125 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B817CE2E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F48F7CE2EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjJRQgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        id S231235AbjJRQh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJRQgg (ORCPT
+        with ESMTP id S229537AbjJRQh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:36:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3953A113;
-        Wed, 18 Oct 2023 09:36:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14D7C433C7;
-        Wed, 18 Oct 2023 16:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697646993;
-        bh=uN4FTt1WJfID/Mn+71JQqnF+ueyE2WBjOZDWcTg9Tt8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dTDtv7a+6jAyDRbZJ7t4ZZEJmkadDCEdEF3hYZtwVRGW+h3m48nUYLh0r5cCTkiLu
-         ep0o48YxHgLr85xuKCozOBVkzxOffLao5QQon8j10wlUGT53uzZY4NeZSbwfviiVig
-         TboNmRsdZRX2Vd16I77OC9tW/7Z9t2/yIRFlZR7JV2x7pSsM7PyfssILKI/5ONYYeI
-         YgO71HUb03rz2fS/3Bt0wAo+rG/uGIV/4WfvhHipzFjOd7fydVFRLUNzEDTcIcPt1v
-         OoiHhAOX5ulw82X9vKHeIJHeJz+J1AEXZQPKU4G5GUkB1LEV6hTMExT1qiZj/O6Eom
-         4lwYlCHYPWdqA==
-Date:   Wed, 18 Oct 2023 11:36:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        r-gunasekaran@ti.com, srk@ti.com,
-        Serge Semin <fancer.lancer@gmail.com>
-Subject: Re: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x
- SoC
-Message-ID: <20231018163632.GA1364574@bhelgaas>
-MIME-Version: 1.0
+        Wed, 18 Oct 2023 12:37:26 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78914AB;
+        Wed, 18 Oct 2023 09:37:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PyOj/NO2fV+51MtfJkUnQhz30+Uz0mihlCcjtXbE7u3sLNZgh08MqDTLY4g+8mXoAb0Q/DFxvo5o/2lo+ZYDvxoNUCXqFgq98hhyw2e8hB28FdCvR0Sucw+wFXX+tKX3r29+ZQvPwpEA1hv/YmgNt8+iXYDaigHIFf4wydAyoCS29hkL3mHNaaRCszgjCK83PNp+rGHQNfcq6et4WbqqhOMZWwFnDGo1hY518To5D7Xvipp2XFQnAwtyrcbt9EYoNgAEpsjvK78b2g5uLlBiQXrtbORi4u5LD5Ma4alwBrQlAPh+gtVe46tMl5KFBNWX7cHutXah/yOT3UAjH34hww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X/xYz+1V02lTS5PLvxnX38wXWkbtB3NbkXRBkwf6J6o=;
+ b=cL9Pbo6Td8pcLzbzoqZGpsq7WGGqQKddTAk/wNbQFbq/+37AOq8Z2Sg5y7EtsB4QAjGBy1S+N3zlIDqCYGymhoDkf3+6PGSH9K1pU/uRPgkXcRK+WxOGH8rOkoIwFEL4CW3/QDC7OXDdj0W4PzDHg45gnzbNSM19w7Xv1zETp1vGz7MhXLkZ6d+zpEBBHiix577bBgqGY9ixygHEB4xLwAT/Vj1iREPUHC+GJYxYBOykiKgamEq/aeUO6dm+l88D7eJDlbqLITm5rAn5oYjifPMaI8etIrqHvARHdK8MQ0kdz0JE6iebR7n7GQagPwMCoghFFlZErcvU7yNhWaMqSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X/xYz+1V02lTS5PLvxnX38wXWkbtB3NbkXRBkwf6J6o=;
+ b=cjg8XTh0AWYM5bA17jzj66NeOT94NuipybD0nwayYXDr1vCbAjmeqLuMDxxYud6JNKqd9viTqXJiuJ1khcaH+l9bIeE3i5gq6T7iKhzDExgMATC2UCrakeww/hOZuvTacuEQ9NBzqGovLekm9KY4y/QSpZiBB2F6bd1qwfnHro6NxbTOdho9/I/uKUZY+w2QYFmvxo4r0zoXGRJxkJfPo9EYsFllPYIQQ+fRUdewtGwVb+o5hUcIFmICAAbuTa4FNZgnzB+QpW1IoycPnmK4C6KP+m2uWH5iwOY7KIp+f0OHFjJQjbaT1NGCGweBHtEfG3Dm/Dp7TmbYlzDHeef1Xw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH8PR12MB8430.namprd12.prod.outlook.com (2603:10b6:510:259::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
+ 2023 16:37:22 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
+ 16:37:22 +0000
+Date:   Wed, 18 Oct 2023 13:37:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
+Message-ID: <20231018163720.GA3952@nvidia.com>
+References: <20230921075138.124099-2-yi.l.liu@intel.com>
+ <20231010165844.GQ3952@nvidia.com>
+ <03ba68e9-33ef-35c1-5720-8f559f94f8a1@intel.com>
+ <20231012133917.GL3952@nvidia.com>
+ <3659d9a7-d9e9-bb73-daf5-41c765e99c8c@intel.com>
+ <20231013140456.GR3952@nvidia.com>
+ <ZSmE6unIukqJ3GKu@Asurada-Nvidia>
+ <79f0cab5-39ad-3d98-3896-6e1ba7b8db21@intel.com>
+ <20231016115407.GO3952@nvidia.com>
+ <ZS1+VMEo+0bCecui@Asurada-Nvidia>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231018075038.2740534-1-s-vadapalli@ti.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZS1+VMEo+0bCecui@Asurada-Nvidia>
+X-ClientProxiedBy: BL1PR13CA0111.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::26) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH8PR12MB8430:EE_
+X-MS-Office365-Filtering-Correlation-Id: d040bd83-0538-4267-cfec-08dbcff88092
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7iL9KinlD+OPSaTmhHlp8/5q13yMm/GPcm9ztCLFfG2Ft3Wts5xUzh1lEnqXI8XROZy3O13VAhpiO+fj1JZm6XcAdUQMm+4yskRCGntCVZ/FjE+JPVVKD4UCKE9YLu4NgJkP8Y3mtRTCSEHtP2nZq0vyS2FgmF9Wg7v1eB+kUv5WxWNdgYRXPjhOtTrTmq9Jl7h4x7YIY94Oax+1txQ73RoUA/suKk/SFdcWh2287dICDV7dwxciYgE/FHV69sdbskdvToevR4FGD6xYJQiXulQl7ZUDwqdDssa4a8iwrIjYQ3Sxeok7ukuKz0VA+P/l9jAy4qKDTz6dQlGOQEVU2DZXRjANIxst61+sMlYs9afgE1KtXukr1xeAX9eZfDEPubHGaQmBEOqxnHnP3Lafj4/t4pqmpx75+85mQdnTD/LNWjAIHwAkF3GUfUxocSZiyf9uoBkw2RU6vXtzIDyZF/uZLPYPJd/ec91jIRFd+DPWBYBOCFBO/fgkkKMxkq/9eAgDGitChwnW6LWauEnwDGfcRkhB9uoBssG9P/CwqnmuhAIEyP4v/S6mgxfFc0oV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(346002)(39860400002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(26005)(6512007)(5660300002)(6506007)(2616005)(1076003)(53546011)(41300700001)(83380400001)(2906002)(4326008)(6862004)(8676002)(8936002)(7416002)(66946007)(6636002)(478600001)(6486002)(66556008)(316002)(66476007)(38100700002)(37006003)(33656002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Qejt985LPoErpt6SymzspCeHm0RJIrXsGhtyd/0IBHs7Y6XhsJ7vQU2Lwcs6?=
+ =?us-ascii?Q?Ndn9IhE5c1Kj3OBDgbpr02CFrrYkRa6AFDUc6ARUNyzQbIrHM/HRgF6JYZHA?=
+ =?us-ascii?Q?lZ5vqBSSy/RauBfr9uJONE38Qdvx5bnyb5YBzC7Vbj/18ybRjOtxpfEKpNZC?=
+ =?us-ascii?Q?JelGaTXKzD3l1gVuoQbXdjeakIk6w0JUHt/8Ss7gpJvcnmefVKPNVQDoBbVP?=
+ =?us-ascii?Q?deJ35ofsPqcFsNogqUgEEMmEbsfFpWP7frDNU2jYPkND3yKnXLPw/3yYo9Qi?=
+ =?us-ascii?Q?+nY3LQPhE6ltQxuqU/oyJyahYtaq64CXiHj1S19OzuEgwavcxI734S0qkN11?=
+ =?us-ascii?Q?zLugPmKdmX65pzJpRubHgikI0xDvJp4Vyk6NY9/zkpFiPcpW78GD6gbKZKGL?=
+ =?us-ascii?Q?lN9loJmFXws27c55CZV8/RUcUk0YYEve0X26XChmm0Pw71/nImGJhYsRrI/B?=
+ =?us-ascii?Q?jPCAVZgeLK4NBhBlkSesM3PtsL9nbB8TxQxrzHuwu79zpaV9ApttaGG2Hyms?=
+ =?us-ascii?Q?yGUKn2YonESkeEgD/fgNAQZYMUHPJgrO7eWUBYSzpOTlgUPOEb4+a4wl2Bep?=
+ =?us-ascii?Q?Cvb8IVrGRSV/tY8O2R+CJ8UOSjAchPJc0qxKqz2mQHOxpgOhy1HKlBxsVlJW?=
+ =?us-ascii?Q?RcSpZf62Q5uGt0l6suFpDd+p8HrWWZf16MpRUjFCa2JoGGorueRrY4p++zWH?=
+ =?us-ascii?Q?615Idic4d/BWZp0gwbsTp2MuRsN2/kohX5vXa+XWqrMy6fd9UCawc/hST81Y?=
+ =?us-ascii?Q?w7ws2ZABH7wErFlUM073VzOSW3um0dHYzyGGHJU7XBRSBzbzsXJzL/8iclVD?=
+ =?us-ascii?Q?DVJwAMUW6mQcbVu91UX48G/6W4JVBJtDgoeFq9ZE/fFfKyg+SVhVmo00djmX?=
+ =?us-ascii?Q?dtL5Oh3h9IpsWeYC+/T3c5nB3hMHyLuoIPvL3+8nGJT+5ALMVYHwSeWl+ZEz?=
+ =?us-ascii?Q?quWHcFKp2Dn83M/YNw4cglFgDjN9MCz/rPp7g9iTlv1pyuY1YY2B5pNBm1TL?=
+ =?us-ascii?Q?o3buTOdJRNDDIFYLlaEyIjBI/ama1JD7fjwSwKIUpHJndR5PGBg+xO5bdfq+?=
+ =?us-ascii?Q?qDxMxz3fN8l8PpaoRIXo0NBL+CD0s9XiiAxXPmsv50HOPIQAjlyjk4pfGpgQ?=
+ =?us-ascii?Q?6h2qLb3MBHJaeV2RI/vwC/IF4AZKeQFntTv9MkRnbBU8h/ElUs4daA5Cn4+W?=
+ =?us-ascii?Q?C7IgP4QVc7YWxwrbjRojW5ECaJSi1Nwr+MoRvSUwRxEMbZB3eBnYUm+napTn?=
+ =?us-ascii?Q?oKHnJCtYUna7vsU1cn04kWTXgpeI437UyevcDofYbZoohnSXE+smMYKJ5cY2?=
+ =?us-ascii?Q?jI8AAylM+bCu0dzeqZqV6O2XRctufX6OpwbDxLCSmyuxIkxShkp29xZucNfX?=
+ =?us-ascii?Q?/K6bbd6lxH7UTQ1wEJl3P97x99aMoP+DgVftW8p19+jK4Ju5XIFZ67UEw4ao?=
+ =?us-ascii?Q?rx8WVOxXHsb1oHU2w9YHvMMUMsaPUkHJNYbz02nzCdnXTbTmFV2nnxs42jKD?=
+ =?us-ascii?Q?+urn8v1Nh5Gz/LSQ9dGgIowxeQHlJj4uBwv2knZuaT1ob3VShjJCqEkiqHqg?=
+ =?us-ascii?Q?v72/A2/epFpMnR/seUD32C5U6iMaiOFpLnVxLNqy?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d040bd83-0538-4267-cfec-08dbcff88092
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 16:37:22.1111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zug8SguJ9tCJVoE2BujmE4+2K+fTCVJij18XppuRryDhVgT8PK/WEs6ad38QphRQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB8430
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Serge (please cc people who have commented on previous revisions)]
+On Mon, Oct 16, 2023 at 11:17:56AM -0700, Nicolin Chen wrote:
+> On Mon, Oct 16, 2023 at 08:54:07AM -0300, Jason Gunthorpe wrote:
+> > On Mon, Oct 16, 2023 at 11:28:15AM +0800, Yi Liu wrote:
+> > > On 2023/10/14 01:56, Nicolin Chen wrote:
+> > > > On Fri, Oct 13, 2023 at 11:04:56AM -0300, Jason Gunthorpe wrote:
+> > > > > On Fri, Oct 13, 2023 at 12:33:13PM +0800, Yi Liu wrote:
+> > > > > 
+> > > > > > not really. Below the users of the struct iommu_user_data in my current
+> > > > > > iommufd_nesting branch. Only the domain_alloc_user op has type as there
+> > > > > > can be multiple vendor specific alloc data types. Basically, I'm ok to
+> > > > > > make the change you suggested, just not sure if it is good to add type
+> > > > > > as it is only needed by one path.
+> > > > > 
+> > > > > I don't think we should ever have an opaque data blob without a type
+> > > > > tag..
+> > > > 
+> > > > I can add those "missing" data types, and then a driver will be
+> > > > responsible for sanitizing the type along with the data_len.
+> > > > 
+> > > > I notice that the enum iommu_hwpt_data_type in the posted patch
+> > > > is confined to the alloc_user uAPI. Perhaps we should share it
+> > > > with invalidate too:
+> > > 
+> > > invalidation path does not need a type field today as the data
+> > > type is vendor specific, vendor driver should know the data type
+> > > when calls in.
+> > 
+> > I'm not keen on that, what if a driver needs another type in the
+> > future?  You'd want to make the invalidation data format part of the
+> > domain allocation?
+> 
+> The invalidation data has hwpt_id so it's tied to a hwpt and its 
+> hwpt->domain. Would it be reasonable to have a different type of
+> invalidation data for the same type of hwpt?
 
-On Wed, Oct 18, 2023 at 01:20:38PM +0530, Siddharth Vadapalli wrote:
-> The ks_pcie_v3_65_add_bus() member of "ks_pcie_ops" was added for
-> platforms using DW PCIe IP-core version 3.65a. The AM654x SoC uses
-> DW PCIe IP-core version 4.90a and ks_pcie_v3_65_add_bus() is not
-> applicable to it.
-> 
-> The commit which added support for the AM654x SoC has reused majority
-> of the functions with the help of the "is_am6" flag to handle AM654x
-> separately where applicable. Thus, make use of the "is_am6" flag and
-> change ks_pcie_v3_65_add_bus() to no-op for AM654x SoC.
-> 
-> Fixes: 18b0415bc802 ("PCI: keystone: Add support for PCIe RC in AM654x Platforms")
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
-> Hello,
-> 
-> This patch is based on linux-next tagged next-20231018.
-> 
-> The v1 of this patch is at:
-> https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
-> 
-> While there are a lot of changes since v1 and this patch could have been
-> posted as a v1 patch itself, I decided to post it as the v2 of the patch
-> mentioned above since it aims to address the issue described by the v1
-> patch and is similar in that sense. However, the solution to the issue
-> described in the v1 patch appears to be completely different from what
-> was implemented in the v1 patch. Thus, the commit message and subject of
-> this patch have been modified accordingly.
-> 
-> Changes since v1:
-> - Updated patch subject and commit message.
-> - Determined that issue is not with the absence of Link as mentioned in
->   v1 patch. Even with Link up and endpoint device connected, if
->   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
->   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
->   AER and PME services. The all Fs return value indicates that the MSI-X
->   configuration is failing even if Endpoint device is connected. This is
->   because the ks_pcie_v3_65_add_bus() function is not applicable to the
->   AM654x SoC which uses DW PCIe IP-core version 4.90a.
+Yeah, maybe? Go down the road 10 years and we might have SMMUv3
+invalidation format v1 and v2 or something?
 
-Thanks for verifying that this doesn't actually depend on whether the
-link is up.
+Like we don't know what the HW side will do, they might extend the
+command queue to have bigger commands and negotiate with the driver if
+the bigger/smaller format is used. We've done that in our HW a couple
+of times now.
 
-I think that means we should be able to get rid of the
-ks_pcie_v3_65_add_bus() callback altogether and instead do this along
-with the rest of the Root Port init.
-
->  drivers/pci/controller/dwc/pci-keystone.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> index 0def919f89fa..3abd59335574 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -459,7 +459,7 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
->  
-> -	if (!pci_is_root_bus(bus))
-> +	if (!pci_is_root_bus(bus) || ks_pcie->is_am6)
->  		return 0;
->  
->  	/* Configure and set up BAR0 */
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Jason
