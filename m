@@ -2,143 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6243E7CDBF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDF67CDBFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbjJRMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        id S1344486AbjJRMiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbjJRMhq (ORCPT
+        with ESMTP id S231374AbjJRMiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:37:46 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2036.outbound.protection.outlook.com [40.92.46.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A081310E;
-        Wed, 18 Oct 2023 05:37:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMgN4LkNnvpQT9hxxWeWZymNrFyS4rAsdsee2eOxW0AuxmpfrqFcskMab/+J4UURRKBuYi3x6dKinQBePIVW2YeWNNwBCItrdZIQ+jGjNnj1sLoiuVZDqbqJ8W0/yXnryDAn8F3s6kr/Rue3hUrFgHDUNR/XyBUT9MUFp/b/lyvaCcV/ZiHWJHsM6khJtlACGea1dEH+bcGErvtekv10uEbQW3n7busTPy8BR5JE8Jo5KTgdLe7C/nB0P9J23lUHYBaHq98IFI5Z05PqaSYqNQikcHjaVgIxG7QuxK9OLODFDnZpbA0Ydth/2Nrwv+9eyAQdgKShWgoyQbt+4zZb5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hr28upwkPn4oJyaNFmtTw6AwNt8aFNTRILMM4isSNuU=;
- b=kuCwtsynjBQgO3mYaU7olvJizhq9YAoFIRt3VjOLB3gDRiOZE37y3MSVLva98AQ3TNbiiH6USAirMYjlN6rj2Nan5E3wC/zx+YuVWppDQVElt9X5Tcg0CChEUu2UrhspwyaWe3LSN4V2ZeMX4b3JdV6Zz1Yx7QVe2X3BIZcpjO/RgJGEQfGUV0OG/bBbyCcGgxUvnvdCLbeAlEwu3552fy7HUdNt2Gs7ZQOeaw3BHA7fuPqn6aDYQy38C/0mWcrVpncIswicyRkcWk0OrKKrYOFN/Us6QuLUaaKRcFZs5PLvNYOiipHSswD7wdjLiA8NUr06wzF5s+aCgCjqU0Ga1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hr28upwkPn4oJyaNFmtTw6AwNt8aFNTRILMM4isSNuU=;
- b=TISroFgOzblwdGQ6r3e661giPKB4/OrsXPyrrpbvIS7jQ8p9UBNNxpPpMQgr5LH11tnOzQbzWRPHSI3gIfD33+K1EhByetmR0T30COIXIf6Hc00Cu4Y9345wcMT+RsPgC6CZEpJtyhgDbzzBc/eDzEJ52bmG5buAZHI7BWDoxEyaI6E6nQXXDTQGYHYBFSsmw1ooUmPxVQAHoFXHcdxnDWWDR42s4Fgs1iCgjv+X4Ja6/tDTYeAt8Pr8KLrvS0+2vWtMImNt/JJpVJAhsBB3LCpmWEDm8xrnF1IzOJ7tjGfiRKYqPTngVxBoYyuXlW3KtfXhnqVHbx3/C5T+g/WWFQ==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA1PR20MB6049.namprd20.prod.outlook.com (2603:10b6:806:33d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.44; Wed, 18 Oct
- 2023 12:37:39 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6907.021; Wed, 18 Oct 2023
- 12:37:39 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Inochi Amaoto <inochiama@outlook.com>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] riscv: dts: sophgo: Rename cv1800b device tree file
-Date:   Wed, 18 Oct 2023 20:37:59 +0800
-Message-ID: <IA1PR20MB49530B8580E22AE664B8D59FBBD5A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <4d98aa3b-003b-45e8-9a85-db07af73aa8a@linaro.org>
-References: <4d98aa3b-003b-45e8-9a85-db07af73aa8a@linaro.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [ifCJSrGIM896K1uM6O8wjHxgtiRJSugNdnS72cuVje8=]
-X-ClientProxiedBy: SJ0PR05CA0064.namprd05.prod.outlook.com
- (2603:10b6:a03:332::9) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231018123800.1630336-1-inochiama@outlook.com>
+        Wed, 18 Oct 2023 08:38:05 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D9B10E
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9be3b66f254so719711566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697632682; x=1698237482; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3qQmGYMA/S/kWNsfETnUZllqVCQ7paKt7r6KbXhorwY=;
+        b=IDeYgP2bKLi5UkFUhINiGkW8/1DHaVmRTiTGfbQLclEWEbhp52Oil4froQIWvhdG3C
+         89U7m5AFjicW+P3Rx5zx68UkEfVkjo9wawI3piDhFSvimgslzydOotTe4fxg6junLDpG
+         SVUutXdUA3aefCKdBytEY0BUStAERyOntlhjmdsffKvdDSZUG41EqEl3VLijZYghW4Er
+         /3tpHVPhKOm2hRokdSDW9id1qCrZ/BTFOVEch7bkgzZirzdT1FpMMlmPiz6PsxyFLzwf
+         d5slTF6ygeyh6tQCtE+g5qzXfxsWqsqQiMAHaPnY94g77/J8p4GXJ312ElZEdNASnan8
+         uLbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697632682; x=1698237482;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3qQmGYMA/S/kWNsfETnUZllqVCQ7paKt7r6KbXhorwY=;
+        b=YjCtP1oiUEyCYijfeRva07515FodS/YjVSek+Jtt7843smBaqX8xPOZtNDR3Tty6tk
+         0xvWshXpQXmUqNx1HjrkDleAhUEN4u8XDjhGTEeuqtlCmAtcjp/QuQpCC87cfM99OL9/
+         mZSO6dKdqxWzhaRngZ+izPFIGFzc8PYNVFSAT/dKO5k1l5BGPui7n4SL9ne74/tOUfz4
+         7qfqDXH910unFFq0B1uyDUDvXhFkg8u02cNyujuaIuwWFWHCDa8USheCu8rYeZD2Z4v9
+         Uon8KdQO8VyNvWT6eqsfJEj8XXbTB/uy1PoeCv8vMWZhWiVyQBUgeft2xcZzPZHAwLl9
+         xb2A==
+X-Gm-Message-State: AOJu0Yzr6HUlKQxuAJ1q+yxt/17UYGdymvTsxEJD+5AgaxPWMtuyspGS
+        34InyttWz8vPUetMK5cR/zly7A==
+X-Google-Smtp-Source: AGHT+IEv0afA8MvLYpLh9AHhXpQVqh1dTYchdh/YkxFnJBj+fwK7WpxSPxuTDgKJ4pbY7Z0rzhOckA==
+X-Received: by 2002:a17:907:a42:b0:9bd:f902:9a61 with SMTP id be2-20020a1709070a4200b009bdf9029a61mr4000821ejc.18.1697632682177;
+        Wed, 18 Oct 2023 05:38:02 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id jz14-20020a17090775ee00b009b27d4153c0sm1620770ejc.178.2023.10.18.05.38.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 05:38:01 -0700 (PDT)
+Message-ID: <84f9f1c4-0627-4986-8160-b4ab99469b81@linaro.org>
+Date:   Wed, 18 Oct 2023 14:38:00 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB6049:EE_
-X-MS-Office365-Filtering-Correlation-Id: 49b19ba9-04ab-4492-f5fb-08dbcfd703c0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UDGfxsNKFsblgjQB5P1PVMLPwcQE0FMuuJHVzykrLd+Mlw9OSV1ykCrheyjOMHPz2T0j2FtuYVHr+hXySANYjd2Lh30CIjqZFy5HNxnQ+JTsetSAyzQsGL/mk3U+BYVAUG/RewG3MPxZk4TgSEqgbhKHsX1iQLjnQikKHi//qUtl9F9fNOxM3NQpzihyCmgItHEYdbZY8Q53M5l4ygfuyPPuxY/4anw2nYxBexm+U+BmxdajJvvOWV7ZW2YuE3/BP4+GLCPjy4hS8vbtb7gwYMa8sY/fKfha9isYYaIfFnTE2qns35s/r/KZxS6KGbYRuu6a/iRop2fRP9kqrey/IW2dsJ1FRCMCHRPWe9ZH2fZAQ3wdEjdHOFtgxoMlmSCopWBb4EBsMPk5IlFQPl43JETvAoNcBpMUPQ+X9Qm946l8cmvwKZ/pJKLo8y0sAHjfhlOI7WSK1cYe1g5xxgZsQK+3hi/Ecq9l8f3A7m83t71E4wAaTJBeLW3xgIm7mxajoXNQUPnnLku3i1ZyyC5huykcl3ErB3VyzBHIWtpKglKS9ptB8rE4dqb37zJDRs+WbNTN5Rep/Prf5247k0SwUr7K0ajpf1Owx69jCQyo3RL86zXOwQrCDAEcGs99a5Uu
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7soomxCZwOpNEPlVGdvhVbd8mydGAcxUZb2VY+OLDYGmhfAvMySuYnXyCQYU?=
- =?us-ascii?Q?eU3/JRw+KMYop3hu9FFzoTUSoM2fmJvkorCYGeWlGVTT22luCpq6BwXqwA6m?=
- =?us-ascii?Q?YARCsK9V6hPg8+MPeHTm0OSBAzSFXsvVRB7zygsc8DX2R9qZcvxcyu0iHp5f?=
- =?us-ascii?Q?muDyu8FHtvk+ryLpV8dNjwv++3X4lZebAG6hJtusSGMdWS06abmjNbIRXQxR?=
- =?us-ascii?Q?Q4T8BNHDY9eDMvKir9GUgNJJtn1yE+/wgZeQk/egbKkA8HSIGE5tyFSqQQGj?=
- =?us-ascii?Q?2mTuYthtCxQX286e5W1Hi6vXNSdisfGeDGbBdemD1JpmloikzVa5N0+oEcff?=
- =?us-ascii?Q?2M4KurgPnx2OJIi4/4uWq5cWoU4bmnJACjwaUdBChEgAEHfFWH3guXEFI5FQ?=
- =?us-ascii?Q?EDCp9IzGMik7J1I3XpFTdkM464NRUti/rt198TF5j/TUGfYy5gFYyv87vCWQ?=
- =?us-ascii?Q?AeYTS+mXIebcf1oSDnyekK+qHN3s26zl0hJUVeUnxvRX8TRw4Rh8fIKb2waT?=
- =?us-ascii?Q?xRdEmJgBXn3KbyC4Ieq8JJzHdvVbpUOPFabaU8nn6Bwhhkt1Is2tw+yC+JKW?=
- =?us-ascii?Q?Y1NYI5igUInj++KEAkj/S3a4HvK+dLRe2XxaXamlsvHm/7Fkvfz8wRLZtYWr?=
- =?us-ascii?Q?Lnu7O6yr4O5VBqjHh4ONdUeWSEOA1lQzxxwEe5TKpBRik2uDKS5wFDjhb2Ib?=
- =?us-ascii?Q?rMdQY40blrI/ojl8TJ0fIhqkhhdnrm0mtsxU226zExjT3PO7KkJlX3dJq9H9?=
- =?us-ascii?Q?hNVaxj2KWG8Gn56VYjSSEs8fXtiGdwCHI/U5nKuo7GlRcxZuNatKLb1bjRP1?=
- =?us-ascii?Q?kPu+2L+pn2nX3yWGKAJGwmv/dYvrOBWSAr3x5wQtzthRB0UlebNrmSydcyL2?=
- =?us-ascii?Q?aVC+X/HncdzBg1lcl9LlKs2ctAbU5BlvfDZyydgbs7MryRKYGCCxhCzKOJe3?=
- =?us-ascii?Q?qppUxUFMAy3MXKuFCm7K4nQA5dLfko3xxE+FDX0HXl8lFNgeNlMaks4NiReE?=
- =?us-ascii?Q?kh/W+sA9HepkY9vl4dJykKSeM9PfHrSL9QetZB4x4Q5Of7TFi/PJffyftOmy?=
- =?us-ascii?Q?J07DJ74J5SBVb4JlpgwfHHIQrAaKCgijs7+Ol/StHTsHRa/xSc8OQbCUT0QZ?=
- =?us-ascii?Q?giv/gApHN9D64uiSWl1s/ny2vSGPeLsD14iID/adb9uWE2/YhrqbvoItVRCL?=
- =?us-ascii?Q?wXf6nrpfqGdny4DmkGMdJpuBL0gDz0eky/1Wa1V4uahL/Ei/krly/zKR8Wo?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49b19ba9-04ab-4492-f5fb-08dbcfd703c0
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 12:37:39.5039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB6049
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
+ <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 18/10/2023 13:31, Inochi Amaoto wrote:
->> As CV180x and CV181x have the identical layouts, it is OK to use the
->> cv1800b basic device tree for the whole series.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> ---
->>  arch/riscv/boot/dts/sophgo/{cv1800b.dtsi => cv18xx.dtsi} | 0
->>  1 file changed, 0 insertions(+), 0 deletions(-)
->>  rename arch/riscv/boot/dts/sophgo/{cv1800b.dtsi => cv18xx.dtsi} (100%)
->>
->
->If nothing breaks by this commit, means the file is not used, so how did
->it end up in the kernel?
->
+On 18/10/2023 14:35, Mark Brown wrote:
+> On Wed, Oct 18, 2023 at 12:00:55PM +0200, Krzysztof Kozlowski wrote:
+>> On some boards with multiple WSA8840/WSA8845 speakers, the reset
+>> (shutdown) GPIO is shared between two speakers.  Request it as
+>> GPIOD_FLAGS_BIT_NONEXCLUSIVE to allow such configurations.
+> 
+>>  	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
+>> -						GPIOD_OUT_HIGH);
+>> +						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
+> 
+> How do the speakers coordinate?
 
-This commit breaks the including file cv1800b-milkv-duo.dts, which is
-fixed in the next patch. For cv1800b, it only needs to set compatible
-strings. The cv1800b and cv1812h have identical layout.
+They don't and that's the generic problem of many Linux drivers. Not
+only this one, but others as well.
 
-I use this commit to avoid wired output provided by git and make the
-change more clear.
+Device unbind (remove()) or runtime suspend of one speaker will affect
+other speaker. I don't think any other drivers solved this, because this
+is rather core's GPIO issue, thus I am not solving it here either. :(
 
->
->Best regards,
->Krzysztof
->
->
+Best regards,
+Krzysztof
+
