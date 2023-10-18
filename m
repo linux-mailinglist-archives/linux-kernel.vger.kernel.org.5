@@ -2,196 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDF87CE08B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226007CE08E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345110AbjJRO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S1345142AbjJRO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345140AbjJRO6m (ORCPT
+        with ESMTP id S1345139AbjJRO7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:58:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30AA109;
-        Wed, 18 Oct 2023 07:58:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C479C433C8;
-        Wed, 18 Oct 2023 14:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697641114;
-        bh=mnkWVLZ9Y8i+zHIjgcDkOug6dQ2uTfJgT66hAd4Xvtc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QgD7Pp0V88krqY1oBxYwCS92ixQo//Vwtp9jh845KAT3jF0gjvx/sdf/eWVTjqp83
-         +4VnOiVvJXRFRw43u0361PDY+WRPV5hWUmzJHadC8QHcBqN05SaiTyeGOXCaHKYXgP
-         m3VI06pLpPTyEEZZG9uygZPgN3NCDU6kDPWwL3Q90Ex2MK4jUKcJopZoUo6D9BgNr5
-         ylCytT9ugsX064yE+6RY6RRHqD5KHEOVIOHG0ehig1GR+hVtfemlIJxvJZzSkcrXnM
-         NCGgYsYIEloCPy0TreK0hNLprCrp/8mRbWXvmfMmFmqTRxstrHxWRTSwPKvIHKHqKL
-         NnTAybN5AQDwA==
-Message-ID: <115e3643-d290-492c-926a-e11e9964ed3a@kernel.org>
-Date:   Wed, 18 Oct 2023 23:58:25 +0900
+        Wed, 18 Oct 2023 10:59:08 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4744F7;
+        Wed, 18 Oct 2023 07:59:06 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IEx1nq069188;
+        Wed, 18 Oct 2023 09:59:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697641141;
+        bh=yPgGsfJKzCvXwN62kkBo6+6blW8BYPNEdSmbI8WojGM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Ap/yEGHlYgeW5FNHzks9QHiYT7fxazOV2ALPIU7e+pce/mhKkwg3Qs64bSfZZhnYt
+         0W6xBADeYNqCuOUEBIHJdn9BVxRkVDENrHfwhYfAeA8ty1C1O3E/9k4BQfH0PTW4pw
+         TaILxsQGfh4kKuiKvAemF/EYSIaVbs0Vro02eus8=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IEx1B9032106
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Oct 2023 09:59:01 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
+ Oct 2023 09:59:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 18 Oct 2023 09:59:00 -0500
+Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IEwueM026595;
+        Wed, 18 Oct 2023 09:58:57 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vaishnav Achath <vaishnav.a@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <u-kumar1@ti.com>, <j-choudhary@ti.com>
+Subject: Re: [PATCH v2 0/2] arm64: dts: ti: k3-j721s2/j784s4: Add CSI BCDMA nodes
+Date:   Wed, 18 Oct 2023 20:28:43 +0530
+Message-ID: <169764101786.299606.12584643376472033357.b4-ty@ti.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231010111723.17524-1-vaishnav.a@ti.com>
+References: <20231010111723.17524-1-vaishnav.a@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 04/26] PM / devfreq: rockchip-dfi: Add SoC specific
- init function
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
- <20231018061714.3553817-5-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231018061714.3553817-5-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 18. 15:16, Sascha Hauer wrote:
-> Move the RK3399 specifics to a SoC specific init function to make
-> the way free for supporting other SoCs later.
-> 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
-> 
-> Notes:
->     Changes since v4:
->      - use of_device_get_match_data()
->      - use a callback rather than a struct type as driver data
-> 
->  drivers/devfreq/event/rockchip-dfi.c | 48 +++++++++++++++++++---------
->  1 file changed, 33 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index e19e5acaa362c..6b1ef29df7048 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -17,6 +17,7 @@
->  #include <linux/slab.h>
->  #include <linux/list.h>
->  #include <linux/of.h>
-> +#include <linux/of_device.h>
->  
->  #include <soc/rockchip/rk3399_grf.h>
->  
-> @@ -55,27 +56,21 @@ struct rockchip_dfi {
->  	void __iomem *regs;
->  	struct regmap *regmap_pmu;
->  	struct clk *clk;
-> +	u32 ddr_type;
->  };
->  
->  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
->  {
->  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
->  	void __iomem *dfi_regs = dfi->regs;
-> -	u32 val;
-> -	u32 ddr_type;
-> -
-> -	/* get ddr type */
-> -	regmap_read(dfi->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
-> -	ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
-> -		    RK3399_PMUGRF_DDRTYPE_MASK;
->  
->  	/* clear DDRMON_CTRL setting */
->  	writel_relaxed(CLR_DDRMON_CTRL, dfi_regs + DDRMON_CTRL);
->  
->  	/* set ddr type to dfi */
-> -	if (ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR3)
-> +	if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR3)
->  		writel_relaxed(LPDDR3_EN, dfi_regs + DDRMON_CTRL);
-> -	else if (ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR4)
-> +	else if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR4)
->  		writel_relaxed(LPDDR4_EN, dfi_regs + DDRMON_CTRL);
->  
->  	/* enable count, use software mode */
-> @@ -167,8 +162,26 @@ static const struct devfreq_event_ops rockchip_dfi_ops = {
->  	.set_event = rockchip_dfi_set_event,
->  };
->  
-> +static int rk3399_dfi_init(struct rockchip_dfi *dfi)
-> +{
-> +	struct regmap *regmap_pmu = dfi->regmap_pmu;
-> +	u32 val;
-> +
-> +	dfi->clk = devm_clk_get(dfi->dev, "pclk_ddr_mon");
-> +	if (IS_ERR(dfi->clk))
-> +		return dev_err_probe(dfi->dev, PTR_ERR(dfi->clk),
-> +				     "Cannot get the clk pclk_ddr_mon\n");
-> +
-> +	/* get ddr type */
-> +	regmap_read(regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
-> +	dfi->ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
-> +			RK3399_PMUGRF_DDRTYPE_MASK;
-> +
-> +	return 0;
-> +};
-> +
->  static const struct of_device_id rockchip_dfi_id_match[] = {
-> -	{ .compatible = "rockchip,rk3399-dfi" },
-> +	{ .compatible = "rockchip,rk3399-dfi", .data = rk3399_dfi_init },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, rockchip_dfi_id_match);
-> @@ -179,6 +192,12 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  	struct rockchip_dfi *dfi;
->  	struct devfreq_event_desc *desc;
->  	struct device_node *np = pdev->dev.of_node, *node;
-> +	int (*soc_init)(struct rockchip_dfi *dfi);
-> +	int ret;
-> +
-> +	soc_init = of_device_get_match_data(&pdev->dev);
-> +	if (!soc_init)
-> +		return -EINVAL;
->  
->  	dfi = devm_kzalloc(dev, sizeof(*dfi), GFP_KERNEL);
->  	if (!dfi)
-> @@ -188,11 +207,6 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  	if (IS_ERR(dfi->regs))
->  		return PTR_ERR(dfi->regs);
->  
-> -	dfi->clk = devm_clk_get(dev, "pclk_ddr_mon");
-> -	if (IS_ERR(dfi->clk))
-> -		return dev_err_probe(dev, PTR_ERR(dfi->clk),
-> -				     "Cannot get the clk pclk_ddr_mon\n");
-> -
->  	node = of_parse_phandle(np, "rockchip,pmu", 0);
->  	if (!node)
->  		return dev_err_probe(&pdev->dev, -ENODEV, "Can't find pmu_grf registers\n");
-> @@ -209,6 +223,10 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  	desc->driver_data = dfi;
->  	desc->name = np->name;
->  
-> +	ret = soc_init(dfi);
-> +	if (ret)
-> +		return ret;
-> +
->  	dfi->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
->  	if (IS_ERR(dfi->edev)) {
->  		dev_err(&pdev->dev,
+Hi Vaishnav Achath,
 
-Already applied it on v7.
+On Tue, 10 Oct 2023 16:47:21 +0530, Vaishnav Achath wrote:
+> J721S2 and J784S4 have a dedicated BCDMA controller for
+> Camera Serial Interface. Add the node for the DMA controllers
+> and keep it disabled by default.
+> 
+> The BCDMA instances were enabled/disabled and tested:
+> J721S2 : https://gist.github.com/vaishnavachath/4b9d7ec2ee1aad59a57d44cf28ed7eb0
+> J784S4 : https://gist.github.com/vaishnavachath/f928e4566aa80c7f47e7ac3c1491d62e
+> 
+> [...]
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/2] arm64: dts: ti: k3-j721s2-main: Add BCDMA instance for CSI2RX
+      commit: 10c6c4db6283053e8ec20eef19eb77d4aeffed1a
+[2/2] arm64: dts: ti: k3-j784s4-main: Add BCDMA instance for CSI2RX
+      commit: 8b2e41833bd649086e32ac4c3a412d7ec80e8202
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+--
+Vignesh
 
