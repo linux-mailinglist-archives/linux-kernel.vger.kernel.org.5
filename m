@@ -2,103 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E8C7CE07F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211A27CE084
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345045AbjJRO6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        id S1345068AbjJRO6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235255AbjJRO56 (ORCPT
+        with ESMTP id S235263AbjJRO6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:57:58 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA6D109
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:57:55 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so11961452a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697641074; x=1698245874; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ru2R7zuvY45hV9RylJTA2u/cUA8xp2Mn6s4hLcqrWjk=;
-        b=XlGFl4slyc37E0A9PVGSExMMi0jnmIava72qbqtsGfGEbxf2iljWLNXVJRE4qH23v1
-         tZqXwWHtYNLzhdYz4uNgoDW93Fs38cawcvQODXSmresAURRI2XKnhRQy4qe7zX8dxxvA
-         wkc+H5FdfP+d6KIGHK3MOXKGuVjoTELdB0YoCIk+mKz5sPoTkTW8dvE5MIcGjvFgJBYG
-         dfwcO/paVbQO5Fq4UJt0Jrj9MpFSCyDkFA0/8lTeG3o4tFPPomgnbTlyE+BwCOc+25V0
-         ycPOsJLqxBs4tBTRJrrDJ89l3DmFPxgk9PvW2KNZ/twN1uruI/khSZAZgD88iiNOq4Rj
-         FjZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697641074; x=1698245874;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ru2R7zuvY45hV9RylJTA2u/cUA8xp2Mn6s4hLcqrWjk=;
-        b=pSwWmvyt7B8TcYwAb8bY4zuF5btOk71H0xe5uZfF35m+zSn0uts7HxR7XXcYkVRvTy
-         HgnlDkjphqVES6KGb+nM8cI9hgD88P35Wjh0TyB+QU+uxbaRHvDNPxOY5SfGNvSoG4U6
-         MpOw0nbRGQu/EXOq01/geDPzdhPyBAiQDzG0rc3tfm9fJ1ZMO+opw6jKBPkqgEcuQC4J
-         qZFTRVUDsxq37t1WQ5jFkaZJ9uJCl3xCKGhKgmvGvdAqE3VedM7QfqaqkpkOvuUkQICC
-         uiZjv5TWDy+b6AN/xhQhdqG3JsiZbXo1lHmlfqwYmbKvk9el5p8dskRy8rZ6iNk+bB+s
-         uagQ==
-X-Gm-Message-State: AOJu0Yy8iGUZEUIFYVsLnNFLMUgkFNeXw8a3IHc9XPZfmw3vdWXv8doC
-        jSAwA2ekP49R+DgF3stmWvHs1A==
-X-Google-Smtp-Source: AGHT+IF3KKzONpdhTXHuqkIwWMJvt0YLy7is0f4aGGbq4QIrdEF6b1TfFbNUCBYfaeYF9w08njGe7Q==
-X-Received: by 2002:a50:a446:0:b0:53e:10a1:21d with SMTP id v6-20020a50a446000000b0053e10a1021dmr4191660edb.35.1697641074233;
-        Wed, 18 Oct 2023 07:57:54 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id t29-20020a50ab5d000000b0053ed70ebd7csm2983570edc.31.2023.10.18.07.57.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 07:57:53 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Wed, 18 Oct 2023 10:58:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F457116;
+        Wed, 18 Oct 2023 07:58:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B1C0C433C7;
+        Wed, 18 Oct 2023 14:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697641091;
+        bh=oON56p+SlehrIDMoT8ql+1sFP3jroX/v1hAIFl+OSLo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=OClBTbVISFPOhxalCQ95Y/r15vhVG87qNTc96xZGLo9QVJe4h8k5OoXpod82FVh3e
+         LwhFjujSdwhS51FNPq9H2h2yVf7uHnYftQv8mBiHRU0zK43QPq0Pfo6FhdGY3VS/Vy
+         A2ScolHoUUnBtVAMJHwLtqLlnY0fKhQRvDr/bVTvV8syR3SiNl/z1XvWGUuWNziq0F
+         otfoHXjQmVbfkEC/wjqXVtzKVTXP0UcmXBzS7g93mzSpLvJYFkdPeapPc655I4lyWq
+         +XigI9ZECcvg6XBfFTeYeDg8EnCkI48gFZJugION51WyW45N0N/mqck+9hf5xBV7Hq
+         oGnPXW8iCf3UA==
+Message-ID: <c89e0fa8-e51e-47f1-9857-f01bd3e79bab@kernel.org>
+Date:   Wed, 18 Oct 2023 23:58:05 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 03/26] PM / devfreq: rockchip-dfi: use consistent name
+ for private data struct
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: pinctrl: qcom,sa8775p-tlmm: add missing wakeup-parent
-Date:   Wed, 18 Oct 2023 16:57:50 +0200
-Message-Id: <20231018145750.429385-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
+ <20231018061714.3553817-4-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20231018061714.3553817-4-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing wakeup-parent property, already used by DTS to indicate that
-pins are wakeup capable:
+On 23. 10. 18. 15:16, Sascha Hauer wrote:
+> The variable name for the private data struct is 'info' in some
+> functions and 'data' in others. Both names do not give a clue what
+> type the variable has, so consistently use 'dfi'.
+> 
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/devfreq/event/rockchip-dfi.c | 72 ++++++++++++++--------------
+>  1 file changed, 36 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 467f9f42d38f7..e19e5acaa362c 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -59,13 +59,13 @@ struct rockchip_dfi {
+>  
+>  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> -	void __iomem *dfi_regs = info->regs;
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+> +	void __iomem *dfi_regs = dfi->regs;
+>  	u32 val;
+>  	u32 ddr_type;
+>  
+>  	/* get ddr type */
+> -	regmap_read(info->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
+> +	regmap_read(dfi->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
+>  	ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
+>  		    RK3399_PMUGRF_DDRTYPE_MASK;
+>  
+> @@ -84,28 +84,28 @@ static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
+>  
+>  static void rockchip_dfi_stop_hardware_counter(struct devfreq_event_dev *edev)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> -	void __iomem *dfi_regs = info->regs;
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+> +	void __iomem *dfi_regs = dfi->regs;
+>  
+>  	writel_relaxed(SOFTWARE_DIS, dfi_regs + DDRMON_CTRL);
+>  }
+>  
+>  static int rockchip_dfi_get_busier_ch(struct devfreq_event_dev *edev)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+>  	u32 tmp, max = 0;
+>  	u32 i, busier_ch = 0;
+> -	void __iomem *dfi_regs = info->regs;
+> +	void __iomem *dfi_regs = dfi->regs;
+>  
+>  	rockchip_dfi_stop_hardware_counter(edev);
+>  
+>  	/* Find out which channel is busier */
+>  	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
+> -		info->ch_usage[i].access = readl_relaxed(dfi_regs +
+> +		dfi->ch_usage[i].access = readl_relaxed(dfi_regs +
+>  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20) * 4;
+> -		info->ch_usage[i].total = readl_relaxed(dfi_regs +
+> +		dfi->ch_usage[i].total = readl_relaxed(dfi_regs +
+>  				DDRMON_CH0_COUNT_NUM + i * 20);
+> -		tmp = info->ch_usage[i].access;
+> +		tmp = dfi->ch_usage[i].access;
+>  		if (tmp > max) {
+>  			busier_ch = i;
+>  			max = tmp;
+> @@ -118,20 +118,20 @@ static int rockchip_dfi_get_busier_ch(struct devfreq_event_dev *edev)
+>  
+>  static int rockchip_dfi_disable(struct devfreq_event_dev *edev)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+>  
+>  	rockchip_dfi_stop_hardware_counter(edev);
+> -	clk_disable_unprepare(info->clk);
+> +	clk_disable_unprepare(dfi->clk);
+>  
+>  	return 0;
+>  }
+>  
+>  static int rockchip_dfi_enable(struct devfreq_event_dev *edev)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+>  	int ret;
+>  
+> -	ret = clk_prepare_enable(info->clk);
+> +	ret = clk_prepare_enable(dfi->clk);
+>  	if (ret) {
+>  		dev_err(&edev->dev, "failed to enable dfi clk: %d\n", ret);
+>  		return ret;
+> @@ -149,13 +149,13 @@ static int rockchip_dfi_set_event(struct devfreq_event_dev *edev)
+>  static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
+>  				  struct devfreq_event_data *edata)
+>  {
+> -	struct rockchip_dfi *info = devfreq_event_get_drvdata(edev);
+> +	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+>  	int busier_ch;
+>  
+>  	busier_ch = rockchip_dfi_get_busier_ch(edev);
+>  
+> -	edata->load_count = info->ch_usage[busier_ch].access;
+> -	edata->total_count = info->ch_usage[busier_ch].total;
+> +	edata->load_count = dfi->ch_usage[busier_ch].access;
+> +	edata->total_count = dfi->ch_usage[busier_ch].total;
+>  
+>  	return 0;
+>  }
+> @@ -176,47 +176,47 @@ MODULE_DEVICE_TABLE(of, rockchip_dfi_id_match);
+>  static int rockchip_dfi_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> -	struct rockchip_dfi *data;
+> +	struct rockchip_dfi *dfi;
+>  	struct devfreq_event_desc *desc;
+>  	struct device_node *np = pdev->dev.of_node, *node;
+>  
+> -	data = devm_kzalloc(dev, sizeof(struct rockchip_dfi), GFP_KERNEL);
+> -	if (!data)
+> +	dfi = devm_kzalloc(dev, sizeof(*dfi), GFP_KERNEL);
+> +	if (!dfi)
+>  		return -ENOMEM;
+>  
+> -	data->regs = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(data->regs))
+> -		return PTR_ERR(data->regs);
+> +	dfi->regs = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(dfi->regs))
+> +		return PTR_ERR(dfi->regs);
+>  
+> -	data->clk = devm_clk_get(dev, "pclk_ddr_mon");
+> -	if (IS_ERR(data->clk))
+> -		return dev_err_probe(dev, PTR_ERR(data->clk),
+> +	dfi->clk = devm_clk_get(dev, "pclk_ddr_mon");
+> +	if (IS_ERR(dfi->clk))
+> +		return dev_err_probe(dev, PTR_ERR(dfi->clk),
+>  				     "Cannot get the clk pclk_ddr_mon\n");
+>  
+>  	node = of_parse_phandle(np, "rockchip,pmu", 0);
+>  	if (!node)
+>  		return dev_err_probe(&pdev->dev, -ENODEV, "Can't find pmu_grf registers\n");
+>  
+> -	data->regmap_pmu = syscon_node_to_regmap(node);
+> +	dfi->regmap_pmu = syscon_node_to_regmap(node);
+>  	of_node_put(node);
+> -	if (IS_ERR(data->regmap_pmu))
+> -		return PTR_ERR(data->regmap_pmu);
+> +	if (IS_ERR(dfi->regmap_pmu))
+> +		return PTR_ERR(dfi->regmap_pmu);
+>  
+> -	data->dev = dev;
+> +	dfi->dev = dev;
+>  
+> -	desc = &data->desc;
+> +	desc = &dfi->desc;
+>  	desc->ops = &rockchip_dfi_ops;
+> -	desc->driver_data = data;
+> +	desc->driver_data = dfi;
+>  	desc->name = np->name;
+>  
+> -	data->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
+> -	if (IS_ERR(data->edev)) {
+> +	dfi->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
+> +	if (IS_ERR(dfi->edev)) {
+>  		dev_err(&pdev->dev,
+>  			"failed to add devfreq-event device\n");
+> -		return PTR_ERR(data->edev);
+> +		return PTR_ERR(dfi->edev);
+>  	}
+>  
+> -	platform_set_drvdata(pdev, data);
+> +	platform_set_drvdata(pdev, dfi);
+>  
+>  	return 0;
+>  }
 
-  sa8775p-ride.dtb: pinctrl@f000000: 'wakeup-parent' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+Already applied it on v7.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-index e119a226a4b1..2173c5255638 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-@@ -28,6 +28,7 @@ properties:
-   gpio-controller: true
-   "#gpio-cells": true
-   gpio-ranges: true
-+  wakeup-parent: true
- 
-   gpio-reserved-ranges:
-     minItems: 1
 -- 
-2.34.1
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
