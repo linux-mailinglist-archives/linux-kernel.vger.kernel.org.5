@@ -2,65 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BEB7CD19B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7F7CD1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbjJRBGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 21:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S1344238AbjJRBKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 21:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjJRBF6 (ORCPT
+        with ESMTP id S229463AbjJRBKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 21:05:58 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED26B0;
-        Tue, 17 Oct 2023 18:05:55 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VuOo5c-_1697591152;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VuOo5c-_1697591152)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Oct 2023 09:05:53 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] PCI: Remove duplicated include in pci.c
-Date:   Wed, 18 Oct 2023 09:05:51 +0800
-Message-Id: <20231018010551.118071-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 17 Oct 2023 21:10:15 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CCDB6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:10:14 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b7179ff4easo2441183a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697591414; x=1698196214; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E16mHWskjTK/3B68Q/Af3Teg1/R8lnVGjDiVWL3Gi8c=;
+        b=XxajgS6DEeyskLQvwZCq4+hzkNK3/lfws5r3oQW+RYnw1cUNQRQ9Kg5K16vDWNnPNI
+         YtjXOsod+tCYYiFHg3UG+nWORmehgOBNKWh4u5bjGVC5yHCOvPmRyjbiSCaQ7woanc5T
+         U2DJLNWabXj0YEqKMt9R7MkrIPNDxosa/6HkNY8Sle74XM4dtNGsK8XMMdDj2+hjaaBh
+         iohbD/a80XQ6ZaurfgjXQUwmQ0ddWtzLwh5yjLWcznMWbqBqZXuFm1gdjYrlVLSd+Y1K
+         ZIdDaoq6Phr2xk670Ul/pqyCMVNmDZjbe3p/p7JDL0L3xJEnN0KaPw4VNhpqa6Z+Gssl
+         Re2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697591414; x=1698196214;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E16mHWskjTK/3B68Q/Af3Teg1/R8lnVGjDiVWL3Gi8c=;
+        b=d20C1AMwBx7P3g4IMT23IdhxPYgto9hzLmfQ9a+6dHLTgkDOU0xcVorhQqJxr4F8X/
+         UjHp2yGPK+VD+9CyLBjFWvrxKtNwmsnbXVaz4+RXElhdZP9DKWWUHzH6mf6ZFqAvbM8V
+         MiGvcyoabXtog7MWc6usJQN1r8PRaVTHeilLHWL+uDoUbktQq/zBGvWli9JbTV4GU+CA
+         UE8+dyc54RFfSXFPtEFJiRuPBohetENAZWy2oJqZf8TSw/lx5XfaCw09eGr7viJd91S5
+         x95sI2gkmOkpYIOmmeKhE5G+uarPRS/62z3PmIn7hVjppzagUfOoxqVeVTcSxtq9qjGR
+         Qhjw==
+X-Gm-Message-State: AOJu0YyoIcgJ6TP/tvjXneLn1lFEfjKrRzVMHtsm6kkhnfch1vfltI8w
+        Hsp3Fu/JycMBc5LPK1ZDBWgjJmMP8NY=
+X-Google-Smtp-Source: AGHT+IGHyYI6m11j74GgAMpc6cp+2vjYXNqQ9yFJFAolNqis+S4xnhwYV0x/iBUJz9i94LnYDn3tHaUP2g4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab54:b0:1ca:7295:8127 with SMTP id
+ ij20-20020a170902ab5400b001ca72958127mr78911plb.13.1697591413896; Tue, 17 Oct
+ 2023 18:10:13 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 18:10:12 -0700
+In-Reply-To: <20231016184737.1027930-1-michael.roth@amd.com>
+Mime-Version: 1.0
+References: <20231016184737.1027930-1-michael.roth@amd.com>
+Message-ID: <ZS8wdNtAoSvH_jpX@google.com>
+Subject: Re: [PATCH gmem] KVM: selftests: Fix gmem conversion tests for
+ multiple vCPUs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vannapurve@google.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./drivers/pci/pci.c: linux/bitfield.h is included more than once.
+On Mon, Oct 16, 2023, Michael Roth wrote:
+> Currently the private_mem_conversions_test crashes if invoked with the
+> -n <num_vcpus> option without also specifying multiple memslots via -m.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6898
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/pci/pci.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 5b70eefc38fc..92b8dafec0d9 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -32,7 +32,6 @@
- #include <linux/vmalloc.h>
- #include <asm/dma.h>
- #include <linux/aer.h>
--#include <linux/bitfield.h>
- #include "pci.h"
+Totally a PEBKAC, not a bug ;-)
  
- DEFINE_MUTEX(pci_slot_mutex);
--- 
-2.20.1.7.g153144c
+> This is because the current implementation assumes -m is specified and
+> always sets up the per-vCPU memory with a dedicated memslot for each
+> vCPU. When -m is not specified, the test skips setting up
+> memslots/memory for secondary vCPUs.
+> 
+> The current code does seem to try to handle using a single memslot for
+> multiple vCPUs in some places, e.g. the call-site, but
+> test_mem_conversions() is missing the important bit of sizing the single
+> memslot appropriately to handle all the per-vCPU memory. Implement that
+> handling.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  .../kvm/x86_64/private_mem_conversions_test.c        | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> index c04e7d61a585..5eb693fead33 100644
+> --- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> @@ -388,10 +388,14 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+>  		gmem_flags = 0;
+>  	memfd = vm_create_guest_memfd(vm, memfd_size, gmem_flags);
+>  
+> -	for (i = 0; i < nr_memslots; i++)
+> -		vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
+> -			   BASE_DATA_SLOT + i, size / vm->page_size,
+> -			   KVM_MEM_PRIVATE, memfd, size * i);
+> +	if (nr_memslots == 1)
+> +		vm_mem_add(vm, src_type, BASE_DATA_GPA, BASE_DATA_SLOT,
+> +			   memfd_size / vm->page_size, KVM_MEM_PRIVATE, memfd, 0);
+> +	else
+> +		for (i = 0; i < nr_memslots; i++)
 
+The if-else needs curly braces.
+
+> +			vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
+> +				   BASE_DATA_SLOT + i, size / vm->page_size,
+> +				   KVM_MEM_PRIVATE, memfd, size * i);
+
+But I think that's a moot point, because isn't it easier to do this?
+
+diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+index c04e7d61a585..c99073098f98 100644
+--- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
++++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+@@ -367,6 +367,7 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+         */
+        const size_t size = align_up(PER_CPU_DATA_SIZE, get_backing_src_pagesz(src_type));
+        const size_t memfd_size = size * nr_vcpus;
++       const size_t slot_size = memfd_size / nr_memslots;
+        struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+        pthread_t threads[KVM_MAX_VCPUS];
+        uint64_t gmem_flags;
+@@ -390,7 +391,7 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+ 
+        for (i = 0; i < nr_memslots; i++)
+                vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
+-                          BASE_DATA_SLOT + i, size / vm->page_size,
++                          BASE_DATA_SLOT + i, slot_size / vm->page_size,
+                           KVM_MEM_PRIVATE, memfd, size * i);
+ 
+        for (i = 0; i < nr_vcpus; i++) {
