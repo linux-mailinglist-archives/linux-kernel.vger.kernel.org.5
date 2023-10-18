@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2130D7CDD38
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15ED7CDD3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344661AbjJRN1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        id S1344688AbjJRN2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbjJRN1u (ORCPT
+        with ESMTP id S231748AbjJRN2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:27:50 -0400
+        Wed, 18 Oct 2023 09:28:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D95A3;
-        Wed, 18 Oct 2023 06:27:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 902D3C433C8;
-        Wed, 18 Oct 2023 13:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697635666;
-        bh=jCgth0ZM5NS8POYLQWWncAMyPeJN/zdTVz+jC6/ir9s=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B27115;
+        Wed, 18 Oct 2023 06:28:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFF23C433C9;
+        Wed, 18 Oct 2023 13:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697635686;
+        bh=iLmiQsrFLaoTQBSf63WblBjFMj7qtawoLyyCTo0IaaA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cgi7WPeIR22Maw7vQXg4kBgzinMLtQgFbpnFy9pUgqlKbc4AtGgTaOEBdVkMrWKCz
-         ptQNibWB+rUMv/fArQrHll9RBq9B+8lWECJTao2WD01tRUvFWQ5Y4toqTEAntZVBIc
-         bWUQRuYQgzQK4JKeyxxQqHPfjuKodQC/lS5z+kow=
-Date:   Wed, 18 Oct 2023 15:27:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dorcas Litunya <anonolitunya@gmail.com>
-Cc:     outreachy@lists.linux.dev, julia.lawall@inria.fr,
-        dan.carpenter@linaro.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] Staging: sm750fb: Rename
- displayControlAdjust_SM750E
-Message-ID: <2023101844-sadness-payee-0923@gregkh>
-References: <20231016201434.7880-1-anonolitunya@gmail.com>
- <20231016201434.7880-2-anonolitunya@gmail.com>
- <2023101724-diagram-legwork-0e53@gregkh>
- <ZS5FlsCPETnr8T5D@dorcaslitunya-virtual-machine>
- <2023101712-grudge-overtime-1f43@gregkh>
- <ZS5JexVUSKZUuOd4@dorcaslitunya-virtual-machine>
- <ZS7WvaM65awtILqk@dorcaslitunya-virtual-machine>
+        b=ZobnOmL8WENcMI6dMg0IuPhAas+ySO5bqbZpQP2XvCXd+u3MRzwxPYQdNHcGjd8tO
+         eP/A5jnXYfQ0tVhPCyHbmy1V1j349j87eMwhWxzQfnO4x3PIcbqrJHdMnzkN3Cce1e
+         cnK4qVmE8L/YUQypxniYUOjvtD6+ryZYCElTJ9HzxE+meGIcFspAfZsKZ9WuWn1jlG
+         TdTOy9HlVouc6lF5KwsmZOk0v2dlzyB69+NYN5cCMnEwdaV1fzGI/QxfZhxljbStyq
+         rxlpQVz8fv2LlQ7+7XpVHMWHQY+kruzpjPo9pXpvABB+icrPUC6VsjEfwjBQFZ4UYl
+         Wx4dqw943zNYw==
+Date:   Wed, 18 Oct 2023 18:57:58 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 2/2] PCI: qcom-ep: Implement dbi_cs2_access() function
+ callback for DBI CS2 access
+Message-ID: <20231018132758.GD47321@thinkpad>
+References: <20231017-pcie-qcom-bar-v1-0-3e26de07bec0@linaro.org>
+ <20231017-pcie-qcom-bar-v1-2-3e26de07bec0@linaro.org>
+ <20231017142431.GR3553829@hu-bjorande-lv.qualcomm.com>
+ <20231017162129.GF5274@thinkpad>
+ <20231017165609.GT3553829@hu-bjorande-lv.qualcomm.com>
+ <20231017174100.GA137137@thinkpad>
+ <20231017221811.GV3553829@hu-bjorande-lv.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZS7WvaM65awtILqk@dorcaslitunya-virtual-machine>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231017221811.GV3553829@hu-bjorande-lv.qualcomm.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,81 +62,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:47:25PM +0300, Dorcas Litunya wrote:
-> On Tue, Oct 17, 2023 at 11:44:43AM +0300, Dorcas Litunya wrote:
-> > On Tue, Oct 17, 2023 at 10:34:43AM +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Oct 17, 2023 at 11:28:06AM +0300, Dorcas Litunya wrote:
-> > > > On Tue, Oct 17, 2023 at 09:50:50AM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Mon, Oct 16, 2023 at 11:14:08PM +0300, Dorcas AnonoLitunya wrote:
-> > > > > > Rename function displayControlAdjust_SM750E to
-> > > > > > display_control_adjust_SM750E. This follows snakecase naming convention
-> > > > > > and ensures a consistent naming style throughout the file. Issue found by
-> > > > > > checkpatch.
-> > > > > > 
-> > > > > > Mutes the following error:
-> > > > > > CHECK:Avoid CamelCase: <displayControlAdjust_SM750E>
-> > > > > > 
-> > > > > > Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
-> > > > > > ---
-> > > > > >  drivers/staging/sm750fb/ddk750_mode.c | 6 +++---
-> > > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > > index e00a6cb31947..8708995f676c 100644
-> > > > > > --- a/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > > +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > > @@ -14,8 +14,8 @@
-> > > > > >   * in bit 29:27 of Display Control register.
-> > > > > >   */
-> > > > > >  static unsigned long
-> > > > > > -displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
-> > > > > > -			     unsigned long dispControl)
-> > > > > > +display_control_adjust_SM750LE(struct mode_parameter *pModeParam,
-> > > > > > +			       unsigned long dispControl)
-> > > > > >  {
-> > > > > >  	unsigned long x, y;
-> > > > > >  
-> > > > > > @@ -125,7 +125,7 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
-> > > > > >  			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
-> > > > > >  
-> > > > > >  		if (sm750_get_chip_type() == SM750LE) {
-> > > > > > -			displayControlAdjust_SM750LE(pModeParam, tmp);
-> > > > > > +			display_control_adjust_SM750LE(pModeParam, tmp);
+On Tue, Oct 17, 2023 at 03:18:11PM -0700, Bjorn Andersson wrote:
+> On Tue, Oct 17, 2023 at 11:11:00PM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Oct 17, 2023 at 09:56:09AM -0700, Bjorn Andersson wrote:
+> > > On Tue, Oct 17, 2023 at 09:51:29PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Tue, Oct 17, 2023 at 07:24:31AM -0700, Bjorn Andersson wrote:
+> > > > > On Tue, Oct 17, 2023 at 11:47:55AM +0530, Manivannan Sadhasivam wrote:
+> > > > > > From: Manivannan Sadhasivam <mani@kernel.org>
 > > > > > 
-> > > > > Why is this function returning a value if it is just being ignored?
+> > > > > Your S-o-b should match this.
 > > > > > 
-> > > > > It's not the issue here in the patch, but for future changes.
-> > > > >
-> > > > Hi Greg,
 > > > > 
-> > > > I will do the correction in the next patchset to correct both functions
-> > > > return value as this patchset was not focused on that. Does this mean
-> > > > that this patchset has been accepted? Or should I submit another
-> > > > patchset that includes the two changes suggested on function return
-> > > > values?
+> > > > I gave b4 a shot for sending the patches and missed this. Will fix it in next
+> > > > version.
+> > > > 
+> > > > > > 
+> > > > > > Qcom EP platforms require enabling/disabling the DBI CS2 access while
+> > > > > > programming some read only and shadow registers through DBI. So let's
+> > > > > > implement the dbi_cs2_access() callback that will be called by the DWC core
+> > > > > > while programming such registers like BAR mask register.
+> > > > > > 
+> > > > > > Without DBI CS2 access, writes to those registers will not be reflected.
+> > > > > > 
+> > > > > > Fixes: f55fee56a631 ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
+> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > ---
+> > > > > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 14 ++++++++++++++
+> > > > > >  1 file changed, 14 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > > > index 32c8d9e37876..4653cbf7f9ed 100644
+> > > > > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > > > @@ -124,6 +124,7 @@
+> > > > > >  
+> > > > > >  /* ELBI registers */
+> > > > > >  #define ELBI_SYS_STTS				0x08
+> > > > > > +#define ELBI_CS2_ENABLE				0xa4
+> > > > > >  
+> > > > > >  /* DBI registers */
+> > > > > >  #define DBI_CON_STATUS				0x44
+> > > > > > @@ -262,6 +263,18 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
+> > > > > >  	disable_irq(pcie_ep->perst_irq);
+> > > > > >  }
+> > > > > >  
+> > > > > > +static void qcom_pcie_dbi_cs2_access(struct dw_pcie *pci, bool enable)
+> > > > > > +{
+> > > > > > +	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > > > > > +
+> > > > > > +	writel_relaxed(enable, pcie_ep->elbi + ELBI_CS2_ENABLE);
+> > > > > 
+> > > > > Don't you want to maintain the ordering of whatever write came before
+> > > > > this?
+> > > > > 
+> > > > 
+> > > > Since this in a dedicated function, I did not care about the ordering w.r.t
+> > > > previous writes. Even if it gets inlined, the order should not matter since it
+> > > > only enables/disables the CS2 access for the forthcoming writes.
+> > > > 
 > > > 
-> > > You'll get an email from my system when it is accepted, wait a day or so
-> > > before worrying about that.  And then send new patches on top of them
-> > > then.
+> > > The wmb() - in a non-relaxed writel -  would ensure that no earlier
+> > > writes are reordered and end up in your expected set of "forthcoming
+> > > writes".
 > > > 
-> > Thanks for the clarification Greg. I will wait for the confirmation
-> > email from your system then send the new patches shortly afterwards.
 > > 
-> > thanks,
-> > Dorcas
-> > > thanks,
-> > > 
-> > > greg k-h
-> Hello,
->  I have realised there was an error in the commit message subject and body for this patch. I had put "Staging: sm750fb: Rename displayControlAdjust_SM750E" instead of "Staging: sm750fb: Rename displayControlAdjust_SM750LE".I had forgotten the L in SM750LE. I have modified the commit message using git commit --amend to correct the mistake. I have seen the patch has been accepted, however, I am not sure whether the change in the commit message will reflect once the patch is merged. Please guide on what to do next. I am really sorry for the inconvenience.
+> > I was under the impression that the readl_relaxed() here serves as an implicit
+> > barrier. But reading the holy memory-barriers documentation doesn't explicitly
+> > say so. So I'm going to add wmb() to be on the safe side as you suggested.
+> > 
+> 
+> I'm talking about writes prior to this function is being called.
+> 
+> In other words, if you write:
+> 
+> writel_relaxed(A, ptr); (or writel, it doesn't matter)
+> writel_relaxed(X, ELBI_CS2_ENABLE);
+> readl_relaxed(ELBI_CS2_ENABLE);
+> 
+> Then there are circumstances where the write to ptr might be performed
+> after ELBI_CS2_ENABLE.
+> 
 
-There is no connection between the change you made on your machine, and
-the ones on mine which get pushed to kernel.org.  So if you need a
-change, you need to send a new patch.
+That shouldn't cause any issues as CS2_ENABLE just opens up the write access to
+read only registers. It will cause issues if CPU/compiler reorders this write
+with the following writes where we actually write to the read only registers.
 
-For a typo fix like this, don't worry about it, it's already in my tree
-and is not worth dropping it, so it's all ok.
+For that I initially thought the readl_relaxed() would be sufficient. But
+looking more, it may not be enough since CS2_ENABLE register lies in ELBI space
+and the read only registers are in DBI space. So the CPU may reorder writes if
+this function gets inlined by the compiler since both are in different hardware
+space (not sure if CPU considers both regions as one since they are in PCI
+domain, in that case the barrier is not required, but I'm not sure).
 
-thanks,
+So to be on the safe side, I should add wmb() after the CS2_ENABLE write.
 
-greg k-h
+- Mani
+
+> Iiuc, the way to avoid that is to either be certain that none of those
+> circumstances applies, or to add a wmb(), like:
+> 
+> writel_relaxed(A, ptr); (or writel, it doesn't matter)
+> wmb();
+> writel_relaxed(X, ELBI_CS2_ENABLE);
+> readl_relaxed(ELBI_CS2_ENABLE);
+> 
+> or short hand:
+> 
+> writel_relaxed(A, ptr); (or writel, it doesn't matter)
+> writel(X, ELBI_CS2_ENABLE);
+> readl_relaxed(ELBI_CS2_ENABLE);
+> 
+> Where the wmb() will ensure the two writes happen in order.
+> 
+> The read in your code will ensure that execution won't proceed until the
+> write has hit the hardware, so that's good. But writing this makes me
+> uncertain if there's sufficient guarantees for the CPU not reordering
+> later operations.
+> 
+> Regards,
+> Bjorn
+
+-- 
+மணிவண்ணன் சதாசிவம்
