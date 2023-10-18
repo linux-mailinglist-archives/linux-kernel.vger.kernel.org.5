@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7AC7CEB7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC6C7CEB82
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjJRWxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S230304AbjJRW5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJRWxJ (ORCPT
+        with ESMTP id S229632AbjJRW5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:53:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26B7115
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:53:07 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697669586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aVtOactJ1TymnCHMGNnseSmaZvbustdeqqgs9YNOttw=;
-        b=Ysch+2hE7gZoO4Qjd+aj7FnyWHzDCjfW4UPnXGM0S3fbccS5V6CbBZHDSTOuhQi03pDodd
-        jVfeynUjZ3svRNvkYgXFVizsgwYgFPm1vkD0A/IFPgRUu9OP9dbubHuYs1+48r0Nt4nZxb
-        7i+ShMbFMZBvalRIQ1p5LghwuASVYBFotDRLwqvcLNWG7kHz5SUG/ZHEJSYFQXx4h39LZQ
-        qipWXN5ox9kbahUJOewlhdwCdyyC3zMS3LqJAmv0XGZMahPdBuQ9SP+i0KDBsWDocCCSLO
-        UPZBjM7kBHGbnKZWgJusgHWOWdoS3AN+7CIPbhtHOdjeaUAZ4gZEz/eF231y9w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697669586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aVtOactJ1TymnCHMGNnseSmaZvbustdeqqgs9YNOttw=;
-        b=1z15eYutbjRCKrR8dISYOIoDdqZUhSkpp/QQKbwHDPWI4V6wEtoI9q/kEA9Bw2IBVx1ht3
-        k/hmWXX13pk4InCQ==
-To:     paulmck@kernel.org, Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>, urezki@gmail.com
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-In-Reply-To: <7520a5b9-b604-4da2-b874-32505f175f39@paulmck-laptop>
-References: <87ttrngmq0.ffs@tglx> <87jzshhexi.ffs@tglx>
- <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
- <87il74qghh.fsf@oracle.com>
- <7520a5b9-b604-4da2-b874-32505f175f39@paulmck-laptop>
-Date:   Thu, 19 Oct 2023 00:53:05 +0200
-Message-ID: <875y334k6m.ffs@tglx>
+        Wed, 18 Oct 2023 18:57:30 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86A4114;
+        Wed, 18 Oct 2023 15:57:28 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a877e0f0d8so1704937b3.1;
+        Wed, 18 Oct 2023 15:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697669848; x=1698274648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AE1SaR/BHQxenJ33mN0ItySiN6Ep+fGPSaWs9qSQa2Q=;
+        b=hxPLh7NSkHY+wXqwwUwySB0xQaqg+1BVE/hdb6rnPdkrhXrK9ukLalozC6PJBhJmMt
+         A+SJruIWxqrGffLbOsZAF2yEzjslYYuiGrq5dfGod+x4Yn/+boPOjFwdgjeYaJj47Z0e
+         uI124EgCE9WokhGYmbifKSfonyD4AswTycobzUrKNgXdbpQN6j6nOsUFkGEEzFqQK8gS
+         6teK4xDeffiJuOKaoEPh5a7ktUN0ZsZ6swsrpoe/EI1VRp8jPIKI1GlT6hLE27TATiQL
+         FaxT1eEKo3OTRgLGqryK0q8N2/3AjQNLnqKfhVnSKjCv9qM1sHpWYVdi2+LJTScxj1Es
+         6ILw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697669848; x=1698274648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AE1SaR/BHQxenJ33mN0ItySiN6Ep+fGPSaWs9qSQa2Q=;
+        b=RoZSfamasYgNmD684fPCXlxzs3m0Akb3ffLbffS4879eNizlLTkv8DV1lezGodr5ht
+         57l7sg6VE+F3ZKyxmrbIJ0Ndb8bKJ0DFXi5CtLmy5Frulczyv8H1Tku13KYI8RduuH5i
+         /hxdwwlIRkNgZOO3NkHsd9uqyfUEHM+A3pwtwLhj+IZNODGHIJcKcCxfQTU9su/UFVkf
+         ApI4HOmYbcE/EXsCojVEF3mlnEQ7BHnzEGuntXd6t1b7pGz8gI8HR4/0tMBkPQenuw9D
+         TkNiAmfTPBKJWX3hJ9Xe/Lbh8MQ9hfya3mg112IZKNTzjc183LFPAecW6BkVQFU5cm6+
+         +b0g==
+X-Gm-Message-State: AOJu0Yzz/qbkwaCSCSDw+d3eERX4td1H6+WgfYil+OKCwbmts+zBExjS
+        SGssc0vL/rX5yf1Z7d2jlMUOcowrGseh0UtYKzjKEpskXp9yLCei
+X-Google-Smtp-Source: AGHT+IEhExAjJ/kqU13bH/iu+1hTB73pJsYiyEBFRfajbn0eLIbp0DQbJge+BtAiBbYc9eQEJDm8R0y65x2ghEM15FE=
+X-Received: by 2002:a0d:eb4b:0:b0:5a7:c887:43bd with SMTP id
+ u72-20020a0deb4b000000b005a7c88743bdmr182981ywe.15.1697669847838; Wed, 18 Oct
+ 2023 15:57:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231018160145.1017340-1-ojeda@kernel.org>
+In-Reply-To: <20231018160145.1017340-1-ojeda@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 19 Oct 2023 00:57:16 +0200
+Message-ID: <CANiq72=_jGC1YR+9jHxYn9w68iZoC9sHoXdXqGu6qGxzriEkwA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] docs: rust: update Rust docs output path
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Akira Yokosawa <akiyks@gmail.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18 2023 at 10:51, Paul E. McKenney wrote:
-> On Wed, Oct 18, 2023 at 05:09:46AM -0700, Ankur Arora wrote:
-
-Can you folks please trim your replies. It's annoying to scroll
-through hundreds of quoted lines to figure out that nothing is there.
-
->>  This probably allows for more configuration flexibility across archs?
->>  Would allow for TREE_RCU=y, for instance. That said, so far I've only
->>  been working with PREEMPT_RCU=y.)
+On Wed, Oct 18, 2023 at 6:02=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
 >
-> Then this is a bug that needs to be fixed.  We need a way to make
-> RCU readers non-preemptible.
+> The Rust code documentation output path moved from `rust/doc` to
+> `Documentation/output/rust/rustdoc`, thus update the old reference.
+>
+> Fixes: 48fadf440075 ("docs: Move rustdoc output, cross-reference it")
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Why?
+Applied to `rust-fixes` early to start getting some time in
+`linux-next` -- please feel free to send more reviews, thanks!
 
+Cheers,
+Miguel
