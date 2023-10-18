@@ -2,186 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F9D7CD828
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1C27CD818
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjJRJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
+        id S230433AbjJRJbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235221AbjJRJby (ORCPT
+        with ESMTP id S230427AbjJRJbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:31:54 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20001996;
-        Wed, 18 Oct 2023 02:31:12 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39I58Vu6013865;
-        Wed, 18 Oct 2023 09:31:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=Q39nesa3iokJWBjY0DCM/z0AaNrX5/NIO6hWDZsdE/o=;
- b=NzvRc23zPVSMfaBzsPLMylVgPC885YC+eM34GHUflSA6GoMtFvmpK4KA9kW3wXFWLGYh
- 4K0urSDkp+bN1k+L9hCVy3d0YIPq1mWg7BGgZJeLwnNz2G68sKc9zW9wABBjBBNKeFQg
- mVql52Mcm48alS4ncQPKKGsoBfDFDCVp/W8TStqpblvPVpq4BePxxfDCGDgocro9Qw/8
- E7SdRuGfNbnccdxmVeT8mAjmPB+FZeppivYZFlLPa5r9WJRaYykiF3B08BM4r+gSxsLS
- f+bmC0hp0SY+1O8tM9PXefi0hnCy29FZR3sSSBCCDXJPDNzai6wiLqI64IPKPEzZQ3pD cQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tt8xs8hm0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 09:31:09 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39I9V8PG019004
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 09:31:08 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 18 Oct 2023 02:31:02 -0700
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <rafael@kernel.org>,
-        <viresh.kumar@linaro.org>, <ilia.lin@kernel.org>,
-        <quic_kathirav@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-pm@vger.kernel.org>
-CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v3 8/8] arm64: dts: qcom: ipq9574: populate the opp table based on the eFuse
-Date:   Wed, 18 Oct 2023 14:59:21 +0530
-Message-ID: <5d1bf44de58db10a20d1b116c7fd4b073d01271e.1697600121.git.quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1697600121.git.quic_varada@quicinc.com>
-References: <cover.1697600121.git.quic_varada@quicinc.com>
+        Wed, 18 Oct 2023 05:31:18 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB131BE
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:30:47 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D1D473200AF1;
+        Wed, 18 Oct 2023 05:30:45 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 18 Oct 2023 05:30:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1697621445; x=1697707845; bh=8c
+        ly2LTXugCW0URdraIBz7FF8OXwxO5w40tU9akFI8o=; b=Z1BLS8h3bsCmn4Ose0
+        m0G6APl8uHCyI1KOTJupnNXibtB3PJqcR5otmud3QuQzhtNmVZckk63DWuSiLFaz
+        bR9yB1Rnov2vBNF7oLJ9HpfwIwerfhByEij5dUxfdVGHQW2U78WBYin4563bxcJQ
+        cl09WHK4//oVsGpchvOX4+aCwC9ePSk3n73G61S5HBDrg4i8HFLcN+tuhx6Gd0/j
+        vtNZNfNo8ijFvorHfIW2IdqV2/cDhgeb9zsByNeqsljt7Yk7stwXgAXleqEx7CYg
+        Xva8MpeHVJvn20oti7wqX5+CGA5z7sgdFmKh9HuFgdVr0UigvoTaqdD4k0oUETfz
+        Rv7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697621445; x=1697707845; bh=8cly2LTXugCW0
+        URdraIBz7FF8OXwxO5w40tU9akFI8o=; b=eHSWUwYalvutHn0AZBz8k0RiFf0N9
+        0Sh2FYMqiT2zHq2cYrCygc46eOTg/2b8R0WBjOKk0fXc9REfoCsN5DcrfUITVvtm
+        ydy3TLSeWMLV0R7hqHE2vlwBJ7GJWBPanbTtVocvkg/pUY9aeAr1Z1yvZ2Pl372c
+        G4+/mvF+i2a/H9RWiuqDXSMbS+MRn+k4V4ZGZlpg/8eP/JlkqrnHleOr6+AUAm/O
+        hpk9ssuh6LzMxC4IJgta+JxR2HQXd/dXBiMVO8EW4iMrLis4xOEpnInMDLwRutly
+        IjQv3lsHtE8oV//C3wFX/2VmMpg2zdLXULJWT5e7TsV76ly5asUjys89Q==
+X-ME-Sender: <xms:xaUvZT_CXi2hngxur_ic3o229LS-VjWnqceCAWKrzIwevrCgnj9OZg>
+    <xme:xaUvZftq52_NT1uwTyruxNiAAaEaoPSvNT1REXTRcXacUrqk_ej5YRtFCTvNOk2Rf
+    _EbRcDZQWoIoPxt4h0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeggdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:xaUvZRBnatBXvx-JyWh-lmKamq4Y45UyY_u4T4ZigSSBoU15rhM2zg>
+    <xmx:xaUvZfetiX02GdZ0IPPGKI6R51TMlAk92ip3si-Nt7f5_HOv8Be5zw>
+    <xmx:xaUvZYPA4vOnF-cVNl-fLY6irwrjzIKoEm8bxshaFJeT179pb_6Efw>
+    <xmx:xaUvZVopnTueZaFIdFtVyGQQ1JSDgLpX-7U1FAzi5IOqvZqgxMym_g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 148E4B60089; Wed, 18 Oct 2023 05:30:45 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
 MIME-Version: 1.0
+Message-Id: <bfdc04b3-d776-4cb9-a95a-eec317e792e1@app.fastmail.com>
+In-Reply-To: <20231018081941.475277-6-saeed@kernel.org>
+References: <20231018081941.475277-1-saeed@kernel.org>
+ <20231018081941.475277-6-saeed@kernel.org>
+Date:   Wed, 18 Oct 2023 11:30:24 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Saeed Mahameed" <saeed@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>, "Jiri Pirko" <jiri@nvidia.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>
+Subject: Re: [PATCH 5/5] misc: mlx5ctl: Add umem reg/unreg ioctl
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vFowdpO-XE0_bRX19b5wnuQfH8no5yPv
-X-Proofpoint-ORIG-GUID: vFowdpO-XE0_bRX19b5wnuQfH8no5yPv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_07,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 clxscore=1015
- impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=924 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310180080
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ95xx SoCs have different OPPs available for the CPU based on
-SoC variant. This can be determined from an eFuse register
-present in the silicon.
+On Wed, Oct 18, 2023, at 10:19, Saeed Mahameed wrote:
+> From: Saeed Mahameed <saeedm@nvidia.com>
 
-Add support to read the eFuse and populate the OPPs based on it.
+>
+> To do so this patch introduces two ioctls:
+>
+> MLX5CTL_IOCTL_UMEM_REG(va_address, size):
+>  - calculate page fragments from the user provided virtual address
+>  - pin the pages, and allocate a sg list
+>  - dma map the sg list
+>  - create a UMEM device object that points to the dma addresses
+>  - add a driver umem object to an xarray data base for bookkeeping
+>  - return UMEM ID to user so it can be used in subsequent rpcs
+>
+> MLX5CTL_IOCTL_UMEM_UNREG(umem_id):
+>  - user provides a pre allocated umem ID
+>  - unwinds the above
+>
 
-Frequency	1.2GHz	1.8GHz	1.5GHz	No	opp-supported-hw
-					Limit
-------------------------------------------------------------
-936000000	1	1	1	1	0xf
-1104000000	1	1	1	1	0xf
-1200000000	1	1	1	1	0xf
-1416000000	0	1	1	1	0x7
-1488000000	0	1	1	1	0x7
-1800000000	0	1	0	1	0x5
-2208000000	0	0	0	1	0x1
------------------------------------------------------------
+> +static ssize_t mlx5ctl_ioctl_umem_reg(struct file *file, unsigned long 
+> arg)
+> +{
+> +	struct mlx5ctl_fd *mfd = file->private_data;
+> +	struct mlx5ctl_umem_reg umem_reg;
+> +	int umem_id;
+> +
+> +	if (copy_from_user(&umem_reg, (void __user *)arg, sizeof(umem_reg)))
+> +		return -EFAULT;
 
-Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
----
-v2:	cpu_speed_bin -> cpu-speed-bin in node name
-	Move comment to commit log
----
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Instead of an in-place cast, the usual way to do it is to
+have a local pointer of the correct type
+(struct mlx5ctl_umem_reg __iomem *) as the function argument.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index cc84f25..5f83ee4 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -106,42 +106,56 @@
- 	};
- 
- 	cpu_opp_table: opp-table-cpu {
--		compatible = "operating-points-v2";
-+		compatible = "operating-points-v2-kryo-cpu";
- 		opp-shared;
-+		nvmem-cells = <&cpu_speed_bin>;
- 
- 		opp-936000000 {
- 			opp-hz = /bits/ 64 <936000000>;
- 			opp-microvolt = <725000>;
-+			opp-supported-hw = <0xf>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1104000000 {
- 			opp-hz = /bits/ 64 <1104000000>;
- 			opp-microvolt = <787500>;
-+			opp-supported-hw = <0xf>;
-+			clock-latency-ns = <200000>;
-+		};
-+
-+		opp-1200000000 {
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-microvolt = <862500>;
-+			opp-supported-hw = <0xf>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1416000000 {
- 			opp-hz = /bits/ 64 <1416000000>;
- 			opp-microvolt = <862500>;
-+			opp-supported-hw = <0x7>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1488000000 {
- 			opp-hz = /bits/ 64 <1488000000>;
- 			opp-microvolt = <925000>;
-+			opp-supported-hw = <0x7>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1800000000 {
- 			opp-hz = /bits/ 64 <1800000000>;
- 			opp-microvolt = <987500>;
-+			opp-supported-hw = <0x5>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-2208000000 {
- 			opp-hz = /bits/ 64 <2208000000>;
- 			opp-microvolt = <1062500>;
-+			opp-supported-hw = <0x1>;
- 			clock-latency-ns = <200000>;
- 		};
- 	};
-@@ -223,6 +237,11 @@
- 			reg = <0x000a4000 0x5a1>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+
-+			cpu_speed_bin: cpu-speed-bin@15 {
-+				reg = <0x15 0x2>;
-+				bits = <7 2>;
-+			};
- 		};
- 
- 		cryptobam: dma-controller@704000 {
--- 
-2.7.4
+> +
+> +	umem_id = mlx5ctl_umem_reg(mfd->umem_db, (unsigned 
+> long)umem_reg.addr, umem_reg.len);
 
+umem_reg.addr seems to be a user space address, so I would
+suggest consistently passing it as a 'void __user *' instead
+of casting to (unsigned long) here. You can use u64_to_user_ptr()
+to handle the pointer conversion correctly across all
+architectures that way, and get better type checking.
+
+> @@ -24,6 +24,14 @@ struct mlx5ctl_cmdrpc {
+>  	__aligned_u64 flags;
+>  };
+> 
+> +struct mlx5ctl_umem_reg {
+> +	__aligned_u64 addr; /* user address */
+> +	__aligned_u64 len; /* user buffer length */
+> +	__aligned_u64 flags;
+> +	__u32 umem_id; /* returned device's umem ID */
+> +	__u32 reserved[7];
+> +};
+> +
+
+You have a 'flags' argument that is never accessed and can
+probably be removed. If the intention was to make the ioctl
+extensible for the future, this doesn't work unless you
+ensure that only known flags (i.e. none at this point)
+are set, and it's probably a bad idea anyway, compared
+to creating a new ioctl command with new semantics.
+
+Same for the 'reserved' fields except as needed for padding.
+
+> +#define MLX5CTL_IOCTL_UMEM_UNREG \
+> +	_IOWR(MLX5CTL_IOCTL_MAGIC, 0x3, unsigned long)
+
+The use of 'unsigned long' here is wrong, this just makes
+the command incompatible with compat mode, since
+that type has different sizes. It also doesn't
+match what the implementation uses, as that does
+not try to read and write an 'unsigned long'
+from user memory but instead takes the argument
+itself as an integer. If you want to keep the use
+of direct integer arguments (instead of pointer to
+__u32 or __u64) here, this would have to be
+
+   _IO(MLX5CTL_IOCTL_MAGIC, 0x3)
+
+     Arnd
