@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489637CDEAB
+	by mail.lfdr.de (Postfix) with ESMTP id A141D7CDEAD
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345098AbjJRONc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S1345089AbjJRON0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbjJROMm (ORCPT
+        with ESMTP id S1344973AbjJROMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:42 -0400
+        Wed, 18 Oct 2023 10:12:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3873124;
-        Wed, 18 Oct 2023 07:12:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EC44C433C8;
-        Wed, 18 Oct 2023 14:12:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7D218A;
+        Wed, 18 Oct 2023 07:12:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86432C433C9;
+        Wed, 18 Oct 2023 14:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638359;
-        bh=6fR1zDnhTjOd8PDzhn3qngZr0tCpD2XBDM5cg16Eex0=;
+        s=k20201202; t=1697638360;
+        bh=JIRr0gRvmQQNSAExZupPyrYT+vxJ3y/jlLLbi6tp3zs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l1RGw44n2mG2umQOoq3bwiQRJBGUTaf+td0l0qV9s7ME27ub7uJ4SHM7wtNxmgR0w
-         r5XMGB5UUTGDQZe3aBa8UPnW3tWE1QW44moJHeqAe6Ecw6kQSUr2mDBXXi71aJBpKx
-         qaEqjzlpQ6qQjUlZsBPYEzzs0zmMz7h89CgQCLl+uUriZVDnCLX3Ps1AZZgbRw+hCp
-         elyiPv1wiY7KNS1sOneYkq4NVK7f2Ozj+fCtUcAThcxXB4i2ANK66LbS3DE9VCI2XM
-         cwjB04X2kAKD82mkrn/KtjcjdLHftBIblZrTfmDdaVPoaEB2LDACzcWzq6iHE2Iefz
-         cr1DhXQGSVaIg==
+        b=m4FTIJUzfpTKfXZDgkZlizOrzz8VN6duZcuSZ7hsDzK4cl8Yi9cVvH65JgusXP3r1
+         XM5C8v0VrRka810qrXt65qsKc9CHVOrWv8KOEk7pxLghT2RDuiXMGacm7pWOQHmdOz
+         guEGtTx8vCGWlF4GjIriLqC5HvpCW9Y4bApxmcJ5vqwJ/34Bo7WW+uZVvu6oZQb2OY
+         nKfHqv1gx25BV+Ba+lV6gpHfEQYuHfLLPcW0E59aP8SeUHsli7InzHIp0fJQL2Kdj1
+         MdD5vjR0ytfGZD7TQHg0ypYtGPmBKeKwP+D0YFNfTBNAGuApmaMpM8ZF1Uze4eox0H
+         2JxaJ6t56VnHg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 18/31] irqchip/gic-v3: Enable non-coherent redistributors/ITSes DT probing
-Date:   Wed, 18 Oct 2023 10:11:35 -0400
-Message-Id: <20231018141151.1334501-18-sashal@kernel.org>
+Cc:     Anup Patel <apatel@ventanamicro.com>,
+        Dmitry Dunaev <dunaev@tecon.ru>, Marc Zyngier <maz@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 19/31] irqchip/riscv-intc: Mark all INTC nodes as initialized
+Date:   Wed, 18 Oct 2023 10:11:36 -0400
+Message-Id: <20231018141151.1334501-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
 References: <20231018141151.1334501-1-sashal@kernel.org>
@@ -54,153 +54,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+From: Anup Patel <apatel@ventanamicro.com>
 
-[ Upstream commit 3a0fff0fb6a3861fa05416f21858cf0c75cbf944 ]
+[ Upstream commit e13cd66bd821be417c498a34928652db4ac6b436 ]
 
-The GIC architecture specification defines a set of registers
-for redistributors and ITSes that control the sharebility and
-cacheability attributes of redistributors/ITSes initiator ports
-on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
-GITS_BASER<n>).
+The RISC-V INTC local interrupts are per-HART (or per-CPU) so we
+create INTC IRQ domain only for the INTC node belonging to the boot
+HART. This means only the boot HART INTC node will be marked as
+initialized and other INTC nodes won't be marked which results
+downstream interrupt controllers (such as PLIC, IMSIC and APLIC
+direct-mode) not being probed due to missing device suppliers.
 
-Architecturally the GIC provides a means to drive shareability
-and cacheability attributes signals and related IWB/OWB/ISH barriers
-but it is not mandatory for designs to wire up the corresponding
-interconnect signals that control the cacheability/shareability
-of transactions.
+To address this issue, we mark all INTC node for which we don't
+create IRQ domain as initialized.
 
-Redistributors and ITSes interconnect ports can be connected to
-non-coherent interconnects that are not able to manage the
-shareability/cacheability attributes; this implicitly makes
-the redistributors and ITSes non-coherent observers.
-
-So far, the GIC driver on probe executes a write to "probe" for
-the redistributors and ITSes registers shareability bitfields
-by writing a value (ie InnerShareable - the shareability domain the
-CPUs are in) and check it back to detect whether the value sticks or
-not; this hinges on a GIC programming model behaviour that predates the
-current specifications, that just define shareability bits as writeable
-but do not guarantee that writing certain shareability values
-enable the expected behaviour for the redistributors/ITSes
-memory interconnect ports.
-
-To enable non-coherent GIC designs, introduce the "dma-noncoherent"
-device tree property to allow firmware to describe redistributors and
-ITSes as non-coherent observers on the memory interconnect and use the
-property to force the shareability attributes to be programmed into the
-redistributors and ITSes registers through the GIC quirks mechanism.
-
-Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
+Reported-by: Dmitry Dunaev <dunaev@tecon.ru>
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20231006125929.48591-3-lpieralisi@kernel.org
+Link: https://lore.kernel.org/r/20230926102801.1591126-1-dunaev@tecon.ru
+Link: https://lore.kernel.org/r/20231003044403.1974628-4-apatel@ventanamicro.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-gic-common.h |  4 ++++
- drivers/irqchip/irq-gic-v3-its.c | 21 +++++++++++++++++----
- drivers/irqchip/irq-gic-v3.c     | 13 +++++++++++++
- 3 files changed, 34 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-riscv-intc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-index 3db4592cda1c0..f407cce9ecaaa 100644
---- a/drivers/irqchip/irq-gic-common.h
-+++ b/drivers/irqchip/irq-gic-common.h
-@@ -29,4 +29,8 @@ void gic_enable_quirks(u32 iidr, const struct gic_quirk *quirks,
- void gic_enable_of_quirks(const struct device_node *np,
- 			  const struct gic_quirk *quirks, void *data);
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 4adeee1bc391f..e8d01b14ccdde 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -155,8 +155,16 @@ static int __init riscv_intc_init(struct device_node *node,
+ 	 * for each INTC DT node. We only need to do INTC initialization
+ 	 * for the INTC DT node belonging to boot CPU (or boot HART).
+ 	 */
+-	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id())
++	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id()) {
++		/*
++		 * The INTC nodes of each CPU are suppliers for downstream
++		 * interrupt controllers (such as PLIC, IMSIC and APLIC
++		 * direct-mode) so we should mark an INTC node as initialized
++		 * if we are not creating IRQ domain for it.
++		 */
++		fwnode_dev_initialized(of_fwnode_handle(node), true);
+ 		return 0;
++	}
  
-+#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING    (1 << 0)
-+#define RDIST_FLAGS_RD_TABLES_PREALLOCATED     (1 << 1)
-+#define RDIST_FLAGS_FORCE_NON_SHAREABLE        (1 << 2)
-+
- #endif /* _IRQ_GIC_COMMON_H */
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 5e57b605b7c61..75a2dd550625b 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -44,10 +44,6 @@
- #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
- #define ITS_FLAGS_FORCE_NON_SHAREABLE		(1ULL << 3)
- 
--#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
--#define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
--#define RDIST_FLAGS_FORCE_NON_SHAREABLE		(1 << 2)
--
- #define RD_LOCAL_LPI_ENABLED                    BIT(0)
- #define RD_LOCAL_PENDTABLE_PREALLOCATED         BIT(1)
- #define RD_LOCAL_MEMRESERVE_DONE                BIT(2)
-@@ -4754,6 +4750,14 @@ static bool __maybe_unused its_enable_rk3588001(void *data)
- 	return true;
+ 	return riscv_intc_init_common(of_node_to_fwnode(node));
  }
- 
-+static bool its_set_non_coherent(void *data)
-+{
-+	struct its_node *its = data;
-+
-+	its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
-+	return true;
-+}
-+
- static const struct gic_quirk its_quirks[] = {
- #ifdef CONFIG_CAVIUM_ERRATUM_22375
- 	{
-@@ -4808,6 +4812,11 @@ static const struct gic_quirk its_quirks[] = {
- 		.init   = its_enable_rk3588001,
- 	},
- #endif
-+	{
-+		.desc   = "ITS: non-coherent attribute",
-+		.property = "dma-noncoherent",
-+		.init   = its_set_non_coherent,
-+	},
- 	{
- 	}
- };
-@@ -4817,6 +4826,10 @@ static void its_enable_quirks(struct its_node *its)
- 	u32 iidr = readl_relaxed(its->base + GITS_IIDR);
- 
- 	gic_enable_quirks(iidr, its_quirks, its);
-+
-+	if (is_of_node(its->fwnode_handle))
-+		gic_enable_of_quirks(to_of_node(its->fwnode_handle),
-+				     its_quirks, its);
- }
- 
- static int its_save_disable(void)
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index eedfa8e9f0772..f59ac9586b7b1 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -1857,6 +1857,14 @@ static bool gic_enable_quirk_arm64_2941627(void *data)
- 	return true;
- }
- 
-+static bool rd_set_non_coherent(void *data)
-+{
-+	struct gic_chip_data *d = data;
-+
-+	d->rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-+	return true;
-+}
-+
- static const struct gic_quirk gic_quirks[] = {
- 	{
- 		.desc	= "GICv3: Qualcomm MSM8996 broken firmware",
-@@ -1923,6 +1931,11 @@ static const struct gic_quirk gic_quirks[] = {
- 		.mask	= 0xff0f0fff,
- 		.init	= gic_enable_quirk_arm64_2941627,
- 	},
-+	{
-+		.desc   = "GICv3: non-coherent attribute",
-+		.property = "dma-noncoherent",
-+		.init   = rd_set_non_coherent,
-+	},
- 	{
- 	}
- };
 -- 
 2.40.1
 
