@@ -2,138 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7F7CD1A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2F77CD1AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344238AbjJRBKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 21:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S1344182AbjJRBK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 21:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjJRBKP (ORCPT
+        with ESMTP id S234859AbjJRBKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 21:10:15 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CCDB6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:10:14 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b7179ff4easo2441183a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697591414; x=1698196214; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E16mHWskjTK/3B68Q/Af3Teg1/R8lnVGjDiVWL3Gi8c=;
-        b=XxajgS6DEeyskLQvwZCq4+hzkNK3/lfws5r3oQW+RYnw1cUNQRQ9Kg5K16vDWNnPNI
-         YtjXOsod+tCYYiFHg3UG+nWORmehgOBNKWh4u5bjGVC5yHCOvPmRyjbiSCaQ7woanc5T
-         U2DJLNWabXj0YEqKMt9R7MkrIPNDxosa/6HkNY8Sle74XM4dtNGsK8XMMdDj2+hjaaBh
-         iohbD/a80XQ6ZaurfgjXQUwmQ0ddWtzLwh5yjLWcznMWbqBqZXuFm1gdjYrlVLSd+Y1K
-         ZIdDaoq6Phr2xk670Ul/pqyCMVNmDZjbe3p/p7JDL0L3xJEnN0KaPw4VNhpqa6Z+Gssl
-         Re2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697591414; x=1698196214;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E16mHWskjTK/3B68Q/Af3Teg1/R8lnVGjDiVWL3Gi8c=;
-        b=d20C1AMwBx7P3g4IMT23IdhxPYgto9hzLmfQ9a+6dHLTgkDOU0xcVorhQqJxr4F8X/
-         UjHp2yGPK+VD+9CyLBjFWvrxKtNwmsnbXVaz4+RXElhdZP9DKWWUHzH6mf6ZFqAvbM8V
-         MiGvcyoabXtog7MWc6usJQN1r8PRaVTHeilLHWL+uDoUbktQq/zBGvWli9JbTV4GU+CA
-         UE8+dyc54RFfSXFPtEFJiRuPBohetENAZWy2oJqZf8TSw/lx5XfaCw09eGr7viJd91S5
-         x95sI2gkmOkpYIOmmeKhE5G+uarPRS/62z3PmIn7hVjppzagUfOoxqVeVTcSxtq9qjGR
-         Qhjw==
-X-Gm-Message-State: AOJu0YyoIcgJ6TP/tvjXneLn1lFEfjKrRzVMHtsm6kkhnfch1vfltI8w
-        Hsp3Fu/JycMBc5LPK1ZDBWgjJmMP8NY=
-X-Google-Smtp-Source: AGHT+IGHyYI6m11j74GgAMpc6cp+2vjYXNqQ9yFJFAolNqis+S4xnhwYV0x/iBUJz9i94LnYDn3tHaUP2g4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ab54:b0:1ca:7295:8127 with SMTP id
- ij20-20020a170902ab5400b001ca72958127mr78911plb.13.1697591413896; Tue, 17 Oct
- 2023 18:10:13 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 18:10:12 -0700
-In-Reply-To: <20231016184737.1027930-1-michael.roth@amd.com>
-Mime-Version: 1.0
-References: <20231016184737.1027930-1-michael.roth@amd.com>
-Message-ID: <ZS8wdNtAoSvH_jpX@google.com>
-Subject: Re: [PATCH gmem] KVM: selftests: Fix gmem conversion tests for
- multiple vCPUs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vannapurve@google.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 21:10:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C40410C;
+        Tue, 17 Oct 2023 18:10:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CF9ABC433C8;
+        Wed, 18 Oct 2023 01:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697591422;
+        bh=WPJ/r8+0jyetchJwy0VLkx+UQMJn64TVCXqZ4uqyTz0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sR8wrLxO9NaaYo7u5jAGmbvtGAnodVa5rRjKLeDjWUX1o1XwubZqFJr8vyFbv69Ym
+         o8fpJGdaQsugI9naJ61lloVTHSxyMdfh0+NRNs7Lt+/ublPQzZMs5+QWWHpAmZ6RWJ
+         s0yZf6zw5V+BYZS1DkqrjryZdcZECWaz186hhBEUpZnm4GJETRYlQx7RPGBVu0yfhL
+         jbO9RxxY+eRqb4rYQlgqewmpQON3OBBuLYjxg/vubZPUsBuAjf5zXa6ui5Tgn273kR
+         88kGpX/yrVQ+prfxQzXb4EY29oVOJeINeTCrta0dPEZlNsvpSQICPW9o6J+aiVz3Xm
+         Vq3rwy51eo7mQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B472FC04E24;
+        Wed, 18 Oct 2023 01:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] hamradio: replace deprecated strncpy with strscpy_pad
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169759142273.24973.7934258453986488450.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Oct 2023 01:10:22 +0000
+References: <20231016-strncpy-drivers-net-hamradio-baycom_epp-c-v2-1-39f72a72de30@google.com>
+In-Reply-To: <20231016-strncpy-drivers-net-hamradio-baycom_epp-c-v2-1-39f72a72de30@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     t.sailer@alumni.ethz.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023, Michael Roth wrote:
-> Currently the private_mem_conversions_test crashes if invoked with the
-> -n <num_vcpus> option without also specifying multiple memslots via -m.
+Hello:
 
-Totally a PEBKAC, not a bug ;-)
- 
-> This is because the current implementation assumes -m is specified and
-> always sets up the per-vCPU memory with a dedicated memslot for each
-> vCPU. When -m is not specified, the test skips setting up
-> memslots/memory for secondary vCPUs.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 16 Oct 2023 18:42:42 +0000 you wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> The current code does seem to try to handle using a single memslot for
-> multiple vCPUs in some places, e.g. the call-site, but
-> test_mem_conversions() is missing the important bit of sizing the single
-> memslot appropriately to handle all the per-vCPU memory. Implement that
-> handling.
+> We expect both hi.data.modename and hi.data.drivername to be
+> NUL-terminated based on its usage with sprintf:
+> |       sprintf(hi.data.modename, "%sclk,%smodem,fclk=%d,bps=%d%s",
+> |               bc->cfg.intclk ? "int" : "ext",
+> |               bc->cfg.extmodem ? "ext" : "int", bc->cfg.fclk, bc->cfg.bps,
+> |               bc->cfg.loopback ? ",loopback" : "");
 > 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  .../kvm/x86_64/private_mem_conversions_test.c        | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-> index c04e7d61a585..5eb693fead33 100644
-> --- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-> @@ -388,10 +388,14 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
->  		gmem_flags = 0;
->  	memfd = vm_create_guest_memfd(vm, memfd_size, gmem_flags);
->  
-> -	for (i = 0; i < nr_memslots; i++)
-> -		vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
-> -			   BASE_DATA_SLOT + i, size / vm->page_size,
-> -			   KVM_MEM_PRIVATE, memfd, size * i);
-> +	if (nr_memslots == 1)
-> +		vm_mem_add(vm, src_type, BASE_DATA_GPA, BASE_DATA_SLOT,
-> +			   memfd_size / vm->page_size, KVM_MEM_PRIVATE, memfd, 0);
-> +	else
-> +		for (i = 0; i < nr_memslots; i++)
+> [...]
 
-The if-else needs curly braces.
+Here is the summary with links:
+  - [v2] hamradio: replace deprecated strncpy with strscpy_pad
+    https://git.kernel.org/netdev/net-next/c/d4b14c1da5bf
 
-> +			vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
-> +				   BASE_DATA_SLOT + i, size / vm->page_size,
-> +				   KVM_MEM_PRIVATE, memfd, size * i);
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-But I think that's a moot point, because isn't it easier to do this?
 
-diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-index c04e7d61a585..c99073098f98 100644
---- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-@@ -367,6 +367,7 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
-         */
-        const size_t size = align_up(PER_CPU_DATA_SIZE, get_backing_src_pagesz(src_type));
-        const size_t memfd_size = size * nr_vcpus;
-+       const size_t slot_size = memfd_size / nr_memslots;
-        struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
-        pthread_t threads[KVM_MAX_VCPUS];
-        uint64_t gmem_flags;
-@@ -390,7 +391,7 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
- 
-        for (i = 0; i < nr_memslots; i++)
-                vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
--                          BASE_DATA_SLOT + i, size / vm->page_size,
-+                          BASE_DATA_SLOT + i, slot_size / vm->page_size,
-                           KVM_MEM_PRIVATE, memfd, size * i);
- 
-        for (i = 0; i < nr_vcpus; i++) {
