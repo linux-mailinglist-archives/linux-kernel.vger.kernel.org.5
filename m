@@ -2,167 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B687CD11D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7267CD11F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344175AbjJRACF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 20:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        id S1344148AbjJRAH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 20:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjJRACD (ORCPT
+        with ESMTP id S229459AbjJRAH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 20:02:03 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FB5C4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:02:01 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-66d122f6294so40893356d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:02:01 -0700 (PDT)
+        Tue, 17 Oct 2023 20:07:27 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4DF9F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:07:24 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so67568041fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697587321; x=1698192121; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1697587642; x=1698192442; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E/603XVHKaUaM8lugP87JFe8YYdPyptNnYZAmeymCgY=;
-        b=majv7qatmKp5hGEMBDnrcA/xbS7deDukIQnOFM9dOmjfsR5yTtI/fh9vZqOeE6a3+I
-         zHB0ptmqwmSjHEjaNF1bHyj76vG+mHkTb8CzzmS0CLSl8vW/xrdR+oeYtV3NDPbkhJuk
-         eY9HfyzB3w8lKw22JBZALwsrMiVe0RQZ25wlVz4MruYuL0n9R6oiiqsUYSUo5sKCw35h
-         hkSl5piDBIhaw1Ol1kWt61AdwUpalXYQUf66tmKAKa3PGAYdYe7bffojY0/2XCFfYaaJ
-         Ek0QEgKSijvvlu0E+gHtOBCONzYD26k37W0AaIfIwtP6iBUMeUJ5wd2jCo/8vqNTA2LB
-         Tx9w==
+        bh=yL5IHSgiOPCaseF8jxFxoTKSJkLG4FnIxMof3Q5FawM=;
+        b=clXo2BuXwWDeIGHWv6y1m7WBxmQt5y7kTjRrxV5RlJ7+e4RmwbCkHBdPYHWmcpday+
+         e6/HW3c/+1HuhSfRrVOBwA1ph13ytHoAh4u9tVwWF6VttJOHf9tMh8KJN6OzKDL8RuLd
+         1ElbON6TzF86S9AhHUnouq75QrEyuySIsu1+g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697587321; x=1698192121;
+        d=1e100.net; s=20230601; t=1697587642; x=1698192442;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E/603XVHKaUaM8lugP87JFe8YYdPyptNnYZAmeymCgY=;
-        b=Jv7DWe5ZpsKz+EYhN5yB9XnFZ9Bs3ByG1ot3XnKgfhOPSdgd+XGz1Yo3yNfX1bNl/a
-         vi2jmYoARtfOsBt29bmFNDHhrzalJSePRjX+E9BSnkNu59i6LXhki/xvbi9H/2MFgZjn
-         TujYmgMNQ38vcKHeaEMEPzP9s7ybymzbv/m03QCbDLevyOeLaQAhk2tp46auaYAJrsak
-         C0ap2UmahLflI1J5Zj0jlqfV3I5fBclMYQ+utDfeG/DsVLXnDEM173/as1+VT5DH8ivr
-         il0HbIIYXRLKoyrzGnm4JADP569aldCBcOY2i5R2OyksE9MjFN4LuYDs2JjMOUJgWcBG
-         uGsg==
-X-Gm-Message-State: AOJu0YxV1wn1qpkkUJ7CGHzNkiIIucZb1I0b3jw7ZEv6F7WbxOcpgr3J
-        xVVw6NFkotcwVOKIttlrGc16wD7cZBoScPca8V6LYQ==
-X-Google-Smtp-Source: AGHT+IESc2jTZ14IErCtSD+XcH0XpFOrhUBDLZawZQWz8lF0Jn33Z5ZeUHxOsx7dhaVo+vey71zFifxSwADdtIjWyu0=
-X-Received: by 2002:a05:6214:2aa1:b0:66d:3c8b:5f44 with SMTP id
- js1-20020a0562142aa100b0066d3c8b5f44mr4336406qvb.27.1697587320791; Tue, 17
- Oct 2023 17:02:00 -0700 (PDT)
+        bh=yL5IHSgiOPCaseF8jxFxoTKSJkLG4FnIxMof3Q5FawM=;
+        b=Tb3epPu+4CHEbGFmNzgWtwp3KXO/drwnziwvuhQl0ud4YihSVWNlKo2uxO+7KLsOn2
+         qN+i4gf0g2Sye9XeCS+bs+BeHgCVXBmbnRN9zbMoty6omp2ZLZNZxKximn7WchBtkhss
+         stsZ+EJKlb+IDSrLXBq1a5Ye/zrCNZNgI1QM0sDB7SgJ+Kk6cpsLWvOUzbneN/r5P/8y
+         WYpDnX+co0CrlComNKHHMANnoPb1JQrV/z0m79D761zBFEm3+tiN1uGKhuYKPk+BbqML
+         r4TEhBHDoDE7s27IqPVzTprOWrz0JvdCODaWyOZ7SnSfL3L5dpKuTkfos0L0ONs1uUTF
+         lrSg==
+X-Gm-Message-State: AOJu0YziwH31b3OHZePDRdAbhDMBnp71xoyksSDdZRMqVVjkOsIn8y9Z
+        Le+BM+0rAGAoZL+eDKuLAAW4ASPMx17saVYZztp/Wg==
+X-Google-Smtp-Source: AGHT+IHdYpQ7b2GTg0pg2e6yXIg3WUzgg6FphjxIscthWaEOsQp4Vnpo/InQm+NVk8R54x4Et7gna/2lIz01hIOxMHE=
+X-Received: by 2002:ac2:598c:0:b0:507:a33f:135d with SMTP id
+ w12-20020ac2598c000000b00507a33f135dmr2672443lfn.4.1697587641970; Tue, 17 Oct
+ 2023 17:07:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231002204017.GB27267@noisy.programming.kicks-ass.net>
- <ZRtmvLJFGfjcusQW@google.com> <20231003081616.GE27267@noisy.programming.kicks-ass.net>
- <ZRwx7gcY7x1x3a5y@google.com> <20231004112152.GA5947@noisy.programming.kicks-ass.net>
- <CAL715W+RgX2JfeRsenNoU4TuTWwLS5H=P+vrZK_GQVQmMkyraw@mail.gmail.com>
- <ZR3eNtP5IVAHeFNC@google.com> <ZR3hx9s1yJBR0WRJ@google.com>
- <c69a1eb1-e07a-8270-ca63-54949ded433d@gmail.com> <03b7da03-78a1-95b1-3969-634b5c9a5a56@amd.com>
- <20231011141535.GF6307@noisy.programming.kicks-ass.net> <b2bfead3-0f48-d832-daee-e7c2069dae5d@amd.com>
- <CAL715WLhJ_xSL-cR+ppoJA+dwWK2gwCPb2ZqfToRYm-ShqkmEw@mail.gmail.com>
-In-Reply-To: <CAL715WLhJ_xSL-cR+ppoJA+dwWK2gwCPb2ZqfToRYm-ShqkmEw@mail.gmail.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 17 Oct 2023 17:01:23 -0700
-Message-ID: <CAL715WLuO0WFumyTuahXoxxirFRknN4+nU_zNxbumuQjEVxfow@mail.gmail.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
-To:     Manali Shukla <manali.shukla@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        David Dunn <daviddunn@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        Like Xu <like.xu.linux@gmail.com>
+References: <20231017190545.157282-1-bero@baylibre.com>
+In-Reply-To: <20231017190545.157282-1-bero@baylibre.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 17 Oct 2023 17:07:10 -0700
+Message-ID: <CAGXv+5FwkBU3wfyZWWaiOgzLACfMVs4Bnu2KM4oSCUa28SzXVw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] Add LVTS support for mt8192
+To:     =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>
+Cc:     daniel.lezcano@linaro.org, angelogioacchino.delregno@collabora.com,
+        rafael@kernel.org, amitk@kernel.org, rui.zhang@intel.com,
+        matthias.bgg@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, dunlap@infradead.org,
+        e.xingchen@zte.com.cn, p.zabel@pengutronix.de,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        ames.lo@mediatek.com, rex-bc.chen@mediatek.com,
+        nfraprado@collabora.com, abailon@baylibre.com,
+        amergnat@baylibre.com, khilman@baylibre.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 9:58=E2=80=AFAM Mingwei Zhang <mizhang@google.com> =
-wrote:
->
-> On Tue, Oct 17, 2023 at 3:24=E2=80=AFAM Manali Shukla <manali.shukla@amd.=
-com> wrote:
-> >
-> > On 10/11/2023 7:45 PM, Peter Zijlstra wrote:
-> > > On Mon, Oct 09, 2023 at 10:33:41PM +0530, Manali Shukla wrote:
-> > >> Hi all,
-> > >>
-> > >> I would like to add following things to the discussion just for the =
-awareness of
-> > >> everyone.
-> > >>
-> > >> Fully virtualized PMC support is coming to an upcoming AMD SoC and w=
-e are
-> > >> working on prototyping it.
-> > >>
-> > >> As part of virtualized PMC design, the PERF_CTL registers are define=
-d as Swap
-> > >> type C: guest PMC states are loaded at VMRUN automatically but host =
-PMC states
-> > >> are not saved by hardware.
-> > >
-> > > Per the previous discussion, doing this while host has active counter=
-s
-> > > that do not have ::exclude_guest=3D1 is invalid and must result in an
-> > > error.
-> > >
-> >
-> > Yeah, exclude_guest should be enforced on host, while host has active P=
-MC
-> > counters and VPMC is enabled.
-> >
-> > > Also, I'm assuming it is all optional, a host can still profile a gue=
-st
-> > > if all is configured just so?
-> > >
-> >
-> > Correct, host should be able to profile guest, if VPMC is not enabled.
-> >
-> > >> If hypervisor is using the performance counters, it
-> > >> is hypervisor's responsibility to save PERF_CTL registers to host sa=
-ve area
-> > >> prior to VMRUN and restore them after VMEXIT.
-> > >
-> > > Does VMEXIT clear global_ctrl at least?
-> > >
-> >
-> > global_ctrl will be initialized to reset value(0x3F) during VMEXIT. Sim=
-ilarly,
-> > all the perf_ctl and perf_ctr are initialized to reset values(0) at VME=
-XIT.
->
-> Are these guest values (automatically) saved in the guest area of VMCB
-> on VMEXIT?
->
+Hi,
 
-Never mind on this one. So, if both values are in Type C, then they
-should be saved to the guest area of VMCB on VMEXIT (according to APM
-vol 2 Table B-3). So, this means KVM does not need to intercept these
-MSRs on pass-through implementation.
+On Tue, Oct 17, 2023 at 12:05=E2=80=AFPM Bernhard Rosenkr=C3=A4nzer
+<bero@baylibre.com> wrote:
+>
+> Add full LVTS support (MCU thermal domain + AP thermal domain) to MediaTe=
+k MT8192 SoC.
+> Also, add Suspend and Resume support to LVTS Driver (all SoCs),
+> and update the documentation that describes the Calibration Data Offsets.
+>
+> v5 changes are a lot smaller than originally assumed -- commit
+> 185673ca71d3f7e9c7d62ee5084348e084352e56 fixed the issue I
+> was originally planning to work around in this patchset,
+> so what remains for v5 is noirq and cosmetics.
 
-Thanks.
--Mingwei
+I see two series in my inbox and on the mailing list. Which one is the
+correct one?
 
--Mingwei
+Thanks
+ChenYu
+
+> Changelog:
+>    v5 :
+>         - Suspend/Resume in noirq stage
+>         - Reorder chipset specific functions
+>         - Rebased :
+>             base-commit: 4d5ab2376ec576af173e5eac3887ed0b51bd8566
+>
+>    v4 :
+>         - Shrink the lvts_ap thermal sensor I/O range to 0xc00 to make
+>           room for SVS support, pointed out by
+>           AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora=
+.com>
+>
+>     v3 :
+>         - Rebased :
+>             base-commit: 6a3d37b4d885129561e1cef361216f00472f7d2e
+>         - Fix issues in v2 pointed out by N=C3=ADcolas F. R. A. Prado <nf=
+raprado@collabora.com>:
+>           Use filtered mode to make sure threshold interrupts are trigger=
+ed,
+>           protocol documentation, cosmetics
+>         - I (bero@baylibre.com) will be taking care of this patchset
+>           from now on, since Balsam has left BayLibre. Thanks for
+>           getting it almost ready, Balsam!
+>
+>     v2 :
+>         - Based on top of thermal/linux-next :
+>             base-commit: 7ac82227ee046f8234471de4c12a40b8c2d3ddcc
+>         - Squash "add thermal zones and thermal nodes" and
+>             "add temperature mitigation threshold" commits together to fo=
+rm
+>             "arm64: dts: mediatek: mt8192: Add thermal nodes and thermal =
+zones" commit.
+>         - Add Suspend and Resume support to LVTS Driver.
+>         - Update Calibration Data documentation.
+>         - Fix calibration data offsets for mt8192
+>             (Thanks to "Chen-Yu Tsai" and "N=C3=ADcolas F. R. A. Prado").
+>         https://lore.kernel.org/all/20230425133052.199767-1-bchihi@baylib=
+re.com/
+>         Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+>
+>     v1 :
+>         - The initial series "Add LVTS support for mt8192" :
+>             "https://lore.kernel.org/all/20230307163413.143334-1-bchihi@b=
+aylibre.com/".
+>
+> Balsam CHIHI (5):
+>   dt-bindings: thermal: mediatek: Add LVTS thermal controller definition
+>     for mt8192
+>   thermal/drivers/mediatek/lvts_thermal: Add suspend and resume
+>   thermal/drivers/mediatek/lvts_thermal: Add mt8192 support
+>   arm64: dts: mediatek: mt8192: Add thermal nodes and thermal zones
+>   thermal/drivers/mediatek/lvts_thermal: Update calibration data
+>     documentation
+>
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi      | 454 ++++++++++++++++++
+>  drivers/thermal/mediatek/lvts_thermal.c       | 163 ++++++-
+>  .../thermal/mediatek,lvts-thermal.h           |  19 +
+>  3 files changed, 634 insertions(+), 2 deletions(-)
+>
+> --
+> 2.42.0
