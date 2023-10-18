@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0967CDE99
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E797CDE9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344957AbjJROM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
+        id S1345027AbjJRONB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbjJROMN (ORCPT
+        with ESMTP id S1344726AbjJROMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:13 -0400
+        Wed, 18 Oct 2023 10:12:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B90184;
-        Wed, 18 Oct 2023 07:12:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B8E7C433CB;
-        Wed, 18 Oct 2023 14:12:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBC413E;
+        Wed, 18 Oct 2023 07:12:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 953A4C433C8;
+        Wed, 18 Oct 2023 14:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638330;
-        bh=Fx7fqmGEpgzMOCUel/RgkUToOINnPMIGufOHI4Fg6FE=;
+        s=k20201202; t=1697638331;
+        bh=/w5UhJTlM4f3g0xvKK31B3U73QejfR514S44BgEBF04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqQo4qeQEPn45dKZf+Tcf06LXqWzPSwS3VO26C0yCK83+xvObw4rlH3nspTdLtNnb
-         52OOPpmlh+twbgI5TL2XoEGgW04ROFYghkT+d1Jt9F6e8DE77dg8y4qMgzdyivfkCN
-         62m08eGetHiyVTump8UIrr+ifY7N3mGRrMFsUVCIqzR1jEzY5+GJt037222hHp4ZsB
-         Vmj8p/oPAx85dBDeJu05NC/EPNMWUmxFVk/g+hg+ySakLckfzbpOU2/dHtAaBpljo9
-         XvmDtQ3XRqCbv0sXDFN4FqfixAEL1miIkA7t1Tjkui0+Gu7USY+Vi9yUtXsehtV4Hy
-         ee423FnVnMtsQ==
+        b=G5Fg/J5llAHLXg0PoeUbtm3P65rLNOGrgvqeiVf60LhHwLdNoWymM+v0XjKaSTzxg
+         YKovYwhQGxC13A/xUlf/LVOv/UVLFR0WezwFzEuwF4K5aLwnZRY4tIEvQGo+H9U6Z8
+         Ewr2pjXqq7XMOpEoLIUccsb3TOwmaasu4fnUrk4aImMENuN5extY+fPDDxB07gJ8Zn
+         GK29//4M82ONrdOAQkAhR6nmSpX9XDhT5aFOFunobLQiH9Up3Z0jLAsLKT42HWBBL6
+         tNYzv+iuIS15lfFNINAyQjIqLW1vsIj3Ak2JagsnhcHX68kTILApkpVDGZ9eW/kRY2
+         nEyVdb/1388Ig==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 06/31] ACPI: EC: Add quirk for the HP Pavilion Gaming 15-dk1xxx
-Date:   Wed, 18 Oct 2023 10:11:23 -0400
-Message-Id: <20231018141151.1334501-6-sashal@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, shengjiu.wang@gmail.com,
+        Xiubo.Lee@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.5 07/31] ASoC: fsl-asoc-card: use integer type for fll_id and pll_id
+Date:   Wed, 18 Oct 2023 10:11:24 -0400
+Message-Id: <20231018141151.1334501-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
 References: <20231018141151.1334501-1-sashal@kernel.org>
@@ -53,47 +55,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit cd4aece493f99f95d41edcce32927d70a5dde923 ]
+[ Upstream commit 2b21207afd06714986a3d22442ed4860ba4f9ced ]
 
-Added GPE quirk entry for the HP Pavilion Gaming 15-dk1xxx.
-There is a quirk entry for 2 15-c..... laptops, this is
-for a new version which has 15-dk1xxx as identifier.
+As the pll_id and pll_id can be zero (WM8960_SYSCLK_AUTO)
+with the commit 2bbc2df46e67 ("ASoC: wm8960: Make automatic the
+default clocking mode")
 
-This fixes the LID switch and rfkill and brightness hotkeys
-not working.
+Then the machine driver will skip to call set_sysclk() and set_pll()
+for codec, when the sysclk rate is different with what wm8960 read
+at probe, the output sound frequency is wrong.
 
-Closes: https://github.com/systemd/systemd/issues/28942
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+So change the fll_id and pll_id initial value, still keep machine
+driver's behavior same as before.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1695202992-24864-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/ec.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/fsl/fsl-asoc-card.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index 660834a49c1f9..c95d0edb0be9e 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1913,6 +1913,17 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "HP 15-cx0041ur"),
- 		},
- 	},
-+	{
-+		/*
-+		 * HP Pavilion Gaming Laptop 15-dk1xxx
-+		 * https://github.com/systemd/systemd/issues/28942
-+		 */
-+		.callback = ec_honor_dsdt_gpe,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-dk1xxx"),
-+		},
-+	},
- 	{
- 		/*
- 		 * Samsung hardware
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 76b5bfc288fde..bab7d34cf585b 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -52,8 +52,8 @@ struct codec_priv {
+ 	unsigned long mclk_freq;
+ 	unsigned long free_freq;
+ 	u32 mclk_id;
+-	u32 fll_id;
+-	u32 pll_id;
++	int fll_id;
++	int pll_id;
+ };
+ 
+ /**
+@@ -206,7 +206,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Specific configuration for PLL */
+-	if (codec_priv->pll_id && codec_priv->fll_id) {
++	if (codec_priv->pll_id >= 0 && codec_priv->fll_id >= 0) {
+ 		if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
+ 			pll_out = priv->sample_rate * 384;
+ 		else
+@@ -248,7 +248,7 @@ static int fsl_asoc_card_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	priv->streams &= ~BIT(substream->stream);
+ 
+-	if (!priv->streams && codec_priv->pll_id && codec_priv->fll_id) {
++	if (!priv->streams && codec_priv->pll_id >= 0 && codec_priv->fll_id >= 0) {
+ 		/* Force freq to be free_freq to avoid error message in codec */
+ 		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
+ 					     codec_priv->mclk_id,
+@@ -621,6 +621,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	priv->card.dapm_routes = audio_map;
+ 	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
+ 	priv->card.driver_name = DRIVER_NAME;
++
++	priv->codec_priv.fll_id = -1;
++	priv->codec_priv.pll_id = -1;
++
+ 	/* Diversify the card configurations */
+ 	if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
+ 		codec_dai_name = "cs42888";
 -- 
 2.40.1
 
