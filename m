@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FA37CD8E8
+	by mail.lfdr.de (Postfix) with ESMTP id BEA567CD8E9
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjJRKKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
+        id S230414AbjJRKKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjJRKKo (ORCPT
+        with ESMTP id S230386AbjJRKKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:10:44 -0400
+        Wed, 18 Oct 2023 06:10:45 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D1BFF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:10:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945F895
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697623843; x=1729159843;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6jc3C8TgBPZmi0jXAgsee/x9WJDcUSILTyWe9qsitHw=;
-  b=IQTXUuxGEd+ozCz8HQd3fro5SiM82r+6lGkUPO9HKh9UANgtQxS2J75B
-   qdgqfJKXbza90SsFPVD7QKpAT9Ndcq/TlH1lOA8VPdd+H+6DoUWjpVrRX
-   mpHI3u3oEgzNrRvjfLMOic5khbrt7ZkqGDTE2jEf6cYubeuseJCMyhR3j
-   hY0hw6XQlqHHtfiKy6YX+MOhJ85y04oFD6r1ftjgdx5czzYfm21p0vFf3
-   a7qyjPWC45IsqB2WzBS/KAjTdPezRb0LoiqGMSW9SBiC77nHQd+D5D+yP
-   hejWiyupQFFduf1HbFI3La8VY7BH2EfpH+zzlhybDoC9K6CLbV5ytI5co
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="4578728"
+  t=1697623844; x=1729159844;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=0TviPh5D209AYMkM4B05lZWreiuWP+oC6y7l4yN98lU=;
+  b=lHbIvcmxy1bS2cGp4umLT2o2MYXkwSDV6oLJd4D28EqQC/AL9lawgjaX
+   rkjxWBzc+c0cxgAuPXGocet3J1NOdb+JqDpFHx56SQyxyKwV10EeWlDhF
+   DyUAJ7cvn7OiuwoDoBwNh33v4svDplv3Y9l6NbiRGzX2/bmqyr5+wjFNt
+   gcP/jOcKY7FrnSOdqZHbbWFVxSbqIoPXHf7NK19BgWkKtON0Rw75yQ3wE
+   7MIH8YPKhqAZltf5jJL4qTkO94nQCuZW2ZCpKy8Ai5YZSSPJZGhafmmJ1
+   oSLzugZvN/s2yA+oEeEZv9cBGMscgXAxI6SE1jpoAHTRwCqpIhiJ+eBri
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="4578734"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="4578728"
+   d="scan'208";a="4578734"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:10:42 -0700
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:10:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="847206375"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="847206385"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="847206375"
+   d="scan'208";a="847206385"
 Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:10:38 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:10:41 -0700
 From:   Tomas Winkler <tomas.winkler@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         Vitaly Lubart <vitaly.lubart@intel.com>,
         linux-kernel@vger.kernel.org,
         Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 1/2] mei: add check for offline bit in every register access
-Date:   Wed, 18 Oct 2023 13:10:23 +0300
-Message-ID: <20231018101024.271437-1-tomas.winkler@intel.com>
+Subject: [char-misc-next 2/2] mei: add empty handlers for ops functions
+Date:   Wed, 18 Oct 2023 13:10:24 +0300
+Message-ID: <20231018101024.271437-2-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231018101024.271437-1-tomas.winkler@intel.com>
+References: <20231018101024.271437-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -63,462 +65,336 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vitaly Lubart <vitaly.lubart@intel.com>
 
-Added check for offline in every register access function.
-When offline bit is set the driver should not access any mei hw.
+When the offline bit is set and the device is being removed
+we should prevent the driver from accessing the hardware because
+at this stage the hardware may be no longer available.
+Replace the operation handlers with the empty ones to ensure
+no hardware registers are being accessed by the driver.
 
 Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/hw-me.c | 154 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 146 insertions(+), 8 deletions(-)
+ drivers/misc/mei/gsc-me.c | 293 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 293 insertions(+)
 
-diff --git a/drivers/misc/mei/hw-me.c b/drivers/misc/mei/hw-me.c
-index d11a0740b47c96c33591e69a..565da19bb980c845bc2cf3ed 100644
---- a/drivers/misc/mei/hw-me.c
-+++ b/drivers/misc/mei/hw-me.c
-@@ -58,6 +58,9 @@ static inline void mei_me_reg_write(const struct mei_me_hw *hw,
-  */
- static inline u32 mei_me_mecbrw_read(const struct mei_device *dev)
- {
-+	if (dev->dev->offline)
-+		return 0;
+diff --git a/drivers/misc/mei/gsc-me.c b/drivers/misc/mei/gsc-me.c
+index 6be8f1cc052c13be3607432f..8ff2aae245aca26aee11e0b4 100644
+--- a/drivers/misc/mei/gsc-me.c
++++ b/drivers/misc/mei/gsc-me.c
+@@ -23,6 +23,11 @@
+ 
+ #define MEI_GSC_RPM_TIMEOUT 500
+ 
++static inline bool mei_gsc_hw_is_unavailable(const struct device *dev)
++{
++	return dev->offline;
++}
 +
- 	return mei_me_reg_read(to_me_hw(dev), ME_CB_RW);
+ static int mei_gsc_read_hfs(const struct mei_device *dev, int where, u32 *val)
+ {
+ 	struct mei_me_hw *hw = to_me_hw(dev);
+@@ -43,6 +48,291 @@ static void mei_gsc_set_ext_op_mem(const struct mei_me_hw *hw, struct resource *
+ 	iowrite32(limit, hw->mem_addr + H_GSC_EXT_OP_MEM_LIMIT_REG);
  }
  
-@@ -69,6 +72,9 @@ static inline u32 mei_me_mecbrw_read(const struct mei_device *dev)
-  */
- static inline void mei_me_hcbww_write(struct mei_device *dev, u32 data)
++/**
++ * mei_gsc_mecbrw_read_null - read 32bit data from ME circular buffer (empty implementation)
++ *  read window register
++ *
++ * @dev: the device structure
++ *
++ * Return: always 0
++ */
++static inline u32 mei_gsc_mecbrw_read_null(const struct mei_device *dev)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_trc_status_null - read trc status register (empty implementation)
++ *
++ * @dev: mei device
++ * @trc: trc status register value
++ *
++ * Return: always 0
++ */
++static int mei_gsc_trc_status_null(struct mei_device *dev, u32 *trc)
++{
++	*trc = 0;
++	return 0;
++}
++
++/**
++ * mei_gsc_fw_status_null - read fw status register from pci config space (empty implementation)
++ *
++ * @dev: mei device
++ * @fw_status: fw status register values
++ *
++ * Return: always 0
++ */
++static int mei_gsc_fw_status_null(struct mei_device *dev,
++				  struct mei_fw_status *fw_status)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_hw_config_null - configure hw dependent settings (empty implementation)
++ *
++ * @dev: mei device
++ *
++ * Return: always 0
++ *
++ */
++static int mei_gsc_hw_config_null(struct mei_device *dev)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_pg_state_null  - translate internal pg state (empty implementation)
++ *   to the mei power gating state
++ *
++ * @dev:  mei device
++ *
++ * Return: always MEI_PG_OFF
++ */
++static inline enum mei_pg_state mei_gsc_pg_state_null(struct mei_device *dev)
++{
++	return MEI_PG_OFF;
++}
++
++/**
++ * mei_gsc_intr_clear_null - clear and stop interrupts (empty implementation)
++ *
++ * @dev: the device structure
++ */
++static void mei_gsc_intr_clear_null(struct mei_device *dev)
++{
++}
++
++/**
++ * mei_gsc_intr_enable_null - enables mei device interrupts (empty implementation)
++ *
++ * @dev: the device structure
++ */
++static void mei_gsc_intr_enable_null(struct mei_device *dev)
++{
++}
++
++/**
++ * mei_gsc_intr_disable_null - disables mei device interrupts (empty implementation)
++ *
++ * @dev: the device structure
++ */
++static void mei_gsc_intr_disable_null(struct mei_device *dev)
++{
++}
++
++/**
++ * mei_gsc_synchronize_irq_null - wait for pending IRQ handlers (empty implementation)
++ *
++ * @dev: the device structure
++ */
++static void mei_gsc_synchronize_irq_null(struct mei_device *dev)
++{
++}
++
++/**
++ * mei_gsc_host_is_ready_null - check whether the host has turned ready (empty implementation)
++ *
++ * @dev: mei device
++ * Return: always true
++ */
++static bool mei_gsc_host_is_ready_null(struct mei_device *dev)
++{
++	return true;
++}
++
++/**
++ * mei_gsc_hw_start_null - hw start routine (empty implementation)
++ *
++ * @dev: mei device
++ * Return: always 0
++ */
++static int mei_gsc_hw_start_null(struct mei_device *dev)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_hbuf_is_empty_null - checks if host buffer is empty (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always true
++ */
++static bool mei_gsc_hbuf_is_empty_null(struct mei_device *dev)
++{
++	return true;
++}
++
++/**
++ * mei_gsc_hbuf_empty_slots_null - counts write empty slots (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always -EOVERFLOW
++ */
++static int mei_gsc_hbuf_empty_slots_null(struct mei_device *dev)
++{
++	return -EOVERFLOW;
++}
++
++/**
++ * mei_gsc_hbuf_depth_null - returns depth of the hw buffer (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always 1
++ */
++static u32 mei_gsc_hbuf_depth_null(const struct mei_device *dev)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_hbuf_write_null - writes a message to host hw buffer (empty implementation)
++ *
++ * @dev: the device structure
++ * @hdr: header of message
++ * @hdr_len: header length in bytes: must be multiplication of a slot (4bytes)
++ * @data: payload
++ * @data_len: payload length in bytes
++ *
++ * Return: always 0
++ */
++static int mei_gsc_hbuf_write_null(struct mei_device *dev,
++				   const void *hdr, size_t hdr_len,
++				   const void *data, size_t data_len)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_count_full_read_slots_null - counts read full slots (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always -EOVERFLOW
++ */
++static int mei_gsc_count_full_read_slots_null(struct mei_device *dev)
++{
++	return -EOVERFLOW;
++}
++
++/**
++ * mei_gsc_read_slots_null - reads a message from mei device (empty implementation)
++ *
++ * @dev: the device structure
++ * @buffer: message buffer will be written
++ * @buffer_length: message size will be read
++ *
++ * Return: always 0
++ */
++static int mei_gsc_read_slots_null(struct mei_device *dev, unsigned char *buffer,
++				   unsigned long buffer_length)
++{
++	return 0;
++}
++
++/**
++ * mei_gsc_pg_in_transition_null - is device now in pg transition (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always false
++ */
++static bool mei_gsc_pg_in_transition_null(struct mei_device *dev)
++{
++	return false;
++}
++
++/**
++ * mei_gsc_pg_is_enabled_null - detect if PG is supported by HW (empty implementation)
++ *
++ * @dev: the device structure
++ *
++ * Return: always false
++ */
++static bool mei_gsc_pg_is_enabled_null(struct mei_device *dev)
++{
++	return false;
++}
++
++/**
++ * mei_gsc_hw_is_ready_null - check whether the me(hw) has turned ready (empty implementation)
++ *
++ * @dev: mei device
++ * Return: always true
++ */
++static bool mei_gsc_hw_is_ready_null(struct mei_device *dev)
++{
++	return true;
++}
++
++/**
++ * mei_gsc_hw_reset_null - resets fw via mei csr register (empty implementation)
++ *
++ * @dev: the device structure
++ * @intr_enable: if interrupt should be enabled after reset.
++ *
++ * Return: always 0
++ */
++static int mei_gsc_hw_reset_null(struct mei_device *dev, bool intr_enable)
++{
++	return 0;
++}
++
++static const struct mei_hw_ops mei_gsc_hw_ops_null = {
++	.trc_status = mei_gsc_trc_status_null,
++	.fw_status = mei_gsc_fw_status_null,
++	.pg_state  = mei_gsc_pg_state_null,
++
++	.host_is_ready = mei_gsc_host_is_ready_null,
++
++	.hw_is_ready = mei_gsc_hw_is_ready_null,
++	.hw_reset = mei_gsc_hw_reset_null,
++	.hw_config = mei_gsc_hw_config_null,
++	.hw_start = mei_gsc_hw_start_null,
++
++	.pg_in_transition = mei_gsc_pg_in_transition_null,
++	.pg_is_enabled = mei_gsc_pg_is_enabled_null,
++
++	.intr_clear = mei_gsc_intr_clear_null,
++	.intr_enable = mei_gsc_intr_enable_null,
++	.intr_disable = mei_gsc_intr_disable_null,
++	.synchronize_irq = mei_gsc_synchronize_irq_null,
++
++	.hbuf_free_slots = mei_gsc_hbuf_empty_slots_null,
++	.hbuf_is_ready = mei_gsc_hbuf_is_empty_null,
++	.hbuf_depth = mei_gsc_hbuf_depth_null,
++
++	.write = mei_gsc_hbuf_write_null,
++
++	.rdbuf_full_slots = mei_gsc_count_full_read_slots_null,
++	.read_hdr = mei_gsc_mecbrw_read_null,
++	.read = mei_gsc_read_slots_null
++};
++
+ static int mei_gsc_probe(struct auxiliary_device *aux_dev,
+ 			 const struct auxiliary_device_id *aux_dev_id)
  {
-+	if (dev->dev->offline)
-+		return;
+@@ -149,6 +439,9 @@ static void mei_gsc_remove(struct auxiliary_device *aux_dev)
+ 
+ 	hw = to_me_hw(dev);
+ 
++	if (mei_gsc_hw_is_unavailable(&aux_dev->dev))
++		dev->ops = &mei_gsc_hw_ops_null;
 +
- 	mei_me_reg_write(to_me_hw(dev), H_CB_WW, data);
- }
+ 	mei_stop(dev);
  
-@@ -83,6 +89,9 @@ static inline u32 mei_me_mecsr_read(const struct mei_device *dev)
- {
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	reg = mei_me_reg_read(to_me_hw(dev), ME_CSR_HA);
- 	trace_mei_reg_read(dev->dev, "ME_CSR_HA", ME_CSR_HA, reg);
- 
-@@ -100,6 +109,9 @@ static inline u32 mei_hcsr_read(const struct mei_device *dev)
- {
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	reg = mei_me_reg_read(to_me_hw(dev), H_CSR);
- 	trace_mei_reg_read(dev->dev, "H_CSR", H_CSR, reg);
- 
-@@ -114,6 +126,9 @@ static inline u32 mei_hcsr_read(const struct mei_device *dev)
-  */
- static inline void mei_hcsr_write(struct mei_device *dev, u32 reg)
- {
-+	if (dev->dev->offline)
-+		return;
-+
- 	trace_mei_reg_write(dev->dev, "H_CSR", H_CSR, reg);
- 	mei_me_reg_write(to_me_hw(dev), H_CSR, reg);
- }
-@@ -127,6 +142,9 @@ static inline void mei_hcsr_write(struct mei_device *dev, u32 reg)
-  */
- static inline void mei_hcsr_set(struct mei_device *dev, u32 reg)
- {
-+	if (dev->dev->offline)
-+		return;
-+
- 	reg &= ~H_CSR_IS_MASK;
- 	mei_hcsr_write(dev, reg);
- }
-@@ -140,6 +158,9 @@ static inline void mei_hcsr_set_hig(struct mei_device *dev)
- {
- 	u32 hcsr;
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	hcsr = mei_hcsr_read(dev) | H_IG;
- 	mei_hcsr_set(dev, hcsr);
- }
-@@ -155,6 +176,9 @@ static inline u32 mei_me_d0i3c_read(const struct mei_device *dev)
- {
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	reg = mei_me_reg_read(to_me_hw(dev), H_D0I3C);
- 	trace_mei_reg_read(dev->dev, "H_D0I3C", H_D0I3C, reg);
- 
-@@ -169,6 +193,9 @@ static inline u32 mei_me_d0i3c_read(const struct mei_device *dev)
-  */
- static inline void mei_me_d0i3c_write(struct mei_device *dev, u32 reg)
- {
-+	if (dev->dev->offline)
-+		return;
-+
- 	trace_mei_reg_write(dev->dev, "H_D0I3C", H_D0I3C, reg);
- 	mei_me_reg_write(to_me_hw(dev), H_D0I3C, reg);
- }
-@@ -185,6 +212,9 @@ static int mei_me_trc_status(struct mei_device *dev, u32 *trc)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return -EOPNOTSUPP;
-+
- 	if (!hw->cfg->hw_trc_supported)
- 		return -EOPNOTSUPP;
- 
-@@ -210,6 +240,9 @@ static int mei_me_fw_status(struct mei_device *dev,
- 	int ret;
- 	int i;
- 
-+	if (dev->dev->offline)
-+		return -EINVAL;
-+
- 	if (!fw_status || !hw->read_fws)
- 		return -EINVAL;
- 
-@@ -242,6 +275,9 @@ static int mei_me_hw_config(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	u32 hcsr, reg;
- 
-+	if (dev->dev->offline)
-+		return -EINVAL;
-+
- 	if (WARN_ON(!hw->read_fws))
- 		return -EINVAL;
- 
-@@ -294,6 +330,9 @@ static inline u32 me_intr_src(u32 hcsr)
-  */
- static inline void me_intr_disable(struct mei_device *dev, u32 hcsr)
- {
-+	if (dev->dev->offline)
-+		return;
-+
- 	hcsr &= ~H_CSR_IE_MASK;
- 	mei_hcsr_set(dev, hcsr);
- }
-@@ -306,6 +345,9 @@ static inline void me_intr_disable(struct mei_device *dev, u32 hcsr)
-  */
- static inline void me_intr_clear(struct mei_device *dev, u32 hcsr)
- {
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (me_intr_src(hcsr))
- 		mei_hcsr_write(dev, hcsr);
- }
-@@ -317,7 +359,12 @@ static inline void me_intr_clear(struct mei_device *dev, u32 hcsr)
-  */
- static void mei_me_intr_clear(struct mei_device *dev)
- {
--	u32 hcsr = mei_hcsr_read(dev);
-+	u32 hcsr;
-+
-+	if (dev->dev->offline)
-+		return;
-+
-+	hcsr = mei_hcsr_read(dev);
- 
- 	me_intr_clear(dev, hcsr);
- }
-@@ -330,6 +377,9 @@ static void mei_me_intr_enable(struct mei_device *dev)
- {
- 	u32 hcsr;
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (mei_me_hw_use_polling(to_me_hw(dev)))
- 		return;
- 
-@@ -344,8 +394,12 @@ static void mei_me_intr_enable(struct mei_device *dev)
-  */
- static void mei_me_intr_disable(struct mei_device *dev)
- {
--	u32 hcsr = mei_hcsr_read(dev);
-+	u32 hcsr;
- 
-+	if (dev->dev->offline)
-+		return;
-+
-+	hcsr = mei_hcsr_read(dev);
- 	me_intr_disable(dev, hcsr);
- }
- 
-@@ -358,6 +412,9 @@ static void mei_me_synchronize_irq(struct mei_device *dev)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (mei_me_hw_use_polling(hw))
- 		return;
- 
-@@ -371,7 +428,12 @@ static void mei_me_synchronize_irq(struct mei_device *dev)
-  */
- static void mei_me_hw_reset_release(struct mei_device *dev)
- {
--	u32 hcsr = mei_hcsr_read(dev);
-+	u32 hcsr;
-+
-+	if (dev->dev->offline)
-+		return;
-+
-+	hcsr = mei_hcsr_read(dev);
- 
- 	hcsr |= H_IG;
- 	hcsr &= ~H_RST;
-@@ -385,7 +447,12 @@ static void mei_me_hw_reset_release(struct mei_device *dev)
-  */
- static void mei_me_host_set_ready(struct mei_device *dev)
- {
--	u32 hcsr = mei_hcsr_read(dev);
-+	u32 hcsr;
-+
-+	if (dev->dev->offline)
-+		return;
-+
-+	hcsr = mei_hcsr_read(dev);
- 
- 	if (!mei_me_hw_use_polling(to_me_hw(dev)))
- 		hcsr |= H_CSR_IE_MASK;
-@@ -402,7 +469,12 @@ static void mei_me_host_set_ready(struct mei_device *dev)
-  */
- static bool mei_me_host_is_ready(struct mei_device *dev)
- {
--	u32 hcsr = mei_hcsr_read(dev);
-+	u32 hcsr;
-+
-+	if (dev->dev->offline)
-+		return true;
-+
-+	hcsr = mei_hcsr_read(dev);
- 
- 	return (hcsr & H_RDY) == H_RDY;
- }
-@@ -415,7 +487,12 @@ static bool mei_me_host_is_ready(struct mei_device *dev)
-  */
- static bool mei_me_hw_is_ready(struct mei_device *dev)
- {
--	u32 mecsr = mei_me_mecsr_read(dev);
-+	u32 mecsr;
-+
-+	if (dev->dev->offline)
-+		return true;
-+
-+	mecsr = mei_me_mecsr_read(dev);
- 
- 	return (mecsr & ME_RDY_HRA) == ME_RDY_HRA;
- }
-@@ -428,7 +505,12 @@ static bool mei_me_hw_is_ready(struct mei_device *dev)
-  */
- static bool mei_me_hw_is_resetting(struct mei_device *dev)
- {
--	u32 mecsr = mei_me_mecsr_read(dev);
-+	u32 mecsr;
-+
-+	if (dev->dev->offline)
-+		return false;
-+
-+	mecsr = mei_me_mecsr_read(dev);
- 
- 	return (mecsr & ME_RST_HRA) == ME_RST_HRA;
- }
-@@ -443,6 +525,9 @@ static void mei_gsc_pxp_check(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	u32 fwsts5 = 0;
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (!kind_is_gsc(dev) && !kind_is_gscfi(dev))
- 		return;
- 
-@@ -538,8 +623,12 @@ static void mei_me_check_fw_reset(struct mei_device *dev)
-  */
- static int mei_me_hw_start(struct mei_device *dev)
- {
--	int ret = mei_me_hw_ready_wait(dev);
-+	int ret;
-+
-+	if (dev->dev->offline)
-+		return 0;
- 
-+	ret = mei_me_hw_ready_wait(dev);
- 	if (kind_is_gsc(dev) || kind_is_gscfi(dev))
- 		mei_me_check_fw_reset(dev);
- 	if (ret)
-@@ -640,6 +729,9 @@ static int mei_me_hbuf_write(struct mei_device *dev,
- 	u32 dw_cnt;
- 	int empty_slots;
- 
-+	if (dev->dev->offline)
-+		return -EINVAL;
-+
- 	if (WARN_ON(!hdr || hdr_len & 0x3))
- 		return -EINVAL;
- 
-@@ -724,6 +816,9 @@ static int mei_me_read_slots(struct mei_device *dev, unsigned char *buffer,
- {
- 	u32 *reg_buf = (u32 *)buffer;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	for (; buffer_length >= MEI_SLOT_SIZE; buffer_length -= MEI_SLOT_SIZE)
- 		*reg_buf++ = mei_me_mecbrw_read(dev);
- 
-@@ -747,6 +842,9 @@ static void mei_me_pg_set(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	reg = mei_me_reg_read(hw, H_HPG_CSR);
- 	trace_mei_reg_read(dev->dev, "H_HPG_CSR", H_HPG_CSR, reg);
- 
-@@ -766,6 +864,9 @@ static void mei_me_pg_unset(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	reg = mei_me_reg_read(hw, H_HPG_CSR);
- 	trace_mei_reg_read(dev->dev, "H_HPG_CSR", H_HPG_CSR, reg);
- 
-@@ -789,6 +890,9 @@ static int mei_me_pg_legacy_enter_sync(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	int ret;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	dev->pg_event = MEI_PG_EVENT_WAIT;
- 
- 	ret = mei_hbm_pg(dev, MEI_PG_ISOLATION_ENTRY_REQ_CMD);
-@@ -826,6 +930,9 @@ static int mei_me_pg_legacy_exit_sync(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	int ret;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	if (dev->pg_event == MEI_PG_EVENT_RECEIVED)
- 		goto reply;
- 
-@@ -971,6 +1078,9 @@ static int mei_me_d0i3_enter_sync(struct mei_device *dev)
- 	int ret;
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	reg = mei_me_d0i3c_read(dev);
- 	if (reg & H_D0I3C_I3) {
- 		/* we are in d0i3, nothing to do */
-@@ -1046,6 +1156,9 @@ static int mei_me_d0i3_enter(struct mei_device *dev)
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	reg = mei_me_d0i3c_read(dev);
- 	if (reg & H_D0I3C_I3) {
- 		/* we are in d0i3, nothing to do */
-@@ -1074,6 +1187,9 @@ static int mei_me_d0i3_exit_sync(struct mei_device *dev)
- 	int ret;
- 	u32 reg;
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	dev->pg_event = MEI_PG_EVENT_INTR_WAIT;
- 
- 	reg = mei_me_d0i3c_read(dev);
-@@ -1125,6 +1241,9 @@ static void mei_me_pg_legacy_intr(struct mei_device *dev)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (dev->pg_event != MEI_PG_EVENT_INTR_WAIT)
- 		return;
- 
-@@ -1144,6 +1263,9 @@ static void mei_me_d0i3_intr(struct mei_device *dev, u32 intr_source)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (dev->pg_event == MEI_PG_EVENT_INTR_WAIT &&
- 	    (intr_source & H_D0I3C_IS)) {
- 		dev->pg_event = MEI_PG_EVENT_INTR_RECEIVED;
-@@ -1185,6 +1307,9 @@ static void mei_me_pg_intr(struct mei_device *dev, u32 intr_source)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return;
-+
- 	if (hw->d0i3_supported)
- 		mei_me_d0i3_intr(dev, intr_source);
- 	else
-@@ -1202,6 +1327,9 @@ int mei_me_pg_enter_sync(struct mei_device *dev)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	if (hw->d0i3_supported)
- 		return mei_me_d0i3_enter_sync(dev);
- 	else
-@@ -1219,6 +1347,9 @@ int mei_me_pg_exit_sync(struct mei_device *dev)
- {
- 	struct mei_me_hw *hw = to_me_hw(dev);
- 
-+	if (dev->dev->offline)
-+		return 0;
-+
- 	if (hw->d0i3_supported)
- 		return mei_me_d0i3_exit_sync(dev);
- 	else
-@@ -1309,6 +1440,9 @@ irqreturn_t mei_me_irq_quick_handler(int irq, void *dev_id)
- 	struct mei_device *dev = (struct mei_device *)dev_id;
- 	u32 hcsr;
- 
-+	if (dev->dev->offline)
-+		return IRQ_HANDLED;
-+
- 	hcsr = mei_hcsr_read(dev);
- 	if (!me_intr_src(hcsr))
- 		return IRQ_NONE;
-@@ -1340,6 +1474,10 @@ irqreturn_t mei_me_irq_thread_handler(int irq, void *dev_id)
- 	int rets = 0;
- 
- 	dev_dbg(dev->dev, "function called after ISR to handle the interrupt processing.\n");
-+
-+	if (dev->dev->offline)
-+		return IRQ_HANDLED;
-+
- 	/* initialize our complete list */
- 	mutex_lock(&dev->device_lock);
- 
+ 	hw = to_me_hw(dev);
 -- 
 2.41.0
 
