@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8137CE8C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0754C7CE8C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbjJRU14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S232432AbjJRU2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbjJRU1m (ORCPT
+        with ESMTP id S231285AbjJRU1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:27:42 -0400
+        Wed, 18 Oct 2023 16:27:52 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C0FF7;
-        Wed, 18 Oct 2023 13:27:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DC019D;
+        Wed, 18 Oct 2023 13:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697660860; x=1729196860;
+  t=1697660867; x=1729196867;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uBq0mn/KWsPThzvu8vYwD7SGaiak2SEULwdsVYDWNkE=;
-  b=P5J2xF9mWbqUtNTW7KOh6Fuf+MiLyiMYzO4gb9k4biwP1lr4XcPrau4w
-   JwMqSWz+cBJrO1uJOnDDXkNdPZZQxlyozEVNPM+4+Rf5rV05umb2G7WMk
-   3UThViwXnf6/IXrq8JMQXieVa2WwXDoS6gY1bTr4UwSOn0oqu00n75wL8
-   J9AETP1Q7hGBcedekD8Vw58R0IjKCDqBi4fojPR7qHs50WAeqaHVVuiRm
-   GuMo8dVjQ6d1O2n4RcJiTmI9DdjdMHhnZhkApS6quJppZl0mD4i6dDXV9
-   aJs/YJo/5L23sh99u1p9nesJlajBaVq6KC8a6XTMv7UiWIaNymCQs6/if
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366352995"
+  bh=+xjFGFU3Ghawr8q7pdpDqNRlTkWqK1+SNcGCln6+RQc=;
+  b=jk1r9FiNcZLDgkM7lAD8Voesa0Hots64vkVLDPQ9KdqlpJMgWLDiL4Qx
+   WXdT5EZLqllVWqHn5duB5zLNFCi4iHCzKKJ1z3Cckw+AOBkGyYJOZpTIY
+   YlnamxnbpJPU+115kYEoK/4RpIrEMCmN7d/dpbiHxy0ZJLZFB8GGtvTtI
+   bBAQkk+NDusifIVid9NGUKPvHcgZF63Oc8ojBRuWqvEHRO/9fAcjJl014
+   sgPcjPp9ShZeJWTg2iYAWP4wF2juniH/e1jf/HJa9QJy+yPnEwOCQK1WK
+   BP4ATFWfBokKHJn/TuVL1d+CZbm96TJw4o8ckdfnHB/0rqp7DXohKdFrD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366353018"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="366352995"
+   d="scan'208";a="366353018"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:27:39 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:27:46 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="4691357"
+   d="scan'208";a="4691405"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmviesa001.fm.intel.com with ESMTP; 18 Oct 2023 13:27:35 -0700
+  by fmviesa001.fm.intel.com with ESMTP; 18 Oct 2023 13:27:42 -0700
 Received: from pkitszel-desk.intel.com (unknown [10.255.194.180])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id 81E7E33E92;
-        Wed, 18 Oct 2023 21:27:24 +0100 (IST)
+        by irvmail002.ir.intel.com (Postfix) with ESMTP id D78ED332CA;
+        Wed, 18 Oct 2023 21:27:31 +0100 (IST)
 From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
 To:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>,
@@ -74,9 +74,9 @@ Cc:     Brett Creeley <brett.creeley@amd.com>,
         Przemek Kitszel <przemyslaw.kitszel@intel.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next v3 03/11] pds_core: devlink health: use retained error fmsg API
-Date:   Wed, 18 Oct 2023 22:26:39 +0200
-Message-Id: <20231018202647.44769-4-przemyslaw.kitszel@intel.com>
+Subject: [PATCH net-next v3 04/11] bnxt_en: devlink health: use retained error fmsg API
+Date:   Wed, 18 Oct 2023 22:26:40 +0200
+Message-Id: <20231018202647.44769-5-przemyslaw.kitszel@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
 References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
@@ -98,59 +98,149 @@ so there is no need to check for them after each call.
 
 Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 ---
-add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-57 (-57)
+add/remove: 0/0 grow/shrink: 0/2 up/down: 0/-125 (-125)
 ---
- drivers/net/ethernet/amd/pds_core/devlink.c | 29 ++++++---------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c | 93 +++++++------------
+ 1 file changed, 32 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
-index d9607033bbf2..8b2b9e0d59f3 100644
---- a/drivers/net/ethernet/amd/pds_core/devlink.c
-+++ b/drivers/net/ethernet/amd/pds_core/devlink.c
-@@ -154,33 +154,20 @@ int pdsc_fw_reporter_diagnose(struct devlink_health_reporter *reporter,
- 			      struct netlink_ext_ack *extack)
- {
- 	struct pdsc *pdsc = devlink_health_reporter_priv(reporter);
--	int err;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+index 8b3e7697390f..09254e8a62d0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+@@ -104,80 +104,58 @@ static int bnxt_fw_diagnose(struct devlink_health_reporter *reporter,
+ 	struct bnxt *bp = devlink_health_reporter_priv(reporter);
+ 	struct bnxt_fw_health *h = bp->fw_health;
+ 	u32 fw_status, fw_resets;
+-	int rc;
  
- 	mutex_lock(&pdsc->config_lock);
--
- 	if (test_bit(PDSC_S_FW_DEAD, &pdsc->state))
--		err = devlink_fmsg_string_pair_put(fmsg, "Status", "dead");
-+		devlink_fmsg_string_pair_put(fmsg, "Status", "dead");
- 	else if (!pdsc_is_fw_good(pdsc))
--		err = devlink_fmsg_string_pair_put(fmsg, "Status", "unhealthy");
-+		devlink_fmsg_string_pair_put(fmsg, "Status", "unhealthy");
- 	else
--		err = devlink_fmsg_string_pair_put(fmsg, "Status", "healthy");
--
+-	if (test_bit(BNXT_STATE_IN_FW_RESET, &bp->state))
+-		return devlink_fmsg_string_pair_put(fmsg, "Status", "recovering");
++	if (test_bit(BNXT_STATE_IN_FW_RESET, &bp->state)) {
++		devlink_fmsg_string_pair_put(fmsg, "Status", "recovering");
++		return 0;
++	}
+ 
+-	if (!h->status_reliable)
+-		return devlink_fmsg_string_pair_put(fmsg, "Status", "unknown");
++	if (!h->status_reliable) {
++		devlink_fmsg_string_pair_put(fmsg, "Status", "unknown");
++		return 0;
++	}
+ 
+ 	mutex_lock(&h->lock);
+ 	fw_status = bnxt_fw_health_readl(bp, BNXT_FW_HEALTH_REG);
+ 	if (BNXT_FW_IS_BOOTING(fw_status)) {
+-		rc = devlink_fmsg_string_pair_put(fmsg, "Status", "initializing");
+-		if (rc)
+-			goto unlock;
++		devlink_fmsg_string_pair_put(fmsg, "Status", "initializing");
+ 	} else if (h->severity || fw_status != BNXT_FW_STATUS_HEALTHY) {
+ 		if (!h->severity) {
+ 			h->severity = SEVERITY_FATAL;
+ 			h->remedy = REMEDY_POWER_CYCLE_DEVICE;
+ 			h->diagnoses++;
+ 			devlink_health_report(h->fw_reporter,
+ 					      "FW error diagnosed", h);
+ 		}
+-		rc = devlink_fmsg_string_pair_put(fmsg, "Status", "error");
+-		if (rc)
+-			goto unlock;
+-		rc = devlink_fmsg_u32_pair_put(fmsg, "Syndrome", fw_status);
+-		if (rc)
+-			goto unlock;
++		devlink_fmsg_string_pair_put(fmsg, "Status", "error");
++		devlink_fmsg_u32_pair_put(fmsg, "Syndrome", fw_status);
+ 	} else {
+-		rc = devlink_fmsg_string_pair_put(fmsg, "Status", "healthy");
+-		if (rc)
+-			goto unlock;
 +		devlink_fmsg_string_pair_put(fmsg, "Status", "healthy");
- 	mutex_unlock(&pdsc->config_lock);
+ 	}
  
--	if (err)
--		return err;
--
--	err = devlink_fmsg_u32_pair_put(fmsg, "State",
--					pdsc->fw_status &
--						~PDS_CORE_FW_STS_F_GENERATION);
--	if (err)
--		return err;
--
--	err = devlink_fmsg_u32_pair_put(fmsg, "Generation",
--					pdsc->fw_generation >> 4);
--	if (err)
--		return err;
-+	devlink_fmsg_u32_pair_put(fmsg, "State",
-+				  pdsc->fw_status & ~PDS_CORE_FW_STS_F_GENERATION);
-+	devlink_fmsg_u32_pair_put(fmsg, "Generation", pdsc->fw_generation >> 4);
-+	devlink_fmsg_u32_pair_put(fmsg, "Recoveries", pdsc->fw_recoveries);
+-	rc = devlink_fmsg_string_pair_put(fmsg, "Severity",
+-					  bnxt_health_severity_str(h->severity));
+-	if (rc)
+-		goto unlock;
++	devlink_fmsg_string_pair_put(fmsg, "Severity",
++				     bnxt_health_severity_str(h->severity));
  
--	return devlink_fmsg_u32_pair_put(fmsg, "Recoveries",
--					 pdsc->fw_recoveries);
+ 	if (h->severity) {
+-		rc = devlink_fmsg_string_pair_put(fmsg, "Remedy",
+-						  bnxt_health_remedy_str(h->remedy));
+-		if (rc)
+-			goto unlock;
+-		if (h->remedy == REMEDY_DEVLINK_RECOVER) {
+-			rc = devlink_fmsg_string_pair_put(fmsg, "Impact",
+-							  "traffic+ntuple_cfg");
+-			if (rc)
+-				goto unlock;
+-		}
++		devlink_fmsg_string_pair_put(fmsg, "Remedy",
++					     bnxt_health_remedy_str(h->remedy));
++		if (h->remedy == REMEDY_DEVLINK_RECOVER)
++			devlink_fmsg_string_pair_put(fmsg, "Impact",
++						     "traffic+ntuple_cfg");
+ 	}
+ 
+-unlock:
+ 	mutex_unlock(&h->lock);
+-	if (rc || !h->resets_reliable)
+-		return rc;
++	if (!h->resets_reliable)
++		return 0;
+ 
+ 	fw_resets = bnxt_fw_health_readl(bp, BNXT_FW_RESET_CNT_REG);
+-	rc = devlink_fmsg_u32_pair_put(fmsg, "Resets", fw_resets);
+-	if (rc)
+-		return rc;
+-	rc = devlink_fmsg_u32_pair_put(fmsg, "Arrests", h->arrests);
+-	if (rc)
+-		return rc;
+-	rc = devlink_fmsg_u32_pair_put(fmsg, "Survivals", h->survivals);
+-	if (rc)
+-		return rc;
+-	rc = devlink_fmsg_u32_pair_put(fmsg, "Discoveries", h->discoveries);
+-	if (rc)
+-		return rc;
+-	rc = devlink_fmsg_u32_pair_put(fmsg, "Fatalities", h->fatalities);
+-	if (rc)
+-		return rc;
+-	return devlink_fmsg_u32_pair_put(fmsg, "Diagnoses", h->diagnoses);
++	devlink_fmsg_u32_pair_put(fmsg, "Resets", fw_resets);
++	devlink_fmsg_u32_pair_put(fmsg, "Arrests", h->arrests);
++	devlink_fmsg_u32_pair_put(fmsg, "Survivals", h->survivals);
++	devlink_fmsg_u32_pair_put(fmsg, "Discoveries", h->discoveries);
++	devlink_fmsg_u32_pair_put(fmsg, "Fatalities", h->fatalities);
++	devlink_fmsg_u32_pair_put(fmsg, "Diagnoses", h->diagnoses);
 +	return 0;
+ }
+ 
+ static int bnxt_fw_dump(struct devlink_health_reporter *reporter,
+@@ -203,19 +181,12 @@ static int bnxt_fw_dump(struct devlink_health_reporter *reporter,
+ 
+ 	rc = bnxt_get_coredump(bp, BNXT_DUMP_LIVE, data, &dump_len);
+ 	if (!rc) {
+-		rc = devlink_fmsg_pair_nest_start(fmsg, "core");
+-		if (rc)
+-			goto exit;
+-		rc = devlink_fmsg_binary_pair_put(fmsg, "data", data, dump_len);
+-		if (rc)
+-			goto exit;
+-		rc = devlink_fmsg_u32_pair_put(fmsg, "size", dump_len);
+-		if (rc)
+-			goto exit;
+-		rc = devlink_fmsg_pair_nest_end(fmsg);
++		devlink_fmsg_pair_nest_start(fmsg, "core");
++		devlink_fmsg_binary_pair_put(fmsg, "data", data, dump_len);
++		devlink_fmsg_u32_pair_put(fmsg, "size", dump_len);
++		devlink_fmsg_pair_nest_end(fmsg);
+ 	}
+ 
+-exit:
+ 	vfree(data);
+ 	return rc;
  }
 -- 
 2.38.1
