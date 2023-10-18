@@ -2,246 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D927CD5BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B591F7CD5BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344629AbjJRHw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 03:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        id S1344584AbjJRHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 03:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjJRHwy (ORCPT
+        with ESMTP id S229843AbjJRHwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 03:52:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749CBBC
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 00:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697615527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=RHU5Hd39FUrVAV5loRQ1RiePBE82/byfLGhIqj8tiII=;
-        b=b7+pqYhvqbLisqItcn5tyjs12Ug9UXQucYwVC8X2NkMVPKzOqsSphqemLXaxRKAKailVhx
-        a8UjAP9rs++YMveImQeNmCmNPlX9s+Fe189pd1dDDr3gRSWs8JBNJbYd/cbc2b0NGewG95
-        Gvl0QvqczuspCB5JxOMLC294Jn/9rU4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-452-eBPrSne1PKufKvPDpHavoA-1; Wed, 18 Oct 2023 03:52:04 -0400
-X-MC-Unique: eBPrSne1PKufKvPDpHavoA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32db9cd71d7so1351071f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 00:52:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697615523; x=1698220323;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RHU5Hd39FUrVAV5loRQ1RiePBE82/byfLGhIqj8tiII=;
-        b=nh2oWdGlK7pz45qd+B7VaErD6TduoGxmJ40s4zM4AuJ8f0nCmvBxllG1oQ/Yp785gX
-         qXwFAY/ZYsiuu70n0PPlkgc9xW6sqMYb5+Ym9Vc4CsHSxY6ki2MroAjRahblIS2A0Ref
-         34N0qZbjFPiGiql08NlSXAdtvZgtc2HRHyfA2yi/0KV49tzLVOYYbehWeGACC/dVX0nv
-         mdI4bs2qsecmuMOemvckLjI3xZoC3l27MQYWyQCU9zbCsPyIuIU8neuTS6L2HYfweNHh
-         ixlZTNne+EZEa6arVkw6Z5gXVOVWcu3hdczTDj36dBzdad0+tuTr5FVamACthTXuM17a
-         ewWg==
-X-Gm-Message-State: AOJu0Yx0hMKmYr5gYh3ee52EJqhKHxnEnAh7fKUp127uyUIJ6GT+VVTD
-        3USqI0jZlVOnCvbAYEvDfF+INPGQuJ3pFK+CdopS1+YalxIcxJHnVGd48JPsk+GGmr2Oa/hDIn3
-        qBEnLkEIAUdF+fHbP2nJ44kv8
-X-Received: by 2002:a05:6000:b90:b0:32d:c76f:299e with SMTP id dl16-20020a0560000b9000b0032dc76f299emr3762795wrb.19.1697615522870;
-        Wed, 18 Oct 2023 00:52:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEQkhmtCUMSZwDH9L0u+eMmT0hnvuPZIJdkFV3319moRmx057s+D42w02GTuO9Exs8Q8EZUCw==
-X-Received: by 2002:a05:6000:b90:b0:32d:c76f:299e with SMTP id dl16-20020a0560000b9000b0032dc76f299emr3762765wrb.19.1697615522319;
-        Wed, 18 Oct 2023 00:52:02 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:d300:5c7b:51ce:e3ef:6e01? (p200300cbc70ad3005c7b51cee3ef6e01.dip0.t-ipconnect.de. [2003:cb:c70a:d300:5c7b:51ce:e3ef:6e01])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c499100b0040772138bb7sm939078wmp.2.2023.10.18.00.52.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 00:52:01 -0700 (PDT)
-Message-ID: <e4386b0a-325e-4757-a993-dcf9fec220c3@redhat.com>
-Date:   Wed, 18 Oct 2023 09:52:01 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
+        Wed, 18 Oct 2023 03:52:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDDBEA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 00:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697615560; x=1729151560;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=9xp/50kNWyZjGGI2ZQhifT7cyKIRe4n5TvBOqvjQvSc=;
+  b=WlsYZwflYZ+ahgdYI2DzBTs47Cc0EB9kbOxpgavHDyGPAZxxZ0mmQK1+
+   uEtYZkK2ye/5aerpCZ3BmYSGSuDe9h8KGf3yn1f8RzO9Vaa9cwgl8bzxG
+   92JhRqGrwyZ30o3IVvbV48akkgeQaCnN+0WELvdyKhAaClU6+4TwBTohS
+   tY0mZ+KmUt4ho1UmILsdx7QuHF2A+NX0fKr5vGL/3Vsf/3ziv0dEhpR87
+   pod4Jdkpo9Uf0pqH7K989a4/jRzhpcoV4SpyvNSpfVOe2juRaHG+y1wGY
+   L7rKLYgU6VJ9E9/gmbGBYPnzepkDW7QyHj1J/Qu8fKcV7j8uhy7hAf0nj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383183492"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="383183492"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 00:52:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="930075772"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="930075772"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2023 00:52:39 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 18 Oct 2023 00:52:38 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 18 Oct 2023 00:52:38 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 18 Oct 2023 00:52:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QUT5kK8B/FURSm3Ret4qHMcgrmb+9oCyEs9z4zsLEvq+Gll9KH3ujdoEzVNeeqPl9uN8iFQIw/RbMVl++ieqbN8xkwKEPn/3+VINOgVfxWWZ6HM+AjCJTImE+e+GZ7iePRVoVfS4CkhnEiq/o+U8tn35BgAUxcyYzdA1ChL/CIkRLVXv+5l2Hq7a9aBpGph3GMBSv9NKWrhPSn6u+bXDuTmlauGAZqMqIOsxnoukOKumHclTwY8P92zrX2Mm6EbIu6UAfsbErZ7ZNGMPU1GDRlWFyLdu2SHtDhGqAAM0A9U5vSjCN0idc6yDyID1bec7SZOA25Cfavnq0zoTCM8PcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DDMVUPs9HKqcN3J8uhaQ9ii5ckop6yR2eE5wG3DD9Dk=;
+ b=ajQ/fA/cvJE/8yZM6m6EsDwHueAcn5zG5OB3WyYEO9gH+1epzHO1FGtPVIH9ldC5ihF9xQ6vyuNlSJsFwzeodnsOA24xD38y10IEy7pweIlbVwWa7+pJvBs40XHPKRTkGPMI3gmFFw1QtHmoIv9mz5mWFiuzUsJh1eNCp83s9LVmV/iM10jG+tSOb+2PEiBOfUOn5pnI/zXlr6+ww1MuOEAAoHoBzASkoR2Sq2Es9MOQJVAAO2ribY2AowDyMu0S6BNd58pgV4RUPkT5DcVczg8rlU91gikYCGiLleK9KwgzDUe9Oue7J8LEMm2CDL/Ldcj8kD9x1Sr/H2QQLreNhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BY5PR11MB4243.namprd11.prod.outlook.com (2603:10b6:a03:1c8::16)
+ by MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Wed, 18 Oct
+ 2023 07:52:31 +0000
+Received: from BY5PR11MB4243.namprd11.prod.outlook.com
+ ([fe80::59cb:e244:fe8b:184d]) by BY5PR11MB4243.namprd11.prod.outlook.com
+ ([fe80::59cb:e244:fe8b:184d%5]) with mapi id 15.20.6907.021; Wed, 18 Oct 2023
+ 07:52:31 +0000
+Message-ID: <7dde176b-1059-e9a4-a023-0243cce61d01@intel.com>
+Date:   Wed, 18 Oct 2023 09:52:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] staging: rts5208: Replace delay function.
 Content-Language: en-US
-To:     Charan Teja Kalla <quic_charante@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     osalvador@suse.de, dan.j.williams@intel.com, vbabka@suse.cz,
-        mgorman@techsingularity.net, aneesh.kumar@linux.ibm.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
- <20231014152532.5f3dca7838c2567a1a9ca9c6@linux-foundation.org>
- <a46cf10b-d852-c671-ee20-40f39bdbceac@redhat.com>
- <994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Julia Lawall <julia.lawall@inria.fr>,
+        kenechukwu maduechesi <maduechesik@gmail.com>,
+        <outreachy@lists.linux.dev>, <shreeya.patel23498@gmail.com>,
+        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+References: <20231018004300.GA3189@ubuntu>
+ <7bc719c4-459f-3d8-7ed-b1e1adf158@inria.fr>
+ <1118ec6d-e1e7-79f3-08e4-9a79c996eed1@intel.com>
+ <2023101853-axis-stylist-f1b9@gregkh>
+From:   Karolina Stolarek <karolina.stolarek@intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
+ Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <2023101853-axis-stylist-f1b9@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0003.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::14) To BY5PR11MB4243.namprd11.prod.outlook.com
+ (2603:10b6:a03:1c8::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4243:EE_|MW3PR11MB4554:EE_
+X-MS-Office365-Filtering-Correlation-Id: da15a763-1866-401b-00c2-08dbcfaf2ec6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UkLKSmb/iIsO61tZiVa0OoBlIozCDRQQqtQZsOHjAKzxq0by+aBTYiVlr/2w/3iI7LllTNpVuy/i1qdcEmHwOF68ZEjANh9bZ6QbFk9SlsH//7n0f6FXeBUrEPe/VLZ5Tkb4DnGnaFHcoO8Dxn0XyvmF9BULAVUVnh5xX1agOsbysmh9g6VIWi4Mv1N5wMYfwFNGtwpu6Grvasztyn8HsiCJKEmCKtTyVW1J3RCOSOQ4qV73CcxEGsQNiGiB4BCzTwOT90hitogZl9DFyerYXI5Dn9XT/m0Bu8yObYN5nnjQ7MObAzO31b01OkISFkcitXSUuYj6KzffeaBT7q2oHDSbYtry6JgmJjBOA7XcIvK6SWwodJCnCKa/CtSvHsiAzAbWbruKbwAWQUViDFoELdeQbdij1aCYDxc0f9MbhQXZujbc2sZzfvPTCRnctreaoMaIfRUxnBzQRZMeGkkCUCwXJNyiM7SGPtZLbumDNSe1PgP4lJJ1pRZXoFr8AQTfc9kAmVb35hw+j50xLmMk7H7uH4Z1u6agwYHOxPFKv8KK7ltDkus4fsXNx9a1a8gJvwwFnQjzaf1Bgwbc/uKUChx97MSBMOICS9ZfcNWeDSFe1TgL+IdfObsTo99z5SH3m2cJVqpUZym10tmkv9mmnQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4243.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(376002)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(316002)(66946007)(6916009)(53546011)(6512007)(66556008)(86362001)(83380400001)(36756003)(38100700002)(82960400001)(2616005)(31696002)(36916002)(478600001)(6486002)(6506007)(54906003)(66476007)(41300700001)(44832011)(5660300002)(26005)(31686004)(2906002)(8676002)(4326008)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXkrazNFQ3QwWEZJMTgvSFJXZCtuVkk2eDhzRnEvZUZmbzEwRVNTbXdYTmJG?=
+ =?utf-8?B?SlUydENMZ2lRT05MeGJNN1FjMGVGdEJTNXcvOURWdUVsTVJhWmFIazJEd0ZK?=
+ =?utf-8?B?eVM2eTY0REs1Nklkc3NHalZJZ0tqTHMzenowVjZvRWNnSVNRUUUwdnhDbDdD?=
+ =?utf-8?B?OUdIZ25vbGNsclRPdnlTaWNWQXNQdFNSUC9GVlZWTmJMM0IyVks3WEMrMjFq?=
+ =?utf-8?B?RE95MU1CNEI4cjBuekdQZytiN1M4ZHpBeDFVL1JSRFBEUWN1cU0velMraHJu?=
+ =?utf-8?B?anNyVVRQZkhyT3dZRzJmSnJQeE11MDViOXhxazJFUjVFb1VVV1ExVXhuKzZO?=
+ =?utf-8?B?MEFTaDRUN20rMUROZlJPZitHdGJJQ1BGRzFsQ3UyN21OSFVkWTlEVGZNckY5?=
+ =?utf-8?B?ZXMzK0hNSUNtNVZqZXgyL0ZtZFp2dWRXY005UWF3eGVIUkR1amQzRHdVak54?=
+ =?utf-8?B?eG9FZzRvNlduWUc0L1JnODh6M1VBTUcwQXpvUEJ1MzBWN1I5cjcyVGpZOEJi?=
+ =?utf-8?B?Z3RvVTJXdnVWb2wwRWpLaHBJbzEyYU9UdFVUTlQ1eEdONUQvdDh1VSthTXcy?=
+ =?utf-8?B?RU15TWRGODNOK0tWRWJha3o2NkVHelZVNDhHNXNadExDQTdWN1FPQWxuM0dD?=
+ =?utf-8?B?Z1BmZWdVK2lEWWUyeXdFT0FNaDNRcFJoRUVaUGN4ZVh1Z2ZXYUtOOE4vLzcz?=
+ =?utf-8?B?K1l6b3lsM3h0eFFpUUYxWStwRFh3TndHeXE0N2FvZzl5ZVFiSTlWb3J0bnJk?=
+ =?utf-8?B?NVBFQjV4d1E4alMzWnp3N2JpeFJ3dlZxK3k0UVgyaGdlQ2RBMGFseU9jakhC?=
+ =?utf-8?B?dkdmY0RNUXJIR1RxQm5sTmd3VTJEWnhKWUlLSkZ0THRwSmROZUdxdmVPSUU5?=
+ =?utf-8?B?VXZ5QVBKTHVHVCtmZGxJNDRhSXhPNVVvcmlabys0OGNVenR5SnZuT3c3VmhJ?=
+ =?utf-8?B?MG91dUp4Z2orMEdodDNzK0twRlNPMXB5OVJMUDkvMWwydUZQeG1FblM3cVhs?=
+ =?utf-8?B?WW1vWFg4Z09MbkgvNjQ2bFdIaTJlT0JMaDhVTW40RnZEdFVlcWtkWFhXRHMx?=
+ =?utf-8?B?YWkrb0s5SXVidmZpSitXRUhJdS9pckFFVWFiMytpYTRtQUhhNTA1SVJ0aVpv?=
+ =?utf-8?B?SUZ1UlJIQWlNRzVEcFFIdGVGTHVpMC9RYlBFNFJzeXZiTyt3WmhDSEhUdlFR?=
+ =?utf-8?B?ZUgzOVVqQm9hUWZmbXV5SUtzVElSdlRzdk1RZnFDWDY5OEtVY3M4NnUyRHk4?=
+ =?utf-8?B?Qit2Y2pCakkzUkxzWk9RSm84T3hTZnZqYnMzNnNBa0k3SHhnNkJOaHh2dDlK?=
+ =?utf-8?B?NGpGRVJHckNHaGdkMzJjWWQ0TE9mR0gxNGYydktvSTgzTE5aS0N4TmdJSG1z?=
+ =?utf-8?B?NFArajI2NzR0WDQ0cXRQSWw5dTF0NytqcENlK1NZcWtrR3pqcVlIZkRVcXlQ?=
+ =?utf-8?B?WWIweE51d1hpMGRtYStNWUpETFZ5TFlwTXhJSFVCVGs3ZHRhTTh4dUtIQUdS?=
+ =?utf-8?B?Qmh2cDdWYzFHVVVmRWJMMEtNenlGQ2dOcktrYjdSenFTajhOSUdmaGJFb3Zq?=
+ =?utf-8?B?d0p5Z3RIV2tCbkd1a3pSdk1lYUZhT0RjM01JWHVFcUhyNnk0cGp6TVRDMzJF?=
+ =?utf-8?B?WWh2ZGFSWEY1bElUdFlnOGYzbFVpbzVDd3ZXUll2a2dqeWRrSlhjV1JkamRu?=
+ =?utf-8?B?SVYrclUvcUJDQURQQ2kwZThhWkhjZkxKNDFpRE1ORlFRM0lOMEl6TUVhaDRr?=
+ =?utf-8?B?TmNZMk0yUlNNU3FtSmhRd05UM1BtM3hHVjlaQjl1eEpaUjVSdC8rbThiNE9C?=
+ =?utf-8?B?dGZLRE55cjEwM0FZVEorekdCc1hqMG4yNkZyWndIRWVudHBIWjVQbUx3TVgy?=
+ =?utf-8?B?LzQ5N202VTd0RE9Ua3ZadFEzL2lxckw1Y2czMndqanlocWZkWXJyY2JWOHNs?=
+ =?utf-8?B?eVZzdXpKVE9RZ0ROdHdBOEdkeDhHUWwxTVZ2b2xic1hlbjlWZy9DUzNqZG1O?=
+ =?utf-8?B?ZE1NTnpZUHRsTUFjVTFQSmZsWDBHcW1tQ0RYWnMwMW9XV3F0VTh4NVNCTVpT?=
+ =?utf-8?B?dDJZWDhRUWdXQTJVc1MxQUZQc2t2cXNjT3M2aFA0aEtjU292Ym02QXlMWlVy?=
+ =?utf-8?B?RlBGM0NqQjk1NUlVTjA5Ui9HTWFGTy8xSHNDclc5N3BmdG5vcVlicmpLbEZO?=
+ =?utf-8?B?RkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: da15a763-1866-401b-00c2-08dbcfaf2ec6
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4243.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 07:52:31.6377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: woGk3/2n+Zy6WHUB/sWQgtyKEmR0pVEmlmT34pEVTysl6iijVADkcZ0e6jB+wTBjbs2Of1gCNXBd3N73A+RjLAqVJxtsGC+uDgxxL06rAt0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4554
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.10.23 15:38, Charan Teja Kalla wrote:
-> Thanks Andrew/David,
-> 
-> On 10/16/2023 1:53 PM, David Hildenbrand wrote:
->>>> The below race is observed on a PFN which falls into the device memory
->>>> region with the system memory configuration where PFN's are such that
->>>> [ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL]. Since normal zone start and
->>>> end pfn contains the device memory PFN's as well, the compaction
->>>> triggered will try on the device memory PFN's too though they end up in
->>>> NOP(because pfn_to_online_page() returns NULL for ZONE_DEVICE memory
->>>> sections). When from other core, the section mappings are being removed
->>>> for the ZONE_DEVICE region, that the PFN in question belongs to,
->>>> on which compaction is currently being operated is resulting into the
->>>> kernel crash with CONFIG_SPASEMEM_VMEMAP enabled.
+On 18.10.2023 09:45, Greg Kroah-Hartman wrote:
+> On Wed, Oct 18, 2023 at 09:32:46AM +0200, Karolina Stolarek wrote:
+>> On 18.10.2023 09:03, Julia Lawall wrote:
 >>>
->>> Seems this bug is four years old, yes?  It must be quite hard to hit.
+>>>
+>>> On Tue, 17 Oct 2023, kenechukwu maduechesi wrote:
+>>>
+>>>> Replace udelay() with usleep_range() for more precise delay handling.
+>>>>
+>>>> Reported by checkpatch:
+>>>>
+>>>> CHECK: usleep_range is preferred over udelay
+>>>
+>>> This message is typically not a good candidate for outreachy patches,
+>>> because you need access to the device to be sure that any change is
+>>> correct.
 >>
->>  From the description, it's not quite clear to me if this was actually
->> hit -- usually people include the dmesg bug/crash info.
+>> Could we add a paragraph on how to pick good checkpatch.pl error to fix to
+>> the Outreachyfirstpatch docs? This could go to "Find a driver to clean up"
+>> section, for example.
 > 
-> On Snapdragon SoC,  with the mentioned memory configuration of PFN's as
-> [ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL],  we are able to see bunch of
-> issues daily while testing on a device farm.
-> 
-> I note that from next time on wards will send the demsg bug/crash info
-> for these type of issues. For this particular issue below is the log.
-> Though the below log is not directly pointing to the
-> pfn_section_valid(){ ms->usage;}, when we loaded this dump on T32
-> lauterbach tool, it is pointing.
-> 
-> [  540.578056] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-> [  540.578068] Mem abort info:
-> [  540.578070]   ESR = 0x0000000096000005
-> [  540.578073]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [  540.578077]   SET = 0, FnV = 0
-> [  540.578080]   EA = 0, S1PTW = 0
-> [  540.578082]   FSC = 0x05: level 1 translation fault
-> [  540.578085] Data abort info:
-> [  540.578086]   ISV = 0, ISS = 0x00000005
-> [  540.578088]   CM = 0, WnR = 0
-> [  540.579431] pstate: 82400005 (Nzcv daif +PAN -UAO +TCO -DIT -SSBS
-> BTYPE=--)
-> [  540.579436] pc : __pageblock_pfn_to_page+0x6c/0x14c
-> [  540.579454] lr : compact_zone+0x994/0x1058
-> [  540.579460] sp : ffffffc03579b510
-> [  540.579463] x29: ffffffc03579b510 x28: 0000000000235800 x27:
-> 000000000000000c
-> [  540.579470] x26: 0000000000235c00 x25: 0000000000000068 x24:
-> ffffffc03579b640
-> [  540.579477] x23: 0000000000000001 x22: ffffffc03579b660 x21:
-> 0000000000000000
-> [  540.579483] x20: 0000000000235bff x19: ffffffdebf7e3940 x18:
-> ffffffdebf66d140
-> [  540.579489] x17: 00000000739ba063 x16: 00000000739ba063 x15:
-> 00000000009f4bff
-> [  540.579495] x14: 0000008000000000 x13: 0000000000000000 x12:
-> 0000000000000001
-> [  540.579501] x11: 0000000000000000 x10: 0000000000000000 x9 :
-> ffffff897d2cd440
-> [  540.579507] x8 : 0000000000000000 x7 : 0000000000000000 x6 :
-> ffffffc03579b5b4
-> [  540.579512] x5 : 0000000000027f25 x4 : ffffffc03579b5b8 x3 :
-> 0000000000000001
-> [  540.579518] x2 : ffffffdebf7e3940 x1 : 0000000000235c00 x0 :
-> 0000000000235800
-> [  540.579524] Call trace:
-> [  540.579527]  __pageblock_pfn_to_page+0x6c/0x14c
-> [  540.579533]  compact_zone+0x994/0x1058
-> [  540.579536]  try_to_compact_pages+0x128/0x378
-> [  540.579540]  __alloc_pages_direct_compact+0x80/0x2b0
-> [  540.579544]  __alloc_pages_slowpath+0x5c0/0xe10
-> [  540.579547]  __alloc_pages+0x250/0x2d0
-> [  540.579550]  __iommu_dma_alloc_noncontiguous+0x13c/0x3fc
-> [  540.579561]  iommu_dma_alloc+0xa0/0x320
-> [  540.579565]  dma_alloc_attrs+0xd4/0x108
-> 
->>>> Fix this issue by the below steps:
->>>> a) Clear SECTION_HAS_MEM_MAP before freeing the ->usage.
->>>> b) RCU protected read side critical section will either return NULL when
->>>> SECTION_HAS_MEM_MAP is cleared or can successfully access ->usage.
->>>> c) Synchronize the rcu on the write side and free the ->usage. No
->>>> attempt will be made to access ->usage after this as the
->>>> SECTION_HAS_MEM_MAP is cleared thus valid_section() return false.
->>
->>
->> This affects any kind of memory hotunplug. When hotunplugging memory we
->> will end up calling synchronize_rcu() for each and every memory section,
->> which sounds extremely wasteful.
->>
->> Can't we find a way to kfree_rcu() that thing and read/write the pointer
->> using READ?ONCE?WRITE_ONCE instead?
-> 
-> I am inspired to use the synchronize_rcu() because of [1] where we did
-> use it in offline_page_ext(). And my limited understanding is that, a
-> user can trigger the offline operation more often than the unplug operation.
+> The ability to find a "good" error changes over time, so this might be
+> hard to do.
 
-In theory yes. In practice there are not many use cases where we do that.
+I agree, but we can all agree that experimenting with udelay during 
+Outreachy is not a good idea, and people should know about it
 
-Further, page_ext is already not used that frequently (page owner, 
-young, idle tracking only), especially in most production (!debug) 
-environments.
+All the best,
+Karolina
 
 > 
-> I agree here that there is a scope to use kfree_rcu() unlike in [1]. Let
-> me check for a way to use it.
-
-Exactly, if we could use that, it would be ideal.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> good luck!
+> 
+> greg k-h
