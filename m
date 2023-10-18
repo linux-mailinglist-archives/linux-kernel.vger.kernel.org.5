@@ -2,252 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7407CD927
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF23A7CD930
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjJRK0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
+        id S230439AbjJRK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjJRK0V (ORCPT
+        with ESMTP id S230359AbjJRK2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:26:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61D595;
-        Wed, 18 Oct 2023 03:26:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CE24C433C9;
-        Wed, 18 Oct 2023 10:26:14 +0000 (UTC)
-Message-ID: <b3b978a8-93b8-4964-8754-18ce3dab3d42@xs4all.nl>
-Date:   Wed, 18 Oct 2023 12:26:12 +0200
+        Wed, 18 Oct 2023 06:28:40 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5069EB0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=3jpi6tb2USUsryGUEr6x7yJ/m4xxBkCDZ36oL0gWECY=;
+  b=lduhjMdf6rMq63cR4tJzKodlbSMhSjFOCoZdjij/lJ580mw0rdvlt6BT
+   XE1MP7WktTFWHp/cMRYHb5XOs0fHFvHm9eGPBEPPKdFZBx/0C6DN62EOQ
+   gZzCE9wd9hjv3eBz+B/TqfNGo/dBq1Lw2hMcHIlcEoU8H8FOlGwRWUwBS
+   Y=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,234,1694728800"; 
+   d="scan'208";a="131873658"
+Received: from dhcp-138-246-3-50.dynamic.eduroam.mwn.de (HELO hadrien) ([138.246.3.50])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:28:35 +0200
+Date:   Wed, 18 Oct 2023 12:28:35 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+To:     Karolina Stolarek <karolina.stolarek@intel.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kenechukwu maduechesi <maduechesik@gmail.com>,
+        outreachy@lists.linux.dev, shreeya.patel23498@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rts5208: Replace delay function.
+In-Reply-To: <7dde176b-1059-e9a4-a023-0243cce61d01@intel.com>
+Message-ID: <12b375b1-acd3-476e-17bc-b4db22efba69@inria.fr>
+References: <20231018004300.GA3189@ubuntu> <7bc719c4-459f-3d8-7ed-b1e1adf158@inria.fr> <1118ec6d-e1e7-79f3-08e4-9a79c996eed1@intel.com> <2023101853-axis-stylist-f1b9@gregkh> <7dde176b-1059-e9a4-a023-0243cce61d01@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 30/56] media: test-drivers: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Daniel Almeida <daniel.almeida@collabora.com>
-References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
- <20231017144756.34719-31-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231017144756.34719-31-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 16:47, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> This allows us to change how the number of buffers is computed in the
-> futur.
-> If 'min_buffers_needed' is set remove useless checks in queue setup
-> functions.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Daniel Almeida <daniel.almeida@collabora.com>
-> ---
->  drivers/media/test-drivers/visl/visl-dec.c         | 4 ++--
->  drivers/media/test-drivers/vivid/vivid-meta-cap.c  | 3 ---
->  drivers/media/test-drivers/vivid/vivid-meta-out.c  | 5 +++--
->  drivers/media/test-drivers/vivid/vivid-touch-cap.c | 5 +++--
->  drivers/media/test-drivers/vivid/vivid-vbi-cap.c   | 5 +++--
->  drivers/media/test-drivers/vivid/vivid-vbi-out.c   | 5 +++--
->  drivers/media/test-drivers/vivid/vivid-vid-cap.c   | 5 +++--
->  drivers/media/test-drivers/vivid/vivid-vid-out.c   | 5 +----
->  8 files changed, 18 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/visl/visl-dec.c b/drivers/media/test-drivers/visl/visl-dec.c
-> index ba20ea998d19..4672dc5e52bb 100644
-> --- a/drivers/media/test-drivers/visl/visl-dec.c
-> +++ b/drivers/media/test-drivers/visl/visl-dec.c
-> @@ -287,7 +287,7 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->  	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
->  
->  	len = 0;
-> -	for (i = 0; i < out_q->num_buffers; i++) {
-> +	for (i = 0; i < vb2_get_num_buffers(out_q); i++) {
->  		char entry[] = "index: %u, state: %s, request_fd: %d, ";
->  		u32 old_len = len;
->  		struct vb2_buffer *vb2;
-> @@ -347,7 +347,7 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->  	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
->  
->  	len = 0;
-> -	for (i = 0; i < cap_q->num_buffers; i++) {
-> +	for (i = 0; i < vb2_get_num_buffers(cap_q); i++) {
->  		u32 old_len = len;
->  		struct vb2_buffer *vb2;
->  		char *q_status;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-meta-cap.c b/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> index 780f96860a6d..0a718d037e59 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> @@ -30,9 +30,6 @@ static int meta_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->  		sizes[0] = size;
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->  	*nplanes = 1;
->  	return 0;
->  }
-> diff --git a/drivers/media/test-drivers/vivid/vivid-meta-out.c b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> index 95835b52b58f..4a569a6e58be 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> @@ -18,6 +18,7 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->  				struct device *alloc_devs[])
->  {
->  	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	unsigned int size =  sizeof(struct vivid_meta_out_buf);
->  
->  	if (!vivid_is_webcam(dev))
-> @@ -30,8 +31,8 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->  		sizes[0] = size;
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
->  
->  	*nplanes = 1;
->  	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-touch-cap.c b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> index c7f6e23df51e..4b3c6ea0afde 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> @@ -13,6 +13,7 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->  				 struct device *alloc_devs[])
->  {
->  	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	struct v4l2_pix_format *f = &dev->tch_format;
->  	unsigned int size = f->sizeimage;
->  
-> @@ -23,8 +24,8 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->  		sizes[0] = size;
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
->  
->  	*nplanes = 1;
->  	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-cap.c b/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> index b65b02eeeb97..fcd7f40385e9 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> @@ -124,6 +124,7 @@ static int vbi_cap_queue_setup(struct vb2_queue *vq,
->  		       unsigned sizes[], struct device *alloc_devs[])
->  {
->  	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	bool is_60hz = dev->std_cap[dev->input] & V4L2_STD_525_60;
->  	unsigned size = vq->type == V4L2_BUF_TYPE_SLICED_VBI_CAPTURE ?
->  		36 * sizeof(struct v4l2_sliced_vbi_data) :
-> @@ -134,8 +135,8 @@ static int vbi_cap_queue_setup(struct vb2_queue *vq,
->  
->  	sizes[0] = size;
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
 
-min_buffers_needed is 2 for vbi_cap, so this can be dropped.
 
->  
->  	*nplanes = 1;
->  	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-out.c b/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> index cd56476902a2..8f0da5d88bcc 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> @@ -20,6 +20,7 @@ static int vbi_out_queue_setup(struct vb2_queue *vq,
->  		       unsigned sizes[], struct device *alloc_devs[])
->  {
->  	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	bool is_60hz = dev->std_out & V4L2_STD_525_60;
->  	unsigned size = vq->type == V4L2_BUF_TYPE_SLICED_VBI_OUTPUT ?
->  		36 * sizeof(struct v4l2_sliced_vbi_data) :
-> @@ -30,8 +31,8 @@ static int vbi_out_queue_setup(struct vb2_queue *vq,
->  
->  	sizes[0] = size;
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
+On Wed, 18 Oct 2023, Karolina Stolarek wrote:
 
-Ditto.
+> On 18.10.2023 09:45, Greg Kroah-Hartman wrote:
+> > On Wed, Oct 18, 2023 at 09:32:46AM +0200, Karolina Stolarek wrote:
+> > > On 18.10.2023 09:03, Julia Lawall wrote:
+> > > >
+> > > >
+> > > > On Tue, 17 Oct 2023, kenechukwu maduechesi wrote:
+> > > >
+> > > > > Replace udelay() with usleep_range() for more precise delay handling.
+> > > > >
+> > > > > Reported by checkpatch:
+> > > > >
+> > > > > CHECK: usleep_range is preferred over udelay
+> > > >
+> > > > This message is typically not a good candidate for outreachy patches,
+> > > > because you need access to the device to be sure that any change is
+> > > > correct.
+> > >
+> > > Could we add a paragraph on how to pick good checkpatch.pl error to fix to
+> > > the Outreachyfirstpatch docs? This could go to "Find a driver to clean up"
+> > > section, for example.
+> >
+> > The ability to find a "good" error changes over time, so this might be
+> > hard to do.
+>
+> I agree, but we can all agree that experimenting with udelay during Outreachy
+> is not a good idea, and people should know about it
 
->  
->  	*nplanes = 1;
->  	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> index 3a06df35a2d7..0cc7602b9fb2 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> @@ -77,6 +77,7 @@ static int vid_cap_queue_setup(struct vb2_queue *vq,
->  		       unsigned sizes[], struct device *alloc_devs[])
->  {
->  	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  	unsigned buffers = tpg_g_buffers(&dev->tpg);
->  	unsigned h = dev->fmt_cap_rect.height;
->  	unsigned p;
-> @@ -117,8 +118,8 @@ static int vid_cap_queue_setup(struct vb2_queue *vq,
->  					dev->fmt_cap->data_offset[p];
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
+In general, I think that it is better in the contribution period to do the
+wrong thing and then learn about why it is wrong, but this case comes up
+over and over, and it is always not the right thing to do, so I added an
+appropriate explanation.  Thanks for the suggestion.
 
-Ditto.
+julia
 
->  
->  	*nplanes = buffers;
->  
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-out.c b/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> index 184a6df2c29f..24c6dc896255 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> @@ -73,12 +73,9 @@ static int vid_out_queue_setup(struct vb2_queue *vq,
->  				       vfmt->data_offset[p] : size;
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->  	*nplanes = planes;
->  
-> -	dprintk(dev, 1, "%s: count=%d\n", __func__, *nbuffers);
-> +	dprintk(dev, 1, "%s: count=%u\n", __func__, vb2_get_num_buffers(vq));
->  	for (p = 0; p < planes; p++)
->  		dprintk(dev, 1, "%s: size[%u]=%u\n", __func__, p, sizes[p]);
->  	return 0;
-
-Regards,
-
-	Hans
+>
+> All the best,
+> Karolina
+>
+> >
+> > good luck!
+> >
+> > greg k-h
+>
