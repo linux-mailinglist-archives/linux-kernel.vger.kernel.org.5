@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D207CD406
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577D67CD41A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344501AbjJRGRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S1344500AbjJRGSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjJRGRk (ORCPT
+        with ESMTP id S1344488AbjJRGRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:17:40 -0400
+        Wed, 18 Oct 2023 02:17:47 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5FFC4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F7AC6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:44 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrs-0001a6-MK; Wed, 18 Oct 2023 08:17:20 +0200
+        id 1qszrx-0001a2-7S; Wed, 18 Oct 2023 08:17:25 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrr-002UYi-E6; Wed, 18 Oct 2023 08:17:19 +0200
+        id 1qszrr-002UYl-Di; Wed, 18 Oct 2023 08:17:19 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <sha@pengutronix.de>)
-        id 1qszrr-00EvjZ-0X;
+        id 1qszrr-00Evjf-0d;
         Wed, 18 Oct 2023 08:17:19 +0200
 From:   Sascha Hauer <s.hauer@pengutronix.de>
 To:     linux-rockchip@lists.infradead.org
@@ -45,11 +45,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v8 23/26] dt-bindings: soc: rockchip: grf: add rockchip,rk3588-pmugrf
-Date:   Wed, 18 Oct 2023 08:17:11 +0200
-Message-Id: <20231018061714.3553817-24-s.hauer@pengutronix.de>
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH v8 24/26] arm64: dts: rockchip: rk3399: Enable DFI
+Date:   Wed, 18 Oct 2023 08:17:12 +0200
+Message-Id: <20231018061714.3553817-25-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231018061714.3553817-1-s.hauer@pengutronix.de>
 References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
@@ -68,31 +67,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rockchip,rk3588-pmugrf compatible string.
+the DFI unit can provide useful data for measuring DDR utilization
+and works without any configuration from the board, so enable it in the
+dtsi file directly.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-Notes:
-    Changes since v5:
-     - new patch
-
- Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-index e4fa6a07b4fa2..1309bf5ae0cdd 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-@@ -233,6 +233,7 @@ allOf:
-               - rockchip,rk3399-grf
-               - rockchip,rk3399-pmugrf
-               - rockchip,rk3568-pmugrf
-+              - rockchip,rk3588-pmugrf
-               - rockchip,rv1108-grf
-               - rockchip,rv1108-pmugrf
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 9da0b6d77c8d2..e3972ef668f8c 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1358,7 +1358,6 @@ dfi: dfi@ff630000 {
+ 		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		clocks = <&cru PCLK_DDR_MON>;
+ 		clock-names = "pclk_ddr_mon";
+-		status = "disabled";
+ 	};
  
+ 	vpu: video-codec@ff650000 {
 -- 
 2.39.2
 
