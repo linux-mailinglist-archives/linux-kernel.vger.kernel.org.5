@@ -2,68 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2837CDFE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE88F7CDFEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345758AbjJROcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
+        id S1345411AbjJROdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345790AbjJROcZ (ORCPT
+        with ESMTP id S1345343AbjJROcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:32:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14C124F19;
-        Wed, 18 Oct 2023 07:23:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D3AC433C7;
-        Wed, 18 Oct 2023 14:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697639006;
-        bh=RHYkct3GSStzCzNNQNXsSJmDDCk6GywYTniHzwRPwnQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q24A6P30QPceMlFd4gGIwsiwDA/fU7ZjlH8L8J2YX84B7RQd5gmN52OpQcCdxBc3b
-         QQUHePfdhHkvNJ80mFIMzp6buCeTAV2tycAFiAA2Btwb3+fa0qflJ51DX3D91dcVMu
-         cZO7LSEyJxEYD2kVQzcV1QHLIVE1nfcaGxTPgGx+WNY//Oc8o7Ae4eLNi3DM35wAQ7
-         MEy+UaFKFnk6utdmapG+u/tp5F4XSi2Xv4gxy3/6eLm8i5rXVoF3mwIXUzbTeP6Lh6
-         Q/x1sajmE6F7wVtg5tFmnlvZMp1MqLKnEs0AT2p4QnwvJCwP8Bd6q7qzIZ9r10fQwn
-         bsf6lIHiab52Q==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v6-6-rc4
-Date:   Wed, 18 Oct 2023 15:23:10 +0100
-Message-Id: <20231018142326.03D3AC433C7@smtp.kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 10:32:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E243D24F18;
+        Wed, 18 Oct 2023 07:23:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5BA011F383;
+        Wed, 18 Oct 2023 14:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697638995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IvKfrgI6kIvXjlAq5Aks0oGwA1m42o1gRc23nO1fAE=;
+        b=xVtsU/1Ua8x38vrciCf3fXDEoneDqknKaF6UtsI4cf1gEaJdvYDYXXgTUpsauQMzm16yDI
+        1C3HD0cKmNlo7fh0Q75XeVwMiPX3svsfn0Wf2C6f0btGo9E0CwRoXMbt45P3Lz6NtIAXWV
+        7QoB4XVaj8hxs2de2til1uzYHStFLhc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697638995;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IvKfrgI6kIvXjlAq5Aks0oGwA1m42o1gRc23nO1fAE=;
+        b=ihRWtvfV5N2TdE/ymRmqxIkhdyZY8+l0Y4jDOViTCkSq/7LFvebhKgVimkOzXuqdSHJTLu
+        pIpLC59qeE8O7sAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25E3213915;
+        Wed, 18 Oct 2023 14:23:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NkKKCFPqL2UfVgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 18 Oct 2023 14:23:15 +0000
+Message-ID: <3b723bf1-830e-7f47-27ce-98f7808fbc4b@suse.cz>
+Date:   Wed, 18 Oct 2023 16:23:14 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 5/5] percpu: scoped objcg protection
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-6-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016221900.4031141-6-roman.gushchin@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.57
+X-Spamd-Result: default: False [-2.57 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(1.53)[86.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 1a8196a93e493c0a50b800cb09cef60b124eee15:
+On 10/17/23 00:19, Roman Gushchin wrote:
+> Similar to slab and kmem, switch to a scope-based protection of the
+> objcg pointer to avoid.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-  spi: spi-gxp: BUG: Correct spi write return value (2023-09-27 17:06:36 +0200)
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-are available in the Git repository at:
+Do you plan to convert also the bpf users of get_obj_cgroup_from_current()
+so it could be removed?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6-6-rc4
+Thanks!
 
-for you to fetch changes up to 2ec8b010979036c2fe79a64adb6ecc0bd11e91d1:
+> ---
+>  mm/percpu.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index a7665de8485f..f53ba692d67a 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1628,14 +1628,12 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
+>  	if (!memcg_kmem_online() || !(gfp & __GFP_ACCOUNT))
+>  		return true;
+>  
+> -	objcg = get_obj_cgroup_from_current();
+> +	objcg = current_obj_cgroup();
+>  	if (!objcg)
+>  		return true;
+>  
+> -	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size))) {
+> -		obj_cgroup_put(objcg);
+> +	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
+>  		return false;
+> -	}
+>  
+>  	*objcgp = objcg;
+>  	return true;
+> @@ -1649,6 +1647,7 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
+>  		return;
+>  
+>  	if (likely(chunk && chunk->obj_cgroups)) {
+> +		obj_cgroup_get(objcg);
+>  		chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = objcg;
+>  
+>  		rcu_read_lock();
+> @@ -1657,7 +1656,6 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
+>  		rcu_read_unlock();
+>  	} else {
+>  		obj_cgroup_uncharge(objcg, pcpu_obj_full_size(size));
+> -		obj_cgroup_put(objcg);
+>  	}
+>  }
+>  
 
-  spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0 (2023-10-02 15:03:19 +0100)
-
-----------------------------------------------------------------
-spi: Fix for v6.6
-
-A fix for the npcm-fiu driver in cases where there are no dummy bytes
-during reads.
-
-----------------------------------------------------------------
-William A. Kennington III (1):
-      spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
-
- drivers/spi/spi-npcm-fiu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
