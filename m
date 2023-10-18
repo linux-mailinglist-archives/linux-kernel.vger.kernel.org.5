@@ -2,193 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB457CE833
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26C57CE83C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjJRTxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S231599AbjJRTx7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 15:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbjJRTxG (ORCPT
+        with ESMTP id S229702AbjJRTx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:53:06 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA13120
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:53:04 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so4104618b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697658783; x=1698263583; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VhPjYIM8H5qvEYPlYZEBXrx9Vt3xsE9FG+Ow/kWUXwo=;
-        b=SqWRFDjfvQKJQK3yOZQVdCpCm5SqMeouHfhNuycb76ax1+4UweERnjbTFQXEfKoi/V
-         fph+qrNWvkU2vLlMgNtDj8c528Vy6ewG/hYo9GNtam6RNqB+MuAybMhBuVDNso1E3VM9
-         kU7HmOhOc/y/4ohdj1s9jLcsQjU/Wwn9mjNvZ3Nv5WfWE/Sg9fezU/NTPso39JGzkOCZ
-         CAL/u+TieKKMbDPZizGvuA/PmN5nZq2biM6R9qfF9dSH7XNk/eUE8v3b8YkJ6lIpzpR7
-         s366GxBNxx3n95aaoP10f7IkXHbexxqP7SjK4WWC/4IWzJ5IfOemMYwQqAayOYuG8CoI
-         ffAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697658783; x=1698263583;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VhPjYIM8H5qvEYPlYZEBXrx9Vt3xsE9FG+Ow/kWUXwo=;
-        b=bbq/qqnwBVzdzymIN+6jxbe8uIpC89Tda2fcmEtbx+x8UkRO4FkOeZKNgjJzcECV5y
-         58PPTUJwUpm5RvBht14QLwTMSr2khYKNrPDFvcXk5xrlv385AtnGNsZMReHxI9L9jD7q
-         mlx2UAz35nOGBWir1xInP4/xLWYIZr929aCe1lnKG45fny9br1b9zCrSJeOQg8YsHs5u
-         YdM0gvN3xupXUyqNRUZyDK46+lZ5ThSQD/FXd44I6A3KYMxaKup8Y9Y4u30CAdQ6QRDO
-         1waZV/GVo8UoPOtczQA9P5pFtkleSNqVcv0xbql+8RZ2EX6Y/EU+IiV12HjVi8fHLydw
-         /yDg==
-X-Gm-Message-State: AOJu0YzIEoMRWHm6yi00ZnxPwT3FksfLLpI+goA8auU/5Z6TTLpDJeHa
-        1TW27+KsQ4LlEkQJN6x5tB7xkg==
-X-Google-Smtp-Source: AGHT+IEZDQQEu1s1N6RQnGEjs+T8AyfSPGxR6PSMDC9cwRc+b3s8mJdC0m9BpQfz/Zjsi0SMo+CnOg==
-X-Received: by 2002:a05:6a21:71c7:b0:17a:f1eb:e143 with SMTP id ay7-20020a056a2171c700b0017af1ebe143mr159582pzc.26.1697658783320;
-        Wed, 18 Oct 2023 12:53:03 -0700 (PDT)
-Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
-        by smtp.gmail.com with ESMTPSA id i16-20020a170902c95000b001ca86a9caccsm308796pla.228.2023.10.18.12.53.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 12:53:02 -0700 (PDT)
-Message-ID: <69f5791c-d428-494e-a944-824898e02801@google.com>
-Date:   Wed, 18 Oct 2023 12:53:01 -0700
+        Wed, 18 Oct 2023 15:53:57 -0400
+Received: from smtprelay05.ispgateway.de (smtprelay05.ispgateway.de [80.67.31.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F379AB;
+        Wed, 18 Oct 2023 12:53:54 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay05.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.1)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qtCc3-00015F-2W;
+        Wed, 18 Oct 2023 21:53:51 +0200
+Message-ID: <11c55f82ec95f66f8b9381bf8a1a3b273ae986ab.camel@apitzsch.eu>
+Subject: Re: [PATCH] arm64: dts: qcom: msm8939-longcheer-l9100: Add
+ proximity-near-level
+From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Date:   Wed, 18 Oct 2023 21:53:49 +0200
+In-Reply-To: <a640a6c2-5b5c-48a5-9680-bec9514bd068@linaro.org>
+References: <20231016-bqm5_prox-v1-1-2acdc732be9d@apitzsch.eu>
+         <3aede886-3219-4b9f-a44d-0c414979c260@linaro.org>
+         <65214451e02a38032e9fc6ac4cff185c6b2b5fc8.camel@apitzsch.eu>
+         <a640a6c2-5b5c-48a5-9680-bec9514bd068@linaro.org>
+Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] usb: gadget: uvc: Allocate uvc_requests one at a
- time
-Content-Language: en-US
-To:     Michael Grzeschik <mgr@pengutronix.de>
-Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        etalvala@google.com, gregkh@linuxfoundation.org,
-        jchowdhary@google.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20230930184821.310143-1-arakesh@google.com>
- <20231012002451.254737-1-arakesh@google.com>
- <20231012002451.254737-2-arakesh@google.com>
- <ZS/XhFNvnevol9MP@pengutronix.de>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <ZS/XhFNvnevol9MP@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/18/23 06:03, Michael Grzeschik wrote:
-> A short second review.
-
-Thank you for the review. Sent out a v5 with the comments 
-addressed!
-
+Am Mittwoch, dem 18.10.2023 um 10:32 +0200 schrieb Konrad Dybcio:
 > 
-> On Wed, Oct 11, 2023 at 05:24:50PM -0700, Avichal Rakesh wrote:
->> Currently, the uvc gadget driver allocates all uvc_requests as one array
->> and deallocates them all when the video stream stops. This includes
->> de-allocating all the usb_requests associated with those uvc_requests.
->> This can lead to use-after-free issues if any of those de-allocated
->> usb_requests were still owned by the usb controller.
->>
->> This patch is 1 of 2 patches addressing the use-after-free issue.
->> Instead of bulk allocating all uvc_requests as an array, this patch
->> allocates uvc_requests one at a time, which should allows for similar
->> granularity when deallocating the uvc_requests. This patch has no
->> functional changes other than allocating each uvc_request separately,
->> and similarly freeing each of them separately.
->>
->> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
->> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Signed-off-by: Avichal Rakesh <arakesh@google.com>
->> ---
->> v1 -> v2: Rebased to ToT
->> v2 -> v3: Fix email threading goof-up
->> v3 -> v4: Address review comments & re-rebase to ToT
->>
->> drivers/usb/gadget/function/uvc.h       |  3 +-
->> drivers/usb/gadget/function/uvc_video.c | 87 ++++++++++++++-----------
->> 2 files changed, 50 insertions(+), 40 deletions(-)
->> -        if (video->ureq[i].req_buffer == NULL)
->> +        ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
->> +        if (ureq->req_buffer == NULL)
-> You could also use if (!ureq->req_buffer)
-
-Keeping this as is because I prefer `== NULL` check for readability.
-Didn't find any specific rules in the kernel codestyle, so sticking
-with the more readable option (in my opinion).
-
 > 
->>             goto error;
->>
->> -        video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
->> -        if (video->ureq[i].req == NULL)
->> +        ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
->> +        if (ureq->req == NULL)
->>             goto error;
->>
->> -        video->ureq[i].req->buf = video->ureq[i].req_buffer;
->> -        video->ureq[i].req->length = 0;
->> -        video->ureq[i].req->complete = uvc_video_complete;
->> -        video->ureq[i].req->context = &video->ureq[i];
->> -        video->ureq[i].video = video;
->> -        video->ureq[i].last_buf = NULL;
->> +        ureq->req->buf = ureq->req_buffer;
->> +        ureq->req->length = 0;
->> +        ureq->req->complete = uvc_video_complete;
->> +        ureq->req->context = ureq;
->> +        ureq->video = video;
->> +        ureq->last_buf = NULL;
->>
->> -        list_add_tail(&video->ureq[i].req->list, &video->req_free);
->> +        list_add_tail(&ureq->req->list, &video->req_free);
->>         /* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
->> -        sg_alloc_table(&video->ureq[i].sgt,
->> +        sg_alloc_table(&ureq->sgt,
->>                    DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
->>                         PAGE_SIZE) + 2, GFP_KERNEL);
->>     }
->> @@ -489,8 +496,8 @@ static void uvcg_video_pump(struct work_struct *work)
->>  */
->> int uvcg_video_enable(struct uvc_video *video, int enable)
->> {
->> -    unsigned int i;
->>     int ret;
->> +    struct uvc_request *ureq;
->>
->>     if (video->ep == NULL) {
->>         uvcg_info(&video->uvc->func,
->> @@ -502,9 +509,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
->>         cancel_work_sync(&video->pump);
->>         uvcg_queue_cancel(&video->queue, 0);
->>
->> -        for (i = 0; i < video->uvc_num_requests; ++i)
->> -            if (video->ureq && video->ureq[i].req)
->> -                usb_ep_dequeue(video->ep, video->ureq[i].req);
->> +        list_for_each_entry(ureq, &video->ureqs, list) {
->> +            if (ureq->req)
->> +                usb_ep_dequeue(video->ep, ureq->req);
->> +        }
->>
->>         uvc_video_free_requests(video);
->>         uvcg_queue_enable(&video->queue, 0);
->> @@ -536,6 +544,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
->>  */
->> int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
->> {
->> +    INIT_LIST_HEAD(&video->ureqs);
->>     INIT_LIST_HEAD(&video->req_free);
->>     spin_lock_init(&video->req_lock);
->>     INIT_WORK(&video->pump, uvcg_video_pump);
->> -- 
->> 2.42.0.609.gbb76f46606-goog
->>
->>
+> On 10/17/23 22:03, André Apitzsch wrote:
+> > Am Dienstag, dem 17.10.2023 um 18:25 +0200 schrieb Konrad Dybcio:
+> > > 
+> > > 
+> > > On 10/16/23 22:18, André Apitzsch wrote:
+> > > > Consider an object near to the sensor when their distance is
+> > > > about
+> > > > 4 cm
+> > > > or below.
+> > > > 
+> > > > Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> > > > ---
+> > > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> > > 
+> > > Out of interest, what is it set to by default?
+> > > 
+> > > Konrad
+> > 
+> > The default value is 0.
+> That much I could guess :) I was wondering if it meant more like "it
+> can detect movement from 1km away" or "disabled"
 > 
+> Konrad
+
+I doubt that this sensor can detect anything from a distance of 50cm.
+
+The values returned by the sensor are all non-negative, i.e. zero means
+something like "disabled" as every raw proximity value would be
+considered 'near' to the sensor according to the description in
+iio/common.yaml.
+
+André
