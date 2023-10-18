@@ -2,54 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E617CDB2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756157CDD51
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjJRMDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
+        id S1344608AbjJRNcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjJRMDX (ORCPT
+        with ESMTP id S231637AbjJRNcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:03:23 -0400
-Received: from out0-217.mail.aliyun.com (out0-217.mail.aliyun.com [140.205.0.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B13F95
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:03:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047211;MF=houwenlong.hwl@antgroup.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---.V21j794_1697630594;
-Received: from localhost(mailfrom:houwenlong.hwl@antgroup.com fp:SMTPD_---.V21j794_1697630594)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Oct 2023 20:03:15 +0800
-Date:   Wed, 18 Oct 2023 20:03:14 +0800
-From:   "Hou Wenlong" <houwenlong.hwl@antgroup.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steve Rutherford <srutherford@google.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] x86/sme: Mark the code as __head in
- mem_encrypt_identity.c
-Message-ID: <20231018120314.GA11219@k08j02272.eu95sqa>
-References: <cover.1697525407.git.houwenlong.hwl@antgroup.com>
- <b2670a8a79a7b4a5c8993fb916904af7c675b7f8.1697525407.git.houwenlong.hwl@antgroup.com>
- <ZS6DngTm9ILei4dM@gmail.com>
- <20231018071347.GA87734@k08j02272.eu95sqa>
- <ZS+xX7IJfdGJj7Ix@gmail.com>
+        Wed, 18 Oct 2023 09:32:01 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6701E109
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:31:58 -0700 (PDT)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231018133152epoutp02a5fcb90096a26ca1ed0b21f798a477ca~PNt5O-YWb1997519975epoutp02k
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:31:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231018133152epoutp02a5fcb90096a26ca1ed0b21f798a477ca~PNt5O-YWb1997519975epoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697635913;
+        bh=u3aqnbBtv3vyIec2Mlnu7VZjNoMVUqew8xlxNtYVuT0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ar6xkA8WBl8DA0SXsHcUVW75HU2NC5zijFCz8StrEtpWkgAFvxJxoiUkdTrbqG2y9
+         kgPzjsOUDvtGuJ9jGcdZBnry/lrAS/Wvvukv0pFZtjxUUtp/o5adSXHk78H6c7+rhD
+         ESb9LwyAHWcb+xFbPHmL/0g2YvO2tm7JqVe+KF1E=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20231018133151epcas5p32eee98f338fcffca106dc084b9405c3d~PNt3_9ePq1794217942epcas5p34;
+        Wed, 18 Oct 2023 13:31:51 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4S9WwP5y9Yz4x9Pt; Wed, 18 Oct
+        2023 13:31:49 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1F.31.10009.54EDF256; Wed, 18 Oct 2023 22:31:49 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231018101516epcas5p2ac132e21cc9f83edd819c7680a51487d~PLCPQwGhZ3226032260epcas5p2g;
+        Wed, 18 Oct 2023 10:15:16 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231018101516epsmtrp23a828f342d83585a91c501a654146b0c~PLCPPbHfq1426614266epsmtrp2K;
+        Wed, 18 Oct 2023 10:15:16 +0000 (GMT)
+X-AuditID: b6c32a4a-ff1ff70000002719-05-652fde45eb1a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BA.0F.07368.430BF256; Wed, 18 Oct 2023 19:15:16 +0900 (KST)
+Received: from green245 (unknown [107.99.41.245]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231018101513epsmtip27d59481a87c3dbfc474968108748ac3d~PLCMGR7Ek0062200622epsmtip2h;
+        Wed, 18 Oct 2023 10:15:13 +0000 (GMT)
+Date:   Wed, 18 Oct 2023 15:38:48 +0530
+From:   Nitesh Jagadeesh Shetty <nj.shetty@samsung.com>
+To:     Jinyoung Choi <j-young.choi@samsung.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "nitheshshetty@gmail.com" <nitheshshetty@gmail.com>,
+        "anuj1072538@gmail.com" <anuj1072538@gmail.com>,
+        SSDR Gost Dev <gost.dev@samsung.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        Vincent Kang Fu <vincent.fu@samsung.com>,
+        Anuj Gupta <anuj20.g@samsung.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v16 04/12] block: add emulation for copy
+Message-ID: <20231018100848.i26yrkuufv4koluq@green245>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS+xX7IJfdGJj7Ix@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+In-Reply-To: <20230926100718.wcptispc2zhfi5eh@green245>
+User-Agent: NeoMutt/20171215
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHd+4tt4VRdgGZpzAeueAiyqMFWg7KY4mPXMeysZCwqTNY22vL
+        gLZry9zIkhUYQ94gzmARhYzxqFNGB6SIMASURxA3HTCIGMyAhIE8ZMgYAVdaWPzvc77n+z2/
+        c37nHA7uZGS7chIUWkatECdRhB2ruct3r/+RJ4EM32TyR/X993C0tLLOQulFGzi6Pl5IoNmu
+        5wBNdmQB1DZfZoNGO1owVHf9LobyC5sIdKFzGKCpIT2G2sb2o8pvq1jodlsfCz26dYVA16qn
+        2Ch3xESgmp5NDP1RNAWQaTINoJuzCyzUO+aG/sw9D9CDjR6bd3h0i36cTT940sCiH91PoY2G
+        bIL+ueprunVUR9DfF5TY0PkZ8wS9NDXGohfahwi6oNEA6GWjB22cfIbFcE8khssZsZRRezEK
+        iVKaoJBFUNGx8YfihSK+wF8QhkIpL4U4mYmgDr8X4380IcncBMrrc3FSilmKEWs0VGBkuFqZ
+        omW85EqNNoJiVNIkVYgqQCNO1qQoZAEKRntAwOcHCc3G04nymew1G9Ui+4vKqV8IHRgjcoAt
+        B5IhcH0gDc8BdhwnshXAjrtz24PnADavNrGtgxcA6pavgJ1Iw1Uje4udyDYASy6praZpAB8/
+        zGVtTbDIPTDrTprFRJBC2NqQYdY5nF2kH8w0eG/5cbKCA9tHblgWfY2MgsZ+oyXrTIbDpsLb
+        liyXFMHpBhNmZUfYd3nS4rElQ6Eu657F40K+BUt/WLFsG5KDtrD8t9+3d3oYZv9azbKyM/yr
+        p5FtZVe4PN+23YBzsO5iLWENfwOgfkS/HY6Cmf2F+BbjpBwO5OfZWHV3+F3/TcyqO8D89UnM
+        qnOh6eoOe8Mf6yu2C/Dg8GoasXV6SNIw46dT1m5VYXBwdQIvAl76Vw6nf6WclQ/A7MX0bfaE
+        GU1luN68FE66wZpNjhV9Yf2twApAGACPUWmSZYxGqApSMOf+fwkSZbIRWD7PvndN4OnEYkAn
+        wDigE0AOTu3iymL9GCeuVPxlKqNWxqtTkhhNJxCaL7EYd3WRKM2/T6GNF4SE8UNEIlFIWLBI
+        QO3mzmaWS51ImVjLJDKMilHv5DCOrasOa5laWXZ03njzUvJMsZQ9pLdrMcjlwXc8JLnKgdoC
+        j4y87lOp0qc580T3J3m5zgmrXdrQ3tOlyx6f7i+vj+tJVhilIxcPufMuO7e+Ye8+vKeDVBac
+        jIus8zn20W52qOiMr3PD4zVHF/5cJKUrXlup1B308+5rWOLVlt1IHeXOZDsMFklGHTy6B8U8
+        kUHf+LLINWoDr3N7djYxwFRCt77wO/lQnRIkG//KVjA8vkId7/KprssH8e1H++sXrh0fyDkh
+        4afdn4j+p5PnuRcznfn4yPvNH7z0HD//YWl61dtxQvvPfHphsOfrngejaoKoWIe/fc+6Rks0
+        m/Wr9tOc2WP/zjlSLI1cLNiHqzXi/wBk9K1gxQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SaUwTURSFeTPT6YBpHBb1YY0kNSrBUm1EfcQFTIyOxsSlJiSYKEUmBaVY
+        W+uWoIUGQRRpcMPWgAuC4MooylasFUFcaBBRQVCRVmOUpYhxgRalaOTfyTnnfvf+uBTup+NN
+        phKSdrLqJHmiiPQhbt8XBYWG3ZjNzhngJOj6ozocOb8NEijV4MLR5Y5sEn2+3w+Q3ZIOkLnH
+        xEOtlgoMFV9+gKGs7DIS5VhfAORoMWLI3DYLnTtYQKBqcwOBmivPkCi/0MFHh1+Wk6io3o2h
+        VwYHQOX2FICufe4l0MM2Ieo6nAGQzVXPiwxkKowdfMb2ppRgmp9qGa7kEMncLDjAVLXqSObC
+        0WM8JkvfQzJORxvB9Na0kMzRWyWA+cpNZTh7N7ZWEO2zKI5NTNjFqmcvifGJf91tw1QpvD3N
+        JzsJHcggMoE3BekwWJrH8TOBD+VHVwFY+PMDPhoEwkJX7V/tD4vdH/+W7ABWvr3rmSbo6TD9
+        Xgp/RJP0PFhVqv/jU1QALYZpJdNG+jh9iYLnzv/w9L3oCMg94jzan14Ey7KrPbMCej78UFqO
+        jS4owGBebgcxGvjChtN2j8b/lPJuduIjC3BaCIvc1KgdBPVlJs+h3vQCqEuv8zAn0FNg7sVv
+        uAH4G8eQjGNIxv8k4xjSWUCUgEBWpVEqlFukKmkSu1uikSs12iSFZMt2JQc8TxISXA7e5Lsl
+        VoBRwAoghYsCBAqZmPUTxMn37mPV2zertYmsxgqEFCGaJJDmmuL8aIV8J7uNZVWs+l+KUd6T
+        dZjY1/qra77a0m69ccX86WTkJi+Wy22ZOT0rojnra0JOjT5s8P3BdwEXVqTNdIq3hhv6uops
+        nZprQj3fvcB/boSsQDrQtzQ+eNgy6FUhe5+z7yU8lVl8orGxrzWgTUIlLwz7NW8Ha+7tcjqi
+        7cXcc/Ga46Zl+wVBK4VlMWlHaNOXd0OqvcdDmybW28PbU61NP7+4ur93nskZct1qGi87oOzZ
+        +EkoWq4YsCVrr9oal0JZYUjs4tMbtHwUFd4PY1Jj8uNEsZQlwxBtebI+9vGwb+hqX+3bYGXR
+        2XVRGZNqhwXjNsaLnXcsYHVy/pAh9Fj/s9r2SzXKqOeaVTOGU095R4oITbxcGoKrNfLfzLD+
+        a5MDAAA=
+X-CMS-MailID: 20231018101516epcas5p2ac132e21cc9f83edd819c7680a51487d
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_12cae_"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230920081458epcas5p3a3e12d8b5661b5d6f4420316630b02e1
+References: <20230920080756.11919-5-nj.shetty@samsung.com>
+        <20230920080756.11919-1-nj.shetty@samsung.com>
+        <CGME20230920081458epcas5p3a3e12d8b5661b5d6f4420316630b02e1@epcms2p6>
+        <20230922130815epcms2p631fc5fc5ebe634cc948fef1992f83a38@epcms2p6>
+        <20230926100718.wcptispc2zhfi5eh@green245>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,115 +145,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 06:20:15PM +0800, Ingo Molnar wrote:
-> 
-> * Hou Wenlong <houwenlong.hwl@antgroup.com> wrote:
-> 
-> > On Tue, Oct 17, 2023 at 08:52:46PM +0800, Ingo Molnar wrote:
-> > > 
-> > > * Hou Wenlong <houwenlong.hwl@antgroup.com> wrote:
-> > > 
-> > > > The functions sme_enable() and sme_encrypt_kernel() are only called by
-> > > > the head code which runs in identity virtual address. Therefore, it's
-> > > > better to mark them as __head as well.
-> > > > 
-> > > > Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
-> > > > ---
-> > > >  arch/x86/include/asm/mem_encrypt.h |  8 ++++----
-> > > >  arch/x86/mm/mem_encrypt_identity.c | 27 ++++++++++++++-------------
-> > > >  2 files changed, 18 insertions(+), 17 deletions(-)
-> > > > 
-> > > > diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-> > > > index 359ada486fa9..48469e22a75e 100644
-> > > > --- a/arch/x86/include/asm/mem_encrypt.h
-> > > > +++ b/arch/x86/include/asm/mem_encrypt.h
-> > > > @@ -46,8 +46,8 @@ void __init sme_unmap_bootdata(char *real_mode_data);
-> > > >  
-> > > >  void __init sme_early_init(void);
-> > > >  
-> > > > -void __init sme_encrypt_kernel(struct boot_params *bp);
-> > > > -void __init sme_enable(struct boot_params *bp);
-> > > > +void sme_encrypt_kernel(struct boot_params *bp);
-> > > > +void sme_enable(struct boot_params *bp);
-> > > >  
-> > > >  int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
-> > > >  int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
-> > > > @@ -75,8 +75,8 @@ static inline void __init sme_unmap_bootdata(char *real_mode_data) { }
-> > > >  
-> > > >  static inline void __init sme_early_init(void) { }
-> > > >  
-> > > > -static inline void __init sme_encrypt_kernel(struct boot_params *bp) { }
-> > > > -static inline void __init sme_enable(struct boot_params *bp) { }
-> > > > +static inline void sme_encrypt_kernel(struct boot_params *bp) { }
-> > > > +static inline void sme_enable(struct boot_params *bp) { }
-> > > 
-> > > So I think we should preserve the previous convention of marking functions 
-> > > __init in the header-declaration and at the definition site as well, and do 
-> > > the same with __head as well?
-> > > 
-> > Hi Ingo,
-> > 
-> > I tried to include <asm/init.h> into <asm/mem_encrypt.h> and mark the
-> > function declaration as __head, but it resulted in a build failure. This
-> > is because <asm/init.h> is not self-contained; the type "pgd_t" is
-> > defined in <asm/pgtable_types.h>, which includes <asm/mem_encrypt.h>,
-> > leading to mutual inclusion of header files. To avoid the issue of
-> > complicated header file inclusion, I removed the annotation from the
-> > function declaration.
-> 
-> The right solution at that point is to make <asm/init.h> self-contained...
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_12cae_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+
+On 26/09/23 03:37PM, Nitesh Jagadeesh Shetty wrote:
+>>>+                write_bio->bi_iter.bi_size = chunk;
+>>>+                ret = submit_bio_wait(write_bio);
+>>>+                kfree(write_bio);
+>>
+>>blk_mq_map_bio_put(write_bio) ?
+>>or bio_uninit(write_bio); kfree(write_bio)?
+>>
+>>hmm...
+>>It continuously allocates and releases memory for bio,
+>>Why don't you just allocate and reuse bio outside the loop?
+>>
 >
+>Agree, we will update this in next version.
+>
+Reusing the bio won't work in cases where the bio gets split.
+So we decided to keep the previous design.
 
-The "pgd_t" is a typedef declaration in <asm/pgtable_types.h>, so it
-cannot be forward declared. Therefore, I had to include
-<asm/pgtable_types.h> into <asm/init.h> to make it self-contained.
-However, <asm/pgtable_types.h> includes <asm/mem_encrypt.h>. If I
-include <asm/init.h> into <asm/mem_encrypt.h> to mark functions as
-__head in the header-declaration, it would result in mutual inclusion of
-header files. It appears that <asm/mem_encrypt.h> is a base header that
-is included in multiple headers, so adding one more header to it would
-complicate things. In reality, if it is acceptable, I could move the
-__head definition into <asm/mem_encrypt.h>.
- 
-> > Actually, initially, I noticed that the __init definition is in
-> > <linux/init.h>, so I first placed the __head definition in
-> > <linux/init.h> as well. However, this conflicted with the local variable
-> > in the "list_next_or_null_rcu" macro in <linux/rculist.h>. Then I
-> > realized that __head was only used in x86, so I made the decision to put
-> > it in the architecture-specific header. Considering simplicity, I chose
-> > to put the definition in <asm/init.h>. I also attempted to put the
-> > definition in other headers such as <asm/boot.h> and
-> > <asm/bootparam_utils.h>, and included them in <asm/mem_encrypt.h>, but
-> > the build still failed.
-> 
-> When exporting a localized definition you should consider namespace 
-> collisions - the name '__head' is way too generic, no wonder it caused 
-> problems elsewhere.
-> 
-> I'd suggest naming it __init_head or so, but still keep it in a x86-only 
-> header.
-> 
-> I presume keeping it all in the  separate section and widening its usage has a 
-> specific purpose? Please outline that in the changelog as well.
-> 
+Thank you,
+Nitesh Shetty
 
-Based on my understanding, the __head section contains the early boot
-code that runs at a low identity address instead of the compile-time
-address. Therefore, it must use RIP-relative addressing to access
-memory. This makes the __head section special. However, when it comes to
-C source code, the compiler may generate absolute addressing, which can
-result in boot failure. That's why the fixup_pointer() function is
-introduced in head64.c. So maybe we could consider validating the memory
-access instructions in this section using objtool to ensure that the
-generated instructions are PC-relative. Then we should mark all the
-early boot code as __head.
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_12cae_
+Content-Type: text/plain; charset="utf-8"
 
-Thanks!
 
-> Ie. instead of mechanical patches that try to follow existing patterns 
-> cargo-cult style, this area of x86 code requires well-argued, well thought 
-> out patches that show background knowledge of the area.
-> 
-> Thanks,
-> 
-> 	Ingo
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_12cae_--
