@@ -2,100 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B127CDA4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4407CDA43
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjJRL1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
+        id S230024AbjJRL0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjJRL1O (ORCPT
+        with ESMTP id S229690AbjJRL0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:27:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EF0FE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:26:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697628392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LC+JUkUMT+93nTpU6gFosVyFPXlgCxZT1NxP3orC2Vw=;
-        b=HpJRN5GOyW70JsR2QEsZ/fTc9bgiizucqQoevUb4WIJRyVekY7lKsobVRLBpQpeMHKpf6+
-        p6SBGtFIOU63HeyY95F9mq1fblwZ26iWXAJMidx3gk6wcQxh7TQDWUr+FodVa7hgzA/tqa
-        nwmYADv9a0PHTV3lvkBpFB3ibbEATmw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-688-0XlQQ09WNBCF9GWRvoz_Gg-1; Wed, 18 Oct 2023 07:26:24 -0400
-X-MC-Unique: 0XlQQ09WNBCF9GWRvoz_Gg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DFF9F10201E0;
-        Wed, 18 Oct 2023 11:26:23 +0000 (UTC)
-Received: from p1.luc.com (unknown [10.45.226.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4923F492BEE;
-        Wed, 18 Oct 2023 11:26:22 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
-Date:   Wed, 18 Oct 2023 13:26:20 +0200
-Message-ID: <20231018112621.463893-1-ivecera@redhat.com>
+        Wed, 18 Oct 2023 07:26:41 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE392113
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:26:37 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d834ec222so5990442f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697628396; x=1698233196; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fo7B+cdiTA7QkXzogWs+Pqnw9GSLWygwDRl43SgG4dc=;
+        b=hDSJHTw6KFJp97jETOV2GRIONRsn/wO2k4STSHYThukIZ/pfWMd69mKW95WwnHdarh
+         03pqqrCcvOaeuueBFXLm2EPg8XipZhzRZwg82RzdmFTiqmcFRpWQOlJLscMwQsc50zHo
+         EnRgCZ96YMbCA6QjZT6zJWJnDpb0EK3QtWX6qQPlMw7VTCBcgpiqmUhI3DB5kaiMq0OK
+         QO7WqVqcXy8H/CMxdqhuvtP3hJRdXRoTaZC7w/5Fxmb6lJ8y3TDcKXZxyKvka0A+0GJG
+         D1N0SB8lAgKn7ZX/DaRqGRl5XuuTIi+FojQtwVk7OpgBh/sf2jL36trqBQ4UkqoYXLHH
+         e35A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697628396; x=1698233196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fo7B+cdiTA7QkXzogWs+Pqnw9GSLWygwDRl43SgG4dc=;
+        b=BfTs3bloBKJ4HrDPA8f9yL/qH6auwcbThcIP8cEiPcZTR71FYzVmtpwTv42BQOmjP5
+         Px/Amti0xsYAIyj3ZHpH037exhj0Zxm8RmvY5roS3vR1XTWEpCUWFtAt4itH2f/zJh+l
+         vlQQMnldlFFcxpGf7fkHKBDV2RRS+avhqL+kPAtF81bupilsQl8I/+ehM1V+8EYKWUsk
+         YqFSz9UKFk2iECLwIfuLSHeQaln5jND/x+E2psotYZEBkuaWohq6rdu/XSYn8IYtE1Fj
+         YHCWKVHarRuib61z3SSTq3XbF+XsozWkeqaMaBNACG5nHyYY91H/3jTx1iuUf6S4DwOQ
+         giSA==
+X-Gm-Message-State: AOJu0YwAyApbzXLqyRkaKzw7SDPukYgmzUdy75UbATttStXqKzkHitFn
+        r6aPGm9ucNI3gC05q5MtlNvKgccWO/szezU9uUh9aw==
+X-Google-Smtp-Source: AGHT+IEGTdYVt+EPdhZK2SJoJGQwAAt5GzCSXuLlL/UEP8u+GheBaAJrwgwf37URmrStLQQQxRBRAHFjOKB/q7DtxmM=
+X-Received: by 2002:a5d:58da:0:b0:32d:b051:9a2b with SMTP id
+ o26-20020a5d58da000000b0032db0519a2bmr4179536wrf.2.1697628396063; Wed, 18 Oct
+ 2023 04:26:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230911131224.61924-1-alexghiti@rivosinc.com>
+ <20230911131224.61924-2-alexghiti@rivosinc.com> <2047b2c2-bf37-4c02-9297-d89f95863ed5@sifive.com>
+In-Reply-To: <2047b2c2-bf37-4c02-9297-d89f95863ed5@sifive.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Wed, 18 Oct 2023 13:26:25 +0200
+Message-ID: <CAHVXubiM=JPRZXjsdK1JTGBbywxT_tYRNminZw8ZLo=jAj8N+w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] riscv: Improve flush_tlb()
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Andrew Jones <ajones@ventanamicro.com>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c87c938f62d8f1 ("i40e: Add VF VLAN pruning") added new
-PF flag I40E_FLAG_VF_VLAN_PRUNING but its value collides with
-existing I40E_FLAG_TOTAL_PORT_SHUTDOWN_ENABLED flag.
+Hi Samuel,
 
-Move the affected flag at the end of the flags and fix its value.
+On Mon, Oct 9, 2023 at 7:53=E2=80=AFPM Samuel Holland <samuel.holland@sifiv=
+e.com> wrote:
+>
+> On 2023-09-11 8:12 AM, Alexandre Ghiti wrote:
+> > For now, flush_tlb() simply calls flush_tlb_mm() which results in a
+>
+> s/flush_tlb/tlb_flush/ here and in the subject.
+>
+> Otherwise:
+> Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
 
-Cc: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ahah good catch, thanks for that and the RB!
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 6e310a53946782..55bb0b5310d5b4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -580,7 +580,6 @@ struct i40e_pf {
- #define I40E_FLAG_DISABLE_FW_LLDP		BIT(24)
- #define I40E_FLAG_RS_FEC			BIT(25)
- #define I40E_FLAG_BASE_R_FEC			BIT(26)
--#define I40E_FLAG_VF_VLAN_PRUNING		BIT(27)
- /* TOTAL_PORT_SHUTDOWN
-  * Allows to physically disable the link on the NIC's port.
-  * If enabled, (after link down request from the OS)
-@@ -603,6 +602,7 @@ struct i40e_pf {
-  *   in abilities field of i40e_aq_set_phy_config structure
-  */
- #define I40E_FLAG_TOTAL_PORT_SHUTDOWN_ENABLED	BIT(27)
-+#define I40E_FLAG_VF_VLAN_PRUNING		BIT(28)
- 
- 	struct i40e_client_instance *cinst;
- 	bool stat_offsets_loaded;
--- 
-2.41.0
+Alex
 
+>
+> > flush of the whole TLB. So let's use mmu_gather fields to provide a mor=
+e
+> > fine-grained flush of the TLB.
+> >
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/tlb.h      | 8 +++++++-
+> >  arch/riscv/include/asm/tlbflush.h | 3 +++
+> >  arch/riscv/mm/tlbflush.c          | 7 +++++++
+> >  3 files changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.=
+h
+> > index 120bcf2ed8a8..1eb5682b2af6 100644
+> > --- a/arch/riscv/include/asm/tlb.h
+> > +++ b/arch/riscv/include/asm/tlb.h
+> > @@ -15,7 +15,13 @@ static void tlb_flush(struct mmu_gather *tlb);
+> >
+> >  static inline void tlb_flush(struct mmu_gather *tlb)
+> >  {
+> > -     flush_tlb_mm(tlb->mm);
+> > +#ifdef CONFIG_MMU
+> > +     if (tlb->fullmm || tlb->need_flush_all)
+> > +             flush_tlb_mm(tlb->mm);
+> > +     else
+> > +             flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
+> > +                                tlb_get_unmap_size(tlb));
+> > +#endif
+> >  }
+> >
+> >  #endif /* _ASM_RISCV_TLB_H */
+> > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm=
+/tlbflush.h
+> > index a09196f8de68..f5c4fb0ae642 100644
+> > --- a/arch/riscv/include/asm/tlbflush.h
+> > +++ b/arch/riscv/include/asm/tlbflush.h
+> > @@ -32,6 +32,8 @@ static inline void local_flush_tlb_page(unsigned long=
+ addr)
+> >  #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+> >  void flush_tlb_all(void);
+> >  void flush_tlb_mm(struct mm_struct *mm);
+> > +void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+> > +                     unsigned long end, unsigned int page_size);
+> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> >                    unsigned long end);
+> > @@ -52,6 +54,7 @@ static inline void flush_tlb_range(struct vm_area_str=
+uct *vma,
+> >  }
+> >
+> >  #define flush_tlb_mm(mm) flush_tlb_all()
+> > +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> >  #endif /* !CONFIG_SMP || !CONFIG_MMU */
+> >
+> >  /* Flush a range of kernel pages */
+> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> > index 77be59aadc73..fa03289853d8 100644
+> > --- a/arch/riscv/mm/tlbflush.c
+> > +++ b/arch/riscv/mm/tlbflush.c
+> > @@ -132,6 +132,13 @@ void flush_tlb_mm(struct mm_struct *mm)
+> >       __flush_tlb_range(mm, 0, -1, PAGE_SIZE);
+> >  }
+> >
+> > +void flush_tlb_mm_range(struct mm_struct *mm,
+> > +                     unsigned long start, unsigned long end,
+> > +                     unsigned int page_size)
+> > +{
+> > +     __flush_tlb_range(mm, start, end - start, page_size);
+> > +}
+> > +
+> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+> >  {
+> >       __flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
+>
