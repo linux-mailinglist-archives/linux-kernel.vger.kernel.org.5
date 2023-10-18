@@ -2,132 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E46E17CE930
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CC77CE93B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjJRUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S232067AbjJRUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbjJRUka (ORCPT
+        with ESMTP id S229605AbjJRUmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:40:30 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782A2114
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:40:28 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so105951276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697661627; x=1698266427; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bBX89TOd2XNsREV6sYMesdAWMTbxT15WNrv90h+6g78=;
-        b=ZXy7YbZ1cQoQ85IEgJn6bMs73ecSNPeamVrsQCbPQvLSxKjBkbuiPpVgCBgz0XPWE4
-         xQY+ZxxW/NxOPdTtGxRw8aYCY8uOG0LT4GI1PvBslEGDlcGDq5M3q9dSy1xGPBJSULP+
-         XFArkP9O+D1vzXObAmDGzdxsLKNS3t3jZfLhSEKegWNmz+wVjqf9E9VX5Nl6Y+HybnKl
-         jwAdVCqI+Kkv+qGIx9JRIeMvoqQxXIESwDZQ7OMDD8lxZs2KzXLc5S+3Xbm+lRuZAuKu
-         NO0J3Ki9gnBK8Q5vH6/NqOCzgFzF13y80qAnh20ZvqB99sMfNf3UHw8T5hfKtpp8LBnt
-         q+ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697661627; x=1698266427;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bBX89TOd2XNsREV6sYMesdAWMTbxT15WNrv90h+6g78=;
-        b=ZggtSOFHPVIfsny+XrnanlhdafVKXQ6dnb5FxHjx1oM56aB6NqwYANsPtCvfTThdXr
-         ezV3QDqxuRtTT1mzJcvoOLXEy6UW7MGC5hRMC/Dho/mA3E+0dlX15jJ1Htfch7UjEbWE
-         6g4/168Pg2dIMcInDtFO61KBLHg6Bj6G3jOI5RJh7PQzDZfIky05bMTn4FiEHiE9TIzg
-         0NkQSHZrFuBvETbz8yX3JKiWfU3AkBtboO0uohjXUwjU66cRbs2KIGc9U5VzsE9IJl5P
-         TVWBux7m+vny1EszNgRn9iyzasdZQEsnUswx/hbXUqkCpjj5mK8H/rYMPQm63w4bHiWu
-         Nrhg==
-X-Gm-Message-State: AOJu0YziJe8CB39QCEnHXMHTqLwVMnNVLnYvIkqg0lZ4cFnMyaIO8+QX
-        ugbqMichOg1cSZTAB0GOzKHMzPHgvi1jRMjGSA4L
-X-Google-Smtp-Source: AGHT+IFvWReW4umGMptCXdVoLxvyKYnY8atS/QTLxHeGyisEa9Zy3YvSppV2FjksorUXbkn+U5CwQD1Uwh/uypYMywc=
-X-Received: by 2002:a25:bc13:0:b0:d81:5cbb:689e with SMTP id
- i19-20020a25bc13000000b00d815cbb689emr4428344ybh.21.1697661627592; Wed, 18
- Oct 2023 13:40:27 -0700 (PDT)
+        Wed, 18 Oct 2023 16:42:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C53A4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:42:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC79C433C8;
+        Wed, 18 Oct 2023 20:42:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697661742;
+        bh=RjEGy53VoxaTJ1W6q5mGi360GS1eyr9FMldrIArMCz0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=j1kPeGY/78hSmBnfGznQt/X0aWbRWjTb5Jo/tG0k2OJ3xWc6Bdz7hcBQmtzA6iyZI
+         o3qjzKTMKLpNyH4Y/8apcZ7gq15w2Jix0s+XQGITfm4+u/QogDr94TL/KWL9zeD71M
+         Oy9n+di9RLmXc+cLpR8i6Ubt5OjRuvBy+eDZynYk/Ftg5RItc95wZ6DeNSSRFasuVA
+         64gTJN56FCsK1JermJPfkAJ/yyEzphkCoS1LoOKoI9aoHpbClodn7CGvCPLuVPM5ly
+         eZteM358//nFpcTn51vxpXq/2xqZWgLGpnoZd+VvNrRDMPaSIwspgPtpvGajixWRtD
+         GpDcv8xJWVguw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DBF3ECE0BB0; Wed, 18 Oct 2023 13:42:21 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 13:42:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <ebfe3ca1-2f48-42ce-9d03-513a8c1bc530@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <87ttrngmq0.ffs@tglx>
+ <87jzshhexi.ffs@tglx>
+ <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
+ <87pm1c3wbn.ffs@tglx>
+ <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
+ <87r0lroffj.fsf@oracle.com>
 MIME-Version: 1.0
-References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
- <20230912205658.3432-1-casey@schaufler-ca.com> <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
- <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
- <ae39864947debbc7c460db478b8abe1c147b7d5c.camel@huaweicloud.com>
- <CAHC9VhRQ7xpeSX7b3VZfzQ15noJ8mgauNMuHWo_n3hMgsYMAfQ@mail.gmail.com>
- <468436cf766732a3cfc55d07ad119a6ccdc815c1.camel@huaweicloud.com>
- <CAHC9VhTjHT-DGKu0=cZPVb=+kMwmbPdr8HiVWJq-yzaDiYk_SA@mail.gmail.com>
- <6f33144c850c40e9438a6de2cf3004e223508755.camel@huaweicloud.com>
- <2637d5294d4a7ae871f1b758f5a30234836e2463.camel@huaweicloud.com>
- <c896c8ed559d0075146070be232e449b6951eb99.camel@linux.ibm.com>
- <283bf52d-af6e-4d20-a5ba-d98511c2e530@huaweicloud.com> <CAHC9VhSiUgY1Dzy6LGOjPF6XQ3pVBiZ9LPdcQANNXZ9rj-WURw@mail.gmail.com>
- <80f05011bf9fe19bde1f923e98c2db69ffc91065.camel@linux.ibm.com>
-In-Reply-To: <80f05011bf9fe19bde1f923e98c2db69ffc91065.camel@linux.ibm.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 18 Oct 2023 16:40:16 -0400
-Message-ID: <CAHC9VhSqgAD09QL2n0aoWLK7RGPkkjZHBrDCQmt1p3=ozpdt4A@mail.gmail.com>
-Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net,
-        linux-integrity@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r0lroffj.fsf@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 4:23=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
-> On Wed, 2023-10-18 at 12:35 -0400, Paul Moore wrote:
-> > On Wed, Oct 18, 2023 at 10:15=E2=80=AFAM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On 10/18/2023 3:09 PM, Mimi Zohar wrote:
+On Wed, Oct 18, 2023 at 01:15:28PM -0700, Ankur Arora wrote:
+> 
+> Paul E. McKenney <paulmck@kernel.org> writes:
+> 
+> > On Wed, Oct 18, 2023 at 03:16:12PM +0200, Thomas Gleixner wrote:
+> >> Paul!
+> >>
+> >> On Tue, Oct 17 2023 at 18:03, Paul E. McKenney wrote:
+> >> > Belatedly calling out some RCU issues.  Nothing fatal, just a
+> >> > (surprisingly) few adjustments that will need to be made.  The key thing
+> >> > to note is that from RCU's viewpoint, with this change, all kernels
+> >> > are preemptible, though rcu_read_lock() readers remain
+> >> > non-preemptible.
+> >>
+> >> Why? Either I'm confused or you or both of us :)
 > >
-> > ...
+> > Isn't rcu_read_lock() defined as preempt_disable() and rcu_read_unlock()
+> > as preempt_enable() in this approach?  I certainly hope so, as RCU
+> > priority boosting would be a most unwelcome addition to many datacenter
+> > workloads.
+> 
+> No, in this approach, PREEMPT_AUTO selects PREEMPTION and thus
+> PREEMPT_RCU so rcu_read_lock/unlock() would touch the
+> rcu_read_lock_nesting.  Which is identical to what PREEMPT_DYNAMIC does.
+
+Understood.  And we need some way to build a kernel such that RCU
+read-side critical sections are non-preemptible.  This is a hard
+requirement that is not going away anytime soon.
+
+> >> With this approach the kernel is by definition fully preemptible, which
+> >> means means rcu_read_lock() is preemptible too. That's pretty much the
+> >> same situation as with PREEMPT_DYNAMIC.
 > >
-> > > > I agree with Roberto.  All three should be defined: LSM_ID_INTEGRIT=
-Y,
-> > > > LSM_ID_IMA, LSM_ID_EVM.
-> > >
-> > > I did not try yet, but the 'integrity' LSM does not need an LSM ID. W=
-ith
-> > > the last version adding hooks to 'ima' or 'evm', it should be suffici=
-ent
-> > > to keep DEFINE_LSM(integrity) with the request to store a pointer in =
-the
-> > > security blob (even the init function can be a dummy function).
+> > Please, just no!!!
 > >
-> > First off, this *really* should have been brought up way, way, *way*
-> > before now.  This patchset has been discussed for months, and bringing
-> > up concerns in the eleventh hour is borderline rude.
->
-> As everyone knows IMA and EVM are not LSMs at this point.
+> > Please note that the current use of PREEMPT_DYNAMIC with preempt=none
+> > avoids preempting RCU read-side critical sections.  This means that the
+> > distro use of PREEMPT_DYNAMIC has most definitely *not* tested preemption
+> > of RCU readers in environments expecting no preemption.
+> 
+> Ah. So, though PREEMPT_DYNAMIC with preempt=none runs with PREEMPT_RCU,
+> preempt=none stubs out the actual preemption via __preempt_schedule.
+> 
+> Okay, I see what you are saying.
 
-Considering all the work Roberto has been doing to make that happen,
-not to mention the discussions we've had on this topic, that's an
-awfully small technicality to use as the basis of an argument.
+More to the point, currently, you can build with CONFIG_PREEMPT_DYNAMIC=n
+and CONFIG_PREEMPT_NONE=y and have non-preemptible RCU read-side critical
+sections.
 
-> So the only thing that is "rude" is the way you're responding in this
-> thread.
+> (Side issue: but this means that even for PREEMPT_DYNAMIC preempt=none,
+> _cond_resched() doesn't call rcu_all_qs().)
 
-Agree to disagree.
+I have no idea if anyone runs with CONFIG_PREEMPT_DYNAMIC=y and
+preempt=none.  We don't do so.  ;-)
 
-> > At least we haven't shipped this in a tagged release from Linus yet,
-> > so there is that.
->
-> What does that have to do with anything?!  Code changes.
+> >> For throughput sake this fully preemptible kernel provides a mechanism
+> >> to delay preemption for SCHED_OTHER tasks, i.e. instead of setting
+> >> NEED_RESCHED the scheduler sets NEED_RESCHED_LAZY.
+> >>
+> >> That means the preemption points in preempt_enable() and return from
+> >> interrupt to kernel will not see NEED_RESCHED and the tasks can run to
+> >> completion either to the point where they call schedule() or when they
+> >> return to user space. That's pretty much what PREEMPT_NONE does today.
+> >>
+> >> The difference to NONE/VOLUNTARY is that the explicit cond_resched()
+> >> points are not longer required because the scheduler can preempt the
+> >> long running task by setting NEED_RESCHED instead.
+> >>
+> >> That preemption might be suboptimal in some cases compared to
+> >> cond_resched(), but from my initial experimentation that's not really an
+> >> issue.
+> >
+> > I am not (repeat NOT) arguing for keeping cond_resched().  I am instead
+> > arguing that the less-preemptible variants of the kernel should continue
+> > to avoid preempting RCU read-side critical sections.
+> 
+> [ snip ]
+> 
+> >> In the end there is no CONFIG_PREEMPT_XXX anymore. The only knob
+> >> remaining would be CONFIG_PREEMPT_RT, which should be renamed to
+> >> CONFIG_RT or such as it does not really change the preemption
+> >> model itself. RT just reduces the preemption disabled sections with the
+> >> lock conversions, forced interrupt threading and some more.
+> >
+> > Again, please, no.
+> >
+> > There are situations where we still need rcu_read_lock() and
+> > rcu_read_unlock() to be preempt_disable() and preempt_enable(),
+> > repectively.  Those can be cases selected only by Kconfig option, not
+> > available in kernels compiled with CONFIG_PREEMPT_DYNAMIC=y.
+> 
+> As far as non-preemptible RCU read-side critical sections are concerned,
+> are the current
+> - PREEMPT_DYNAMIC=y, PREEMPT_RCU, preempt=none config
+>   (rcu_read_lock/unlock() do not manipulate preempt_count, but do
+>    stub out preempt_schedule())
+> - and PREEMPT_NONE=y, TREE_RCU config (rcu_read_lock/unlock() manipulate
+>    preempt_count)?
+> 
+> roughly similar or no?
 
-Code can change, Linux kernel APIs should not change.
+No.
 
---=20
-paul-moore.com
+There is still considerable exposure to preemptible-RCU code paths,
+for example, when current->rcu_read_unlock_special.b.blocked is set.
+
+> >> > I am sure that I am missing something, but I have not yet seen any
+> >> > show-stoppers.  Just some needed adjustments.
+> >>
+> >> Right. If it works out as I think it can work out the main adjustments
+> >> are to remove a large amount of #ifdef maze and related gunk :)
+> >
+> > Just please don't remove the #ifdef gunk that is still needed!
+> 
+> Always the hard part :).
+
+Hey, we wouldn't want to insult your intelligence by letting you work
+on too easy of a problem!  ;-)
+
+						Thanx, Paul
