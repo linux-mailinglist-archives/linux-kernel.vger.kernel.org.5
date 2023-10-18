@@ -2,175 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4407CDA43
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEF87CDAE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjJRL0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        id S229529AbjJRLqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjJRL0l (ORCPT
+        with ESMTP id S230359AbjJRL1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:26:41 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE392113
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:26:37 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d834ec222so5990442f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697628396; x=1698233196; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fo7B+cdiTA7QkXzogWs+Pqnw9GSLWygwDRl43SgG4dc=;
-        b=hDSJHTw6KFJp97jETOV2GRIONRsn/wO2k4STSHYThukIZ/pfWMd69mKW95WwnHdarh
-         03pqqrCcvOaeuueBFXLm2EPg8XipZhzRZwg82RzdmFTiqmcFRpWQOlJLscMwQsc50zHo
-         EnRgCZ96YMbCA6QjZT6zJWJnDpb0EK3QtWX6qQPlMw7VTCBcgpiqmUhI3DB5kaiMq0OK
-         QO7WqVqcXy8H/CMxdqhuvtP3hJRdXRoTaZC7w/5Fxmb6lJ8y3TDcKXZxyKvka0A+0GJG
-         D1N0SB8lAgKn7ZX/DaRqGRl5XuuTIi+FojQtwVk7OpgBh/sf2jL36trqBQ4UkqoYXLHH
-         e35A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697628396; x=1698233196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fo7B+cdiTA7QkXzogWs+Pqnw9GSLWygwDRl43SgG4dc=;
-        b=BfTs3bloBKJ4HrDPA8f9yL/qH6auwcbThcIP8cEiPcZTR71FYzVmtpwTv42BQOmjP5
-         Px/Amti0xsYAIyj3ZHpH037exhj0Zxm8RmvY5roS3vR1XTWEpCUWFtAt4itH2f/zJh+l
-         vlQQMnldlFFcxpGf7fkHKBDV2RRS+avhqL+kPAtF81bupilsQl8I/+ehM1V+8EYKWUsk
-         YqFSz9UKFk2iECLwIfuLSHeQaln5jND/x+E2psotYZEBkuaWohq6rdu/XSYn8IYtE1Fj
-         YHCWKVHarRuib61z3SSTq3XbF+XsozWkeqaMaBNACG5nHyYY91H/3jTx1iuUf6S4DwOQ
-         giSA==
-X-Gm-Message-State: AOJu0YwAyApbzXLqyRkaKzw7SDPukYgmzUdy75UbATttStXqKzkHitFn
-        r6aPGm9ucNI3gC05q5MtlNvKgccWO/szezU9uUh9aw==
-X-Google-Smtp-Source: AGHT+IEGTdYVt+EPdhZK2SJoJGQwAAt5GzCSXuLlL/UEP8u+GheBaAJrwgwf37URmrStLQQQxRBRAHFjOKB/q7DtxmM=
-X-Received: by 2002:a5d:58da:0:b0:32d:b051:9a2b with SMTP id
- o26-20020a5d58da000000b0032db0519a2bmr4179536wrf.2.1697628396063; Wed, 18 Oct
- 2023 04:26:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230911131224.61924-1-alexghiti@rivosinc.com>
- <20230911131224.61924-2-alexghiti@rivosinc.com> <2047b2c2-bf37-4c02-9297-d89f95863ed5@sifive.com>
-In-Reply-To: <2047b2c2-bf37-4c02-9297-d89f95863ed5@sifive.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 18 Oct 2023 13:26:25 +0200
-Message-ID: <CAHVXubiM=JPRZXjsdK1JTGBbywxT_tYRNminZw8ZLo=jAj8N+w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] riscv: Improve flush_tlb()
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
+        Wed, 18 Oct 2023 07:27:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EFA114;
+        Wed, 18 Oct 2023 04:27:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFC50C433C8;
+        Wed, 18 Oct 2023 11:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697628438;
+        bh=zlW+WXJ03AHaq8TEskzb4g7xW6mVxN5qwb3rME6hGQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JWFJEp+Xmwvqe1PFdvZVgupKgddtwchKLguWXYSy2opIYYHnnucRppdNIOI8hvmOL
+         8tn8h6rrY3/6hNMSC9Ysudo5/+2jx6i0aLDx4yyJH5hfKHiEc27hB9D2zHvtIIHiWo
+         lkE1MjpbhdqG/iMyT1Xi7ubTqK32DQT9kwnF9VINOU4CBWL+YbMGpVoUDepNe5pvtv
+         LK1xOym53SCRV8VbCl3ahcq8ZQgZc7wv9A6KboruZTX7Tng5vAnmOfJGXNDaeKTWBH
+         iegx8qrA/LBME+Sc2Vll002vBDr/hTKxEqqdjSvgqOb4GmZX+7KOkUxbqsIT9bTzXY
+         LRAsSME3qYBjQ==
+Date:   Wed, 18 Oct 2023 12:27:12 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v8 15/22] PCI: microchip: Add get_events() callback
+ function
+Message-ID: <20231018-landed-sampling-2fcec42943c8@spud>
+References: <20231011110514.107528-1-minda.chen@starfivetech.com>
+ <20231011110514.107528-16-minda.chen@starfivetech.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r6ZiTasWF0vb64gL"
+Content-Disposition: inline
+In-Reply-To: <20231011110514.107528-16-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
 
-On Mon, Oct 9, 2023 at 7:53=E2=80=AFPM Samuel Holland <samuel.holland@sifiv=
-e.com> wrote:
->
-> On 2023-09-11 8:12 AM, Alexandre Ghiti wrote:
-> > For now, flush_tlb() simply calls flush_tlb_mm() which results in a
->
-> s/flush_tlb/tlb_flush/ here and in the subject.
->
-> Otherwise:
-> Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+--r6ZiTasWF0vb64gL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ahah good catch, thanks for that and the RB!
+On Wed, Oct 11, 2023 at 07:05:07PM +0800, Minda Chen wrote:
 
-Alex
 
->
-> > flush of the whole TLB. So let's use mmu_gather fields to provide a mor=
-e
-> > fine-grained flush of the TLB.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > ---
-> >  arch/riscv/include/asm/tlb.h      | 8 +++++++-
-> >  arch/riscv/include/asm/tlbflush.h | 3 +++
-> >  arch/riscv/mm/tlbflush.c          | 7 +++++++
-> >  3 files changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.=
-h
-> > index 120bcf2ed8a8..1eb5682b2af6 100644
-> > --- a/arch/riscv/include/asm/tlb.h
-> > +++ b/arch/riscv/include/asm/tlb.h
-> > @@ -15,7 +15,13 @@ static void tlb_flush(struct mmu_gather *tlb);
-> >
-> >  static inline void tlb_flush(struct mmu_gather *tlb)
-> >  {
-> > -     flush_tlb_mm(tlb->mm);
-> > +#ifdef CONFIG_MMU
-> > +     if (tlb->fullmm || tlb->need_flush_all)
-> > +             flush_tlb_mm(tlb->mm);
-> > +     else
-> > +             flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
-> > +                                tlb_get_unmap_size(tlb));
-> > +#endif
-> >  }
-> >
-> >  #endif /* _ASM_RISCV_TLB_H */
-> > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm=
-/tlbflush.h
-> > index a09196f8de68..f5c4fb0ae642 100644
-> > --- a/arch/riscv/include/asm/tlbflush.h
-> > +++ b/arch/riscv/include/asm/tlbflush.h
-> > @@ -32,6 +32,8 @@ static inline void local_flush_tlb_page(unsigned long=
- addr)
-> >  #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-> >  void flush_tlb_all(void);
-> >  void flush_tlb_mm(struct mm_struct *mm);
-> > +void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
-> > +                     unsigned long end, unsigned int page_size);
-> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
-> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> >                    unsigned long end);
-> > @@ -52,6 +54,7 @@ static inline void flush_tlb_range(struct vm_area_str=
-uct *vma,
-> >  }
-> >
-> >  #define flush_tlb_mm(mm) flush_tlb_all()
-> > +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> >  #endif /* !CONFIG_SMP || !CONFIG_MMU */
-> >
-> >  /* Flush a range of kernel pages */
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index 77be59aadc73..fa03289853d8 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -132,6 +132,13 @@ void flush_tlb_mm(struct mm_struct *mm)
-> >       __flush_tlb_range(mm, 0, -1, PAGE_SIZE);
-> >  }
-> >
-> > +void flush_tlb_mm_range(struct mm_struct *mm,
-> > +                     unsigned long start, unsigned long end,
-> > +                     unsigned int page_size)
-> > +{
-> > +     __flush_tlb_range(mm, start, end - start, page_size);
-> > +}
-> > +
-> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
-> >  {
-> >       __flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
->
+> For different interrupts to event num mapping function,
+> add get_events() function pointer.
+> For extenting event ops in the fucture, Add struct
+> plda_event_ops data structure.
+
+I still think these commit messages are a bit weak and should point out
+the reasons why these are needed, rather than handwaving about future
+users.
+Otherwise,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+>=20
+> plda_handle_events() will call the get_events() callback
+> function pointer directly. For the robustness of codes,
+> add checking in plda_init_interrupts().
+>=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> ---
+>  drivers/pci/controller/plda/pcie-microchip-host.c | 14 +++++++++++++-
+>  drivers/pci/controller/plda/pcie-plda.h           |  8 ++++++++
+>  2 files changed, 21 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
+pci/controller/plda/pcie-microchip-host.c
+> index e99498b5b563..fca1520d56c9 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -647,7 +647,7 @@ static void plda_handle_event(struct irq_desc *desc)
+> =20
+>  	chained_irq_enter(chip, desc);
+> =20
+> -	events =3D mc_get_events(port);
+> +	events =3D port->event_ops->get_events(port);
+> =20
+>  	for_each_set_bit(bit, &events, port->num_events)
+>  		generic_handle_domain_irq(port->event_domain, bit);
+> @@ -806,7 +806,12 @@ static int mc_request_event_irq(struct plda_pcie_rp =
+*plda, int event_irq,
+>  				0, event_cause[event].sym, plda);
+>  }
+> =20
+> +static const struct plda_event_ops mc_event_ops =3D {
+> +	.get_events =3D mc_get_events,
+> +};
+> +
+>  static const struct plda_event mc_event =3D {
+> +	.event_ops              =3D &mc_event_ops,
+>  	.request_event_irq      =3D mc_request_event_irq,
+>  	.intx_event             =3D EVENT_LOCAL_PM_MSI_INT_INTX,
+>  	.msi_event              =3D EVENT_LOCAL_PM_MSI_INT_MSI,
+> @@ -920,6 +925,11 @@ static int plda_init_interrupts(struct platform_devi=
+ce *pdev,
+>  	int i, intx_irq, msi_irq, event_irq;
+>  	int ret;
+> =20
+> +	if (!event->event_ops || !event->event_ops->get_events) {
+> +		dev_err(dev, "no get events ops\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	ret =3D plda_pcie_init_irq_domains(port);
+>  	if (ret) {
+>  		dev_err(dev, "failed creating IRQ domains\n");
+> @@ -930,6 +940,8 @@ static int plda_init_interrupts(struct platform_devic=
+e *pdev,
+>  	if (irq < 0)
+>  		return -ENODEV;
+> =20
+> +	port->event_ops =3D event->event_ops;
+> +
+>  	for (i =3D 0; i < port->num_events; i++) {
+>  		event_irq =3D irq_create_mapping(port->event_domain, i);
+>  		if (!event_irq) {
+> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
+ller/plda/pcie-plda.h
+> index 5ad1b81c0086..6571a4befac9 100644
+> --- a/drivers/pci/controller/plda/pcie-plda.h
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -102,6 +102,12 @@
+>  #define EVENT_PM_MSI_INT_SYS_ERR		12
+>  #define NUM_PLDA_EVENTS				13
+> =20
+> +struct plda_pcie_rp;
+> +
+> +struct plda_event_ops {
+> +	u32 (*get_events)(struct plda_pcie_rp *pcie);
+> +};
+> +
+>  struct plda_msi {
+>  	struct mutex lock;		/* Protect used bitmap */
+>  	struct irq_domain *msi_domain;
+> @@ -117,11 +123,13 @@ struct plda_pcie_rp {
+>  	struct irq_domain *event_domain;
+>  	raw_spinlock_t lock;
+>  	struct plda_msi msi;
+> +	const struct plda_event_ops *event_ops;
+>  	void __iomem *bridge_addr;
+>  	int num_events;
+>  };
+> =20
+>  struct plda_event {
+> +	const struct plda_event_ops *event_ops;
+>  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
+>  				 int event_irq, int event);
+>  	int intx_event;
+> --=20
+> 2.17.1
+>=20
+
+--r6ZiTasWF0vb64gL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS/BEAAKCRB4tDGHoIJi
+0m/cAQCOrCJ2bYXCB7wvpZnWAUAeEFiNVKT5N+U+TgJyh1aYPgEA5fNtx3R0qwom
+tjpc0UtKhVAbjP8MwJIzQFwaIgq+ig8=
+=OugO
+-----END PGP SIGNATURE-----
+
+--r6ZiTasWF0vb64gL--
