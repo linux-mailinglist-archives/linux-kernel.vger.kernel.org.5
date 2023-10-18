@@ -2,146 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210857CE495
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1847CE494
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjJRRam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        id S231715AbjJRRai convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 13:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjJRR3z (ORCPT
+        with ESMTP id S231643AbjJRR3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 13:29:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E9F3C0C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697649795; x=1729185795;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UdBe7hqt4ajlP6rkH/62cvH28e6YLrgqmePPO+p1iuo=;
-  b=ADDixrrBGdTbG83f+ZR0okpbmKswUt3ZPY7mx0arN53MD9wtrNYgS17T
-   I3YiqjyySgkht2VZwkr+2RUuGyjE5s0saTaknc5bHzelGCT3MSMwPvNDM
-   O2xwPjRrWbkYxVYTsF+cOO4v4usuS8FWGAzmKZ/Rj6Zx+/y61+/X3+71Z
-   kyXUzkMo8dzme9WMMFZEEqmUk16rHW2sEzVwcHLEJrz4tJBx6QzG/kOMC
-   KBA63n3/XFuz3shwvA9fOLJj07QVn7sv6v6NDfkkC8GreaZpOpRikjLd+
-   yGso7F6q3OzthTW10hrgzgi95U+t2A1pQ3S7d1428xA+3C8wDx2pZuERD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="384942696"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="384942696"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 10:23:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="706532444"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="706532444"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 18 Oct 2023 10:23:12 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtAGD-0000kW-1e;
-        Wed, 18 Oct 2023 17:23:09 +0000
-Date:   Thu, 19 Oct 2023 01:22:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>
-Subject: arch/riscv/kernel/hibernate.c:76:65: warning: array subscript -1 is
- outside array bounds of 'const void[]'
-Message-ID: <202310190159.mAUo9iEX-lkp@intel.com>
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699C63C0F;
+        Wed, 18 Oct 2023 10:23:25 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-582050ce2d8so25812eaf.0;
+        Wed, 18 Oct 2023 10:23:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697649804; x=1698254604;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I2lwiFW7v1x6wJxRpx1c+ObPtw/kHFVlH2vUJpoYMn0=;
+        b=AyN+NoPAVB8NQ1Jq3z4mylGl6Ae++nsCqlUsiob5kMuKBv7h8JL+ye1HEMthG0tvb1
+         NxmK0CS9Ig+jTtmNngI04vbRqXZKncEGAORkGmXGQWV6cJ8t52KSx4DpczqDZODYlZ8j
+         q8KpPMO57QECLStv3uTuylzxo7WO4zyqRkrwquJ1RgeEod1AlyvBVhmpsCwp8WAn4Gl7
+         ryg3szxmrA3upeE7VjSuXQBwurv8j82xozg24GgwO5VMhCRJp2LjO4siPR93S+izqBiI
+         I6NlahBmucbrDjYBLn4+ED5ck6rht4ynj1LuXSL/2NhqpuCaqz3c25gcGzdQECUJWqn4
+         ks6Q==
+X-Gm-Message-State: AOJu0YxpHvf0ViJg46ESn432olLBgRBMlCVdIhw7L8jwL/U9+yRTvJ1r
+        6ILbfEBG4dClBZy9ndSaay29+4N6Pr+C1uW4qpLnkQX7zf0=
+X-Google-Smtp-Source: AGHT+IGnNjtcabtUMJyCpUS/Q8iadNabFO9ltoFIiy6KhS15PxlDuBSBbxZIY+SzIP5PAczSNxTThF+a9wJpw+QBaOQ=
+X-Received: by 2002:a05:6820:180f:b0:581:f17d:5eb5 with SMTP id
+ bn15-20020a056820180f00b00581f17d5eb5mr3255065oob.0.1697649804594; Wed, 18
+ Oct 2023 10:23:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231018162540.667646-1-vincent.guittot@linaro.org> <20231018162540.667646-3-vincent.guittot@linaro.org>
+In-Reply-To: <20231018162540.667646-3-vincent.guittot@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Oct 2023 19:23:13 +0200
+Message-ID: <CAJZ5v0iu9AjZWNbMPQbwErYRTz8y0PEGDyh7CU_NwxGj6KXMOQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] cpufreq: use the fixed and coherent frequency for
+ scaling capacity
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: c0317210012e3b985779ddd92a7c5db8424e1e97 RISC-V: Add arch functions to support hibernation/suspend-to-disk
-date:   6 months ago
-config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20231019/202310190159.mAUo9iEX-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310190159.mAUo9iEX-lkp@intel.com/reproduce)
+On Wed, Oct 18, 2023 at 6:25 PM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> cpuinfo.max_freq can change at runtime because of boost as an example. This
+> implies that the value could be different from the frequency that has been
+> used to compute the capacity of a CPU.
+>
+> The new arch_scale_freq_ref() returns a fixed and coherent frequency
+> that can be used to compute the capacity for a given frequency.
+>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310190159.mAUo9iEX-lkp@intel.com/
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-All warnings (new ones prefixed by >>):
-
-   In file included from arch/riscv/include/asm/page.h:12,
-                    from arch/riscv/include/asm/thread_info.h:11,
-                    from include/linux/thread_info.h:60,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/riscv/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:78,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7,
-                    from arch/riscv/include/asm/cacheflush.h:9,
-                    from arch/riscv/kernel/hibernate.c:11:
-   arch/riscv/kernel/hibernate.c: In function 'pfn_is_nosave':
->> arch/riscv/kernel/hibernate.c:76:65: warning: array subscript -1 is outside array bounds of 'const void[]' [-Warray-bounds=]
-      76 |         unsigned long nosave_end_pfn = sym_to_pfn(&__nosave_end - 1);
-   include/linux/pfn.h:22:43: note: in definition of macro 'PHYS_PFN'
-      22 | #define PHYS_PFN(x)     ((unsigned long)((x) >> PAGE_SHIFT))
-         |                                           ^
-   arch/riscv/include/asm/page.h:172:33: note: in expansion of macro '__phys_to_pfn'
-     172 | #define sym_to_pfn(x)           __phys_to_pfn(__pa_symbol(x))
-         |                                 ^~~~~~~~~~~~~
-   arch/riscv/include/asm/page.h:156:44: note: in expansion of macro 'RELOC_HIDE'
-     156 | #define __pa_symbol(x)  __phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
-         |                                            ^~~~~~~~~~
-   arch/riscv/include/asm/page.h:172:47: note: in expansion of macro '__pa_symbol'
-     172 | #define sym_to_pfn(x)           __phys_to_pfn(__pa_symbol(x))
-         |                                               ^~~~~~~~~~~
-   arch/riscv/kernel/hibernate.c:76:40: note: in expansion of macro 'sym_to_pfn'
-      76 |         unsigned long nosave_end_pfn = sym_to_pfn(&__nosave_end - 1);
-         |                                        ^~~~~~~~~~
-   In file included from arch/riscv/include/asm/sections.h:8,
-                    from include/linux/interrupt.h:21,
-                    from include/linux/kernel_stat.h:9,
-                    from include/linux/cgroup.h:26,
-                    from include/linux/memcontrol.h:13,
-                    from include/linux/swap.h:9,
-                    from include/asm-generic/tlb.h:15,
-                    from arch/riscv/include/asm/tlb.h:14,
-                    from arch/riscv/include/asm/pgalloc.h:11,
-                    from arch/riscv/kernel/hibernate.c:14:
-   include/asm-generic/sections.h:59:45: note: at offset -1 into object '__nosave_end' of size [0, 9223372036854775807]
-      59 | extern __visible const void __nosave_begin, __nosave_end;
-         |                                             ^~~~~~~~~~~~
-
-
-vim +76 arch/riscv/kernel/hibernate.c
-
-    69	
-    70	/*
-    71	 * Check if the given pfn is in the 'nosave' section.
-    72	 */
-    73	int pfn_is_nosave(unsigned long pfn)
-    74	{
-    75		unsigned long nosave_begin_pfn = sym_to_pfn(&__nosave_begin);
-  > 76		unsigned long nosave_end_pfn = sym_to_pfn(&__nosave_end - 1);
-    77	
-    78		return ((pfn >= nosave_begin_pfn) && (pfn <= nosave_end_pfn));
-    79	}
-    80	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  drivers/cpufreq/cpufreq.c | 4 ++--
+>  include/linux/cpufreq.h   | 9 +++++++++
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 60ed89000e82..8c4f9c2f9c44 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -454,7 +454,7 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
+>
+>         arch_set_freq_scale(policy->related_cpus,
+>                             policy->cur,
+> -                           policy->cpuinfo.max_freq);
+> +                           arch_scale_freq_ref(policy->cpu));
+>
+>         spin_lock(&policy->transition_lock);
+>         policy->transition_ongoing = false;
+> @@ -2174,7 +2174,7 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>
+>         policy->cur = freq;
+>         arch_set_freq_scale(policy->related_cpus, freq,
+> -                           policy->cpuinfo.max_freq);
+> +                           arch_scale_freq_ref(policy->cpu));
+>         cpufreq_stats_record_transition(policy, freq);
+>
+>         if (trace_cpu_frequency_enabled()) {
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 71d186d6933a..bbc483b4b6e5 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -1211,6 +1211,15 @@ void arch_set_freq_scale(const struct cpumask *cpus,
+>  {
+>  }
+>  #endif
+> +
+> +#ifndef arch_scale_freq_ref
+> +static __always_inline
+> +unsigned int arch_scale_freq_ref(int cpu)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  /* the following are really really optional */
+>  extern struct freq_attr cpufreq_freq_attr_scaling_available_freqs;
+>  extern struct freq_attr cpufreq_freq_attr_scaling_boost_freqs;
+> --
+> 2.34.1
+>
