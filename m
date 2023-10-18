@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CD57CD68D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25827CD690
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344690AbjJRIb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
+        id S1344705AbjJRIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344664AbjJRIbx (ORCPT
+        with ESMTP id S1344688AbjJRIb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:31:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9F7BA;
-        Wed, 18 Oct 2023 01:31:51 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 08:31:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697617910;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=p1eHh83Sg5uz33qMvHr/Qg2yAhdWF/K7xokZDEP7HJM=;
-        b=qHNxPEK8a8M+NaT/1mAM4eDzdD5BZJvbi9C+kk/yOZ7AsiRw/YWc6A08x75cTMOca8wd6G
-        +SUCKqdkj4LnabgzZqPbLZL1enDiEHLpM+KUQ+kqvK+YLBGAi2/px3VD2pVP5wJph52OuQ
-        mbeEnkNRsWVnQSXUYkTS5cSNmzjdwOgXRg7mvgoLmclx8dvmj/uClFpVEHmvIzXwyBZWqA
-        qFKUZW/dMO7f2cqON6HCIGt+zo84OKs7BQxLqrF9pcyyy2qeDhuCOK8FbtGhLhF5V3uFUy
-        hDHsI89cHmyrVJnl7yWiXQFXvw9V/GicwvLimwzF2Vk8rfnuo4QwPUjKjOAgGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697617910;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=p1eHh83Sg5uz33qMvHr/Qg2yAhdWF/K7xokZDEP7HJM=;
-        b=9r7v6E9ExhnkSmMK3sOvJSkBTewahkkGEu8jYR1JubHMLh1LbAj+fTF0WfXJzmh34kVrD7
-        p0hWgRmxAgp/hgBA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/eevdf: Fix heap corruption more
-Cc:     0599jiangyc@gmail.com, Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <169761790955.3135.2302450117444631157.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+        Wed, 18 Oct 2023 04:31:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3087101;
+        Wed, 18 Oct 2023 01:31:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83B7C433C9;
+        Wed, 18 Oct 2023 08:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697617915;
+        bh=7LzgGeipT9Qy5v1sgxiku72SEYU7sxO5+0HO8M6l8bQ=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=qKt5ZdvwyBDhTdY/Carhf2QcB/N5BdLhJRXjIQrVpairy5npomajJthuzXG/OqMh2
+         C1kfrrdgDAjJymrPiYciajAwXdHNovsfJ7E7dPk/SjXOiqANBCqssOV7JHUMt/Hr+m
+         8uorOQF5OsYMl+g3YQLYWCeO3bRmfncZXtU9GJNc0sB8jwdvOSmJMibKZil+8bvLlM
+         J8AX267eQ1RvwrJej9JPWj0POYBwQO6qzBRfEwzQc/99jITsmW1cqXrwCnQpeXMGUB
+         cDz+et2TLAtyAJkhUoLSAkjeTcOku+n6c/FUc4TyLFzYrq23NR8vHMSxkIiGAX4bxP
+         MdCNpOie3W88g==
 Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Subject: Re: [PATCH] ath5k: replace deprecated strncpy with strscpy
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231013-strncpy-drivers-net-wireless-ath-ath5k-led-c-v1-1-3acb0b5a21f2@google.com>
+References: <20231013-strncpy-drivers-net-wireless-ath-ath5k-led-c-v1-1-3acb0b5a21f2@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169761791192.48072.4820317724523709074.kvalo@kernel.org>
+Date:   Wed, 18 Oct 2023 08:31:53 +0000 (UTC)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,43 +53,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Justin Stitt <justinstitt@google.com> wrote:
 
-Commit-ID:     d2929762cc3f85528b0ca12f6f63c2a714f24778
-Gitweb:        https://git.kernel.org/tip/d2929762cc3f85528b0ca12f6f63c2a714f24778
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 17 Oct 2023 16:59:47 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 18 Oct 2023 10:22:13 +02:00
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We expect led->name to be NUL-terminated based on the presence of a
+> manual NUL-byte assignment.
+> 
+> This NUL-byte assignment was added in Commit daf9669bea30aa22 ("ath5k:
+> ensure led name is null terminated"). If strscpy() had existed and had
+> been used back when this code was written then potential bugs and the
+> need to manually NUL-terminate could have been avoided. Since we now
+> have the technology, let's use it :)
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding. If NUL-padding is required let's opt
+> for strscpy_pad().
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-sched/eevdf: Fix heap corruption more
+Patch applied to ath-next branch of ath.git, thanks.
 
-Because someone is a flaming idiot... and forgot we have current as
-se->on_rq but not actually in the tree itself, and walking rb_parent()
-on an entry not in the tree is 'funky' and KASAN complains.
+24709752bfe8 wifi: ath5k: replace deprecated strncpy with strscpy
 
-Fixes: 8dafa9d0eb1a ("sched/eevdf: Fix min_deadline heap integrity")
-Reported-by: 0599jiangyc@gmail.com
-Reported-by: Dmitry Safonov <0x7f454c46@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Dmitry Safonov <0x7f454c46@gmail.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218020
-Link: https://lkml.kernel.org/r/CAJwJo6ZGXO07%3DQvW4fgQfbsDzQPs9xj5sAQ1zp%3DmAyPMNbHYww%40mail.gmail.com
----
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231013-strncpy-drivers-net-wireless-ath-ath5k-led-c-v1-1-3acb0b5a21f2@google.com/
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 061a30a..df348aa 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3657,7 +3657,8 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		 */
- 		deadline = div_s64(deadline * old_weight, weight);
- 		se->deadline = se->vruntime + deadline;
--		min_deadline_cb_propagate(&se->run_node, NULL);
-+		if (se != cfs_rq->curr)
-+			min_deadline_cb_propagate(&se->run_node, NULL);
- 	}
- 
- #ifdef CONFIG_SMP
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
