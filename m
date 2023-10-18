@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F5F7CE2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEFF7CE459
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjJRQZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
+        id S229487AbjJRRY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjJRQZL (ORCPT
+        with ESMTP id S231754AbjJRQZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:25:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C816FA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:25:09 -0700 (PDT)
+        Wed, 18 Oct 2023 12:25:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFD711D;
+        Wed, 18 Oct 2023 09:25:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697646309; x=1729182309;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=LTaD1a7qsCERlvZZ2FDv6BVyrI5/qaIFdMINk4FCDO8=;
-  b=F8D4ulI0Ew5hqiRpjpJc5TV+UYUsRyDm27k/noG4PHh7qJIZkXLJFZTC
-   MEIeQXro21aCx/03KKyT3KpLxhbZaHuHjbPd7OAFb9JFqUoCPlEZ4Zo3x
-   wojY2J0EKzvCV9cZ+or5jFsaQfDKMjnGVU53Eh7ydA8UcfA42VUk8x13H
-   rpjp5SYg4AWbSPQ/fGyexMErlchrUqKLCVlDsS35Mk+J7A109BDyII9pf
-   eBTY9YqTogMrX1g7vOql26LYvcahgGEBCqk8jin8eVC/3E3SgoxEDxGtI
-   9pMGUhv3E5jJQLhP2oSXiN9LltBvFzzk3HlnD7VXeinA1YZ+OJf4ZQHRE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="365401118"
+  t=1697646335; x=1729182335;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=3SzZhMSgWPufMQv3UDQZF8yioB50y/KqV65kuToF9No=;
+  b=JgmRUzClX6MKH0AEVqBGTXpTtU7/rKrOw/bMSsiMHE9Tz5bt5FcU8kiE
+   +vetL7brflYzmYNbgOqaO/9CCfRZs85bkDNMQvrvzSuIq7qmbb5sD239A
+   MrxKtI4stKJtbvaAiGaCejVDd0+hicAPruhDD2bI7ZZnrVQ45DxBMsaVM
+   KFTpMUubFMMsWJfSANPGHRAhvqEiVWA5/e5tyL6/KUQ6Iye7WVDEnv018
+   enPnsS0iRtTm2PnRVjccyTonw0OjUpMhbipbxV6QHTXSQVPIVYhx/ty5C
+   brp1J7+lPCQQOGXrhbDyvcNhc0AXdy05Zd/eGfsOf8Gsiqs4QyqZi8jCc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366306231"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="365401118"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 09:25:09 -0700
+   d="scan'208";a="366306231"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 09:25:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="706515685"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756643245"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="706515685"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 18 Oct 2023 09:25:07 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qt9M0-0000ew-2T;
-        Wed, 18 Oct 2023 16:25:04 +0000
-Date:   Thu, 19 Oct 2023 00:24:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: kernel/sched/fair.c:939:34: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202310190027.YzS5EYN2-lkp@intel.com>
+   d="scan'208";a="756643245"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Oct 2023 09:25:29 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Dave Hansen" <dave.hansen@intel.com>,
+        =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+ <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
+ <op.2c0nt109wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com>
+ <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
+Date:   Wed, 18 Oct 2023 11:25:28 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2c0qkqrowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: 904cbab71dda1689d41a240541179f21ff433c40 sched: Make const-safe
-date:   10 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231019/202310190027.YzS5EYN2-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310190027.YzS5EYN2-lkp@intel.com/reproduce)
+On Wed, 18 Oct 2023 10:52:23 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310190027.YzS5EYN2-lkp@intel.com/
+> On Wed, Oct 18, 2023 at 08:37:25AM -0700, Dave Hansen  =
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/fair.c:939:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sched_entity const *se @@     got struct sched_entity [noderef] __rcu * @@
-   kernel/sched/fair.c:939:34: sparse:     expected struct sched_entity const *se
-   kernel/sched/fair.c:939:34: sparse:     got struct sched_entity [noderef] __rcu *
-   kernel/sched/fair.c:7698:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:7698:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:7698:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:7996:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:7996:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:7996:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:6039:35: sparse: sparse: marked inline, but without a definition
-   kernel/sched/fair.c: note: in included file:
-   kernel/sched/sched.h:2232:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2232:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2232:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
---
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/rt.c:961:70: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/rt.c:961:70: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/rt.c:961:70: sparse:    struct task_struct *
-   kernel/sched/rt.c:1047:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:1047:38: sparse:     expected struct task_struct *curr
-   kernel/sched/rt.c:1047:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/rt.c:1592:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:1592:31: sparse:     expected struct task_struct *p
-   kernel/sched/rt.c:1592:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/build_policy.c: note: in included file:
->> kernel/sched/deadline.c:1954:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct sched_dl_entity const *b @@     got struct sched_dl_entity [noderef] __rcu * @@
-   kernel/sched/deadline.c:1954:42: sparse:     expected struct sched_dl_entity const *b
-   kernel/sched/deadline.c:1954:42: sparse:     got struct sched_dl_entity [noderef] __rcu *
-   kernel/sched/deadline.c:1182:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1182:23: sparse:     expected struct task_struct *p
-   kernel/sched/deadline.c:1182:23: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:1309:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1309:38: sparse:     expected struct task_struct *curr
-   kernel/sched/deadline.c:1309:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:2645:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/deadline.c:2645:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/deadline.c:2645:22: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
+> <dave.hansen@intel.com> wrote:
+>> 1. Admin sets a limit
+>> 2. Enclave is created
+>> 3. Enclave hits limit, allocation fails
+>
+> I was actually about to suggest reorganizing the series to a part
+> implementing this simple limiting and a subsequent part with the recla=
+im
+> stuff for easier digestability.
+>
+>> Nothing else matters.
+>
+> If the latter part is an unncessary overkill, it's even better.
+>
 
-vim +939 kernel/sched/fair.c
+Ok. I'll take out max_write() callback and only implement non-preemptive=
+  =
 
-bf0f6f24a1ece8 kernel/sched_fair.c Ingo Molnar       2007-07-09  936  
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  937  static void update_curr_fair(struct rq *rq)
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  938  {
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12 @939  	update_curr(cfs_rq_of(&rq->curr->se));
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  940  }
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  941  
+misc.max for EPC.
+I can also separate OOEPC_killing enclaves out, which is not needed if w=
+e  =
 
-:::::: The code at line 939 was first introduced by commit
-:::::: 6e998916dfe327e785e7c2447959b2c1a3ea4930 sched/cputime: Fix clock_nanosleep()/clock_gettime() inconsistency
+only block allocation at limit, no need killing one enclave to make spac=
+e  =
 
-:::::: TO: Stanislaw Gruszka <sgruszka@redhat.com>
-:::::: CC: Ingo Molnar <mingo@kernel.org>
+for another. This will simplify a lot.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks to all for your input!
+
+Haitao
+ =
+
