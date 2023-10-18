@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3055B7CE16E
+	by mail.lfdr.de (Postfix) with ESMTP id 860457CE16F
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344773AbjJRPpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        id S1344750AbjJRPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjJRPpH (ORCPT
+        with ESMTP id S232412AbjJRPpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:45:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499A511B
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:45:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697643906; x=1729179906;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=MP10YohGiPP+OhqmtVYeRkq3ED2HUZXN0Rbya0uXRZY=;
-  b=eXV2+k3yNcQcBYygavRyPZOPzn6zpxoR5g9BX9BJm0sy/nd/EXCBi910
-   PZu9zbBaRK8GPNABi+5Ez+BTg33B0OO1YxBzQDzGz2fhdZyTQeX+8N3po
-   ENEo70U90r1TYQaC37liUGNs3vp1mWR4DKsBf92vTOAe9PwACVRWTmnR6
-   nGaws2ZUKgq/pamaqaIYPMGLNIxtsCh0C4H66HjbGhEu8irgZD/wDmhdi
-   5ISY4np1Eio02HqQR19AQeQpm15dSCzo0Jc48JhWgMfG2Yqy9mV0rpBUp
-   iHem+0ITzhj0rmgfXGsbeTgYfaJMmFmEtuHp2JyPopDcvXmgTUwqsH+2e
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="383263398"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="383263398"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 08:45:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="4587033"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 18 Oct 2023 08:45:08 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qt8jF-0000bQ-2A;
-        Wed, 18 Oct 2023 15:45:01 +0000
-Date:   Wed, 18 Oct 2023 23:44:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s'
- directive argument is null
-Message-ID: <202310182347.zS9BxqD4-lkp@intel.com>
+        Wed, 18 Oct 2023 11:45:06 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EFC118;
+        Wed, 18 Oct 2023 08:45:04 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IFinrK079557;
+        Wed, 18 Oct 2023 10:44:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697643889;
+        bh=/ZywHds19OF8HgvTVTSGg8Wo3OLLlAOYwDmxLDtIUMI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Oe+C2tKY9UB/+03MhksDPTI9LlmzUpd1II2ZhfYIPlV+t5hcan100OuXwJfrBF33J
+         W93rOEkMI0mR5RdGp32+ZBNEXgBnGP3VV4TNHGQ8Duzndv8AAHKE55QqLUgcRbIxoY
+         dE4EmZwVR/R+KHAup/hz7dOT44ShcigrueL5XLOs=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IFin8o029902
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Oct 2023 10:44:49 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
+ Oct 2023 10:44:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 18 Oct 2023 10:44:48 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IFim0D005933;
+        Wed, 18 Oct 2023 10:44:48 -0500
+Date:   Wed, 18 Oct 2023 10:44:48 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Ravi Gunasekaran <r-gunasekaran@ti.com>,
+        Neha Malcom Francis <n-francis@ti.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <rogerq@ti.com>, <andrew@lunn.ch>,
+        <f.fainelli@gmail.com>, <horms@kernel.org>,
+        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <srk@ti.com>,
+        Thejasvi Konduru <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>
+Subject: Re: [PATCH net-next] net: ethernet: ti: davinci_mdio: Fix the
+ revision string for J721E
+Message-ID: <20231018154448.vlunpwbw67xeh4rj@unfasten>
+References: <20231018140009.1725-1-r-gunasekaran@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231018140009.1725-1-r-gunasekaran@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
-date:   5 months ago
-config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20231018/202310182347.zS9BxqD4-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182347.zS9BxqD4-lkp@intel.com/reproduce)
+On 19:30-20231018, Ravi Gunasekaran wrote:
+> Prior to the commit 07e651db2d78 ("soc: ti: k3-socinfo: Revamp driver
+> to accommodate different rev structs"), K3 SoC's revision was
+> interpreted as an incremental value or one-to-one mapping of the
+> JTAG_ID's variant field. Now that the revision mapping is fixed,
+> update the correct revision string for J721E in k3_mdio_socinfo,
+> so that MDIO errata i2329 is applied for J721E SR1.1.
+> 
+> Fixes: 07e651db2d78 ("soc: ti: k3-socinfo: Revamp driver to accommodate different rev structs")
+> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+> ---
+>  drivers/net/ethernet/ti/davinci_mdio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/davinci_mdio.c b/drivers/net/ethernet/ti/davinci_mdio.c
+> index 628c87dc1d28..998fe2717cf9 100644
+> --- a/drivers/net/ethernet/ti/davinci_mdio.c
+> +++ b/drivers/net/ethernet/ti/davinci_mdio.c
+> @@ -519,7 +519,7 @@ static const struct soc_device_attribute k3_mdio_socinfo[] = {
+>  	{ .family = "J7200", .revision = "SR1.0", .data = &am65_mdio_soc_data },
+>  	{ .family = "J7200", .revision = "SR2.0", .data = &am65_mdio_soc_data },
+>  	{ .family = "J721E", .revision = "SR1.0", .data = &am65_mdio_soc_data },
+> -	{ .family = "J721E", .revision = "SR2.0", .data = &am65_mdio_soc_data },
+> +	{ .family = "J721E", .revision = "SR1.1", .data = &am65_mdio_soc_data },
+>  	{ .family = "J721S2", .revision = "SR1.0", .data = &am65_mdio_soc_data},
+>  	{ /* sentinel */ },
+>  };
+> 
+> base-commit: 2dac75696c6da3c848daa118a729827541c89d33
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310182347.zS9BxqD4-lkp@intel.com/
+Uggh.. This is a bit of chicken or hen problem here that creates
+bisectability issues (thanks for linux-next for exposing this).
 
-All warnings (new ones prefixed by >>):
+Neha's patch I picked up is a valid fix, though this side effect was
+unfortunate.
 
-   In file included from drivers/net/wireless/intel/iwlwifi/fw/acpi.c:9:
-   drivers/net/wireless/intel/iwlwifi/fw/acpi.c: In function 'iwl_acpi_is_ppag_approved':
->> drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s' directive argument is null [-Wformat-overflow=]
-    1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/iwl-debug.h:91:56: note: in definition of macro '__IWL_DEBUG_DEV'
-      91 |                 __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
-         |                                                        ^~~
-   drivers/net/wireless/intel/iwlwifi/iwl-debug.h:209:41: note: in expansion of macro 'IWL_DEBUG'
-     209 | #define IWL_DEBUG_RADIO(p, f, a...)     IWL_DEBUG(p, IWL_DL_RADIO, f, ## a)
-         |                                         ^~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1189:17: note: in expansion of macro 'IWL_DEBUG_RADIO'
-    1189 |                 IWL_DEBUG_RADIO(fwrt,
-         |                 ^~~~~~~~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:41: note: format string is defined here
-    1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
-         |                                         ^~
---
-   In file included from drivers/net/wireless/intel/iwlwifi/mvm/../iwl-trans.h:15,
-                    from drivers/net/wireless/intel/iwlwifi/mvm/fw.c:11:
-   drivers/net/wireless/intel/iwlwifi/mvm/fw.c: In function 'iwl_mvm_tas_init':
->> drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1167:33: warning: '%s' directive argument is null [-Wformat-overflow=]
-    1167 |                                 "System vendor '%s' is not in the approved list, disabling TAS in US and Canada.\n",
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/mvm/../iwl-debug.h:91:56: note: in definition of macro '__IWL_DEBUG_DEV'
-      91 |                 __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
-         |                                                        ^~~
-   drivers/net/wireless/intel/iwlwifi/mvm/../iwl-debug.h:209:41: note: in expansion of macro 'IWL_DEBUG'
-     209 | #define IWL_DEBUG_RADIO(p, f, a...)     IWL_DEBUG(p, IWL_DL_RADIO, f, ## a)
-         |                                         ^~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1166:17: note: in expansion of macro 'IWL_DEBUG_RADIO'
-    1166 |                 IWL_DEBUG_RADIO(mvm,
-         |                 ^~~~~~~~~~~~~~~
-   drivers/net/wireless/intel/iwlwifi/mvm/fw.c:1167:49: note: format string is defined here
-    1167 |                                 "System vendor '%s' is not in the approved list, disabling TAS in US and Canada.\n",
-         |                                                 ^~
+My suggestion is:
+a) I will drop
+   https://lore.kernel.org/all/20231016101608.993921-4-n-francis@ti.com/
+   from my queue for this window.
+b) please identify other places where we could have this situation.
+https://www.ti.com/lit/pdf/spruiu1 seems to indicate just SR1.0 for
+J7200.
 
+We then have the following steps potentially
 
-vim +1190 drivers/net/wireless/intel/iwlwifi/fw/acpi.c
+Drop the fixes and Maintain both SR2.0 and SR1.0 (add SR1.1) so that
+we can merge the socinfo fixes without breaking bisectability.
 
-e8e10a37c51c08 Matt Chen 2022-03-04  1187  
-e8e10a37c51c08 Matt Chen 2022-03-04  1188  	if (!dmi_check_system(dmi_ppag_approved_list)) {
-e8e10a37c51c08 Matt Chen 2022-03-04  1189  		IWL_DEBUG_RADIO(fwrt,
-e8e10a37c51c08 Matt Chen 2022-03-04 @1190  			"System vendor '%s' is not in the approved list, disabling PPAG.\n",
+To merge, the following options exist:
+A) netdev maintainers could provide me an rc1 based immutable tag
+B) if netdev maintainers can give me a ack to carry this patch(or patch
+   series for relevant SoCs) on my tree, I can apply the fixes before
+   picking up the socinfo fixups.
+C) I can wait a kernel window to the nearest rc1 *after* netdev fixes
+   are merged in to pick up socinfo fix.
 
-:::::: The code at line 1190 was first introduced by commit
-:::::: e8e10a37c51c08b99d272b2e1b3ef70fcd38f9e8 iwlwifi: acpi: move ppag code from mvm to fw/acpi
+Once A/B/C is done (I would like netdev maintainers to suggest which way
+to go), we can drop the "invalid" SoC SR ID.
 
-:::::: TO: Matt Chen <matt.chen@intel.com>
-:::::: CC: Luca Coelho <luciano.coelho@intel.com>
+I don't see a cleaner way to get this inter-dependency integrated.
+
+Also in the future, please CC me as the reporter and for Soc-fixes
+dependency issues (I am listed in the MAINTAINERS file).
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
