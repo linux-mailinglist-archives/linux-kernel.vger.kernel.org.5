@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4C57CDEB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E448B7CDEAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344903AbjJRONI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
+        id S1345053AbjJRONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344904AbjJROM3 (ORCPT
+        with ESMTP id S1344931AbjJROMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:29 -0400
+        Wed, 18 Oct 2023 10:12:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0E895;
-        Wed, 18 Oct 2023 07:12:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE0FC433CC;
-        Wed, 18 Oct 2023 14:12:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7405411B;
+        Wed, 18 Oct 2023 07:12:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49FE9C433C8;
+        Wed, 18 Oct 2023 14:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638346;
-        bh=DpBF6ZbRwFLOmgLcUNEs8T24t3r9g/7TPEYW9l39YVk=;
+        s=k20201202; t=1697638350;
+        bh=SZ/JnfUGBRzyGmQDn/UNvhmvUCg0MK1vMdDoCyu18EY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dz7ibN8vD+Cq8G49IWI6ydnOxtV0e5f8K3CHVyJHm7A0gIGMcNeYWr9oIRgBAoX60
-         FywNVoQAXhuaExydzbn7brd9w3xnwyL2/fy1ejD+Dqqp79fX6dQgY/LAitsqi6rkmM
-         Hh9reWMsTYG8LUSH4TrbD7PmGS5o/bN0lLymTWsXBnVAqx2QqgtoIRvSRzgiha/loo
-         H/Lj8Lp0UnLW63GM2AfKYGR2eXcETpedWt2S9jPNfshgQpsYJmJz6ZcrdrIsdy8pLp
-         gf5edkG5pLx8WYJ/gf/dpO6QnD7A2F8rqUltGgMdkQeC3JQ6/wf4utnx1hrO7aW+N/
-         7D7xinGvyhx8g==
+        b=DxHnMuKu71DLxgEVB0OcKencH2yuelWkCuwapmF9IStb56KAIhg2EPS4bTYmtMyDa
+         hGxG6+vm4JfiC2k0XAc2u72Fh5ffz2Sj8myjMTekWFGI8yVe9Fx1gKtj8HFOkS6UMA
+         5fK6fleBHXWb87c16pokx5HB1qLQlnjsvZMdS7UvALLDGisiKUtvO87hxBBZBpWlc2
+         h2lbjOQI/1Xo/i6kxTWU3LE/fNdmpX0JjggRgikTKjsk9Jt7DOJGOouMuLyciQ8c1e
+         UN3Nh/O1s7jbupV3ki83STVmvHcBux+ouiuNX7xnMV8JBB+7go97PUE28OHqgOT+P/
+         JyxQalPd8+thQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alejandro Colomar <alx@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, xiyou.wangcong@gmail.com,
-        jiri@resnulli.us, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 14/31] net: sched: cls_u32: Fix allocation size in u32_init()
-Date:   Wed, 18 Oct 2023 10:11:31 -0400
-Message-Id: <20231018141151.1334501-14-sashal@kernel.org>
+Cc:     Haibo Chen <haibo.chen@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, peng.fan@nxp.com,
+        alexander.stein@ew.tq-group.com, ping.bai@nxp.com,
+        xiaoning.wang@nxp.com, sherry.sun@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 15/31] arm64: dts: imx93: add the Flex-CAN stop mode by GPR
+Date:   Wed, 18 Oct 2023 10:11:32 -0400
+Message-Id: <20231018141151.1334501-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
 References: <20231018141151.1334501-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.7
@@ -56,103 +58,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-[ Upstream commit c4d49196ceec80e30e8d981410d73331b49b7850 ]
+[ Upstream commit 23ed2be5404da7cee6a519fa69bf22d0f69da4e4 ]
 
-commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
-with flexible-array member") incorrecly replaced an instance of
-`sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
-in a an over-allocation of 8 bytes.
+imx93 A0 chip use the internal q-channel handshake signal in LPCG
+and CCM to automatically handle the Flex-CAN stop mode. But this
+method meet issue when do the system PM stress test. IC can't fix
+it easily. So in the new imx93 A1 chip, IC drop this method, and
+involve back the old way，use the GPR method to trigger the Flex-CAN
+stop mode signal. Now NXP claim to drop imx93 A0, and only support
+imx93 A1. So here add the stop mode through GPR.
 
-This change is wrong because `hlist` in `struct tc_u_common` is a
-pointer:
+This patch also fix a typo for aonmix_ns_gpr.
 
-net/sched/cls_u32.c:
-struct tc_u_common {
-        struct tc_u_hnode __rcu *hlist;
-        void                    *ptr;
-        int                     refcnt;
-        struct idr              handle_idr;
-        struct hlist_node       hnode;
-        long                    knodes;
-};
-
-So, the use of `struct_size()` makes no sense: we don't need to allocate
-any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine.
-
-So, `struct_size(tp_c, hlist->ht, 1)` translates to:
-
-sizeof(*tp_c) + sizeof(tp_c->hlist->ht) ==
-sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) ==
-						144 + 8  == 0x98 (byes)
-						     ^^^
-						      |
-						unnecessary extra
-						allocation size
-
-$ pahole -C tc_u_common net/sched/cls_u32.o
-struct tc_u_common {
-	struct tc_u_hnode *        hlist;                /*     0     8 */
-	void *                     ptr;                  /*     8     8 */
-	int                        refcnt;               /*    16     4 */
-
-	/* XXX 4 bytes hole, try to pack */
-
-	struct idr                 handle_idr;           /*    24    96 */
-	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
-	struct hlist_node          hnode;                /*   120    16 */
-	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-	long int                   knodes;               /*   136     8 */
-
-	/* size: 144, cachelines: 3, members: 6 */
-	/* sum members: 140, holes: 1, sum holes: 4 */
-	/* last cacheline: 16 bytes */
-};
-
-And with `sizeof(*tp_c)`, we have:
-
-	sizeof(*tp_c) == sizeof(struct tc_u_common) == 144 == 0x90 (bytes)
-
-which is the correct and original allocation size.
-
-Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
-`sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
-
-The following difference in binary output is expected and reflects the
-desired change:
-
-| net/sched/cls_u32.o
-| @@ -6148,7 +6148,7 @@
-| include/linux/slab.h:599
-|     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
-|                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
-|-    2cfc:      mov    $0x98,%edx
-|+    2cfc:      mov    $0x90,%edx
-
-Reported-by: Alejandro Colomar <alx@kernel.org>
-Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Link: https://lore.kernel.org/all/20230726112458.3524165-1-haibo.chen@nxp.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_u32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx93.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-index da4c179a4d418..6663e971a13e7 100644
---- a/net/sched/cls_u32.c
-+++ b/net/sched/cls_u32.c
-@@ -366,7 +366,7 @@ static int u32_init(struct tcf_proto *tp)
- 	idr_init(&root_ht->handle_idr);
+diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+index 1d8dd14b65cfa..2a9b89bf52698 100644
+--- a/arch/arm64/boot/dts/freescale/imx93.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+@@ -146,7 +146,7 @@ aips1: bus@44000000 {
+ 			#size-cells = <1>;
+ 			ranges;
  
- 	if (tp_c == NULL) {
--		tp_c = kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KERNEL);
-+		tp_c = kzalloc(sizeof(*tp_c), GFP_KERNEL);
- 		if (tp_c == NULL) {
- 			kfree(root_ht);
- 			return -ENOBUFS;
+-			anomix_ns_gpr: syscon@44210000 {
++			aonmix_ns_gpr: syscon@44210000 {
+ 				compatible = "fsl,imx93-aonmix-ns-syscfg", "syscon";
+ 				reg = <0x44210000 0x1000>;
+ 			};
+@@ -280,6 +280,7 @@ flexcan1: can@443a0000 {
+ 				assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+ 				assigned-clock-rates = <40000000>;
+ 				fsl,clk-source = /bits/ 8 <0>;
++				fsl,stop-mode = <&aonmix_ns_gpr 0x14 0>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -532,6 +533,7 @@ flexcan2: can@425b0000 {
+ 				assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+ 				assigned-clock-rates = <40000000>;
+ 				fsl,clk-source = /bits/ 8 <0>;
++				fsl,stop-mode = <&wakeupmix_gpr 0x0c 2>;
+ 				status = "disabled";
+ 			};
+ 
 -- 
 2.40.1
 
