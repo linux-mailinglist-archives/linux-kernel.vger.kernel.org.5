@@ -2,115 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24F47CE062
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577A97CE065
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344914AbjJROvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S1344717AbjJROwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjJROve (ORCPT
+        with ESMTP id S232078AbjJROwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:51:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BDFAB;
-        Wed, 18 Oct 2023 07:51:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E825AC433C8;
-        Wed, 18 Oct 2023 14:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697640692;
-        bh=BbvjjIBqrx4LLuoNVbrW9S9bLaMwRPFS7lIkl7RjLWU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=S878NAwuhe2zWCeS5/FbNtl7dgxsCsVjrg5yCoP67+b2sQKUEsx7TASUDFsIy7jnc
-         NTba6lHdDtNv/X70utYTiM4x7Gp4do6IB8UZLeR0DH9Do7Eqvvt6ZnICWTosJ83zZL
-         WQehJ1HCylF2JMYylUqxv5BnFXcGcCRH7kOAtqVcQOd6224wkOKxp6iqHEkGd3cnAM
-         McITwjuuNDBognSWXeNRwBqN4B5WFfKMAILEAwK7RHMjb171/Hv10pUr3m1Vrf626V
-         htgH5+bmJEF5cAo2TuXM93k/MVH7ZUAR0HH9FXDlxbgfna2E9YfvQDoOOCLE8NV05X
-         x2r8+Vp4D5BOw==
-Message-ID: <39e1f40f-647a-4c3a-b070-0e504d7d3389@kernel.org>
-Date:   Wed, 18 Oct 2023 23:51:27 +0900
+        Wed, 18 Oct 2023 10:52:04 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93471A4;
+        Wed, 18 Oct 2023 07:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=l5lfKMqIHpjuJJaQLxCr6zq6nQHM5gTGHt5YODyVGPE=; b=Pp7xYa70Xv9OOtFNWrZ+32jMed
+        sMDzrVDE+ObrsJNPhN3vW9TZcEbSozsJUH8wqbSbUpAWgRjQ8+X/KRl1Axwf0P2IeLqaMmrbm+QWt
+        qmRKnP9Xz+fw7pDOyOoaMTiY6K5fc5gERFJHrg8iAxoPLqpk+7giQ1j8J5qv3BARwLv4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qt7tn-002aqM-P9; Wed, 18 Oct 2023 16:51:51 +0200
+Date:   Wed, 18 Oct 2023 16:51:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Anwar, Md Danish" <a0501179@ti.com>
+Cc:     MD Danish Anwar <danishanwar@ti.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
+        Vignesh Raghavendra <vigneshr@ti.com>, r-gunasekaran@ti.com,
+        Roger Quadros <rogerq@kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH net v2] net: ti: icssg-prueth: Fix r30
+ CMDs bitmasks
+Message-ID: <f33ea0c9-5e7b-4b18-941b-50406fe27334@lunn.ch>
+References: <20231016161525.1695795-1-danishanwar@ti.com>
+ <11109e7d-139b-4c8c-beaa-e1e89e355b1b@lunn.ch>
+ <d7e56794-8061-bf18-bb6f-7525588546fc@ti.com>
+ <a322d1c2-d79a-4b55-92f6-2b98c1f2266e@lunn.ch>
+ <80240b87-4257-9ff4-e24c-5b9211f2dc2b@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 02/26] PM / devfreq: rockchip-dfi: Embed desc into
- private data struct
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
- <20231018061714.3553817-3-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231018061714.3553817-3-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80240b87-4257-9ff4-e24c-5b9211f2dc2b@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 18. 15:16, Sascha Hauer wrote:
-> No need for an extra allocation, just embed the struct
-> devfreq_event_desc into the private data struct.
-> 
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 74893c06aa087..467f9f42d38f7 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -49,7 +49,7 @@ struct dmc_usage {
->   */
->  struct rockchip_dfi {
->  	struct devfreq_event_dev *edev;
-> -	struct devfreq_event_desc *desc;
-> +	struct devfreq_event_desc desc;
->  	struct dmc_usage ch_usage[RK3399_DMC_NUM_CH];
->  	struct device *dev;
->  	void __iomem *regs;
-> @@ -204,14 +204,10 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  
->  	data->dev = dev;
->  
-> -	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
-> -	if (!desc)
-> -		return -ENOMEM;
-> -
-> +	desc = &data->desc;
->  	desc->ops = &rockchip_dfi_ops;
->  	desc->driver_data = data;
->  	desc->name = np->name;
-> -	data->desc = desc;
->  
->  	data->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
->  	if (IS_ERR(data->edev)) {
+> Apologies for wrong commit message. I will send next version with proper
+> commit message mentioning that this patch is backwards compatible
 
-Already applied it on v7.
+Great, thanks for looking into this.
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Andrew
 
+---
+pw-bot: cr
