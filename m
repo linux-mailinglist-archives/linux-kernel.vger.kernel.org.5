@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEE67CDEA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B90E7CDE7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345035AbjJRONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
+        id S1344865AbjJROMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344846AbjJROMP (ORCPT
+        with ESMTP id S231933AbjJROME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:12:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0944183;
-        Wed, 18 Oct 2023 07:12:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5BBC433C9;
-        Wed, 18 Oct 2023 14:12:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638333;
-        bh=lOJ9IO0p1IqYS9u1GlHfb86JxNofqQmR9iLuoYPMvwQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jF93VGus9M9etw/f0MT9FpbnbBaNZbvuK3HKLU/2E6lV7sLENKrbeXSSsBRhDxhgN
-         9s9wGoQxgP+sw206mbNok9fxDYuzJVUaQwem0OduvXAW2FBih7Rmm6XzkIekhfwhTP
-         3fTOTWD2oNHxiywIMAt0TdH/rDggMljIO1NSMV/5BgHqOf5JPxyVyp+nhM/TLJ9i/i
-         zhOWo40wa8OKxp4ynxyPn3JrtgrGnPEZyyEhQqMS6JWVP9jMYZi2W94ulsohZACiNK
-         GYyfpCQY1GFBeCOnceP95C87UCVTqbPQZzd5j6b4wDaH7hFRU2ehGYECzasB1uYzwJ
-         ES9zhRoB8iFzg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 08/31] ASoC: core: Do not call link_exit() on uninitialized rtd objects
-Date:   Wed, 18 Oct 2023 10:11:25 -0400
-Message-Id: <20231018141151.1334501-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
-References: <20231018141151.1334501-1-sashal@kernel.org>
+        Wed, 18 Oct 2023 10:12:04 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0DB1B3;
+        Wed, 18 Oct 2023 07:11:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9D3811F37E;
+        Wed, 18 Oct 2023 14:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697638286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DYiV2GlRsuhLVr+o+u8G875fUeAuZMgyNTvrcWEW7Ls=;
+        b=AH7J6bQ4jRhJuFjlD2XOy2YOXaP7CIeRKCUlEbK3rUc+kl3oEbNyJnsFz7SPY3PW3g9Yg7
+        ByRaIwmVgsBhmo8lM/kMUVxRR4yuVqr0JLCKlLwCMgBSvHQLSDFrBnC7b009ims80WZaEi
+        a5Ej3LHo3l4op7e1KP20IvmvgFASIww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697638286;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DYiV2GlRsuhLVr+o+u8G875fUeAuZMgyNTvrcWEW7Ls=;
+        b=WRceSXZYToTwRmBaTbtGNZwl0FvLc1BeLXgZXwIBNHdOOMU2v5Q/Opy7cB6IuZRynBwhNa
+        2bo8Ni/IKnUFrYAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71F3F13915;
+        Wed, 18 Oct 2023 14:11:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /yosG47nL2XATwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 18 Oct 2023 14:11:26 +0000
+Message-ID: <30bf8eb7-f039-48cf-3dca-11f99604e12e@suse.cz>
+Date:   Wed, 18 Oct 2023 16:11:26 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-3-roman.gushchin@linux.dev>
+ <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
+In-Reply-To: <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
 Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.7
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.76
+X-Spamd-Result: default: False [-4.76 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.66)[82.76%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+On 10/18/23 11:52, Vlastimil Babka wrote:
+>> +
+>> +	return objcg;
+>> +}
+>> +
+>>  __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>>  {
+>>  	struct mem_cgroup *memcg;
+>> @@ -3008,19 +3054,26 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>>  
+>>  	if (in_task()) {
+>>  		memcg = current->active_memcg;
+>> +		if (unlikely(memcg))
+>> +			goto from_memcg;
+>>  
+>> -		/* Memcg to charge can't be determined. */
+>> -		if (likely(!memcg) && (!current->mm || (current->flags & PF_KTHREAD)))
+> The checks for current->mm and PF_KTHREAD seem to be gone completely after
+> the patch, was that intended and why?
 
-[ Upstream commit dd9f9cc1e6b9391140afa5cf27bb47c9e2a08d02 ]
-
-On init we have sequence:
-
-	for_each_card_prelinks(card, i, dai_link) {
-		ret = snd_soc_add_pcm_runtime(card, dai_link);
-
-	ret = init_some_other_things(...);
-	if (ret)
-		goto probe_end:
-
-	for_each_card_rtds(card, rtd) {
-		ret = soc_init_pcm_runtime(card, rtd);
-
-probe_end:
-
-while on exit:
-	for_each_card_rtds(card, rtd)
-		snd_soc_link_exit(rtd);
-
-If init_some_other_things() step fails due to error we end up with
-not fully setup rtds and try to call snd_soc_link_exit on them, which
-depending on contents on .link_exit handler, can end up dereferencing
-NULL pointer.
-
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20230929103243.705433-2-amadeuszx.slawinski@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 20 +++++++++++++++-----
- 2 files changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index b27f84580c5b0..cf34810882347 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1125,6 +1125,8 @@ struct snd_soc_pcm_runtime {
- 	unsigned int pop_wait:1;
- 	unsigned int fe_compr:1; /* for Dynamic PCM */
- 
-+	bool initialized;
-+
- 	int num_components;
- 	struct snd_soc_component *components[]; /* CPU/Codec/Platform */
- };
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1a0bde23f5e6f..2d85164457f73 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1259,7 +1259,7 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
- 	snd_soc_runtime_get_dai_fmt(rtd);
- 	ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
- 	if (ret)
--		return ret;
-+		goto err;
- 
- 	/* add DPCM sysfs entries */
- 	soc_dpcm_debugfs_add(rtd);
-@@ -1284,17 +1284,26 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
- 	/* create compress_device if possible */
- 	ret = snd_soc_dai_compress_new(cpu_dai, rtd, num);
- 	if (ret != -ENOTSUPP)
--		return ret;
-+		goto err;
- 
- 	/* create the pcm */
- 	ret = soc_new_pcm(rtd, num);
- 	if (ret < 0) {
- 		dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
- 			dai_link->stream_name, ret);
--		return ret;
-+		goto err;
- 	}
- 
--	return snd_soc_pcm_dai_new(rtd);
-+	ret = snd_soc_pcm_dai_new(rtd);
-+	if (ret < 0)
-+		goto err;
-+
-+	rtd->initialized = true;
-+
-+	return 0;
-+err:
-+	snd_soc_link_exit(rtd);
-+	return ret;
- }
- 
- static void soc_set_name_prefix(struct snd_soc_card *card,
-@@ -1892,7 +1901,8 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
- 
- 	/* release machine specific resources */
- 	for_each_card_rtds(card, rtd)
--		snd_soc_link_exit(rtd);
-+		if (rtd->initialized)
-+			snd_soc_link_exit(rtd);
- 	/* remove and free each DAI */
- 	soc_remove_link_dais(card);
- 	soc_remove_link_components(card);
--- 
-2.40.1
-
+And also they are not present in the new flavor that's current_obj_cgroup().
