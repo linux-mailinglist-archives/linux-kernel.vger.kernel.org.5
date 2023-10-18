@@ -2,144 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630707CEA54
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639117CEA36
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbjJRVxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S231709AbjJRVuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjJRVxv (ORCPT
+        with ESMTP id S230284AbjJRVuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:53:51 -0400
-X-Greylist: delayed 239 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Oct 2023 14:53:50 PDT
-Received: from dsmtpq4-prd-nl1-vmo.edge.unified.services (dsmtpq4-prd-nl1-vmo.edge.unified.services [84.116.6.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3215A98
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:53:50 -0700 (PDT)
-Received: from csmtpq3-prd-nl1-vmo.edge.unified.services ([84.116.50.34])
-        by dsmtpq4-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <gareth.randall@virgin.net>)
-        id 1qtEQH-00BRe8-8X
-        for linux-kernel@vger.kernel.org; Wed, 18 Oct 2023 23:49:49 +0200
-Received: from csmtp6-prd-nl1-vmo.nl1.unified.services ([100.107.82.136] helo=csmtp6-prd-nl1-vmo.edge.unified.services)
-        by csmtpq3-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <gareth.randall@virgin.net>)
-        id 1qtEQE-006Prw-Ej
-        for linux-kernel@vger.kernel.org; Wed, 18 Oct 2023 23:49:46 +0200
-Received: from [192.168.0.10] ([94.175.123.86])
-        by csmtp6-prd-nl1-vmo.edge.unified.services with ESMTPA
-        id tEQCqzMnnQDxRtEQDqawpY; Wed, 18 Oct 2023 23:49:46 +0200
-X-SourceIP: 94.175.123.86
-X-Authenticated-Sender: gareth.randall@virgin.net
-X-Spam: 0
-X-Authority: v=2.4 cv=MPKm2uVl c=1 sm=1 tr=0 ts=653052fa cx=a_exe
- a=mwdPpgLduwvwBeoi1XfOCA==:117 a=mwdPpgLduwvwBeoi1XfOCA==:17
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=0ygn4hyuA6Uwe3Jho9UA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virgin.net;
-        s=meg.feb2017; t=1697665786;
-        bh=iDvSE95X2IbecfwDgjBUXneuyU03nn6+tZAzCPcbd9o=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=fdzwD7kEZfIWlA/IiXGq3DJsTpfYg+uS2MHh6m+GQZDxg2rwaFZFqEEQLFb3YQhSD
-         jm3GMHTE8UKu5czHxgvBknlbWWEbXFP44OpA3MAqu6YAs9oGmRy2OWUhyVdf08EnkG
-         ezf7JCJLet98cO2IQ3CtTUSc4T19Qk2qmKGY//C63eeuhlWZqsMBmzbpJW1n/HVRcH
-         cXakThnHwuxyZTpW0AiAR6ezCudXI2eDRVHyIf3xcreb9hdEpbXN4TqLhbVzMO5GBQ
-         smxl5c8PuhTeGjKT87Uil4cUx7e9LbJXTmS0wCPBolXSFWImHCEkPnF8POlm/EYR1u
-         l2FhLs70H25kg==
-Message-ID: <11a2da09-bd42-4a2f-9b4b-a4c1b019e8aa@virgin.net>
-Date:   Wed, 18 Oct 2023 22:49:44 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] input: gpio-keys - optimize wakeup sequence.
-Content-Language: en-GB
-To:     abhi1.singh@samsung.com
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        SRI-N IT Security <sri-n.itsec@samsung.com>
-References: <CGME20231017103415epcms5p2f8f5b28a8f5d71055622b82f71b0fc93@epcms5p2>
- <1830198030.734987.1697538855953@mail-kr5-1.mail-kr5.knoxportal-kr-prod-blue.svc.cluster.local>
-From:   Gareth Randall <gareth.randall@virgin.net>
-In-Reply-To: <1830198030.734987.1697538855953@mail-kr5-1.mail-kr5.knoxportal-kr-prod-blue.svc.cluster.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKpRorcHekzKLWsZegZBkCQtny1sIrdpfk9fpkYBxlCMyzYl5CH9ZWRg1zlGeDyIC8MRdv3EnHpNhD1+yok/tVZfln3UC8wbhydMHW5XGDHH0VimwpWs
- gWxomKyyQ3/f0rkusdsK5WkMqUIkv6O0pLwVjxF8/5MA2BXJCO2FxqMgF2fDZVnTulHiPN92WBqJ6Yf51/h3HV33q/1Uho6b8sSZ6qnUYlQ1IMpo+VP5gtn4
- 1CpXQ9bsat03j6XJscrT+7313KDOPrZ2hKVgoY0qust9dJ9xpfQ1mdVGeihYPaafZO+qnSUlqPSXkI7ZkMeSyQ==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 17:50:04 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E331112
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:50:02 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7d1816bccso111552937b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697665801; x=1698270601; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z8zZipBfwYNWzVL/d5y/qUL95UR9zvumjoOjtC0bzRU=;
+        b=sl82I0r5PMtHtJ6HzraR/DHXHBM77LzsndZNdvsOaZrTDj2RWUzCXC9OpAXU+iwjpE
+         jnPMHAU6cvTBsnuuEM45zMaC6XYV8h6gj46DIQstwtT/6FjJ4SqnZSWf4w9I0iH5lDYR
+         Gc+QbeIfiQDNG7QxmfTY5CnVfgcyfdAvuBFDIH7DI0b9QccGe04yt/mgxlfTQ8k9vWw+
+         hEORv86pxWu/B3LU/VaqoxoxtrHMm65zM2jgjCWH+ddmW48pm6NUipKNoOTRfIkZlW9B
+         3CCTfW0eWnQHqgHUwddT9NAxuiiGmD9uvLeciy8vzROLj/6+2L8KEiUaZ7SqajjW9sOo
+         bMJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697665801; x=1698270601;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z8zZipBfwYNWzVL/d5y/qUL95UR9zvumjoOjtC0bzRU=;
+        b=bshZtfpct/6019EcRWdeLnxO5qY8yaWdA1ds2YA/636lammrY0nAKMtO5zCRfIacK4
+         fcNq8j8J4PV8Jw8ZlzxHpuESawvHDTF1UJ9bV/j5Jqdt4T+ZvDoBaNycLl8gBGGpnlyr
+         qpBdkMFwQVoxay4XpzftMINSEUwZqu4Kb/DQYGiBwA0xD+8MvijfOGpmvyS5GMOrQYJN
+         3xmcpXXoP6cyKMAPMoyFzK2DKm9f+GGtx+g3AcokfXcEPm8so8kAFboEwi7HISFnkkiy
+         yddtKZVJSLtWaVBG8tzU2H5bKuDo/6EBKxWGintK56CZWcyLoqJm2yiE9QM/lPUlTAZR
+         414g==
+X-Gm-Message-State: AOJu0Ywf29ueE+ECrmiXG24gdotk+U++35yKGZ++2xC/8R7kz6e7Zr45
+        1dR+0TrAXQy/TX7b+5vJ++1OKtZs6A3FfnXK2A==
+X-Google-Smtp-Source: AGHT+IEN/FTSASrll23QyNRMxl3kr6I8Hj0ECv2EwBFAUZlWSl9jzbvTcPJAY+6SodfofM1HCyBdr6WOwoVCZaWyww==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:9a42:0:b0:d9a:da03:97e8 with SMTP
+ id r2-20020a259a42000000b00d9ada0397e8mr15079ybo.2.1697665801580; Wed, 18 Oct
+ 2023 14:50:01 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 21:50:01 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAhTMGUC/x3NwQqDMAyA4VeRnBdou4vsVcYOXUy3gIuSFHWI7
+ 27x+F3+fwdnE3Z4dDsYL+IyaUO8dUDfrB9GGZohhXSPIfbo1ZTmPw4mC5ujcsVVjEd2xyq4jjQ Z4y+LIiEFSn1OpbxDgdacjYts1+/5Oo4Td1K6yn8AAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697665800; l=2656;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=+Kzx2MbD//7ayd+aOst6C3X1PEowOw6WZ0FJ1cJtGh0=; b=PHmejvnmSgVgn+JBcu0Adx76+ya44Z1bQUxBUSKkPHEXVZqm2ntP844KkvGQvnoeCjqDYj+QK
+ VdfW2La2QM2BXds6tdk7luDoj/gtbofZTNzHKJ52cnnh7z7vH0EK0Xu
+X-Mailer: b4 0.12.3
+Message-ID: <20231018-strncpy-drivers-net-wireless-ti-wlcore-main-c-v1-1-1b1055f482a1@google.com>
+Subject: [PATCH] wifi: wlcore: main: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Mr Singh,
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-I am not a maintainer but can point out some issues you need to resolve 
-with this post.
+We expect fw_version strings to be NUL-terminated based on other similar
+assignments:
 
-1. Put the patch in the body of the email and not in an attachment.
-2. You need a "Signed-off-by:" line.
-3. The email needs to start with a description of the what the patch 
-resolves. Don't put "suggested changes".
+wireless/broadcom/brcm80211/brcmsmac/main.c
+7867:           snprintf(wlc->wiphy->fw_version,
+7868:                    sizeof(wlc->wiphy->fw_version), "%u.%u", rev, patch);
 
-There are probably other issues as well but I hope this helps you to get 
-started. Note that I am not involved in the review process.
+wireless/broadcom/b43legacy/main.c
+1765:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
 
-Yours,
+wireless/broadcom/b43/main.c
+2730:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
 
-Gareth
+wireless/intel/iwlwifi/dvm/main.c
+1465:   snprintf(priv->hw->wiphy->fw_version,
+1466:            sizeof(priv->hw->wiphy->fw_version),
 
-On 17/10/2023 11:34, Abhishek Kumar Singh wrote:
-> Dear Mr. Dmitry,
-> 
-> Greetings!
-> 
-> 
-> 
-> This patch is related to optimization in input key event driver of Kernel module.
-> 
-> Suggested change to avoid the many APIs call chain if there is no key press event triggered.
-> 
-> 
-> 
-> There is a call back function gpio_keys_resume() called for every suspend/resume of the device.
-> 
-> And whenever this function is called, it is reading the status of the key.
-> 
-> And gpio_keys_resume() API further calls the below chain of API irrespective of key press event.
-> 
-> 
-> 
-> APIs call chain:
-> 
-> static void gpio_keys_report_state(struct gpio_keys_drvdata *ddata)
-> 
-> static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
-> 
-> gpiod_get_value_cansleep(bdata->gpiod);
-> 
-> input_event(input, type, *bdata->code, state);
-> 
-> input_sync(input);
-> 
-> 
-> 
-> 
-> Suggested changes to avoid the above APIs call chain if there is no key press event triggered.
-> 
-> It will save the device computational resources, power resources and optimize the suspend/resume time"
-> 
-> 
-> Please help to review the attached patch and integrate in main line kernel code.
-> 
->   
-> 
-> 
-> 
-> Thanks and Regards,
-> Abhishek Kumar Singh
-> Sr. Chief Engineer, Samsung Electronics, Noida-India
+wireless/intel/ipw2x00/ipw2100.c
+5905:   snprintf(info->fw_version, sizeof(info->fw_version), "%s:%d:%s",
+
+Based on this, NUL-padding is not required.
+
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on the destination buffer without
+unnecessarily NUL-padding.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/ti/wlcore/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
+index bf21611872a3..52a427bd54fa 100644
+--- a/drivers/net/wireless/ti/wlcore/main.c
++++ b/drivers/net/wireless/ti/wlcore/main.c
+@@ -1126,7 +1126,7 @@ int wl1271_plt_start(struct wl1271 *wl, const enum plt_mode plt_mode)
+ 
+ 		/* update hw/fw version info in wiphy struct */
+ 		wiphy->hw_version = wl->chip.id;
+-		strncpy(wiphy->fw_version, wl->chip.fw_ver_str,
++		strscpy(wiphy->fw_version, wl->chip.fw_ver_str,
+ 			sizeof(wiphy->fw_version));
+ 
+ 		goto out;
+@@ -2344,7 +2344,7 @@ static int wl12xx_init_fw(struct wl1271 *wl)
+ 
+ 	/* update hw/fw version info in wiphy struct */
+ 	wiphy->hw_version = wl->chip.id;
+-	strncpy(wiphy->fw_version, wl->chip.fw_ver_str,
++	strscpy(wiphy->fw_version, wl->chip.fw_ver_str,
+ 		sizeof(wiphy->fw_version));
+ 
+ 	/*
+
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231018-strncpy-drivers-net-wireless-ti-wlcore-main-c-c0c28a2ffb0f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
