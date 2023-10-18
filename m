@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D427CD3B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BA37CD3C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjJRF6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S229618AbjJRGAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjJRF6V (ORCPT
+        with ESMTP id S229595AbjJRGAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:58:21 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77216EA
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:58:17 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40839807e82so3508305e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:58:17 -0700 (PDT)
+        Wed, 18 Oct 2023 02:00:41 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF5FF9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:00:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso10881565e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697608696; x=1698213496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=iEOeNY6xsMGDSYNt4Dz81FCMN9scYvmee4j0hqZCEi8=;
-        b=MrCy4WVuQ4Ek9ojNn0LQZeDnKJtf2+eWMclEWELB17VFn0V+MokWZpDteuNyG+c5vM
-         NR1lDpC1n4r/ixPAvAEmyvgRzqfLNinneiNdWVe6LUmS4VL6geyqOPRLmGn2c0OHeKnG
-         iZi14VTlcvaxblsrnHpns6xFdfaTcCzLbFNrUEgcjZ7AwYjtiXRpAyTXJnY0WAewqqw+
-         3qH5NHc83q+7iqyyh4wpKjtmc+PXcehgytSft4UgS3LAEcbhmMd/028qzuesSOMgJlir
-         kMRLJcMt0dbxLIFjlBOXaupC0mDg1srFDZH161xrcyEaD2Uur19EtVA9F2UIe/YRwjNn
-         bfOg==
+        d=linaro.org; s=google; t=1697608837; x=1698213637; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6jYUU/zMwQ57icTdluFdkVmoJdfusA7m4N1I0RAQAJ8=;
+        b=SMW+4zZRxBpo0dDRtVQcrjed634Z5Y/sGjZBrbdcU0HGjd4e7RGpNLR/VaSgKeJ40o
+         pE+onUgqNbIEofkHB0KvK1Sa/IiIZdgJHVZaIy/8ylH6bi13x/JDnztldxDgtgzWg1py
+         hmEUSQ2TpQq1RR2PaRpQf59I+C52JkJ/h2jaPghymUYwv0HZaJf/9QN5DiwBDauUwRiu
+         3E26Oy/IqqXLegFI7Uz2wFM6WLaZiTLnd4biR6PFjCT0yLzzEYQVL2tvSAGyNm3RIBZ0
+         dRQk3NaxCW2ng+K1OeUOMHq5OaYEqN6d+dzMB8rfTWJnhKI0Zq5Oxy+UMomSlnvMRVkC
+         tmfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697608696; x=1698213496;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iEOeNY6xsMGDSYNt4Dz81FCMN9scYvmee4j0hqZCEi8=;
-        b=DrFcLYz8DtTCx2abkxIz0ksUaVYfSyFoiA8KcDEfd/6SdDjbvG+Q1or1usX93vKNM8
-         wRcpB7poiu7nHtF146vPu9XCzIWSdq603orFjXnPsAoay+RivgQFgf/C7jHWAqOeIILx
-         Xct6vxat3ju8TjZ9Ae84/dzPxZ7fcpiy2DaGGU3AI2BmlKt6XjpFOPPr2+Bp8r9jrbzE
-         4ntxvhbo5sk3EtHUwmHCViGy9A50UcyAUY2WQFXlvc3rjWBbKokzFQU59yrmJIv0Hi4B
-         uBHXpySziif6FydvPzFlNb8gJyvcdWjpFT0fjo9ao6RH7dF6e1dGrX9wj4vm50v4jPmW
-         nvPQ==
-X-Gm-Message-State: AOJu0YyFBgQ+CKSohtQZfLJsXd+Gok7jNZqYMWmT0pLttzt5r1gRcXjm
-        I2eo1Lh3aeYL/ycR6NAoBsZqUw==
-X-Google-Smtp-Source: AGHT+IEHcgYGuQ7s9Hm5flor+0tI77dccZCxmq5rzCLsNSr78v7hny7/fcIV/1MlMpeECSiRrNvLgw==
-X-Received: by 2002:a1c:4c08:0:b0:405:29ba:9b5c with SMTP id z8-20020a1c4c08000000b0040529ba9b5cmr3515425wmf.16.1697608695641;
-        Tue, 17 Oct 2023 22:58:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697608837; x=1698213637;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6jYUU/zMwQ57icTdluFdkVmoJdfusA7m4N1I0RAQAJ8=;
+        b=jD8Nu3/YX1BrRRmKoQxrKmkecLkMeNHAse6TDF/XOHryZsk8FkNBoNRg5F5QQAcUfG
+         Oh1H2af4d6QBhe3qs0rR58/UfXbhhb1cNX5otPJ4graD0boxlHp7F9VdS09fxOn6aArW
+         LqD1warGZi/2A0gRMsZHosTnu/qL5xIFoIxszVCkt+ckrN8h5r60ZpTxm4y9f4MZnI9j
+         GxUn8o3fVDUCNcWM4yVigARM1gVamTnAXsZcHxpHHFADIbQWsE2zxuiwEt7wMLR8hlyN
+         Yrxta/lz2SB7LiJwAVY1ZkBiU2/4+bB6aV/hgrTltew3Q/vktMugVJQ9gcSPcLl7emTL
+         7k7Q==
+X-Gm-Message-State: AOJu0Yzmhw/uQPFQr2f1KYK18aPIF95916eQtVSnH8PDtKnjrN4+aaUI
+        oiGcddZekxTf0C9FDkeOgmxNhw==
+X-Google-Smtp-Source: AGHT+IGPB7PtgGhLJB00EPY5bCertig3g1OC/hkjJkff0FeRZ0lTrQed2+3auUs93GzcwOhS6dTgyw==
+X-Received: by 2002:a05:600c:19cc:b0:405:375d:b860 with SMTP id u12-20020a05600c19cc00b00405375db860mr3162436wmq.21.1697608837336;
+        Tue, 17 Oct 2023 23:00:37 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id m13-20020a7bca4d000000b00402ff8d6086sm714523wml.18.2023.10.17.22.58.14
+        by smtp.gmail.com with ESMTPSA id h5-20020a05600c350500b003fc0505be19sm722336wmq.37.2023.10.17.23.00.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 22:58:15 -0700 (PDT)
-Message-ID: <6c8a3ed2-879c-4423-b6e7-80f8b127a1c1@linaro.org>
-Date:   Wed, 18 Oct 2023 07:58:13 +0200
+        Tue, 17 Oct 2023 23:00:36 -0700 (PDT)
+Message-ID: <b52d0de7-e320-4c4c-876e-346281de23a1@linaro.org>
+Date:   Wed, 18 Oct 2023 08:00:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin
- control
-To:     Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        schung@nuvoton.com, Jacky Huang <ychuang3@nuvoton.com>
-References: <20231011090510.114476-1-ychuang570808@gmail.com>
- <20231011090510.114476-3-ychuang570808@gmail.com>
- <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
- <17a80031-98bf-48bf-8cea-c0ca4400f142@gmail.com>
- <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
- <8e983479-709f-4ec8-85e2-c46a5256a2ec@gmail.com>
+Subject: Re: [PATCH 10/12] dt-bindings: usb: qcom,dwc3: Introduce flattened
+ qcom,dwc3 binding
 Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
+ <20231016-dwc3-refactor-v1-10-ab4a84165470@quicinc.com>
+ <9f53e647-7c38-435f-bc74-e4f417445830@linaro.org>
+ <20231017225433.GW3553829@hu-bjorande-lv.qualcomm.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,117 +121,136 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8e983479-709f-4ec8-85e2-c46a5256a2ec@gmail.com>
+In-Reply-To: <20231017225433.GW3553829@hu-bjorande-lv.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 05:26, Jacky Huang wrote:
-> Dear Krzysztof,
-> 
-> Thank you for the review.
-> 
-> 
-> On 2023/10/17 上午 03:52, Krzysztof Kozlowski wrote:
->> On 16/10/2023 06:32, Jacky Huang wrote:
->>>>> +  '#size-cells':
->>>>> +    const: 1
->>>>> +
->>>>> +  nuvoton,sys:
->>>>> +    description:
->>>>> +      phandle to the syscon node
->>>> sys is quite generic. Description explains nothing except duplicating
->>>> known information. Drop duplicated info and instead explain to what this
->>>> phandle points and how it is going to be used.
->> Read comments carefully.
-> 
-> 
-> I will update the description of 'nuvoton,sys'.
-
-What is the full name of destination block?
-
-> 
+On 18/10/2023 00:54, Bjorn Andersson wrote:
+> On Tue, Oct 17, 2023 at 08:11:45AM +0200, Krzysztof Kozlowski wrote:
+>> On 17/10/2023 05:11, Bjorn Andersson wrote:
+>>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> [..]
+>>> +select:
+>>> +  properties:
+>>> +    compatible:
+>>> +      items:
+>>> +        - enum:
+>>> +            - qcom,ipq4019-dwc3
+> [..]
+>>> +            - qcom,sm8550-dwc3
 >>
->>>>
->>>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>>>> +    items:
->>>>> +      maxItems: 1
->>>> So just phandle, not phandle-array, unless it is defined like this in
->>>> some other binding.
->>> I would like to update this as:
->>>
->>>     nuvoton,sys:
->> Nothing improved.
-> 
-> Here just fix  the 'phandle-array' to 'phandle' and remove 'maxItems'.
-> 
->>>       $ref: /schemas/types.yaml#/definitions/phandle
->>>       description:
->>>         Help pinctrl driver to access system registers by means of regmap.
->> Driver is not relevant here. Say which part of syscon are necessary for
->> pinctrl operation.
+>> This enum could be replaced with '{}'. Alternatively, drop enum entire
+>> select replaced with:
+>> - contains
+>>   - items:
+>>       - const: qcom,dwc3
+>>       - const: snps,dwc3
 >>
 > 
-> I will update description as:
+> I thought this would be what I needed as well, but unfortunately this
+> select matches either qcom,dwc3, snps,dwc3, or both. With the result
+> that e.g. the example in the snps,dwc3 binding matches against this and
+> as expected fails when validated against this binding.
 > 
->    nuvoton,sys:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description:
->        The pin function control registers are located in the system
->        control register space. This phandle provides pinctrl the
->        ability to access the pin function control registers through
->        the use of regmap.
-
-regmap is unrelated to the bindings.
-
+> Taking yet another look at this, and reading more about json validation
+> I figured out that the following matches nodes with both the
+> compatibles:
 > 
->>>>> +        maximum: 7
->>>>> +
->>>>> +      input-enable: true
->>>>> +
->>>>> +      input-schmitt-enable: true
->>>>> +
->>>>> +      power-source:
->>>>> +        description:
->>>>> +          I/O voltage in millivolt.
->>>>> +        enum: [ 1800, 3300 ]
->>>> Missing units in property name. power-source also does not really
->>>> describe the property.
->>>
->>> The output voltage level of GPIO can be configured as 1.8V or 3.3V,
->>> but I cannot find any suitable output properties in 'pincfg-node.yaml.'
->> There is actually power-source, but treated as actual choice of power
->> supplies.
+> select:
+>   properties:
+>     compatible:
+>       items:
+>         - const: qcom,dwc3
+>         - const: snps,dwc3
+>   required:
+>     - compatible
+> 
+> [..]
+>>> +
+>>> +# Required child node:
 >>
->>> I noticed that 'xlnx,zynq-pinctrl.yaml' and 'xlnx,zynq-pinctrl.yaml' use
->>> 'power source' to specify the output voltage.  Should I follow their
->>> approach or define a vendor-specific one?
->> Maybe Rob or Linus have here some recommendation, but I would suggest to
->> go either with rtd1319d-pinctrl.yaml approach or add a generic property
->> to pincfg-node expressed in real units like "io-microvolt".
+>> Drop
+>>
 > 
-> OK, I will update it as:
+> Of course.
 > 
->        power-source:
->          description: |
->            Valid arguments are described as below:
->            0: power supply of 1.8V
->            1: power supply of 3.3V
->          enum: [0, 1]
+>>
+>> ...
+>>
+>>> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+>>> index d81c2e849ca9..d6914b8cef6a 100644
+>>> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+>>> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+>>> @@ -44,14 +44,18 @@ properties:
+>>>        It's either a single common DWC3 interrupt (dwc_usb3) or individual
+>>>        interrupts for the host, gadget and DRD modes.
+>>>      minItems: 1
+>>> -    maxItems: 4
+>>> +    maxItems: 5
+>>>  
+>>>    interrupt-names:
+>>> -    minItems: 1
+>>> -    maxItems: 4
+>>>      oneOf:
+>>> -      - const: dwc_usb3
+>>> -      - items:
+>>> +      - minItems: 1
+>>> +        maxItems: 5
+>>> +        items:
+>>> +          - const: dwc_usb3
+>>> +        additionalItems: true
+>>
+>> This is not correct change. Before, one dwc_usb3 interrupt was combined
+>> allowed, or a set of host+peripheral+otg+wakeup. Now, you allow combined
+>> dwc_usb3 with anything.
+>>
 > 
+> My intention here is to make below list of 5 strings be valid according
+> to the snps,dwc3 (i.e. dwc_usb3 being the first item), and valid
+> according to the qcom,dwc3 binding with all 5 defined.
 > 
->> Rob, Linus, any ideas for generic property replacing register-specific
->> power-source?
+>   interrupt-names = "dwc_usb3", "hs_phy_irq", "ss_phy_irq",
+> 		    "dm_hs_phy_irq", "dp_hs_phy_irq";
+> 
+> When I express this as:
+> 
+>   interrupt-names:
+>     minItems: 1
+>     maxItems: 5
+>     oneOf:
+>       - const: dwc_usb3
+>       - items:
+>           enum: [host, peripheral, otg, wakeup]
+> 
+> I get:
+> 
+> /local/mnt/workspace/bjorande/linux/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dtb: usb@a600000: interrupt-names: 'oneOf' conditional failed, one must be fixed:
+>         ['dwc_usb3', 'hs_phy_irq', 'ss_phy_irq', 'dm_hs_phy_irq', 'dp_hs_phy_irq'] is too long
+>         'dwc_usb3' is not one of ['host', 'peripheral', 'otg', 'wakeup']
+>         'hs_phy_irq' is not one of ['host', 'peripheral', 'otg', 'wakeup']
+>         'ss_phy_irq' is not one of ['host', 'peripheral', 'otg', 'wakeup']
+>         'dm_hs_phy_irq' is not one of ['host', 'peripheral', 'otg', 'wakeup']
+>         'dp_hs_phy_irq' is not one of ['host', 'peripheral', 'otg', 'wakeup']
+>         from schema $id: http://devicetree.org/schemas/usb/snps,dwc3.yaml#
+> 
+> Which to me sounds like the two oneOf branches allow me a single entry,
+> or items from the set given here. In contrast, I believe that my
+> proposal allow 1-5 items, where the first needs to be dwc_usb3.
+> 
+> But the proposal does look messy, so I'd appreciate some guidance on
+> this one.
 
-I proposed io-microvolt
+Then you need three branches I guess, with your branch listing the Qcom
+specific interrupts. The point is that dwc_usb3 should not be allowed
+with host/peripheral/otg/wakeup.
 
 Best regards,
 Krzysztof
