@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC70F7CDAA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677917CDAE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjJRLho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S230262AbjJRLoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjJRLhi (ORCPT
+        with ESMTP id S229717AbjJRLoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:37:38 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5025911B;
-        Wed, 18 Oct 2023 04:37:37 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9TKS3083z15NTd;
-        Wed, 18 Oct 2023 19:34:52 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
- 2023 19:37:34 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH 4/4] ext4: reduce unnecessary memory allocation in alloc_flex_gd()
-Date:   Wed, 18 Oct 2023 19:42:21 +0800
-Message-ID: <20231018114221.441526-5-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231018114221.441526-1-libaokun1@huawei.com>
-References: <20231018114221.441526-1-libaokun1@huawei.com>
+        Wed, 18 Oct 2023 07:44:37 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB87AFE;
+        Wed, 18 Oct 2023 04:44:35 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-457bac7c3f5so2705527137.2;
+        Wed, 18 Oct 2023 04:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697629475; x=1698234275; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WiYUDUcKnehSjffzREvUBbALA9UBWc+RpuBwUEC7x8A=;
+        b=IE5sUdIUWXPbljHgL38+01IdQTSlAotc5tL6Su/0PiD2X+C+BJ8cKn/hBg1H/qKPwD
+         HoxMyQ06a04N3n5TCB83wSeAFmOe0l4L/xHblUIFY1FYp4nFYK71VS6TlfzbjfljZ5uQ
+         QDaybcDB6gT35YOXxqIgryjA4847WGu/ro4CY5Q+3v1Tr2I7FmymFOKoigcAGXFkX+Me
+         RsfgYjYX7AFdG/l+BdYT2NNGbIDieKt6Pu/8IIiV8oWvLaeep6Jbs45InKMGb6+L+lQR
+         PgQRnX9K8/Y4/h0ABhAhQrYUcPCg7Z8l5QqvyJYfPngWsDGGzJalQl7OOouxwFFBuYqS
+         G5KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697629475; x=1698234275;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WiYUDUcKnehSjffzREvUBbALA9UBWc+RpuBwUEC7x8A=;
+        b=SM2oSV7xSqTZmn72Iv1untFUCKoaVQ/P44uyD3ELjTwNDPAIukdZOzG6GTlnDS3MDG
+         7QW4HXMO8V2EJwFuJHfFMTXGgu3BJf/YCcuhOqqlkq9vy9Ycyg816T1kmY1OT0PARVPw
+         fzJNVXFmDQp2xLtZ1NGWhmaAqOgaqnZPNxMFgEJ65gTk+bplwh4YOzRYP1ID4i/D86R9
+         5DFhEr6vGoXUfvptiKo/GlNGKbDhYS/+1ouDOZ960kFd1R+gFfbFgnNdUYOK9tUXVzmZ
+         1CeMq76e9C2OO0Ja54MPBSxWf2rbuMzQrLLCQNELwlcNKYNLZLE42OnmKlZv5OQbsBL6
+         0JwA==
+X-Gm-Message-State: AOJu0YwTtwOffezVMlNH/4QSp/pehxThagbjUafrJr5TrTrAkOjbqr1V
+        oKSx1EZl7runnYI25V2AAEP1AvF105hFfS0RYnmzYTxeHdw=
+X-Google-Smtp-Source: AGHT+IEXtfkdK4Eo2DAhBcc51Slee5bbKqaF6DfWGL8SlocR50WyYe9feEanqX+tiO0Ann7oB1PHlGy3oZ1c781Pc3k=
+X-Received: by 2002:a67:e010:0:b0:454:6ccc:ab79 with SMTP id
+ c16-20020a67e010000000b004546cccab79mr4656821vsl.11.1697629474747; Wed, 18
+ Oct 2023 04:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018-amtime-v1-1-e066bae97285@kernel.org>
+In-Reply-To: <20231018-amtime-v1-1-e066bae97285@kernel.org>
+From:   Klara Modin <klarasmodin@gmail.com>
+Date:   Wed, 18 Oct 2023 13:44:23 +0200
+Message-ID: <CABq1_vhoWrKuDkdogeHufnPn68k9RLsRiZM6H8fp-zoTwnvd_Q@mail.gmail.com>
+Subject: Re: [PATCH] fat: fix mtime handing in __fat_write_inode
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a large flex_bg file system is resized, the number of groups to be
-added may be small, and a large amount of memory that will not be used will
-be allocated. Therefore, resize_bg can be set to the size after the number
-of new_group_data to be used is aligned upwards to the power of 2. This
-does not affect the disk layout after online resize and saves some memory.
+I can confirm that this patch fixes the issue, thanks!
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/resize.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index e168a9f59600..4a7430524014 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -235,8 +235,10 @@ struct ext4_new_flex_group_data {
-  *
-  * Returns NULL on failure otherwise address of the allocated structure.
-  */
--static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
-+static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size,
-+				ext4_group_t o_group, ext4_group_t n_group)
- {
-+	ext4_group_t last_group;
- 	struct ext4_new_flex_group_data *flex_gd;
- 
- 	flex_gd = kmalloc(sizeof(*flex_gd), GFP_NOFS);
-@@ -248,6 +250,14 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
- 	else
- 		flex_gd->resize_bg = flexbg_size;
- 
-+	/* Avoid allocating new groups that will not be used. */
-+	last_group = o_group | (flex_gd->resize_bg - 1);
-+	if (n_group <= last_group)
-+		flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
-+	else if (n_group - last_group < flex_gd->resize_bg)
-+		flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
-+					      fls(n_group - last_group));
-+
- 	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
- 					sizeof(struct ext4_new_group_data),
- 					GFP_NOFS);
-@@ -2131,7 +2141,7 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
- 	if (err)
- 		goto out;
- 
--	flex_gd = alloc_flex_gd(flexbg_size);
-+	flex_gd = alloc_flex_gd(flexbg_size, o_group, n_group);
- 	if (flex_gd == NULL) {
- 		err = -ENOMEM;
- 		goto out;
--- 
-2.31.1
-
+Den ons 18 okt. 2023 kl 13:15 skrev Jeff Layton <jlayton@kernel.org>:
+>
+> Klara reported seeing mangled mtimes when dealing with FAT. Fix the
+> braino in the FAT conversion to the new timestamp accessors.
+>
+> Fixes: e57260ae3226 (fat: convert to new timestamp accessors)
+> Reported-by: Klara Modin <klarasmodin@gmail.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> This patch fixes the bug that Klara reported late yesterday. The issue
+> is a bad by-hand conversion of __fat_write_inode to the new timestamp
+> accessor functions.
+>
+> Christian, this patch should probably be squashed into e57260ae3226.
+>
+> Thanks!
+> Jeff
+> ---
+>  fs/fat/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> index aa87f323fd44..1fac3dabf130 100644
+> --- a/fs/fat/inode.c
+> +++ b/fs/fat/inode.c
+> @@ -888,9 +888,9 @@ static int __fat_write_inode(struct inode *inode, int wait)
+>                 raw_entry->size = cpu_to_le32(inode->i_size);
+>         raw_entry->attr = fat_make_attrs(inode);
+>         fat_set_start(raw_entry, MSDOS_I(inode)->i_logstart);
+> +       mtime = inode_get_mtime(inode);
+>         fat_time_unix2fat(sbi, &mtime, &raw_entry->time,
+>                           &raw_entry->date, NULL);
+> -       inode_set_mtime_to_ts(inode, mtime);
+>         if (sbi->options.isvfat) {
+>                 struct timespec64 ts = inode_get_atime(inode);
+>                 __le16 atime;
+>
+> ---
+> base-commit: fea0e8fc7829dc85f82c8a1a8249630f6fb85553
+> change-id: 20231018-amtime-24d2effcc9a9
+>
+> Best regards,
+> --
+> Jeff Layton <jlayton@kernel.org>
+>
