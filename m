@@ -2,199 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB9C7CD3AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41037CD3B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344476AbjJRFxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
+        id S229576AbjJRFzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 01:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJRFxt (ORCPT
+        with ESMTP id S229570AbjJRFzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:53:49 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E29DBA;
-        Tue, 17 Oct 2023 22:53:47 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39I5rau071104752, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39I5rau071104752
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 13:53:36 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 18 Oct 2023 13:53:36 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 18 Oct 2023 13:53:35 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Wed, 18 Oct 2023 13:53:35 +0800
-From:   Jyan Chou <jyanchou@realtek.com>
-To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
-        <jh80.chung@samsung.com>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <benchuanggli@gmail.com>, <jyanchou@realtek.com>
-Subject: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-Date:   Wed, 18 Oct 2023 13:53:24 +0800
-Message-ID: <20231018055326.18256-5-jyanchou@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231018055326.18256-1-jyanchou@realtek.com>
-References: <20231018055326.18256-1-jyanchou@realtek.com>
+        Wed, 18 Oct 2023 01:55:35 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26D9C4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 22:55:28 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qszWg-0007hK-2U; Wed, 18 Oct 2023 07:55:26 +0200
+Message-ID: <24f14f0f-2a1b-401d-b5f8-314387d0aaef@pengutronix.de>
+Date:   Wed, 18 Oct 2023 07:55:21 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/5] net: stmmac: fix PPS capture input index
+Content-Language: en-US, de-DE
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Eric Dumazet <edumazet@google.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Simon Horman <horms@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org, patchwork-jzi@pengutronix.de
+References: <20231010-stmmac_fix_auxiliary_event_capture-v1-0-3eeca9e844fa@pengutronix.de>
+ <20231010-stmmac_fix_auxiliary_event_capture-v1-2-3eeca9e844fa@pengutronix.de>
+ <20231014144428.GA1386676@kernel.org>
+ <004d6ce9-7d15-4944-b31c-c9e628e7483a@pengutronix.de>
+ <20231017082618.4558ad06@kernel.org>
+ <20231017-transfer-refurbish-5cfaf12a524c-mkl@pengutronix.de>
+ <20231017165042.30fa9061@kernel.org>
+From:   Johannes Zink <j.zink@pengutronix.de>
+In-Reply-To: <20231017165042.30fa9061@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the device-tree bindings for Realtek SoCs mmc driver.
+Hi Jakub, hi Marc,
 
-Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+On 10/18/23 01:50, Jakub Kicinski wrote:
+> On Tue, 17 Oct 2023 22:27:41 +0200 Marc Kleine-Budde wrote:
+>>> Would be good to clarify what impact on device operation the problem
+>>> has. How would end user notice the problem?
+>>> Does it mean snapshots were always or never enabled, previously?
+>>
+>> On all dwmac devices not covered by dwmac-intel.c (INTEL 10/100/1000
+>> Ethernet PCI driver), PPS capture can be requested from user-space, but
+>> is not enabled in HW. There is no error message or other feedback to the
+>> user space. The user space will not get any PPS events.
+>>
+>> As this change also affects the Intel driver, and we don't have any
+>> hardware to test, I think it's better that this goes via net-next to
+>> give it a bit more time of testing.
 
----
-v0 -> v2:
-- Add dt-binding.
----
----
- .../bindings/mmc/realtek-dw-mshc.yaml         | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
+I have also CC'ed Kurt in this series, as I know he has at least some hardware 
+at hand, though I cannot tell whether he has any chance to test the PPS 
+capture. Maybe he has a possibility to try it out. However, giving it a spin in 
+net-next SGTM.
 
-diff --git a/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
-new file mode 100644
-index 000000000000..f398a595c5c5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/realtek-dw-mshc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek designware mobile storage host controller
-+
-+description:
-+  Realtek uses the Synopsys designware mobile storage host controller
-+  to interface a SoC with storage medium. This file documents the Realtek
-+  specific extensions.
-+
-+allOf:
-+  - $ref: synopsys-dw-mshc-common.yaml#
-+
-+maintainers:
-+  - Jyan Chou <jyanchou@realtek.com>
-+
-+# Everything else is described in the common file
-+properties:
-+  compatible:
-+    enum:
-+      - realtek,rtd-dw-cqe-emmc
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 4
-+    description:
-+      Handle to "biu" and "ciu" clocks for the bus interface unit clock and
-+      the card interface unit clock.
-+
-+  clock-names:
-+    minItems: 2
-+    items:
-+      - const: biu
-+      - const: ciu
-+      - const: vp0
-+      - const: vp1
-+    description:
-+      "vp0" and "vp1" are used to control the clock phases.
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: reset
-+
-+  speed-step:
-+    maxItems: 1
-+    description:
-+	"speed-step" represents the bus speed mode of emmc. "3" means HS400,
-+	"2" means HS200, "0" means HS.
-+
-+  pinctrl-names:
-+    maxItems: 10
-+    items:
-+      - const: default
-+      - const: sdr50
-+      - const: ddr50
-+      - const: hs200
-+      - const: hs400
-+      - const: tune0
-+      - const: tune1
-+      - const: tune2
-+      - const: tune3
-+      - const: tune4
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - pinctrl-names
-+  - pinctrl
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    emmc: emmc@12000 {
-+        compatible = "realtek,rtd-dw-cqe-emmc";
-+        reg = <0x00012000 0x00600>,
-+		<0x00012180 0x00060>;
-+        reg-names = "emmc","cqhci";
-+        interrupts = <0 42 4>;
-+        clocks = <&cc RTD1319D_CRT_CLK_EN_EMMC>,
-+		<&cc RTD1319D_CRT_CLK_EN_EMMC_IP>,
-+                <&cc RTD1319D_CRT_PLL_EMMC_VP0>,
-+                <&cc RTD1319D_CRT_PLL_EMMC_VP1>;
-+        clock-names = "biu", "ciu", "vp0", "vp1";
-+        clock-freq-min-max = <300000 400000000>;
-+        clock-frequency = <400000>;
-+        vmmc-supply = <&reg_vcc1v8>;
-+        resets = <&cc RTD1319D_CRT_RSTN_EMMC>;
-+        reset-names = "reset";
-+        speed-step = <3>;
-+        cqe = <1>;
-+        pinctrl-names = "default", "sdr50", "ddr50", "hs200", "hs400", "tune0", "tune1", "tune2", "tune3", "tune4";
-+	pinctrl-0 = <&emmc_pins_sdr50>;
-+        pinctrl-1 = <&emmc_pins_sdr50>;
-+        pinctrl-2 = <&emmc_pins_ddr50>;
-+        pinctrl-3 = <&emmc_pins_hs200>;
-+        pinctrl-4 = <&emmc_pins_hs400>;
-+        pinctrl-5 = <&emmc_pins_tune0>;
-+	pinctrl-6 = <&emmc_pins_tune1>;
-+	pinctrl-7 = <&emmc_pins_tune2>;
-+	pinctrl-8 = <&emmc_pins_tune3>;
-+	pinctrl-9 = <&emmc_pins_tune4>;
-+        };
+> 
+> SGTM, we can chalk it up to "never worked, doesn't hurt anyone"
+> and put it in net-next. But then the Fixes tag must go.
+> 
+
+sure, that's fine for me. I will reword the commit messages and send a v2.
+
+Best regards,
+Johannes
+
 -- 
-2.42.0
+Pengutronix e.K.                | Johannes Zink                  |
+Steuerwalder Str. 21            | https://www.pengutronix.de/    |
+31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
