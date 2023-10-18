@@ -2,109 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF327CDAEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D3D7CDAF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjJRLrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S230097AbjJRLsm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 07:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjJRLrV (ORCPT
+        with ESMTP id S229757AbjJRLsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:47:21 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75152112;
-        Wed, 18 Oct 2023 04:47:19 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9TVJ4M6WzvQ7d;
-        Wed, 18 Oct 2023 19:42:32 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
- 2023 19:47:17 +0800
-Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related API
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-References: <20231013064827.61135-1-linyunsheng@huawei.com>
- <20231016182725.6aa5544f@kernel.org>
- <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
- <20231017081303.769e4fbe@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
-Date:   Wed, 18 Oct 2023 19:47:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Wed, 18 Oct 2023 07:48:40 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB016F7;
+        Wed, 18 Oct 2023 04:48:38 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6bf106fb6a0so1341691a34.0;
+        Wed, 18 Oct 2023 04:48:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697629718; x=1698234518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3q/Z+37O+9hSuiBMjYzeMo3yjEqRFNG+vOZC6JSJYCk=;
+        b=rjmXQj+VKCCXNMW6V0kk7Ar+BaUrkWwSvYAa09g1J6ZvS4GfnGnyZ/Zlz2BhHa0pc5
+         V0S1/rFjMz36B91DYk01v5VRFWNr5PmCHdyYEiNCuCKriGP+YnvJSJFCDxKej1UIQox2
+         x6MVhFU4Bl6VirF4NF6auA5SUcwaTpVUfGGE09nxuALVioqcvZOWHUK7/NZaOZLGG9ms
+         dOhOXafpFvUkfNd4P+c1ZbOWoD/BV+4TrZxA1UexObsi7PgrO/17U8wz6ky+FKEDFJNo
+         eZE9+3Pmry4Z0ynQmMVsQ87u/373WP5sFzBjktnwkXCArrWMjvp91MeRwPIt7SqooSeq
+         zvdw==
+X-Gm-Message-State: AOJu0YzGYl4j9yDoCpVj7vwPsqRXkdvqIvPggsSSoXVrgajxPqWWKRdT
+        1tlky4GdNzvHsUab58ZAl652IfsTqBzxoJuXvGA=
+X-Google-Smtp-Source: AGHT+IESrE+6/GTLq2QJSvPquuCaryzdi+XZnUeLv45RGCYYAQTFj7ea1gj6QMAde8TamdCZzR3hvWU7zPLpmSaq9Jw=
+X-Received: by 2002:a4a:ee97:0:b0:57c:6e35:251e with SMTP id
+ dk23-20020a4aee97000000b0057c6e35251emr5173160oob.1.1697629718123; Wed, 18
+ Oct 2023 04:48:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20231017081303.769e4fbe@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231014105426.26389-1-sumitg@nvidia.com> <20231014105426.26389-2-sumitg@nvidia.com>
+In-Reply-To: <20231014105426.26389-2-sumitg@nvidia.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Oct 2023 13:48:27 +0200
+Message-ID: <CAJZ5v0jm5h9qeZdnLDp9qUMT-31FOWMBERMzhFzgFsmt9QX78g@mail.gmail.com>
+Subject: Re: [Patch v5 1/2] ACPI: thermal: Add Thermal fast Sampling Period
+ (_TFP) support
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rafael@kernel.org, rui.zhang@intel.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, bbasu@nvidia.com, sanjayc@nvidia.com,
+        ksitaraman@nvidia.com, srikars@nvidia.com, jbrasen@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/17 23:13, Jakub Kicinski wrote:
-> On Tue, 17 Oct 2023 15:56:48 +0800 Yunsheng Lin wrote:
->>> And I can't figure out now what the "cache" in the name is referring to.
->>> Looks like these are just convenience wrappers which return VA instead
->>> of struct page..  
->>
->> Yes, it is corresponding to some API like napi_alloc_frag() returning va
->> instead of 'struct page' mentioned in patch 5.
->>
->> Anyway, naming is hard, any suggestion for a better naming is always
->> welcomed:)
-> 
-> I'd just throw a _va (for virtual address) at the end. And not really
+On Sat, Oct 14, 2023 at 12:54 PM Sumit Gupta <sumitg@nvidia.com> wrote:
+>
+> From: Jeff Brasen <jbrasen@nvidia.com>
+>
+> Add support of "Thermal fast Sampling Period (_TFP)" for Passive cooling.
+> As per [1], _TFP overrides the "Thermal Sampling Period (_TSP)" if both
+> are present in a Thermal zone.
+>
+> [1] ACPI Specification 6.4 - section 11.4.17. _TFP (Thermal fast Sampling
+>     Period)"
+>
+> Signed-off-by: Jeff Brasen <jbrasen@nvidia.com>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/acpi/thermal.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index d98ff69303b3..a91e3d566858 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -90,7 +90,7 @@ struct acpi_thermal_passive {
+>         struct acpi_thermal_trip trip;
+>         unsigned long tc1;
+>         unsigned long tc2;
+> -       unsigned long tsp;
+> +       unsigned long passive_delay;
 
-_va seems fine:)
+This is a passive trip structure anyway, so the "passive_" prefix is
+redundant here.  "delay" alone would be fine.
 
-> mention it in the documentation. Plus the kdoc of the function should
-> say that this is just a thin wrapper around other page pool APIs, and
-> it's safe to mix it with other page pool APIs?
+>  };
+>
+>  struct acpi_thermal_active {
+> @@ -404,11 +404,16 @@ static bool passive_trip_params_init(struct acpi_thermal *tz)
+>
+>         tz->trips.passive.tc2 = tmp;
+>
+> -       status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
+> -       if (ACPI_FAILURE(status))
+> -               return false;
+> +       status = acpi_evaluate_integer(tz->device->handle, "_TFP", NULL, &tmp);
+> +       if (ACPI_FAILURE(status)) {
+> +               status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
+> +               if (ACPI_FAILURE(status))
+> +                       return false;
+>
+> -       tz->trips.passive.tsp = tmp;
+> +               tz->trips.passive.passive_delay = tmp * 100;
+> +       } else {
+> +               tz->trips.passive.passive_delay = tmp;
+> +       }
 
-I am not sure I understand what do 'safe' and 'mix' mean here.
+I would prefer the if () statement above to be structured the other
+way around, that is
 
-For 'safe' part, I suppose you mean if there is a va accociated with
-a 'struct page' without calling some API like kmap()? For that, I suppose
-it is safe when the driver is calling page_pool API without the
-__GFP_HIGHMEM flag. Maybe we should mention that in the kdoc and give a
-warning if page_pool_*alloc_va() is called with the __GFP_HIGHMEM flag?
+ status = ...
+ if (ACPI_SUCCESS(status)) {
+        tz->trips.passive.delay = tmp;
+        return true;
+}
 
-For the 'mix', I suppose you mean the below:
-1. Allocate a page with the page_pool_*alloc_va() API and free a page with
-   page_pool_free() API.
-2. Allocate a page with the page_pool_*alloc() API and free a page with
-   page_pool_free_va() API.
+status = ...
+if (ACPI_FAILURE(status))
+         return false;
 
-For 1, it seems it is ok as some virt_to_head_page() and page_address() call
-between va and 'struct page' does not seem to change anything if we have
-enforce page_pool_*alloc_va() to be called without the __GFP_HIGHMEM flag.
+etc.
 
-For 2, If the va is returned from page_address() which the allocation API is
-called without __GFP_HIGHMEM flag. If not, the va is from kmap*()? which means
-we may be calling page_pool_free_va() before kunmap*()? Is that possible?
-
-
-> .
-> 
+>
+>         return true;
+>  }
+> @@ -904,7 +909,7 @@ static int acpi_thermal_add(struct acpi_device *device)
+>
+>         acpi_trip = &tz->trips.passive.trip;
+>         if (acpi_thermal_trip_valid(acpi_trip)) {
+> -               passive_delay = tz->trips.passive.tsp * 100;
+> +               passive_delay = tz->trips.passive.passive_delay;
+>
+>                 trip->type = THERMAL_TRIP_PASSIVE;
+>                 trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
+> --
+> 2.17.1
+>
