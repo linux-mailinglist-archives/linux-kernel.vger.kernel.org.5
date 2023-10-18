@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4977CD99D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62227CD994
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbjJRKvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S235063AbjJRKuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjJRKvc (ORCPT
+        with ESMTP id S229702AbjJRKur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:51:32 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B995FE;
-        Wed, 18 Oct 2023 03:51:28 -0700 (PDT)
-Received: from weisslap.aisec.fraunhofer.de ([91.67.186.133]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1M2Plu-1qpDK02lgs-003vUA; Wed, 18 Oct 2023 12:51:06 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de,
-        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: [RFC PATCH v2 14/14] device_cgroup: Allow mknod in non-initial userns if guarded
-Date:   Wed, 18 Oct 2023 12:50:33 +0200
-Message-Id: <20231018105033.13669-15-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
-References: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
+        Wed, 18 Oct 2023 06:50:47 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185FAFE;
+        Wed, 18 Oct 2023 03:50:42 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S9SKr581Xz67gZw;
+        Wed, 18 Oct 2023 18:50:08 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
+ 2023 11:50:39 +0100
+Date:   Wed, 18 Oct 2023 11:50:38 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cxl/pmu: Ensure put_device on pmu devices
+Message-ID: <20231018115038.0000433d@Huawei.com>
+In-Reply-To: <20231016-pmu-unregister-fix-v1-1-1e2eb2fa3c69@intel.com>
+References: <20231016-pmu-unregister-fix-v1-1-1e2eb2fa3c69@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:p+Jv7n/tSXj9VOdub/TyRhRZeiciOIbTx11fcWiGi9mKRboHY1V
- l3Y/axn61Mwfb1USZtNvgmraJ1CvN/YuyhUiM8MPPLLy3N9UcB3qIkXNVazSm0dD2d1J8N7
- uPKVlmahAJpd7/TQyOQPb7QixZrgDlGBQnVqsB55vJGRa/srXyHE/FYrh62/Xb6SLAiNIAZ
- EMgJSuPBLUzKhU2OZ8/jg==
-UI-OutboundReport: notjunk:1;M01:P0:bWVLZ0m+uHw=;xZezacsXngGcvH0Bz/M7eP4ELMi
- 4AKs7tVSf04OhugwkXmK4kLGTy79PUmq3E2OhojNEXh7mA/P5Hpkd6Gu0iNxVex7N+b38m1mw
- VG5DJO61uPkIhhatZiKXD6Vx3zU+0tf3LRFT/ESZuNw5udUo0lkQnujM0x5hWzT0LyrE9+d/b
- bhjdwEyoyDQQGmcD0CppnWSXW89XpgCccRVLuKCdu4QHEusAaK4MVVDJTGfR01NXZmSjNWjOb
- ltu5zGJg5ezN8IwQ2hNHvQExD5LjaoTZ+7P4RqikOQc1i9kld9B3P23uCh1tIV8G4zdldqNeg
- lyBqE5//uO9VydAokKzr3xW9nbaXMMtXLRk7mGYWQdYcrk3HsUQ4TBjUzHNicacwq75pWhbxS
- 7lBcWLXhK67HHijf88W4b9QMXfQMRzh5X3DN2XItGKVjt7GbFuXNSf+XLYThWQSqztBliLqW5
- i/4Hj6LkNwZ4Eud3ros5+f8VhB25d7CCBHPyd5iisNKQK6/KUAgJ5TRp9/ML5g+oWw39N7o+G
- IOhGCaGWeKEgKHLFxhSt4RPDyAd79tLzKBm/f1ayZmE3jLkXNlI3WWtuLVH4BHMeru1gfnRQL
- H53jjRvlxHM8oJnEkMFMSVOy1heQJoZdn4L6b/iLuwMS3bthXFxHdR5BMcTZ+aiyXck2IawtF
- Fv6ynUUeUInBWzpwk9fteyiPvcGHZ6d1lFvMvzlR0+CoeeOHLuHXDmbeoqptZAqR54RdpT0j1
- yYmDGKaAf+ECfucMZWyjtBcHEnq5oeAh7poy5o9pnUOVCgwB6JexbEOSsbIPR4G5VqU9fUBGO
- l2558RO1KZDEekYpURHUWxC7tDkKBFud3PReNx1rcIcp33BT2sCWJ/hBXh//CIptigA+47bzj
- s8PUNBkPd2dr2ko+XFC1YNa8YlxpfKA4R0w0=
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a container manager restricts its unprivileged (user namespaced)
-children by a device cgroup, it is not necessary to deny mknod()
-anymore. Thus, user space applications may map devices on different
-locations in the file system by using mknod() inside the container.
+On Mon, 16 Oct 2023 16:25:05 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-A use case for this, we also use in GyroidOS, is to run virsh for
-VMs inside an unprivileged container. virsh creates device nodes,
-e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
-in a non-initial userns, even if a cgroup device white list with the
-corresponding major, minor of /dev/null exists. Thus, in this case
-the usual bind mounts or pre populated device nodes under /dev are
-not sufficient.
+> The following kmemleaks were detected when removing the cxl module
+> stack:
+> 
+> unreferenced object 0xffff88822616b800 (size 1024):
+> ...
+>   backtrace:
+>     [<00000000bedc6f83>] kmalloc_trace+0x26/0x90
+>     [<00000000448d1afc>] devm_cxl_pmu_add+0x3a/0x110 [cxl_core]
+>     [<00000000ca3bfe16>] 0xffffffffa105213b
+>     [<00000000ba7f78dc>] local_pci_probe+0x41/0x90
+>     [<000000005bb027ac>] pci_device_probe+0xb0/0x1c0
+> ...
+> unreferenced object 0xffff8882260abcc0 (size 16):
+> ...
+>   hex dump (first 16 bytes):
+>     70 6d 75 5f 6d 65 6d 30 2e 30 00 26 82 88 ff ff  pmu_mem0.0.&....
+>   backtrace:
+> ...
+>     [<00000000152b5e98>] dev_set_name+0x43/0x50
+>     [<00000000c228798b>] devm_cxl_pmu_add+0x102/0x110 [cxl_core]
+>     [<00000000ca3bfe16>] 0xffffffffa105213b
+>     [<00000000ba7f78dc>] local_pci_probe+0x41/0x90
+>     [<000000005bb027ac>] pci_device_probe+0xb0/0x1c0
+> ...
+> unreferenced object 0xffff8882272af200 (size 256):
+> ...
+>   backtrace:
+>     [<00000000bedc6f83>] kmalloc_trace+0x26/0x90
+>     [<00000000a14d1813>] device_add+0x4ea/0x890
+>     [<00000000a3f07b47>] devm_cxl_pmu_add+0xbe/0x110 [cxl_core]
+>     [<00000000ca3bfe16>] 0xffffffffa105213b
+>     [<00000000ba7f78dc>] local_pci_probe+0x41/0x90
+>     [<000000005bb027ac>] pci_device_probe+0xb0/0x1c0
+> ...
+> 
+> devm_cxl_pmu_add() correctly registers a device remove function but it
+> only calls device_del() which is only part of device unregistration.
+> 
+> Properly call device_unregister() to free up the memory associated with
+> the device.
+> 
+> Fixes: 1ad3f701c399 ("cxl/pci: Find and register CXL PMU devices")
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Oops.
 
-To circumvent this limitation, allow mknod() by checking CAP_MKNOD
-in the userns by implementing the security_inode_mknod_nscap(). The
-hook implementation checks if the corresponding permission flag
-BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
-To avoid to create unusable inodes in user space the hook also checks
-SB_I_NODEV on the corresponding super block.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Further, the security_sb_alloc_userns() hook is implemented using
-cgroup_bpf_current_enabled() to allow usage of device nodes on super
-blocks mounted by a guarded task.
-
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- security/device_cgroup/lsm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/security/device_cgroup/lsm.c b/security/device_cgroup/lsm.c
-index a963536d0a15..6bc984d9c9d1 100644
---- a/security/device_cgroup/lsm.c
-+++ b/security/device_cgroup/lsm.c
-@@ -66,10 +66,37 @@ static int devcg_inode_mknod(struct inode *dir, struct dentry *dentry,
- 	return __devcg_inode_mknod(mode, dev, DEVCG_ACC_MKNOD);
- }
- 
-+#ifdef CONFIG_CGROUP_BPF
-+static int devcg_sb_alloc_userns(struct super_block *sb)
-+{
-+	if (cgroup_bpf_current_enabled(CGROUP_DEVICE))
-+		return 0;
-+
-+	return -EPERM;
-+}
-+
-+static int devcg_inode_mknod_nscap(struct inode *dir, struct dentry *dentry,
-+				       umode_t mode, dev_t dev)
-+{
-+	if (!cgroup_bpf_current_enabled(CGROUP_DEVICE))
-+		return -EPERM;
-+
-+	// avoid to create unusable inodes in user space
-+	if (dentry->d_sb->s_iflags & SB_I_NODEV)
-+		return -EPERM;
-+
-+	return __devcg_inode_mknod(mode, dev, BPF_DEVCG_ACC_MKNOD_UNS);
-+}
-+#endif /* CONFIG_CGROUP_BPF */
-+
- static struct security_hook_list devcg_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(inode_permission, devcg_inode_permission),
- 	LSM_HOOK_INIT(inode_mknod, devcg_inode_mknod),
- 	LSM_HOOK_INIT(dev_permission, devcg_dev_permission),
-+#ifdef CONFIG_CGROUP_BPF
-+	LSM_HOOK_INIT(sb_alloc_userns, devcg_sb_alloc_userns),
-+	LSM_HOOK_INIT(inode_mknod_nscap, devcg_inode_mknod_nscap),
-+#endif
- };
- 
- static int __init devcgroup_init(void)
--- 
-2.30.2
+> ---
+>  drivers/cxl/core/pmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cxl/core/pmu.c b/drivers/cxl/core/pmu.c
+> index 7684c843e5a5..5d8e06b0ba6e 100644
+> --- a/drivers/cxl/core/pmu.c
+> +++ b/drivers/cxl/core/pmu.c
+> @@ -23,7 +23,7 @@ const struct device_type cxl_pmu_type = {
+>  
+>  static void remove_dev(void *dev)
+>  {
+> -	device_del(dev);
+> +	device_unregister(dev);
+>  }
+>  
+>  int devm_cxl_pmu_add(struct device *parent, struct cxl_pmu_regs *regs,
+> 
+> ---
+> base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+> change-id: 20231016-pmu-unregister-fix-345480926a58
+> 
+> Best regards,
 
