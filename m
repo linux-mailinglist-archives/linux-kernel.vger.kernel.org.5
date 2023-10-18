@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C548F7CE4BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A035F7CE4BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbjJRRiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
+        id S230396AbjJRRh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjJRRho (ORCPT
+        with ESMTP id S230284AbjJRRho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 13:37:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD92122
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F74198
         for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:37:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1483BC433C8;
-        Wed, 18 Oct 2023 17:37:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24585C433CA;
+        Wed, 18 Oct 2023 17:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697650624;
-        bh=oFj2hOD0FJcu+azHgKmYICzh2htgdd2Wv5h+L8tXxW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PGoxBFH7kFpGXuNXarPS4c99yt2NmcMHGAG61xiXgEWbuhSQUwdufy6ZcWmie//K6
-         2jQuz48qza50itX3m+nM3m+zLLxqwx5TNu/1H8FtrTLZESdAtSePpowbxfuT5Som1/
-         QPL/LCRRiN+oL3q8cCeBAmbndhX3IOgO4kT4U2yMaWE5XkgV9R+nRpulbZ124R93cJ
-         ungaM9yiPw1lhiU37GjtiwsYnLFvTSZ0OBc7Sy8iwKvJ72tQYuRo9EIulRnA6DnKE0
-         A219HIJQcfYQmv5RCfbfUtzRYWo0CbTk1gzcwIa6Ca9T1AZrZdCczZZ1/wFytbveoI
-         7iGVvpM33p3iQ==
-Date:   Wed, 18 Oct 2023 18:36:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Samuel Ortiz <sameo@rivosinc.com>
-Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension
- reporting
-Message-ID: <20231018-flagpole-footpad-07a6228485f3@spud>
-References: <20231017131456.2053396-1-cleger@rivosinc.com>
- <20231017131456.2053396-2-cleger@rivosinc.com>
- <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
- <20231018-scrap-bankable-a0f321d97a46@spud>
+        s=k20201202; t=1697650625;
+        bh=geOBo95O/K4ooFlTQc6NiW8YW2+mC1AuPcK2r9RbM60=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SXJfEeKWIEFL037wd9Kx1uRUp4vBF0hK+5pVBFk/LlLMQnkZgzbXWX/0iVZCFJSyP
+         W7sTaRni2aOXaaP1bp9sZ/yR4HHmCvBAxxsNVcBx4OEsquhbG91/IikvmM+WTyW5l8
+         /+g/dDC6FOZ7erRdJLiMMIocyKhi2BnvQWip987zLwn9qZMEQhwPy4MCdbtuyr4/La
+         dtzuMIcwKRLG628usEnptkqlz5W1Y7Va6KsX563a6krV4cKmg5Gymp2yD/TUv6hywL
+         G2cEeyg745JJ5zm3X34im7j7hiII8pxpWtcf+A1YRvyaKEdwWh05DBow2Ke0mrWGT+
+         P3dyAc8SrFrFg==
+Date:   Wed, 18 Oct 2023 10:37:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     takeru hayasaka <hayatake396@gmail.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Harald Welte <laforge@gnumonks.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        osmocom-net-gprs@lists.osmocom.org
+Subject: Re: [PATCH net-next v2] ethtool: ice: Support for RSS settings to
+ GTP from ethtool
+Message-ID: <20231018103703.41fd4d9b@kernel.org>
+In-Reply-To: <CADFiAc+OnpyNTXntZBkDAf+UfueRotqqWKg+BrApWcL=x_8vjQ@mail.gmail.com>
+References: <20231012060115.107183-1-hayatake396@gmail.com>
+        <20231016152343.1fc7c7be@kernel.org>
+        <CADFiAcKOKiTXFXs-e=WotnQwhLB2ycbBovqS2YCk9hvK_RH2uQ@mail.gmail.com>
+        <CADFiAcLiAcyqaOTsRZHex8g-wSBQjCzt_0SBtBaW3CJHz9afug@mail.gmail.com>
+        <20231017164915.23757eed@kernel.org>
+        <CADFiAc+OnpyNTXntZBkDAf+UfueRotqqWKg+BrApWcL=x_8vjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cYWeMTHrHEjyZ4VV"
-Content-Disposition: inline
-In-Reply-To: <20231018-scrap-bankable-a0f321d97a46@spud>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,103 +63,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 18 Oct 2023 10:53:02 +0900 takeru hayasaka wrote:
+> For instance, there are PGWs that have the capability to separate the
+> termination of communication of 4G LTE users into Control and User
+> planes (C/U).
+> This is quite convenient from a scalability perspective. In fact, in
+> 5G UPF, the communication is explicitly only on the User plane
+> (Uplane).
+> 
+> Therefore, services are expected to receive only GTPU traffic (e.g.,
+> PGW-U, UPF) or only GTPC traffic (e.g., PGW-C). Hence, there arises a
+> necessity to use only GTPU.
+> 
+> If we do not distinguish packets into Control/User (C/U) with options
+> like gtp4|6, I can conceive scenarios where performance tuning becomes
+> challenging.
+> For example, in cases where we want to process only the control
+> communication (GTPC) using Flow Director on specific CPUs, while
+> processing GTPU on the remaining cores.
+> In scenarios like IoT, where user communication is minimal but the
+> volume of devices is vast, the control traffic could substantially
+> increase. Thus, this might also be possible in reverse.
+> In short, this pertains to being mindful of CPU core affinity.
+> 
+> If we were to propose again, setting aside considerations specific to
+> Intel, I believe, considering the users of ethtool, the smallest units
+> should be gtpu4|6 and gtpc4|6.
+> Regarding Extension Headers and such, I think it would be more
+> straightforward to handle them implicitly.
+> 
+> What does everyone else think?
 
---cYWeMTHrHEjyZ4VV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 18, 2023 at 06:33:34PM +0100, Conor Dooley wrote:
-> On Wed, Oct 18, 2023 at 10:24:15AM -0700, Evan Green wrote:
-> > On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger=
-@rivosinc.com> wrote:
-> > >
-> > > Factorize ISA extension reporting by using a macro rather than
-> > > copy/pasting extension names. This will allow adding new extensions m=
-ore
-> > > easily.
-> > >
-> > > Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
-> > > ---
-> > >  arch/riscv/kernel/sys_riscv.c | 32 ++++++++++++++++++--------------
-> > >  1 file changed, 18 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_ri=
-scv.c
-> > > index 473159b5f303..e207874e686e 100644
-> > > --- a/arch/riscv/kernel/sys_riscv.c
-> > > +++ b/arch/riscv/kernel/sys_riscv.c
-> > > @@ -145,20 +145,24 @@ static void hwprobe_isa_ext0(struct riscv_hwpro=
-be *pair,
-> > >         for_each_cpu(cpu, cpus) {
-> > >                 struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
-> > >
-> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBA))
-> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBA;
-> > > -               else
-> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBA;
-> > > -
-> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBB))
-> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBB;
-> > > -               else
-> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBB;
-> > > -
-> > > -               if (riscv_isa_extension_available(isainfo->isa, ZBS))
-> > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBS;
-> > > -               else
-> > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBS;
-> > > +#define CHECK_ISA_EXT(__ext)                                        =
-           \
-> > > +               do {                                                 =
-           \
-> > > +                       if (riscv_isa_extension_available(isainfo->is=
-a, __ext)) \
-> > > +                               pair->value |=3D RISCV_HWPROBE_EXT_##=
-__ext;       \
-> > > +                       else                                         =
-           \
-> > > +                               missing |=3D RISCV_HWPROBE_EXT_##__ex=
-t;           \
-> > > +               } while (false)
-> > > +
-> > > +               /*
-> > > +                * Only use CHECK_ISA_EXT() for extensions which can =
-be exposed
-> > > +                * to userspace, regardless of the kernel's configura=
-tion, as no
-> > > +                * other checks, besides presence in the hart_isa bit=
-map, are
-> > > +                * made.
-> >=20
-> > This comment alludes to a dangerous trap, but I'm having trouble
-> > understanding what it is.
->=20
-> You cannot, for example, use this for communicating the presence of F or
-> D, since they require a config option to be set before their use is
-> safe.
-
-Funnily enough, this comment is immediately contradicted by the vector
-subset extensions, where these CHECK_ISA_EXT() macros are used wrapped
-in has_vector(). The code looks valid to me, since has_vector() contains
-the Kconfig check, but does fly in the face of this comment.
-
->=20
-> > Perhaps some rewording to more explicitly
-> > state the danger would be appropriate. Other than that:
-> >=20
-> > Reviewed-by: Evan Green <evan@rivosinc.com>
-
-
-
---cYWeMTHrHEjyZ4VV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTAXuwAKCRB4tDGHoIJi
-0ssgAQCFsE/VyWSVFRI6XGd2p+Q+D0bkhT1pEi2sRvGHdVIbwAEAlRpXF0hcPhDv
-uK+YFm8QJY4dKBMhZ6EtzbVoIv6ctA8=
-=a1cl
------END PGP SIGNATURE-----
-
---cYWeMTHrHEjyZ4VV--
+Harald went further and questioned use of the same IP addresses for 
+-U and -C traffic, but even within one endpoint aren't these running
+on a different port? Can someone reasonably use the same UDP port
+for both types of traffic?
