@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A587CD755
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735AE7CD760
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjJRI7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
+        id S229510AbjJRJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjJRI7x (ORCPT
+        with ESMTP id S229441AbjJRJBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:59:53 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00FAFD;
-        Wed, 18 Oct 2023 01:59:51 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1e9baf16a86so3448614fac.1;
-        Wed, 18 Oct 2023 01:59:51 -0700 (PDT)
+        Wed, 18 Oct 2023 05:01:06 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB4EEA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:01:04 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50435ad51bbso8697736e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697619591; x=1698224391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wLg1o9DOF3VnHtMnC8PASVDsIiegad5WKGOMGpmn+Ec=;
-        b=ndnn/ryij66BIvxFAtAUGEEKwcuDFnhOf0Ag63I/9eYtfrX/pGRZeB9XgOeszSZ3GI
-         g+UcU+ALVUTCvTVtoWqFD8PG+ygpsz6TTaQJMueYaqsVILV0rrkzN4XZU77ocjF/R50I
-         Jd694UXQAZ5dWdrbtClPSN76Q/0M+i0kwbaCmtR3OZRtk7GfY24P9SPQd5w5Czbu1duB
-         uDJK9TNM/gUbTXbIGiHKk9Q/8+3bysfl/Ajc85Mfyfi0XQbO0TdHzaNtbjY+Q9VmGGd2
-         s1hy05Krg936YFxuPZoB4JH5rHIJ/BTuQrwHpUpIi9Nkz9hQviTDpQiK4XJSZQJK+GxL
-         5F4w==
+        d=linaro.org; s=google; t=1697619662; x=1698224462; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZSpFNZO1arwmkyx+97hJB9n0j7JKmTEsg8eKLgN5W3I=;
+        b=QBfBTykd2rDw5LTViJaKIrH7Yyrlc6gb4trxw+kVNmq3CBwoHSHtAtP/oJBY4HBsTs
+         q7BlFyPorDiiKfuDxzNhJBp+EghGUTtwGaWNtAV2OFKPHkxj8PgbqntGhsutQDNPi/d8
+         ex9PKzVP1P9JZYB2Zr61GBhGbEqlOJFOoSDXvwOKz/Tq/3j2CV7dgp2olJJUBO/RagIH
+         ft5atq3CUUVMLVg1TOYepARRU+sy6oZ2ThGwK/1BufZHhQpZDCWBmJw4k3BK3lE5fiJ1
+         bcvrbt3s2dEluTP9axRs+zuz50yVhpE9M+66nZL6YVKjnRDpbM5Rzm1TafiEGQdbdf66
+         JW0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697619591; x=1698224391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wLg1o9DOF3VnHtMnC8PASVDsIiegad5WKGOMGpmn+Ec=;
-        b=VE84AxipUxfEWtxVXZq3BNEx5NdcbwrvQw5x4cAaYpK4LUu3clQIzZlNFtRPTk7R7l
-         9zrgk3HWWT3BneRTdNm7krJIgtRdwaSVRq/Tna3Aj12SYYhILWzgyM/56Akm8VMpl13v
-         4nmR0KVsqnbLmOwdfzmIYYPxdOKbGgVCZYCXiAc37zigfK8hfTW8BSAsGXdmxuSg5APC
-         6KbQWapCr7TPZXc8OzA+NSpCgJbVDJ+JxBPWTdza/2YOKwKKnFarTtkDvUVUBpknSG5X
-         8mnJ4NHymqnQgCMV29+zO777oRin+SQ871+doDMxDhUeAVIXXMsFOg1tGbWm0+WFlTNw
-         JOFw==
-X-Gm-Message-State: AOJu0YybcrhLaeuC+61KH6dNSsds1ZI46PtYUrMsm9ACxrb6y1Wt2jpE
-        lB9wZp0PPLYlZS8tSj9KLLeOQ7ayddxGKMqfxSg=
-X-Google-Smtp-Source: AGHT+IEwmg6hKMx5NyEARa7yEZGHlf4iBHwoIM3/a+e2XvCgZXkBJX5beUIBiBA4x9a5zAMY8Xeq9izSd5tpItfzcJI=
-X-Received: by 2002:a05:6870:4202:b0:1d0:f5bd:6cf with SMTP id
- u2-20020a056870420200b001d0f5bd06cfmr5715015oac.43.1697619590829; Wed, 18 Oct
- 2023 01:59:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697619662; x=1698224462;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZSpFNZO1arwmkyx+97hJB9n0j7JKmTEsg8eKLgN5W3I=;
+        b=vudIzRZ0hGkqy0EBKHsI0zBTtoHA8EDgoZct9kddI5TH3j2VUiopL1fFALXOGgDCIc
+         RoOUkx6F4n1ZZO9pRylotGS5ds37F1x/N6Vl8tB/kEKsCMGe4RbctwlradvA2rnWy/a9
+         NP73mBakcM3ioVazAGZz8i0VQThXYq0guKhlNK3V5qvT20qwPLdshmVIx+Fne7LLeha/
+         5wGFzhfYsYnyVWagiPr0iyim7IYaq4A2bv9Yw6NSWrUobep5r6Apd4U90/9nAsUmVppN
+         IPz41hnXymws1EkU8owzuTaUkO7H+FXTQQSbaE27MA/ADMjg1hkZ+mu5Q04123wA07Qc
+         1FUA==
+X-Gm-Message-State: AOJu0Yz+jAz1m/OOjtcfi/LUFVyVViEdTmskoV8ra4Olc0s1a/rqW8Rf
+        niV6iRlXiI2wkCRvpIEgNgaGOA==
+X-Google-Smtp-Source: AGHT+IHfuSChl3m67DXdnoev5ggVFiwYwf9ghGOeVq7b/O0ZW2jEVoLQJADhG06GtJH0kVLil/+4mg==
+X-Received: by 2002:ac2:4d86:0:b0:500:d970:6541 with SMTP id g6-20020ac24d86000000b00500d9706541mr3290410lfe.39.1697619662481;
+        Wed, 18 Oct 2023 02:01:02 -0700 (PDT)
+Received: from [172.30.204.55] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id h41-20020a0565123ca900b004fbc82dd1a5sm619906lfv.13.2023.10.18.02.01.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 02:01:02 -0700 (PDT)
+Message-ID: <62645ba4-ab4a-491e-a9d8-6b7faebbb8cd@linaro.org>
+Date:   Wed, 18 Oct 2023 11:00:59 +0200
 MIME-Version: 1.0
-References: <20230827023932.501102-1-sergio.paracuellos@gmail.com> <20231017155257.GA710773@dev-arch.thelio-3990X>
-In-Reply-To: <20231017155257.GA710773@dev-arch.thelio-3990X>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 18 Oct 2023 10:59:39 +0200
-Message-ID: <CAMhs-H8cLcHNX5yOinyYcHe8-wNS5sBk9sW9U913Lph_JQG_dA@mail.gmail.com>
-Subject: Re: [PATCH v2] clk: ralink: mtmips: quiet unused variable warning
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-clk@vger.kernel.org, tsbogend@alpha.franken.de,
-        sboyd@kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        arnd@kernel.org, yangshiji66@outlook.com,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] pinctrl: qcom: lpass-lpi: allow slew rate bit in
+ main pin config register
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
+ <20231013145935.220945-3-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231013145935.220945-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 5:53=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> On Sun, Aug 27, 2023 at 04:39:32AM +0200, Sergio Paracuellos wrote:
-> > When CONFIG_OF is disabled then the matching table is not referenced an=
-d
-> > the following warning appears:
-> >
-> > drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmip=
-s_of_match' [-Wunused-const-variable]
-> > 821 |   static const struct of_device_id mtmips_of_match[] =3D {
-> >     |                          ^
-> >
-> > There are two match tables in the driver: one for the clock driver and =
-the
-> > other for the reset driver. The only difference between them is that th=
-e
-> > clock driver uses 'data' and does not have 'ralink,rt2880-reset' compat=
-ible.
-> > Both just can be merged into a single one just by adding the compatible
-> > 'ralink,rt2880-reset' entry to 'mtmips_of_match[]', which will allow it=
- to
-> > be used for 'mtmips_clk_driver' (which doesn't use the data) as well as=
- for
-> > 'mtmips_clk_init()' (which doesn't need get called for 'ralink,rt2880-r=
-eset').
-> >
-> > Doing in this way ensures that 'CONFIG_OF' is not disabled anymore so t=
-he
-> > above warning disapears.
-> >
-> > Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIP=
-S SoCs")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp=
-@intel.com/
-> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
->
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Thanks, Nathan!
 
-Best regards,
-    Sergio Paracuellos
->
-> > ---
-> > Changes in v2:
-> > - Merge two match tables into one to properly avoid this warning.
-> >
-> > PATCH in v1: https://lore.kernel.org/lkml/20230802092647.3000666-1-serg=
-io.paracuellos@gmail.com/T/
-> >
-> >  drivers/clk/ralink/clk-mtmips.c | 20 +++++---------------
-> >  1 file changed, 5 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-m=
-tmips.c
-> > index 1e7991439527..50a443bf79ec 100644
-> > --- a/drivers/clk/ralink/clk-mtmips.c
-> > +++ b/drivers/clk/ralink/clk-mtmips.c
-> > @@ -821,6 +821,10 @@ static const struct mtmips_clk_data mt76x8_clk_dat=
-a =3D {
-> >  };
-> >
-> >  static const struct of_device_id mtmips_of_match[] =3D {
-> > +     {
-> > +             .compatible =3D "ralink,rt2880-reset",
-> > +             .data =3D NULL,
-> > +     },
-> >       {
-> >               .compatible =3D "ralink,rt2880-sysc",
-> >               .data =3D &rt2880_clk_data,
-> > @@ -1088,25 +1092,11 @@ static int mtmips_clk_probe(struct platform_dev=
-ice *pdev)
-> >       return 0;
-> >  }
-> >
-> > -static const struct of_device_id mtmips_clk_of_match[] =3D {
-> > -     { .compatible =3D "ralink,rt2880-reset" },
-> > -     { .compatible =3D "ralink,rt2880-sysc" },
-> > -     { .compatible =3D "ralink,rt3050-sysc" },
-> > -     { .compatible =3D "ralink,rt3052-sysc" },
-> > -     { .compatible =3D "ralink,rt3352-sysc" },
-> > -     { .compatible =3D "ralink,rt3883-sysc" },
-> > -     { .compatible =3D "ralink,rt5350-sysc" },
-> > -     { .compatible =3D "ralink,mt7620-sysc" },
-> > -     { .compatible =3D "ralink,mt7628-sysc" },
-> > -     { .compatible =3D "ralink,mt7688-sysc" },
-> > -     {}
-> > -};
-> > -
-> >  static struct platform_driver mtmips_clk_driver =3D {
-> >       .probe =3D mtmips_clk_probe,
-> >       .driver =3D {
-> >               .name =3D "mtmips-clk",
-> > -             .of_match_table =3D mtmips_clk_of_match,
-> > +             .of_match_table =3D mtmips_of_match,
-> >       },
-> >  };
-> >
-> > --
-> > 2.25.1
-> >
+On 10/13/23 16:59, Krzysztof Kozlowski wrote:
+> Existing Qualcomm SoCs have the LPASS pin controller slew rate control
+> in separate register, however this will change with upcoming Qualcomm
+> SoCs.  The slew rate will be part of the main register for pin
+> configuration, thus second device IO address space is not needed.
+> 
+> Prepare for supporting new SoCs by adding flag customizing the driver
+> behavior for slew rate.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Changes in v2:
+> 1. Reversed xmas tree
+> 
+> v1: https://lore.kernel.org/all/20230901090224.27770-1-krzysztof.kozlowski@linaro.org/
+> ---
+Only because I know it'll be used soon:
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
