@@ -2,166 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6C07CE7A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F7C7CE7A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbjJRTXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S231373AbjJRTYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjJRTXd (ORCPT
+        with ESMTP id S230391AbjJRTYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:23:33 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7762A119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:23:31 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a828bdcfbaso84075167b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697657010; x=1698261810; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nodpH4C4bQ/gNaICo1hh4M7XTXxxvuUKNCjUFbiep9I=;
-        b=p8oqL8104jOuVWELkmr4wobfylJAOtjigEl/yNhBatjRBxW2x+UxdzB4p1PjD2dSba
-         ow8UjseMnh9Ba4IaOJY5Gs0pblrrDhGXFxDi41+RU4fZKH8J+CSCoelJOkOxwbNanXro
-         XWvyOAaS1JZklMBtUzzw/Z7FwSvcJZG3Q2CL7FMUclLzQzH59JQyKsm/ScVOePVz6q0R
-         GjlsKPIVLGzEKjMlnq3mKL5r8sxFtMv0kna8cEbVu8qntXKl9Qa4wUxttqHnp8Y5pieU
-         m06iXzXmX9hL6DYoG7EzuLWsD+cTnj5823jD+11pUEvyaTyulHEJCAWd2+HyQaUve9oP
-         qYug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697657010; x=1698261810;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nodpH4C4bQ/gNaICo1hh4M7XTXxxvuUKNCjUFbiep9I=;
-        b=eweHRxleBkilpgglLguZlEyxA8665yTwP95X35QrkiMQ3a25h5dJ3CAPSvdqHFWwpg
-         uJ6zIMbpbxHasleRTsIjSwqZCBNDz/eUzwOfuHpBsKBon6XqFFSqoqEtgx04FtbYM4ol
-         VQuSdJG3GsZe/4eP8du3DYp1/mwAHG27SAh7NRarI8ekGy+koSVgeqQIUCvRiEUu4kX5
-         01kkXdxJX8Z2S+5664Axz+QO4iusd5QHZFDidgAy+KSkDT2rZOUc1ZxgmaZNxPnWNMCU
-         070T77SAi4bA5RsaMRE2OEOE3sThgeXjlvoDPIszmTw+ECiS+/2FMWWXn8P9raK0o/JK
-         tFkg==
-X-Gm-Message-State: AOJu0YxdUu7xGzdMhkTI6cCii9WVEE3YhcX1T0PfBhSR2ltQAi2Giand
-        I014Ag1QnRYi9FjH/tgh+o389xpTo+c=
-X-Google-Smtp-Source: AGHT+IFmGxaXOt4/cBpfYV39xsYcl21XLtTTYlfhhkHY00t9wInu5pOx40L8w/7hPanWGs0YbTQEg8QQDMI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:6c4f:0:b0:592:8069:540a with SMTP id
- h76-20020a816c4f000000b005928069540amr4397ywc.8.1697657010698; Wed, 18 Oct
- 2023 12:23:30 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 18 Oct 2023 12:23:25 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231018192325.1893896-1-seanjc@google.com>
-Subject: [PATCH] KVM: x86/mmu: Declare flush_remote_tlbs{_range}() hooks iff HYPERV!=n
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 18 Oct 2023 15:24:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F37D11C;
+        Wed, 18 Oct 2023 12:24:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A7E1C433C8;
+        Wed, 18 Oct 2023 19:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697657046;
+        bh=4pqgNCj2VHR73ruj+oEmmVKmJYNHgKP3AZBxoTczZZw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EGcGmANt2u7vd+hQPa+Fc6Vq4Uk9vDD1pnE9zW8eGR4ZoKbQ/3cKMSb07JiVBZEfG
+         zylilyHGXi7xU0s3J/MeYg/F+3yR2Cw2S8vI+knHV7vJnlC8znULylVoVtj7jsC0uh
+         WSMjp4m4ui+/9u+IqcBAhf9N47KzgaB8mHqhZVgiZcOYCbY+ruSRPRDpmpipiu3eti
+         COhWXUeAVz75t2AH5aJYTTKsgn9nBhy4YdvwU3Ho2H5MIglNDsCkP10yNLqwt2Loi4
+         rAiDlj8KZl9lbIREk8oc880uk2SHIwzfKeisGL9JXSMTStQQtgOC7RrMdwYIx0vCqo
+         orFElBTA317IQ==
+Date:   Wed, 18 Oct 2023 20:24:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        nuno.sa@analog.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: resolver: ad2s1210: add support for
+ adi,fixed-mode
+Message-ID: <20231018202425.66c07591@jic23-huawei>
+In-Reply-To: <492e8f347d4682ff672f81151ab4b1fe7f5b3059.camel@gmail.com>
+References: <20231016135423.16808-1-dlechner@baylibre.com>
+        <492e8f347d4682ff672f81151ab4b1fe7f5b3059.camel@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Declare the kvm_x86_ops hooks used to wire up paravirt TLB flushes when
-running under Hyper-V if and only if CONFIG_HYPERV!=n.  Wrapping yet more
-code with IS_ENABLED(CONFIG_HYPERV) eliminates a handful of conditional
-branches, and makes it super obvious why the hooks *might* be valid.
+On Tue, 17 Oct 2023 10:26:43 +0200
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm-x86-ops.h |  2 ++
- arch/x86/include/asm/kvm_host.h    | 12 ++++++++++++
- arch/x86/kvm/mmu/mmu.c             | 12 ++++--------
- 3 files changed, 18 insertions(+), 8 deletions(-)
+> On Mon, 2023-10-16 at 08:54 -0500, David Lechner wrote:
+> > It is possible to use the AD2S1210 with hardwired mode pins (A0 and A1).
+> > According to the devicetree bindings, in this case the adi,fixed-mode
+> > property will specify which of the 3 possible modes the mode pins are
+> > hardwired for and the gpio-modes property is not allowed.
+> >=20
+> > This adds support for the case where the mode pins are hardwired for
+> > config mode. In this configuration, the position and value must be read
+> > from the config register.
+> >=20
+> > The case of hardwired position or velocity mode is not supported as
+> > there would be no way to configure the device.
+> >=20
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >  =20
+>=20
+> LGTM
+>=20
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+>=20
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to see what we missed.
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index 26b628d84594..f482216bbdb8 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -55,8 +55,10 @@ KVM_X86_OP(set_rflags)
- KVM_X86_OP(get_if_flag)
- KVM_X86_OP(flush_tlb_all)
- KVM_X86_OP(flush_tlb_current)
-+#if IS_ENABLED(CONFIG_HYPERV)
- KVM_X86_OP_OPTIONAL(flush_remote_tlbs)
- KVM_X86_OP_OPTIONAL(flush_remote_tlbs_range)
-+#endif
- KVM_X86_OP(flush_tlb_gva)
- KVM_X86_OP(flush_tlb_guest)
- KVM_X86_OP(vcpu_pre_run)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7c228ae05df0..f0d1ac871465 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1614,9 +1614,11 @@ struct kvm_x86_ops {
- 
- 	void (*flush_tlb_all)(struct kvm_vcpu *vcpu);
- 	void (*flush_tlb_current)(struct kvm_vcpu *vcpu);
-+#if IS_ENABLED(CONFIG_HYPERV)
- 	int  (*flush_remote_tlbs)(struct kvm *kvm);
- 	int  (*flush_remote_tlbs_range)(struct kvm *kvm, gfn_t gfn,
- 					gfn_t nr_pages);
-+#endif
- 
- 	/*
- 	 * Flush any TLB entries associated with the given GVA.
-@@ -1825,6 +1827,7 @@ static inline struct kvm *kvm_arch_alloc_vm(void)
- #define __KVM_HAVE_ARCH_VM_FREE
- void kvm_arch_free_vm(struct kvm *kvm);
- 
-+#if IS_ENABLED(CONFIG_HYPERV)
- #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
- static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
- {
-@@ -1836,6 +1839,15 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
- }
- 
- #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
-+static inline int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn,
-+						   u64 nr_pages)
-+{
-+	if (!kvm_x86_ops.flush_remote_tlbs_range)
-+		return -EOPNOTSUPP;
-+
-+	return static_call(kvm_x86_flush_remote_tlbs_range)(kvm, gfn, nr_pages);
-+}
-+#endif /* CONFIG_HYPERV */
- 
- #define kvm_arch_pmi_in_guest(vcpu) \
- 	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5d3dc7119e57..0702f5234d69 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -271,15 +271,11 @@ static inline unsigned long kvm_mmu_get_guest_pgd(struct kvm_vcpu *vcpu,
- 
- static inline bool kvm_available_flush_remote_tlbs_range(void)
- {
-+#if IS_ENABLED(CONFIG_HYPERV)
- 	return kvm_x86_ops.flush_remote_tlbs_range;
--}
--
--int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pages)
--{
--	if (!kvm_x86_ops.flush_remote_tlbs_range)
--		return -EOPNOTSUPP;
--
--	return static_call(kvm_x86_flush_remote_tlbs_range)(kvm, gfn, nr_pages);
-+#else
-+	return false;
-+#endif
- }
- 
- static gfn_t kvm_mmu_page_get_gfn(struct kvm_mmu_page *sp, int index);
+This probably won't make 6.7. Still no problem with getting it queued up for
+6.8.
 
-base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
--- 
-2.42.0.655.g421f12c284-goog
+Thanks,
+
+Jonathan
+
+> > v2 changes:
+> > * Use regmap_bulk_read() instead of new local function.
+> > * Simplify adi,fixed-mode property error checking.
+> >=20
+> > =C2=A0drivers/iio/resolver/ad2s1210.c | 150 +++++++++++++++++++++++++--=
+-----
+> > =C2=A01 file changed, 119 insertions(+), 31 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2=
+s1210.c
+> > index 1bd1b950e7cc..7f688bfe2172 100644
+> > --- a/drivers/iio/resolver/ad2s1210.c
+> > +++ b/drivers/iio/resolver/ad2s1210.c
+> > @@ -141,7 +141,7 @@ struct ad2s1210_state {
+> > =C2=A0	struct spi_device *sdev;
+> > =C2=A0	/** GPIO pin connected to SAMPLE line. */
+> > =C2=A0	struct gpio_desc *sample_gpio;
+> > -	/** GPIO pins connected to A0 and A1 lines. */
+> > +	/** GPIO pins connected to A0 and A1 lines (optional). */
+> > =C2=A0	struct gpio_descs *mode_gpios;
+> > =C2=A0	/** Used to access config registers. */
+> > =C2=A0	struct regmap *regmap;
+> > @@ -149,6 +149,8 @@ struct ad2s1210_state {
+> > =C2=A0	unsigned long clkin_hz;
+> > =C2=A0	/** Available raw hysteresis values based on resolution. */
+> > =C2=A0	int hysteresis_available[2];
+> > +	/* adi,fixed-mode property - only valid when mode_gpios =3D=3D NULL. =
+*/
+> > +	enum ad2s1210_mode fixed_mode;
+> > =C2=A0	/** The selected resolution */
+> > =C2=A0	enum ad2s1210_resolution resolution;
+> > =C2=A0	/** Copy of fault register from the previous read. */
+> > @@ -175,6 +177,9 @@ static int ad2s1210_set_mode(struct ad2s1210_state =
+*st,
+> > enum ad2s1210_mode mode)
+> > =C2=A0	struct gpio_descs *gpios =3D st->mode_gpios;
+> > =C2=A0	DECLARE_BITMAP(bitmap, 2);
+> > =C2=A0
+> > +	if (!gpios)
+> > +		return mode =3D=3D st->fixed_mode ? 0 : -EOPNOTSUPP;
+> > +
+> > =C2=A0	bitmap[0] =3D mode;
+> > =C2=A0
+> > =C2=A0	return gpiod_set_array_value(gpios->ndescs, gpios->desc, gpios->=
+info,
+> > @@ -276,7 +281,8 @@ static int ad2s1210_regmap_reg_read(void *context,
+> > unsigned int reg,
+> > =C2=A0	 * parity error. The fault register is read-only and the D7 bit =
+means
+> > =C2=A0	 * something else there.
+> > =C2=A0	 */
+> > -	if (reg !=3D AD2S1210_REG_FAULT && st->rx[1] & AD2S1210_ADDRESS_DATA)
+> > +	if ((reg > AD2S1210_REG_VELOCITY_LSB && reg !=3D AD2S1210_REG_FAULT)
+> > +	=C2=A0=C2=A0=C2=A0=C2=A0 && st->rx[1] & AD2S1210_ADDRESS_DATA)
+> > =C2=A0		return -EBADMSG;
+> > =C2=A0
+> > =C2=A0	*val =3D st->rx[1];
+> > @@ -450,21 +456,53 @@ static int ad2s1210_single_conversion(struct iio_=
+dev
+> > *indio_dev,
+> > =C2=A0	ad2s1210_toggle_sample_line(st);
+> > =C2=A0	timestamp =3D iio_get_time_ns(indio_dev);
+> > =C2=A0
+> > -	switch (chan->type) {
+> > -	case IIO_ANGL:
+> > -		ret =3D ad2s1210_set_mode(st, MOD_POS);
+> > -		break;
+> > -	case IIO_ANGL_VEL:
+> > -		ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> > -		break;
+> > -	default:
+> > -		return -EINVAL;
+> > +	if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> > +		unsigned int reg_val;
+> > +
+> > +		switch (chan->type) {
+> > +		case IIO_ANGL:
+> > +			ret =3D regmap_bulk_read(st->regmap,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_POSITION_MSB,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> > +			if (ret < 0)
+> > +				return ret;
+> > +
+> > +			break;
+> > +		case IIO_ANGL_VEL:
+> > +			ret =3D regmap_bulk_read(st->regmap,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_VELOCITY_MSB,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> > +			if (ret < 0)
+> > +				return ret;
+> > +
+> > +			break;
+> > +		default:
+> > +			return -EINVAL;
+> > +		}
+> > +
+> > +		ret =3D regmap_read(st->regmap, AD2S1210_REG_FAULT, &reg_val);
+> > +		if (ret < 0)
+> > +			return ret;
+> > +
+> > +		st->sample.fault =3D reg_val;
+> > +	} else {
+> > +		switch (chan->type) {
+> > +		case IIO_ANGL:
+> > +			ret =3D ad2s1210_set_mode(st, MOD_POS);
+> > +			break;
+> > +		case IIO_ANGL_VEL:
+> > +			ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> > +			break;
+> > +		default:
+> > +			return -EINVAL;
+> > +		}
+> > +		if (ret < 0)
+> > +			return ret;
+> > +
+> > +		ret =3D spi_read(st->sdev, &st->sample, 3);
+> > +		if (ret < 0)
+> > +			return ret;
+> > =C2=A0	}
+> > -	if (ret < 0)
+> > -		return ret;
+> > -	ret =3D spi_read(st->sdev, &st->sample, 3);
+> > -	if (ret < 0)
+> > -		return ret;
+> > =C2=A0
+> > =C2=A0	switch (chan->type) {
+> > =C2=A0	case IIO_ANGL:
+> > @@ -1252,27 +1290,53 @@ static irqreturn_t ad2s1210_trigger_handler(int=
+ irq,
+> > void *p)
+> > =C2=A0	ad2s1210_toggle_sample_line(st);
+> > =C2=A0
+> > =C2=A0	if (test_bit(0, indio_dev->active_scan_mask)) {
+> > -		ret =3D ad2s1210_set_mode(st, MOD_POS);
+> > -		if (ret < 0)
+> > -			goto error_ret;
+> > -
+> > -		ret =3D spi_read(st->sdev, &st->sample, 3);
+> > -		if (ret < 0)
+> > -			goto error_ret;
+> > +		if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> > +			ret =3D regmap_bulk_read(st->regmap,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_POSITION_MSB,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +		} else {
+> > +			ret =3D ad2s1210_set_mode(st, MOD_POS);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +
+> > +			ret =3D spi_read(st->sdev, &st->sample, 3);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +		}
+> > =C2=A0
+> > =C2=A0		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> > =C2=A0	}
+> > =C2=A0
+> > =C2=A0	if (test_bit(1, indio_dev->active_scan_mask)) {
+> > -		ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> > -		if (ret < 0)
+> > -			goto error_ret;
+> > +		if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> > +			ret =3D regmap_bulk_read(st->regmap,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_VELOCITY_MSB,
+> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +		} else {
+> > +			ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +
+> > +			ret =3D spi_read(st->sdev, &st->sample, 3);
+> > +			if (ret < 0)
+> > +				goto error_ret;
+> > +		}
+> > =C2=A0
+> > -		ret =3D spi_read(st->sdev, &st->sample, 3);
+> > +		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> > +	}
+> > +
+> > +	if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> > +		unsigned int reg_val;
+> > +
+> > +		ret =3D regmap_read(st->regmap, AD2S1210_REG_FAULT, &reg_val);
+> > =C2=A0		if (ret < 0)
+> > -			goto error_ret;
+> > +			return ret;
+> > =C2=A0
+> > -		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> > +		st->sample.fault =3D reg_val;
+> > =C2=A0	}
+> > =C2=A0
+> > =C2=A0	ad2s1210_push_events(indio_dev, st->sample.fault, pf->timestamp);
+> > @@ -1299,9 +1363,24 @@ static const struct iio_info ad2s1210_info =3D {
+> > =C2=A0static int ad2s1210_setup_properties(struct ad2s1210_state *st)
+> > =C2=A0{
+> > =C2=A0	struct device *dev =3D &st->sdev->dev;
+> > +	const char *str_val;
+> > =C2=A0	u32 val;
+> > =C2=A0	int ret;
+> > =C2=A0
+> > +	ret =3D device_property_read_string(dev, "adi,fixed-mode", &str_val);
+> > +	if (ret =3D=3D -EINVAL)
+> > +		st->fixed_mode =3D -1;
+> > +	else if (ret < 0)
+> > +		return dev_err_probe(dev, ret,
+> > +			"failed to read adi,fixed-mode property\n");
+> > +	else {
+> > +		if (strcmp(str_val, "config"))
+> > +			return dev_err_probe(dev, -EINVAL,
+> > +				"only adi,fixed-mode=3D\"config\" is
+> > supported\n");
+> > +
+> > +		st->fixed_mode =3D MOD_CONFIG;
+> > +	}
+> > +
+> > =C2=A0	ret =3D device_property_read_u32(dev, "assigned-resolution-bits",
+> > &val);
+> > =C2=A0	if (ret < 0)
+> > =C2=A0		return dev_err_probe(dev, ret,
+> > @@ -1357,12 +1436,21 @@ static int ad2s1210_setup_gpios(struct ad2s1210=
+_state
+> > *st)
+> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "failed to request sample GPIO\n");
+> > =C2=A0
+> > =C2=A0	/* both pins high means that we start in config mode */
+> > -	st->mode_gpios =3D devm_gpiod_get_array(dev, "mode", GPIOD_OUT_HIGH);
+> > +	st->mode_gpios =3D devm_gpiod_get_array_optional(dev, "mode",
+> > +						=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GPIOD_OUT_HIGH);
+> > =C2=A0	if (IS_ERR(st->mode_gpios))
+> > =C2=A0		return dev_err_probe(dev, PTR_ERR(st->mode_gpios),
+> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "failed to request mode GPIOs\n");
+> > =C2=A0
+> > -	if (st->mode_gpios->ndescs !=3D 2)
+> > +	if (!st->mode_gpios && st->fixed_mode =3D=3D -1)
+> > +		return dev_err_probe(dev, -EINVAL,
+> > +			"must specify either adi,fixed-mode or mode-
+> > gpios\n");
+> > +
+> > +	if (st->mode_gpios && st->fixed_mode !=3D -1)
+> > +		return dev_err_probe(dev, -EINVAL,
+> > +			"must specify only one of adi,fixed-mode or mode-
+> > gpios\n");
+> > +
+> > +	if (st->mode_gpios && st->mode_gpios->ndescs !=3D 2)
+> > =C2=A0		return dev_err_probe(dev, -EINVAL,
+> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "requires exactly 2 mode-gpios\n");
+> > =C2=A0 =20
+>=20
 
