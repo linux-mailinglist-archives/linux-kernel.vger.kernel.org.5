@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA697CEB6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F667CEB6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjJRWka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        id S230051AbjJRWlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjJRWk2 (ORCPT
+        with ESMTP id S229695AbjJRWla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:40:28 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEAA119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:40:26 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so12186575a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:40:26 -0700 (PDT)
+        Wed, 18 Oct 2023 18:41:30 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F425114;
+        Wed, 18 Oct 2023 15:41:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d11401516so4914961a91.2;
+        Wed, 18 Oct 2023 15:41:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697668825; x=1698273625; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQSN/8AyNe3sAydXX0IQmaasInOgjPE21LKV/uZBmFs=;
-        b=fjReqgnIB3MnFYnlXAfnW45VENvYQUpfeIAQUpNYpA6JenM7Vhb7MBHqoID3n+Q/Ev
-         mcHPGu5wXc08eFYyG0cow2qGmn0TpEs1CpoCxI9ru6G/qk8XVEAnWx3GSQX1anPiGjfi
-         M93eLqvZeFTI/fFiDJxF7o6SgobphCNPRxc8M=
+        d=gmail.com; s=20230601; t=1697668888; x=1698273688; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKa6JWtcPiC4zAx7oaeBnwEnkEeAK8IrNKWLYxgQr3w=;
+        b=apJF+qyfY7TuIpH/2IBFM9c0wloiFosCwRPLz8QQVAG2+4Fu1x91ruhogwwalKVP17
+         pnpvD1Zfzrta4Ki2v4M9n59vHtsGccRK/uwzRgdaLbyvxKwTSvP7zNcb+GG1jr6Rrp7C
+         w7fVYK2JQbctjiJn2QNMr3h7tDswLLLjiODSHMFM7GybIBRVIz0mb6lNwDJdKNo+sIGz
+         dvyq8BUGLny8vGwBjcXqw92poQakzSskJMF9gbutagREtZJ7JDFOSoMc9D7M+ZaBDZPJ
+         Nawt0SCax3JrxpbhPVIg9JRJE98aLxJAKzDiDPLTFSTySm18gpmRaqYcz/sf60lLpbcb
+         Hzlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697668825; x=1698273625;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DQSN/8AyNe3sAydXX0IQmaasInOgjPE21LKV/uZBmFs=;
-        b=QRIYPT6a5ClXeicvLoq5u99XUE1thkV+JCgSqyqobTan3NdSH+I0Hhj/QaP8LKZk66
-         UbQqTxtJQhrWN9AD/gqlyFLVwuVK48ZY6Hb+l4pOor9mNamxJ8w/VumTLUnj5+b5Fo/7
-         Sr/5pNoZGKGDX3gbtc9kEjeeTkQ1yTrHXh84aCqxLD0nemISkvpoX8M4OMvl0etAkqO6
-         zjEsC+tkfiNsmSfyvmNHqKd6wxv5SrOkCKBHsiUp3CHPNw1cRh9vAtOtdlmPeXg7r6B9
-         VWIB5BAw4Mwbu6rw7kYFQHkC+g1wdqSpksyE3C1g2loDMj5v/82vG2xczc53A2Bo0eey
-         308Q==
-X-Gm-Message-State: AOJu0YzUUNjX8FJCzQJAGU1ngDRzzTWKfRNjO/aUH8CY6vbdk2CQ61wP
-        W1jSY0Uv8yaqnztYFEu7+FjPUuMrCwqOz1n0OVQYBS99
-X-Google-Smtp-Source: AGHT+IHnEWjvGCzbvWbO6bhWAEtoM/H1JiYZP9yGZGNf8tgE8v6RlswtL22ej9lS104RI8qc38pEig==
-X-Received: by 2002:a17:907:6096:b0:9b2:ccd8:2d2b with SMTP id ht22-20020a170907609600b009b2ccd82d2bmr399718ejc.77.1697668825048;
-        Wed, 18 Oct 2023 15:40:25 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id qk17-20020a170906d9d100b009a198078c53sm2421978ejb.214.2023.10.18.15.40.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 15:40:23 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99c1c66876aso1193285666b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:40:23 -0700 (PDT)
-X-Received: by 2002:a17:906:dc92:b0:9af:9c4f:b579 with SMTP id
- cs18-20020a170906dc9200b009af9c4fb579mr437316ejc.18.1697668823207; Wed, 18
- Oct 2023 15:40:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697668888; x=1698273688;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XKa6JWtcPiC4zAx7oaeBnwEnkEeAK8IrNKWLYxgQr3w=;
+        b=msHdT6odvXquYeMoRihPfu2d7qTWunp2ckAkL63SV17sK+3tyGBnxEwt39lM+87kKU
+         a6Sc9ofHJpYqCJ/NVx/fKy9Xp0XNbhPsH7ps8s31XgsZ8XUaEcl/LAuZhYLUvJDt0zBA
+         bRv2nJDMdew4pX4MjCLj8bOxY21nQ5o0t4lL7FRATvMcB9z+DnBLyzgwGoIPEd7zqrwK
+         Qj14OC8qQAPhEJtK83fZgShj9GEFC5XTFk6sVVo1+kqpjctLcv+6BpaFp6rQQEg9Hr9q
+         sQ4nrBxC92kxi7wq22Aecb+LWyDz+vefNkozdbUJV1bQ9F8K6fpdlFkhjJV3kWA0FYla
+         deCA==
+X-Gm-Message-State: AOJu0Yxfd7FqXBSdIBNchtSPN22+BpwFXhaj1wyc8uDJ+m0nuRjuGz70
+        j7y0mDiKa2SpTgjx5oRfanp2L4UVE78=
+X-Google-Smtp-Source: AGHT+IFHcZ7gaE/rCiyv/fbBc5fVKTK17v1bK6uCXT3LwwmAwQpzROz0PtOxmiupmBLwnyeB+rJykQ==
+X-Received: by 2002:a17:90b:2dcd:b0:27d:bbee:578b with SMTP id sk13-20020a17090b2dcd00b0027dbbee578bmr560004pjb.7.1697668887719;
+        Wed, 18 Oct 2023 15:41:27 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:c4c4:bbd9:2220:727f])
+        by smtp.gmail.com with ESMTPSA id x1-20020a17090aa38100b0026f90d7947csm354611pjp.34.2023.10.18.15.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 15:41:27 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 15:41:24 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZTBfFIyCsl2gkp6f@google.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+ <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+ <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
+ <ZS7kY/+80Be4geGM@smile.fi.intel.com>
+ <ZS7_5VGvRnw99gzd@google.com>
+ <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
- <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
- <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
- <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
- <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
- <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
- <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
- <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
- <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
- <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
- <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
- <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
- <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
- <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
- <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
- <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
- <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
- <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
- <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com> <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
-In-Reply-To: <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 18 Oct 2023 15:40:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
-Message-ID: <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>, peterz@infradead.org
-Cc:     Nadav Amit <namit@vmware.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,105 +80,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 at 14:40, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> The ones in "raw" form are not IRQ safe and these are implemented
-> without volatile qualifier.
+On Wed, Oct 18, 2023 at 08:01:23AM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 17, 2023 at 02:43:01PM -0700, Dmitry Torokhov wrote:
+> > On Tue, Oct 17, 2023 at 10:45:39PM +0300, Andy Shevchenko wrote:
+> 
+> Thanks for your response.
+> 
+> ...
+> 
+> > I wonder, could you please post entire dmesg for your system?
+> 
+> Working, non-working or both?
 
-You are misreading it.
+Non working, especially if you also enable debug logs in
+drivers/mmc/host/sdhci-pci-core.c.
 
-Both *are* irq safe - on x86.
+What I do not quite understand is that I think we should not be hitting
+the case where pinctrl is already created for the device, which is the
+code path my patch was changing. IIUIC we should be mostly executing the
+"pinctrl not found" path and that did not really change. Maybe you could
+also put some more annotations to show how/at what exact point the probe
+order changed? Maybe log find_pinctrl() calls and compare?
 
-The difference between "this_cpu_xyz()" and "raw_cpu_xyz()" is that on
-*other* architectures, "raw_cpu_xyz():" can be a lot more efficient,
-because other architectures may need to do extra work to make the
-"this" version be atomic on a particular CPU.
+Linus, BTW, I think there are more problems there with pinctrl lookup,
+because, if we assume there are concurrent accesses to pinctrl_get(),
+the fact that we did not find an instance while scanning the list does
+not mean we will not find it when we go to insert a newly created one.
 
-See for example __count_vm_event() vs count_vm_event().
+Another problem, as far as I can see, that there is not really a defined
+owner of pinctrl structure, it is created on demand, and destroyed when
+last user is gone. So if we execute last pintctrl_put() and there is
+another pinctrl_get() running simultaneously, we may get and bump up the
+refcount, and then release (pinctrl_free) will acquire the mutex, and
+zap the structure.
 
-In fact, that particular use isn't even in an interrupt-safe context,
-that's an example of literally "I'd rather be fast that correct for
-certain statistics that aren't all that important".
+Given that there are more issues in that code, maybe we should revert
+the patch for now so Andy has a chance to convert to UUID/LABEL booting?
 
-They two versions generate the same code on x86, but on other
-architectures, __count_vm_event() can *much* simpler and faster
-because it doesn't disable interrupts or do other special things.
+> 
+> ...
+> 
+> > I think the right answer is "fix the userspace" really in this case. We
+> > could also try extend of_alias_get_id() to see if we could pass some
+> > preferred numbering on x86. But this will again be fragile if the
+> > knowledge resides in the driver and is not tied to a particular board
+> > (as it is in DT case): there could be multiple controllers, things will
+> > be shifting board to board...
+> 
+> Any suggestion how should it be properly done in the minimum shell environment?
+> (Busybox uses mdev with static tables IIRC and there is no fancy udev or so)
 
-But on x86, the whole "interrupt safety" is a complete red herring.
-Both of them generate the exact same instruction.
+I'm not sure, so you have something like blkid running? You just need to
+locate the device and chroot there. This assumes you do have initramfs.
 
-On x86, the "volatile" is actually for a completely different reason:
-to avoid too much CSE by the compiler.
+Thanks.
 
-See  commit b59167ac7baf ("x86/percpu: Fix this_cpu_read()").
-
-In fact, that commit went overboard, and just added "volatile" to
-*every* percpu read.
-
-So then people complained about *that*, and PeterZ did commit
-0b9ccc0a9b14 ("x86/percpu: Differentiate this_cpu_{}() and
-__this_cpu_{}()"), which basically made that "qual or not" be a macro
-choice.
-
-And in the process, it now got added to all the RMW ops, that didn't
-actually need it or want it in the first place, since they won't be
-CSE'd, since they depend on the input.
-
-So that commit basically generalized the whole thing entirely
-pointlessly, and caused your current confusion.
-
-End result: we should remove 'volatile' from the RMW ops. It doesn't
-do anything on x86. All it does is make us have two subtly different
-versions that we don't care about the difference.
-
-End result two: we should make it clear that "this_cpu_read()" vs
-"raw_cpu_read()" are *NOT* about interrupts. Even on architectures
-where the RMW ops need to have irq protection (so that they are atomic
-wrt interrupts also modifying the value), the *READ* operation
-obviously has no such issue.
-
-For the raw_cpu_read() vs this_cpu_read() case, the only issue is
-whether you can CSE the result.
-
-And in 99% of all cases, you can - and want to - CSE it. But as that
-commit b59167ac7baf shows, sometimes you cannot.
-
-Side note: the code that caused that problem is this:
-
-  __always_inline void __cyc2ns_read(struct cyc2ns_data *data)
-  {
-        int seq, idx;
-
-        do {
-                seq = this_cpu_read(cyc2ns.seq.seqcount.sequence);
-                ...
-        } while (unlikely(seq != this_cpu_read(cyc2ns.seq.seqcount.sequence)));
-  }
-
-where the issue is that the this_cpu_read() of that sequence number
-needs to be ordered.
-
-Honestly, that code is just buggy and bad.  We should never have
-"fixed" it by changing the semantics of this_cpu_read() in the first
-place.
-
-The problem is that it re-implements its own locking model, and as so
-often happens when people do that, they do it completely wrongly.
-
-Look at the *REAL* sequence counter code in <linux/seqlock.h>. Notice
-how in raw_read_seqcount_begin() we have
-
-        unsigned _seq = __read_seqcount_begin(s);
-        smp_rmb();
-
-because it actually does the proper barriers. Notice how the garbage
-code in __cyc2ns_read() doesn't have them - and how it was buggy as a
-result.
-
-(Also notice how this all predates our "we should use load_acquire()
-instead of smb_rmb()", but whatever).
-
-IOW, all the "volatiles" in the x86 <asm/percpu.h> file are LITERAL
-GARBAGE and should not exist, and are due to a historical mistake.
-
-                   Linus
+-- 
+Dmitry
