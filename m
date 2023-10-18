@@ -2,150 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B77AB7CD9F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998E17CD9F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjJRLBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S230025AbjJRLAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJRLBN (ORCPT
+        with ESMTP id S229853AbjJRLAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:01:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F17392
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:01:11 -0700 (PDT)
+        Wed, 18 Oct 2023 07:00:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81EEEA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697626871; x=1729162871;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dTDdGpzlXb3ERKytdmOV1XkKeASL3B8yeKq3HAH4osI=;
-  b=aoRg5GwbVVKXAWiugIlQx5ANWT4/XmkGgGrt5k5xWzIDH3xVA3YTAYaC
-   WHjPtrM4O0Z5R9/OUppIign4jIll5Szn9ztlPVMIPqnXuTd+rNR0bBw3Q
-   pe0Hy1BsRf965ZVpLD1NJbQptTXiyQ+CrE9rRTyPpw8R4PUhz0VLXqGBT
-   yiP/MHIbL7v4P6pEl716p0tTYzqCK6nxkCToAW5Ro/hXwByCikHrI99ki
-   /Y1QiFd0C7tCfnT9XVZOw7NvfXP7cV57R5gwPSbo4otC4zqxtTOWvHvrd
-   20yliQALImXRr6pH8sD9okqzVyB6zllVpv3H0BEGzHUu7ZBHTJq961yh0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="452457517"
+  t=1697626813; x=1729162813;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=COxJInCL0jGxY7ESovjNwogq2qyUcFkuDBB6vSCiReM=;
+  b=jVSML2za00uHck8vBTUxp3NjWh246+iV0BuwH7yYyGkR90Oqt8O3SBiD
+   sWX0J/aBq6eS0rHG910eUC3phCSIBr0Nxb8gFKsUGM3oNF95iGqf5zNdl
+   wjX5mSIcB5meLhNLdKelEA0aLfKNK/M4uOdDExSAM9aibJ505GFSbRFEY
+   YMpXta/nJBn/LGjXFxrxmaEsnbvUCpm8ayKoMCupeF4r31XKdlkmNY2K6
+   Mu9TRIN2HOzVXE3UtfdPnu0+zfjJcDMRDSM4q9SsfF81ZYx15X4yeZCDC
+   Jb5tKFdvwv/X2bd6Z13b3x6iiSVLTEnC9ymnXAsnqZEIo9CgcRIKLIuH0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365338340"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="452457517"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:01:10 -0700
+   d="scan'208";a="365338340"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:00:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="847236138"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="900303900"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="847236138"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Oct 2023 04:00:35 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qt4Hw-0000Ga-2s;
-        Wed, 18 Oct 2023 11:00:32 +0000
-Date:   Wed, 18 Oct 2023 18:59:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/powerpc/sysdev/xive/common.c:1845:50: warning: '%ld' directive
- output may be truncated writing between 1 and 20 bytes into a region of size
- 13
-Message-ID: <202310181858.EyyD4USk-lkp@intel.com>
+   d="scan'208";a="900303900"
+Received: from nurfahan-mobl3.gar.corp.intel.com (HELO intel.com) ([10.213.159.217])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:58:05 -0700
+Date:   Wed, 18 Oct 2023 13:00:01 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 2/2] staging: vme_user: Use __func__ instead of function
+ name
+Message-ID: <ZS+6sTNNZ5KUzpd4@ashyti-mobl2.lan>
+References: <cover.1697601942.git.soumya.negi97@gmail.com>
+ <c553e5901f16b78681e74b2d77796f8fc102b602.1697601942.git.soumya.negi97@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c553e5901f16b78681e74b2d77796f8fc102b602.1697601942.git.soumya.negi97@gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-commit: 33e67710beda78aed38a2fe10be6088d4aeb1c53 cpumask: switch for_each_cpu{,_not} to use for_each_bit()
-date:   1 year, 1 month ago
-config: powerpc64-randconfig-r003-20230828 (https://download.01.org/0day-ci/archive/20231018/202310181858.EyyD4USk-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310181858.EyyD4USk-lkp@intel.com/reproduce)
+Hi Soumya,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310181858.EyyD4USk-lkp@intel.com/
+On Tue, Oct 17, 2023 at 09:36:33PM -0700, Soumya Negi wrote:
+> Replace function names in message strings with __func__ to fix
+> all checkpatch warnings like:
+> 
+>     WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
+>              this function's name, in a string
+> 
+> Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> ---
+>  drivers/staging/vme_user/vme.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+> index e8c2c1e77b7d..11c1df12b657 100644
+> --- a/drivers/staging/vme_user/vme.c
+> +++ b/drivers/staging/vme_user/vme.c
+> @@ -422,7 +422,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
+>  	image = list_entry(resource->entry, struct vme_slave_resource, list);
+>  
+>  	if (!bridge->slave_get) {
+> -		dev_err(bridge->parent, "vme_slave_get not supported\n");
+> +		dev_err(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -572,7 +572,7 @@ int vme_master_set(struct vme_resource *resource, int enabled,
+>  	image = list_entry(resource->entry, struct vme_master_resource, list);
+>  
+>  	if (!bridge->master_set) {
+> -		dev_warn(bridge->parent, "vme_master_set not supported\n");
+> +		dev_warn(bridge->parent, "%s not supported\n", __func__);
 
-All warnings (new ones prefixed by >>):
+I wouldn't disagree if you made this dev_err() instead of
+dev_warn(). The reasoning behind is that if it's a warning you
+should not fail. But beacuse you are returning -EINVAL it means
+that you are failing, therefore you should use dev_err().
 
-   arch/powerpc/sysdev/xive/common.c: In function 'xive_core_debug_init':
->> arch/powerpc/sysdev/xive/common.c:1845:50: warning: '%ld' directive output may be truncated writing between 1 and 20 bytes into a region of size 13 [-Wformat-truncation=]
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                                                  ^~~
-   In function 'xive_core_debugfs_create',
-       inlined from 'xive_core_debug_init' at arch/powerpc/sysdev/xive/common.c:1861:3:
-   arch/powerpc/sysdev/xive/common.c:1845:46: note: directive argument in the range [-9223372036854775808, 4294967294]
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                                              ^~~~~~~~
-   arch/powerpc/sysdev/xive/common.c:1845:17: note: 'snprintf' output between 5 and 24 bytes into a destination of size 16
-    1845 |                 snprintf(name, sizeof(name), "cpu%ld", cpu);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   arch/powerpc/platforms/pseries/lpar.c: In function '__machine_initcall_pseries_vpa_debugfs_init':
->> arch/powerpc/platforms/pseries/lpar.c:2032:36: warning: '%ld' directive writing between 1 and 20 bytes into a region of size 12 [-Wformat-overflow=]
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                                    ^~~
-   In function 'vpa_debugfs_init',
-       inlined from '__machine_initcall_pseries_vpa_debugfs_init' at arch/powerpc/platforms/pseries/lpar.c:2038:1:
-   arch/powerpc/platforms/pseries/lpar.c:2032:31: note: directive argument in the range [-9223372036854775808, 4294967294]
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                               ^~~~~~~~~
-   arch/powerpc/platforms/pseries/lpar.c:2032:17: note: 'sprintf' output between 6 and 25 bytes into a destination of size 16
-    2032 |                 sprintf(name, "cpu-%ld", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Others might object that the change I'm suggesting sohuld go in a
+different patch, which is also OK.
 
+>  		return -EINVAL;
 
-vim +1845 arch/powerpc/sysdev/xive/common.c
+... or, if you want to keep the dev_warn(), whou can consider
+removing the "return -EINVAL;". But this is an evaluation you
+should make in a different patch and mainly evaluate if it's
+OK to remove the error here.
 
-08f3f610214f39 Cédric Le Goater 2021-11-05  1827  
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1828  static void xive_core_debugfs_create(void)
-930914b7d528fc Cédric Le Goater 2020-03-06  1829  {
-baed14de78b5ee Cédric Le Goater 2021-11-05  1830  	struct dentry *xive_dir;
-08f3f610214f39 Cédric Le Goater 2021-11-05  1831  	struct dentry *xive_eq_dir;
-08f3f610214f39 Cédric Le Goater 2021-11-05  1832  	long cpu;
-08f3f610214f39 Cédric Le Goater 2021-11-05  1833  	char name[16];
-baed14de78b5ee Cédric Le Goater 2021-11-05  1834  
-baed14de78b5ee Cédric Le Goater 2021-11-05  1835  	xive_dir = debugfs_create_dir("xive", arch_debugfs_dir);
-baed14de78b5ee Cédric Le Goater 2021-11-05  1836  	if (IS_ERR(xive_dir))
-baed14de78b5ee Cédric Le Goater 2021-11-05  1837  		return;
-baed14de78b5ee Cédric Le Goater 2021-11-05  1838  
-33e1d4a152ce55 Cédric Le Goater 2021-11-05  1839  	debugfs_create_file("ipis", 0400, xive_dir,
-33e1d4a152ce55 Cédric Le Goater 2021-11-05  1840  			    NULL, &xive_ipi_debug_fops);
-baed14de78b5ee Cédric Le Goater 2021-11-05  1841  	debugfs_create_file("interrupts", 0400, xive_dir,
-baed14de78b5ee Cédric Le Goater 2021-11-05  1842  			    NULL, &xive_irq_debug_fops);
-08f3f610214f39 Cédric Le Goater 2021-11-05  1843  	xive_eq_dir = debugfs_create_dir("eqs", xive_dir);
-08f3f610214f39 Cédric Le Goater 2021-11-05  1844  	for_each_possible_cpu(cpu) {
-08f3f610214f39 Cédric Le Goater 2021-11-05 @1845  		snprintf(name, sizeof(name), "cpu%ld", cpu);
-08f3f610214f39 Cédric Le Goater 2021-11-05  1846  		debugfs_create_file(name, 0400, xive_eq_dir, (void *)cpu,
-08f3f610214f39 Cédric Le Goater 2021-11-05  1847  				    &xive_eq_debug_fops);
-08f3f610214f39 Cédric Le Goater 2021-11-05  1848  	}
-d7bc1e376cb786 Cédric Le Goater 2021-11-05  1849  	debugfs_create_bool("store-eoi", 0600, xive_dir, &xive_store_eoi);
-2a2ac8a7018b95 Cédric Le Goater 2021-12-01  1850  
-2a2ac8a7018b95 Cédric Le Goater 2021-12-01  1851  	if (xive_ops->debug_create)
-2a2ac8a7018b95 Cédric Le Goater 2021-12-01  1852  		xive_ops->debug_create(xive_dir);
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1853  }
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1854  #else
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1855  static inline void xive_core_debugfs_create(void) { }
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1856  #endif /* CONFIG_DEBUG_FS */
-412877dfae3dc1 Cédric Le Goater 2021-11-05  1857  
+>  	}
+>  
+> @@ -1565,7 +1565,7 @@ int vme_lm_set(struct vme_resource *resource, unsigned long long lm_base,
+>  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+>  
+>  	if (!bridge->lm_set) {
+> -		dev_err(bridge->parent, "vme_lm_set not supported\n");
+> +		dev_err(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1601,7 +1601,7 @@ int vme_lm_get(struct vme_resource *resource, unsigned long long *lm_base,
+>  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+>  
+>  	if (!bridge->lm_get) {
+> -		dev_err(bridge->parent, "vme_lm_get not supported\n");
+> +		dev_err(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1638,7 +1638,7 @@ int vme_lm_attach(struct vme_resource *resource, int monitor,
+>  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+>  
+>  	if (!bridge->lm_attach) {
+> -		dev_err(bridge->parent, "vme_lm_attach not supported\n");
+> +		dev_err(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1671,7 +1671,7 @@ int vme_lm_detach(struct vme_resource *resource, int monitor)
+>  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+>  
+>  	if (!bridge->lm_detach) {
+> -		dev_err(bridge->parent, "vme_lm_detach not supported\n");
+> +		dev_err(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -1738,7 +1738,7 @@ int vme_slot_num(struct vme_dev *vdev)
+>  	}
+>  
+>  	if (!bridge->slot_get) {
+> -		dev_warn(bridge->parent, "vme_slot_num not supported\n");
+> +		dev_warn(bridge->parent, "%s not supported\n", __func__);
+>  		return -EINVAL;
+>  	}
 
-:::::: The code at line 1845 was first introduced by commit
-:::::: 08f3f610214f395561bbda03344e641579f6e917 powerpc/xive: Add a debugfs file to dump EQs
+Nothing wrong with the patch itself. But imagine if we end up in
+one of those printouts and, as a user, you read something like:
 
-:::::: TO: Cédric Le Goater <clg@kaod.org>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+   ... vme_slot_num not supported
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The message itself doesn't say much to the user. The perfect fix
+would be to re-write all these error messages with a proper
+meaningful sentence, like, e.g.:
+
+   Can't retrieve the CS/CSR slot id
+
+(don't even know if it's fully correct). Anyway, I understand
+you don't have much time for such fine changes, so whatever you
+decide to do:
+
+Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
+
+Andi
