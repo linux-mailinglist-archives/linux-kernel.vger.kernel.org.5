@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEAC7CE6D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F267C7CE6A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjJRSiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
+        id S1344801AbjJRSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjJRSiK (ORCPT
+        with ESMTP id S231562AbjJRSdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:38:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2829118
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697654241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Q/0ep7eS2yn1G5ni+CIWne5Bs5Cck5auB+wlCPDOEU=;
-        b=IYJkR6iyMA/fjujZt937TAtjPQgZGon8wXKELFxd0x7XnBlZC81c75MtSZleHEjVAPcKPi
-        /ti5rJToAtWF8MsBSwvSxjIsSTw1uOg/hzGjLTqWB+9hlkKLCW+i7kZtFJ1MyY3cV/LTR5
-        BvE6Zpnnf9z0jAbYOR+wjs51NTi/cQE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-163-Mu_eMp-RO9OeB8AD4XfzsA-1; Wed, 18 Oct 2023 14:37:18 -0400
-X-MC-Unique: Mu_eMp-RO9OeB8AD4XfzsA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 617943C0C113;
-        Wed, 18 Oct 2023 18:37:17 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.45.225.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 53C8E40C6F7D;
-        Wed, 18 Oct 2023 18:37:15 +0000 (UTC)
-From:   Jan Stancek <jstancek@redhat.com>
-To:     djwong@kernel.org, willy@infradead.org, hch@lst.de,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jstancek@redhat.com
-Subject: [PATCH v2] iomap: fix short copy in iomap_write_iter()
-Date:   Wed, 18 Oct 2023 20:32:32 +0200
-Message-Id: <e1cb4f8981f8c6e7e0384e95faf1911d9937e979.1697647960.git.jstancek@redhat.com>
-In-Reply-To: <8762e91a210f4cc5713fce05fe5906c18513bd0a.1697617238.git.jstancek@redhat.com>
-References: <8762e91a210f4cc5713fce05fe5906c18513bd0a.1697617238.git.jstancek@redhat.com>
+        Wed, 18 Oct 2023 14:33:01 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941F8118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:32:59 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9ace5370a0so7135455276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697653979; x=1698258779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OcuhCkyUkVkJNziShfChcqgUhXGg8fxBljsMorp2LaA=;
+        b=ePAoapLTdINEqv0vb+QGSFhX9piNv71BX+6lcbgOhGicNbkA0CTYSeBIpA2wzGnj9t
+         Jx8iWGexToXZ/0Mc3Ysw9/hbCUrE3KAK+I0DdAo4rfc2ErNb3jtYaHqC/EHL6gcP2qj+
+         zE0pX14WxW5yQ6LBuZNJO2r6RXlEM4U1TM1QpQxKtK8yEfg52XV0iqvRHpFcPwkQh80D
+         UvDuFK301kalDuRtdHE3w23IXKN6gL52HzxAk2rKq0YgC8Ml1GuXaNFj3uS2qVigZBww
+         ARq3TyxGIzz2X0rLmcFSI9AIkJ9YKra/PMWOGxxM7pvM+u1T25EhhhGCnvTWq2TgzhPP
+         vKdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697653979; x=1698258779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OcuhCkyUkVkJNziShfChcqgUhXGg8fxBljsMorp2LaA=;
+        b=sTm81fsBa7b2yTU0O4nttIR2ye9OBWBFgXoMFTyFixu6bkgTZL5+vRe6Mcua7POZYm
+         PbHcWT1LbeJHmvC/F8k4rNbCp6xAjevSsEc/6ceXWXm5rrW2b3UNjNl1sifU+5uZrmWl
+         4rNUlmUOtSxqRTp1unfSNqvkbbMLSpFtgjg1HXJDGmO0DqFFuoH1OEjRaRnttgtjerxW
+         KZ4Mz5O4hAX82zr50v5dXmWWxZvKCv1+zWwRp2Dx+dMMsIVc7ppkfxVw7C/V8W8ASQ8y
+         bAe6/5wMxPEFPxwcjo4cxYb9or8lNqmiEnBPhweExIwvBDd6pFTirZJozVNk0fN+eayH
+         l/sQ==
+X-Gm-Message-State: AOJu0YyFwizXn8JWLLKZaGau/pZmD4EOxF/YhT+/PH182QQeO1DAKjwz
+        P9VzZ6HxdCORpEmCosJzslxru7TlI+FvI3vc+pASqQ==
+X-Google-Smtp-Source: AGHT+IHkEoDEJmC+1gcRzR6CUVYIHQaxyD1p/4F2VErdLaQiFO3wf8DlPdOjz/L+K7KLQtAA+Udj5qMsTRqBXRzn9+Q=
+X-Received: by 2002:a25:c588:0:b0:d9b:e043:96fa with SMTP id
+ v130-20020a25c588000000b00d9be04396famr176582ybe.22.1697653978695; Wed, 18
+ Oct 2023 11:32:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018152816.56589-1-ak@it-klinger.de>
+In-Reply-To: <20231018152816.56589-1-ak@it-klinger.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 18 Oct 2023 20:32:46 +0200
+Message-ID: <CACRpkdbyOqxU_2vP1-9P+XwX4YTXfgSyh+abRJxSimxqqDDbwQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: bmp280: fix eoc interrupt usage
+To:     Andreas Klinger <ak@it-klinger.de>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with commit 5d8edfb900d5 ("iomap: Copy larger chunks from
-userspace"), iomap_write_iter() can get into endless loop. This can
-be reproduced with LTP writev07 which uses partially valid iovecs:
-        struct iovec wr_iovec[] = {
-                { buffer, 64 },
-                { bad_addr, 64 },
-                { buffer + 64, 64 },
-                { buffer + 64 * 2, 64 },
-        };
+On Wed, Oct 18, 2023 at 5:29=E2=80=AFPM Andreas Klinger <ak@it-klinger.de> =
+wrote:
 
-commit bc1bb416bbb9 ("generic_perform_write()/iomap_write_actor():
-saner logics for short copy") previously introduced the logic, which
-made short copy retry in next iteration with amount of "bytes" it
-managed to copy:
 
-                if (unlikely(status == 0)) {
-                        /*
-                         * A short copy made iomap_write_end() reject the
-                         * thing entirely.  Might be memory poisoning
-                         * halfway through, might be a race with munmap,
-                         * might be severe memory pressure.
-                         */
-                        if (copied)
-                                bytes = copied;
+> Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
+> bmp085 and bmp180 share the same chip id. Therefore it's necessary to
+> distinguish the case in which the interrupt is set.
+>
+> Fix the if statement so that only when the interrupt is set and the chip
+> id is recognized the interrupt is requested.
+>
+> This bug exists since the support of EOC interrupt was introduced.
+> Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC i=
+nterrupt")
+>
+> Also add a link to bmp085 datasheet for reference.
+>
+> Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
+> Signed-off-by: Andreas Klinger <ak@it-klinger.de>
 
-However, since 5d8edfb900d5 "bytes" is no longer carried into next
-iteration, because it is now always initialized at the beginning of
-the loop. And for iov_iter_count < PAGE_SIZE, "bytes" ends up with
-same value as previous iteration, making the loop retry same copy
-over and over, which leads to writev07 testcase hanging.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Make next iteration retry with amount of bytes we managed to copy.
-
-Fixes: 5d8edfb900d5 ("iomap: Copy larger chunks from userspace")
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-Changes in v2:
-- use goto instead of new variable (suggested by Christoph Hellwig)
-
- fs/iomap/buffered-io.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 5db54ca29a35..2bc0aa23fde3 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -881,8 +881,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 		size_t bytes;		/* Bytes to write to folio */
- 		size_t copied;		/* Bytes copied from user */
- 
-+		bytes = iov_iter_count(i);
-+retry:
- 		offset = pos & (chunk - 1);
--		bytes = min(chunk - offset, iov_iter_count(i));
-+		bytes = min(chunk - offset, bytes);
- 		status = balance_dirty_pages_ratelimited_flags(mapping,
- 							       bdp_flags);
- 		if (unlikely(status))
-@@ -933,10 +935,12 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 			 * halfway through, might be a race with munmap,
- 			 * might be severe memory pressure.
- 			 */
--			if (copied)
--				bytes = copied;
- 			if (chunk > PAGE_SIZE)
- 				chunk /= 2;
-+			if (copied) {
-+				bytes = copied;
-+				goto retry;
-+			}
- 		} else {
- 			pos += status;
- 			written += status;
--- 
-2.31.1
-
+Yours,
+Linus Walleij
