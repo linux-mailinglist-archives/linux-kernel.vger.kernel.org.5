@@ -2,185 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DD67CD64C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D547CD647
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbjJRIWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S235100AbjJRIVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbjJRIWO (ORCPT
+        with ESMTP id S235262AbjJRIVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:22:14 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2128.outbound.protection.outlook.com [40.107.215.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB599EA;
-        Wed, 18 Oct 2023 01:22:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dJNjtDbq5MY8+/8k53ArckBxifmZ3KLitaHfWuxF7Nz3cOU+QjGYAk5m0wFCitNS3M8GSfOezR3YzGbwOpzQzsMczdWV21Mc5KCgIuOFPAFMVwM+IeR7I1E+IBnWz/TKijbCAuSWc9gUV1XYkaV4W6EvVdmWCpMpRGE1W0vbS+t3FCwXT5MGBCwzAaO5MLGgHt4bvnqPT37uX5t9SB1aNgQwFim5wyqYCr9Raq5uUgbCAk371n7CH3T3U1+MyxgKrfwnUcvOmtyeQVaRA9EWuJzsO8lX+WcuI6QKDZQi///G/wsm0jJux2R221KkZMxL5G9FcWGcmTwDSrIhkmERbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EWIhVH8kG9NLSbfhfkLvuBEveomuvEk4IFEU8DuIXio=;
- b=HoBI4C5m4aE6SBXmEpXbVG+5nDYOYPQoDTMVFYO9jWmNd0rXgqDco8BCrTOybW0rOvDHaP7CmGgqSJ6rOFQj0HFDVjSvLCi91zpUUi3x6E4zVA6CrHCVLpx44nAlmqaXxBMaMRdJ3Wwezad2D7zEMSekGiaXUPLyJf98KIloCfObu3Eno8gs7OQyJFM2TGr6mS+yzgUvPAdcJ1yr2jfrAZNwfXvrHc364iXERIIAB5Ow89FzCtSP39pJqQBgZq2lRI9d2ht8cSs/QuBZInuD4EuBmx2GzUxozcIwNsufpXPtP4rus+ZqcBXIAujpN7pMDKB4D1Ozp7tFeUj0GKEZtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EWIhVH8kG9NLSbfhfkLvuBEveomuvEk4IFEU8DuIXio=;
- b=MjIb9KPMWPUYy+bMJuJpjnkuL420kv/3z3pEzhwh8SAjHMqqKmt/y+Tjb8LgoNT6QlWDIKhTuaAwVfKiTP2vr8yZATvWYUio4lA1R8dgTspcSIXPariaag6SvQrqXub8w/rwOK8q99B69S2+ULL+ymD64ZtkliXS14n3F5J1vi87A8joyQSemM9Pzydh2IrQJGGgYgZkYMb7dtctvJH3boF34We9FPgBRbbkAHp7UHuzpgRk28AVu2p5JyRrU9dnV2XhypmwEpPZNQ+OAxF/6l5yDV+hX4dJlLo0BHTB8qU6cPsz2seR4LxaHDtc1zNGTHMcwubLm51R1I/CidfgLQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by PSAPR06MB4391.apcprd06.prod.outlook.com (2603:1096:301:82::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Wed, 18 Oct
- 2023 08:22:08 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::40ac:5701:4617:f503]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::40ac:5701:4617:f503%4]) with mapi id 15.20.6907.021; Wed, 18 Oct 2023
- 08:22:08 +0000
-From:   Huan Yang <link@vivo.com>
-To:     Yu Zhao <yuzhao@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huan Yang <link@vivo.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH 2/2] mm: multi-gen lru: fix stat count
-Date:   Wed, 18 Oct 2023 16:21:00 +0800
-Message-Id: <20231018082104.3918770-3-link@vivo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231018082104.3918770-1-link@vivo.com>
-References: <20231018082104.3918770-1-link@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR04CA0185.apcprd04.prod.outlook.com
- (2603:1096:4:14::23) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Wed, 18 Oct 2023 04:21:22 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9345D12D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:21:05 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1C912F4;
+        Wed, 18 Oct 2023 01:21:45 -0700 (PDT)
+Received: from [10.57.66.147] (unknown [10.57.66.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2FBA3F64C;
+        Wed, 18 Oct 2023 01:21:03 -0700 (PDT)
+Message-ID: <1634d3e0-ac13-4f08-97e3-9b04a9202431@arm.com>
+Date:   Wed, 18 Oct 2023 09:21:02 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|PSAPR06MB4391:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9545bd03-848c-4418-0106-08dbcfb351cc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jUXaTwskgInwOhmnvEmDReDAfqDVqzr1IwWmWfcoWsvlRGiNX4DdFKXyC0cUpqsDU1/L7wAWXGXxSWaoKes/+WY8NKHpK38lOUkf6H7vWwxuJxcxa5+Sq7tM1lcI2SWHrtTLtw7g+88YXsYpdDAkLnAMRAUxfPopSL/6FK3LTCayh3Je90ngSWQabyYR0ViikbfA294kwBAPR1BOC5NDeKjt+21sXewM+5Evl10Lrq+VZx5GcFqvB00cnV42EPtlyTK7hl+chsVZ0yVVYJ7PgOf5xGcs+bW2bqoeSM8u1mavoNI/PhHng88meKc0/9230F37vj1OAyJ5qgAYsgpmwuDC78dT4sdZ2xZX5erfFe+ibcHsHPA3jj5W6gSWIU7aZt6gkmnNJkn9XUge2xpC6lzlRPb/UkUBUR4v/v6EcMq+GvMc2cseGS8ITq3Kj3IWoCDzWiRTr3HPmW+kvhrFK7yIRDw8GeZOsi12N1lZLtk5zoclxO6TTX4e6MExk9okVudUHfRgEK20WvtkHlSPF1ZUolv5JnQ0wXxM44tQf1ou11k7lGP6fzNApK+R78WUz4niOhOiJL0YQ7526uwKD7TrjipdDkxdA79no2KRhF81PVI7so0jEFGTmu4wLLuBikc4qjppQ1GQEILok2/gYg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(396003)(346002)(39850400004)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(7416002)(4326008)(8676002)(8936002)(5660300002)(2906002)(86362001)(36756003)(41300700001)(38100700002)(6506007)(83380400001)(6666004)(52116002)(6512007)(6486002)(107886003)(316002)(478600001)(1076003)(26005)(921005)(110136005)(38350700005)(66476007)(2616005)(66946007)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1mnGyRBonP7nfJzGGd0Um/FvTMR58vdZaxRHqIIFzgsilsKyy5clAdGYSP1d?=
- =?us-ascii?Q?hvgZwe4sCfCVXTq8JZ27b+qjTHILP5JFbK3s5ZV4qggD0iS/AHRNWwQSW+Fx?=
- =?us-ascii?Q?nzmogV3PxCcXzGiI5KjTknsvMDYNP5pMjT/E1waJx1+fTtHV2oNNpGsLOuQk?=
- =?us-ascii?Q?1RGLsldoyweJoLFLTF/ofHzyGxLzZpkfVhT1AGLciZWiybkUkiqXGqVinDB8?=
- =?us-ascii?Q?0iaVQQ/1dwznJFQq8A4IlJgie3sEmAkMMsANTT/9xGAvdYezSZ114BofuBXw?=
- =?us-ascii?Q?aul0yOkSMZfBX9z29b/8tSPjdnqfXjB0Xxtm9gw6wRePyopGHnZNNr9tcxCC?=
- =?us-ascii?Q?ojrBI5aGdEamZbLCCuWKuDO8bEtXNfFlwEG3OqUEARRYX2jGwvr1hoj5ceX9?=
- =?us-ascii?Q?zohH3JIeFQDOD1N2c+YkZZUYrBUgkTvIZqlukvhjEJmrrsc/mTOmvz8m9LLP?=
- =?us-ascii?Q?wQ/VzkC6wHUX0EBN9W26wWtDewB/Mq6RVOHe2I2KtyfhYBNvGVKhpKsyLY+8?=
- =?us-ascii?Q?cJUYMkLaaAIWiCK2GqREghKJEBhn0gMGLVa1RocUoAtsHm2IxN6DTJ9mvZWi?=
- =?us-ascii?Q?/GyGe3NUdAiABohIRWF3zn/Igfgi0yHAL1msVdm3CB5P7kmXlsUj3AFP/oFz?=
- =?us-ascii?Q?zx3vRa7zf03owoIXsrUf8kHBca+T7WJ9L/YR101sb7P/wA6XV1SpufKFKpa5?=
- =?us-ascii?Q?tINUWV804zq1kwQHjbR0M/7TND8Swmi3e22mQYR/oLcnMln8suqut0kP0JkX?=
- =?us-ascii?Q?2BsEs1xNWPsz4BIqi0rkBGMsBl2tAGdTFKnIoybqFCOVJF2ZddBbLcikk6vv?=
- =?us-ascii?Q?V3n6nT68lDQL1gMCi/5ErV/J5KTt9hVihk06Rd6FjxHootOd5Beh2zyGIZA7?=
- =?us-ascii?Q?vVzIUCR/lE3NPjJLZ4ooQ0LTICL5y526mtyQA/MTaQn7CWFF7O9I+5uepj8C?=
- =?us-ascii?Q?dPT7X6wEn7aQ7L/FB1C4Fg2tFVIDpHZR6yA1vzkFywmKONvwRzoSBqflx/PA?=
- =?us-ascii?Q?vSm1MDGsZjtCGOTWWhmwzXxz4fDBJc1nmqRwltsM5mdGbkFTH83EeblFu8Qp?=
- =?us-ascii?Q?i8ESswdFs7f1WHkzYVSmo5YKc8JkyS70WtJ31EOFUuxQzpw3IYW3yMRYXLh2?=
- =?us-ascii?Q?BSfe4fw0v6ChAkJl1LEfEntQI7aCMbeHa+fqfeJuHvKzeShQXqmy9PgrkLh+?=
- =?us-ascii?Q?QZYugvEjS4npEwYqXcvNoGpPsDFvLHnLa6dSxXmkEpB/O7ZxqVCih79zJxqM?=
- =?us-ascii?Q?YTonxev19RPF6VFuiL5nMVPZjsyd+SGWNx5bhaiIqG7yN0gbNJZMeF4P/oCz?=
- =?us-ascii?Q?DaoQY1mB3kb229llzSewyzoHsbTs6JQYDuFY0cPzqEaXJOpgcdVyjeYLaiiN?=
- =?us-ascii?Q?03x8rGHh2BkjnU5RBwJ4n4eK/iPbB1AgdJTDnqrjAJSt7y38Wunn141Gi9JC?=
- =?us-ascii?Q?lhM1Mrn06uhg449iq75GqZLrvWtjLOFXfujGBxsubClRIqYMAJgyzKsRMu46?=
- =?us-ascii?Q?o+8m/z+WyFIV9uIS8MtXpFdZEZr0Q6haNoJi8WwrRA0f7kg4zFeZfdw1Fatt?=
- =?us-ascii?Q?IfA41MX+k1rH7eZA03YoG96EKSYTaSkxP9Fm06/9?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9545bd03-848c-4418-0106-08dbcfb351cc
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 08:22:08.2941
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: humrRbJhtzRz7mHw3ImA04YdvnTUCHIFeVefqEAMtiz6oeqaw/URu+bmPYOWCWlYnOX1btJyeZPTSBYDOvXzJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4391
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
+Content-Language: en-GB
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kernel test robot <lkp@intel.com>, Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Peter Collingbourne <pcc@google.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231005140730.2191134-1-ryan.roberts@arm.com>
+ <202310140531.BQQwt3NQ-lkp@intel.com> <ZS147N1JKyUvaHyJ@arm.com>
+ <b463b420-c2be-49c5-bed6-0ff896851adb@arm.com> <ZS6EvMiJ0QF5INkv@arm.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZS6EvMiJ0QF5INkv@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For multi-gen lru reclaim in evict_folios, like shrink_inactive_list,
-gather folios which isolate to reclaim, and invoke shirnk_folio_list.
+On 17/10/2023 13:57, Catalin Marinas wrote:
+> On Tue, Oct 17, 2023 at 08:36:43AM +0100, Ryan Roberts wrote:
+>> On 16/10/2023 18:54, Catalin Marinas wrote:
+>>> On Sat, Oct 14, 2023 at 05:15:51AM +0800, kernel test robot wrote:
+>>>> kernel test robot noticed the following build warnings:
+>>>>
+>>>> [auto build test WARNING on arm64/for-next/core]
+>>>> [also build test WARNING on arm-perf/for-next/perf arm/for-next kvmarm/next soc/for-next linus/master v6.6-rc5 next-20231013]
+>>>> [cannot apply to arm/fixes]
+>>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>>>> And when submitting patch, we suggest to use '--base' as documented in
+>>>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>>>
+>>>> url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/arm64-mm-Hoist-synchronization-out-of-set_ptes-loop/20231005-231636
+>>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+>>>> patch link:    https://lore.kernel.org/r/20231005140730.2191134-1-ryan.roberts%40arm.com
+>>>> patch subject: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
+>>>> config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/config)
+>>>> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+>>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/reproduce)
+>>>>
+>>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>>>> the same patch/commit), kindly add following tags
+>>>> | Reported-by: kernel test robot <lkp@intel.com>
+>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202310140531.BQQwt3NQ-lkp@intel.com/
+>>>>
+>>>> All warnings (new ones prefixed by >>):
+>>>>
+>>>>    In file included from net/ipv4/route.c:66:
+>>>>    In file included from include/linux/mm.h:29:
+>>>>    In file included from include/linux/pgtable.h:6:
+>>>>>> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
+>>>>      344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>>>>          |                                                                 ^
+>>>>    1 warning generated.
+>>>
+>>> Thanks for the report. I think something like below will do (I'll test
+>>> and commit as a separate patch, it's not something that Ryan's patch
+>>> introduces):
+>>
+>> I was actually just trying to repro this and was planning to send out a v3 of my
+>> patch. But if you are happy to handle it as you suggest, then I guess you don't
+>> need anything further from me?
+> 
+> If you feel like testing, please give this a go ;)
 
-But, when complete shrink, it not gather shrink reclaim stat into sc,
-we can't get info like nr_dirty\congested in reclaim, and then
-control writeback, dirty number and mark as LRUVEC_CONGESTED, or
-just bpf trace shrink and get correct sc stat.
+Compile tested and observed that warning is gone with your change. Also ran mm
+selftests and all looks good. So:
 
-This patch fix this by simple copy code from shrink_inactive_list when
-end of shrink list.
+Tested-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Signed-off-by: Huan Yang <link@vivo.com>
----
- mm/vmscan.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 21099b9f21e0..88d1d586aea5 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4593,6 +4593,41 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
- 	 */
- 	nr_taken = sc->nr_scanned - nr_taken;
- 
-+	/*
-+	 * If dirty folios are scanned that are not queued for IO, it
-+	 * implies that flushers are not doing their job. This can
-+	 * happen when memory pressure pushes dirty folios to the end of
-+	 * the LRU before the dirty limits are breached and the dirty
-+	 * data has expired. It can also happen when the proportion of
-+	 * dirty folios grows not through writes but through memory
-+	 * pressure reclaiming all the clean cache. And in some cases,
-+	 * the flushers simply cannot keep up with the allocation
-+	 * rate. Nudge the flusher threads in case they are asleep.
-+	 */
-+	if (unlikely(stat.nr_unqueued_dirty == nr_taken)) {
-+		wakeup_flusher_threads(WB_REASON_VMSCAN);
-+		/*
-+		 * For cgroupv1 dirty throttling is achieved by waking up
-+		 * the kernel flusher here and later waiting on folios
-+		 * which are in writeback to finish (see shrink_folio_list()).
-+		 *
-+		 * Flusher may not be able to issue writeback quickly
-+		 * enough for cgroupv1 writeback throttling to work
-+		 * on a large system.
-+		 */
-+		if (!writeback_throttling_sane(sc))
-+			reclaim_throttle(pgdat, VMSCAN_THROTTLE_WRITEBACK);
-+	}
-+
-+	sc->nr.dirty += stat.nr_dirty;
-+	sc->nr.congested += stat.nr_congested;
-+	sc->nr.unqueued_dirty += stat.nr_unqueued_dirty;
-+	sc->nr.writeback += stat.nr_writeback;
-+	sc->nr.immediate += stat.nr_immediate;
-+	sc->nr.taken += nr_taken;
-+	if (type)
-+		sc->nr.file_taken += nr_taken;
-+
- 	sc->nr_reclaimed += total_reclaimed;
- 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id, nr_taken,
- 					     total_reclaimed, &stat,
--- 
-2.34.1
+> 
+> ------------8<---------------------------
+> From e6255237acfc21e92252653c3ed42446ef67f625 Mon Sep 17 00:00:00 2001
+> From: Catalin Marinas <catalin.marinas@arm.com>
+> Date: Tue, 17 Oct 2023 11:57:55 +0100
+> Subject: [PATCH] arm64: Mark the 'addr' argument to set_ptes() and
+>  __set_pte_at() as unused
+> 
+> This argument is not used by the arm64 implementation. Mark it as
+> __always_unused and also remove the unnecessary 'addr' increment in
+> set_ptes().
+> 
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310140531.BQQwt3NQ-lkp@intel.com/
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  arch/arm64/include/asm/pgtable.h | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 68984ba9ce2a..b19a8aee684c 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -341,8 +341,9 @@ static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>  		mte_sync_tags(pte, nr_pages);
+>  }
+>  
+> -static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+> -			      pte_t *ptep, pte_t pte, unsigned int nr)
+> +static inline void set_ptes(struct mm_struct *mm,
+> +			    unsigned long __always_unused addr,
+
+Personally I'm not a huge fan of the __always_unused mark up, given that it's
+used so patchily in the source. The warning also disappears without these
+markups. (the real problem is just the `addr += PAGE_SIZE` below.
+
+Thanks,
+Ryan
+
+
+> +			    pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+>  	page_table_check_ptes_set(mm, ptep, pte, nr);
+>  	__sync_cache_and_tags(pte, nr);
+> @@ -353,7 +354,6 @@ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>  		if (--nr == 0)
+>  			break;
+>  		ptep++;
+> -		addr += PAGE_SIZE;
+>  		pte_val(pte) += PAGE_SIZE;
+>  	}
+>  }
+> @@ -528,7 +528,8 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+>  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
+>  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+>  
+> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+> +static inline void __set_pte_at(struct mm_struct *mm,
+> +				unsigned long __always_unused addr,
+>  				pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+>  	__sync_cache_and_tags(pte, nr);
 
