@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3F7CD5B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607F17CD5AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 09:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344615AbjJRHvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 03:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        id S1344559AbjJRHvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 03:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344584AbjJRHvD (ORCPT
+        with ESMTP id S229853AbjJRHu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 03:51:03 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2A0EA;
-        Wed, 18 Oct 2023 00:50:59 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39I7ohxW077421;
-        Wed, 18 Oct 2023 02:50:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697615443;
-        bh=/Pn+j+SGy0Pf87LvUcY7SLTOVYLU/WbWc24R3v0wvWc=;
-        h=From:To:CC:Subject:Date;
-        b=tp6wxbdp86ZnMpNI3cW9dgf5y/qagJEp7+LUwrU5dWkwrUIGvJnnDgS+3VyjLoE4K
-         7wMH4Bpy/igBoyEoNCyO8x2hsKVePs/wETgfHkuRdQTnBfCYU+Ban6t2t2YNqsgCIG
-         XRh3ULEJHKXUyKKI9cIMI2xf7YM6fOOdUpwUxxYA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39I7ohAr074316
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Oct 2023 02:50:43 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
- Oct 2023 02:50:42 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 18 Oct 2023 02:50:42 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39I7odjM030544;
-        Wed, 18 Oct 2023 02:50:40 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x SoC
-Date:   Wed, 18 Oct 2023 13:20:38 +0530
-Message-ID: <20231018075038.2740534-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 18 Oct 2023 03:50:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C4FF7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 00:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697615457; x=1729151457;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2e6ywZDG7rC0YaI4mpzW/6wyogmKCONIADxJWPjr35g=;
+  b=Ris7k8cvI8G3zzK1+0qkYLVfaaNPC/9aqvZSECaUCxpqHS8ovvvUsWFF
+   3daVKnVVA6JHBmPpZmJzG3CtpYY3zrxQ+j3VUuUC+O52XVGWoO4Lp/iHM
+   o6IOzP2yUyBH6t/d0DUHc/TPSKm4WQrGLQb7VBjPw2Ewd2lGxU9FJazwp
+   Hdyd2X+tegLj5grfGDBPcyNpRp6B58XAy6JUzelYXzbfL0PiUo1zwXkws
+   j0BY2ZHn1Lqh56PQYVYNiAQR3pI8NwG6aaylThPSfLdTJa6tWeQc8SyTD
+   e3o21H7vnQ3tfjDnpJdh4VeY4tfCxXmnPdA2CeQgJGRXQhZPeplBiOj0W
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365312994"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="365312994"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 00:50:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="760124176"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="760124176"
+Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 00:50:54 -0700
+Date:   Wed, 18 Oct 2023 09:50:53 +0200
+From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: ivpu TODO list items
+Message-ID: <20231018075053.GB525429@linux.intel.com>
+References: <ZSjwuyCOL9Vb9+yb@runicha.com>
+ <ZS68dysac34rA32D@runicha.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS68dysac34rA32D@runicha.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ks_pcie_v3_65_add_bus() member of "ks_pcie_ops" was added for
-platforms using DW PCIe IP-core version 3.65a. The AM654x SoC uses
-DW PCIe IP-core version 4.90a and ks_pcie_v3_65_add_bus() is not
-applicable to it.
+Hi
 
-The commit which added support for the AM654x SoC has reused majority
-of the functions with the help of the "is_am6" flag to handle AM654x
-separately where applicable. Thus, make use of the "is_am6" flag and
-change ks_pcie_v3_65_add_bus() to no-op for AM654x SoC.
+On Tue, Oct 17, 2023 at 10:25:19PM +0530, Deepak R Varma wrote:
+> On Fri, Oct 13, 2023 at 12:54:43PM +0530, Deepak R Varma wrote:
+> > Hello,
+> > I am shortlisted as a mentee for the LF Mentorship program. I looked at the TODO
+> > file for the ivpu driver for my project tasks. Could you please answer the
+> > following questions:
+> >
+> > 1. Is the TODO list up to date? If not, can we have it updated? Let me know if I
+> > can help.
+It's not. Some of those was already implemented (but yet not submitted).
+Some ideas there was dropped. 
 
-Fixes: 18b0415bc802 ("PCI: keystone: Add support for PCIe RC in AM654x Platforms")
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
-Hello,
+I think this file can be whole removed. Feel free to post patch for
+that.
 
-This patch is based on linux-next tagged next-20231018.
+> > 2. Is it absolutely necessary for me to have a specialized hardware to test my
+> > patches? Is it limited to the 14thGen or above CPU or do I need more than that?
+Yes, I don't think someone can work on ivpu without hardware.
 
-The v1 of this patch is at:
-https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
+> > 3. Is it okay for me to work on the TODO list items. Let me know if you have a
+> > preference [Please note I just started a few months ago and still learning].
+I recommend you to work on items from:
+https://www.kernel.org/doc/html/latest/gpu/todo.html
 
-While there are a lot of changes since v1 and this patch could have been
-posted as a v1 patch itself, I decided to post it as the v2 of the patch
-mentioned above since it aims to address the issue described by the v1
-patch and is similar in that sense. However, the solution to the issue
-described in the v1 patch appears to be completely different from what
-was implemented in the v1 patch. Thus, the commit message and subject of
-this patch have been modified accordingly.
+> Hello,
+> May I request the maintainer to review my questions and comment please?
 
-Changes since v1:
-- Updated patch subject and commit message.
-- Determined that issue is not with the absence of Link as mentioned in
-  v1 patch. Even with Link up and endpoint device connected, if
-  ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
-  MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
-  AER and PME services. The all Fs return value indicates that the MSI-X
-  configuration is failing even if Endpoint device is connected. This is
-  because the ks_pcie_v3_65_add_bus() function is not applicable to the
-  AM654x SoC which uses DW PCIe IP-core version 4.90a.
+Sorry, I haven't seen this email before.
 
-Regards,
-Siddharth.
-
- drivers/pci/controller/dwc/pci-keystone.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 0def919f89fa..3abd59335574 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -459,7 +459,7 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
- 
--	if (!pci_is_root_bus(bus))
-+	if (!pci_is_root_bus(bus) || ks_pcie->is_am6)
- 		return 0;
- 
- 	/* Configure and set up BAR0 */
--- 
-2.34.1
-
+Regards
+Stanislaw
