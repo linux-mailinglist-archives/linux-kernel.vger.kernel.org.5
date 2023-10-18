@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E194E7CE7E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF857CE7C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjJRTja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        id S230391AbjJRTdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJRTj2 (ORCPT
+        with ESMTP id S229487AbjJRTdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:39:28 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0873AB
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:39:25 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IJR9h8019194;
-        Wed, 18 Oct 2023 19:37:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : reply-to : in-reply-to :
- content-type : content-transfer-encoding : mime-version; s=pp1;
- bh=yOaHQCYUhLSQI4jFZybHkjI3bsaNRxLdTDXlGx5g6vU=;
- b=K1qDrbEnm4SJ7p4CnU7MLwgZ9g33134AcC+mmA9b5nszyPJFntvVd5TCD2DOY/CJqsjI
- tlQZJp/AenEyWu5IWW/V677EX0xyb76ohtORRuwIYDFsaRnTp+cFLhUwJVVQVSEjxFA9
- b+5DeElMzm7ZxCNKkW1vNjeYr0OcSq1J4bX0dOiicog0KJoQFvJ5VTK2FNw7pQk51jqU
- sr3+O2p9a7gP/u1aDE80ksZTKf3lAl8jt5YD97Hdx8ygNdzX+FKevvv/YH12TZOohEgR
- du45RoMJlbILrqVm826gFzvoBNnyA9QMgbaHPS+dZICasuDAa7YcuCMjC7ra5HrYq9+C Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttnhf0bf1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:37:02 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39IJXQji001713;
-        Wed, 18 Oct 2023 19:36:54 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ttnhf0as4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:36:54 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39II7o6l026875;
-        Wed, 18 Oct 2023 19:32:29 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr5askny8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 19:32:29 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39IJWS8A40501672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 19:32:28 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 33CAE5805F;
-        Wed, 18 Oct 2023 19:32:28 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5BDE758051;
-        Wed, 18 Oct 2023 19:32:18 +0000 (GMT)
-Received: from [9.179.4.104] (unknown [9.179.4.104])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Oct 2023 19:32:18 +0000 (GMT)
-Message-ID: <eb45778d-3302-2ece-8d2e-319b1fcd071d@linux.ibm.com>
-Date:   Thu, 19 Oct 2023 01:02:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 0/2] Introduce SIS_CACHE to choose previous CPU during
- task wakeup
-To:     Chen Yu <yu.c.chen@intel.com>,
-        cover.1695704179.git.yu.c.chen@intel.com
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org, Chen Yu <yu.chen.surf@gmail.com>,
-        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-References: <cover.1695704179.git.yu.c.chen@intel.com>
- <3f98806b-fd74-cfba-b48c-2526109d10a3@linux.ibm.com>
- <ZS5rhO5XysGOUn4M@chenyu5-mobl2.ccr.corp.intel.com>
-Content-Language: en-US
-From:   Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-Reply-To: ZS5rhO5XysGOUn4M@chenyu5-mobl2.ccr.corp.intel.com
-In-Reply-To: <ZS5rhO5XysGOUn4M@chenyu5-mobl2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _Jw2K_soGUUccuVN04o0MyIL4osYdIlH
-X-Proofpoint-GUID: Vp9OO0cWkzQGZX84O52wlE1VUDeNIuVy
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 18 Oct 2023 15:33:33 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AC9109
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:33:31 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e16f076b3so91597a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697657610; x=1698262410; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m1tU0gAsvo99sH0ntf3CjZbasv525nBRbJ+XTXDklbo=;
+        b=jNmOSKUxio7Q6kK8qjZW0HdTJn0b78TQIDgshy2n482jkfNruU1HplrWR8kymuzY6m
+         dACY/qgLSLIBlGAjNJs3azlKipYJlYZq76e4lbfRysvfVK23e3T1kexWo4PzqXsZ2iLO
+         rLIWhb3G5DxcFcpTFzsYMRtK3O2SxvaIojC/J+1zAObNvpes7g+l0PF/87wQSyFkJD6l
+         3tMj7LpiXUyAJAPrtjzv7I6X6QJB2r5pMOFwkAI39s+JyOrC62VxSqarIUd/lYEp9i75
+         eRyEm2zJ3s2sIKCLZJm/yyFSXPYR3tchSCAV29iY4zInI+0KxGD4Z11F4MZQOghwCxgU
+         UbmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697657610; x=1698262410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m1tU0gAsvo99sH0ntf3CjZbasv525nBRbJ+XTXDklbo=;
+        b=mOfPdjQgfhchtDtJSiPCqFFtalmB7ID14US7NP2hKDuzIrRsKwRpE1hbL0UTMmtcnr
+         sK5dq6BVCNAqanJrNof/bRtYjOWUe/b8hCuecjhXTKGBC28PgtYLSXzxv3srmgN8IRZa
+         cidQIBM/rcMkt/o6SlZtX2SL8ilkhuSDn6qwjlcX+2AgfgsdJqAV+3zEqrDPgv8qSTb1
+         9FlZ60zJw4vcloLAH+pAwql7n8/4qNzfAWhi1lwkCfCV5OfNaD4xvS9uDp+tGcGetJfv
+         GBr++NWgrPbSOSCIi7D0i7Vl8wcQOru1VEhaPcegSig9f4Lyc2C13tqoYhNbY8iIl/9D
+         tLrQ==
+X-Gm-Message-State: AOJu0Ywf66JKBpKTQNnM/rE+lIdwXmEf23lrHXfxoVReSvVkWXg9usYn
+        LjriX73SVBqnZyxR1s+X6WeUi+VSJER3cj+i4s4=
+X-Google-Smtp-Source: AGHT+IEzDqTzIZ0kupOd7q8LeO5l5AyVoXEMBAMSErgMITON+MJpAZvES8ludPwFskqbnBDzTA/4ToZkFhA3zNruQC4=
+X-Received: by 2002:a05:6402:524a:b0:53e:264d:be1f with SMTP id
+ t10-20020a056402524a00b0053e264dbe1fmr436781edd.2.1697657609825; Wed, 18 Oct
+ 2023 12:33:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_18,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- spamscore=0 impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180159
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com> <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+In-Reply-To: <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 21:33:18 +0200
+Message-ID: <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,291 +98,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen Yu,
-On 17/10/23 16:39, Chen Yu wrote:
-> Hi Madadi,
-> 
-> On 2023-10-17 at 15:19:24 +0530, Madadi Vineeth Reddy wrote:
->> Hi Chen Yu,
->>
->> On 26/09/23 10:40, Chen Yu wrote:
->>> RFC -> v1:
->>> - drop RFC
->>> - Only record the short sleeping time for each task, to better honor the
->>>   burst sleeping tasks. (Mathieu Desnoyers)
->>> - Keep the forward movement monotonic for runqueue's cache-hot timeout value.
->>>   (Mathieu Desnoyers, Aaron Lu)
->>> - Introduce a new helper function cache_hot_cpu() that considers
->>>   rq->cache_hot_timeout. (Aaron Lu)
->>> - Add analysis of why inhibiting task migration could bring better throughput
->>>   for some benchmarks. (Gautham R. Shenoy)
->>> - Choose the first cache-hot CPU, if all idle CPUs are cache-hot in
->>>   select_idle_cpu(). To avoid possible task stacking on the waker's CPU.
->>>   (K Prateek Nayak)
->>>
->>> Thanks for your comments and review!
->>>
->>> ----------------------------------------------------------------------
->>
->> Regarding making the scan for finding an idle cpu longer vs cache benefits, 
->> I ran some benchmarks.
->>
-> 
-> Thanks very much for your interest and your time on the patch.
-> 
->> Tested the patch on power system with 12 cores. Total of 96 CPU's.
->> System has two NUMA nodes.
->>
->> Below are some of the benchmark results
->>
->> schbench 99.0th latency (lower is better)
->> ========
->> case            load        	baseline[pct imp](std%)       SIS_CACHE[pct imp]( std%)
->> normal          1-mthreads      1.00 [ 0.00]( 3.66)            1.00 [  0.00]( 1.71)
->> normal          2-mthreads      1.00 [ 0.00]( 4.55)            1.02 [ -2.00]( 3.00)
->> normal          4-mthreads      1.00 [ 0.00]( 4.77)            0.96 [ +4.00]( 4.27)
->> normal          6-mthreads      1.00 [ 0.00]( 60.37)           2.66 [ -166.00]( 23.67)
->>
->>
->> schbench results are showing that there is not much impact in wakeup latencies due to more iterations 
->> in search for an idle cpu in the select_idle_cpu code path and interestingly numbers are slightly better 
->> for SIS_CACHE in case of 4-mthreads.
-> 
-> The 4% improvement is within std%, so I suppose we did not see much difference in 4 mthreads case.
-> 
->> I think we can ignore the last case due to huge run to run variations.
-> 
-> Although the run-to-run variation is large, it seems that the decrease is within that range.
-> Prateek has also reported that when the system is overloaded there could be some regression
-> from schbench:
-> https://lore.kernel.org/lkml/27651e14-f441-c1e2-9b5b-b958d6aadc79@amd.com/
-> Could you also post the raw data printed by schbench? And maybe using the latest schbench could get the
-> latency in detail.
->  
+On Wed, Oct 18, 2023 at 8:26=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
+>
+> On Wed, Oct 18, 2023 at 8:16=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Wed, 18 Oct 2023 at 11:08, Uros Bizjak <ubizjak@gmail.com> wrote:
+> > >
+> > > But loads from non-const memory work like the above.
+> >
+> > Yes, I'm certainly ok with the move to use plain loads from __seg_gs
+> > for the percpu accesses. If they didn't honor the memory clobber, we
+> > could never use it at all.
+> >
+> > I was just saying that the 'const' alias trick isn't useful for
+> > anything else than 'current', because everything else needs to at
+> > least honor our existing barriers.
+>
+> FYI, smp_processor_id() is implemented as:
+>
+> #define __smp_processor_id() __this_cpu_read(pcpu_hot.cpu_number)
+>
+> where __this_* forces volatile access which disables CSE.
+>
+> *If* the variable is really stable, then it should use __raw_cpu_read.
+> Both, __raw_* and __this_* were recently (tip/percpu branch)
+> implemented for SEG_SUPPORT as:
 
-raw data by schbench(old) with 6-mthreads
-======================
+This pach works for me:
 
-Baseline (5 runs)
-========
-Latency percentiles (usec)                                                                                                                                                                                                                                  
-        50.0000th: 22
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 981 
-        99.5000th: 4424
-        99.9000th: 9200
-        min=0, max=29497
+--cut here--
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+index 4fab2ed454f3..6eda4748bf64 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -141,8 +141,7 @@ __visible void
+smp_call_function_single_interrupt(struct pt_regs *r);
+ * This function is needed by all SMP systems. It must _always_ be valid
+ * from the initial startup.
+ */
+-#define raw_smp_processor_id()  this_cpu_read(pcpu_hot.cpu_number)
+-#define __smp_processor_id() __this_cpu_read(pcpu_hot.cpu_number)
++#define raw_smp_processor_id()  raw_cpu_read(pcpu_hot.cpu_number)
 
-Latency percentiles (usec)
-        50.0000th: 23
-        75.0000th: 29
-        90.0000th: 35
-        95.0000th: 38
-        *99.0000th: 495 
-        99.5000th: 3924
-        99.9000th: 9872
-        min=0, max=29997
+#ifdef CONFIG_X86_32
+extern int safe_smp_processor_id(void);
+--cut here--
 
-Latency percentiles (usec)
-        50.0000th: 23
-        75.0000th: 30
-        90.0000th: 36
-        95.0000th: 39
-        *99.0000th: 1326
-        99.5000th: 4744
-        99.9000th: 10000
-        min=0, max=23394
+But removes merely 10 reads from 3219.
 
-Latency percentiles (usec)
-        50.0000th: 23
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 55
-        99.5000th: 3292
-        99.9000th: 9104
-        min=0, max=25196
+BTW: I also don't understand the comment from include/linux/smp.h:
 
-Latency percentiles (usec)
-        50.0000th: 23
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 711 
-        99.5000th: 4600
-        99.9000th: 9424
-        min=0, max=19997
+/*
+ * Allow the architecture to differentiate between a stable and unstable re=
+ad.
+ * For example, x86 uses an IRQ-safe asm-volatile read for the unstable but=
+ a
+ * regular asm read for the stable.
+ */
+#ifndef __smp_processor_id
+#define __smp_processor_id(x) raw_smp_processor_id(x)
+#endif
 
-SIS_CACHE (5 runs)
-=========
-Latency percentiles (usec)                                                                                                                                                                                                                                                                                     
-        50.0000th: 23
-        75.0000th: 30
-        90.0000th: 35
-        95.0000th: 38
-        *99.0000th: 1894
-        99.5000th: 5464
-        99.9000th: 10000
-        min=0, max=19157
+All reads up to word size on x86 are atomic, so IRQ safe. asm-volatile
+is not some IRQ property, but prevents the compiler from CSE the asm
+and scheduling (moving) asm around too much.
 
-Latency percentiles (usec)
-        50.0000th: 22
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 2396
-        99.5000th: 6664
-        99.9000th: 10000
-        min=0, max=24029
-
-Latency percentiles (usec)
-        50.0000th: 22
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 2132
-        99.5000th: 6296
-        99.9000th: 10000
-        min=0, max=25313
-
-Latency percentiles (usec)
-        50.0000th: 22
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 37
-        *99.0000th: 1090
-        99.5000th: 6232
-        99.9000th: 9744
-        min=0, max=27264
-
-Latency percentiles (usec)
-        50.0000th: 22
-        75.0000th: 29
-        90.0000th: 34
-        95.0000th: 38
-        *99.0000th: 1786
-        99.5000th: 5240
-        99.9000th: 9968
-        min=0, max=24754
-
-The above data as indicated has large run to run variation and in general, the latency is
-high in case of SIS_CACHE for the 99th %ile.
-
-
-schbench(new) with 6-mthreads
-=============
-
-Baseline
-========
-Wakeup Latencies percentiles (usec) runtime 30 (s) (209403 total samples)
-	  50.0th: 8          (43672 samples)
-	  90.0th: 13         (83908 samples)
-	* 99.0th: 20         (18323 samples)
-	  99.9th: 775        (1785 samples)
-	  min=1, max=8400
-Request Latencies percentiles (usec) runtime 30 (s) (209543 total samples)
-	  50.0th: 13648      (59873 samples)
-	  90.0th: 14000      (82767 samples)
-	* 99.0th: 14320      (16342 samples)
-	  99.9th: 18720      (1670 samples)
-	  min=5130, max=38334
-RPS percentiles (requests) runtime 30 (s) (31 total samples)
-	  20.0th: 6968       (8 samples)
-	* 50.0th: 6984       (23 samples)
-	  90.0th: 6984       (0 samples)
-	  min=6835, max=6991
-average rps: 6984.77
-
-
-SIS_CACHE
-=========
-Wakeup Latencies percentiles (usec) runtime 30 (s) (209295 total samples)
-	  50.0th: 9          (49267 samples)
-	  90.0th: 14         (86522 samples)
-	* 99.0th: 21         (14091 samples)
-	  99.9th: 1146       (1722 samples)
-	  min=1, max=10427
-Request Latencies percentiles (usec) runtime 30 (s) (209432 total samples)
-	  50.0th: 13616      (62838 samples)
-	  90.0th: 14000      (85301 samples)
-	* 99.0th: 14352      (16149 samples)
-	  99.9th: 21408      (1660 samples)
-	  min=5070, max=41866
-RPS percentiles (requests) runtime 30 (s) (31 total samples)
-	  20.0th: 6968       (7 samples)
-	* 50.0th: 6984       (21 samples)
-	  90.0th: 6984       (0 samples)
-	  min=6672, max=6996
-average rps: 6981.07
-
-In new schbench, I didn't observe run to run variation and also there was no regression
-in case of SIS_CACHE for the 99th %ile.
-
-
->> producer_consumer avg time/access (lower is better)
->> ========
->> loads per consumer iteration   baseline[pct imp](std%)         SIS_CACHE[pct imp]( std%)
->> 5                  		1.00 [ 0.00]( 0.00)            0.87 [ +13.0]( 1.92)
->> 20                   		1.00 [ 0.00]( 0.00)            0.92 [ +8.00]( 0.00)
->> 50                    		1.00 [ 0.00]( 0.00)            1.00 [  0.00]( 0.00)
->> 100                    		1.00 [ 0.00]( 0.00)            1.00 [  0.00]( 0.00)
->>
->> The main goal of the patch of improving cache locality is reflected as SIS_CACHE only improves in this workload, 
->> mainly when loads per consumer iteration is lower.
->>
->> hackbench normalized time in seconds (lower is better)
->> ========
->> case            load        baseline[pct imp](std%)         SIS_CACHE[pct imp]( std%)
->> process-pipe    1-groups     1.00 [ 0.00]( 1.50)            1.02 [ -2.00]( 3.36)
->> process-pipe    2-groups     1.00 [ 0.00]( 4.76)            0.99 [ +1.00]( 5.68)
->> process-sockets 1-groups     1.00 [ 0.00]( 2.56)            1.00 [  0.00]( 0.86)
->> process-sockets 2-groups     1.00 [ 0.00]( 0.50)            0.99 [ +1.00]( 0.96)
->> threads-pipe    1-groups     1.00 [ 0.00]( 3.87)            0.71 [ +29.0]( 3.56)
->> threads-pipe    2-groups     1.00 [ 0.00]( 1.60)            0.97 [ +3.00]( 3.44)
->> threads-sockets 1-groups     1.00 [ 0.00]( 7.65)            0.99 [ +1.00]( 1.05)
->> threads-sockets 2-groups     1.00 [ 0.00]( 3.12)            1.03 [ -3.00]( 1.70)
->>
->> hackbench results are similar in both kernels except the case where there is an improvement of
->> 29% in case of threads-pipe case with 1 groups.
->>
->> Daytrader throughput (higher is better)
->> ========
->>
->> As per Ingo suggestion, ran a real life workload daytrader
->>
->> baseline:
->> =================================================================================== 
->>  Instance      1
->>      Throughputs         Ave. Resp. Time   Min. Resp. Time   Max. Resp. Time
->>   ================       ===============   ===============   ===============
->>        10124.5 			    2 		    0 		   3970
->>
->> SIS_CACHE:
->> ===================================================================================
->>  Instance      1
->>      Throughputs         Ave. Resp. Time   Min. Resp. Time   Max. Resp. Time
->>   ================       ===============   ===============   ===============
->>        10319.5                       2               0              5771
->>
->> In the above run, daytrader perfomance was 2% better in case of SIS_CACHE.
->>
-> 
-> Thanks for bringing this good news, a real life workload benefits from this change.
-> I'll tune this patch a little bit to address the regression from schbench. Also to mention
-> that, I'm working with Mathieu on his proposal to make the wakee choosing its previous
-> CPU easier(similar to SIS_CACHE, but a little simpler), and we'll check how to make more
-> platform benefit from this change.
-> https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
-
-Oh..ok. Thanks for the pointer!
-
-> 
-> thanks,
-> Chenyu
->  
-
-Thanks and Regards
-Madadi Vineeth Reddy
-
+Uros.
