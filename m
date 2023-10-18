@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92A47CDAEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF327CDAEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjJRLqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S230059AbjJRLrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjJRLqT (ORCPT
+        with ESMTP id S229757AbjJRLrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:46:19 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BFF123
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:46:17 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083740f92dso9999125e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697629575; x=1698234375; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hIZB4xEFiDqc2+Z84fN6WVGzHYrI2kiuxOOK9C2i8+I=;
-        b=OsJYJIZ7N2aUiAtuMwVWHJsMh4uu2u34GY9Gwnv07oPTNrecxZCVY4KTbU+Ktw3CRj
-         3q57SyO8rPydvlVLdR69AqlO7YXRTbZ5yl1DRlaoZcFvGkebTFMDuFaArTRoybOAuQOf
-         TfLAwWd9OnfJ29M6SIx3NZ7RrM/hVgzPl27fzG4Ss1/vm7ijw+EJYfo3WZ9vE16ps0VS
-         ePpZa9ey+KrMFYVm+OKB1AwqKQyaiKO+HMhruH0gmaQ2kbfkzy1mtz3MoFvgDxnyGYfD
-         8+CQFdqF8GZ1L0bloWz7eMTYNU8PmtoaX2FNqAhmVpLVeJbBVB3vaYVQucP+Ltu+I9BN
-         YMDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697629575; x=1698234375;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hIZB4xEFiDqc2+Z84fN6WVGzHYrI2kiuxOOK9C2i8+I=;
-        b=qsYKGm9C3ixSB4jVxcJwR9EpxmOg6pDiUZquYH13Ng6lMT2MRs6pYQfOcCRlo4D0Lo
-         zhOohqRbJ7PpcADA44CcNn/+IUANifvE1VBmcM6G0LMEP2olag6QlQEdeTrXVlE4o6iS
-         fDaNBo9DO0udj8O5lpdSmSRwppabQAh25pPJM2PHcpDPl+ThtAuLreLfcjQkTgNUnobE
-         65ORRTa3dHU1+Tq+tBrNULCPZKU/21UNx7Pv/cKYAzj+gbMU6CqqEuENYFZtKwu3YhAx
-         0FuvMBxJ8AWh80peBhPpuTVfMrRv7GQXu5Bl6K49Sj6P5uq+ABna86GPeaJdJTyJlZ4p
-         /NCQ==
-X-Gm-Message-State: AOJu0YwI1cqCKPqUUiyuvjlbb8Zm4AhctR/zndCTpWq83QjHBOzaTfjI
-        fOc/CkDkwVMoSsB5JiMaTEJMhA==
-X-Google-Smtp-Source: AGHT+IFST4zTv5e3F3vfbnDudoRjP5SBUIl6bdsoe+9WOadjGlN10iP2gifoV+us3GybdQCFKsaB5Q==
-X-Received: by 2002:a05:600c:468e:b0:405:3d04:5f52 with SMTP id p14-20020a05600c468e00b004053d045f52mr3756113wmo.24.1697629575441;
-        Wed, 18 Oct 2023 04:46:15 -0700 (PDT)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id bs30-20020a056000071e00b0032d9a1f2ec3sm1991631wrb.27.2023.10.18.04.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 04:46:14 -0700 (PDT)
-Message-ID: <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set
- the FUSE_INIT_EXT"
-From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To:     Bernd Schubert <bschubert@ddn.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 18 Oct 2023 12:46:13 +0100
-In-Reply-To: <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
-References: <20230904133321.104584-1-git@andred.net>
-         <20231018111508.3913860-1-git@andred.net>
-         <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4-1 
+        Wed, 18 Oct 2023 07:47:21 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75152112;
+        Wed, 18 Oct 2023 04:47:19 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9TVJ4M6WzvQ7d;
+        Wed, 18 Oct 2023 19:42:32 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
+ 2023 19:47:17 +0800
+Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related API
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+References: <20231013064827.61135-1-linyunsheng@huawei.com>
+ <20231016182725.6aa5544f@kernel.org>
+ <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
+ <20231017081303.769e4fbe@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
+Date:   Wed, 18 Oct 2023 19:47:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231017081303.769e4fbe@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-18 at 11:39 +0000, Bernd Schubert wrote:
-> On 10/18/23 13:15, Andr=C3=A9 Draszik wrote:
-> > From: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-> >=20
-> > This reverts commit 3066ff93476c35679cb07a97cce37d9bb07632ff.
-> >=20
-> > This patch breaks all existing userspace by requiring updates as
-> > mentioned in the commit message, which is not allowed.
-> >=20
-> > Revert to restore compatibility with existing userspace
-> > implementations.
->=20
-> Which fuse file system does it exactly break? In fact there haven't
-> been=20
-> added too many flags after - what exactly is broken?
+On 2023/10/17 23:13, Jakub Kicinski wrote:
+> On Tue, 17 Oct 2023 15:56:48 +0800 Yunsheng Lin wrote:
+>>> And I can't figure out now what the "cache" in the name is referring to.
+>>> Looks like these are just convenience wrappers which return VA instead
+>>> of struct page..  
+>>
+>> Yes, it is corresponding to some API like napi_alloc_frag() returning va
+>> instead of 'struct page' mentioned in patch 5.
+>>
+>> Anyway, naming is hard, any suggestion for a better naming is always
+>> welcomed:)
+> 
+> I'd just throw a _va (for virtual address) at the end. And not really
 
-The original patch broke the existing kernel <-> user ABI by now
-requiring user space applications to pass in an extra flag.
-There are various side-effects of this, like unbootable systems, just
-because the kernel was updated.
-Breaking the ABI is the one thing that is not allowed. This is not
-specific to any particular fuse file system.
+_va seems fine:)
 
-Kind Regards,
-Andre
+> mention it in the documentation. Plus the kdoc of the function should
+> say that this is just a thin wrapper around other page pool APIs, and
+> it's safe to mix it with other page pool APIs?
 
+I am not sure I understand what do 'safe' and 'mix' mean here.
+
+For 'safe' part, I suppose you mean if there is a va accociated with
+a 'struct page' without calling some API like kmap()? For that, I suppose
+it is safe when the driver is calling page_pool API without the
+__GFP_HIGHMEM flag. Maybe we should mention that in the kdoc and give a
+warning if page_pool_*alloc_va() is called with the __GFP_HIGHMEM flag?
+
+For the 'mix', I suppose you mean the below:
+1. Allocate a page with the page_pool_*alloc_va() API and free a page with
+   page_pool_free() API.
+2. Allocate a page with the page_pool_*alloc() API and free a page with
+   page_pool_free_va() API.
+
+For 1, it seems it is ok as some virt_to_head_page() and page_address() call
+between va and 'struct page' does not seem to change anything if we have
+enforce page_pool_*alloc_va() to be called without the __GFP_HIGHMEM flag.
+
+For 2, If the va is returned from page_address() which the allocation API is
+called without __GFP_HIGHMEM flag. If not, the va is from kmap*()? which means
+we may be calling page_pool_free_va() before kunmap*()? Is that possible?
+
+
+> .
+> 
