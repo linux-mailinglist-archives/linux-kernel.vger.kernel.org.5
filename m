@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A87A07CE8D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236387CE8D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjJRU2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S231182AbjJRU2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232129AbjJRU2O (ORCPT
+        with ESMTP id S232319AbjJRU2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:28:14 -0400
+        Wed, 18 Oct 2023 16:28:17 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477D41A6;
-        Wed, 18 Oct 2023 13:28:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D00CA4;
+        Wed, 18 Oct 2023 13:28:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697660883; x=1729196883;
+  t=1697660889; x=1729196889;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=M7nmXxTZZPNAVyd0R3yGjZtdYgZ4bLYuBHo9eoL14ME=;
-  b=lVRgWG/Gtds4w2pqNnuU0b16J/iwlThxaCqV/iWXx1irQrGd+B4lzMuy
-   0WnepVhW3eq8/AK6dvlLwJ5SC3d28O/zB5N8pk63YZOvEN7uvzwIsRS6I
-   yXB3mqRg8mKBpqUny1BbisYPVsyzj05ABXH0CTy56vKKliOf/RFcKU5wV
-   VwtsZfaKxtqnT0i5/IAw7nrNWoDdGlczFL1QlmyMi5/Sgj34f6Nb1g+es
-   yVcEioqECMd/9VqWaczsLu59I5CPnTsZC0YMqk356INx4XdO45rlSXN7h
-   iRxYAq6mDikM47IDSqGB/4fQ5+JZ8BpLiYUa3ybMzlz9WDHAN/DPEFrbM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389984313"
+  bh=UuuOxe1ayDWcBL4iJoYF1ljlKR4ova3kpskzCkH/pAA=;
+  b=C3CEQu3qsQbw6TG1InNoVdWUlECs0jkD4pmg9MZxf7DEH1waqbz+5fQT
+   qxh4aWRV0cRjRfxNrW3hxffRGz935zQQstlMigFd8ojvkIVV8RpBg2pvo
+   zEhSaHNY6nXRjP8ZlBYF29ZJY4KK4F1vZYA9skCAom9G6+WQS5XIoxuqO
+   ateF/inGWjPSPRhxcnrE1CVbMXOthHaGYI9F3/AWrC0PryH6NavlOxz4A
+   Kzno2MzChdyf25qEckLmPHRj5DAnT+zbmFiKZDrB3QjbfllRoOBoPewvl
+   vdlBSloZ7xY4YSzwEfnGkZKk55qGO03HdwoxQ3kPN5kXyNTxE4MswJ+k7
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389984353"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="389984313"
+   d="scan'208";a="389984353"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:28:02 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:28:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1003937684"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1003937690"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="1003937684"
+   d="scan'208";a="1003937690"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Oct 2023 13:27:52 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 18 Oct 2023 13:27:59 -0700
 Received: from pkitszel-desk.intel.com (unknown [10.255.194.180])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id AC7AB33E92;
-        Wed, 18 Oct 2023 21:27:45 +0100 (IST)
+        by irvmail002.ir.intel.com (Postfix) with ESMTP id E7C7F33E9D;
+        Wed, 18 Oct 2023 21:27:52 +0100 (IST)
 From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
 To:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>,
@@ -75,9 +75,9 @@ Cc:     Brett Creeley <brett.creeley@amd.com>,
         Przemek Kitszel <przemyslaw.kitszel@intel.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next v3 06/11] octeontx2-af: devlink health: use retained error fmsg API
-Date:   Wed, 18 Oct 2023 22:26:42 +0200
-Message-Id: <20231018202647.44769-7-przemyslaw.kitszel@intel.com>
+Subject: [PATCH net-next v3 07/11] mlxsw: core: devlink health: use retained error fmsg API
+Date:   Wed, 18 Oct 2023 22:26:43 +0200
+Message-Id: <20231018202647.44769-8-przemyslaw.kitszel@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
 References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
@@ -102,533 +102,298 @@ Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 ---
-add/remove: 0/0 grow/shrink: 2/2 up/down: 150/-585 (-435)
+add/remove: 0/8 grow/shrink: 0/3 up/down: 0/-694 (-694)
 ---
- .../marvell/octeontx2/af/rvu_devlink.c        | 464 +++++-------------
- 1 file changed, 133 insertions(+), 331 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/core.c | 171 ++++++---------------
+ 1 file changed, 47 insertions(+), 124 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-index 41df5ac23f92..c70932625d0d 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-@@ -14,26 +14,16 @@
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
+index 1ccf3b73ed72..6df0711607ac 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -1792,122 +1792,78 @@ static void mlxsw_core_health_listener_func(const struct mlxsw_reg_info *reg,
+ static const struct mlxsw_listener mlxsw_core_health_listener =
+ 	MLXSW_CORE_EVENTL(mlxsw_core_health_listener_func, MFDE);
  
- #define DRV_NAME "octeontx2-af"
- 
--static int rvu_report_pair_start(struct devlink_fmsg *fmsg, const char *name)
-+static void rvu_report_pair_start(struct devlink_fmsg *fmsg, const char *name)
+-static int
++static void
+ mlxsw_core_health_fw_fatal_dump_fatal_cause(const char *mfde_pl,
+ 					    struct devlink_fmsg *fmsg)
  {
+ 	u32 val, tile_v;
 -	int err;
--
--	err = devlink_fmsg_pair_nest_start(fmsg, name);
+ 
+ 	val = mlxsw_reg_mfde_fatal_cause_id_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "cause_id", val);
 -	if (err)
 -		return err;
--
--	return  devlink_fmsg_obj_nest_start(fmsg);
-+	devlink_fmsg_pair_nest_start(fmsg, name);
-+	devlink_fmsg_obj_nest_start(fmsg);
- }
- 
--static int rvu_report_pair_end(struct devlink_fmsg *fmsg)
-+static void rvu_report_pair_end(struct devlink_fmsg *fmsg)
- {
--	int err;
--
--	err = devlink_fmsg_obj_nest_end(fmsg);
--	if (err)
--		return err;
--
--	return devlink_fmsg_pair_nest_end(fmsg);
-+	devlink_fmsg_obj_nest_end(fmsg);
-+	devlink_fmsg_pair_nest_end(fmsg);
- }
- 
- static bool rvu_common_request_irq(struct rvu *rvu, int offset,
-@@ -284,175 +274,81 @@ static int rvu_nix_report_show(struct devlink_fmsg *fmsg, void *ctx,
- {
- 	struct rvu_nix_event_ctx *nix_event_context;
- 	u64 intr_val;
--	int err;
- 
- 	nix_event_context = ctx;
- 	switch (health_reporter) {
- 	case NIX_AF_RVU_INTR:
- 		intr_val = nix_event_context->nix_af_rvu_int;
--		err = rvu_report_pair_start(fmsg, "NIX_AF_RVU");
++	devlink_fmsg_u32_pair_put(fmsg, "cause_id", val);
+ 	tile_v = mlxsw_reg_mfde_fatal_cause_tile_v_get(mfde_pl);
+ 	if (tile_v) {
+ 		val = mlxsw_reg_mfde_fatal_cause_tile_index_get(mfde_pl);
+-		err = devlink_fmsg_u8_pair_put(fmsg, "tile_index", val);
 -		if (err)
 -			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNIX RVU Interrupt Reg ",
--						nix_event_context->nix_af_rvu_int);
--		if (err)
--			return err;
--		if (intr_val & BIT_ULL(0)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tUnmap Slot Error");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NIX_AF_RVU");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNIX RVU Interrupt Reg ",
-+					  nix_event_context->nix_af_rvu_int);
-+		if (intr_val & BIT_ULL(0))
-+			devlink_fmsg_string_put(fmsg, "\n\tUnmap Slot Error");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NIX_AF_RVU_GEN:
- 		intr_val = nix_event_context->nix_af_rvu_gen;
--		err = rvu_report_pair_start(fmsg, "NIX_AF_GENERAL");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNIX General Interrupt Reg ",
--						nix_event_context->nix_af_rvu_gen);
--		if (err)
--			return err;
--		if (intr_val & BIT_ULL(0)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tRx multicast pkt drop");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(1)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tRx mirror pkt drop");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(4)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tSMQ flush done");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NIX_AF_GENERAL");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNIX General Interrupt Reg ",
-+					  nix_event_context->nix_af_rvu_gen);
-+		if (intr_val & BIT_ULL(0))
-+			devlink_fmsg_string_put(fmsg, "\n\tRx multicast pkt drop");
-+		if (intr_val & BIT_ULL(1))
-+			devlink_fmsg_string_put(fmsg, "\n\tRx mirror pkt drop");
-+		if (intr_val & BIT_ULL(4))
-+			devlink_fmsg_string_put(fmsg, "\n\tSMQ flush done");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NIX_AF_RVU_ERR:
- 		intr_val = nix_event_context->nix_af_rvu_err;
--		err = rvu_report_pair_start(fmsg, "NIX_AF_ERR");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNIX Error Interrupt Reg ",
--						nix_event_context->nix_af_rvu_err);
--		if (err)
--			return err;
--		if (intr_val & BIT_ULL(14)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_AQ_INST_S read");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(13)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_AQ_RES_S write");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(12)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAQ Doorbell Error");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(6)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tRx on unmapped PF_FUNC");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(5)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tRx multicast replication error");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(4)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_RX_MCE_S read");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(3)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on multicast WQE read");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(2)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on mirror WQE read");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(1)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on mirror pkt write");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(0)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on multicast pkt write");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NIX_AF_ERR");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNIX Error Interrupt Reg ",
-+					  nix_event_context->nix_af_rvu_err);
-+		if (intr_val & BIT_ULL(14))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_AQ_INST_S read");
-+		if (intr_val & BIT_ULL(13))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_AQ_RES_S write");
-+		if (intr_val & BIT_ULL(12))
-+			devlink_fmsg_string_put(fmsg, "\n\tAQ Doorbell Error");
-+		if (intr_val & BIT_ULL(6))
-+			devlink_fmsg_string_put(fmsg, "\n\tRx on unmapped PF_FUNC");
-+		if (intr_val & BIT_ULL(5))
-+			devlink_fmsg_string_put(fmsg, "\n\tRx multicast replication error");
-+		if (intr_val & BIT_ULL(4))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on NIX_RX_MCE_S read");
-+		if (intr_val & BIT_ULL(3))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on multicast WQE read");
-+		if (intr_val & BIT_ULL(2))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on mirror WQE read");
-+		if (intr_val & BIT_ULL(1))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on mirror pkt write");
-+		if (intr_val & BIT_ULL(0))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on multicast pkt write");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NIX_AF_RVU_RAS:
- 		intr_val = nix_event_context->nix_af_rvu_err;
--		err = rvu_report_pair_start(fmsg, "NIX_AF_RAS");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNIX RAS Interrupt Reg ",
--						nix_event_context->nix_af_rvu_err);
--		if (err)
--			return err;
--		err = devlink_fmsg_string_put(fmsg, "\n\tPoison Data on:");
--		if (err)
--			return err;
--		if (intr_val & BIT_ULL(34)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX_AQ_INST_S");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(33)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX_AQ_RES_S");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(32)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tHW ctx");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(4)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tPacket from mirror buffer");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(3)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tPacket from multicast buffer");
--
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(2)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tWQE read from mirror buffer");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(1)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tWQE read from multicast buffer");
--			if (err)
--				return err;
--		}
--		if (intr_val & BIT_ULL(0)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX_RX_MCE_S read");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NIX_AF_RAS");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNIX RAS Interrupt Reg ",
-+					  nix_event_context->nix_af_rvu_err);
-+		devlink_fmsg_string_put(fmsg, "\n\tPoison Data on:");
-+		if (intr_val & BIT_ULL(34))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX_AQ_INST_S");
-+		if (intr_val & BIT_ULL(33))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX_AQ_RES_S");
-+		if (intr_val & BIT_ULL(32))
-+			devlink_fmsg_string_put(fmsg, "\n\tHW ctx");
-+		if (intr_val & BIT_ULL(4))
-+			devlink_fmsg_string_put(fmsg, "\n\tPacket from mirror buffer");
-+		if (intr_val & BIT_ULL(3))
-+			devlink_fmsg_string_put(fmsg, "\n\tPacket from multicast buffer");
-+		if (intr_val & BIT_ULL(2))
-+			devlink_fmsg_string_put(fmsg, "\n\tWQE read from mirror buffer");
-+		if (intr_val & BIT_ULL(1))
-+			devlink_fmsg_string_put(fmsg, "\n\tWQE read from multicast buffer");
-+		if (intr_val & BIT_ULL(0))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX_RX_MCE_S read");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -922,181 +818,87 @@ static int rvu_npa_report_show(struct devlink_fmsg *fmsg, void *ctx,
- 	struct rvu_npa_event_ctx *npa_event_context;
- 	unsigned int alloc_dis, free_dis;
- 	u64 intr_val;
--	int err;
- 
- 	npa_event_context = ctx;
- 	switch (health_reporter) {
- 	case NPA_AF_RVU_GEN:
- 		intr_val = npa_event_context->npa_af_rvu_gen;
--		err = rvu_report_pair_start(fmsg, "NPA_AF_GENERAL");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNPA General Interrupt Reg ",
--						npa_event_context->npa_af_rvu_gen);
--		if (err)
--			return err;
--		if (intr_val & BIT_ULL(32)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tUnmap PF Error");
--			if (err)
--				return err;
--		}
-+		rvu_report_pair_start(fmsg, "NPA_AF_GENERAL");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNPA General Interrupt Reg ",
-+					  npa_event_context->npa_af_rvu_gen);
-+		if (intr_val & BIT_ULL(32))
-+			devlink_fmsg_string_put(fmsg, "\n\tUnmap PF Error");
- 
- 		free_dis = FIELD_GET(GENMASK(15, 0), intr_val);
--		if (free_dis & BIT(NPA_INPQ_NIX0_RX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX0: free disabled RX");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_NIX0_TX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX0:free disabled TX");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_NIX1_RX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX1: free disabled RX");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_NIX1_TX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX1:free disabled TX");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_SSO)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for SSO");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_TIM)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for TIM");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_DPI)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for DPI");
--			if (err)
--				return err;
--		}
--		if (free_dis & BIT(NPA_INPQ_AURA_OP)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for AURA");
--			if (err)
--				return err;
--		}
-+		if (free_dis & BIT(NPA_INPQ_NIX0_RX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX0: free disabled RX");
-+		if (free_dis & BIT(NPA_INPQ_NIX0_TX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX0:free disabled TX");
-+		if (free_dis & BIT(NPA_INPQ_NIX1_RX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX1: free disabled RX");
-+		if (free_dis & BIT(NPA_INPQ_NIX1_TX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX1:free disabled TX");
-+		if (free_dis & BIT(NPA_INPQ_SSO))
-+			devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for SSO");
-+		if (free_dis & BIT(NPA_INPQ_TIM))
-+			devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for TIM");
-+		if (free_dis & BIT(NPA_INPQ_DPI))
-+			devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for DPI");
-+		if (free_dis & BIT(NPA_INPQ_AURA_OP))
-+			devlink_fmsg_string_put(fmsg, "\n\tFree Disabled for AURA");
- 
- 		alloc_dis = FIELD_GET(GENMASK(31, 16), intr_val);
--		if (alloc_dis & BIT(NPA_INPQ_NIX0_RX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX0: alloc disabled RX");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_NIX0_TX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX0:alloc disabled TX");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_NIX1_RX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX1: alloc disabled RX");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_NIX1_TX)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tNIX1:alloc disabled TX");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_SSO)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for SSO");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_TIM)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for TIM");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_DPI)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for DPI");
--			if (err)
--				return err;
--		}
--		if (alloc_dis & BIT(NPA_INPQ_AURA_OP)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for AURA");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		if (alloc_dis & BIT(NPA_INPQ_NIX0_RX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX0: alloc disabled RX");
-+		if (alloc_dis & BIT(NPA_INPQ_NIX0_TX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX0:alloc disabled TX");
-+		if (alloc_dis & BIT(NPA_INPQ_NIX1_RX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX1: alloc disabled RX");
-+		if (alloc_dis & BIT(NPA_INPQ_NIX1_TX))
-+			devlink_fmsg_string_put(fmsg, "\n\tNIX1:alloc disabled TX");
-+		if (alloc_dis & BIT(NPA_INPQ_SSO))
-+			devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for SSO");
-+		if (alloc_dis & BIT(NPA_INPQ_TIM))
-+			devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for TIM");
-+		if (alloc_dis & BIT(NPA_INPQ_DPI))
-+			devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for DPI");
-+		if (alloc_dis & BIT(NPA_INPQ_AURA_OP))
-+			devlink_fmsg_string_put(fmsg, "\n\tAlloc Disabled for AURA");
-+
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NPA_AF_RVU_ERR:
--		err = rvu_report_pair_start(fmsg, "NPA_AF_ERR");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNPA Error Interrupt Reg ",
--						npa_event_context->npa_af_rvu_err);
--		if (err)
--			return err;
--
--		if (npa_event_context->npa_af_rvu_err & BIT_ULL(14)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on NPA_AQ_INST_S read");
--			if (err)
--				return err;
--		}
--		if (npa_event_context->npa_af_rvu_err & BIT_ULL(13)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tFault on NPA_AQ_RES_S write");
--			if (err)
--				return err;
--		}
--		if (npa_event_context->npa_af_rvu_err & BIT_ULL(12)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tAQ Doorbell Error");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NPA_AF_ERR");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNPA Error Interrupt Reg ",
-+					  npa_event_context->npa_af_rvu_err);
-+		if (npa_event_context->npa_af_rvu_err & BIT_ULL(14))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on NPA_AQ_INST_S read");
-+		if (npa_event_context->npa_af_rvu_err & BIT_ULL(13))
-+			devlink_fmsg_string_put(fmsg, "\n\tFault on NPA_AQ_RES_S write");
-+		if (npa_event_context->npa_af_rvu_err & BIT_ULL(12))
-+			devlink_fmsg_string_put(fmsg, "\n\tAQ Doorbell Error");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NPA_AF_RVU_RAS:
--		err = rvu_report_pair_start(fmsg, "NPA_AF_RVU_RAS");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNPA RAS Interrupt Reg ",
--						npa_event_context->npa_af_rvu_ras);
--		if (err)
--			return err;
--		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(34)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tPoison data on NPA_AQ_INST_S");
--			if (err)
--				return err;
--		}
--		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(33)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tPoison data on NPA_AQ_RES_S");
--			if (err)
--				return err;
--		}
--		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(32)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tPoison data on HW context");
--			if (err)
--				return err;
--		}
--		err = rvu_report_pair_end(fmsg);
--		if (err)
--			return err;
-+		rvu_report_pair_start(fmsg, "NPA_AF_RVU_RAS");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNPA RAS Interrupt Reg ",
-+					  npa_event_context->npa_af_rvu_ras);
-+		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(34))
-+			devlink_fmsg_string_put(fmsg, "\n\tPoison data on NPA_AQ_INST_S");
-+		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(33))
-+			devlink_fmsg_string_put(fmsg, "\n\tPoison data on NPA_AQ_RES_S");
-+		if (npa_event_context->npa_af_rvu_ras & BIT_ULL(32))
-+			devlink_fmsg_string_put(fmsg, "\n\tPoison data on HW context");
-+		rvu_report_pair_end(fmsg);
- 		break;
- 	case NPA_AF_RVU_INTR:
--		err = rvu_report_pair_start(fmsg, "NPA_AF_RVU");
--		if (err)
--			return err;
--		err = devlink_fmsg_u64_pair_put(fmsg, "\tNPA RVU Interrupt Reg ",
--						npa_event_context->npa_af_rvu_int);
--		if (err)
--			return err;
--		if (npa_event_context->npa_af_rvu_int & BIT_ULL(0)) {
--			err = devlink_fmsg_string_put(fmsg, "\n\tUnmap Slot Error");
--			if (err)
--				return err;
--		}
--		return rvu_report_pair_end(fmsg);
-+		rvu_report_pair_start(fmsg, "NPA_AF_RVU");
-+		devlink_fmsg_u64_pair_put(fmsg, "\tNPA RVU Interrupt Reg ",
-+					  npa_event_context->npa_af_rvu_int);
-+		if (npa_event_context->npa_af_rvu_int & BIT_ULL(0))
-+			devlink_fmsg_string_put(fmsg, "\n\tUnmap Slot Error");
-+		rvu_report_pair_end(fmsg);
-+		break;
- 	default:
- 		return -EINVAL;
++		devlink_fmsg_u8_pair_put(fmsg, "tile_index", val);
  	}
+-
+-	return 0;
+ }
+ 
+-static int
++static void
+ mlxsw_core_health_fw_fatal_dump_fw_assert(const char *mfde_pl,
+ 					  struct devlink_fmsg *fmsg)
+ {
+ 	u32 val, tile_v;
+-	int err;
+ 
+ 	val = mlxsw_reg_mfde_fw_assert_var0_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "var0", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "var0", val);
+ 	val = mlxsw_reg_mfde_fw_assert_var1_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "var1", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "var1", val);
+ 	val = mlxsw_reg_mfde_fw_assert_var2_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "var2", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "var2", val);
+ 	val = mlxsw_reg_mfde_fw_assert_var3_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "var3", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "var3", val);
+ 	val = mlxsw_reg_mfde_fw_assert_var4_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "var4", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "var4", val);
+ 	val = mlxsw_reg_mfde_fw_assert_existptr_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "existptr", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "existptr", val);
+ 	val = mlxsw_reg_mfde_fw_assert_callra_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "callra", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "callra", val);
+ 	val = mlxsw_reg_mfde_fw_assert_oe_get(mfde_pl);
+-	err = devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+ 	tile_v = mlxsw_reg_mfde_fw_assert_tile_v_get(mfde_pl);
+ 	if (tile_v) {
+ 		val = mlxsw_reg_mfde_fw_assert_tile_index_get(mfde_pl);
+-		err = devlink_fmsg_u8_pair_put(fmsg, "tile_index", val);
+-		if (err)
+-			return err;
++		devlink_fmsg_u8_pair_put(fmsg, "tile_index", val);
+ 	}
+ 	val = mlxsw_reg_mfde_fw_assert_ext_synd_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "ext_synd", val);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	devlink_fmsg_u32_pair_put(fmsg, "ext_synd", val);
+ }
+ 
+-static int
++static void
+ mlxsw_core_health_fw_fatal_dump_kvd_im_stop(const char *mfde_pl,
+ 					    struct devlink_fmsg *fmsg)
+ {
+ 	u32 val;
+-	int err;
+ 
+ 	val = mlxsw_reg_mfde_kvd_im_stop_oe_get(mfde_pl);
+-	err = devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+ 	val = mlxsw_reg_mfde_kvd_im_stop_pipes_mask_get(mfde_pl);
+-	return devlink_fmsg_u32_pair_put(fmsg, "pipes_mask", val);
++	devlink_fmsg_u32_pair_put(fmsg, "pipes_mask", val);
+ }
+ 
+-static int
++static void
+ mlxsw_core_health_fw_fatal_dump_crspace_to(const char *mfde_pl,
+ 					   struct devlink_fmsg *fmsg)
+ {
+ 	u32 val;
+-	int err;
+ 
+ 	val = mlxsw_reg_mfde_crspace_to_log_address_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "log_address", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "log_address", val);
+ 	val = mlxsw_reg_mfde_crspace_to_oe_get(mfde_pl);
+-	err = devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_bool_pair_put(fmsg, "old_event", val);
+ 	val = mlxsw_reg_mfde_crspace_to_log_id_get(mfde_pl);
+-	err = devlink_fmsg_u8_pair_put(fmsg, "log_irisc_id", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u8_pair_put(fmsg, "log_irisc_id", val);
+ 	val = mlxsw_reg_mfde_crspace_to_log_ip_get(mfde_pl);
+-	err = devlink_fmsg_u64_pair_put(fmsg, "log_ip", val);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	devlink_fmsg_u64_pair_put(fmsg, "log_ip", val);
+ }
+ 
+ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *reporter,
+@@ -1918,24 +1874,17 @@ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *repor
+ 	char *val_str;
+ 	u8 event_id;
+ 	u32 val;
+-	int err;
+ 
+ 	if (!priv_ctx)
+ 		/* User-triggered dumps are not possible */
+ 		return -EOPNOTSUPP;
+ 
+ 	val = mlxsw_reg_mfde_irisc_id_get(mfde_pl);
+-	err = devlink_fmsg_u8_pair_put(fmsg, "irisc_id", val);
+-	if (err)
+-		return err;
+-	err = devlink_fmsg_arr_pair_nest_start(fmsg, "event");
+-	if (err)
+-		return err;
++	devlink_fmsg_u8_pair_put(fmsg, "irisc_id", val);
+ 
++	devlink_fmsg_arr_pair_nest_start(fmsg, "event");
+ 	event_id = mlxsw_reg_mfde_event_id_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "id", event_id);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "id", event_id);
+ 	switch (event_id) {
+ 	case MLXSW_REG_MFDE_EVENT_ID_CRSPACE_TO:
+ 		val_str = "CR space timeout";
+@@ -1955,24 +1904,13 @@ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *repor
+ 	default:
+ 		val_str = NULL;
+ 	}
+-	if (val_str) {
+-		err = devlink_fmsg_string_pair_put(fmsg, "desc", val_str);
+-		if (err)
+-			return err;
+-	}
+-
+-	err = devlink_fmsg_arr_pair_nest_end(fmsg);
+-	if (err)
+-		return err;
+-
+-	err = devlink_fmsg_arr_pair_nest_start(fmsg, "severity");
+-	if (err)
+-		return err;
++	if (val_str)
++		devlink_fmsg_string_pair_put(fmsg, "desc", val_str);
++	devlink_fmsg_arr_pair_nest_end(fmsg);
+ 
++	devlink_fmsg_arr_pair_nest_start(fmsg, "severity");
+ 	val = mlxsw_reg_mfde_severity_get(mfde_pl);
+-	err = devlink_fmsg_u8_pair_put(fmsg, "id", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u8_pair_put(fmsg, "id", val);
+ 	switch (val) {
+ 	case MLXSW_REG_MFDE_SEVERITY_FATL:
+ 		val_str = "Fatal";
+@@ -1986,15 +1924,9 @@ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *repor
+ 	default:
+ 		val_str = NULL;
+ 	}
+-	if (val_str) {
+-		err = devlink_fmsg_string_pair_put(fmsg, "desc", val_str);
+-		if (err)
+-			return err;
+-	}
+-
+-	err = devlink_fmsg_arr_pair_nest_end(fmsg);
+-	if (err)
+-		return err;
++	if (val_str)
++		devlink_fmsg_string_pair_put(fmsg, "desc", val_str);
++	devlink_fmsg_arr_pair_nest_end(fmsg);
+ 
+ 	val = mlxsw_reg_mfde_method_get(mfde_pl);
+ 	switch (val) {
+@@ -2007,16 +1939,11 @@ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *repor
+ 	default:
+ 		val_str = NULL;
+ 	}
+-	if (val_str) {
+-		err = devlink_fmsg_string_pair_put(fmsg, "method", val_str);
+-		if (err)
+-			return err;
+-	}
++	if (val_str)
++		devlink_fmsg_string_pair_put(fmsg, "method", val_str);
+ 
+ 	val = mlxsw_reg_mfde_long_process_get(mfde_pl);
+-	err = devlink_fmsg_bool_pair_put(fmsg, "long_process", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_bool_pair_put(fmsg, "long_process", val);
+ 
+ 	val = mlxsw_reg_mfde_command_type_get(mfde_pl);
+ 	switch (val) {
+@@ -2032,29 +1959,25 @@ static int mlxsw_core_health_fw_fatal_dump(struct devlink_health_reporter *repor
+ 	default:
+ 		val_str = NULL;
+ 	}
+-	if (val_str) {
+-		err = devlink_fmsg_string_pair_put(fmsg, "command_type", val_str);
+-		if (err)
+-			return err;
+-	}
++	if (val_str)
++		devlink_fmsg_string_pair_put(fmsg, "command_type", val_str);
+ 
+ 	val = mlxsw_reg_mfde_reg_attr_id_get(mfde_pl);
+-	err = devlink_fmsg_u32_pair_put(fmsg, "reg_attr_id", val);
+-	if (err)
+-		return err;
++	devlink_fmsg_u32_pair_put(fmsg, "reg_attr_id", val);
+ 
+ 	switch (event_id) {
+ 	case MLXSW_REG_MFDE_EVENT_ID_CRSPACE_TO:
+-		return mlxsw_core_health_fw_fatal_dump_crspace_to(mfde_pl,
+-								  fmsg);
++		mlxsw_core_health_fw_fatal_dump_crspace_to(mfde_pl, fmsg);
++		break;
+ 	case MLXSW_REG_MFDE_EVENT_ID_KVD_IM_STOP:
+-		return mlxsw_core_health_fw_fatal_dump_kvd_im_stop(mfde_pl,
+-								   fmsg);
++		mlxsw_core_health_fw_fatal_dump_kvd_im_stop(mfde_pl, fmsg);
++		break;
+ 	case MLXSW_REG_MFDE_EVENT_ID_FW_ASSERT:
+-		return mlxsw_core_health_fw_fatal_dump_fw_assert(mfde_pl, fmsg);
++		mlxsw_core_health_fw_fatal_dump_fw_assert(mfde_pl, fmsg);
++		break;
+ 	case MLXSW_REG_MFDE_EVENT_ID_FATAL_CAUSE:
+-		return mlxsw_core_health_fw_fatal_dump_fatal_cause(mfde_pl,
+-								   fmsg);
++		mlxsw_core_health_fw_fatal_dump_fatal_cause(mfde_pl, fmsg);
++		break;
+ 	}
+ 
+ 	return 0;
 -- 
 2.38.1
 
