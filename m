@@ -2,125 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6020B7CE4CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB5B7CE4D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbjJRRlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S231247AbjJRRlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjJRRlO (ORCPT
+        with ESMTP id S229998AbjJRRld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:41:14 -0400
+        Wed, 18 Oct 2023 13:41:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8617AB0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:41:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0DEC433C8;
-        Wed, 18 Oct 2023 17:41:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E45116;
+        Wed, 18 Oct 2023 10:41:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D2FC433C8;
+        Wed, 18 Oct 2023 17:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697650891;
+        bh=kOWxubIvgkUuX1LHF9Uvd3PXOcCevsiFIHXsUMPyfII=;
+        h=From:Subject:Date:To:Cc:From;
+        b=HmbULKUSdAVTYh0NKXFEKevWhFCUwYFMuL4ZE6MnHrMRc//1huWLlflMoK0S8D7HT
+         RpsmiCca/5mXfeyTb19e8+kl8UJFzEghrdotH3KvXYHZLUsXcKKlbUVfvdQyMx62z6
+         34Xsrh7WT/00XDtz5t6InI84zeLOx7tPeu8rJA9Rwn1Zx9HeCyi0I3fC4LOiYur/fE
+         JDN4Vyc3XcT+ERm/aUw1zN6TI4Le3vB5HM60CU8WN2sV4b/rcSCzdsY2aZvIqYa99Z
+         sjX65S2Oku9xYqAVYGzUC0sAqceFqJ82GaotgiDmurcJyHeCgtRQvu9Ale3NAijBbP
+         rOv1uoNIL4Tnw==
+From:   Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH RFC 0/9] fs: multigrain timestamps (redux)
 Date:   Wed, 18 Oct 2023 13:41:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <20231018134107.1941dcf5@gandalf.local.home>
-In-Reply-To: <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
-References: <87ttrngmq0.ffs@tglx>
-        <87jzshhexi.ffs@tglx>
-        <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
-        <87pm1c3wbn.ffs@tglx>
-        <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Message-Id: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIALMYMGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Mz3dz0kszcVN20VOPURHPTZLM0U0sloOKCotS0zAqwQdFKQW7OSrG
+ 1tQAHBm97XQAAAA==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5629; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=kOWxubIvgkUuX1LHF9Uvd3PXOcCevsiFIHXsUMPyfII=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlMBjAuucpyDoopVPNBPSV5kIUK51y3+JkIuJbJ
+ MfA0arDDZaJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZTAYwAAKCRAADmhBGVaC
+ FRcGD/4gWTfDUlUYR99pZVwm1+RHd3+PX9zlbEqYbvDvs6/aA8B9q7koy4wlyncLKHzM5nrgYHf
+ rFzENOpzsSadkGkDajVLKfFaQ7akLUv8uZiji9WsSoT+e1AyWZj0DskG0JKmYteynPzh30YyJL0
+ KHzsJ7pfrumiZBtdXtMJAa8Skoueq0gWV/7oshhybg6JEOMLOQ+4ANJDMsIfpb6+sHdFitMACRF
+ q4gKZPjsX7FZIx1dd0SQdMlRjw4An+JYEwgjP3bkdy7XTjz6sW5sitQstxEDS/JaxZ6XIIL7xqB
+ OO/Jkxmo5/vSa05/4RVeplhTkAh1uV5n4LuWsjuh+Q8bON7Zv4VKdYJP8r9WBL/5zQwCPpHM2SO
+ c5eE9cT+BmXGcJIzAw52UsXAbp0LO+gYHlR+G7q+I5GEVg2+g6LFRoxL0+OpYvIWcycfYQps5NH
+ XnbuDRwrAVg96y3GpdKaOGuEzu1Sm5CLNXS0jYorIwAossaz50WdaaVRJxMjPRinrp+sP8fv7+l
+ h2X/0Yla61mKX6fZZArxV7sA9uEGbMcZPQcXRw5DW7EhjKh1QbyGwF46sawjrX93/UoxFvWEHso
+ iVcm5rVdVOTBwEy9iFhY241oVCW3E7NtCZ/SNf/hiaRQFTl/Sn7Q3aluI/ogOfLPa0eG+eRYdo8
+ H373khRmD98lzxQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 10:19:53 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> Isn't rcu_read_lock() defined as preempt_disable() and rcu_read_unlock()
-> as preempt_enable() in this approach?  I certainly hope so, as RCU
-> priority boosting would be a most unwelcome addition to many datacenter
-> workloads.
-> 
-> > With this approach the kernel is by definition fully preemptible, which
-> > means means rcu_read_lock() is preemptible too. That's pretty much the
-> > same situation as with PREEMPT_DYNAMIC.  
-> 
-> Please, just no!!!
+The VFS always uses coarse-grained timestamps when updating the
+ctime and mtime after a change. This has the benefit of allowing
+filesystems to optimize away a lot metadata updates, down to around 1
+per jiffy, even when a file is under heavy writes.
 
-Note, when I first read Thomas's proposal, I figured that Paul would no
-longer get to brag that:
+Unfortunately, this coarseness has always been an issue when we're
+exporting via NFSv3, which relies on timestamps to validate caches. A
+lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+help the client decide to invalidate the cache.
 
- "In CONFIG_PREEMPT_NONE, rcu_read_lock() and rcu_read_unlock() are simply
- nops!"
+Even with NFSv4, a lot of exported filesystems don't properly support a
+change attribute and are subject to the same problems with timestamp
+granularity. Other applications have similar issues with timestamps (e.g
+backup applications).
 
-But instead, they would be:
+If we were to always use fine-grained timestamps, that would improve the
+situation, but that becomes rather expensive, as the underlying
+filesystem would have to log a lot more metadata updates.
 
-static void rcu_read_lock(void)
-{
-	preempt_disable();
-}
+What we need is a way to only use fine-grained timestamps when they are
+being actively queried. The idea is to use an unused bit in the ctime's
+tv_nsec field to mark when the mtime or ctime has been queried via
+getattr. Once that has been marked, the next m/ctime update will use a
+fine-grained timestamp.
 
-static void rcu_read_unlock(void)
-{
-	preempt_enable();
-}
+The original merge of multigrain timestamps for v6.6 had to be reverted,
+as a file with a coarse-grained timestamp could incorrectly appear to be
+modified before a file with a fine-grained timestamp, when that wasn't
+the case.
 
-as it was mentioned that today's preempt_disable() is fast and not an issue
-like it was in older kernels.
+This revision solves that problem by making it so that when a
+fine-grained timespec64 is handed out, that that value becomes the floor
+for further coarse-grained timespec64 fetches. This requires new
+timekeeper interfaces with a potential downside: when a file is
+stamped with a fine-grained timestamp, it has to (briefly) take the
+global timekeeper spinlock.
 
-That would mean that there will still be a "non preempt" version of RCU.
+Because of that, this set takes greater pains to avoid issuing new
+fine-grained timestamps when possible. A fine-grained timestamp is now
+only required if the current mtime or ctime have been fetched for a
+getattr, and the next coarse-grained tick has not happened yet. For any
+other case, a coarse-grained timestamp is fine, and that is done using
+the seqcount.
 
-As the preempt version of RCU adds a lot more logic when scheduling out in
-an RCU critical section, that I can envision not all workloads would want
-around. Adding "preempt_disable()" is now low overhead, but adding the RCU
-logic to handle preemption isn't as lightweight as that.
+In order to get some hard numbers about how often the lock would be
+taken, I've added a couple of percpu counters and a debugfs file for
+tracking both types of multigrain timekeeper fetches.
 
-Not to mention the logic to boost those threads that were preempted and
-being starved for some time.
+With this, I did a kdevops fstests run on xfs (CRC mode). I ran "make
+fstests-baseline" and then immediately grabbed the counter values, and
+calcuated the percentage:
 
+$ time make fstests-baseline
+real    324m17.337s
+user    27m23.213s
+sys     2m40.313s
 
+fine            3059498
+coarse          383848171
+pct fine        .79075661
 
-> > > 6.	You might think that RCU Tasks (as opposed to RCU Tasks Trace
-> > > 	or RCU Tasks Rude) would need those pesky cond_resched() calls
-> > > 	to stick around.  The reason is that RCU Tasks readers are ended
-> > > 	only by voluntary context switches.  This means that although a
-> > > 	preemptible infinite loop in the kernel won't inconvenience a
-> > > 	real-time task (nor an non-real-time task for all that long),
-> > > 	and won't delay grace periods for the other flavors of RCU,
-> > > 	it would indefinitely delay an RCU Tasks grace period.
-> > >
-> > > 	However, RCU Tasks grace periods seem to be finite in preemptible
-> > > 	kernels today, so they should remain finite in limited-preemptible
-> > > 	kernels tomorrow.  Famous last words...  
-> > 
-> > That's an issue which you have today with preempt FULL, right? So if it
-> > turns out to be a problem then it's not a problem of the new model.  
-> 
-> Agreed, and hence my last three lines of text above.  Plus the guy who
-> requested RCU Tasks said that it was OK for its grace periods to take
-> a long time, and I am holding Steven Rostedt to that.  ;-)
+Next I did a kdevops fstests run with NFS. One server serving 3 clients
+(v4.2, v4.0 and v3). Again, timed "make fstests-baseline" and then
+grabbed the multigrain counters from the NFS server:
 
-Matters what your definition of "long time" is ;-)
+$ time make fstests-baseline
+real    181m57.585s
+user    16m8.266s
+sys     1m45.864s
 
--- Steve
+fine            8137657
+coarse          44726007
+pct fine        15.393668
+
+We can't run as many tests on nfs as xfs, so the run is shorter. nfsd is
+a very getattr-heavy workload, and the clients aggressively coalesce
+writes, so this is probably something of a pessimal case for number of
+fine-grained timestamps over time.
+
+At this point I'm mainly wondering whether (briefly) taking the
+timekeeper spinlock in this codepath is unreasonable. It does very
+little work under it, so I'm hoping the impact would be unmeasurable for
+most workloads.
+
+Side Q: what's the best tool for measuring spinlock contention? It'd be
+interesting to see how often (and how long) we end up spinning on this
+lock under different workloads.
+
+Note that some of the patches in the series are virtually identical to
+the ones before. I stripped the prior Reviewed-by/Acked-by tags though
+since the underlying infrastructure has changed a bit.
+
+Comments and suggestions welcome.
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Jeff Layton (9):
+      fs: switch timespec64 fields in inode to discrete integers
+      timekeeping: new interfaces for multigrain timestamp handing
+      timekeeping: add new debugfs file to count multigrain timestamps
+      fs: add infrastructure for multigrain timestamps
+      fs: have setattr_copy handle multigrain timestamps appropriately
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+      tmpfs: add support for multigrain timestamps
+
+ fs/attr.c                           |  52 ++++++++++++++--
+ fs/btrfs/file.c                     |  25 ++------
+ fs/btrfs/super.c                    |   5 +-
+ fs/ext4/super.c                     |   2 +-
+ fs/inode.c                          |  70 ++++++++++++++++++++-
+ fs/stat.c                           |  41 ++++++++++++-
+ fs/xfs/libxfs/xfs_trans_inode.c     |   6 +-
+ fs/xfs/xfs_iops.c                   |  10 +--
+ fs/xfs/xfs_super.c                  |   2 +-
+ include/linux/fs.h                  |  85 ++++++++++++++++++--------
+ include/linux/timekeeper_internal.h |   2 +
+ include/linux/timekeeping.h         |   4 ++
+ kernel/time/timekeeping.c           | 117 ++++++++++++++++++++++++++++++++++++
+ mm/shmem.c                          |   2 +-
+ 14 files changed, 352 insertions(+), 71 deletions(-)
+---
+base-commit: 12cd44023651666bd44baa36a5c999698890debb
+change-id: 20231016-mgtime-fe3ea75c6f59
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
