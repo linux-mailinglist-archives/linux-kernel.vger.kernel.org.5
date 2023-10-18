@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5EC7CE4C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D427CE4B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjJRRjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S232446AbjJRRd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbjJRRdB (ORCPT
+        with ESMTP id S230387AbjJRRdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:33:01 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA0A170F
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:29:23 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c5056059e0so84312551fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:29:23 -0700 (PDT)
+        Wed, 18 Oct 2023 13:33:05 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4A630F8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:29:31 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c5056059e0so84314231fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697650161; x=1698254961; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697650169; x=1698254969; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rAT+E2Mqww2+Xf9ub965fid4r/e0BGLFO3gBSbvEEyQ=;
-        b=WdIVHNn185WrCBxZcxeK6EpHAm663qxgoDNWOTzFmYKl/5CTDaBmjvxkA3ULQrCSPT
-         m4vq4bJCAM5g65oDxaw1iCzgMRWE4j7X6L4YXOYPT5Fp7TR3sjoLhh01FmlWcOYEiHpa
-         AIm6RaeGuuFoKOL3LoOW88PxgAirIMqJHntp2hRXPF5BajDdKGZCsuha6G5JB8swo5nv
-         wd/zfQxQRIPeRvleWn0aPBZv8/VSa3HWyONrSV9vn/OGCCCGAp30/EAJtUC1uAJksVh3
-         cpwqP2PFPwYHDvE5Xn30d9AihUBtS6oKHCeZ8XTjKBtmOQGqmcGR8b8eS6ZxbQWVYMT0
-         8eQA==
+        bh=0GJ2P2CnTobBA/8z5Cm8CPIZTuVTwbVlOW0vmiISWx0=;
+        b=QgMh309bM5dL46kFYzNOXZcVB/NcbdixgEujiUSsWvsYURS9Suu+wkBglY/aBzRf/3
+         gZCpofmyzb3D6XQdcKQFVZYzpGFbClLm8yD+Se18KbDQQt8Q6ra0C57GF0nzs6cDMFMK
+         bVhLk9Z8dTW1g5zyx22Q9s7/r+mYGFXpERe97ntLCcjPfWwH2ZgMGqqw5qz5I4ec5n6B
+         eh7x8zjs3dVKiIi0lAuCh5dbc0SeAjvJSUMjgSe+IvR2Asnjfqz5sdYvjwLO1seSg9pW
+         irg02gOuiM1+Xgje2i3XNmPBMKYCfA6gNpx3D0neOXYZcciJPj0v/fE5TjPe7/Z9NzNq
+         /9MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697650161; x=1698254961;
+        d=1e100.net; s=20230601; t=1697650169; x=1698254969;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rAT+E2Mqww2+Xf9ub965fid4r/e0BGLFO3gBSbvEEyQ=;
-        b=hAbXwFR41we+S6OFL6tB/dhOwuy2QWxrB9iXRFZd6OeUj9Im766CeF5SUpOGvqBKpi
-         Qs+UmRS3tbgWXa/5AKt7Ex+CNoSEN5DEHvG/6RuphfiF1YrNojNXSIoBQ52NxCi1K1k3
-         6PgHZBaAFAYYKGmJPQWTXuCn/XnTtaLGsEpLEuw6tGDyDrYGn2Pht1WvgmDVjfbw1dpg
-         QUKG3m7vF0wai8Al6f1X2fdc3WwCdqTrOwY9KWzhronwJEus+uio0+tG5MgA3/3Wiz9l
-         ReAQ1zOqf6I87Pje5GAR2x4K5FTzIiDnpxjIInDITamx1K4Yvv5+w2Do21bEX0+23v2h
-         c0Nw==
-X-Gm-Message-State: AOJu0YzhBBiSiuc51D6W1mwrIPVP1ngSpE8mWamTG+LB9t8POJMoW5x9
-        Uz1oKaQtI//3yvDcli3huv8R13OreLw9NfbQS3QrGg==
-X-Google-Smtp-Source: AGHT+IEfrz0unC2GiQPrG2JuKmc9QnUuo5JLCp2+gYk1KnHMA7dr2bOwgXlPjCwKOCgOOnKI1jFbT+XgHxTamtCDl18=
-X-Received: by 2002:a2e:b5da:0:b0:2c5:25f3:8e1c with SMTP id
- g26-20020a2eb5da000000b002c525f38e1cmr3998973ljn.21.1697650161325; Wed, 18
- Oct 2023 10:29:21 -0700 (PDT)
+        bh=0GJ2P2CnTobBA/8z5Cm8CPIZTuVTwbVlOW0vmiISWx0=;
+        b=aqTcODBiZSEDTR2/cTPcvPx9mePoPgkjBLOehJarp3NqgwdJa6FvK3dgD8ryqd8I8D
+         Tp6aQG9BeXFiVfhjPk2y2H4t/ZooUOUyIZW9IAP/Ez+Y42xYPM2ieCbc2gVhAKKnV3qG
+         v4/BBRM7P7hYvYuEjmxJ5fq3eI8Egzb/BAQEzYuS892G1ghc1qjkOyispu2qYnsS9778
+         C6v1xbMbHPZJqfKcCBQupvT7ayDY2USNkxLt3yHMEAuqR+W3PE4Ho+YAshJ59H10R2LU
+         tbMQNXgBwZ7QrA6d/VhStdLwCK4KPLPYRmeYpjziycn+awLVZbgFzA04zOac0D8eiVJT
+         mKhQ==
+X-Gm-Message-State: AOJu0Ywea/ag2v0dPqoXbT6Kk7IByJuKhNipoNHC+SgX9nd2T4kpuBqP
+        h/hGfxHK0dJvbHMK/o2ALtJ2J9WfpNiOcAWUDAZSAQ==
+X-Google-Smtp-Source: AGHT+IHCEnrOGaYL2aZ2Uu1BYAivaKmsbw0/Dl8ITo9PK6BbJM+TMe6i41oEoFMoHhyP2EZwsctqXbqrc2W0+6s62wo=
+X-Received: by 2002:a2e:164e:0:b0:2bd:d34:d98a with SMTP id
+ 14-20020a2e164e000000b002bd0d34d98amr4364757ljw.44.1697650168802; Wed, 18 Oct
+ 2023 10:29:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-16-cleger@rivosinc.com>
-In-Reply-To: <20231017131456.2053396-16-cleger@rivosinc.com>
+References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-18-cleger@rivosinc.com>
+In-Reply-To: <20231017131456.2053396-18-cleger@rivosinc.com>
 From:   Evan Green <evan@rivosinc.com>
-Date:   Wed, 18 Oct 2023 10:28:45 -0700
-Message-ID: <CALs-HsuG7FRpbaJaj+q4gEhJnAyVvZv8osDCJ4irrXEJaMd=hQ@mail.gmail.com>
-Subject: Re: [PATCH v2 15/19] riscv: hwprobe: export Zvfh[min] ISA extensions
+Date:   Wed, 18 Oct 2023 10:28:52 -0700
+Message-ID: <CALs-HstTzsbtfcRdm0W+qeoN+GO1mFxOLXK_fPevO2oCUqhxnQ@mail.gmail.com>
+Subject: Re: [PATCH v2 17/19] riscv: add ISA extension parsing for Zfa
 To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
 Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
@@ -69,8 +69,8 @@ Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,10 +80,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
 osinc.com> wrote:
 >
-> Export Zvfh[min] ISA extension[1] through hwprobe.
+> Add parsing for Zfa ISA extension [1] which were ratified in commit
+> 056b6ff467c7 ("Zfa is ratified") of riscv-isa-manual[2].
 >
-> Link: https://drive.google.com/file/d/1_Yt60HGAf1r1hx7JnsIptw0sqkBd9BQ8/v=
+> Link: https://drive.google.com/file/d/1VT6QIggpb59-8QRV266dEE4T8FZTxGq4/v=
 iew [1]
+> Link: https://github.com/riscv/riscv-isa-manual/commits/056b6ff467c7 [2]
 > Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
 
 Reviewed-by: Evan Green <evan@rivosinc.com>
