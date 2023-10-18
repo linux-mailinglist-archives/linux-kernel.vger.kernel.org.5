@@ -2,126 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74A37CDFFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8117CDFFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345790AbjJROez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        id S1345665AbjJROev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346187AbjJROeY (ORCPT
+        with ESMTP id S1346148AbjJROeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:34:24 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46BE4683
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:36 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso67071821fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697639555; x=1698244355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VrViw8EcPVAfO6aNLjjt2oTpTxgN2CS759uONYxwgI4=;
-        b=KILze/neQr3IJu0UagVJuF2dBE/rPc2lx+55r0iNexoLXEG7M4UhYG4TQjR54G6nz/
-         Vi2aYHdNS8pVDaXUJ+vWVHNP5Yeo0dQ3x+F19S4CJYX7hJMlxI8hM3V92D9oeDU5qvyz
-         HecSl73k+/cdXEnq2ppsmQKAiBsENabDoIXBs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697639555; x=1698244355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VrViw8EcPVAfO6aNLjjt2oTpTxgN2CS759uONYxwgI4=;
-        b=pL/SSQoMxCk86jN2aWBIfpDGgW5Xo9LBVjNZZIEj5KvUq/nMhJMds62e7Nx7BccwlL
-         VDyVWWFW3wgfIvGAcj8wv6j/LiIw8KbzHbUdOnlA4MH8TYWD0DB6TG15eZ7RwPjKF/do
-         nnM1rVPJ80vfkClNun90MMv6ES2C65eUNjyM/FJSOFf6eY9VRPzy/adoaZkPSJTARdBd
-         e6e8UJHBKRYzigOrQGhJ9rA6LKHizvV41l0WUzujXhh17flIiJ62WAStlF1yUw/kIqZO
-         Tqhaay8ek4pQsqUyOiKCnDNJPYcUeZy3eIzp5KzFMojttvzlA9E8yT+wcbHRAb/tByhY
-         IG6Q==
-X-Gm-Message-State: AOJu0YxX8DFFptEsLYy11Wk/F3ZvRjhyqfRfGHPqzrrGrVrTHKwqaihl
-        Hthizr8aZVpSjKdETKnEW7UgJMlgNJFjFTMld6tiAQ==
-X-Google-Smtp-Source: AGHT+IEhBZkHoObeKA6gBsXSZrhq4Ye8cUfsfIyb4HEkD0Ex39NGlK1sSNdjvlW2RTMMwJOqTCUfhIWLbDTdbYVXTYw=
-X-Received: by 2002:a05:651c:504:b0:2c5:cf0:74e9 with SMTP id
- o4-20020a05651c050400b002c50cf074e9mr4295422ljp.14.1697639554674; Wed, 18 Oct
- 2023 07:32:34 -0700 (PDT)
+        Wed, 18 Oct 2023 10:34:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC6C449D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AC7DC433C8;
+        Wed, 18 Oct 2023 14:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697639548;
+        bh=4FEwqJ929JAqfUaP3HMuPeYHbZMSPU9FcgWhb7gRou8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c4QJtwVf7GipsAh6O4D12K+Dz/6Tvr//wwczIEzjDOtYEymAH4NVxJtrNNqOeh4U/
+         bNliXOKKZm3AQaC7LBWPQenl7k9FYu0JQ5Pjxf4EkQ+ndennpK16xxWvV2EZeVYnqt
+         osqN9ONbzqnw/VCNaDwCf2mAfEnasJTBOCKaU5+vLt3eGydYYbuZYu9BOb+zjW5mN1
+         uhI1AqRCKoE+ku2x8LZObRZ+Dyw3iQoV1U9CR0Ex5JUZolBq6tz4JLhJphSEvZIG9A
+         qwYf60lUmVls8oLFaetkwxvh1fuwnElxUO99BtxePZfCXjnEo1R7JDvMVT53bXNoQx
+         AD3wk5riYs1Kg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 130A640016; Wed, 18 Oct 2023 11:32:25 -0300 (-03)
+Date:   Wed, 18 Oct 2023 11:32:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        iii@linux.ibm.com, irogers@google.com, svens@linux.ibm.com,
+        gor@linux.ibm.com, sumanthk@linux.ibm.com, hca@linux.ibm.com
+Subject: Re: [PATCH] perf test: test case 111 fails on s390
+Message-ID: <ZS/seVMNrV6j6z1J@kernel.org>
+References: <20231018064441.2751317-1-tmricht@linux.ibm.com>
+ <ZS/mKa1Sk4hhJ/zY@kernel.org>
 MIME-Version: 1.0
-References: <20231016173004.14148-1-urezki@gmail.com> <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
- <ZS6U5SgvGcmdE_DA@pc636>
-In-Reply-To: <ZS6U5SgvGcmdE_DA@pc636>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 18 Oct 2023 10:32:22 -0400
-Message-ID: <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS/mKa1Sk4hhJ/zY@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 10:06=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com=
-> wrote:
-[...]
-> > > +
-> > > +       /* Finally. */
-> > > +       complete(&rs->completion);
-> > > +}
-> > > +
-> > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > +{
-> > > +       struct llist_node *done, *rcu, *next;
-> > > +
-> > > +       done =3D llist_del_all(&sr.done);
-> > > +       if (!done)
-> > > +               return;
-> > > +
-> > > +       llist_for_each_safe(rcu, next, done)
-> > > +               rcu_sr_normal_complete(rcu);
-> > > +}
-> > [...]
-> > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > > +{
-> > > +       atomic_inc(&sr.active);
-> > > +       if (llist_add((struct llist_node *) &rs->head, &sr.curr))
-> > > +               /* Set the tail. Only first and one user can do that.=
- */
-> > > +               WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->h=
-ead);
-> > > +       atomic_dec(&sr.active);
-> >
-> > Here there is no memory ordering provided by the atomic ops. Is that re=
-ally Ok?
-> >
-> This needs to be reworked since there is no ordering guaranteed. I think
-> there is a version of "atomic_inc_something" that guarantees it?
+Em Wed, Oct 18, 2023 at 11:05:29AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Oct 18, 2023 at 08:44:41AM +0200, Thomas Richter escreveu:
+> > Perf test case 111 Check open filename arg using perf trace + vfs_getname
+> > fails on s390. This is caused by a failing function
+> > bpf_probe_read() in file util/bpf_skel/augmented_raw_syscalls.bpf.c.
+> 
+> 
+> Please change the patch subject to describe what is being really fixed
+> instead of the test that spotted the problem, i.e. something like:
+> 
+> perf trace: Use the right bpf_probe_read(_str) variant for reading user data
+> 
+> But then shouldn't all those use bpf_probe_read_user(_str)?
+> 
+> As it is reading arguments to the syscall, that are coming from
+> userspace, i.e. both open/openat/etc path/filename, clock_nanosleep rqtp
+> args (and connect sockaddr, etc) comes from userspace.
 
-Yeah there is atomic_fetch_{inc,dec}{_acquire,_release}()
+So, with your patch, on x86_64, I get:
 
-Or:
-  atomic_inc(&sr.active);
-  smp_mb__after_atomic();
+^C[root@five ~]# perf trace -e connect*
+     0.000 ( 0.021 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 42)         = 0
+     0.544 ( 0.011 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
+     0.569 ( 0.009 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 28)         = -1 ENETUNREACH (Network is unreachable)
 
-  smp_mb__before_atomic();
-  atomic_dec(&sr.active);
+I.e. it loads the resulting BPF bytecode but doesn't manage to copy the
+sockaddr in userspace pointed by connect's uservaddr argument.
 
-?
+We need to use bpf_probe_read_kernel() for the tracepoint payload, in
+the raw_syscalls/sys_enter and raw_syscalls/sys_exit handlers, as that
+is kernel memory, but in the syscall specific BPF programs we need to
+use bpf_probe_read_user() to get things like sockaddr, etc, i.e.
+userspace contents.
 
-That's probably better because we don't need ordering before the inc
-or after the dec, AFAICS.
+With the patch below:
 
-I am actually a bit surprised there is no atomic_inc_acquire() yet. :-)
+[root@five ~]# perf trace -e connect*
+     0.000 ( 0.128 ms): pool/2690 connect(fd: 7, uservaddr: { .family: LOCAL, path: /var/run/.heim_org.h5l.kcm-socket }, addrlen: 110) = 0
+   304.127 ( 0.018 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: LOCAL, path: /run/systemd/resolve/io.systemd.Resolve }, addrlen: 42) = 0
+   304.554 ( 0.016 ms): systemd-resolv/1167 connect(fd: 24, uservaddr: { .family: INET, port: 53, addr: 192.168.86.1 }, addrlen: 16) = 0
+   304.650 ( 0.009 ms): systemd-resolv/1167 connect(fd: 25, uservaddr: { .family: INET, port: 53, addr: 192.168.86.1 }, addrlen: 16) = 0
+   318.952 ( 0.009 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: INET, port: 0, addr: 216.239.38.177 }, addrlen: 16) = 0
+   318.965 ( 0.003 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
+   318.970 ( 0.004 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: INET, port: 0, addr: 216.239.34.177 }, addrlen: 16) = 0
+   318.977 ( 0.002 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
 
-Thanks.
+You can test before/after with:
+
+ # perf trace -e connect*,clo*sleep
+
+To see clock_nanosleep rqtp args as well:
+
+Before:
+
+   999.107 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
+  1000.228 (         ): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) ...
+  1030.375 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
+  1061.694 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
+
+
+after:
+
+  1000.198 (1000.035 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
+  2000.302 (1000.036 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
+  3000.410 (1000.037 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
+  4000.518 (1000.035 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90
+
+[root@five ~]# perf trace -e *sleep sleep 1.234567890
+     0.000 (1234.630 ms): sleep/64495 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 234567890 }, rmtp: 0x7ffdf49af4a0) = 0
+[root@five ~]#
+
+- Arnaldo
+
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index cc22bccfc178229a..52c270330ae0d2f3 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -203,7 +203,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
+ 	_Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
+ 	socklen &= sizeof(augmented_args->saddr) - 1;
+ 
+-	bpf_probe_read_kernel(&augmented_args->saddr, socklen, sockaddr_arg);
++	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
+ 
+ 	return augmented__output(args, augmented_args, len + socklen);
+ }
+@@ -221,7 +221,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
+ 
+ 	socklen &= sizeof(augmented_args->saddr) - 1;
+ 
+-	bpf_probe_read_kernel(&augmented_args->saddr, socklen, sockaddr_arg);
++	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
+ 
+ 	return augmented__output(args, augmented_args, len + socklen);
+ }
+@@ -311,7 +311,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
+         if (augmented_args == NULL)
+ 		goto failure;
+ 
+-	if (bpf_probe_read_kernel(&augmented_args->__data, sizeof(*attr), attr) < 0)
++	if (bpf_probe_read_user(&augmented_args->__data, sizeof(*attr), attr) < 0)
+ 		goto failure;
+ 
+ 	attr_read = (const struct perf_event_attr_size *)augmented_args->__data;
+@@ -325,7 +325,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
+                 goto failure;
+ 
+ 	// Now that we read attr->size and tested it against the size limits, read it completely
+-	if (bpf_probe_read_kernel(&augmented_args->__data, size, attr) < 0)
++	if (bpf_probe_read_user(&augmented_args->__data, size, attr) < 0)
+ 		goto failure;
+ 
+ 	return augmented__output(args, augmented_args, len + size);
+@@ -347,7 +347,7 @@ int sys_enter_clock_nanosleep(struct syscall_enter_args *args)
+ 	if (size > sizeof(augmented_args->__data))
+                 goto failure;
+ 
+-	bpf_probe_read_kernel(&augmented_args->__data, size, rqtp_arg);
++	bpf_probe_read_user(&augmented_args->__data, size, rqtp_arg);
+ 
+ 	return augmented__output(args, augmented_args, len + size);
+ failure:
