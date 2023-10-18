@@ -2,142 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F3D7CE455
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439507CE460
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjJRRY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S229963AbjJRRZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjJRRY4 (ORCPT
+        with ESMTP id S230032AbjJRRZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:24:56 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8953B4482
+        Wed, 18 Oct 2023 13:25:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DA84482
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697649895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5AOd0/hJo+xQgO9OcEYZKv2n43WMiR7HBnvKw0ANJXA=;
+        b=RpLe8K5mAbONvk3pVUNsI4+KdLJWkb4Zd9ewl7cxXQAdsznE4rGSePUyLJFZV8w27RY0b4
+        i9ifvv9a0k6avUvykWdoY4WksisMo9a39GlOOQELElu2KislSdpYgCyQbG6VKGGHfv+yCk
+        uTlHixqRbVjrgO5F6jvHbypvUdwpEc4=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-190-wKcdzogVMbO8MJ8zqYjt0Q-1; Wed, 18 Oct 2023 13:24:53 -0400
+X-MC-Unique: wKcdzogVMbO8MJ8zqYjt0Q-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c51a7df557so40675041fa.0
         for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:24:53 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9338e4695so95991241fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697649892; x=1698254692; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JGr+wt8mibKQk7V/xmPHf9oID5HtJ6aKoUQCNWyJYkI=;
-        b=ssIAHBd6c/4fTV2H6cqWVl4JvFRuctqTiihxcorkMy6+Gnq2FKGTWRMMgB6SLzTj09
-         umOucqfIiNFYTVL8DJyWye2AGcDKPNzN7isZPIflFdmSIWyrtTXravm6OkVgGH7myDwE
-         hAzQcYycD2CojE8wwGxmQfmcnztTME+OzHf9m1XEd6hASlvCG1Ryme9J1g8WW5faCNMl
-         HtddF0/Vdk1l2V/YsXJXkQnbVBPYnE76/jKGrrDwFsk0kT/URJipZpMbw3afvoZkQ1JV
-         tWXI05ziWsTen0ftM3GB5QQH84U8FXQCmkTpX4u1SWjT2nC51jR2rLMX8R7ShQS6ykE4
-         FHeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1697649892; x=1698254692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JGr+wt8mibKQk7V/xmPHf9oID5HtJ6aKoUQCNWyJYkI=;
-        b=pqv/KtOPW888yGJo+P5iXo5esmd81j/7qdO8SBTUojukT5XRZhORLAWzOLGzaIZvlU
-         kPretPUzhlcYlKLOM89oCTp8+lkuys102qWi0xhLm+zWqPDh3Kr4kszHaQEtuNQjV1Ux
-         VCKyRNd/dXm9N8H7HZftuS/24icZLm568m2W8cRrPv0cxWAnLlwFd+zusGUyWs1oPFYs
-         McY3FG6efhIYIUfrzcjVWQole+M97Du0ukSmu6Kn4e6hUfWvJ4tL9pl5/uHjFmvWYX/D
-         sZ7vE6PUWJH2f9MB+ZGAP/ZxGseCbVSNt0/cmfJ0x+CyLzeTBvbsk9uD2tJUOnvupRFX
-         56Kw==
-X-Gm-Message-State: AOJu0YywNTNS8ggjMIkz5V5QBPhUPYfBHs1cloGHewS8Ah3HqYlWyGAQ
-        Je2eHxQtyxfVtYI+wG6zNNPSwGL2Ur82p7CDREnr/Q==
-X-Google-Smtp-Source: AGHT+IHn5JoyDBx4hQ6moyifBlTpJE2HspdWaEwiTdR7052+Lklyunc7KFWvmABqPETQ6/Rlz2A1G6dGqOcAJlNQXXc=
-X-Received: by 2002:a2e:9b13:0:b0:2c5:3492:5d96 with SMTP id
- u19-20020a2e9b13000000b002c534925d96mr4576190lji.12.1697649891740; Wed, 18
- Oct 2023 10:24:51 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5AOd0/hJo+xQgO9OcEYZKv2n43WMiR7HBnvKw0ANJXA=;
+        b=oPARvJzAUh7RcgkeJhn9MYFUIz596E5nwULRc4e6X0NOYj+a06vxCveLaiz4sn5tJQ
+         rTKqGq+Wdo1MJOUhObX945HkgAiIdu9Nwv7xt1glvnDAxK1Ep/GZS7roeIC3FyztWZHk
+         CRUaoJa+2mouKfJDsvXzWfVctkg1QkoRDVbthxbznKQzt0eXySwfu1rPfPuOI6qSUx6Q
+         C+Tx17U/etTXmBTwVL4jF+U2d1BGcybzFt90+qCvyUq3YDzFOJmZqb6sQK+gGXhirbKz
+         +rRvfUiIGnhAhNx1N/KzoZaJ6SDdsEkIdlaDrklzBJr/9FRE9vdftAnYGNJSfQbVViEs
+         D3Pg==
+X-Gm-Message-State: AOJu0Yx8v5Rg6Lc8ZomwDaZ3P6S8bPj0Qcq3QLTnMQBSPm+RukGniZE2
+        YQjBCgOjcoKnWhoZaeRG/cb4F8Z2JsMUHzDXkZ2DW5I9CEyyQwZRZcHP2COaAERZZR6N1MUg6x4
+        EtMf0Fbjmdqar/QzavWbqUGZG
+X-Received: by 2002:a2e:3619:0:b0:2bf:a9b6:d254 with SMTP id d25-20020a2e3619000000b002bfa9b6d254mr3934018lja.50.1697649892292;
+        Wed, 18 Oct 2023 10:24:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBwF/FZH/EqE5Pe6mKGEiyQtBuyLQcUH3K5SG7IYfDvAmL8IFrvXOTzgtqDTf2JFbCaqPxsA==
+X-Received: by 2002:a2e:3619:0:b0:2bf:a9b6:d254 with SMTP id d25-20020a2e3619000000b002bfa9b6d254mr3933990lja.50.1697649891837;
+        Wed, 18 Oct 2023 10:24:51 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:1f2:2037:f34:d61b:7da0:a7be])
+        by smtp.gmail.com with ESMTPSA id r9-20020a05600c320900b0040644e699a0sm2184668wmp.45.2023.10.18.10.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 10:24:51 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 13:24:46 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v4 00/16] vdpa: Add support for vq descriptor
+ mappings
+Message-ID: <20231018132347-mutt-send-email-mst@kernel.org>
+References: <20231018171456.1624030-2-dtatulea@nvidia.com>
 MIME-Version: 1.0
-References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-2-cleger@rivosinc.com>
-In-Reply-To: <20231017131456.2053396-2-cleger@rivosinc.com>
-From:   Evan Green <evan@rivosinc.com>
-Date:   Wed, 18 Oct 2023 10:24:15 -0700
-Message-ID: <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension reporting
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018171456.1624030-2-dtatulea@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
-osinc.com> wrote:
->
-> Factorize ISA extension reporting by using a macro rather than
-> copy/pasting extension names. This will allow adding new extensions more
-> easily.
->
-> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
-> ---
->  arch/riscv/kernel/sys_riscv.c | 32 ++++++++++++++++++--------------
->  1 file changed, 18 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.=
-c
-> index 473159b5f303..e207874e686e 100644
-> --- a/arch/riscv/kernel/sys_riscv.c
-> +++ b/arch/riscv/kernel/sys_riscv.c
-> @@ -145,20 +145,24 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *=
-pair,
->         for_each_cpu(cpu, cpus) {
->                 struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
->
-> -               if (riscv_isa_extension_available(isainfo->isa, ZBA))
-> -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBA;
-> -               else
-> -                       missing |=3D RISCV_HWPROBE_EXT_ZBA;
-> -
-> -               if (riscv_isa_extension_available(isainfo->isa, ZBB))
-> -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBB;
-> -               else
-> -                       missing |=3D RISCV_HWPROBE_EXT_ZBB;
-> -
-> -               if (riscv_isa_extension_available(isainfo->isa, ZBS))
-> -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBS;
-> -               else
-> -                       missing |=3D RISCV_HWPROBE_EXT_ZBS;
-> +#define CHECK_ISA_EXT(__ext)                                            =
-       \
-> +               do {                                                     =
-       \
-> +                       if (riscv_isa_extension_available(isainfo->isa, _=
-_ext)) \
-> +                               pair->value |=3D RISCV_HWPROBE_EXT_##__ex=
-t;       \
-> +                       else                                             =
-       \
-> +                               missing |=3D RISCV_HWPROBE_EXT_##__ext;  =
-         \
-> +               } while (false)
-> +
-> +               /*
-> +                * Only use CHECK_ISA_EXT() for extensions which can be e=
-xposed
-> +                * to userspace, regardless of the kernel's configuration=
-, as no
-> +                * other checks, besides presence in the hart_isa bitmap,=
- are
-> +                * made.
+On Wed, Oct 18, 2023 at 08:14:39PM +0300, Dragos Tatulea wrote:
+> This patch series adds support for vq descriptor table mappings which
+> are used to improve vdpa live migration downtime. The improvement comes
+> from using smaller mappings which take less time to create and destroy
+> in hw.
+> 
+> The first part adds the vdpa core changes from Si-Wei [0].
+> 
+> The second part adds support in mlx5_vdpa:
+> - Refactor the mr code to be able to cleanly add descriptor mappings.
+> - Add hardware descriptor mr support.
+> - Properly update iotlb for cvq during ASID switch.
+> 
+> Changes in v4:
+> 
+> - Improved the handling of empty iotlbs. See mlx5_vdpa_change_map
+>   section in patch "12/16 vdpa/mlx5: Improve mr upate flow".
+> - Fixed a invalid usage of desc_group_mkey hw vq field when the
+>   capability is not there. See patch
+>   "15/16 vdpa/mlx5: Enable hw support for vq descriptor map".
 
-This comment alludes to a dangerous trap, but I'm having trouble
-understanding what it is. Perhaps some rewording to more explicitly
-state the danger would be appropriate. Other than that:
+At this point, whether this patchset makes it in 6.7 will largely depend
+on how many rcs there are in 6.6, so it can get some time in next.
 
-Reviewed-by: Evan Green <evan@rivosinc.com>
+
+> Changes in v3:
+> 
+> - dup_iotlb now checks for src == dst case and returns an error.
+> - Renamed iotlb parameter in dup_iotlb to dst.
+> - Removed a redundant check of the asid value.
+> - Fixed a commit message.
+> - mx5_ifc.h patch has been applied to mlx5-vhost tree. When applying
+>   this series please pull from that tree first.
+> 
+> Changes in v2:
+> 
+> - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
+>   was split off into two patches to avoid merge conflicts into the tree
+>   of Linus.
+> 
+>   The first patch contains only changes for mlx5_ifc.h. This must be
+>   applied into the mlx5-vdpa tree [1] first. Once this patch is applied
+>   on mlx5-vdpa, the change has to be pulled fom mlx5-vdpa into the vhost
+>   tree and only then the remaining patches can be applied.
+> 
+> [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
+> 
+> Dragos Tatulea (13):
+>   vdpa/mlx5: Expose descriptor group mkey hw capability
+>   vdpa/mlx5: Create helper function for dma mappings
+>   vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+>   vdpa/mlx5: Take cvq iotlb lock during refresh
+>   vdpa/mlx5: Collapse "dvq" mr add/delete functions
+>   vdpa/mlx5: Rename mr destroy functions
+>   vdpa/mlx5: Allow creation/deletion of any given mr struct
+>   vdpa/mlx5: Move mr mutex out of mr struct
+>   vdpa/mlx5: Improve mr update flow
+>   vdpa/mlx5: Introduce mr for vq descriptor
+>   vdpa/mlx5: Enable hw support for vq descriptor mapping
+>   vdpa/mlx5: Make iotlb helper functions more generic
+>   vdpa/mlx5: Update cvq iotlb mapping on ASID change
+> 
+> Si-Wei Liu (3):
+>   vdpa: introduce dedicated descriptor group for virtqueue
+>   vhost-vdpa: introduce descriptor group backend feature
+>   vhost-vdpa: uAPI to get dedicated descriptor group id
+> 
+>  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
+>  drivers/vdpa/mlx5/core/mr.c        | 194 ++++++++++++++++-------------
+>  drivers/vdpa/mlx5/core/resources.c |   6 +-
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 105 +++++++++++-----
+>  drivers/vhost/vdpa.c               |  27 ++++
+>  include/linux/mlx5/mlx5_ifc.h      |   8 +-
+>  include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
+>  include/linux/vdpa.h               |  11 ++
+>  include/uapi/linux/vhost.h         |   8 ++
+>  include/uapi/linux/vhost_types.h   |   5 +
+>  10 files changed, 272 insertions(+), 130 deletions(-)
+> 
+> -- 
+> 2.41.0
+
