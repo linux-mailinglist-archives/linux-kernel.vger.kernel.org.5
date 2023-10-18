@@ -2,236 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BE17CDC96
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B777CDC98
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjJRNEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S231236AbjJRNFA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 09:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjJRNEn (ORCPT
+        with ESMTP id S231206AbjJRNE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:04:43 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7777E106
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:04:39 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VuR0XGI_1697634275;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuR0XGI_1697634275)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Oct 2023 21:04:36 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     mgorman@techsingularity.net, hughd@google.com, vbabka@suse.cz,
-        ying.huang@intel.com, ziy@nvidia.com,
-        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: migrate: record the mlocked page status to remove unnecessary lru drain
-Date:   Wed, 18 Oct 2023 21:04:32 +0800
-Message-Id: <64899ad0bb78cde88b52abed1a5a5abbc9919998.1697632761.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+        Wed, 18 Oct 2023 09:04:58 -0400
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E759119;
+        Wed, 18 Oct 2023 06:04:56 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-582a82e6d10so10282eaf.0;
+        Wed, 18 Oct 2023 06:04:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697634295; x=1698239095;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D0SRSPeAfVm/OB4Q86vFV9kJ7aNqnSHVhsB69HY3UnI=;
+        b=MXPzXyEfhZKaHYhUoVcMY49WBpGGN4dYDNA3DDPyZafsLfFLV3lenVRbyKTHIZBO4A
+         Ut5G7KmZ0SNWHs6ltdihN413ul8Dyagr3Jp2/gglvWfejSr0MFZBlra3J4zt0VcHkeeK
+         v5f0yeXUNV+EEJ+GsL9qdvaBEW68Qldvx4ObLuIVVFv/1zdZ9UyqyRCrOnblWUL0zoW6
+         Cf4r/1M0NfGuUNgIe9u4InkhGWsnJ0eog4SHw6Q6fOw3yA30z3xE9wUi+pqKgEBF9cso
+         AoCDl2sDkuc0Fh6PFU0Rjd4Qu2CbEkwtGY5KaEdhGfisZ2zc6M7HkjyhFIgp5CWl0vpe
+         CPRA==
+X-Gm-Message-State: AOJu0YxSakaxgK549IcSzK+sUSidcZZUSUghEsgAyrPK9glJa1Kyv49f
+        ZtGFZXAb5tlReuT4L5wOxtKwijDrtdExaMojqj0=
+X-Google-Smtp-Source: AGHT+IG57X3mbn4wBvOm5puVsKIvyX8GcNe2LUDaudB1ZSTZwuqMifIfoBTQX8YgUfnsWPlF16tTzjXeFrD39Ja0WKE=
+X-Received: by 2002:a4a:d898:0:b0:581:84e9:a7ad with SMTP id
+ b24-20020a4ad898000000b0058184e9a7admr5226358oov.1.1697634295252; Wed, 18 Oct
+ 2023 06:04:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231014105426.26389-1-sumitg@nvidia.com> <20231014105426.26389-3-sumitg@nvidia.com>
+In-Reply-To: <20231014105426.26389-3-sumitg@nvidia.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Oct 2023 15:04:43 +0200
+Message-ID: <CAJZ5v0ivZd-+wRtCNE4t1P=SjJSEJmW6s7GyuYELWg-v87Tw2w@mail.gmail.com>
+Subject: Re: [Patch v5 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
+ pctg for Tegra241
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rafael@kernel.org, rui.zhang@intel.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, bbasu@nvidia.com, sanjayc@nvidia.com,
+        ksitaraman@nvidia.com, srikars@nvidia.com, jbrasen@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing compaction, I found the lru_add_drain() is an obvious hotspot
-when migrating pages. The distribution of this hotspot is as follows:
-   - 18.75% compact_zone
-      - 17.39% migrate_pages
-         - 13.79% migrate_pages_batch
-            - 11.66% migrate_folio_move
-               - 7.02% lru_add_drain
-                  + 7.02% lru_add_drain_cpu
-               + 3.00% move_to_new_folio
-                 1.23% rmap_walk
-            + 1.92% migrate_folio_unmap
-         + 3.20% migrate_pages_sync
-      + 0.90% isolate_migratepages
+On Sat, Oct 14, 2023 at 12:55 PM Sumit Gupta <sumitg@nvidia.com> wrote:
+>
+> From: Srikar Srimath Tirumala <srikars@nvidia.com>
+>
+> Current implementation of processor_thermal performs software throttling
+> in fixed steps of "20%" which can be too coarse for some platforms.
+> We observed some performance gain after reducing the throttle percentage.
+> Change the CPUFREQ thermal reduction percentage and maximum thermal steps
+> to be configurable. Also, update the default values of both for Nvidia
+> Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
+> and accordingly the maximum number of thermal steps are increased as they
+> are derived from the reduction percentage.
+>
+> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/acpi/arm64/Makefile          |  1 +
+>  drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++++++
+>  drivers/acpi/processor_thermal.c     | 35 +++++++++++++++++++++++++---
+>  include/linux/acpi.h                 |  9 +++++++
+>  4 files changed, 62 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+>
+> diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
+> index 143debc1ba4a..3f181d8156cc 100644
+> --- a/drivers/acpi/arm64/Makefile
+> +++ b/drivers/acpi/arm64/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT)         += gtdt.o
+>  obj-$(CONFIG_ACPI_APMT)        += apmt.o
+>  obj-$(CONFIG_ARM_AMBA)         += amba.o
+>  obj-y                          += dma.o init.o
+> +obj-$(CONFIG_ACPI)             += thermal_cpufreq.o
+> diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+> new file mode 100644
+> index 000000000000..de834fb013e7
+> --- /dev/null
+> +++ b/drivers/acpi/arm64/thermal_cpufreq.c
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include <linux/acpi.h>
+> +
+> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+> +#define SMCCC_SOC_ID_T241      0x036b0241
+> +
+> +int acpi_thermal_cpufreq_pctg(void)
+> +{
+> +       s32 soc_id = arm_smccc_get_soc_id_version();
+> +
+> +       /*
+> +        * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
+> +        * reduce the CPUFREQ Thermal reduction percentage to 5%.
+> +        */
+> +       if (soc_id == SMCCC_SOC_ID_T241)
+> +               return 5;
+> +
+> +       return 0;
+> +}
+> +#endif
 
-The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
-__unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
-immediately, to help to build up the correct newpage->mlock_count in
-remove_migration_ptes() for mlocked pages. However, if there are no mlocked
-pages are migrating, then we can avoid this lru drain operation, especailly
-for the heavy concurrent scenarios.
+This part needs an ACK from the ARM folks.
 
-So we can record the source pages' mlocked status in migrate_folio_unmap(),
-and only drain the lru list when the mlocked status is set in migrate_folio_move().
-In addition, the page was already isolated from lru when migrating, so we
-check the mlocked status is stable by folio_test_mlocked() in migrate_folio_unmap().
+> diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
+> index b7c6287eccca..52f316e4e260 100644
+> --- a/drivers/acpi/processor_thermal.c
+> +++ b/drivers/acpi/processor_thermal.c
+> @@ -26,7 +26,16 @@
+>   */
+>
+>  #define CPUFREQ_THERMAL_MIN_STEP 0
+> -#define CPUFREQ_THERMAL_MAX_STEP 3
+> +
+> +static int cpufreq_thermal_max_step __read_mostly = 3;
+> +
+> +/*
+> + * Minimum throttle percentage for processor_thermal cooling device.
+> + * The processor_thermal driver uses it to calculate the percentage amount by
+> + * which cpu frequency must be reduced for each cooling state. This is also used
+> + * to calculate the maximum number of throttling steps or cooling states.
+> + */
+> +static int cpufreq_thermal_pctg __read_mostly = 20;
 
-After this patch, I can see the hotpot of the lru_add_drain() is gone:
-   - 9.41% migrate_pages_batch
-      - 6.15% migrate_folio_move
-         - 3.64% move_to_new_folio
-            + 1.80% migrate_folio_extra
-            + 1.70% buffer_migrate_folio
-         + 1.41% rmap_walk
-         + 0.62% folio_add_lru
-      + 3.07% migrate_folio_unmap
+I'd call this cpufreq_thermal_reduction_step, because the value
+multiplied by it already is in percent.
 
-Meanwhile, the compaction latency shows some improvements when running
-thpscale:
-                            base                   patched
-Amean     fault-both-1      1131.22 (   0.00%)     1112.55 *   1.65%*
-Amean     fault-both-3      2489.75 (   0.00%)     2324.15 *   6.65%*
-Amean     fault-both-5      3257.37 (   0.00%)     3183.18 *   2.28%*
-Amean     fault-both-7      4257.99 (   0.00%)     4079.04 *   4.20%*
-Amean     fault-both-12     6614.02 (   0.00%)     6075.60 *   8.14%*
-Amean     fault-both-18    10607.78 (   0.00%)     8978.86 *  15.36%*
-Amean     fault-both-24    14911.65 (   0.00%)    11619.55 *  22.08%*
-Amean     fault-both-30    14954.67 (   0.00%)    14925.66 *   0.19%*
-Amean     fault-both-32    16654.87 (   0.00%)    15580.31 *   6.45%*
+>
+>  static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
+>
+> @@ -71,7 +80,7 @@ static int cpufreq_get_max_state(unsigned int cpu)
+>         if (!cpu_has_cpufreq(cpu))
+>                 return 0;
+>
+> -       return CPUFREQ_THERMAL_MAX_STEP;
+> +       return cpufreq_thermal_max_step;
+>  }
+>
+>  static int cpufreq_get_cur_state(unsigned int cpu)
+> @@ -113,7 +122,8 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+>                 if (!policy)
+>                         return -EINVAL;
+>
+> -               max_freq = (policy->cpuinfo.max_freq * (100 - reduction_pctg(i) * 20)) / 100;
+> +               max_freq = (policy->cpuinfo.max_freq *
+> +                           (100 - reduction_pctg(i) * cpufreq_thermal_pctg)) / 100;
+>
+>                 cpufreq_cpu_put(policy);
+>
+> @@ -126,10 +136,29 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+>         return 0;
+>  }
+>
+> +static void acpi_thermal_cpufreq_config(void)
+> +{
+> +       int cpufreq_pctg = acpi_thermal_cpufreq_pctg();
+> +
+> +       if (!cpufreq_pctg)
+> +               return;
+> +
+> +       cpufreq_thermal_pctg = cpufreq_pctg;
+> +
+> +       /*
+> +        * Derive the MAX_STEP from minimum throttle percentage so that the reduction
+> +        * percentage doesn't end up becoming negative. Also, cap the MAX_STEP so that
+> +        * the CPU performance doesn't become 0.
+> +        */
+> +       cpufreq_thermal_max_step = (100 / cpufreq_thermal_pctg) - 1;
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- mm/migrate.c | 50 ++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 12 deletions(-)
+Why don't you use the local variable in the expression on the right-hand side?
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 4caf405b6504..32c96f89710f 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1027,22 +1027,32 @@ union migration_ptr {
- 	struct anon_vma *anon_vma;
- 	struct address_space *mapping;
- };
-+
-+enum {
-+	PAGE_WAS_MAPPED = 1 << 0,
-+	PAGE_WAS_MLOCKED = 1 << 1,
-+};
-+
- static void __migrate_folio_record(struct folio *dst,
--				   unsigned long page_was_mapped,
-+				   unsigned long page_flags,
- 				   struct anon_vma *anon_vma)
- {
- 	union migration_ptr ptr = { .anon_vma = anon_vma };
- 	dst->mapping = ptr.mapping;
--	dst->private = (void *)page_was_mapped;
-+	dst->private = (void *)page_flags;
- }
- 
- static void __migrate_folio_extract(struct folio *dst,
- 				   int *page_was_mappedp,
-+				   int *page_was_mlocked,
- 				   struct anon_vma **anon_vmap)
- {
- 	union migration_ptr ptr = { .mapping = dst->mapping };
-+	unsigned long page_flags = (unsigned long)dst->private;
-+
- 	*anon_vmap = ptr.anon_vma;
--	*page_was_mappedp = (unsigned long)dst->private;
-+	*page_was_mappedp = page_flags & PAGE_WAS_MAPPED ? 1 : 0;
-+	*page_was_mlocked = page_flags & PAGE_WAS_MLOCKED ? 1 : 0;
- 	dst->mapping = NULL;
- 	dst->private = NULL;
- }
-@@ -1103,7 +1113,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- {
- 	struct folio *dst;
- 	int rc = -EAGAIN;
--	int page_was_mapped = 0;
-+	int page_was_mapped = 0, page_was_mlocked = 0;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__folio_test_movable(src);
- 	bool locked = false;
-@@ -1157,6 +1167,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 		folio_lock(src);
- 	}
- 	locked = true;
-+	page_was_mlocked = folio_test_mlocked(src);
- 
- 	if (folio_test_writeback(src)) {
- 		/*
-@@ -1206,7 +1217,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 	dst_locked = true;
- 
- 	if (unlikely(!is_lru)) {
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		__migrate_folio_record(dst, 0, anon_vma);
- 		return MIGRATEPAGE_UNMAP;
- 	}
- 
-@@ -1236,7 +1247,13 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 	}
- 
- 	if (!folio_mapped(src)) {
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		unsigned int page_flags = 0;
-+
-+		if (page_was_mapped)
-+			page_flags |= PAGE_WAS_MAPPED;
-+		if (page_was_mlocked)
-+			page_flags |= PAGE_WAS_MLOCKED;
-+		__migrate_folio_record(dst, page_flags, anon_vma);
- 		return MIGRATEPAGE_UNMAP;
- 	}
- 
-@@ -1261,12 +1278,13 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 			      struct list_head *ret)
- {
- 	int rc;
--	int page_was_mapped = 0;
-+	int page_was_mapped = 0, page_was_mlocked = 0;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__folio_test_movable(src);
- 	struct list_head *prev;
- 
--	__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
-+	__migrate_folio_extract(dst, &page_was_mapped,
-+				&page_was_mlocked, &anon_vma);
- 	prev = dst->lru.prev;
- 	list_del(&dst->lru);
- 
-@@ -1287,7 +1305,7 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	 * isolated from the unevictable LRU: but this case is the easiest.
- 	 */
- 	folio_add_lru(dst);
--	if (page_was_mapped)
-+	if (page_was_mlocked)
- 		lru_add_drain();
- 
- 	if (page_was_mapped)
-@@ -1321,8 +1339,15 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	 * right list unless we want to retry.
- 	 */
- 	if (rc == -EAGAIN) {
-+		unsigned int page_flags = 0;
-+
-+		if (page_was_mapped)
-+			page_flags |= PAGE_WAS_MAPPED;
-+		if (page_was_mlocked)
-+			page_flags |= PAGE_WAS_MLOCKED;
-+
- 		list_add(&dst->lru, prev);
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		__migrate_folio_record(dst, page_flags, anon_vma);
- 		return rc;
- 	}
- 
-@@ -1799,10 +1824,11 @@ static int migrate_pages_batch(struct list_head *from,
- 	dst = list_first_entry(&dst_folios, struct folio, lru);
- 	dst2 = list_next_entry(dst, lru);
- 	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
--		int page_was_mapped = 0;
-+		int page_was_mapped = 0, page_was_mlocked = 0;
- 		struct anon_vma *anon_vma = NULL;
- 
--		__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
-+		__migrate_folio_extract(dst, &page_was_mapped,
-+					&page_was_mlocked, &anon_vma);
- 		migrate_folio_undo_src(folio, page_was_mapped, anon_vma,
- 				       true, ret_folios);
- 		list_del(&dst->lru);
--- 
-2.39.3
+Also please note that the formula doesn't allow the default
+combination of reduction_step and max_step to be produced which is a
+bit odd.
 
+What would be wrong with max_step = 60 / reduction_step?
+
+> +}
+> +
+>  void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy)
+>  {
+>         unsigned int cpu;
+>
+> +       acpi_thermal_cpufreq_config();
+> +
+>         for_each_cpu(cpu, policy->related_cpus) {
+>                 struct acpi_processor *pr = per_cpu(processors, cpu);
+>                 int ret;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index ba3f601b6e3d..407617670221 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1541,4 +1541,13 @@ static inline void acpi_device_notify(struct device *dev) { }
+>  static inline void acpi_device_notify_remove(struct device *dev) { }
+>  #endif
+>
+> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+> +int acpi_thermal_cpufreq_pctg(void);
+> +#else
+> +static inline int acpi_thermal_cpufreq_pctg(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+
+This can go into drivers/acpi/internal.h as far as I'm concerned.
+
+>  #endif /*_LINUX_ACPI_H*/
+> --
