@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9161F7CE3EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16347CE3F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbjJRRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        id S232002AbjJRRGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjJRRGb (ORCPT
+        with ESMTP id S231670AbjJRRGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 13:06:31 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BEC12B;
-        Wed, 18 Oct 2023 10:06:21 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79f9acc857cso255507039f.2;
-        Wed, 18 Oct 2023 10:06:21 -0700 (PDT)
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0B811B;
+        Wed, 18 Oct 2023 10:06:22 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a6830df017so2344339f.3;
+        Wed, 18 Oct 2023 10:06:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697648780; x=1698253580; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697648781; x=1698253581; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/hQ8DAFT4FsmbzhSx1IDeWkXEPOHVXkBPwwDIEI4NyY=;
-        b=FedXUgnzppx51UYVh6OyI69Fiv1kOEQA1/Dp0IetZf4cbfPd7lLHvDnAql2Re1nqBD
-         a3L7Da5ac0r2HxRB2e1IjI+iPok55wQa7mjOIPgwPvfH8Bf2ni2vhpKspKGv/+Xf0KcG
-         ckKbDH84J6tY0C6Ng/SUXQagnc7rcW/++qwERmGemiwmGPLktn75Gc8E2SfPMjETPO8Y
-         DXy6tjZmDqP5Npo8nvFS3fykahG9qKRFUHjibN8C/cupUEA5UmX4by3u1BK2cV42WjfA
-         0exAk7KBjw0KayGq1PEBX6hoBCKML2w9Lk3S14D1hHXWVNWbcYfa/pa1vk+IvJ1jEqMK
-         Zwwg==
+        bh=O4Nv87Lg2zXFTsrsMPJe4o1KQfKM5CR/Su7zfjGsbi8=;
+        b=QmuNrB9Kjw4FVRfeq0nV/mRRwbSyHapUnNjPiOxlytCcCZPoEAb1QnT24VgQJKjxhQ
+         iWARqGBt9xtLp2G/TcPWraVghfz7WJ/OdSkr55YdKv3hbGZ4i1XGQ4q5N99XPoQ+hfga
+         HvFy4bM3GFXgRG33gjAXxt4WuUYiAAvmOdIS9K7oGeiQtLguIiC5lSRhab6MyBiFHeZF
+         /+ctpXNDVOs9O8cdqrZAhMYotRSvHW+qfKNAj/YYtQ9/YJyOWfW77xTtbLjg1n2qYVJV
+         nQsaGRgtwDXApbqVdUtqU42hP+xYZBvyJJmHSA7qPGRfiQ/obSoRroXh1pZbvZHQG8xK
+         DhOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697648780; x=1698253580;
+        d=1e100.net; s=20230601; t=1697648782; x=1698253582;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/hQ8DAFT4FsmbzhSx1IDeWkXEPOHVXkBPwwDIEI4NyY=;
-        b=ARmiiSIxK0/usNM409lP0TypXh1bPFWoe7c4cMYJ+T/YfIJMWz0MIxrxsntDyKT7qi
-         UhT20IKry8p0Mb+vQsZYCq97jivBIzn+GBCh9RMD76JBwUS4u2lRNdqk10YK1p0om7hz
-         wZhCdWfjJJ4XH8dyS7WeWhUOr8Rl9vqhWU4qdMdWeu9mtF1/Ysbe46NAvxK4rFrFz0zz
-         rSuvh2D1kA80k/vcgQ724ngNuWNPXJZidF+vpmWEeVVsj7647wmKdpI4KFugVXH87iHT
-         vLX+g6X28tTxvG2UGLeafof8bFQS8e7jleEqw2n01Iqu3rCpAc3UXqEzxWskqpA5ouP4
-         ak6A==
-X-Gm-Message-State: AOJu0Yza2j0+aNEfZtJZcIOBFG+yeY+Kc5l3cMDP0DRhVXHL728OXxRP
-        +0/CxhTmIv6rtMu2dqkIlfIMq3DyuBJ68g==
-X-Google-Smtp-Source: AGHT+IGIAZvPMDR+fx6OVWKmXyK6iJj0xVodIpeExPc/78Fe8uEKXZgGaoSFAe/fSgw/hj7OJdSkBw==
-X-Received: by 2002:a05:6602:2e94:b0:786:2125:a034 with SMTP id m20-20020a0566022e9400b007862125a034mr6919099iow.18.1697648780262;
-        Wed, 18 Oct 2023 10:06:20 -0700 (PDT)
+        bh=O4Nv87Lg2zXFTsrsMPJe4o1KQfKM5CR/Su7zfjGsbi8=;
+        b=hbyLtZTBWEQoboKcTQf7Wlu52WlnQ584m1zndhPVBEQCi8ivv+XaV6XZcwFXHZazwf
+         +zm+ASR65355Ag19t5lRQ/gH7s7aKiRn0FXojYoOsreRfiMLB17HZdTv1Cjs3xtgZjO5
+         T7WRFfD/VWUzWM5xemb0wQqPh+A2S9x4Vhc/EK9zQ6RddY7lLvbAyStmN5RzQJXv/OpG
+         XfFb+oR4RwQdClNaVyaKe6CTHYZtUWaj3kFKrRPSA5QhAe1tD/NMwjKSLJ8lF0XC5yqC
+         SL9jIZh2kP+wQCexRUYBSTKjLBEcuuySPg2hmu4DjlbvO6xdgwvsHG0yLBDaEoSt0rSm
+         jzLg==
+X-Gm-Message-State: AOJu0YyNbyEpyVYw68q8hbtbWlULZw1At9rh3R3eCiM6CujuCUJm2YzH
+        HxB0edLu+hDW+ziqqi8FoE7nFd00UmopMA==
+X-Google-Smtp-Source: AGHT+IG6lZXzulci6YGFdscPrHiN4tISG8h2nXpy9EJZW1KW9NsOJNsFRiWgdpO0OyMO6nbCvvwZ2w==
+X-Received: by 2002:a05:6602:3fc8:b0:795:c6f:59ff with SMTP id fc8-20020a0566023fc800b007950c6f59ffmr8247388iob.17.1697648781706;
+        Wed, 18 Oct 2023 10:06:21 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id n4-20020a5d8244000000b0079fa1a7cd36sm1228944ioo.30.2023.10.18.10.06.19
+        by smtp.googlemail.com with ESMTPSA id n4-20020a5d8244000000b0079fa1a7cd36sm1228944ioo.30.2023.10.18.10.06.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 10:06:19 -0700 (PDT)
+        Wed, 18 Oct 2023 10:06:21 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
@@ -61,9 +61,9 @@ Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
         robdclark@gmail.com, groeck@google.com, yanivt@google.com,
         bleung@google.com, rostedt@goodmis.org, linux-doc@vger.kernel.org,
         Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v7c 09/24] dyndbg: silence debugs with no-change updates
-Date:   Wed, 18 Oct 2023 11:05:49 -0600
-Message-ID: <20231018170604.569042-10-jim.cromie@gmail.com>
+Subject: [PATCH v7c 10/24] dyndbg: tighten ddebug_class_name() 1st arg type
+Date:   Wed, 18 Oct 2023 11:05:50 -0600
+Message-ID: <20231018170604.569042-11-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231018170604.569042-1-jim.cromie@gmail.com>
 References: <20231018170604.569042-1-jim.cromie@gmail.com>
@@ -71,7 +71,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,50 +79,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-check for actual changes before announcing them, declutter logs.
+Change function's 1st arg-type, and deref in the caller.
+The fn doesn't need any other fields in the struct.
+
+no functional change.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ lib/dynamic_debug.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index b0e11f6bfaa2..b07aab422604 100644
+index b07aab422604..8158943b350d 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -591,7 +591,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
- 	return nfound;
- }
+@@ -1117,12 +1117,12 @@ static void *ddebug_proc_next(struct seq_file *m, void *p, loff_t *pos)
+ #define class_in_range(class_id, map)					\
+ 	(class_id >= map->base && class_id < map->base + map->length)
  
--/* apply a new bitmap to the sys-knob's current bit-state */
-+/* apply a new class-param setting */
- static int ddebug_apply_class_bitmap(const struct ddebug_class_param *dcp,
- 				     unsigned long *new_bits, unsigned long *old_bits,
- 				     const char *query_modname)
-@@ -602,8 +602,9 @@ static int ddebug_apply_class_bitmap(const struct ddebug_class_param *dcp,
- 	int matches = 0;
- 	int bi, ct;
+-static const char *ddebug_class_name(struct ddebug_iter *iter, struct _ddebug *dp)
++static const char *ddebug_class_name(struct ddebug_table *dt, struct _ddebug *dp)
+ {
+-	struct ddebug_class_map *map = iter->table->classes;
+-	int i, nc = iter->table->num_classes;
++	struct ddebug_class_map *map = dt->classes;
++	int i;
  
--	v2pr_info("apply bitmap: 0x%lx to: 0x%lx for %s\n", *new_bits, *old_bits,
--		  query_modname ?: "");
-+	if (*new_bits != *old_bits)
-+		v2pr_info("apply bitmap: 0x%lx to: 0x%lx for %s\n", *new_bits,
-+			  *old_bits, query_modname ?: "'*'");
+-	for (i = 0; i < nc; i++, map++)
++	for (i = 0; i < dt->num_classes; i++, map++)
+ 		if (class_in_range(dp->class_id, map))
+ 			return map->class_names[dp->class_id - map->base];
  
- 	for (bi = 0; bi < map->length; bi++) {
- 		if (test_bit(bi, new_bits) == test_bit(bi, old_bits))
-@@ -618,8 +619,9 @@ static int ddebug_apply_class_bitmap(const struct ddebug_class_param *dcp,
- 		v2pr_info("bit_%d: %d matches on class: %s -> 0x%lx\n", bi,
- 			  ct, map->class_names[bi], *new_bits);
- 	}
--	v2pr_info("applied bitmap: 0x%lx to: 0x%lx for %s\n", *new_bits, *old_bits,
--		  query_modname ?: "");
-+	if (*new_bits != *old_bits)
-+		v2pr_info("applied bitmap: 0x%lx to: 0x%lx for %s\n", *new_bits,
-+			  *old_bits, query_modname ?: "'*'");
+@@ -1156,7 +1156,7 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 	seq_puts(m, "\"");
  
- 	return matches;
- }
+ 	if (dp->class_id != _DPRINTK_CLASS_DFLT) {
+-		class = ddebug_class_name(iter, dp);
++		class = ddebug_class_name(iter->table, dp);
+ 		if (class)
+ 			seq_printf(m, " class:%s", class);
+ 		else
 -- 
 2.41.0
 
