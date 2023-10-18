@@ -2,284 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4687CD4B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200FD7CD4B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbjJRGz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        id S229759AbjJRG5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjJRGzY (ORCPT
+        with ESMTP id S229676AbjJRG5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:55:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B939B6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697612076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ws44xpujh++UeLP3dJKBJiYZxBdnuJb4IuYVHtKx0u4=;
-        b=gKsCQUgq3l/cpxhAv9/qt7lQ74uVy/Zug4FcXn9HEMUPUycmZVTUE3ZhuQds3rFSWP/laE
-        4nPAtgzb5IByJzV4HZBScFyylPHxRFxs9yqacZhCB5M3eMfjMKjnH0TBDAHUT5cv7inrGt
-        4EQEhnz7nTlR3ncnhIo+mirY5Hbz1Xs=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-3-NPJdEkFGN7e8IBLoma3KtA-1; Wed, 18 Oct 2023 02:54:35 -0400
-X-MC-Unique: NPJdEkFGN7e8IBLoma3KtA-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7788f0f099fso122639685a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:54:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697612073; x=1698216873;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ws44xpujh++UeLP3dJKBJiYZxBdnuJb4IuYVHtKx0u4=;
-        b=GPI636BJS9QqUOUR+M5r6wQC0OqvMzPh1LDBF625/ONXiJpACjmNbsv2UITR+qOvac
-         /i9OOXfEDIASkaeZ9eFoz6zQFj2BBn5SlkUahAUnpKK2bSp8l6xz/jGoPaR6WxhPIRHd
-         bnBrp8kg+93kVu/N5JOfGFa9I/x0Jq29XCwYqTuxgMxHeE4mBQUlRWDToRvPQyFzF3g7
-         vx2R18MJJzhYi9QbSZ4PRZ1ySDdbbgexPPIZuDfcoqBOkVlEF6SPIs4qCTdcGOOzWG3t
-         WYteOkEE2X1J+jwDTGlzisnShcNiqPvYtpFCrXjRd7OCDzuvtKhlWFZ2/3CATkLqCuCd
-         Ik6Q==
-X-Gm-Message-State: AOJu0YzsihriWyv5+W/T9oEXAsmIvcDyHp6932TRaGfFPBivnowsze2L
-        0D7iWyWUVgUDbp0awb0s1TZVhXdvj+nGmMK1qixknrrm+L4J0l21LsiDKxz4AIp0Z8WAM0xqQ0+
-        JrQ1n+mvyXB4rNCg1JNPjR/FCZHopyEEa
-X-Received: by 2002:a05:620a:c4b:b0:778:8cce:dbf3 with SMTP id u11-20020a05620a0c4b00b007788ccedbf3mr3318528qki.46.1697612073477;
-        Tue, 17 Oct 2023 23:54:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWMELTCfRDqIOtX7AHVLG36zAPI8rt7Pp0jV0lmTUM5Q7A1Fx4EeXlrDC/BJy60i8KUmcMkQ==
-X-Received: by 2002:a05:620a:c4b:b0:778:8cce:dbf3 with SMTP id u11-20020a05620a0c4b00b007788ccedbf3mr3318513qki.46.1697612073174;
-        Tue, 17 Oct 2023 23:54:33 -0700 (PDT)
-Received: from [192.168.43.95] ([37.170.100.204])
-        by smtp.gmail.com with ESMTPSA id de26-20020a05620a371a00b007743446efd1sm1260215qkb.35.2023.10.17.23.54.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 23:54:32 -0700 (PDT)
-Message-ID: <3e6e6c25-7b20-46b4-ffce-d34841aca209@redhat.com>
-Date:   Wed, 18 Oct 2023 08:54:26 +0200
+        Wed, 18 Oct 2023 02:57:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179ECB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697612232; x=1729148232;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=5kCfENKLdy6RK47w9C+3d3YFaUvT9YppRcN0G7AScnU=;
+  b=ne61DFIdgcXKyNUwl4lC9knFXDsAXwgInxnxS5Kug6jTZuUiC8PaRRc5
+   dm1JzXcpkpxVJJFYz7MVDmchFUZevIGRCMIF2KJp0MY15XzY6KeNACPFp
+   T08N3+MFM6SmbCQqbYYyzkkKIHyaMF3Ch2ADKaZC0nwmss2xRlTvk8gcY
+   xqn+P191yvzszzf4YBsRBWpPV4jGxUs1sbncVF61PJdHocu2WuPVcPvkL
+   tGgtvLWFnBpIdGCKfy5f6dkIyLyxw+IhIK4QPgjMV+ZzyCHyTVHLGDHOp
+   QLUeMu9MBvzkgI4rC1UAIFyxrP2kIUz1Ucqk26X3a9JNrTqP0l1hkHcoY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365303861"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="365303861"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 23:57:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="880103185"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="880103185"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 23:57:07 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 2/2] mm: swap: Swap-out small-sized THP without
+ splitting
+In-Reply-To: <20231017161302.2518826-3-ryan.roberts@arm.com> (Ryan Roberts's
+        message of "Tue, 17 Oct 2023 17:13:02 +0100")
+References: <20231017161302.2518826-1-ryan.roberts@arm.com>
+        <20231017161302.2518826-3-ryan.roberts@arm.com>
+Date:   Wed, 18 Oct 2023 14:55:06 +0800
+Message-ID: <87r0ls773p.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 12/12] KVM: selftests: aarch64: vPMU register test for
- unimplemented counters
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-13-rananta@google.com>
-From:   Eric Auger <eauger@redhat.com>
-In-Reply-To: <20231009230858.3444834-13-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
-> 
-> Add a new test case to the vpmu_counter_access test to check
-> if PMU registers or their bits for unimplemented counters are not
-> accessible or are RAZ, as expected.
-> 
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> The upcoming anonymous small-sized THP feature enables performance
+> improvements by allocating large folios for anonymous memory. However
+> I've observed that on an arm64 system running a parallel workload (e.g.
+> kernel compilation) across many cores, under high memory pressure, the
+> speed regresses. This is due to bottlenecking on the increased number of
+> TLBIs added due to all the extra folio splitting.
+>
+> Therefore, solve this regression by adding support for swapping out
+> small-sized THP without needing to split the folio, just like is already
+> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
+> enabled, and when the swap backing store is a non-rotating block device.
+> These are the same constraints as for the existing PMD-sized THP
+> swap-out support.
+>
+> Note that no attempt is made to swap-in THP here - this is still done
+> page-by-page, like for PMD-sized THP.
+>
+> The main change here is to improve the swap entry allocator so that it
+> can allocate any power-of-2 number of contiguous entries between [4, (1
+> << PMD_ORDER)] (THP cannot support order-1 folios). This is done by
+> allocating a cluster for each distinct order and allocating sequentially
+> from it until the cluster is full. This ensures that we don't need to
+> search the map and we get no fragmentation due to alignment padding for
+> different orders in the cluster. If there is no current cluster for a
+> given order, we attempt to allocate a free cluster from the list. If
+> there are no free clusters, we fail the allocation and the caller falls
+> back to splitting the folio and allocates individual entries (as per
+> existing PMD-sized THP fallback).
+>
+> The per-order current clusters are maintained per-cpu using the existing
+> percpu_cluster infrastructure. This is done to avoid interleving pages
+> from different tasks, which would prevent IO being batched. This is
+> already done for the order-0 allocations so we follow the same pattern.
+>
+> As far as I can tell, this should not cause any extra fragmentation
+> concerns, given how similar it is to the existing PMD-sized THP
+> allocation mechanism. There could be up to (PMD_ORDER-2) * nr_cpus
+> clusters in concurrent use though, which in a pathalogical case (cluster
+> set aside for every order for every cpu and only one huge entry
+> allocated from it) would tie up ~12MiB of unused swap entries for these
+> high orders (assuming PMD_ORDER=9). In practice, the number of orders in
+> use will be small and the amount of swap space reserved is very small
+> compared to a typical swap file.
+>
+> Note that PMD_ORDER is not compile-time constant on powerpc, so we have
+> to allocate the large_next[] array at runtime.
+>
+> I've run the tests on Ampere Altra (arm64), set up with a 35G block ram
+> device as the swap device and from inside a memcg limited to 40G memory.
+> I've then run `usemem` from vm-scalability with 70 processes (each has
+> its own core), each allocating and writing 1G of memory. I've repeated
+> everything 5 times and taken the mean and stdev:
+>
+> Mean Performance Improvement vs 4K/baseline
+>
+> | alloc size |            baseline |       + this series |
+> |            |  v6.6-rc4+anonfolio |                     |
+> |:-----------|--------------------:|--------------------:|
+> | 4K Page    |                0.0% |                1.1% |
+> | 64K THP    |              -44.1% |                0.9% |
+> | 2M THP     |               56.0% |               56.4% |
+>
+> So with this change, the regression for 64K swap performance goes away.
+> Both 4K and 64K benhcmarks are now bottlenecked on TLBI performance from
+> try_to_unmap_flush_dirty(), on arm64 at least. When using fewer cpus in
+> the test, I see upto 2x performance of 64K THP swapping compared to 4K.
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  .../kvm/aarch64/vpmu_counter_access.c         | 95 +++++++++++++++++--
->  .../selftests/kvm/include/aarch64/processor.h |  1 +
->  2 files changed, 87 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> index e92af3c0db03..788386ac0894 100644
-> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> @@ -5,8 +5,8 @@
->   * Copyright (c) 2022 Google LLC.
->   *
->   * This test checks if the guest can see the same number of the PMU event
-> - * counters (PMCR_EL0.N) that userspace sets, and if the guest can access
-> - * those counters.
-> + * counters (PMCR_EL0.N) that userspace sets, if the guest can access
-> + * those counters, and if the guest cannot access any other counters.
-I would suggest: if the guest is prevented from accessing any other counters
->   * This test runs only when KVM_CAP_ARM_PMU_V3 is supported on the host.
->   */
->  #include <kvm_util.h>
-> @@ -131,9 +131,9 @@ static void write_pmevtypern(int n, unsigned long val)
+>  include/linux/swap.h |  6 ++++
+>  mm/swapfile.c        | 74 +++++++++++++++++++++++++++++++++++---------
+>  mm/vmscan.c          | 10 +++---
+>  3 files changed, 71 insertions(+), 19 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index a073366a227c..35cbbe6509a9 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -268,6 +268,12 @@ struct swap_cluster_info {
+>  struct percpu_cluster {
+>  	struct swap_cluster_info index; /* Current cluster index */
+>  	unsigned int next; /* Likely next allocation offset */
+> +	unsigned int large_next[];	/*
+> +					 * next free offset within current
+> +					 * allocation cluster for large folios,
+> +					 * or UINT_MAX if no current cluster.
+> +					 * Index is (order - 1).
+> +					 */
+>  };
+>
+>  struct swap_cluster_list {
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index b83ad77e04c0..625964e53c22 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -987,35 +987,70 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>  	return n_ret;
 >  }
->  
->  /*
-> - * The pmc_accessor structure has pointers to PMEVT{CNTR,TYPER}<n>_EL0
-> + * The pmc_accessor structure has pointers to PMEV{CNTR,TYPER}<n>_EL0
->   * accessors that test cases will use. Each of the accessors will
-> - * either directly reads/writes PMEVT{CNTR,TYPER}<n>_EL0
-> + * either directly reads/writes PMEV{CNTR,TYPER}<n>_EL0
-I guess this should belong to the previous patch?
->   * (i.e. {read,write}_pmev{cnt,type}rn()), or reads/writes them through
->   * PMXEV{CNTR,TYPER}_EL0 (i.e. {read,write}_sel_ev{cnt,type}r()).
->   *
-> @@ -291,25 +291,85 @@ static void test_access_pmc_regs(struct pmc_accessor *acc, int pmc_idx)
->  		       pmc_idx, PMC_ACC_TO_IDX(acc), read_data, write_data);
->  }
->  
-> +#define INVALID_EC	(-1ul)
-> +uint64_t expected_ec = INVALID_EC;
-> +uint64_t op_end_addr;
-> +
->  static void guest_sync_handler(struct ex_regs *regs)
+>
+> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
+> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
+> +			    unsigned int nr_pages)
+
+This looks hacky.  IMO, we should put the allocation logic inside
+percpu_cluster framework.  If percpu_cluster framework doesn't work for
+you, just refactor it firstly.
+
 >  {
->  	uint64_t esr, ec;
->  
->  	esr = read_sysreg(esr_el1);
->  	ec = (esr >> ESR_EC_SHIFT) & ESR_EC_MASK;
-> -	__GUEST_ASSERT(0, "PC: 0x%lx; ESR: 0x%lx; EC: 0x%lx", regs->pc, esr, ec);
-> +
-> +	__GUEST_ASSERT(op_end_addr && (expected_ec == ec),
-> +			"PC: 0x%lx; ESR: 0x%lx; EC: 0x%lx; EC expected: 0x%lx",
-> +			regs->pc, esr, ec, expected_ec);
-> +
-> +	/* Will go back to op_end_addr after the handler exits */
-> +	regs->pc = op_end_addr;
-> +
-> +	/*
-> +	 * Clear op_end_addr, and setting expected_ec to INVALID_EC
-and set
-> +	 * as a sign that an exception has occurred.
-> +	 */
-> +	op_end_addr = 0;
-> +	expected_ec = INVALID_EC;
-> +}
-> +
-> +/*
-> + * Run the given operation that should trigger an exception with the
-> + * given exception class. The exception handler (guest_sync_handler)
-> + * will reset op_end_addr to 0, and expected_ec to INVALID_EC, and
-> + * will come back to the instruction at the @done_label.
-> + * The @done_label must be a unique label in this test program.
-> + */
-> +#define TEST_EXCEPTION(ec, ops, done_label)		\
-> +{							\
-> +	extern int done_label;				\
-> +							\
-> +	WRITE_ONCE(op_end_addr, (uint64_t)&done_label);	\
-> +	GUEST_ASSERT(ec != INVALID_EC);			\
-> +	WRITE_ONCE(expected_ec, ec);			\
-> +	dsb(ish);					\
-> +	ops;						\
-> +	asm volatile(#done_label":");			\
-> +	GUEST_ASSERT(!op_end_addr);			\
-> +	GUEST_ASSERT(expected_ec == INVALID_EC);	\
-> +}
-> +
-> +/*
-> + * Tests for reading/writing registers for the unimplemented event counter
-> + * specified by @pmc_idx (>= PMCR_EL0.N).
-> + */
-> +static void test_access_invalid_pmc_regs(struct pmc_accessor *acc, int pmc_idx)
-> +{
-> +	/*
-> +	 * Reading/writing the event count/type registers should cause
-> +	 * an UNDEFINED exception.
-> +	 */
-> +	TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->read_cntr(pmc_idx), inv_rd_cntr);
-> +	TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->write_cntr(pmc_idx, 0), inv_wr_cntr);
-> +	TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->read_typer(pmc_idx), inv_rd_typer);
-> +	TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->write_typer(pmc_idx, 0), inv_wr_typer);
-> +	/*
-> +	 * The bit corresponding to the (unimplemented) counter in
-> +	 * {PMCNTEN,PMOVS}{SET,CLR}_EL1 registers should be RAZ.
-{PMCNTEN,PMINTEN,PMOVS}{SET,CLR}
-> +	 */
-> +	test_bitmap_pmu_regs(pmc_idx, 1);
-> +	test_bitmap_pmu_regs(pmc_idx, 0);
->  }
->  
->  /*
->   * The guest is configured with PMUv3 with @expected_pmcr_n number of
->   * event counters.
->   * Check if @expected_pmcr_n is consistent with PMCR_EL0.N, and
-> - * if reading/writing PMU registers for implemented counters can work
-> - * as expected.
-> + * if reading/writing PMU registers for implemented or unimplemented
-> + * counters can work as expected.
->   */
->  static void guest_code(uint64_t expected_pmcr_n)
->  {
-> -	uint64_t pmcr, pmcr_n;
-> +	uint64_t pmcr, pmcr_n, unimp_mask;
->  	int i, pmc;
->  
->  	__GUEST_ASSERT(expected_pmcr_n <= ARMV8_PMU_MAX_GENERAL_COUNTERS,
-> @@ -324,15 +384,32 @@ static void guest_code(uint64_t expected_pmcr_n)
->  			"Expected PMCR.N: 0x%lx, PMCR.N: 0x%lx",
->  			pmcr_n, expected_pmcr_n);
->  
-> +	/*
-> +	 * Make sure that (RAZ) bits corresponding to unimplemented event
-> +	 * counters in {PMCNTEN,PMOVS}{SET,CLR}_EL1 registers are reset to zero.
-> +	 * (NOTE: bits for implemented event counters are reset to UNKNOWN)
-> +	 */
-> +	unimp_mask = GENMASK_ULL(ARMV8_PMU_MAX_GENERAL_COUNTERS - 1, pmcr_n);
-> +	check_bitmap_pmu_regs(unimp_mask, false);
-wrt above comment, this also checks pmintenset|clr_el1.
-> +
+> +	int order_idx;
+>  	unsigned long idx;
+>  	struct swap_cluster_info *ci;
+> +	struct percpu_cluster *cluster;
+>  	unsigned long offset;
+>
 >  	/*
->  	 * Tests for reading/writing PMU registers for implemented counters.
-> -	 * Use each combination of PMEVT{CNTR,TYPER}<n>_EL0 accessor functions.
-> +	 * Use each combination of PMEV{CNTR,TYPER}<n>_EL0 accessor functions.
+>  	 * Should not even be attempting cluster allocations when huge
+>  	 * page swap is disabled.  Warn and fail the allocation.
 >  	 */
->  	for (i = 0; i < ARRAY_SIZE(pmc_accessors); i++) {
->  		for (pmc = 0; pmc < pmcr_n; pmc++)
->  			test_access_pmc_regs(&pmc_accessors[i], pmc);
+> -	if (!IS_ENABLED(CONFIG_THP_SWAP)) {
+> +	if (!IS_ENABLED(CONFIG_THP_SWAP) ||
+> +	    nr_pages < 4 || nr_pages > SWAPFILE_CLUSTER ||
+> +	    !is_power_of_2(nr_pages)) {
+>  		VM_WARN_ON_ONCE(1);
+>  		return 0;
 >  	}
->  
+>
+> -	if (cluster_list_empty(&si->free_clusters))
 > +	/*
-> +	 * Tests for reading/writing PMU registers for unimplemented counters.
-> +	 * Use each combination of PMEV{CNTR,TYPER}<n>_EL0 accessor functions.
+> +	 * Not using clusters so unable to allocate large entries.
 > +	 */
-> +	for (i = 0; i < ARRAY_SIZE(pmc_accessors); i++) {
-> +		for (pmc = pmcr_n; pmc < ARMV8_PMU_MAX_GENERAL_COUNTERS; pmc++)
-> +			test_access_invalid_pmc_regs(&pmc_accessors[i], pmc);
+> +	if (!si->cluster_info)
+>  		return 0;
+>
+> -	idx = cluster_list_first(&si->free_clusters);
+> -	offset = idx * SWAPFILE_CLUSTER;
+> -	ci = lock_cluster(si, offset);
+> -	alloc_cluster(si, idx);
+> -	cluster_set_count(ci, SWAPFILE_CLUSTER);
+> +	order_idx = ilog2(nr_pages) - 2;
+> +	cluster = this_cpu_ptr(si->percpu_cluster);
+> +	offset = cluster->large_next[order_idx];
+> +
+> +	if (offset == UINT_MAX) {
+> +		if (cluster_list_empty(&si->free_clusters))
+> +			return 0;
+> +
+> +		idx = cluster_list_first(&si->free_clusters);
+> +		offset = idx * SWAPFILE_CLUSTER;
+>
+> -	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
+> +		ci = lock_cluster(si, offset);
+> +		alloc_cluster(si, idx);
+> +		cluster_set_count(ci, SWAPFILE_CLUSTER);
+> +
+> +		/*
+> +		 * If scan_swap_map_slots() can't find a free cluster, it will
+> +		 * check si->swap_map directly. To make sure this standby
+> +		 * cluster isn't taken by scan_swap_map_slots(), mark the swap
+> +		 * entries bad (occupied). (same approach as discard).
+> +		 */
+> +		memset(si->swap_map + offset + nr_pages, SWAP_MAP_BAD,
+> +			SWAPFILE_CLUSTER - nr_pages);
+
+There's an issue with this solution.  If the free space of swap device
+runs low, it's possible that
+
+- some cluster are put in the percpu_cluster of some CPUs
+  the swap entries there are marked as used
+
+- no free swap entries elsewhere
+
+- nr_swap_pages isn't 0
+
+So, we will still scan LRU, but swap allocation fails, although there's
+still free swap space.
+
+I think that we should follow the method we used for the original
+percpu_cluster.  That is, if all free swap entries are in
+percpu_cluster, we will start to allocate from percpu_cluster.
+
+> +	} else {
+> +		idx = offset / SWAPFILE_CLUSTER;
+> +		ci = lock_cluster(si, offset);
 > +	}
 > +
->  	GUEST_DONE();
+> +	memset(si->swap_map + offset, SWAP_HAS_CACHE, nr_pages);
+>  	unlock_cluster(ci);
+> -	swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
+> +	swap_range_alloc(si, offset, nr_pages);
+>  	*slot = swp_entry(si->type, offset);
+>
+> +	offset += nr_pages;
+> +	if (idx != offset / SWAPFILE_CLUSTER)
+> +		offset = UINT_MAX;
+> +	cluster->large_next[order_idx] = offset;
+> +
+>  	return 1;
 >  }
->  
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> index cb537253a6b9..c42d683102c7 100644
-> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> @@ -104,6 +104,7 @@ enum {
->  #define ESR_EC_SHIFT		26
->  #define ESR_EC_MASK		(ESR_EC_NUM - 1)
->  
-> +#define ESR_EC_UNKNOWN		0x0
->  #define ESR_EC_SVC64		0x15
->  #define ESR_EC_IABT		0x21
->  #define ESR_EC_DABT		0x25
+>
 
-Thanks
+[snip]
 
-Eric
-
+--
+Best Regards,
+Huang, Ying
