@@ -2,124 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DE87CE0F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09367CE0F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbjJRPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
+        id S1344608AbjJRPSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjJRPSE (ORCPT
+        with ESMTP id S230515AbjJRPSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:18:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0BB94;
-        Wed, 18 Oct 2023 08:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EYJWM82k/mYbNh1hfZQ8KkV147YIzBIZxX71F7kjj3o=; b=SP8eWuThWrXi0c+GKIfuQmjZth
-        m8/aZFY0nYGaQzDsejHx0z/V6t3NsJjeORp/uGXzhj39+OR2w2/oRsloh++YDaE2cTL3KmaFAfJOn
-        1abJTfFo5CEZEKuPxBZ0FPFkDnDehbk+hCyRjsxjHUY6NXG0/A+MD2FRrLo2JYgFo8BaKNUaq0SEz
-        /+odCu/MMdB5q5sBf9XxYOBN376/6smqd3AYT/9m7BwfQC9Adp6kQQhqG383BL57eLzLWs8latknJ
-        yTnbdZ1C+yUGO2QdDKTttULIj+JqxIRcKc4PdhojxFG7PgO/UW0fs6OY8VbZXahhYtUOFINnnIjMs
-        tVn/tT0w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qt8Iq-001bDQ-Mh; Wed, 18 Oct 2023 15:17:44 +0000
-Date:   Wed, 18 Oct 2023 16:17:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     Theo de Raadt <deraadt@openbsd.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, sroettger@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-Message-ID: <ZS/3GCKvNn5qzhC4@casper.infradead.org>
-References: <20231016143828.647848-1-jeffxu@chromium.org>
- <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
- <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
- <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
- <55960.1697566804@cvs.openbsd.org>
- <CALmYWFs81T=XnT=AXQTo0+9FXo=OBAV_4rrYPSn9-16O-gBTZg@mail.gmail.com>
- <95482.1697587015@cvs.openbsd.org>
- <CALmYWFtQX57Z7ttKxrdXQH4QupFn4vi5KfizUBH9NkmP-S1JDw@mail.gmail.com>
+        Wed, 18 Oct 2023 11:18:07 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85898
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:18:05 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso11027930a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697642284; x=1698247084; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rwmlKg+iurujaoHM78khlFeWHnt3Ry3Unvc1lAlS3ck=;
+        b=FjtIrokIBwiaJ8LXmwKSw+KVgJj2YP2FU/pcMYQ3vWDmS8lslzPDNqCxsE2hPbKmil
+         /aKAJsgFFLv7Tm73p15ZBZ+eVIh1UwiiRPyAiJpZ182X/gR4oQO6e2XrhNaMEmirL40d
+         n6OpmqVHazRvgiRTZyliYez0qMzIzwKUvED4iu1Wq2ZH+PicGazeRj9SEr9TF43xX66K
+         rcQvmPo6+kYBDXzQaTpKrydnNlCV4S6knrWvjFFJ8Gwyejgfu4+Qf/EchGib9AYSrZ8l
+         4zgHUbfzVADl21NlJ4Mrp2mM9vMTnkEj75WvW4vQd/N45GTPpaSgcPnK5Kycnr0wh0Y/
+         TUrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697642284; x=1698247084;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rwmlKg+iurujaoHM78khlFeWHnt3Ry3Unvc1lAlS3ck=;
+        b=H4nmYMrepmI9xCV9E0dMUFg6x2nH6+X/Si+Q2wGLsmbW4qEJCs2ZZ8xJ1acE29FBs7
+         EpNKHy+RiecEIgK05G8QRj9s1AFgc0cM9O1gwQHm6mckasYRv5MGAYAZ3N93Qo8gCX+C
+         ZvpJcl0z51EOQo7O3RVByiQbRHG+YZL2yeQ1tjLlL/+dz1YnuwqU5mrLpzd9yIAxGawW
+         b9LxSTwWTbwhS/EfRSC+ySSaQgSgyVXF1+LCrCuQj+0w1sbWSZg2WJC0NOxBypXoZfgD
+         HbIS1w+SHVHs6heKljaYTaV+CLQ5d3rcHKPZtBnG8nuishJ+EMfSeApHIJ+Srh680sjb
+         UDRw==
+X-Gm-Message-State: AOJu0Yy740fjnO++PJDNXrq5kDDjvqCH0WByNNMnaNNJpfF2XSkaNXIJ
+        jXW2/wZ0bthlrpX9jyaNxyftF4A7XUDzYH0FGYM=
+X-Google-Smtp-Source: AGHT+IEyBgneSxvWCbQbHt+OVSRJvQ8b9wVxZ4e27gd/WOZ2beL6KY5XsL+5FDYTkeK/Tz5jCtIk6bkDK4BUhC5bNzk=
+X-Received: by 2002:a50:8719:0:b0:53e:3732:9aae with SMTP id
+ i25-20020a508719000000b0053e37329aaemr4118128edb.4.1697642283873; Wed, 18 Oct
+ 2023 08:18:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALmYWFtQX57Z7ttKxrdXQH4QupFn4vi5KfizUBH9NkmP-S1JDw@mail.gmail.com>
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com> <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com>
+In-Reply-To: <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 17:17:51 +0200
+Message-ID: <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: multipart/mixed; boundary="00000000000049b5ec0607ff25d6"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 08:18:47PM -0700, Jeff Xu wrote:
-> In practice: libc could do below:
-> #define MM_IMMUTABLE
-> (MM_SEAL_MPROTECT|MM_SEAL_MUNMAP|MM_SEAL_MREMAP|MM_SEAL_MMAP)
-> mseal(add,len, MM_IMMUTABLE)
-> it will be equivalent to BSD's immutable().
+--00000000000049b5ec0607ff25d6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-No, it wouldn't, because you've carefully listed the syscalls you're
-blocking instead of understanding the _concept_ of what you need to
-block.
+On Wed, Oct 18, 2023 at 4:46=E2=80=AFPM Nadav Amit <namit@vmware.com> wrote=
+:
 
-> In linux cases, I think, eventually, mseal() will have a bigger scope than
-> BSD's mimmutable().  VMA's metadata(vm_area_struct) contains a lot
-> of control info, depending on application's needs, mseal() can be
-> expanded to seal individual control info.
-> 
-> For example, in madvice(2) case:
-> As Jann point out in [1] and I quote:
-> "you'd probably also want to block destructive madvise() operations
-> that can effectively alter region contents by discarding pages and
-> such, ..."
-> 
-> Another example: if an application wants to keep a memory always
-> present in RAM, for whatever the reason, it can call seal the mlock().
-> 
-> To handle those two new cases. mseal() could add two more bits:
-> MM_SEAL_MADVICE, MM_SEAL_MLOCK.
+> >> Looks like another case of underspecified functionality where both
+> >> compilers differ. Luckily, both DTRT when aliases are hidden in
+> >> another TU.
+> >
+> > Attached is the prototype patch that works for me (together with
+> > Linus' FPU switching patch).
+>
+> In general looks good. See some minor issues below.
+>
+> > --- a/arch/x86/include/asm/current.h
+> > +++ b/arch/x86/include/asm/current.h
+> > @@ -36,10 +36,23 @@ static_assert(sizeof(struct pcpu_hot) =3D=3D 64);
+> >
+> >  DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
+> >
+> > +/*
+> > + *
+> > + */
+>
+> Obviously some further comments to clarify why struct pcpu_hot is
+> defined in percpu-hot.c (the GCC manual says:  "It is an error if
+> the alias target is not defined in the same translation unit as the
+> alias=E2=80=9D which can be used as part of the explanation.)
 
-Yes, thank you for demonstrating that you have no idea what you need to
-block.
+Sure.
 
-> It is practical to keep syscall extentable, when the business logic is the same.
+>
+> > +DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
+> > +                     const_pcpu_hot);
+> > +
+> > +#ifdef CONFIG_USE_X86_SEG_SUPPORT
+> > +static __always_inline struct task_struct *get_current(void)
+> > +{
+> > +     return const_pcpu_hot.current_task;
+> > +}
+> > +#else
+> >  static __always_inline struct task_struct *get_current(void)
+> >  {
+> >       return this_cpu_read_stable(pcpu_hot.current_task);
+> >  }
+> > +#endif
+>
+>
+> Please consider using IS_ENABLED() to avoid the ifdef=E2=80=99ry.
+>
+> So this would turn to be:
+>
+> static __always_inline struct task_struct *get_current(void)
+> {
+>         if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
+>                 return const_pcpu_hot.current_task;
+>
+>         return this_cpu_read_stable(pcpu_hot.current_task);
+> }
 
-I concur with Theo & Linus.  You don't know what you're doing.  I think
-the underlying idea of mimmutable() is good, but how you've split it up
-and how you've implemented it is terrible.
+I am more thinking of moving the ifdeffery to percpu.h, something like
+the attached part of the patch. This would handle all current and
+future stable percpu variables.
 
-Let's start with the purpose.  The point of mimmutable/mseal/whatever is
-to fix the mapping of an address range to its underlying object, be it
-a particular file mapping or anonymous memory.  After the call succeeds,
-it must not be possible to make any address in that virtual range point
-into any other object.
+Thanks,
+Uros.
 
-The secondary purpose is to lock down permissions on that range.
-Possibly to fix them where they are, possibly to allow RW->RO transitions.
+--00000000000049b5ec0607ff25d6
+Content-Type: text/plain; charset="US-ASCII"; name="p.diff.txt"
+Content-Disposition: attachment; filename="p.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lnvwcubh0>
+X-Attachment-Id: f_lnvwcubh0
 
-With those purposes in mind, you should be able to deduce for any syscall
-or any madvise(), ... whether it should be allowed.
-
-Look, I appreciate this is only your second set of patches to Linux and
-you've taken on a big job.  But that's all the more reason you should
-listen to people who are trying to help you.
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIGIvYXJjaC94ODYvaW5j
+bHVkZS9hc20vcGVyY3B1LmgKaW5kZXggNTQ3NDY5MDNiOGMzLi42MDdmNmI4ZTE2Y2EgMTAwNjQ0
+Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCisrKyBiL2FyY2gveDg2L2luY2x1
+ZGUvYXNtL3BlcmNwdS5oCkBAIC00MTcsNyArNDE3LDYgQEAgZG8gewkJCQkJCQkJCVwKICNkZWZp
+bmUgdGhpc19jcHVfcmVhZF9zdGFibGVfMihwY3ApCXBlcmNwdV9zdGFibGVfb3AoMiwgIm1vdiIs
+IHBjcCkKICNkZWZpbmUgdGhpc19jcHVfcmVhZF9zdGFibGVfNChwY3ApCXBlcmNwdV9zdGFibGVf
+b3AoNCwgIm1vdiIsIHBjcCkKICNkZWZpbmUgdGhpc19jcHVfcmVhZF9zdGFibGVfOChwY3ApCXBl
+cmNwdV9zdGFibGVfb3AoOCwgIm1vdiIsIHBjcCkKLSNkZWZpbmUgdGhpc19jcHVfcmVhZF9zdGFi
+bGUocGNwKQlfX3BjcHVfc2l6ZV9jYWxsX3JldHVybih0aGlzX2NwdV9yZWFkX3N0YWJsZV8sIHBj
+cCkKIAogI2lmZGVmIENPTkZJR19VU0VfWDg2X1NFR19TVVBQT1JUCiAKQEAgLTQ1Myw2ICs0NTIs
+OCBAQCBkbyB7CQkJCQkJCQkJXAogI2RlZmluZSB0aGlzX2NwdV93cml0ZV84KHBjcCwgdmFsKQlf
+X3Jhd19jcHVfd3JpdGUodm9sYXRpbGUsIHBjcCwgdmFsKQogI2VuZGlmCiAKKyNkZWZpbmUgdGhp
+c19jcHVfcmVhZF9zdGFibGUocGNwKQljb25zdF8jI3BjcAorCiAjZWxzZSAvKiBDT05GSUdfVVNF
+X1g4Nl9TRUdfU1VQUE9SVCAqLwogCiAjZGVmaW5lIHJhd19jcHVfcmVhZF8xKHBjcCkJCXBlcmNw
+dV9mcm9tX29wKDEsICwgIm1vdiIsIHBjcCkKQEAgLTQ3Nyw2ICs0NzgsOSBAQCBkbyB7CQkJCQkJ
+CQkJXAogI2RlZmluZSB0aGlzX2NwdV93cml0ZV84KHBjcCwgdmFsKQlwZXJjcHVfdG9fb3AoOCwg
+dm9sYXRpbGUsICJtb3YiLCAocGNwKSwgdmFsKQogI2VuZGlmCiAKKyNkZWZpbmUgdGhpc19jcHVf
+cmVhZF9zdGFibGUocGNwKQkJCQkJXAorICBfX3BjcHVfc2l6ZV9jYWxsX3JldHVybih0aGlzX2Nw
+dV9yZWFkX3N0YWJsZV8sIHBjcCkKKwogI2VuZGlmIC8qIENPTkZJR19VU0VfWDg2X1NFR19TVVBQ
+T1JUICovCiAKICNkZWZpbmUgcmF3X2NwdV9hZGRfMShwY3AsIHZhbCkJCXBlcmNwdV9hZGRfb3Ao
+MSwgLCAocGNwKSwgdmFsKQo=
+--00000000000049b5ec0607ff25d6--
