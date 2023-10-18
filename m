@@ -2,47 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139C77CE18C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528FC7CDF45
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjJRPqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
+        id S1345269AbjJROSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345451AbjJROX4 (ORCPT
+        with ESMTP id S1345273AbjJROST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:23:56 -0400
+        Wed, 18 Oct 2023 10:18:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A08ED48;
-        Wed, 18 Oct 2023 07:15:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA83C433CC;
-        Wed, 18 Oct 2023 14:15:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496CBD5E;
+        Wed, 18 Oct 2023 07:15:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35874C433AB;
+        Wed, 18 Oct 2023 14:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638545;
-        bh=vGpK+Pi7RyLYmOTT0dOXU/PSvCQL3AhVx2ZeABK+HqQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mXFTUqeqojWESFUaRCPjS0tmlvsfbLqnnPmV3cOXbYVUIkkTCde9zX2pHFTsknXJ4
-         tokmlCk5mYl2DngmJSIXr5+6UH/qiJ9jo4hayyvyz/ViN3wWQau/mgNq1Puf7OcY8A
-         netbWi4Omhn5oCjFfjrxrChWfqo0fvwGSIVWcPV9+q5HjTmhfsfjSHPITDz8AKNtgh
-         VsxkKgE1dnB3IN82FOx1XLtRj/iAx9VJfU73weS5XY8thQO6pxnZOIbjLMtnT5t/cb
-         afrgf1Ww/TuaedpWMNL7Pkz9m0ttoenRipDmJ/Tz5zX9z4kbIbgm8XswbyT50ZJ/tg
-         y+Vurr8iKRuwQ==
+        s=k20201202; t=1697638551;
+        bh=xhe2Gk9/so7Dk4aG/o7O2fARwvb4ekg9Yn1UVfoNetc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JtgKlnQZLhkRaJ4tXrr7Ay95pAFRLkMkfSJEFyDMu1fCc/ESZZv97JG1PHHlZYd2g
+         KtErJ9E4Nz2LI0kBS4b6FLzW4oYO2soCgpfe3uHV8liXBom5dlEktKGozA7/tGsrN/
+         kmagNMxZQxBm2zlTZZbtWNagdiNYABBnE6BgerPP6MgxZCS6fJBWX1Asz7L/AFM56R
+         yZRluvCrFo6z1pEkIN4ZHe0UY9CddZyitlP8xdf/zA9qoBRgeHRCEahhyG+t9KExUN
+         5vU9mVmn2Nb0yxBTrBUr2y0DU/LPAiEkWCBfvIN82ywvblSId9Upe7Y0qGZ6bwr/Fy
+         62P1rnc+/dnnw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 7/7] Input: powermate - fix use-after-free in powermate_config_complete
-Date:   Wed, 18 Oct 2023 10:15:23 -0400
-Message-Id: <20231018141525.1335533-7-sashal@kernel.org>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, herve.codina@bootlin.com,
+        spujar@nvidia.com, christophe.leroy@csgroup.eu,
+        astrid.rost@axis.com, aidanmacdonald.0x0@gmail.com,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: simple-card: fixup asoc_simple_probe() error handling
+Date:   Wed, 18 Oct 2023 10:15:40 -0400
+Message-Id: <20231018141548.1335665-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231018141525.1335533-1-sashal@kernel.org>
-References: <20231018141525.1335533-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.258
+X-stable-base: Linux 4.19.296
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -53,42 +56,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 5c15c60e7be615f05a45cd905093a54b11f461bc ]
+[ Upstream commit 41bae58df411f9accf01ea660730649b2fab1dab ]
 
-syzbot has found a use-after-free bug [1] in the powermate driver. This
-happens when the device is disconnected, which leads to a memory free from
-the powermate_device struct.  When an asynchronous control message
-completes after the kfree and its callback is invoked, the lock does not
-exist anymore and hence the bug.
+asoc_simple_probe() is used for both "DT probe" (A) and "platform probe"
+(B). It uses "goto err" when error case, but it is not needed for
+"platform probe" case (B). Thus it is using "return" directly there.
 
-Use usb_kill_urb() on pm->config to cancel any in-progress requests upon
-device disconnection.
+	static int asoc_simple_probe(...)
+	{
+ ^		if (...) {
+ |			...
+(A)			if (ret < 0)
+ |				goto err;
+ v		} else {
+ ^			...
+ |			if (ret < 0)
+(B)				return -Exxx;
+ v		}
 
-[1] https://syzkaller.appspot.com/bug?extid=0434ac83f907a1dbdd1e
+		...
+ ^		if (ret < 0)
+(C)			goto err;
+ v		...
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Reported-by: syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20230916-topic-powermate_use_after_free-v3-1-64412b81a7a2@gmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+	err:
+(D)		simple_util_clean_reference(card);
+
+		return ret;
+	}
+
+Both case are using (C) part, and it calls (D) when err case.
+But (D) will do nothing for (B) case.
+Because of these behavior, current code itself is not wrong,
+but is confusable, and more, static analyzing tool will warning on
+(B) part (should use goto err).
+
+To avoid static analyzing tool warning, this patch uses "goto err"
+on (B) part.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87o7hy7mlh.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/misc/powermate.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/generic/simple-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/misc/powermate.c b/drivers/input/misc/powermate.c
-index c4e0e1886061f..6b1b95d58e6b5 100644
---- a/drivers/input/misc/powermate.c
-+++ b/drivers/input/misc/powermate.c
-@@ -425,6 +425,7 @@ static void powermate_disconnect(struct usb_interface *intf)
- 		pm->requires_update = 0;
- 		usb_kill_urb(pm->irq);
- 		input_unregister_device(pm->input);
-+		usb_kill_urb(pm->config);
- 		usb_free_urb(pm->irq);
- 		usb_free_urb(pm->config);
- 		powermate_free_buffers(interface_to_usbdev(intf), pm);
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 64bf3560c1d1c..7567ee380283e 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -404,10 +404,12 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	} else {
+ 		struct asoc_simple_card_info *cinfo;
+ 
++		ret = -EINVAL;
++
+ 		cinfo = dev->platform_data;
+ 		if (!cinfo) {
+ 			dev_err(dev, "no info for asoc-simple-card\n");
+-			return -EINVAL;
++			goto err;
+ 		}
+ 
+ 		if (!cinfo->name ||
+@@ -416,7 +418,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 		    !cinfo->platform ||
+ 		    !cinfo->cpu_dai.name) {
+ 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
+-			return -EINVAL;
++			goto err;
+ 		}
+ 
+ 		card->name		= (cinfo->card) ? cinfo->card : cinfo->name;
 -- 
 2.40.1
 
