@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7227CD90B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDC67CD913
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbjJRKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S229973AbjJRKWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjJRKVT (ORCPT
+        with ESMTP id S230386AbjJRKWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:21:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038D5BA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:21:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D95E366072F7;
-        Wed, 18 Oct 2023 11:21:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697624474;
-        bh=kH1jXtunBlMIflxPq7hLuLyoVuwUNlJfO0y0ePDVEoY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jhZdfnzBeekyyVBkDSPRwP3lhZX9sgWCjRuT9AeuqEMyzTIun7LOmijs9oz07+gzl
-         4Oj/4DMmMbEHy5CVUx8gn0tEqghbRMbZH61iqT2aS1h4EvUkadcSe9N63zBDZm1jMz
-         Y4k9ifoHnRJxlxqDz/fU1MuNtOcMJdNiIo1605gcolbcX1dPRjn7Z7UzgwK9ZzM3Ic
-         e0cHpgS6ENEf/KJphA4HFeL5+zPD3ghEFe9mhPoYZ0LjcabnB6C6KAyN3aFp9nQG+N
-         75kARIavOnmZPfjstH9PvR+2uHBAU5TyKuOEbwKAozmUftEjsGnVZ05PnRr1mq5HTP
-         ++oKz7SDHQUAg==
-Message-ID: <54a04d22-7ec1-473b-ab57-f6339b2cc782@collabora.com>
-Date:   Wed, 18 Oct 2023 12:21:11 +0200
+        Wed, 18 Oct 2023 06:22:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE9BB0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:12 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3296b49c546so5218728f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697624531; x=1698229331; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+YPVxhrij/9yyiFDCmXjbqG79WA01Bk0XowWcY3BL1k=;
+        b=u8MnSC4Akx15maRa8AfHyPDBL6WFX+JbB1iqRyNbXnfBJla+Dknx/hpbkzMShQg0ix
+         JGDJEHj4OHD9ZKVKdIwrPSta8stYmw0R9hESjC/bV1nATMtp5JEu1Q8J6K5yZ8Gan7hG
+         ghS+SCFJNIE1b1WaFj1wBTQ/98kXh3OW+J1ev3vn3QfKi28lFpTgxnLtYxxytAhmpuHy
+         wx0rlDssLQvm7FE6FGxUelIavCrdPTIdC8YeqvvTGelFZlVvTzsT7dXRCzo0FHKQxCRB
+         MWHWYQ0h3SEnCK9GoGOgseNoYDM/giAw/c4MOYBktLBsnWAGRMcO/1biX66Z3s45+QIA
+         TsYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697624531; x=1698229331;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+YPVxhrij/9yyiFDCmXjbqG79WA01Bk0XowWcY3BL1k=;
+        b=u5OxA9gKwdmRQB9OkFX0F8ExrzjckXhWcm1sPu5LbAcXMS1XXxEbBSJOeeNATW5oe3
+         ZiBfMooNGF+HQyO2n8kXKhmk5yK0SihPkk/ag2+z9FKosgraZEQPPgsXY7DyBFW/8vLj
+         4AyeGbHvJQgL2bKChrI736SmIhfwMH0lYeaVmZ25kQEEmqMmP38dudlfLg0NFoXaXYn1
+         pi+fHetgvVygJFNga5i3VKVaHHYaQW0njUAVdroUFaTaiAJP7ql9R+hElMLOHaIWcckc
+         /z6evPfz555+AngVyACHOCpOxeAovS2GAzaDvtCj9O4r9y9lVQwf6VRyg3bx7+wsPEcB
+         gY0A==
+X-Gm-Message-State: AOJu0YyKcYeyBhY0jd2Ns/hTH5eOjK2pfAUWDJp83se4oM+i+SfEaS1R
+        vMcFzfkNgGtA/SLAgewXecQUnQ==
+X-Google-Smtp-Source: AGHT+IFblBhRhzmDzaS+pqwHqudeZroQ2KZlSAXVw5pwCj/0sJY/9y88i/ThbUt7ShHZ/AFjgg/51g==
+X-Received: by 2002:a5d:4e90:0:b0:32d:a4c4:f700 with SMTP id e16-20020a5d4e90000000b0032da4c4f700mr3953978wru.38.1697624531035;
+        Wed, 18 Oct 2023 03:22:11 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id c5-20020adfef45000000b0032da4c98ab2sm1796413wrp.35.2023.10.18.03.22.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 03:22:10 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 13:22:06 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Calvince Otieno <calvncce@gmail.com>
+Cc:     gustavo@embeddedor.com, outreachy@lists.linux.dev,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCH V2] staging: vme_user: replace strcpy with strscpy
+Message-ID: <8a1d6d6f-b650-4aad-9b31-07a0a8acf45c@kadam.mountain>
+References: <ZS+c7NtfEw5ne2Oj@lab-ubuntu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: mediatek: mtk_dsi: Fix NO_EOT_PACKET
- settings/handling
-Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     airlied@gmail.com, chunkuang.hu@kernel.org, ck.hu@mediatek.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        jitao.shi@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, p.zabel@pengutronix.de,
-        shaoming.chen@mediatek.com, yt.shen@mediatek.com
-References: <20230523104234.7849-1-angelogioacchino.delregno@collabora.com>
- <20230915101124.283232-1-mwalle@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230915101124.283232-1-mwalle@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS+c7NtfEw5ne2Oj@lab-ubuntu>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/09/23 12:11, Michael Walle ha scritto:
->> Due to the initial confusion about MIPI_DSI_MODE_EOT_PACKET, properly
->> renamed to MIPI_DSI_MODE_NO_EOT_PACKET, reflecting its actual meaning,
->> both the DSI_TXRX_CON register setting for bit (HSTX_)DIS_EOT and the
->> later calculation for horizontal sync-active (HSA), back (HBP) and
->> front (HFP) porches got incorrect due to the logic being inverted.
->>
->> This means that a number of settings were wrong because....:
->>   - DSI_TXRX_CON register setting: bit (HSTX_)DIS_EOT should be
->>     set in order to disable the End of Transmission packet;
->>   - Horizontal Sync and Back/Front porches: The delta used to
->>     calculate all of HSA, HBP and HFP should account for the
->>     additional EOT packet.
->>
->> Before this change...
->>   - Bit (HSTX_)DIS_EOT was being set when EOT packet was enabled;
->>   - For HSA/HBP/HFP delta... all three were wrong, as words were
->>     added when EOT disabled, instead of when EOT packet enabled!
->>
->> Invert the logic around flag MIPI_DSI_MODE_NO_EOT_PACKET in the
->> MediaTek DSI driver to fix the aforementioned issues.
->>
->> Fixes: 8b2b99fd7931 ("drm/mediatek: dsi: Fine tune the line time caused by EOTp")
->> Fixes: 2d52bfba09d1 ("drm/mediatek: add non-continuous clock mode and EOT packet control")
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On Wed, Oct 18, 2023 at 11:53:00AM +0300, Calvince Otieno wrote:
+> Checkpatch suggests using strscpy() instead of strcpy().
 > 
+> The advantages of strscpy() are that it always adds a NUL terminator
+> and prevents read overflows if the source string is not properly
+> terminated.
 
-Hello CK,
+strcpy() also always adds a NUL terminator.
 
-can you please pick this fix?
+With strcpy() both read overflows and write overflows are an issue but
+write overflows are sooooooo much more serious that we don't worry about
+read overflow.
 
-Thanks,
-Angelo
+> One potential disadvantage is that it doesn't zero pad the
+> string like strcpy() does.
+
+strcpy() does not zero pad anything.  You're resending patches too
+quickly.  You should wait a day between resends.
+
+
+> 
+> In this specific context, both strscpy and strcpy performs the same
+> operation without any functional difference.
+> 
+> The reason for this equivalence is that the driver_name string "vme_fake"
+> is shorter than the size of the fake_bridge->name array which is defined
+> as 16 characters (struct vme_bridge {char name[VMENAMSIZ];...}). Thus,
+> there is no risk of buffer overflow in either case. VMENAMSIZ variable
+> holds a constant value of 16 (#define VMENAMSIZ 16)
+
+This paragraph is good and sufficient.
+
+> 
+> The null-terminated "vme_fake" string
+> (static const char driver_name[] = "vme_fake";) can be safely copied into
+> fake_bridge->name using either strscpy or strcpy.
+> 
+> While using strscpy() does not address any bugs, it is considered a better
+> practice and aligns with checkpatch recommendations.
+> 
+> Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+
+
+Okay.  Good.  Re-write the commit message and resend it tomorrow.
+
+regards,
+dan carpenter
+
 
