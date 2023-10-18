@@ -2,93 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748837CD6E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B890D7CD6E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbjJRIqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S230185AbjJRIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjJRIqT (ORCPT
+        with ESMTP id S229957AbjJRIse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:46:19 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA43C6;
-        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b20a48522fso4214744b3a.1;
-        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697618777; x=1698223577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MjM8NJM6JVllRLYgSnqxLAwOLXcWEQAjyuI0Ba4HE+U=;
-        b=RGlUJPgaAbhah3No4hAbopJ/BSPdzOf73CA5yt/f9lEedbf2sGeYlPbBig4bNV5M7E
-         jbdI9tq9uRFGRXaeUph+SDUdF9TJWKB/R9536oRY6dtYwlda5eO1vagy+/mYTYtcV4Jg
-         m1WFK9uV+DTfGD5UFmDz5AbpoWOfP6cGPhgFP51XcEpWxICEZmP/GwMxbifqDzguCL2c
-         eez7ZK4OrIQqfBRkoT8hGzH4jhR4QUXk+tBknd665sHhmWvKG9koV6Wx99tiACicpiEa
-         HXVrwpHMUYsTemTBiYM59yQS0Sj+SEiqTWR8iS8SJLuAcDuaI3OA6wvnPbCP0bdvQGyY
-         7bMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697618777; x=1698223577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MjM8NJM6JVllRLYgSnqxLAwOLXcWEQAjyuI0Ba4HE+U=;
-        b=n9n3qvt/uOyxy3a2D7mgHoU1377hcABSsnPZTzGCjhOMQjHJaUq2AdiRIT2iBDndoD
-         O9sdJ5LHo5Z9iFDhS6MjukyKa5lgD4JKErfKGrcBlxWPlqa/PWaK/H4JEXg9kDUIn3Kc
-         z+tP2E2co8jxYpDRrnpW7Gd1RtaQ3bU64ZVFdyvb3QPACMvS6/eEkrgJjUydN+2PdCOU
-         //YDak8uNO+gblp6HHUetAfz8QSdN0si2/6Zm0IIwUmmX5CFw3Vg4rI3RgEyRi/IGnni
-         psdmToqKf3lVsmrxXl9D4rFvt1o/ZU2rg4G/gmkQ7zVDW0zW3jGfVS6JGkUKDm8JDNtR
-         +ZgA==
-X-Gm-Message-State: AOJu0YyQVuCEqzZQ5ay3oS9VJFuoJLd6A7+imQ04pql9AK8w4i7umlX4
-        1PEG22uvHrnzZHJbHso7S7k=
-X-Google-Smtp-Source: AGHT+IG8R9G5TZ+zQwGOq2WBl4PnJCcrqIk75aloxXiztkp1XP4DNIRMi5/iueAfV9rDsF01rx7A2A==
-X-Received: by 2002:a05:6a20:a123:b0:159:b7ba:74bd with SMTP id q35-20020a056a20a12300b00159b7ba74bdmr5205717pzk.50.1697618777184;
-        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902b58700b001ca4c20003dsm2954311pls.69.2023.10.18.01.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 01:46:16 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 17 Oct 2023 22:46:15 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Hunt <pehunt@redhat.com>
-Subject: Re: [PATCH] docs/cgroup: Add the list of threaded controllers to
- cgroup-v2.rst
-Message-ID: <ZS-bVxCAptXLotC_@slm.duckdns.org>
-References: <20231017171341.3683352-1-longman@redhat.com>
+        Wed, 18 Oct 2023 04:48:34 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38C5B6;
+        Wed, 18 Oct 2023 01:48:31 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id C481B24E269;
+        Wed, 18 Oct 2023 16:48:27 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 16:48:28 +0800
+Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 16:48:27 +0800
+Message-ID: <d4df5c0a-07b1-449c-3c08-aa57da7fb3d7@starfivetech.com>
+Date:   Wed, 18 Oct 2023 16:48:26 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017171341.3683352-1-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <changhuang.liang@starfivetech.com>
+References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+ <98297bfc-ab81-4bb5-acc3-619fdf879276@xs4all.nl>
+ <bb5b776c-f1dd-f53e-079c-8048af2e73f1@starfivetech.com>
+In-Reply-To: <bb5b776c-f1dd-f53e-079c-8048af2e73f1@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 01:13:41PM -0400, Waiman Long wrote:
-> The cgroup-v2 file mentions the concept of threaded controllers which can
-> be used in a threaded cgroup. However, it doesn't mention clearly which
-> controllers are threaded leading to some confusion about what controller
-> can be used requiring some experimentation. Clear this up by explicitly
-> listing the controllers that can be used currently in a threaded cgroup.
+
+
+On 2023/10/18 10:37, Jack Zhu wrote:
+> Hi Hans,
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Thank you for your comments.
+> 
+> On 2023/10/16 19:40, Hans Verkuil wrote:
+>> Hi Jack,
+>> 
+>> On 08/10/2023 10:51, Jack Zhu wrote:
+>>> Hi,
+>>> 
+>>> This series is the v10 series that attempts to support the Camera Subsystem
+>>> found on StarFive JH7110 SoC.
+>>> 
+>>> This series is based on top of the master branch of media_stage repository,
+>>> which is tested with a v4l2-compliance compiled from the git repo
+>>> (git://linuxtv.org/v4l-utils.git).
+>> 
+>> I get one smatch warning:
+>> 
+>> drivers/staging/media/starfive/camss/stf-isp.c:122 isp_enum_mbus_code() warn: unsigned 'code->index' is never less than zero.
+>> 
+>> And I also notice that there is no TODO file: staging drivers should have a
+>> TODO file explaining what needs to be done to get them out of staging.
+>> 
+>> I'm curious to know that as well :-)
+>> 
+>> It looks like there is a lot of additional development that can be done, since
+>> most of the ISP parameters appear to be hardcoded.
+>> 
+>> I also notice something weird in the compliance test output for v4l-subdev0 vs
+>> v4l-subdev1:
+>> 
+>>> Compliance test for starfive-camss device /dev/v4l-subdev0:
+>>> 
+>>> Driver Info:
+>>> 	Driver version   : 6.6.0
+>>> 	Capabilities     : 0x00000000
+>>> Media Driver Info:
+>>> 	Driver name      : starfive-camss
+>>> 	Model            : Starfive Camera Subsystem
+>>> 	Serial           : 
+>>> 	Bus info         : platform:19840000.camss
+>>> 	Media version    : 6.6.0
+>>> 	Hardware revision: 0x00000000 (0)
+>>> 	Driver version   : 6.6.0
+>>> Interface Info:
+>>> 	ID               : 0x0300001c
+>>> 	Type             : V4L Sub-Device
+>>> Entity Info:
+>>> 	ID               : 0x00000001 (1)
+>>> 	Name             : stf_isp
+>>> 	Function         : Image Signal Processor
+>>> 	Pad 0x01000002   : 0: Sink
+>>> 	  Link 0x02000014: from remote pad 0x1000010 of entity 'cdns_csi2rx.19800000.csi-bridge' (Video Interface Bridge): Data, Enabled
+>>> 	Pad 0x01000003   : 1: Source
+>>> 	  Link 0x0200000c: to remote pad 0x1000009 of entity 'capture_yuv' (V4L2 I/O): Data, Enabled
+>> 
+>> Here it shows the Media Driver Info for v4l-subdev0.
+>> 
+>> <snip>
+>> 
+>>> --------------------------------------------------------------------------------
+>>> Compliance test for device /dev/v4l-subdev1:
+>>> 
+>>> Driver Info:
+>>> 	Driver version   : 6.6.0
+>>> 	Capabilities     : 0x00000000
+>> 
+>> But this does not appear for v4l-subdev1.
+>> 
+>> I can't really tell why it doesn't show that. Can you debug a little bit?
+>> The code is in v4l2-compliance.cpp, line 1086:
+>> 
+>> ent_id = mi_media_info_for_fd(media_fd, node.g_fd(), &is_invalid, &node.function);
+>> 
+>> The mi_media_info_for_fd() function calls ioctl(media_fd, MEDIA_IOC_DEVICE_INFO, &mdinfo),
+>> and that fails for some reason. It could be that media_fd is invalid (would be weird).
+>> 
+>> This could well be a v4l2-compliance bug that you hit with this driver.
+>> 
+> 
+> On the test board, /dev/v4l-subdev1 is imx219, and the corresponding directory is
+> /sys/dev/char/81:3/device. Media0 does not exist in this directory. Therefore, the media_fd
+> obtained through mi_get_media_fd(node.g_fd(), node.bus_info) is invalid.
+> 
+> I don't know why media0 does not exist in /sys/dev/char/81:3/device?
+> 
 
-Applied to cgroup/for-6.7.
+Hi Hans,
 
-Thanks.
+Could you please comment on this issue? imx219 directly uses the driver file in the
+media_stage repository.
+
+Thank you for your time!
 
 -- 
-tejun
+Regards,
+
+Jack Zhu
