@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E50B7CE19A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A43A7CE19B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjJRPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58854 "EHLO
+        id S231765AbjJRPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbjJRPrl (ORCPT
+        with ESMTP id S231764AbjJRPsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:47:41 -0400
+        Wed, 18 Oct 2023 11:48:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C784CD57
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:47:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5582BC433C8;
-        Wed, 18 Oct 2023 15:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697644032;
-        bh=InG035hMLurwAeKeC47GtRoHkwnqDLCor7MaeAfrvrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F/iCTYgucw81j5t/RFOEvdBl8DFGb/olHT6bk2KuaDxwbmqGgWgXwZt6uhSCCh8J6
-         iiMHO9XX+z1cIxV1+FkRqR9NRC1NQPnerNOi7dCoS8MNaNIC7OBc8S3ymK5zRtnSc8
-         NNVgzrA9OXwGP4MRpbxmbcRFN8vC09nKz1oMcN2FDhT8farNjT55ivsos0qOoNtQfo
-         xkd/hZQ1GeHGSD4BcqSwkxxjZhyJg9JJZ1dSSSagNr0+It4bm4hn1Yjuu+rZnkaWu3
-         FmqS6lLRDHggp7YxES1oWyAOuUnB4vS8ByC/Lj5deDk77lVgtMCyRFsfUC5DWWw1dI
-         9PRhPZUHxs4tA==
-Date:   Wed, 18 Oct 2023 16:47:07 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: usb: vialab,vl817: remove reset-gpios
- from required list
-Message-ID: <20231018-luminous-uncanny-f474a87bf2af@spud>
-References: <20231018150448.1980-1-jszhang@kernel.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FAD116
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:48:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10BCAC433C8;
+        Wed, 18 Oct 2023 15:48:03 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 16:48:00 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Patrick Wang <patrick.wang.shcn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/7] mm: kmemleak: use mem_pool_free() to free object
+Message-ID: <ZS_-MBDKXR9qFXDb@arm.com>
+References: <20231018102952.3339837-1-liushixin2@huawei.com>
+ <20231018102952.3339837-6-liushixin2@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RZusTGGTVMT5+wnc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231018150448.1980-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231018102952.3339837-6-liushixin2@huawei.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 06:29:50PM +0800, Liu Shixin wrote:
+> The kmemleak object is allocated by mem_pool_alloc(), which
+> could be from slab or mem_pool[], so it's not suitable using
+> __kmem_cache_free() to free the object, use __mem_pool_free()
+> instead.
+> 
+> Fixes: 0647398a8c7b ("mm: kmemleak: simple memory allocation pool for kmemleak objects")
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 
---RZusTGGTVMT5+wnc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Could you please reorder this patch before the previous one? If you
+added a Fixes tag, we may want a cc stable as well (as for the other
+patches with a Fixes tag) and it makes more sense to backport it on its
+own without the __create_object() split. Otherwise:
 
-On Wed, Oct 18, 2023 at 11:04:48PM +0800, Jisheng Zhang wrote:
-> The "reset-gpios" is optional in real case, for example reset pin is
-> is hard wired to "high". And this fact is also reflected by the
-> devm_gpio_get_optional() calling in driver code.
->=20
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-> ---
->=20
-> since v1:
->  - remove th1520 usb dt-binding part, this isn't related.
->=20
->  Documentation/devicetree/bindings/usb/vialab,vl817.yaml | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/usb/vialab,vl817.yaml b/Do=
-cumentation/devicetree/bindings/usb/vialab,vl817.yaml
-> index 76db9071b352..c815010ba9c2 100644
-> --- a/Documentation/devicetree/bindings/usb/vialab,vl817.yaml
-> +++ b/Documentation/devicetree/bindings/usb/vialab,vl817.yaml
-> @@ -37,7 +37,6 @@ properties:
->  required:
->    - compatible
->    - reg
-> -  - reset-gpios
->    - vdd-supply
->    - peer-hub
-> =20
-> --=20
-> 2.40.1
->=20
-
---RZusTGGTVMT5+wnc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS/9+wAKCRB4tDGHoIJi
-0pcOAQDuNchpYF/y/RhpvZGEw6IGgDbYw5KpnXkvSBk/zG0DQAD/VlbKt3FeHqNO
-Yq/WDm0rrFeSleCyY2v6/pPl1EyEvAE=
-=lUXz
------END PGP SIGNATURE-----
-
---RZusTGGTVMT5+wnc--
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
