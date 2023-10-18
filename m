@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103B87CE79B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7B37CE799
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbjJRTU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S231450AbjJRTUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbjJRTU0 (ORCPT
+        with ESMTP id S230421AbjJRTUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:20:26 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A620D119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:20:24 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9e0b9b96cso51804935ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697656824; x=1698261624; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H7ppnBIIrbmfIJgnyx9B9RiTitNvmGmwskuXYW2Y3sk=;
-        b=Eh+lgmU/yLFcI4f/ahRmW3zanjUCZG9OkK3vNWgq1j9GrPbUBhq09t376RbY1BBXDo
-         JbspcSvDp2LYTk/d4EXp/e17UBoGy/w1vjEOGKf24/ZOQHfJ6++hoO1pVb2Fj5HAAJFG
-         zzBNeEQqFXeitii8VRQ0+lQ6uP/aZd83yq24Fd0fWwARrYErbsgspqURWOaA1MQpMBR0
-         aj5jhWZUBIX27A0ThvrEoq/onaw3UnjKlK1I9jdKhm9p90xZ/9L6JsBQ8MgPuF+pCakc
-         XvKdftOY3ezawUHR1D1a03Y8+rOxPbSsN+lUJ70bfNId7wasXeEQ4vjWoT9EUafYnezx
-         I6lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697656824; x=1698261624;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7ppnBIIrbmfIJgnyx9B9RiTitNvmGmwskuXYW2Y3sk=;
-        b=DIWcV7DhjmBLDO5XB8wMESnkTKE6uG/m27ErvdP/IXuoo1BHbTVtqbdxeZH6IFecx7
-         CH8BZNyXguk7qRG+KqId5QiuTuXhgbAD0knsLN3W+AifAAJOWePReVqEnDQELBr60IFl
-         /KG9aU0+qIp5VklMoHMMi4ttlKV5XD0cdtwwTBVae0EVaty2+s0p3eJmSN1OIHHAOQQR
-         TBcfQGuvVaqZCyCLA6nm3R5OS6Vh+Mnex2Z0xoJbTDdfGDmjz+r3QIuDUsL+VYSk9C34
-         Zi3q1F4800Akc1qKDgkLpgWhsP2OlQ3UvWPpSZndJEYTPn8wgl5l3DOgrPcYynsx2r+C
-         VXSA==
-X-Gm-Message-State: AOJu0YwoR0cTSlcSvkxrJ85poIKjembvr/bCsNGKqRTwey8/bUmoEOr4
-        jph5ipyVeXQZ/yvOG0V+uzLRYNavhpM=
-X-Google-Smtp-Source: AGHT+IF8fprxOwg9NLxhNoiGVvB0E6ikGR9g208TVUDNojr9nRxzSrwsgdHktxGZJqj/q79lONDYyGyPxWM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c9c4:b0:1ca:a382:7fc1 with SMTP id
- q4-20020a170902c9c400b001caa3827fc1mr6069pld.12.1697656824132; Wed, 18 Oct
- 2023 12:20:24 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 18 Oct 2023 12:20:21 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231018192021.1893261-1-seanjc@google.com>
-Subject: [PATCH v2] KVM: SVM: Don't intercept IRET when injecting NMI and vNMI
- is enabled
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Santosh Shukla <santosh.shukla@amd.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 18 Oct 2023 15:20:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84722114;
+        Wed, 18 Oct 2023 12:20:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7300BC433C7;
+        Wed, 18 Oct 2023 19:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697656805;
+        bh=mLpZTsjbH1oZAruNAaAWMqbAcvfjHo5jimN4dXHpcuI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cxcwwC32kJeRoubZdXCD5Ox6CFDVGJA7FazswfHZuXDlGIUoOcMcRIqhzLZSvWW8T
+         NXXAiOYikRlG1wSe+B/6iZnMuoRYhvC7ZOkMlHWnR6kh33bc1/Vu4tzdgN50mHAhlI
+         sXB/JnSxvCRyTtDAHYxALUAT0Ig/iOyop6+DIQiPASrNRIFqeqCpcyH6ELOgZgp7i8
+         zjjJPTFtYBXYa4iYHhY/eF5ruZukvVOHt/SsAdSBAuvD2pnjIbLq9CdN9uSSz2TB3X
+         TM8s5IC/grZKTjXs3/5Ok5dHZIhpxRZ21vJIqiIvqempIQO3DyncGdldGFdL1AOApY
+         PpwHM6LaCb+bA==
+Date:   Wed, 18 Oct 2023 20:20:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andreas Klinger <ak@it-klinger.de>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: bmp280: fix eoc interrupt usage
+Message-ID: <20231018202024.36aabbc1@jic23-huawei>
+In-Reply-To: <20231018152816.56589-1-ak@it-klinger.de>
+References: <20231018152816.56589-1-ak@it-klinger.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When vNMI is enabled, rely entirely on hardware to correctly handle NMI
-blocking, i.e. don't intercept IRET to detect when NMIs are no longer
-blocked.  KVM already correctly ignores svm->nmi_masked when vNMI is
-enabled, so the effect of the bug is essentially an unnecessary VM-Exit.
+On Wed, 18 Oct 2023 17:28:16 +0200
+Andreas Klinger <ak@it-klinger.de> wrote:
 
-KVM intercepts IRET for two reasons:
- - To track NMI masking to be able to know at any point of time if NMI
-   is masked.
- - To track NMI windows (to inject another NMI after the guest executes
-   IRET, i.e. unblocks NMIs)
+> Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
+> bmp085 and bmp180 share the same chip id. Therefore it's necessary to
+> distinguish the case in which the interrupt is set.
+> 
+> Fix the if statement so that only when the interrupt is set and the chip
+> id is recognized the interrupt is requested.
+> 
+> This bug exists since the support of EOC interrupt was introduced.
+> Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
+> 
+> Also add a link to bmp085 datasheet for reference.
+> 
+Fixes tag is part of the tags block so needs to be down here.
+> Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
+> Signed-off-by: Andreas Klinger <ak@it-klinger.de>
 
-When vNMI is enabled, both cases are handled by hardware:
-- NMI masking state resides in int_ctl.V_NMI_BLOCKING and can be read by
-  KVM at will.
-- Hardware automatically "injects" pending virtual NMIs when virtual NMIs
-  become unblocked.
+However, it's also already fixed upstream I think.
+That's not filtered back around to my togreg branch though as that has an outstanding
+pull request.
 
-However, even though pending a virtual NMI for hardware to handle is the
-most common way to synthesize a guest NMI, KVM may still directly inject
-an NMI via when KVM is handling two "simultaneous" NMIs (see comments in
-process_nmi() for details on KVM's simultaneous NMI handling).  Per AMD's
-APM, hardware sets the BLOCKING flag when software directly injects an NMI
-as well, i.e. KVM doesn't need to manually mark vNMIs as blocked:
+Jonathan
 
-  If Event Injection is used to inject an NMI when NMI Virtualization is
-  enabled, VMRUN sets V_NMI_MASK in the guest state.
-
-Note, it's still possible that KVM could trigger a spurious IRET VM-Exit.
-When running a nested guest, KVM disables vNMI for L2 and thus will enable
-IRET interception (in both vmcb01 and vmcb02) while running L2 reason.  If
-a nested VM-Exit happens before L2 executes IRET, KVM can end up running
-L1 with vNMI enable and IRET intercepted.  This is also a benign bug, and
-even less likely to happen, i.e. can be safely punted to a future fix.
-
-Fixes: fa4c027a7956 ("KVM: x86: Add support for SVM's Virtual NMI")
-Link: https://lore.kernel.org/all/ZOdnuDZUd4mevCqe@google.como
-Cc: Santosh Shukla <santosh.shukla@amd.com>
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
-
-v2: Expand changelog to explain the various behaviors and combos. [Maxim]
-
-v1: https://lore.kernel.org/all/20231009212919.221810-1-seanjc@google.com
-
- arch/x86/kvm/svm/svm.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 1785de7dc98b..517a12e0f1fd 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3568,8 +3568,15 @@ static void svm_inject_nmi(struct kvm_vcpu *vcpu)
- 	if (svm->nmi_l1_to_l2)
- 		return;
- 
--	svm->nmi_masked = true;
--	svm_set_iret_intercept(svm);
-+	/*
-+	 * No need to manually track NMI masking when vNMI is enabled, hardware
-+	 * automatically sets V_NMI_BLOCKING_MASK as appropriate, including the
-+	 * case where software directly injects an NMI.
-+	 */
-+	if (!is_vnmi_enabled(svm)) {
-+		svm->nmi_masked = true;
-+		svm_set_iret_intercept(svm);
-+	}
- 	++vcpu->stat.nmi_injections;
- }
- 
-
-base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
--- 
-2.42.0.655.g421f12c284-goog
+> ---
+>  drivers/iio/pressure/bmp280-core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+> index 6089f3f9d8f4..9b7beeb1c088 100644
+> --- a/drivers/iio/pressure/bmp280-core.c
+> +++ b/drivers/iio/pressure/bmp280-core.c
+> @@ -9,6 +9,7 @@
+>   * Driver for Bosch Sensortec BMP180 and BMP280 digital pressure sensor.
+>   *
+>   * Datasheet:
+> + * https://www.sparkfun.com/datasheets/Components/General/BST-BMP085-DS000-05.pdf
+>   * https://cdn-shop.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+>   * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf
+>   * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
+> @@ -2179,7 +2180,7 @@ int bmp280_common_probe(struct device *dev,
+>  	 * however as it happens, the BMP085 shares the chip ID of BMP180
+>  	 * so we look for an IRQ if we have that.
+>  	 */
+> -	if (irq > 0 || (chip_id  == BMP180_CHIP_ID)) {
+> +	if (irq > 0 && (chip_id  == BMP180_CHIP_ID)) {
+>  		ret = bmp085_fetch_eoc_irq(dev, name, irq, data);
+>  		if (ret)
+>  			return ret;
 
