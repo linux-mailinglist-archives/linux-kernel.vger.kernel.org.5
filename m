@@ -2,145 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297F07CE9C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156947CE9BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbjJRVIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbjJRVIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232076AbjJRVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 18 Oct 2023 17:08:17 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B7E18C
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbjJRVIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Oct 2023 17:08:16 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59D913D
         for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:08:13 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 165192C027A;
-        Thu, 19 Oct 2023 10:08:10 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1697663290;
-        bh=gqjjlKTu73EKTbIjc+Nes5NFC/xjbovCV1p0fBg4XUQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LaC81BLFbzLPwF2FE5Iw5P808xj561SjJ+odwE9ZXjlJpFNLGEXO2NOF/5vRve0sf
-         2fsbkxGlWP3hZNfEVVjZBDpCtVn9pa0vMES5Xtl/WBozwryyl55+Bst28gk2MtpRCO
-         wCj6mUasup5vBtstzR9mfEbQVUIzklIsvykaLA3H7cetGspRj0lObiJQZqdyTsNdoF
-         E3VHQ4SOlYSf8hiSWcrNWO60zCpbm3ALN06x2BYeJG1VYJZfhAY3I8nJcptKeHRXqG
-         O+zYke7J3TZH5PdpV71rOlauzJHbZwAmhC/eLpXRB4rllp8Z0ZG8jn08gbzMPSTdu+
-         2luiEBnDSWSQA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B653049390002>; Thu, 19 Oct 2023 10:08:09 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-        by pat.atlnz.lc (Postfix) with ESMTP id 5BB9213EE85;
-        Thu, 19 Oct 2023 10:08:09 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 5A95C280450; Thu, 19 Oct 2023 10:08:09 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 2/2] i2c: mv64xxx: add an optional reset-gpios property
-Date:   Thu, 19 Oct 2023 10:08:05 +1300
-Message-ID: <20231018210805.1569987-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231018210805.1569987-1-chris.packham@alliedtelesis.co.nz>
-References: <20231018210805.1569987-1-chris.packham@alliedtelesis.co.nz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=bhdUkHdE2iEA:10 a=VsZq4EHS3crWG1I_hwYA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9e994fd94so48028315ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697663293; x=1698268093; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PVTN0DwGw7en9yc7Uz7tI+IpU6nI5xXmVaMMJdRBSvM=;
+        b=1bl+0KebzxdBeUoGPQ9rb0ky0fzroznmmfg0SS05gFbG/GXvgJ9W/Ic8P4pDQ1oLkO
+         lXvBy+9RtvC9DyGT2p1h3vQnGbpdQaeESexH/fo4V3amnpa+R8/2rqUToNVEvRJDzOA1
+         ELX+XLmLZiuVI3Gkn3NqIZQ/kWU1xPMY6CXux8fa2S999IWX/g3w+pCNmYX2y/otcwvS
+         kbjMKQjDHgnpgxBrXYO1JXUiarqIeBCG/Ucisqco7xvgLQFogq3uJPEHAyrL73lvsqtV
+         FeNHGTtjCa2zB44kCDdkh5494G+yW+425BTGcHFwt76/TfPlS8Bq7Apz0vzaDWGcizOU
+         MQhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697663293; x=1698268093;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PVTN0DwGw7en9yc7Uz7tI+IpU6nI5xXmVaMMJdRBSvM=;
+        b=exuH175MuLJ4xWYmSmCeAhrHB+RIVSbttwWaq40xnJko6+hd9gQqRayLKHwV3OIYRJ
+         NbpQkIBHPQZnoI/9GoKybG5NIH3xsfP7CaP5Nw9FDW+3rvjjEAdULfMe5wAzSXi1Gvo9
+         MkzPD1cxkErfn7YXC3lijLMS3oKj4zrp1+RR9CmUv96XUT10WsY/BpwackzGUV6OCETc
+         M9AYtflwxjEWq+B0BSVeitWKHxF6KrZQ1w92VAD7tPCMcknqwEHG//7K+NbY+TinZUoW
+         QaTxT7iSApdnqgvrMFYUHCtlpVenhnL6Aol0CTVPNq18hL+1B2XYfzopeAs9Sxu8aNhQ
+         bCTw==
+X-Gm-Message-State: AOJu0YzQtIofMJbDOfFiJKomSynbKwSEtNZ94r2PLNINeB42sDPoCGO5
+        EEdaIx9v28hCIaXgRHd2//fXhhZha28=
+X-Google-Smtp-Source: AGHT+IGVBxOHZgerTVqsgICs+VuoL4YLyg1CdLr8SOLE1IDW1QAetoYCO7P1ttzgWgM3OSuZ2Sql8nHWrvQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:654d:b0:1ca:8868:8c97 with SMTP id
+ d13-20020a170902654d00b001ca88688c97mr12081pln.0.1697663293202; Wed, 18 Oct
+ 2023 14:08:13 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 14:08:11 -0700
+In-Reply-To: <20230927230811.2997443-1-xin@zytor.com>
+Mime-Version: 1.0
+References: <20230927230811.2997443-1-xin@zytor.com>
+Message-ID: <ZTBJO75Zu1JBsqvw@google.com>
+Subject: Re: [PATCH 1/1] KVM: VMX: Cleanup VMX basic information defines and usages
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Xin Li (Intel)" <xin@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, weijiang.yang@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some hardware designs have a GPIO used to control the reset of all the
-devices on and I2C bus. It's not possible for every child node to
-declare a reset-gpios property as only the first device probed would be
-able to successfully request it (the others will get -EBUSY). Represent
-this kind of hardware design by associating the reset-gpios with the
-parent I2C bus. The reset line will be released prior to the child I2C
-devices being probed.
+On Wed, Sep 27, 2023, Xin Li (Intel) wrote:
+> From: Xin Li <xin3.li@intel.com>
+> 
+> Add IA32_VMX_BASIC MSR bitfield shift macros and use them to define VMX
+> basic information bitfields.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+Why?  Unless something actually uses the shift independently, just define the
+BIT_ULL(...) straightaway.
 
-Notes:
-    Changes in v3:
-    - Rename reset-delay to reset-duration
-    - Use reset-duration-us property to control the reset pulse rather th=
-an
-      delaying after the reset
-    Changes in v2:
-    - Add a property to cover the length of delay after releasing the res=
-et
-      GPIO
-    - Use dev_err_probe() when requesing the GPIO fails
+> Add VMX_BASIC_FEATURES and VMX_BASIC_RESERVED_BITS to form a valid bitmask
+> of IA32_VMX_BASIC MSR. As a result, to add a new VMX basic feature bit,
+> just change the 2 new macros in the header file.
 
- drivers/i2c/busses/i2c-mv64xxx.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Not if a new feature bit lands in the middle of one of the reserved ranges, then
+the developer will have to update at least three macros, and add a new one. More
+below.
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv=
-64xxx.c
-index efd28bbecf61..28f11d2e800b 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -160,6 +160,7 @@ struct mv64xxx_i2c_data {
- 	bool			clk_n_base_0;
- 	struct i2c_bus_recovery_info	rinfo;
- 	bool			atomic;
-+	struct gpio_desc	*reset_gpio;
- };
-=20
- static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx =3D {
-@@ -1036,6 +1037,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	struct mv64xxx_i2c_data		*drv_data;
- 	struct mv64xxx_i2c_pdata	*pdata =3D dev_get_platdata(&pd->dev);
- 	struct resource *res;
-+	u32	reset_duration;
- 	int	rc;
-=20
- 	if ((!pdata && !pd->dev.of_node))
-@@ -1083,6 +1085,14 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	if (drv_data->irq < 0)
- 		return drv_data->irq;
-=20
-+	drv_data->reset_gpio =3D devm_gpiod_get_optional(&pd->dev, "reset", GPI=
-OD_OUT_HIGH);
-+	if (IS_ERR(drv_data->reset_gpio))
-+		return dev_err_probe(&pd->dev, PTR_ERR(drv_data->reset_gpio),
-+				     "Cannot get reset gpio\n");
-+	rc =3D device_property_read_u32(&pd->dev, "reset-duration-us", &reset_d=
-uration);
-+	if (rc)
-+		reset_duration =3D 1;
-+
- 	if (pdata) {
- 		drv_data->freq_m =3D pdata->freq_m;
- 		drv_data->freq_n =3D pdata->freq_n;
-@@ -1121,6 +1131,11 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 			goto exit_disable_pm;
- 	}
-=20
-+	if (drv_data->reset_gpio) {
-+		usleep_range(reset_duration, reset_duration + 10);
-+		gpiod_set_value_cansleep(drv_data->reset_gpio, 0);
-+	}
-+
- 	rc =3D request_irq(drv_data->irq, mv64xxx_i2c_intr, 0,
- 			 MV64XXX_I2C_CTLR_NAME, drv_data);
- 	if (rc) {
---=20
-2.42.0
+> Also replace hardcoded VMX basic numbers with the new VMX basic macros.
+> 
+> Tested-by: Shan Kang <shan.kang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> ---
+>  arch/x86/include/asm/msr-index.h       | 31 ++++++++++++++++++++------
+>  arch/x86/kvm/vmx/nested.c              | 10 +++------
+>  arch/x86/kvm/vmx/vmx.c                 |  2 +-
+>  tools/arch/x86/include/asm/msr-index.h | 31 ++++++++++++++++++++------
+
+Please drop the tools/ update, copying kernel headers into tools is a perf tools
+thing that I want no part of.
+
+https://lore.kernel.org/all/Y8bZ%2FJ98V5i3wG%2Fv@google.com
+
+>  4 files changed, 52 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 1d111350197f..4607448ff805 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -1084,13 +1084,30 @@
+>  #define MSR_IA32_VMX_PROCBASED_CTLS3	0x00000492
+>  
+>  /* VMX_BASIC bits and bitmasks */
+> -#define VMX_BASIC_VMCS_SIZE_SHIFT	32
+> -#define VMX_BASIC_TRUE_CTLS		(1ULL << 55)
+> -#define VMX_BASIC_64		0x0001000000000000LLU
+> -#define VMX_BASIC_MEM_TYPE_SHIFT	50
+> -#define VMX_BASIC_MEM_TYPE_MASK	0x003c000000000000LLU
+> -#define VMX_BASIC_MEM_TYPE_WB	6LLU
+> -#define VMX_BASIC_INOUT		0x0040000000000000LLU
+> +#define VMX_BASIC_VMCS_SIZE_SHIFT		32
+> +#define VMX_BASIC_ALWAYS_0			BIT_ULL(31)
+> +#define VMX_BASIC_RESERVED_RANGE_1		GENMASK_ULL(47, 45)
+> +#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT	48
+> +#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY		BIT_ULL(VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT)
+> +#define VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT	49
+> +#define VMX_BASIC_DUAL_MONITOR_TREATMENT	BIT_ULL(VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT)
+> +#define VMX_BASIC_MEM_TYPE_SHIFT		50
+> +#define VMX_BASIC_MEM_TYPE_WB			6LLU
+> +#define VMX_BASIC_INOUT_SHIFT			54
+> +#define VMX_BASIC_INOUT				BIT_ULL(VMX_BASIC_INOUT_SHIFT)
+> +#define VMX_BASIC_TRUE_CTLS_SHIFT		55
+> +#define VMX_BASIC_TRUE_CTLS			BIT_ULL(VMX_BASIC_TRUE_CTLS_SHIFT)
+> +#define VMX_BASIC_RESERVED_RANGE_2		GENMASK_ULL(63, 56)
+> +
+> +#define VMX_BASIC_FEATURES			\
+
+Maybe VMX_BASIC_FEATURES_MASK to make it more obvious it's a mask of multiple
+bits?
+
+> +	(VMX_BASIC_DUAL_MONITOR_TREATMENT |	\
+> +	 VMX_BASIC_INOUT |			\
+> +	 VMX_BASIC_TRUE_CTLS)
+> +
+> +#define VMX_BASIC_RESERVED_BITS			\
+> +	(VMX_BASIC_ALWAYS_0 |			\
+> +	 VMX_BASIC_RESERVED_RANGE_1 |		\
+> +	 VMX_BASIC_RESERVED_RANGE_2)
+
+I don't see any value in defining VMX_BASIC_RESERVED_RANGE_1 and
+VMX_BASIC_RESERVED_RANGE_2 separately.   Or VMX_BASIC_ALWAYS_0 for the matter.
+And I don't think these macros need to go in msr-index.h, e.g. just define them
+above vmx_restore_vmx_basic() as that's likely going to be the only user, ever.
+
+And what's really missing is a static_assert() or BUILD_BUG_ON() to ensure that
+VMX_BASIC_FEATURES doesn't overlap with VMX_BASIC_RESERVED_BITS.
+
+>  /* Resctrl MSRs: */
+>  /* - Intel: */
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index c5ec0ef51ff7..5280ba944c87 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -1203,21 +1203,17 @@ static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
+>  
+>  static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
+>  {
+> -	const u64 feature_and_reserved =
+> -		/* feature (except bit 48; see below) */
+> -		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
+> -		/* reserved */
+> -		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
+>  	u64 vmx_basic = vmcs_config.nested.basic;
+>  
+> -	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
+> +	if (!is_bitwise_subset(vmx_basic, data,
+> +			       VMX_BASIC_FEATURES | VMX_BASIC_RESERVED_BITS))
+>  		return -EINVAL;
+>  
+>  	/*
+>  	 * KVM does not emulate a version of VMX that constrains physical
+>  	 * addresses of VMX structures (e.g. VMCS) to 32-bits.
+>  	 */
+> -	if (data & BIT_ULL(48))
+> +	if (data & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
+>  		return -EINVAL;
+>  
+>  	if (vmx_basic_vmcs_revision_id(vmx_basic) !=
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 72e3943f3693..f597243d6a72 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2701,7 +2701,7 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+>  
+>  #ifdef CONFIG_X86_64
+>  	/* IA-32 SDM Vol 3B: 64-bit CPUs always have VMX_BASIC_MSR[48]==0. */
+> -	if (vmx_msr_high & (1u<<16))
+> +	if (vmx_msr_high & (1u << (VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT - 32)))
+
+In all honestly, I find the existing code easier to read.  I'm definitely not
+saying the existing code is good, but IMO this is at best a wash.
+
+I would much rather we do something like this and move away from the hi/lo crud
+entirely:
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 86ce9efe6c66..f103980c3d02 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2693,28 +2693,28 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+                _vmexit_control &= ~x_ctrl;
+        }
+ 
+-       rdmsr(MSR_IA32_VMX_BASIC, vmx_msr_low, vmx_msr_high);
++       rdmsrl(MSR_IA32_VMX_BASIC, vmx_msr);
+ 
+        /* IA-32 SDM Vol 3B: VMCS size is never greater than 4kB. */
+-       if ((vmx_msr_high & 0x1fff) > PAGE_SIZE)
++       if ((VMX_BASIC_VMCS_SIZE(vmx_msr) > PAGE_SIZE)
+                return -EIO;
+ 
+ #ifdef CONFIG_X86_64
+        /* IA-32 SDM Vol 3B: 64-bit CPUs always have VMX_BASIC_MSR[48]==0. */
+-       if (vmx_msr_high & (1u<<16))
++       if (vmx_msr & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
+                return -EIO;
+ #endif
+ 
+        /* Require Write-Back (WB) memory type for VMCS accesses. */
+-       if (((vmx_msr_high >> 18) & 15) != 6)
++       if (VMX_BASIC_VMCS_MEMTYPE(vmx_msr) != VMX_BASIC_MEM_TYPE_WB)
+                return -EIO;
+ 
+        rdmsrl(MSR_IA32_VMX_MISC, misc_msr);
+ 
+-       vmcs_conf->size = vmx_msr_high & 0x1fff;
+-       vmcs_conf->basic_cap = vmx_msr_high & ~0x1fff;
++       vmcs_conf->size = VMX_BASIC_VMCS_SIZE(vmx_msr);
++       vmcs_conf->basic_cap = ????(vmx_msr);
+ 
+-       vmcs_conf->revision_id = vmx_msr_low;
++       vmcs_conf->revision_id = (u32)vmx_msr;
+ 
+        vmcs_conf->pin_based_exec_ctrl = _pin_based_exec_control;
+        vmcs_conf->cpu_based_exec_ctrl = _cpu_based_exec_control;
 
