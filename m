@@ -2,84 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B1B7CEA29
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4107CEA2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjJRVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        id S231978AbjJRVnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjJRVnP (ORCPT
+        with ESMTP id S231629AbjJRVni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:43:15 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECC0EA;
-        Wed, 18 Oct 2023 14:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697665390;
-        bh=q6vi5KJHQ6JEcdJXzArswH6XqumV3niz843YNou3/7w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GR0h+F+0Ggr8Hwdzv5Okq35FgurkX0YZT8hxMYI43+mFw/7lsyQJHk/K7v3+sOxj3
-         W/UnSTfRu8aJGksAgbnxdsLuz4UCjIQA5FVX/I12Wsv5rmN2CUVIpr7H2XNDhhOi3R
-         6YJRJ6n3adYT5cz15SLbCbvPhCWipHib3ww94gx+JCdLNtUmNqpi8R1xXHK30V/4st
-         6hGlV4vMCQlflSJ/aEahvCOdm6TSPkqcHg3Q4nzWOXmGNOdTi451mV1ab1BhbR0jle
-         OvcB4/zd4Qpp63P0OW/cz97t49T2RO2hEddKNgcHFqXOooSrT8ldXx+7iZSowxWmle
-         Kr+xbiyN53gmQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9kqL3CQXz4x1x;
-        Thu, 19 Oct 2023 08:43:10 +1100 (AEDT)
-Date:   Thu, 19 Oct 2023 08:43:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the vhost tree
-Message-ID: <20231019084309.3bda85c4@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TB9OWHe6sSjKXM34uRe22Qz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 17:43:38 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C42E115
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:43:36 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6bcefd3b248so3844658b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697665415; x=1698270215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yHOjPmOC7r0r+5ar9NobWThJ75pkt4P9q/gadRDvKdc=;
+        b=Ke9fOIQfNae3ftZLLmympM1XYECAxszzFRrzroJaGMwPnyeTOZDmy2tp1HtPN7+9Q3
+         qvvTT9H/Dv7o7x4Tv7EITPFYtwkYmnhXxbn7h4owHPxG7tC7YYb53Sc/Wl14/WOltPBM
+         WRn/26sKy3HhwiNt7O5aMLhf9OyymvyGY44RoYCulW4V2FCwBo1Qt+5bSNq7K/FCkA8H
+         xy/H/8iF27fGsA996fCxyhZLGfYh+No86z6/Hw0aFktqtM9GbQUCv4arZi68+8eTsU4m
+         xErJJl4HpLOlUq5Ar59hgAQVjN3pWGOxhhWp1mKGj9RNar7WVSlYSkP6WO48UqVjq1wr
+         b3Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697665415; x=1698270215;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yHOjPmOC7r0r+5ar9NobWThJ75pkt4P9q/gadRDvKdc=;
+        b=K4QQJmEVP7ASF5bYwX9UHI8amyj0yHxS7XvHLo4tHmd+6ucEM8y05XTvilj15HPyBq
+         U9/6nnNKcMReTerCT2fGGR/vwTt9/30RVWnRdQknAIkro40p00d4XidcNHBhJI903Hej
+         RtHYlBr6z0XWx6ZxByu1QxGV4R8LWFG/K/l7t6D4to6qS2AX0CbcEOD71bjSCdMRmz+v
+         Tt5QdjbUJBOw3PPxJem9pPoV7NIuH1rsoLLEnnTyWE2uNHWGiObaP+Elh4zFx/7KNlyN
+         v89lOw3JsSaH5+7hpjW5luybbBYmnLKYbW8ZZZzNsgirhyS9swJDlQpKONF0dIVz424c
+         FBTg==
+X-Gm-Message-State: AOJu0YzfrmKS+w2xOj/YaNJ0ZN+xpPo9v571My84yYSfm3FPa5rpdR9u
+        p85WaSwUThdJWd5lWZ6pgyBjCfgYwwE=
+X-Google-Smtp-Source: AGHT+IGUIkCQe1UK/QW99mdDBgVsiaYRLV507eIWp4Sq8wCBVUL0fhdbBBlk6yGAr+Sqlx1A3Hmy2I+nx8s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:aa7:8f96:0:b0:68f:cb69:8e76 with SMTP id
+ t22-20020aa78f96000000b0068fcb698e76mr7929pfs.2.1697665415538; Wed, 18 Oct
+ 2023 14:43:35 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 14:43:33 -0700
+In-Reply-To: <4f8bb755-e208-fd8c-f948-f7d64260f8a7@amd.com>
+Mime-Version: 1.0
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-49-michael.roth@amd.com> <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+ <ZS614OSoritrE1d2@google.com> <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+ <ZS_iS4UOgBbssp7Z@google.com> <09556ee3-3d9c-0ecc-0b4a-3df2d6bb5255@amd.com>
+ <ZTBCVpXaGcyFaozo@google.com> <4f8bb755-e208-fd8c-f948-f7d64260f8a7@amd.com>
+Message-ID: <ZTBRhbCwgZVcKwkP@google.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
+ NAE event
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Alexey Kardashevskiy <aik@amd.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TB9OWHe6sSjKXM34uRe22Qz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 18, 2023, Ashish Kalra wrote:
+>=20
+> On 10/18/2023 3:38 PM, Sean Christopherson wrote:
+> > On Wed, Oct 18, 2023, Ashish Kalra wrote:
+> > > > static int snp_handle_ext_guest_request(struct vcpu_svm *svm)
+> > > > {
+> > > > 	struct kvm_vcpu *vcpu =3D &svm->vcpu;
+> > > > 	struct kvm *kvm =3D vcpu->kvm;
+> > > > 	struct kvm_sev_info *sev;
+> > > > 	unsigned long exitcode;
+> > > > 	u64 data_gpa;
+> > > >=20
+> > > > 	if (!sev_snp_guest(vcpu->kvm)) {
+> > > > 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_GUEST);
+> > > > 		return 1;
+> > > > 	}
+> > > >=20
+> > > > 	data_gpa =3D vcpu->arch.regs[VCPU_REGS_RAX];
+> > > > 	if (!IS_ALIGNED(data_gpa, PAGE_SIZE)) {
+> > > > 		ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SEV_RET_INVALID_ADDRESS=
+);
+> > > > 		return 1;
+> > > > 	}
+> > > >=20
 
-Hi all,
+Doh, I forget to set
 
-Commit
+		vcpu->run->exit_reason        =3D KVM_EXIT_HYPERCALL;
 
-  34ad6689c509 ("vdpa/mlx5: Expose descriptor group mkey hw capability")
+> > > > 	vcpu->run->hypercall.nr		 =3D KVM_HC_SNP_GET_CERTS;
+> > > > 	vcpu->run->hypercall.args[0]	 =3D data_gpa;
+> > > > 	vcpu->run->hypercall.args[1]	 =3D vcpu->arch.regs[VCPU_REGS_RBX];
+> > > > 	vcpu->run->hypercall.flags	 =3D KVM_EXIT_HYPERCALL_LONG_MODE;
+> > > > 	vcpu->arch.complete_userspace_io =3D snp_complete_ext_guest_reques=
+t;
+> > > > 	return 0;
+> > > > }
+> > > >=20
+> > >=20
+> > > IIRC, the important consideration here is to ensure that getting the
+> > > attestation report and retrieving the certificates appears atomic to =
+the
+> > > guest. When SNP live migration is supported we don't want a case wher=
+e the
+> > > guest could have migrated between the call to obtain the certificates=
+ and
+> > > obtaining the attestation report, which can potentially cause failure=
+ of
+> > > validation of the attestation report.
+> >=20
+> > Where does "obtaining the attestation report" happen?  I see the guest =
+request
+> > and the certificate stuff, I don't see anything about attestation repor=
+ts (though
+> > I'm not looking very closely).
+> >=20
+>=20
+> The guest requests that the firmware construct an attestation report via =
+the
+> SNP_GUEST_REQUEST command. The certificates are piggy-backed to the guest
+> along with the attestation report (retrieved from the FW via the
+> SNP_GUEST_REQUEST command) as part of the SNP Extended Guest Request NAE
+> handling.
 
-is missing a Signed-off-by from its committer.
+Ah, thanks!
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TB9OWHe6sSjKXM34uRe22Qz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwUW0ACgkQAVBC80lX
-0GxYQAgAnsbPGWpMYrXFnaidDDYbpvEpOxA9I9f3GKpIeDb0+YPX1uOMdYSENwhm
-y5slbz7vciQPZCn6QYMURa5WbLh9m0eownmkpxzExU0ECX6jBv82bkGeMauA3acg
-0B/NKHrHbCRA6+e4nz3yK8Zpsqo/1lBgp88zV6dDCq2wiYuYfRNgaTEw61sE0/5h
-nqTgiCHBKIiLiHqTZgdpw1y5Zi95FTPKt10QknaeAtFdm3W/sdg3Z8nT2MNE3pOa
-k6yI2ex/THL8dnnpVfU2MSr85Vm9cB5kXG0s1v6a2Pcu2vYRaGT9j1XSLwcm6IF0
-384/cruiGIxBeX2TI9oVoS996v/+4Q==
-=KVlI
------END PGP SIGNATURE-----
-
---Sig_/TB9OWHe6sSjKXM34uRe22Qz--
+In that case, my proposal should more or less Just Work=E2=84=A2, we simply=
+ need to define
+KVM's ABI to be that userspace is responsible for doing KVM_RUN with
+vcpu->run->immediate_exit set before migrating if the previous exit was
+KVM_EXIT_HYPERCALL with KVM_HC_SNP_GET_CERTS.  This is standard operating p=
+rocedure
+for userspace exits where KVM needs to "complete" the VM-Exit, e.g. for MMI=
+O, I/O,
+etc. that are punted to userspace.
