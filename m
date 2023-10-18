@@ -2,273 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFC97CD145
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B83D7CD148
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbjJRA0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 20:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        id S233726AbjJRA3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 20:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJRA0Q (ORCPT
+        with ESMTP id S229446AbjJRA3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 20:26:16 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD9DA4;
-        Tue, 17 Oct 2023 17:26:14 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HNO5P7026973;
-        Wed, 18 Oct 2023 00:25:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=15RYQdT6m7iWcWeSsv90aUlOyCZ517t+tMdVefgstE8=;
- b=IcG+bLna/+YaL/0UE5HxdYsa15Xv7+DhS2TRhKFhvwPI3KTZdlGL3nCsMkEk8vko1taV
- JABsmS+bsRUA1N7spOqYoM1IhmO1QaA+KTcs+40u+95vKPUeJgo+pIXyGI+koigz9xNr
- ow/QN/hVDq9X16P0KSk3vZeDuMcUSiGfHRiQhlLK/UgIG3GaUvPSZU56+n/Ua3VirGo7
- Mj8j+SU/+u1iV7t743cvP4tRy86u0HWB/UJtehEMC3fnjMsDRFPnAkGChEYGLCSbLDaf
- LTAL2l1ejfGrkfp0ghFp1FIha0rmYf9u4NHrjDqOoj7Ogsp85HPX5dsUjaNVlf/ug8Tv +g== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsr7c1r9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 00:25:55 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39I0PsdZ012718
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 00:25:54 GMT
-Received: from [10.71.115.127] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
- 2023 17:25:53 -0700
-Message-ID: <366d50fa-500f-e884-d48a-197e65bb2fb7@quicinc.com>
-Date:   Tue, 17 Oct 2023 17:25:47 -0700
+        Tue, 17 Oct 2023 20:29:20 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E76CA4;
+        Tue, 17 Oct 2023 17:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1697588933; x=1698193733; i=linosanfilippo@gmx.de;
+        bh=kPs0cEAAD7er/7MuIimw3M4hGwf1nKIAilx1GxoxzPw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:
+         In-Reply-To;
+        b=o8ir53hhVL134F55UnlRaD5Lgw1CX38kuAXAHfMpnK/SARMhg9wHHrdIyh05+DuC
+         paQmQaKxPr36rlLYHjW2A0nKtI+X7o1kPFp7A1g/fYflT/iaF2QLtrX7Tfa8RKwvB
+         ynOi9oOmq435EFHcmMOwf984RmAOQ+OnrsqF0nns7NIhkG6YzBDrI6YpThdzO7rjG
+         lzV2Vhih4HSOcnMY9dftQvjZvi6F/aiD3aifXwSQKAFFQv6Q5K5sYfaR4ke0pzmX3
+         OKM+gvLt+6T5qf6Psiv1LbB7/T5XRjQAnu693FCZlmUshdIXHiuystbiOteMZIarB
+         huROqPtbnivlVawYdQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.37] ([84.162.21.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MatVb-1rPE6w2DQR-00cROj; Wed, 18
+ Oct 2023 02:28:53 +0200
+Subject: Re: [PATCH V2 2/2] tty: serial: uartps: Add rs485 support to uartps
+ driver
+To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>, git@amd.com,
+        michal.simek@amd.com, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     radhey.shyam.pandey@amd.com, srinivas.goud@amd.com,
+        shubhrajyoti.datta@amd.com, manion05gk@gmail.com
+References: <20231011145602.3619616-1-manikanta.guntupalli@amd.com>
+ <20231011145602.3619616-3-manikanta.guntupalli@amd.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <cb663c4d-b9b7-9c9b-1566-02c41dd01425@gmx.de>
+Date:   Wed, 18 Oct 2023 02:28:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v9 00/34] Introduce QC USB SND audio offloading support
+In-Reply-To: <20231011145602.3619616-3-manikanta.guntupalli@amd.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <9942bb93-31ea-4574-940f-98d87a2fc127@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <9942bb93-31ea-4574-940f-98d87a2fc127@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: taLlUA-GgwY8lg2uCsRZXu6Wnb8EXH4V
-X-Proofpoint-GUID: taLlUA-GgwY8lg2uCsRZXu6Wnb8EXH4V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-17_07,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1011 bulkscore=0 adultscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180000
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vRMakVEVvjcV/ODbZycIfaTSkWvcPNTKMk7G+ix13++DlVAzjwE
+ SzzwNHu9mG8eNfk0J2VzLjLctlcKIgHtMbh4F5b6yuAfqBsJXW9rcCCRdv7POyBJDt5KcaQ
+ yt8F7gtflLrOcRQzMy+mupPP+fOVqUt+e9J3jce5riH1sawFeJXiPKx4MLdoScXfkZuqSXg
+ 0PdUB+0u3RcEKhLb0RFMg==
+UI-OutboundReport: notjunk:1;M01:P0:7JpT6JrJF9I=;6heus26Ioh/HlByf86XkG/1CpGZ
+ ZD3qDACmO9A9LnS+ItBISgS05dE9nOrWY+XfJlE3kYUZXLSDpZ0Wj5QvjRsIh5RBCY+eqdJvB
+ qfi4AnFDsJ1wwn8E0KNEIxwzNwkIMsPLU14Qto726yXieGw+2mtUVOgqL1NvOJtC/3bf98wnB
+ ajGwnpdo70q3gTjFCQ5rWxVzX0kH7IibVMgpy6d9wIu4ShAcqYi04CmpAqHUIWz0E26X63b7u
+ lb7gCqf6+b/3vEHk8stFg0lK0IGTnfzVH4eimNetwdGBboIzUvfzt4ucxAGh+G4oOx2WcmeeK
+ Gd0CKfb2TZ+1s+5trWtg0T/pR+MvWMQd21QdUtW9M8E+rF6OSiOV/4DNu/ebIsoVxsOVDL5Zt
+ t8CDb1oXML/OU3CJezR3YFpvIkpGJnChBQEQvcw8CSaw5L8I1vxKaoUs+XxWzlQxySzdN8Kpk
+ 4Cf7vq4Q31sy/2o8B4J9IIw83+XaLsAEoU1H3DGAHMPnE0D7pe7DXrECqbJdXXqDQZmp7WNjh
+ fA1L7/veUmDdcO5rmpCZzJmLrt9qJtpdYLO3Dhrk48euMHjsLU7GdlJUzXwQzP8pv1wHps7hu
+ S4w+nXiAyHh6AXjc+PBK9NouopyW5Jk4xZ8+yoX8R7+9j/l9rQoVyA83lzhpbSs4D9HzY3f8B
+ zao5gaz62dYW7m0FXrMRVB093hNRvNmSdzZjtbS/naVDVlJAa5vkHa7om2MamqRDHDY5+ip8A
+ 9tUV18+rMpaq5Bl/G3mXig3s2xnNOQ9OIoVsZX335Xdck1/ZvQ9hJflw0EI8wsIXd0UPgJIc7
+ iMXMS561eG2/VAlbxGj6Wec9pZnRy69nuTIYvygtTkpGDB0JAlIxXltcq4xnSVVprKoM5MQDd
+ BX/rDPFGcB66Mvu1W+TWrZEoApyQwHnWAJkeY9VOU2TtChh+SNB3tff1XRcPuGYED1b+H58A6
+ abVqBw==
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+On 11.10.23 at 16:56, Manikanta Guntupalli wrote:
+> In RS485 half duplex configuration, DriverEnable and ReceiverEnable
+> shorted to each other, and at a time, any node acts as either a driver
+> or a receiver. Use either xlnx,phy-ctrl-gpios or RTS to control
+> RS485 phy as driver or a receiver.
 
-On 10/17/2023 1:58 PM, Pierre-Louis Bossart wrote:
-> It's been a very long time since I reviewed earlier versions, and I am
-> still lost on terminology and concepts. The explanations below should
-> really be added as a .rst file in Documentation for reference, not just
-> as a cover letter.
-> 
+This is a very specific hardware setup. RS485 is supposed to work with var=
+ious
+hardware configurations though. So the above assumptions must not be hardc=
+oded
+in the RS485 implementation (as it is in cdns_rs485_rx_setup() and cdns_rs=
+485_tx_setup()
+IIUC)
 
-Thanks for the review!
+>
+> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+> ---
+> Changes for V2:
+> Modify optional gpio name to xlnx,phy-ctrl-gpios.
+> Update commit description.
+> Add support for RTS, delay_rts_before_send and delay_rts_after_send in R=
+S485 mode.
+> ---
+>  drivers/tty/serial/xilinx_uartps.c | 116 ++++++++++++++++++++++++++++-
+>  1 file changed, 115 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xil=
+inx_uartps.c
+> index 8e521c69a959..abddcf1a8bf4 100644
+> --- a/drivers/tty/serial/xilinx_uartps.c
+> +++ b/drivers/tty/serial/xilinx_uartps.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/gpio.h>
+>
+>  #define CDNS_UART_TTY_NAME	"ttyPS"
+>  #define CDNS_UART_NAME		"xuartps"
+> @@ -193,6 +194,7 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+>   * @clk_rate_change_nb:	Notifier block for clock changes
+>   * @quirks:		Flags for RXBS support.
+>   * @cts_override:	Modem control state override
+> + * @gpiod:		Pointer to the gpio descriptor
+>   */
+>  struct cdns_uart {
+>  	struct uart_port	*port;
+> @@ -203,10 +205,19 @@ struct cdns_uart {
+>  	struct notifier_block	clk_rate_change_nb;
+>  	u32			quirks;
+>  	bool cts_override;
+> +	struct gpio_desc	*gpiod;
+>  };
+>  struct cdns_platform_data {
+>  	u32 quirks;
+>  };
+> +
+> +struct serial_rs485 cdns_rs485_supported =3D {
+> +	.flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
+> +		 SER_RS485_RTS_AFTER_SEND,
+> +	.delay_rts_before_send =3D 1,
+> +	.delay_rts_after_send =3D 1,
+> +};
+> +
+>  #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
+>  		clk_rate_change_nb)
+>
+> @@ -305,6 +316,42 @@ static void cdns_uart_handle_rx(void *dev_id, unsig=
+ned int isrstatus)
+>  	tty_flip_buffer_push(&port->state->port);
+>  }
+>
+> +/**
+> + * cdns_rs485_tx_setup - Tx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	u32 val;
+> +
+> +	if (cdns_uart->gpiod) {
 
-Sure, maybe I can write a more comprehensive documentation that saves 
-these details somewhere.  Will add a RST documentation for material 
-where necessary.
+If both RTS_ON_SEND and RTS_AFTER_SEND are supported than you have to set =
+the
+GPIO value here depending on which one is currently configured. Note that
+userspace may change RTS mode via TIOCSRS485 ioctl.
 
->> Several Qualcomm based chipsets can support USB audio offloading to a
->> dedicated audio DSP, which can take over issuing transfers to the USB
->> host controller.  The intention is to reduce the load on the main
->> processors in the SoC, and allow them to be placed into lower power modes.
->> There are several parts to this design:
->>    1. Adding ASoC binding layer
->>    2. Create a USB backend for Q6DSP
-> 
-> "backend" is a loaded terms for ASoC. Can you clarify which part of the
-> ascii art below is a 'backend'?
-> 
+> +		gpiod_set_value(cdns_uart->gpiod, 1);
+> +	} else {
+> +		val =3D readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +		val &=3D ~CDNS_UART_MODEMCR_RTS;
+> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
 
-This would be the Q6USB entity which is the DPCM backend for this 
-particular audio path.
+Same for the native RTS case.
 
->>    3. Introduce XHCI interrupter support
->>    4. Create vendor ops for the USB SND driver
->>
->>        USB                          |            ASoC
->> --------------------------------------------------------------------
->>                                     |  _________________________
->>                                     | |sm8250 platform card     |
->>                                     | |_________________________|
->>                                     |         |           |
->>                                     |      ___V____   ____V____
->>                                     |     |Q6USB   | |Q6AFE    |
->>                                     |     |"codec" | |"cpu"    |
->>                                     |     |________| |_________|
->>                                     |         ^  ^        ^
->>                                     |         |  |________|
->>                                     |      ___V____    |
->>                                     |     |SOC-USB |   |
->>     ________       ________               |        |   |
->>    |USB SND |<--->|QC offld|<------------>|________|   |
->>    |(card.c)|     |        |<----------                |
->>    |________|     |________|___     | |                |
->>        ^               ^       |    | |    ____________V_________
->>        |               |       |    | |   |APR/GLINK             |
->>     __ V_______________V_____  |    | |   |______________________|
->>    |USB SND (endpoint.c)     | |    | |              ^
->>    |_________________________| |    | |              |
->>                ^               |    | |   ___________V___________
->>                |               |    | |->|audio DSP              |
->>     ___________V_____________  |    |    |_______________________|
->>    |XHCI HCD                 |<-    |
->>    |_________________________|      |
->>
->>
->> Adding ASoC binding layer:
->> soc-usb: Intention is to treat a USB port similar to a headphone jack.
-> 
-> What is a 'port'? USB refers to "interfaces" and "endpoints". Is a
-> "port" a 1:1 mapping to "endpoint"?
-> 
-> Below I read "AFE port" so not sure what concepts refer to what.
-> 
+> +	}
+> +}
+> +
+> +/**
+> + * cdns_rs485_rx_setup - Rx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	u32 val;
+> +
+> +	if (cdns_uart->gpiod) {
+> +		gpiod_set_value(cdns_uart->gpiod, 0);
+> +	} else {
+> +		val =3D readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +		val |=3D CDNS_UART_MODEMCR_RTS;
+> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +	}
 
-"Port" in this explanation refers to the USB port.  So the audio device 
-connected.  You are right that a USB device can enumerate w/ multiple 
-interfaces (ie UAC + HID + ...) so the closest relation to "port" is 
-"interface."  It is not a 1:1 mapping w/ the number of endpoints exposed 
-by a device.
+See above.
 
-"AFE port" is just something that has been termed from the audio DSP 
-end, so that concept of port is not related to the port where USB 
-devices are connected to.  This is something that is defined within the 
-audio DSP.
 
->> The port is always present on the device, but cable/pin status can be
->> enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
->> communicate with USB SND.
->>
->> Create a USB backend for Q6DSP:
->> q6usb: Basic backend driver that will be responsible for maintaining the
-> 
-> The asciiart above suggests that q6usb exposes a codec DAI - but the
-> backend dailink is created by the platform card?
-> 
+> +}
+> +
+> +static unsigned int cdns_uart_tx_empty(struct uart_port *port);
+> +
+>  /**
+>   * cdns_uart_handle_tx - Handle the bytes to be Txed.
+>   * @dev_id: Id of the UART port
+> @@ -313,12 +360,20 @@ static void cdns_uart_handle_rx(void *dev_id, unsi=
+gned int isrstatus)
+>  static void cdns_uart_handle_tx(void *dev_id)
+>  {
+>  	struct uart_port *port =3D (struct uart_port *)dev_id;
+> +	struct cdns_uart *cdns_uart =3D port->private_data;
+>  	struct circ_buf *xmit =3D &port->state->xmit;
+> +	unsigned long time_out;
+>  	unsigned int numbytes;
+>
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		cdns_rs485_tx_setup(cdns_uart);
+> +		if (cdns_uart->port->rs485.delay_rts_before_send)
+> +			mdelay(cdns_uart->port->rs485.delay_rts_before_send);
+> +	}
+> +
+>  	if (uart_circ_empty(xmit)) {
+>  		writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IDR);
+> -		return;
+> +		goto rs485_rx_setup;
+>  	}
+>
+>  	numbytes =3D port->fifosize;
+> @@ -332,6 +387,23 @@ static void cdns_uart_handle_tx(void *dev_id)
+>
+>  	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+>  		uart_write_wakeup(port);
+> +
+> +rs485_rx_setup:
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		time_out =3D jiffies + usecs_to_jiffies(TX_TIMEOUT);
+> +		/* Wait for tx completion */
+> +		while ((cdns_uart_tx_empty(cdns_uart->port) !=3D TIOCSER_TEMT) &&
+> +		       time_before(jiffies, time_out))
+> +			cpu_relax();
+> +
+> +		/*
+> +		 * Default Rx should be setup, because RX signaling path
+> +		 * need to enable to receive data.
+> +		 */
+> +		cdns_rs485_rx_setup(cdns_uart);
+> +		if (cdns_uart->port->rs485.delay_rts_after_send)
+> +			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
+> +	}
+>  }
+>
+>  /**
+> @@ -829,6 +901,9 @@ static int cdns_uart_startup(struct uart_port *port)
+>  		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
+>  		cpu_relax();
+>
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
+> +		cdns_rs485_rx_setup(cdns_uart);
+> +
+>  	/*
+>  	 * Clear the RX disable bit and then set the RX enable bit to enable
+>  	 * the receiver.
+> @@ -1455,6 +1530,25 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
+>  /* Temporary variable for storing number of instances */
+>  static int instances;
+>
+> +/**
+> + * cdns_rs485_config - Called when an application calls TIOCSRS485 ioct=
+l.
+> + * @port: Pointer to the uart_port structure
+> + * @termios: Pointer to the ktermios structure
+> + * @rs485: Pointer to the serial_rs485 structure
+> + *
+> + * Return: 0
+> + */
+> +static int cdns_rs485_config(struct uart_port *port, struct ktermios *t=
+ermios,
+> +			     struct serial_rs485 *rs485)
+> +{
+> +	port->rs485 =3D *rs485;
+> +
 
-That is my understanding, at least.  The machine driver (sm8250.c) has 
-an API that parses our DT node for the DAI relationships 
-(qcom_snd_parse_of()), and seems to also create the dailinks.
+This assignment is not needed, the serial core will do that.
 
->> resources needed to initiate a playback stream using the Q6DSP.  Will
-> 
-> is capture supported? there's explicit references to "num_capture" in
-> following patches.
-> 
+> +	if (rs485->flags & SER_RS485_ENABLED)
+> +		dev_dbg(port->dev, "Setting UART to RS485\n");
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * cdns_uart_probe - Platform driver probe
+>   * @pdev: Pointer to the platform device structure
+> @@ -1597,9 +1691,28 @@ static int cdns_uart_probe(struct platform_device=
+ *pdev)
+>  	port->private_data =3D cdns_uart_data;
+>  	port->read_status_mask =3D CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRI=
+G |
+>  			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
+> +	port->rs485_config =3D cdns_rs485_config;
+> +	port->rs485_supported =3D cdns_rs485_supported;
+>  	cdns_uart_data->port =3D port;
+>  	platform_set_drvdata(pdev, port);
+>
+> +	rc =3D uart_get_rs485_mode(port);
+> +	if (rc)
+> +		goto err_out_clk_notifier;
+> +
+> +	cdns_uart_data->gpiod =3D devm_gpiod_get_optional(&pdev->dev, "xlnx,ph=
+y-ctrl",
+> +							GPIOD_OUT_LOW);
+> +	if (IS_ERR(cdns_uart_data->gpiod)) {
+> +		rc =3D PTR_ERR(cdns_uart_data->gpiod);
+> +		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
+> +		goto err_out_clk_notifier;
+> +	}
+> +
 
-We (QCOM) do not support capture at the moment, but the num_capture was 
-added to the soc-usb driver, which is platform independent.  This is in 
-case other vendors want to add this support, but have capture included 
-as well.
+If using the GPIO is optional, why not fall back to the use of the native =
+RTS?
 
->> be the entity that checks to make sure the connected USB audio device
->> supports the requested PCM format.  If it does not, the PCM open call will
->> fail, and userpsace ALSA can take action accordingly.
->>
->> Introduce XHCI interrupter support:
->> XHCI HCD supports multiple interrupters, which allows for events to be routed
->> to different event rings.  This is determined by "Interrupter Target" field
->> specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
->>
->> Events in the offloading case will be routed to an event ring that is assigned
->> to the audio DSP.
->>
->> Create vendor ops for the USB SND driver:
->> qc_audio_offload: This particular driver has several components associated
->> with it:
->> - QMI stream request handler
->> - XHCI interrupter and resource management
->> - audio DSP memory management
->>
->> When the audio DSP wants to enable a playback stream, the request is first
->> received by the ASoC platform sound card.  Depending on the selected route,
->> ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
->> will send an AFE port start command (with enabling the USB playback path), and
->> the audio DSP will handle the request accordingly.
-> 
-> what about capture, e.g. for a headset?
-> 
+> +	if (cdns_uart_data->gpiod) {
+> +		gpiod_direction_output(cdns_uart_data->gpiod, GPIOD_OUT_LOW);
+> +		gpiod_set_value(cdns_uart_data->gpiod, 0);
 
-Not supported yet at the moment.
+You already set both of these attributes when you requested the GPIO.
 
->> Part of the AFE USB port start handling will have an exchange of control
->> messages using the QMI protocol.  The qc_audio_offload driver will populate the
->> buffer information:
->> - Event ring base address
->> - EP transfer ring base address
->>
->> and pass it along to the audio DSP.  All endpoint management will now be handed
->> over to the DSP, and the main processor is not involved in transfers.
->>
->> Overall, implementing this feature will still expose separate sound card and PCM
->> devices for both the platorm card and USB audio device:
-> 
-> typo: platform
-> 
+> +	}
+> +
+>  	pm_runtime_use_autosuspend(&pdev->dev);
+>  	pm_runtime_set_autosuspend_delay(&pdev->dev, UART_AUTOSUSPEND_TIMEOUT)=
+;
+>  	pm_runtime_set_active(&pdev->dev);
+> @@ -1646,6 +1759,7 @@ static int cdns_uart_probe(struct platform_device =
+*pdev)
+>  	pm_runtime_disable(&pdev->dev);
+>  	pm_runtime_set_suspended(&pdev->dev);
+>  	pm_runtime_dont_use_autosuspend(&pdev->dev);
+> +err_out_clk_notifier:
+>  #ifdef CONFIG_COMMON_CLK
+>  	clk_notifier_unregister(cdns_uart_data->uartclk,
+>  			&cdns_uart_data->clk_rate_change_nb);
+>
 
-Thanks, will fix this.
-
->>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
->>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
-> 
-> How do you plan on exposing the USB PCM device?
-> 
-> The lines above are really cryptic, and with no USB reference in any of
-> the short/long card names it's not obvious that this card is different
-> from the no-offload case, is it?
-> 
-
-In the end, since the offload case is handled by the audio DSP, it would 
-have to go through the platform/machine sound card.  That is the sm8250 
-device above.
-
->>   1 [Audio          ]: USB-Audio - USB Audio
->>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-> 
-> likewise some sort of qualifier would be useful to show that card 0 and
-> card 1 can target the same USB endpoints.
-> 
-
-Do userspace entities look at this card string?  Assuming there is only 
-one platform card, there are situations where maybe multiple USB audio 
-devices are connected to the same USB root hub, so offloading can happen 
-on any one of them (not at the same time).
-
-Thanks
-Wesley Cheng
+Regards,
+Lino
