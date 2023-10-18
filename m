@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 306247CDC0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8397CDC1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbjJRMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S230355AbjJRMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjJRMks (ORCPT
+        with ESMTP id S230305AbjJRMnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:40:48 -0400
+        Wed, 18 Oct 2023 08:43:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3041AB
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:40:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD5D8C433CA;
-        Wed, 18 Oct 2023 12:40:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97DCA3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:43:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48DC8C433C7;
+        Wed, 18 Oct 2023 12:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697632840;
-        bh=ANCj0Q2OJ1qzkkQO+Sp4XFTRcw4ECnG/L7DzjhbHY0o=;
+        s=k20201202; t=1697633010;
+        bh=t6KGVhsRv9EQvvDPyF01PvPCYq3klVc6018BEpDuOZ8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PnhgzYZkM/eyLI9CA2rHMDopAQgkqfFT1BRiLbSCJoEyPGzAsGy7SKqrTfX89CTVB
-         pE1qCMR/gLq0c7TJ/JQbahHI+QBWuRfY8qbsL8/u6wI4yYrP9eWrQ8nQyizWPxEdR/
-         d9GOWpiXjJrCe0mV4YeAYuzCtUbxyb1nqjxSo5yBtCEysiG4Ucjwalxw8kxwO6wqJF
-         U3GIIf0c4YHHMmfKdrVigxcM7U+4QOKPuNK4wvPRh1rnDIU1OaKs2u2oE8tiN7y3tn
-         HtHsjD69uI1pKgYtuVdEdJPQ4SUMvEpJUQhWr4zBmwz+6NE/0qzxjOUl5u6QII5smk
-         hLXYiIrqfAPVw==
+        b=uw3rGon9JgKQ3cXXw/3RwixN7hIdCbSg0K6EueSmE9uhZznP2zFMBVhyJkUHapJ0o
+         sucwDynvUVy1xLKwRWv/c56ZwFSleoNYo0YczouQqbI26CROHSL4dIFjUkD7RZ5mh2
+         pX9wx8iRd6vvEe3izYgsdcab1bsV3/YLFM7ga9dEqCTcfIlvPck9FKjPeluSuUQLkg
+         WECjs+L97m65RpSv2tqFGJU7oRaPRRXy4rlDthYmc+/m6hYEwjkw482Q2dlkowkQf0
+         cGntFmpSt6qmVC9UiLnBABhrlveGzDNei6VT6SMPwG+8kk0+/gfgWArCSl6r7CABIR
+         lwV6vkA2RlVaA==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.95)
         (envelope-from <maz@kernel.org>)
-        id 1qt5qo-005LoC-6Y;
-        Wed, 18 Oct 2023 13:40:38 +0100
-Date:   Wed, 18 Oct 2023 13:40:37 +0100
-Message-ID: <86r0lsm7cq.wl-maz@kernel.org>
+        id 1qt5tX-005LrM-OB;
+        Wed, 18 Oct 2023 13:43:28 +0100
+Date:   Wed, 18 Oct 2023 13:43:27 +0100
+Message-ID: <86pm1cm780.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: Independently update HDFGRTR_EL2 and HDFGWTR_EL2
-In-Reply-To: <20231018030007.1968317-1-anshuman.khandual@arm.com>
-References: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com,
+        krisman@suse.de, broonie@kernel.org, james.morse@arm.com,
+        ionela.voinescu@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] arm64: cpufeature: Change 32-bit EL0 to display enabled cores
+In-Reply-To: <f3fc7881-c965-2b1d-8430-b8c18783cb7b@arm.com>
+References: <20231017052322.1211099-1-jeremy.linton@arm.com>
+        <20231017052322.1211099-4-jeremy.linton@arm.com>
+        <86ttqpm8lg.wl-maz@kernel.org>
+        <f3fc7881-c965-2b1d-8430-b8c18783cb7b@arm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
  (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Rcpt-To: jeremy.linton@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com, krisman@suse.de, broonie@kernel.org, james.morse@arm.com, ionela.voinescu@arm.com, linux-kernel@vger.kernel.org
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -63,72 +65,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 04:00:07 +0100,
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On Tue, 17 Oct 2023 20:15:43 +0100,
+Jeremy Linton <jeremy.linton@arm.com> wrote:
 > 
-> Currently PMSNEVFR_EL1 system register read, and write access EL2 traps are
-> disabled, via setting the same bit (i.e 62) in HDFGRTR_EL2, and HDFGWTR_EL2
-> respectively. Although very similar, bit fields are not exact same in these
-> two EL2 trap configure registers particularly when it comes to read-only or
-> write-only accesses such as ready-only 'HDFGRTR_EL2.nBRBIDR' which needs to
-> be set while enabling BRBE on NVHE platforms. Using the exact same bit mask
-> fields for both these trap register risk writing into their RESERVED areas,
-> which is undesirable.
-
-Sorry, I don't understand at all what you are describing. You seem to
-imply that the read and write effects of the FGT doesn't apply the
-same way. But my reading of the ARM ARM is that  behave completely
-symmetrically.
-
-Also, what is nBRBIDR doing here? It is still set to 0. What
-'RESERVED' state are you talking about?
-
+> Hi,
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v6.6-rc6.
+> On 10/17/23 13:01, Marc Zyngier wrote:
+> > On Tue, 17 Oct 2023 06:23:22 +0100,
+> > Jeremy Linton <jeremy.linton@arm.com> wrote:
+> >> 
+> >> Now that we have the ability to display the list of cores
+> >> with a feature when it is selectivly enabled, lets display the
+> >> cores enabled for 32-bit use at EL0.
+> >> 
+> >> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> >> ---
+> >>   arch/arm64/kernel/cpufeature.c | 15 +++++++++++++--
+> >>   1 file changed, 13 insertions(+), 2 deletions(-)
+> >> 
+> >> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> >> index b7b67bac0e60..512cbe446b41 100644
+> >> --- a/arch/arm64/kernel/cpufeature.c
+> >> +++ b/arch/arm64/kernel/cpufeature.c
+> >> @@ -1533,8 +1533,17 @@ static bool has_32bit_el0(const struct arm64_cpu_capabilities *entry, int scope)
+> >>   	if (!has_cpuid_feature(entry, scope))
+> >>   		return allow_mismatched_32bit_el0;
+> >>   -	if (scope == SCOPE_SYSTEM)
+> >> -		pr_info("detected: 32-bit EL0 Support\n");
+> >> +	if (scope == SCOPE_SYSTEM) {
+> >> +		struct arm64_cpu_capabilities *has_32bit;
+> >> +
+> >> +		has_32bit = (struct arm64_cpu_capabilities *)entry;
+> >> +
+> >> +		has_32bit->cpus = system_32bit_el0_cpumask();
+> > 
+> > This seems rather dodgy. 'entry' comes from a static const array which
+> > will, in all likelihood be mapped R/O pretty soon after the initial
+> > CPU bringup. Try offlining/onlining a CPU and you should see a
+> > firework similar to what I have below (I hacked the CnP property, but
+> > that's no different from what you are doing):
 > 
-> I guess it should be okay to use 'x2' as it is in the clobbered register
-> list for init_el2_state() function. But please do let me know otherwise.
-> 
->  arch/arm64/include/asm/el2_setup.h | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-> index 899b5c10f84c..c534afb1a30d 100644
-> --- a/arch/arm64/include/asm/el2_setup.h
-> +++ b/arch/arm64/include/asm/el2_setup.h
-> @@ -206,16 +206,19 @@
->  	cbz	x1, .Lskip_fgt_\@
->  
->  	mov	x0, xzr
-> +	mov	x2, xzr
->  	mrs	x1, id_aa64dfr0_el1
->  	ubfx	x1, x1, #ID_AA64DFR0_EL1_PMSVer_SHIFT, #4
->  	cmp	x1, #3
->  	b.lt	.Lset_debug_fgt_\@
-> +
->  	/* Disable PMSNEVFR_EL1 read and write traps */
-> -	orr	x0, x0, #(1 << 62)
-> +	orr	x0, x0, #HDFGRTR_EL2_nPMSNEVFR_EL1_MASK
-> +	orr	x2, x2, #HDFGWTR_EL2_nPMSNEVFR_EL1_MASK
->  
->  .Lset_debug_fgt_\@:
->  	msr_s	SYS_HDFGRTR_EL2, x0
-> -	msr_s	SYS_HDFGWTR_EL2, x0
-> +	msr_s	SYS_HDFGWTR_EL2, x2
+> Yes, dodgy is a good word. The other choices, maintain a mask just for
+> the print or dump the static key and always use the cpu_32bit_el0_mask
+> or some combination, weren't much better in the "ick" category. If
+> anyone sees a better way I'm open to suggestion, although simply
+> dropping this last patch is fine too.
 
-So what has changed here, aside from clobbering an extra register? The
-masks are the same, the initial values are the same... Is it in
-preparation for some other work?
-
-/me puzzled.
+An obvious choice would be to replace the 'cpus' cpumask with a
+function that evaluates a cpumask stored separately.
 
 	M.
 
