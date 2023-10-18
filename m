@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2627CD992
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45C37CD9AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjJRKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S1344486AbjJRKwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjJRKun (ORCPT
+        with ESMTP id S230526AbjJRKvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:50:43 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC74FF;
-        Wed, 18 Oct 2023 03:50:38 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id E2B6F8068;
-        Wed, 18 Oct 2023 18:50:31 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
- 2023 18:50:32 +0800
-Received: from [192.168.125.85] (183.27.98.194) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
- 2023 18:50:30 +0800
-Message-ID: <8dfdc8a5-339a-43e8-8d82-0597a6187336@starfivetech.com>
-Date:   Wed, 18 Oct 2023 18:50:30 +0800
+        Wed, 18 Oct 2023 06:51:32 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8809F101;
+        Wed, 18 Oct 2023 03:51:28 -0700 (PDT)
+Received: from weisslap.aisec.fraunhofer.de ([91.67.186.133]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1N8EdM-1rfLHD3yTI-014Buu; Wed, 18 Oct 2023 12:51:04 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Subject: [RFC PATCH v2 11/14] vfs: Wire up security hooks for lsm-based device guard in userns
+Date:   Wed, 18 Oct 2023 12:50:30 +0200
+Message-Id: <20231018105033.13669-12-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
+References: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 10/22] PCI: plda: Add PLDA default event IRQ handler
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231011110514.107528-1-minda.chen@starfivetech.com>
- <20231011110514.107528-11-minda.chen@starfivetech.com>
- <20231018-escapable-chef-16572cda2c12@spud>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20231018-escapable-chef-16572cda2c12@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.98.194]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:QKuNcHsyjzZeVFhJge7r9EgZaJUd1hSQUNm5KrdnKw9WPc7MzKn
+ oARcftJeCxBau0k8RbuFVQsbaKvoER/ApOI5iziIof3ikARFUAYuQ/e3CpGm2DvTbMneYjZ
+ 3mAX2olG5AbqRXD86FY2w3uJ7IS/uhVx/WgvP8bUqG6rm8A9UyrXr2PJ8PYZ5hkTbfiuPsc
+ R65uN8EIxjOlPB7Uel4gg==
+UI-OutboundReport: notjunk:1;M01:P0:UsmMmelH1QY=;Te31CKQmgxElaICDoMa60Hv9NZr
+ V7G+LrLIi9tu0IPzzq2E4kLeXGgyZnPSxd4kOwZQGmR+qzhpNrEKSesPDqB/jdYVUzYevhqkU
+ JasgoppivfgdH7GD47iRzHYMH+Ba3JEcNFoIcXGt313SnBMDRQMv32dBKGVzbx4kGSP9WhOFV
+ nwfvj9+HHXgmUCEBukfuf9VNUDl2rdO7i83v1xmJl4Cg9O3MI3sANH3Ff7LjbbjJQwtshK7S4
+ q7Nco8SVY99bn3hIKBxk5TiEMWUYRB53apBZ8cT7RwjaN5LYFnIWdnOrUkGUPETqffBVymt+F
+ xePopQ1rUUR+6t1U4kzi8E8LDVtjqQhSVTsf3lLxYMuRChNAnEMvLLLViyVCWQcOKiTrPj2NU
+ vhV85ztJkAkDnQwv5oI3uPKPeDnDjKMmnYQfE9y9ZX8wKKzG9TKcGbe7EAi3jWyMoaqXZRuzk
+ JbyzfpiiTzcnWM5QJugsTt+qPJoTEQvuPpVYy1JJT2/faj9V35B4fEJzZgQ1LkAld78JVwcD2
+ 4tH4DE7joCdgoNdPIQsHTNIjfpMHrPjGs5uk4R8l6PWmKxwhdF8GYifopLp8HnrUcznBxqRmH
+ jAbig9gTzAfKD/KLTCxrE2ORxhfyVvmaOw2oG028cicY/hXniY5taOu29c+l20ZiBHOkYr7QW
+ zZmjytwe7FKRBT7p8jD9C90WMRXXDBn+UtKTiUATgzZhlxK2mGxvGXy4Ox94qvEDhpXQbaWam
+ Ua3y7egjlnbF0P/3ji4700ALzjAYV5ZjlY++leIpVqA6Z5EZ18DL2XQCTrwjygDe9rcqNhCxm
+ a/KNT4V6WtGUrp86t4Q/tXpHjkl/1iWtd/0bJUE8V/nGKq/Hf+3nm/4n0FitxEAER+klCFsL2
+ DZRdVItQ32YjjNA==
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Wire up security_inode_mknod_capns() in fs/namei.c. If implemented
+and access is granted by an lsm, check ns_capable() instead of the
+global CAP_MKNOD.
 
+Wire up security_sb_alloc_userns() in fs/super.c. If implemented
+and access is granted by an lsm, the created super block will allow
+access to device nodes also if it was created in a non-inital userns.
 
-On 2023/10/18 18:44, Conor Dooley wrote:
-> On Wed, Oct 11, 2023 at 07:05:02PM +0800, Minda Chen wrote:
->> Add PLDA default event IRQ handler.
->> This is first patch of refactoring IRQ handling codes.
->> The handler function will be referenced by later patch.
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> ---
->>  drivers/pci/controller/plda/pcie-plda-host.c | 5 +++++
->>  drivers/pci/controller/plda/pcie-plda.h      | 1 +
-> 
-> Dunno what hte PCI maintainers take is on this kind of thing, but this
-> patch adds dead code, as there is no user for it until the follow-on
-> patch you mention. Did someone ask you to split this out?
-> 
-> Cheers,
-> Conor.
-> 
-No one. Previous this patch contain other codes. I modify this incorrect.  I will squash this with other patch. Thanks.
->>  2 files changed, 6 insertions(+)
->> 
->> diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
->> index 19131181897f..21ca6b460f5e 100644
->> --- a/drivers/pci/controller/plda/pcie-plda-host.c
->> +++ b/drivers/pci/controller/plda/pcie-plda-host.c
->> @@ -18,6 +18,11 @@
->>  
->>  #include "pcie-plda.h"
->>  
->> +irqreturn_t plda_event_handler(int irq, void *dev_id)
->> +{
->> +	return IRQ_HANDLED;
->> +}
->> +
->>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
->>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
->>  			    size_t size)
->> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
->> index 3deefd35fa5a..7ff7ff44c980 100644
->> --- a/drivers/pci/controller/plda/pcie-plda.h
->> +++ b/drivers/pci/controller/plda/pcie-plda.h
->> @@ -120,6 +120,7 @@ struct plda_pcie_rp {
->>  	void __iomem *bridge_addr;
->>  };
->>  
->> +irqreturn_t plda_event_handler(int irq, void *dev_id);
->>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
->>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
->>  			    size_t size);
->> -- 
->> 2.17.1
->> 
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+---
+ fs/namei.c | 16 +++++++++++++++-
+ fs/super.c |  6 +++++-
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index f601fcbdc4d2..1f68d160e2c0 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3949,6 +3949,20 @@ inline struct dentry *user_path_create(int dfd, const char __user *pathname,
+ }
+ EXPORT_SYMBOL(user_path_create);
+ 
++static bool mknod_capable(struct inode *dir, struct dentry *dentry,
++			  umode_t mode, dev_t dev)
++{
++	/*
++	 * In case of a security hook implementation check mknod in user
++	 * namespace. Otherwise just check global capability.
++	 */
++	int error = security_inode_mknod_nscap(dir, dentry, mode, dev);
++	if (!error)
++		return ns_capable(current_user_ns(), CAP_MKNOD);
++	else
++		return capable(CAP_MKNOD);
++}
++
+ /**
+  * vfs_mknod - create device node or file
+  * @idmap:	idmap of the mount the inode was found from
+@@ -3975,7 +3989,7 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+ 		return error;
+ 
+ 	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+-	    !capable(CAP_MKNOD))
++	    !mknod_capable(dir, dentry, mode, dev))
+ 		return -EPERM;
+ 
+ 	if (!dir->i_op->mknod)
+diff --git a/fs/super.c b/fs/super.c
+index 2d762ce67f6e..bb01db6d9986 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -362,7 +362,11 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	}
+ 	s->s_bdi = &noop_backing_dev_info;
+ 	s->s_flags = flags;
+-	if (s->s_user_ns != &init_user_ns)
++	/*
++	 * We still have to think about this here. Several concerns exist
++	 * about the security model, especially about malicious fuse.
++	 */
++	if (s->s_user_ns != &init_user_ns && security_sb_alloc_userns(s))
+ 		s->s_iflags |= SB_I_NODEV;
+ 	INIT_HLIST_NODE(&s->s_instances);
+ 	INIT_HLIST_BL_HEAD(&s->s_roots);
+-- 
+2.30.2
+
