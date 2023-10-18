@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C1A7CD6FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8257CD70D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjJRIvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S229563AbjJRIxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJRIvp (ORCPT
+        with ESMTP id S229453AbjJRIxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:51:45 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CEDF7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:51:43 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507975d34e8so7157187e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:51:43 -0700 (PDT)
+        Wed, 18 Oct 2023 04:53:06 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2737F9D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:53:05 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4065f29e933so67352195e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697619101; x=1698223901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1697619183; x=1698223983; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NXI4HfIXwanv99cOv9efEkDM5+V1kS9Jv8riF+5hsvI=;
-        b=lQ4rPVReMIqjyasQVHeAS0r1YNvIRsFK0WavR4MtJZFV7lcDzwg35etOgByaU4vtHa
-         MJhVqxtYDvecztwT/TCVBNDPD7R11BZeQPVDiZH5z07CANUG+/ifXQZ018NzGOWgGV7a
-         1YdD2Msly1HP+gtOw79+sr8+laXd9N3u+geWwmh5M3jVtIlV0aKTAkZMhIEcSMFKsBb8
-         cVpn3jLSSILi7DaRRYIkhwCeTkUUnXeu6DLQpg6J0nBvtBeiAFsL6/0tzBIL+E6DVNY2
-         TsX9BAg0opvA0EjFWV3Xj7vgrjXM2CuRJqUZ7CLmnYJve/ZSx8mzQPkIxrqisVyRcyZk
-         j/Kg==
+        bh=geUEpwvi3+e4pwlZJkv1VdkNb71jcT4N9IHDjoo0hiw=;
+        b=LpTtpeXfJ4aTxvCgA6cigOFUsrZ3dtvHPA/wKi9D0daNfVJ01m1veIuAFD72oRwifM
+         4jBtV2jw9pi2nOBOVDuB91c+k54Mukx8VB2VyVJ4EMfy0pgem2cCbovQBJm9M2dhkifQ
+         sBTOcbCZkbfIszxS2KlG4q9B5DiXHl2qfCHbY0T4HfCAPliF2mWs7Xx60bxy1H27u8aU
+         jUU76WzqwoMX0D6m05upZOk6o2M6jIDuR1GO5fc9uWfvugpr3GDnclragkGzjIdDL+0s
+         bEucDYBvDStWMgB7pJpUjQPv4ItbMSBlFJoZU/uu9Jjq4/D0WI9cekvvL4vCgHN1fEzk
+         GLJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697619101; x=1698223901;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697619183; x=1698223983;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NXI4HfIXwanv99cOv9efEkDM5+V1kS9Jv8riF+5hsvI=;
-        b=k4fdPFdxRv7dIUODrAr6uYb0UhssLLRqgOlgdyrTBMW5eWmUoJhMSQr0EcVhoiYuVD
-         rbg2ZxUeQZubDbjnf69+rhwdag3SD7OeBjmPlC2q5GZ8tqdJioyGeaOiyDk7aejlz9nd
-         pWdEG1DMNtbwvaQvBWLcjMm6HLj+C+BjxSEpzGYDP9Gh9uR4nW6zEXhUF/+pq/dgpdxg
-         wUMrEjbhLkOrf/nGGZGELOYEVSIjmrM0q+Ec10SXTEXBBCQ/blqGgBwYK6WVMWpgaMcQ
-         Y6+d345XWWjWyeIZOJtdkeRFEcOLf2B6jPoiY/tiSLhycnofdWT9sxqyd93wqaucsHnf
-         Fr3A==
-X-Gm-Message-State: AOJu0YyG7eCc0Wf571Q/w7itUkhzKW5F0Pw38dkmViasLF3gOSYfIJ7W
-        4dgZ1/yAtHVTzoFFb45eI8P0Jw==
-X-Google-Smtp-Source: AGHT+IHKWyECjBrhZqfAsv9Y/nGjP/98hBlZ2VRgG7KqWNz4HLJDcK61sC8d/IqMDm6ZtNVxr43osw==
-X-Received: by 2002:a19:f70f:0:b0:4f8:75cf:fdd7 with SMTP id z15-20020a19f70f000000b004f875cffdd7mr3351906lfe.22.1697619101558;
-        Wed, 18 Oct 2023 01:51:41 -0700 (PDT)
-Received: from [172.30.204.55] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id x20-20020a056512079400b00507a3b8b007sm615700lfr.110.2023.10.18.01.51.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 01:51:41 -0700 (PDT)
-Message-ID: <9dd20d48-b517-446a-b740-4f409c7bcea2@linaro.org>
-Date:   Wed, 18 Oct 2023 10:51:39 +0200
+        bh=geUEpwvi3+e4pwlZJkv1VdkNb71jcT4N9IHDjoo0hiw=;
+        b=W1fu/+hl87UuiJ9vqIcuo0dXW+VjjxA9cJPCdr0ASTV0JFGgiZMO8RoHHEwicm78yU
+         +21hWsCI8Occ+h3chEV3fQQ/G3G9UI5ZRLX0YdrAzhxj+VH3Y9nDo68+4HD+wM5CpO0e
+         gMjc8Kge5mYDyNgxWqFI+JLtHBv8FUJ8JZL03taqhugblmAyJBnp1kgFkpzW9KGA1K3v
+         J7LKU+rRfpMD/LN6w/xKGaGyI8hZU10hyVYcXXgscrUBCkYLzEqKpoKwfK07a+orpOqM
+         /PRj8PjGqOCZwKMQz2ECM/rVpkis42pVCSDs23KUb3NUAEJI8WnKa/XzztLciA4+DqaZ
+         ANfw==
+X-Gm-Message-State: AOJu0YztXnjJt8VbyBbiof0fXZDuZhalyF++wTYY0B2xh2OKJrK225e1
+        gHvow8PUYl3VVpVu6QRGUCk=
+X-Google-Smtp-Source: AGHT+IFe7N0r16SpcIn2ppSF9YwaBfMXR5p9HHAUkW/Z5SFuEG/gq5GT5k5JsnJNXPESx8hwfICsIA==
+X-Received: by 2002:a5d:540d:0:b0:32d:9d99:d0a5 with SMTP id g13-20020a5d540d000000b0032d9d99d0a5mr3493755wrv.5.1697619183280;
+        Wed, 18 Oct 2023 01:53:03 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.71.30])
+        by smtp.gmail.com with ESMTPSA id r12-20020adfce8c000000b0032d9caeab0fsm1612082wrn.77.2023.10.18.01.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 01:53:02 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 11:53:00 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     gustavo@embeddedor.com, outreachy@lists.linux.dev
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Calvince Otieno <calvncce@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH V2] staging: vme_user: replace strcpy with strscpy
+Message-ID: <ZS+c7NtfEw5ne2Oj@lab-ubuntu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: lpass-lpi: split slew rate set to
- separate function
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
- <20231013145935.220945-2-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231013145935.220945-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Checkpatch suggests using strscpy() instead of strcpy().
 
+The advantages of strscpy() are that it always adds a NUL terminator
+and prevents read overflows if the source string is not properly
+terminated. One potential disadvantage is that it doesn't zero pad the
+string like strcpy() does.
 
-On 10/13/23 16:59, Krzysztof Kozlowski wrote:
-> Setting slew rate for each pin will grow with upcoming Qualcomm SoCs,
-> so split the code responsible for this into separate function for easier
-> readability and maintenance.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Changes in v2:
-> 1. None
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+In this specific context, both strscpy and strcpy performs the same
+operation without any functional difference.
 
-Konrad
+The reason for this equivalence is that the driver_name string "vme_fake"
+is shorter than the size of the fake_bridge->name array which is defined
+as 16 characters (struct vme_bridge {char name[VMENAMSIZ];...}). Thus,
+there is no risk of buffer overflow in either case. VMENAMSIZ variable
+holds a constant value of 16 (#define VMENAMSIZ 16)
+
+The null-terminated "vme_fake" string
+(static const char driver_name[] = "vme_fake";) can be safely copied into
+fake_bridge->name using either strscpy or strcpy.
+
+While using strscpy() does not address any bugs, it is considered a better
+practice and aligns with checkpatch recommendations.
+
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+---
+Changes in V2:
+ - Make the commit message more clearer.
+ - Remove the incident extra line change.
+
+ drivers/staging/vme_user/vme_fake.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 0e02c194298d..8ab5b43c70a6 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -1091,7 +1091,7 @@ static int __init fake_init(void)
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+ 		     (unsigned long)fake_bridge);
+ 
+-	strcpy(fake_bridge->name, driver_name);
++	strscpy(fake_bridge->name, driver_name, sizeof(fake_bridge->name))
+ 
+ 	/* Add master windows to list */
+ 	INIT_LIST_HEAD(&fake_bridge->master_resources);
+-- 
+2.34.1
+
