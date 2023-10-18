@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132FB7CE46A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E377CE46E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjJRR2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S230296AbjJRR2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjJRR2L (ORCPT
+        with ESMTP id S229462AbjJRR2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:28:11 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EF54487
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:08 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IHRvQH127682;
-        Wed, 18 Oct 2023 12:27:57 -0500
+        Wed, 18 Oct 2023 13:28:19 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E625E4495
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:28:15 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IHS5H8029782;
+        Wed, 18 Oct 2023 12:28:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697650077;
-        bh=3dhza5KgSO+NkFmW/yrL4gVhAg2B6xYmrtVFbos6POI=;
-        h=Date:From:Subject:CC:To;
-        b=IqzSj/GKsiKS8j4pu2weziYHiLyc0jYRcz+4BmgmeMc6eYEJyaqt2kmdTCsy9TRXV
-         9sv1KTXKhOSjGnVO8Dc6PegkxjVxOeBmA9eaecfxMcPuvk86YB8oV26zn5ardLpEbE
-         nafWhMM38qVhPFPLxnGF5gkHbcwH72keMY8otq7Y=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IHRvtV031321
+        s=ti-com-17Q1; t=1697650085;
+        bh=behoVI6ahWHU3TqWjsSGM8oZJ95ZNz9rkWsKbXO5RWs=;
+        h=Date:From:Subject:To:CC;
+        b=AfI8ULhMchemHdd9nK7k7pZer1GodH6euHHx8xPjCXw2/GaqcjJnNrchuhqhcPAi0
+         BG8E3kJTc0Chl89+EazXA6EV9BIkXW5RH16iFq3HxYPY+NLdELTvDERls1dU4Y+huN
+         kLF9hHKDqeJuw0uk5W1+rhcCqiXYYq3b6BVKAJjY=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IHS5r0038166
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Oct 2023 12:27:57 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 18 Oct 2023 12:28:05 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
- Oct 2023 12:27:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 12:28:05 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 18 Oct 2023 12:27:57 -0500
+ Frontend Transport; Wed, 18 Oct 2023 12:28:05 -0500
 Received: from [172.24.227.94] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IHRr3u021940;
-        Wed, 18 Oct 2023 12:27:54 -0500
-Message-ID: <f05c98b6-6274-4544-8fcd-0332c39244c9@ti.com>
-Date:   Wed, 18 Oct 2023 22:57:52 +0530
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IHRr3v021940;
+        Wed, 18 Oct 2023 12:28:00 -0500
+Message-ID: <9c820e96-21e4-451e-b0ab-a6400d68bdf7@ti.com>
+Date:   Wed, 18 Oct 2023 22:58:00 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
 From:   Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL 1/2] arm64: dts: ti: K3 updates for v6.7
+Subject: [GIT PULL 2/2] arm64: defconfig: TI K3 updates for v6.7
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm-soc <arm@kernel.org>, SoC <soc@kernel.org>
 CC:     Tero Kristo <kristo@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC <soc@kernel.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
         protocol="application/pgp-signature";
-        boundary="------------p2S395UI5QVp6MNmTQdA0Z4v"
+        boundary="------------AeVk06D7Z64Px7zGqmo1IsqZ"
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------p2S395UI5QVp6MNmTQdA0Z4v
-Content-Type: multipart/mixed; boundary="------------0jRDMl066jbGz4zx94yVHeam";
+--------------AeVk06D7Z64Px7zGqmo1IsqZ
+Content-Type: multipart/mixed; boundary="------------zVfXdN2sVthLRcqNGDgj9BVs";
  protected-headers="v1"
 From: Vignesh Raghavendra <vigneshr@ti.com>
 To: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
@@ -76,13 +76,13 @@ To: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
 Cc: Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Nishanth Menon <nm@ti.com>
-Message-ID: <f05c98b6-6274-4544-8fcd-0332c39244c9@ti.com>
-Subject: [GIT PULL 1/2] arm64: dts: ti: K3 updates for v6.7
+Message-ID: <9c820e96-21e4-451e-b0ab-a6400d68bdf7@ti.com>
+Subject: [GIT PULL 2/2] arm64: defconfig: TI K3 updates for v6.7
 
---------------0jRDMl066jbGz4zx94yVHeam
-Content-Type: multipart/mixed; boundary="------------2KWq0NCDNV4y01IiV7Xp0MYN"
+--------------zVfXdN2sVthLRcqNGDgj9BVs
+Content-Type: multipart/mixed; boundary="------------0ikweu55jeDM3GRjx2XN6lZD"
 
---------------2KWq0NCDNV4y01IiV7Xp0MYN
+--------------0ikweu55jeDM3GRjx2XN6lZD
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
@@ -97,186 +97,30 @@ The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d=
 are available in the Git repository at:
 
   https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git tags/ti-k3=
--dt-for-v6.7
+-config-for-v6.7
 
-for you to fetch changes up to 56bc311585206a8955de793301d4f84fb4ad2ee6:
+for you to fetch changes up to f9010eb938beb9a58c640b50d2fe65e4187c1fde:
 
-  arm64: dts: ti: k3-j712s2-mcu: Add the mcu domain watchdog instances (2=
-023-10-12 18:53:36 +0530)
-
-----------------------------------------------------------------
-TI K3 device tree updates for v6.7
-
-New features across K3 SoCs:
-- Watchdog and ESM nodes for J7xx
-- DMA node for Camera interface (CSI) for J7xx
-- C7x DSP and R5F rproc support for J7xx/AM68/AM69
-
-AM68:
-- USB and PCIe support
-
-AM64:
-- IO expander support
-- GPIO LED, I2C device supplies for am64-tqma64xxl-mbax4xxl
-- RTC IRQ pin update for am64 phycore
-
-AM62A:
-- TPS6593 PMIC and mcasp audio support
-
-Misc:
-- bootph-* tag addition for AM64 and AM62
-- iw416 based bluetooth support on verdin-am62
-- IO Expander addition for AM64 and AM65 boards
-
-Fixes:
-- Convert DMSS/NAVSS to simple-bus compatible to squelch dtbs_check
-  warnings
-- Minor indentation fixes
-- Specify base dtb for k3-j721s2-evm-gesi.dtbo and k3-am62x-sk-hdmi-audio=
-=2Edtbo
-- Misc fixups for AM62 Beagleplay, verdin-am62 boards
+  arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A (2023-10-12 12:20:30=
+ +0530)
 
 ----------------------------------------------------------------
-Apurva Nandan (9):
-      arm64: dts: ti: k3-j721s2-mcu: Add MCU R5F cluster nodes
-      arm64: dts: ti: k3-j721s2-main: Add MAIN R5F remote processsor node=
-s
-      arm64: dts: ti: k3-j721s2-main: Add C7x remote processsor nodes
-      arm64: dts: ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for=
- R5F
-      arm64: dts: ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for=
- C71x DSPs
-      arm64: dts: ti: k3-am68-sk-som: Add DDR carveout memory nodes for R=
-5F
-      arm64: dts: ti: k3-am68-sk-som: Add DDR carveout memory nodes for C=
-71x DSP
-      arm64: dts: ti: k3-am69-sk: Add DDR carveout memory nodes for R5F
-      arm64: dts: ti: k3-am69-sk: Add DDR carveout memory nodes for C71x =
-DSP
+TI K3 defconfig updates
 
-Aradhya Bhatia (1):
-      arm64: dts: ti: Fix HDMI Audio overlay in Makefile
+Enable TPS6593 PMIC driver as module to support PMIC on AM62A SK board
 
-Francesco Dolcini (1):
-      arm64: dts: ti: verdin-am62: disable MIPI DSI bridge
+----------------------------------------------------------------
+Jai Luthra (1):
+      arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
 
-Jai Luthra (4):
-      arm64: dts: ti: k3-am62a-main: Add nodes for McASP
-      arm64: dts: ti: k3-am62a7-sk: Split vcc_3v3 regulators
-      arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
-      arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
-
-Julien Panis (1):
-      arm64: dts: ti: k3-am62a7-sk: Add support for TPS6593 PMIC
-
-Keerthy (7):
-      arm64: dts: ti: k3-j721s2: Add ESM instances
-      arm64: dts: ti: k3-j784s4: Add ESM instances
-      arm64: dts: ti: k3-j7200: Add MCU domain ESM instance
-      arm64: dts: ti: k3-j784s4-main: Add the main domain watchdog instan=
-ces
-      arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain watchdog instance=
-s
-      arm64: dts: ti: k3-j721s2-main: Add the main domain watchdog instan=
-ces
-      arm64: dts: ti: k3-j712s2-mcu: Add the mcu domain watchdog instance=
-s
-
-Marcel Ziswiler (1):
-      arm64: dts: ti: verdin-am62: add iw416 based bluetooth
-
-Matthias Schiffer (4):
-      arm64: dts: ti: k3-am64-tqma64xxl: add supply regulator for I2C dev=
-ices
-      arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add muxing for GPIOs on=
- pin headers
-      arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add chassis-type
-      arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: update gpio-led configu=
-ration
-
-Neha Malcom Francis (1):
-      arm64: dts: ti: k3-j721e-mcu-wakeup: Add MCU domain ESM instance
-
-Nishanth Menon (6):
-      arm64: dts: ti: k3-am625: Add boot phase tags marking
-      arm64: dts: ti: k3-am625-beagleplay: Add boot phase tags marking
-      arm64: dts: ti: k3-am625-sk: Add boot phase tags marking
-      arm64: dts: ti: k3-am64: Add phase tags marking
-      arm64: dts: ti: k3-am642-evm: Add boot phase tags marking
-      arm64: dts: ti: k3-am642-sk: Add boot phase tags marking
-
-Ravi Gunasekaran (1):
-      arm64: dts: ti: k3-am654-base-board: Add I2C I/O expander
-
-Roger Quadros (1):
-      arm64: dts: ti: k3-am64: Add GPIO expander on I2C0
-
-Siddharth Vadapalli (1):
-      arm64: dts: ti: k3-j721s2-evm-gesi: Specify base dtb for overlay fi=
-le
-
-Sinthu Raja (3):
-      arm64: dts: ti: Add USB Type C swap defines for J721S2 SoC
-      arm64: dts: ti: k3-am68-sk: Add DT node for PCIe
-      arm64: dts: ti: k3-am68-sk: Add DT node for USB
-
-Vaishnav Achath (2):
-      arm64: dts: ti: k3-j721s2-main: Add BCDMA instance for CSI2RX
-      arm64: dts: ti: k3-j784s4-main: Add BCDMA instance for CSI2RX
-
-Vignesh Raghavendra (2):
-      arm64: dts: ti: k3-*: Convert DMSS to simple-bus
-      arm64: dts: ti: k3-*: Convert NAVSS to simple-bus
-
-Wadim Egorov (3):
-      arm64: dts: ti: k3-am64: Fix indentation in watchdog nodes
-      arm64: dts: ti: phycore-am64: Add RTC interrupt pin
-      arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
-
- arch/arm64/boot/dts/ti/Makefile                        |   7 +-
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi               |  12 +-
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi                |   2 +
- arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi        |   6 +
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi             |   1 +
- arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi             |   2 +
- arch/arm64/boot/dts/ti/k3-am62.dtsi                    |   3 +
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts         |  28 +-
- arch/arm64/boot/dts/ti/k3-am625-sk.dts                 |  27 +
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi              |  60 ++
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts                | 189 +++++-
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi              |   2 +-
- arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi         |  16 +
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi               |  37 +-
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi                |   2 +
- arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi        |  11 +
- arch/arm64/boot/dts/ti/k3-am64.dtsi                    |   2 +
- arch/arm64/boot/dts/ti/k3-am642-evm.dts                |  37 ++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts                 |  29 +
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts |  84 ++-
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi         |  12 +
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi               |   2 +-
- arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi                |   2 +-
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts         |   7 +
- arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts       |  56 ++
- arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi             | 208 +++++++
- arch/arm64/boot/dts/ti/k3-am69-sk.dts                  | 304 ++++++++++
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi              |   2 +-
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi        |   9 +-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi              |   2 +-
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi        |   9 +-
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi             | 232 ++++++-
- arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi       |  82 ++-
- arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi           | 208 +++++++
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi             | 223 +++++++
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi       |  40 ++
- arch/arm64/boot/dts/ti/k3-serdes.h                     |   2 +-
- 37 files changed, 1925 insertions(+), 32 deletions(-)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
 
 --=20
 Regards
 Vignesh
---------------2KWq0NCDNV4y01IiV7Xp0MYN
+--------------0ikweu55jeDM3GRjx2XN6lZD
 Content-Type: application/pgp-keys; name="OpenPGP_0xF903332F551A78E9.asc"
 Content-Disposition: attachment; filename="OpenPGP_0xF903332F551A78E9.asc"
 Content-Description: OpenPGP public key
@@ -447,24 +291,24 @@ K5paG+wIzgINF3s89w=3D=3D
 =3D6Uiz
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------2KWq0NCDNV4y01IiV7Xp0MYN--
+--------------0ikweu55jeDM3GRjx2XN6lZD--
 
---------------0jRDMl066jbGz4zx94yVHeam--
+--------------zVfXdN2sVthLRcqNGDgj9BVs--
 
---------------p2S395UI5QVp6MNmTQdA0Z4v
+--------------AeVk06D7Z64Px7zGqmo1IsqZ
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEyRC2zAhGcGjrhiNExEYeRXyRFuMFAmUwFZkFAwAAAAAACgkQxEYeRXyRFuMw
-+wf+JzFmWxmvOYxcyZ4E1xe19TIPwDLGd/V/5TEpImAz6dZzfSMQTBI3JYyfxmXn1q7lmJTCXMz9
-f/tBRh6y24VPRpgVpX4CGaCVQ2zL1vQ2cFnd5DlokRGLJmgU28tax1HC6O+JGcj2DZECEbsq6ouG
-RMblYuDehYFiS6xBN3LcuJykCbA3pww6Lu1Cp5W28uGPslcR+y/ptCEPrWQTUxkS3bNzyvk5FMB6
-eZcpiu+OHvav3EzpnGQWuN31XGigdSpnSL9FcXJ0GyInwAYA2d+HGjY1na4uO7iZFKdrbzc5mQHm
-ZMkRe7Gj1KSqewNbHXMKdlJm9xFpK2LfGLSKPJdN7w==
-=NQFV
+wsB5BAABCAAjFiEEyRC2zAhGcGjrhiNExEYeRXyRFuMFAmUwFaAFAwAAAAAACgkQxEYeRXyRFuN/
+CggAoh+HinQ/Ypvh8nUnztKJEN6Vhv4/bOGM3xX+120NhXXiCEtC9yFHhbfYJgEormfSP0UcKmPd
+wBpCX51hn2suGbUcJyRfWDUKTR8mS7SdMe4KF2pCk63Bui4XXaZbkYblVj5C/BzxY2QLGw9q/wR8
+AO18J6Wm0Y4H+Mz5vqW8a5ov4AP0On2Q1MIchHOUD9YzYP6VRPZ3R3oIOP07VcVk1X7LQEXNRbWq
+3eb9xgWKvTEMBc14SgqHBMlnJiY5hmXNgce59Ry/RGcs5psNMqR7UwwHI/GbF/H+MDZZaCF8t7kg
+swt5OValy5a5CxpMw/SVyyXbAS4SAbSJbOfkZf4eNg==
+=Gf1e
 -----END PGP SIGNATURE-----
 
---------------p2S395UI5QVp6MNmTQdA0Z4v--
+--------------AeVk06D7Z64Px7zGqmo1IsqZ--
