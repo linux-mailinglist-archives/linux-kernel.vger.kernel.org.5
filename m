@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0A87CE126
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B0A7CE12A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbjJRP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S231733AbjJRP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjJRP0V (ORCPT
+        with ESMTP id S230444AbjJRP2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:26:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E8EFA;
-        Wed, 18 Oct 2023 08:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697642780; x=1729178780;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=F6u+KBYcn7BYk4Z2evWe0eujHOmh6t8u43JwYuaW7sM=;
-  b=TA0KoY+/vNeLGlzTqI+ZFfs7fuo5Yyppr7jVf7aG72+PEbgHK58gP1BD
-   2C3AsAmW0Sd/uW8ZVJ+9iJiGdD6jtn1GkcXZnsaP6/KN2aZJOXK6N8zIn
-   FNU6pNdBdnE8whVJrj0P5JOZTD3gD2xF63hw9nPOo00pz2ZWbOBUPSZKy
-   u6rJ2ltQ61IB/AK/Ukr8RjsaKeH45KWsy060SubbJzt5Vh9UfyDqalOX5
-   fTExhlJ1wZwg/Fo9jK92ADep4VNq+1yQLPsmJI8QH+iJJSmQwsJUdY8Wj
-   XxDsBSCM8PUFJ9qas+rMmtESlyF9F1chuxl4ATsGA1zaHR2YJiW9Itq/t
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366293753"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="366293753"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 08:26:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756625348"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756625348"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Oct 2023 08:26:16 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>,
-        "Dave Hansen" <dave.hansen@intel.com>
-Cc:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
- <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
- <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
- <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
- <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
-Date:   Wed, 18 Oct 2023 10:26:15 -0500
+        Wed, 18 Oct 2023 11:28:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6224C116
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697642855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LO3U/3O7orcDX1UKblPetHP+0g37M+8wNFC9UUNpGbg=;
+        b=GhGhvTDa6Qk9bqLYG2EUWr1HAXBq4VmXcQJS9J/zdI1IUzkBLhW8PgcO64c/JdQ7cnIUYa
+        5JZhBSNdEELEFsxkawIXVtuCa/VNUhOFpYxkthyEuhg2FH087SlycYCDmAhF5GLFQrJ0tw
+        rKEbVpxzKCgbCQNVrLHNLu9LK7xg+kA=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-346-WsQtEvmRPiWajntt-xIjVQ-1; Wed, 18 Oct 2023 11:27:23 -0400
+X-MC-Unique: WsQtEvmRPiWajntt-xIjVQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d35dda745so46251036d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:27:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697642843; x=1698247643;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LO3U/3O7orcDX1UKblPetHP+0g37M+8wNFC9UUNpGbg=;
+        b=dvWyxXGNd3ftK/QjRhF7+HyqEhz+YM/sNnPPVHZh2H767KunajKMF1Jyid2qt7+s1l
+         PSD2HRftS1tvgAM30hAZBUY76eRR3ql8QqSG8vSbWi9ojihW9GpXqQzLABO1I2GUXNzg
+         EXQPNYCCm/0igYgMAlgLkaM6cCCXdfrUT1tsAXMiTFjaqpSfU4hJ+9GeM4S+8QC/LXzZ
+         m/sHtmmCjix9B+wbsTdkww0no9tgIgCJSHNvr5GaMV8MG9+dveQEDgimvgzi4uppUSDO
+         SU4XtsV7uwCpNF4c8IHegON/bGKJBpo8FicDg8tqiHmvjVe8oOqiDHi/aL3NUHu5mF6s
+         vUjg==
+X-Gm-Message-State: AOJu0YyeITzV/Dw3sOal0kGn3Jy7mPIu9fl3Ii6WG2CMU80QXT6RdOwe
+        YZcjMAz5CBhB5uvx+p4zOhCr1DdHfYuGp+UBFKIvnmj/Icpco99o6cZoQHwOI1lzDG6/Jp5/URu
+        SKnZPEfDmmDiSlurxnpwMATrjHfeUS81s
+X-Received: by 2002:a05:6214:2602:b0:66c:ffe1:e244 with SMTP id gu2-20020a056214260200b0066cffe1e244mr7592497qvb.62.1697642842839;
+        Wed, 18 Oct 2023 08:27:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH6fCGqNMshOHcVQgHFixpMRES/AbjqtXvQxpoRaWfInZXTWRZ0YrGHrSAVlJmDRabVuafBLg==
+X-Received: by 2002:a05:6214:2602:b0:66c:ffe1:e244 with SMTP id gu2-20020a056214260200b0066cffe1e244mr7592455qvb.62.1697642842210;
+        Wed, 18 Oct 2023 08:27:22 -0700 (PDT)
+Received: from vschneid.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id dy20-20020ad44e94000000b006588bd29c7esm35137qvb.28.2023.10.18.08.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 08:27:21 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: Re: [RFC PATCH] tcp/dcpp: Un-pin tw_timer
+In-Reply-To: <CANn89iJUicsEdbp7qrsaSUg8jQ=dBUr0nK296LxXp5rnPrw8cA@mail.gmail.com>
+References: <20231016125934.1970789-1-vschneid@redhat.com>
+ <CANn89i+pQ3j+rb2SjFWjCU7BEges3TADDes5+csEr1JJamtzPQ@mail.gmail.com>
+ <xhsmhil74m10c.mognet@vschneid.remote.csb>
+ <CANn89iJUicsEdbp7qrsaSUg8jQ=dBUr0nK296LxXp5rnPrw8cA@mail.gmail.com>
+Date:   Wed, 18 Oct 2023 17:27:18 +0200
+Message-ID: <xhsmhfs28lzmx.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2c0nt109wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 08:55:12 -0500, Dave Hansen <dave.hansen@intel.com>  
-wrote:
-
-> On 10/17/23 21:37, Haitao Huang wrote:
->> Yes we can introduce misc.reclaim to give user a knob to forcefully
->> reducing usage if that is really needed in real usage. The semantics
->> would make force-kill VMs explicit to user.
+On 18/10/23 17:00, Eric Dumazet wrote:
+> On Wed, Oct 18, 2023 at 4:57=E2=80=AFPM Valentin Schneider <vschneid@redh=
+at.com> wrote:
 >
-> Do any other controllers do something like this?  It seems odd.
+>>
+>> Looks reasonable to me, I'll go write v2.
+>>
+>> Thanks for the help!
+>
+> Sure thing !
+>
+> BTW, we also use TIMER_PINNED for req->rsk_timer, are you working on it t=
+oo ?
 
-Maybe not in sense of killing something. My understanding memory.reclaim  
-does not necessarily invoke the OOM killer. But what I really intend to  
-say is we can have a separate knob for user to express the need for  
-reducing the current usage explicitly and keep "misc.max' non-preemptive  
-semantics intact. When we implement that new knob, then we can define what  
-kind of reclaim for that. Depending on vEPC implementation, it may or may  
-not involve killing VMs. But at least that semantics will be explicit for  
-user.
+Ah, no, that wasn't on my radar. This hasn't shown up on our systems
+yet. From a cursory look it does look like it could lead to similar issues,
+I'll add that to my todolist. Thanks!
 
-Thanks
-Haitao
