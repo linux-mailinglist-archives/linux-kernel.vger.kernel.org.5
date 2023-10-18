@@ -2,46 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1847CD6B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2037CD6B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344715AbjJRIfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        id S1344708AbjJRIgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbjJRIfo (ORCPT
+        with ESMTP id S235151AbjJRIgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:35:44 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7458BBA;
-        Wed, 18 Oct 2023 01:35:41 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VuQCMVo_1697618136;
-Received: from 30.221.100.193(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VuQCMVo_1697618136)
+        Wed, 18 Oct 2023 04:36:50 -0400
+Received: from out0-208.mail.aliyun.com (out0-208.mail.aliyun.com [140.205.0.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FCEB6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:36:47 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=houwenlong.hwl@antgroup.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---.V1uac8-_1697618204;
+Received: from localhost(mailfrom:houwenlong.hwl@antgroup.com fp:SMTPD_---.V1uac8-_1697618204)
           by smtp.aliyun-inc.com;
-          Wed, 18 Oct 2023 16:35:37 +0800
-Message-ID: <c7277fd2-cc44-40a1-9f56-9341d3340e2e@linux.alibaba.com>
-Date:   Wed, 18 Oct 2023 16:35:33 +0800
+          Wed, 18 Oct 2023 16:36:45 +0800
+Date:   Wed, 18 Oct 2023 16:36:43 +0800
+From:   "Hou Wenlong" <houwenlong.hwl@antgroup.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "Lai Jiangshan" <jiangshan.ljs@antgroup.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "=?UTF-8?B?bWFpbnRhaW5lcjpYODYgQVJDSElURUNUVVJFIDMyLUJJVCBBTkQgNjQtQklU?=" 
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "Josh Poimboeuf" <jpoimboe@kernel.org>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Pasha Tatashin" <pasha.tatashin@soleen.com>
+Subject: Re: [PATCH RFC 1/7] x86/head/64: Mark startup_gdt and
+ startup_gdt_descr as __initdata
+Message-ID: <20231018083643.GB87734@k08j02272.eu95sqa>
+References: <cover.1689130310.git.houwenlong.hwl@antgroup.com>
+ <c85903a7cfad37d14a7e5a4df9fc7119a3669fb3.1689130310.git.houwenlong.hwl@antgroup.com>
+ <ZS0lEmEpQOz4iQ4Q@gmail.com>
+ <20231017072311.GA46993@k08j02272.eu95sqa>
+ <ZS6F46vJfca5f6f8@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] net/smc: correct the reason code in
- smc_listen_find_device when fallback
-Content-Language: en-US
-To:     dust.li@linux.alibaba.com, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231017124234.99574-1-guangguan.wang@linux.alibaba.com>
- <20231017124234.99574-3-guangguan.wang@linux.alibaba.com>
- <20231018070142.GY92403@linux.alibaba.com>
-From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
-In-Reply-To: <20231018070142.GY92403@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS6F46vJfca5f6f8@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,107 +55,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/18 15:01, Dust Li wrote:
-> On Tue, Oct 17, 2023 at 08:42:34PM +0800, Guangguan Wang wrote:
->> The ini->rc is used to store the last error happened when finding usable
->> ism or rdma device in smc_listen_find_device, and is set by calling smc_
->> find_device_store_rc. Once the ini->rc is assigned to an none-zero value,
->> the value can not be overwritten anymore. So the ini-rc should be set to
->> the error reason only when an error actually occurs.
->>
->> When finding ISM/RDMA devices, device not found is not a real error, as
->> not all machine have ISM/RDMA devices. Failures after device found, when
->> initializing device or when initializing connection, is real errors, and
->> should be store in ini->rc.
->>
->> SMC_CLC_DECL_DIFFPREFIX also is not a real error, as for SMC-RV2, it is
->> not require same prefix.
->>
->> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
->> ---
->> net/smc/af_smc.c | 12 +++---------
->> 1 file changed, 3 insertions(+), 9 deletions(-)
->>
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index b3a67a168495..21e9c6ec4d01 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -2163,10 +2163,8 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
->> 	}
->> 	mutex_unlock(&smcd_dev_list.mutex);
->>
->> -	if (!ini->ism_dev[0]) {
->> -		smc_find_device_store_rc(SMC_CLC_DECL_NOSMCD2DEV, ini);
->> +	if (!ini->ism_dev[0])
+On Tue, Oct 17, 2023 at 09:02:27PM +0800, Ingo Molnar wrote:
 > 
-> Hi Guangguan,
+> * Hou Wenlong <houwenlong.hwl@antgroup.com> wrote:
 > 
-> Generally, I think this is right. Fallback in one kind of device should
-> not be the final fallback reason.
+> > Hi Ingo,
+> > 
+> > I have sent patch #6 separately for x86. Do you have any ideas about 
+> > building the head code as PIE? Should I resend the patchset for the PIE 
+> > feature?
 > 
-> But what if we have more than one device and failed more than once, for
-> example:
-> Let's say we have an ISM device, a RDMA device. First we looked the ISM device
-> and failed during the initialization, we got a fallback reason A. Then we
-> looked for the RDMA device, and failed again, with another reason B.
-> Finally, we fallback to TCP. What should fallback reason be ?
-
-IMO, the order of finding devices is defined by preference. ISM v2, ISM v1, RDMA v2, RDMA v1, the former the prefer.
-I think it should return the most preferred device's failure reason if found and failed during the initialization.
-So, here should return the first reason(reason A). 
-
-> 
-> OTOH, SMC_CLC_DECL_NOSMCD2DEV is only used here. Removing it would mean
-> that we would never see SMC_CLC_DECL_NOSMCD2DEV in the fallback reason,
-> which makes it meaningless.
+> So I had a brief look, and despite reading 0/43 it was unclear to me what 
+> the precise advantages of building as PIE are.
 >
- 
-Is SMC_CLC_DECL_NOSMCD2DEV really necessary? There is no reason names SMC_CLC_DECL_NOSMCR2DEV.
-
-Thanks,
-Guangguan Wang
-
-> Best regards,
-> Dust
+> Ie. could you please outline:
 > 
->> 		goto not_found;
->> -	}
->>
->> 	smc_ism_get_system_eid(&eid);
->> 	if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext,
->> @@ -2216,9 +2214,9 @@ static void smc_find_ism_v1_device_serv(struct smc_sock *new_smc,
->> 	rc = smc_listen_ism_init(new_smc, ini);
->> 	if (!rc)
->> 		return;		/* V1 ISM device found */
->> +	smc_find_device_store_rc(rc, ini);
->>
->> not_found:
->> -	smc_find_device_store_rc(rc, ini);
->> 	ini->smcd_version &= ~SMC_V1;
->> 	ini->ism_dev[0] = NULL;
->> 	ini->is_smcd = false;
->> @@ -2267,10 +2265,8 @@ static void smc_find_rdma_v2_device_serv(struct smc_sock *new_smc,
->> 	ini->smcrv2.saddr = new_smc->clcsock->sk->sk_rcv_saddr;
->> 	ini->smcrv2.daddr = smc_ib_gid_to_ipv4(smc_v2_ext->roce);
->> 	rc = smc_find_rdma_device(new_smc, ini);
->> -	if (rc) {
->> -		smc_find_device_store_rc(rc, ini);
->> +	if (rc)
->> 		goto not_found;
->> -	}
->> 	if (!ini->smcrv2.uses_gateway)
->> 		memcpy(ini->smcrv2.nexthop_mac, pclc->lcl.mac, ETH_ALEN);
->>
->> @@ -2331,8 +2327,6 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
->>
->> 	/* check for matching IP prefix and subnet length (V1) */
->> 	prfx_rc = smc_listen_prfx_check(new_smc, pclc);
->> -	if (prfx_rc)
->> -		smc_find_device_store_rc(prfx_rc, ini);
->>
->> 	/* get vlan id from IP device */
->> 	if (smc_vlan_by_tcpsk(new_smc->clcsock, ini))
->> -- 
->> 2.24.3 (Apple Git-128)
+>  - *Exactly* how much PIE based KASLR randomization would gain us in terms 
+>    of randomization granularity and effective number of randomization bits, 
+>    compared to the current status quo?
+> 
+>  - How is code generation changed at the instruction level - how does 
+>    kernel size change and what are the micro-advantages/disadvantages?
+> 
+>  - Are there any other advantages/motivation than improving KASLR?
+> 
+> Ie. before asking us to apply ~50 patches and add a whole new build mode 
+> and the maintainance overhead to support it into infinity and beyond, could 
+> you please offer a better list of pros and cons?
+> 
+Hi Ingo,
+
+Thanks for your reply. I apologize for the confusion. Waht I meant to
+say is that I would like to resend the remaining part of this patchset
+that building the head code as PIE. As mentioned in the cover letter,
+building the head code as PIE can eliminate certain workarounds such as
+the "fixup_pointer" in head64.c and the inline assembly in
+mem_encrypt_identity.c. This is considered a cleanup. However, it is
+still necessary to use inline assembly to obtain the absolute symbol
+value during the pagetable building process.
+
+Regarding the entire PIE patchset, I agree that it is complex and there
+are no obvious use cases apart from improving KASLR. As mentioned
+earlier, the primary motivation is to increase the flexibility of the
+kernel image address rather than prioritizing security, enabling the
+kernel image to be placed at any virtual address. The use cases in our
+internal environment are specific and not widespread, so we do not feel
+an urgent need to push it forward at the moment.
+
+Thanks!
+
+> Thanks,
+> 
+> 	Ingo
