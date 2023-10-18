@@ -2,71 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 951EB7CE040
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7087CE043
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235229AbjJROkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        id S1344898AbjJROlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbjJROkk (ORCPT
+        with ESMTP id S231970AbjJROlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:40:40 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884B9AB;
-        Wed, 18 Oct 2023 07:40:38 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso7216331276.3;
-        Wed, 18 Oct 2023 07:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697640037; x=1698244837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wNv8M58yyPVg5uvKIwOx60Ldf+nVn0ykDKlqkzwcMQ4=;
-        b=HnzJ8oOuERbMsiH8fKQk9Humoddf8bJIhljCPtSFWO8/JZvsXBxjF/0Nk5k/56piN4
-         W4DK2DTNIDRA+DibwPLcFVnmLRqr32+vY/fCamtqezwoFxbtwPIf5EUnkzdmkde6fQ/j
-         sCFoyIZpCHmNgr8/59DQJBanEeXjWe1l9+rD036dQdYji2nSK0GU8+TjqP3a3uBBzpxr
-         ZZgvRz7rQYMY7tUaDlHBxXTM25bE/v5Dt6a36ySLwWJIXteytPnTVtlySQGJ0plQg1cO
-         +fMrKBgKzUTByyfXiSg3WLxqfuWLfP9erMn1ee8IV7u55zKs/V/ImpKd0mwRmfaDKBRc
-         fUew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697640037; x=1698244837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wNv8M58yyPVg5uvKIwOx60Ldf+nVn0ykDKlqkzwcMQ4=;
-        b=SJ3qm8vzXkJup0J9/XJYNAji/3zNyAIaEypVNnScOx0Fd8aDBwlPFqE38dXXb7TMUM
-         MVQ2B3j4sKXltIc44D8A0MVlvxouZV0thkn00rb1VjXpumDJ4bjgr5XXyy8nZdaTXG+t
-         ywqlVomQAv4VClmG02P81XfVVNmGZLb+1UGGJMpDE/TMUASC1CsLliTZQvwBZCP0Lz9T
-         y3RxdRywjgLbOaVLlZyGmKmlttWE1xqvnrkt3/y1J6g8Vok6Iko/mWtcqrh7wuaA/Ex3
-         +SnsaeGhrf1DZe1X2w+CBP4SCc9A6c3K2iNUiLQwUMCgaA2q0xhehndb+XCQvKxOs1f1
-         c19Q==
-X-Gm-Message-State: AOJu0YxEPt1TsDQMxe3e9Ch9PrrjAEd6k46zYtm9gBwqL4pBTAExg6XK
-        kIBuDjSMGCkpi/3ZIPDT1K4S4PP3v5usCLIPk00=
-X-Google-Smtp-Source: AGHT+IHJBSmMP2EVuH9Btz7PWxUtHiy8BjT2/gXVTElhQYOk7FNM4ZHT9ysxYJisRu4kpRaND+qRh/8VbZ0QGGHZjcQ=
-X-Received: by 2002:a25:a2c2:0:b0:d88:a049:e901 with SMTP id
- c2-20020a25a2c2000000b00d88a049e901mr5679424ybn.7.1697640037733; Wed, 18 Oct
- 2023 07:40:37 -0700 (PDT)
+        Wed, 18 Oct 2023 10:41:00 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B893210D;
+        Wed, 18 Oct 2023 07:40:58 -0700 (PDT)
+Received: from pwmachine.numericable.fr (unknown [188.24.154.80])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5688720B74C1;
+        Wed, 18 Oct 2023 07:40:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5688720B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1697640058;
+        bh=ZyhmO3X6jBWaHqcLJasVL9JKLb1Dgh5tpNMbuRYa2ik=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FQMjO0kLaNOHH1rthm3YX7spa7A90Q8QVHXqVikjkfWN+6bcWWrma6ygpS5FtXO79
+         MrxIIywW4yN/Hn+3nD0VDMsUDoGUoFrv/ckDcJMog+PT5FoIr5Ss+A8SszB8VUi6Aw
+         h4aLTyOwkk6tJ+q0JmtogLYfJAOdiLdjbkt6lbaQ=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     linux-trace-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] tracing/kprobes: Return EADDRNOTAVAIL when func matches several symbols
+Date:   Wed, 18 Oct 2023 17:40:29 +0300
+Message-Id: <20231018144030.86885-2-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231018144030.86885-1-flaniel@linux.microsoft.com>
+References: <20231018144030.86885-1-flaniel@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20231016020314.1269636-1-haowenchao2@huawei.com>
- <CAOptpSMSpuU_NDKNPKRk1ZS76KhOfCmSeB7YxbD6jvNpvNGZPg@mail.gmail.com>
- <0091a3e7-d3cf-4572-af46-79adbde42ab8@acm.org> <8877db4d-50e2-d814-484b-c2ec501f752b@huawei.com>
- <3e7cd38f-681b-446d-9c16-a694a8d03497@acm.org>
-In-Reply-To: <3e7cd38f-681b-446d-9c16-a694a8d03497@acm.org>
-From:   Wenchao Hao <haowenchao22@gmail.com>
-Date:   Wed, 18 Oct 2023 22:40:26 +0800
-Message-ID: <CAOptpSMnGyc5cjkxuHvLCsv_DaS8e9maCkCyp=vGne6KDX43eg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] SCSI: Fix issues between removing device and error handle
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Wenchao Hao <haowenchao2@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,19 +50,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 9:51=E2=80=AFPM Bart Van Assche <bvanassche@acm.org=
-> wrote:
->
-> On 10/17/23 18:37, Wenchao Hao wrote:
-> > The previous version was posted on 2023/9/28 but not reviewed, so I
-> > ping soon after repost.
->
-> Since a repost counts as a ping, I think posting a ping soon after
-> reposting is considered aggressive.
->
+Previously to this commit, if func matches several symbols, a kprobe, being
+either sysfs or PMU, would only be installed for the first matching address.
+This could lead to some misunderstanding when some BPF code was never called
+because it was attached to a function which was indeed not called, because
+the effectively called one has no kprobes attached.
 
-I didn't mean that, then how long is appropriate to post a ping?
+So, this commit returns EADDRNOTAVAIL when func matches several symbols.
+This way, user needs to use address to remove the ambiguity.
 
-Thanks.
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+Link: https://lore.kernel.org/lkml/20230819101105.b0c104ae4494a7d1f2eea742@kernel.org/
+---
+ kernel/trace/trace_kprobe.c | 63 +++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_probe.h  |  1 +
+ 2 files changed, 64 insertions(+)
 
-> Bart.
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 3d7a180a8427..a8fef6ab0872 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -705,6 +705,25 @@ static struct notifier_block trace_kprobe_module_nb = {
+ 	.priority = 1	/* Invoked after kprobe module callback */
+ };
+
++static int count_symbols(void *data, unsigned long unused)
++{
++	unsigned int *count = data;
++
++	(*count)++;
++
++	return 0;
++}
++
++static unsigned int number_of_same_symbols(char *func_name)
++{
++	unsigned int count;
++
++	count = 0;
++	kallsyms_on_each_match_symbol(count_symbols, func_name, &count);
++
++	return count;
++}
++
+ static int __trace_kprobe_create(int argc, const char *argv[])
+ {
+ 	/*
+@@ -836,6 +855,31 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+ 		}
+ 	}
+
++	if (symbol && !strchr(symbol, ':')) {
++		unsigned int count;
++
++		count = number_of_same_symbols(symbol);
++		if (count > 1) {
++			/*
++			 * Users should use ADDR to remove the ambiguity of
++			 * using KSYM only.
++			 */
++			trace_probe_log_err(0, NON_UNIQ_SYMBOL);
++			ret = -EADDRNOTAVAIL;
++
++			goto error;
++		} else if (count == 0) {
++			/*
++			 * We can return ENOENT earlier than when register the
++			 * kprobe.
++			 */
++			trace_probe_log_err(0, BAD_PROBE_ADDR);
++			ret = -ENOENT;
++
++			goto error;
++		}
++	}
++
+ 	trace_probe_log_set_index(0);
+ 	if (event) {
+ 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
+@@ -1695,6 +1739,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
+ }
+
+ #ifdef CONFIG_PERF_EVENTS
++
+ /* create a trace_kprobe, but don't add it to global lists */
+ struct trace_event_call *
+ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+@@ -1705,6 +1750,24 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+ 	int ret;
+ 	char *event;
+
++	if (func) {
++		unsigned int count;
++
++		count = number_of_same_symbols(func);
++		if (count > 1)
++			/*
++			 * Users should use addr to remove the ambiguity of
++			 * using func only.
++			 */
++			return ERR_PTR(-EADDRNOTAVAIL);
++		else if (count == 0)
++			/*
++			 * We can return ENOENT earlier than when register the
++			 * kprobe.
++			 */
++			return ERR_PTR(-ENOENT);
++	}
++
+ 	/*
+ 	 * local trace_kprobes are not added to dyn_event, so they are never
+ 	 * searched in find_trace_kprobe(). Therefore, there is no concern of
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 02b432ae7513..850d9ecb6765 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -450,6 +450,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+ 	C(BAD_MAXACT,		"Invalid maxactive number"),		\
+ 	C(MAXACT_TOO_BIG,	"Maxactive is too big"),		\
+ 	C(BAD_PROBE_ADDR,	"Invalid probed address or symbol"),	\
++	C(NON_UNIQ_SYMBOL,	"The symbol is not unique"),		\
+ 	C(BAD_RETPROBE,		"Retprobe address must be an function entry"), \
+ 	C(NO_TRACEPOINT,	"Tracepoint is not found"),		\
+ 	C(BAD_ADDR_SUFFIX,	"Invalid probed address suffix"), \
+--
+2.34.1
+
