@@ -2,177 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF8B7CE200
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB2E7CE207
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbjJRQAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38910 "EHLO
+        id S1344897AbjJRQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344704AbjJRQAG (ORCPT
+        with ESMTP id S1344868AbjJRQAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:00:06 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2047.outbound.protection.outlook.com [40.107.13.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07B2116
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:00:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PXIvC6ZLfNB+KGG0DzU8M85j5GIWB56VpQh6c4GPAf3BCF7gjkq4sS/OovCn4OPZvnhwmpxfju1qwYnXfsMj++JqXfeytijqP1tyqfMbYTQJSdc81uHDNlBTNJCXzH0KTnpIFcOkE8sVccj6Lbc/3hTewP8n+sKSNg6ZkrqonZFiBY4dnNlNO9P/s73BAGwOzZeJXOxvnOvGUx9fRNCIbP0QPX+200aSZgFZobtC64FhZQdB+/HOqnj2UX+c0CCUGZWjpgcVw1sTkjj/beoTlquNg5Ywu+sEppUFUfmN4vyYgyot0sv4jiRMY0aXZ5Hp6wzoCUskUckBAW/kC728xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=478803QczRFFXBUKZoVGKqPgxQF91oUCRqBqSsaRd+c=;
- b=QWeViCOLj9+yWPPu9X2ZaQjBd/Jj427tpv8uOkPEIyJjkQqpTile/Ogeh9282QquzXgDgdmCRhxQJSVmw+7afrBZikW2ovXedm4vXR5j5UVa0IKemmdegdYg//gMHkop68TFjJrewccgz3qFCZg7wLrxZ+zPW3c5Sk8CbiP5zss95ZCNuDRh/A9bv4uR9xHZPLvUdmtOlOTIEtbwpXlZUkwnwOtEI3LffRbjpxIGDz3ywwnNoJDyw1+0mzh+EWoFhCi014fuW3mp74WVgTCAl9pouv0+vgc+UwUqpfTjj2u6HnhR2WMZ9by6WrbehYjpJM5VvsePro1xBmP2Oomj2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=478803QczRFFXBUKZoVGKqPgxQF91oUCRqBqSsaRd+c=;
- b=I7lSfk6mpf4kco4xiOh1PzN5kobl9au2hHtcGe69DWXLY2mE3VQOrIitd5qc6peg73MI3eN+VrWVMuC5f8leVdxiwtQyC6aN3wyd0qSV6owNX3zRcs3e8D1qYIbA4HQSvCh1hIsdB807ZDfnwlBgdYnTGCBMAilUdYalThj3OZ4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM7PR04MB6966.eurprd04.prod.outlook.com (2603:10a6:20b:109::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Wed, 18 Oct
- 2023 15:59:58 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
- 15:59:58 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     miquel.raynal@bootlin.com
-Cc:     Frank.Li@nxp.com, alexandre.belloni@bootlin.com,
-        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 Resent 6/6] i3c: master: svc: fix random hot join failure since timeout error
-Date:   Wed, 18 Oct 2023 11:59:26 -0400
-Message-Id: <20231018155926.3305476-7-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231018155926.3305476-1-Frank.Li@nxp.com>
-References: <20231018155926.3305476-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR05CA0210.namprd05.prod.outlook.com
- (2603:10b6:a03:330::35) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Wed, 18 Oct 2023 12:00:37 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0EE122
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:00:19 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so7280469a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697644818; x=1698249618; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=POKi49S1OWvMArZJIA79m6UJxhSMMZpTCToq5XjVsjY=;
+        b=P7F7wDTTzpqQJTifTlI6e8V7EL7/PCu3S7I8Fe0I3LuT+iH406+DcvoiF+AbtV0U7K
+         7kQ4s2+5rzZpzUXlvwLcoK7g/vWUkt2pew9j20cplOT2wem9NIwoYyWtkanj4XEWspJp
+         ZWVOS29PRulUtzhV4yLWDzoL6jQCVjsTn0SrWs/WWAtBNnyc5cV6xZEa9mRe0hEPb2/r
+         tmE1nsdsitUj6DfIQPtjK3ZqUbUIzePA0J9kw4f11fRh7RabbhdRDJM12262Qi3NdwQq
+         rSf5ls1wp15mMAJVWsjODd8pa0a0beP3FFfKqLleeidHjPFk7dK7wjcLThhZjjH0h59s
+         7aAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697644818; x=1698249618;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=POKi49S1OWvMArZJIA79m6UJxhSMMZpTCToq5XjVsjY=;
+        b=Vo3AHyWQKMesS87FoXU/iMNxQmV690DLbMUXc9+1KjJUu9niNmEfZ/6PUdezGkiTx+
+         Di3cIIvvc37V2P7n845CHFEiMEeuMYwhXKsyACIj+t6MCQ1JkAwFqj0iSF5zaT9qJwS3
+         73kSNd6H8R2bVsoASQI34BTlD4mDRAGM64iGVCL6jn4AdWJipI0CFhOlBf2mqEpQWF8k
+         VrAqO9SUI4m3i+KGNkw8Ob8vKH3UE+7wsqMDH9qtacpcOcMhnyy+DxD6I2E960bd+lcZ
+         UDVLdtbDjjoRAyL9TfloVCyuDEZks6dvF2d5rdLwXEIqp2HtNmR7WfhnCmQajNS1CugV
+         ziuQ==
+X-Gm-Message-State: AOJu0YyPJBrYan4av34+dz9uBQAj5IY2dkGeEdvRkVi5/cfqucGG0PT7
+        C/s8urKflnMynEejk0fglJXWECLHtFo0i5eaG60=
+X-Google-Smtp-Source: AGHT+IHkAKNK/SpkNnn4h3XvX0forCcLEJ/Z7lNySAu5wiImRqkT91Z73eAp/bAVImw9dKE0vPBYrQ==
+X-Received: by 2002:a05:6402:2691:b0:53d:f4f5:7ab0 with SMTP id w17-20020a056402269100b0053df4f57ab0mr3795783edd.40.1697644817717;
+        Wed, 18 Oct 2023 09:00:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id t21-20020a50d715000000b0053d9f427a6bsm3071532edi.71.2023.10.18.09.00.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 09:00:17 -0700 (PDT)
+Message-ID: <4b210859-c6ef-4722-adea-9af89420211b@linaro.org>
+Date:   Wed, 18 Oct 2023 18:00:15 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM7PR04MB6966:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2be9190-f7fc-45cd-6d61-08dbcff34751
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Smkj3gwC3HUe66vGSDimpNAsvQlq7DV5p1MyVAdR7X+KEKe4PZSZZEj5/VnNVMKgxkC1ozjDt4VaK3YQjPcn37OMmUfFlkzj41AU5k5An8cGQOE5V/Jl4vS89JULr/fdYuXA7NOF5ct6H0nSyPm5wxSWfthKLaPdT5bKPQuFP/SGuhVJtfK1HuLwgIgVCjRXw4t/1sQnWuZogYXKKij9rQ6Q7BnX+VB0pLZwJEiOFEcmxwhN1Y9eh4wHTqj8hgaJWcl4Ob1WUkD5vtGaSG5rccTBGyr1RE30VZQSnSaN8elm2w2Y6fDMPW+0SvmTz4XiK5tSXfz2gIKw9YrWsXDNw6opudtkzNmXxTT5mOl/hc88IEdhqRr1NPzuZo6DcxJz+E2ZNNNp/bUmNAzl9qv1/Gh/I58Kyyp4hsWmM6R6pNbICtflNmFHSfmy/JHws+m2WuCs3Ohv8KsFPUy7hoaAPfFRd2gNrqsObFP1LaqFFn2pDaItddkDveYuJcH6GfWbnlzHO048918hk3yO7A4/8i/OLY0yRDJ8/E5/TL0tnCYdcAo40WlkCHxSYGmJ/pIL2GpUul+kuNf2m0VtW1BEcXiXvfyueL2dE83ZagKmuOiK1rpfJoJb8Z3HWOpwdoO6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(2906002)(478600001)(6486002)(6666004)(38100700002)(8936002)(5660300002)(8676002)(66556008)(4326008)(66946007)(316002)(36756003)(66476007)(6916009)(86362001)(41300700001)(6512007)(52116002)(1076003)(6506007)(2616005)(26005)(38350700005)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RGYzVUdwSlJJUDFkVWw5VjB1a3RONUF2UCtYREFtdnpGS2RjS0tPK01jaEpI?=
- =?utf-8?B?c1djekpaWnBQZnZqNWlyY2NOdXJSL252WWxKaksyU1dReWxqaUxWY1E2dlVB?=
- =?utf-8?B?djJSMGlnM0ZCS2tSUHRsMWNyMHMraXA0anA4QWRXQ2RoaThVVlhKNTFMUUFX?=
- =?utf-8?B?REY4QXN3dVMvY1lHL2ZWUVp0N1RaUEt5YTU2NDgwcVN4SFNCcWFmY3U3REY3?=
- =?utf-8?B?MFR4OC9VVUY0TFJTSHJJNWFROG1VaC9OUmVaeFlVaWQ5Y3QrU21nUURrRVpy?=
- =?utf-8?B?Q3huQjR5TmdWSzRLTmFHQmt4NkZmZlVwRUZaUFZyL0xyZUg1WENTN2kwQndy?=
- =?utf-8?B?NUpoWHJmOEJDZVFJL3pKbTBpRk5yc0k2QnF5UHBjT3NHcGNSRGd4cUR0bHIx?=
- =?utf-8?B?a1MxMWNqT0NldTFxSG9pZXZvcFpuSFNLUzB6VkdCUU95SVFYTGM4Nms4TnJS?=
- =?utf-8?B?eEJydis1NzdXeVdnR0psN0dGQStkSlFQQUpHaHJUU0I4aVhDU3BtbmJCUEw5?=
- =?utf-8?B?am05WFNLbkJYU2ZwTWhZTUJMNzdDUnpZajBmbVVHRkpIY1gxR1hYT0xweWgr?=
- =?utf-8?B?ekpSdHVrZ2ZvdDhSMU1hMjhqT2cwNSs5bitqSEduMUtGNnBjdGZGdG1pRmFP?=
- =?utf-8?B?QnJBazZaYWoxem84UEREU1FIT1c1Q3YxdTZKbjlIL3l3bGV3N0g0L3ZRT0pV?=
- =?utf-8?B?dVRIdFNGZEZwLzZKNW12NU12dFZTRnozNHkzSEVXbk55amxESElmcy8ybytK?=
- =?utf-8?B?WnVoNzhQSnZsMTdtdVQxbUNDMXZMalduM0RRMlhsYVRmSXNLK09ERGN1UzA4?=
- =?utf-8?B?YUhiMHhySGdtUk56S0hSeEVoMUtKNURlcGQ2cml6NHc2VlJlNXFFTmM0aWRu?=
- =?utf-8?B?aDdQSU1ILzlBTDdrTUFlMFZkVlhtU2FqeEJBUmNabVR6d29FMUJUSHBSUzRo?=
- =?utf-8?B?Q3FkeGdQditKQUtUcXVOQXZvSUhuSS82SG1pL2piZmhuTmU5NnFTSDk0MXFh?=
- =?utf-8?B?TjBMYUtDTDVtOTNqTkp3NGpBWGJvNEtUV3E3ZlExdWFKcTc5SHlpNU1QWm4r?=
- =?utf-8?B?cnlsWEUxZ2d1eTlObXpLZVIycDBWTi8xOGRWaGdIT0ZHSWl6ZHhWUEJZZ3lJ?=
- =?utf-8?B?VTN3TGZZK2RHcGlZZEZNbE5NelhLbG8wM2ZxcTNESU9rcThtL25JWmZqSGRv?=
- =?utf-8?B?NEgxOEcrSGVKL2k0MmY2YVZlaG9HMXBVRGJUcjhBZlZJTFFHQldGOUVJSXA5?=
- =?utf-8?B?SnFUZnY5VEtNdUZCR2xQbXhzTmU0U1VJQzVaTDUxOE5pZ2tXYU9Qd0FuS3pp?=
- =?utf-8?B?YTl0RFViMmVuVE96VXYxS2hDTHViTlVMT3k4ZjdMQWRoQ3VvVUFESGY4TlJ4?=
- =?utf-8?B?U1JrRDBtdHlqNjV2bWE1UVVpRDF3SU85bjRoYzl3V3pudVpiWmFqdUFwcnV1?=
- =?utf-8?B?eFc4SysyWFBsNHd4OGxTQkdRbUZnKy9CSGs3a2RhZzFtQjZwcmd3b3pVb0Jv?=
- =?utf-8?B?UUJqcWhSY3BWTytoV1FsZVkyYTk1Y3JrRklhSTJtN3NrWHR5TldNZEh0cWtp?=
- =?utf-8?B?MXc2dVRDQUZLR0lwU0Juc2VCZGtkS0FNZ01WdTBRc2ZIbEZqN2tBQ0VDY2xC?=
- =?utf-8?B?Rkd6ZWFyRU9aRHRTMFRJY3pVekd1dXpOVGtscG9kRkIwZjBpMktidk5WemVZ?=
- =?utf-8?B?TnpSdWxKMW5KYmozdEtCaWQwcmFpcE9naXRlUnU1L0lKUkQxNVdZblVUNm04?=
- =?utf-8?B?RkRZa2s4RUtpUWtHUUIvQ3o3eURHd1FKcXZ0ZUlWelNmRFVJMXhEN09KWWpl?=
- =?utf-8?B?SlluMXlSNWFrdjZvd2pqd3FYTXU5OVpFQTdTclQxeHpPenJwQnVGVW9ENVBk?=
- =?utf-8?B?amFoZXI1MzNHZW10UUJxZXFNOVVsRmlzQjlKQ0VYY0JxV3k5VGFsc08zWnh1?=
- =?utf-8?B?OGxtR2NHbnFJc2ZoVWNYcm02Wlp6VVcyME80b2pMRGkvVGFvVllCMTdNcE5L?=
- =?utf-8?B?TVF6SExiaHdOdUtkc05FWTlGRXZXWkZvbmtmK3NZdW5iMVg4ZE9xeDdIVUcx?=
- =?utf-8?B?MFVJY3hDeExlM1JoR1BMTlBiazFGSG5LaUcyaFd6SU5SMGZpWDBQMyt4MThj?=
- =?utf-8?Q?GKqPKpgYhS11pSc+BGHyCDWml?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2be9190-f7fc-45cd-6d61-08dbcff34751
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 15:59:58.5131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4I63UuGnjXmXnwy8MxQis7lE52/x2VZWoraOOvtBb+ac2OVVWOFq1FgDitYaoM1rPLMYGh/QX9lhRt+GEq1sPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6966
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] w1: Add 1-wire master driver for AMD programmable
+ logic IP Core
+Content-Language: en-US
+To:     Kris Chaplin <kris.chaplin@amd.com>, thomas.delev@amd.com,
+        michal.simek@amd.com, robh+dt@kernel.org, conor+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20231013093109.37165-1-kris.chaplin@amd.com>
+ <20231013093109.37165-3-kris.chaplin@amd.com>
+ <3aed801f-cb11-4306-b588-b1de1405f93f@linaro.org>
+ <7946d74b-6d07-41f1-9dba-6c2d98683e26@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7946d74b-6d07-41f1-9dba-6c2d98683e26@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-master side report:
-  silvaco-i3c-master 44330000.i3c-master: Error condition: MSTATUS 0x020090c7, MERRWARN 0x00100000
+On 18/10/2023 17:54, Kris Chaplin wrote:
+> Thank you Krzysztof,
+> 
+> I shall post v2 tomorrow:
+> 
+> On 13/10/2023 16:20, Krzysztof Kozlowski wrote:
+>> On 13/10/2023 11:30, Kris Chaplin wrote:
+>>> Add a master driver to support the AMD 1-Wire programmable logic IP block.
+>>> This block guarantees protocol timing for driving off-board devices such
+>>> as thermal sensors, proms, etc.
+>>>
+>>> Add file to MAINTAINERS
+>>>
+>>> Co-developed-by: Thomas Delev <thomas.delev@amd.com>
+>>> Signed-off-by: Thomas Delev <thomas.delev@amd.com>
+>>> Signed-off-by: Kris Chaplin <kris.chaplin@amd.com>
+>>> ---
+>>>   MAINTAINERS                 |   1 +
+>>>   drivers/w1/masters/Kconfig  |  11 +
+>>>   drivers/w1/masters/Makefile |   1 +
+>>>   drivers/w1/masters/amd_w1.c | 422 ++++++++++++++++++++++++++++++++++++
+>>>   4 files changed, 435 insertions(+)
+>>>   create mode 100644 drivers/w1/masters/amd_w1.c
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 6ec3922b256e..7f26dab5261b 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -1072,6 +1072,7 @@ R:      Thomas Delev <thomas.delev@amd.com>
+>>>   R:   Michal Simek <michal.simek@amd.com>
+>>>   S:   Maintained
+>>>   F:   Documentation/devicetree/bindings/w1/amd,axi-1wire-master.yaml
+>>> +F:   drivers/w1/masters/amd_w1.c
+>>>
+>>>   AMD XGBE DRIVER
+>>>   M:   "Shyam Sundar S K" <Shyam-sundar.S-k@amd.com>
+>>> diff --git a/drivers/w1/masters/Kconfig b/drivers/w1/masters/Kconfig
+>>> index ad316573288a..9232fd1f4e5b 100644
+>>> --- a/drivers/w1/masters/Kconfig
+>>> +++ b/drivers/w1/masters/Kconfig
+>>> @@ -67,5 +67,16 @@ config W1_MASTER_SGI
+>>>          This support is also available as a module.  If so, the module
+>>>          will be called sgi_w1.
+>>>
+>>> +config W1_MASTER_AMD
+>> This looks oddly places. Isn't entry above 'S', so A should go before?
+>> The rule is for entire Linux kernel: do not stuff things to the end of
+>> the lists.
+> There doesnt appear to be a specific alphabetical ordering taking place 
+> in this Kconfig:
+> 
+> config W1_MASTER_MATROX
+> config W1_MASTER_DS2490
+> config W1_MASTER_DS2482
+> config W1_MASTER_MXC
+> config W1_MASTER_GPIO
+> config HDQ_MASTER_OMAP
+> config W1_MASTER_SGI
+> config W1_MASTER_AMD
 
-BIT 20: TIMEOUT error
-  The module has stalled too long in a frame. This happens when:
-  - The TX FIFO or RX FIFO is not handled and the bus is stuck in the
-middle of a message,
-  - No STOP was issued and between messages,
-  - IBI manual is used and no decision was made.
-  The maximum stall period is 10 KHz or 100 μs.
+I understand, happens. Still stuff should not be added to the end of lists.
 
-This is a just warning. System irq thread schedule latency is possible
-bigger than 100us. Just omit this waring.
-
-Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
-
-Notes:
-    Change from v1 to v2
-    -none
-
- drivers/i3c/master/svc-i3c-master.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-index 1a57fdebaa26d..fedb31e0076c4 100644
---- a/drivers/i3c/master/svc-i3c-master.c
-+++ b/drivers/i3c/master/svc-i3c-master.c
-@@ -93,6 +93,7 @@
- #define SVC_I3C_MINTMASKED   0x098
- #define SVC_I3C_MERRWARN     0x09C
- #define   SVC_I3C_MERRWARN_NACK BIT(2)
-+#define   SVC_I3C_MERRWARN_TIMEOUT BIT(20)
- #define SVC_I3C_MDMACTRL     0x0A0
- #define SVC_I3C_MDATACTRL    0x0AC
- #define   SVC_I3C_MDATACTRL_FLUSHTB BIT(0)
-@@ -226,6 +227,11 @@ static bool svc_i3c_master_error(struct svc_i3c_master *master)
- 	if (SVC_I3C_MSTATUS_ERRWARN(mstatus)) {
- 		merrwarn = readl(master->regs + SVC_I3C_MERRWARN);
- 		writel(merrwarn, master->regs + SVC_I3C_MERRWARN);
-+
-+		/* ignore timeout error */
-+		if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT)
-+			return false;
-+
- 		dev_err(master->dev,
- 			"Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x\n",
- 			mstatus, merrwarn);
--- 
-2.34.1
+Best regards,
+Krzysztof
 
