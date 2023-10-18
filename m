@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A6C7CD9EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3517E7CD9F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbjJRK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S229956AbjJRK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbjJRK6V (ORCPT
+        with ESMTP id S229702AbjJRK7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:58:21 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF847FF;
-        Wed, 18 Oct 2023 03:58:13 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39I6tSue005405;
-        Wed, 18 Oct 2023 10:58:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dfIPjwCo1TPlhSqa+JpWtxJpKqFI6gMa+tmQEAaensM=;
- b=f2j4Fpgo9dOa6n4Y0tU74WWyIVffjJ/CPiiJMkOitrl7zCzlNUmFrwZ6nkSRxaUfVgp+
- hIk1v8fIJcPbif4MZbnfcwx1muyEc/+/huBS+4WTced7jsa9E8MdRG9q+wwYE3XqQerM
- rpJ6gZW+pPuV+rjHrgnA13vklNH+vpq/O0ZCyzwTDV6BSATrTeYA60YZjGMB3JeAItfo
- 9O02nh0rVXUqJi9khqWjGJbe4XDNo88LKx98kTEGPatGf3yB330P7zcqOBDP4NDlxBCg
- mYAGRs7TB1CTPvMEa9iOpB/o3EuddT/zYLHUa3LyF+XBOzN0emkFUpJmte700tnUKE8L ag== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsvxwtat6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 10:58:10 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39IAwAMg029504
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 10:58:10 GMT
-Received: from [10.216.39.143] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
- 2023 03:58:04 -0700
-Message-ID: <fe60f28b-ab8e-0cb5-b08c-c02f4df865eb@quicinc.com>
-Date:   Wed, 18 Oct 2023 16:28:01 +0530
+        Wed, 18 Oct 2023 06:59:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3C9EA
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697626776; x=1729162776;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=iNchPBy+GLO0AHcCt2JFOY0IPNG1RyEB4B2/HF/7DIo=;
+  b=jYUYEBB0SFnB/H4CFH53X6EiQ9se4GMXbnqDy+ur4kn6N5MkdehswBIb
+   okiiRKGpCdKHDfq363/X/Xf3w1SQyP6ZCqEGoA1L/oQspHFZgOjWTGR4z
+   K3FBzLvEemX8EEOoUWCP0JiSsL4R6gNlUZO/n8marxnPOyD0OJoWAYsze
+   00yTa+vxH9FpLFCq3d+pmYvKxRIclMX1duRrp52M1kwt0FeVMCHjzLW5O
+   4ugZRGZnxtE3jLFNnTJLBmHiXvGKz7d3NUBONlB0Ie0+JHDftZxo+FGXx
+   VYzUchMQAQZtR+rAbxuqo8NB2z9AOKw1uPm7Q8Yys6GfTu29m3wkoyJLW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="417104407"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="417104407"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 03:59:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="822399893"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="822399893"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Oct 2023 03:59:34 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qt4Gy-0000GW-2g;
+        Wed, 18 Oct 2023 10:59:32 +0000
+Date:   Wed, 18 Oct 2023 18:59:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: include/linux/fortify-string.h:59:33: warning: '__builtin_memset'
+ specified bound 18446744073709551615 exceeds maximum object size
+ 9223372036854775807
+Message-ID: <202310181852.t3zhZN02-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V2 0/4] Add support for Qualcomm ECPRI clock controller
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Taniya Das <quic_tdas@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20231011090028.1706653-1-quic_imrashai@quicinc.com>
- <427980eb-3235-4d63-bb8f-3af06978a3eb@linaro.org>
-From:   Imran Shaik <quic_imrashai@quicinc.com>
-In-Reply-To: <427980eb-3235-4d63-bb8f-3af06978a3eb@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0GpuOH3TlNKQgcwTDfaXcBTBUtwhOJtk
-X-Proofpoint-ORIG-GUID: 0GpuOH3TlNKQgcwTDfaXcBTBUtwhOJtk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_09,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 phishscore=0 mlxlogscore=930 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180090
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
+commit: 439a1bcac648fe9b59210cde8991fb2acf37bdab fortify: Use __builtin_dynamic_object_size() when available
+date:   10 months ago
+config: s390-randconfig-r002-20230326 (https://download.01.org/0day-ci/archive/20231018/202310181852.t3zhZN02-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310181852.t3zhZN02-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310181852.t3zhZN02-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/string.h:253,
+                    from include/linux/bitmap.h:11,
+                    from include/linux/cpumask.h:12,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/spinlock.h:63,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:15,
+                    from drivers/misc/lkdtm/usercopy.c:7:
+   drivers/misc/lkdtm/usercopy.c: In function 'do_usercopy_slab_size':
+>> include/linux/fortify-string.h:59:33: warning: '__builtin_memset' specified bound 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+      59 | #define __underlying_memset     __builtin_memset
+         |                                 ^
+   include/linux/fortify-string.h:453:9: note: in expansion of macro '__underlying_memset'
+     453 |         __underlying_memset(p, c, __fortify_size);                      \
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/fortify-string.h:461:25: note: in expansion of macro '__fortify_memset_chk'
+     461 | #define memset(p, c, s) __fortify_memset_chk(p, c, s,                   \
+         |                         ^~~~~~~~~~~~~~~~~~~~
+   drivers/misc/lkdtm/usercopy.c:157:9: note: in expansion of macro 'memset'
+     157 |         memset(one, 'A', size);
+         |         ^~~~~~
 
 
-On 10/11/2023 3:58 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 10/11/23 11:00, Imran Shaik wrote:
->> The ECPRI clock controller support for QDU1000 and QRU1000. The clock
->> controller has a special branch which requires an additional memory to
->> be enabled/disabled before the branch ops.
->>
->> Changes since v1:
->>   - Updated the dt-bindings
->>   - Modified mem ops logic as per the review comments
->>   - Update all the hex values to lowercase
->>   - Aligned the clock entries in DT as per the review comment
->>
->> Previous series:
->> v1 - 
->> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=774092
-> That link is gone by now, as patchwork is periodically purged.
-> 
-> Please use lore links instead.
-> 
-> https://lore.kernel.org/linux-arm-msm/20230808051407.647395-1-quic_imrashai@quicinc.com/
-> 
-> Konrad
+vim +/__builtin_memset +59 include/linux/fortify-string.h
 
-Sure, will use lore links from now.
+78a498c3a227f2 Alexander Potapenko 2022-10-24  46  
+78a498c3a227f2 Alexander Potapenko 2022-10-24  47  #if defined(__SANITIZE_MEMORY__)
+78a498c3a227f2 Alexander Potapenko 2022-10-24  48  /*
+78a498c3a227f2 Alexander Potapenko 2022-10-24  49   * For KMSAN builds all memcpy/memset/memmove calls should be replaced by the
+78a498c3a227f2 Alexander Potapenko 2022-10-24  50   * corresponding __msan_XXX functions.
+78a498c3a227f2 Alexander Potapenko 2022-10-24  51   */
+78a498c3a227f2 Alexander Potapenko 2022-10-24  52  #include <linux/kmsan_string.h>
+78a498c3a227f2 Alexander Potapenko 2022-10-24  53  #define __underlying_memcpy	__msan_memcpy
+78a498c3a227f2 Alexander Potapenko 2022-10-24  54  #define __underlying_memmove	__msan_memmove
+78a498c3a227f2 Alexander Potapenko 2022-10-24  55  #define __underlying_memset	__msan_memset
+78a498c3a227f2 Alexander Potapenko 2022-10-24  56  #else
+a28a6e860c6cf2 Francis Laniel      2021-02-25  57  #define __underlying_memcpy	__builtin_memcpy
+a28a6e860c6cf2 Francis Laniel      2021-02-25  58  #define __underlying_memmove	__builtin_memmove
+a28a6e860c6cf2 Francis Laniel      2021-02-25 @59  #define __underlying_memset	__builtin_memset
+78a498c3a227f2 Alexander Potapenko 2022-10-24  60  #endif
+78a498c3a227f2 Alexander Potapenko 2022-10-24  61  
 
-Thanks,
-Imran
+:::::: The code at line 59 was first introduced by commit
+:::::: a28a6e860c6cf231cf3c5171c75c342adcd00406 string.h: move fortified functions definitions in a dedicated header.
+
+:::::: TO: Francis Laniel <laniel_francis@privacyrequired.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
