@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BC37CD847
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B9D7CD849
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjJRJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S229933AbjJRJgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjJRJgh (ORCPT
+        with ESMTP id S229753AbjJRJgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:36:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 69D73102
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:36:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F2732F4;
-        Wed, 18 Oct 2023 02:37:15 -0700 (PDT)
-Received: from [10.57.3.139] (unknown [10.57.3.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 750DD3F64C;
-        Wed, 18 Oct 2023 02:36:33 -0700 (PDT)
-Message-ID: <bc4a0623-16bc-199a-957c-e167a629e582@arm.com>
-Date:   Wed, 18 Oct 2023 10:36:32 +0100
+        Wed, 18 Oct 2023 05:36:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0129D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:36:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AC6C433C7;
+        Wed, 18 Oct 2023 09:36:37 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 10:36:35 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     kernel test robot <lkp@intel.com>, Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Peter Collingbourne <pcc@google.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
+Message-ID: <ZS-nI79Aqm1UdQ6z@arm.com>
+References: <20231005140730.2191134-1-ryan.roberts@arm.com>
+ <202310140531.BQQwt3NQ-lkp@intel.com>
+ <ZS147N1JKyUvaHyJ@arm.com>
+ <b463b420-c2be-49c5-bed6-0ff896851adb@arm.com>
+ <ZS6EvMiJ0QF5INkv@arm.com>
+ <1634d3e0-ac13-4f08-97e3-9b04a9202431@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] coresight: etm4x: Enable ETE device accessed via MMIO
-To:     Ruidong Tian <tianruidong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org
-Cc:     james.clark@arm.com, coresight@lists.linaro.org,
-        mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20231018070506.65320-1-tianruidong@linux.alibaba.com>
- <f7ccb9c4-60f4-7037-085d-3f36ae024219@arm.com>
- <206d5b79-dcd8-05b7-86c8-d6fb5790439e@linux.alibaba.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <206d5b79-dcd8-05b7-86c8-d6fb5790439e@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634d3e0-ac13-4f08-97e3-9b04a9202431@arm.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Oct 18, 2023 at 09:21:02AM +0100, Ryan Roberts wrote:
+> On 17/10/2023 13:57, Catalin Marinas wrote:
+> > On Tue, Oct 17, 2023 at 08:36:43AM +0100, Ryan Roberts wrote:
+> >> On 16/10/2023 18:54, Catalin Marinas wrote:
+> >>> On Sat, Oct 14, 2023 at 05:15:51AM +0800, kernel test robot wrote:
+> >>>> kernel test robot noticed the following build warnings:
+> >>>>
+> >>>> [auto build test WARNING on arm64/for-next/core]
+> >>>> [also build test WARNING on arm-perf/for-next/perf arm/for-next kvmarm/next soc/for-next linus/master v6.6-rc5 next-20231013]
+> >>>> [cannot apply to arm/fixes]
+> >>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> >>>> And when submitting patch, we suggest to use '--base' as documented in
+> >>>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> >>>>
+> >>>> url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/arm64-mm-Hoist-synchronization-out-of-set_ptes-loop/20231005-231636
+> >>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> >>>> patch link:    https://lore.kernel.org/r/20231005140730.2191134-1-ryan.roberts%40arm.com
+> >>>> patch subject: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
+> >>>> config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/config)
+> >>>> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> >>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/reproduce)
+> >>>>
+> >>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> >>>> the same patch/commit), kindly add following tags
+> >>>> | Reported-by: kernel test robot <lkp@intel.com>
+> >>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202310140531.BQQwt3NQ-lkp@intel.com/
+> >>>>
+> >>>> All warnings (new ones prefixed by >>):
+> >>>>
+> >>>>    In file included from net/ipv4/route.c:66:
+> >>>>    In file included from include/linux/mm.h:29:
+> >>>>    In file included from include/linux/pgtable.h:6:
+> >>>>>> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
+> >>>>      344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+> >>>>          |                                                                 ^
+> >>>>    1 warning generated.
+> >>>
+> >>> Thanks for the report. I think something like below will do (I'll test
+> >>> and commit as a separate patch, it's not something that Ryan's patch
+> >>> introduces):
+> >>
+> >> I was actually just trying to repro this and was planning to send out a v3 of my
+> >> patch. But if you are happy to handle it as you suggest, then I guess you don't
+> >> need anything further from me?
+> > 
+> > If you feel like testing, please give this a go ;)
+> 
+> Compile tested and observed that warning is gone with your change. Also ran mm
+> selftests and all looks good. So:
+> 
+> Tested-by: Ryan Roberts <ryan.roberts@arm.com>
 
-On 18/10/2023 10:30, Ruidong Tian wrote:
-> Hi Suzuki,
-> 
-> Now ETM4X driver use MMIO or system instruction depends on this check in 
-> function etm4_init_csdev_access:
-> 
->          if (drvdata->base)
->                  return etm4_init_iomem_access(drvdata, csa);
-> 
-> This check always true if firmware provides a address range in ACPI
-> table of ETE, and as a result, the ETE device in this case cannot be
-> successfully probed.
-> 
-> I think OS should be compatible with this situation, no matter firmware
-> how to organize ETE information in ACPI table. How do you feel about
-> it?
+Thanks. I'll push this patch on top of yours.
 
-My question is not about "What the patch does". But, why can't we use
-system instructions on your system, when ETE was designed to be used
-with that in the first place and get rid of the MMIO.
-
-Suzuki
-
-> 
-> Thank you
-> 
-> Ruidong Tian
-> 在 2023/10/18 16:28, Suzuki K Poulose 写道:
->> On 18/10/2023 08:05, Ruidong Tian wrote:
->>> The ETM4X driver now assume that all ETE as CPU system instructions
->>> accessed device, in fact the ETE device on some machines also accessed
->>> via MMIO.
->>>
->>> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
->>
->> Why are we going backwards to MMIO from system instructions ? Is it 
->> because of an "unfriendly" hypervisor preventing access ?
->>
->> As such, without a sufficiently acceptable explanation, I am reluctant
->> to make this change
->>
->> Suzuki
->>
->>> ---
->>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
->>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> index 285539104bcc..ad298c9cc87e 100644
->>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> @@ -1103,8 +1103,9 @@ static bool etm4_init_iomem_access(struct 
->>> etmv4_drvdata *drvdata,
->>>        * with MMIO. But we cannot touch the OSLK until we are
->>>        * sure this is an ETM. So rely only on the TRCDEVARCH.
->>>        */
->>> -    if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH) {
->>> -        pr_warn_once("TRCDEVARCH doesn't match ETMv4 architecture\n");
->>> +    if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH &&
->>> +        (devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETE_ARCH) {
->>> +        pr_warn_once("TRCDEVARCH doesn't match ETMv4/ETE 
->>> architecture\n");
->>>           return false;
->>>       }
-
+-- 
+Catalin
