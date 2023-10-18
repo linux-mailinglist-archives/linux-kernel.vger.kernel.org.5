@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D1B7CD251
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050347CD257
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjJRCfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 22:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S229492AbjJRCgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 22:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJRCfV (ORCPT
+        with ESMTP id S229458AbjJRCgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 22:35:21 -0400
+        Tue, 17 Oct 2023 22:36:13 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E8AAB;
-        Tue, 17 Oct 2023 19:35:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95093F7;
+        Tue, 17 Oct 2023 19:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697596520; x=1729132520;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eW1nR+Vnq/ijVBW0+IDk2j8V33dp2IbrFLegJCuCDx4=;
-  b=T9v+pSmawNy3CLXb/+KDSALHRW3hPHCyvUVVDHAb5IiLP9jCdQTy2umf
-   WgHotEsVCK3riTu4ZXzI/uMkoOTrIHcvnsYL4Bu26jgURsppb3RuXp8L0
-   p/rfK7Tidzebzepi+UaLybo4kagjJ7hfyUsBbZZbX+Dc0q43TgP9LdE9C
-   VhP4YXPynvsge2bbkk1gxCX6VYNBDT+tzMTI+Sa2Da545LwF/R91COOCT
-   /z7g0xSYyeQhZVfYug2gaa4hdDzRu0WFJp0nX04ejGS5U1k/3Fmlbxoy4
-   v+ZyjzhvTFeDOCOnrqBJ3mB4PadlSPZivEXzwhJ40XxeUD5G7cLtK1+w+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="450144128"
+  t=1697596571; x=1729132571;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qAsqCySP1xPuDyaG6+jAnZQYD37eye7rcWsdeW4wC0k=;
+  b=MqFVRTH6uIDnL/q4bSRcHmYShdra4vsaYW3pocM4Dpp7OginhyF3K3+C
+   UuYXSY+/OASIL0a9Po+5Wu6Y0YktBE52VJ/OWe6b4T3OMOuE8wfek0lOO
+   4RM1mgVzHjwZedDHlfPErGwGlw5dnT6kc8iYr3EoiC6U0GPqnqidXeqT3
+   w6vZjGKUVk8wTqv65Vs9TQi5ujYwA1Qw3FrL+s8M6rkhECYEkrI3dOVkR
+   h/AdD9iPYj+PO87ufNqTlV59YO6DH6ldpVwuuutYfyPS8gHjMyxULcG65
+   1WhO/S8kJPZxKc3VCmZwJXOqOXjmwbj8goP73oKhwJuyDuEUa48vg5xtO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="450144277"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="450144128"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 19:35:19 -0700
+   d="scan'208";a="450144277"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 19:36:11 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="4333750"
-Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
-  by fmviesa001.fm.intel.com with ESMTP; 17 Oct 2023 19:35:17 -0700
-From:   "Gan, Yi Fang" <yi.fang.gan@intel.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>,
-        Gan Yi Fang <yi.fang.gan@intel.com>
-Subject: [PATCH net 1/1] net: stmmac: update MAC capabilities when tx queues are updated
-Date:   Wed, 18 Oct 2023 10:31:36 +0800
-Message-Id: <20231018023137.652132-1-yi.fang.gan@intel.com>
-X-Mailer: git-send-email 2.34.1
+   d="scan'208";a="4163967"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa001.jf.intel.com with ESMTP; 17 Oct 2023 19:34:59 -0700
+Message-ID: <350f8544-8967-4f9e-bdcc-a464cdeadeea@linux.intel.com>
+Date:   Wed, 18 Oct 2023 10:32:25 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v4 08/17] iommufd: Always setup MSI and anforce cc on
+ kernel-managed domains
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-9-yi.l.liu@intel.com>
+ <BN9PR11MB527658EAF017FF3576667EEA8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZSnkiKoCspmG1+/j@Asurada-Nvidia>
+ <BN9PR11MB52763227866603ED7795AA068CD7A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231016115736.GP3952@nvidia.com>
+ <BN9PR11MB5276FDC375685CE04A7AD93B8CD6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276FDC375685CE04A7AD93B8CD6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+On 10/17/23 4:52 PM, Tian, Kevin wrote:
+>>> another problem is that intel_iommu_enforce_cache_coherency()
+>>> doesn't update existing entries. It only sets a domain flag to affect
+>>> future mappings. so it means the 2nd idev is also broken.
+>> This is such a gap, intel driver should not permit that.
+> yes. @Baolu, can you add a fix?
 
-Upon boot up, the driver will configure the MAC capabilities based on
-the maximum number of tx and rx queues. When the user changes the
-tx queues to single queue, the MAC should be capable of supporting Half
-Duplex, but the driver does not update the MAC capabilities when it is
-configured so.
+Sure thing!
 
-Using the stmmac_reinit_queues() to check the number of tx queues
-and set the MAC capabilities accordingly.
-
-Fixes: 0366f7e06a6b ("net: stmmac: add ethtool support for get/set channels")
-Cc: <stable@vger.kernel.org> # 5.17+
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ed1a5a31a491..7ddc33fa0cb5 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7172,6 +7172,14 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
- 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
- 									rx_cnt);
- 
-+	/* Half-Duplex can only work with single tx queue */
-+	if (priv->plat->tx_queues_to_use > 1)
-+		priv->phylink_config.mac_capabilities &=
-+			~(MAC_10HD | MAC_100HD | MAC_1000HD);
-+	else
-+		priv->phylink_config.mac_capabilities |=
-+			(MAC_10HD | MAC_100HD | MAC_1000HD);
-+
- 	stmmac_napi_add(dev);
- 
- 	if (netif_running(dev))
--- 
-2.34.1
-
+Best regards,
+baolu
