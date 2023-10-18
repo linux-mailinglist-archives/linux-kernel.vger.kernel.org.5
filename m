@@ -2,172 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84347CEB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7827CEB79
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjJRWtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
+        id S231199AbjJRWua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjJRWty (ORCPT
+        with ESMTP id S229694AbjJRWu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:49:54 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883C9115
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:49:52 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9c687f83a2so2213972276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:49:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697669392; x=1698274192; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Itd3K+35Q5LCuuiQpkQ+hlfAcgIRYzc4goGel/0mjhk=;
-        b=N0Vji/T8DW8QFf0c+EbGY/jy6gfJe+WrUi8hV8KG9ZMkVr6f6qUG7svg43G3GNmGtT
-         0xsT1Gyu35vu89ecergNJ8k3KGzahpdpemBOwzYFWtkCMt/IVHPd+xen+muXNBeIwyft
-         ASAyV9/WY4BVxzmYmyFHE/WNYlJYOQmkD1ngzQSDqJgAVqmt6Ok+0CkcN/W41OOLH0wr
-         Qb4M3kye26wCzeFXez/2ln7mKqXTkOAyr2TxgWdcfo5ZPYQVTVhfxSd2/hntwRppMxNJ
-         ZEDe2k02Hhb5hXNm8b7meQR8M5y/Ci5Irz7Re1hLRhEb2qifG/cy5NipKE/nzFKZH05Q
-         OXRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697669392; x=1698274192;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Itd3K+35Q5LCuuiQpkQ+hlfAcgIRYzc4goGel/0mjhk=;
-        b=Lc3SnRRnQtrG3HJkqBUKuTbvWgd4X0/L4J5ekb9bk6q7ubAWX9hQJYoMxo7Fot6oeE
-         29OCUyx0EvW9sY2bPQZUOuSYFbn2/3zgrgsfRbL0LTiWyaUrzhEZU8/OmpoKI6IFvAeE
-         Eiv9sob2Ivj2goIS5u8PtTQ6HKMMl+9HMg8nVZ7aYwqc0+WwrbsCs10ssnUDfxKgtsxT
-         XQ/2AqqeG45wKjFnZWbj6WJwIsTdhH5s/xeeDrrn2uvFFExrN3Np1HkUPDGzfA9rIWtp
-         TKzuUIhTtzvg/gfd1Rt3TiEbaB/lyojvldak8ajtHBuDFzAQzpdfNitUADfq5IPwCLE+
-         6pKw==
-X-Gm-Message-State: AOJu0YzG12NFHkMMWeAw2jRck4/TxJu2kUf8R+GG8Av5GfGLJHdO9RnL
-        ZpnYPd/Yg9uYfnNZGVlWeZ2NYbbRAljpGvIngDg21E1+QHRZoxc8
-X-Google-Smtp-Source: AGHT+IFMQne48Ci6124ZJ4/1HYU4EA0QRWtfa4ezFepMeZBntWk0+Ilj6fnvEHae0teXkx2uHfaLR4luXVeMdbtLFcE=
-X-Received: by 2002:a5b:3ce:0:b0:d80:68d1:b826 with SMTP id
- t14-20020a5b03ce000000b00d8068d1b826mr732120ybp.6.1697669391762; Wed, 18 Oct
- 2023 15:49:51 -0700 (PDT)
+        Wed, 18 Oct 2023 18:50:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7C3114
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:50:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697669424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6YtWId1/SWWenZl2luC/PqpUeo0OsJMpmqJeBR+/Tyc=;
+        b=uUvSPDd3XhrZhpXVA2631gq17qLnbviYXo2VUT5bMvPixVAZUthWGXaTxI82oto+xKrxMa
+        U7mHXnc9KRutNVvW+SPZw0DbOfq+M9HDVYnx6VvUH1GSeguC2sMgEpvx3R5ukmC4mdLGWX
+        cRALJjf3fIUYh32xw0/Lo58RpoA1AW95dNtV5qp3G4F/9Ss84uEkerD9PfNteSsU1vQYBq
+        8++Q/8xBPiygSHzJxDnSs1hFwsAjS3UVXssASGCKLkPWhNeALDubAXc3KLSLdAzNvTcQB9
+        NV1iHtmNqza8ZfD7WUUITr5oVPkdDnZS5+xAy+NAiqljVZdttmnph3ENcVqqqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697669424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6YtWId1/SWWenZl2luC/PqpUeo0OsJMpmqJeBR+/Tyc=;
+        b=gAqNJSgUCCme+WXPT5IqZCHeiPj3HxCYSeErhFzM4RH7udkSeH1WRcTehKpvleSV1K+EhK
+        qBD0APyAHi9/pNCQ==
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: PIC probing code from e179f6914152 failing
+In-Reply-To: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+Date:   Thu, 19 Oct 2023 00:50:23 +0200
+Message-ID: <878r7z4kb4.ffs@tglx>
 MIME-Version: 1.0
-References: <20231001194943.658299-1-beanhuo@iokpp.de> <CAPDyKFpgPEhVuTbxe5YhYQ0W6907SwJRxSQLB1F2FbVW3zKHxg@mail.gmail.com>
- <254df9b8ca7475ad9dbd3a303c60e1f99eca9c56.camel@iokpp.de> <CAPDyKFofJR0xtpmjCQXM7=VzUeN5jQLD2AZYEWocuyCnYNObYw@mail.gmail.com>
- <fbb29b88-7a16-4d3d-a96a-0256f6bcfc05@beims.me>
-In-Reply-To: <fbb29b88-7a16-4d3d-a96a-0256f6bcfc05@beims.me>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 19 Oct 2023 00:49:15 +0200
-Message-ID: <CAPDyKFo2BGp+Wacz7cTAPZ7_Tkpy0St0AujWfiW=13P7fmrwhA@mail.gmail.com>
-Subject: Re: [PATCH v4] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
- eMMC Q2J54A
-To:     Rafael Beims <rafael@beims.me>
-Cc:     Bean Huo <beanhuo@iokpp.de>, adrian.hunter@intel.com,
-        beanhuo@micron.com, jakub.kwapisz@toradex.com,
-        rafael.beims@toradex.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 at 18:05, Rafael Beims <rafael@beims.me> wrote:
+On Wed, Oct 18 2023 at 13:50, Mario Limonciello wrote:
+> Recently an issue was reported to Bugzilla [1] that the Keyboard (IRQ 1) 
+> and GPIO controller (IRQ 7) weren't working properly on two separate 
+> Lenovo machines.  The issues are unique to Linux.
 >
-> On 10/10/2023 18:04, Ulf Hansson wrote:
-> > On Tue, 10 Oct 2023 at 17:33, Bean Huo <beanhuo@iokpp.de> wrote:
-> >> Hi Ulf,
-> >>
-> >> thanks for your comments, I didn't quite get your points:
-> >>
-> >> On Tue, 2023-10-10 at 16:20 +0200, Ulf Hansson wrote:
-> >>>> @@ -2381,8 +2381,11 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct
-> >>>> mmc_queue *mq, struct request *req)
-> >>>>                           }
-> >>>>                           ret = mmc_blk_cqe_issue_flush(mq, req);
-> >>>>                           break;
-> >>>> -               case REQ_OP_READ:
-> >>>>                   case REQ_OP_WRITE:
-> >>>> +                       if (mmc_card_broken_cache_flush(card) &&
-> >>>> !card->written_flag)
-> >>> It looks superfluous to me to check mmc_card_broken_cache_flush() and
-> >>> !card->written_flag. Just set the card->written_flag unconditionally.
-> >> what did you mean "Just set the card->written_flag unconditionally."?
-> >> This means I just need to check card->written_flag and set card-
-> >>> written_flag to true and false in the case
-> >> MMC_QUIRK_BROKEN_CACHE_FLUSH? or don't need to call
-> >> mmc_card_broken_cache_flush()?
-> > I mean skip the checks above and just do the assignment below.
-> >
-> >>>> +                               card->written_flag = true;
-> >>>> +                       fallthrough;
-> >>>> +               case REQ_OP_READ:
-> >>>>                           if (host->cqe_enabled)
-> >>>>                                   ret = mmc_blk_cqe_issue_rw_rq(mq,
-> >>>> req);
-> >>>>                           else
-> >>>> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-> >>>> index 4edf9057fa79..b7754a1b8d97 100644
-> >>>> --- a/drivers/mmc/core/card.h
-> >>>> +++ b/drivers/mmc/core/card.h
-> >>>> @@ -280,4 +280,8 @@ static inline int
-> >>>> mmc_card_broken_sd_cache(const struct mmc_card *c)
-> >>>>           return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
-> >>>>    }
-> >>>>
-> >>>> +static inline int mmc_card_broken_cache_flush(const struct
-> >>>> mmc_card *c)
-> >>>> +{
-> >>>> +       return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
-> >>>> +}
-> >>>>    #endif
-> >>>> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> >>>> index 89cd48fcec79..47896c32086e 100644
-> >>>> --- a/drivers/mmc/core/mmc.c
-> >>>> +++ b/drivers/mmc/core/mmc.c
-> >>>> @@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host
-> >>>> *host, u32 ocr,
-> >>>>           if (!oldcard)
-> >>>>                   host->card = card;
-> >>>>
-> >>>> +       card->written_flag = false;
-> >>>> +
-> >>> How about doing this after a successful flush operation instead? In
-> >>> other words in _mmc_flush_cache().
-> >> Here initializes flag and the patch is intenting to eliminate the cache
-> >> flush command before writing. what do you mean adding in
-> >> mmc_flush_cache()?
-> > mmc_init_card() is called while initializing and re-initializing the
-> > card. So, it certainly works to reset the flag from here.
-> >
-> > However, _mmc_flush_cache() is called before powering off the card,
-> > which then would work similarly to the above, but also gets called for
-> > REQ_OP_FLUSH. Wouldn't that mean that we may be able to skip some
-> > unnecessary/troublesome cache flush requests if we would reset the
-> > flag from  mmc_flush_cache(), rather than from mmc_init_card()?
-> >
-> > Kind regards
-> > Uffe
-> Forgive me if I'm misunderstanding something, but wouldn't resetting the
-> flag on _mmc_flush_cache()
-> essentially disable cache when the MMC_QUIRK_BROKEN_CACHE_FLUSH is active?
-
-It would, until after there has been a new I/O write. Is that a problem?
-
+> In digging through them, they happen because Lenovo didn't set up the 
+> PIC in the BIOS.
+> Specifically the PIC probing code introduced by e179f6914152 ("x86, irq, 
+> pic: Probe for legacy PIC and set legacy_pic appropriately") expects 
+> that the BIOS sets up the PIC and uses that assertion to let Linux set 
+> it up.
 >
->  From what I see, the card->written flag is supposed to stay true until
-> we need to reinitialize the
-> eMMC again, otherwise we would be skipping cache flushes we don't want
-> to skip. It's only before
-> writing for the first time that we want to skip the flush.
+> One of the reporters confirmed that reverting e179f6914152 fixes the 
+> issue.  Keyboard and GPIO controller both work properly.
+>
+> I wanted to ask if we can please revert that and come up with a 
+> different solution for kexec with HyperV.
+> Can guests instead perhaps detect in early boot code they're running in 
+> an EFI based hypervisor and explicitly set 'legacy_pic = &null_legacy_pic;'?
 
-If that's really what we want, that's perfectly okay to me. The commit
-message isn't really clear about this, so I think that Bean could
-improve that too.
+No. This detection mechanism prevents PIC usage also in other
+scenarios.
 
-I guess we need some kind of confirmation from Bean about this. Don't
-get me wrong, I am happy to go with whatever approach as long as it's
-clear *why* the selected approach is taken.
+It's perfectly valid code and the assumption that you can read back what
+you wrote to the master IMR is entirely correct. If that's not the case
+then there is no PIC, the BIOS has disabled some parts of the legacy
+block or did not initialize it.
 
-Kind regards
-Uffe
+Letting the kernel blindly assume that there is always a PIC is just
+wrong. Worse, it puts the burden on everyone else to sprinkle
+"legacy_pic = null_pic;" all over the place with dubious
+conditions. That's exactly what the commit in question avoided.
+
+So no, we are not going back there.
+
+We could obviously change the probe() function to issue a full PIC
+initialization sequence before reading a known written value
+back. That's basically what the revert causes to happen via
+legacy_pic->init().
+
+But I fundamentally hate to do that because forcing the init sequence
+just to make presumably broken code which has some dubious dependencies
+on the PIC or on nr_legacy_irqs > 0 happy is not really a solution when
+the PIC is actually not needed at all. For anything modern where all
+legacy interrupts are routed to the IO/APIC the PIC does not make any
+sense whatsoever.
+
+We rather go and fix the real underlying problem.
+
+The kernel can handle the legacy interrupts perfectly fine through the
+IOAPIC. There is no hard requirement for the PIC at all except for
+really old systems which had the timer interrupt wired to the PIC and
+therefore required to route the timer interrupt through the PIC instead
+of the IO/APIC or did not provide routing entries for the IO/APIC. See
+the horrible hackery in check_timer() and the grossly misnomed
+init_IO_APIC_traps().
+
+I just took a random machine, forced the NULL PIC and added
+'apic=verbose' to the kernel command line and magically all the legacy
+interrupts are set up via IO/APIC despite the NULL PIC and therefore 0
+preallocated legacy interrupts.
+
+  apic 0 pin 0 not connected
+ IOAPIC[0]: Preconfigured routing entry (0-1 -> IRQ 1 Level:0 ActiveLow:0)
+ IOAPIC[0]: Preconfigured routing entry (0-2 -> IRQ 2 Level:0 ActiveLow:0)
+ IOAPIC[0]: Preconfigured routing entry (0-3 -> IRQ 3 Level:0 ActiveLow:0)
+ ...
+
+which is identical to the output with PIC enabled. That debug message is
+emitted from mp_irqdomain_alloc() which is invoked via the PNP resource
+management code.
+
+Now /proc/interrupts:
+
+           CPU0       CPU1       CPU2       CPU3        
+  1:          0         56          0          0    IO-APIC   1-edge      i8042
+  4:        442          0          0          0    IO-APIC   4-edge      ttyS0
+  8:          0          0          0          0    IO-APIC   8-edge      rtc0
+  9:          0          0          0          0    IO-APIC   9-fasteoi   acpi
+ 12:          0          0        122          0    IO-APIC  12-edge      i8042
+
+Keyboard and serial are working, see?
+
+The only interrupt which does not work is interrupt 0 because nothing
+allocates interrupt 0 due to nr_legacy_irqs == 0, but that's a trivially
+solvable problem.
+
+That machine does not even need the timer interrupt because it has a
+usable APIC and TSC deadline timer, so no APIC timer calibration
+required. The same is true for CPUs which do not have a TSC deadline
+timer, but enumerate the APIC frequency via CPUID or MSRs.
+
+But that brings up an interesting question. How are those affected
+machines even reaching a state where the user notices that just the
+keyboard and the GPIO are not working? Why?
+
+The CPUID/MSR APIC frequency enumeration is Intel specific and
+everything else depends on a working timer interrupt to calibrate the
+APIC timer frequency. So AMD CPUs require the timer interrupt to
+work. The only explanation why this "works" in that null PIC case is
+that the PIT/HPET interrupt is actually wired to pin 0, but that's
+something to be determined...
+
+Can I please get the following information from an affected machine:
+
+  1) dmesg with 'apic=verbose' on the command line
+  2) /proc/interrupts
+  3) /sys/kernel/debug/irq/irqs/{0..15}
+
+  #3 requires CONFIG_GENERIC_IRQ_DEBUGFS to be set.
+
+Two versions of that please:
+
+  1) Unpatched kernel
+  2) Patched kernel
+
+Thanks,
+
+        tglx
