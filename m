@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F8E7CDFB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7197CDFBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345713AbjJRO1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S1345108AbjJRO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345560AbjJRO1V (ORCPT
+        with ESMTP id S1344873AbjJRO2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:27:21 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F07170A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:26:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso1108480766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697639163; x=1698243963; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yz7ZSvascT2J277a7QoKDS11yhfUPVtOBgADIA7AQis=;
-        b=wmq3JQ20vXZyMu83mEGpO4M+/tgOjw7Fvq3MRhcJw7KPLoHGCXyh9AQDpSWOacGHXG
-         RUY4WC8/A1qwSMcOs1dawNhH0g0n/fIactHppReBRMh6yOGIYI335QZfVVyihM3eOR7Y
-         VnudgIEQFx4jp+5iBO9AGbEtCx0OweB0bi6fZQ2VqfQOMEGPkhmfPh/MXazVOPQe4cuf
-         6JFN5JvHdZ6xLcZSgw0lZ5sOZ+9c547/0r2qmojZqElWF2eEwYShJply2860mnrP+Dbo
-         3ZrXgsyEPyNg9cPYv+fD3D17ywCv/BPYamsyUtjo5+ZwExYrSUUwBYnsPjQCPb9NuPwk
-         d0/w==
+        Wed, 18 Oct 2023 10:28:03 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F41189
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:01 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3ae30e1ad6cso10859070b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:28:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697639163; x=1698243963;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yz7ZSvascT2J277a7QoKDS11yhfUPVtOBgADIA7AQis=;
-        b=DqCnm9VSfe4kW1cmh0qOQmq1OC4Vntu1EtbjJMZWKg4vppbkkeUSFQF+s2UVWCCiQx
-         CbpR6bn9YgePdDm/WAa8Qn1v+mJWAI7950RJSaY86X6yZJ0kgpZMltyK++mWl0FXlgGD
-         RvXtALG+WcrHteJAiU/qxKfgoIDDffMTp7ph+Y/EGfG1tXlkIBPEwl1o8XQFv6sywj39
-         EVCb86yZIbK9JrDM9KDuMf9tLzD7Iq7TpeARxfrFNhNeJ7V3H9glLTn1frG8rrG9GR6h
-         RLiKvGs7umoXwjN07UYrIfD92r0PgBDUkASPHW40RkR2JcD6+yyMo8Gq0oFOOGL41LZ8
-         F21w==
-X-Gm-Message-State: AOJu0YzB/DuciWeZal6DjPCyCnokc5p69MGymMcdjEbNpbQTns4zPZiQ
-        fbxJw25DETOxTuCe9/DlpUs2qg==
-X-Google-Smtp-Source: AGHT+IGXsHNg+vY54Vy7dLjS/eWTBxTI8IxUwjx0EIdkU+CBaq+/D+mx/PDV0nwXtR4BDJ5gjFnm5A==
-X-Received: by 2002:a17:907:3202:b0:9a5:9038:b1e7 with SMTP id xg2-20020a170907320200b009a59038b1e7mr4375120ejb.36.1697639162665;
-        Wed, 18 Oct 2023 07:26:02 -0700 (PDT)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id g11-20020a1709064e4b00b0099bcf1c07c6sm1784191ejw.138.2023.10.18.07.26.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 07:26:02 -0700 (PDT)
-Message-ID: <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set
- the FUSE_INIT_EXT"
-From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To:     Bernd Schubert <bschubert@ddn.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 18 Oct 2023 15:26:01 +0100
-In-Reply-To: <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
-References: <20230904133321.104584-1-git@andred.net>
-         <20231018111508.3913860-1-git@andred.net>
-         <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
-         <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
-         <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4-1 
+        d=1e100.net; s=20230601; t=1697639280; x=1698244080;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CdMBNL3S2x6JknCQNvPePRN6XZ2zBEfRh1DVc58bPSA=;
+        b=YrOMQsVnqxCaQI5XYPCDQTi/aZRVzHpuxfuKWDVcFfx4GwiNmmx99MqvWeFoKa1Kgo
+         hQlvNkSGic5+AsSNzIPShf7kkKu/8XyZd4IVjIhWgtiI3ATitqlulb3cCjfO6uorTU1/
+         Mh4RNUrK5L0qoxtIeI67bm/5lvAWTq6s/+tgEaZQ9cFiiT/SmuJl4UDpvWe3D6KgPT0V
+         l+/pZTtMM1O6HUYidEL6Ek7t+XamP7LBHfVUzmYG8kZMzHNhCLaJlEDS/wF+SZir0OJx
+         mLs7jIjxBzxeb4g7D9Hi0HEVppv4aWZukRN5utszOSjwRiw9mlv2M732KsrKILNfuOqR
+         4dmQ==
+X-Gm-Message-State: AOJu0YzcwQh/42hyp2yh8dTt1vQgGVc+OwKMriT/LI6AEoSEOwM629Xi
+        mmOGT+2FVPj7UrHq4C5w38Ax9JkBGRd0ombg55phlIrvNP40
+X-Google-Smtp-Source: AGHT+IH5x77WTQFzLiRumx9QRmlIW1x9csdWG+C9yZ4XNpdGNpfb61NuTSsTMsCGzbBMsDzUBEgm2yxf0y4jfQacuqmDkoK4xRm/
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Received: by 2002:a05:6808:219b:b0:3b2:f40e:9493 with SMTP id
+ be27-20020a056808219b00b003b2f40e9493mr13347oib.6.1697639280434; Wed, 18 Oct
+ 2023 07:28:00 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 07:28:00 -0700
+In-Reply-To: <0000000000000c44b0060760bd00@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004467c80607fe72f1@google.com>
+Subject: Re: [syzbot] [gfs2?] WARNING: suspicious RCU usage in gfs2_permission
+From:   syzbot <syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, gfs2@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        postmaster@duagon.onmicrosoft.com, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,54 +57,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-18 at 11:52 +0000, Bernd Schubert wrote:
-> On 10/18/23 13:46, Andr=C3=A9 Draszik wrote:
-> > On Wed, 2023-10-18 at 11:39 +0000, Bernd Schubert wrote:
-> > > On 10/18/23 13:15, Andr=C3=A9 Draszik wrote:
-> > > > From: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-> > > >=20
-> > > > This reverts commit 3066ff93476c35679cb07a97cce37d9bb07632ff.
-> > > >=20
-> > > > This patch breaks all existing userspace by requiring updates
-> > > > as
-> > > > mentioned in the commit message, which is not allowed.
-> > > >=20
-> > > > Revert to restore compatibility with existing userspace
-> > > > implementations.
-> > >=20
-> > > Which fuse file system does it exactly break? In fact there
-> > > haven't
-> > > been
-> > > added too many flags after - what exactly is broken?
-> >=20
-> > The original patch broke the existing kernel <-> user ABI by now
-> > requiring user space applications to pass in an extra flag.
-> > There are various side-effects of this, like unbootable systems,
-> > just
-> > because the kernel was updated.
-> > Breaking the ABI is the one thing that is not allowed. This is not
-> > specific to any particular fuse file system.
->=20
-> How exactly did it break it?
+syzbot has found a reproducer for the following issue on:
 
-At least in Android, creating new files, or reading existing files
-returns -EFAULT
+HEAD commit:    2dac75696c6d Add linux-next specific files for 20231018
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13af5fe5680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
+dashboard link: https://syzkaller.appspot.com/bug?extid=3e5130844b0c0e2b4948
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101c8d09680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a07475680000
 
->  These are feature flags - is there really a=20
-> file system that relies on these flag to the extend that it does not=20
-> work anymore?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2375f16ed327/disk-2dac7569.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c80aee6e2e6c/vmlinux-2dac7569.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/664dc23b738d/bzImage-2dac7569.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/5ce278ef6f36/mount_0.gz
 
-I don't know enough about the implementation details, but even outside
-Android user space had to be updated as a prerequisite for this kernel
-patch:
-https://lore.kernel.org/all/YmUKZQKNAGimupv7@redhat.com/
-https://github.com/libfuse/libfuse/pull/662
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com
 
-Which means any non-Android user space predating those changes isn't
-working anymore either.
+gfs2: fsid=syz:syz.0: first mount done, others may mount
+=============================
+WARNING: suspicious RCU usage
+6.6.0-rc6-next-20231018-syzkaller #0 Not tainted
+-----------------------------
+fs/gfs2/inode.c:1877 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
 
 
+rcu_scheduler_active = 2, debug_locks = 1
+no locks held by syz-executor120/5052.
 
-Cheers,
-Andre
+stack backtrace:
+CPU: 1 PID: 5052 Comm: syz-executor120 Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ lockdep_rcu_suspicious+0x20c/0x3b0 kernel/locking/lockdep.c:6711
+ gfs2_permission+0x3f9/0x4c0 fs/gfs2/inode.c:1877
+ do_inode_permission fs/namei.c:462 [inline]
+ inode_permission fs/namei.c:529 [inline]
+ inode_permission+0x384/0x5e0 fs/namei.c:504
+ may_open+0x11c/0x400 fs/namei.c:3249
+ do_open fs/namei.c:3619 [inline]
+ path_openat+0x17aa/0x2ce0 fs/namei.c:3778
+ do_filp_open+0x1de/0x430 fs/namei.c:3808
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f5b23a31a11
+Code: 75 57 89 f0 25 00 00 41 00 3d 00 00 41 00 74 49 80 3d 7a 06 0b 00 00 74 6d 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 93 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+RSP: 002b:00007ffe9ecd33a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007f5b23a31a11
+RDX: 0000000000010000 RSI: 0000000020037f80 RDI: 00000000ffffff9c
+RBP: 0000000020037f80 R08: 00007ffe9ecd3470 R09: 0000000000037f13
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 00007ffe9ecd3470 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
 
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
