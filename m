@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA697CE821
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA7A7CE824
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbjJRTtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
+        id S231883AbjJRTty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjJRTtj (ORCPT
+        with ESMTP id S232221AbjJRTtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:49:39 -0400
+        Wed, 18 Oct 2023 15:49:41 -0400
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F288012C;
-        Wed, 18 Oct 2023 12:49:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073DE134;
+        Wed, 18 Oct 2023 12:49:03 -0700 (PDT)
 Received: from smtp.gmail.com (1.general.jsalisbury.us.vpn [10.172.66.188])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 402FA4166C;
-        Wed, 18 Oct 2023 19:48:57 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C605141687;
+        Wed, 18 Oct 2023 19:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697658538;
-        bh=4pmQNv5cuKJdx4r3/SYwWbuS5xEyX4GGjTdNfRldRoE=;
+        s=20210705; t=1697658541;
+        bh=8Y07yuoT6DVyuGlkc8/akVKoJW7v392Ra1UBrfLmh5Y=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=V00gxXgqAOphSWpCadBNGWsMCNJ7MQ9x52GYK0yS2GcjAQ6s/7taWRQ+63q2fZc6k
-         fs6rlyCmHxNT8FO5ASDUdWf3iDoQGU2veeNh+ZHnuf3vNfePDtG8Wp8c6oGdfqipP/
-         bLFDgEPu6NUOE6RSDK1IW2Z+WtjkdYHlJgKljkL7/uzMVroGeG81jOaxNqHnpDMz+x
-         M6AmVbS7jrKKJDmYuI+EfJovx8WKEz7IRgnGxvn6DfzJK1tl05IJ7a8kW5r6qHpkgB
-         2FPHNONrJB3AlX6VpUQ5j32xivi3juCk/vufQCS1YAX0A/DvRDSkqQshtgJ1QyjZni
-         9WXo0BifQMY0Q==
+        b=dc6cF6qoAjkfEXrGMu0blXNYuIEkkt4XWwFkrTY+GNsY+UPMYNV9PGaEca8gY5R1U
+         vMl/LXS/vNd6G1SnK+G1WvGyvx1SoeG+TJ/jCOV4l8iKm6IgHUQroBsTiLAfE0XY3z
+         PhgyfLRirMrTLNsG1faA4fYJWtp554F64OPPsWSaiFymqNuKV1JSRg+jyww6l/0HTT
+         RWX57Z+MVZx24z/FeMExLU7StqidEc22lzUkcKT5jv1KF/Z7nsSg/FX2LtKifEnuAd
+         eyoCAmHb7kq8njndyyvx9pp1uZ/aps3JvZWyS0Qu0QiI3QnvGNXUkJ4kxLJSjfM4Gj
+         Yfton3wKj8SNQ==
 From:   Joseph Salisbury <joseph.salisbury@canonical.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -45,12 +45,12 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>,
         Joseph Salisbury <joseph.salisbury@canonical.com>
-Cc:     syzbot+5c54bd3eb218bb595aa9@syzkaller.appspotmail.com,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH RT 10/12] posix-timers: Ensure timer ID search-loop limit is valid
-Date:   Wed, 18 Oct 2023 15:48:31 -0400
-Message-Id: <20231018194833.651674-11-joseph.salisbury@canonical.com>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Chris Wilson <chris.p.wilson@intel.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH RT 11/12] drm/i915: Do not disable preemption for resets
+Date:   Wed, 18 Oct 2023 15:48:32 -0400
+Message-Id: <20231018194833.651674-12-joseph.salisbury@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231018194833.651674-1-joseph.salisbury@canonical.com>
 References: <20231018194833.651674-1-joseph.salisbury@canonical.com>
@@ -66,7 +66,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
 v5.15.133-rt70-rc1 stable review patch.
 If anyone has any objections, please let me know.
@@ -74,111 +74,110 @@ If anyone has any objections, please let me know.
 -----------
 
 
-posix_timer_add() tries to allocate a posix timer ID by starting from the
-cached ID which was stored by the last successful allocation.
+[commit 40cd2835ced288789a685aa4aa7bc04b492dcd45 in linux-rt-devel]
 
-This is done in a loop searching the ID space for a free slot one by
-one. The loop has to terminate when the search wrapped around to the
-starting point.
+Commit ade8a0f59844 ("drm/i915: Make all GPU resets atomic") added a
+preempt disable section over the hardware reset callback to prepare the
+driver for being able to reset from atomic contexts.
 
-But that's racy vs. establishing the starting point. That is read out
-lockless, which leads to the following problem:
+In retrospect I can see that the work item at a time was about removing
+the struct mutex from the reset path. Code base also briefly entertained
+the idea of doing the reset under stop_machine in order to serialize
+userspace mmap and temporary glitch in the fence registers (see
+eb8d0f5af4ec ("drm/i915: Remove GPU reset dependence on struct_mutex"),
+but that never materialized and was soon removed in 2caffbf11762
+("drm/i915: Revoke mmaps and prevent access to fence registers across
+reset") and replaced with a SRCU based solution.
 
-CPU0	  	      	     	   CPU1
-posix_timer_add()
-  start = sig->posix_timer_id;
-  lock(hash_lock);
-  ...				   posix_timer_add()
-  if (++sig->posix_timer_id < 0)
-      			             start = sig->posix_timer_id;
-     sig->posix_timer_id = 0;
+As such, as far as I can see, today we still have a requirement that
+resets must not sleep (invoked from submission tasklets), but no need to
+support invoking them from a truly atomic context.
 
-So CPU1 can observe a negative start value, i.e. -1, and the loop break
-never happens because the condition can never be true:
+Given that the preemption section is problematic on RT kernels, since the
+uncore lock becomes a sleeping lock and so is invalid in such section,
+lets try and remove it. Potential downside is that our short waits on GPU
+to complete the reset may get extended if CPU scheduling interferes, but
+in practice that probably isn't a deal breaker.
 
-  if (sig->posix_timer_id == start)
-     break;
+In terms of mechanics, since the preemption disabled block is being
+removed we just need to replace a few of the wait_for_atomic macros into
+busy looping versions which will work (and not complain) when called from
+non-atomic sections.
 
-While this is unlikely to ever turn into an endless loop as the ID space is
-huge (INT_MAX), the racy read of the start value caught the attention of
-KCSAN and Dmitry unearthed that incorrectness.
-
-Rewrite it so that all id operations are under the hash lock.
-
-Reported-by: syzbot+5c54bd3eb218bb595aa9@syzkaller.appspotmail.com
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Link: https://lore.kernel.org/r/87bkhzdn6g.ffs@tglx
-
-(cherry picked from commit 8ce8849dd1e78dadcee0ec9acbd259d239b7069f)
+Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: Chris Wilson <chris.p.wilson@intel.com>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/20230705093025.3689748-1-tvrtko.ursulin@linux.intel.com
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+[PG: backport from v6.4-rt ; minor context fixup caused by b7d70b8b06ed]
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Clark Williams <williams@redhat.com>
+(cherry picked from commit 1a80b572f783a15327663bf9e7d71163976e8d6a
+v6.1-rt)
 Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
 ---
- include/linux/sched/signal.h |  2 +-
- kernel/time/posix-timers.c   | 31 ++++++++++++++++++-------------
- 2 files changed, 19 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_reset.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 5f0e8403e8ce..9743f7d173a0 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -125,7 +125,7 @@ struct signal_struct {
- #ifdef CONFIG_POSIX_TIMERS
+diff --git a/drivers/gpu/drm/i915/gt/intel_reset.c b/drivers/gpu/drm/i915/gt/intel_reset.c
+index 9dc244b70ce4..06ab730dc9a8 100644
+--- a/drivers/gpu/drm/i915/gt/intel_reset.c
++++ b/drivers/gpu/drm/i915/gt/intel_reset.c
+@@ -167,13 +167,13 @@ static int i915_do_reset(struct intel_gt *gt,
+ 	/* Assert reset for at least 20 usec, and wait for acknowledgement. */
+ 	pci_write_config_byte(pdev, I915_GDRST, GRDOM_RESET_ENABLE);
+ 	udelay(50);
+-	err = wait_for_atomic(i915_in_reset(pdev), 50);
++	err = _wait_for_atomic(i915_in_reset(pdev), 50, 0);
  
- 	/* POSIX.1b Interval Timers */
--	int			posix_timer_id;
-+	unsigned int		next_posix_timer_id;
- 	struct list_head	posix_timers;
+ 	/* Clear the reset request. */
+ 	pci_write_config_byte(pdev, I915_GDRST, 0);
+ 	udelay(50);
+ 	if (!err)
+-		err = wait_for_atomic(!i915_in_reset(pdev), 50);
++		err = _wait_for_atomic(!i915_in_reset(pdev), 50, 0);
  
- 	/* ITIMER_REAL timer for the process */
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index ed3c4a954398..2d6cf93ca370 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -140,25 +140,30 @@ static struct k_itimer *posix_timer_by_id(timer_t id)
- static int posix_timer_add(struct k_itimer *timer)
- {
- 	struct signal_struct *sig = current->signal;
--	int first_free_id = sig->posix_timer_id;
- 	struct hlist_head *head;
--	int ret = -ENOENT;
-+	unsigned int cnt, id;
+ 	return err;
+ }
+@@ -193,7 +193,7 @@ static int g33_do_reset(struct intel_gt *gt,
+ 	struct pci_dev *pdev = to_pci_dev(gt->i915->drm.dev);
  
--	do {
-+	/*
-+	 * FIXME: Replace this by a per signal struct xarray once there is
-+	 * a plan to handle the resulting CRIU regression gracefully.
-+	 */
-+	for (cnt = 0; cnt <= INT_MAX; cnt++) {
- 		spin_lock(&hash_lock);
--		head = &posix_timers_hashtable[hash(sig, sig->posix_timer_id)];
--		if (!__posix_timers_find(head, sig, sig->posix_timer_id)) {
-+		id = sig->next_posix_timer_id;
-+
-+		/* Write the next ID back. Clamp it to the positive space */
-+		sig->next_posix_timer_id = (id + 1) & INT_MAX;
-+
-+		head = &posix_timers_hashtable[hash(sig, id)];
-+		if (!__posix_timers_find(head, sig, id)) {
- 			hlist_add_head_rcu(&timer->t_hash, head);
--			ret = sig->posix_timer_id;
-+			spin_unlock(&hash_lock);
-+			return id;
- 		}
--		if (++sig->posix_timer_id < 0)
--			sig->posix_timer_id = 0;
--		if ((sig->posix_timer_id == first_free_id) && (ret == -ENOENT))
--			/* Loop over all possible ids completed */
--			ret = -EAGAIN;
- 		spin_unlock(&hash_lock);
--	} while (ret == -ENOENT);
--	return ret;
-+	}
-+	/* POSIX return code when no timer ID could be allocated */
-+	return -EAGAIN;
+ 	pci_write_config_byte(pdev, I915_GDRST, GRDOM_RESET_ENABLE);
+-	return wait_for_atomic(g4x_reset_complete(pdev), 50);
++	return _wait_for_atomic(g4x_reset_complete(pdev), 50, 0);
  }
  
- static inline void unlock_timer(struct k_itimer *timr, unsigned long flags)
+ static int g4x_do_reset(struct intel_gt *gt,
+@@ -210,7 +210,7 @@ static int g4x_do_reset(struct intel_gt *gt,
+ 
+ 	pci_write_config_byte(pdev, I915_GDRST,
+ 			      GRDOM_MEDIA | GRDOM_RESET_ENABLE);
+-	ret =  wait_for_atomic(g4x_reset_complete(pdev), 50);
++	ret =  _wait_for_atomic(g4x_reset_complete(pdev), 50, 0);
+ 	if (ret) {
+ 		GT_TRACE(gt, "Wait for media reset failed\n");
+ 		goto out;
+@@ -218,7 +218,7 @@ static int g4x_do_reset(struct intel_gt *gt,
+ 
+ 	pci_write_config_byte(pdev, I915_GDRST,
+ 			      GRDOM_RENDER | GRDOM_RESET_ENABLE);
+-	ret =  wait_for_atomic(g4x_reset_complete(pdev), 50);
++	ret =  _wait_for_atomic(g4x_reset_complete(pdev), 50, 0);
+ 	if (ret) {
+ 		GT_TRACE(gt, "Wait for render reset failed\n");
+ 		goto out;
+@@ -736,9 +736,7 @@ int __intel_gt_reset(struct intel_gt *gt, intel_engine_mask_t engine_mask)
+ 	intel_uncore_forcewake_get(gt->uncore, FORCEWAKE_ALL);
+ 	for (retry = 0; ret == -ETIMEDOUT && retry < retries; retry++) {
+ 		GT_TRACE(gt, "engine_mask=%x\n", engine_mask);
+-		preempt_disable();
+ 		ret = reset(gt, engine_mask, retry);
+-		preempt_enable();
+ 	}
+ 	intel_uncore_forcewake_put(gt->uncore, FORCEWAKE_ALL);
+ 
 -- 
 2.34.1
 
