@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEED7CDC0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306247CDC0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjJRMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        id S231467AbjJRMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjJRMke (ORCPT
+        with ESMTP id S231267AbjJRMks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:40:34 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABCE119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:40:29 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so4011916b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697632829; x=1698237629; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k2bhvVS+iGlODYrs0fN0iTmfeOWSVXnmMmj0GHdCTAk=;
-        b=RMQSb1h6l1sL1msEixO2AlPtG+ceNrqLKD+J9chAAIqvWVPv7Eb751LaOTMkTCLTFP
-         hJq5svk5+oR8wN2nbhnu0nEt7arFTX72RTvTK87SlgmjpVQRfS2fmddWUzHyd0GhlJIY
-         +Znjd1gxhk60K1UvfOCostA82wC3oExu9kvO+64zWbpoMLa5wGJshBXNKx+t6LGtskyH
-         MFAKmqp2hsxpPSHFzc2fpKl1cVicZdjN83tHjMVhyGTbG2ZP/YnqEQlYuYUYUjfKJxb6
-         gZRgAZfm06S5t9XWsJi09a/6xoezJHrLpjoq3qW+FT6/Ap6FcIhszMeWUIfmTmJW315O
-         oeJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697632829; x=1698237629;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k2bhvVS+iGlODYrs0fN0iTmfeOWSVXnmMmj0GHdCTAk=;
-        b=uxHY4jOpSRh0jrGxNpfo2i9e+BNB4wrjwkYSwLD47x85Q+WjRD/3FLYErEtVwtgcZ9
-         +JxwtNeQB3YouOn7S+3yPPGbK/Qrfavkc138FgxLl9orHOREB1XqO29AntWByxNi6/Un
-         pkPv72mNvFQf6CHge3nkCmeZwc+AX/ZnUIgUmH35XQxP95aRdfeHFeGfLBElCRv1UDgH
-         K3O4VnuwjUK3GxPLXxpQ/0bEfebZIgsz7xptytNbl4K7xaROEsfOCLJZH+/IY3j7afOG
-         5Ec2Z34K0+58t5DKAw8dGR7FkFn/1qR8MG0CkD+kyn26SQFeImf1ZIo85Y2P9lo9l5yF
-         5XsA==
-X-Gm-Message-State: AOJu0Ywek/sSZR8kIJS0uHWz9/4xqbyqENXUw38vKdoO7C0XOONwUxKX
-        SjpuOrewNnWRuxbJu2yU+fQa9A==
-X-Google-Smtp-Source: AGHT+IFX5lHsddVHnrml5UqaK+P/TAYVDKZO5+Nh2aDb58jEp+tdc2ugg5iW4fHN20LrYBuh7yZ22g==
-X-Received: by 2002:a05:6a21:6da8:b0:17b:4b61:a907 with SMTP id wl40-20020a056a216da800b0017b4b61a907mr1493643pzb.50.1697632829272;
-        Wed, 18 Oct 2023 05:40:29 -0700 (PDT)
-Received: from sunil-pc.Dlink ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id w190-20020a6382c7000000b005891f3af36asm1599267pgd.87.2023.10.18.05.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 05:40:28 -0700 (PDT)
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v4 -next 4/4] RISC-V: cacheflush: Initialize CBO variables on ACPI systems
-Date:   Wed, 18 Oct 2023 18:10:07 +0530
-Message-Id: <20231018124007.1306159-5-sunilvl@ventanamicro.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231018124007.1306159-1-sunilvl@ventanamicro.com>
-References: <20231018124007.1306159-1-sunilvl@ventanamicro.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        Wed, 18 Oct 2023 08:40:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3041AB
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:40:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD5D8C433CA;
+        Wed, 18 Oct 2023 12:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697632840;
+        bh=ANCj0Q2OJ1qzkkQO+Sp4XFTRcw4ECnG/L7DzjhbHY0o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PnhgzYZkM/eyLI9CA2rHMDopAQgkqfFT1BRiLbSCJoEyPGzAsGy7SKqrTfX89CTVB
+         pE1qCMR/gLq0c7TJ/JQbahHI+QBWuRfY8qbsL8/u6wI4yYrP9eWrQ8nQyizWPxEdR/
+         d9GOWpiXjJrCe0mV4YeAYuzCtUbxyb1nqjxSo5yBtCEysiG4Ucjwalxw8kxwO6wqJF
+         U3GIIf0c4YHHMmfKdrVigxcM7U+4QOKPuNK4wvPRh1rnDIU1OaKs2u2oE8tiN7y3tn
+         HtHsjD69uI1pKgYtuVdEdJPQ4SUMvEpJUQhWr4zBmwz+6NE/0qzxjOUl5u6QII5smk
+         hLXYiIrqfAPVw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qt5qo-005LoC-6Y;
+        Wed, 18 Oct 2023 13:40:38 +0100
+Date:   Wed, 18 Oct 2023 13:40:37 +0100
+Message-ID: <86r0lsm7cq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Independently update HDFGRTR_EL2 and HDFGWTR_EL2
+In-Reply-To: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+References: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize the CBO variables on ACPI based systems using information in
-RHCT.
+On Wed, 18 Oct 2023 04:00:07 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> Currently PMSNEVFR_EL1 system register read, and write access EL2 traps are
+> disabled, via setting the same bit (i.e 62) in HDFGRTR_EL2, and HDFGWTR_EL2
+> respectively. Although very similar, bit fields are not exact same in these
+> two EL2 trap configure registers particularly when it comes to read-only or
+> write-only accesses such as ready-only 'HDFGRTR_EL2.nBRBIDR' which needs to
+> be set while enabling BRBE on NVHE platforms. Using the exact same bit mask
+> fields for both these trap register risk writing into their RESERVED areas,
+> which is undesirable.
 
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
----
- arch/riscv/mm/cacheflush.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+Sorry, I don't understand at all what you are describing. You seem to
+imply that the read and write effects of the FGT doesn't apply the
+same way. But my reading of the ARM ARM is that  behave completely
+symmetrically.
 
-diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-index f1387272a551..55a34f2020a8 100644
---- a/arch/riscv/mm/cacheflush.c
-+++ b/arch/riscv/mm/cacheflush.c
-@@ -3,7 +3,9 @@
-  * Copyright (C) 2017 SiFive
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/of.h>
-+#include <asm/acpi.h>
- #include <asm/cacheflush.h>
- 
- #ifdef CONFIG_SMP
-@@ -124,13 +126,24 @@ void __init riscv_init_cbo_blocksizes(void)
- 	unsigned long cbom_hartid, cboz_hartid;
- 	u32 cbom_block_size = 0, cboz_block_size = 0;
- 	struct device_node *node;
-+	struct acpi_table_header *rhct;
-+	acpi_status status;
-+
-+	if (acpi_disabled) {
-+		for_each_of_cpu_node(node) {
-+			/* set block-size for cbom and/or cboz extension if available */
-+			cbo_get_block_size(node, "riscv,cbom-block-size",
-+					   &cbom_block_size, &cbom_hartid);
-+			cbo_get_block_size(node, "riscv,cboz-block-size",
-+					   &cboz_block_size, &cboz_hartid);
-+		}
-+	} else {
-+		status = acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
-+		if (ACPI_FAILURE(status))
-+			return;
- 
--	for_each_of_cpu_node(node) {
--		/* set block-size for cbom and/or cboz extension if available */
--		cbo_get_block_size(node, "riscv,cbom-block-size",
--				   &cbom_block_size, &cbom_hartid);
--		cbo_get_block_size(node, "riscv,cboz-block-size",
--				   &cboz_block_size, &cboz_hartid);
-+		acpi_get_cbo_block_size(rhct, &cbom_block_size, &cboz_block_size, NULL);
-+		acpi_put_table((struct acpi_table_header *)rhct);
- 	}
- 
- 	if (cbom_block_size)
+Also, what is nBRBIDR doing here? It is still set to 0. What
+'RESERVED' state are you talking about?
+
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on v6.6-rc6.
+> 
+> I guess it should be okay to use 'x2' as it is in the clobbered register
+> list for init_el2_state() function. But please do let me know otherwise.
+> 
+>  arch/arm64/include/asm/el2_setup.h | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+> index 899b5c10f84c..c534afb1a30d 100644
+> --- a/arch/arm64/include/asm/el2_setup.h
+> +++ b/arch/arm64/include/asm/el2_setup.h
+> @@ -206,16 +206,19 @@
+>  	cbz	x1, .Lskip_fgt_\@
+>  
+>  	mov	x0, xzr
+> +	mov	x2, xzr
+>  	mrs	x1, id_aa64dfr0_el1
+>  	ubfx	x1, x1, #ID_AA64DFR0_EL1_PMSVer_SHIFT, #4
+>  	cmp	x1, #3
+>  	b.lt	.Lset_debug_fgt_\@
+> +
+>  	/* Disable PMSNEVFR_EL1 read and write traps */
+> -	orr	x0, x0, #(1 << 62)
+> +	orr	x0, x0, #HDFGRTR_EL2_nPMSNEVFR_EL1_MASK
+> +	orr	x2, x2, #HDFGWTR_EL2_nPMSNEVFR_EL1_MASK
+>  
+>  .Lset_debug_fgt_\@:
+>  	msr_s	SYS_HDFGRTR_EL2, x0
+> -	msr_s	SYS_HDFGWTR_EL2, x0
+> +	msr_s	SYS_HDFGWTR_EL2, x2
+
+So what has changed here, aside from clobbering an extra register? The
+masks are the same, the initial values are the same... Is it in
+preparation for some other work?
+
+/me puzzled.
+
+	M.
+
 -- 
-2.39.2
-
+Without deviation from the norm, progress is not possible.
