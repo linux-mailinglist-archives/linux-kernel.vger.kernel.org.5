@@ -2,120 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B83667CE90E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529647CE914
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjJRUeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S232156AbjJRUey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRUeR (ORCPT
+        with ESMTP id S231952AbjJRUex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:34:17 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9743E9B;
-        Wed, 18 Oct 2023 13:34:15 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IHNxlB003122;
-        Wed, 18 Oct 2023 20:33:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iaF4fZOLwaJ/KZ0QOfrm4IVew7yLHfkgzzwK04I4AIE=;
- b=KW4cTeCvVOwZRO6FsDVGC3bRI3dP+g76ArcwLxyrRqT0WZ+6xBj6WvujSbDhG6lshS0B
- yvvsB++TFm+Ss3Gph9w9V4SXXyWfaKPAfzS/ozuJLVsAaGeqjEX9a4Qr5tBvK/DUA4Kj
- 2J4rxNTn86z2QZ8cUuCYjJNLqaIU3/LacdPafs1coND6QAzy5OwVerPKS5OAJjFM0ZMU
- M5b+YJJyBAXrMFGUkS83fpeQNvMxZdl3i45o0N4fQaTolrKlgu/rIKsdy6HVXbzH9xiE
- vhDJPTRRQdvyO5dKRAoQHIjt6aOrVqy4bw7BaAwhbBv8igsdAMsM03OXlFltI70oZofL xw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttg82s19j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 20:33:59 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39IKXwRX024079
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 20:33:58 GMT
-Received: from [10.110.123.255] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
- 2023 13:33:57 -0700
-Message-ID: <4ad7b474-257c-9934-8f1b-8ceb3a90af60@quicinc.com>
-Date:   Wed, 18 Oct 2023 13:33:56 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v9 23/34] ALSA: usb-audio: Prevent starting of audio
- stream if in use
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-24-quic_wcheng@quicinc.com>
- <a8dc2a3a-27a2-40d6-9e67-6ea475701e44@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <a8dc2a3a-27a2-40d6-9e67-6ea475701e44@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TXpSOcmW4EEgl-PLKgoKBfqn-fPLzaEx
-X-Proofpoint-ORIG-GUID: TXpSOcmW4EEgl-PLKgoKBfqn-fPLzaEx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_18,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=667 spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310180169
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 16:34:53 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF16118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:34:48 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7aa161b2fso112137017b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 13:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697661288; x=1698266088; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GYfskxGvkh052vsvEl3d1awIlELqt+/ddHAW9BMrb5M=;
+        b=tjTDUDggaay6pZ8JPWGnkBCMlNApkbCjAUcM95JTuLhhNKnx4jWxVlXdeIZLUrk5CA
+         spybpbmeC77+7ZVi8jZEzRAinCS5ZqAEzHiW75KYIcVLyAxXmfJChHm1/Sho/rjyo7UZ
+         JFkTSF0ajFt1PecigoRKX5q0NlFhtik1G0P7fv1NVKcyMcRmUlbl0vt+dT/j9clocfxc
+         qLICOXY5foAUQyx/HrF8cS0HpSQRDw8oEXlwls7r6Q40dDlfgG3c48ZDIh+hrtF80hgr
+         SDVZtJRhJWMyFPaTyEfW97HDtQyPb65V9Wuh3CYaBawU0qAP/YGU7wJ58q43xiiuxwgg
+         CGKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697661288; x=1698266088;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GYfskxGvkh052vsvEl3d1awIlELqt+/ddHAW9BMrb5M=;
+        b=V9F4Z1mi8ue6XDL4UXdplptDMG0bgoeAiNY4P9FA1WBnSJ4Xstz0ng93iAyUfESmPh
+         AaYVmOtgS/XvbJLptNqHPFpsgw/Gjh6zbaNffk8+DV0TRqxPkhXaZAOnb3pwOdfVIws9
+         O1QyqP7muX7ljyvxmF0+gGSxe3uuiMHMfLB/kg15mW211SGZS2wyTWXpZj+pG1pEQmhw
+         2F/7XfKwVhVc6XJtvjN1YwwqvIFVR4GBQR7onM7/F3Zeea0XA1RyDXv64KQ6jJ4oQXjQ
+         CQDSiXttNFCf8a53puXtrFScjTFKQzRePkA8cJX3ZAhup46YRDbpepW87+rnFfDq0I6P
+         iYjA==
+X-Gm-Message-State: AOJu0Yz4o+7OCjEC1yYopm46Iqp4B3+Cl2yS1J8omt+CTC5wk01QynDY
+        7m6IILue/x4lQJVXgpMrHMnTgNwrZ0w+MEU=
+X-Google-Smtp-Source: AGHT+IHH9L2XcQrcEnBx+5sYGPq31tgkiNdL4i/MGxTDHxJzWb/KYYrSKiunlxKSpvVOsOx41RQLlhhGwcxpntY=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a81:4948:0:b0:59b:d33b:5ddc with SMTP id
+ w69-20020a814948000000b0059bd33b5ddcmr8572ywa.4.1697661287989; Wed, 18 Oct
+ 2023 13:34:47 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 20:34:09 +0000
+Mime-Version: 1.0
+X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2514; i=rdbabiera@google.com;
+ h=from:subject; bh=hbXS4m7M+3a84/Y9ShZ33pG/hhrskV0AxsaMBUHbk7Y=;
+ b=owGbwMvMwCFW0bfok0KS4TbG02pJDKkGjg4WTwWm9nz6HvjwYaA023frFi2/Z/w3b1Trlb2Ra
+ JgRKnOyo5SFQYyDQVZMkUXXP8/gxpXULXM4a4xh5rAygQxh4OIUgInMfMjwP5Zh0tM4sb/H7jhm
+ iGjGq05RTf52o3CJRPDV/wIedq8PHGJkWPMnNezDosTQBc//BmpWrI2uKHjv5rRDJnG3sFSB0qr /XAA=
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231018203408.202845-2-rdbabiera@google.com>
+Subject: [PATCH v2] usb: typec: altmodes/displayport: verify compatible
+ source/sink role combination
+From:   RD Babiera <rdbabiera@google.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com, RD Babiera <rdbabiera@google.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+DisplayPort Alt Mode CTS test 10.3.8 states that both sides of the
+connection shall be compatible with one another such that the connection
+is not Source to Source or Sink to Sink.
 
-On 10/17/2023 3:37 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 10/17/23 15:00, Wesley Cheng wrote:
->> With USB audio offloading, an audio session is started from the ASoC
->> platform sound card and PCM devices.  Likewise, the USB SND path is still
->> readily available for use, in case the non-offload path is desired.  In
->> order to prevent the two entities from attempting to use the USB bus,
->> introduce a flag that determines when either paths are in use.
->>
->> If a PCM device is already in use, the check will return an error to
->> userspace notifying that the stream is currently busy.  This ensures that
->> only one path is using the USB substream.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   sound/usb/card.h                  |  1 +
->>   sound/usb/pcm.c                   | 19 +++++++++++++++++--
->>   sound/usb/qcom/qc_audio_offload.c | 15 ++++++++++++++-
-> 
-> should this be split in a generic part and a more specific qcom patch?
-> 
+The DisplayPort driver currently checks for a compatible pin configuration
+that resolves into a source and sink combination. The CTS test is designed
+to send a Discover Modes message that has a compatible pin configuration
+but advertises the same port capability as the device; the current check
+fails this.
 
-Got it.
+Verify that the port and port partner resolve into a valid source and sink
+combination before checking for a compatible pin configuration.
 
-Thanks
-Wesley Cheng
+---
+Changes since v1:
+* Fixed styling errors
+* Added DP_CAP_IS_UFP_D and DP_CAP_IS_DFP_D as macros to typec_dp.h
+---
+
+Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mode")
+Cc: stable@vger.kernel.org
+Signed-off-by: RD Babiera <rdbabiera@google.com>
+---
+ drivers/usb/typec/altmodes/displayport.c | 5 +++++
+ include/linux/usb/typec_dp.h             | 2 ++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+index 718da02036d8..9c17955da570 100644
+--- a/drivers/usb/typec/altmodes/displayport.c
++++ b/drivers/usb/typec/altmodes/displayport.c
+@@ -578,6 +578,11 @@ int dp_altmode_probe(struct typec_altmode *alt)
+ 
+ 	/* FIXME: Port can only be DFP_U. */
+ 
++	/* Make sure that the port and partner can resolve into source and sink */
++	if (!(DP_CAP_IS_DFP_D(port->vdo) && DP_CAP_IS_UFP_D(alt->vdo)) &&
++	    !(DP_CAP_IS_UFP_D(port->vdo) && DP_CAP_IS_DFP_D(alt->vdo)))
++		return -ENODEV;
++
+ 	/* Make sure we have compatiple pin configurations */
+ 	if (!(DP_CAP_PIN_ASSIGN_DFP_D(port->vdo) &
+ 	      DP_CAP_PIN_ASSIGN_UFP_D(alt->vdo)) &&
+diff --git a/include/linux/usb/typec_dp.h b/include/linux/usb/typec_dp.h
+index 1f358098522d..4e6c0479307f 100644
+--- a/include/linux/usb/typec_dp.h
++++ b/include/linux/usb/typec_dp.h
+@@ -67,6 +67,8 @@ enum {
+ #define   DP_CAP_UFP_D			1
+ #define   DP_CAP_DFP_D			2
+ #define   DP_CAP_DFP_D_AND_UFP_D	3
++#define DP_CAP_IS_UFP_D(_cap_)		(!!(DP_CAP_CAPABILITY(_cap_) & DP_CAP_UFP_D))
++#define DP_CAP_IS_DFP_D(_cap_)		(!!(DP_CAP_CAPABILITY(_cap_) & DP_CAP_DFP_D))
+ #define DP_CAP_DP_SIGNALLING(_cap_)	(((_cap_) & GENMASK(5, 2)) >> 2)
+ #define   DP_CAP_SIGNALLING_HBR3	1
+ #define   DP_CAP_SIGNALLING_UHBR10	2
+
+base-commit: 5220d8b04a840fa09434072c866d032b163419e3
+-- 
+2.42.0.655.g421f12c284-goog
+
