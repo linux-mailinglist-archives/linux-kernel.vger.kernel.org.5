@@ -2,857 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E4C7CD16B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83ED7CD16E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344182AbjJRAi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 20:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        id S1344232AbjJRAos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 20:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344232AbjJRAiy (ORCPT
+        with ESMTP id S232009AbjJRAor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 20:38:54 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667B1F1;
-        Tue, 17 Oct 2023 17:38:49 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1AB2B5C037A;
-        Tue, 17 Oct 2023 20:38:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 17 Oct 2023 20:38:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1697589527; x=1697675927; bh=hjliyMRUnC70IxwEWsv1PmT0njMSUWt3g72
-        TEFQld84=; b=Tkn0D/u/HZa0iYoSE9XkMhJiYHo9Mn4kDIdHqDReIiz4VgNKPXZ
-        0pdeIimsgw0WGatENxeI9ESYttFtnZ43r37ndzsT0ofBlogZvOqiIgkttIv/JaII
-        BIkntzXwVKyAJedUzDfzL7NgsE/v4/rrkUdpDUk1Bop+h4DfYXpydxT7Z6FUvT7f
-        zE0EbMGntmJ8Qk2d/R1d4bnEAzoGH4n4VfCNFxWm0sX7EHNpADN+KV+MW9vILADE
-        f/qB0hcQnOeLe3bNwD0bsS7WESS2gHq3Iue2qrBmmcFasqhKPFRQqGmlqHAPFZm/
-        7mGQ2U0UcvxlJY3/ClLZXluzX94ercmmZWQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1697589527; x=1697675927; bh=hjliyMRUnC70IxwEWsv1PmT0njMSUWt3g72
-        TEFQld84=; b=Zc3tn+kX2N2XwFykTj2cp+uBvIFjjdq5PPehbP1NfZcF8gXCJQn
-        XS53KhGoqJLUUsfayvYcJz0xWZmn8Zr88bTmNYSXMSxI9xtO/ggLeYKZBb3O0hmA
-        oKQ9ZEp0w0jyX5vmte9ygJ2FBoG2lysuLP1XBTrX3aaP88Q5EBrUSgofTKXhvV7k
-        0m/eGk1ARaj6oOIKv6S3GzpLUMOiguZX7urvDBvqrKlwcjZirgeVm8B4/4eAcdPE
-        DWvpY6swIhvPNbS5LY2/pkcGeJXlb/rPQ93U2s/pdcs3KxI2BgACIDr/0RnPEVTp
-        9GgH6mq0LqHIQfAIQER6TLmdCDb/HQmwsXA==
-X-ME-Sender: <xms:FikvZWdyenJn4VB6bZ-Tb2fnh_98DibwMnQDcKbhdwaqEpcCrVTpYA>
-    <xme:FikvZQNc1dGEayXZ0RLKuL8QBy46JcYVMWr-BweAOTFiIyIIEO9YrOmhzgTA46qOs
-    uXsexjDIoMp3TVqYQ>
-X-ME-Received: <xmr:FikvZXg3p2wvTnGknqtZuOJ35swb03jrZ5mhYrEykc8QotIh4FU3GQWfl8snYF3BmvX8paFJyXausoiJx-d9wzlujyM9ZqeZZmmhU3F0MBkHycqK88S1sZhqdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeefgdefhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfdtgfelffekveelvdeuteetfefgleelhfejteeiuefhheetueef
-    fefgheefveefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:FikvZT_ai_YCu2diNvrWnxjJ9zk7YAw_6OPW7jAM2FNiurLO-7ftJw>
-    <xmx:FikvZStL-K_aqf6Ip_K48qlTE-qG3AvUioTI4EfTr6fn0yrcyYAr-w>
-    <xmx:FikvZaE_yxZGwIO0pWKt4JvqmNYsCwN1J5j5SNp-A2kQQmxhNWpo1g>
-    <xmx:FykvZUVnd1GRM5X-Et2jeyoQrgfl_GoFpppJO55l4t0OC70uwN2yhQ>
-Feedback-ID: i0ad843c9:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 17 Oct 2023 20:38:45 -0400 (EDT)
-Message-ID: <a1adbe50-3400-fd10-1856-8c1d0ed82276@sholland.org>
-Date:   Tue, 17 Oct 2023 19:38:43 -0500
+        Tue, 17 Oct 2023 20:44:47 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C93AF9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:44:45 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HJwswC008171;
+        Wed, 18 Oct 2023 00:44:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=+ApPqscOIDWc6QzfO/rULCLSTf892kyBkF1bQmxr+is=;
+ b=nKhMA6kop9k0fpwvxWHxKLZ9NlSrTU6OTVbOOPvgqFsQMtWAiAuFg2jZtI7wS9Zhdcxq
+ drhIOdILFupionyhKsrX4+JjFKZaQFh9GU7qptIer/psEeGrvtGxBMgo7ZdM+OJ6zujP
+ TN9GvAz2byStqv1OJFjeTAvqfj2mmEPPSmCM5g2PgXrLobHEVd47lpaKAqcKP+cWc+li
+ 1cwbCZLRWeh5pz0Nc+nR2YlNsc+vHss8jUggI5zgL5l1ArPzGFYi2csy2y5LVQNY+dlW
+ a8Jb4EcEkKx4qtcnbRn7cOMz5mlmJmROeEATp+jOpyTLui1vd4hXJnOEcIdHYgOVVgsQ TA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqk1cxefe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 00:44:02 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39HMb1BI021622;
+        Wed, 18 Oct 2023 00:44:01 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3trg51sk28-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 00:44:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n2GjrsdEue6sKun+VD66vp65fezecA1h47dB7Be5rhEzurQ7VLgDfr5wLwbG8ljHeZZX7IV/nikdY1Adr37AHx5XAIwjX/Z+V5sToB+03hWtMNlowDb9Zd8emYfjFFSRoZMLjlCZwc4E5Wc1cX9c6D+SEosxD2/90OJp6GIxOX0Xke8/PVClTjUgVNyb7AxMp+0CRT6bQgD47wPhTEWvOTxpRo3JYaK5iVGWPO+fxhPv1DQdTEVxZNpc1mx4lQXS1/Sy0qTYvB2Qu1iITPFX8XUZNBCh0300YaRpFQ1YOKbpXDDF1A4o1vA6pouNExDPkExM7g9pbvAqaJ8Yb7HQkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+ApPqscOIDWc6QzfO/rULCLSTf892kyBkF1bQmxr+is=;
+ b=D/VpzRXNcFGyxYbatsX6Y0HQTeSvYQwm0mriOOuajAeoU215GhcB99YDJIaHqjDJIQIV6Kv/Glx5a9XZClGXZttXedOw3d3oK79URTw24/p89RyDJPmjwEA5iEzVtgdfB+3dbMhcbMbwN/r+jPvCS7uZATxsayuZHUp23f50uxn/VpQSJrBYEFa7FXpFBSO2aP17g5vUge7mnuB5nMctIdMdcF6MDYZtcXedi/WGIa7udRYV0wmisfkVdeSf/DXuwWX4wqNTaEatqbPLGvZRsPCrWt3Z8Tr7ivKsN0PVneckXFAXOmE/1OwM+zEOEtM/ST4HO1ZIyE58JNz7ulzvbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ApPqscOIDWc6QzfO/rULCLSTf892kyBkF1bQmxr+is=;
+ b=vtExNp1iXftpSdyfRNtn8BSlHVCk466xVuC312DHVZ6w+NNKBpFEDfgsJLGMxTAfcxsy5NNZnZ9pJOQBs1mnfbtlW/Xb7ATteewBPTTHWMGK26MYvw/Rvl4NCYwpyNXiQgzNwNdNmuo8Rr9pG4dmp0TbtGX+Fr070QLGCqd7IAg=
+Received: from SA1PR10MB5711.namprd10.prod.outlook.com (2603:10b6:806:23e::20)
+ by SA0PR10MB6426.namprd10.prod.outlook.com (2603:10b6:806:2c0::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Wed, 18 Oct
+ 2023 00:43:59 +0000
+Received: from SA1PR10MB5711.namprd10.prod.outlook.com
+ ([fe80::e277:20c3:200b:7790]) by SA1PR10MB5711.namprd10.prod.outlook.com
+ ([fe80::e277:20c3:200b:7790%4]) with mapi id 15.20.6863.043; Wed, 18 Oct 2023
+ 00:43:59 +0000
+Date:   Tue, 17 Oct 2023 20:43:54 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     bristot@redhat.com, bsegall@google.com, chris.hyser@oracle.com,
+        corbet@lwn.net, dietmar.eggemann@arm.com, efault@gmx.de,
+        joel@joelfernandes.org, joshdon@google.com, juri.lelli@redhat.com,
+        kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
+        mgorman@suse.de, mingo@kernel.org, patrick.bellasi@matbug.net,
+        pavel@ucw.cz, pjt@google.com, qperret@google.com,
+        qyousef@layalina.io, rostedt@goodmis.org, tglx@linutronix.de,
+        tim.c.chen@linux.intel.com, timj@gnu.org,
+        vincent.guittot@linaro.org, youssefesmat@chromium.org,
+        yu.c.chen@intel.com
+Subject: Re: [PATCH] sched/fair: Always update_curr() before placing at
+ enqueue
+Message-ID: <x4ptje5uqobysfje22cqcxn4ajatq7nyj2zldtkt5t7cjqvy5x@37flzfaselbx>
+References: <20230531124604.068911180@infradead.org>
+ <20231006164826.335223-1-daniel.m.jordan@oracle.com>
+ <20231006195810.GI36277@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006195810.GI36277@noisy.programming.kicks-ass.net>
+X-ClientProxiedBy: BLAPR03CA0021.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::26) To SA1PR10MB5711.namprd10.prod.outlook.com
+ (2603:10b6:806:23e::20)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux ppc64le; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RESEND PATCH v7 2/5] leds: sun50i-a100: New driver for the A100
- LED controller
-Content-Language: en-US
-To:     Lee Jones <lee@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
-References: <20221231235541.13568-1-samuel@sholland.org>
- <20221231235541.13568-3-samuel@sholland.org>
- <20230316133422.GM9667@google.com>
-From:   Samuel Holland <samuel@sholland.org>
-In-Reply-To: <20230316133422.GM9667@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR10MB5711:EE_|SA0PR10MB6426:EE_
+X-MS-Office365-Filtering-Correlation-Id: f245136c-486b-43fd-fa63-08dbcf735118
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e9XXOXaFfH+FmG8q9L3+O5jMb2gbxS2m7qLClpAP3di9k3RJ2DJ8eofKlxYbtV0mU5Kmdgkqi90XXbvhFgOluluPcJHRiqWTkXBk2SOxhckYcJXzdDXxLocGkI2mVhVZtuIvM6+J6EY+WWxjf1boHKsRDYBRGab4OrTpx9P107W4SNkUQ/+94I9yorBru0GqVp/sztZAweFb2PJraZoxVjlYX2OPHoByJlZF4LamY/a6tQpc4CVWmR+coRcrTy5GfVvHqvFWedWNDZxbN1UIGaD04b6OEjShF8AEcN/kEQwxYaYdc+kblMyXZmGPVSDvx6KqaaOqF2BCNfj0iKN0B83EP3M5wXmKyxJnxe8UeahYtLgmghanMY+YRqfRDqWPvnRFsphPfjAzrNvA82Q0KDn3w4YGEap4bNI+FBTh0KcqMQUc7+JUecJMLjJ1fxb9gA3JyXGaRVR4p/n42NAsDFX+JKnE+hZeVv37ACYMiPobbsKzsJxDcQs+VA9jGgx1NbbNDS81C2v/Nn596hfubvuBnbjeTeD+5pYWwf+zygqGlG6g2ikfYdKWV94/y5qdiQaWaTPWCLrTDvT5s1NN3nzHAUbKDGmBYdJsShGaN/M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR10MB5711.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(376002)(366004)(346002)(396003)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(9686003)(8936002)(6512007)(6506007)(6486002)(6666004)(66556008)(83380400001)(33716001)(8676002)(5660300002)(15650500001)(7416002)(4326008)(478600001)(66476007)(41300700001)(316002)(2906002)(66946007)(6916009)(38100700002)(86362001)(26005)(21314003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/bvUftTbsAuexw/n5tQS9xQHNyUzidjk8/6UJaOmJpS5+2sNrkLQGVIQmu21?=
+ =?us-ascii?Q?Oqvc1Y4v1ndJmJQwBUVFxFj2TtwQdyBuM0il8I/0st/i2R4GrLW/7c/DFvL+?=
+ =?us-ascii?Q?GtKTeurUtRkfqPxQw6qiXBQBR9dETShCplO0iyTvjMCCoYQTjwAWEjD8AF+y?=
+ =?us-ascii?Q?SJf2gkVylDI6r4iPWOWglG8bqaCFx1kkI6Amj7uJuVdymwS6iCXYXxWqV41O?=
+ =?us-ascii?Q?vjwbt4LSUD34k7O+dlQNNsNo+qoQOW5ynTqDbErM09ytTaL8iT+waUZboT60?=
+ =?us-ascii?Q?Q4otHprTPTvcGB5HFVeDCp4POP68Tduj1S3PB1gTMvWWttZzDm1aRzltBLRs?=
+ =?us-ascii?Q?Lx+foUpWEMsWelPSJ8IXCpTpnx8FD/eNQUFg9/VaD5WMx6YRZ54BVAzZDrqx?=
+ =?us-ascii?Q?QJdDp70j2nnmlYlzKRrXfRkBDI5iKp3kLGOcZ78M7Wu0PFVWAfEe8AU9R98x?=
+ =?us-ascii?Q?4DBjNEdgk08PUe+OCf0Jq8CvSelMCWGEhQUfrpWZxkzh2AVtLV/sTmB4WZRg?=
+ =?us-ascii?Q?qN6tBoM5xG/ZTBVGhgI4Ajs8bmHATs0Wkg+2xccO++zual9tG7VXFVg7CP0L?=
+ =?us-ascii?Q?1sUR6T0QnKR1AMeC+lxdjdofoiwiJw+SeQIqnMXpiVfDaSi9Ak98j7La9Upa?=
+ =?us-ascii?Q?aJEJ9porhT3R6jHKI6oifuMUzKSjqWjs6srQZ2FFKSZ+Jbrwfg2AjMmIrMRn?=
+ =?us-ascii?Q?2g7kfJuSn8Igx92xyUQvAJ/f6fkLqPB6OOjeqlqbhewWh2ZJv7oBVUeRxrhK?=
+ =?us-ascii?Q?6u3u9GVUwlUZBaGvsK4m59kbDRAgyWusYWsyZuI8+kqKFgwwkm3tdUvJww5Z?=
+ =?us-ascii?Q?8pHuN7mIJZMhzh4xlnzzttascaks4Qxu0Pn7Iv20Jwg6ADnl7Pga3v7UV3Qz?=
+ =?us-ascii?Q?msWjlYKWB2NYMnKgMT1Yk08C3clFIGmIEK2RP3OSWvMZJI9ShM0+ezWaNC6x?=
+ =?us-ascii?Q?BsKrBtAqFanbUT62MS/xpJAkhQAzG36dxrLHVEgObP8LBXsUOKdo30LSX15C?=
+ =?us-ascii?Q?fb7j7xO5xhNXm8TieCHPM10scQdRZGnxSVVDYgLKRTLNnxaTHBC6ssAFAK2g?=
+ =?us-ascii?Q?MJ6UUwfdmIE9w9YcR2EVi9FNNlHBf86HyTifw3LinCxahrsxJlMbouc/6/m/?=
+ =?us-ascii?Q?m0mjk/baMc2ntwJSZUnYdZVDgp5U1CsRDatoCyiOu945aersauRP341waFtN?=
+ =?us-ascii?Q?hVCV2bA7PsD9hzm2OU40vEWkPSHaK4LLWcZORhwdiIjP/whqeIr21lsyN1K7?=
+ =?us-ascii?Q?W3c+qgSu3QBuicGC2UhpliBTl5crZnun/C2GiQJ3J15Znn9BwEJkgwpYvxVN?=
+ =?us-ascii?Q?anSbYdBvL8aNPdO0CWs9evCob+X8Cxa2hi8oiTgJyCJIwuG7shqXuBPWs3US?=
+ =?us-ascii?Q?CTXZxpHC6DwNWow58kXxQ9vu+/R5TiE9LhBomw+u14O8UaKhJ2yufMu997Ow?=
+ =?us-ascii?Q?EcpnJfg/wdTCjHZK1BxNr6MU/Z8vmPCIUAT9BMNYzY2IDVeeCUpJFWBgIHHx?=
+ =?us-ascii?Q?v62iM32p/A+yiwyIKTIg0HfuaurUJ1YeLHgMKRetzSV3EDXmRLlFYm5CR/3E?=
+ =?us-ascii?Q?JOj8HwrggeoD2kmpH5nXR7YXomFpSaNXukq3zEFoSNOGQ/wFcOLttbu6G5wu?=
+ =?us-ascii?Q?vQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?Boy0373++YBWVcYHeyk5WctYGuwEAyO+GJoQsKFsEkj+Fsnd2G/J2m9fAOjW?=
+ =?us-ascii?Q?J3TKsp0N3UlabGpZvMr4/VHk39lD7XHZQnX/ydaHfOr2y3Y82cDOrsgpD4B7?=
+ =?us-ascii?Q?pJI5XSZpjQn1uMFO8HpVJjgQoZpNCvFLw/xCB81Ep2A708J0HQgkjkAf6DW7?=
+ =?us-ascii?Q?6CxghzcrBRvoT5q3pW4MkQnrjQ06uxkPLd5IsY+gnRwqKBzH94lvSMm92PHo?=
+ =?us-ascii?Q?EBVTGgHKyNzs/xiTjjbc2HzdsWo5zWGmYeAqkyh8AFtfWYf0RY/pc+6hZ73y?=
+ =?us-ascii?Q?z02RDqf4xBSu+9mWmZWkCZfIGBdmwiBuIE/vZkBQO7ycGt7yg4eLQX5qeMJl?=
+ =?us-ascii?Q?+hSFZeBLkur9j4S4AqIKBpcm1IIFOd0ga//lXtBI46LarbTryBg1XKhOIMEZ?=
+ =?us-ascii?Q?aRZ+CITFCYfu46PaR6eLW9GD4hiGuyCP28FxilwO1tOPKiEXX3yiPgc1gqiL?=
+ =?us-ascii?Q?TzpBDLkLcbOqghw7G94nC/yhUeq4+prRaCFhId+iG9a7fMh8AHrRbcXjn5+K?=
+ =?us-ascii?Q?dedrfEZ+RBK4TvvgTjIr0EXvfuQkW9H1yp4axsAT9WSRpjM9lFY+/cFq5/E+?=
+ =?us-ascii?Q?ArassLXjPNTiuKUMku60Lg1HnZWnuOPTxo1eKRpigFq5oCtEejb8zmM9g8IA?=
+ =?us-ascii?Q?rYYtEqnRqjAf59XAyo+pYyW6STlUDULqoW8xT7d/XZezkw7PBRl8Fk/7rusW?=
+ =?us-ascii?Q?p68NVduj2SAe/hyJd+CurvrWLBjKUPS09fneQUrGtK0Wgc+wRUNDRF99dxdu?=
+ =?us-ascii?Q?bYnGAaKVeNLuLKH6BYiUIWIpLBCLaED0Nf02JZj05EsJ7432GXj+zmBWChBB?=
+ =?us-ascii?Q?6XoYrqtpeqfcfIJIVCMKRX7IZCi42MgrPniwpWy1cGoaHPFA+7M4KeybQ54O?=
+ =?us-ascii?Q?uO3ztaqO61gW8/4wjxvxVRvdglHrvG6f4KinXkvwN6LmWb4VmzI7ZUFb35r7?=
+ =?us-ascii?Q?wUkS3rlmAPfPyA6rnJlV3wHE80ik/w0GAz7j1YdNLujUzVuFjL91wV6tIRRZ?=
+ =?us-ascii?Q?W28Km51OkfyvSZEc0c813td9HTvMoQRLTHX0AN8+l9Al5AGPdz8zYRQuVdZ+?=
+ =?us-ascii?Q?qmRiImiXxpDGRtyHfFzX1C4z9oZKyiluRq4r6T9/KCBsIreJUN8JHYx/cf1g?=
+ =?us-ascii?Q?w8Z42S8nyDlub3Yy3ezY7uUZ4crf/hvKjuMC+vOe0H/Wu7qeYgHJXKmYcriY?=
+ =?us-ascii?Q?LijTlQHeKyLjMWAJKTpvukZO5rrKjy01WeOjP5ILgKinLeLoRvFMAcbJIMAo?=
+ =?us-ascii?Q?P4RACcd9qSIDdllwXll1cg3fqoRl4pEtlGuO9geVb5jytV+Yz+pt3bEdyoud?=
+ =?us-ascii?Q?weDrAVegR1ZTr2ac980rBPwsgCPfeAesm9jrCfvTACe8Jw=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f245136c-486b-43fd-fa63-08dbcf735118
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR10MB5711.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 00:43:59.4669
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oR1gGRyxiXBumJd3Pngsg96DhFM/A45WHPpIJfxjfftisSYHxHIRGvGMYNM2lBNdTTv8GScw1pv42jJDI1A6q9kLTh+Ml5eInf6b6cozwYs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR10MB6426
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_08,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310180004
+X-Proofpoint-GUID: uPo5CVO4qobpg7lAFFrhjPeFVYFgAdi4
+X-Proofpoint-ORIG-GUID: uPo5CVO4qobpg7lAFFrhjPeFVYFgAdi4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/23 08:34, Lee Jones wrote:
-> On Sat, 31 Dec 2022, Samuel Holland wrote:
+On Fri, Oct 06, 2023 at 09:58:10PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 06, 2023 at 12:48:26PM -0400, Daniel Jordan wrote:
+> > Placing wants current's vruntime and the cfs_rq's min_vruntime up to
+> > date so that avg_runtime() is too, and similarly it wants the entity to
+> > be re-weighted and lag adjusted so vslice and vlag are fresh, so always
+> > do update_curr() and update_cfs_group() beforehand.
+> > 
+> > There doesn't seem to be a reason to treat the 'curr' case specially
+> > after e8f331bcc270 since vruntime doesn't get normalized anymore.
+> > 
+> > Fixes: e8f331bcc270 ("sched/smp: Use lag to simplify cross-runqueue placement")
+> > Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> > ---
+> > 
+> > Not sure what the XXX above place_entity() is for, maybe it can go away?
+> > 
+> > Based on tip/sched/core.
+> > 
+> >  kernel/sched/fair.c | 14 ++------------
+> >  1 file changed, 2 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 04fbcbda97d5f..db2ca9bf9cc49 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -5047,15 +5047,6 @@ static inline bool cfs_bandwidth_used(void);
+> >  static void
+> >  enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+> >  {
+> > -	bool curr = cfs_rq->curr == se;
+> > -
+> > -	/*
+> > -	 * If we're the current task, we must renormalise before calling
+> > -	 * update_curr().
+> > -	 */
+> > -	if (curr)
+> > -		place_entity(cfs_rq, se, flags);
+> > -
+> >  	update_curr(cfs_rq);
 > 
->> Some Allwinner sunxi SoCs, starting with the A100, contain an LED
->> controller designed to drive RGB LED pixels. Add a driver for it using
->> the multicolor LED framework, and with LEDs defined in the device tree.
->>
->> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->>
->> Changes in v7:
->>  - Use DEFINE_SIMPLE_DEV_PM_OPS
->>
->> Changes in v5:
->>  - Rename the driver R329 -> A100, since that is the actual original
->>    implementation
->>
->> Changes in v4:
->>  - Depend on LEDS_CLASS_MULTICOLOR
->>
->> Changes in v3:
->>  - Added vendor prefix to timing/format properties
->>  - Renamed "format" property to "pixel-format" for clarity
->>  - Dropped "vled-supply" as it is unrelated to the controller hardware
->>  - Changed "writesl" to "iowrite32_rep" so the driver builds on hppa
->>
->> Changes in v2:
->>  - Renamed from sunxi-ledc to sun50i-r329-ledc
->>  - Added missing "static" to functions/globals as reported by 0day bot
->>
->>  drivers/leds/Kconfig            |   9 +
->>  drivers/leds/Makefile           |   1 +
->>  drivers/leds/leds-sun50i-a100.c | 555 ++++++++++++++++++++++++++++++++
->>  3 files changed, 565 insertions(+)
->>  create mode 100644 drivers/leds/leds-sun50i-a100.c
+> IIRC part of the reason for this order is the:
 > 
-> Nice driver.  Just some nits below.
+>   dequeue
+>   update
+>   enqueue
+> 
+> pattern we have all over the place. You don't want the enqueue to move
+> time forward in this case.
+> 
+> Could be that all magically works, but please double check.
 
-Thanks for the review!
+Yes, I wasn't thinking of the dequeue/update/enqueue places.
+Considering these, it seems like there's more to fix (from before EEVDF
+even).
 
->> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
->> index 499d0f215a8b..4f4c515ed7d7 100644
->> --- a/drivers/leds/Kconfig
->> +++ b/drivers/leds/Kconfig
->> @@ -281,6 +281,15 @@ config LEDS_COBALT_RAQ
->>  	help
->>  	  This option enables support for the Cobalt Raq series LEDs.
->>
->> +config LEDS_SUN50I_A100
->> +	tristate "LED support for Allwinner A100 RGB LED controller"
->> +	depends on LEDS_CLASS_MULTICOLOR && OF
->> +	depends on ARCH_SUNXI || COMPILE_TEST
->> +	help
->> +	  This option enables support for the RGB LED controller found
->> +	  in some Allwinner sunxi SoCs, includeing A100, R329, and D1.
->> +	  It uses a one-wire interface to control up to 1024 LEDs.
-> 
-> Did you run spellcheck on this?
-
-I will fix the spelling and style issues in the next version.
-
->>  config LEDS_SUNFIRE
->>  	tristate "LED support for SunFire servers."
->>  	depends on LEDS_CLASS
->> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
->> index 4fd2f92cd198..a6ee3f5cf7be 100644
->> --- a/drivers/leds/Makefile
->> +++ b/drivers/leds/Makefile
->> @@ -76,6 +76,7 @@ obj-$(CONFIG_LEDS_PWM)			+= leds-pwm.o
->>  obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
->>  obj-$(CONFIG_LEDS_S3C24XX)		+= leds-s3c24xx.o
->>  obj-$(CONFIG_LEDS_SC27XX_BLTC)		+= leds-sc27xx-bltc.o
->> +obj-$(CONFIG_LEDS_SUN50I_A100)		+= leds-sun50i-a100.o
->>  obj-$(CONFIG_LEDS_SUNFIRE)		+= leds-sunfire.o
->>  obj-$(CONFIG_LEDS_SYSCON)		+= leds-syscon.o
->>  obj-$(CONFIG_LEDS_TCA6507)		+= leds-tca6507.o
->> diff --git a/drivers/leds/leds-sun50i-a100.c b/drivers/leds/leds-sun50i-a100.c
->> new file mode 100644
->> index 000000000000..30fa9be2cf2d
->> --- /dev/null
->> +++ b/drivers/leds/leds-sun50i-a100.c
->> @@ -0,0 +1,555 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +//
->> +// Copyright (c) 2021-2022 Samuel Holland <samuel@sholland.org>
-> 
-> Please update.
-> 
->> +// Partly based on drivers/leds/leds-turris-omnia.c, which is:
->> +//     Copyright (c) 2020 by Marek Behún <kabel@kernel.org>
->> +//
-> 
-> What is this line commenting?
-> 
-> Could you please re-do this header to use C-style comments please.
-> 
->> +#include <linux/clk.h>
->> +#include <linux/dma-mapping.h>
->> +#include <linux/dmaengine.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/io.h>
->> +#include <linux/led-class-multicolor.h>
->> +#include <linux/leds.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/pm.h>
->> +#include <linux/reset.h>
->> +#include <linux/spinlock.h>
->> +
->> +#define LEDC_CTRL_REG			0x0000
->> +#define LEDC_CTRL_REG_DATA_LENGTH		(0x1fff << 16)
->> +#define LEDC_CTRL_REG_RGB_MODE			(0x7 << 6)
->> +#define LEDC_CTRL_REG_LEDC_EN			BIT(0)
->> +#define LEDC_T01_TIMING_CTRL_REG	0x0004
->> +#define LEDC_T01_TIMING_CTRL_REG_T1H		(0x3f << 21)
->> +#define LEDC_T01_TIMING_CTRL_REG_T1L		(0x1f << 16)
->> +#define LEDC_T01_TIMING_CTRL_REG_T0H		(0x1f << 6)
->> +#define LEDC_T01_TIMING_CTRL_REG_T0L		(0x3f << 0)
->> +#define LEDC_RESET_TIMING_CTRL_REG	0x000c
->> +#define LEDC_RESET_TIMING_CTRL_REG_LED_NUM	(0x3ff << 0)
->> +#define LEDC_DATA_REG			0x0014
->> +#define LEDC_DMA_CTRL_REG		0x0018
->> +#define LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL	(0x1f << 0)
->> +#define LEDC_INT_CTRL_REG		0x001c
->> +#define LEDC_INT_CTRL_REG_GLOBAL_INT_EN		BIT(5)
->> +#define LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN	BIT(1)
->> +#define LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN	BIT(0)
->> +#define LEDC_INT_STS_REG		0x0020
->> +#define LEDC_INT_STS_REG_FIFO_CPUREQ_INT	BIT(1)
->> +#define LEDC_INT_STS_REG_TRANS_FINISH_INT	BIT(0)
->> +
->> +#define LEDC_FIFO_DEPTH			32
->> +#define LEDC_MAX_LEDS			1024
->> +
->> +#define LEDS_TO_BYTES(n)		((n) * sizeof(u32))
->> +
->> +struct sun50i_a100_ledc_led {
-> 
-> Is this information likely to change on a per-LED basis?
-
-Yes, this controller is designed to drive strips of
-individually-addressible RGB LEDs (WS2812 or similar). Each RGB LED is
-independent.
-
->> +	struct led_classdev_mc mc_cdev;
->> +	struct mc_subled subled_info[3];
-> 
-> What is 3?
-
-The three colors (R/G/B) per multicolor LED.
-
->> +};
->> +
->> +#define to_ledc_led(mc) container_of(mc, struct sun50i_a100_ledc_led, mc_cdev)
->> +
->> +struct sun50i_a100_ledc_timing {
->> +	u32 t0h_ns;
->> +	u32 t0l_ns;
->> +	u32 t1h_ns;
->> +	u32 t1l_ns;
->> +	u32 treset_ns;
->> +};
->> +
->> +struct sun50i_a100_ledc {
->> +	struct device *dev;
->> +	void __iomem *base;
->> +	struct clk *bus_clk;
->> +	struct clk *mod_clk;
->> +	struct reset_control *reset;
->> +
->> +	u32 *buffer;
->> +	struct dma_chan *dma_chan;
->> +	dma_addr_t dma_handle;
->> +	int pio_length;
->> +	int pio_offset;
->> +
->> +	spinlock_t lock;
->> +	int next_length;
->> +	bool xfer_active;
->> +
->> +	u32 format;
->> +	struct sun50i_a100_ledc_timing timing;
->> +
->> +	int num_leds;
->> +	struct sun50i_a100_ledc_led leds[];
->> +};
->> +
->> +static int sun50i_a100_ledc_dma_xfer(struct sun50i_a100_ledc *priv, int length)
->> +{
->> +	struct dma_async_tx_descriptor *desc;
->> +	dma_cookie_t cookie;
->> +
->> +	desc = dmaengine_prep_slave_single(priv->dma_chan, priv->dma_handle,
->> +					   LEDS_TO_BYTES(length),
->> +					   DMA_MEM_TO_DEV, 0);
->> +	if (!desc)
->> +		return -ENOMEM;
->> +
->> +	cookie = dmaengine_submit(desc);
->> +	if (dma_submit_error(cookie))
->> +		return -EIO;
->> +
->> +	dma_async_issue_pending(priv->dma_chan);
->> +
->> +	return 0;
->> +}
->> +
->> +static void sun50i_a100_ledc_pio_xfer(struct sun50i_a100_ledc *priv, int length)
->> +{
->> +	u32 burst, offset, val;
->> +
->> +	if (length) {
->> +		/* New transfer (FIFO is empty). */
->> +		offset = 0;
->> +		burst  = min(length, LEDC_FIFO_DEPTH);
->> +	} else {
->> +		/* Existing transfer (FIFO is half-full). */
->> +		length = priv->pio_length;
->> +		offset = priv->pio_offset;
->> +		burst  = min(length, LEDC_FIFO_DEPTH / 2);
-> 
-> Didn't we already establish that length was 0?
-
-Yes, and then we set it to the length of the existing partial transfer
-two lines above here. I can split out the parameter from `length` for
-clarity.
-
->> +	}
->> +
->> +	iowrite32_rep(priv->base + LEDC_DATA_REG, priv->buffer + offset, burst);
->> +
->> +	if (burst < length) {
->> +		priv->pio_length = length - burst;
->> +		priv->pio_offset = offset + burst;
->> +
->> +		if (!offset) {
->> +			val = readl(priv->base + LEDC_INT_CTRL_REG);
->> +			val |= LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
->> +			writel(val, priv->base + LEDC_INT_CTRL_REG);
->> +		}
->> +	} else {
->> +		/* Disable the request IRQ once all data is written. */
->> +		val = readl(priv->base + LEDC_INT_CTRL_REG);
->> +		val &= ~LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
->> +		writel(val, priv->base + LEDC_INT_CTRL_REG);
->> +	}
->> +}
->> +
->> +static void sun50i_a100_ledc_start_xfer(struct sun50i_a100_ledc *priv,
->> +					int length)
->> +{
->> +	u32 val;
->> +
->> +	dev_dbg(priv->dev, "Updating %d LEDs\n", length);
-> 
-> How useful is this, really?
-> 
-> Could you consider removing it?
-
-It was helpful to verify the queued transfer went out. I will remove it.
-
->> +	val = readl(priv->base + LEDC_CTRL_REG);
->> +	val &= ~LEDC_CTRL_REG_DATA_LENGTH;
->> +	val |= length << 16 | LEDC_CTRL_REG_LEDC_EN;
-> 
-> Why 16?  Please consider defining all magic numbers.
-> 
->   BLAH_BLAH_SHIFT ?
-> 
->> +	writel(val, priv->base + LEDC_CTRL_REG);
->> +
->> +	if (length > LEDC_FIFO_DEPTH) {
->> +		int ret = sun50i_a100_ledc_dma_xfer(priv, length);
-> 
-> Looks odd.  It's way more common to separate the call from the declaration.
-> 
->> +		if (!ret)
->> +			return;
->> +
->> +		dev_warn(priv->dev, "Failed to set up DMA: %d\n", ret);
-> 
-> This looks like an error.
-> 
-> Please tell the user we're falling back to PIO.
-
-Do you mean that I should change the message to mention that, or
-something more?
-
->> +	}
->> +
->> +	sun50i_a100_ledc_pio_xfer(priv, length);
->> +}
->> +
->> +static irqreturn_t sun50i_a100_ledc_irq(int irq, void *dev_id)
->> +{
->> +	struct sun50i_a100_ledc *priv = dev_id;
-> 
-> This is clearly not a def_id.  'data' looks like a common alternative.
-> 
->> +	u32 val;
->> +
->> +	val = readl(priv->base + LEDC_INT_STS_REG);
-> 
-> 'val' is a terrible variable name.  'status'?
-> 
->> +	if (val & LEDC_INT_STS_REG_TRANS_FINISH_INT) {
->> +		int next_length;
->> +
->> +		/* Start the next transfer if needed. */
->> +		spin_lock(&priv->lock);
->> +		next_length = priv->next_length;
->> +		if (next_length)
->> +			priv->next_length = 0;
->> +		else
->> +			priv->xfer_active = false;
->> +		spin_unlock(&priv->lock);
->> +
->> +		if (next_length)
->> +			sun50i_a100_ledc_start_xfer(priv, next_length);
->> +	} else if (val & LEDC_INT_STS_REG_FIFO_CPUREQ_INT) {
->> +		/* Continue the current transfer. */
->> +		sun50i_a100_ledc_pio_xfer(priv, 0);
->> +	}
->> +
->> +	writel(val, priv->base + LEDC_INT_STS_REG);
-> 
-> Did 'val' change?  If this is intentional, perhaps a comment to clarify.
-
-The IRQ status bits are write-1-to-clear. I will add a comment.
-
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +static void sun50i_a100_ledc_brightness_set(struct led_classdev *cdev,
->> +					    enum led_brightness brightness)
->> +{
->> +	struct sun50i_a100_ledc *priv = dev_get_drvdata(cdev->dev->parent);
->> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
->> +	struct sun50i_a100_ledc_led *led = to_ledc_led(mc_cdev);
->> +	int addr = led - priv->leds;
-> 
-> Not really an address is it?  'offset' or something better?
-
-It is the address of the LED on the one-wire bus. But in this context,
-`offset` makes sense too, so I'll change it.
-
->> +	unsigned long flags;
->> +	bool xfer_active;
->> +	int next_length;
->> +
->> +	led_mc_calc_color_components(mc_cdev, brightness);
->> +
->> +	priv->buffer[addr] = led->subled_info[0].brightness << 16 |
->> +			     led->subled_info[1].brightness <<  8 |
->> +			     led->subled_info[2].brightness;
->> +
->> +	dev_dbg(priv->dev, "LED %d -> #%06x\n", addr, priv->buffer[addr]);
-> 
-> As above.
-> 
->> +	spin_lock_irqsave(&priv->lock, flags);
->> +	next_length = max(priv->next_length, addr + 1);
->> +	xfer_active = priv->xfer_active;
->> +	if (xfer_active)
->> +		priv->next_length = next_length;
->> +	else
->> +		priv->xfer_active = true;
->> +	spin_unlock_irqrestore(&priv->lock, flags);
-> 
-> Cramped code is not easy to read.  Please consider some '\n's.
-> 
->> +	if (!xfer_active)
->> +		sun50i_a100_ledc_start_xfer(priv, next_length);
->> +}
->> +
->> +static const char *const sun50i_a100_ledc_formats[] = {
->> +	"rgb",
->> +	"rbg",
->> +	"grb",
->> +	"gbr",
->> +	"brg",
->> +	"bgr",
->> +};
->> +
->> +static int sun50i_a100_ledc_parse_format(const struct device_node *np,
->> +					 struct sun50i_a100_ledc *priv)
->> +{
->> +	const char *format = "grb";
->> +	u32 i;
->> +
->> +	of_property_read_string(np, "allwinner,pixel-format", &format);
->> +
->> +	for (i = 0; i < ARRAY_SIZE(sun50i_a100_ledc_formats); ++i) {
-> 
-> Does the pre-increment hold any significance?
-
-No, I will update it.
-
-> If not, please use the more common implementation of post-incrementing.
-> 
->> +		if (!strcmp(format, sun50i_a100_ledc_formats[i])) {
->> +			priv->format = i;
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	dev_err(priv->dev, "Bad pixel format '%s'\n", format);
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static void sun50i_a100_ledc_set_format(struct sun50i_a100_ledc *priv)
->> +{
->> +	u32 val;
->> +
->> +	val = readl(priv->base + LEDC_CTRL_REG);
->> +	val &= ~LEDC_CTRL_REG_RGB_MODE;
->> +	val |= priv->format << 6;
->> +	writel(val, priv->base + LEDC_CTRL_REG);
->> +}
->> +
->> +static const struct sun50i_a100_ledc_timing sun50i_a100_ledc_default_timing = {
->> +	.t0h_ns = 336,
->> +	.t0l_ns = 840,
->> +	.t1h_ns = 882,
->> +	.t1l_ns = 294,
->> +	.treset_ns = 300000,
->> +};
->> +
->> +static int sun50i_a100_ledc_parse_timing(const struct device_node *np,
->> +					 struct sun50i_a100_ledc *priv)
->> +{
->> +	struct sun50i_a100_ledc_timing *timing = &priv->timing;
->> +
->> +	*timing = sun50i_a100_ledc_default_timing;
->> +
->> +	of_property_read_u32(np, "allwinner,t0h-ns", &timing->t0h_ns);
->> +	of_property_read_u32(np, "allwinner,t0l-ns", &timing->t0l_ns);
->> +	of_property_read_u32(np, "allwinner,t1h-ns", &timing->t1h_ns);
->> +	of_property_read_u32(np, "allwinner,t1l-ns", &timing->t1l_ns);
->> +	of_property_read_u32(np, "allwinner,treset-ns", &timing->treset_ns);
->> +
->> +	return 0;
->> +}
->> +
->> +static void sun50i_a100_ledc_set_timing(struct sun50i_a100_ledc *priv)
->> +{
->> +	const struct sun50i_a100_ledc_timing *timing = &priv->timing;
->> +	unsigned long mod_freq = clk_get_rate(priv->mod_clk);
->> +	u32 cycle_ns = NSEC_PER_SEC / mod_freq;
->> +	u32 val;
-> 
-> 'timing'
-> 
->> +	val = (timing->t1h_ns / cycle_ns) << 21 |
->> +	      (timing->t1l_ns / cycle_ns) << 16 |
->> +	      (timing->t0h_ns / cycle_ns) <<  6 |
->> +	      (timing->t0l_ns / cycle_ns);
->> +	writel(val, priv->base + LEDC_T01_TIMING_CTRL_REG);
->> +
->> +	val = (timing->treset_ns / cycle_ns) << 16 |
->> +	      (priv->num_leds - 1);
->> +	writel(val, priv->base + LEDC_RESET_TIMING_CTRL_REG);
->> +}
->> +
->> +static int sun50i_a100_ledc_resume(struct device *dev)
->> +{
->> +	struct sun50i_a100_ledc *priv = dev_get_drvdata(dev);
->> +	u32 val;
->> +	int ret;
-> 
-> 'control'
-> 
->> +	ret = reset_control_deassert(priv->reset);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = clk_prepare_enable(priv->bus_clk);
->> +	if (ret)
->> +		goto err_assert_reset;
->> +
->> +	ret = clk_prepare_enable(priv->mod_clk);
->> +	if (ret)
->> +		goto err_disable_bus_clk;
->> +
->> +	sun50i_a100_ledc_set_format(priv);
->> +	sun50i_a100_ledc_set_timing(priv);
->> +
->> +	/* The trigger level must be at least the burst length. */
->> +	val = readl(priv->base + LEDC_DMA_CTRL_REG);
->> +	val &= ~LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL;
->> +	val |= LEDC_FIFO_DEPTH / 2;
->> +	writel(val, priv->base + LEDC_DMA_CTRL_REG);
->> +
->> +	val = LEDC_INT_CTRL_REG_GLOBAL_INT_EN |
->> +	      LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN;
->> +	writel(val, priv->base + LEDC_INT_CTRL_REG);
->> +
->> +	return 0;
->> +
->> +err_disable_bus_clk:
->> +	clk_disable_unprepare(priv->bus_clk);
->> +err_assert_reset:
->> +	reset_control_assert(priv->reset);
->> +
->> +	return ret;
->> +}
->> +
->> +static int sun50i_a100_ledc_suspend(struct device *dev)
->> +{
->> +	struct sun50i_a100_ledc *priv = dev_get_drvdata(dev);
->> +
->> +	clk_disable_unprepare(priv->mod_clk);
->> +	clk_disable_unprepare(priv->bus_clk);
->> +	reset_control_assert(priv->reset);
->> +
->> +	return 0;
->> +}
->> +
->> +static void sun50i_a100_ledc_dma_cleanup(void *data)
->> +{
->> +	struct sun50i_a100_ledc *priv = data;
->> +	struct device *dma_dev = dmaengine_get_dma_device(priv->dma_chan);
-> 
-> What happens if this is NULL or an error?
-
-At this point, we successfully acquired a DMA channel, so I don't think
-it can be. That said, it wouldn't hurt to make the driver work without
-DMA at all, for if the SoC doesn't hook up the LED controller to the DMA
-engine.
-
->> +	if (priv->buffer)
->> +		dma_free_wc(dma_dev, LEDS_TO_BYTES(priv->num_leds),
->> +			    priv->buffer, priv->dma_handle);
-> 
-> '\n'
-> 
->> +	dma_release_channel(priv->dma_chan);
->> +}
->> +
->> +static int sun50i_a100_ledc_probe(struct platform_device *pdev)
->> +{
->> +	const struct device_node *np = pdev->dev.of_node;
->> +	struct dma_slave_config dma_cfg = {};
->> +	struct led_init_data init_data = {};
->> +	struct device *dev = &pdev->dev;
->> +	struct device_node *child;
->> +	struct sun50i_a100_ledc *priv;
->> +	struct resource *mem;
->> +	int count, irq, ret;
->> +
->> +	count = of_get_available_child_count(np);
->> +	if (!count)
->> +		return -ENODEV;
-> 
-> '\n'
-> 
->> +	if (count > LEDC_MAX_LEDS) {
->> +		dev_err(dev, "Too many LEDs! (max is %d)\n", LEDC_MAX_LEDS);
->> +		return -EINVAL;
->> +	}
->> +
->> +	priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
->> +	if (!priv)
->> +		return -ENOMEM;
->> +
->> +	priv->dev = dev;
->> +	priv->num_leds = count;
->> +	spin_lock_init(&priv->lock);
->> +	dev_set_drvdata(dev, priv);
->> +
->> +	ret = sun50i_a100_ledc_parse_format(np, priv);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = sun50i_a100_ledc_parse_timing(np, priv);
->> +	if (ret)
->> +		return ret;
->> +
->> +	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
->> +	if (IS_ERR(priv->base))
->> +		return PTR_ERR(priv->base);
->> +
->> +	priv->bus_clk = devm_clk_get(dev, "bus");
->> +	if (IS_ERR(priv->bus_clk))
->> +		return PTR_ERR(priv->bus_clk);
->> +
->> +	priv->mod_clk = devm_clk_get(dev, "mod");
->> +	if (IS_ERR(priv->mod_clk))
->> +		return PTR_ERR(priv->mod_clk);
->> +
->> +	priv->reset = devm_reset_control_get_exclusive(dev, NULL);
->> +	if (IS_ERR(priv->reset))
->> +		return PTR_ERR(priv->reset);
->> +
->> +	priv->dma_chan = dma_request_chan(dev, "tx");
->> +	if (IS_ERR(priv->dma_chan))
->> +		return PTR_ERR(priv->dma_chan);
->> +
->> +	ret = devm_add_action_or_reset(dev, sun50i_a100_ledc_dma_cleanup, priv);
->> +	if (ret)
->> +		return ret;
->> +
->> +	dma_cfg.dst_addr	= mem->start + LEDC_DATA_REG;
->> +	dma_cfg.dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
->> +	dma_cfg.dst_maxburst	= LEDC_FIFO_DEPTH / 2;
-> 
-> '\n'
-> 
->> +	ret = dmaengine_slave_config(priv->dma_chan, &dma_cfg);
->> +	if (ret)
->> +		return ret;
->> +
->> +	priv->buffer = dma_alloc_wc(dmaengine_get_dma_device(priv->dma_chan),
->> +				    LEDS_TO_BYTES(priv->num_leds),
->> +				    &priv->dma_handle, GFP_KERNEL);
->> +	if (!priv->buffer)
->> +		return -ENOMEM;
->> +
->> +	irq = platform_get_irq(pdev, 0);
->> +	if (irq < 0)
->> +		return irq;
->> +
->> +	ret = devm_request_irq(dev, irq, sun50i_a100_ledc_irq,
->> +			       0, dev_name(dev), priv);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = sun50i_a100_ledc_resume(dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	for_each_available_child_of_node(np, child) {
->> +		struct sun50i_a100_ledc_led *led;
->> +		struct led_classdev *cdev;
->> +		u32 addr, color;
->> +
->> +		ret = of_property_read_u32(child, "reg", &addr);
->> +		if (ret || addr >= count) {
->> +			dev_err(dev, "LED 'reg' values must be from 0 to %d\n",
-> 
-> Doesn't sounds like an address.
-
-The one-wire protocol involves the first LED responding to the first 24
-bits of the transfer, then forwarding the rest to the next LED. The
-address is the ordinal position in the chain. So I don't think there is
-any reason to have gaps in the addresses--the LEDs would still have to
-physically be there, but you would not be able to control them. That
-said, the driver doesn't need to enforce this, so I can remove the check.
-
->> +				priv->num_leds - 1);
-> 
-> 100-chars - no need to wrap.
-> 
-> Please apply this everywhere.
-> 
->> +			ret = -EINVAL;
->> +			goto err_put_child;
->> +		}
->> +
->> +		ret = of_property_read_u32(child, "color", &color);
->> +		if (ret || color != LED_COLOR_ID_RGB) {
->> +			dev_err(dev, "LED 'color' must be LED_COLOR_ID_RGB\n");
-> 
-> Then why even provide the option?
-
-It is required by the leds-class-multicolor.yaml binding.
-
->> +			ret = -EINVAL;
->> +			goto err_put_child;
->> +		}
->> +
->> +		led = &priv->leds[addr];
->> +
->> +		led->subled_info[0].color_index = LED_COLOR_ID_RED;
->> +		led->subled_info[0].channel = 0;
->> +		led->subled_info[1].color_index = LED_COLOR_ID_GREEN;
->> +		led->subled_info[1].channel = 1;
->> +		led->subled_info[2].color_index = LED_COLOR_ID_BLUE;
->> +		led->subled_info[2].channel = 2;
->> +
->> +		led->mc_cdev.num_colors = ARRAY_SIZE(led->subled_info);
->> +		led->mc_cdev.subled_info = led->subled_info;
->> +
->> +		cdev = &led->mc_cdev.led_cdev;
->> +		cdev->max_brightness = U8_MAX;
->> +		cdev->brightness_set = sun50i_a100_ledc_brightness_set;
->> +
->> +		init_data.fwnode = of_fwnode_handle(child);
->> +
->> +		ret = devm_led_classdev_multicolor_register_ext(dev,
->> +								&led->mc_cdev,
->> +								&init_data);
->> +		if (ret) {
->> +			dev_err(dev, "Failed to register LED %u: %d\n",
-> 
-> "multicolor LED"
-> 
->> +				addr, ret);
->> +			goto err_put_child;
->> +		}
->> +	}
->> +
->> +	dev_info(dev, "Registered %d LEDs\n", priv->num_leds);
->> +
->> +	return 0;
->> +
->> +err_put_child:
->> +	of_node_put(child);
->> +	sun50i_a100_ledc_suspend(&pdev->dev);
->> +
->> +	return ret;
->> +}
->> +
->> +static int sun50i_a100_ledc_remove(struct platform_device *pdev)
->> +{
->> +	sun50i_a100_ledc_suspend(&pdev->dev);
->> +
->> +	return 0;
-> 
-> return sun50i_a100_ledc_suspend(&pdev->dev);
-> 
->> +}
->> +
->> +static void sun50i_a100_ledc_shutdown(struct platform_device *pdev)
->> +{
->> +	sun50i_a100_ledc_suspend(&pdev->dev);
->> +}
->> +
->> +static const struct of_device_id sun50i_a100_ledc_of_match[] = {
->> +	{ .compatible = "allwinner,sun50i-a100-ledc" },
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(of, sun50i_a100_ledc_of_match);
->> +
->> +static DEFINE_SIMPLE_DEV_PM_OPS(sun50i_a100_ledc_pm,
->> +				sun50i_a100_ledc_suspend,
->> +				sun50i_a100_ledc_resume);
->> +
->> +static struct platform_driver sun50i_a100_ledc_driver = {
->> +	.probe		= sun50i_a100_ledc_probe,
->> +	.remove		= sun50i_a100_ledc_remove,
->> +	.shutdown	= sun50i_a100_ledc_shutdown,
->> +	.driver		= {
->> +		.name		= "sun50i-a100-ledc",
->> +		.of_match_table	= sun50i_a100_ledc_of_match,
->> +		.pm		= pm_ptr(&sun50i_a100_ledc_pm),
->> +	},
->> +};
->> +module_platform_driver(sun50i_a100_ledc_driver);
->> +
->> +MODULE_AUTHOR("Samuel Holland <samuel@sholland.org>");
->> +MODULE_DESCRIPTION("Allwinner A100 LED controller driver");
->> +MODULE_LICENSE("GPL");
->> --
->> 2.37.4
->>
-> 
-> --
-> Lee Jones [李琼斯]
-
+Sorry for the delayed response, been staring for a while thinking I'd
+have it all by the next day.  It'll take a bit longer to sort out all
+the cases, but I'll keep going.
