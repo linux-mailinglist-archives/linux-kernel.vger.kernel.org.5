@@ -2,275 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC147CDC38
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FA07CDC3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbjJRMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S230439AbjJRMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjJRMrv (ORCPT
+        with ESMTP id S230202AbjJRMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:47:51 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B1EA3;
-        Wed, 18 Oct 2023 05:47:49 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b44befac59so3872898b3a.0;
-        Wed, 18 Oct 2023 05:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697633269; x=1698238069; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9kzuTzxZVlGgh2f5mC3oIMplNBV8HnSfbYCkmlfvIO0=;
-        b=FghNIC/6Ky0TDrGA5L+6MIbYS4RZzOrcCQ/gvu+h3/36los+pKUA0A5Mhm1WOCz7IS
-         teerGv3bM5eUJ7csLv6Oi47uyim01+tB5nNTd17r+ulRBUqIIEscD39pnDRSTvAkatU3
-         2MqGzFLR7BMUVO75gqtjGdJbrEVEflCUNbNTEhqvw9lZDb8gDP3gyDfav/L9ohUExcgF
-         QAGAz2PMiEVU/trN9Ir0Zjc6sdqyYxcpsULMiTIJTM6V3SqgVi84m4q4veoBDCHsqKLv
-         eOG80aHVXHBIh/pYVzOeL37berqwA0Q6swHBd45EhS8x5DJvS5+0/1W02eewL1oLzo9j
-         lhMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697633269; x=1698238069;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9kzuTzxZVlGgh2f5mC3oIMplNBV8HnSfbYCkmlfvIO0=;
-        b=u40rByz1CfXpIApXfdLszdtmZAeiTWPwdnAwpnqMV/IkHTJ4ZunJC4Wyj6zUwsY3F3
-         7XLkDKTcwfnYBik7+uHZh+MHgZVm2IDjxwBHWmcEQh7VcL9QY4A+ar2KIzydodEmswxj
-         F0DpVUPQlkGK7BMOD/QAGpWEup6eTthwUuUzPZkbCNxnvJHox660Ve23nzhsKjbWwbGe
-         VVUo8I43cVo7Wy8yQHzwmo/vp6U8In98fnF+yY9Vhqg4NR0TkznyjdHeSwiDAdN9SsSa
-         UkjX8Mf39Hhp7t1DQHZrrRmP77UdaBAf7KQ7UTwS05C2PgXW5X3+eM69dlhblbbuqGKS
-         eoAA==
-X-Gm-Message-State: AOJu0YwVYjZs3z9WpmfvA9UqbhMiXxVaniZtx+wjkSQ/6/0Ao3IlPfR7
-        sWpszR4URTRAbp43sVyKEd+ZBkkTI/0RbQ==
-X-Google-Smtp-Source: AGHT+IGXGeVHsVlXRGS2m6a7frgX1L1AYtgLEn9FwtI5ugKjMogKB6UXepsFeotAkt1UZrRjKys6fw==
-X-Received: by 2002:a05:6a20:7288:b0:15d:4cf1:212e with SMTP id o8-20020a056a20728800b0015d4cf1212emr6856294pzk.4.1697633268764;
-        Wed, 18 Oct 2023 05:47:48 -0700 (PDT)
-Received: from thinkpad ([117.202.186.25])
-        by smtp.gmail.com with ESMTPSA id i13-20020a65484d000000b00578afd8e012sm1389183pgs.92.2023.10.18.05.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 05:47:48 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 18:17:41 +0530
-From:   Manivannan Sadhasivam <manivannanece23@gmail.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Can Guo <quic_cang@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
- version detection
-Message-ID: <20231018124741.GA47321@thinkpad>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
- <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
- <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com>
- <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
- <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
- <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
- <20230919120829.GB4732@thinkpad>
- <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
- <20230920102327.GH4732@thinkpad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 18 Oct 2023 08:49:32 -0400
+Received: from mx0b-002c1b01.pphosted.com (mx0b-002c1b01.pphosted.com [148.163.155.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB36498;
+        Wed, 18 Oct 2023 05:49:30 -0700 (PDT)
+Received: from pps.filterd (m0127844.ppops.net [127.0.0.1])
+        by mx0b-002c1b01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39I6tYRk017686;
+        Wed, 18 Oct 2023 05:49:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=
+        message-id:date:subject:to:cc:references:from:in-reply-to
+        :content-type:content-transfer-encoding:mime-version; s=
+        proofpoint20171006; bh=U7nBwqCfYFAH/7HfGLYeKq5hnEslgvn28dAkqepPd
+        aQ=; b=HI96glq1p7E2+kihPDCRwV4anwnmI8EGDquF+k0rKek7on4XWKMzyrzDF
+        dfvYfKQaOQtjyp1zau1tyXG0LseaSbdeHo9TzoRtHg3vaxJFgbDJlPdBx3CY1lo+
+        xttLftGv0ujRVBi4xFIMYF3gD3UKmP79I4FVERbpju6UGeXFewZBfRs/d28SBvEs
+        F5hmf5SdfrHYnuUmEnNzmCF2u6qu7QRf2tM5Af2W6PlYuFiONi0edsuPzr5+N7AA
+        CaeaBDTwIWsh7HWhEVVFfJ7xgZitjgxdI7FcjYwFftGwP/Al0XhRodHr70cJazGa
+        pGynxm/QPgkd434TnoUIAJWczx3Lw==
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0b-002c1b01.pphosted.com (PPS) with ESMTPS id 3ts6hwwp4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 05:49:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F0g3IzVwVhHsGCwywKTqgYMnK3o5GjU9OheBzvTcO1puICnST+Ni1dLniU1GhiH2qkAd3PWWnSXPJ9AJoxpktm9GEowfo6uu6qImoAsHvmDnah5TPVKsDC4R6mp4BWALlGFiCNmE6bgrNPw6iywAuVSKPHWZ7DNTpXYnztLMCrXp15ZSm0vTNqLNv0cMJ0wLVhCkKtncOTFR0m+uAFVjwU2l7Q6/qhG9jiBTkraHm5lXLdZoYYtNY8+lNFpF5ywIMQrSv0EpkioAK4BWm5gjsObKm7CO57pXI/9vcrEvi6Fn8KbLTQSieh1X3STpqNLUZiLzwx0ybCR8/Pm6hxrtxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U7nBwqCfYFAH/7HfGLYeKq5hnEslgvn28dAkqepPdaQ=;
+ b=BsXGrq3eqzcivSMTqZc758MVaueWErgDXCxdYvWeTa/axJ+z+J6bLuUJBL3e9kGrz6D+S80awPaO2prwgQRBxKsE8ElvOsG512CiMIfR3VR5YXGNgH09F5pf+q7mLrwt0MquPo94XktH3P50ioJp4V26V7vW8yG3H9PD3Q3ge/wACQoHWW+t9dvCT4flZFnUq9JZ5sddyqnORTpo//04zasr1eR0KiIS8kKI2TiRYSSvyBPNY+oZInbn1J1qRXF+/gkB+NzqvtF9uie6oFmao3sfuOZWKbGfTlGZ4Xw3DCN6r8v0ExUcJVvoJrRYbQxEwfEVMvLrahwdw/qXXIdjIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7nBwqCfYFAH/7HfGLYeKq5hnEslgvn28dAkqepPdaQ=;
+ b=Ugl6qQCkpSjgMmIXAZ/384voUaqTIPsX42XoJXoVPQevCPNzzU+hdrtu+zz55vSf+le7jBuoWM/Zy7C6HWock3f/DPxAHB9GlJdf3rI5q0vVfjpk8yBnz10bMGJ5Ob6C9QqcIyfKhVeK/a4EkAHZrJS32sgVVwpV8Nha8L1ME8VKYwUwO82wjOL68Roq4g1yFqP5c06OWmfgjjFYmDPkSk+DmR0KCTCV2D/xN/QUFR5QKCIdiiQsTka4AglNLluTFbV9VIbGiGuCsok8AsGRkCsprkFFm5oKKAInyr9AvMURy0MGqpARxJbyCUEus7vn8hPf1qf5kDghjU/SF6T3Zw==
+Received: from DM5PR02MB3830.namprd02.prod.outlook.com (2603:10b6:4:b0::29) by
+ SA3PR02MB9393.namprd02.prod.outlook.com (2603:10b6:806:315::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
+ 2023 12:49:26 +0000
+Received: from DM5PR02MB3830.namprd02.prod.outlook.com
+ ([fe80::26ba:be45:ee4b:e1ae]) by DM5PR02MB3830.namprd02.prod.outlook.com
+ ([fe80::26ba:be45:ee4b:e1ae%4]) with mapi id 15.20.6907.022; Wed, 18 Oct 2023
+ 12:49:26 +0000
+Message-ID: <cdcd0b8a-1098-470f-86ba-dcc858ac4cd3@nutanix.com>
+Date:   Wed, 18 Oct 2023 13:49:17 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] audit: Send netlink ACK before setting connection in
+ auditd_set
+Content-Language: en-US
+To:     Rinat Gadelshin <rgadelsh@gmail.com>, audit@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>
+Cc:     jonathan.davies@nutanix.com, linux-kernel@vger.kernel.org
+References: <CAHC9VhQBV1mcFUmXQs1-VKpAVdaAQ3EiGk-G3ybxfcBkoKGwcw@mail.gmail.com>
+ <20231018092351.195715-1-chris.riches@nutanix.com>
+ <102df7b7-a07a-475a-adb6-ae60453feb63@gmail.com>
+From:   Chris Riches <chris.riches@nutanix.com>
+In-Reply-To: <102df7b7-a07a-475a-adb6-ae60453feb63@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230920102327.GH4732@thinkpad>
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SJ0PR13CA0179.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::34) To DM5PR02MB3830.namprd02.prod.outlook.com
+ (2603:10b6:4:b0::29)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM5PR02MB3830:EE_|SA3PR02MB9393:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3e28b7e-e17b-40b8-2742-08dbcfd8a8ee
+x-proofpoint-crosstenant: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h8Z9xHubmCtdZ74PrrjK0b4m9El98c3ZUKPaE9SkvWfJ0i/MEG3Er6UdCD+LG2sIf96dSuTCb7saQyeMqk1ogE38KcFRa1UVRX+3VQ0P7S8eY+H84eZAikc+fXsBBLQ5i6VqjzoDTLEu2r5lAM1vnV0Rj1RVaC6OjGQRVqwop9xuRHPGsSWZxqFEdmKNQCEoMMHL0/N+aNrvIpo7i3/P6+cW/hJWSK1VB5ZEJNxjDFvy+LaJNNodq6Z/rISkjkTyindqS8rzPLt3nUskgIq4sUFy5Uj1gKy49a5r4CP9kSNtADOAHGgANZObT0BA2KWNjcgSXj6rEPNd267Ut/La/8ZSAh9Dsy4qSWclF3Hu3U22u+4Km1sjbRbu7hIBFf3aHHicrerUAuLOToGmSkHZp2pOJq3fw1X+ITcbJyMkbn9ivVNxDjwNgmFep17t07K3B+ck/TVKoPIbr+Dwh90nBMI/FW08R9znNcT6wuuwlkIg0hOQo8i5UskXJBrMw+XGaOgUc4TsTa7bPlAI4D1xpsBUVhm8TWH69hGXCPm+QojkbCKMtcTG778t0EPldWneraaVWADWe4du0VBMYQlmY0zrBuNiQYJfPv/peZKPdtNI/g5emv3BM+wCZd/hXw16WGYnixphuS200T2bhnZhrQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR02MB3830.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(86362001)(41300700001)(44832011)(53546011)(5660300002)(8936002)(8676002)(4326008)(36756003)(38100700002)(31686004)(31696002)(2906002)(66946007)(316002)(66476007)(66556008)(26005)(2616005)(4744005)(6512007)(6666004)(6506007)(110136005)(6486002)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bU9tbWpKcU1mYW84VTFvbUpRYTVrbjhRTldRZVlhVGxKYTFRTy9UL21mTDE4?=
+ =?utf-8?B?U1VWU0tsNGJEaGRXaDc2M1VUOFFQZEN5TG5kdEdjTktDZllPTFFwa0Nyenp2?=
+ =?utf-8?B?ak4xN3BmSDlFUytFYytDZ3RpRFZrVlRiSGY4aklEWFNtNGxwY3RLRm5aSy9k?=
+ =?utf-8?B?cWdaZzBPUWsrd3hsNU5JSFU4dXdMSFN1dXZSUnFUNGhUeXpobDhadVV4Z2tN?=
+ =?utf-8?B?RXZSbEJyaCsvakdOVGVBWTdVVENuNlhLV0gxR3p3WXRFbEUyMkFHd09OWC9w?=
+ =?utf-8?B?UzZNMWJtVzdiUmNScTFOMVFqcm5NdEtWNVducVR1Q1V4Ly9xWHQ3Wml5YXdj?=
+ =?utf-8?B?UGNPMis2aHZnZUZyUktUekFPOVVha2xZY0FGZmwrdE1GWTBHRUNjdDJWMzFr?=
+ =?utf-8?B?eDU4TWxwd2txV0xHOVBrb2VFT3hwTGQ2VGNuOUhRVjZ5ak0yRzcyZmdGS1ZF?=
+ =?utf-8?B?dHZqNTYxdWdMalUvSWllTW1JcHBwUStHdzRLS09lUU13RzNRSzBCTXljcGF5?=
+ =?utf-8?B?cHhTQ3duTmFNK2pRTWkxUEFJQmplQmpVeWJtaEcyNnVXVnJFaUdYYmZBU2da?=
+ =?utf-8?B?ZWVXcnQxdk1Fa0UvVjRSSkJUQ052NXI3NU51dzZUSVl6a0ZWZDZ3RkQ2ek1U?=
+ =?utf-8?B?aHBVcUE4dUhmYmI1WnNhY253SHNvbUtteEd1OExSMW5TR1R1cW04Y1g4bllq?=
+ =?utf-8?B?TVpyTFBocE1KZ016dGZTcTdWT1B6alI0ckptUWhsZDE4VHNoWkMwQm5NdFow?=
+ =?utf-8?B?MWptNDBObDA0dVowTUFpMU9HVlB1blRPWkd6K2hoQktEUHFqNWtQVEN0dEg1?=
+ =?utf-8?B?VEgxNktRcmY0djY0RGpNaGRUMGw4R0JKWCtGTmk3V1BFQWxZK2doK3E3eGRK?=
+ =?utf-8?B?TXhaS2dZOERiU1RkNkoxMDRVR2c1ZUxZNC9MYUNVUU13bEZzU21VRVZGaHhs?=
+ =?utf-8?B?UjFVcEVtdmovVjRGc3VXQ000SStuUC9BUnJrTll1SDYvTlBvRFpGL21jOGpo?=
+ =?utf-8?B?dE5SL3MvNWxOaEFHL2lwbnZnNkdrUWdTQm5iOTg5d1RDc1RJQ3VWQnQwNW9Y?=
+ =?utf-8?B?b3dod3daNDNGQlZJVnNxS2h5WFkwbHdFdUhyN3JkeHJ0OUFlMmo1b2lveWd1?=
+ =?utf-8?B?bWw4d28wZ3JxajYrSTRLd3dXUTcvRm13V0ZIa1ZPVy9zajhQNmZnMkNxcklJ?=
+ =?utf-8?B?RXBUc2xNZXpXMC9VUUlNWXdDTU9ubEE1bWdNNHFzcy9ENiswTmQyQjlGbHkw?=
+ =?utf-8?B?L1paei9hZU1YVDI5VnFRaFl3VTkwWlJjRGhhUGxDS3pUUGRReTczL0ZlN2pJ?=
+ =?utf-8?B?NDlUbjVLYnZjcS9kNWc5RzJDcnJkZVFvaGkzNFdqOTFWd0lORWRlWXhSeE4v?=
+ =?utf-8?B?c1dlbWFodVlUZWVMa1hJdHFhdXlLaHpZRzF2REw3T3ZlSnJQTFA0b3lKMzZV?=
+ =?utf-8?B?Yzk2UmcrVHNLTDZ4QWdVTVc4K0d4VURBaDVmVUVLZ2hwUjZTOGJ3TE9HQ3hq?=
+ =?utf-8?B?TWhYRVNBK0hNaVJKdTkzRkJQSHpvL08yVDc5cE9vMXRSRm5MMVlhaHVOVHpX?=
+ =?utf-8?B?UmR6b1VXeExBMjZZSWZ2NUxCRmU3d2lmUWljU21qNEZhWkpqTFRRemxDUzdT?=
+ =?utf-8?B?UVU1cC92MnAvamNGMWxLSkdiZldxNjB6UEtlandLV3oxdDlBTG5EejdTeFRj?=
+ =?utf-8?B?SjJONWJGUGppc0RiRCtxYzloYmRhclNMNXpYNkpoUlE0V25IK1d6bk0zQ3N4?=
+ =?utf-8?B?bHA0RUJhTGdNRys5bzBZL2sva2Y3T3VvVWNzRHVuTGJjNjRKdnlWMzZBT09w?=
+ =?utf-8?B?N1dMVmpUUTUrVEtSNFp4cjROL3dXRWlkaDFNTzU1aDJqK0VOTWNUcmFNUlpn?=
+ =?utf-8?B?Ri9JOVVQUFdUQlFuVEJNQnhqdEJIZzRxSmVaMis5SjlXREhrMHZMcncxM2ps?=
+ =?utf-8?B?bFBLQzVlZzZsaWsyTUhJa0pDeUFKWWpua2ZLU0NIZUJSYnF3RW5qOEhrd3E4?=
+ =?utf-8?B?dmRUUUt4SWRaaHNUaC9SdUd4dTdTNUVyTGVNRkYzVFllS2FpaktWaktWS0Ji?=
+ =?utf-8?B?c3I3dEwrQ1drZTNCd245L0YrUVc4V0h4ejR6eGlkRkZUVk1zYml4TFdDanVv?=
+ =?utf-8?B?L1ZNR3ZCNFNQM05seStnWDAzUXVKckVaWkdjN1V3b084M1huam5tL2tRMEgv?=
+ =?utf-8?B?enc9PQ==?=
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3e28b7e-e17b-40b8-2742-08dbcfd8a8ee
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR02MB3830.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 12:49:25.9432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lp/NT6ePBXpN8Slb1cWrhPJVwVbbqMVrENgFAzRMCKr4ftRmLY3V1t60jccvoLkvLupKhtSG+PocI4yx2GqmjOrXM5YCcvVyAcKY5Ld3Rag=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR02MB9393
+X-Proofpoint-GUID: E_Hn7eHF2zCOVH29_Ar__Kt3NSxWq4v2
+X-Proofpoint-ORIG-GUID: E_Hn7eHF2zCOVH29_Ar__Kt3NSxWq4v2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_11,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 12:23:27PM +0200, Manivannan Sadhasivam wrote:
-> On Wed, Sep 20, 2023 at 01:27:59AM +0300, Dmitry Baryshkov wrote:
-> > On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> wrote:
-> > >
-> > > On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
-> > > > On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc.com> wrote:
-> > > > >
-> > > > >On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
-> > > > >> On 11.09.2023 11:42, Can Guo wrote:
-> > > > >>> Hi Konrad,
-> > > > >>>
-> > > > >>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
-> > > > >>>> On 11.09.2023 07:59, Can Guo wrote:
-> > > > >>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
-> > > > >>>>>
-> > > > >>>>> Retrieve UFS device version from UFS host controller's spare register
-> > > > >>>>> which is populated by bootloader, and use the UFS device version together
-> > > > >>>>> with host controller's HW version to decide the proper power modes which
-> > > > >>>>> should be used to configure the UFS PHY.
-> > > > >>>> That sounds a bit fishy.. is there no bootloader-independent
-> > > > >>>> solution to that? Can't we bring in the code that the bootloader
-> > > > >>>> uses to determine these values?
-> > > > >>>>
-> > > > >>>> Konrad
-> > > > >>>
-> > > > >>> Agree, it is.
-> > > > >>>
-> > > > >>>
-> > > > >>> All these complexities come from one request from PHY design team - power saving.
-> > > > >>>
-> > > > >>> And to achieve power saving, Qualcomm UFS developers are requested to use the
-> > > > >>>
-> > > > >>> lowest hanging PHY settings which can sustain the Max agreed HS Gear (btw host
-> > > > >>>
-> > > > >>> and UFS device) during UFS's lifecycle in High Level OS,  whereas the power saving
-> > > > >>>
-> > > > >>> request does not apply to bootloader, which works for only a few seconds during
-> > > > >>>
-> > > > >>> bootup. Hence, there is no such version detect code in bootloader -  it just uses the
-> > > > >>>
-> > > > >>> highest PHY settings to configure PHY, boot up UFS and put UFS device version in this
-> > > > >>>
-> > > > >>> register.
-> > > > >> First of all, your email client seems to be inserting 2 newlines
-> > > > >> instead of 1. If you're using thunderbird, you may want to edit:
-> > > > >>
-> > > > >> mail.identity.(default or your mail identity idx).default.compose_html
-> > > > >>
-> > > > >> to `false`
-> > > > >>
-> > > > >> and add that to your internal wiki page, as I see many @quic folks having
-> > > > >> this issue.
-> > > > >>
-> > > > >>
-> > > > >> Going back to the main topic, I don't think we understood each other.
-> > > > >> The commit message states:
-> > > > >>
-> > > > >>
-> > > > >> "Retrieve UFS device version from UFS host controller's spare register
-> > > > >> which is populated by bootloader"
-> > > > >>
-> > > > >>
-> > > > >> Which means the bootloader is able to somehow determine the value
-> > > > >> that's in the spare register and write it there.
-> > > > >>
-> > > > >> I'm asking whether we can take the logic behind this value and
-> > > > >> move it to Linux so that we don't depend on the bootloader to
-> > > > >> guarantee it (e.g. Chrome or some other devices with more exotic
-> > > > >> fw may not work this way).
-> > > > >>
-> > > > >>
-> > > > >> Konrad
-> > > > >
-> > > > >
-> > > > >There is no logic behind this value at all in bootloader, as I explained, after bootloader
-> > > > >
-> > > > >initializes UFS, bootloader simply reads UFS's device version (the value you are referring)
-> > > > >
-> > > > >and write it to the register. But in Linux kernel, we need (or want to know) this value
-> > > > >
-> > > > >BEFORE we initialize UFS host controller (and UFS device).
-> > > >
-> > > > Depending on the bootloader behaviour is not an option. For example the kernel might be started via kexec. Or via u-boot. Or grub. Or any other bootloader. So please duplicate the logic to read the UFS version instead.
-> > > >
-> > >
-> > > As Can said, there is no logic in the bootloader. What it does it, after doing
-> > > the UFS initialization, it writes the agreed gear (between host and the device)
-> > > to this register. And in linux, we use that value to initialize the device
-> > > (i.e., not doing init based on the min gear).
-> > >
-> > > But the important factor here is that, we use this gear value to program the PHY
-> > > init sequence. So if there is no hint from the bootloader, linux will program
-> > > the min phy sequence (G3/G4) and then once the gear scaling happens, it will
-> > > program the max phy sequence (G4/G5).
-> > >
-> > > Now on recent platforms, the init sequences are not compatible with each other
-> > > i.e., once the min seq. is programmed, then before programming max seq. the
-> > > registers not common to both seq. should be programmed to default value. In
-> > > other words, min seq. specific registers should be reset to the default value.
-> > > Otherwise, there will be stability issues in the PHY.
-> > 
-> > I see nothing wrong with adding 'default' register programming to the
-> > gear tables. If we have to reset them to the default values to switch
-> > the PHY settings, these writes must be a part of the corresponding
-> > tables.
-> > 
-> 
-> Yep, that's what I initially proposed. But Qcom wanted to avoid the cost of
-> programming the reset tables in the PHY driver.
-> 
-> Can, could you please check if programming the additional sequence doesn't cause
-> any power/performance effect?
-> 
 
-I'd like to simplify this conversion as there has been some misunderstanding.
+On 18/10/2023 13:11, Rinat Gadelshin wrote:
+>> -static void audit_receive(struct sk_buff *skb)
+>> +static void audit_receive(struct sk_buff *skb)
+>>   {
+>>       struct nlmsghdr *nlh;
+>> +    bool ack;
+> Maybe we should initialize 'ack' as 'true' here?
+That doesn't feel particularly useful to me. In fact, I think it's 
+actually clearer
+uninitialised as a never-used initialisation could look like an 
+actually-used default.
+We're guaranteed to initialise before use.
 
-First of all in linux, while probing the UFS device by the host controller, it
-needs to use _some_ gear. So far we were using HS_G2 as that gear and using the
-PHY init sequence of G3/G4 depending on the SoC. We do not need to use G2 init
-sequence because, there are only 2 init sequences available for any SoC and
-since the init sequences are backwards compatible, we mostly use the min init
-sequence, G3/G4. Even though this incurs slight power consumption during boot,
-the ufs host controller after probing the device will switch to max gear
-supported by both entities. If that max is G4/G5, then the respective init
-sequence will be programmed again.
-
-Now the issue is, for the automotive usecases, switching the gears 2 times
-during boot is affecting the boot KPI (Key Performance Inidicator). So the UFS
-team came with the idea of populating a spare register in the bootloader with
-the max gear info that the bootloader has already found out and using the same
-in the linux for first time itself. This helps linux in using a single gear
-during probe time.
-
-This is what this patch is doing. If for some reason, that register is not
-populated, then we default to the existing G2 gear and do init twice as the
-driver is doing currently.
-
-I hope this clarifies the intention of this patch.
-
-- Mani
-
-> - Mani
-> 
-> > >
-> > > So to avoid that, if we get the hint from bootloader (always the max supported
-> > > gear between host and device), then only one seq. will be programmed.
-> > >
-> > > Other way to solve this issue is to reset the non common registers in the init
-> > > seq. to default value. But that will be an additional overhead.
-> > >
-> > > But... if the bootloader doesn't populate this register (if the boot device is
-> > > not UFS, like in compute platforms), then this whole logic won't work. This
-> > > should also be taken into consideration.
-> > 
-> > Yep, that's the dependency on the bootloader. Which we should avoid.
-> > 
-> > >
-> > > - Mani
-> > >
-> > > >
-> > > > P.S. you have been asked to fix your email client. Please do so. Or, if you are inserting these linebreaks manually, please stop.
-> > > >
-> > > > >Thanks,
-> > > > >
-> > > > >Can Guo.
-> > > > >
-> > > >
-> > >
-> > > --
-> > > மணிவண்ணன் சதாசிவம்
-> > 
-> > 
-> > 
-> > -- 
-> > With best wishes
-> > Dmitry
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
-
--- 
-மணிவண்ணன் சதாசிவம்
+- Chris
