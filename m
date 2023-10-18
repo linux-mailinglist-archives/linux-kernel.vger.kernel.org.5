@@ -2,48 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8117CDFFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0853A7CE007
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345665AbjJROev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S1345727AbjJROfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346148AbjJROeW (ORCPT
+        with ESMTP id S1345558AbjJROfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:34:22 -0400
+        Wed, 18 Oct 2023 10:35:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC6C449D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:32:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AC7DC433C8;
-        Wed, 18 Oct 2023 14:32:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017C5D72;
+        Wed, 18 Oct 2023 07:33:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C36C433CA;
+        Wed, 18 Oct 2023 14:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697639548;
-        bh=4FEwqJ929JAqfUaP3HMuPeYHbZMSPU9FcgWhb7gRou8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c4QJtwVf7GipsAh6O4D12K+Dz/6Tvr//wwczIEzjDOtYEymAH4NVxJtrNNqOeh4U/
-         bNliXOKKZm3AQaC7LBWPQenl7k9FYu0JQ5Pjxf4EkQ+ndennpK16xxWvV2EZeVYnqt
-         osqN9ONbzqnw/VCNaDwCf2mAfEnasJTBOCKaU5+vLt3eGydYYbuZYu9BOb+zjW5mN1
-         uhI1AqRCKoE+ku2x8LZObRZ+Dyw3iQoV1U9CR0Ex5JUZolBq6tz4JLhJphSEvZIG9A
-         qwYf60lUmVls8oLFaetkwxvh1fuwnElxUO99BtxePZfCXjnEo1R7JDvMVT53bXNoQx
-         AD3wk5riYs1Kg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 130A640016; Wed, 18 Oct 2023 11:32:25 -0300 (-03)
-Date:   Wed, 18 Oct 2023 11:32:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Thomas Richter <tmricht@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iii@linux.ibm.com, irogers@google.com, svens@linux.ibm.com,
-        gor@linux.ibm.com, sumanthk@linux.ibm.com, hca@linux.ibm.com
-Subject: Re: [PATCH] perf test: test case 111 fails on s390
-Message-ID: <ZS/seVMNrV6j6z1J@kernel.org>
-References: <20231018064441.2751317-1-tmricht@linux.ibm.com>
- <ZS/mKa1Sk4hhJ/zY@kernel.org>
+        s=k20201202; t=1697639626;
+        bh=cLipz8J6oEmh+ml1rc21wOF53zzsI1dKLbu6UdJUPAE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pnKaJobVr1K8TrLoPMWwbp4EU6l54jpXaiZ3WiRMftDNOtS4Vc+7wQ2K1bm6VkpmV
+         jo9kOetAQE1csLrFm64M8g0krD5DLQzJgSyY3RL6fgeni9HKZm0yVb3tcHXyz8f4cw
+         zS7XlD8fUCBr0/K1hZvXc+X1mAa9EwYp86KIdWmJm51Ag5uINuVyU+tjRdzTh87qc4
+         aea12HuAHGtTF/UV4GfwhiSOncFEcyP3LaV/fJiJq4WFBot6H8KVWx0iorXTtDQCxG
+         LEG2HuuyhrH1QIAN4xlbf/255CE9UwdD5BOtXcY8MZ8+vhXWqrQAr49MEO4+6VN0sk
+         FuV250BtzoC4A==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so1085641366b.1;
+        Wed, 18 Oct 2023 07:33:46 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyd9UupN1qOjKcg1ZiktEc0ukEG8Qweb2dhyb211C7JKVq4izLK
+        K2Sn6gLY7GCeQa5LfobX8Fy6aueUM1k4VFVevvA=
+X-Google-Smtp-Source: AGHT+IEsWAGom4iQqn79hXr786s3mfMGfFSL+9U7yikMdyJnU4Qb89MGJCpe0Z+zNqgH5yPPIQqdurERnRAYU0THHxg=
+X-Received: by 2002:a17:906:fd84:b0:9be:fc31:8cd4 with SMTP id
+ xa4-20020a170906fd8400b009befc318cd4mr4906580ejb.18.1697639624987; Wed, 18
+ Oct 2023 07:33:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS/mKa1Sk4hhJ/zY@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org> <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org> <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <86wmxcejav.wl-maz@kernel.org> <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
+ <86pm2ye2si.wl-maz@kernel.org> <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
+ <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
+ <CAMpQs4+neiaJKp93UcemJbPPbhmf1B7WYNqKh=qx0avrbwW2cQ@mail.gmail.com> <CAOiHx==uSQrO6+Ob1qe3NaRdXoGTwLYSS8S7YYMwQ4zhSbX75g@mail.gmail.com>
+In-Reply-To: <CAOiHx==uSQrO6+Ob1qe3NaRdXoGTwLYSS8S7YYMwQ4zhSbX75g@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 18 Oct 2023 22:33:32 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4yZ7DKx865M1RN+0L8CZjua=wBMsuXT0ekNANRN+RWAg@mail.gmail.com>
+Message-ID: <CAAhV-H4yZ7DKx865M1RN+0L8CZjua=wBMsuXT0ekNANRN+RWAg@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Jonas Gorski <jonas.gorski@gmail.com>
+Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,125 +77,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 18, 2023 at 11:05:29AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Oct 18, 2023 at 08:44:41AM +0200, Thomas Richter escreveu:
-> > Perf test case 111 Check open filename arg using perf trace + vfs_getname
-> > fails on s390. This is caused by a failing function
-> > bpf_probe_read() in file util/bpf_skel/augmented_raw_syscalls.bpf.c.
-> 
-> 
-> Please change the patch subject to describe what is being really fixed
-> instead of the test that spotted the problem, i.e. something like:
-> 
-> perf trace: Use the right bpf_probe_read(_str) variant for reading user data
-> 
-> But then shouldn't all those use bpf_probe_read_user(_str)?
-> 
-> As it is reading arguments to the syscall, that are coming from
-> userspace, i.e. both open/openat/etc path/filename, clock_nanosleep rqtp
-> args (and connect sockaddr, etc) comes from userspace.
+Hi, Jonas,
 
-So, with your patch, on x86_64, I get:
+On Wed, Oct 18, 2023 at 5:38=E2=80=AFPM Jonas Gorski <jonas.gorski@gmail.co=
+m> wrote:
+>
+> On Wed, 18 Oct 2023 at 08:58, Binbin Zhou <zhoubb.aaron@gmail.com> wrote:
+> >
+> > On Tue, Oct 17, 2023 at 9:05=E2=80=AFPM Jonas Gorski <jonas.gorski@gmai=
+l.com> wrote:
+> > >
+> > > On Mon, 16 Oct 2023 at 13:26, Binbin Zhou <zhoubb.aaron@gmail.com> wr=
+ote:
+> > > >
+> > > > Hi all:
+> > > >
+> > > > Sorry, it's been a while since the last discussion.
+> > > >
+> > > > Previously, Krzysztof suggested using the standard "interrupt-map"
+> > > > attribute instead of the "loongson,parent_int_map" attribute, which=
+ I
+> > > > tried to implement, but the downside of this approach seems to be
+> > > > obvious.
+> > > >
+> > > > First of all, let me explain again the interrupt routing of the
+> > > > loongson liointc.
+> > > > For example, the Loongson-2K1000 has 64 interrupt sources, each wit=
+h
+> > > > the following 8-bit interrupt routing registers (main regs attribut=
+e
+> > > > in dts):
+> > > >
+> > > > +----+-------------------------------------------------------------=
+------+
+> > > > | bit  | description
+> > > >             |
+> > > > +----+-------------------------------------------------------------=
+------+
+> > > > | 3:0 | Processor core to route                                    =
+       |
+> > > > | 7:4 | Routed processor core interrupt pins (INT0--INT3) |
+> > > > +-----+------------------------------------------------------------=
+------+
+> > > >
+> > > > The "loongson,parent_int_map" attribute is to describe the routed
+> > > > interrupt pins to cpuintc.
+> > > >
+> > > > However, the "interrupt-map" attribute is not supposed to be used f=
+or
+> > > > interrupt controller in the normal case. Though since commit
+> > > > 041284181226 ("of/irq: Allow matching of an interrupt-map local to =
+an
+> > > > interrupt controller"), the "interrupt-map" attribute can be used i=
+n
+> > > > interrupt controller nodes. Some interrupt controllers were found n=
+ot
+> > > > to work properly later, so in commit de4adddcbcc2 ("of/irq: Add a
+> > > > quirk for controllers with their own definition of interrupt-map"),=
+ a
+> > > > quirk was added for these interrupt controllers. As we can see from
+> > > > the commit message, this is a bad solution in itself.
+> > > >
+> > > > Similarly, if we choose to use the "interrupt-map" attribute in the
+> > > > interrupt controller, we have to use this unfriendly solution (quir=
+k).
+> > > > Because we hope of_irq_parse_raw() stops at the liointc level rathe=
+r
+> > > > than goto its parent level.
+> > > >
+> > > > So, I don't think it's a good choice to use a bad solution as a rep=
+lacement.
+> > > >
+> > > > Do you have any other ideas?
+> > >
+> > > Assuming this is changeable at runtime, this sounds to me like this
+> > > mapping/routing could easily be exposed as irqchip cpu affinity. Then
+> > > userspace can apply all the performance optimizations it wants (and
+> > > can easily update them without fiddling with the kernel/dts).
+> > >
+> > > And then there would be no need to hardcode/describe it in the dts(i)=
+ at all.
+> >
+> > Hi Jonas:
+> >
+> > Thanks for your reply.
+> >
+> > It is possible that my non-detailed explanation caused your misundersta=
+nding.
+> > Allow me to explain again about the interrupt routing register above,
+> > which we know is divided into two parts:
+> >
+> > +----+-----------------------------------------------------------------=
+--+
+> > | bit  | description |
+> > +----+-----------------------------------------------------------------=
+--+
+> > | 3:0 | Processor core to route                                        =
+   |
+> > | 7:4 | Routed processor core interrupt pins (INT0--INT3) |
+> > +-----+----------------------------------------------------------------=
+--+
+> >
+> > The first part "processor core" will be set to "boot_cpu_id" in the
+> > driver, which we assume is fixed and we don't need to care about it
+> > here.
+> > What we care about is the second part "mapping of device interrupts to
+> > processor interrupt pins", which is what we want to describe in
+> > dts(i).
+> >
+> > Let's take the Loongson-2K1000 as an example again, it has 64
+> > interrupt sources as inputs and 4 processor core interrupt pins as
+> > outputs.
+> > The sketch is shown below:
+> >
+> > Device Interrupts           Interrupt Pins
+> >                  +-------------+
+> >          0---->|                |--> INT0
+> >         ...       | Mapping |--> INT1
+> >         ...       |                |--> INT2
+> >         63--->|                |--> INT3
+> >                  +-------------+
+> >
+> > Therefore, this mapping relationship cannot be changed at runtime and
+> > needs to be hardcoded/described in dts(i).
+>
+> But that's only a driver/description limitation, not an actual
+> physical limitation, right? In theory you could reroute them as much
+> as you want as long as you keep the kernel up-to-date about the
+> current routing (via whatever means).
+>
+> Anyway, I guess you want to use the routed interrupt pin to identify
+> different irq controller blocks.
+>
+> Can't the interrupt pin be inferred from the parent interrupt? If your
+> parent (hw) irq is two, route everything to INT0 etc? Or alternatively
+> use the name of the parent interrupt?
+Let me make things clear and ignore those irrelevant information.
+1, Our liointc controller has 32 inputs from downstream interrupt
+sources and 4 outputs to the parent irqchip, the "routing" here means
+which input go to which output.
+2, We use 'parent_int_map' to describe the boot-time routing in dts
+previously, but Krzysztof suggests us to use 'interrupt-map' instead.
+3, When we rework our driver to use 'interrupt-map', we found that
+this property is not supposed to be used in a regular irqchip (it is
+usually used in a pcie port which is also act as an irqchip).
+4, If we still want to use 'interrupt-map' to describe the routing in
+liointc, we should make of_irq_parse_raw() stop at the liointc level
+rather than go to its parent level, because the hwirq is provided by
+liointc, not its parent. To archive this goal, we should add liointc
+to the quirk list.
+5, So, for our liointc driver we have two choices: 1) still use the
+'parent_int_map' property; 2) use 'interrupt-map' property and add
+liointc to the quirk list. We prefer the first ourselves, but
+Krzysztof may give us a best solution.
 
-^C[root@five ~]# perf trace -e connect*
-     0.000 ( 0.021 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 42)         = 0
-     0.544 ( 0.011 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
-     0.569 ( 0.009 ms): DNS Res~ver #1/8756 connect(fd: 229, uservaddr: { .family: UNSPEC }, addrlen: 28)         = -1 ENETUNREACH (Network is unreachable)
+Huacai
 
-I.e. it loads the resulting BPF bytecode but doesn't manage to copy the
-sockaddr in userspace pointed by connect's uservaddr argument.
-
-We need to use bpf_probe_read_kernel() for the tracepoint payload, in
-the raw_syscalls/sys_enter and raw_syscalls/sys_exit handlers, as that
-is kernel memory, but in the syscall specific BPF programs we need to
-use bpf_probe_read_user() to get things like sockaddr, etc, i.e.
-userspace contents.
-
-With the patch below:
-
-[root@five ~]# perf trace -e connect*
-     0.000 ( 0.128 ms): pool/2690 connect(fd: 7, uservaddr: { .family: LOCAL, path: /var/run/.heim_org.h5l.kcm-socket }, addrlen: 110) = 0
-   304.127 ( 0.018 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: LOCAL, path: /run/systemd/resolve/io.systemd.Resolve }, addrlen: 42) = 0
-   304.554 ( 0.016 ms): systemd-resolv/1167 connect(fd: 24, uservaddr: { .family: INET, port: 53, addr: 192.168.86.1 }, addrlen: 16) = 0
-   304.650 ( 0.009 ms): systemd-resolv/1167 connect(fd: 25, uservaddr: { .family: INET, port: 53, addr: 192.168.86.1 }, addrlen: 16) = 0
-   318.952 ( 0.009 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: INET, port: 0, addr: 216.239.38.177 }, addrlen: 16) = 0
-   318.965 ( 0.003 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
-   318.970 ( 0.004 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: INET, port: 0, addr: 216.239.34.177 }, addrlen: 16) = 0
-   318.977 ( 0.002 ms): DNS Resolver #/6524 connect(fd: 556, uservaddr: { .family: UNSPEC }, addrlen: 16)         = 0
-
-You can test before/after with:
-
- # perf trace -e connect*,clo*sleep
-
-To see clock_nanosleep rqtp args as well:
-
-Before:
-
-   999.107 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
-  1000.228 (         ): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) ...
-  1030.375 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
-  1061.694 (         ): gnome-terminal/3285 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x7ffdd373adb0) ...
-
-
-after:
-
-  1000.198 (1000.035 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
-  2000.302 (1000.036 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
-  3000.410 (1000.037 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90) = 0
-  4000.518 (1000.035 ms): pool-gsd-smart/3140 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7f85b61fec90
-
-[root@five ~]# perf trace -e *sleep sleep 1.234567890
-     0.000 (1234.630 ms): sleep/64495 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 234567890 }, rmtp: 0x7ffdf49af4a0) = 0
-[root@five ~]#
-
-- Arnaldo
-
-diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-index cc22bccfc178229a..52c270330ae0d2f3 100644
---- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-+++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-@@ -203,7 +203,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
- 	_Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
- 	socklen &= sizeof(augmented_args->saddr) - 1;
- 
--	bpf_probe_read_kernel(&augmented_args->saddr, socklen, sockaddr_arg);
-+	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
- 
- 	return augmented__output(args, augmented_args, len + socklen);
- }
-@@ -221,7 +221,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
- 
- 	socklen &= sizeof(augmented_args->saddr) - 1;
- 
--	bpf_probe_read_kernel(&augmented_args->saddr, socklen, sockaddr_arg);
-+	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
- 
- 	return augmented__output(args, augmented_args, len + socklen);
- }
-@@ -311,7 +311,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
-         if (augmented_args == NULL)
- 		goto failure;
- 
--	if (bpf_probe_read_kernel(&augmented_args->__data, sizeof(*attr), attr) < 0)
-+	if (bpf_probe_read_user(&augmented_args->__data, sizeof(*attr), attr) < 0)
- 		goto failure;
- 
- 	attr_read = (const struct perf_event_attr_size *)augmented_args->__data;
-@@ -325,7 +325,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
-                 goto failure;
- 
- 	// Now that we read attr->size and tested it against the size limits, read it completely
--	if (bpf_probe_read_kernel(&augmented_args->__data, size, attr) < 0)
-+	if (bpf_probe_read_user(&augmented_args->__data, size, attr) < 0)
- 		goto failure;
- 
- 	return augmented__output(args, augmented_args, len + size);
-@@ -347,7 +347,7 @@ int sys_enter_clock_nanosleep(struct syscall_enter_args *args)
- 	if (size > sizeof(augmented_args->__data))
-                 goto failure;
- 
--	bpf_probe_read_kernel(&augmented_args->__data, size, rqtp_arg);
-+	bpf_probe_read_user(&augmented_args->__data, size, rqtp_arg);
- 
- 	return augmented__output(args, augmented_args, len + size);
- failure:
+>
+> Best Regards,
+> Jonas
