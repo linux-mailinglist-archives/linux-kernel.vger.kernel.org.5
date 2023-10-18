@@ -2,76 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289CE7CDAAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B767CDABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344486AbjJRLid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S1344600AbjJRLjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235197AbjJRLiQ (ORCPT
+        with ESMTP id S231230AbjJRLjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:38:16 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BA810C1;
-        Wed, 18 Oct 2023 04:38:04 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9TKz2WF6z15NQC;
-        Wed, 18 Oct 2023 19:35:19 +0800 (CST)
-Received: from build.huawei.com (10.175.101.6) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 18 Oct 2023 19:38:01 +0800
-From:   Wenchao Hao <haowenchao2@huawei.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>
-CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <louhongxiang@huawei.com>, Wenchao Hao <haowenchao2@huawei.com>
-Subject: [PATCH v3 2/2] scsi: Add comment of target_destroy in scsi_host_template
-Date:   Wed, 18 Oct 2023 19:37:46 +0800
-Message-ID: <20231018113746.1940197-3-haowenchao2@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20231018113746.1940197-1-haowenchao2@huawei.com>
-References: <20231018113746.1940197-1-haowenchao2@huawei.com>
+        Wed, 18 Oct 2023 07:39:37 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F499118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:39:35 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qt4tP-0002JJ-K9; Wed, 18 Oct 2023 13:39:15 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qt4tO-002Xih-D8; Wed, 18 Oct 2023 13:39:14 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qt4tO-00FE7I-14;
+        Wed, 18 Oct 2023 13:39:14 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v5 0/9] net: dsa: microchip: provide Wake on LAN support
+Date:   Wed, 18 Oct 2023 13:39:04 +0200
+Message-Id: <20231018113913.3629151-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add comment to tell callback function target_destroy of
-scsi_host_template must not sleep.
+This patch series introduces extensive Wake on LAN (WoL) support for the
+Microchip KSZ9477 family of switches, coupled with some code refactoring
+and error handling enhancements. The principal aim is to enable and
+manage Wake on Magic Packet and other PHY event triggers for waking up
+the system, whilst ensuring that the switch isn't reset during a
+shutdown if WoL is active.
 
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
----
- include/scsi/scsi_host.h | 3 +++
- 1 file changed, 3 insertions(+)
+The Wake on LAN functionality is optional and is particularly beneficial
+if the PME pins are connected to the SoC as a wake source or to a PMIC
+that can enable or wake the SoC.
 
-diff --git a/include/scsi/scsi_host.h b/include/scsi/scsi_host.h
-index 49f768d0ff37..2c61dd30d766 100644
---- a/include/scsi/scsi_host.h
-+++ b/include/scsi/scsi_host.h
-@@ -245,6 +245,9 @@ struct scsi_host_template {
- 	 * midlayer calls this point so that the driver may deallocate
- 	 * and terminate any references to the target.
- 	 *
-+	 * Note: This callback is called with the host lock held and hence
-+	 * must not sleep.
-+	 *
- 	 * Status: OPTIONAL
- 	 */
- 	void (* target_destroy)(struct scsi_target *);
+changes v5:
+- rework Wake on Magic Packet support.
+- Make sure we show more or less realistic information on get_wol by
+  comparing refcounted mac address against the ports address
+- fix mac address refcounting on set_wol()
+- rework shutdown sequence by to handle PMIC related issues. Make sure
+  PME pin is net frequently toggled.
+- use wakeup_source variable instead of reading PME pin register.
+
+changes v4:
+- add ksz_switch_shutdown() and do not skip dsa_switch_shutdown() and
+  etc.
+- try to configure MAC address on WAKE_MAGIC. If not possible, prevent
+  WAKE_MAGIC configuration
+- use ksz_switch_macaddr_get() for WAKE_MAGIC.
+- prevent ksz_port_set_mac_address if WAKE_MAGIC is active
+- do some more refactoring and patch reordering
+
+changes v3:
+- use ethernet address of DSA master instead from devicetree
+- use dev_ops->wol* instead of list of supported switch
+- don't shutdown the switch if WoL is enabled
+- rework on top of latest HSR changes
+
+changes v2:
+- rebase against latest next
+
+Oleksij Rempel (9):
+  net: dsa: microchip: Add missing MAC address register offset for
+    ksz8863
+  dt-bindings: net: dsa: microchip: add wakeup-source property
+  net: dsa: microchip: use wakeup-source DT property to enable PME
+    output
+  net: dsa: microchip: ksz9477: add Wake on LAN support
+  net: dsa: microchip: ksz9477: Add Wake on Magic Packet support
+  net: dsa: microchip: Refactor comment for ksz_switch_macaddr_get()
+    function
+  net: dsa: microchip: Add error handling for ksz_switch_macaddr_get()
+  net: dsa: microchip: Refactor switch shutdown routine for WoL
+    preparation
+  net: dsa: microchip: Ensure Stable PME Pin State for Wake-on-LAN
+
+ .../bindings/net/dsa/microchip,ksz.yaml       |   2 +
+ drivers/net/dsa/microchip/ksz9477.c           | 194 ++++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h           |   5 +
+ drivers/net/dsa/microchip/ksz9477_i2c.c       |   5 +-
+ drivers/net/dsa/microchip/ksz_common.c        |  96 +++++++--
+ drivers/net/dsa/microchip/ksz_common.h        |  10 +
+ drivers/net/dsa/microchip/ksz_spi.c           |   5 +-
+ 7 files changed, 297 insertions(+), 20 deletions(-)
+
 -- 
-2.32.0
+2.39.2
 
