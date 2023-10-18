@@ -2,194 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC21A7CDB21
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB1F7CDB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbjJRL67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S230345AbjJRL7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjJRL6y (ORCPT
+        with ESMTP id S230303AbjJRL7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:58:54 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BA895;
-        Wed, 18 Oct 2023 04:58:51 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5079eed8bfbso6589686e87.1;
-        Wed, 18 Oct 2023 04:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697630329; x=1698235129; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2HZjnaGwa5TvV5dl/sxySQcLOHk4EGrD00dll5PVeJA=;
-        b=Lo3VHsSiB66SLdquW962+1d7evyV/+IIhgPRTgXKTCIlg5NwtVGo6dQs9hkyjik8kW
-         nFz8AOSH55jrDPT+yjoh56RE6z7tOzAQ6Ndpwt4QKkvttq1jB9vPIuTRFMYCl00Tw0nH
-         irrDtUqp5DGIQEOBHHvQUmQRxGypB3W+ZNAIj9FDoQw6KkmfHJr2pLJJx34x7Be2ziTh
-         u4sQbZJtKMUutwxUVpkQsnqk+Bzyt90WAtRvcONYhlmnQCbXlwXgRYmUAIWpq94H3TUA
-         1a5Di7N34q+OwzBrrmazi60xSLBcMuR/yVeSQfLSOU3CDTkNSddhDg7uciiIwQB101eZ
-         JNzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697630329; x=1698235129;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2HZjnaGwa5TvV5dl/sxySQcLOHk4EGrD00dll5PVeJA=;
-        b=S0TL1E3PtoYLfSUmc5/5BETUWdE67C0Io/XBJW8pTEryY9l095yBFTLNJqSeJJhB2d
-         Bo19CCS/HYrzhV8mHO6YZDhjkyJWWzC3OpjZ7dQO6tmNsVfxdPqTjXngr9GNZkdRmbNk
-         30Id4tIP/ZGSQKPbA3BlefcvkoshiZf2Sb+YISGSFgIZxs77r2Y9OO3XmC8fOepXuIyi
-         cGHfb65+O/Wgmuj+mMvpPsa/alFjatoXqojSYa1Ck/nseRIPffhtIk/kOSJvdgctG/W9
-         1srSZz/MGAwjhZPpspavspw6/6x12vzF9f3H/yQNsxDL8VvxCFL3raZXboSZ1xJrE4Ph
-         XWuA==
-X-Gm-Message-State: AOJu0YyYJqEfEGJgkma7BAuVQs6/CtCKSqxJwTw8S15QTLDfrPMI9n2t
-        HktG4cUfzUcNvpzIMOC5r3Q=
-X-Google-Smtp-Source: AGHT+IGDRs6ujQYt61uHUyuK2nZPaUHqMKNTJs1USNR1zu9RKEbLV1M3xtEtAllA7nWWty8ovI/qTw==
-X-Received: by 2002:ac2:528a:0:b0:507:9625:5fd3 with SMTP id q10-20020ac2528a000000b0050796255fd3mr3691084lfm.32.1697630329349;
-        Wed, 18 Oct 2023 04:58:49 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id f13-20020a056512360d00b005007fc9ccccsm679059lfs.122.2023.10.18.04.58.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 04:58:48 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 14:58:46 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 2/7] PCI: dwc: Use FIELD_GET/PREP()
-Message-ID: <3o4neokfqofk42zrx5t5su72qmdu2x62rq5u2ywfobqyyg23rc@aksd3afajhwr>
-References: <20231018113254.17616-1-ilpo.jarvinen@linux.intel.com>
- <20231018113254.17616-3-ilpo.jarvinen@linux.intel.com>
+        Wed, 18 Oct 2023 07:59:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A8A111
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697630337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t354rC8K4HgkPzvMiAse2NVWm0ar8ppamL3evFb9Y8k=;
+        b=cCSOQnOwZeOsZDbegk6d3/d9XUg8mvVYYtrWXjnBUjPJ/PV56XEmF8llPcUMbUiF+0DoH0
+        y0H5X23cmLipLG2pEoUxWboEMw6cSTWHHtbghaUzbs+M4fpN5ECSSLCDxn7yUM8MRonAkz
+        Zw1AEHVGRBauZ6gkeL1/uFi22jkBQd8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-690-8a9MVqywO8erVYyhNhg87A-1; Wed, 18 Oct 2023 07:58:52 -0400
+X-MC-Unique: 8a9MVqywO8erVYyhNhg87A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 94F33881F00;
+        Wed, 18 Oct 2023 11:58:51 +0000 (UTC)
+Received: from [10.45.226.105] (unknown [10.45.226.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 277C640C6CA3;
+        Wed, 18 Oct 2023 11:58:49 +0000 (UTC)
+Message-ID: <901e8187-097e-457c-a467-e878afbc3504@redhat.com>
+Date:   Wed, 18 Oct 2023 13:58:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231018113254.17616-3-ilpo.jarvinen@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/5] i40e: Add handler for devlink .info_get
+To:     Jacob Keller <jacob.e.keller@intel.com>, netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+References: <20231013170755.2367410-1-ivecera@redhat.com>
+ <20231013170755.2367410-4-ivecera@redhat.com>
+ <93fa7e66-a4fc-47f5-84c8-e26551eb3204@intel.com>
+Content-Language: en-US
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <93fa7e66-a4fc-47f5-84c8-e26551eb3204@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 02:32:49PM +0300, Ilpo Järvinen wrote:
-> Convert open-coded variants of PCI field access into FIELD_GET/PREP()
-> to make the code easier to understand.
-> 
-> Add two missing defines into pci_regs.h. Logically, the Max No-Snoop
-> Latency Register is a separate word sized register in the PCIe spec,
-> but the pre-existing LTR defines in pci_regs.h with dword long values
-> seem to consider the registers together (the same goes for the only
-> user). Thus, follow the custom and make the new values also take both
-> word long LTR registers as a joint dword register.
-
-Nice work. Thanks! Could you also have a look at
-drivers/pci/controller/dwc/pcie-designware.c
-?
-It contains two open-coded patterns:
-(bar << 8) - FIELD_PREP()
-next_cap_ptr = (reg & 0xff00) >> 8; - FIELD_GET().
-next_cap_ptr = (reg & 0x00ff); - FIELD_GET().
-At least the later two statements concern the generic PCIe capability CSR.
-
--Serge(y)
 
 
+On 17. 10. 23 19:17, Jacob Keller wrote:
 > 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 7 ++++---
->  drivers/pci/controller/dwc/pcie-tegra194.c      | 5 ++---
->  include/uapi/linux/pci_regs.h                   | 2 ++
->  3 files changed, 8 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index f9182f8d552f..20bef1436bfb 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -6,6 +6,7 @@
->   * Author: Kishon Vijay Abraham I <kishon@ti.com>
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
->  
-> @@ -334,7 +335,7 @@ static int dw_pcie_ep_get_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
->  	if (!(val & PCI_MSI_FLAGS_ENABLE))
->  		return -EINVAL;
->  
-> -	val = (val & PCI_MSI_FLAGS_QSIZE) >> 4;
-> +	val = FIELD_GET(PCI_MSI_FLAGS_QSIZE, val);
->  
->  	return val;
->  }
-> @@ -357,7 +358,7 @@ static int dw_pcie_ep_set_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  	reg = ep_func->msi_cap + func_offset + PCI_MSI_FLAGS;
->  	val = dw_pcie_readw_dbi(pci, reg);
->  	val &= ~PCI_MSI_FLAGS_QMASK;
-> -	val |= (interrupts << 1) & PCI_MSI_FLAGS_QMASK;
-> +	val |= FIELD_PREP(PCI_MSI_FLAGS_QMASK, interrupts);
->  	dw_pcie_dbi_ro_wr_en(pci);
->  	dw_pcie_writew_dbi(pci, reg, val);
->  	dw_pcie_dbi_ro_wr_dis(pci);
-> @@ -584,7 +585,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  
->  	reg = ep_func->msix_cap + func_offset + PCI_MSIX_TABLE;
->  	tbl_offset = dw_pcie_readl_dbi(pci, reg);
-> -	bir = (tbl_offset & PCI_MSIX_TABLE_BIR);
-> +	bir = FIELD_GET(PCI_MSIX_TABLE_BIR, tbl_offset);
->  	tbl_offset &= PCI_MSIX_TABLE_OFFSET;
->  
->  	msix_tbl = ep->epf_bar[bir]->addr + tbl_offset;
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 248cd9347e8f..12d5ab2f5219 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -126,7 +126,6 @@
->  
->  #define APPL_LTR_MSG_1				0xC4
->  #define LTR_MSG_REQ				BIT(15)
-> -#define LTR_MST_NO_SNOOP_SHIFT			16
->  
->  #define APPL_LTR_MSG_2				0xC8
->  #define APPL_LTR_MSG_2_LTR_MSG_REQ_STATE	BIT(3)
-> @@ -496,8 +495,8 @@ static irqreturn_t tegra_pcie_ep_irq_thread(int irq, void *arg)
->  		ktime_t timeout;
->  
->  		/* 110us for both snoop and no-snoop */
-> -		val = 110 | (2 << PCI_LTR_SCALE_SHIFT) | LTR_MSG_REQ;
-> -		val |= (val << LTR_MST_NO_SNOOP_SHIFT);
-> +		val = 110 | FIELD_PREP(PCI_LTR_SCALE_SHIFT, 2) | LTR_MSG_REQ;
-> +		val |= FIELD_PREP(PCI_LTR_NOSNOOP_VALUE, val);
->  		appl_writel(pcie, val, APPL_LTR_MSG_1);
->  
->  		/* Send LTR upstream */
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index e5f558d96493..495f0ae4ecd5 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -975,6 +975,8 @@
->  #define  PCI_LTR_VALUE_MASK	0x000003ff
->  #define  PCI_LTR_SCALE_MASK	0x00001c00
->  #define  PCI_LTR_SCALE_SHIFT	10
-> +#define  PCI_LTR_NOSNOOP_VALUE	0x03ff0000 /* Max No-Snoop Latency Value */
-> +#define  PCI_LTR_NOSNOOP_SCALE	0x1c000000 /* Scale for Max Value */
->  #define PCI_EXT_CAP_LTR_SIZEOF	8
->  
->  /* Access Control Service */
-> -- 
-> 2.30.2
+> On 10/13/2023 10:07 AM, Ivan Vecera wrote:
+>> Provide devlink .info_get callback to allow the driver to report
+>> detailed version information. The following info is reported:
+>>
+>>   "serial_number" -> The PCI DSN of the adapter
+>>   "fw.mgmt" -> The version of the firmware
+>>   "fw.mgmt.api" -> The API version of interface exposed over the AdminQ
+>>   "fw.psid" -> The version of the NVM image
+>>   "fw.bundle_id" -> Unique identifier for the combined flash image
+>>   "fw.undi" -> The combo image version
+>>
+>> With this, 'devlink dev info' provides at least the same amount
+>> information as is reported by ETHTOOL_GDRVINFO:
+>>
+>> $ ethtool -i enp2s0f0 | egrep '(driver|firmware)'
+>> driver: i40e
+>> firmware-version: 9.30 0x8000e5f3 1.3429.0
+>>
+>> $ devlink dev info pci/0000:02:00.0
+>> pci/0000:02:00.0:
+>>    driver i40e
+>>    serial_number c0-de-b7-ff-ff-ef-ec-3c
+>>    versions:
+>>        running:
+>>          fw.mgmt 9.130.73618
 > 
+> The ice driver used fw.mgmt.build for the fw_build value, rather than
+> combining it into the fw.mgmt value.
+
+OK, will fix by follow up.
+
+>>          fw.mgmt.api 1.15
+>>          fw.psid 9.30
+> 
+> As discussed in the other thread, ice used fw.psid.api
+
+OK, will change it to fw.psid.api.
+
+>>          fw.bundle_id 0x8000e5f3
+>>          fw.undi 1.3429.0
+>>
+> 
+> Does i40e have a netlist? The ice driver reports netlist versions as
+> well. It also reports the DDP version information, but I don't think
+> i40e supports that either if I recall..
+
+i40e supports to load DDP in runtime by ethtool flash function and the
+name and version of DDP package could be provided IMHO.
+
+
+>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+>> ---
+>>   .../net/ethernet/intel/i40e/i40e_devlink.c    | 90 +++++++++++++++++++
+>>   1 file changed, 90 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/intel/i40e/i40e_devlink.c b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
+>> index 66b7f5be45ae..fb6144d74c98 100644
+>> --- a/drivers/net/ethernet/intel/i40e/i40e_devlink.c
+>> +++ b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
+>> @@ -5,7 +5,97 @@
+>>   #include "i40e.h"
+>>   #include "i40e_devlink.h"
+>>   
+>> +static void i40e_info_get_dsn(struct i40e_pf *pf, char *buf, size_t len)
+>> +{
+>> +	u8 dsn[8];
+>> +
+>> +	put_unaligned_be64(pci_get_dsn(pf->pdev), dsn);
+>> +
+>> +	snprintf(buf, len, "%8phD", dsn);
+>> +}
+>> +
+>> +static void i40e_info_fw_mgmt(struct i40e_hw *hw, char *buf, size_t len)
+>> +{
+>> +	struct i40e_adminq_info *aq = &hw->aq;
+>> +
+>> +	snprintf(buf, len, "%u.%u.%05d",
+>> +		 aq->fw_maj_ver, aq->fw_min_ver, aq->fw_build);
+>> +}
+>> +
+>> +static void i40e_info_fw_api(struct i40e_hw *hw, char *buf, size_t len)
+>> +{
+>> +	struct i40e_adminq_info *aq = &hw->aq;
+>> +
+>> +	snprintf(buf, len, "%u.%u", aq->api_maj_ver, aq->api_min_ver);
+>> +}
+>> +
+>> +enum i40e_devlink_version_type {
+>> +	I40E_DL_VERSION_RUNNING,
+>> +};
+>> +
+>> +static int i40e_devlink_info_put(struct devlink_info_req *req,
+>> +				 enum i40e_devlink_version_type type,
+>> +				 const char *key, const char *value)
+>> +{
+>> +	if (!strlen(value))
+>> +		return 0;
+>> +
+>> +	switch (type) {
+>> +	case I40E_DL_VERSION_RUNNING:
+>> +		return devlink_info_version_running_put(req, key, value);
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +static int i40e_devlink_info_get(struct devlink *dl,
+>> +				 struct devlink_info_req *req,
+>> +				 struct netlink_ext_ack *extack)
+>> +{
+>> +	struct i40e_pf *pf = devlink_priv(dl);
+>> +	struct i40e_hw *hw = &pf->hw;
+>> +	char buf[32];
+>> +	int err;
+>> +
+>> +	i40e_info_get_dsn(pf, buf, sizeof(buf));
+>> +	err = devlink_info_serial_number_put(req, buf);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	i40e_info_fw_mgmt(hw, buf, sizeof(buf));
+>> +	err = i40e_devlink_info_put(req, I40E_DL_VERSION_RUNNING,
+>> +				    DEVLINK_INFO_VERSION_GENERIC_FW_MGMT, buf);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	i40e_info_fw_api(hw, buf, sizeof(buf));
+>> +	err = i40e_devlink_info_put(req, I40E_DL_VERSION_RUNNING,
+>> +				    DEVLINK_INFO_VERSION_GENERIC_FW_MGMT_API,
+>> +				    buf);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	i40e_info_nvm_ver(hw, buf, sizeof(buf));
+>> +	err = i40e_devlink_info_put(req, I40E_DL_VERSION_RUNNING,
+>> +				    DEVLINK_INFO_VERSION_GENERIC_FW_PSID, buf);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	i40e_info_eetrack(hw, buf, sizeof(buf));
+>> +	err = i40e_devlink_info_put(req, I40E_DL_VERSION_RUNNING,
+>> +				    DEVLINK_INFO_VERSION_GENERIC_FW_BUNDLE_ID,
+>> +				    buf);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	i40e_info_civd_ver(hw, buf, sizeof(buf));
+>> +	err = i40e_devlink_info_put(req, I40E_DL_VERSION_RUNNING,
+>> +				    DEVLINK_INFO_VERSION_GENERIC_FW_UNDI, buf);
+>> +
+>> +	return err;
+>> +}
+> 
+> The ice driver created a struct list and loop flow to iterate this. I'm
+> wondering if it could make sense to extract that logic into devlink
+> core, so that drivers just need to implement a map between version names
+> and functions which extract the name.
+> 
+> It seems like it would be straight forward to implement with a setup,
+> the list mapping info names to version getters, and a teardown.
+> 
+> Hmm...
+> 
+>> +
+>>   static const struct devlink_ops i40e_devlink_ops = {
+>> +	.info_get = i40e_devlink_info_get,
+>>   };
+>>   
+>>   /**
+> 
+
