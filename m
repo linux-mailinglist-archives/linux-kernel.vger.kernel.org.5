@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0DE7CDF7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C7A7CDF7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345501AbjJROYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
+        id S1345561AbjJROYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345665AbjJROYL (ORCPT
+        with ESMTP id S1345663AbjJROYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 10:24:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9756A35A7;
-        Wed, 18 Oct 2023 07:14:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49ECCC433CC;
-        Wed, 18 Oct 2023 14:14:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D24835BB;
+        Wed, 18 Oct 2023 07:14:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CAB1C433B8;
+        Wed, 18 Oct 2023 14:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638469;
-        bh=Yn57Ag2OKGJtanQWylEtemHP6MhQcFPm09SQigVKxTE=;
+        s=k20201202; t=1697638471;
+        bh=vIp2a3Og1dF/DJNtsWBa46BZeQrxOpxrSprYQl3XD78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FmqJ/r9bmGlTTuYCaHV/0abW6sYcPSIfpYI+NhZLuJXqh/tdTRKKx0VvsuG++H5Fe
-         cASlC4FSYgvaDnz6+Dax3Vsk8c66k5QLrVNRVg7Uqjk6MmQ8WIUINIKu6rlOPJ6vqE
-         qiUXJr36tdK4Z7TiT6NhX4tKDCMiyZPAEeF8F23M/tAYxaAoZgVHett6noY0YbgH5d
-         lcCulye/a8iYH6hO0dcq5fCqebrWBwrt2OqynPuTLvquigQDiPbiDAReQxISaalZLz
-         txMiSTaXHHayvGp5jGGpUilqqszu8/EpxkTOVGY3ZCdLbhYamF2Az3WxRoJvgYsOo+
-         AB9vh4tQVq9NA==
+        b=XEftafoo/ngVNxHPc/6jVZUuUSi4W6WqvETB6vEbelqR8eDXT1GTSNlRCBxdU5YXW
+         zEAdZg0DjGBYEGZKwDvmX/4U+7GsMKIJD3XHqhGeUsuZdnJ/aK7MsCv84AWMLVyQ5K
+         ZgyqALKU+zX4TFm01NIWlXqHeS7swdPF3K4YcqVbSr7hjyux1dwV2bN+2luY9IOBEm
+         XX0ocC3Ig09PkNZCPyqlJKq8b/JlEqSA/lAyjQ7B1gwBhIA9d+Wc9IK0qmSatPYfEm
+         hA1bd0+0JL0RzD2ViWd1Lbe59QqlBCTauS8Qo9vtb/2B929g4AEkaoJKoS7J3JTW1Y
+         lDx3LpC3o3nNg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     WhaleChang <whalechang@google.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>, perex@perex.cz,
-        tiwai@suse.com, jussi@sonarnerd.net, aichao@kylinos.cn,
-        ltyl@hem-e.com, john@keeping.me.uk, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 05/14] ALSA: usb-audio: Fix microphone sound on Opencomm2 Headset
-Date:   Wed, 18 Oct 2023 10:14:05 -0400
-Message-Id: <20231018141416.1335165-5-sashal@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alejandro Colomar <alx@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 06/14] net: sched: cls_u32: Fix allocation size in u32_init()
+Date:   Wed, 18 Oct 2023 10:14:06 -0400
+Message-Id: <20231018141416.1335165-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141416.1335165-1-sashal@kernel.org>
 References: <20231018141416.1335165-1-sashal@kernel.org>
@@ -53,46 +56,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: WhaleChang <whalechang@google.com>
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-[ Upstream commit 6a83d6f3bb3c329a73e3483651fb77b78bac1878 ]
+[ Upstream commit c4d49196ceec80e30e8d981410d73331b49b7850 ]
 
-When a Opencomm2 Headset is connected to a Bluetooth USB dongle,
-the audio playback functions properly, but the microphone does not work.
+commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
+with flexible-array member") incorrecly replaced an instance of
+`sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
+in a an over-allocation of 8 bytes.
 
-In the dmesg logs, there are messages indicating that the init_pitch
-function fails when the capture process begins.
+This change is wrong because `hlist` in `struct tc_u_common` is a
+pointer:
 
-The microphone only functions when the ep pitch control is not set.
+net/sched/cls_u32.c:
+struct tc_u_common {
+        struct tc_u_hnode __rcu *hlist;
+        void                    *ptr;
+        int                     refcnt;
+        struct idr              handle_idr;
+        struct hlist_node       hnode;
+        long                    knodes;
+};
 
-Toggling the pitch control off bypasses the init_piatch function
-and allows the microphone to work.
+So, the use of `struct_size()` makes no sense: we don't need to allocate
+any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine.
 
-Signed-off-by: WhaleChang <whalechang@google.com>
-Link: https://lore.kernel.org/r/20231006044852.4181022-1-whalechang@google.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+So, `struct_size(tp_c, hlist->ht, 1)` translates to:
+
+sizeof(*tp_c) + sizeof(tp_c->hlist->ht) ==
+sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) ==
+						144 + 8  == 0x98 (byes)
+						     ^^^
+						      |
+						unnecessary extra
+						allocation size
+
+$ pahole -C tc_u_common net/sched/cls_u32.o
+struct tc_u_common {
+	struct tc_u_hnode *        hlist;                /*     0     8 */
+	void *                     ptr;                  /*     8     8 */
+	int                        refcnt;               /*    16     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	struct idr                 handle_idr;           /*    24    96 */
+	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
+	struct hlist_node          hnode;                /*   120    16 */
+	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+	long int                   knodes;               /*   136     8 */
+
+	/* size: 144, cachelines: 3, members: 6 */
+	/* sum members: 140, holes: 1, sum holes: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+And with `sizeof(*tp_c)`, we have:
+
+	sizeof(*tp_c) == sizeof(struct tc_u_common) == 144 == 0x90 (bytes)
+
+which is the correct and original allocation size.
+
+Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
+`sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
+
+The following difference in binary output is expected and reflects the
+desired change:
+
+| net/sched/cls_u32.o
+| @@ -6148,7 +6148,7 @@
+| include/linux/slab.h:599
+|     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
+|                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
+|-    2cfc:      mov    $0x98,%edx
+|+    2cfc:      mov    $0x90,%edx
+
+Reported-by: Alejandro Colomar <alx@kernel.org>
+Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/sched/cls_u32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 8de572e774ddc..6d87f58d1b005 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1725,7 +1725,11 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 		/* mic works only when ep packet size is set to wMaxPacketSize */
- 		fp->attributes |= UAC_EP_CS_ATTR_FILL_MAX;
- 		break;
--
-+	case USB_ID(0x3511, 0x2b1e): /* Opencomm2 UC USB Bluetooth dongle */
-+		/* mic works only when ep pitch control is not set */
-+		if (stream == SNDRV_PCM_STREAM_CAPTURE)
-+			fp->attributes &= ~UAC_EP_CS_ATTR_PITCH_CONTROL;
-+		break;
- 	}
- }
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index 17edcf1d1c3b6..440c29dc058ed 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -364,7 +364,7 @@ static int u32_init(struct tcf_proto *tp)
+ 	idr_init(&root_ht->handle_idr);
  
+ 	if (tp_c == NULL) {
+-		tp_c = kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KERNEL);
++		tp_c = kzalloc(sizeof(*tp_c), GFP_KERNEL);
+ 		if (tp_c == NULL) {
+ 			kfree(root_ht);
+ 			return -ENOBUFS;
 -- 
 2.40.1
 
