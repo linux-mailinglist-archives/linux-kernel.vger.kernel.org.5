@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8B97CEA3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D8F7CEA3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbjJRVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S232164AbjJRVvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbjJRVuo (ORCPT
+        with ESMTP id S231435AbjJRVvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:50:44 -0400
+        Wed, 18 Oct 2023 17:51:16 -0400
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD00FE;
-        Wed, 18 Oct 2023 14:50:41 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 704B83200A2C;
-        Wed, 18 Oct 2023 17:50:36 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209F2EA;
+        Wed, 18 Oct 2023 14:51:15 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id C225E3200A21;
+        Wed, 18 Oct 2023 17:51:12 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 18 Oct 2023 17:50:38 -0400
+  by compute3.internal (MEProxy); Wed, 18 Oct 2023 17:51:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ryhl.io; h=cc:cc
         :content-transfer-encoding:content-type:content-type:date:date
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1697665835; x=1697752235; bh=dtw4GnkSOk7yUR8yZ4s9FY4KMKXBEBzSxdJ
-        S7mZNAzo=; b=AkpGkNdCRzYLy8Yo4cuUWNveGsT0XMCWoPV43fm5gE8b16Rs6Vw
-        5GibL/K8CGiM2TYdH5X4KWtDk3c/QiLpnqrO8h5vjnd/iFse2bmLBxV+Rh/bT53W
-        KzX8u9lyzPeNb+pcttcz9Sv+xP4fLV5sIR1QazZIra2p2RA8kayBroxcixqRAB1L
-        eORsKtP0eLR+e4jKdz1BWc/ocm+C21wdlRT5fGxwslEoACRr7xVGUneZ1/TjrvIl
-        MpLmJlly/b9qLUfjzgWTWTG5celxY2dQnsZVLB+bKqRCwzUhviX476O0SI7t+zZu
-        Rw9zEDzZfJ4nDl0QkNMV0wfsfaj2dK8DnqA==
+        1697665872; x=1697752272; bh=AlPk2h7qGZuNRoWEGnMtQ/VbGE5sTysrzAQ
+        3hMfPOm0=; b=MV/2ipkds3A0kM23N1L6SvL5v39JUSZ/7dCiIgqUscjSfuR28xP
+        +gHW717cx8Ou36WXe4hdkN2kn1v/thrNXX7/R6MnyQKyBLQl+kVSVzK4uvKJxDrR
+        Qo8ckMRoPzCNGXhoUC2VX1wiJZOBMdgiGRjbqKiGNZ30CGpZic9RyTmAhpXS/JHV
+        F4fHCFBwwnH2nvftiOscrz1cCsMsZQ6D2G6IIRXnUGFSDo9Nqp5XT3gAIS6FbE7t
+        xmgpNg2E4HsT3dbm5MKU3E09NYzsFM07KY6R7Kw2u1oZa9C5tUvkGOL3Yn8wmWLp
+        WUrhC3henRYpKXORIi4Y51iWGRKnbpdMnwA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:content-type:date:date:feedback-id:feedback-id
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1697665835; x=1697752235; bh=dtw4GnkSOk7yUR8yZ4s9FY4KMKXBEBzSxdJ
-        S7mZNAzo=; b=o01eupX12CTf4Pxgax9u24mQUNSSndKO4LCLOek+ziKZJPYVNMw
-        ge/p+sVuc3Omu9z3oOUrpBkv4Gn7pi33eXIgTB5JE3Mm5vXvs/FqPLEaIS4lKV8S
-        KtUkZ9kpIAaNUx3Q67WvWNaD/8nzjWx870e00I6IxJX7A37Gcj4g/QBluxBtIRwK
-        jZdrii5/Byvgy6H69NeG8OgewnEN5/zEebYfy/T/3DWWGXscOXOFkie1HGbydjdy
-        3P9DfNrnd5AljdXoy66R4tz1dXhdl3WGvdqlkVvl4CgbJJr6vPiSVf1NNjw3Pgtz
-        BtX8SxRRvwX/xVhGSBu/FlE9ed6W/sO5AOg==
-X-ME-Sender: <xms:K1MwZWOk-lbM06q_4flNNA_kwCzXDVBglLrM1bWALFL_tIfW7ANlaA>
-    <xme:K1MwZU8Mo-WtbnWY3gVJva8rbvolYHM49U8ZHSNfRjb0dKqo_YauBs6phA4ri9PI6
-    -bdsbjtshqr8WSjDg>
-X-ME-Received: <xmr:K1MwZdSPrxWOo7zPDJKbpVJtob0utWTMsTJ_K4bdWqMjcSWCqo7CA4VD7pa5zzRhJ1Z3lBe-kdTcD_C0UujusJWStzSL9tbhwweS>
+        1697665872; x=1697752272; bh=AlPk2h7qGZuNRoWEGnMtQ/VbGE5sTysrzAQ
+        3hMfPOm0=; b=gRW0f4Uw0B0uHLHG8GJg+TXyxwlgLiCedYCW3SP/qsX5PmafaTV
+        lyuaeRKxB417SgrYQwIWXC6H0mXlVgC8YBqoTbM3bbY6b+ky+VjKUVBLAUfUAFhJ
+        ug9Tbp3hqz4i5L3kqkdI736/uN4VlyPHmtLZVxSD7VLvNVfzbs1hsYeVnbtU8At0
+        rdfNT3bzruY8ituZLgdIIiFKZO7BV/IBaZ+UFfDNjnnUAKKvFofP6tM8DPWxzoIE
+        eWr2FbpY3eQn2TWrg3Vx3w3HGPITQnojl/lF0P9DdZp0E7uvE+oUxUM4KRelb4FD
+        LFcdmcobhmL6foiGX7CLKX+gDa4vrEKj4AQ==
+X-ME-Sender: <xms:T1MwZV4S4RSgsEWVy-U8rCiayMEnHitOoX_gY6b3gQu6lUIljzmI6A>
+    <xme:T1MwZS5i89RomhrvzBhhe3tqZLN1TsAHlaRLCKdnA283VPWZhvMGTNJhG7iIquGOE
+    T2SYZTSV6sQjQzbmg>
+X-ME-Received: <xmr:T1MwZcd5nrOjAZ1OvPd0Thczof9IrtgtVEdER-8e-rXAyFKo-oDCqWClW3ZNQBFK8U1kCjGRY0x-ipV99YrSFMTI0vXz1YnjR9UY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeehgddtvdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -56,18 +56,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeehgddtvdcutefuodetggdote
     fguefgtdeghfeuieduffejhfevueehueehkedvteefgfehhedtffdutdfgudejnecuvehl
     uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihgtvgesrh
     ihhhhlrdhioh
-X-ME-Proxy: <xmx:K1MwZWshTKs_gLcTrJ4fVXXbH4cunhv0Px61fjzFuSzhlQvtAhxddw>
-    <xmx:K1MwZecgWCraxoGwLq92xXbDxQ_lBDpcKeuLkz--EC6QwVZp5AkQ5g>
-    <xmx:K1MwZa0o8FyRCwjojUYuw8tTPgnRcxB6p_gqwOKSxXi81-Nppbe6-g>
-    <xmx:K1MwZVD-ECej0Vp06Gs87IlC479dhGOPfZK1SVYv8kpAOhEkXPYz1g>
+X-ME-Proxy: <xmx:T1MwZeIPOva27k4DFERVnumUg4IAsc4TZUBnX713HecdrQx-bq3qrg>
+    <xmx:T1MwZZKTmd1BTYAs69H33kGVmUdMPQJTEoz7Kwi8M7zZc2DOoh_mxg>
+    <xmx:T1MwZXydd3ylQRYNjbwr-oy78zzAIt1FfS4MlzKx4IH5F4y2NqqYIA>
+    <xmx:UFMwZRLp8_Av_Tie1gf-y-TLEAzRLamoZbf9p6mFdT5n68xY2IBioA>
 Feedback-ID: i56684263:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Oct 2023 17:50:32 -0400 (EDT)
-Message-ID: <50fd5311-13e2-4345-9f86-21c8902badad@ryhl.io>
-Date:   Wed, 18 Oct 2023 23:50:29 +0200
+ 18 Oct 2023 17:51:07 -0400 (EDT)
+Message-ID: <9f262bcc-a551-43c1-8bf2-c5c6eb6f99ed@ryhl.io>
+Date:   Wed, 18 Oct 2023 23:51:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] docs: rust: update Rust docs output path
+Subject: Re: [PATCH 2/2] kbuild: remove old Rust docs output path
+Content-Language: en-US-large
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -81,12 +82,15 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         Alice Ryhl <aliceryhl@google.com>,
         linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Akira Yokosawa <akiyks@gmail.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Akira Yokosawa <akiyks@gmail.com>
 References: <20231018160145.1017340-1-ojeda@kernel.org>
-Content-Language: en-US-large
+ <20231018160145.1017340-2-ojeda@kernel.org>
 From:   Alice Ryhl <alice@ryhl.io>
-In-Reply-To: <20231018160145.1017340-1-ojeda@kernel.org>
+In-Reply-To: <20231018160145.1017340-2-ojeda@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -100,7 +104,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 10/18/23 18:01, Miguel Ojeda wrote:
 > The Rust code documentation output path moved from `rust/doc` to
-> `Documentation/output/rust/rustdoc`, thus update the old reference.
+> `Documentation/output/rust/rustdoc`. The `make cleandocs` target
+> takes care of cleaning it now since it is integrated with the rest
+> of the documentation.
+> 
+> Thus remove the old reference.
 > 
 > Fixes: 48fadf440075 ("docs: Move rustdoc output, cross-reference it")
 > Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
