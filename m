@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6964F7CDADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E7D7CDAE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjJRLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
+        id S231387AbjJRLlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRLlk (ORCPT
+        with ESMTP id S231379AbjJRLlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:41:40 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27A2111;
-        Wed, 18 Oct 2023 04:41:38 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39IBepoP71505718, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39IBepoP71505718
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 19:40:51 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 18 Oct 2023 19:40:51 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 18 Oct 2023 19:40:50 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Wed, 18 Oct 2023 19:40:50 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Doug Anderson <dianders@chromium.org>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Grant Grundler <grundler@chromium.org>,
-        =?utf-8?B?QmrDuHJuIE1vcms=?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v3 5/5] r8152: Block future register access if register access fails
-Thread-Topic: [PATCH v3 5/5] r8152: Block future register access if register
- access fails
-Thread-Index: AQHZ/UKPr2uppqw2y0WH24Vf4SC1orBMGX/AgAAGioCAAVSUAIAAE/SAgAGw82A=
-Date:   Wed, 18 Oct 2023 11:40:50 +0000
-Message-ID: <34d7d7c7b5914674b55a6dc21ced1190@realtek.com>
-References: <20231012192552.3900360-1-dianders@chromium.org>
- <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
- <29f9a2ff1979406489213909b940184f@realtek.com>
- <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
- <052401da00fa$dacccd90$906668b0$@realtek.com>
- <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-In-Reply-To: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.228.6]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 18 Oct 2023 07:41:49 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1890211A
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:41:47 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7b91faf40so81540267b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697629306; x=1698234106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/wt7hBmTjyhHKxT1iU8w6hvI4yVCQQDXaEm9aRSBcGw=;
+        b=e5WzcXpU2fytb9XN+joCyQquPfEHbbmxmTZYnsphwz4tGBfw/uY1+dZa1pLJeAsaWQ
+         zBaSGvkkSZiYlF4+gzArH/Eyr4RxfNjIy9VhRXPGrJ6LF5LFc2ePfEth/pywQDlaKC4t
+         kLITA9ddJneRhayKWYbgKk5azhhkXA6HNgkWtsFSWZyUkCrUQq0ljXSC/eP/pXTjvsJ0
+         S5qFZrGNS0ValRPoh869NYvQZEYj9IbABWnX9J9+KpJDvfO0SCiyva/Hqlqcr2kb9yN2
+         Hwjwv3yF+XTNXDh8C6OnBTFduXVgnwWy+TLmQi8qCqJX3op6y6uWx/42zz9qDX9K5YC3
+         ebMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697629306; x=1698234106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/wt7hBmTjyhHKxT1iU8w6hvI4yVCQQDXaEm9aRSBcGw=;
+        b=RNlbhX2VHhenyZKaFNwyAAiu2FAAtKLjtV+EkmIPO4AB2qGawC35M/rLyvQHGDZeI5
+         ibgKQ+dtM41vad1qicDdJ6l8a7C3EOBiO5FSs00bezvS/vJLtW8HYC9Gry9xP3ZRAkzR
+         T+uqEbu6ODx5o2vM1rDy1wSmlrzjNaayr5Spen7TnFuKo9IhkjrD98Csr1OK/eWi1Yup
+         QNxuv9sn8uE5hcV0an9cooz/SDVT0YkBESiciagcadzW58dxBnn1I7tyYFqbxkKIYdaG
+         VJE/IDlyKB4s5lvKBNujyAZRQXGsAZNkXvsnGrseKXy/LU+G6+64zXGAiLc2NMMFy7oS
+         /VUw==
+X-Gm-Message-State: AOJu0Yz8Uxrrn0bOiJ2pvw2WmLnFR6F6azg7w4fyNaFrB1gw0xodFMSx
+        zXY7v7uADv6rpfpMMWsBvEok5rtZa7vhVgjG4YZTPK0fyKAAb2EW
+X-Google-Smtp-Source: AGHT+IH6Ar5ABgryO9a/1CG5P1p4amLNNPBAwWHOK/HFmzy/cNuiZKpFEYqQoBzaYhl7Y/eFSIxDdQy3k/YTcrkku00=
+X-Received: by 2002:a81:92c8:0:b0:59f:6675:7771 with SMTP id
+ j191-20020a8192c8000000b0059f66757771mr4389883ywg.35.1697629306289; Wed, 18
+ Oct 2023 04:41:46 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011090510.114476-1-ychuang570808@gmail.com>
+ <20231011090510.114476-3-ychuang570808@gmail.com> <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
+ <17a80031-98bf-48bf-8cea-c0ca4400f142@gmail.com> <254837e5-a0fa-4796-8928-277db4b98bf1@linaro.org>
+ <CACRpkdaiihOex19SavWwC+S8o5qp=F=XMNm9+UXh=q2nVbOFkA@mail.gmail.com> <4ca28f03-eb05-4cd7-ace5-8cbc0d108b6c@linaro.org>
+In-Reply-To: <4ca28f03-eb05-4cd7-ace5-8cbc0d108b6c@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 18 Oct 2023 13:41:34 +0200
+Message-ID: <CACRpkdbXm5f7aCnnQ58=XN6PohviPzab0LRw4f6Jq=JZXiVCqA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jacky Huang <ychuang570808@gmail.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        schung@nuvoton.com, Jacky Huang <ychuang3@nuvoton.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RG91ZyBBbmRlcnNvbiA8ZGlhbmRlcnNAY2hyb21pdW0ub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBP
-Y3RvYmVyIDE3LCAyMDIzIDEwOjE3IFBNDQpbLi4uXQ0KPiA+IFRoYXQgaXMsIHRoZSBsb29wIHdv
-dWxkIGJlIGJyb2tlbiB3aGVuIHRoZSBmYWlsIHJhdGUgb2YgdGhlIGNvbnRyb2wgdHJhbnNmZXIg
-aXMgaGlnaCBvciBsb3cgZW5vdWdoLg0KPiA+IE90aGVyd2lzZSwgeW91IHdvdWxkIHF1ZXVlIGEg
-dXNiIHJlc2V0IGFnYWluIGFuZCBhZ2Fpbi4NCj4gPiBGb3IgZXhhbXBsZSwgaWYgdGhlIGZhaWwg
-cmF0ZSBvZiB0aGUgY29udHJvbCB0cmFuc2ZlciBpcyAxMCUgfiA2MCUsDQo+ID4gSSB0aGluayB5
-b3UgaGF2ZSBoaWdoIHByb2JhYmlsaXR5IHRvIGtlZXAgdGhlIGxvb3AgY29udGludWFsbHkuDQo+
-ID4gV291bGQgaXQgbmV2ZXIgaGFwcGVuPw0KPiANCj4gQWN0dWFsbHksIGV2ZW4gd2l0aCBhIGZh
-aWx1cmUgcmF0ZSBvZiAxMCUgSSBkb24ndCB0aGluayB5b3UnbGwgZW5kIHVwDQo+IHdpdGggYSBm
-dWxseSBjb250aW51b3VzIGxvb3AsIHJpZ2h0PyBBbGwgeW91IG5lZWQgaXMgdG8gZ2V0IDMgZmFp
-bHVyZXMNCj4gaW4gYSByb3cgaW4gcnRsODE1Ml9nZXRfdmVyc2lvbigpIHRvIGdldCBvdXQgb2Yg
-dGhlIGxvb3AuIFNvIHdpdGggYQ0KPiAxMCUgZmFpbHVyZSByYXRlIHlvdSdkIHVuYmluZC9iaW5k
-IDEwMDAgdGltZXMgKG9uIGF2ZXJhZ2UpIGFuZCB0aGVuDQo+IChmaW5hbGx5KSBnaXZlIHVwLiBX
-aXRoIGEgNTAlIGZhaWx1cmUgcmF0ZSBJIHRoaW5rIHlvdSdkIG9ubHkNCj4gdW5iaW5kL2JpbmQg
-OCB0aW1lcyBvbiBhdmVyYWdlLCByaWdodD8gT2YgY291cnNlLCBJIGd1ZXNzIDEwMDAgbG9vcHMN
-Cj4gaXMgcHJldHR5IGNsb3NlIHRvIGluZmluaXRlLg0KPiANCj4gSW4gYW55IGNhc2UsIHdlIGhh
-dmVuJ3QgYWN0dWFsbHkgc2VlbiBoYXJkd2FyZSB0aGF0IGZhaWxzIGxpa2UgdGhpcy4NCj4gV2Un
-dmUgc2VlbiBmYWlsdXJlIHJhdGVzIHRoYXQgYXJlIG11Y2ggbXVjaCBsb3dlciBhbmQgd2UgY2Fu
-IGltYWdpbmUNCj4gZmFpbHVyZSByYXRlcyB0aGF0IGFyZSAxMDAlIGlmIHdlJ3JlIGdvdCByZWFs
-bHkgYnJva2VuIGhhcmR3YXJlLiBEbw0KPiB5b3UgdGhpbmsgY2FzZXMgd2hlcmUgZmFpbHVyZSBy
-YXRlcyBhcmUgbWlkZGxlLW9mLXRoZS1yb2FkIGFyZSBsaWtlbHk/DQoNClRoYXQgaXMgbXkgcXVl
-c3Rpb24sIHRvby4NCkkgZG9uJ3Qga25vdyBpZiBzb21ldGhpbmcgd291bGQgY2F1c2UgdGhlIHNp
-dHVhdGlvbiwgZWl0aGVyLg0KVGhpcyBpcyBvdXQgb2YgbXkga25vd2xlZGdlLg0KSSBhbSB3YWl0
-aW5nIGZvciB0aGUgcHJvZmVzc2lvbmFsIGFuc3dlcnMsIHRvby4NCg0KQSBsb3Qgb2YgcmVhc29u
-cyBtYXkgY2F1c2UgdGhlIGZhaWwgb2YgdGhlIGNvbnRyb2wgdHJhbnNmZXIuDQpJIGRvbid0IGhh
-dmUgYWxsIG9mIHRoZSByZWFsIHNpdHVhdGlvbiB0byBhbmFseXplIHRoZW0uDQpUaGVyZWZvcmUs
-IHdoYXQgSSBjb3VsZCBkbyBpcyB0byBhc3N1bWUgZGlmZmVyZW50IHNpdHVhdGlvbnMuDQpZb3Ug
-Y291bGQgc2F5IG15IGh5cG90aGVzZXMgYXJlIHVucmVhc29uYWJsZS4NCkhvd2V2ZXIsIEkgaGF2
-ZSB0byB0ZWxsIHlvdSB3aGF0IEkgd29ycnkuDQoNCj4gSSB3b3VsZCBhbHNvIHNheSB0aGF0IG5v
-dGhpbmcgd2UgY2FuIGRvIGNhbiBwZXJmZWN0bHkgaGFuZGxlIGZhdWx0eQ0KPiBoYXJkd2FyZS4g
-SWYgd2UncmUgaW1hZ2luaW5nIHRoZW9yZXRpY2FsIGhhcmR3YXJlLCB3ZSBjb3VsZCBpbWFnaW5l
-DQo+IHRoZW9yZXRpY2FsIGhhcmR3YXJlIHRoYXQgZGUtZW51bWVyYXRlZCBpdHNlbGYgYW5kIHJl
-LWVudW1lcmF0ZWQNCj4gaXRzZWxmIGV2ZXJ5IGhhbGYgc2Vjb25kIGJlY2F1c2UgdGhlIGZpcm13
-YXJlIG9uIHRoZSBkZXZpY2UgY3Jhc2hlZCBvcg0KPiBzb21lIHJlZ3VsYXRvciBrZXB0IGRyb3Bw
-aW5nLiBUaGlzIGZhdWx0eSBoYXJkd2FyZSB3b3VsZCBhbHNvIGNhdXNlIGFuDQo+IGluZmluaXRl
-IGxvb3Agb2YgZGUtZW51bWVyYXRpb24gYW5kIHJlLWVudW1lcmF0aW9uLCByaWdodD8NCj4gDQo+
-IFByZXN1bWFibHkgaWYgd2UgZ2V0IGludG8gZWl0aGVyIGNhc2UsIHRoZSB1c2VyIHdpbGwgcmVh
-bGl6ZSB0aGF0IHRoZQ0KPiBoYXJkd2FyZSBpc24ndCB3b3JraW5nIGFuZCB3aWxsIHVucGx1ZyBp
-dCBmcm9tIHRoZSBzeXN0ZW0uIFdoaWxlIHRoZQ0KDQpTb21lIG9mIG91ciBkZXZpY2VzIGFyZSBv
-bmJvYXJkLiBUaGF0IGlzLCB0aGV5IGNvdWxkbid0IGJlIHVucGx1Z2dlZC4NClRoYXQgaXMgd2h5
-IEkgaGF2ZSB0byBjb25zaWRlciBhIGxvdCBvZiBzaXR1YXRpb25zLg0KDQo+IHN5c3RlbSBpcyBk
-b2luZyB0aGUgbG9vcCBvZiB0cnlpbmcgdG8gZW51bWVyYXRlIHRoZSBoYXJkd2FyZSwgaXQgd2ls
-bA0KPiBiZSB0YWtpbmcgdXAgYSBidW5jaCBvZiBleHRyYSBDUFUgY3ljbGVzIGJ1dCAoSSBiZWxp
-ZXZlKSBpdCB3b24ndCBiZQ0KPiBmdWxseSBsb2NrZWQgdXAgb3IgYW55dGhpbmcuIFRoZSBtYWNo
-aW5lIHdpbGwgc3RpbGwgZnVuY3Rpb24gYW5kIGJlDQo+IGFibGUgdG8gZG8gbm9uLUV0aGVybmV0
-IGFjdGl2aXRpZXMsIHJpZ2h0PyBJIHdvdWxkIHNheSB0aGF0IHRoZSB3b3JzdA0KPiB0aGluZyBh
-Ym91dCB0aGlzIHN0YXRlIHdvdWxkIGJlIHRoYXQgaXQgd291bGQgc3RyZXNzIGNvcm5lciBjYXNl
-cyBpbg0KPiB0aGUgcmVzZXQgb2YgdGhlIFVTQiBzdWJzeXN0ZW0sIHBvc3NpYmx5IHRpY2tpbmcg
-YnVncy4NCj4gDQo+IFNvIEkgZ3Vlc3MgSSB3b3VsZCBzdW1tYXJpemUgYWxsIHRoZSBhYm92ZSBh
-czoNCj4gDQo+IElmIGhhcmR3YXJlIGlzIGJyb2tlbiBpbiBqdXN0IHRoZSByaWdodCB3YXkgdGhl
-biB0aGlzIHBhdGNoIGNvdWxkDQo+IGNhdXNlIGEgbmVhcmx5IGluZmluaXRlIHVuYmluZGluZy9y
-ZWJpbmRpbmcgb2YgdGhlIHI4MTUyIGRyaXZlci4NCj4gSG93ZXZlcjoNCj4gDQo+IDEuIEl0IGRv
-ZXNuJ3Qgc2VlbSB0ZXJyaWJseSBsaWtlbHkgZm9yIGhhcmR3YXJlIHRvIGJlIGJyb2tlbiBpbiBq
-dXN0IHRoaXMgd2F5Lg0KPiANCj4gMi4gV2UgaGF2ZW4ndCBzZWVuIGhhcmR3YXJlIGJyb2tlbiBp
-biBqdXN0IHRoaXMgd2F5Lg0KPiANCj4gMy4gSGFyZHdhcmUgYnJva2VuIGluIGEgc2xpZ2h0bHkg
-ZGlmZmVyZW50IHdheSBjb3VsZCBjYXVzZSBpbmZpbml0ZQ0KPiB1bmJpbmRpbmcvcmViaW5kaW5n
-IGV2ZW4gd2l0aG91dCB0aGlzIHBhdGNoLg0KPiANCj4gNC4gSW5maW5pdGUgdW5iaW5kaW5nL3Jl
-YmluZGluZyBvZiBhIFVTQiBhZGFwdGVyIGlzbid0IGdyZWF0LCBidXQgbm90DQo+IHRoZSBhYnNv
-bHV0ZSB3b3JzdCB0aGluZy4NCg0KSXQgaXMgZmluZSBpZiBldmVyeW9uZSBhZ3JlZXMgdGhlc2Uu
-DQoNCkJlc3QgUmVnYXJkcywNCkhheWVzDQoNCg==
+On Wed, Oct 18, 2023 at 11:53=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 18/10/2023 10:18, Linus Walleij wrote:
+> > On Mon, Oct 16, 2023 at 9:52=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >
+> >>> I noticed that 'xlnx,zynq-pinctrl.yaml' and 'xlnx,zynq-pinctrl.yaml' =
+use
+> >>> 'power source' to specify the output voltage.  Should I follow their
+> >>> approach or define a vendor-specific one?
+> >>
+> >> Maybe Rob or Linus have here some recommendation, but I would suggest =
+to
+> >> go either with rtd1319d-pinctrl.yaml approach or add a generic propert=
+y
+> >> to pincfg-node expressed in real units like "io-microvolt".
+> >>
+> >> Rob, Linus, any ideas for generic property replacing register-specific
+> >> power-source?
+> >
+> > The existing power-source is generally used to select between (usually
+> > two) different chip-internal power rails, such as 1.8V and 3.3V.
+> > The format is a driver-specific enumerator.
+> >
+> > We *could* just patch the documentation for power-source to
+> > say that microvolts is the preferred format but legacy users may
+> > be using a custom enumerator.
+> >
+> > io-microvolt seems like a more long-term viable option if a wider
+> > range of voltages are to be supported so I'm happy with that if the
+> > DT folks think it's nicer. However notice that the power-source
+> > property is already being hard-coded into things such as SCMI
+> > and ACPI so it's not like it will ever be replaced by io-microvolt
+> > and phased out as far as Linux is concerned. Not the next 50
+> > years at least.
+>
+> This I understand.
+>
+> I think It is better in general if generic properties use units (e.g.
+> drive-strength-microamp, output-impedance-ohms), so it could be here
+> "io-microvolt". At least for the new bindings.
+
+I agree. Even io-voltage-microvolt perhaps.
+
+Yours,
+Linus Walleij
