@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA497CE2E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B817CE2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjJRQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        id S230326AbjJRQgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJRQgj (ORCPT
+        with ESMTP id S229537AbjJRQgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:36:39 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82653AB;
-        Wed, 18 Oct 2023 09:36:37 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9a7a3e17d1so8240465276.2;
-        Wed, 18 Oct 2023 09:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697646996; x=1698251796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=muPYN+h5m0NQxmc9aOMQOWiJMXRbZ7xmKLB8WJtuUBM=;
-        b=PC5zPG5mS8gCOalC9G7HVItxvmnC+MhUUYuO7NIqT7CwgDDTR8/nJQOe4KGcw8siKr
-         ZxozluAabM7xVpLIs5ioQIFRJzMDGpz5M5eDFEeOOqvz3KNqb6UIjG44xIv4AoorI38Q
-         fQrhMy51y9ZDdFOLmYYxrQ0Unb3F1lEcFbLICSTPkZLsNf6OUQ4o6Gz76aDfzSNMTPaX
-         iT+BWsDGf4bRkbd7yeJ/Tn7jxDq9C7dhvCmolr8Gmnc17n9wiM7HiKfzXl+dW4XX/Xfj
-         bHrGCAFqDXbJpz//nRXwinoHpVTLc0Sm6+F7Ypzlvlotw/afr7BZf5YmgJspXOKACf7H
-         zpGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697646996; x=1698251796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=muPYN+h5m0NQxmc9aOMQOWiJMXRbZ7xmKLB8WJtuUBM=;
-        b=StuKOFBh71q3j3ik5cpbWcq6jaQbMsrnf9t8nXzrkgiOicATqkQsfOQpxglm6+vRld
-         f0xyWOdPptoNN3qqExUMUGKLxi/TJKwkl18rAaioRA0SZ2kzpLhHquG8OGS48jlP4Adx
-         esnYx67e2rsQZoRcQW+byvs1JCYFhiAcgItrmqCjME/fA+kbQDC7XSiwIvJi7itd2c4M
-         vl+QPpPybX4elsXaOdX7c3kd3Bonl2zPOrj7FWxF8pjN18uYUUwQEICMjv/QlwFGdvD/
-         cmqRxKs63Ii8KeG5ZyXP5+qXihvgWTNWLyixpX2myYgmaElOALSzgFtCGzhTbqoCzLWj
-         r8sQ==
-X-Gm-Message-State: AOJu0Yz0Dx/1Vo4yWSPIQpH+FGncwVK0+dkAcUgMLz5TjMTbMEebkTOf
-        cKkTodVm/sm99BDFsHP4niQk8yVekMadqAFxfmc=
-X-Google-Smtp-Source: AGHT+IFN2ShsAR/vt4lfDeqB/Tiw89GrzRBQZEOB9gpbxR7f/kvg0uhlf4ib/npOczI8Rxj7dDdnVfkQ1znwcC9kr4Y=
-X-Received: by 2002:a25:ab2d:0:b0:d81:754a:7cb8 with SMTP id
- u42-20020a25ab2d000000b00d81754a7cb8mr5743619ybi.65.1697646996757; Wed, 18
- Oct 2023 09:36:36 -0700 (PDT)
+        Wed, 18 Oct 2023 12:36:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3953A113;
+        Wed, 18 Oct 2023 09:36:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14D7C433C7;
+        Wed, 18 Oct 2023 16:36:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697646993;
+        bh=uN4FTt1WJfID/Mn+71JQqnF+ueyE2WBjOZDWcTg9Tt8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dTDtv7a+6jAyDRbZJ7t4ZZEJmkadDCEdEF3hYZtwVRGW+h3m48nUYLh0r5cCTkiLu
+         ep0o48YxHgLr85xuKCozOBVkzxOffLao5QQon8j10wlUGT53uzZY4NeZSbwfviiVig
+         TboNmRsdZRX2Vd16I77OC9tW/7Z9t2/yIRFlZR7JV2x7pSsM7PyfssILKI/5ONYYeI
+         YgO71HUb03rz2fS/3Bt0wAo+rG/uGIV/4WfvhHipzFjOd7fydVFRLUNzEDTcIcPt1v
+         OoiHhAOX5ulw82X9vKHeIJHeJz+J1AEXZQPKU4G5GUkB1LEV6hTMExT1qiZj/O6Eom
+         4lwYlCHYPWdqA==
+Date:   Wed, 18 Oct 2023 11:36:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        r-gunasekaran@ti.com, srk@ti.com,
+        Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x
+ SoC
+Message-ID: <20231018163632.GA1364574@bhelgaas>
 MIME-Version: 1.0
-References: <20231018155527.1015059-1-ojeda@kernel.org>
-In-Reply-To: <20231018155527.1015059-1-ojeda@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 18 Oct 2023 18:36:25 +0200
-Message-ID: <CANiq72=bEcVgwJ=Cyps1q09V0LYfooizR69fKJxswm=S=_FXhg@mail.gmail.com>
-Subject: Re: [PATCH] rust: docs: fix logo replacement
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, stable@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018075038.2740534-1-s-vadapalli@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 5:55=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> Thus update it to have the Linux logo again in the output.
+[+cc Serge (please cc people who have commented on previous revisions)]
 
-Cc'ing docs and kbuild, by the way, in case they want to take a look.
+On Wed, Oct 18, 2023 at 01:20:38PM +0530, Siddharth Vadapalli wrote:
+> The ks_pcie_v3_65_add_bus() member of "ks_pcie_ops" was added for
+> platforms using DW PCIe IP-core version 3.65a. The AM654x SoC uses
+> DW PCIe IP-core version 4.90a and ks_pcie_v3_65_add_bus() is not
+> applicable to it.
+> 
+> The commit which added support for the AM654x SoC has reused majority
+> of the functions with the help of the "is_am6" flag to handle AM654x
+> separately where applicable. Thus, make use of the "is_am6" flag and
+> change ks_pcie_v3_65_add_bus() to no-op for AM654x SoC.
+> 
+> Fixes: 18b0415bc802 ("PCI: keystone: Add support for PCIe RC in AM654x Platforms")
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
+> Hello,
+> 
+> This patch is based on linux-next tagged next-20231018.
+> 
+> The v1 of this patch is at:
+> https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
+> 
+> While there are a lot of changes since v1 and this patch could have been
+> posted as a v1 patch itself, I decided to post it as the v2 of the patch
+> mentioned above since it aims to address the issue described by the v1
+> patch and is similar in that sense. However, the solution to the issue
+> described in the v1 patch appears to be completely different from what
+> was implemented in the v1 patch. Thus, the commit message and subject of
+> this patch have been modified accordingly.
+> 
+> Changes since v1:
+> - Updated patch subject and commit message.
+> - Determined that issue is not with the absence of Link as mentioned in
+>   v1 patch. Even with Link up and endpoint device connected, if
+>   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
+>   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
+>   AER and PME services. The all Fs return value indicates that the MSI-X
+>   configuration is failing even if Endpoint device is connected. This is
+>   because the ks_pcie_v3_65_add_bus() function is not applicable to the
+>   AM654x SoC which uses DW PCIe IP-core version 4.90a.
 
-Cheers,
-Miguel
+Thanks for verifying that this doesn't actually depend on whether the
+link is up.
+
+I think that means we should be able to get rid of the
+ks_pcie_v3_65_add_bus() callback altogether and instead do this along
+with the rest of the Root Port init.
+
+>  drivers/pci/controller/dwc/pci-keystone.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 0def919f89fa..3abd59335574 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -459,7 +459,7 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+>  
+> -	if (!pci_is_root_bus(bus))
+> +	if (!pci_is_root_bus(bus) || ks_pcie->is_am6)
+>  		return 0;
+>  
+>  	/* Configure and set up BAR0 */
+> -- 
+> 2.34.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
