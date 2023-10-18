@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3D47CD7F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23097CD80C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjJRJ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S230183AbjJRJa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJRJ3R (ORCPT
+        with ESMTP id S229835AbjJRJab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:29:17 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A812AF7;
-        Wed, 18 Oct 2023 02:29:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5CBCF66072F4;
-        Wed, 18 Oct 2023 10:29:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697621354;
-        bh=9tOmuNn4amTBPLiqMSY+fjbpWsftcPyLojA4Ajbn/i4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JAmaOnc8L/a1j+NJQYq51be9a8L1S6SSABYLIpIQohVhh/JU3mupOYp0AV1kbjNzO
-         QtfJwQfrDdMI3wKugWGifvg+qZ3+wdXSE8XcNDAy4hOvCdeVqtJCGOPbvWFvJDTtAd
-         vordH3lM8ogVIUW0t3pB66pkY3mSfiW/VcXF88H/qolQG4n/m8C6+1L5h9Y9Vxe+HF
-         K4J99Q7PJSZ+WwbBTiJv8V91P/clTm1f070VF1Sc7XouxUm8nxPyakNiBPRD0xcd/j
-         /G3vxbWnuGOEbR7vJE1dutgoTfcnBA/CRTdqF3121XTnXJ8uNueEV3lr1E0DEqYW1m
-         c1BVbyVmz8zKg==
-Message-ID: <a9f0acfb-742a-4197-8237-9666fedf5fc3@collabora.com>
-Date:   Wed, 18 Oct 2023 11:29:11 +0200
+        Wed, 18 Oct 2023 05:30:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0A1B0;
+        Wed, 18 Oct 2023 02:30:29 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39I7bqnP010211;
+        Wed, 18 Oct 2023 09:30:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=0/z1aE8IPiETaIScHbyhLazcbnzCXnH1Qund8xpklbM=;
+ b=lY6Ead4jU6HSMYIeXJxET7V7/mtPa4s1XbyNKa2WVk9k0FPhLrDFL/rTea6/mqLm1vY/
+ oJc+NyGz+MncjAvoCthWd/vczVa+X1+pbv5DTn79InzMQXT6YVYzRRizYehL3OlPuj+/
+ tXrEVm+aaIyPIRA4TftJUwMuQtuDGlXV3NnfaMyWkgUSiBD1F7F3ffM6HQjriNgaRLdO
+ mFWQlMgk/yUQrbf91sS4DhAAqplA1K/qyi+PdAEBNAtxEuSTFdPhcwLVPRhMjzpd7TpM
+ ykDUJYHqMiguaId0r/yCrEU51UAI5N5FIjgW+FGb71gMqkYrXCvE+cW2yt/R4Lg6QKyu ig== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb7xm767-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 09:30:23 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39I9UMgG031601
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 09:30:22 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 18 Oct 2023 02:30:16 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <rafael@kernel.org>,
+        <viresh.kumar@linaro.org>, <ilia.lin@kernel.org>,
+        <quic_kathirav@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-pm@vger.kernel.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH v3 0/8] Enable cpufreq for IPQ5332 & IPQ9574
+Date:   Wed, 18 Oct 2023 14:59:13 +0530
+Message-ID: <cover.1697600121.git.quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 02/16] dt-bindings: media: mediatek: mdp3: merge the
- indentical RDMA under display
-Content-Language: en-US
-To:     =?UTF-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-3-moudy.ho@mediatek.com>
- <0e972a0a-af27-4837-a80c-cbab0002d368@linaro.org>
- <324f170c69387c5587688ae7bee5ddf95bc94576.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <324f170c69387c5587688ae7bee5ddf95bc94576.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4BxFETwDxKapZbod5a0Y2MS8kb2cueSI
+X-Proofpoint-GUID: 4BxFETwDxKapZbod5a0Y2MS8kb2cueSI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_07,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=873 suspectscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310180079
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -78,109 +78,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/10/23 05:06, Moudy Ho (何宗原) ha scritto:
-> On Fri, 2023-10-13 at 08:46 +0200, Krzysztof Kozlowski wrote:
->>   	
-> 
-> Hi Krzysztof,
-> 
-> Thank you for assisting with the review.
-> 
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>   On 12/10/2023 10:40, Moudy Ho wrote:
->>
->>>   
->>> +allOf:
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            const: mediatek,mt8183-mdp3-rdma
->>> +
->>> +    then:
->>> +      properties:
->>> +        clocks:
->>> +          items:
->>> +            - description: RDMA clock
->>> +            - description: RSZ clock (shared SRAM with RDMA)
->>> +
->>> +        mboxes:
->>> +          items:
->>> +            - description: used for 1st data pipe from RDMA
->>> +            - description: used for 2nd data pipe from RDMA
->>
->> interrupts:
->>    false
->>
-> 
-> As Angelo provided additional clarification in [15/16], explaining that
-> certain conditions in [2/16] and [3/16] were intentionally omitted due
-> to the need to integrate the same IP with different operations.
-> Apologies for any inconvenience this has caused you.
-> 
+Depends On:
+https://lore.kernel.org/lkml/20230913-gpll_cleanup-v2-6-c8ceb1a37680@quicinc.com/T/
 
-MT8183's MDP3 RDMA interrupt property was omitted in the devicetree that we
-have upstream because it was either unused in the driver, or MTK didn't want
-to actually use it for reasons, but that SoC *definitely does* have a mdp_rdma0
-IRQ and a mdp_rdma1 IRQ.
+This patch series aims to enable cpufreq for IPQ5332 and IPQ9574.
+For IPQ5332, a minor enhancement to Stromer Plus ops and a safe
+source switch is needed before cpu freq can be enabled.
 
-That's the same for MT8186 and MT8188... and it's probably the same for all
-MediaTek SoCs, so interrupts shouldn't be disallowed in this binding.
+These are also included in this series. Posting this as a single
+series. Please let me know if this is not correct, will split in
+the subsequent revisions.
 
->>> +
->>> +      required:
->>> +        - mboxes
->>> +        - mediatek,gce-events
->>> +
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            const: mediatek,mt8195-vdo1-rdma
->>> +
->>> +    then:
->>> +      properties:
->>> +        clocks:
->>> +          items:
->>> +            - description: RDMA clock
->>
->> mboxes: false
->> mediatek,gce-events: false
->>
->> I am not so sure it is actually "simpler" to merge these. They are
->> quite
->> different. You will end up with unmanageable allOf  with a lot of
->> branches (which supposedly you want to remove).
->>
+Passed the following DT related validations
+make W=1 ARCH=arm64 -j16 DT_CHECKER_FLAGS='-v -m' dt_binding_check DT_SCHEMA_FILES=qcom
+make W=1 ARCH=arm64 -j16 CHECK_DTBS=y DT_SCHEMA_FILES=qcom dtbs_check
 
-It's the same thing as "split"... All of the display and mdp/mdp3 components of
-MediaTek SoC do support GCE mailboxes by HW, so it's not limited to "split", but
-literally all of them.
+For IPQ5332:
+~~~~~~~~~~~
+	* This patch series introduces stromer plus ops which
+	  builds on stromer ops and implements a different
+	  set_rate and determine_rate.
 
-Disallowing mboxes and/or mediatek,gce-events on *any* of those is actually wrong.
+	  A different set_rate is needed since stromer plus PLLs
+	  do not support dynamic frequency scaling. To switch
+	  between frequencies, we have to shut down the PLL,
+	  configure the L and ALPHA values and turn on again. So
+	  introduce the separate set of ops for Stromer Plus PLL.
 
-Cheers,
-Angelo
+	* Update ipq_pll_stromer_plus to use clk_alpha_pll_stromer_plus_ops
+	  instead of clk_alpha_pll_stromer_ops.
 
->>
-> 
-> Upon examining the minor hardware changes in MDP for MT8183 and MT8195
-> RDMA ([3/16]), it appears that branching cannot be avoided. However,
-> consolidating these changes has the additional advantage of addressing
-> Rob's concerns from v4. Perhaps we can consider the current changes as
-> a form of progress.
-> 
-> Sincerely,
-> Moudy
-> 
->>> +
->>>   additionalProperties: false
->>>   
->>>   examples:
->>
->> Best regards,
->> Krzysztof
->>
+	* Set 'l' value to a value that is supported on all SKUs.
 
+	* Provide safe source switch for a53pll
+
+	* Include IPQ5332 in cpufreq nvmem framework
+
+	* Add OPP details to device tree
+
+For IPQ9574:
+~~~~~~~~~~~
+	* Include IPQ9574 in cpufreq nvmem framework
+
+	* Add OPP details to device tree
+
+Removed 2 patches from V1 as they have been merged
+	* dt-bindings: cpufreq: qcom-cpufreq-nvmem: document IPQ5332
+	* dt-bindings: cpufreq: qcom-cpufreq-nvmem: document IPQ9574
+
+Varadarajan Narayanan (8):
+  clk: qcom: clk-alpha-pll: introduce stromer plus ops
+  clk: qcom: apss-ipq-pll: Use stromer plus ops for stromer plus pll
+  clk: qcom: apss-ipq-pll: Fix 'l' value for ipq5332_pll_config
+  clk: qcom: apss-ipq6018: ipq5332: add safe source switch for a53pll
+  cpufreq: qti: Enable cpufreq for ipq53xx
+  arm64: dts: qcom: ipq5332: populate the opp table based on the eFuse
+  cpufreq: qti: Introduce cpufreq for ipq95xx
+  arm64: dts: qcom: ipq9574: populate the opp table based on the eFuse
+
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi | 21 ++++++++++++-
+ drivers/clk/qcom/apss-ipq-pll.c       |  4 +--
+ drivers/clk/qcom/apss-ipq6018.c       | 58 ++++++++++++++++++++++++++++++++++-
+ drivers/clk/qcom/clk-alpha-pll.c      | 57 ++++++++++++++++++++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.h      |  1 +
+ drivers/cpufreq/cpufreq-dt-platdev.c  |  2 ++
+ drivers/cpufreq/qcom-cpufreq-nvmem.c  | 16 ++++++++++
+ 8 files changed, 171 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
 
