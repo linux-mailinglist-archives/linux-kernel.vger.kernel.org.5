@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CACA87CD9D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2627CD992
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjJRK5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        id S230480AbjJRKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbjJRK5E (ORCPT
+        with ESMTP id S229702AbjJRKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:57:04 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEEB92;
-        Wed, 18 Oct 2023 03:57:01 -0700 (PDT)
-Received: from weisslap.aisec.fraunhofer.de ([91.67.186.133]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MpCz1-1rJY4G0S1H-00qmy3; Wed, 18 Oct 2023 12:51:03 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de,
-        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: [RFC PATCH v2 10/14] lsm: Add security_sb_alloc_userns() hook
-Date:   Wed, 18 Oct 2023 12:50:29 +0200
-Message-Id: <20231018105033.13669-11-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
-References: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
+        Wed, 18 Oct 2023 06:50:43 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC74FF;
+        Wed, 18 Oct 2023 03:50:38 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id E2B6F8068;
+        Wed, 18 Oct 2023 18:50:31 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 18:50:32 +0800
+Received: from [192.168.125.85] (183.27.98.194) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 18:50:30 +0800
+Message-ID: <8dfdc8a5-339a-43e8-8d82-0597a6187336@starfivetech.com>
+Date:   Wed, 18 Oct 2023 18:50:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:1r5RyqGAN9dy40dCcTVA8P+ZdQrnAWjyMfT7NWw+AjP5k7SdSAx
- KK6ojyZeqMoIKXoNN5B05l8hRYYrpxg2YsWGs0W0oVR5FlK/vd0aZOYdG0AL/l+CQ5iGm5e
- O0YnfYkhugXo/lJhVr+PA2rOcH47EsknuLQQnKrXL07VgH3KwnC4ufExd7KzXs9PeBLvufI
- ET/oTA9gKppKW3e2BLdgQ==
-UI-OutboundReport: notjunk:1;M01:P0:7me07hlkTME=;sNgRW1+b87bFkPd2ci/jNOKxrY/
- E3OsrEQIpRvOmvjffQg2b9fa3t3DZkvTrHLDkqf3oYKKFUgeSxdR5qG18aSrsBOK1Pa00KKbL
- /UQcWTQ/nuYrv0QvLDl50sf086WdgoBfJ2/URhBwnTv3KRQ7t1il7cgJceSozFxcemIogxidQ
- LL3M7TsNkb7ASSMhpnDNiMHiNTkCb1yiA82Nrq/W/9+yDZxO2s49HocioaBiV1xOGuEPUMONT
- 5U3G+4fXY7tdTs13VnJmVlLF92Z5idVgVqYYm/5QZ5uKKT4maSQSfG00nf94lEsDFTiPIkn+S
- ZtHGKa+F96ZkdZjnU8HvdbGCQebFMQIM08okjd5W441mzGfzGU9FrScSOsOeecy9/uxvBGh3a
- o1NprWiXBUNBGiz81EQMjrmU3nCGoIFu9sjU7jb+HlsX6va7+AhzTp2gZDMHaOv+v2LTx7PCv
- JFP3BiK90WUmdBc1poLC6wEhfDmVzclkLzJ30wAC089UquOrE90adQwCB5QcDQMN9ffOqWgcd
- PiH00bjbtVzeuknhKCGGOYCVepoOa32lfVdtoXIlqaQOaa2WHt55aPihU/lIfuAdkTHb4HR4E
- b2I/CdlUPHHEg1y5An6i9eeJ/e4H4K0lGCHxR9Dw2sTu0iJFz7I06zTgsrXPoVkEopPu0r/48
- hY7IU5/UR9hiCk9hCcwQ8C/RkZiX0ZtNwi9crKi+5zomHZoKB22oZlbH/Cx00W6i9rUJAetZe
- KJ+cOaHVobJZdbTDq8FHjFDCH1XKnYFYP+kv+m289poYuRD09l91FbFx4B2n4y0zC4jKHAndJ
- Twfv3u/b7Mwi6HYZXKp8uVign0Z2zewzMYSYzTlx4nMib1DuCWW8mNEDVEuw6HK7uKorvcUhW
- sfBrRi+IYWzODCABGVCbEVEkHzTs9PrJrERU=
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 10/22] PCI: plda: Add PLDA default event IRQ handler
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+CC:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231011110514.107528-1-minda.chen@starfivetech.com>
+ <20231011110514.107528-11-minda.chen@starfivetech.com>
+ <20231018-escapable-chef-16572cda2c12@spud>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <20231018-escapable-chef-16572cda2c12@spud>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.194]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a new lsm hook which may be used to allow access to device
-nodes for super blocks created in unprivileged namespaces if some
-sort of device guard to control access is implemented.
 
-By default this will return -EPERM if no lsm implements the hook.
-A first lsm to use this will be the lately converted cgroup_device
-module.
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- include/linux/lsm_hook_defs.h |  1 +
- include/linux/security.h      |  5 +++++
- security/security.c           | 26 ++++++++++++++++++++++++++
- 3 files changed, 32 insertions(+)
-
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index f4fa01182910..0f734a0a5ebc 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -278,6 +278,7 @@ LSM_HOOK(int, 0, inode_getsecctx, struct inode *inode, void **ctx,
- LSM_HOOK(int, 0, dev_permission, umode_t mode, dev_t dev, int mask)
- LSM_HOOK(int, -EPERM, inode_mknod_nscap, struct inode *dir, struct dentry *dentry,
- 	 umode_t mode, dev_t dev)
-+LSM_HOOK(int, -EPERM, sb_alloc_userns, struct super_block *sb)
- 
- #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
- LSM_HOOK(int, 0, post_notification, const struct cred *w_cred,
-diff --git a/include/linux/security.h b/include/linux/security.h
-index bad6992877f4..0f66be1ed1ed 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -487,6 +487,7 @@ int security_locked_down(enum lockdown_reason what);
- int security_dev_permission(umode_t mode, dev_t dev, int mask);
- int security_inode_mknod_nscap(struct inode *dir, struct dentry *dentry,
- 			       umode_t mode, dev_t dev);
-+int security_sb_alloc_userns(struct super_block *sb);
- #else /* CONFIG_SECURITY */
- 
- static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
-@@ -1408,6 +1409,10 @@ static inline int security_inode_mknod_nscap(struct inode *dir,
- {
- 	return -EPERM;
- }
-+static inline int security_sb_alloc_userns(struct super_block *sb)
-+{
-+	return -EPERM;
-+}
- #endif	/* CONFIG_SECURITY */
- 
- #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
-diff --git a/security/security.c b/security/security.c
-index 7708374b6d7e..9d5d4ec28e62 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -4065,6 +4065,32 @@ int security_inode_mknod_nscap(struct inode *dir, struct dentry *dentry,
- }
- EXPORT_SYMBOL(security_inode_mknod_nscap);
- 
-+/**
-+ * security_sb_alloc_userns() - Grand access to device nodes on sb in userns
-+ *
-+ * If device access is provided elsewere, this hook will grand access to device nodes
-+ * on the allocated sb for unprivileged user namespaces.
-+ *
-+ * Return: Returns 0 on success, error on failure.
-+ */
-+int security_sb_alloc_userns(struct super_block *sb)
-+{
-+	int thisrc;
-+	int rc = LSM_RET_DEFAULT(sb_alloc_userns);
-+	struct security_hook_list *hp;
-+
-+	hlist_for_each_entry(hp, &security_hook_heads.sb_alloc_userns, list) {
-+		thisrc = hp->hook.sb_alloc_userns(sb);
-+		if (thisrc != LSM_RET_DEFAULT(sb_alloc_userns)) {
-+			rc = thisrc;
-+			if (thisrc != 0)
-+				break;
-+		}
-+	}
-+	return rc;
-+}
-+EXPORT_SYMBOL(security_sb_alloc_userns);
-+
- #ifdef CONFIG_WATCH_QUEUE
- /**
-  * security_post_notification() - Check if a watch notification can be posted
--- 
-2.30.2
-
+On 2023/10/18 18:44, Conor Dooley wrote:
+> On Wed, Oct 11, 2023 at 07:05:02PM +0800, Minda Chen wrote:
+>> Add PLDA default event IRQ handler.
+>> This is first patch of refactoring IRQ handling codes.
+>> The handler function will be referenced by later patch.
+>> 
+>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> ---
+>>  drivers/pci/controller/plda/pcie-plda-host.c | 5 +++++
+>>  drivers/pci/controller/plda/pcie-plda.h      | 1 +
+> 
+> Dunno what hte PCI maintainers take is on this kind of thing, but this
+> patch adds dead code, as there is no user for it until the follow-on
+> patch you mention. Did someone ask you to split this out?
+> 
+> Cheers,
+> Conor.
+> 
+No one. Previous this patch contain other codes. I modify this incorrect.  I will squash this with other patch. Thanks.
+>>  2 files changed, 6 insertions(+)
+>> 
+>> diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
+>> index 19131181897f..21ca6b460f5e 100644
+>> --- a/drivers/pci/controller/plda/pcie-plda-host.c
+>> +++ b/drivers/pci/controller/plda/pcie-plda-host.c
+>> @@ -18,6 +18,11 @@
+>>  
+>>  #include "pcie-plda.h"
+>>  
+>> +irqreturn_t plda_event_handler(int irq, void *dev_id)
+>> +{
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+>>  			    size_t size)
+>> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+>> index 3deefd35fa5a..7ff7ff44c980 100644
+>> --- a/drivers/pci/controller/plda/pcie-plda.h
+>> +++ b/drivers/pci/controller/plda/pcie-plda.h
+>> @@ -120,6 +120,7 @@ struct plda_pcie_rp {
+>>  	void __iomem *bridge_addr;
+>>  };
+>>  
+>> +irqreturn_t plda_event_handler(int irq, void *dev_id);
+>>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+>>  			    size_t size);
+>> -- 
+>> 2.17.1
+>> 
