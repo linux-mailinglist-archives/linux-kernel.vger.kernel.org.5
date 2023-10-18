@@ -2,149 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E8B7CE796
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103B87CE79B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjJRTTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        id S230147AbjJRTU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbjJRTTo (ORCPT
+        with ESMTP id S230421AbjJRTU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:19:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D211C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697656741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O8mqtxJn0RIu5PIvWrBwIFU/c+8fQEb8PdmiMLhcCVo=;
-        b=E7Bm3HI6X9LhlRFGtr4BRkLM+qkeF2CKmyQXXgNtwrpISHFJzHRgYgsuMObvmnHiNVec8d
-        YgpcnxLEDSe5SOf967m9hMdiQudF5YeZDsDsJRCbHOltd7LntoeOg1jmz46JTBxi6E7Tn5
-        z4z88hYZYpMvStdpXKuHClEX4sv83qw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-193-6TOr_ffSO6qAkdIxLaQMiQ-1; Wed, 18 Oct 2023 15:18:55 -0400
-X-MC-Unique: 6TOr_ffSO6qAkdIxLaQMiQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C722A857D0C;
-        Wed, 18 Oct 2023 19:18:53 +0000 (UTC)
-Received: from [10.22.17.22] (unknown [10.22.17.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1651C1121319;
-        Wed, 18 Oct 2023 19:18:53 +0000 (UTC)
-Message-ID: <f8796057-e7f0-b589-783f-d11538aaafbf@redhat.com>
-Date:   Wed, 18 Oct 2023 15:18:52 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH-cgroup 1/4] workqueue: Add
- workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20231013181122.3518610-1-longman@redhat.com>
- <20231013181122.3518610-2-longman@redhat.com>
- <ZS-kTXgSZoc985ul@slm.duckdns.org>
- <4e9cc6e3-7582-64af-76d7-6f9f72779146@redhat.com>
-In-Reply-To: <4e9cc6e3-7582-64af-76d7-6f9f72779146@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 18 Oct 2023 15:20:26 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A620D119
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:20:24 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9e0b9b96cso51804935ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697656824; x=1698261624; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H7ppnBIIrbmfIJgnyx9B9RiTitNvmGmwskuXYW2Y3sk=;
+        b=Eh+lgmU/yLFcI4f/ahRmW3zanjUCZG9OkK3vNWgq1j9GrPbUBhq09t376RbY1BBXDo
+         JbspcSvDp2LYTk/d4EXp/e17UBoGy/w1vjEOGKf24/ZOQHfJ6++hoO1pVb2Fj5HAAJFG
+         zzBNeEQqFXeitii8VRQ0+lQ6uP/aZd83yq24Fd0fWwARrYErbsgspqURWOaA1MQpMBR0
+         aj5jhWZUBIX27A0ThvrEoq/onaw3UnjKlK1I9jdKhm9p90xZ/9L6JsBQ8MgPuF+pCakc
+         XvKdftOY3ezawUHR1D1a03Y8+rOxPbSsN+lUJ70bfNId7wasXeEQ4vjWoT9EUafYnezx
+         I6lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697656824; x=1698261624;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7ppnBIIrbmfIJgnyx9B9RiTitNvmGmwskuXYW2Y3sk=;
+        b=DIWcV7DhjmBLDO5XB8wMESnkTKE6uG/m27ErvdP/IXuoo1BHbTVtqbdxeZH6IFecx7
+         CH8BZNyXguk7qRG+KqId5QiuTuXhgbAD0knsLN3W+AifAAJOWePReVqEnDQELBr60IFl
+         /KG9aU0+qIp5VklMoHMMi4ttlKV5XD0cdtwwTBVae0EVaty2+s0p3eJmSN1OIHHAOQQR
+         TBcfQGuvVaqZCyCLA6nm3R5OS6Vh+Mnex2Z0xoJbTDdfGDmjz+r3QIuDUsL+VYSk9C34
+         Zi3q1F4800Akc1qKDgkLpgWhsP2OlQ3UvWPpSZndJEYTPn8wgl5l3DOgrPcYynsx2r+C
+         VXSA==
+X-Gm-Message-State: AOJu0YwoR0cTSlcSvkxrJ85poIKjembvr/bCsNGKqRTwey8/bUmoEOr4
+        jph5ipyVeXQZ/yvOG0V+uzLRYNavhpM=
+X-Google-Smtp-Source: AGHT+IF8fprxOwg9NLxhNoiGVvB0E6ikGR9g208TVUDNojr9nRxzSrwsgdHktxGZJqj/q79lONDYyGyPxWM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:c9c4:b0:1ca:a382:7fc1 with SMTP id
+ q4-20020a170902c9c400b001caa3827fc1mr6069pld.12.1697656824132; Wed, 18 Oct
+ 2023 12:20:24 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 18 Oct 2023 12:20:21 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231018192021.1893261-1-seanjc@google.com>
+Subject: [PATCH v2] KVM: SVM: Don't intercept IRET when injecting NMI and vNMI
+ is enabled
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Santosh Shukla <santosh.shukla@amd.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/23 09:41, Waiman Long wrote:
-> On 10/18/23 05:24, Tejun Heo wrote:
->> Hello,
->>
->> On Fri, Oct 13, 2023 at 02:11:19PM -0400, Waiman Long wrote:
->>> When the "isolcpus" boot command line option is used to add a set
->>> of isolated CPUs, those CPUs will be excluded automatically from
->>> wq_unbound_cpumask to avoid running work functions from unbound
->>> workqueues.
->>>
->>> Recently cpuset has been extended to allow the creation of partitions
->>> of isolated CPUs dynamically. To make it closer to the "isolcpus"
->>> in functionality, the CPUs in those isolated cpuset partitions 
->>> should be
->>> excluded from wq_unbound_cpumask as well. This can be done currently by
->>> explicitly writing to the workqueue's cpumask sysfs file after creating
->>> the isolated partitions. However, this process can be error prone.
->>> Ideally, the cpuset code should be allowed to request the workqueue 
->>> code
->>> to exclude those isolated CPUs from wq_unbound_cpumask so that this
->>> operation can be done automatically and the isolated CPUs will be 
->>> returned
->>> back to wq_unbound_cpumask after the destructions of the isolated
->>> cpuset partitions.
->>>
->>> This patch adds a new workqueue_unbound_exclude_cpumask() to enable
->>> that. This new function will exclude the specified isolated CPUs
->>> from wq_unbound_cpumask. To be able to restore those isolated CPUs
->>> back after the destruction of isolated cpuset partitions, a new
->>> wq_user_unbound_cpumask is added to store the user provided unbound
->>> cpumask either from the boot command line options or from writing to
->>> the cpumask sysfs file. This new cpumask provides the basis for CPU
->>> exclusion.
->> The behaviors around wq_unbound_cpumask is getting pretty inconsistent:
->>
->> 1. Housekeeping excludes isolated CPUs on boot but allows user to 
->> override
->>     it to include isolated CPUs afterwards.
->>
->> 2. If an unbound wq's cpumask doesn't have any intersection with
->>     wq_unbound_cpumask we ignore the per-wq cpumask and falls back to
->>     wq_unbound_cpumask.
->>
->> 3. You're adding a masking layer on top with exclude which fails to 
->> set if
->>     the intersection is empty.
->>
->> Can we do the followings for consistency?
->>
->> 1. User's requested_unbound_cpumask is stored separately (as in this 
->> patch).
->>
->> 2. The effect wq_unbound_cpumask is determined by 
->> requested_unbound_cpumask
->>     & housekeeping_cpumask & cpuset_allowed_cpumask. The operation order
->>     matters. When an & operation yields an cpumask, the cpumask from the
->>     previous step is the effective one.
-> Sure. I will do that.
+When vNMI is enabled, rely entirely on hardware to correctly handle NMI
+blocking, i.e. don't intercept IRET to detect when NMIs are no longer
+blocked.  KVM already correctly ignores svm->nmi_masked when vNMI is
+enabled, so the effect of the bug is essentially an unnecessary VM-Exit.
 
-I have a second thought after taking a further look at that. First of 
-all, cpuset_allowed_mask isn't relevant here and the mask can certainly 
-contain offline CPUs. So cpu_possible_mask is the proper fallback.
+KVM intercepts IRET for two reasons:
+ - To track NMI masking to be able to know at any point of time if NMI
+   is masked.
+ - To track NMI windows (to inject another NMI after the guest executes
+   IRET, i.e. unblocks NMIs)
 
-With the current patch, wq_user_unbound_cpumask is set up initially as  
-(HK_TYPE_WQ ∩ HK_TYPE_DOMAIN) house keeping mask and rewritten by any 
-subsequent write to workqueue/cpumask sysfs file. So using 
-wq_user_unbound_cpumask has the implied precedence of user-sysfs written 
-mask, command line isolcpus or nohz_full option mask and 
-cpu_possible_mask. I think just fall back to wq_user_unbound_cpumask if 
-the operation fails should be enough.
+When vNMI is enabled, both cases are handled by hardware:
+- NMI masking state resides in int_ctl.V_NMI_BLOCKING and can be read by
+  KVM at will.
+- Hardware automatically "injects" pending virtual NMIs when virtual NMIs
+  become unblocked.
 
-Cheers,
-Longman
+However, even though pending a virtual NMI for hardware to handle is the
+most common way to synthesize a guest NMI, KVM may still directly inject
+an NMI via when KVM is handling two "simultaneous" NMIs (see comments in
+process_nmi() for details on KVM's simultaneous NMI handling).  Per AMD's
+APM, hardware sets the BLOCKING flag when software directly injects an NMI
+as well, i.e. KVM doesn't need to manually mark vNMIs as blocked:
 
+  If Event Injection is used to inject an NMI when NMI Virtualization is
+  enabled, VMRUN sets V_NMI_MASK in the guest state.
+
+Note, it's still possible that KVM could trigger a spurious IRET VM-Exit.
+When running a nested guest, KVM disables vNMI for L2 and thus will enable
+IRET interception (in both vmcb01 and vmcb02) while running L2 reason.  If
+a nested VM-Exit happens before L2 executes IRET, KVM can end up running
+L1 with vNMI enable and IRET intercepted.  This is also a benign bug, and
+even less likely to happen, i.e. can be safely punted to a future fix.
+
+Fixes: fa4c027a7956 ("KVM: x86: Add support for SVM's Virtual NMI")
+Link: https://lore.kernel.org/all/ZOdnuDZUd4mevCqe@google.como
+Cc: Santosh Shukla <santosh.shukla@amd.com>
+Cc: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+
+v2: Expand changelog to explain the various behaviors and combos. [Maxim]
+
+v1: https://lore.kernel.org/all/20231009212919.221810-1-seanjc@google.com
+
+ arch/x86/kvm/svm/svm.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1785de7dc98b..517a12e0f1fd 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3568,8 +3568,15 @@ static void svm_inject_nmi(struct kvm_vcpu *vcpu)
+ 	if (svm->nmi_l1_to_l2)
+ 		return;
+ 
+-	svm->nmi_masked = true;
+-	svm_set_iret_intercept(svm);
++	/*
++	 * No need to manually track NMI masking when vNMI is enabled, hardware
++	 * automatically sets V_NMI_BLOCKING_MASK as appropriate, including the
++	 * case where software directly injects an NMI.
++	 */
++	if (!is_vnmi_enabled(svm)) {
++		svm->nmi_masked = true;
++		svm_set_iret_intercept(svm);
++	}
+ 	++vcpu->stat.nmi_injections;
+ }
+ 
+
+base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
+-- 
+2.42.0.655.g421f12c284-goog
 
