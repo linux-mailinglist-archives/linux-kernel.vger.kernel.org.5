@@ -2,227 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAC67CD3D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107127CD3DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjJRGHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        id S1344470AbjJRGIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjJRGHl (ORCPT
+        with ESMTP id S229625AbjJRGIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:07:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8755EFE
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:07:37 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso1008787466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697609256; x=1698214056; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=12Ki6pOs9EDEYe9sW9iaFz4JG4me1D3T1b13jqZlW2k=;
-        b=o1k4gw0ph+B3Gssb1qvgoWQ3sQYH3Y1xxxlfjSHpWwesf1I8OlUHoiIDRywLbTrzUV
-         ffDsiy+VyP7diEDfqeE6dVZ5qSB3KInJ4pORxLXQtuT3qdHLhVuDS1yeFvG0FaebCTJ/
-         r/dyqHF02EhA/bPE+qcT/ZeEV9/XZKn74Yw4X9mgL2UxF185ypaVhUeSQl13OjOd7PiK
-         HSqVoX29CsZkph4i+xGn7UkNtNjASrC8GM1H1/i5q7bLPLZ6eRep2gs9MTSLqzuPPVke
-         s9jWNClqxQkwTZyIh4aAAK+m+1Ymp0LaoH5UaiD449Q2qqjdDxNca1CmNv7BduP8i5/8
-         nBhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697609256; x=1698214056;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=12Ki6pOs9EDEYe9sW9iaFz4JG4me1D3T1b13jqZlW2k=;
-        b=D7mhS+9yMHC/wgVOleJ8zftEB5DlZdKSQxzg7RM1IBLBzLF1XVu4M/LfyeIxmUjkYR
-         zi7ScZ2DXKPTQPrKzhG+ovPkYCyX/OjLz39+Nt6B6s2QckJWZ3tO5xqK95+T4KsZwBHR
-         rHirMQbEONRitRTW/jm78hdzJW4GIKDCKylj6Wm+ZOzOtTKQFUP1ZgBwsPtNvCkkkawo
-         8WJCbcLesfV0Ac6LUvlQVoAcr1TmjSLJucFB1cqsHndOHeTYUoO4DNGcD0etLVtr8Der
-         BZyMDxSp/16hz68veLb5u0x/7n/71m+nz7vXq1f9/qXMRGf16gem1XOeHJXObC3cnYsZ
-         u25g==
-X-Gm-Message-State: AOJu0Yz4eFAMqf/pHxe/ecOmpJkZm6pg69D1hvU2gSPY5LkeYdl5VVEd
-        +4u3BIbtbSXb6ItY20edWg9YfA==
-X-Google-Smtp-Source: AGHT+IEUQoC8psfKLUB/+f6hfs65fspFuxwkifskgcN24nOlUyzhwi4x3BUhbGaaEZ8CVlYT39zkZw==
-X-Received: by 2002:a17:907:320b:b0:9be:d217:40b7 with SMTP id xg11-20020a170907320b00b009bed21740b7mr3271384ejb.32.1697609255921;
-        Tue, 17 Oct 2023 23:07:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id l26-20020a170906a41a00b0099d798a6bb5sm941784ejz.67.2023.10.17.23.07.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 23:07:34 -0700 (PDT)
-Message-ID: <9e1233ce-1a6d-443d-873e-6efb3ed0207c@linaro.org>
-Date:   Wed, 18 Oct 2023 08:07:32 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] HID: touchscreen: add himax hid-over-spi driver
+        Wed, 18 Oct 2023 02:08:10 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2061.outbound.protection.outlook.com [40.107.96.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC4C6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:08:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QhrKqn5Pcq9ZJwg7zeWdHIIcHdKI3V2PPeCR97jj5NR70kR5C1BP+4e5/rbIT+zm5yp0QcVaGerTsIYEqT3xait3xI6IruE1hJ/z/pW59DePX2013M5hqLXFD/QhNcHTW4s2Z0JRTdaBWEXzgUKsjlbvPUvOr1RcCGpMRaf9xbSLtXGPh2o0OtXvqLBpcxRcbeZXVRegDm8cbY/d5K24n5WPGOUMiI9srki/LC6be11Bo3kCKyd31tndBiIoVRMTEN8Y+OkSxyftcb79UVqLjdbGWDNvy/Ax9Pvc0lBzoMIofmGtr+NxBj0qaWFf6ph2whHMhBtVWu+7Clht+n8NUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lcJoDYEO2Wwbq4uQbPnXSz2+G/gKbqIioP4jzlbASEA=;
+ b=DXwKlZLp6WuD2njbO3SjUJCSZRLHhoAw3dPX1revs4tCbdfZKDjQ+6rizo1+q95z73CxvxZXKc5t0i+ZGA3mCUCXN4Wn+Isid5WqdvCL1+yYj3jBQDw0Z1DjkzAdGQSqxj1Z0r8M4iLot3Vsm63KBPqyN0UAZSn3BXYu3+2kb/MoSBYcQnhM+GG/oDq7+HKrUVsUL3NLbsPN1X0RqW47kM/1ezNbXD02ktreUKySUN0ycIgdwWpjcc57dt5yXJDN3IaJYbvhVI893G4hK/4aoNgDoEBVCg9g0vLnLt9HUbS6sTGwJpLNZpG/pzma4CGVbV793Xe6lBwwh2Jj1eM+9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lcJoDYEO2Wwbq4uQbPnXSz2+G/gKbqIioP4jzlbASEA=;
+ b=I/TqQHs+D9kyWK0+/EG6GZ7Jszrf7u75x1PlFqendh0OTokT5qTFz5c0mTqApU8SuMhvb2YKdfOLKgDsZWuYv0i36aIvqb5Vyw0YZIVuY+3tsmqyx9bq4eLZGETq2Rjl5lpZa0ZYxjkpm1mOxz8Ib8ISqls6UXNvagUeJkW0IrI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
+ DS7PR12MB8369.namprd12.prod.outlook.com (2603:10b6:8:eb::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.35; Wed, 18 Oct 2023 06:08:04 +0000
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::726d:296a:5a0b:1e98]) by DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::726d:296a:5a0b:1e98%4]) with mapi id 15.20.6886.037; Wed, 18 Oct 2023
+ 06:08:04 +0000
+Message-ID: <2dafeead-22f4-875a-8a59-4173a387912d@amd.com>
+Date:   Wed, 18 Oct 2023 11:37:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH] iommu/amd: Do not flush IRTE when only updating isRun and
+ destination fields
 Content-Language: en-US
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Tylor Yang <tylor_yang@himax.corp-partner.google.com>,
-        Tomasz Figa <tfiga@chromium.org>, jingyliang@chromium.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        jikos@kernel.org, wuxy23@lenovo.com, conor+dt@kernel.org,
-        luolm1@lenovo.com, robh+dt@kernel.org, dmitry.torokhov@gmail.com,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        poyu_hung@himax.corp-partner.google.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        benjamin.tissoires@redhat.com
-References: <20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com>
- <6c7d9c92-7616-4fad-806e-44302c33b63c@linaro.org>
- <CAD=FV=X2kZcyeyK1SBcXaViBft4F6XYtA6+JwBqJswU41V9kUQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAD=FV=X2kZcyeyK1SBcXaViBft4F6XYtA6+JwBqJswU41V9kUQ@mail.gmail.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Cc:     joro@8bytes.org, mlevitsk@redhat.com, seanjc@google.com,
+        jon.grimm@amd.com, santosh.shukla@amd.com,
+        joao.m.martins@oracle.com, alejandro.j.jimenez@oracle.com,
+        boris.ostrovsky@oracle.com
+References: <20231017144236.8287-1-suravee.suthikulpanit@amd.com>
+From:   Vasant Hegde <vasant.hegde@amd.com>
+In-Reply-To: <20231017144236.8287-1-suravee.suthikulpanit@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0166.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:26::21) To DS7PR12MB6048.namprd12.prod.outlook.com
+ (2603:10b6:8:9f::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|DS7PR12MB8369:EE_
+X-MS-Office365-Filtering-Correlation-Id: d4bf7bab-54fc-4cb9-c978-08dbcfa09739
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: noOzDbgz8WnzpB23NSaIhYWMhGpWwRFg28j7UwSo6NvCr7TqKq3U1J9SGqLhse0HoAVWBzqYmmhtVeXgq6iPdKwOK73jbfv5sJjmfZUdiAQFTLcXvp8oFIO68JQISOWYBJDOfmgldsxmUbkV/NKIv3PHpDQmcdQMzcT4z7RYq1V6lvJ7ho2M4GBbzYn36bNPlC8qaN3TD1+oyihkQkIIgmKUknM8GRpI6rnLe5OBC/I8H8D5z68J+hUQeep6Qw/gS/SyfQJYRV9zXN/R7lb760lIpnsIiuj6f9L/WToJIByWEjKdMBJGg1YFbL6o30XfrrA+r8z7KbUuDcUZrJd0Czfth4mn2l6K4kZNM2zFwuRvOo8Y8ylcYZr3tAh8Yo8Pd3zA4j5KMYj71V+2obsdq6IUjEbpD7+v8roS66dV7af2NDSzoA5tae5jB7hmqvLaAm9D1yO6nA8NcZxCG2rtdASDjrAm2sYGa4iiikvowvuNcvBuf82aR37SZ5R1JVB8czEglX9T2ow2KCdChXQW6tiwsx76Tn4KhDQfdSMXygQx35u2gXpV9tERus6Byc8n8P3LsHPiidPvsrJPguSPIVtpNsldb3UMQYx7XC4zIZ11+f4DPBBmPWvG9zDTx7S5+4UY7h/ayivbnzGggzGZ2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(2616005)(31686004)(53546011)(478600001)(66946007)(66476007)(966005)(6666004)(6486002)(66556008)(26005)(83380400001)(31696002)(86362001)(38100700002)(6512007)(316002)(5660300002)(6506007)(41300700001)(36756003)(8936002)(2906002)(44832011)(4326008)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnVseTlQUVE5ekd0Rkp3ZEVzT08yVXJHVmp4WWlTeEs2SzFpejFQbUR5UmdF?=
+ =?utf-8?B?TlBzamVCQXU1dGFCZjdraWtPanZ4eVZONC9pbGwvSkliNVAwTWVzWTNGM3Np?=
+ =?utf-8?B?aDdKWXJ3VTRxNlFTV2ZSbEp0dWdjeXBHMXhZc0hvL0FRWEFBM0F0L1J3WjNv?=
+ =?utf-8?B?ODI4bjlibCszTmphbjdJWnFyNkErQ2M2VUNscWhKaTBURFUzTjJFR21nZ3Bv?=
+ =?utf-8?B?MFoyTFdRaGo0OC80ZjAvbUkvMHFHZHdYelROWVVqVGF6T2txY3I4ZUZVbHJn?=
+ =?utf-8?B?ZThFaGk3VXoxbWtHWUZzS1k1Y1JBZ2FRc2xrQlpySmlFb0dBdktBUzZDM3ky?=
+ =?utf-8?B?clhLeDYzY2Y5OHU4M1ZJbTR2WmpUQmx2RkZhOGRIWVFITncwVzNBN3c5SFI1?=
+ =?utf-8?B?b0Q1ZWl6ME1WZ1BPQWRCcFEvY0o2TGZPQVcrbmJsK010RStFYmpVS2FJa3ho?=
+ =?utf-8?B?UzBhRVBCbE9qUXRpTDVYVmlNQmFDcVE4czZIYWRIYTNGWDZIRDNYNG5XazNi?=
+ =?utf-8?B?V1NabVJJOHRmZU9xa3cvT29yT0xtM1ZCa2o3eWFIZHlPSlZ6RXFnQzN0SkVP?=
+ =?utf-8?B?dFlzV2VpeGZBRkpwUVZyaG9mRHd5S2dxMnd3SEgxYlB1ODJjTWhwQjArY1JY?=
+ =?utf-8?B?eEhib3NWRW4xeWFmbitkaUZPaXdYVlEzQ0NPcFRSN2N5MmF2c3h6WklibHM5?=
+ =?utf-8?B?MVQwQ1JRQzdzb2g4eWJpYUJTTXBNUVAxd2FIajZrakM5dzV0dkNnR1gxZjhM?=
+ =?utf-8?B?TTA1Nkx2R0hBbll6azExTzAxWHdYT09RL21hL0g1LzVyblQvOG5zMjFlMG1J?=
+ =?utf-8?B?bXVpbTlXNHBGMXR6eHdIYVFBdStTWjZ2V1orWHU1Z2FtYkdzSGtQanNwdnl5?=
+ =?utf-8?B?TFpRN2lYOXBwcTV3Y0sxcEV4SGVwdktWTzZlWDRDWE1OQlQ2M3hBR3pQc1I5?=
+ =?utf-8?B?NllwYnN0Mjh0TXBBaWo4cUYrNmp3eE1NUWtXOTFOUGZMNFBpcWw1ME41NnIx?=
+ =?utf-8?B?QXR3b0VZV0QzVzQ0eHJsaTdOZFR1QXM3N2Y0VFVhUUJmekZ5Ri8rVCtPMVRM?=
+ =?utf-8?B?ZUFzQmgralNpL0p1QXhEUTFXbTdsSzEraEROaUt4QlI4ZEJmaEhRYWthWVRM?=
+ =?utf-8?B?OEFtdzVuSHczODJhYlk5Q0lSc3AxdXgzaXg4bUhrcmFiQU83Um1iQ0p1VHpC?=
+ =?utf-8?B?VHhpRFdlNWFCZnRCYUdQZW5PMllLeXdwWGhlbW8zcDRzZHFrdVFNSnRJRjV4?=
+ =?utf-8?B?bk44R2tMNVkzMkdDZFFka2lTejI2UGRGcnltQVFxL1hVdFdBdWZXMUF4NktU?=
+ =?utf-8?B?T1c4S2g1NXhEaTh2bWcrQThSM1BudFZDMytMZ3h2Umg5VVFia01TZmN1RTYr?=
+ =?utf-8?B?aURrUnowQTN3d1B6OUJLdFdta0QxRGpJUWlzamxuT1NJWGxsbUtUTDlEei82?=
+ =?utf-8?B?aDFldm1xVFZXdWpQUG82WDdOamRGNERaUVRxYkV5ekswaDVWUmxRbzlaNm5o?=
+ =?utf-8?B?UURldVNxdERlL1dVQklvWGNPMHpTME40ZHJRYWI2ckJwVUhOZXdTbnZMNnEv?=
+ =?utf-8?B?aWtFZDB0K1NveUVrTFdUMy9KZFBjUmh0RExkT21YUlNEaVhFZ0lDTVJzNEVh?=
+ =?utf-8?B?bGZhRlFDR1MrTnoxUXBlT0twTTNqWkRKdHVxVjFveE9CQ0VSaTBRUUdlSERx?=
+ =?utf-8?B?dFZScmZFRm9lRi9vQ090OUJqTGIrRVpvN0MxUzMzVmx4OGVBMXN2MEpWb1lu?=
+ =?utf-8?B?MVllVVRSV0dmVkt3S3V5bUlFRlZWOVRhTWt0d05NcmxNMjEwY200eDkyTC95?=
+ =?utf-8?B?SVlSWG8ycW5ZdExyaHdPdGowUWdObFRIczhaZ25JN1pkbzdjaDNpVzZUdkRw?=
+ =?utf-8?B?UHlvcEZjd1htei9vc1U5NVhlQkdLTGt4VUwxZmcwUXN4d3A3OXNUc2VldU1l?=
+ =?utf-8?B?WGN0ZUdmaWgwV3JvQW1LUUo4WUVQUmZIUC9RWjRNVkdoQ285ZEtCM3VocUEz?=
+ =?utf-8?B?ZmFqNFZieGpiSkdteENkRFF2dEMvTWtaMWJtUmFGK3pMUy94UmNKNTVzaHoz?=
+ =?utf-8?B?dlIzdEdsQndRYVp5VjlGZlYzcTBWVUhwekZyYlowdjg5aFROS3ZrZzNETEhQ?=
+ =?utf-8?Q?wlGrmg3Si6ybAh1huT8+ZadBu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4bf7bab-54fc-4cb9-c978-08dbcfa09739
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 06:08:04.5389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3GP4Lir2U7aW2BSZ5sDEe9PYKOTri0gTmogwRuKK+XvqdKEP5R82uLKxuBsJw3HR6PUpVLLNpFbfmB9zNKauOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8369
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 23:41, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Oct 17, 2023 at 10:08 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 17/10/2023 11:18, Tylor Yang wrote:
->>> Hello,
->>>
->>> This patch series adds the driver for Himax HID-over-SPI touchscreen ICs.
->>> This driver takes a position in [1], it intends to take advantage of SPI
->>> transfer speed and HID interface.
->>>
->>
->> Dear Google/Chromium folks,
->>
->> As a multi-billion company I am sure you can spare some small amount of
->> time/effort/money for internal review before using community for this
->> purpose. I mean reviewing trivial issues, like coding style, or just
->> running checkpatch. You know, the obvious things.
->>
->> There is no need to use expensive time of community reviewers to review
->> very simple mistakes, the ones which we fixed in Linux kernel years ago
->> (also with automated tools). You can and you should do it, before
->> submitting drivers for community review.
-> 
-> We can certainly talk more about this, but a quick reply is:
-> 
-> 1. If a patch really looks super bad to you then the right thing for
-> you to do is to respond to the patch with some canned response saying
-> "you didn't even do these basic things--please read the documentation
-> and work with someone at Google to get a basic review". This seems
-> like a perfectly legit response and I don't think you should do more
-> than that.
-> 
-> 2. IMO as a general rule "internal review" should be considered
-> harmful. When you're a new submitter then absolutely you should get
-> some internal review from someone who has done this before, but making
-> "internal review" a requirement for all patches leads to frustration
-> all around. It leads to people redesigning their code in response to
-> "internal review" and then getting frustrated when external
-> maintainers tell them to do something totally different. ...then
-> upstream reviewers respond to the frustration with "Why were you
-> designing your code behind closed doors? If you had done the review in
-> the public and on the mailing lists then someone could have stopped
-> you before you changed everything".
-
-No one expects forced internal review on mature contributions. We talk
-here about a first time contribution where already basic mistakes were
-made: like not using get_maintainers.pl, not using checkpatch, not using
-other tools and finally sending code which does not look like Linux
-kernel code at all.
-
-> 
-> 3. The ChromeOS team is organized much more like the upstream
-> community than a big hierarchical corporation. Just as it's not easy
-> for you to control the behavior of other maintainers, it is not
-> trivial for one person on the team to control what others on the team
-> will do. We could make an attempt to institute rules like "all patches
-> must go through internal review before being posted", but as per #2 I
-> don't think this is a good idea. The ChromeOS team has even less
-> control over what our partners may or may not do. In general it is
-> always a struggle to get partners to even start working upstream and
-> IMO it's a win when I see a partner post a patch. We should certainly
-> help partners be successful here, but the right way to do that is by
-> offering them support.
-
-I don't know who is exactly core team, who is partner. I see
-"google.com" domain, so Google folks are responsible for not wasting
-time of the community. If Google disagrees, please change the domain so
-I will understand that and not feel like Google wants to use us all. I
-am fine and I understand if small companies or individuals make such
-mistakes. It feels like a waste of our time if Google makes such
-mistakes. Google's (Alphabet's) revenue for 2022 was 282 billions USD
-and net revenue was 59 billions USD.
-
-> 
-> About the best we can do is to provide good documentation for people
-> learning how to send patches. Right now the ChromeOS kernel docs [1]
-> suggest using "patman" to send patches and I have seen many partners
-> do this. Patman will, at the very least, run checkpatch for you. Our
-> instructions also say that you should make sure you run "checkpatch"
-> yourself if you don't run patman. If people aren't following these
-> docs that we already have then there's not much we can do.
-> 
-> 
-> So I guess the tl;dr from my side:
-> 
-> a) People should absolutely be posting on mailing lists and not (as a
-> rule) doing "internal review".
-> 
-> b) If a patch looks really broken to you, don't get upset and don't
-> waste your time. Just respond and say that you'll look at it once it
-> looks better and suggest that they get a review (preferably on the
-> mailing lists!) from someone they're working with at Google.
 
 
-Best regards,
-Krzysztof
+On 10/17/2023 8:12 PM, Suravee Suthikulpanit wrote:
+> According to the recent update in the AMD IOMMU spec [1], the IsRun and
+> Destination fields of the Interrupt Remapping Table Entry (IRTE) are not
+> cached by the IOMMU hardware.
+> 
+> Therefore, do not issue the INVALIDATE_INTERRUPT_TABLE command when
+> updating IRTE[IsRun] and IRTE[Destination] when IRTE[GuestMode]=1, which
+> should help improve IOMMU AVIC/x2AVIC performance.
+> 
+> References:
+> [1] AMD IOMMU Spec Revision (Rev 3.08-PUB)
+> (Link: https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/specifications/48882_IOMMU.pdf)
+> 
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
+Looks good to me.
+
+Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+
+-Vasant
+
+
+> ---
+>  drivers/iommu/amd/iommu.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index 089886485895..d63590563d3e 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -2970,8 +2970,8 @@ static int alloc_irq_index(struct amd_iommu *iommu, u16 devid, int count,
+>  	return index;
+>  }
+>  
+> -static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+> -			  struct irte_ga *irte)
+> +static int __modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+> +			    struct irte_ga *irte)
+>  {
+>  	struct irq_remap_table *table;
+>  	struct irte_ga *entry;
+> @@ -2998,6 +2998,18 @@ static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+>  
+>  	raw_spin_unlock_irqrestore(&table->lock, flags);
+>  
+> +	return 0;
+> +}
+> +
+> +static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+> +			  struct irte_ga *irte)
+> +{
+> +	bool ret;
+> +
+> +	ret = __modify_irte_ga(iommu, devid, index, irte);
+> +	if (ret)
+> +		return ret;
+> +
+>  	iommu_flush_irt_and_complete(iommu, devid);
+>  
+>  	return 0;
+> @@ -3681,8 +3693,8 @@ int amd_iommu_update_ga(int cpu, bool is_run, void *data)
+>  	}
+>  	entry->lo.fields_vapic.is_run = is_run;
+>  
+> -	return modify_irte_ga(ir_data->iommu, ir_data->irq_2_irte.devid,
+> -			      ir_data->irq_2_irte.index, entry);
+> +	return __modify_irte_ga(ir_data->iommu, ir_data->irq_2_irte.devid,
+> +				ir_data->irq_2_irte.index, entry);
+>  }
+>  EXPORT_SYMBOL(amd_iommu_update_ga);
+>  #endif
