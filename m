@@ -2,722 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5327CEC40
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BC87CEC43
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjJRXrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 19:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S232105AbjJRXs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbjJRXrO (ORCPT
+        with ESMTP id S229891AbjJRXs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:47:14 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCD9B6;
-        Wed, 18 Oct 2023 16:47:10 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79fb78e297bso310532739f.0;
-        Wed, 18 Oct 2023 16:47:10 -0700 (PDT)
+        Wed, 18 Oct 2023 19:48:27 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2413110F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:48:25 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IIp5eT018065;
+        Wed, 18 Oct 2023 23:48:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=jZ2ztBDuE1nVqB5i58AwsA3rQ18vsZArxDIvTBOu8kk=;
+ b=nlISE4v9CPpcsK343IaC5vETg05gdNQBOswh8Sjl4f4iXo+6oMJQEW8+t993/4zaS4MC
+ zjngcKElCBJt7s4e/o8TvB61TuGRj0RR9F5QDK7tFA5S0hlgOCpgOyXgBWizh7nHBl8P
+ 3/qYIR0UpZPKtOT1ST2aqKDQ0/91kDsQmmmaZT6TUBal3gnJ42dG21VvGolBpwgRl845
+ AGRZC13aft1MYfpiUQvkmmAq8QiSoUWBvfm/krJMw98+T7G+vWcZP/eX3Cdnqmm0g6ob
+ ZJBpN6MDUof1nxeQG51IFVh6CFImfb7DOVZM8+4Hb1Ykc2UJiN3NkYc0RvdqqSLGKaUW hA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqkhu8wxk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 23:48:16 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39ILo3c9040665;
+        Wed, 18 Oct 2023 23:48:15 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3trfypetkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Oct 2023 23:48:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fbv1sBtKDhkLuXt265Q/S4Z5s4f3GEc+Md0teeAfdKv37MTRZ53fFcplcbhntAbhZpymLjKM09D2hvhXUkuQg5BC/yPaEq0aGHaR9436DNJoBDj8Ob/97csawRRgnOFnikZPQ8H0ZhVKkZRmQbF0Pg7k8xWyGB9OfUyhoa7gsiEcCeHf0BuhIBarrhQBba1aYRdMP4rg/BKAJfyM815kCaqFt01wJ1kCub5bRGZE9yAOxD2ZBY9LFhd6X+YNuJcN6o2InTyFdTxXIi+qvPhuzfWuKdzeQTtOHv6LK/WzQ5mlDwo3BMZrFsIxgrqaxOQuQWtFnaLCxiOdopyhmEznYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jZ2ztBDuE1nVqB5i58AwsA3rQ18vsZArxDIvTBOu8kk=;
+ b=WH0rU2X4RNx/fdu5tzxgJykdi1CeY8Mbfa5M5+gAwYdOa9eEA/uTpyreoYn1gNUa+zmnZ5MUEAaKYVE2MkMuUWZkxEGR8Rm2D3p67BvDk/Mzaj0LOAjK50WXXIbbA6/tNBuyhVs95aiT9B+nXfEqjTg3Zn5ilZ+JAm1dOxRsKu8Ajm+hSTpWJ2TQDPyWN6DjajaXDEAfaspkNkEVjP9t4vyvXdd/3qOQXweIN6KIin/h075cPGYJCFE9wxqhQf5tkqYxTZgPz63sY2L/ASiH1zxKHMQG6Dfbn/v6TvwGIFdkUMHp5GoqpT7XR4EFuFmgk17fYs4iMChzX/NPZs9HvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697672830; x=1698277630; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrC86Rs6qF+NDCGybzpr8afhv2WKWXGSdchJYM7XuwU=;
-        b=AF0diONIgRYxmhnVxqONxpa605kvNuYohrcwp1Vts+5Mw9FxFBX41BgJZ2CLy5ue9f
-         NVVHIo2+gMvWBDO18hDCCW2Z4PsouKQkxrgv9NuGMYTez+8aC3Yo4AbE4xZYfziB/Q/P
-         0nGcpYMFk0XdLoTOZkWN2UstyC9jwSX7LV/GUqj6U0s4a0HKWtge3wx/mQVZ2MLCfH92
-         WetFuiQa3T0G9zNv7aJmyBD5BEEkV5FU6cCezyHRVrfA/jEnCJVGRNVKhDpD/kE7LjW8
-         6mI4w7dYjFIsUMAMPr7ZzFWGsJwcryIAy5HImbuQ2PTgD5ExDbAGND4zS5f8Ue2/DpKk
-         sqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697672830; x=1698277630;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zrC86Rs6qF+NDCGybzpr8afhv2WKWXGSdchJYM7XuwU=;
-        b=pxdt4nma6BVCO97x6D39/+/umjKNGcO8NowfbuVXQO4PxbHAeRYqdzsYwpye8/nYzf
-         vXfS+rUw/t3X8irZljlY4jTHRLd70VSG/KOzS76oFTkelfuTbrW2aYDxjuJv91j5tbD7
-         rbHYraJfzspiNJJmUL1AK3QCNY6MAqROJiBFgu3HjmfS33MdhVoKpLbNIL7RUIMJEqSh
-         t41EUGEXGr3wW1KdSlO1eBa5G5/0TRKal40yymRYOJbV/zSHh6wQlW1RqQhdQHA8doQM
-         qt9vXu0D+AAB1Dqok8azY4zxxfXH7nNaZqEwXW10A7N7hgv3u2938awLCRauzN+8AJ8p
-         JQaw==
-X-Gm-Message-State: AOJu0YxRpOpqd128RrHhDtQKqjhuyZtgz8pHfBuI7dg6x+ITLpknIalB
-        rpC1cK8m7yDs8oOU2T6eeRVc5M3LmXWiWVpzBj4=
-X-Google-Smtp-Source: AGHT+IEongFA6OKeYSxIY4NQ/kpNwapiAjv9lsdCIOaUmmq3ZCAZ7Gvc6P/5FSu1G1Fl6tTmGEI9HNZumcssORlVcBA=
-X-Received: by 2002:a5d:9d92:0:b0:784:314f:8d68 with SMTP id
- ay18-20020a5d9d92000000b00784314f8d68mr910755iob.1.1697672829845; Wed, 18 Oct
- 2023 16:47:09 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jZ2ztBDuE1nVqB5i58AwsA3rQ18vsZArxDIvTBOu8kk=;
+ b=tnpX9ZZiN4qwy8geK/+rBKBj3HMeleA5sWsomuPyfPld9FN9AOgVLwUbg04o7+/bffDWFUCYJLWuwg4ZSHTlWXyeKcuvBPmJbCIR/t6kpopWw/5yPY9REjjKbYSDDEV8E6nf1t9Z+wHLF7f1dOkFDilTYKv2L781hxJu7UzPBsY=
+Received: from MW4PR10MB6535.namprd10.prod.outlook.com (2603:10b6:303:225::12)
+ by CH0PR10MB5321.namprd10.prod.outlook.com (2603:10b6:610:c9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Wed, 18 Oct
+ 2023 23:47:54 +0000
+Received: from MW4PR10MB6535.namprd10.prod.outlook.com
+ ([fe80::5393:c70f:cefa:91c1]) by MW4PR10MB6535.namprd10.prod.outlook.com
+ ([fe80::5393:c70f:cefa:91c1%3]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
+ 23:47:54 +0000
+Message-ID: <171a1147-2099-46da-81f1-fc953e9410e2@oracle.com>
+Date:   Wed, 18 Oct 2023 16:47:48 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 PATCH] vdpa_sim: implement .reset_map support
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1697605893-30313-1-git-send-email-si-wei.liu@oracle.com>
+ <becui44lhdptriz4ds7r2b22kazofwo7i44rydacjssnwb7mrq@f6sa74zjhlfp>
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <becui44lhdptriz4ds7r2b22kazofwo7i44rydacjssnwb7mrq@f6sa74zjhlfp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BL0PR02CA0117.namprd02.prod.outlook.com
+ (2603:10b6:208:35::22) To MW4PR10MB6535.namprd10.prod.outlook.com
+ (2603:10b6:303:225::12)
 MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-3-nphamcs@gmail.com>
- <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com>
-In-Reply-To: <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 18 Oct 2023 16:46:58 -0700
-Message-ID: <CAKEwX=N3CnKE+gu-EP98Wr3goQV0Z8fXn_nBPW_H_rupjkBwhA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] zswap: make shrinking memcg-aware
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR10MB6535:EE_|CH0PR10MB5321:EE_
+X-MS-Office365-Filtering-Correlation-Id: 40f01ccf-0cfc-4c0a-11dc-08dbd034a527
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DqHGu/F18P4QNjZzZHg3YUssHiOAjt7EeJFqNAMdab7h5qWD4FtQCo6QApNSzFwNxtKTFtuLvVLqC/rcknw0VYA5n2AcREtRQhz4vs4Oo6H3tiPX3RgMtuGUkn3fyMwdWFALrA4cbCNq0dbWrxDorrsh2HTRyUhtjmBJUi280BaOAd60HiqettIn5iiZ4yyO94IwKuPeD4qwD9AQk5cuh7laBQErDYD36XMzLC54r7gQnb05PGXUs4rtvIGdTkIAlWzR0CT5djP7yoU0cXT9YEJBxUYgn2KplSutjs6Vnmd+Oq4mj3EIw5pzvyfIbzUg8unETvXdJR9Vda5ueJQ30TENIDM/bKI3c1Gm9r3McUEW4LMKDIM+k1myy1zArjQrStPscrMzydxnjUzq0s5St05n7Ez4ISnXTjM8cTIkXcPUHRyN1jAqrn9Ay9fxDNucgjBok+hQX92kdE/Oots6kBKqCBfHy6y1acn84dLEWA0gNkcNr/1tV8ONcENBNoiLYO0TPuqqcWS7dWo0F5YRaPpuBe0yYgVrazJGfhZ5WzRpln2hGkaic6vIVjHFZcYCcu2vKKmbBh+V6kU0iIIKEbFif0/5iRp5qLjdfrAI4x4tXZqfWRc8yf/nfivvEBJFrQyI5OMPemB0IGIKE2t7CvE1GXeNjo+4VO8xt9YthR4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR10MB6535.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(5660300002)(31686004)(66556008)(316002)(66946007)(6916009)(66476007)(8936002)(478600001)(8676002)(6486002)(966005)(4326008)(38100700002)(83380400001)(31696002)(6512007)(86362001)(2616005)(41300700001)(36756003)(53546011)(6666004)(6506007)(26005)(36916002)(2906002)(142923001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RVc4dFdhelZvT2lKblR5L2FtaXlvNkdVeVFZYTdicXBLckNaWGxUTmhVN2Vt?=
+ =?utf-8?B?TzhWZjBNSTR3ZldtMjVwRXoyL1Z1dWpnbExvdXc2YXFQZ2tpQU1WY1Q4Q3pT?=
+ =?utf-8?B?TGRFL0Iva1pTbVpKZ3JaV1RsVHRTa2lTcUdKUjlsOXdtWER5Lzg1MVVVZHNs?=
+ =?utf-8?B?WlZoZ2EzZDEzUE8xeUx6YkQwS29zZ1BrT3l6M0lVYkFzVGFvVHVvMXN2Zkxh?=
+ =?utf-8?B?WWpUR3dFU3Y0ZWdReGtYQW9BbWJ4RmxPOUM2dmtab0s2a0w0ejlwdk1Taklj?=
+ =?utf-8?B?Wm5hL3dhd2ZMQlBmVFpRa0tWeW1PR0s0amtVenBjb2dLbUhON29BL1B2Qldh?=
+ =?utf-8?B?Y3Z1VUZnaE1rY1BvdXc4MC9weXkzWG1mcEZPZzRMODVvb3BrYW9JK0k1Rm95?=
+ =?utf-8?B?blYxaTFDQVlocS9vcmowVkJES0ZMUURSUXVoTzFsV0ZkOENMVVQ3L2FBT29H?=
+ =?utf-8?B?Ujh2Zk4vOFB3K2NBMkk2QjFKY2tMQUdIZ25PWXJ0NjFnUFZOT2NlcE1qMDNn?=
+ =?utf-8?B?TlZuTENkWEtyY1FSSGRBYWI5bDlnZ1JFQXd6L2IrSzBWMFJSTGFqMnRncndt?=
+ =?utf-8?B?c3VsN2V4dnV0RkNhdGdJNmJhV1NvMVNVMnUrT3p2bzZ0N3NmSkpWREdud1h5?=
+ =?utf-8?B?ZWZ6MExMaHFzM3hjVG9rYWszMHYyZi92L2RzMU1lMktvbFZSZXdjcmhvVFdm?=
+ =?utf-8?B?bnFtWEd6cWV1MU52ZnF1N0UvZHlrNStVeER2cVUzWmFyMUFGU2NnSjUyVkJp?=
+ =?utf-8?B?S1RsZ2hmMjM1QWJnbVZiVU90bnBTK1RzeXRMSHQ4THNYSVBHbFdWNmFFTUtm?=
+ =?utf-8?B?ZlllbktNeUU1Q2FQWDY4ZG9nYWpuMGNBcFRmNG9OOGIxVUJKNnE4MlprMmR0?=
+ =?utf-8?B?VHErZzF3UmYyTEJkWDVwN3FNbGFvdU5rZG5KeGZ1RmRWNUZlQ3orKzM5S2k2?=
+ =?utf-8?B?N09VWkFIbHM0cFZQS09JTXpXcGU3L2Q0aFhxdDdxeWlyL01sTERnQ2krcyto?=
+ =?utf-8?B?Z3hETlhlbXJVNnJvMXJxMzlFWENpV3l3NFE2c3piNnhrRDdVa25ISFJoTUVQ?=
+ =?utf-8?B?M01GaXVXRzNiNlFvbFRPeFB5d3Jmb3ZOdXdmVFBRcXdXRWJTSjV4alZpaEpo?=
+ =?utf-8?B?eU51OVdBK29iYW1GOHAvTEdXejd6VzlvWUJKbG42VDM0M3B3bjJ3NVZqN2JW?=
+ =?utf-8?B?eFh4c2ZhSzVJcWZDb0QvRE43a0MrY1Z1WmxmMVlMV3FkVGEvckl6T1o2eExE?=
+ =?utf-8?B?eVBwZUlyalFmaDF1Nkx1SzZtUUM4dmIzbVY2OFhQNWlEQmVyOTBFWjR3UU9a?=
+ =?utf-8?B?Y2lWVXBFWXZGdjNHZDZ2amFQNWlnVDdYdDloQys5eUM5LzlKRXZJM3dVa0oy?=
+ =?utf-8?B?Yy9ZUlhEQTRNMjdROXluVGJQSDRHQzBVOHU1Ulc0ZG1wOTBHcFNwaXQ4cHZB?=
+ =?utf-8?B?cXV1MHBmQTB5TzVVa0UwRkh1ZDRnYjd4WXdPbEVydWV6Nk51MnFrdUNHT1Vy?=
+ =?utf-8?B?ZG5uMUt2cmdNV2wyejBQM0lKVUQzSXRSbkdPOHI4N2xEbGhOSXpDSTZHZFo1?=
+ =?utf-8?B?cWJBUEpTcUhnMHU2Mng5Z3NKYndQWUhObjJYRzI1cTJXeFlRMllMcDhJc2dB?=
+ =?utf-8?B?K2pnVFA2bTJyd2NSVGVEQjRlUUhSVkROV0JpZ2FKT2QrNjhSOHV4MnYzWjk4?=
+ =?utf-8?B?dDV5QTBoUDZvc3N1MDIzSXhPbHZObm00RU5vUDdLaWtwSTI1cE5mUThDWjVw?=
+ =?utf-8?B?Vzk4a2NiNEhUQ0ZrZHk1WkhpdzFFQk1EaWVxYll2TUt0alY1TXFlQlNBYjZI?=
+ =?utf-8?B?UW9sYkJ6cVVJWHUyUzJvT01FZUxpWFpTSkd6Z1oxUDY4cXIrY01RWHFTeHlM?=
+ =?utf-8?B?dGd2YTRRVkJYd3hpbGh5UzlGSEhZZFlLR1FGU016a1pjU0ZWcFc5V2Uyclh0?=
+ =?utf-8?B?azBLdXJtaGp5eVFxeGhWWXRlMUNzNDBnM2I4aUNQQUswZ0NheUtueHNWMy85?=
+ =?utf-8?B?OXFGSllWMVhQWGlPVXRsTWJPbUNvOCtUTytsYi9hb2FEU3VHb0tMMzI1cThI?=
+ =?utf-8?B?RjZHT3lndzR6YzBpVDV6cEpNb2VOT0dWNTVNWTd1U2laUldWaXVIRzVWT2Rh?=
+ =?utf-8?Q?DsYtELc96Tr3I3JwQ3FqUG9hC?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: NOFnaL88h7NeDs9NQklBK5O6GMOu7Fqf6pDn/F0U6xpZFqyIa0kVvrqSpFsiS0Efa5tuWQDboDvucz5iNzM+sJb9dw3s7rImImh56UnLYEc0kSVfDf+w+YkoXrSn98gJpMxC/ab57UowGiY35EEHLC6CGKFgFlsJvasLlEsW/m9FgYPFa/7yBi5vJ51plHgSVu48unkX6S8ZUfSVcGmhC/wSMmNLTymJYmtbsGSkpPWdkNyczFCI7E0pzn4FVarrjE8pVkO0lZp0jQpweBymNS7w9MI4pFvANXsHSZSDPJjOMxcofQtGm9Wt2EHIlJ+guCvvhAaiJXHSNRQ/ynuNa/uwJ/J4hHsGGvdeKfX89IHhBZVh8qx7dufbxC7Gu3hoVqEsPUd99Yrnn+TWrzE+z7gYH/6DPROx9X/CGEUHZU9suUjtY4Seuu1XenWzgwv4XuoilrxKI4a1oJ9DL2X8KZ/bVMkIjwI5HC14nEr9KkVgwPhnHgyUADv+32hhF/sOOdYjmIVE57uTtXW3ZeDEQq3Nyff5nsmoGRFCtpd4MAsN8KElmZ8rd5Rpmw2UQz2h7fI4decWMIQbrEgKoZ2kmz7SDjXiz34+slfqLYdR9p4HnqY/x3CBrv9HeTOb8ymlWXIqc5Yq/SzYjZhCLsqcme0wYnM5DPiQpjdUKFmJFe4/mTq1irFKwmPywu1oyRBizWTpTENGsy5VOPtZ4yy1+Ik6ULJVuX5QXWngeIF0UXIy/GuAyl40uZUAORMRyyLwcpGUcPOyEpZOTrP3JzcSalP6np5KckZe/wEQ9Y3u4wiWjj9cTShHkyQ8U+GuesLu5KYS6K2cvy7RrFD585ZVMcBmHBrVr/JJ96nPZoGkfOtUwbDM+k+46BgVNfXWXl9R
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40f01ccf-0cfc-4c0a-11dc-08dbd034a527
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR10MB6535.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 23:47:53.7299
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b9DjPsK6fpjghp+jZENoTYum2naPwzBrMrTFLdhq6fJ5yzKEI619VGzsevLkc6Gmt8xDoRo0Fdcvbrl4loA7PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5321
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-18_18,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310180197
+X-Proofpoint-GUID: MxiAhUpqLFcoK8qyRC2OyzllKxIvt1If
+X-Proofpoint-ORIG-GUID: MxiAhUpqLFcoK8qyRC2OyzllKxIvt1If
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 4:20=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+
+
+On 10/18/2023 1:05 AM, Stefano Garzarella wrote:
+> On Tue, Oct 17, 2023 at 10:11:33PM -0700, Si-Wei Liu wrote:
+>> RFC only. Not tested on vdpa-sim-blk with user virtual address.
+>> Works fine with vdpa-sim-net which uses physical address to map.
+>>
+>> This patch is based on top of [1].
+>>
+>> [1] 
+>> https://lore.kernel.org/virtualization/1696928580-7520-1-git-send-email-si-wei.liu@oracle.com/
+>>
+>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+>>
+>> ---
+>> RFC v2:
+>>  - initialize iotlb to passthrough mode in device add
 >
-> On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> >
-> > Currently, we only have a single global LRU for zswap. This makes it
-> > impossible to perform worload-specific shrinking - an memcg cannot
-> > determine which pages in the pool it owns, and often ends up writing
-> > pages from other memcgs. This issue has been previously observed in
-> > practice and mitigated by simply disabling memcg-initiated shrinking:
-> >
-> > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/=
-T/#u
-> >
-> > This patch fully resolves the issue by replacing the global zswap LRU
-> > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> >
-> > a) When a store attempt hits an memcg limit, it now triggers a
-> >    synchronous reclaim attempt that, if successful, allows the new
-> >    hotter page to be accepted by zswap.
-> > b) If the store attempt instead hits the global zswap limit, it will
-> >    trigger an asynchronous reclaim attempt, in which an memcg is
-> >    selected for reclaim in a round-robin-like fashion.
->
-> Could you explain the rationale behind the difference in behavior here
-> between the global limit and the memcg limit?
+> I tested this version and I didn't see any issue ;-)
+Great, thank you so much for your help on testing my patch, Stefano!
+Just for my own interest/curiosity, currently there's no vhost-vdpa 
+backend client implemented for vdpa-sim-blk or any vdpa block device in 
+userspace as yet, correct? So there was no test specific to vhost-vdpa 
+that needs to be exercised, right?
 
-The global limit hit reclaim behavior was previously asynchronous too.
-We just added the round-robin part because now the zswap LRU is
-cgroup-aware :)
+Thanks,
+-Siwei
 
-For the cgroup limit hit, however, we cannot make it asynchronous,
-as it is a bit hairy to add a per-cgroup shrink_work. So, we just
-perform the reclaim synchronously.
 
-The question is whether it makes sense to make the global limit
-reclaim synchronous too. That is a task of its own IMO.
-
-(FWIW, this somewhat mirrors the direct reclaimer v.s kswapd
-story to me, but don't quote me too hard on this).
 
 >
-> >
-> > Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> > Co-developed-by: Nhat Pham <nphamcs@gmail.com>
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |   5 ++
-> >  mm/swap.h                  |   3 +-
-> >  mm/swap_state.c            |  17 +++-
-> >  mm/zswap.c                 | 179 ++++++++++++++++++++++++++-----------
-> >  4 files changed, 147 insertions(+), 57 deletions(-)
+> Tested-by: Stefano Garzarella <sgarzare@redhat.com>
 >
-> This is a dense patch, I haven't absorbed all of it yet, but the first
-> round of comments below.
+>> ---
+>> drivers/vdpa/vdpa_sim/vdpa_sim.c | 34 ++++++++++++++++++++++++--------
+>> 1 file changed, 26 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c 
+>> b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>> index 76d41058add9..2a0a6042d61d 100644
+>> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>> @@ -151,13 +151,6 @@ static void vdpasim_do_reset(struct vdpasim 
+>> *vdpasim)
+>>                  &vdpasim->iommu_lock);
+>>     }
+>>
+>> -    for (i = 0; i < vdpasim->dev_attr.nas; i++) {
+>> -        vhost_iotlb_reset(&vdpasim->iommu[i]);
+>> -        vhost_iotlb_add_range(&vdpasim->iommu[i], 0, ULONG_MAX,
+>> -                      0, VHOST_MAP_RW);
+>> -        vdpasim->iommu_pt[i] = true;
+>> -    }
+>> -
+>>     vdpasim->running = true;
+>>     spin_unlock(&vdpasim->iommu_lock);
+>>
+>> @@ -259,8 +252,12 @@ struct vdpasim *vdpasim_create(struct 
+>> vdpasim_dev_attr *dev_attr,
+>>     if (!vdpasim->iommu_pt)
+>>         goto err_iommu;
+>>
+>> -    for (i = 0; i < vdpasim->dev_attr.nas; i++)
+>> +    for (i = 0; i < vdpasim->dev_attr.nas; i++) {
+>>         vhost_iotlb_init(&vdpasim->iommu[i], max_iotlb_entries, 0);
+>> +        vhost_iotlb_add_range(&vdpasim->iommu[i], 0, ULONG_MAX, 0,
+>> +                      VHOST_MAP_RW);
+>> +        vdpasim->iommu_pt[i] = true;
+>> +    }
+>>
+>>     for (i = 0; i < dev_attr->nvqs; i++)
+>>         vringh_set_iotlb(&vdpasim->vqs[i].vring, &vdpasim->iommu[0],
+>> @@ -637,6 +634,25 @@ static int vdpasim_set_map(struct vdpa_device 
+>> *vdpa, unsigned int asid,
+>>     return ret;
+>> }
+>>
+>> +static int vdpasim_reset_map(struct vdpa_device *vdpa, unsigned int 
+>> asid)
+>> +{
+>> +    struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>> +
+>> +    if (asid >= vdpasim->dev_attr.nas)
+>> +        return -EINVAL;
+>> +
+>> +    spin_lock(&vdpasim->iommu_lock);
+>> +    if (vdpasim->iommu_pt[asid])
+>> +        goto out;
+>> +    vhost_iotlb_reset(&vdpasim->iommu[asid]);
+>> +    vhost_iotlb_add_range(&vdpasim->iommu[asid], 0, ULONG_MAX,
+>> +                  0, VHOST_MAP_RW);
+>> +    vdpasim->iommu_pt[asid] = true;
+>> +out:
+>> +    spin_unlock(&vdpasim->iommu_lock);
+>> +    return 0;
+>> +}
+>> +
+>> static int vdpasim_bind_mm(struct vdpa_device *vdpa, struct mm_struct 
+>> *mm)
+>> {
+>>     struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>> @@ -759,6 +775,7 @@ static const struct vdpa_config_ops 
+>> vdpasim_config_ops = {
+>>     .set_group_asid         = vdpasim_set_group_asid,
+>>     .dma_map                = vdpasim_dma_map,
+>>     .dma_unmap              = vdpasim_dma_unmap,
+>> +    .reset_map              = vdpasim_reset_map,
+>>     .bind_mm        = vdpasim_bind_mm,
+>>     .unbind_mm        = vdpasim_unbind_mm,
+>>     .free                   = vdpasim_free,
+>> @@ -796,6 +813,7 @@ static const struct vdpa_config_ops 
+>> vdpasim_batch_config_ops = {
+>>     .get_iova_range         = vdpasim_get_iova_range,
+>>     .set_group_asid         = vdpasim_set_group_asid,
+>>     .set_map                = vdpasim_set_map,
+>> +    .reset_map              = vdpasim_reset_map,
+>>     .bind_mm        = vdpasim_bind_mm,
+>>     .unbind_mm        = vdpasim_unbind_mm,
+>>     .free                   = vdpasim_free,
+>> -- 
+>> 2.39.3
+>>
+>
 
-Regardless, thanks for the feedback, Yosry! Domenico definitely
-knows more than me about this, but I'll respond with what I know,
-and he can expand and/or fact-check me :)
-
->
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 031102ac9311..3de10fabea0f 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -1179,6 +1179,11 @@ static inline struct mem_cgroup *page_memcg_chec=
-k(struct page *page)
-> >         return NULL;
-> >  }
-> >
-> > +static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_=
-cgroup *objcg)
-> > +{
-> > +       return NULL;
-> > +}
-> > +
-> >  static inline bool folio_memcg_kmem(struct folio *folio)
-> >  {
-> >         return false;
-> > diff --git a/mm/swap.h b/mm/swap.h
-> > index 8a3c7a0ace4f..bbd6ce661a20 100644
-> > --- a/mm/swap.h
-> > +++ b/mm/swap.h
-> > @@ -50,7 +50,8 @@ struct page *read_swap_cache_async(swp_entry_t entry,=
- gfp_t gfp_mask,
-> >  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask=
-,
-> >                                      struct vm_area_struct *vma,
-> >                                      unsigned long addr,
-> > -                                    bool *new_page_allocated);
-> > +                                    bool *new_page_allocated,
-> > +                                    bool fail_if_exists);
-> >  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
-> >                                     struct vm_fault *vmf);
-> >  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index b3b14bd0dd64..0356df52b06a 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -411,7 +411,7 @@ struct folio *filemap_get_incore_folio(struct addre=
-ss_space *mapping,
-> >
-> >  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask=
-,
-> >                         struct vm_area_struct *vma, unsigned long addr,
-> > -                       bool *new_page_allocated)
-> > +                       bool *new_page_allocated, bool fail_if_exists)
->
-> nit: I don't feel like "fail" is the correct word here. Perhaps "skip"?
->
-> >  {
-> >         struct swap_info_struct *si;
-> >         struct folio *folio;
-> > @@ -468,6 +468,15 @@ struct page *__read_swap_cache_async(swp_entry_t e=
-ntry, gfp_t gfp_mask,
-> >                 if (err !=3D -EEXIST)
-> >                         goto fail_put_swap;
-> >
-> > +               /*
-> > +                * This check guards against a state that happens if a =
-call
-> > +                * to __read_swap_cache_async triggers a reclaim, if th=
-e
-> > +                * reclaimer (zswap's writeback as of now) then decides=
- to
-> > +                * reclaim that same entry, then the subsequent call to
-> > +                * __read_swap_cache_async would get stuck in this loop=
-.
->
-> I think this comment needs to first state that it is protecting
-> against a recursive call in general, not necessarily in reclaim, as
-> __read_swap_cache_async() is not usually called in the context of
-> reclaim so this can be confusing. Then it can give the exact example
-> we have today. Perhaps something like:
->
-> Protect against a recursive call to __read_swap_cache_async() on the
-> same entry waiting forever here because SWAP_HAS_CACHE is set but the
-> folio is not the swap cache yet. This can happen today if
-> mem_cgroup_swapin_charge_folio() below triggers reclaim through zswap,
-> which may call __read_swap_cache_async() in the writeback path.
->
-> > +                */
-> > +               if (fail_if_exists && err =3D=3D -EEXIST)
->
-> We already made sure  in the preceding condition that err is -EEXIST.
->
-> > +                       goto fail_put_swap;
-> >                 /*
-> >                  * We might race against __delete_from_swap_cache(), an=
-d
-> >                  * stumble across a swap_map entry whose SWAP_HAS_CACHE
-> > @@ -530,7 +539,7 @@ struct page *read_swap_cache_async(swp_entry_t entr=
-y, gfp_t gfp_mask,
-> >  {
-> >         bool page_was_allocated;
-> >         struct page *retpage =3D __read_swap_cache_async(entry, gfp_mas=
-k,
-> > -                       vma, addr, &page_was_allocated);
-> > +                       vma, addr, &page_was_allocated, false);
-> >
-> >         if (page_was_allocated)
-> >                 swap_readpage(retpage, false, plug);
-> > @@ -649,7 +658,7 @@ struct page *swap_cluster_readahead(swp_entry_t ent=
-ry, gfp_t gfp_mask,
-> >                 /* Ok, do the async read-ahead now */
-> >                 page =3D __read_swap_cache_async(
-> >                         swp_entry(swp_type(entry), offset),
-> > -                       gfp_mask, vma, addr, &page_allocated);
-> > +                       gfp_mask, vma, addr, &page_allocated, false);
-> >                 if (!page)
-> >                         continue;
-> >                 if (page_allocated) {
-> > @@ -815,7 +824,7 @@ static struct page *swap_vma_readahead(swp_entry_t =
-fentry, gfp_t gfp_mask,
-> >                 pte_unmap(pte);
-> >                 pte =3D NULL;
-> >                 page =3D __read_swap_cache_async(entry, gfp_mask, vma,
-> > -                                              addr, &page_allocated);
-> > +                                              addr, &page_allocated, f=
-alse);
-> >                 if (!page)
-> >                         continue;
-> >                 if (page_allocated) {
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 083c693602b8..d2989ad11814 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/writeback.h>
-> >  #include <linux/pagemap.h>
-> >  #include <linux/workqueue.h>
-> > +#include <linux/list_lru.h>
-> >
-> >  #include "swap.h"
-> >  #include "internal.h"
-> > @@ -171,8 +172,8 @@ struct zswap_pool {
-> >         struct work_struct shrink_work;
-> >         struct hlist_node node;
-> >         char tfm_name[CRYPTO_MAX_ALG_NAME];
-> > -       struct list_head lru;
-> > -       spinlock_t lru_lock;
-> > +       struct list_lru list_lru;
-> > +       struct mem_cgroup *next_shrink;
-> >  };
-> >
-> >  /*
-> > @@ -288,15 +289,25 @@ static void zswap_update_total_size(void)
-> >         zswap_pool_total_size =3D total;
-> >  }
-> >
-> > +static inline struct mem_cgroup *get_mem_cgroup_from_entry(struct zswa=
-p_entry *entry)
-> > +{
-> > +       return entry->objcg ? get_mem_cgroup_from_objcg(entry->objcg) :=
- NULL;
-> > +}
-> > +
-> > +static inline int entry_to_nid(struct zswap_entry *entry)
-> > +{
-> > +       return page_to_nid(virt_to_page(entry));
-> > +}
-> > +
-> >  /*********************************
-> >  * zswap entry functions
-> >  **********************************/
-> >  static struct kmem_cache *zswap_entry_cache;
-> >
-> > -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
-> > +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
-> >  {
-> >         struct zswap_entry *entry;
-> > -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
-> > +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
-> >         if (!entry)
-> >                 return NULL;
-> >         entry->refcount =3D 1;
-> > @@ -309,6 +320,27 @@ static void zswap_entry_cache_free(struct zswap_en=
-try *entry)
-> >         kmem_cache_free(zswap_entry_cache, entry);
-> >  }
-> >
-> > +/*********************************
-> > +* lru functions
-> > +**********************************/
-> > +static bool zswap_lru_add(struct list_lru *list_lru, struct zswap_entr=
-y *entry)
-> > +{
-> > +       struct mem_cgroup *memcg =3D get_mem_cgroup_from_entry(entry);
->
-> Could we avoid the need for get/put with an rcu_read_lock() instead?
->
-> > +       bool added =3D __list_lru_add(list_lru, &entry->lru, entry_to_n=
-id(entry), memcg);
-> > +
-> > +       mem_cgroup_put(memcg);
-> > +       return added;
-> > +}
-> > +
-> > +static bool zswap_lru_del(struct list_lru *list_lru, struct zswap_entr=
-y *entry)
-> > +{
-> > +       struct mem_cgroup *memcg =3D get_mem_cgroup_from_entry(entry);
-> > +       bool removed =3D __list_lru_del(list_lru, &entry->lru, entry_to=
-_nid(entry), memcg);
-> > +
-> > +       mem_cgroup_put(memcg);
-> > +       return removed;
-> > +}
-> > +
-> >  /*********************************
-> >  * rbtree functions
-> >  **********************************/
-> > @@ -393,9 +425,7 @@ static void zswap_free_entry(struct zswap_entry *en=
-try)
-> >         if (!entry->length)
-> >                 atomic_dec(&zswap_same_filled_pages);
-> >         else {
-> > -               spin_lock(&entry->pool->lru_lock);
-> > -               list_del(&entry->lru);
-> > -               spin_unlock(&entry->pool->lru_lock);
-> > +               zswap_lru_del(&entry->pool->list_lru, entry);
-> >                 zpool_free(zswap_find_zpool(entry), entry->handle);
-> >                 zswap_pool_put(entry->pool);
-> >         }
-> > @@ -629,21 +659,16 @@ static void zswap_invalidate_entry(struct zswap_t=
-ree *tree,
-> >                 zswap_entry_put(tree, entry);
-> >  }
-> >
-> > -static int zswap_reclaim_entry(struct zswap_pool *pool)
-> > +static enum lru_status shrink_memcg_cb(struct list_head *item, struct =
-list_lru_one *l,
-> > +                                      spinlock_t *lock, void *arg)
-> >  {
-> > -       struct zswap_entry *entry;
-> > +       struct zswap_entry *entry =3D container_of(item, struct zswap_e=
-ntry, lru);
-> > +       struct mem_cgroup *memcg;
-> >         struct zswap_tree *tree;
-> >         pgoff_t swpoffset;
-> > -       int ret;
-> > +       enum lru_status ret =3D LRU_REMOVED_RETRY;
-> > +       int writeback_result;
-> >
-> > -       /* Get an entry off the LRU */
-> > -       spin_lock(&pool->lru_lock);
-> > -       if (list_empty(&pool->lru)) {
-> > -               spin_unlock(&pool->lru_lock);
-> > -               return -EINVAL;
-> > -       }
-> > -       entry =3D list_last_entry(&pool->lru, struct zswap_entry, lru);
-> > -       list_del_init(&entry->lru);
-> >         /*
-> >          * Once the lru lock is dropped, the entry might get freed. The
-> >          * swpoffset is copied to the stack, and entry isn't deref'd ag=
-ain
-> > @@ -651,28 +676,33 @@ static int zswap_reclaim_entry(struct zswap_pool =
-*pool)
-> >          */
-> >         swpoffset =3D swp_offset(entry->swpentry);
-> >         tree =3D zswap_trees[swp_type(entry->swpentry)];
-> > -       spin_unlock(&pool->lru_lock);
-> > +       list_lru_isolate(l, item);
-> > +       spin_unlock(lock);
->
-> Perhaps a comment somewhere stating that we only return either
-> LRU_REMOVED_RETRY or LRU_RETRY, so it's fine to drop and reacquire the
-> lock.
->
-> >
-> >         /* Check for invalidate() race */
-> >         spin_lock(&tree->lock);
-> >         if (entry !=3D zswap_rb_search(&tree->rbroot, swpoffset)) {
-> > -               ret =3D -EAGAIN;
-> >                 goto unlock;
-> >         }
->
-> nit: braces no longer needed?
-
-Ah, for some reason checkpatch did not pick up on this.
-Weird.
-
->
-> >         /* Hold a reference to prevent a free during writeback */
-> >         zswap_entry_get(entry);
-> >         spin_unlock(&tree->lock);
-> >
-> > -       ret =3D zswap_writeback_entry(entry, tree);
-> > +       writeback_result =3D zswap_writeback_entry(entry, tree);
-> >
-> >         spin_lock(&tree->lock);
-> > -       if (ret) {
-> > -               /* Writeback failed, put entry back on LRU */
-> > -               spin_lock(&pool->lru_lock);
-> > -               list_move(&entry->lru, &pool->lru);
-> > -               spin_unlock(&pool->lru_lock);
-> > +       if (writeback_result) {
-> > +               zswap_reject_reclaim_fail++;
-> > +               memcg =3D get_mem_cgroup_from_entry(entry);
-> > +               spin_lock(lock);
-> > +               /* we cannot use zswap_lru_add here, because it increme=
-nts node's lru count */
-> > +               list_lru_putback(&entry->pool->list_lru, item, entry_to=
-_nid(entry), memcg);
-> > +               spin_unlock(lock);
-> > +               mem_cgroup_put(memcg);
-> > +               ret =3D LRU_RETRY;
-> >                 goto put_unlock;
-> >         }
-> > +       zswap_written_back_pages++;
->
-> Why is this moved here from zswap_writeback_entry()? Also why is
-> zswap_reject_reclaim_fail incremented here instead of inside
-> zswap_writeback_entry()?
-
-Domenico should know this better than me, but my understanding
-is that moving it here protects concurrent modifications of
-zswap_written_back_pages with the tree lock.
-
-Is writeback single-threaded in the past? This counter is non-atomic,
-and doesn't seem to be protected by any locks...
-
-There definitely can be concurrent stores now though - with
-a synchronous reclaim from cgroup-limit hit and another
-from the old shrink worker.
-
-(and with the new zswap shrinker, concurrent reclaim is
-the expectation!)
-
-zswap_reject_reclaim_fail was previously incremented in
-shrink_worker I think. We need it to be incremented
-for the shrinker as well, so might as well move it here.
-
->
-> >
-> >         /*
-> >          * Writeback started successfully, the page now belongs to the
-> > @@ -686,7 +716,36 @@ static int zswap_reclaim_entry(struct zswap_pool *=
-pool)
-> >         zswap_entry_put(tree, entry);
-> >  unlock:
-> >         spin_unlock(&tree->lock);
-> > -       return ret ? -EAGAIN : 0;
-> > +       spin_lock(lock);
-> > +       return ret;
-> > +}
-> > +
-> > +static int shrink_memcg(struct mem_cgroup *memcg)
-> > +{
-> > +       struct zswap_pool *pool;
-> > +       int nid, shrunk =3D 0;
-> > +
-> > +       pool =3D zswap_pool_current_get();
-> > +       if (!pool)
-> > +               return -EINVAL;
-> > +
-> > +       /*
-> > +        * Skip zombies because their LRUs are reparented and we would =
-be
-> > +        * reclaiming from the parent instead of the dead memcgroup.
->
-> nit: s/memcgroup/memcg.
->
-> > +        */
-> > +       if (memcg && !mem_cgroup_online(memcg))
-> > +               goto out;
->
-> If we move this above zswap_pool_current_get(), we can return directly
-> and remove the label. I noticed we will return -EAGAIN if memcg is
-> offline. IIUC -EAGAIN for the caller will move on to the next memcg,
-> but I am wondering if a different errno would be clearer here.
->
-> > +
-> > +       for_each_node_state(nid, N_NORMAL_MEMORY) {
-> > +               unsigned long nr_to_walk =3D 1;
-> > +
-> > +               if (list_lru_walk_one(&pool->list_lru, nid, memcg, &shr=
-ink_memcg_cb,
-> > +                                     NULL, &nr_to_walk))
-> > +                       shrunk++;
->
-> nit:
-> shrunk +=3D list_lru_walk_one(..);
-
-yeah might be a tad cleaner.
-
->
-> > +       }
-> > +out:
-> > +       zswap_pool_put(pool);
-> > +       return shrunk ? 0 : -EAGAIN;
-> >  }
-> >
-> >  static void shrink_worker(struct work_struct *w)
-> > @@ -695,10 +754,13 @@ static void shrink_worker(struct work_struct *w)
-> >                                                 shrink_work);
-> >         int ret, failures =3D 0;
-> >
-> > +       /* global reclaim will select cgroup in a round-robin fashion. =
-*/
-> >         do {
-> > -               ret =3D zswap_reclaim_entry(pool);
-> > +               pool->next_shrink =3D mem_cgroup_iter(NULL, pool->next_=
-shrink, NULL);
->
-> Perhaps next_shrink_memcg is a better name here?
->
-> > +
-> > +               ret =3D shrink_memcg(pool->next_shrink);
-> > +
-> >                 if (ret) {
-> > -                       zswap_reject_reclaim_fail++;
-> >                         if (ret !=3D -EAGAIN)
-> >                                 break;
-> >                         if (++failures =3D=3D MAX_RECLAIM_RETRIES)
-> > @@ -764,8 +826,7 @@ static struct zswap_pool *zswap_pool_create(char *t=
-ype, char *compressor)
-> >          */
-> >         kref_init(&pool->kref);
-> >         INIT_LIST_HEAD(&pool->list);
-> > -       INIT_LIST_HEAD(&pool->lru);
-> > -       spin_lock_init(&pool->lru_lock);
-> > +       list_lru_init_memcg(&pool->list_lru, NULL);
-> >         INIT_WORK(&pool->shrink_work, shrink_worker);
-> >
-> >         zswap_pool_debug("created", pool);
-> > @@ -831,6 +892,9 @@ static void zswap_pool_destroy(struct zswap_pool *p=
-ool)
-> >
-> >         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->=
-node);
-> >         free_percpu(pool->acomp_ctx);
-> > +       list_lru_destroy(&pool->list_lru);
-> > +       if (pool->next_shrink)
-> > +               mem_cgroup_put(pool->next_shrink);
-> >         for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
-> >                 zpool_destroy_pool(pool->zpools[i]);
-> >         kfree(pool);
-> > @@ -1076,7 +1140,7 @@ static int zswap_writeback_entry(struct zswap_ent=
-ry *entry,
-> >
-> >         /* try to allocate swap cache page */
-> >         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, NULL, 0,
-> > -                                      &page_was_allocated);
-> > +                                      &page_was_allocated, true);
-> >         if (!page) {
-> >                 ret =3D -ENOMEM;
-> >                 goto fail;
-> > @@ -1142,7 +1206,6 @@ static int zswap_writeback_entry(struct zswap_ent=
-ry *entry,
-> >         /* start writeback */
-> >         __swap_writepage(page, &wbc);
-> >         put_page(page);
-> > -       zswap_written_back_pages++;
-> >
-> >         return ret;
-> >
-> > @@ -1199,8 +1262,10 @@ bool zswap_store(struct folio *folio)
-> >         struct scatterlist input, output;
-> >         struct crypto_acomp_ctx *acomp_ctx;
-> >         struct obj_cgroup *objcg =3D NULL;
-> > +       struct mem_cgroup *memcg =3D NULL;
-> >         struct zswap_pool *pool;
-> >         struct zpool *zpool;
-> > +       int lru_alloc_ret;
-> >         unsigned int dlen =3D PAGE_SIZE;
-> >         unsigned long handle, value;
-> >         char *buf;
-> > @@ -1230,15 +1295,15 @@ bool zswap_store(struct folio *folio)
-> >                 zswap_invalidate_entry(tree, dupentry);
-> >         }
-> >         spin_unlock(&tree->lock);
-> > -
-> > -       /*
-> > -        * XXX: zswap reclaim does not work with cgroups yet. Without a
-> > -        * cgroup-aware entry LRU, we will push out entries system-wide=
- based on
-> > -        * local cgroup limits.
-> > -        */
-> >         objcg =3D get_obj_cgroup_from_folio(folio);
-> > -       if (objcg && !obj_cgroup_may_zswap(objcg))
-> > -               goto reject;
-> > +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> > +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> > +               if (shrink_memcg(memcg)) {
-> > +                       mem_cgroup_put(memcg);
-> > +                       goto reject;
-> > +               }
-> > +               mem_cgroup_put(memcg);
-> > +       }
-> >
-> >         /* reclaim space if needed */
-> >         if (zswap_is_full()) {
-> > @@ -1254,10 +1319,15 @@ bool zswap_store(struct folio *folio)
-> >                         zswap_pool_reached_full =3D false;
-> >         }
-> >
-> > +       pool =3D zswap_pool_current_get();
-> > +       if (!pool)
-> > +               goto reject;
-> > +
->
-> Why do we need to move zswap_pool_current_get() up here?
->
-> >         /* allocate entry */
-> > -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
-> > +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(page)=
-);
-> >         if (!entry) {
-> >                 zswap_reject_kmemcache_fail++;
-> > +               zswap_pool_put(pool);
-> >                 goto reject;
-> >         }
-> >
-> > @@ -1269,6 +1339,7 @@ bool zswap_store(struct folio *folio)
-> >                         entry->length =3D 0;
-> >                         entry->value =3D value;
-> >                         atomic_inc(&zswap_same_filled_pages);
-> > +                       zswap_pool_put(pool);
-> >                         goto insert_entry;
-> >                 }
-> >                 kunmap_atomic(src);
-> > @@ -1278,9 +1349,15 @@ bool zswap_store(struct folio *folio)
-> >                 goto freepage;
-> >
-> >         /* if entry is successfully added, it keeps the reference */
-> > -       entry->pool =3D zswap_pool_current_get();
-> > -       if (!entry->pool)
-> > -               goto freepage;
-> > +       entry->pool =3D pool;
-> > +       if (objcg) {
-> > +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> > +               lru_alloc_ret =3D memcg_list_lru_alloc(memcg, &pool->li=
-st_lru, GFP_KERNEL);
-> > +               mem_cgroup_put(memcg);
-> > +
-> > +               if (lru_alloc_ret)
-> > +                       goto freepage;
-> > +       }
-> >
-> >         /* compress */
-> >         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> > @@ -1358,9 +1435,8 @@ bool zswap_store(struct folio *folio)
-> >                 zswap_invalidate_entry(tree, dupentry);
-> >         }
-> >         if (entry->length) {
-> > -               spin_lock(&entry->pool->lru_lock);
-> > -               list_add(&entry->lru, &entry->pool->lru);
-> > -               spin_unlock(&entry->pool->lru_lock);
-> > +               INIT_LIST_HEAD(&entry->lru);
-> > +               zswap_lru_add(&pool->list_lru, entry);
-> >         }
-> >         spin_unlock(&tree->lock);
-> >
-> > @@ -1373,8 +1449,8 @@ bool zswap_store(struct folio *folio)
-> >
-> >  put_dstmem:
-> >         mutex_unlock(acomp_ctx->mutex);
-> > -       zswap_pool_put(entry->pool);
-> >  freepage:
-> > +       zswap_pool_put(entry->pool);
-> >         zswap_entry_cache_free(entry);
-> >  reject:
-> >         if (objcg)
-> > @@ -1467,9 +1543,8 @@ bool zswap_load(struct folio *folio)
-> >                 zswap_invalidate_entry(tree, entry);
-> >                 folio_mark_dirty(folio);
-> >         } else if (entry->length) {
-> > -               spin_lock(&entry->pool->lru_lock);
-> > -               list_move(&entry->lru, &entry->pool->lru);
-> > -               spin_unlock(&entry->pool->lru_lock);
-> > +               zswap_lru_del(&entry->pool->list_lru, entry);
-> > +               zswap_lru_add(&entry->pool->list_lru, entry);
-> >         }
-> >         zswap_entry_put(tree, entry);
-> >         spin_unlock(&tree->lock);
-> > --
-> > 2.34.1
-
-I don't have (strong) opinions or (educated) guesses
-on the rest.
