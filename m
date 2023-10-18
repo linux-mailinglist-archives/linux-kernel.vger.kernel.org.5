@@ -2,274 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B717CDC76
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADF27CDC77
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjJRM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S231213AbjJRM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJRM6A (ORCPT
+        with ESMTP id S231209AbjJRM6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:58:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AD3A3;
-        Wed, 18 Oct 2023 05:57:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13865C433C8;
-        Wed, 18 Oct 2023 12:57:53 +0000 (UTC)
-Message-ID: <83c7dae1-4910-4e85-8b7e-bd803eac9523@xs4all.nl>
-Date:   Wed, 18 Oct 2023 14:57:52 +0200
+        Wed, 18 Oct 2023 08:58:04 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DABA3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:58:03 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40839652b97so8515805e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697633881; x=1698238681; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fr5bNJBFLMuIPEONfHq2XJxUXHhZ/+z0NpQUkCG4IxQ=;
+        b=oxzGvBtIIekcaOOt5NznYJv95yglEgbxODzr7Gn+0rLfPCzpI8Sha+wmr7InHCY6zl
+         aNguJz6DSN3B0kIXH9CepB8/39WLMkoh/b4j3MX1LyfZIP/2Zj6+5R1bU9IbLMbFWjXS
+         Ltl+8yqDdVnJCIDbbJ0LJlZ676svE51eKctxxGdEo9456bi75QhZX375lbUuo1+5+B9F
+         WVDflZBt8g/HBxdqxYIUzgsJ8Eut32aJScU4JLAStQpz0oEFtS8LlyEqPsuSBRVCHZX7
+         05uXnznv366pckKMgcB/DUuS+Mbr2xrEJf+38gnA8iSAyZMqriAjOoYw/b8MBmVENbwj
+         uRtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697633881; x=1698238681;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fr5bNJBFLMuIPEONfHq2XJxUXHhZ/+z0NpQUkCG4IxQ=;
+        b=kelONxCWrt7eq9NAqGNpK3HZcPWOzQGDANFNSjNRcwcGUezHtc2wazjZkN8khABByP
+         aAk8qyfLmOo6OFju8l+q2srvAIskprKM02eKjU1ng4lwaIYhO9aO5EfcwXfOe2mD/WDa
+         RR9hlrpga66frv7nNH967SQwG8TPhfCPuktzMk1jQJ2c6QcGpXXNVMbrF3SnBMQKtpUb
+         3RtJVkUeODBeQtb7HrhC1/PKtyjsUMPoY8l9HhqINqXTl//aWT+H2p8U/uATiNxJKst9
+         Oe52Oc8DTEJvZOB80rb9L0xGdTy3xPqxd5eezYkfi2H5iq87J8Als7w8JXGIuLlUwupU
+         MLDA==
+X-Gm-Message-State: AOJu0YwrYRHqrZjnnaKkTwqkEVGJ3iMrzO5gtkTY2fKNsTuFHBq1rvzO
+        xvrPmYrcx3LQqDvN1a4oRdvVdJ7r91wxLUpesdw=
+X-Google-Smtp-Source: AGHT+IFMx1nw7RrrfF2jby2CNEyNERSDjSAkNAeiPbbJTFume3ii5cEer9QrawqbSvcQqpa9lpvgyQ==
+X-Received: by 2002:a05:600c:3545:b0:403:b86:f624 with SMTP id i5-20020a05600c354500b004030b86f624mr3962206wmq.23.1697633881454;
+        Wed, 18 Oct 2023 05:58:01 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id r4-20020a05600c35c400b0040531f5c51asm1665721wmq.5.2023.10.18.05.57.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 05:58:01 -0700 (PDT)
+Message-ID: <b35a21a2-6e69-4033-8d51-2b67b08ac7b3@linaro.org>
+Date:   Wed, 18 Oct 2023 14:57:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v6 10/11] media: imx-asrc: Add memory to memory driver
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-11-git-send-email-shengjiu.wang@nxp.com>
- <677abf53-651a-42d3-ac65-c2a7d0b63fe6@xs4all.nl>
- <CAA+D8ANKVwwqoYKo=rZGx029BykH9eDv=-VCQ3PP9p-k8faJ_w@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <CAA+D8ANKVwwqoYKo=rZGx029BykH9eDv=-VCQ3PP9p-k8faJ_w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
+ <3aa9e3a7-9417-44b4-87d8-fcf1a8b46daf@sirena.org.uk>
+ <84f9f1c4-0627-4986-8160-b4ab99469b81@linaro.org>
+ <b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 14:53, Shengjiu Wang wrote:
-> On Mon, Oct 16, 2023 at 10:01 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> On 13/10/2023 10:31, Shengjiu Wang wrote:
->>> Implement the ASRC memory to memory function using
->>> the v4l2 framework, user can use this function with
->>> v4l2 ioctl interface.
->>>
->>> User send the output and capture buffer to driver and
->>> driver store the converted data to the capture buffer.
->>>
->>> This feature can be shared by ASRC and EASRC drivers
->>>
->>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->>> ---
->>>  drivers/media/platform/nxp/Kconfig    |   12 +
->>>  drivers/media/platform/nxp/Makefile   |    1 +
->>>  drivers/media/platform/nxp/imx-asrc.c | 1248 +++++++++++++++++++++++++
->>>  3 files changed, 1261 insertions(+)
->>>  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
->>>
->>> diff --git a/drivers/media/platform/nxp/Kconfig b/drivers/media/platform/nxp/Kconfig
->>> index 40e3436669e2..8234644ee341 100644
->>> --- a/drivers/media/platform/nxp/Kconfig
->>> +++ b/drivers/media/platform/nxp/Kconfig
->>> @@ -67,3 +67,15 @@ config VIDEO_MX2_EMMAPRP
->>>
->>>  source "drivers/media/platform/nxp/dw100/Kconfig"
->>>  source "drivers/media/platform/nxp/imx-jpeg/Kconfig"
->>> +
->>> +config VIDEO_IMX_ASRC
->>> +     tristate "NXP i.MX ASRC M2M support"
->>> +     depends on V4L_MEM2MEM_DRIVERS
->>> +     depends on MEDIA_SUPPORT
->>> +     select VIDEOBUF2_DMA_CONTIG
->>> +     select V4L2_MEM2MEM_DEV
->>> +     help
->>> +         Say Y if you want to add ASRC M2M support for NXP CPUs.
->>> +         It is a complement for ASRC M2P and ASRC P2M features.
->>> +         This option is only useful for out-of-tree drivers since
->>> +         in-tree drivers select it automatically.
->>> diff --git a/drivers/media/platform/nxp/Makefile b/drivers/media/platform/nxp/Makefile
->>> index 4d90eb713652..1325675e34f5 100644
->>> --- a/drivers/media/platform/nxp/Makefile
->>> +++ b/drivers/media/platform/nxp/Makefile
->>> @@ -9,3 +9,4 @@ obj-$(CONFIG_VIDEO_IMX8MQ_MIPI_CSI2) += imx8mq-mipi-csi2.o
->>>  obj-$(CONFIG_VIDEO_IMX_MIPI_CSIS) += imx-mipi-csis.o
->>>  obj-$(CONFIG_VIDEO_IMX_PXP) += imx-pxp.o
->>>  obj-$(CONFIG_VIDEO_MX2_EMMAPRP) += mx2_emmaprp.o
->>> +obj-$(CONFIG_VIDEO_IMX_ASRC) += imx-asrc.o
->>> diff --git a/drivers/media/platform/nxp/imx-asrc.c b/drivers/media/platform/nxp/imx-asrc.c
->>> new file mode 100644
->>> index 000000000000..373ca2b5ec90
->>> --- /dev/null
->>> +++ b/drivers/media/platform/nxp/imx-asrc.c
->>> @@ -0,0 +1,1248 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +//
->>> +// Copyright (C) 2014-2016 Freescale Semiconductor, Inc.
->>> +// Copyright (C) 2019-2023 NXP
->>> +//
->>> +// Freescale ASRC Memory to Memory (M2M) driver
->>> +
->>> +#include <linux/dma/imx-dma.h>
->>> +#include <linux/pm_runtime.h>
->>> +#include <media/v4l2-ctrls.h>
->>> +#include <media/v4l2-device.h>
->>> +#include <media/v4l2-event.h>
->>> +#include <media/v4l2-fh.h>
->>> +#include <media/v4l2-ioctl.h>
->>> +#include <media/v4l2-mem2mem.h>
->>> +#include <media/videobuf2-dma-contig.h>
->>> +#include <sound/dmaengine_pcm.h>
->>> +#include <sound/fsl_asrc_common.h>
->>> +
->>> +#define V4L_CAP OUT
->>> +#define V4L_OUT IN
->>> +
->>> +#define ASRC_xPUT_DMA_CALLBACK(dir) \
->>> +     (((dir) == V4L_OUT) ? asrc_input_dma_callback \
->>> +     : asrc_output_dma_callback)
->>> +
->>> +#define DIR_STR(dir) (dir) == V4L_OUT ? "out" : "cap"
->>> +
->>> +#define ASRC_M2M_BUFFER_SIZE (512 * 1024)
->>> +#define ASRC_M2M_PERIOD_SIZE (48 * 1024)
->>> +#define ASRC_M2M_SG_NUM (20)
->>
->> Where do all these values come from? How do they relate?
->> Some comments would be welcome.
->>
->> Esp. ASRC_M2M_SG_NUM is a bit odd.
->>
->>> +
->>> +struct asrc_fmt {
->>> +     u32     fourcc;
->>> +     snd_pcm_format_t     format;
->>
->> Do you need this field? If not, then you can drop the whole
->> struct and just use u32 fourcc in the formats[] array.
->>
->>> +};
->>> +
->>> +struct asrc_pair_m2m {
->>> +     struct fsl_asrc_pair *pair;
->>> +     struct asrc_m2m *m2m;
->>> +     struct v4l2_fh fh;
->>> +     struct v4l2_ctrl_handler ctrl_handler;
->>> +     int channels[2];
->>> +     struct v4l2_ctrl_fixed_point src_rate;
->>> +     struct v4l2_ctrl_fixed_point dst_rate;
->>> +
->>> +};
->>> +
->>> +struct asrc_m2m {
->>> +     struct fsl_asrc_m2m_pdata pdata;
->>> +     struct v4l2_device v4l2_dev;
->>> +     struct v4l2_m2m_dev *m2m_dev;
->>> +     struct video_device *dec_vdev;
->>> +     struct mutex mlock; /* v4l2 ioctls serialization */
->>> +     struct platform_device *pdev;
->>> +};
->>> +
->>> +static struct asrc_fmt formats[] = {
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S8,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S16_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_U16_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S24_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S24_3LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_U24_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_U24_3LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S32_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_U32_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_S20_3LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_U20_3LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_FLOAT_LE,
->>> +     },
->>> +     {
->>> +             .fourcc = V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE,
->>> +     },
->>> +};
->>> +
->>> +#define NUM_FORMATS ARRAY_SIZE(formats)
->>> +
->>> +static snd_pcm_format_t convert_fourcc(u32 fourcc) {
->>> +
->>> +     return (__force snd_pcm_format_t)v4l2_fourcc_to_audfmt(fourcc);
->>
->> Is this cast something that should be done in the v4l2_fourcc_to_audfmt
->> define instead?
+On 18/10/2023 14:56, Mark Brown wrote:
+> On Wed, Oct 18, 2023 at 02:38:00PM +0200, Krzysztof Kozlowski wrote:
+>> On 18/10/2023 14:35, Mark Brown wrote:
 > 
-> need to avoid include asound.h in videodev2.h,  so add this cast in driver.
+>>> How do the speakers coordinate?
+> 
+>> They don't and that's the generic problem of many Linux drivers. Not
+>> only this one, but others as well.
+> 
+>> Device unbind (remove()) or runtime suspend of one speaker will affect
+>> other speaker. I don't think any other drivers solved this, because this
+>> is rather core's GPIO issue, thus I am not solving it here either. :(
+> 
+> I'd expect that the GPIO users should coordiante directly rather than
+> rely on the GPIO API to do the coordination for them - there aren't
+> enough semantics in the GPIO itself to do much more except possibly
+> provide discovery services (which would be nice).  Look at how the
+> regulator API manages multiple regulators sharing an enable GPIO for
+> example, it adds an additional layer of reference counting when it
+> identifies a shared GPIO.
 
-It's a #define, so just including videodev2.h won't require asound.h.
+OK, it is still regulator core, though. Not individual drivers problem.
 
-Regards,
+Several other existing drivers have the same issue, so this should be
+solved in a generic or shared way.
 
-	Hans
+Best regards,
+Krzysztof
 
