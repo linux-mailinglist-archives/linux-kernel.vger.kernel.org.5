@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB307CD1EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69537CD1EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344436AbjJRBmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 21:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        id S229468AbjJRBpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 21:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344264AbjJRBmH (ORCPT
+        with ESMTP id S229454AbjJRBpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 21:42:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039CFC4;
-        Tue, 17 Oct 2023 18:42:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 384D1C433C8;
-        Wed, 18 Oct 2023 01:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697593325;
-        bh=35o2Y8/cJzVFwMj0lLlMkxzyp3mX/WQk9C/SzjhSbEs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VIGrmHy4DM1kB5rgdhG3YbSUWE3UDc45k/mUIp4CAYWbZlOFAfBae2zYCQAlrz9ZE
-         odPBcVhJRbVHBLUGelXzJP6fxzvyUkruunLkWV45iYD36qHkw62uW5NWBVRjiO377k
-         wl3kfLqMfkjDyNMJBKgqGzB/3RbBKElr76v3XOhn4w2LmmknirFLnRtWzYGK3j7z9Z
-         K4mL5EViefkcUNN22AV+on8e2GoI/M9iMkOJykruvBH44LB75H/NCLO1eW3CcT8MPn
-         +rdc6oYltmDrR8BOsbHi8CMaofXqj4PZxIbmIVkSie/wF8A2xRkCuEu8VbFJPvpPsC
-         +UaLonOYDHmjA==
-Date:   Tue, 17 Oct 2023 20:42:03 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH -next] PCI: Remove duplicated include in pci.c
-Message-ID: <20231018014203.GA1344868@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018010551.118071-1-yang.lee@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 21:45:39 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40793F7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:45:37 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9daca2b85so47899955ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1697593536; x=1698198336; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IIoyMcQHZ0Qpe7BKvINLbeGCoM4NhndfXHONk8A0DuA=;
+        b=ff/gZ9bw0UNlmX9LRwzlObgx1Nn0oDNWNqhn6focVKW/InbdoeBzX9etFkTiG8idD4
+         06/QHNFGW/PpAx15kGyXh4jLErgMUJvANiHbz/vp+4JmwqQ74evtHZKrOEKJ5o9YkgPQ
+         fAYZS+uvNgtk4MjuVEvTl2xKdN+1+YIvCKoc/JZW9goYG5iFzopPb7g2ucqvtCr53/Lb
+         OUMLtA7Yd7rYGgpE7CGFIIZGrJfQ2JbvetAMb2uMpDzqugoUVs5UBV7UbmlbGJHvrM+/
+         S0nFwJ+taEODed2M0Aaa36NRBZgvfWsNdD1P3jzdEJs9E787CR+2bqxW6cwTEtY3GviW
+         AsUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697593536; x=1698198336;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IIoyMcQHZ0Qpe7BKvINLbeGCoM4NhndfXHONk8A0DuA=;
+        b=o0BwmQ1tbnf6ghtvJ+TQY9eG5xDvL8oLvZIbvugdYnPCQhu5Qc2mHmXNz+y+hW9fN/
+         FKbKelG9eNJJW9Ey1InPJ1nAqlaYlHpPcMNx1cr8oPHQtOyurEiSLf2n8jwibzL2OXHu
+         eA7kg3qT7vHb91UwB7S6mhIHyFXDs3oKbZe96fxDtsW812QMWYDFane5/6kaKkUUr3uV
+         gpN2eRf9YJnH8WUp4QLF3ro9FhZQlt6zVhXY8TCJ1T+OokQisyile6XhxhgFvScaLPf8
+         JAu708imVZlYlEGqAtVwuGOB6kpWhJg5TAv2aRsoXws3oV5USzrMREK7VBShF1zEPGwn
+         zrEw==
+X-Gm-Message-State: AOJu0YwYU5EoHNgacQcNRyztKGbQ1JbTz9VgJ2MWU5OwCiqcZd2ZocwM
+        Rj/FWRyENjndUJC3KLfBQkWsrg==
+X-Google-Smtp-Source: AGHT+IEhf4Aw5KzsP/CJeC+Xlre2SWvSR0H6szLH78PgMiwD0/+840q7dozZd2G8H0QR1O26UaYkUA==
+X-Received: by 2002:a17:902:e5c3:b0:1b0:3ab6:5140 with SMTP id u3-20020a170902e5c300b001b03ab65140mr5806185plf.4.1697593536621;
+        Tue, 17 Oct 2023 18:45:36 -0700 (PDT)
+Received: from ?IPv6:2402:7500:5ce:a18a:d02c:5aee:75ae:ccc2? ([2402:7500:5ce:a18a:d02c:5aee:75ae:ccc2])
+        by smtp.gmail.com with ESMTPSA id q11-20020a170902dacb00b001c746b986e5sm2247981plx.45.2023.10.17.18.45.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Oct 2023 18:45:36 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v2 05/19] riscv: add ISA extension parsing for vector
+ crypto extensions
+From:   Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231017131456.2053396-6-cleger@rivosinc.com>
+Date:   Wed, 18 Oct 2023 09:45:30 +0800
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Reply-To: 20231017131456.2053396-6-cleger@rivosinc.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DA8B4610-D514-4733-B875-C247FFCCC7AA@sifive.com>
+References: <20231017131456.2053396-1-cleger@rivosinc.com>
+ <20231017131456.2053396-6-cleger@rivosinc.com>
+To:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+X-Mailer: Apple Mail (2.3445.9.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Ilpo]
+On Oct 17, 2023, at 21:14, Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com> =
+wrote:
+> @@ -221,6 +261,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
+ {
+> 	__RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
+> 	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
+> 	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
+> +	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
+> +	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
+> +	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
 
-On Wed, Oct 18, 2023 at 09:05:51AM +0800, Yang Li wrote:
-> ./drivers/pci/pci.c: linux/bitfield.h is included more than once.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6898
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+The `Zvkb` is the subset of `Zvbb`[1]. So, the `Zvkb` should be bundled =
+with `Zvbb`.
 
-I folded this into the commit that added the duplicate, thanks!
++	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
++	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVKB),
++	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
 
-https://lore.kernel.org/r/20230919125648.1920-7-ilpo.jarvinen@linux.intel.com
+or
 
-> ---
->  drivers/pci/pci.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 5b70eefc38fc..92b8dafec0d9 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -32,7 +32,6 @@
->  #include <linux/vmalloc.h>
->  #include <asm/dma.h>
->  #include <linux/aer.h>
-> -#include <linux/bitfield.h>
->  #include "pci.h"
->  
->  DEFINE_MUTEX(pci_slot_mutex);
-> -- 
-> 2.20.1.7.g153144c
-> 
++	__RISCV_ISA_EXT_BUNDLE(zvbb, riscv_zvbb_bundled_exts),
++	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
+
+[1]
+=
+https://github.com/riscv/riscv-crypto/blob/main/doc/vector/riscv-crypto-ve=
+ctor-zvkb.adoc
+
+-Jerry=
