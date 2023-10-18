@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACD67CE768
+	by mail.lfdr.de (Postfix) with ESMTP id 23D6E7CE767
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjJRTKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S231414AbjJRTKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbjJRTKM (ORCPT
+        with ESMTP id S230491AbjJRTKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:10:12 -0400
+        Wed, 18 Oct 2023 15:10:14 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A198F118;
-        Wed, 18 Oct 2023 12:10:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13021109;
+        Wed, 18 Oct 2023 12:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697656210; x=1729192210;
+  t=1697656213; x=1729192213;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lEuW3yOtEdU/a1Okhs6bGa5lUXS9niTft/NxC06rI0c=;
-  b=IDXN7cTJTCO41KiM+8cf8PhjVgxbEyVa2fJxQFtizrg1qX0BGLHxgC6t
-   sRsAuKJsQstgj7Lrh+sI4SEeNBNkl/XxDETI+89Egc8ggWS4XXy2U6Lkg
-   2Dmm1L1xr/384ZK3o91EbCZKFSo3FxdO8fohHjMr96yJy6CX23yCHa2PS
-   SYCmHB/BE924gXJGHC7QbtDvwQW2YDF7FK8Qyyh05+2afVpThtQhli47j
-   g6qtgI87L7LgSx++5ZVmUpl/P22y2xctziVR/vdzAP8e5w+mj/rLAHlNT
-   okMu81zWEQkzBxuiCCHwGpJm3it+cQzqruE548EFd8frOzcYuO03bByOH
+  bh=ztoGdE0qg+ItzRYoFmpgpqeHEUkaq3yFJe9yMCKp7Z0=;
+  b=TjyblE1eg1dKDY4mqXdC0MqxQE8kXdrMQ6vhG83K3Q7fxT6AlYOkmYIb
+   /cV5U1+sVIHj3kWWB8tROHkX3C5MbpEedpzCNh/qdoMDNZ4PJjo2sUuUz
+   SyofNmZEDUGZE1e2X/TYtqgXXe3uaa5M0EDz1hji2Hjc6hCFXV8HPHjaJ
+   Hy8EHYcvvtJVvJa1Bv84yJZqq0G9Im0TsdEu2ZRw6jgmociloPg2Q9tVQ
+   sw5c0QsPdtGyfORl4dl5HkE6JfjadWRc/osir6hUAweeKcXJq1tR58IjD
+   pTWt8W3lUYgfHaM4AUJHPHWovwm3i6hAetfdo4ir5DSOaFZk8pbXvIEt5
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="472323315"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="472323319"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="472323315"
+   d="scan'208";a="472323319"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:10:10 -0700
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:10:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="733277283"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="733277292"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="733277283"
+   d="scan'208";a="733277292"
 Received: from powerlab.fi.intel.com ([10.237.71.25])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:10:08 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 12:10:10 -0700
 From:   Michal Wilczynski <michal.wilczynski@intel.com>
 To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
-        lenb@kernel.org, Michal Wilczynski <michal.wilczynski@intel.com>
-Subject: [PATCH v2 1/3] ACPI: acpi_pad: Replace acpi_driver with platform_driver
-Date:   Wed, 18 Oct 2023 22:09:43 +0300
-Message-ID: <20231018190945.252428-2-michal.wilczynski@intel.com>
+        lenb@kernel.org, Michal Wilczynski <michal.wilczynski@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2 2/3] ACPI: acpi_pad: Use dev groups for sysfs
+Date:   Wed, 18 Oct 2023 22:09:44 +0300
+Message-ID: <20231018190945.252428-3-michal.wilczynski@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231018190945.252428-1-michal.wilczynski@intel.com>
 References: <20231018190945.252428-1-michal.wilczynski@intel.com>
@@ -60,92 +61,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The acpi_pad driver uses struct acpi_driver to register itself while it
-would be more logically consistent to use struct platform_driver for this
-purpose, because the corresponding platform device is present and the
-role of struct acpi_device is to amend the other bus types. ACPI devices
-are not meant to be used as proper representation of hardware entities,
-but to collect information on those hardware entities provided by the
-platform firmware.
+Change the way sysfs files are created. Use dev_groups, as it's a
+better approach - it allows to declare attributes, and the core code
+would take care of the lifecycle of those objects.
 
-Use struct platform_driver for registering the acpi_pad driver.
-
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
 ---
- drivers/acpi/acpi_pad.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ drivers/acpi/acpi_pad.c | 42 +++++++++--------------------------------
+ 1 file changed, 9 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/acpi/acpi_pad.c b/drivers/acpi/acpi_pad.c
-index 7a453c5ff303..25068f2c5b4d 100644
+index 25068f2c5b4d..3ede3019d898 100644
 --- a/drivers/acpi/acpi_pad.c
 +++ b/drivers/acpi/acpi_pad.c
-@@ -18,6 +18,7 @@
- #include <linux/slab.h>
- #include <linux/acpi.h>
- #include <linux/perf_event.h>
-+#include <linux/platform_device.h>
- #include <asm/mwait.h>
- #include <xen/xen.h>
+@@ -337,33 +337,14 @@ static ssize_t idlecpus_show(struct device *dev,
  
-@@ -430,8 +431,9 @@ static void acpi_pad_notify(acpi_handle handle, u32 event,
- 	}
- }
+ static DEVICE_ATTR_RW(idlecpus);
  
--static int acpi_pad_add(struct acpi_device *device)
-+static int acpi_pad_probe(struct platform_device *pdev)
- {
-+	struct acpi_device *device = ACPI_COMPANION(&pdev->dev);
- 	acpi_status status;
+-static int acpi_pad_add_sysfs(struct acpi_device *device)
+-{
+-	int result;
+-
+-	result = device_create_file(&device->dev, &dev_attr_idlecpus);
+-	if (result)
+-		return -ENODEV;
+-	result = device_create_file(&device->dev, &dev_attr_idlepct);
+-	if (result) {
+-		device_remove_file(&device->dev, &dev_attr_idlecpus);
+-		return -ENODEV;
+-	}
+-	result = device_create_file(&device->dev, &dev_attr_rrtime);
+-	if (result) {
+-		device_remove_file(&device->dev, &dev_attr_idlecpus);
+-		device_remove_file(&device->dev, &dev_attr_idlepct);
+-		return -ENODEV;
+-	}
+-	return 0;
+-}
++static struct attribute *acpi_pad_attrs[] = {
++	&dev_attr_idlecpus.attr,
++	&dev_attr_idlepct.attr,
++	&dev_attr_rrtime.attr,
++	NULL
++};
  
+-static void acpi_pad_remove_sysfs(struct acpi_device *device)
+-{
+-	device_remove_file(&device->dev, &dev_attr_idlecpus);
+-	device_remove_file(&device->dev, &dev_attr_idlepct);
+-	device_remove_file(&device->dev, &dev_attr_rrtime);
+-}
++ATTRIBUTE_GROUPS(acpi_pad);
+ 
+ /*
+  * Query firmware how many CPUs should be idle
+@@ -439,15 +420,10 @@ static int acpi_pad_probe(struct platform_device *pdev)
  	strcpy(acpi_device_name(device), ACPI_PROCESSOR_AGGREGATOR_DEVICE_NAME);
-@@ -450,8 +452,10 @@ static int acpi_pad_add(struct acpi_device *device)
+ 	strcpy(acpi_device_class(device), ACPI_PROCESSOR_AGGREGATOR_CLASS);
+ 
+-	if (acpi_pad_add_sysfs(device))
+-		return -ENODEV;
+-
+ 	status = acpi_install_notify_handler(device->handle,
+ 		ACPI_DEVICE_NOTIFY, acpi_pad_notify, device);
+-	if (ACPI_FAILURE(status)) {
+-		acpi_pad_remove_sysfs(device);
++	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+-	}
+ 
  	return 0;
  }
+@@ -462,7 +438,6 @@ static void acpi_pad_remove(struct platform_device *pdev)
  
--static void acpi_pad_remove(struct acpi_device *device)
-+static void acpi_pad_remove(struct platform_device *pdev)
- {
-+	struct acpi_device *device = ACPI_COMPANION(&pdev->dev);
-+
- 	mutex_lock(&isolated_cpus_lock);
- 	acpi_pad_idle_cpus(0);
- 	mutex_unlock(&isolated_cpus_lock);
-@@ -467,13 +471,12 @@ static const struct acpi_device_id pad_device_ids[] = {
- };
- MODULE_DEVICE_TABLE(acpi, pad_device_ids);
+ 	acpi_remove_notify_handler(device->handle,
+ 		ACPI_DEVICE_NOTIFY, acpi_pad_notify);
+-	acpi_pad_remove_sysfs(device);
+ }
  
--static struct acpi_driver acpi_pad_driver = {
--	.name = "processor_aggregator",
--	.class = ACPI_PROCESSOR_AGGREGATOR_CLASS,
--	.ids = pad_device_ids,
--	.ops = {
--		.add = acpi_pad_add,
--		.remove = acpi_pad_remove,
-+static struct platform_driver acpi_pad_driver = {
-+	.probe = acpi_pad_probe,
-+	.remove_new = acpi_pad_remove,
-+	.driver = {
-+		.name = "processor_aggregator",
-+		.acpi_match_table = pad_device_ids,
+ static const struct acpi_device_id pad_device_ids[] = {
+@@ -475,6 +450,7 @@ static struct platform_driver acpi_pad_driver = {
+ 	.probe = acpi_pad_probe,
+ 	.remove_new = acpi_pad_remove,
+ 	.driver = {
++		.dev_groups = acpi_pad_groups,
+ 		.name = "processor_aggregator",
+ 		.acpi_match_table = pad_device_ids,
  	},
- };
- 
-@@ -487,12 +490,12 @@ static int __init acpi_pad_init(void)
- 	if (power_saving_mwait_eax == 0)
- 		return -EINVAL;
- 
--	return acpi_bus_register_driver(&acpi_pad_driver);
-+	return platform_driver_register(&acpi_pad_driver);
- }
- 
- static void __exit acpi_pad_exit(void)
- {
--	acpi_bus_unregister_driver(&acpi_pad_driver);
-+	platform_driver_unregister(&acpi_pad_driver);
- }
- 
- module_init(acpi_pad_init);
 -- 
 2.41.0
 
