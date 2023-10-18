@@ -2,198 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C8D7CDFCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B36C7CDFC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345300AbjJRO3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
+        id S1345752AbjJRO3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345659AbjJRO3T (ORCPT
+        with ESMTP id S1345095AbjJRO3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:29:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B828256;
-        Wed, 18 Oct 2023 07:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697638797; x=1729174797;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=XjapHZdAAIXb/r8LmmNmC/q9/lNmCHm8wGhPv3dzY2Q=;
-  b=JWndZsc0XLQmqFOb5jaJjcDjpUbYzO1Sbe6+yNEC2zniuCyO+LYHL+jI
-   I7DRAotzHN+hukxOuuicNWNpmQriutc2rc93/KKmCLCuaHguMeev3w5f/
-   EU48s/d5dHlhZfJqblVoSgSBXSo7zIgz/MFkPoyadwR+UNPMzMsdBjGB5
-   7h+CIozq6E6dmD6gHPJurt2pllHgWQ1Kexp0x/VbFOLS81uGRo/5DX9d8
-   +N8wmD39f1VyRC75Z4wVK7Y2texfOG7vLiCxAg1qlQYeqbdK/a3vLyeU4
-   RsWQOLb14lZ3Jzvw+jcqB3r7+WK1dJuRpxrH4/Kg2b1ZLr1uGevyWDiUL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389898425"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="389898425"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:16:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="873034283"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="873034283"
-Received: from gruberda-mobl1.ger.corp.intel.com ([10.252.62.52])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:16:39 -0700
-Date:   Wed, 18 Oct 2023 17:16:36 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 2/7] PCI: dwc: Use FIELD_GET/PREP()
-In-Reply-To: <3o4neokfqofk42zrx5t5su72qmdu2x62rq5u2ywfobqyyg23rc@aksd3afajhwr>
-Message-ID: <293b90ca-dab1-eef3-e718-c93295442d9@linux.intel.com>
-References: <20231018113254.17616-1-ilpo.jarvinen@linux.intel.com> <20231018113254.17616-3-ilpo.jarvinen@linux.intel.com> <3o4neokfqofk42zrx5t5su72qmdu2x62rq5u2ywfobqyyg23rc@aksd3afajhwr>
+        Wed, 18 Oct 2023 10:29:08 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5993C22
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:17:17 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53f34f2718cso12084a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697638633; x=1698243433; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QOE/HwXbjXBM8pvrHd8gpMB/9CB4hrW/MzpGagoB2q0=;
+        b=0t0nAVvHIAmh1ekQB8kNEH/ekimf1bdP9TqJyMJMAzlrC/61akbCcHKl2FTG8Ggyt7
+         2bRwZf31LtuYyaql30L3t1pXyfqqXdhMfNFLu5l0T7ERcNUin+BSJzGulJnr6s3G4hvS
+         i6JQmCdj+DtnvG7ltbNybrfYyAy0A4T/rXWv7iJSaN93/S6EzTJU1KWyEDcaejjQ8kOJ
+         vlK5vwPMGmkg/6IblukKn6PQRwP+D5WPfyTTCQ2F16NEAC5DDzD4il7/3bef/xlz9GmX
+         iMbyD9o9Lp4dINnTAdl76MFT8FEs1aVv0oG0RlHq3uuA2F/Is56JzQk6pi8tFkGWQXRO
+         GxKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697638633; x=1698243433;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QOE/HwXbjXBM8pvrHd8gpMB/9CB4hrW/MzpGagoB2q0=;
+        b=FUCa0TBrWr5uc6uS7KYSjqhIMWgakqYiIjZNm8oDJzzu7tqPteQuRAcmboCoVg5vfe
+         +KyVplFu1qCD1IZXGgY8weRomq8c6mAsp3oTFbJrAXukTnDQlgsnXvRYCna6MAlIC8AI
+         F0Aiz53pSqzAGQhGdxW9LcG6LJstnWp4+MKPE7t4WYHfjP//Mg0UkjgpNz5isOWgRPs6
+         j7JNfW1W1ejA4bXXW5C0/3Y75xFuZxbY1eVfGO9apdI0cLVd9WihdLe8yBB9W7Ag6x65
+         kxStHCiTWDbvTYq6YtkrHtxvRXl1mxEmkpGC9a04OuLeifuO+AH4bbTN4/hfFy6plEHX
+         NXXA==
+X-Gm-Message-State: AOJu0Yxhe9pcfFH7+1J+YqQSIU367sElJhXhMtW7ZMit0rDF9KCxxbAl
+        W+NM3qUKVlF21YZtq4OGdafVjiv3GkdyFN4NOKsIpA==
+X-Google-Smtp-Source: AGHT+IHmL8s7uMe74PQsFSvo3cbKUEO4eKQ6ofJYGQCkXl0yaoYhv0BaAcEdSxe3CnHa/wjM6y76eZdS/9Xom2hW1rY=
+X-Received: by 2002:a50:9f03:0:b0:52e:f99a:b5f8 with SMTP id
+ b3-20020a509f03000000b0052ef99ab5f8mr99470edf.7.1697638632991; Wed, 18 Oct
+ 2023 07:17:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-849054604-1697638602=:2178"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231014104942.856152-1-vamshigajjela@google.com>
+ <20231014104942.856152-3-vamshigajjela@google.com> <b0ec67b1-24a2-d67d-d7c1-9c3fdafdb570@linux.intel.com>
+In-Reply-To: <b0ec67b1-24a2-d67d-d7c1-9c3fdafdb570@linux.intel.com>
+From:   VAMSHI GAJJELA <vamshigajjela@google.com>
+Date:   Wed, 18 Oct 2023 19:46:59 +0530
+Message-ID: <CAMTSyjpiz_LVtVAzaNpD-xThtp6sKNy-Uvkr+CaH9b10VRYD9A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] serial: core: Make local variable size to u64
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, manugautam@google.com,
+        Subhash Jadavani <sjadavani@google.com>,
+        Channa Kadabi <kadabi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-849054604-1697638602=:2178
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-
-On Wed, 18 Oct 2023, Serge Semin wrote:
-
-> On Wed, Oct 18, 2023 at 02:32:49PM +0300, Ilpo Järvinen wrote:
-> > Convert open-coded variants of PCI field access into FIELD_GET/PREP()
-> > to make the code easier to understand.
-> > 
-> > Add two missing defines into pci_regs.h. Logically, the Max No-Snoop
-> > Latency Register is a separate word sized register in the PCIe spec,
-> > but the pre-existing LTR defines in pci_regs.h with dword long values
-> > seem to consider the registers together (the same goes for the only
-> > user). Thus, follow the custom and make the new values also take both
-> > word long LTR registers as a joint dword register.
-> 
-> Nice work. Thanks! Could you also have a look at
-> drivers/pci/controller/dwc/pcie-designware.c
-> ?
-> It contains two open-coded patterns:
-> (bar << 8) - FIELD_PREP()
-> next_cap_ptr = (reg & 0xff00) >> 8; - FIELD_GET().
-> next_cap_ptr = (reg & 0x00ff); - FIELD_GET().
-> At least the later two statements concern the generic PCIe capability CSR.
-
-The problem with cap id / next cap is that there are currently no defines 
-for them AFAICT, at least not in pci_regs.h. And pci_regs.h defines those 
-as different registers so if I'm to add defines from them, I don't know 
-which size would be the most appropriate since that 0xff00 goes across 
-that register boundary. I've not had time to study the related core code 
-yet but I intend to take a look at it to see what's the best course of 
-action forward.
-
--- 
- i.
-
-
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+On Mon, Oct 16, 2023 at 5:09=E2=80=AFPM Ilpo J=C3=A4rvinen
+<ilpo.jarvinen@linux.intel.com> wrote:
+>
+> On Sat, 14 Oct 2023, Vamshi Gajjela wrote:
+>
+> > From: VAMSHI GAJJELA <vamshigajjela@google.com>
+> >
+> > The variable size has been changed from u32 to u64 to accommodate a
+> > larger range of values without the need for explicit typecasting.
+>
+> Don't use too broad/generic terminology in shortlog (on [PATCH] line in
+> subject) or changelog but explicitly mention the variable names please.
+name of the variable is "size", may be now I will rename the variable
+to "frame_size" in v2
+>
+> > Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
 > > ---
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c | 7 ++++---
-> >  drivers/pci/controller/dwc/pcie-tegra194.c      | 5 ++---
-> >  include/uapi/linux/pci_regs.h                   | 2 ++
-> >  3 files changed, 8 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > index f9182f8d552f..20bef1436bfb 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > @@ -6,6 +6,7 @@
-> >   * Author: Kishon Vijay Abraham I <kishon@ti.com>
-> >   */
-> >  
-> > +#include <linux/bitfield.h>
-> >  #include <linux/of.h>
-> >  #include <linux/platform_device.h>
-> >  
-> > @@ -334,7 +335,7 @@ static int dw_pcie_ep_get_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
-> >  	if (!(val & PCI_MSI_FLAGS_ENABLE))
-> >  		return -EINVAL;
-> >  
-> > -	val = (val & PCI_MSI_FLAGS_QSIZE) >> 4;
-> > +	val = FIELD_GET(PCI_MSI_FLAGS_QSIZE, val);
-> >  
-> >  	return val;
+> >  drivers/tty/serial/serial_core.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/seri=
+al_core.c
+> > index 7bdc21d5e13b..fb4696d17a8b 100644
+> > --- a/drivers/tty/serial/serial_core.c
+> > +++ b/drivers/tty/serial/serial_core.c
+> > @@ -410,10 +410,10 @@ void
+> >  uart_update_timeout(struct uart_port *port, unsigned int cflag,
+> >                   unsigned int baud)
+> >  {
+> > -     unsigned int size =3D tty_get_frame_size(cflag);
+> > +     u64 size =3D tty_get_frame_size(cflag);
+> >       u64 frame_time;
+> >
+> > -     frame_time =3D (u64)size * NSEC_PER_SEC;
+> > +     frame_time =3D size * NSEC_PER_SEC;
+> >       port->frame_time =3D DIV64_U64_ROUND_UP(frame_time, baud);
 > >  }
-> > @@ -357,7 +358,7 @@ static int dw_pcie_ep_set_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
-> >  	reg = ep_func->msi_cap + func_offset + PCI_MSI_FLAGS;
-> >  	val = dw_pcie_readw_dbi(pci, reg);
-> >  	val &= ~PCI_MSI_FLAGS_QMASK;
-> > -	val |= (interrupts << 1) & PCI_MSI_FLAGS_QMASK;
-> > +	val |= FIELD_PREP(PCI_MSI_FLAGS_QMASK, interrupts);
-> >  	dw_pcie_dbi_ro_wr_en(pci);
-> >  	dw_pcie_writew_dbi(pci, reg, val);
-> >  	dw_pcie_dbi_ro_wr_dis(pci);
-> > @@ -584,7 +585,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
-> >  
-> >  	reg = ep_func->msix_cap + func_offset + PCI_MSIX_TABLE;
-> >  	tbl_offset = dw_pcie_readl_dbi(pci, reg);
-> > -	bir = (tbl_offset & PCI_MSIX_TABLE_BIR);
-> > +	bir = FIELD_GET(PCI_MSIX_TABLE_BIR, tbl_offset);
-> >  	tbl_offset &= PCI_MSIX_TABLE_OFFSET;
-> >  
-> >  	msix_tbl = ep->epf_bar[bir]->addr + tbl_offset;
-> > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > index 248cd9347e8f..12d5ab2f5219 100644
-> > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > @@ -126,7 +126,6 @@
-> >  
-> >  #define APPL_LTR_MSG_1				0xC4
-> >  #define LTR_MSG_REQ				BIT(15)
-> > -#define LTR_MST_NO_SNOOP_SHIFT			16
-> >  
-> >  #define APPL_LTR_MSG_2				0xC8
-> >  #define APPL_LTR_MSG_2_LTR_MSG_REQ_STATE	BIT(3)
-> > @@ -496,8 +495,8 @@ static irqreturn_t tegra_pcie_ep_irq_thread(int irq, void *arg)
-> >  		ktime_t timeout;
-> >  
-> >  		/* 110us for both snoop and no-snoop */
-> > -		val = 110 | (2 << PCI_LTR_SCALE_SHIFT) | LTR_MSG_REQ;
-> > -		val |= (val << LTR_MST_NO_SNOOP_SHIFT);
-> > +		val = 110 | FIELD_PREP(PCI_LTR_SCALE_SHIFT, 2) | LTR_MSG_REQ;
-> > +		val |= FIELD_PREP(PCI_LTR_NOSNOOP_VALUE, val);
-> >  		appl_writel(pcie, val, APPL_LTR_MSG_1);
-> >  
-> >  		/* Send LTR upstream */
-> > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> > index e5f558d96493..495f0ae4ecd5 100644
-> > --- a/include/uapi/linux/pci_regs.h
-> > +++ b/include/uapi/linux/pci_regs.h
-> > @@ -975,6 +975,8 @@
-> >  #define  PCI_LTR_VALUE_MASK	0x000003ff
-> >  #define  PCI_LTR_SCALE_MASK	0x00001c00
-> >  #define  PCI_LTR_SCALE_SHIFT	10
-> > +#define  PCI_LTR_NOSNOOP_VALUE	0x03ff0000 /* Max No-Snoop Latency Value */
-> > +#define  PCI_LTR_NOSNOOP_SCALE	0x1c000000 /* Scale for Max Value */
-> >  #define PCI_EXT_CAP_LTR_SIZEOF	8
-> >  
-> >  /* Access Control Service */
-> > -- 
-> > 2.30.2
-> > 
-> 
---8323329-849054604-1697638602=:2178--
+> >  EXPORT_SYMBOL(uart_update_timeout);
+>
+> This is actually a good cleanup all by itself unrelated to the other
+> change but you need to adapt the changelog to reflect why this is helpful
+> instead wording it based on the other change.
+I shall submit this as a separate patch. As mentioned in 1/3 patch
+I will also add a cast u32 before assigning the value to port->frametime
+along with variable name and size change.
+
+>
+> --
+>  i.
+>
