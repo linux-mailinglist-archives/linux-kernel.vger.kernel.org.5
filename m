@@ -2,166 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9157CD350
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F11F7CD354
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 07:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjJRFBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 01:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        id S229557AbjJRFBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 01:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjJRFBX (ORCPT
+        with ESMTP id S229563AbjJRFBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 01:01:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C0FB0;
-        Tue, 17 Oct 2023 22:01:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FD36C433C9;
-        Wed, 18 Oct 2023 05:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697605280;
-        bh=Ckyy2X8tBufClleOPA0RjLMRbz7/6JEOlB60UkusMtY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=g/4pWe2nCuSagq3vXanNy/QZAviLnpWaj01hJmNoNlji0LWf96xAd0ijVUsBVgm7G
-         yTy/wdw81JDFErcKM+jKdZT1YMzL3FME33hgxLDzlpVDhK1BXcOKqYeTj58nLXQ1AE
-         XNx9VE7gRsArPBWRHb86u/h8VDXXXfDWtiDQKlBBPO538DzHdDqEWuBUCIS7cmPb0T
-         WQodJtEFeQFYMYJpMJP9M2/cOjmcPHUKPEcFwrzHWapGSEKxaX76XX2hlVGAKQvGoP
-         gKm9ZKxHHpHETDYGWWKogoDUopeJNFvX907SqpIGimdfFSFNql7Lt1BzmTQQJmMxKB
-         JFbijesgJtq3A==
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1ea82246069so968682fac.3;
-        Tue, 17 Oct 2023 22:01:20 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzafLWQfQkiGKqmJOo/5k7ARk6QZykTOf3jzdAfwYBkDZQKDuCQ
-        DgGzWKgP+JwYXaRDJBCAEcksN//2l468SI3egy8=
-X-Google-Smtp-Source: AGHT+IFyVXqhy3zZGFpv0KwU4r/CxpTUcS7f8/y14F1jIHbLXBrfYYsOpPdeuVsZhlhMWIenth9iy5zkdYwEmovBbTU=
-X-Received: by 2002:a05:6870:15d5:b0:1e9:87ce:133e with SMTP id
- k21-20020a05687015d500b001e987ce133emr5184202oad.8.1697605279568; Tue, 17 Oct
- 2023 22:01:19 -0700 (PDT)
+        Wed, 18 Oct 2023 01:01:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08662103;
+        Tue, 17 Oct 2023 22:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697605294; x=1729141294;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xa+xut1TfI2HMab1q65v9qAkFEYsv5oUYEFQQ4ltZ4M=;
+  b=Julb1pfO13XJyWaefCiEmekd69bJj5BDrQL0cS5SH43Azy2RDyCQrCK0
+   5x7uPO1XBZIXngPRJccEvFGX4z/2YhouMMvZxXYnK3hxJ44H55tedAk4c
+   KMnCP7L19faMqfLp/SQOMwLcCQVmB4JDgwT0yrJ+yKrjH6ge7q/eipWLv
+   nhYbplyyVkSpLbSS4odvSdLCnindetXq02lOj60yg6FNvmzqITsB/Diz1
+   f+MYT1U4V3L2qfy4Q/4eqY0eJXK+Gb4vlWCk+9S5aTzd61g8ckvNDOZgT
+   inC0CfxOKfVileVWRHHpOZ+0erU9KIoAOI9mPXj3EViI0mAsycgR//fvN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="389813958"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="389813958"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 22:01:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="1003626061"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="1003626061"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 22:01:26 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qsygO-00000006VXl-0ZsZ;
+        Wed, 18 Oct 2023 08:01:24 +0300
+Date:   Wed, 18 Oct 2023 08:01:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+ <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+ <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
+ <ZS7kY/+80Be4geGM@smile.fi.intel.com>
+ <ZS7_5VGvRnw99gzd@google.com>
 MIME-Version: 1.0
-References: <20231017103742.130927-1-masahiroy@kernel.org> <20231017103742.130927-2-masahiroy@kernel.org>
- <CAEf4Bzaxb1npVtH_CnFNrOJQxQF5t82_nZxqbaFLiE-rpk_jBg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzaxb1npVtH_CnFNrOJQxQF5t82_nZxqbaFLiE-rpk_jBg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 18 Oct 2023 14:00:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARRtCQOoWT0q5EjJhoMrfAVbCg_fREeA+NpUHBRbB5oww@mail.gmail.com>
-Message-ID: <CAK7LNARRtCQOoWT0q5EjJhoMrfAVbCg_fREeA+NpUHBRbB5oww@mail.gmail.com>
-Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of scripts/pahole-flags.sh
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Gary Guo <gary@garyguo.net>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-        rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS7_5VGvRnw99gzd@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 4:57=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Oct 17, 2023 at 3:38=E2=80=AFAM Masahiro Yamada <masahiroy@kernel=
-.org> wrote:
-> >
-> > scripts/pahole-flags.sh is executed so many times.
-> >
-> > You can check how many times it is invoked during the build, as follows=
-:
-> >
-> >   $ cat <<EOF >> scripts/pahole-flags.sh
-> >   > echo "scripts/pahole-flags.sh was executed" >&2
-> >   > EOF
-> >
-> >   $ make -s
-> >   scripts/pahole-flags.sh was executed
-> >   scripts/pahole-flags.sh was executed
-> >   scripts/pahole-flags.sh was executed
-> >   scripts/pahole-flags.sh was executed
-> >   scripts/pahole-flags.sh was executed
-> >     [ lots of repeated lines suppressed... ]
-> >
-> > This scripts is exectuted more than 20 times during the kernel build
-> > because PAHOLE_FLAGS is a recursively expanded variable and exported
-> > to sub-processes.
-> >
-> > With the GNU Make >=3D 4.4, it is executed more than 60 times because
-> > exported variables are also passed to other $(shell ) invocations.
-> > Without careful coding, it is known to cause an exponential fork
-> > explosion. [1]
-> >
-> > The use of $(shell ) in an exported recursive variable is likely wrong
-> > because $(shell ) is always evaluated due to the 'export' keyword, and
-> > the evaluation can occur multiple times by the nature of recursive
-> > variables.
-> >
-> > Convert the shell script to a Makefile, which is included only when
-> > CONFIG_DEBUG_INFO_BTF=3Dy.
-> >
-> > [1]: https://savannah.gnu.org/bugs/index.php?64746
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  Makefile                |  4 +---
-> >  scripts/Makefile.btf    | 19 +++++++++++++++++++
-> >  scripts/pahole-flags.sh | 30 ------------------------------
-> >  3 files changed, 20 insertions(+), 33 deletions(-)
-> >  create mode 100644 scripts/Makefile.btf
-> >  delete mode 100755 scripts/pahole-flags.sh
-> >
-> > diff --git a/Makefile b/Makefile
-> > index fed9a6cc3665..eaddec67e5e1 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -513,8 +513,6 @@ LZ4         =3D lz4c
-> >  XZ             =3D xz
-> >  ZSTD           =3D zstd
-> >
-> > -PAHOLE_FLAGS   =3D $(shell PAHOLE=3D$(PAHOLE) $(srctree)/scripts/pahol=
-e-flags.sh)
->
-> What if we just used :=3D here? Wouldn't it avoid unnecessary multiple ex=
-ecutions?
+On Tue, Oct 17, 2023 at 02:43:01PM -0700, Dmitry Torokhov wrote:
+> On Tue, Oct 17, 2023 at 10:45:39PM +0300, Andy Shevchenko wrote:
+
+Thanks for your response.
+
+...
+
+> I wonder, could you please post entire dmesg for your system?
+
+Working, non-working or both?
+
+...
+
+> I think the right answer is "fix the userspace" really in this case. We
+> could also try extend of_alias_get_id() to see if we could pass some
+> preferred numbering on x86. But this will again be fragile if the
+> knowledge resides in the driver and is not tied to a particular board
+> (as it is in DT case): there could be multiple controllers, things will
+> be shifting board to board...
+
+Any suggestion how should it be properly done in the minimum shell environment?
+(Busybox uses mdev with static tables IIRC and there is no fancy udev or so)
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Yeah, :=3D is less silly than =3D.
-
-
-But, I do not like to run the script for non-build targets
-such as 'make clean', 'make help', etc.
-
-Also, when building with CONFIG_DEBUG_INFO_BTF=3Dn,
-the shell is forked to compute PAHOLE_FLAGS,
-which we know are unnecessary.
-
-
-
-
-
---
-Best Regards
-
-Masahiro Yamada
