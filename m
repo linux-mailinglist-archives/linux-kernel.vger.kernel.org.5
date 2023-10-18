@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314A77CE862
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4690A7CE865
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjJRUBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        id S230366AbjJRUCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRUBR (ORCPT
+        with ESMTP id S229510AbjJRUCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:01:17 -0400
+        Wed, 18 Oct 2023 16:02:13 -0400
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE9095;
-        Wed, 18 Oct 2023 13:01:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED76BB8;
+        Wed, 18 Oct 2023 13:02:09 -0700 (PDT)
 Received: from i53875b5b.versanet.de ([83.135.91.91] helo=diego.localnet)
         by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <heiko@sntech.de>)
-        id 1qtCiz-0004aG-Fd; Wed, 18 Oct 2023 22:01:01 +0200
+        id 1qtCjz-0004b2-U9; Wed, 18 Oct 2023 22:02:03 +0200
 From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
 To:     linux-rockchip@lists.infradead.org,
         Sascha Hauer <s.hauer@pengutronix.de>
@@ -36,14 +36,13 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH v8 08/26] PM / devfreq: rk3399_dmc,dfi: generalize DDRTYPE defines
-Date:   Wed, 18 Oct 2023 22:01:00 +0200
-Message-ID: <4102931.6PsWsQAL7t@diego>
-In-Reply-To: <20231018061714.3553817-9-s.hauer@pengutronix.de>
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v8 10/26] PM / devfreq: rockchip-dfi: Add RK3568 support
+Date:   Wed, 18 Oct 2023 22:02:02 +0200
+Message-ID: <3318045.KgjxqYA5nG@diego>
+In-Reply-To: <20231018061714.3553817-11-s.hauer@pengutronix.de>
 References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
- <20231018061714.3553817-9-s.hauer@pengutronix.de>
+ <20231018061714.3553817-11-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -55,17 +54,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 18. Oktober 2023, 08:16:56 CEST schrieb Sascha Hauer:
-> The DDRTYPE defines are named to be RK3399 specific, but they can be
-> used for other Rockchip SoCs as well, so replace the RK3399_PMUGRF_
-> prefix with ROCKCHIP_. They are defined in a SoC specific header
-> file, so when generalizing the prefix also move the new defines to
-> a SoC agnostic header file. While at it use GENMASK to define the
-> DDRTYPE bitfield and give it a name including the full register name.
+Am Mittwoch, 18. Oktober 2023, 08:16:58 CEST schrieb Sascha Hauer:
+> This adds RK3568 support to the DFI driver.  Only iniitialization
+> differs from the currently supported RK3399.
 > 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+> 
+> Notes:
+>     Changes since v7:
+>      - Add comment to explain << 3
+> 
+>  drivers/devfreq/event/rockchip-dfi.c | 27 +++++++++++++++++++++++++++
+>  include/soc/rockchip/rk3568_grf.h    | 12 ++++++++++++
+>  2 files changed, 39 insertions(+)
+>  create mode 100644 include/soc/rockchip/rk3568_grf.h
 
 Acked-by: Heiko Stuebner <heiko@sntech.de>
 
