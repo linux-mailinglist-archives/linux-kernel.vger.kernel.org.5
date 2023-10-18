@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABED7CDA92
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550547CDA90
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbjJRLfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
+        id S231466AbjJRLfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234836AbjJRLfB (ORCPT
+        with ESMTP id S231322AbjJRLe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:35:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAD612F;
-        Wed, 18 Oct 2023 04:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697628895; x=1729164895;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=NRJlQShSFWurHaKOv7QhLLMxfjt9JndN5eDKi4TZy98=;
-  b=aGbYegRUtj56RBdWDPRzO9F0UnjGtoWATtUqMrSJdZjhGYMQ2A6ivG4d
-   6pVdPGZDrHNJw3PzKnMNjDxsDxINogltPm/9AIegeJsjnG2nhApe4a3FP
-   Kbkd/js6XQVoJwiqrb+NGYeu3Se3MhMV73t52u4PH8gLgZPtY01u8TS6p
-   oHSFuxXJwF7XFJwp7YkFMS3hFHW167AeXArQkgnWhIvOdznIfeBSo503b
-   /8hS6qXYv4iFhgM0hZwCv1NFG45oiZFRX8q0WLUB1b45O8JQvpTnEZiST
-   oSbpvY0P3CxKt/rzUfUHYaW4OLTHrpITf658DpasvOLG1+E/FcvfspS9d
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="376365782"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="376365782"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:34:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="733145191"
-X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="733145191"
-Received: from suguccin-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.44.63])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:34:47 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 7/7] PCI/MSI: Use FIELD_GET/PREP()
-Date:   Wed, 18 Oct 2023 14:32:54 +0300
-Message-Id: <20231018113254.17616-8-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231018113254.17616-1-ilpo.jarvinen@linux.intel.com>
-References: <20231018113254.17616-1-ilpo.jarvinen@linux.intel.com>
+        Wed, 18 Oct 2023 07:34:56 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1768A198
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:34:49 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so1028606966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697628887; x=1698233687; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bLIYllS+O6Xd2qzawS5VK1eQ02CDGNfk+dIUUR4Mb9M=;
+        b=cJFZs9KeWhc44wUobqG2sXmnLVs6/rwf2HA/ZuAiQ+cr20H7bdaq/4ioETFwkKW7bz
+         PeMxsrPV/wUFDN4gn5KQxI8iRZQFtAJrwkyTL8flXwTqNiTNIqE19tdI8Bmen5DRJAtA
+         nfkEICHwRgUUCi8GqPje5jxK+wkGxk+TFd810Uc0UQ3l2Sk0ll4lJUG2852p6/A4rGaW
+         mLx2MphEYLX5+vLs1SViTgvaC10vC+08JXj5zU1JG32grA+WBT7lNn1xqG/yjBxrOGOY
+         EMLzPudrOXcv2/wdcAfBGjt8dgNFZCuKVquHDSlY+hcdkpm/BPiDHVV2hJDPcfxA+RH5
+         IMYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697628887; x=1698233687;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bLIYllS+O6Xd2qzawS5VK1eQ02CDGNfk+dIUUR4Mb9M=;
+        b=cN9LNuG0bipPws+YuCA3u8Ing5I5Pv5VyS/IDTMPfsTkPlQ6jmUNT/eVWVuKHHhS2q
+         Qj1mvZyZG0qvD1Ti6AsdGPUOnsDjrUNWlF/jSNciSj5yjboXjsIHwO0sd0W0FqfTI78A
+         n46v2SGgabdIjRw/eLEO+EiahIBS8AqfqlkBbz6+O4qv0T3pegavTO/VSbSD2oIoNPZ1
+         gP1yK10vVinCZ9AD7WwPgDzZU0wn9ZBhMGWp2Aip1+vu/6oN8H58atnD+tsF3pogVW21
+         szNb2EIN+K1zmf5Ioh/DIrX87x+USPTNw19HVFKsdaTbNrHpipk4Mbgex2BkuLMJkLV2
+         iH9A==
+X-Gm-Message-State: AOJu0YxT/NaLlJ6vyXCCC2Loq+XxEjVUrCtPK4JZkgp4ae569gjU62vD
+        r3miUUqkzA4KC7xtyAEgg+g=
+X-Google-Smtp-Source: AGHT+IEYuZTECiTe/CWO5fzOqWJ8nMXo46EwDgNlRRBWZqPtxnbzqwj6YGcgm9HvKPNlFMhAV6hFaQ==
+X-Received: by 2002:a17:906:dac4:b0:9be:dce3:6e07 with SMTP id xi4-20020a170906dac400b009bedce36e07mr4461109ejb.32.1697628886950;
+        Wed, 18 Oct 2023 04:34:46 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id mm27-20020a170906cc5b00b0099e12a49c8fsm1521281ejb.173.2023.10.18.04.34.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 04:34:46 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Oct 2023 13:34:44 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+Subject: Re: [PATCH v2 3/4] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+Message-ID: <ZS/C1HS/EEXTtVji@gmail.com>
+References: <20231016123933.17284-1-jgross@suse.com>
+ <20231016123933.17284-4-jgross@suse.com>
+ <20231016142930.GE33217@noisy.programming.kicks-ass.net>
+ <4f5cc965-36da-43f0-aaaa-082a2235ec1e@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f5cc965-36da-43f0-aaaa-082a2235ec1e@suse.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of custom masking and shifting, use FIELD_GET/PREP() with
-register fields.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/pci/msi/msi.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+* Juergen Gross <jgross@suse.com> wrote:
 
-diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
-index ef1d8857a51b..682fa877478f 100644
---- a/drivers/pci/msi/msi.c
-+++ b/drivers/pci/msi/msi.c
-@@ -6,6 +6,7 @@
-  * Copyright (C) Tom Long Nguyen (tom.l.nguyen@intel.com)
-  * Copyright (C) 2016 Christoph Hellwig.
-  */
-+#include <linux/bitfield.h>
- #include <linux/err.h>
- #include <linux/export.h>
- #include <linux/irq.h>
-@@ -188,7 +189,7 @@ static inline void pci_write_msg_msi(struct pci_dev *dev, struct msi_desc *desc,
- 
- 	pci_read_config_word(dev, pos + PCI_MSI_FLAGS, &msgctl);
- 	msgctl &= ~PCI_MSI_FLAGS_QSIZE;
--	msgctl |= desc->pci.msi_attrib.multiple << 4;
-+	msgctl |= FIELD_PREP(PCI_MSI_FLAGS_QSIZE, desc->pci.msi_attrib.multiple);
- 	pci_write_config_word(dev, pos + PCI_MSI_FLAGS, msgctl);
- 
- 	pci_write_config_dword(dev, pos + PCI_MSI_ADDRESS_LO, msg->address_lo);
-@@ -299,7 +300,7 @@ static int msi_setup_msi_desc(struct pci_dev *dev, int nvec,
- 	desc.pci.msi_attrib.is_64	= !!(control & PCI_MSI_FLAGS_64BIT);
- 	desc.pci.msi_attrib.can_mask	= !!(control & PCI_MSI_FLAGS_MASKBIT);
- 	desc.pci.msi_attrib.default_irq	= dev->irq;
--	desc.pci.msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
-+	desc.pci.msi_attrib.multi_cap	= FIELD_GET(PCI_MSI_FLAGS_QMASK, control);
- 	desc.pci.msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
- 	desc.affinity			= masks;
- 
-@@ -478,7 +479,7 @@ int pci_msi_vec_count(struct pci_dev *dev)
- 		return -EINVAL;
- 
- 	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &msgctl);
--	ret = 1 << ((msgctl & PCI_MSI_FLAGS_QMASK) >> 1);
-+	ret = 1 << FIELD_GET(PCI_MSI_FLAGS_QMASK, msgctl);
- 
- 	return ret;
- }
-@@ -511,7 +512,8 @@ void __pci_restore_msi_state(struct pci_dev *dev)
- 	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
- 	pci_msi_update_mask(entry, 0, 0);
- 	control &= ~PCI_MSI_FLAGS_QSIZE;
--	control |= (entry->pci.msi_attrib.multiple << 4) | PCI_MSI_FLAGS_ENABLE;
-+	control |= PCI_MSI_FLAGS_ENABLE |
-+		   FIELD_PREP(PCI_MSI_FLAGS_QSIZE, entry->pci.msi_attrib.multiple);
- 	pci_write_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, control);
- }
- 
--- 
-2.30.2
+> On 16.10.23 16:29, Peter Zijlstra wrote:
+> > On Mon, Oct 16, 2023 at 02:39:32PM +0200, Juergen Gross wrote:
+> > > Instead of stacking alternative and paravirt patching, use the new
+> > > ALT_FLAG_CALL flag to switch those mixed calls to pure alternative
+> > > handling.
+> > > 
+> > > This eliminates the need to be careful regarding the sequence of
+> > > alternative and paravirt patching.
+> > > 
+> > > For call depth tracking callthunks_setup() needs to be adapted to patch
+> > > calls at alternative patching sites instead of paravirt calls.
+> > > 
+> > > Signed-off-by: Juergen Gross <jgross@suse.com>
+> > 
+> > I cannot help but feel this would've been better as two patches, one
+> > introducing ALT_NOT_XEN and then a second with the rest.
+> 
+> In case I need to respin I'll split it up.
+
+Yeah, would be nice to split this patch into two, as Peter requested.
+
+Thanks,
+
+	Ingo
 
