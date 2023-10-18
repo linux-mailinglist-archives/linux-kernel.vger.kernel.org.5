@@ -2,204 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9E7CD44B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9BC7CD446
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 08:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjJRGTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 02:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S1344520AbjJRGTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 02:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344554AbjJRGSz (ORCPT
+        with ESMTP id S229714AbjJRGSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 02:18:55 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD4E10D3;
-        Tue, 17 Oct 2023 23:18:05 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39I6HoBX21129348, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39I6HoBX21129348
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Oct 2023 14:17:50 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 18 Oct 2023 14:17:50 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 18 Oct 2023 14:17:17 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Wed, 18 Oct 2023 14:17:17 +0800
-From:   =?utf-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
-        Ben Chuang <benchuanggli@gmail.com>
-Subject: RE: [PATCH 2/3] [02/03] mmc: Add Synopsys DesignWare mmc cmdq host driver
-Thread-Topic: [PATCH 2/3] [02/03] mmc: Add Synopsys DesignWare mmc cmdq host
- driver
-Thread-Index: AQHZ4KOYYC6NHs+QFkyYuq8rJlABHbBCSJcAgA0GRKA=
-Date:   Wed, 18 Oct 2023 06:17:17 +0000
-Message-ID: <1d50d8fa62cf4bdf969c468bd4ed9776@realtek.com>
-References: <cover.1693991785.git.jyanchou@realtek.com>
- <9617f04133ba8b6907b253c4154083f75956a341.1693991785.git.jyanchou@realtek.com>
- <b35ef5aa-08c8-4316-9699-50ce907324a5@intel.com>
-In-Reply-To: <b35ef5aa-08c8-4316-9699-50ce907324a5@intel.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.236]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 18 Oct 2023 02:18:32 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CA3D45
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:56 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27cfb8442f9so4113204a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 23:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697609875; x=1698214675; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7WGehLvi+FTWeGkTWKP/DHbfVzwre07LJ9bBGVXupS4=;
+        b=ifdtDxmJ2hvbsEOUlsNcxitO6NodJJ1mFQZweYGCky2DFCSXiyT37RzSu8xiT5nqJZ
+         NqjxUg2Rgnyfc24AZSV9FE7guW66zD8A8yX4woJLonSi+CDc1e4bW/IFmqEtvDqOX2e6
+         HorCDrJLaEGKWhH5pYuV0EI0Wd23fO8PU8WbUM7EIQnbRBn3Mf/gpXPS60nnK00whH8c
+         FVzUnFVC7htM79kO04lcMdOC5ZJ6DNWl6y76a+9ScS+RtuDKnU6QKcrn2vWsh+tY5yj2
+         Cff/11dx+fITiJF8/uZVF8HDuVmsBUist/DjyvlRXMzYMhW0XxV1YSPRCKdLjpqYOIdS
+         9E/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697609875; x=1698214675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7WGehLvi+FTWeGkTWKP/DHbfVzwre07LJ9bBGVXupS4=;
+        b=LfRl8IX1E/g+xxzzWYTZ3rxr+eaiAywGYmi8cZQoFq3eBXv/GARcgNj7xNkyORiaSo
+         nlyoWbglJDJCRDjAwJND2RLp0pBtI+rdg/xipEnheeaxWSnZkyII6MPfos2lB4nzPB4h
+         BwAilvUhh/VzNFsivPvaK3JR6hkxIWafDolakjGPHlxsIwzP748QUPl6QzjnTuGVy7hb
+         5RVgGgOeoN+jREqxOUAAjWTn6fgmr0lN312ImZgARZUeCblHrAutg/kTDpEBLB1fnQdF
+         HHxNoSoou5rG1O7Jne3V0OjCQQ/00I+pm9SLOYPT0X4L9OskvSWvD3ozbrp0atHWxzdN
+         WwQA==
+X-Gm-Message-State: AOJu0YyO9TUIsZtcOiJhFbbZUEUmA38tRKSh5TBX0d/NPKJVh7PoJ/iH
+        M/ey2ETVEPfS/KVIW/QrF2ScUyqbL9p8lz++jdM=
+X-Google-Smtp-Source: AGHT+IF9pwZQJ/oUNzQ0rStDH9whuphmOQIXCQUqfZTC6ax/a0ujVx2R67oPfE2ZDYCvAWQGxBsr1A==
+X-Received: by 2002:a17:90a:ec88:b0:27d:2e39:25da with SMTP id f8-20020a17090aec8800b0027d2e3925damr4090446pjy.39.1697609875037;
+        Tue, 17 Oct 2023 23:17:55 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.103.200])
+        by smtp.gmail.com with ESMTPSA id ix13-20020a170902f80d00b001c61acd5bd2sm2659116plb.112.2023.10.17.23.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 23:17:54 -0700 (PDT)
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [RESEND PATCH bpf-next v6 0/8] Add Open-coded task, css_task and css iters
+Date:   Wed, 18 Oct 2023 14:17:38 +0800
+Message-Id: <20231018061746.111364-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWRyaWFuLA0KDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3IGFuZCBhZHZpY2UuIA0KDQpXZSBo
-YWQgdXBkYXRlZCBvdXIgbmV3IHZlcnNpb24gcGF0Y2hlcyBhbmQgY29ycmVjdGVkIG91ciBjb2Rl
-IHRvIHlvdXIgc3VnZ2VzdGlvbnMuDQoNCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJv
-amVjdC9saW51eC1tbWMvcGF0Y2gvMjAyMzEwMTgwNTUzMjYuMTgyNTYtMi1qeWFuY2hvdUByZWFs
-dGVrLmNvbS8NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tbWMv
-cGF0Y2gvMjAyMzEwMTgwNTUzMjYuMTgyNTYtMy1qeWFuY2hvdUByZWFsdGVrLmNvbS8NCmh0dHBz
-Oi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tbWMvcGF0Y2gvMjAyMzEwMTgw
-NTUzMjYuMTgyNTYtNC1qeWFuY2hvdUByZWFsdGVrLmNvbS8NCmh0dHBzOi8vcGF0Y2h3b3JrLmtl
-cm5lbC5vcmcvcHJvamVjdC9saW51eC1tbWMvcGF0Y2gvMjAyMzEwMTgwNTUzMjYuMTgyNTYtNS1q
-eWFuY2hvdUByZWFsdGVrLmNvbS8NCg0KDQo+PiBQbGVhc2UgcHV0IHZlcnNpb24gbnVtYmVycyBp
-biB0aGUgcGF0Y2ggc3ViamVjdC4NCldlIG1vZGlmaWVkIHZlcnNpb24gbnVtYmVycyB0aGlzIHRp
-bWUsIHRoYW5rcy4NCg0KPiBSZWdpc3RlciBkaWZmZXJlbmNlcyBjYW4gYmUgYWJzdHJhY3RlZCBh
-d2F5LCBmb3IgZXhhbXBsZSBieSBwcm92aWRpbmcgY2FsbGJhY2tzIGZvciByZWFkaW5nIC8gd3Jp
-dGluZyByZWdpc3RlcnMuDQo+IFNvIHRoaXMgc3RpbGwgbmVlZHMgbXVjaCBtb3JlIGV4cGxhbmF0
-aW9uLg0KV2UgaGFkIGFkZGVkIG1vcmUgZGVzY3JpcHRpb24gdG8gZXhwbGFpbi4NCg0KPiBJdCB3
-b3VsZCBiZSBwcmVmZXJhYmxlIHRvIHVzZSBhIGNhbGxiYWNrIG9ubHkgZm9yIHNldHRpbmcgdGhl
-IGRlc2NyaXB0b3IuDQo+IFBsZWFzZSBzZWUgY29tbWVudHMgYWJvdXQgZHdjbXNoY19jcWhjaV9z
-ZXRfdHJhbl9kZXNjKCkgYW5kIGR3Y21zaGNfY3FoY2lfcHJlcF90cmFuX2Rlc2MoKSBtYWRlIGhl
-cmU6DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW1tYy8wOTMyYjEyNC0xNmRhLTQ5
-NWMtOTcwNi1iYmFkYWRiM2IwNzZAaW50ZWwuY29tLw0KV2UgRVhQT1JUIGNxaGNpX3NldF90cmFu
-X2Rlc2MgYW5kIHVzZWQgaXQgdG8gcmVwbGFjZSBkd19tY2lfY3FlX3NldF90cmFuX2Rlc2MsIHRo
-YW5rcy4NCg0KPiBUaGlzIHNob3VsZCBub3QgYmUgbmVjZXNzYXJ5LiAgSW5zdGVhZCwgcGxlYXNl
-IHRyeSB0byB1c2UNCj4gLT5wcmVfZW5hYmxlKCkgYW5kIC0+cG9zdF9kaXNhYmxlKCkgbGlrZSBp
-biBtdGstc2QuYw0KVGhhbmtzIGZvciB5b3VyIGFkdmljZSwgd2UgaGFkIHJlbW92ZWQgdW5uZWNl
-c3NhcnkgY2hlY2sgY29kZSBhbmQgYWRkZWQgY3FoY2lfaG9zdF9vcHMgY2FsbGJhY2sgZnVuY3Rp
-b24uDQoNCkJlc3QgUmVnYXJkcywNCkp5YW4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-CkZyb206IEFkcmlhbiBIdW50ZXIgPGFkcmlhbi5odW50ZXJAaW50ZWwuY29tPiANClNlbnQ6IFR1
-ZXNkYXksIE9jdG9iZXIgMTAsIDIwMjMgMzowNCBQTQ0KVG86IEp5YW4gQ2hvdSBb5ZGo6Iq35a6J
-XSA8anlhbmNob3VAcmVhbHRlay5jb20+OyB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyBqaDgwLmNo
-dW5nQHNhbXN1bmcuY29tDQpDYzogbGludXgtbW1jQHZnZXIua2VybmVsLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgSmFtZXMgVGFpIFvmiLTlv5fls7BdIDxqYW1lcy50YWlAcmVh
-bHRlay5jb20+DQpTdWJqZWN0OiBSZTogW1BBVENIIDIvM10gWzAyLzAzXSBtbWM6IEFkZCBTeW5v
-cHN5cyBEZXNpZ25XYXJlIG1tYyBjbWRxIGhvc3QgZHJpdmVyDQoNCg0KRXh0ZXJuYWwgbWFpbC4N
-Cg0KDQoNClBsZWFzZSBwdXQgdmVyc2lvbiBudW1iZXJzIGluIHRoZSBwYXRjaCBzdWJqZWN0LiAg
-UmVmZXIgdG86DQoNCmh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0ZXN0L3Byb2Nl
-c3Mvc3VibWl0dGluZy1wYXRjaGVzLmh0bWwNCg0KT24gNi8wOS8yMyAxMjoyOCwgSnlhbiBDaG91
-IHdyb3RlOg0KPiBXZSBpbXBsZW1lbnRlZCBjbWRxIGZlYXR1cmUgb24gU3lub3BzeXMgRGVzaWdu
-V2FyZSBtbWMgZHJpdmVyLg0KPiBUaGUgZGlmZmVyZW5jZSBiZXR3ZWVuIGR3X21tYy5jIGFuZCBk
-d19tbWNfY3FlLmMgd2VyZSBkaXN0aW5jdCANCj4gcmVnaXN0ZXIgZGVmaW5pdGlvbnMgYW5kIHRo
-ZSBhZGRpdGlvbiBvZiBjbWRxLg0KDQpSZWdpc3RlciBkaWZmZXJlbmNlcyBjYW4gYmUgYWJzdHJh
-Y3RlZCBhd2F5LCBmb3IgZXhhbXBsZSBieSBwcm92aWRpbmcgY2FsbGJhY2tzIGZvciByZWFkaW5n
-IC8gd3JpdGluZyByZWdpc3RlcnMuDQpTbyB0aGlzIHN0aWxsIG5lZWRzIG11Y2ggbW9yZSBleHBs
-YW5hdGlvbi4NCg0KPg0KPiBNb3JlIG92ZXIsIHRoZSBmbG93IG9mIGFib3J0IGNvbW1hbmQgc2Vx
-dWVuY2UgaGFkIGNoYW5nZS4NCj4gV2UgYWRkZWQgYSB3YWl0IHN0YXR1cyBmdW5jdGlvbiB0byBz
-YXRpc2Z5IHN5bm9wc3lzIHVzZXIgZ3VpZGUncyANCj4gZGVzY3JpcHRpb24sIHNpbmNlIHRoaXMg
-ZmxvdyBtaWdodCBiZSBzcGVjaWZpYyBpbiBzeW5vcHN5cyBob3N0IGRyaXZlciANCj4gb25seS4N
-Cj4NCj4gU2lnbmVkLW9mZi1ieTogSnlhbiBDaG91IDxqeWFuY2hvdUByZWFsdGVrLmNvbT4NCj4N
-Cj4g4oCUDQo+IHYwIHRvIHYxIGNoYW5nZToNCj4gMS4gU2VwZXJhdGUgZGlmZmVyZW50IHN1cHBv
-cnQgaW50byBzaW5nbGUgcGF0Y2guDQo+IDIuIEZpeCB0aGUgY29tcGlsZXIgY29tcGxhaW5zLg0K
-PiAtLS0NCj4gIGRyaXZlcnMvbW1jL2hvc3QvS2NvbmZpZyAgICAgIHwgICAxMyArDQo+ICBkcml2
-ZXJzL21tYy9ob3N0L01ha2VmaWxlICAgICB8ICAgIDEgKw0KPiAgZHJpdmVycy9tbWMvaG9zdC9k
-d19tbWNfY3FlLmMgfCAxNjM0IA0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysg
-IGRyaXZlcnMvbW1jL2hvc3QvZHdfbW1jX2NxZS5oIHwgIA0KPiA0NDMgKysrKysrKysrDQo+ICA0
-IGZpbGVzIGNoYW5nZWQsIDIwOTEgaW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IGRyaXZlcnMvbW1jL2hvc3QvZHdfbW1jX2NxZS5jICBjcmVhdGUgbW9kZSAxMDA2NDQgDQo+IGRy
-aXZlcnMvbW1jL2hvc3QvZHdfbW1jX2NxZS5oDQoNCk15IGNvbW1lbnRzIHBlcnRhaW4gb25seSB0
-byB0aGUgdXNlIG9mIGNxaGNpLg0KDQpbU05JUF0NCg0KPiArc3RhdGljIHZvaWQgZHdfbWNpX2Nx
-ZV9zZXRfdHJhbl9kZXNjKHU4ICpkZXNjLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGRtYV9hZGRyX3QgYWRkciwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBpbnQgbGVuLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGJvb2wgZW5kLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJv
-b2wgZG1hNjQpIHsNCj4gKyAgICAgX19sZTMyICphdHRyID0gKF9fbGUzMiBfX2ZvcmNlICopZGVz
-YzsNCj4gKw0KPiArICAgICAqYXR0ciA9IChDUUhDSV9WQUxJRCgxKSB8DQo+ICsgICAgICAgICAg
-ICAgIENRSENJX0VORChlbmQgPyAxIDogMCkgfA0KPiArICAgICAgICAgICAgICBDUUhDSV9JTlQo
-MCkgfA0KPiArICAgICAgICAgICAgICBDUUhDSV9BQ1QoMHg0KSB8DQo+ICsgICAgICAgICAgICAg
-IENRSENJX0RBVF9MRU5HVEgobGVuKSk7DQo+ICsNCj4gKyAgICAgaWYgKGRtYTY0KSB7DQo+ICsg
-ICAgICAgICAgICAgX19sZTY0ICpkYXRhZGRyID0gKF9fbGU2NCBfX2ZvcmNlICopKGRlc2MgKyA0
-KTsNCj4gKw0KPiArICAgICAgICAgICAgIGRhdGFkZHJbMF0gPSBjcHVfdG9fbGU2NChhZGRyKTsN
-Cj4gKyAgICAgfSBlbHNlIHsNCj4gKyAgICAgICAgICAgICBfX2xlMzIgKmRhdGFkZHIgPSAoX19s
-ZTMyIF9fZm9yY2UgKikoZGVzYyArIDQpOw0KPiArDQo+ICsgICAgICAgICAgICAgZGF0YWRkclsw
-XSA9IGNwdV90b19sZTMyKGFkZHIpOw0KPiArICAgICB9DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyB2
-b2lkIGR3X21jaV9jcWVfc2V0dXBfdHJhbl9kZXNjKHN0cnVjdCBtbWNfZGF0YSAqZGF0YSwNCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGNxaGNpX2hvc3QgKmNx
-X2hvc3QsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHU4ICpkZXNjLA0K
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQgc2dfY291bnQpIHsNCj4g
-KyAgICAgc3RydWN0IHNjYXR0ZXJsaXN0ICpzZzsNCj4gKyAgICAgdTMyIGN1cl9ibGtfY250LCBy
-ZW1haW5fYmxrX2NudDsNCj4gKyAgICAgdW5zaWduZWQgaW50IGJlZ2luLCBlbmQ7DQo+ICsgICAg
-IGludCBpLCBsZW47DQo+ICsgICAgIGJvb2wgbGFzdCA9IGZhbHNlOw0KPiArICAgICBib29sIGRt
-YTY0ID0gY3FfaG9zdC0+ZG1hNjQ7DQo+ICsgICAgIGRtYV9hZGRyX3QgYWRkcjsNCj4gKw0KPiAr
-ICAgICBmb3JfZWFjaF9zZyhkYXRhLT5zZywgc2csIHNnX2NvdW50LCBpKSB7DQo+ICsgICAgICAg
-ICAgICAgYWRkciA9IHNnX2RtYV9hZGRyZXNzKHNnKTsNCj4gKyAgICAgICAgICAgICBsZW4gPSBz
-Z19kbWFfbGVuKHNnKTsNCj4gKyAgICAgICAgICAgICByZW1haW5fYmxrX2NudCAgPSBsZW4gPj4g
-OTsNCj4gKw0KPiArICAgICAgICAgICAgIHdoaWxlIChyZW1haW5fYmxrX2NudCkgew0KPiArICAg
-ICAgICAgICAgICAgICAgICAgLypEV19NQ0lfTUFYX1NDUklQVF9CTEsgaXMgdGhhIG1heCBmb3Ig
-ZWFjaCBkZXNjcmlwdG9yIHJlY29yZCovDQo+ICsgICAgICAgICAgICAgICAgICAgICBpZiAocmVt
-YWluX2Jsa19jbnQgPiBEV19NQ0lfTUFYX1NDUklQVF9CTEspDQo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIGN1cl9ibGtfY250ID0gRFdfTUNJX01BWF9TQ1JJUFRfQkxLOw0KPiArICAg
-ICAgICAgICAgICAgICAgICAgZWxzZQ0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
-dXJfYmxrX2NudCA9IHJlbWFpbl9ibGtfY250Ow0KPiArDQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAvKiBJbiBTeW5vcHN5cyBEZXNpZ25XYXJlIERhdGFib29rIFBhZ2UgODQsDQo+ICsgICAgICAg
-ICAgICAgICAgICAgICAgKiBUaGV5IG1lbnRpb25lZCB0aGUgRE1BIDEyOE1CIHJlc3RyaWN0aW9u
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgKi8NCj4gKyAgICAgICAgICAgICAgICAgICAgIGJl
-Z2luID0gYWRkciAvIFNaXzEyOE07DQo+ICsgICAgICAgICAgICAgICAgICAgICBlbmQgPSAoYWRk
-ciArIGN1cl9ibGtfY250ICogU1pfNTEyKSAvIFNaXzEyOE07DQo+ICsNCj4gKyAgICAgICAgICAg
-ICAgICAgICAgIGlmIChiZWdpbiAhPSBlbmQpDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGN1cl9ibGtfY250ID0gKGVuZCAqIFNaXzEyOE0gLSBhZGRyKSAvIA0KPiArIFNaXzUxMjsN
-Cj4gKw0KPiArICAgICAgICAgICAgICAgICAgICAgaWYgKChpKzEpID09IHNnX2NvdW50ICYmIChy
-ZW1haW5fYmxrX2NudCA9PSBjdXJfYmxrX2NudCkpDQo+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGxhc3QgPSB0cnVlOw0KPiArDQo+ICsgICAgICAgICAgICAgICAgICAgICBkd19tY2lf
-Y3FlX3NldF90cmFuX2Rlc2MoZGVzYywgYWRkciwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAoY3VyX2Jsa19jbnQgPDwgOSksIGxhc3QsIA0KPiArIGRtYTY0KTsNCj4g
-Kw0KPiArICAgICAgICAgICAgICAgICAgICAgYWRkciA9IGFkZHIgKyAoY3VyX2Jsa19jbnQgPDwg
-OSk7DQo+ICsgICAgICAgICAgICAgICAgICAgICByZW1haW5fYmxrX2NudCAtPSBjdXJfYmxrX2Nu
-dDsNCj4gKyAgICAgICAgICAgICAgICAgICAgIGRlc2MgKz0gY3FfaG9zdC0+dHJhbnNfZGVzY19s
-ZW47DQo+ICsgICAgICAgICAgICAgfQ0KPiArICAgICB9DQo+ICt9DQoNCkl0IHdvdWxkIGJlIHBy
-ZWZlcmFibGUgdG8gdXNlIGEgY2FsbGJhY2sgb25seSBmb3Igc2V0dGluZyB0aGUgZGVzY3JpcHRv
-ci4NClBsZWFzZSBzZWUgY29tbWVudHMgYWJvdXQgZHdjbXNoY19jcWhjaV9zZXRfdHJhbl9kZXNj
-KCkgYW5kIGR3Y21zaGNfY3FoY2lfcHJlcF90cmFuX2Rlc2MoKSBtYWRlIGhlcmU6DQpodHRwczov
-L2xvcmUua2VybmVsLm9yZy9saW51eC1tbWMvMDkzMmIxMjQtMTZkYS00OTVjLTk3MDYtYmJhZGFk
-YjNiMDc2QGludGVsLmNvbS8NCg0KW1NOSVBdDQoNCj4gK3N0YXRpYyB2b2lkIGR3X21jaV9jcWVf
-cmVxdWVzdChzdHJ1Y3QgbW1jX2hvc3QgKm1tYywgc3RydWN0IA0KPiArbW1jX3JlcXVlc3QgKm1y
-cSkgew0KPiArICAgICBzdHJ1Y3QgZHdfbWNpX3Nsb3QgKnNsb3QgPSBtbWNfcHJpdihtbWMpOw0K
-PiArICAgICBzdHJ1Y3QgZHdfbWNpICpob3N0ID0gc2xvdC0+aG9zdDsNCj4gKw0KPiArICAgICBX
-QVJOX09OKHNsb3QtPm1ycSk7DQo+ICsNCj4gKyAgICAgLyoNCj4gKyAgICAgICogVGhlIGNoZWNr
-IGZvciBjYXJkIHByZXNlbmNlIGFuZCBxdWV1ZWluZyBvZiB0aGUgcmVxdWVzdCBtdXN0IGJlDQo+
-ICsgICAgICAqIGF0b21pYywgb3RoZXJ3aXNlIHRoZSBjYXJkIGNvdWxkIGJlIHJlbW92ZWQgaW4g
-YmV0d2VlbiBhbmQgdGhlDQo+ICsgICAgICAqIHJlcXVlc3Qgd291bGRuJ3QgZmFpbCB1bnRpbCBh
-bm90aGVyIGNhcmQgd2FzIGluc2VydGVkLg0KPiArICAgICAgKi8NCj4gKw0KPiArICAgICBpZiAo
-IWR3X21jaV9jcWVfZ2V0X2NkKG1tYykpIHsNCj4gKyAgICAgICAgICAgICBtcnEtPmNtZC0+ZXJy
-b3IgPSAtRU5PTUVESVVNOw0KPiArICAgICAgICAgICAgIG1tY19yZXF1ZXN0X2RvbmUobW1jLCBt
-cnEpOw0KPiArICAgICAgICAgICAgIHJldHVybjsNCj4gKyAgICAgfQ0KPiArDQo+ICsgICAgIGRv
-d25fd3JpdGUoJmhvc3QtPmNyX3J3X3NlbSk7DQo+ICsNCj4gKyAgICAgLypjbWRxIGNhc2UgbmVl
-ZHMgZXh0cmEgY2hlY2sqLw0KPiArICAgICBpZiAoaG9zdC0+cGRhdGEgJiYgKGhvc3QtPnBkYXRh
-LT5jYXBzMiAmIE1NQ19DQVAyX0NRRSkpIHsNCj4gKyAgICAgICAgICAgICBpZiAoKGhvc3QtPmNx
-ZSkgPT0gTlVMTCkgew0KPiArICAgICAgICAgICAgICAgICAgICAgZGV2X2Vycihob3N0LT5kZXYs
-ICJkd19tY2lfcmVxdWVzdF9jcWUgbm90IGRvbmUgeWV0XG4iKTsNCj4gKyAgICAgICAgICAgICAg
-ICAgICAgIG1kZWxheSgyKTsNCj4gKyAgICAgICAgICAgICB9DQo+ICsNCj4gKyAgICAgICAgICAg
-ICBpZiAobW1jLT5jcWVfb24gPT0gZmFsc2UgJiYgaG9zdC0+Y3FlLT5hY3RpdmF0ZWQgPT0gdHJ1
-ZSkNCj4gKyAgICAgICAgICAgICAgICAgICAgIGNxaGNpX2RlYWN0aXZhdGUobW1jKTsNCg0KVGhp
-cyBzaG91bGQgbm90IGJlIG5lY2Vzc2FyeS4gIEluc3RlYWQsIHBsZWFzZSB0cnkgdG8gdXNlDQot
-PnByZV9lbmFibGUoKSBhbmQgLT5wb3N0X2Rpc2FibGUoKSBsaWtlIGluIG10ay1zZC5jDQoNCltT
-TklQXQ0K
+This is version 6 of task, css_task and css iters support.
+
+--- Changelog ---
+
+v5 -> v6:
+
+Patch #3:
+ * In bpf_iter_task_next, return pos rather than goto out. (Andrii)
+Patch #2, #3, #4:
+ * Add the missing __diag_ignore_all to avoid kernel build warning
+Patch #5, #6, #7:
+ * Add Andrii's ack
+
+Patch #8:
+ * In BPF prog iter_css_task_for_each, return -EPERM rather than 0, and
+   ensure stack_mprotect() in iters.c not success. If not, it would cause
+   the subsequent 'test_lsm' fail, since the 'is_stack' check in
+   test_int_hook(lsm.c) would not be guaranteed.
+   (https://github.com/kernel-patches/bpf/actions/runs/6489662214/job/17624665086?pr=5790)
+
+v4 -> v5:https://lore.kernel.org/lkml/20231007124522.34834-1-zhouchuyi@bytedance.com/
+
+Patch 3~4:
+ * Relax the BUILD_BUG_ON check in bpf_iter_task_new and bpf_iter_css_new to avoid
+   netdev/build_32bit CI error.
+   (https://netdev.bots.linux.dev/static/nipa/790929/13412333/build_32bit/stderr)
+Patch 8:
+ * Initialize skel pointer to fix the LLVM-16 build CI error
+   (https://github.com/kernel-patches/bpf/actions/runs/6462875618/job/17545170863)
+
+v3 -> v4:https://lore.kernel.org/all/20230925105552.817513-1-zhouchuyi@bytedance.com/
+
+* Address all the comments from Andrii in patch-3 ~ patch-6
+* Collect Tejun's ack
+* Add a extra patch to rename bpf_iter_task.c to bpf_iter_tasks.c
+* Seperate three BPF program files for selftests (iters_task.c iters_css_task.c iters_css.c)
+
+v2 -> v3:https://lore.kernel.org/lkml/20230912070149.969939-1-zhouchuyi@bytedance.com/
+
+Patch 1 (cgroup: Prepare for using css_task_iter_*() in BPF)
+  * Add tj's ack and Alexei's suggest-by.
+Patch 2 (bpf: Introduce css_task open-coded iterator kfuncs)
+  * Use bpf_mem_alloc/bpf_mem_free rather than kzalloc()
+  * Add KF_TRUSTED_ARGS for bpf_iter_css_task_new (Alexei)
+  * Move bpf_iter_css_task's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_css_task_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 3 (Introduce task open coded iterator kfuncs)
+  * Change th API design keep consistent with SEC("iter/task"), support
+    iterating all threads(BPF_TASK_ITERATE_ALL) and threads of a
+    specific task (BPF_TASK_ITERATE_THREAD).（Andrii)
+  * Move bpf_iter_task's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_task_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 4 (Introduce css open-coded iterator kfuncs)
+  * Change th API design keep consistent with cgroup_iters, reuse
+    BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST
+    /BPF_CGROUP_ITER_ANCESTORS_UP(Andrii)
+  * Add KF_TRUSTED_ARGS for bpf_iter_css_new
+  * Move bpf_iter_css's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_css_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 5 (teach the verifier to enforce css_iter and task_iter in RCU CS)
+  * Add KF flag KF_RCU_PROTECTED to maintain kfuncs which need RCU CS.(Andrii)
+  * Consider STACK_ITER when using bpf_for_each_spilled_reg.
+Patch 6 (Let bpf_iter_task_new accept null task ptr)
+  * Add this extra patch to let bpf_iter_task_new accept a 'nullable'
+  * task pointer(Andrii)
+Patch 7 (selftests/bpf: Add tests for open-coded task and css iter)
+  * Add failure testcase(Alexei)
+
+
+Changes from v1(https://lore.kernel.org/lkml/20230827072057.1591929-1-zhouchuyi@bytedance.com/):
+- Add a pre-patch to make some preparations before supporting css_task
+  iters.(Alexei)
+- Add an allowlist for css_task iters(Alexei)
+- Let bpf progs do explicit bpf_rcu_read_lock() when using process
+  iters and css_descendant iters.(Alexei)
+---------------------
+
+In some BPF usage scenarios, it will be useful to iterate the process and
+css directly in the BPF program. One of the expected scenarios is
+customizable OOM victim selection via BPF[1].
+
+Inspired by Dave's task_vma iter[2], this patchset adds three types of
+open-coded iterator kfuncs:
+
+1. bpf_task_iters. It can be used to
+1) iterate all process in the system, like for_each_forcess() in kernel.
+2) iterate all threads in the system.
+3) iterate all threads of a specific task
+
+2. bpf_css_iters. It works like css_task_iter_{start, next, end} and would
+be used to iterating tasks/threads under a css.
+
+3. css_iters. It works like css_next_descendant_{pre, post} to iterating all
+descendant css.
+
+BPF programs can use these kfuncs directly or through bpf_for_each macro.
+
+link[1]: https://lore.kernel.org/lkml/20230810081319.65668-1-zhouchuyi@bytedance.com/
+link[2]: https://lore.kernel.org/all/20230810183513.684836-1-davemarchevsky@fb.com/
+
+Chuyi Zhou (8):
+  cgroup: Prepare for using css_task_iter_*() in BPF
+  bpf: Introduce css_task open-coded iterator kfuncs
+  bpf: Introduce task open coded iterator kfuncs
+  bpf: Introduce css open-coded iterator kfuncs
+  bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
+  bpf: Let bpf_iter_task_new accept null task ptr
+  selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
+  selftests/bpf: Add tests for open-coded task and css iter
+
+ include/linux/bpf_verifier.h                  |  19 ++-
+ include/linux/btf.h                           |   1 +
+ include/linux/cgroup.h                        |  12 +-
+ kernel/bpf/cgroup_iter.c                      |  65 ++++++++
+ kernel/bpf/helpers.c                          |   9 ++
+ kernel/bpf/task_iter.c                        | 151 ++++++++++++++++++
+ kernel/bpf/verifier.c                         |  86 ++++++++--
+ kernel/cgroup/cgroup.c                        |  18 ++-
+ .../testing/selftests/bpf/bpf_experimental.h  |  19 +++
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  18 +--
+ .../testing/selftests/bpf/prog_tests/iters.c  | 150 +++++++++++++++++
+ .../{bpf_iter_task.c => bpf_iter_tasks.c}     |   0
+ tools/testing/selftests/bpf/progs/iters_css.c |  72 +++++++++
+ .../selftests/bpf/progs/iters_css_task.c      |  47 ++++++
+ .../testing/selftests/bpf/progs/iters_task.c  |  41 +++++
+ .../selftests/bpf/progs/iters_task_failure.c  | 105 ++++++++++++
+ 16 files changed, 771 insertions(+), 42 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_css.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_css_task.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task_failure.c
+
+-- 
+2.20.1
+
