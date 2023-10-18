@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB357CDF07
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5327CDF0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345092AbjJROQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S235065AbjJROQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345165AbjJROPX (ORCPT
+        with ESMTP id S231969AbjJROPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:15:23 -0400
+        Wed, 18 Oct 2023 10:15:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9CE2114;
-        Wed, 18 Oct 2023 07:13:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E5F5C433CB;
-        Wed, 18 Oct 2023 14:13:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CAF212C;
+        Wed, 18 Oct 2023 07:13:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2139EC43391;
+        Wed, 18 Oct 2023 14:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638426;
-        bh=i6OgIGJSxKPbH1liKPx3JpyYDrqSV3S+ooC+cPoDvAg=;
+        s=k20201202; t=1697638428;
+        bh=4TpKUHbeJhydNfeTrWYik6Eg3Dy0qNg/mrIhNU3pthk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NdnPuKD7xEmUdHsC5jJw82rsJ3Y0yrE7VRLjdqux++apF5eaHHMUdVK5M/zGMDH8O
-         E3Wp/75O8g8O0iU6rgQpata9woDwE1H2UCQcEyyFHnLxoIJUVnlR2m1Pd6UoeFYe7S
-         6BAcNuy2FIFXtmEo3mgswhnCG2lu+sha2sENfpOkFdXcsnfQovI6lXoAxepQGUA913
-         AYLPojiW2F10ILHgrK5vjlcrhCT9f2+ip6xSlM8YFh5ctIHPjGmk4NtO7zhwtNDBG9
-         /9SDr9sPU641NMWTl+dYWux0P5bpQwKXLYCqbgfRe9R0NUoFGhVjpFtn6umBPtRWnq
-         SgVPkH1mbkl1w==
+        b=PJj+95CiCpKMwDNmB3N2QhB1MEptus1bGhcbvVg6dy4DuZE43KXCSakC1ukF59Xc0
+         paLifneUXdcfY7NecgZyMWM7tpcJtsBpPuMhPyFLFAX1qKfcUHGF6sAHf3zMkbBgVl
+         vILzSd7jZXzuPPGtnYQuakFHIVeVbx64JgsA4LEdmJATTaWHDKcBbo1J04fxrTNnk9
+         V5XsijgCpSHNjMlrg7c7XUcrXhdSqkRc3n7CHSMZKExfRuSBmp7eIb3L9gdcYEptt8
+         C0JnKRa77YhsF703Lpudjf+USurhqYOiK6hbJ9VYQXcuvFcaOL3URjQJ4L/Yv4Zgy8
+         My9/xcJn0Q+pQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alejandro Colomar <alx@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, xiyou.wangcong@gmail.com,
-        jiri@resnulli.us, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/19] net: sched: cls_u32: Fix allocation size in u32_init()
-Date:   Wed, 18 Oct 2023 10:13:12 -0400
-Message-Id: <20231018141323.1334898-10-sashal@kernel.org>
+Cc:     Anup Patel <apatel@ventanamicro.com>,
+        Dmitry Dunaev <dunaev@tecon.ru>, Marc Zyngier <maz@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 11/19] irqchip/riscv-intc: Mark all INTC nodes as initialized
+Date:   Wed, 18 Oct 2023 10:13:13 -0400
+Message-Id: <20231018141323.1334898-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141323.1334898-1-sashal@kernel.org>
 References: <20231018141323.1334898-1-sashal@kernel.org>
@@ -56,103 +54,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+From: Anup Patel <apatel@ventanamicro.com>
 
-[ Upstream commit c4d49196ceec80e30e8d981410d73331b49b7850 ]
+[ Upstream commit e13cd66bd821be417c498a34928652db4ac6b436 ]
 
-commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
-with flexible-array member") incorrecly replaced an instance of
-`sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
-in a an over-allocation of 8 bytes.
+The RISC-V INTC local interrupts are per-HART (or per-CPU) so we
+create INTC IRQ domain only for the INTC node belonging to the boot
+HART. This means only the boot HART INTC node will be marked as
+initialized and other INTC nodes won't be marked which results
+downstream interrupt controllers (such as PLIC, IMSIC and APLIC
+direct-mode) not being probed due to missing device suppliers.
 
-This change is wrong because `hlist` in `struct tc_u_common` is a
-pointer:
+To address this issue, we mark all INTC node for which we don't
+create IRQ domain as initialized.
 
-net/sched/cls_u32.c:
-struct tc_u_common {
-        struct tc_u_hnode __rcu *hlist;
-        void                    *ptr;
-        int                     refcnt;
-        struct idr              handle_idr;
-        struct hlist_node       hnode;
-        long                    knodes;
-};
-
-So, the use of `struct_size()` makes no sense: we don't need to allocate
-any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine.
-
-So, `struct_size(tp_c, hlist->ht, 1)` translates to:
-
-sizeof(*tp_c) + sizeof(tp_c->hlist->ht) ==
-sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) ==
-						144 + 8  == 0x98 (byes)
-						     ^^^
-						      |
-						unnecessary extra
-						allocation size
-
-$ pahole -C tc_u_common net/sched/cls_u32.o
-struct tc_u_common {
-	struct tc_u_hnode *        hlist;                /*     0     8 */
-	void *                     ptr;                  /*     8     8 */
-	int                        refcnt;               /*    16     4 */
-
-	/* XXX 4 bytes hole, try to pack */
-
-	struct idr                 handle_idr;           /*    24    96 */
-	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
-	struct hlist_node          hnode;                /*   120    16 */
-	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-	long int                   knodes;               /*   136     8 */
-
-	/* size: 144, cachelines: 3, members: 6 */
-	/* sum members: 140, holes: 1, sum holes: 4 */
-	/* last cacheline: 16 bytes */
-};
-
-And with `sizeof(*tp_c)`, we have:
-
-	sizeof(*tp_c) == sizeof(struct tc_u_common) == 144 == 0x90 (bytes)
-
-which is the correct and original allocation size.
-
-Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
-`sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
-
-The following difference in binary output is expected and reflects the
-desired change:
-
-| net/sched/cls_u32.o
-| @@ -6148,7 +6148,7 @@
-| include/linux/slab.h:599
-|     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
-|                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
-|-    2cfc:      mov    $0x98,%edx
-|+    2cfc:      mov    $0x90,%edx
-
-Reported-by: Alejandro Colomar <alx@kernel.org>
-Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Dmitry Dunaev <dunaev@tecon.ru>
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20230926102801.1591126-1-dunaev@tecon.ru
+Link: https://lore.kernel.org/r/20231003044403.1974628-4-apatel@ventanamicro.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_u32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-riscv-intc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-index ba93e2a6bdbb4..04448bfb4d3db 100644
---- a/net/sched/cls_u32.c
-+++ b/net/sched/cls_u32.c
-@@ -364,7 +364,7 @@ static int u32_init(struct tcf_proto *tp)
- 	idr_init(&root_ht->handle_idr);
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 499e5f81b3fe3..4b66850978e6e 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -110,8 +110,16 @@ static int __init riscv_intc_init(struct device_node *node,
+ 	 * for each INTC DT node. We only need to do INTC initialization
+ 	 * for the INTC DT node belonging to boot CPU (or boot HART).
+ 	 */
+-	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id())
++	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id()) {
++		/*
++		 * The INTC nodes of each CPU are suppliers for downstream
++		 * interrupt controllers (such as PLIC, IMSIC and APLIC
++		 * direct-mode) so we should mark an INTC node as initialized
++		 * if we are not creating IRQ domain for it.
++		 */
++		fwnode_dev_initialized(of_fwnode_handle(node), true);
+ 		return 0;
++	}
  
- 	if (tp_c == NULL) {
--		tp_c = kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KERNEL);
-+		tp_c = kzalloc(sizeof(*tp_c), GFP_KERNEL);
- 		if (tp_c == NULL) {
- 			kfree(root_ht);
- 			return -ENOBUFS;
+ 	intc_domain = irq_domain_add_linear(node, BITS_PER_LONG,
+ 					    &riscv_intc_domain_ops, NULL);
 -- 
 2.40.1
 
