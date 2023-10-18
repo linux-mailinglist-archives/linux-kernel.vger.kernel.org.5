@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DAB7CE7EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF3E7CE7F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 21:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjJRTlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 15:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S231715AbjJRTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 15:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjJRTlM (ORCPT
+        with ESMTP id S231621AbjJRTlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 15:41:12 -0400
+        Wed, 18 Oct 2023 15:41:13 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A8795
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:41:10 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7d1816bccso109853997b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:41:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF19B95
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:41:11 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a81a80097fso96092987b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 12:41:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697658069; x=1698262869; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697658071; x=1698262871; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=XDwbLiOis3SdrHxTO/Y/lxRhpLoGiD6x3/AIUgIhLVk=;
-        b=225mPG4bn22vpmEQZ/lq+lcwjZcVmHd/UgrRyJJQv/nh9BGjJUbzh4ACMeF6r9ZggD
-         Tim2wJUR0TlkYG+5oMCTYa9+FgGhyroQo1nuaGeFHdlJgNTmP4xzvBFCKQLlkXfXaW/h
-         0R2meemQK9REEx3buTD4LUdnDReM4przJQSAX6ezEr5oxWaoKpwu2W2S+I0eFy8O9ymK
-         ZM9+nbK4y0dEW4YK0QrokjdR+O1at/X62oDDoF2yGN7UWvz7VxivEiaz4Fve1p8ExpWj
-         kCba5caUEh77WN8mSQ7pczcJlYmalwYmRhwrSPdMYuRlW/t3ngLDMfDT2W/FX8169bOX
-         gjGA==
+        bh=Ofuuq8OnXnBwuNBiWtVLb1NEzqrH7XwtOSMnrh73sd8=;
+        b=KQUyfewpiZDgHKhuBlxHffQ0dmFuq14bplh/X97tRzsZ1J4IVFw9LgSRusq4uePP7p
+         I2fWrJB20gGOcn5OK3sPVx1Cws82eApx0yayMcRBTHMuag8ieLn/2rpiqGl3vYU4HPMP
+         plDRDLUy8748Fghanx4KRrDiuZHDMRky8F4wOa8TUtlosUPPrnt8TW2Km2mHMOe1rfJT
+         aNFAX76iUsrGF5vygVrg4yh/zpC/grDHqg9iEFeZfNT7U1Y0o/YXZDFBZvUTTCpBtV2t
+         ZuO/MR0PUS/H22Pu5+Tp47+t0h+q8nJwrIqvaJ1iEY8W14kWB6immkZlwC+AABSEmehm
+         PINg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697658069; x=1698262869;
+        d=1e100.net; s=20230601; t=1697658071; x=1698262871;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XDwbLiOis3SdrHxTO/Y/lxRhpLoGiD6x3/AIUgIhLVk=;
-        b=IKcC3S0tpvRglJRhOyFj/HWOSCHqt6rCw4cn/dynDsm2z9TXP336/Ltay53fOLaMOi
-         dfCyWhHAFf1zgYcm0heIzGrKaIRZmU+zSCIxVdEI68NRxNlyLKwpjuSpDedz4lMLwD6x
-         5FiIpteYtUy1xBJWSdo11rzFaiNk9HEARpgzIRVIWAnF+oyULWT6Azp8XL72uyeVEMTO
-         NbXz0S2ykF5Ph/py8xVkrHImoU9RLAuXS33pr4jv/soGQq5gkwmfdA9+ibO8ku4jaZLa
-         cCG/3dR8qNgijaQ1PICMtHuI5xK6j1LoHUjiEBpksyJ4d5VTcikWFp0kSp830ZepFP+3
-         kF9Q==
-X-Gm-Message-State: AOJu0Yw29UJtpFgPhjhuR6owLAoByg2b+MU//aMzS5/JHAc+plr/6O1H
-        udYhJ5pPYpc49UwGuaG+90Ndrs0vzjw=
-X-Google-Smtp-Source: AGHT+IEE1wVrW556Cd5uDxyOx/0Ua1tTpL0wLSYC675igkSjSvLsIaByHuL9JyEvU5bZFTNu2xBMZmFUKKA=
+        bh=Ofuuq8OnXnBwuNBiWtVLb1NEzqrH7XwtOSMnrh73sd8=;
+        b=YheTq6Hs+gORztHMIZLrnMW8TX763146xm+ac8jhjLLSbVeWh1vn5nZRuYlt9eokZx
+         8GtpTviwlALLQKoJ2xcmQjKbRJeitqvsRM7ueAc6rZr7jJ5YkhzuUz6xXivTR0e/LK7E
+         aOjszPynv6eUrgG0pwWQaUBit0jITugfgLV4abI3Fbbnrstx9wmWGnmACxWrlCnGbqBk
+         vVBTRHXdCV8Wdavk2JAHW8nVt/dTcXWZLDMSCNqFk5OPmw60fbrLlRmQAbFLzeYrnQwV
+         Qe3FezSoyA8O7KV4HWXWahXTjCkqqaxLPOw4Kp5F5IoNq0NoiRbyNNwYJ8dj1y3WDtdm
+         xu0A==
+X-Gm-Message-State: AOJu0YxCMKXIyG2tXBvna2XsShNIkoEFRiuCAMl9zdVoutVJdpWINAZn
+        d+1hYSmwVnj5222JpCT3c6dzfKJ12EA=
+X-Google-Smtp-Source: AGHT+IGW0vvt2l55+JL2+bM3VOgMoxB7qvHv720MxhQbccRQ4nqpX0a4NV57+RPdy39vplncxaNMVHs5grk=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:ca46:0:b0:5a2:3de0:24a9 with SMTP id
- m67-20020a0dca46000000b005a23de024a9mr6913ywd.1.1697658069288; Wed, 18 Oct
- 2023 12:41:09 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1825:b0:d9a:d272:ee58 with SMTP id
+ cf37-20020a056902182500b00d9ad272ee58mr7884ybb.9.1697658071068; Wed, 18 Oct
+ 2023 12:41:11 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 18 Oct 2023 12:41:03 -0700
+Date:   Wed, 18 Oct 2023 12:41:04 -0700
 In-Reply-To: <20231018194104.1896415-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231018194104.1896415-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231018194104.1896415-2-seanjc@google.com>
-Subject: [PATCH 1/2] Revert "nSVM: Check for reserved encodings of TLB_CONTROL
- in nested VMCB"
+Message-ID: <20231018194104.1896415-3-seanjc@google.com>
+Subject: [PATCH 2/2] KVM: nSVM: Advertise support for flush-by-ASID
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,56 +71,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert KVM's made-up consistency check on SVM's TLB control.  The APM says
-that unsupported encodings are reserved, but the APM doesn't state that
-VMRUN checks for a supported encoding.  Unless something is called out
-in "Canonicalization and Consistency Checks" or listed as MBZ (Must Be
-Zero), AMD behavior is typically to let software shoot itself in the foot.
+Advertise support for FLUSHBYASID when nested SVM is enabled, as KVM can
+always emulate flushing TLB entries for a vmcb12 ASID, e.g. by running L2
+with a new, fresh ASID in vmcb02.  Some modern hypervisors, e.g. VMWare
+Workstation 17, require FLUSHBYASID support and will refuse to run if it's
+not present.
 
-This reverts commit 174a921b6975ef959dd82ee9e8844067a62e3ec1.
+Punt on proper support, as "Honor L1's request to flush an ASID on nested
+VMRUN" is one of the TODO items in the (incomplete) list of issues that
+need to be addressed in order for KVM to NOT do a full TLB flush on every
+nested SVM transition (see nested_svm_transition_tlb_flush()).
 
-Fixes: 174a921b6975 ("nSVM: Check for reserved encodings of TLB_CONTROL in nested VMCB")
 Reported-by: Stefan Sterz <s.sterz@proxmox.com>
 Closes: https://lkml.kernel.org/r/b9915c9c-4cf6-051a-2d91-44cc6380f455%40proxmox.com
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/nested.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ arch/x86/kvm/svm/svm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 3fea8c47679e..60891b9ce25f 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -247,18 +247,6 @@ static bool nested_svm_check_bitmap_pa(struct kvm_vcpu *vcpu, u64 pa, u32 size)
- 	    kvm_vcpu_is_legal_gpa(vcpu, addr + size - 1);
- }
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1785de7dc98b..9cf7eef161ff 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -5083,6 +5083,7 @@ static __init void svm_set_cpu_caps(void)
+ 	if (nested) {
+ 		kvm_cpu_cap_set(X86_FEATURE_SVM);
+ 		kvm_cpu_cap_set(X86_FEATURE_VMCBCLEAN);
++		kvm_cpu_cap_set(X86_FEATURE_FLUSHBYASID);
  
--static bool nested_svm_check_tlb_ctl(struct kvm_vcpu *vcpu, u8 tlb_ctl)
--{
--	/* Nested FLUSHBYASID is not supported yet.  */
--	switch(tlb_ctl) {
--		case TLB_CONTROL_DO_NOTHING:
--		case TLB_CONTROL_FLUSH_ALL_ASID:
--			return true;
--		default:
--			return false;
--	}
--}
--
- static bool __nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
- 					 struct vmcb_ctrl_area_cached *control)
- {
-@@ -278,9 +266,6 @@ static bool __nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
- 					   IOPM_SIZE)))
- 		return false;
- 
--	if (CC(!nested_svm_check_tlb_ctl(vcpu, control->tlb_ctl)))
--		return false;
--
- 	if (CC((control->int_ctl & V_NMI_ENABLE_MASK) &&
- 	       !vmcb12_is_intercept(control, INTERCEPT_NMI))) {
- 		return false;
+ 		if (nrips)
+ 			kvm_cpu_cap_set(X86_FEATURE_NRIPS);
 -- 
 2.42.0.655.g421f12c284-goog
 
