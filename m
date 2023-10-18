@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496357CDFD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112CA7CDFA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345227AbjJRObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
+        id S1345478AbjJRO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345741AbjJRObH (ORCPT
+        with ESMTP id S1345260AbjJRO0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:31:07 -0400
+        Wed, 18 Oct 2023 10:26:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C76724F1C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:23:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26198C433C8;
-        Wed, 18 Oct 2023 14:23:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBFB4ED8;
+        Wed, 18 Oct 2023 07:25:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03FC1C433C7;
+        Wed, 18 Oct 2023 14:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697639015;
-        bh=Ib5xGlxFnL+g2CztwHbaocEOnFEe/Lvk6lssJdyUbDk=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=K7izogodyR6m1/+d0slSkw+5+0OJ9cpE46MG2k7Yl6dLM7o8diY5WLcvWmfY7zNjk
-         fcCYtLJgvpSt1lg6BAYIe3GPVu3JKguUyL25bHpPnudT6k1TeYUQPfaUd9hL0tqDWP
-         L3gc0aISlW2qlIEEAfX/OwoczOhPbnF4yUz482sIY/Mxi42rYjfJcTNH8yWx4TQe6T
-         HBLxBZOqQ/qYGEWSrcZdsydD1w4jUUMXGStypPSohzho2CWhfBSQhqVZu7S5RAYuac
-         bW5vNmS+j1TSq07G3uQ6mKFEzlGT/KTGBUV/JdJ38YuFCD8ca93UA12Vpl8uJ+oVQY
-         QR0EmoI5+FgWg==
-Message-ID: <beb42f6d-3c3b-47ea-897b-2a0656ab5c0a@kernel.org>
-Date:   Wed, 18 Oct 2023 16:23:33 +0200
+        s=k20201202; t=1697639099;
+        bh=Rg/y4kM5Gh6xCt0U7RMA1FJeqe5yyk+jYtUix12m2UA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L5cHTsm/pbOD4v+x9Ok5JEbNEIF6yXgPRxH5hIQKGPifG+6Er4tEnsSS2WCJkKaKJ
+         Ca9oiEkU+K5JQ7XjWVAbitT0zrHUbezZz3s8KqxbUvdGqwxT0FkGKcd6Z2Hf1bRmNP
+         ob1x7W8ekYDDkvbEZv9wIH5zmByAc0qBcC2lfljD3LxhPU6HK5JVq4qW/fAw7WTztn
+         Fdxuh9lTdSbiiF4JzoEPIaovtPzFRiprFE+NZRhvJxb+ih9JYHQxFKn43TmdRi93+f
+         zjNggbrMifJdunyRZo+jUymYbXftsSc+ZvBYf1iY7+FU+xDs0bPc00fE8502kXCvkH
+         OZyfRHxJT25uA==
+Message-ID: <4a20bcf9-c0d7-45e9-ab19-e7e3bb073601@kernel.org>
+Date:   Wed, 18 Oct 2023 16:24:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] arm64: dts: qcom: starqltechn: enable more features
+Subject: Re: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
 Content-Language: en-US
-To:     Dzmitry Sankouski <dsankouski@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20231018123033.301005-1-dsankouski@gmail.com>
- <20231018123033.301005-5-dsankouski@gmail.com>
+To:     Jyan Chou <jyanchou@realtek.com>, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, jh80.chung@samsung.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        benchuanggli@gmail.com
+References: <20231018055326.18256-1-jyanchou@realtek.com>
+ <20231018055326.18256-5-jyanchou@realtek.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -81,7 +83,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231018123033.301005-5-dsankouski@gmail.com>
+In-Reply-To: <20231018055326.18256-5-jyanchou@realtek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -93,35 +95,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 14:30, Dzmitry Sankouski wrote:
-> - enable usb 2.0
-> - enable debug uart (uart9)
-> - enable touchscreen
-> - enable ipa so that we can bring up mobile data
+On 18/10/2023 07:53, Jyan Chou wrote:
+> Document the device-tree bindings for Realtek SoCs mmc driver.
 > 
-> Signed-off-by: Dzmitry Sankouski <dsankouski@gmail.com>
+> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
 
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
->  &usb_1_dwc3 {
->  	/* Until we have Type C hooked up we'll force this as peripheral. */
->  	dr_mode = "peripheral";
-> +
-> +	maximum-speed = "high-speed";
->  };
->  
->  &usb_1_hsphy {
-> @@ -444,4 +580,53 @@ sd_card_det_n_state: sd-card-det-n-state {
->  		function = "gpio";
->  		bias-pull-up;
->  	};
-> +
-> +	s2dos05_irq: s2dos05_irq {
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+Also, coding style of your example is messy.
 
 Best regards,
 Krzysztof
