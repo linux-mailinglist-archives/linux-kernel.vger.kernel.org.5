@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15B17CE5CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6B17CE5CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbjJRSBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        id S232369AbjJRSB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjJRSBg (ORCPT
+        with ESMTP id S232504AbjJRSB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:01:36 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11hn2200.outbound.protection.outlook.com [52.100.171.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BE0113
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:01:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fk3G02lqJ1EwXFsB+zFpmLg1par0yoSE41gcGlcS8YPIjAXBXMgeUw78FNc/xTnw8nUJiSmVW8ZjyCFs98XhFgv5vXHCrr8g4Oy+z1NyXi5D2oNO8hvNI1eJ38f6ktN6qJuNl4g3Yx3M/uOaxKbw8wglvwVEgXWC3fyohHdeSIVWWC7xtm62+EEkEA4CjJVVVY9Lmg/rfK+IXhyYHt2bFBYDfI7M9SIc1ZOHOkKC9IzyimbiNhemUDtm18BlZES7Rxou8Sb548Izaqlv6+yDLQwyQS6qswm/cuBa6qtGZS4jzUuHBj4jAEnRbNbC/gjg+NNGi+Oa6CkdMoT9l2ehhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BzP2vFUh46JhYc4Eb76QC4gm3VmpVKTa32xn4px0Hlc=;
- b=ToqLherhvsGKqqGS4Ybu3oDde3pX6zNJOuCHttaxvFxuKvBL6RNxddfjukS/anHZz8g7XsLliiz0fio0CzHMwgda6XLjwqzfpWDuNj1RFwKSS8YjP8856rfaHLzZoxF+imJZc3B9NaxW6E+tQcyPKH3BbHv2AYFIHHbnpsIw1bXJqVIQgKc+xybssHjBUNOkhWA3UwONSfv1aUYU3noiuWwrdK1rI9vhUiJDAn/5w+iwxvii9FyPjx+xFdHpOeJKsDgX+oDLRl6nbw8/AnU0wGg3esyh3DYaTkzjomp+5IQB1MZZ16K9s52JggUnUtZQi8GBMT7Fg0u13Lt5xM0ysQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BzP2vFUh46JhYc4Eb76QC4gm3VmpVKTa32xn4px0Hlc=;
- b=S9ESUwjoWGagf57Q5uwJAr6n0fRPENxMLzMloNGUPW7SPijPuOsEDryZU+L8EQ1X4B08Jasc3D2EZzKRsAB+tYCDW1K52tQhXA7GxOIZY0kBtgZGKN4oGhOFkgVcV1PlFcdKcQW/NgIOxeFQX84UQPuGmPfHiWeGLyemi18dnncOzNRxGsVczhSCHF+YnMUVZkpm51S/1E7r2liEvcCoqvM+PLbXy5GjzylceHrS/tSC8t1FybAsU2H7jSNBhzpZHZwmFIUP1BXwZvR72JegcBq6KIE+mNcTT4X3HSqJxr++wJqfnuPNilct3dJw9LtkzE+jFc5Q9uHWSTpZ/fknag==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB6111.namprd12.prod.outlook.com (2603:10b6:8:ac::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
- 2023 18:01:30 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
- 18:01:30 +0000
-Date:   Wed, 18 Oct 2023 15:01:28 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <20231018180128.GA719006@nvidia.com>
-References: <20231018081941.475277-1-saeed@kernel.org>
- <20231018081941.475277-3-saeed@kernel.org>
- <2023101835-trapdoor-unicycle-788a@gregkh>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023101835-trapdoor-unicycle-788a@gregkh>
-X-ClientProxiedBy: BL0PR0102CA0030.prod.exchangelabs.com
- (2603:10b6:207:18::43) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 18 Oct 2023 14:01:56 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B64B8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:01:51 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507ad511315so5129352e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697652109; x=1698256909; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZItgi/26ljXyDWT88p+j+vFHLDbnwaOnBmv/sklK2Kc=;
+        b=Zoj7MEUpsEnvemtSZf1WZ86taRnPp24Lq2J1F9gFKl9kxaGrskh8WKN7YBS5dpi82z
+         UTTdCP2SDmLR/7F0JO8n0EmvcT9LKUK3zb9olH5+dgJLHEs+JuTGln7PfMARagFIqjpb
+         rIBxB+jm8O+wuuqM+znToOVgzRnKwZ8QWizf8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697652109; x=1698256909;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZItgi/26ljXyDWT88p+j+vFHLDbnwaOnBmv/sklK2Kc=;
+        b=p1r03hufL8GHFTQcs4BXryWfickj/q8ZhXULuWl+2fdLv3RUWDfkiY7YNI7Cr9bL7C
+         5fxCAW4+5Y9Iwl1qhMw6YhE0oRWO3SXBPL5HH/LPyq5M0rAg2SAT8iW5g2PlJIoIOTIW
+         GfBAJUn53F3eFBJf7dOTvrHQhtcPAndJC4E63AUCQO0IKSjD1Xhz6vu5r5mckEgfeeMt
+         kMsLbLNI+NjNYBJUsi/f/Lqfjrpw80J+wg3fJ3h0WPjzPhiqcW+JgXvv2OckaAjoi74R
+         XUQFQAR2+aHYwNheAur6Zdyi1IhP30HgzyC/f4fJfXNYH/OraGGDaCd0kC7gTll3brwm
+         MhpA==
+X-Gm-Message-State: AOJu0YwV4hNBzEiXu1egkkZ3r/cIJd5uWFjLhWqulGCQ2vVUtIzE9lUF
+        /nE7FJQ82IZ/nF6ys+2vYRSTMhB8gs4GM2IhJbkXmN8k
+X-Google-Smtp-Source: AGHT+IFIWT/oi6A6BYZ+jOmbSEr8O5L43pFsyBimH3zfD+GoJe292TFes74rbFtkeB6t4w5oqmZLlQ==
+X-Received: by 2002:ac2:5a4e:0:b0:502:ff3b:766f with SMTP id r14-20020ac25a4e000000b00502ff3b766fmr4156539lfn.6.1697652109307;
+        Wed, 18 Oct 2023 11:01:49 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id p10-20020ac24eca000000b0050300e013f3sm785544lfr.254.2023.10.18.11.01.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 11:01:48 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso74909001fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:01:48 -0700 (PDT)
+X-Received: by 2002:ac2:5ecd:0:b0:507:9787:6773 with SMTP id
+ d13-20020ac25ecd000000b0050797876773mr4693334lfq.36.1697652108120; Wed, 18
+ Oct 2023 11:01:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6111:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5dd76b85-5429-4e47-1531-08dbd0044190
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?CXiSr6tj4UIZ1QYUz/HRdH4HXmV+wUKXRHvBapLaIT5DwdFcK4q2p125Dqm9?=
- =?us-ascii?Q?Uhdy+mp2imtwK0ZOyREqlAqhIu6JH6gq064OnHZ3QsLKOSJIaUQ1RbmwXa38?=
- =?us-ascii?Q?vZYj5jLq2PYvGR+4PssCmUOulBLN6mh+UEiEnBBMfFCdHKapVx8/XO462DdO?=
- =?us-ascii?Q?KcWXkB5kcoFrESBjNgK8qL1PjtptqcYVinY+u99ukCqQvAUL5nRd445JbO6s?=
- =?us-ascii?Q?GXkSK3SVhdfulgWVlXKfSarMXLmNjDTU9RUWZY+pcBi167eBkMcaeMr70iNq?=
- =?us-ascii?Q?eiZaWcNnlMoQwZX1X11cgprISeFL/c0VZPlriV3uhu/If6V/cnJmN53ADowr?=
- =?us-ascii?Q?u/ABxo0LmGQbL8jCN3eVE+xVgfL0TODky1Wp+7gW30k7sfBpWRzDpO923rBX?=
- =?us-ascii?Q?RDkRTWM1fZ+h8S6XhWo2zM1sTWPEoioMmjFiTigQh5xjaAyputg2VVseXrvJ?=
- =?us-ascii?Q?5UeKECbOVWJJARD3/mxM1IQ+sgMBm+wjhY1vGQga0kBO2YAtqQtFFzdViT51?=
- =?us-ascii?Q?5TUut+jI9xf37iTSOLD3IIZqPmIBHhtDteimP7KuJwh3bcku4OVKvUGHueOx?=
- =?us-ascii?Q?3sGnuaIvo2IIoxXlZ3w7qL7EeTasFFlgQ8gYV3pS8KIKbrIlGx75CWIiH2Fl?=
- =?us-ascii?Q?ls9gg5H2gbaUn60B0jCUkTsh6uAiHQGkN7RxLlcbANl81MCi+UeD1R5ITYcp?=
- =?us-ascii?Q?QG2LNwr0x1JJhU016m+blvTH+q7Y68mP8hPhvtrM9LTBWEzv+d032rviRAmR?=
- =?us-ascii?Q?wOWOsLLBzOhoOw9i3hF8w2mMjx8GjrkiR27zXBH3U35pXNjX4M85p0xhfsyp?=
- =?us-ascii?Q?Vq5GGYcolPGCFy+rJy/hrrB5kem/G5Hr1A6e1GoSL0bpcZM7PbLSz71Kjg4d?=
- =?us-ascii?Q?vAwbPA8BUwn1CC4gxjEbiDjUtvxWbWrxp/i5xM7Zh3UQFoY1tV5Z5OZC+mRA?=
- =?us-ascii?Q?PWc2S60+9xCGD+tyX03o10oy78gCn7Ys2LQoFN9p3g7nIl4tTm2doc6mZAXZ?=
- =?us-ascii?Q?BMqi+JIbCMDqepUnpS1TPV7R5g=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:OSPM;SFS:(13230031)(39860400002)(376002)(346002)(136003)(396003)(366004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(1076003)(26005)(6506007)(4326008)(8936002)(107886003)(2616005)(8676002)(316002)(5660300002)(41300700001)(2906002)(4744005)(478600001)(6486002)(54906003)(66556008)(66946007)(6916009)(66476007)(86362001)(38100700002)(36756003)(33656002)(6512007)(27376004)(42413004);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?v3eEGx3icIHKBSPciZNr7U+uM6MuN05vdVRaszZ/AFje+nRQnWFDbxQ2cYvo?=
- =?us-ascii?Q?vNdByfwPXyEcnqOkHlfhYDwQnXuCWOgQfi04kCUf/WoYWMg76WMAIMcFDh9A?=
- =?us-ascii?Q?GX0vK27XjqmiEkGAAh9e/1QBxXY0JKB8+VSRSKAsW21KZ+K9Rgzty/x4kJQ+?=
- =?us-ascii?Q?3YobzPvXEQWF7A3NVcVyMjnOkSlbMIpFCqcFLZLExIioacat+TMJhoLZKryC?=
- =?us-ascii?Q?Pn++JE2v15VYd3/OCGGFL3sTd4VgIyMvpR3fd2qRFKQ8ll4ZwMP+M7E/sgJB?=
- =?us-ascii?Q?LFRB5Gp+hwxZmlNGxJFF317vthXFvhxHJDONQmcV8qSYxK/MQeVJxgIJujF/?=
- =?us-ascii?Q?3JZkRlci1uX13styT/g0s9Pww/YnxggruN3QUNCwcPRFK4h2/q5cfYBgj31O?=
- =?us-ascii?Q?Lb0CoguF7kceDl4cY8fHVw9xJDNxURmJMqqNml8llYdyDmXxb3DwV593TyYb?=
- =?us-ascii?Q?1s66SN7CvYOZsLZqvd5N+Prv6WByNDC3ucCUJXjIkXRg9ufDpn81i50RVIjw?=
- =?us-ascii?Q?UVSyaCDfnuNlxxiBWZnnsCEVDRVGW+DyGYUxpKimMeX/tHWajYAVZZ1bT0NI?=
- =?us-ascii?Q?G1N/VxqVOTJmTdnXSSWabngUIiPF3NaV663mKMiSlvteiFrAe6hgHTVtk5iH?=
- =?us-ascii?Q?smmhB4fDaN2QmACRt0dkiqIBVEHbPPem1cSZPlvdERGjgmwTZZfygPJZZImU?=
- =?us-ascii?Q?bg8uC6ZPUMesGAqMiL09jTZLXoP0fBgMz/2Xh+/TDzJ7RC0YJzutOPAQ5BTS?=
- =?us-ascii?Q?FejZdcg49IicqaiUG2FAWfAtdgJMQoJ4o+cP5ST1yYjOCTeTIHrPXLCb+c2t?=
- =?us-ascii?Q?yUGnL+aMiLwsu8CufMMr7HCu9kDjK21yP6Up/wKyZz9UnhQkucH+u3QIjJAK?=
- =?us-ascii?Q?jfZ845vqAydYvl6lw2XEFtG9c0mbuqKdjFFIPgHAu+Fa8vYg7yKUuoP34oYD?=
- =?us-ascii?Q?MXF66C4Nx5vLLmohY90LJ/lOQqlQHMDhbkauoerNBMVsfxpapokVm0uepEo4?=
- =?us-ascii?Q?qrvmS91+6dzbRG2Q1uF5rL+nlmHHTdwUsvbX1h1hJnUDN+hMHx86+TL8wviv?=
- =?us-ascii?Q?SCX9P/s6f1Bnw2+LLfgiPLnDxWy7BUC02M+GIsQM0fjyqUsG55ozvAtQoWHf?=
- =?us-ascii?Q?FiDm5uXUkJ/jUxuJog6cxD/MGc6iTmM/JFjSyg/pPVXBP94cWWVv0aWRDlTu?=
- =?us-ascii?Q?k7xj56+R/4tdZ7D9Tqt1Gno7cw0NwN1WnA0zKuk2Pkv4EEaWTVZwHKqI7Qf/?=
- =?us-ascii?Q?7DRKTIED5hbbqYt52heH5PF53SxX1/6OPpV0yDxheI1DCbO/OlWl+kFc96zD?=
- =?us-ascii?Q?JYk255/4srA2o4kQ8uOruabwWqRKnRBZ3elTYabpU8P1lInfUaEZnZESbvhO?=
- =?us-ascii?Q?s6RWlCYniMPkiMxTgCZkDtQBHHX+XfjrGtJ5ieF/8TwvInoOcRR6535QlEsd?=
- =?us-ascii?Q?DV7r0mFewpkfT8mOVHCZA2RBDBaD07kUSfbMnWKK18XBE/7ovOZh8cOdXpz0?=
- =?us-ascii?Q?MjtDZTWX0zU8IPBrgnrY71mUadU3+ARYNu2MRKKrc3DD8DDkkcCMkQ9Py7Az?=
- =?us-ascii?Q?+WpGHtmaIf2DWrGwgw6HOcFpnfKnB5lF7zuah+Q3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5dd76b85-5429-4e47-1531-08dbd0044190
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 18:01:30.3980
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4l2oho+ng7iCwv6LALMvtzvhdQ5hFPx4qYBhOmEJGl9PngyuV+/sI8S8CkEctpeO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6111
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <CAHk-=wiB6LHPmnG7=RWNuQYY9=jCY0EmaJ7thRBEFOfDO09dfw@mail.gmail.com> <CAFULd4YHq7tKQBNk9bNYZkBo9C5XM+6=O7QZG3E-qKBVjSHb6g@mail.gmail.com>
+In-Reply-To: <CAFULd4YHq7tKQBNk9bNYZkBo9C5XM+6=O7QZG3E-qKBVjSHb6g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 18 Oct 2023 11:01:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjgbLLH7Eh2mDHp-k0+qtE-aXpzut7_Ee9dwZ5YVw8BrA@mail.gmail.com>
+Message-ID: <CAHk-=wjgbLLH7Eh2mDHp-k0+qtE-aXpzut7_Ee9dwZ5YVw8BrA@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:30:00AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Oct 18, 2023 at 01:19:38AM -0700, Saeed Mahameed wrote:
-> > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> 
-> For dual-licensed code, I need a LOT of documentation as to why this
-> must be dual-licensed, AND a signed-off-by from your corporate lawyer
-> agreeing to it so they convey an understanding of just how complex and
-> messy this will get over time and what you are agreeing to do here.
+On Wed, 18 Oct 2023 at 10:08, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> Sure. Now the patch looks quite slim, but works as expected, reducing
+> the number of current_task accesses from 3841 to 3220.
 
-Can you provide a brief or whitepaper discussing this complexity
-please? This pushback is news to me, Mellanox and the RDMA ecosystem
-has been doing this for over 15 years now. I would need something
-substantive to have a conversation with our legal.
+Thanks, that patch looks lovely to me.
 
-However, I believe we can get an exception approval for single license
-MIT or BSD-3-Clause for this code.
+Since you've done all the hard lifting and the testing, I'd suggest
+you submit this all to the x86, including my fpu patch. Take my
+sign-off, and the commit message might be something along the lines of
 
-Thanks,
-Jason
+    x86: clean up fpu switching in the middle of task switching
+
+    It happens to work, but it's very very wrong, because our 'current'
+    macro is magic that is supposedly loading a stable value.
+
+    It just happens to be not quite stable enough and the compilers
+    re-load the value enough for this code to work.  But it's wrong.
+
+    It also generates worse code.
+
+    So fix it.
+
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+or add any verbiage you feel appropriate.
+
+               Linus
