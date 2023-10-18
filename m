@@ -2,93 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6517CDEE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31477CDE9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbjJROPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        id S1344929AbjJROMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjJROOS (ORCPT
+        with ESMTP id S235224AbjJROMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:14:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01ADD198C;
-        Wed, 18 Oct 2023 07:13:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F5E2C4163D;
-        Wed, 18 Oct 2023 14:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638400;
-        bh=lLQOKnXcGXnbg3+B5MRiapcu+9TSOsqsE5/4kZRhk3s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BZNBTUWGlSsx/3JRuKJGUZxcgCut26KbqzcNqeJ27iXFaYhKCAMrs6wZd0Rivi/LA
-         RdjZS4Ei5T49uRBGtRNsMsi071CD5xbLKhI/lI7WckngjiWdehkBq2GB7GSBLaNxEq
-         UqiwNAdCqamgdgp0pP/Hm64Z08iE3Ag9GW+5u8eL4Oa6Z7F1xBdpdlguT5VrZQaW0n
-         JpQ8lA/8HkeMNQt9yNiElhrTKpdHqXpb3EGWNu8YmETkiXCW0MqtgMajytvKIc6LHM
-         yCpppRnKT0x9Y0Q2t5HRpqKL1QtMPbPV0MzUFo93amaszMoKooURbLuvxxXmLqj9+7
-         2wJNoxxIGCRqw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 31/31] Input: powermate - fix use-after-free in powermate_config_complete
-Date:   Wed, 18 Oct 2023 10:11:48 -0400
-Message-Id: <20231018141151.1334501-31-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
-References: <20231018141151.1334501-1-sashal@kernel.org>
+        Wed, 18 Oct 2023 10:12:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7D613D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=41esCbpGOiNvuMpXdu5kkIly6/BMtC7WI0rjINadEXI=; b=Bvthg0jTiYmJA89rusISVNCnk6
+        FkTOdcN2gYyU3pDzIHF8P8VpC/HpVYFqx3DuGjYDIawfW317jAjZhhLR35rNhrh6LD1oUGlmP3cFQ
+        DJRLa+U0VQHaU+Sty0TFWGsfy76Rsrb6Kh7AWHba3q7iT51H8vK+0JHaCMLM7DzHUUcalGO+NTeQJ
+        yGvSh7lB9E3OY7/QZ5tDvXUq2jV5DQy/xowRGaaTEVcJETyj/W+GSlCBrwJFz9yN0ikPzExYl8SDg
+        pmPbV/6T+Xk7hTF0wWKgzSvhqOGv2k6nQKXm0sfzKXDrBzqV984frPnrdbA3losZDx650PwaGK3tf
+        VfJx7Trw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qt7HH-001Key-B3; Wed, 18 Oct 2023 14:12:03 +0000
+Date:   Wed, 18 Oct 2023 15:12:03 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhiguo Jiang <justinjiang@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] mm: vmscan: the dirty folio unmap redundantly
+Message-ID: <ZS/nszOJM0Qzspip@casper.infradead.org>
+References: <20231018013004.1569-1-justinjiang@vivo.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.7
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018013004.1569-1-justinjiang@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+On Wed, Oct 18, 2023 at 09:30:03AM +0800, Zhiguo Jiang wrote:
+> If the dirty folio is not reclaimed in the shrink process, it do
+> not need to unmap, which can save shrinking time during traversaling
+> the dirty folio.
 
-[ Upstream commit 5c15c60e7be615f05a45cd905093a54b11f461bc ]
-
-syzbot has found a use-after-free bug [1] in the powermate driver. This
-happens when the device is disconnected, which leads to a memory free from
-the powermate_device struct.  When an asynchronous control message
-completes after the kfree and its callback is invoked, the lock does not
-exist anymore and hence the bug.
-
-Use usb_kill_urb() on pm->config to cancel any in-progress requests upon
-device disconnection.
-
-[1] https://syzkaller.appspot.com/bug?extid=0434ac83f907a1dbdd1e
-
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Reported-by: syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20230916-topic-powermate_use_after_free-v3-1-64412b81a7a2@gmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/input/misc/powermate.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/input/misc/powermate.c b/drivers/input/misc/powermate.c
-index c1c733a9cb890..db2ba89adaefa 100644
---- a/drivers/input/misc/powermate.c
-+++ b/drivers/input/misc/powermate.c
-@@ -425,6 +425,7 @@ static void powermate_disconnect(struct usb_interface *intf)
- 		pm->requires_update = 0;
- 		usb_kill_urb(pm->irq);
- 		input_unregister_device(pm->input);
-+		usb_kill_urb(pm->config);
- 		usb_free_urb(pm->irq);
- 		usb_free_urb(pm->config);
- 		powermate_free_buffers(interface_to_usbdev(intf), pm);
--- 
-2.40.1
+Don't we have to unmap it first in order to make sure that all the
+dirty bits from the PTEs have been transferred to the folio dirty bit?
 
