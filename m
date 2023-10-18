@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBF57CE6A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEAC7CE6D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjJRScO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        id S229988AbjJRSiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbjJRScN (ORCPT
+        with ESMTP id S229702AbjJRSiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:32:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC53119;
-        Wed, 18 Oct 2023 11:32:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A1B8C433C7;
-        Wed, 18 Oct 2023 18:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697653931;
-        bh=tOqSoJfV6UaA+IPipuWQfTMZpKrjsZ4IKE5zi0uW75Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hEsrVwG26XgWeooyYzpdHRZizqpNkD/qWqR4Pm4qMBYXfVYDYvY3AjObVH9iTtBoP
-         NdwFAX5OA1bWSK90CZ1tmYQ1jaN4XGZu2L3OKX+d36MpWX/qBRCUZ2NGYKm2Uu4mN5
-         zhXSPExIU/oB2I3iEKXFuQNfkAlqVuBrUd+lvlEUD7g2+rknHH1ZKKtkHEHYglGEwu
-         ct1+4lmRuyhyj+RvXLEC4nmcRCTwLDwxJ4ruin67DLYjfIl33o+9lbwXe2YWnHiqeb
-         MSehl76slfRpmBpSBNxNznHjg1cu02Ze2BlE2WzZO41GnAzD+yvH+S3IpIOGDBaofP
-         vJCbmMVelOgLw==
-Date:   Wed, 18 Oct 2023 19:32:30 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ivan Mikhaylov <fr0st61te@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] Add maxim max34408/34409 ADC driver and yaml
-Message-ID: <20231018193230.60736165@jic23-huawei>
-In-Reply-To: <20231014211254.16719-1-fr0st61te@gmail.com>
-References: <20231014211254.16719-1-fr0st61te@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Wed, 18 Oct 2023 14:38:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2829118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697654241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Q/0ep7eS2yn1G5ni+CIWne5Bs5Cck5auB+wlCPDOEU=;
+        b=IYJkR6iyMA/fjujZt937TAtjPQgZGon8wXKELFxd0x7XnBlZC81c75MtSZleHEjVAPcKPi
+        /ti5rJToAtWF8MsBSwvSxjIsSTw1uOg/hzGjLTqWB+9hlkKLCW+i7kZtFJ1MyY3cV/LTR5
+        BvE6Zpnnf9z0jAbYOR+wjs51NTi/cQE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-163-Mu_eMp-RO9OeB8AD4XfzsA-1; Wed, 18 Oct 2023 14:37:18 -0400
+X-MC-Unique: Mu_eMp-RO9OeB8AD4XfzsA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 617943C0C113;
+        Wed, 18 Oct 2023 18:37:17 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 53C8E40C6F7D;
+        Wed, 18 Oct 2023 18:37:15 +0000 (UTC)
+From:   Jan Stancek <jstancek@redhat.com>
+To:     djwong@kernel.org, willy@infradead.org, hch@lst.de,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jstancek@redhat.com
+Subject: [PATCH v2] iomap: fix short copy in iomap_write_iter()
+Date:   Wed, 18 Oct 2023 20:32:32 +0200
+Message-Id: <e1cb4f8981f8c6e7e0384e95faf1911d9937e979.1697647960.git.jstancek@redhat.com>
+In-Reply-To: <8762e91a210f4cc5713fce05fe5906c18513bd0a.1697617238.git.jstancek@redhat.com>
+References: <8762e91a210f4cc5713fce05fe5906c18513bd0a.1697617238.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Oct 2023 00:12:52 +0300
-Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
+Starting with commit 5d8edfb900d5 ("iomap: Copy larger chunks from
+userspace"), iomap_write_iter() can get into endless loop. This can
+be reproduced with LTP writev07 which uses partially valid iovecs:
+        struct iovec wr_iovec[] = {
+                { buffer, 64 },
+                { bad_addr, 64 },
+                { buffer + 64, 64 },
+                { buffer + 64 * 2, 64 },
+        };
 
-> Add Maxim max34408/34409 ADC driver and yaml for it. Until now it
-> supports only current monitioring function without overcurrent
-> threshold/delay, shutdown delay configuration, alert interrupt.
-> 
-> Changes from v1:
->    - minor changes from Rob's comments for yaml
->    - add ena, shtdn and make 4 inputs for R sense from Jonathan's comments for yaml
->    - add _REG suffix and make prefix for bitmasks and statuses
->    - add SCALE/OFFSET instead of AVG/PROCESSED from Jonathan and
->      Lars-Peter comments
->    - add chip data from Jonathan and Lars-Peter comments
->    - minor changes from Lars-Peter and Jonathan comments for driver
-> 
-> Changes from v2:
->    - add channels into hardware description into yaml
->    - add rsense property per channel
->    - rename pins for shtdn and ena pins
->    - make one array for input_rsense values
-> 
-> Changes from v3:
->    - change *_34408_OCT3 and 4 to *_34409_OCT3 and 4
->    - change of_property_read_u32 to fwnode family calls
->    - add i2c dev table
->    - change of_match_device to i2c_of_match_device
->    - change match->data to i2c_get_match_data 
-> 
-> Changes from v4:
->    - minor changes in yaml
-> 
-> Changes from v5:
->    - name and minor changes to properties in yaml from Rob's comments
->    - shtdn-enable-gpios -> powerdown-status-gpios from Krzysztof and
->      Jonathan comments in yaml
->    - minor changes to driver
-> 
-> Ivan Mikhaylov (2):
->   dt-bindings: adc: provide max34408/9 device tree binding document
->   iio: adc: Add driver support for MAX34408/9
-> 
->  .../bindings/iio/adc/maxim,max34408.yaml      | 139 +++++++++
->  drivers/iio/adc/Kconfig                       |  11 +
->  drivers/iio/adc/Makefile                      |   1 +
->  drivers/iio/adc/max34408.c                    | 276 ++++++++++++++++++
->  4 files changed, 427 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
->  create mode 100644 drivers/iio/adc/max34408.c
-> 
+commit bc1bb416bbb9 ("generic_perform_write()/iomap_write_actor():
+saner logics for short copy") previously introduced the logic, which
+made short copy retry in next iteration with amount of "bytes" it
+managed to copy:
 
-Series applied to the togreg branch of iio.git and pushed out as testing.
-We are very late in the cycle, so this is probably destined for 6.8
+                if (unlikely(status == 0)) {
+                        /*
+                         * A short copy made iomap_write_end() reject the
+                         * thing entirely.  Might be memory poisoning
+                         * halfway through, might be a race with munmap,
+                         * might be severe memory pressure.
+                         */
+                        if (copied)
+                                bytes = copied;
 
-Jonathan
+However, since 5d8edfb900d5 "bytes" is no longer carried into next
+iteration, because it is now always initialized at the beginning of
+the loop. And for iov_iter_count < PAGE_SIZE, "bytes" ends up with
+same value as previous iteration, making the loop retry same copy
+over and over, which leads to writev07 testcase hanging.
+
+Make next iteration retry with amount of bytes we managed to copy.
+
+Fixes: 5d8edfb900d5 ("iomap: Copy larger chunks from userspace")
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+Changes in v2:
+- use goto instead of new variable (suggested by Christoph Hellwig)
+
+ fs/iomap/buffered-io.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 5db54ca29a35..2bc0aa23fde3 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -881,8 +881,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+ 		size_t bytes;		/* Bytes to write to folio */
+ 		size_t copied;		/* Bytes copied from user */
+ 
++		bytes = iov_iter_count(i);
++retry:
+ 		offset = pos & (chunk - 1);
+-		bytes = min(chunk - offset, iov_iter_count(i));
++		bytes = min(chunk - offset, bytes);
+ 		status = balance_dirty_pages_ratelimited_flags(mapping,
+ 							       bdp_flags);
+ 		if (unlikely(status))
+@@ -933,10 +935,12 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+ 			 * halfway through, might be a race with munmap,
+ 			 * might be severe memory pressure.
+ 			 */
+-			if (copied)
+-				bytes = copied;
+ 			if (chunk > PAGE_SIZE)
+ 				chunk /= 2;
++			if (copied) {
++				bytes = copied;
++				goto retry;
++			}
+ 		} else {
+ 			pos += status;
+ 			written += status;
+-- 
+2.31.1
+
