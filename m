@@ -2,200 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDE07CD176
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594BE7CD17E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344182AbjJRAwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 20:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        id S234787AbjJRAzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 20:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbjJRAwo (ORCPT
+        with ESMTP id S229459AbjJRAzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 20:52:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECF9FA
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697590325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FK1HTlHJ+0l3R06vHMoTLhT2NX6e511ARHCQNoD5obE=;
-        b=Mll2DxNOqBO9xcRILQUG8Dzx/vvkyh+vlqt5RR+p6A9+H7g/8g2blIl9EHgq2XdECSgYRk
-        luHJfAglCJIDNChRD+ItI2VkuJSzFif/CJ+oLdPpQ4uSwNODfSFxW+VA9IvCe9Noe3zzjn
-        IEemTQJ2acCsLouSlgJAnWj7gljJVno=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-MncavxcFMiWQ2xX8HXTwdg-1; Tue, 17 Oct 2023 20:52:03 -0400
-X-MC-Unique: MncavxcFMiWQ2xX8HXTwdg-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77892d78dd3so12532385a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:52:03 -0700 (PDT)
+        Tue, 17 Oct 2023 20:55:49 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9692;
+        Tue, 17 Oct 2023 17:55:48 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7dd65052aso85686407b3.0;
+        Tue, 17 Oct 2023 17:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697590547; x=1698195347; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eBsdVbQfZnd0UbagwL4VN2FSW+PYWVlXpxtElHlS/LI=;
+        b=cR+u8GJ+jUtI+lDTbLL5LkooRSK8VIyiCaYpwn3+0F8YNbVPKJcbDg26wKofskAr51
+         KT9bKbXxB3O5aBGcpZL7hoieqdKSEWWCPbA932HBZ5AIxiODkcBAXctp7dP7uH4fZ5Ar
+         qadiNyimyaI8ToBmucMbPXX6PbR/DVufXIRMU22CEyQJb7/BFuSXJvU7iVccU4lED/ne
+         KjB28+Hw6nURMuAoW7vy/g6BO85pI7x1EHC9L2y7YtX3fZ/UK+qNktQCa5j/EptbgJmx
+         G3Gp4V6k5ymwu+CDmu4Sl1UFUCiUh/fKBmv3uk+kH6aXLZVmM/6EItS9VIbWxnemCPaw
+         sWhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697590323; x=1698195123;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FK1HTlHJ+0l3R06vHMoTLhT2NX6e511ARHCQNoD5obE=;
-        b=sCv/E0zrHplhVZ8U6XZ6GqzLF3p93WV82fZDCg9/LQSZi4EF/+6RJUMlcOlLc+jFan
-         tvCeH4K4LBlo9b8WOMZ+Y51zxQuxvQoqGAYZXwy8c9bpZqdtoqjO1fUIj5QR+ANF7cKl
-         DKhc4do36VCali3gdaQmxfIvxatuSoY5zrOGcPB0DLd7Qx4X4Pxq5IgvMHt7t6+rftPD
-         gtrqHYFoIzVBhz3Jee9dW9Bi+bfc/51uoQDWkalPfZeAcrwfzugK6OfewE2KdnYUpcpt
-         5Y5KZjRbj8yYimb36Qdj29S/WT9QOfeFJHxycAMxYKDPA9ArFtNh4N9byCNB/uNGHOCs
-         BWeA==
-X-Gm-Message-State: AOJu0Yx66Q/HaeTWiDHA5ipWmtecwMvMqF2wU7wPTbDorXSFzjIk9CkG
-        43MuZ1QjSVGKYApgcH3ebTbNEufGhhK7TTN/gMpOGQWbWO1sJ9m0PkZtDuJ2Jr0mD0kg5+h7xWL
-        EX231BP8lKTp5sNIzRoNe3Sipn1Flns/x
-X-Received: by 2002:a05:620a:404b:b0:778:91ee:a9fb with SMTP id i11-20020a05620a404b00b0077891eea9fbmr775773qko.5.1697590323300;
-        Tue, 17 Oct 2023 17:52:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHir5AcRevEbyBxlM67AyCtcgYu4/8oXdFaF+eZVrQj0Vpe5aLV+xNdi/1ePelDyN7VpVyqQw==
-X-Received: by 2002:a05:620a:404b:b0:778:91ee:a9fb with SMTP id i11-20020a05620a404b00b0077891eea9fbmr775761qko.5.1697590323028;
-        Tue, 17 Oct 2023 17:52:03 -0700 (PDT)
-Received: from [192.168.0.189] (pool-173-76-165-118.bstnma.fios.verizon.net. [173.76.165.118])
-        by smtp.gmail.com with ESMTPSA id s17-20020ae9f711000000b0076f16e98851sm1077482qkg.102.2023.10.17.17.52.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 17:52:02 -0700 (PDT)
-Message-ID: <f62c39ad-24a4-45e2-9f3e-52f033ac9807@redhat.com>
-Date:   Tue, 17 Oct 2023 20:52:01 -0400
+        d=1e100.net; s=20230601; t=1697590547; x=1698195347;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eBsdVbQfZnd0UbagwL4VN2FSW+PYWVlXpxtElHlS/LI=;
+        b=HK5PlOuOFclwKTERdkN8giwuWiWDzvMZATX1HWwsISMbjDAgC+hC2Squzuu4xm9rKs
+         Eb+XTL+n7VpuOY61MrQkV6IOVllSjPIWLZf5f01fpH5U6u9oOcDeMUzFtETazRO+7B16
+         BwJxaBd47vbmT/+EOLzrWLghlISq9GsoqUtCiCzm+zcLAreWtwFBEzzFPoGGqo8f5xmh
+         YvZ7bT5GrmxsOlIfCqHNICJjyTT8Z2R5vGucoMJWoz9y3zfYtV9l7yT7cu1jmNEIPM1E
+         wilIFDm/KM5tOqoc0ha2xANHtGNeSx6osT1nHF6OYzUC7C//lFcOMIHV5vsWqLjvv8HC
+         RVFw==
+X-Gm-Message-State: AOJu0YwK+y8BrwmqWRVFul52uTfRf6MdfTG+4zrbTNk+GlMiHtXvuTjY
+        k7Rk3ZX1H9/DgVz9dluFc7w=
+X-Google-Smtp-Source: AGHT+IEDzZCyUkIkQ55ygoudggAt4gMoCY+HI4SZTLbqxGuB8pzQ4sjzkhQriIESTr8MIe6flYXL4w==
+X-Received: by 2002:a05:690c:f96:b0:5a8:286d:339e with SMTP id df22-20020a05690c0f9600b005a8286d339emr4506682ywb.4.1697590547035;
+        Tue, 17 Oct 2023 17:55:47 -0700 (PDT)
+Received: from lanran-u22.. ([169.235.25.167])
+        by smtp.googlemail.com with ESMTPSA id u5-20020a17090add4500b002777001ee76sm135919pjv.18.2023.10.17.17.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 17:55:45 -0700 (PDT)
+From:   Haonan Li <lihaonan1105@gmail.com>
+To:     Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Haonan Li <lihaonan1105@gmail.com>
+Subject: Re: [PATCH] pata_lagacy: Handle failed ATA timing computation in opti82c46x_set_piomode
+Date:   Wed, 18 Oct 2023 00:52:21 +0000
+Message-Id: <20231018005220.2551586-1-lihaonan1105@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <1a0c4378-29b2-43b4-982b-0d92dfb8ed4f@kernel.org>
+References: <1a0c4378-29b2-43b4-982b-0d92dfb8ed4f@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] blk-mq: don't schedule block kworker on isolated CPUs
-To:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-References: <20231013124758.1492796-1-ming.lei@redhat.com>
-Content-Language: en-US
-From:   Joe Mario <jmario@redhat.com>
-In-Reply-To: <20231013124758.1492796-1-ming.lei@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Joe Mario <jmario@redhat.com>
+The function opti82c46x_set_piomode utilizes the ata_timing_compute()
+to determine the appropriate ATA timings for a given device. However,
+in certain conditions where the ata_timing_find_mode() function does
+not find a valid mode, ata_timing_compute() returns an error (-EINVAL),
+leaving the tp struct uninitialized.
 
-Verified that block kworker threads no longer ran on isolated cpus.
-Joe
+This patch checks the return value of ata_timing_compute() and print
+err message. This avoids any potential use of uninitialized `tp`
+struct in the opti82c46x_set_piomode function.
 
-On 10/13/23 8:47 AM, Ming Lei wrote:
-> Kernel parameter of `isolcpus=` or 'nohz_full=' are used for isolating CPUs
-> for specific task, and user often won't want block IO to disturb these CPUs,
-> also long IO latency may be caused if blk-mq kworker is scheduled on these
-> isolated CPUs.
-> 
-> Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
-> the responsibility should be on wq user.
-> 
-> So don't not run block kworker on isolated CPUs by ruling out isolated CPUs
-> from hctx->cpumask. Meantime in cpuhp handler, use queue map to check if
-> all CPUs in this hw queue are offline, this way can avoid any cost in fast
-> IO code path.
-> 
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Andrew Theurer <atheurer@redhat.com>
-> Cc: Joe Mario <jmario@redhat.com>
-> Cc: Sebastian Jug <sejug@redhat.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
-> V2:
-> 	- remove module parameter, meantime use queue map to check if
-> 	all cpus in one hctx are offline
-> 
->  block/blk-mq.c | 42 +++++++++++++++++++++++++++++++++---------
->  1 file changed, 33 insertions(+), 9 deletions(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index ec922c6bccbe..91055bdc4426 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -29,6 +29,7 @@
->  #include <linux/prefetch.h>
->  #include <linux/blk-crypto.h>
->  #include <linux/part_stat.h>
-> +#include <linux/sched/isolation.h>
->  
->  #include <trace/events/block.h>
->  
-> @@ -3476,14 +3477,27 @@ static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
->  	return data.has_rq;
->  }
->  
-> -static inline bool blk_mq_last_cpu_in_hctx(unsigned int cpu,
-> -		struct blk_mq_hw_ctx *hctx)
-> +static bool blk_mq_hctx_has_online_cpu(struct blk_mq_hw_ctx *hctx)
->  {
-> -	if (cpumask_first_and(hctx->cpumask, cpu_online_mask) != cpu)
-> -		return false;
-> -	if (cpumask_next_and(cpu, hctx->cpumask, cpu_online_mask) < nr_cpu_ids)
-> -		return false;
-> -	return true;
-> +	struct blk_mq_tag_set *tag_set = hctx->queue->tag_set;
-> +	int cpu;
-> +
-> +	/*
-> +	 * hctx->cpumask has rule out isolated CPUs, but userspace still
-> +	 * might submit IOs on these isolated CPUs, so use queue map to
-> +	 * check if all CPUs mapped to this hctx are offline
-> +	 */
-> +	for_each_possible_cpu(cpu) {
-> +		unsigned idx = tag_set->map[hctx->type].mq_map[cpu];
-> +
-> +		if (idx != hctx->queue_num)
-> +			continue;
-> +
-> +		if (cpu_online(cpu))
-> +			return true;
-> +	}
-> +
-> +	return false;
->  }
->  
->  static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
-> @@ -3491,8 +3505,7 @@ static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
->  	struct blk_mq_hw_ctx *hctx = hlist_entry_safe(node,
->  			struct blk_mq_hw_ctx, cpuhp_online);
->  
-> -	if (!cpumask_test_cpu(cpu, hctx->cpumask) ||
-> -	    !blk_mq_last_cpu_in_hctx(cpu, hctx))
-> +	if (blk_mq_hctx_has_online_cpu(hctx))
->  		return 0;
->  
->  	/*
-> @@ -3900,6 +3913,8 @@ static void blk_mq_map_swqueue(struct request_queue *q)
->  	}
->  
->  	queue_for_each_hw_ctx(q, hctx, i) {
-> +		int cpu;
-> +
->  		/*
->  		 * If no software queues are mapped to this hardware queue,
->  		 * disable it and free the request entries.
-> @@ -3926,6 +3941,15 @@ static void blk_mq_map_swqueue(struct request_queue *q)
->  		 */
->  		sbitmap_resize(&hctx->ctx_map, hctx->nr_ctx);
->  
-> +		/*
-> +		 * rule out isolated CPUs from hctx->cpumask for avoiding to
-> +		 * run wq worker on isolated CPU
-> +		 */
-> +		for_each_cpu(cpu, hctx->cpumask) {
-> +			if (cpu_is_isolated(cpu))
-> +				cpumask_clear_cpu(cpu, hctx->cpumask);
-> +		}
-> +
->  		/*
->  		 * Initialize batch roundrobin counts
->  		 */
+Signed-off-by: Haonan Li <lihaonan1105@gmail.com>
+---
+ drivers/ata/pata_legacy.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ata/pata_legacy.c b/drivers/ata/pata_legacy.c
+index 448a511cbc17..3c7163f97aaf 100644
+--- a/drivers/ata/pata_legacy.c
++++ b/drivers/ata/pata_legacy.c
+@@ -579,12 +579,19 @@ static void opti82c46x_set_piomode(struct ata_port *ap, struct ata_device *adev)
+ 	clock = 1000000000 / khz[sysclk];
+ 
+ 	/* Get the timing data in cycles */
+-	ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000);
++	if (ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000)) {
++		dev_err(ap->dev, "adev: unknown mode %d\n", adev->pio_mode);
++		return;
++	}
+ 
+ 	/* Setup timing is shared */
+ 	if (pair) {
+ 		struct ata_timing tp;
+-		ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000);
++
++		if (ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000)) {
++			dev_err(ap->dev, "pair: unknown mode %d\n", pair->pio_mode);
++			return;
++		}
+ 
+ 		ata_timing_merge(&t, &tp, &t, ATA_TIMING_SETUP);
+ 	}
+-- 
+2.34.1
 
