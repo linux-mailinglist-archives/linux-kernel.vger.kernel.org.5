@@ -2,162 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D2B7CD716
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73A77CD717
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 10:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjJRIzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 04:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S229563AbjJRIzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 04:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjJRIzD (ORCPT
+        with ESMTP id S229552AbjJRIzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 04:55:03 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C286F9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:55:01 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad8a822508so1069747466b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697619299; x=1698224099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yL/UZARaAWUIf6+4o54rQD6Gfs68ZHxoU8jk1dJAyXQ=;
-        b=kk/2/pPkkiZmVUHI2gAJs5ixlwqzBytCoss2FWxrBodYlEMyl+CesseG89gfUQ073i
-         7UWs0zfmq38UuCFIa+1jJbU9O2q0ymh7YpDkIa2KQu46g+YkbFskBjy+95hNUEJqtQmL
-         n4T2zr2WblAx9Ok8Z3DdhuX+nfLiNy2yK1haqi11I8M5S8OIUi8Az+xGel8+IETsOkGy
-         BzwVnQLEvSKCmHc5uAqD5TWpoY7JoVDMGrJm5H/PAJrNeLGxiB9z3tSYcLdsiSzQq66A
-         lKrrk86Yc3aOyuptGvBUyfoWI3eZYJ+5yOz33ijcVXbF8r9y8/lrcZWO/PAlY71PJOzJ
-         wqvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697619299; x=1698224099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yL/UZARaAWUIf6+4o54rQD6Gfs68ZHxoU8jk1dJAyXQ=;
-        b=FRDVVGX7NQ5q/YBm6Elt/1M/d0bP3L5j8zGfmeTqroh4CHLvipbYQ4Wt7hQo8LFLFC
-         cTh4AYFRXzigk4b/TMVOSNOwrar9l0vQQZI5bnnEOem8SgMhEbr5O1ljizWV9Crx4xfO
-         m6oqDM5KiuBP5RYpNzwmrD+jaMNC3SlaR62aIHqPgRrVBZ8yG5yEe4KkUuvurH6hbYFc
-         E1gZuLEGvDU5oV1+gRxRlBxl7rkdtZitSCUKUiCVnlhSLcChIKmO6dYOAx9Cj7Vt0FOZ
-         zfq4BIDXUPzD4E8swqfv5ZAdv6r+uDsY9U7klWqBnF3p+pZsn/kztdJn/kGqpoDtkJfd
-         j7xg==
-X-Gm-Message-State: AOJu0YxD2zvehSI3cwBjcC5ZAiCk1v/1VseP8Pn1lEPeI41GcOCfcTyC
-        WkWZei+3uU7WJdcNubPSy2e7uRLFJ7iMjaAdoIWnOg==
-X-Google-Smtp-Source: AGHT+IGGtmOH11oZ1Cb59UA//7N6str2jENUft6xZQE93G81xgY9OLXEg+0bgebtR43pEb9PTMWIKAdCJH6cxE6feGU=
-X-Received: by 2002:a17:907:9712:b0:9ae:50e3:7e40 with SMTP id
- jg18-20020a170907971200b009ae50e37e40mr3787316ejc.52.1697619299344; Wed, 18
- Oct 2023 01:54:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
- <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
- <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
- <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
- <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
- <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
- <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com> <ZS+VqgmMVStQ9X8m@xsang-OptiPlex-9020>
-In-Reply-To: <ZS+VqgmMVStQ9X8m@xsang-OptiPlex-9020>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 18 Oct 2023 01:54:20 -0700
-Message-ID: <CAJD7tkY9KTwDWJUtnQ8qygeHkWvzyFSM7w07z_=PYLh1kHcRMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
+        Wed, 18 Oct 2023 04:55:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122819D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 01:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697619289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pp5sXxU1MFlNUtAtVI0C/KnM/d5Lryu4hPhDsWo2s0M=;
+        b=QPZfSwgy9Zr7hkRfuNV8k1U9p/7JPf8bpSW3BNXYz7aSkLH0hM+x5k4sIWqKr08VTrahPT
+        iLP9674R8d/9hrH/oPIMxvzTGc0PadZbKfTdnVhJ3J+5Wun+zK2vQcD9ohCxRpp4pmnvNW
+        +e+ngP8JE/IswVoZghNd7P8ykjl04Ec=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-467-qrWKnXEXPOmIyykWECAa-Q-1; Wed, 18 Oct 2023 04:54:38 -0400
+X-MC-Unique: qrWKnXEXPOmIyykWECAa-Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F6CA3826D3D;
+        Wed, 18 Oct 2023 08:54:38 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 073D7909;
+        Wed, 18 Oct 2023 08:54:36 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 16:54:33 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     oe-kbuild@lists.linux.dev, Lorenzo Stoakes <lstoakes@gmail.com>,
+        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        michael@phoronix.com, Feng Tang <feng.tang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
+ could be null (see line 3667)
+Message-ID: <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
+References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 1:22=E2=80=AFAM Oliver Sang <oliver.sang@intel.com>=
- wrote:
->
-> hi, Yosry Ahmed, hi, Shakeel Butt,
->
-> On Thu, Oct 12, 2023 at 03:23:06PM -0700, Yosry Ahmed wrote:
-> > On Thu, Oct 12, 2023 at 2:39=E2=80=AFPM Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > >
-> > > On Thu, Oct 12, 2023 at 2:20=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > > >
-> > > [...]
-> > > > >
-> > > > > Yes this looks better. I think we should also ask intel perf and
-> > > > > phoronix folks to run their benchmarks as well (but no need to bl=
-ock
-> > > > > on them).
-> > > >
-> > > > Anything I need to do for this to happen? (I thought such testing i=
-s
-> > > > already done on linux-next)
-> > >
-> > > Just Cced the relevant folks.
-> > >
-> > > Michael, Oliver & Feng, if you have some time/resource available,
-> > > please do trigger your performance benchmarks on the following series
-> > > (but nothing urgent):
-> > >
-> > > https://lore.kernel.org/all/20231010032117.1577496-1-yosryahmed@googl=
-e.com/
-> >
-> > Thanks for that.
->
-> we (0day team) have already applied the patch-set as:
->
-> c5f50d8b23c79 (linux-review/Yosry-Ahmed/mm-memcg-change-flush_next_time-t=
-o-flush_last_time/20231010-112257) mm: memcg: restore subtree stats flushin=
-g
-> ac8a48ba9e1ca mm: workingset: move the stats flush into workingset_test_r=
-ecent()
-> 51d74c18a9c61 mm: memcg: make stats flushing threshold per-memcg
-> 130617edc1cd1 mm: memcg: move vmstats structs definition above flushing c=
-ode
-> 26d0ee342efc6 mm: memcg: change flush_next_time to flush_last_time
-> 25478183883e6 Merge branch 'mm-nonmm-unstable' into mm-everything   <----=
- the base our tool picked for the patch set
->
-> they've already in our so-called hourly-kernel which under various functi=
-on
-> and performance tests.
->
-> our 0day test logic is if we found any regression by these hourly-kernels
-> comparing to base (e.g. milestone release), auto-bisect will be triggnere=
-d.
-> then we only report when we capture a first bad commit for a regression.
->
-> based on this, if you don't receive any report in following 2-3 weeks, yo=
-u
-> could think 0day cannot capture any regression from your patch-set.
->
-> *However*, please be aware that 0day is not a traditional CI system, and =
-also
-> due to resource constraints, we cannot guaratee coverage, we cannot tigge=
-r
-> specific tests for your patchset, either.
-> (sorry if this is not your expectation)
->
+Hi,
 
-Thanks for taking a look and clarifying this, much appreciated.
-Fingers crossed for not getting any reports :)
+On 10/17/23 at 05:26pm, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+> commit: 4c91c07c93bbbdd7f2d9de2beb7ee5c2a48ad8e7 mm: vmalloc: convert vread() to vread_iter()
+> config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20231017/202310171600.WCrsOwFj-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202310171600.WCrsOwFj-lkp@intel.com/
+> 
+> smatch warnings:
+> mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
+
+I see the code deficit, while the reproduce link seems to be unavilable.
+Could you double check the link and provide a good one so that I can
+verify the code fix?
+
+Thanks
+Baoquan
+
+> 
+> vim +/vm +3689 mm/vmalloc.c
+> 
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3619  long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3620  {
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3621  	struct vmap_area *va;
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3622  	struct vm_struct *vm;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3623  	char *vaddr;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3624  	size_t n, size, flags, remains;
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3625  
+> 4aff1dc4fb3a5a Andrey Konovalov        2022-03-24  3626  	addr = kasan_reset_tag(addr);
+> 4aff1dc4fb3a5a Andrey Konovalov        2022-03-24  3627  
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3628  	/* Don't allow overflow */
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3629  	if ((unsigned long) addr + count < count)
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3630  		count = -(unsigned long) addr;
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3631  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3632  	remains = count;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3633  
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3634  	spin_lock(&vmap_area_lock);
+> f181234a5a21fd Chen Wandun             2021-09-02  3635  	va = find_vmap_area_exceed_addr((unsigned long)addr);
+> f608788cd2d6ca Serapheim Dimitropoulos 2021-04-29  3636  	if (!va)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3637  		goto finished_zero;
+> f181234a5a21fd Chen Wandun             2021-09-02  3638  
+> f181234a5a21fd Chen Wandun             2021-09-02  3639  	/* no intersects with alive vmap_area */
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3640  	if ((unsigned long)addr + remains <= va->va_start)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3641  		goto finished_zero;
+> f181234a5a21fd Chen Wandun             2021-09-02  3642  
+> f608788cd2d6ca Serapheim Dimitropoulos 2021-04-29  3643  	list_for_each_entry_from(va, &vmap_area_list, list) {
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3644  		size_t copied;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3645  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3646  		if (remains == 0)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3647  			goto finished;
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3648  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3649  		vm = va->vm;
+> 06c8994626d1b7 Baoquan He              2023-02-06  3650  		flags = va->flags & VMAP_FLAGS_MASK;
+> 06c8994626d1b7 Baoquan He              2023-02-06  3651  		/*
+> 06c8994626d1b7 Baoquan He              2023-02-06  3652  		 * VMAP_BLOCK indicates a sub-type of vm_map_ram area, need
+> 06c8994626d1b7 Baoquan He              2023-02-06  3653  		 * be set together with VMAP_RAM.
+> 06c8994626d1b7 Baoquan He              2023-02-06  3654  		 */
+> 06c8994626d1b7 Baoquan He              2023-02-06  3655  		WARN_ON(flags == VMAP_BLOCK);
+> 06c8994626d1b7 Baoquan He              2023-02-06  3656  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3657  		if (!vm && !flags)
+> 
+> NULL check
+> 
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3658  			continue;
+> e81ce85f960c2e Joonsoo Kim             2013-04-29  3659  
+> 30a7a9b17c4b03 Baoquan He              2023-02-06  3660  		if (vm && (vm->flags & VM_UNINITIALIZED))
+> 30a7a9b17c4b03 Baoquan He              2023-02-06  3661  			continue;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3662  
+> 30a7a9b17c4b03 Baoquan He              2023-02-06  3663  		/* Pair with smp_wmb() in clear_vm_uninitialized_flag() */
+> 30a7a9b17c4b03 Baoquan He              2023-02-06  3664  		smp_rmb();
+> 30a7a9b17c4b03 Baoquan He              2023-02-06  3665  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3666  		vaddr = (char *) va->va_start;
+> 06c8994626d1b7 Baoquan He              2023-02-06 @3667  		size = vm ? get_vm_area_size(vm) : va_size(va);
+> 06c8994626d1b7 Baoquan He              2023-02-06  3668  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3669  		if (addr >= vaddr + size)
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3670  			continue;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3671  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3672  		if (addr < vaddr) {
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3673  			size_t to_zero = min_t(size_t, vaddr - addr, remains);
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3674  			size_t zeroed = zero_iter(iter, to_zero);
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3675  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3676  			addr += zeroed;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3677  			remains -= zeroed;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3678  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3679  			if (remains == 0 || zeroed != to_zero)
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3680  				goto finished;
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3681  		}
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3682  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3683  		n = vaddr + size - addr;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3684  		if (n > remains)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3685  			n = remains;
+> 06c8994626d1b7 Baoquan He              2023-02-06  3686  
+> 06c8994626d1b7 Baoquan He              2023-02-06  3687  		if (flags & VMAP_RAM)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3688  			copied = vmap_ram_vread_iter(iter, addr, n, flags);
+> 06c8994626d1b7 Baoquan He              2023-02-06 @3689  		else if (!(vm->flags & VM_IOREMAP))
+>                                                                                    ^^^^^^^^^
+> Unchecked dereference
+> 
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3690  			copied = aligned_vread_iter(iter, addr, n);
+> d0107eb07320b5 KAMEZAWA Hiroyuki       2009-09-21  3691  		else /* IOREMAP area is treated as memory hole */
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3692  			copied = zero_iter(iter, n);
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3693  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3694  		addr += copied;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3695  		remains -= copied;
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3696  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3697  		if (copied != n)
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3698  			goto finished;
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3699  	}
+> d0107eb07320b5 KAMEZAWA Hiroyuki       2009-09-21  3700  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3701  finished_zero:
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3702  	spin_unlock(&vmap_area_lock);
+> d0107eb07320b5 KAMEZAWA Hiroyuki       2009-09-21  3703  	/* zero-fill memory holes */
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3704  	return count - remains + zero_iter(iter, remains);
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3705  finished:
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3706  	/* Nothing remains, or We couldn't copy/zero everything. */
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3707  	spin_unlock(&vmap_area_lock);
+> d0107eb07320b5 KAMEZAWA Hiroyuki       2009-09-21  3708  
+> 4c91c07c93bbbd Lorenzo Stoakes         2023-03-22  3709  	return count - remains;
+> ^1da177e4c3f41 Linus Torvalds          2005-04-16  3710  }
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
+
