@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CC47CE012
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FB57CDF2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345919AbjJROgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S1345048AbjJRORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345731AbjJROfu (ORCPT
+        with ESMTP id S1344901AbjJROR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:35:50 -0400
+        Wed, 18 Oct 2023 10:17:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2111726;
-        Wed, 18 Oct 2023 07:14:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D291C4339A;
-        Wed, 18 Oct 2023 14:14:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7815386A;
+        Wed, 18 Oct 2023 07:14:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6467BC433CB;
+        Wed, 18 Oct 2023 14:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638475;
-        bh=gN8cYZmzrmw4cPbabJxCr1aTBAHsKK25MwdgN88SNnI=;
+        s=k20201202; t=1697638477;
+        bh=+qvG0XTru+KrTr6le1sTm/1/16/rrY7hNUFgaFoouRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkbBPjk4BD4hguzqyG4fWu1prnOqJ/34iGA94SFiLt7XifqalgbxdRTzbgZeD4eoV
-         nLKTXLcZzzhxH420lwkk08UylbdAb4oRPe8/vyxEpAs085L3z8HffF1FhaZpP6UBOj
-         JHAXEfJE9u0+6OOYg4C6EkJqFP8Cdion7WkxYf4EDB1lWDtAstdULBj2NC4TSYfaCh
-         2zkf4HPARUOmgVA53vWeeFwH0w+Qbqt8RND1jnHOWqytdHFkF2jGlTxFr450X61Wni
-         Yd9Vyg/jm7qrt/m++AinsWfwD8bFu3eGxR7ZlGf1tYUy+XWPtR7a3GakrgOpDK9lv4
-         74o5zB682C5Fg==
+        b=hDOEm6l8ITMRO6ltHLEQ6bFRDrWUKQcyR1SSENvV6Y5BMrgjU38rk2MAkJ0j5CXd0
+         vSkpsrIf0h8gvuVsdgZJ98cwymRmnRWfVB6dnQjNwt80wTii321ItGmzbEJVdS15OT
+         JBInhsMGbRPGMFKnFvJxB68L0jbjMJxvMmeLMt7u0hkyOHPYiwO522Cj+8WQaBrua/
+         xE0fFxtoyODr8vLp5QBmN/TltDzq8xeXN2QJ2ad/ghvU5QcHpjeVNCQ3jgKl1Rebec
+         /qoc3au3q0Gsk3Zw6qSqrhipYQl/xXxet9UKAE/MsSAGl274YhHt8OpY2NNObxxMwG
+         sHre/RClHFE9g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 09/14] dmaengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
-Date:   Wed, 18 Oct 2023 10:14:09 -0400
-Message-Id: <20231018141416.1335165-9-sashal@kernel.org>
+Cc:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 10/14] net: macsec: indicate next pn update when offloading
+Date:   Wed, 18 Oct 2023 10:14:10 -0400
+Message-Id: <20231018141416.1335165-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141416.1335165-1-sashal@kernel.org>
 References: <20231018141416.1335165-1-sashal@kernel.org>
@@ -53,36 +54,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Shurong <zhang_shurong@foxmail.com>
+From: "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 
-[ Upstream commit 0618c077a8c20e8c81e367988f70f7e32bb5a717 ]
+[ Upstream commit 0412cc846a1ef38697c3f321f9b174da91ecd3b5 ]
 
-The pm_runtime_enable will increase power disable depth. Thus
-a pairing decrement is needed on the error handling path to
-keep it balanced according to context.
-We fix it by calling pm_runtime_disable when error returns.
+Indicate next PN update using update_pn flag in macsec_context.
+Offloaded MACsec implementations does not know whether or not the
+MACSEC_SA_ATTR_PN attribute was passed for an SA update and assume
+that next PN should always updated, but this is not always true.
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/tencent_DD2D371DB5925B4B602B1E1D0A5FA88F1208@qq.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+The PN can be reset to its initial value using the following command:
+$ ip macsec set macsec0 tx sa 0 off #octeontx2-pf case
+
+Or, the update PN command will succeed even if the driver does not support
+PN updates.
+$ ip macsec set macsec0 tx sa 0 pn 1 on #mscc phy driver case
+
+Comparing the initial PN with the new PN value is not a solution. When
+the user updates the PN using its initial value the command will
+succeed, even if the driver does not support it. Like this:
+$ ip macsec add macsec0 tx sa 0 pn 1 on key 00 \
+ead3664f508eb06c40ac7104cdae4ce5
+$ ip macsec set macsec0 tx sa 0 pn 1 on #mlx5 case
+
+Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/ste_dma40.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/macsec.c | 2 ++
+ include/net/macsec.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
-index cb6b0e9ed5adc..0e9cb01682647 100644
---- a/drivers/dma/ste_dma40.c
-+++ b/drivers/dma/ste_dma40.c
-@@ -3697,6 +3697,7 @@ static int __init d40_probe(struct platform_device *pdev)
- 		regulator_disable(base->lcpa_regulator);
- 		regulator_put(base->lcpa_regulator);
- 	}
-+	pm_runtime_disable(base->dev);
+diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
+index 21f41f25a8abe..07c822c301185 100644
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -2410,6 +2410,7 @@ static int macsec_upd_txsa(struct sk_buff *skb, struct genl_info *info)
  
- 	kfree(base->lcla_pool.alloc_map);
- 	kfree(base->lookup_log_chans);
+ 		ctx.sa.assoc_num = assoc_num;
+ 		ctx.sa.tx_sa = tx_sa;
++		ctx.sa.update_pn = !!prev_pn.full64;
+ 		ctx.secy = secy;
+ 
+ 		ret = macsec_offload(ops->mdo_upd_txsa, &ctx);
+@@ -2503,6 +2504,7 @@ static int macsec_upd_rxsa(struct sk_buff *skb, struct genl_info *info)
+ 
+ 		ctx.sa.assoc_num = assoc_num;
+ 		ctx.sa.rx_sa = rx_sa;
++		ctx.sa.update_pn = !!prev_pn.full64;
+ 		ctx.secy = secy;
+ 
+ 		ret = macsec_offload(ops->mdo_upd_rxsa, &ctx);
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index d6fa6b97f6efa..0dc4303329391 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -240,6 +240,7 @@ struct macsec_context {
+ 	struct macsec_secy *secy;
+ 	struct macsec_rx_sc *rx_sc;
+ 	struct {
++		bool update_pn;
+ 		unsigned char assoc_num;
+ 		u8 key[MACSEC_MAX_KEY_LEN];
+ 		union {
 -- 
 2.40.1
 
