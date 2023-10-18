@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B797CEB40
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610B77CEB44
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjJRW2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        id S231942AbjJRW3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjJRW2e (ORCPT
+        with ESMTP id S230051AbjJRW3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:28:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B3B95
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:28:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A32FFC433C7;
-        Wed, 18 Oct 2023 22:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697668112;
-        bh=kOr6kBKVTsDGo/Ewz8kI8OgtxzzOHafK+KurBxJCfV4=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=hKer3voRhWWEcxhPtyOE+NLlGnF6jr3xISPAMNr4ybU/hA5S6CXivbUBZjcGHBxB6
-         wuYohN9nefPMJfk4aJhNP/cR4rzEzuztuez/hfZL0pqRkkvoh6fcNb1iF4iqJvTdJt
-         3+UjEiB3JaB1dpqP48RZrOT21dOxB1zJpi6sr5d/0sUKUGuNS4V0vh8vC8ouNFAaFN
-         /awoxU/kLjfhQeT9YUfQ7pL2luEG0xvBJWFQGoNzQVjX9VZqrfnINzPbXxomD/Cenz
-         Eh03ihOpiIAtcMo8YBvFv3yQVjW7F+zBXj3atJK8gHCmkpjxNv3DL+iezwHfjJ6B2D
-         FnBUUduSXSBQw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3F028CE0BB0; Wed, 18 Oct 2023 15:28:32 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 15:28:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     David Vernet <void@manifault.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] Fold smp_mb__before_atomic() into atomic_set_release()
-Message-ID: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        Wed, 18 Oct 2023 18:29:20 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9020D115
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:29:18 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c0ecb9a075so51297775ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697668158; x=1698272958; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MlEhPotc9YVtJuw6c5D3IvfNe+8QoING9f1FrC2gg/U=;
+        b=JT3ODgYecULnjYpL8MERlDIjflhc1CPn9eeq2YXXsPQID82x6RcvoccyBhciNM/qt0
+         KBaQivWvSMJ/5rYdwMHBuIiQDdqNZyPnIP/vYt9qKmwwfH/8CAlJNw7r3R+1XtDqI+Cy
+         Gj4Gl+bU+jQI8wDOkfVlSM2uoLG/O1p+4Uacs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697668158; x=1698272958;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MlEhPotc9YVtJuw6c5D3IvfNe+8QoING9f1FrC2gg/U=;
+        b=duZ2JDxMUlXU5isj3xcsICUiCmD64yYQ+2H6WlSpx+aRESugB8Vc5xVrbbzqoZ9Csh
+         vctcdXLdQTiQRte9q4Ll+XV/iUTTTe5G/EUd6esJ6zX1oD5cyWYJcus1tO1FkxrdPdeZ
+         YD7iNPpTFvuZyOuv+Wz9+JerkCljzn+YRQ9AZmqfwu/Exl7rvnTUGQ5dE/VJy5nRwTU5
+         b2PtV+K3oiAjFCGlZrS3DlPZ0sE+oJBCBvd750j7JbkPXU79dNP0OFDIpmJ77d7Vc7jR
+         jg37tvMjd7nddgAr1tfGeqqA8EPQdBUXBqntu6F8XThcqnceGpR3J8ajG+3465Fe8Gsn
+         T9Sg==
+X-Gm-Message-State: AOJu0YyALSbHrqFh4+gb3xOQv44IYs2NNpidHkYzxDQHs+mkEVpq3+cu
+        KTDdP3VhI3GuVbssz8O7tmBt1Q==
+X-Google-Smtp-Source: AGHT+IFa7ai3cfHBIJet4SvOmgqTNI6nHVqvudThEcy1ldRSisV/7jAkhiE1Axsq53XFBLKli+nTAA==
+X-Received: by 2002:a17:902:dac8:b0:1ca:64f:35ff with SMTP id q8-20020a170902dac800b001ca064f35ffmr877478plx.48.1697668158080;
+        Wed, 18 Oct 2023 15:29:18 -0700 (PDT)
+Received: from chromium.org (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902cec400b001bf6ea340a9sm425908plg.159.2023.10.18.15.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 15:29:17 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 22:29:16 +0000
+From:   Prashant Malani <pmalani@chromium.org>
+To:     RD Babiera <rdbabiera@google.com>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] usb: typec: altmodes/displayport: verify compatible
+ source/sink role combination
+Message-ID: <ZTBcPEXV5UL_HP3W@chromium.org>
+References: <20231018203408.202845-2-rdbabiera@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231018203408.202845-2-rdbabiera@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf: Fold smp_mb__before_atomic() into atomic_set_release()
+Hi RD,
 
-The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
-immediately preceded by smp_mb__before_atomic() so as to order storing
-of ring-buffer consumer and producer positions prior to the atomic_set()
-call's clearing of the ->busy flag, as follows:
+On Oct 18 20:34, RD Babiera wrote:
+> DisplayPort Alt Mode CTS test 10.3.8 states that both sides of the
+> connection shall be compatible with one another such that the connection
+> is not Source to Source or Sink to Sink.
+> 
+> The DisplayPort driver currently checks for a compatible pin configuration
+> that resolves into a source and sink combination. The CTS test is designed
+> to send a Discover Modes message that has a compatible pin configuration
+> but advertises the same port capability as the device; the current check
+> fails this.
+> 
+> Verify that the port and port partner resolve into a valid source and sink
+> combination before checking for a compatible pin configuration.
+> 
+> ---
+> Changes since v1:
+> * Fixed styling errors
+> * Added DP_CAP_IS_UFP_D and DP_CAP_IS_DFP_D as macros to typec_dp.h
+> ---
+> 
 
-        smp_mb__before_atomic();
-        atomic_set(&rb->busy, 0);
+FWIW,
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
-Although this works given current architectures and implementations, and
-given that this only needs to order prior writes against a later write.
-However, it does so by accident because the smp_mb__before_atomic()
-is only guaranteed to work with read-modify-write atomic operations,
-and not at all with things like atomic_set() and atomic_read().
+> Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mode")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
 
-Note especially that smp_mb__before_atomic() will not, repeat *not*,
-order the prior write to "a" before the subsequent non-read-modify-write
-atomic read from "b", even on strongly ordered systems such as x86:
+BR,
 
-        WRITE_ONCE(a, 1);
-        smp_mb__before_atomic();
-        r1 = atomic_read(&b);
-
-Therefore, replace the smp_mb__before_atomic() and atomic_set() with
-atomic_set_release() as follows:
-
-        atomic_set_release(&rb->busy, 0);
-
-This is no slower (and sometimes is faster) than the original, and also
-provides a formal guarantee of ordering that the original lacks.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: David Vernet <void@manifault.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: <bpf@vger.kernel.org>
-
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index f045fde632e5..0ee653a936ea 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
- 	/* Prevent the clearing of the busy-bit from being reordered before the
- 	 * storing of any rb consumer or producer positions.
- 	 */
--	smp_mb__before_atomic();
--	atomic_set(&rb->busy, 0);
-+	atomic_set_release(&rb->busy, 0);
- 
- 	if (flags & BPF_RB_FORCE_WAKEUP)
- 		irq_work_queue(&rb->work);
+-Prashant
