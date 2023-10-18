@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7071A7CE339
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3947CE343
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbjJRQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S229786AbjJRRBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbjJRQ4A (ORCPT
+        with ESMTP id S229462AbjJRRBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:56:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03621118
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:55:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB57FC433C7;
-        Wed, 18 Oct 2023 16:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697648158;
-        bh=FhJt2vNLVuhy7x9s2wmhEtB3RvSozgHH/YZh9yYPj4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H3cQz036JQg3nyZgCDH2boZgyUF6nTnxBXrYb7RH6+XduR0hU21m9oh5M6+bCuKYZ
-         J4pg5smzBj5uG44HDZVsNQJNCSIKp25eAlha1DymuL3TVRm/hurMUmHCA79FKXl/ME
-         z0O93xG2uhS1OtXHMLnSzSzuDb2/2ReI0z7GspQ2isDYSGTtJmsidvm33pCdrjdqS2
-         /g1xPQRCvu1UnCBYJNs2qGfUdcuvyz1NzXDVFVKjfOaNenfXLfWFDRMD44xMIBiB3U
-         ZONOH1PO5UwFdYlrVjIBry1fZMgaOXOs8TRl3KMn6UsrN9XWF6QguZ3jZ3nHZlR8jl
-         31ZuH141YOH0Q==
-Date:   Wed, 18 Oct 2023 09:55:56 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, kasan-dev@googlegroups.com,
-        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] lib: Kconfig: disable dynamic sanitizers for test builds
-Message-ID: <20231018165556.GA3842315@dev-arch.thelio-3990X>
-References: <20231018153147.167393-1-hamza.mahfooz@amd.com>
- <CANpmjNPZ0Eii3ZTrVqEL2Ez0Jv23y-emLBCLSZ==xmH--4E65g@mail.gmail.com>
+        Wed, 18 Oct 2023 13:01:19 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFF3B0;
+        Wed, 18 Oct 2023 10:01:17 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-581e5a9413bso942539eaf.1;
+        Wed, 18 Oct 2023 10:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697648477; x=1698253277; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hr0ycA5aHb6vFQVTChWOwllkgCks7I3a7aaUZga0s58=;
+        b=ABCO/awwwHbIMTVqnGp24qorbg0akprQMUcS9TFiRKIsluD4mEElu+OPS/1PyXwscg
+         cRTlIW60oXcbs0W8HbhyYHwRYh9OTM5Aj6wQv3nL8jv8HTQYPuSgE+HYxejTkJ3RoqJQ
+         wgQvPrzlk6UPl6vYXXXk2qf23BHdVAk2hX6l5wB5Hmnp7+yguZPZ55myutNvzyUhoePd
+         eu1ptI029MSa0QVfyTDYVlThSKISFtIb0BVF/e7ExGRinMNIjSGSS1phz20mwFo0bDhy
+         Ms+IThkxUzQPsy/pkic5C9NpwtyhRrrBohJdAJzvMW3/RlKA214hFusEVDNzkvQE96cZ
+         knJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697648477; x=1698253277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hr0ycA5aHb6vFQVTChWOwllkgCks7I3a7aaUZga0s58=;
+        b=v9rRIOUF2VShTUGKUFogBgKx2NSZ3q+8BdRChaDPCfe7SiHuDOvPS7RSa7LKJk6v+f
+         Zx5+ZECM76mGR337TcaZoHNSgaNRuw6ady5pR6mfw+ojs7RVfypjgaJ23njivbFgx8Le
+         bAkOeMXpn0syBzOX5/Kpg8BZU5oxENX+Qy0btFgymIuIQfS6zz8aHJdetY7nAoI8yR9P
+         YGQvwYIXzwQyLu5IjJGJDRIR1tJg0vhPVXGWC5jh7r+Jfp8uZ2HliFfjzK0afG7kJ7vk
+         FNcoUC6RDm5nVmwkAMlRO03Sb+urK9NFkKP3qJSzH+bZRp30UFk/VhAd/+ihR9Vl29xJ
+         iqEQ==
+X-Gm-Message-State: AOJu0Yyg6XEB1cbgsx67bpcQZt0rnrvUWmYgXgtmRhgRBQOVJOsSIf2i
+        rY9TOqzb47pVT/JyRVdl6kg=
+X-Google-Smtp-Source: AGHT+IGAR9FT9S+HPbNUPuOZJAwG3+pwoP70aGYbDGxtB3QICfIgpn1ejznN/Qqo1qW4b5zRSrP3bg==
+X-Received: by 2002:a05:6358:ed7:b0:166:94b8:da17 with SMTP id 23-20020a0563580ed700b0016694b8da17mr6604656rwh.16.1697648476989;
+        Wed, 18 Oct 2023 10:01:16 -0700 (PDT)
+Received: from ubuntu ([223.226.54.200])
+        by smtp.gmail.com with ESMTPSA id v14-20020aa799ce000000b006bd6a0a4678sm3574595pfi.80.2023.10.18.10.01.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 10:01:15 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 10:01:11 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Coiby Xu <coiby.xu@gmail.com>, netdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kumaran.4353@gmail.com
+Subject: Re: [PATCH 0/2] staging: qlge: Replace the occurrences of (1<<x) by
+ BIT(x)
+Message-ID: <20231018170111.GA3452@ubuntu>
+References: <cover.1697568757.git.nandhakumar.singaram@gmail.com>
+ <2023101856-visa-unlimited-a365@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNPZ0Eii3ZTrVqEL2Ez0Jv23y-emLBCLSZ==xmH--4E65g@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023101856-visa-unlimited-a365@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 06:22:14PM +0200, Marco Elver wrote:
-> On Wed, 18 Oct 2023 at 17:32, 'Hamza Mahfooz' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-
-<snip>
-
-> > diff --git a/lib/Kconfig.kmsan b/lib/Kconfig.kmsan
-> > index ef2c8f256c57..eb05c885d3fd 100644
-> > --- a/lib/Kconfig.kmsan
-> > +++ b/lib/Kconfig.kmsan
-> > @@ -13,6 +13,7 @@ config KMSAN
-> >         depends on HAVE_ARCH_KMSAN && HAVE_KMSAN_COMPILER
-> >         depends on SLUB && DEBUG_KERNEL && !KASAN && !KCSAN
-> >         depends on !PREEMPT_RT
-> > +       depends on !COMPILE_TEST
+On Wed, Oct 18, 2023 at 03:28:30PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Oct 17, 2023 at 12:03:57PM -0700, Nandha Kumar Singaram wrote:
+> > This patchset performs code cleanup in qlge driver as per
+> > linux coding style and may be applied in any sequence.
+> > 
+> > Nandha Kumar Singaram (2):
+> >   staging: qlge: Replace the occurrences of (1<<x) by BIT(x)
+> >   staging: qlge: Replace the occurrences of (1<<x) by BIT(x)
 > 
-> KMSAN already selects FRAME_WARN of 0 and should not cause you any
-> issues during build testing.
+> You have two different patches doing different things yet they have the
+> same identical subject lines.  That's not ok, sorry, please make unique
+> subject lines as obviously you are doing different things.
+> 
+> thanks,
+> 
+> greg k-h
 
-Yeah, this particular case is a bug in the AMDGPU dml2 Makefile, where
-CONFIG_FRAME_WARN=0 is not respected.
+Sorry greg, thanks for your feedback. Will update the patch
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-index f35ed8de260d..66431525f2a0 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-@@ -61,7 +61,7 @@ ifneq ($(CONFIG_FRAME_WARN),0)
- frame_warn_flag := -Wframe-larger-than=2048
- endif
- 
--CFLAGS_$(AMDDALPATH)/dc/dml2/display_mode_core.o := $(dml2_ccflags) -Wframe-larger-than=2048
-+CFLAGS_$(AMDDALPATH)/dc/dml2/display_mode_core.o := $(dml2_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml2/display_mode_util.o := $(dml2_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml2/dml2_wrapper.o := $(dml2_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml2/dml2_utils.o := $(dml2_ccflags)
-
-I will try to send that patch soon, unless one of the AMDGPU folks wants
-to beat me to it.
-
-Cheers,
-Nathan
+Regards,
+Nandha Kumar Singaram
