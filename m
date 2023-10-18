@@ -2,76 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B143F7CDE4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A0D7CDE47
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344837AbjJROHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
+        id S1344832AbjJROGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjJROHH (ORCPT
+        with ESMTP id S231860AbjJROGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:07:07 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B17510E
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vC793F9pwZbiBpRG56Ys5EhHpAk5IB8eRIKOaHXn80o=; b=dwWdKfK1CygWWhMzyc5akjnX08
-        Ie7n8wdpW4KEG/I78AQjX6kMFwdluu3jjEDJxj+h8dRGLTyLrXsQskQ+Ed6sH/e4FLIGpgR9DISQO
-        O/vRVYoclkGSsP/MrdHlOlncx9XDf1CHydz6Sg3GJNiUNfAeBvlajfDwjRYCFn2lYVQxL2lJ5Cat4
-        SdFBGgxmFjvxgx3wwoJcVjTXU9Gt7jYxHg7yefp3CTi0Fe6UmmOS7lULBnUJGoCSX3eZzONYwtfbi
-        wEZXos0lI3fPUc1OAWtGrh2n9ROHQZphEl8q5KWmnDGK+9Grb8IATSQtQlsN/g8UBoxzVZdu7FL0S
-        SfmsM2gg==;
-Received: from [192.168.1.4] (port=25357 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qt7C0-00016h-00;
-        Wed, 18 Oct 2023 16:06:36 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 18 Oct 2023 16:06:35 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <andrew@lunn.ch>
-CC:     <UNGLinuxDriver@microchip.com>, <ante.knezic@helmholz.de>,
-        <conor+dt@kernel.org>, <davem@davemloft.net>,
-        <devicetree@vger.kernel.org>, <edumazet@google.com>,
-        <f.fainelli@gmail.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>, <marex@denx.de>,
-        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
-Subject: Re: [PATCH net-next v3 2/2] net:dsa:microchip: add property to select
-Date:   Wed, 18 Oct 2023 16:06:28 +0200
-Message-ID: <20231018140628.4149-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <92a18413-fa28-4420-88f8-e7dedaa8c45e@lunn.ch>
-References: <92a18413-fa28-4420-88f8-e7dedaa8c45e@lunn.ch>
+        Wed, 18 Oct 2023 10:06:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB39B83;
+        Wed, 18 Oct 2023 07:06:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E1FC821B4A;
+        Wed, 18 Oct 2023 14:06:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697637995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7cipJ1KzMEqbXf8FrxdUTbjqT8NmWtc5T0d42gkoIA=;
+        b=MKP6LPBzpl7H9LJsOUJnK/dlpeHQ3sglBkkK8B5u4vJsUf6htIxOjpWgm9GOzJkaNmt6+0
+        d/Zy8NfSKw35TRKxdRMUOWMYy0cmGt+GYfVrHD9nby7PlEvWoyMjlITzqOfD6Buz6BqhSc
+        F59XI1xKOE/s27nOiQVxGsssIgkB3a0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697637995;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7cipJ1KzMEqbXf8FrxdUTbjqT8NmWtc5T0d42gkoIA=;
+        b=6YQaehS1CmnhTvvWdrL+nKU0I505CDnehbJPqLS4g0wCNYjoLhaZFHrYUqFwdqmPrytVS5
+        Q3O6Tv2aS5Np0gDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B841213915;
+        Wed, 18 Oct 2023 14:06:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7ihqLGvmL2UjTQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 18 Oct 2023 14:06:35 +0000
+Message-ID: <802261a7-553d-348f-7dd4-109eac704727@suse.cz>
+Date:   Wed, 18 Oct 2023 16:06:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 3/5] mm: kmem: make memcg keep a reference to the
+ original objcg
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-4-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016221900.4031141-4-roman.gushchin@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.10
+X-Spamd-Result: default: False [-7.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 15:52:27 +0200, Andrew Lunn wrote:
+On 10/17/23 00:18, Roman Gushchin wrote:
+> Keep a reference to the original objcg object for the entire life
+> of a memcg structure.
+> 
+> This allows to simplify the synchronization on the kernel memory
+> allocation paths: pinning a (live) memcg will also pin the
+> corresponding objcg.
+> 
+> The memory overhead of this change is minimal because object cgroups
+> usually outlive their corresponding memory cgroups even without this
+> change, so it's only an additional pointer per memcg.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-> It looks like this is the only use of dev->rmii_clk_internal? So does
-> it actually need to be a member of ksz_device? 
+Forgot to point out typo:
 
-Yes, I guess you are right, sorry about that, it probably won't be used later
-on and should be removed from ksz_device.
-I will repost if the rest of the patch is ok?
+> ---
+>  include/linux/memcontrol.h | 8 +++++++-
+>  mm/memcontrol.c            | 5 +++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index ab94ad4597d0..277690af383d 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -299,7 +299,13 @@ struct mem_cgroup {
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+>  	int kmemcg_id;
+> -	struct obj_cgroup __rcu *objcg;
+> +	/*
+> +	 * memcg->objcg is wiped out as a part of the objcg repaprenting
+
+						reparenting ^
+
+> +	 * process. memcg->orig_objcg preserves a pointer (and a reference)
+> +	 * to the original objcg until the end of live of memcg.
+> +	 */
+> +	struct obj_cgroup __rcu	*objcg;
+> +	struct obj_cgroup	*orig_objcg;
+>  	/* list of inherited objcgs, protected by objcg_lock */
+>  	struct list_head objcg_list;
+>  #endif
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 0605e45bd4a2..d90cc19e4113 100644
+
