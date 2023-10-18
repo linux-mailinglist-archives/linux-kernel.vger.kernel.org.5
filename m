@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3F17CDE13
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BCC7CDE23
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344813AbjJRN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
+        id S1344838AbjJRN7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344811AbjJRN57 (ORCPT
+        with ESMTP id S1344812AbjJRN7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:57:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCC111D;
-        Wed, 18 Oct 2023 06:57:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B336C433C7;
-        Wed, 18 Oct 2023 13:57:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697637476;
-        bh=9CmkbilECnd6ujEwZdATorH+rM11Zfb8aq81/Ubbn+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u5AciNiqCUVqfWrstP1MVrMTugREQ2IjVcYCWzfDKjkJvtOw4vyyxAejqyWGMgDr8
-         SOaeOx6lWLiKz0j2COAB/qb8L2Rm6KJ0BmJwOkAz2+T5KJt0zxK5cC85xMfkAIGJ/I
-         zXlV7bSkmjWoqgUkK2EHknjEo3TYmU6RsXWTSMcQnKqVRS/mc3zy+Nvw/KGqgrbIDq
-         WS3BUnm5hYQ8pG4q96QdFMtCW2HHwQEphyUsatEFi9RUg6ajwiaNYMpvyyj1Xc8Zfg
-         QGgsQInTyaIo+Yph8bsl4vnh3DayUsBFEyi5F+nhFO/9JzkwCbQcplGGdoVRMVbVB0
-         tiSuzu9D90oiQ==
-Date:   Wed, 18 Oct 2023 14:57:50 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 6/7] riscv: dts: thead: Enable BeagleV Ahead eMMC
- controller
-Message-ID: <20231018-dating-yogurt-d7f3a65a873e@spud>
-References: <20231017-th1520-mmc-v2-0-4678c8cc4048@baylibre.com>
- <20231017-th1520-mmc-v2-6-4678c8cc4048@baylibre.com>
+        Wed, 18 Oct 2023 09:59:33 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0C5113
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:59:30 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bd04558784so4758465a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:59:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697637570; x=1698242370; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UJsFVEu0nZS2XQuTUeDLT7XtWcBNpvC9dTMB0YQtl08=;
+        b=jgfihO2VPfAbDh85976Fs7ofgR3Ck4yNRIJ6Kog4w28QqeLt+p533nWYcfmtuCQeiv
+         cZ8/Tmp3EQ0s72Fmh1umT+cw2aUY6zY306yE0vahZCQYMMk9E1XPnBV1gXmThY44NNRK
+         hKmbhfIhMrv6eYI65OE8W9Ti1Z7N6Yrz/wr5/36HEWaNvqSdaqSBNywqNQLmeUpmTnEl
+         wRHzqwR3pGtv7HNjz57S7bU/aNmRZe+gPeD17GPr7Tga62QoLtok5IBpdVmKqQ1M+WGK
+         VYgOGMc9Qfo7sXD6/w6kWAAPzExHwV9k+tNIGWCsxgoiDJmDGUB8VQfkpuzX7Tf7yJp/
+         tPAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697637570; x=1698242370;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UJsFVEu0nZS2XQuTUeDLT7XtWcBNpvC9dTMB0YQtl08=;
+        b=knO34bKs7XF+btDn8KhihHTJ/7OQsVXvMSxKjmcoKtTNxqlQUK7WiP7cVvTuu0EYYe
+         Q9HbX2jka3aw6xsYQUFUAWAlO78DvjgZr/CXj5jfMOwx8S7px+uE/oIdw/HPI3jKOTl3
+         FJFK9czdYv/gl1b6fMHQ8WBXXX37j1LIw0VGjgIlGzulD3skWRwDXi6EWGD8GizX+5Pp
+         EyUC26B30iQaggX2bmKPw8yaLbHAD4qsrgZguKf2rZ873GENJC9iIsII8+lFtQ9kpLZV
+         A7YM9xF8sA4sIxvCVinO2a/3HT12UUhnAmNPOtdzCrKSAmsCEMK59ASJ4WtHtTtJeFk2
+         wzpA==
+X-Gm-Message-State: AOJu0YxRIBM4nqLY8GJC61eKJerz3t6Uca5SgTLEBT/tuNgAMNHzTkGz
+        2FraTfFroJvvifLbfaIWiDosSKaPW1UMVJdaJCg=
+X-Google-Smtp-Source: AGHT+IHcSaXI8TATTgE0uFsyojz0oilu79AqJoPzqbYkazhnwilzrsOpJuwICO2yzMpVi+I/x9RR8bf6OhrrUddnT3U=
+X-Received: by 2002:a05:6870:be98:b0:1ea:118d:3e8e with SMTP id
+ nx24-20020a056870be9800b001ea118d3e8emr5548202oab.56.1697637570046; Wed, 18
+ Oct 2023 06:59:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EJhQKjdNlUN6WevH"
-Content-Disposition: inline
-In-Reply-To: <20231017-th1520-mmc-v2-6-4678c8cc4048@baylibre.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018011614.10883-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20231018011614.10883-1-yang.lee@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 18 Oct 2023 09:59:19 -0400
+Message-ID: <CADnq5_M=tRaFQVivkUQqRO1t_RWOgd5=FnRtuo4scAu5eTg+cg@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/amd/display: Remove unneeded semicolon
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     alexander.deucher@amd.com, harry.wentland@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
---EJhQKjdNlUN6WevH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 17, 2023 at 01:43:52PM -0700, Drew Fustini wrote:
-> Add properties to the emmc node and enable it and set the frequency for
-> the sdhci clock.
->=20
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+On Tue, Oct 17, 2023 at 9:16=E2=80=AFPM Yang Li <yang.lee@linux.alibaba.com=
+> wrote:
+>
+> ./drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c:464:3-4: Un=
+needed semicolon
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6900
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/ri=
-scv/boot/dts/thead/th1520-beaglev-ahead.dts
-> index 70e8042c8304..bf55319ba950 100644
-> --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> @@ -52,6 +52,10 @@ &uart_sclk {
->  	clock-frequency =3D <100000000>;
->  };
-> =20
-> +&sdhci_clk {
-> +	clock-frequency =3D <198000000>;
-> +};
-> +
->  &dmac0 {
->  	status =3D "okay";
->  };
-> @@ -59,3 +63,13 @@ &dmac0 {
->  &uart0 {
->  	status =3D "okay";
->  };
-> +
-> +&mmc0 {
-> +	bus-width =3D <8>;
-> +	max-frequency =3D <198000000>;
-> +	mmc-hs400-1_8v;
-> +	non-removable;
-> +	no-sdio;
-> +	no-sd;
-> +	status =3D "okay";
-> +};
-
-Is this file meant to be in alphanumerical order?
-
-
---EJhQKjdNlUN6WevH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS/kXgAKCRB4tDGHoIJi
-0ob5AQCRV10xGur/a43BpgYcA5A0R9y8m/5uK2GBbJL6LVr59QEAopmqh+brNf3r
-URiqy36uFplvPJ9tsOe2/+aAmZRtWQU=
-=DFYd
------END PGP SIGNATURE-----
-
---EJhQKjdNlUN6WevH--
+>  drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c =
+b/drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c
+> index 36baf35bb170..f45fbe820445 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_dc_resource_mgmt.c
+> @@ -461,7 +461,7 @@ static void sort_pipes_for_splitting(struct dc_plane_=
+pipe_pool *pipes)
+>                                 swapped =3D false;
+>                         }
+>
+> -               };
+> +               }
+>         }
+>  }
+>
+> --
+> 2.20.1.7.g153144c
+>
