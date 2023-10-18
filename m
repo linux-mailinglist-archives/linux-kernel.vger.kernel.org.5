@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C77407CEB29
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B797CEB40
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjJRW1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S231704AbjJRW2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjJRW1M (ORCPT
+        with ESMTP id S229487AbjJRW2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:27:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD02114
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697668031; x=1729204031;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=75QujgEWINW/qGGyCr9s22g4nyJiNVG3a7cStBj1G6Y=;
-  b=Enh+iBuh+LHMVKC7G0ph17YNABdMBiiB/qtBgmQZrI9DJydxHAlwCQdc
-   otuWa/SGhER4rBjPbFOEHQAiNXQLz4vbYjQvCjAUQuq1Homc3riqk9xDv
-   fzoQjkrNvedR1GeHwYYH075qhIOmFUZUFmOP2SbrYdBenEprtD6D1WtzX
-   tutyKiVG8RHkLE/+lty3nMRFAqdQEwCJQwLOXocsT/cb3b5Zcetn58yta
-   fS7YkeV57tK1eCwEmy9eAgBR/Wk1pfPpc4FNusVKmMAx90VQrDxgOVfiG
-   3xSqQz+QFpYXhuQ4PKOG+Hpcxi0wbfMPYVgDz3mE3XUw12GywbZKD9a3Y
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="452598562"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="452598562"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:26:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="750272751"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="750272751"
-Received: from minhjohn-mobl.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.212.43.53])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:26:48 -0700
-From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
-To:     Adam Dunlap <acdunlap@google.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, <kirill.shutemov@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Felix Held <felix-coreboot@felixheld.de>
-Subject: Reserved bits and commit x86/sev-es: Set x86_virt_bits to the
- correct value straight away, instead of a two-phase approach
-Date:   Wed, 18 Oct 2023 15:26:47 -0700
-Message-ID: <87r0lry3bs.fsf@jcompost-mobl.amr.corp.intel.com>
-Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara,
-        CA 95052. USA
+        Wed, 18 Oct 2023 18:28:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B3B95
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:28:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A32FFC433C7;
+        Wed, 18 Oct 2023 22:28:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697668112;
+        bh=kOr6kBKVTsDGo/Ewz8kI8OgtxzzOHafK+KurBxJCfV4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=hKer3voRhWWEcxhPtyOE+NLlGnF6jr3xISPAMNr4ybU/hA5S6CXivbUBZjcGHBxB6
+         wuYohN9nefPMJfk4aJhNP/cR4rzEzuztuez/hfZL0pqRkkvoh6fcNb1iF4iqJvTdJt
+         3+UjEiB3JaB1dpqP48RZrOT21dOxB1zJpi6sr5d/0sUKUGuNS4V0vh8vC8ouNFAaFN
+         /awoxU/kLjfhQeT9YUfQ7pL2luEG0xvBJWFQGoNzQVjX9VZqrfnINzPbXxomD/Cenz
+         Eh03ihOpiIAtcMo8YBvFv3yQVjW7F+zBXj3atJK8gHCmkpjxNv3DL+iezwHfjJ6B2D
+         FnBUUduSXSBQw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3F028CE0BB0; Wed, 18 Oct 2023 15:28:32 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 15:28:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     David Vernet <void@manifault.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] Fold smp_mb__before_atomic() into atomic_set_release()
+Message-ID: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,69 +60,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Disposition: inline
+bpf: Fold smp_mb__before_atomic() into atomic_set_release()
 
-Hi,
+The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
+immediately preceded by smp_mb__before_atomic() so as to order storing
+of ring-buffer consumer and producer positions prior to the atomic_set()
+call's clearing of the ->busy flag, as follows:
 
-On both AMD and Intel platform, when memory encryption is enabled (TME
-on Intel, SME or SVE on AMD), the number of physical address bits
-should be lowered. Both AMD code (arch/x86/kernel/cpu/amd.c) and Intel
-code (arch/x86/kernel/cpu/intel.c) support this.
+        smp_mb__before_atomic();
+        atomic_set(&rb->busy, 0);
 
-I recently noticed though that Intel code is not lowering the number
-of physical address bits as part of the early cpu initialization
-(c_early_init) and this is leading to MTRRs sanity check failure in
-generic_get_mtrr() with the following logs.
+Although this works given current architectures and implementations, and
+given that this only needs to order prior writes against a later write.
+However, it does so by accident because the smp_mb__before_atomic()
+is only guaranteed to work with read-modify-write atomic operations,
+and not at all with things like atomic_set() and atomic_read().
 
-mtrr: your BIOS has configured an incorrect mask, fixing it.
-mtrr: your BIOS has configured an incorrect mask, fixing it.
-[...]
+Note especially that smp_mb__before_atomic() will not, repeat *not*,
+order the prior write to "a" before the subsequent non-read-modify-write
+atomic read from "b", even on strongly ordered systems such as x86:
 
-I have been working on fixing this following a similar approach to
-what AMD code does: lower the number of physical address bits at early
-initialization.
-- AMD: early_init_amd() -> detect_tme()  -> c->x86_phys_bits -= [...]
-- Intel: early_init_intel() -> early_detect_mem_encrypt() -> c->x86_phys_bits -= [...]
+        WRITE_ONCE(a, 1);
+        smp_mb__before_atomic();
+        r1 = atomic_read(&b);
 
-I posted the patch on the LKML (cf. <https://lore.kernel.org/lkml/65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com/T/>)
+Therefore, replace the smp_mb__before_atomic() and atomic_set() with
+atomic_set_release() as follows:
 
-It works just fine on v6.6-rc6. However, this morning Kirill brought
-up commit fbf6449f84bf ("x86/sev-es: Set x86_virt_bits to the correct
-value straight away, instead of a two-phase approach") on the tip
-branch to my attention and I believe it should break the AMD early
-flow and is breaking the patch I submitted on my local tests.
+        atomic_set_release(&rb->busy, 0);
 
-This commit moves the get_cpu_address_sizes() call after
-the this_cpu->c_early_init() call.
+This is no slower (and sometimes is faster) than the original, and also
+provides a formal guarantee of ordering that the original lacks.
 
-@@ -1601,7 +1607,6 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-		 cpu_detect(c);
-		 get_cpu_vendor(c);
-		 get_cpu_cap(c);
-- get_cpu_address_sizes(c);
-  setup_force_cpu_cap(X86_FEATURE_CPUID);
-  cpu_parse_early_param();
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: David Vernet <void@manifault.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: <bpf@vger.kernel.org>
 
-@@ -1617,6 +1622,8 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-		 setup_clear_cpu_cap(X86_FEATURE_CPUID);
-	 }
-
-+ get_cpu_address_sizes(c);
-+ setup_force_cpu_cap(X86_FEATURE_ALWAYS);
-
-  cpu_set_bug_bits(c);
-
-In the light of commit fbf6449f84bf I am wondering what is the right
-approach to fix the regression for AMD and then fix the MTRR check for
-Intel. Should we introduce a new cpu_dev callback to read the number
-of reserved bits and take it into account in get_cpu_address_sizes() ?
-
-Regards,
-
--- 
-*Jeremy*
-/One Emacs to rule them all/
-
---=-=-=--
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index f045fde632e5..0ee653a936ea 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
+ 	/* Prevent the clearing of the busy-bit from being reordered before the
+ 	 * storing of any rb consumer or producer positions.
+ 	 */
+-	smp_mb__before_atomic();
+-	atomic_set(&rb->busy, 0);
++	atomic_set_release(&rb->busy, 0);
+ 
+ 	if (flags & BPF_RB_FORCE_WAKEUP)
+ 		irq_work_queue(&rb->work);
