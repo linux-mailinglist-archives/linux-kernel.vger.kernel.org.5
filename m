@@ -2,152 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6597CE4A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3627CE476
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjJRRbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
+        id S231658AbjJRR3D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 13:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbjJRRbZ (ORCPT
+        with ESMTP id S230281AbjJRR24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:31:25 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE713C01
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:22:38 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 10:22:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697649756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZHjqgjJ0DJw5b20QDmJoc6vBigpsp2ZBEUURZnoLsI=;
-        b=GaTsb0RAXezus1Vlp+8lGAEICHr1ef9aRz8NOtZuHWbQyJ/aZCBv92T34FHPtPUwZXDY/u
-        w9iKSPUBX7e5vW9uGpTT0cLKiU+yCd07Pknzq0bCZdZ/qDG3KDpkKs2qgawTgbKrwuk2gq
-        DOEP/2oNVLZm88rFvJQFv0J9V5YGklU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
-Message-ID: <ZTAUTWO2UfI0VoPL@P9FQF9L96D.corp.robot.car>
-References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
- <20231016221900.4031141-3-roman.gushchin@linux.dev>
- <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
+        Wed, 18 Oct 2023 13:28:56 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6F426BF;
+        Wed, 18 Oct 2023 10:22:53 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-57f137dffa5so1006595eaf.1;
+        Wed, 18 Oct 2023 10:22:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697649772; x=1698254572;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KGquFH/+a1RdzcZc8K6W68eVVi5OATd0jI25tQHlZv8=;
+        b=LPHeetMzg/ILxOYIK9wyAxfSZnS+4zcqkRAKzCKSXPhptbNRcF+fUvytUMwX3MjShH
+         +5rrxNob2d/BZZO59Uo/FqEhnxngyIrL3TcODribDkl6Oga6whJtQOdY/H1wA0pS6tUU
+         wxNkC0gIcjgISK4Rnr7aJrDE4es/AEFT3IKeWqZNxRuvr4o0JYA1R/KIISL5kIpTqD1q
+         GardMiSxPKcO3S+a9Z7IO3WBm3om5txBmetKnsUqXJQx+Nv1IaLQCEXyqlEWw6oAQvPU
+         2cd7Lg64rEA1g6T7PnxrLiNwQSijCGSHnvPCTnkOXFysgDtfBI2zFYvsc+C42WxRrpY4
+         6+XA==
+X-Gm-Message-State: AOJu0YzYaTGEVjRAIurAw43EOcE2TRrR6Bwu3nwTV2nB7xcI/nCq7vmu
+        ZRU7pR8StG+MpVAGMhHj7bifyCi1MunWtAkxHe5ODQSC
+X-Google-Smtp-Source: AGHT+IGnmJUfeSri+TMV3NErQyfjji4f2m97Lkw8D0KsSEf0XFZvd7HfD1x/izKkVXkF2hgHtKhj59ftsHemFTzqGXM=
+X-Received: by 2002:a4a:e1cd:0:b0:581:feb5:ac87 with SMTP id
+ n13-20020a4ae1cd000000b00581feb5ac87mr2078567oot.1.1697649771877; Wed, 18 Oct
+ 2023 10:22:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018162540.667646-1-vincent.guittot@linaro.org> <20231018162540.667646-4-vincent.guittot@linaro.org>
+In-Reply-To: <20231018162540.667646-4-vincent.guittot@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Oct 2023 19:22:40 +0200
+Message-ID: <CAJZ5v0i58HLmgp=JYCbq5B6LUe0tEAhd9Ed9WKqkkHjVEO_W6A@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] cpufreq/schedutil: use a fixed reference frequency
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 11:52:27AM +0200, Vlastimil Babka wrote:
-> On 10/17/23 00:18, Roman Gushchin wrote:
-> > To charge a freshly allocated kernel object to a memory cgroup, the
-> > kernel needs to obtain an objcg pointer. Currently it does it
-> > indirectly by obtaining the memcg pointer first and then calling to
-> > __get_obj_cgroup_from_memcg().
-> > 
-> > Usually tasks spend their entire life belonging to the same object
-> > cgroup. So it makes sense to save the objcg pointer on task_struct
-> > directly, so it can be obtained faster. It requires some work on fork,
-> > exit and cgroup migrate paths, but these paths are way colder.
-> > 
-> > To avoid any costly synchronization the following rules are applied:
-> > 1) A task sets it's objcg pointer itself.
-> > 
-> > 2) If a task is being migrated to another cgroup, the least
-> >    significant bit of the objcg pointer is set atomically.
-> > 
-> > 3) On the allocation path the objcg pointer is obtained locklessly
-> >    using the READ_ONCE() macro and the least significant bit is
-> >    checked. If it's set, the following procedure is used to update
-> >    it locklessly:
-> >        - task->objcg is zeroed using cmpxcg
-> >        - new objcg pointer is obtained
-> >        - task->objcg is updated using try_cmpxchg
-> >        - operation is repeated if try_cmpxcg fails
-> >    It guarantees that no updates will be lost if task migration
-> >    is racing against objcg pointer update. It also allows to keep
-> >    both read and write paths fully lockless.
-> > 
-> > Because the task is keeping a reference to the objcg, it can't go away
-> > while the task is alive.
-> > 
-> > This commit doesn't change the way the remote memcg charging works.
-> > 
-> > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-> > Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  include/linux/sched.h |   4 ++
-> >  mm/memcontrol.c       | 130 +++++++++++++++++++++++++++++++++++++++---
-> >  2 files changed, 125 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 16ac2a5838fb..0605e45bd4a2 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> 
-> So IIUC here we increase objcg refcount.
-> 
-> > +				break;
-> > +			objcg = NULL;
-> > +		}
-> > +		rcu_read_unlock();
-> > +
-> > +		/*
-> > +		 * Try set up a new objcg pointer atomically. If it
-> > +		 * fails, it means the update flag was set concurrently, so
-> > +		 * the whole procedure should be repeated.
-> > +		 */
-> > +	} while (!try_cmpxchg(&current->objcg, &old, objcg));
-> 
-> And if this fails we throw objcg away and try again, but we should do
-> obj_cgroup_put(objcg) first, as otherwise it would cause a leak?
+On Wed, Oct 18, 2023 at 6:25 PM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> cpuinfo.max_freq can change at runtime because of boost as an example. This
+> implies that the value could be different than the one that has been
+> used when computing the capacity of a CPU.
+>
+> The new arch_scale_freq_ref() returns a fixed and coherent reference
+> frequency that can be used when computing a frequency based on utilization.
+>
+> Use this arch_scale_freq_ref() when available and fallback to
+> policy otherwise.
+>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Great catch! Thanks!
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-> 
-> > +
-> > +	return objcg;
-> > +}
-> > +
-> >  __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-> >  {
-> >  	struct mem_cgroup *memcg;
-> > @@ -3008,19 +3054,26 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-> >  
-> >  	if (in_task()) {
-> >  		memcg = current->active_memcg;
-> > +		if (unlikely(memcg))
-> > +			goto from_memcg;
-> >  
-> > -		/* Memcg to charge can't be determined. */
-> > -		if (likely(!memcg) && (!current->mm || (current->flags & PF_KTHREAD)))
-> 
-> The checks for current->mm and PF_KTHREAD seem to be gone completely after
-> the patch, was that intended and why?
-
-There is no need for those anymore because it's as cheap or cheaper
-to check task->objcg for being NULL. Those were primarily used to rule out
-kernel threads allocations early.
-
-I gonna fix the objcg ref leak, add the comment you asked above and post v4
-of this particular patch.
-
-Thank you for reviewing the series!
+>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 26 ++++++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 458d359f5991..6e4030482ae8 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -114,6 +114,28 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
+>         }
+>  }
+>
+> +/**
+> + * cpufreq_get_capacity_ref_freq - get the reference frequency of a given CPU that
+> + * has been used to correlate frequency and compute capacity.
+> + * @policy: the cpufreq policy of the CPU in question.
+> + * @use_current: Fallback to current freq instead of policy->cpuinfo.max_freq.
+> + *
+> + * Return: the reference CPU frequency to compute a capacity.
+> + */
+> +static __always_inline
+> +unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> +{
+> +       unsigned int freq = arch_scale_freq_ref(policy->cpu);
+> +
+> +       if (freq)
+> +               return freq;
+> +
+> +       if (arch_scale_freq_invariant())
+> +               return policy->cpuinfo.max_freq;
+> +
+> +       return policy->cur;
+> +}
+> +
+>  /**
+>   * get_next_freq - Compute a new frequency for a given cpufreq policy.
+>   * @sg_policy: schedutil policy object to compute the new frequency for.
+> @@ -140,10 +162,10 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>                                   unsigned long util, unsigned long max)
+>  {
+>         struct cpufreq_policy *policy = sg_policy->policy;
+> -       unsigned int freq = arch_scale_freq_invariant() ?
+> -                               policy->cpuinfo.max_freq : policy->cur;
+> +       unsigned int freq;
+>
+>         util = map_util_perf(util);
+> +       freq = get_capacity_ref_freq(policy);
+>         freq = map_util_freq(util, freq, max);
+>
+>         if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> --
+> 2.34.1
+>
