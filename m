@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 122617CDE6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F77C7CDE72
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344994AbjJROJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S1344998AbjJROKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344890AbjJROJT (ORCPT
+        with ESMTP id S1344902AbjJROJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:09:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C823E11A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:09:12 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9XhL4X7YzrTQF;
-        Wed, 18 Oct 2023 22:06:26 +0800 (CST)
+        Wed, 18 Oct 2023 10:09:25 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88199120
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:09:13 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S9XgG2pm6zRt5M;
+        Wed, 18 Oct 2023 22:05:30 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 18 Oct 2023 22:09:09 +0800
+ 15.1.2507.31; Wed, 18 Oct 2023 22:09:10 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
@@ -32,9 +32,9 @@ CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 18/19] mm: use folio_xchg_last_cpupid() in wp_page_reuse()
-Date:   Wed, 18 Oct 2023 22:08:05 +0800
-Message-ID: <20231018140806.2783514-19-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 19/19] mm: remove page_cpupid_xchg_last()
+Date:   Wed, 18 Oct 2023 22:08:06 +0800
+Message-ID: <20231018140806.2783514-20-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231018140806.2783514-1-wangkefeng.wang@huawei.com>
 References: <20231018140806.2783514-1-wangkefeng.wang@huawei.com>
@@ -45,58 +45,111 @@ X-Originating-IP: [10.175.112.125]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpemm100001.china.huawei.com (7.185.36.93)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to use folio_xchg_last_cpupid() in wp_page_reuse(), and remove
-page variable. Since now only normal and PMD-mapped page is handled by
-numa balancing, it's enough to only update the entire folio's last cpupid.
+Since all calls use folio_xchg_last_cpupid(), remove
+page_cpupid_xchg_last().
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ include/linux/mm.h | 19 +++++++------------
+ mm/mmzone.c        |  6 +++---
+ 2 files changed, 10 insertions(+), 15 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 037da118f1d1..4f0dfbd5e4bf 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3022,19 +3022,20 @@ static inline void wp_page_reuse(struct vm_fault *vmf, struct folio *folio)
- 	__releases(vmf->ptl)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 70eae2e7d5e5..287d52ace444 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1694,9 +1694,9 @@ static inline bool __cpupid_match_pid(pid_t task_pid, int cpupid)
+ 
+ #define cpupid_match_pid(task, cpupid) __cpupid_match_pid(task->pid, cpupid)
+ #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
+-static inline int page_cpupid_xchg_last(struct page *page, int cpupid)
++static inline int folio_xchg_last_cpupid(struct folio *folio, int cpupid)
  {
- 	struct vm_area_struct *vma = vmf->vma;
--	struct page *page = vmf->page;
- 	pte_t entry;
+-	return xchg(&page->_last_cpupid, cpupid & LAST_CPUPID_MASK);
++	return xchg(&folio->_last_cpupid, cpupid & LAST_CPUPID_MASK);
+ }
  
- 	VM_BUG_ON(!(vmf->flags & FAULT_FLAG_WRITE));
--	VM_BUG_ON(folio && folio_test_anon(folio) && !PageAnonExclusive(page));
+ static inline int folio_last_cpupid(struct folio *folio)
+@@ -1713,7 +1713,7 @@ static inline int folio_last_cpupid(struct folio *folio)
+ 	return (folio->flags >> LAST_CPUPID_PGSHIFT) & LAST_CPUPID_MASK;
+ }
  
--	/*
--	 * Clear the pages cpupid information as the existing
--	 * information potentially belongs to a now completely
--	 * unrelated process.
--	 */
--	if (page)
--		page_cpupid_xchg_last(page, (1 << LAST_CPUPID_SHIFT) - 1);
-+	if (folio) {
-+		VM_BUG_ON(folio_test_anon(folio) &&
-+			  !PageAnonExclusive(vmf->page));
-+		/*
-+		 * Clear the folio's cpupid information as the existing
-+		 * information potentially belongs to a now completely
-+		 * unrelated process.
-+		 */
-+		folio_xchg_last_cpupid(folio, (1 << LAST_CPUPID_SHIFT) - 1);
-+	}
+-extern int page_cpupid_xchg_last(struct page *page, int cpupid);
++int folio_xchg_last_cpupid(struct folio *folio, int cpupid);
  
- 	flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 	entry = pte_mkyoung(vmf->orig_pte);
+ static inline void page_cpupid_reset_last(struct page *page)
+ {
+@@ -1725,8 +1725,8 @@ static inline int folio_xchg_access_time(struct folio *folio, int time)
+ {
+ 	int last_time;
+ 
+-	last_time = page_cpupid_xchg_last(&folio->page,
+-					  time >> PAGE_ACCESS_TIME_BUCKETS);
++	last_time = folio_xchg_last_cpupid(folio,
++					   time >> PAGE_ACCESS_TIME_BUCKETS);
+ 	return last_time << PAGE_ACCESS_TIME_BUCKETS;
+ }
+ 
+@@ -1740,9 +1740,9 @@ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
+ 	}
+ }
+ #else /* !CONFIG_NUMA_BALANCING */
+-static inline int page_cpupid_xchg_last(struct page *page, int cpupid)
++static inline int folio_xchg_last_cpupid(struct folio *folio, int cpupid)
+ {
+-	return page_to_nid(page); /* XXX */
++	return folio_nid(folio); /* XXX */
+ }
+ 
+ static inline int folio_xchg_access_time(struct folio *folio, int time)
+@@ -1794,11 +1794,6 @@ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
+ }
+ #endif /* CONFIG_NUMA_BALANCING */
+ 
+-static inline int folio_xchg_last_cpupid(struct folio *folio, int cpupid)
+-{
+-	return page_cpupid_xchg_last(&folio->page, cpupid);
+-}
+-
+ #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+ 
+ /*
+diff --git a/mm/mmzone.c b/mm/mmzone.c
+index 68e1511be12d..b594d3f268fe 100644
+--- a/mm/mmzone.c
++++ b/mm/mmzone.c
+@@ -93,19 +93,19 @@ void lruvec_init(struct lruvec *lruvec)
+ }
+ 
+ #if defined(CONFIG_NUMA_BALANCING) && !defined(LAST_CPUPID_NOT_IN_PAGE_FLAGS)
+-int page_cpupid_xchg_last(struct page *page, int cpupid)
++int folio_xchg_last_cpupid(struct folio *folio, int cpupid)
+ {
+ 	unsigned long old_flags, flags;
+ 	int last_cpupid;
+ 
+-	old_flags = READ_ONCE(page->flags);
++	old_flags = READ_ONCE(folio->flags);
+ 	do {
+ 		flags = old_flags;
+ 		last_cpupid = (flags >> LAST_CPUPID_PGSHIFT) & LAST_CPUPID_MASK;
+ 
+ 		flags &= ~(LAST_CPUPID_MASK << LAST_CPUPID_PGSHIFT);
+ 		flags |= (cpupid & LAST_CPUPID_MASK) << LAST_CPUPID_PGSHIFT;
+-	} while (unlikely(!try_cmpxchg(&page->flags, &old_flags, flags)));
++	} while (unlikely(!try_cmpxchg(&folio->flags, &old_flags, flags)));
+ 
+ 	return last_cpupid;
+ }
 -- 
 2.27.0
 
