@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB547CD31C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7E77CD2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbjJREiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 00:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
+        id S229557AbjJREgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 00:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235013AbjJREhP (ORCPT
+        with ESMTP id S229521AbjJREgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 00:37:15 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0034513D;
-        Tue, 17 Oct 2023 21:37:06 -0700 (PDT)
-X-UUID: f77c71ca6d6f11ee8051498923ad61e6-20231018
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=W5RMBeAtAJ3QWTJFC7HXa4Omx7QtPIe8uwySAvSyeRk=;
-        b=lbpnYpD0H5mPwctA+n9f+nivUhzz+imO/vPfAS5lMQxE8sHWxhkAqXZUij2MraIsFoPxAx2Odvshk065I9HOvi8TTdYy4/5Z1tpXCNVF2hTBi44FLqFWGt0/emhVKL9uh/KqPIcxXqQpuKcljEQJCmO4YDFEA/CXySdRLJYbzHI=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:56b7f214-36a3-470a-bb89-63a68f311ff4,IP:0,U
-        RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:25
-X-CID-META: VersionHash:5f78ec9,CLOUDID:102341c4-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: f77c71ca6d6f11ee8051498923ad61e6-20231018
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1294101140; Wed, 18 Oct 2023 12:36:55 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 18 Oct 2023 12:36:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 18 Oct 2023 12:36:51 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "CK Hu" <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v9 04/23] dt-bindings: display: mediatek: padding: Add MT8188
-Date:   Wed, 18 Oct 2023 12:36:31 +0800
-Message-ID: <20231018043650.22532-5-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231018043650.22532-1-shawn.sung@mediatek.com>
-References: <20231018043650.22532-1-shawn.sung@mediatek.com>
+        Wed, 18 Oct 2023 00:36:39 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57453FD
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 21:36:37 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b20577ef7bso3891526b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 21:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697603797; x=1698208597; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=czJuvzpZ9+G+JcIdKCv4XoL9kYRQrLLnwV3w5sOQ/X0=;
+        b=Brn4P3bX9OsSgIm6+g74fGbKFdnv088NwjjGpTIDh8Vv+hxQIike95y1F8DFbcrGEz
+         CScgCEQHrYfkxThlhyxBsPecoeQ+lQmG/2N1Dafxsf09c8BTo3WAATlp9eUzsLQiMAxj
+         jx9FJBRcmC17mBjqqPc7pvDUcwSWK22pjLOVdT3oCA9cxHWuGGNChtZhG/sZmYqC8Rmf
+         D8FfGRX3ewHyB2rW0uG1WfbPegzh/tWRoWoItEOiUTJQnspfJkEz2tt3B42ryqlygDc7
+         N19sCe9CtfEvdFqAZhlqIFoa9BWhpcRSkE0D2zXBn8BBc5aU9zHwa1lpegue4fWmEU3R
+         ChBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697603797; x=1698208597;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=czJuvzpZ9+G+JcIdKCv4XoL9kYRQrLLnwV3w5sOQ/X0=;
+        b=UvlZglLWGDvk60zKqwsRbHs45n6Mg/okCZYt9nmDp+ZzeWF8a/H88i7TRq2w0o6mHX
+         Ees+8V9K247xWitqJctmdQst1EjH43wnD6NZ4BR2/XqJ8temF/T6pl+2cnK0AuUAW80W
+         WR897aeBhosYJbbts+BAhQItKTmXXvlWm/LS9zZDBTflRQSxWnvSmPOIQ1Rj/sQwGVev
+         RcepOpyqAN+082m2WV3ftRywR0glaUTcmikpelhicDakly0m8iLR+Fge1HPWYApsbton
+         QHyYYCm8NMeXO4lJOpfdQRfB2AXDQJz57NVhtQe0Lq0etOYUMBXQFeHogu4mkDS7ccwv
+         GauQ==
+X-Gm-Message-State: AOJu0Yz+HNY73ttoXVxHFUL65gLDCb+VaUecD9KdFA3dd8NQdkmROBBx
+        XCOyFutsVdYf2pvASfZgBraBBHsQHcm2ZQ==
+X-Google-Smtp-Source: AGHT+IF4N/l3CnVfI7YkZfd8KnsjTquzB4kK5ve45u34ccR1+T1p22QjOLzpfwSQWYj+liHH2P/uEA==
+X-Received: by 2002:a05:6a20:8628:b0:14c:4dfc:9766 with SMTP id l40-20020a056a20862800b0014c4dfc9766mr3194642pze.46.1697603796723;
+        Tue, 17 Oct 2023 21:36:36 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id ja9-20020a170902efc900b001c3267ae317sm2450863plb.165.2023.10.17.21.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 21:36:36 -0700 (PDT)
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Soumya Negi <soumya.negi97@gmail.com>
+Subject: [PATCH 0/2] staging: vme_user: Replace printk's & cleanup log messages
+Date:   Tue, 17 Oct 2023 21:36:31 -0700
+Message-ID: <cover.1697601942.git.soumya.negi97@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--7.513800-8.000000
-X-TMASE-MatchedRID: 9rm+L2YNiKzyZ92BnYqk5lz+axQLnAVB6SXuwUgGH0hbKBBN5zqG8FaP
-        6AhhdqyDBRj5e39v/eGsMR/ATxTHjWVnjx+sD6Kytw+xHnsmQjOMp+s3ceVcmb/Yg8aa0YTZdd3
-        vE6bWkcHv3WZroeUzUI1xSG08E+c3VHcNS6pil71CnGIuUMP0VUEKKv3+tzX7UiwXYafXfD6kB0
-        1zVAshlyIvUI0oiRYyZMzrwqima4jmyenDbONxLaEtILqFekmXLoYOuiLW+uXW4BShNeq/ewpCM
-        S7M3CBmkHg+Xqfv+GzQvEuTNHaCJh0QUKM89Lf/o65WJt1k1O+H7D1bP/FcOglbhF7ZTanLYeGP
-        4tValiDG3TRnfVX2PIAy6p60ZV62v2ThXg3lx4DdB/CxWTRRu4as+d5/8j56Yxdi4F8nEfi5OCV
-        GY5JudjeHtrlqvPTaQnQ6/WjRw2GXmU/FzSSM1Q==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--7.513800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: BEA73C3609E4C71771ADCFBC57CC5502AE115990252F4F242B6702D18DAFF7992000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,105 +72,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Padding is a new hardware module on MediaTek MT8188,
-add dt-bindings for it.
+Staging driver vme_user has a bunch of printk() calls in vme.c which
+triggers checkpatch warnings. Remove all printk's and change them to
+the appropriate logging mechanism i.e pr_err()/pr_warn(), or 
+dev_err()/dev_warn().
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- .../display/mediatek/mediatek,padding.yaml    | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
+Also, cleanup the messages further by using __func__ in the string 
+instead of function names.
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-new file mode 100644
-index 000000000000..db24801ebc48
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/mediatek/mediatek,padding.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek Display Padding
-+
-+maintainers:
-+  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-+  - Philipp Zabel <p.zabel@pengutronix.de>
-+
-+description:
-+  Padding provides ability to add pixels to width and height of a layer with
-+  specified colors. Due to hardware design, Mixer in VDOSYS1 requires
-+  width of a layer to be 2-pixel-align, or 4-pixel-align when ETHDR is enabled,
-+  we need Padding to deal with odd width.
-+  Please notice that even if the Padding is in bypass mode, settings in
-+  register must be cleared to 0, or undefined behaviors could happen.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8188-padding
-+
-+  reg:
-+    maxItems: 1
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: RDMA Clock
-+
-+  mediatek,gce-client-reg:
-+    description:
-+      GCE (Global Command Engine) is a multi-core micro processor that helps
-+      its clients to execute commands without interrupting CPU. This property
-+      describes GCE client's information that is composed by 4 fields.
-+      1. Phandle of the GCE (there may be several GCE processors)
-+      2. Sub-system ID defined in the dt-binding like a user ID
-+         (Please refer to include/dt-bindings/gce/<chip>-gce.h)
-+      3. Offset from base address of the subsys you are at
-+      4. Size of the register the client needs
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      items:
-+        - description: Phandle of the GCE
-+        - description: Subsys ID defined in the dt-binding
-+        - description: Offset from base address of the subsys
-+        - description: Size of register
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - power-domains
-+  - clocks
-+  - mediatek,gce-client-reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/mediatek,mt8188-clk.h>
-+    #include <dt-bindings/power/mediatek,mt8188-power.h>
-+    #include <dt-bindings/gce/mt8195-gce.h>
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        padding0: padding@1c11d000 {
-+            compatible = "mediatek,mt8188-padding";
-+            reg = <0 0x1c11d000 0 0x1000>;
-+            clocks = <&vdosys1 CLK_VDO1_PADDING0>;
-+            power-domains = <&spm MT8188_POWER_DOMAIN_VDOSYS1>;
-+            mediatek,gce-client-reg = <&gce0 SUBSYS_1c11XXXX 0xd000 0x1000>;
-+        };
-+    };
+This patchset fixes all checkpatch warnings like:
+ 
+    WARNING: Prefer [subsystem eg: netdev]_err([subsystem]dev, ... then
+             dev_err(dev, ... then pr_err(...  to printk(KERN_ERR ...
+&
+    WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
+             this function's name, in a string
+
+Patches must be applied in order.
+
+Soumya Negi (2):
+  staging: vme_user: Replace printk() with pr_*(),dev_*()
+  staging: vme_user: Use __func__ instead of function name
+
+ drivers/staging/vme_user/vme.c | 175 ++++++++++++++++++---------------
+ 1 file changed, 94 insertions(+), 81 deletions(-)
+
 -- 
-2.18.0
+2.42.0
 
