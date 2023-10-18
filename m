@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081DE7CE112
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0A87CE126
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjJRPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S231235AbjJRP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjJRPVQ (ORCPT
+        with ESMTP id S230444AbjJRP0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:21:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A1AEA;
-        Wed, 18 Oct 2023 08:21:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECACCC433C8;
-        Wed, 18 Oct 2023 15:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697642474;
-        bh=LYagyGRuLOJIx08cI88zPgXWvrkcS7iNbLmlFxrSclU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZLnIhd9wqi3ayfSZPlcIMGhn5cH+ssUY+jlIdiUjagca/1sntsjihy6sAyb8buY9i
-         t4GDD9OTHBDHbhtx/M5Maf02ICkO51Fdi3uVKmLJBaBpv0pjue7vHK61ZyOnsTIIoC
-         B12j9Szlhdcd/G5cbrOEGnML4dHSZnOY0wQUf2qbgvz8AIu6QIdCgQugSASxV+vsDv
-         m14v6Z30satjrlNduGH3eSKZu5N+PorzNuckMElrfGxEw3OEQmkHgmVUCWPqE+eWQE
-         73tHO5fRAQpY7Su4FJRXizzHo08si1lXn7/jH0hbEB0IGzsLhRQ2ZyrnAUtu/dQsxL
-         6nY08XHyxiuKA==
-Message-ID: <6e43eb6d-351b-4c32-aba9-65ee5b8fd0ed@kernel.org>
-Date:   Thu, 19 Oct 2023 00:21:07 +0900
+        Wed, 18 Oct 2023 11:26:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E8EFA;
+        Wed, 18 Oct 2023 08:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697642780; x=1729178780;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=F6u+KBYcn7BYk4Z2evWe0eujHOmh6t8u43JwYuaW7sM=;
+  b=TA0KoY+/vNeLGlzTqI+ZFfs7fuo5Yyppr7jVf7aG72+PEbgHK58gP1BD
+   2C3AsAmW0Sd/uW8ZVJ+9iJiGdD6jtn1GkcXZnsaP6/KN2aZJOXK6N8zIn
+   FNU6pNdBdnE8whVJrj0P5JOZTD3gD2xF63hw9nPOo00pz2ZWbOBUPSZKy
+   u6rJ2ltQ61IB/AK/Ukr8RjsaKeH45KWsy060SubbJzt5Vh9UfyDqalOX5
+   fTExhlJ1wZwg/Fo9jK92ADep4VNq+1yQLPsmJI8QH+iJJSmQwsJUdY8Wj
+   XxDsBSCM8PUFJ9qas+rMmtESlyF9F1chuxl4ATsGA1zaHR2YJiW9Itq/t
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366293753"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="366293753"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 08:26:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756625348"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="756625348"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Oct 2023 08:26:16 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>,
+        "Dave Hansen" <dave.hansen@intel.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+ <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
+Date:   Wed, 18 Oct 2023 10:26:15 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 00/26] Add perf support to the rockchip-dfi driver
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231018061714.3553817-1-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2c0nt109wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha and Heiko,
+On Wed, 18 Oct 2023 08:55:12 -0500, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-I finished the review from  01 ~ 22 patches.
-- 01-05 patches are merged.
-- 06-22 patches with acked tags.
+> On 10/17/23 21:37, Haitao Huang wrote:
+>> Yes we can introduce misc.reclaim to give user a knob to forcefully
+>> reducing usage if that is really needed in real usage. The semantics
+>> would make force-kill VMs explicit to user.
+>
+> Do any other controllers do something like this?  It seems odd.
 
+Maybe not in sense of killing something. My understanding memory.reclaim  
+does not necessarily invoke the OOM killer. But what I really intend to  
+say is we can have a separate knob for user to express the need for  
+reducing the current usage explicitly and keep "misc.max' non-preemptive  
+semantics intact. When we implement that new knob, then we can define what  
+kind of reclaim for that. Depending on vEPC implementation, it may or may  
+not involve killing VMs. But at least that semantics will be explicit for  
+user.
 
-Some patches modifies the 'include/soc/rockchip/*' files.
-After getting the ack from rockchip maintainer (Heiko Stuebner),
-I'll merge patches from 06 ~ 22 patches to devfreq.git.
-
-Best Regards,
-Chanwoo Choi
-
-On 23. 10. 18. 15:16, Sascha Hauer wrote:
-> This series integrates the recent review feedback from Chanwoo Choi to
-> v7.
-> 
-> Chanwoo, I am sending the full patchset again for people to try this
-> series. You said that you applied 1-5 already, so please start picking
-> from 6/26.
-> 
-> Sascha
-> 
-> Sascha Hauer (26):
->   PM / devfreq: rockchip-dfi: Make pmu regmap mandatory
->   PM / devfreq: rockchip-dfi: Embed desc into private data struct
->   PM / devfreq: rockchip-dfi: use consistent name for private data
->     struct
->   PM / devfreq: rockchip-dfi: Add SoC specific init function
->   PM / devfreq: rockchip-dfi: dfi store raw values in counter struct
->   PM / devfreq: rockchip-dfi: Use free running counter
->   PM / devfreq: rockchip-dfi: introduce channel mask
->   PM / devfreq: rk3399_dmc,dfi: generalize DDRTYPE defines
->   PM / devfreq: rockchip-dfi: Clean up DDR type register defines
->   PM / devfreq: rockchip-dfi: Add RK3568 support
->   PM / devfreq: rockchip-dfi: Handle LPDDR2 correctly
->   PM / devfreq: rockchip-dfi: Handle LPDDR4X
->   PM / devfreq: rockchip-dfi: Pass private data struct to internal
->     functions
->   PM / devfreq: rockchip-dfi: Prepare for multiple users
->   PM / devfreq: rockchip-dfi: give variable a better name
->   PM / devfreq: rockchip-dfi: Add perf support
->   PM / devfreq: rockchip-dfi: make register stride SoC specific
->   PM / devfreq: rockchip-dfi: account for multiple DDRMON_CTRL registers
->   PM / devfreq: rockchip-dfi: add support for RK3588
->   dt-bindings: devfreq: event: convert Rockchip DFI binding to yaml
->   dt-bindings: devfreq: event: rockchip,dfi: Add rk3568 support
->   dt-bindings: devfreq: event: rockchip,dfi: Add rk3588 support
->   dt-bindings: soc: rockchip: grf: add rockchip,rk3588-pmugrf
->   arm64: dts: rockchip: rk3399: Enable DFI
->   arm64: dts: rockchip: rk356x: Add DFI
->   arm64: dts: rockchip: rk3588s: Add DFI
-> 
->  .../bindings/devfreq/event/rockchip,dfi.yaml  |  74 ++
->  .../bindings/devfreq/event/rockchip-dfi.txt   |  18 -
->  .../rockchip,rk3399-dmc.yaml                  |   2 +-
->  .../devicetree/bindings/soc/rockchip/grf.yaml |   1 +
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi      |   1 -
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   7 +
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  16 +
->  drivers/devfreq/event/rockchip-dfi.c          | 814 +++++++++++++++---
->  drivers/devfreq/rk3399_dmc.c                  |  10 +-
->  include/soc/rockchip/rk3399_grf.h             |   9 +-
->  include/soc/rockchip/rk3568_grf.h             |  13 +
->  include/soc/rockchip/rk3588_grf.h             |  18 +
->  include/soc/rockchip/rockchip_grf.h           |  18 +
->  13 files changed, 863 insertions(+), 138 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
->  delete mode 100644 Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt
->  create mode 100644 include/soc/rockchip/rk3568_grf.h
->  create mode 100644 include/soc/rockchip/rk3588_grf.h
->  create mode 100644 include/soc/rockchip/rockchip_grf.h
-> 
-
+Thanks
+Haitao
