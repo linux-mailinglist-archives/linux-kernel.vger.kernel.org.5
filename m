@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B887CE636
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EEF7CE639
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbjJRSUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
+        id S231961AbjJRSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbjJRSUm (ORCPT
+        with ESMTP id S230476AbjJRSVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:20:42 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1C5113
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:20:40 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-41cb7720579so37671cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:20:40 -0700 (PDT)
+        Wed, 18 Oct 2023 14:21:00 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2648118;
+        Wed, 18 Oct 2023 11:20:58 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-77421a47db6so437411785a.0;
+        Wed, 18 Oct 2023 11:20:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697653239; x=1698258039; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6vVIrHuWQVA6shM3HnYPie5+SRU5CPGTqtle1JU5tXo=;
-        b=2Vlfe3wPPKaCOHn3S36I5scTD/erTZe6VUeGITRJcVPh3Jsa4z0A1pMS9Drm2T31zQ
-         250mnWxYhasaEQ5DYVxSsSREv/TULBXzcITSNwLrUSMlLH6u0ofjTLQoA5DRArTGgxqj
-         G6stLv82rdMdF6FdxqSYYSBNcydyyzKfbsNQYF7oQzJNY0w2aXRiKKJd7Gm8WxR3somE
-         fQM76zCSVPBpkrfn6DGrSDpWOEhssv5+8qcsHoqClS7X3oLbc84zTDiAPpKY7uGDvLct
-         SukbY6cA0EhbPqgGhW9DrCLyku3rjNIO0yI5k1LZF0bz+tMqWvJYkMwYdxsWkk0frBVu
-         Ucwg==
+        d=gmail.com; s=20230601; t=1697653258; x=1698258058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IsI5TzzsSuBq8l9ygfi84roa8xAAGSMzTwOJm7U4bAI=;
+        b=cohib1MLIjlV4LIq0GsyrecSuob2+A+qmc5vM4fSntKPVhUmeWcaKTH/vL/FMfYyLe
+         h5MSWbZAFVMsP4N8IjJdjHitrxDvxbluYeC3Sls/zmLJ29V0ovQppPAgtNxuT+GwE9hx
+         KK9ZmJz/vP3022/u6ZJqDIx2VV3+zS0cMtTwknG7awZqB7imwsMhpJht4rM8DS0GX9v6
+         G0TV+AzIGrECQvMzedz0Ks0I1VzICkdQtnuoFnbtUZbNOHiuWTNHAhZQ2sAhAvKTVkBc
+         iQho6Ne2VhKRTPiCVQdJnUUgtB7/cJFbXwk4nwy2/XNa/O07J5ASC2o09ZiQkKIAnReR
+         3MWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697653239; x=1698258039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6vVIrHuWQVA6shM3HnYPie5+SRU5CPGTqtle1JU5tXo=;
-        b=paB3e3ZQ9z0hbZTZ8Jg+caDlTH4eCpR2fQ9g6pNudzarsndsEiFF2q867BMXrTrqbN
-         3ec6OZWMF3XTSicki797RAuGYPWrw9qe4EBnRAdIzZMyFr8P0brZZxPP07iZ1oZ8CGkO
-         5Od5lLL3lzB+JtEe119Jxgb8nK5/FIfCmEWmNDQVCOATQG643LwHPCCPR8zFUbiLCp5q
-         q47H/naASH4iodZuAhGn5nIr2PeP0xhyArtb0k/s+2ajTZbxrgRCOIbagCwZO36q2V+k
-         Gzb1WYxrQIFJKMKADaE+GwXdpWt5lHXGgHKfcI2HDKNuZKy0zWJKrjH2sZssB10LkV4F
-         4a4g==
-X-Gm-Message-State: AOJu0YyRVZrmd76Qx3UVxdOG0de7zXiZ2zaZOpTsALj+GOIhuqYtKobj
-        AhTdtWQsNXqOP3n6kcppQpeBNC4GLeGOVgUOvj5a7Q==
-X-Google-Smtp-Source: AGHT+IGyGQSgQHJFj8BImsesXGVlASS7RW6eopJfbHL22F8InhKtFg9dsIpDe/ROKjo5uadHLqVLhE2zRmNvOeNRnlY=
-X-Received: by 2002:a05:622a:a049:b0:412:9cd:473b with SMTP id
- ju9-20020a05622aa04900b0041209cd473bmr48343qtb.4.1697653239212; Wed, 18 Oct
- 2023 11:20:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697653258; x=1698258058;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IsI5TzzsSuBq8l9ygfi84roa8xAAGSMzTwOJm7U4bAI=;
+        b=EiYlyKobHrK9hex8zEShAk4ImdqU5DgVO7qfsHv7pVlp18iKz5lmjuhUf3dRumZyjC
+         kQvGnAShYzppe3rVGTCyjPepy2sshumvBzlhwiYWFD73FX4CArp54TTeJjhWtNoKicep
+         W6l3pjtI6nKEt+NiXikfE50egEIvJNNTg5kHpnw1uUyU81Kr/gXkqzqNnkPUEA1VcY7A
+         Nl6LMT2VCdnTPXhzkDWo9tlvBlONoVI43pyt74keSBkCoO36D9nUPWMGuQ2zHj5j9bRU
+         WjzJ9gNgTmO6Y73Nnum63HACm1XuCm2pNNc3jFfrQ/i0tjoZm5Vyc467CssBFubd55Pn
+         s0Vg==
+X-Gm-Message-State: AOJu0Yyinzxfs2s5F68goAHHVF+Q9XsWGdakorUwf2SLmIivPFEhQgFK
+        e5/5ezWOGhf2xTCCkbvB+Hc=
+X-Google-Smtp-Source: AGHT+IGmSKfv0+hfyzKpR5QFzcUf5BnweaeZm9C6z+mxT3+76cgWBI2iPN5bWuNipXOpJeVnn3rDyQ==
+X-Received: by 2002:a05:620a:2993:b0:778:9813:6c98 with SMTP id r19-20020a05620a299300b0077898136c98mr1663751qkp.35.1697653257740;
+        Wed, 18 Oct 2023 11:20:57 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id vu19-20020a05620a561300b0076f124abe4dsm142147qkn.77.2023.10.18.11.20.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 11:20:57 -0700 (PDT)
+Message-ID: <f4cfb974-42c6-492c-80fd-85bbeaada9d1@gmail.com>
+Date:   Wed, 18 Oct 2023 11:20:50 -0700
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <ZS1URCBgwGGj9JtM@casper.infradead.org>
- <CAKbZUD2A+=bp_sd+Q0Yif7NJqMu8p__eb4yguq0agEcmLH8SDQ@mail.gmail.com>
- <CALmYWFtOgMAQDGNoM6k2Ev4kMHD396wwH+rVDODaSjsyVMDogg@mail.gmail.com> <CAKbZUD2j1jbomCAVxUX_JmG1rfa8udc=5SqVOpDgc-3GnSTbAQ@mail.gmail.com>
-In-Reply-To: <CAKbZUD2j1jbomCAVxUX_JmG1rfa8udc=5SqVOpDgc-3GnSTbAQ@mail.gmail.com>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Wed, 18 Oct 2023 11:20:02 -0700
-Message-ID: <CALmYWFv7jzOj5HPcYct=UzYKPrwwvtN1EQeHioQHDPwGFvL5Ug@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
-        lstoakes@gmail.com, mawupeng1@huawei.com, linmiaohe@huawei.com,
-        namit@vmware.com, peterx@redhat.com, peterz@infradead.org,
-        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
-        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
-        dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 5/9] net: dsa: microchip: ksz9477: Add Wake on
+ Magic Packet support
+Content-Language: en-US
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+References: <20231018113913.3629151-1-o.rempel@pengutronix.de>
+ <20231018113913.3629151-6-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231018113913.3629151-6-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,106 +89,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 3:35=E2=80=AFPM Pedro Falcato <pedro.falcato@gmail.=
-com> wrote:
->
-> > >
-> > > I think it's worth pointing out that this suggestion (with PROT_*)
-> > > could easily integrate with mmap() and as such allow for one-shot
-> > > mmap() + mseal().
-> > > If we consider the common case as 'addr =3D mmap(...); mseal(addr);',=
- it
-> > > definitely sounds like a performance win as we halve the number of
-> > > syscalls for a sealed mapping. And if we trivially look at e.g OpenBS=
-D
-> > > ld.so code, mmap() + mimmutable() and mprotect() + mimmutable() seem
-> > > like common patterns.
-> > >
-> > Yes. mmap() can support sealing as well, and memory is allocated as
-> > immutable from begining.
-> > This is orthogonal to mseal() though.
->
-> I don't see how this can be orthogonal to mseal().
-> In the case we opt for adding PROT_ bits, we should more or less only
-> need to adapt calc_vm_prot_bits(), and the rest should work without
-> issues.
-> vma merging won't merge vmas with different prots. The current
-> interfaces (mmap and mprotect) would work just fine.
-> In this case, mseal() or mimmutable() would only be needed if you need
-> to set immutability over a range of VMAs with different permissions.
->
-Agreed. By orthogonal, I meant we can have two APIs:
-mmap() and mseal()/mprotect()
-i.e. we can't just rely on mmap() only without mseal()/mprotect()/mimmutabl=
-e().
-Sealing can be applied after initial memory creation.
+On 10/18/23 04:39, Oleksij Rempel wrote:
+> Introduce Wake on Magic Packet (WoL) functionality to the ksz9477
+> driver.
+> 
+> Major changes include:
+> 
+> 1. Extending the `ksz9477_handle_wake_reason` function to identify Magic
+>     Packet wake events alongside existing wake reasons.
+> 
+> 2. Updating the `ksz9477_get_wol` and `ksz9477_set_wol` functions to
+>     handle WAKE_MAGIC alongside the existing WAKE_PHY option, and to
+>     program the switch's MAC address register accordingly when Magic
+>     Packet wake-up is enabled. This change will prevent WAKE_MAGIC
+>     activation if the related port has a different MAC address compared
+>     to a MAC address already used by HSR or an already active WAKE_MAGIC
+>     on another port.
+> 
+> 3. Adding a restriction in `ksz_port_set_mac_address` to prevent MAC
+>     address changes on ports with active Wake on Magic Packet, as the
+>     switch's MAC address register is utilized for this feature.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-> Note: modifications should look kinda like this: https://godbolt.org/z/Tb=
-jjd14Pe
-> The only annoying wrench in my plans here is that we have effectively
-> run out of vm_flags bits in 32-bit architectures, so this approach as
-> I described is not compatible with 32-bit.
->
-> > In case of ld.so, iiuc, memory can be first allocated as W, then later
-> > changed to RO, for example, during symbol resolution.
-> > The important point is that the application can decide what type of
-> > sealing it wants, and when to apply it.  There needs to be an api(),
-> > that can be mseal() or mprotect2() or mimmutable(), the naming is not
-> > important to me.
-> >
-> > mprotect() in linux have the following signature:
-> > int mprotect(void addr[.len], size_t len, int prot);
-> > the prot bitmasks are all taken here.
-> > I have not checked the prot field in mmap(), there might be bits left,
-> > even not, we could have mmap2(), so that is not an issue.
->
-> I don't see what you mean. We have plenty of prot bits left (32-bits,
-> and we seem to have around 8 different bits used).
-> And even if we didn't, prot is the same in mprotect and mmap and mmap2 :)
->
-> The only issue seems to be that 32-bit ran out of vm_flags, but that
-> can probably be worked around if need be.
->
-Ah, you are right about this. vm_flags is full, and prot in mprotect() is n=
-ot.
-Apology that I was wrong previously and caused confusion.
+This looks good to me, just one suggestion below
 
-There is a slight difference in the syntax of mprotect and mseal.
-Each time when mprotect() is called, the kernel takes all of RWX bits
-and updates vm_flags,
-In other words, the application sets/unset each RWX, and kernel takes it.
+[snip]
 
-In the mseal() case, the kernel will remember which seal types were
-applied previously, and the application doesn=E2=80=99t need to repeat all
-existing seal types in the next mseal().  Once a seal type is applied,
-it can=E2=80=99t be unsealed.
+> +	if (pme_ctrl_old == pme_ctrl)
+> +		return 0;
+> +
+> +	/* To keep reference count of MAC address, we should do this
+> +	 * operation only on change of WOL settings.
+> +	 */
+> +	if (!(pme_ctrl_old & PME_WOL_MAGICPKT) &&
+> +	    (pme_ctrl & PME_WOL_MAGICPKT)) {
 
-So if we want to use mprotect() for sealing, developers need to think
-of sealing bits differently than the rest of prot bits. It is a
-different programming model, might or might not be an obvious concept
-to developers.
+Maybe use a temporary variable for that condition since you re-use it 
+below in case you failed to perform the write of the pme_ctrl value. It 
+would be more readable IMHO, something like:
 
-There is a difference in input check and error handling as well.
-for mseal(), if a given address range has a gap (unallocated memory),
-or if one of VMA is sealed with MM_SEAL_SEAL flag, none of VMAs is
-updated.
-For mprotect(), some VMAs can be updated, till an error happens to a VMA.
+	bool magicpkt_was_disabled = !(pme_ctrl_old & PME_WOL_MAGICPKT) && 
+(pme_ctrl & PME_WOL_MAGICPKT));
+-- 
+Florian
 
-IMO: I think it makes sense for mseal() and mprotect() to be different
-in this. mseal() only checks vma struct so it is fast, and mprotect()
-goes deeper into HW.
-
-Because of those two differences, personally I feel a new syscall
-might be worth the effort.
-
-That said, mmap() + mprotect() is workable to me if that is what the
-community wants.
-
-Thanks
--Jeff
-
--Jeff
-
-
-> --
-> Pedro
