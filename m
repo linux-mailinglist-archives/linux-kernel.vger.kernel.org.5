@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B337CD845
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BC37CD847
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjJRJgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        id S229702AbjJRJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRJgO (ORCPT
+        with ESMTP id S229747AbjJRJgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:36:14 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B430CFE;
-        Wed, 18 Oct 2023 02:36:12 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39I9YrWI007069;
-        Wed, 18 Oct 2023 09:36:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=2tRVbVqqyv/5OYK0Sv/nV3R0JKx7T/NSdn4hL1dFioo=;
- b=aUFqEfUgev60Wghv1eqsfvFl6La2r0rqAPSGkbq+8+QqSWwgzPLeP007gWlsQ+OyyjAm
- ZXTxQhGRlu0nejyN0Q6FvJUDFxIqCQGe4r1TIaAE6IlmLE2ut0tmIF84ADIk+9KlY7lv
- XoyB7VodmmUeTU5LYCPMX3/WV7sbvLinfGDYNd/8JlHvfupoWt0S3sM8cREbs5dEibCH
- IjXdZtbALgWtiGrg1zE9BtLXt7pqGFxMxh4tMr/F6ujpiACbIIqGhRwpl4SX4fmJ/UJQ
- DPCxM4JXe9RWXCG27tr4WO8VuDV9edOdOST7bjzy/y7ghxp+7X0/R9e2PSyLGEx7Yj4J 8g== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttcuv0031-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 09:36:08 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39I9a7t4007443
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 09:36:07 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 18 Oct 2023 02:36:01 -0700
-Date:   Wed, 18 Oct 2023 15:05:57 +0530
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Stephen Boyd <sboyd@kernel.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <ilia.lin@kernel.org>,
-        <konrad.dybcio@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <mturquette@baylibre.com>, <quic_kathirav@quicinc.com>,
-        <rafael@kernel.org>, <robh+dt@kernel.org>,
-        <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2 1/8] clk: qcom: clk-alpha-pll: introduce stromer plus
- ops
-Message-ID: <20231018093556.GB24128@varda-linux.qualcomm.com>
-References: <cover.1697101543.git.quic_varada@quicinc.com>
- <8f578277cc015cfe9cdca06586b2c82f1a728bad.1697101543.git.quic_varada@quicinc.com>
- <06b823d5c2ec05a940849ac341c48090.sboyd@kernel.org>
- <20231016070256.GA24128@varda-linux.qualcomm.com>
- <CAA8EJpoQwDaUa+-WyM6FBzQJo9gn1k2rYLmKSFBLUH00epGJ0Q@mail.gmail.com>
+        Wed, 18 Oct 2023 05:36:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 69D73102
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 02:36:35 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F2732F4;
+        Wed, 18 Oct 2023 02:37:15 -0700 (PDT)
+Received: from [10.57.3.139] (unknown [10.57.3.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 750DD3F64C;
+        Wed, 18 Oct 2023 02:36:33 -0700 (PDT)
+Message-ID: <bc4a0623-16bc-199a-957c-e167a629e582@arm.com>
+Date:   Wed, 18 Oct 2023 10:36:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoQwDaUa+-WyM6FBzQJo9gn1k2rYLmKSFBLUH00epGJ0Q@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RNIja8n7oUnX2uLDxpswCe-R6tGxxWZ6
-X-Proofpoint-GUID: RNIja8n7oUnX2uLDxpswCe-R6tGxxWZ6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_07,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180081
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] coresight: etm4x: Enable ETE device accessed via MMIO
+To:     Ruidong Tian <tianruidong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Cc:     james.clark@arm.com, coresight@lists.linaro.org,
+        mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20231018070506.65320-1-tianruidong@linux.alibaba.com>
+ <f7ccb9c4-60f4-7037-085d-3f36ae024219@arm.com>
+ <206d5b79-dcd8-05b7-86c8-d6fb5790439e@linux.alibaba.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <206d5b79-dcd8-05b7-86c8-d6fb5790439e@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:46:56AM +0300, Dmitry Baryshkov wrote:
-> On Mon, 16 Oct 2023 at 10:03, Varadarajan Narayanan
-> <quic_varada@quicinc.com> wrote:
-> >
-> > On Thu, Oct 12, 2023 at 01:55:36PM -0700, Stephen Boyd wrote:
-> > > Quoting Varadarajan Narayanan (2023-10-12 02:26:17)
-> > > > Stromer plus APSS PLL does not support dynamic frequency scaling.
-> > > > To switch between frequencies, we have to shut down the PLL,
-> > > > configure the L and ALPHA values and turn on again. So introduce the
-> > > > separate set of ops for Stromer Plus PLL.
-> > >
-> > > Does this assume the PLL is always on?
-> >
-> > Yes once the PLL is configured by apss-ipq-pll driver, it is always on.
-> >
-> > > > Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> > > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > > > ---
-> > > > v2:     Use clk_alpha_pll_stromer_determine_rate, instead of adding new
-> > > >         clk_alpha_pll_stromer_plus_determine_rate as the alpha pll width
-> > > >         is same for both
-> > > >
-> > > >         Fix review comments
-> > > >                 udelay(50) -> usleep_range(50, 60)
-> > > >                 Remove SoC-specific from print message
-> > > > ---
-> > > >  drivers/clk/qcom/clk-alpha-pll.c | 57 ++++++++++++++++++++++++++++++++++++++++
-> > > >  drivers/clk/qcom/clk-alpha-pll.h |  1 +
-> > > >  2 files changed, 58 insertions(+)
-> > > >
-> > > > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> > > > index 4edbf77..5221b6c 100644
-> > > > --- a/drivers/clk/qcom/clk-alpha-pll.c
-> > > > +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> > > > @@ -2508,3 +2508,60 @@ const struct clk_ops clk_alpha_pll_stromer_ops = {
-> > > >         .set_rate = clk_alpha_pll_stromer_set_rate,
-> > > >  };
-> > > >  EXPORT_SYMBOL_GPL(clk_alpha_pll_stromer_ops);
-> > > > +
-> > > > +static int clk_alpha_pll_stromer_plus_set_rate(struct clk_hw *hw,
-> > > > +                                              unsigned long rate,
-> > > > +                                              unsigned long prate)
-> > > > +{
-> > > > +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > > > +       u32 l, alpha_width = pll_alpha_width(pll);
-> > > > +       int ret;
-> > > > +       u64 a;
-> > > > +
-> > > > +       rate = alpha_pll_round_rate(rate, prate, &l, &a, alpha_width);
-> > > > +
-> > > > +       regmap_write(pll->clkr.regmap, PLL_MODE(pll), 0);
-> > >
-> > > There's a theoretical problem here if I understand correctly. A call to
-> > > clk_enable() can happen while clk_set_rate() is in progress or vice
-> > > versa. Probably we need some sort of spinlock for this PLL that
-> > > synchronizes any enable/disable with the rate change so that when we
-> > > restore the enable bit the clk isn't enabled when it was supposed to be
-> > > off.
-> >
-> > Since the PLL is always on, should we worry about enable/disable?
-> > If you feel it is better to synchronize with a spin lock, will
-> > add and post a new revision. Please let me know.
->
-> Probably another option might be to change stromer PLL ops to use
-> prepare/unprepare instead of enable/disable. This way the
-> clk_prepare_lock() in clk_set_rate() will take care of locking.
+Hi
 
-Thanks for the suggestion. Have posted v3 with this and addressing
-Stephen Boyd's other comments. Please take a look.
-(https://lore.kernel.org/linux-arm-msm/cover.1697600121.git.quic_varada@quicinc.com/)
+On 18/10/2023 10:30, Ruidong Tian wrote:
+> Hi Suzuki,
+> 
+> Now ETM4X driver use MMIO or system instruction depends on this check in 
+> function etm4_init_csdev_access:
+> 
+>          if (drvdata->base)
+>                  return etm4_init_iomem_access(drvdata, csa);
+> 
+> This check always true if firmware provides a address range in ACPI
+> table of ETE, and as a result, the ETE device in this case cannot be
+> successfully probed.
+> 
+> I think OS should be compatible with this situation, no matter firmware
+> how to organize ETE information in ACPI table. How do you feel about
+> it?
 
-Thanks
-Varada
+My question is not about "What the patch does". But, why can't we use
+system instructions on your system, when ETE was designed to be used
+with that in the first place and get rid of the MMIO.
+
+Suzuki
+
+> 
+> Thank you
+> 
+> Ruidong Tian
+> 在 2023/10/18 16:28, Suzuki K Poulose 写道:
+>> On 18/10/2023 08:05, Ruidong Tian wrote:
+>>> The ETM4X driver now assume that all ETE as CPU system instructions
+>>> accessed device, in fact the ETE device on some machines also accessed
+>>> via MMIO.
+>>>
+>>> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+>>
+>> Why are we going backwards to MMIO from system instructions ? Is it 
+>> because of an "unfriendly" hypervisor preventing access ?
+>>
+>> As such, without a sufficiently acceptable explanation, I am reluctant
+>> to make this change
+>>
+>> Suzuki
+>>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
+>>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> index 285539104bcc..ad298c9cc87e 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> @@ -1103,8 +1103,9 @@ static bool etm4_init_iomem_access(struct 
+>>> etmv4_drvdata *drvdata,
+>>>        * with MMIO. But we cannot touch the OSLK until we are
+>>>        * sure this is an ETM. So rely only on the TRCDEVARCH.
+>>>        */
+>>> -    if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH) {
+>>> -        pr_warn_once("TRCDEVARCH doesn't match ETMv4 architecture\n");
+>>> +    if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH &&
+>>> +        (devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETE_ARCH) {
+>>> +        pr_warn_once("TRCDEVARCH doesn't match ETMv4/ETE 
+>>> architecture\n");
+>>>           return false;
+>>>       }
+
