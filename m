@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 138C17CEC78
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33187CEC74
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjJSAAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        id S231875AbjJRX7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJSAAR (ORCPT
+        with ESMTP id S229679AbjJRX7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:00:17 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE67FA
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:00:15 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a66bbb6c1dso54199739f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697673615; x=1698278415; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z1HJODpBcMbzB2tUXUZxawzk68qAf00Djnx9IKBN0d8=;
-        b=X2gC2r7UGG5y4Sc+EB+khOWcAme3Evcmh7hybtMMjds4baAKWqOTuGYOxkwMyo6YuV
-         X1+FoNnzIuP7LbNcRsdDKJUMUpYuznFYROGwsXaLO6nkLpKU8KXJxa1A4kbrOtTwvv7o
-         HK+weMKR4tTmMG+x90lG9C0nbAhxYSYvmhVys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697673615; x=1698278415;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z1HJODpBcMbzB2tUXUZxawzk68qAf00Djnx9IKBN0d8=;
-        b=P8jnMV50oYwQz7hE9VApO/rRAnvtf3dR85PPX+oWbEU7x3B1l742SKZqKpryzZro2Z
-         0dVKWzWOvDknBwpSS1cAcxcycVyDvND2cAsnuZd7fbK1F3jvb4gSays/QEz72RTuBeBQ
-         i+bp9eMbPmZtX+LnhhBiXG/GKmiN5WHJi58MQm6frPAx6S2o1wFc06QfwC8mHdOzlfSF
-         Y8KWUm/ivTqoxIWH+AzibdRqPaCv38xrFkgamXQqAR9Rz8SDbYu/rUQQWIpnjaYaZh5l
-         b9HfC37eCKsqot5I58kqo2Ap13wdMwtR2PG7RHFDrAsrU3AdQt7Y+I9qDAN7pvBny6xM
-         Bbog==
-X-Gm-Message-State: AOJu0YyrBFQWsX1Ur9ImkeFlgtR7JiXmG1ypCjHsMUCD6q1r9bQw+uxg
-        K6jIflkchEz8/0TaxNC9Q2lzoiXx8suCwvN1BDQ=
-X-Google-Smtp-Source: AGHT+IGb7/9XyHJU8tJSJRr+AOTGRuQiAjyMLpKpxv6aUrSVC/zA8mgpnLR6nLEsyXT+SILta4xVUA==
-X-Received: by 2002:a05:6e02:2146:b0:351:e6e:7723 with SMTP id d6-20020a056e02214600b003510e6e7723mr1072598ilv.25.1697673614869;
-        Wed, 18 Oct 2023 17:00:14 -0700 (PDT)
-Received: from markhas1.lan (71-218-45-6.hlrn.qwest.net. [71.218.45.6])
-        by smtp.gmail.com with ESMTPSA id z15-20020a92da0f000000b003512c3e8809sm1425870ilm.71.2023.10.18.17.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 17:00:08 -0700 (PDT)
-From:   Mark Hasemeyer <markhas@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
-        Mark Hasemeyer <markhas@chromium.org>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Brady Norander <bradynorander@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: [PATCH v1] ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
-Date:   Wed, 18 Oct 2023 17:59:31 -0600
-Message-ID: <20231018235944.1860717-1-markhas@chromium.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+        Wed, 18 Oct 2023 19:59:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA40106;
+        Wed, 18 Oct 2023 16:59:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DC09C433C7;
+        Wed, 18 Oct 2023 23:59:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697673587;
+        bh=FqB0xX+9WJ6jUZfPZjzCTE6Y5V5SPa1rNDB782OU+Jg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=DfDMnrbTJRmdHYN3n1P8IIn05wCjMm3Cz+r8dvc9ix/w53TnqaM36PRYr5S7H+y+l
+         HSi/Zd2ng88iPWIjqgu58KNyoHKJdy8VI52I6rTbIAr1CN59cyb7JKv70Q9RoVIy0Z
+         pMGmIzQAxMg9s+eSyphYlrYVPEZgDmO3wAHBszEkYNEc9m1Ihb4P69jb3inEj8l0gl
+         7ckt4EVwd6cSqO9dCzWJGLMW7UN1I9KLjmF2vXcWknVJ5GdVR2p48nSC4+WrDNaeiw
+         dVeguFvToow349Rf9sCv8dACEENpuBVFcr7UTIYtSb45ABZdRR8en4EdKqgl9FOc6H
+         X4bLkzzIqwa2Q==
+Message-ID: <d7772d43a9800a6e44a913f33fba163e.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9fe546088cb150cb42237a6f6a3d68f1c2c87987.1697600121.git.quic_varada@quicinc.com>
+References: <cover.1697600121.git.quic_varada@quicinc.com> <9fe546088cb150cb42237a6f6a3d68f1c2c87987.1697600121.git.quic_varada@quicinc.com>
+Subject: Re: [PATCH v3 2/8] clk: qcom: apss-ipq-pll: Use stromer plus ops for stromer plus pll
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, ilia.lin@kernel.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        mturquette@baylibre.com, quic_kathirav@quicinc.com,
+        rafael@kernel.org, robh+dt@kernel.org, viresh.kumar@linaro.org
+Date:   Wed, 18 Oct 2023 16:59:45 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Jasperlake Chromebooks overwrite the system vendor DMI value to the
-name of the OEM that manufactured the device. This breaks Chromebook
-quirk detection as it expects the system vendor to be "Google".
+Quoting Varadarajan Narayanan (2023-10-18 02:29:15)
+> The set rate and determine rate operations are different between
+> Stromer and Stromer Plus PLLs. Hence, use stromer plus ops for
+> ipq_pll_stromer_plus.
 
-Add another quirk detection entry that looks for "Google" in the BIOS
-version.
+What goes wrong if we don't have this patch? Please add that detail to
+the commit text.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
----
+>=20
+> Fixes: c7ef7fbb1ccf ("clk: qcom: apss-ipq-pll: add support for IPQ5332")
+> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
 
- sound/hda/intel-dsp-config.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 24a948baf1bc..756fa0aa69bb 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -336,6 +336,12 @@ static const struct config_entry config_table[] = {
- 					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
- 				}
- 			},
-+			{
-+				.ident = "Google firmware",
-+				.matches = {
-+					DMI_MATCH(DMI_BIOS_VERSION, "Google"),
-+				}
-+			},
- 			{}
- 		}
- 	},
--- 
-2.42.0.655.g421f12c284-goog
-
+Acked-by: Stephen Boyd <sboyd@kernel.org>
