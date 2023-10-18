@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAF47CDA05
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A107CDA06
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjJRLHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
+        id S230148AbjJRLIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjJRLHw (ORCPT
+        with ESMTP id S229717AbjJRLIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:07:52 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6F810E
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:07:51 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39I6ApHh011707;
-        Wed, 18 Oct 2023 11:07:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ix6ZpUMVpeBCtPeI7PgVsnjw1IDYnRh6hsgCYDArqqk=;
- b=TCpGAlhVGzzGYHUqVAgRTfBxGW7r3l9edYesXVV8nRXNeW+y8d9IxkeffrYg9B8ArHRb
- Sljl3t6Yb7TNsThBQqVfPrFLSWChotCj3hJZPhqet9TVOoWXR710Cr41BdMuLSY+6SBy
- EBxKBsiSs4KwuWlIXPc8jrjTO6KN5WShxLG8uUh+1k2l66oOnVshHk6rqhgTfskxGs6J
- rGyXg1lnAiAO2jEdUL3emIUzR1CFDh+pQERnuTARnHSTucxUv9Cez+utssSVfVaOIbYs
- VyPWIJCtgIm/RebDKNIs2Pv006MaOx26c31pwvDP4iGOrgMr21Epd6SqMaWPaxHf27Pa MQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsvxwtc0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 11:07:41 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39IB7fbg011157
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Oct 2023 11:07:41 GMT
-Received: from [10.201.3.104] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
- 2023 04:07:37 -0700
-Message-ID: <62909863-5f1d-7fc7-3fd5-a8da0caa89ba@quicinc.com>
-Date:   Wed, 18 Oct 2023 16:37:34 +0530
+        Wed, 18 Oct 2023 07:08:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57AD110F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:08:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AC202F4;
+        Wed, 18 Oct 2023 04:08:49 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.67.200])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 613D13F762;
+        Wed, 18 Oct 2023 04:08:06 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 12:08:03 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] irqchip/gic-v3: Remove Mediatek pseudo-NMI firmware
+ quirk handling
+Message-ID: <ZS-8k22ZWgn5hcCd@FVFF77S0Q05N>
+References: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
+ <20231006151547.3.Ie582d33cfe46f9ec2248e7f2dabdd6bbd66486a6@changeid>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] mtd: spi-nor: Ensure operation completion before shutdown
-Content-Language: en-US
-To:     Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <michael@walle.cc>
-CC:     <tudor.ambarus@linaro.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20231012055148.2445303-1-quic_mdalam@quicinc.com>
- <bb12db1205a5d1bfbee341d23defe0be@walle.cc> <mafs034ygm9yc.fsf@kernel.org>
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <mafs034ygm9yc.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: GawOuAzjbGeZmEDcqcMoiSnUNK6Xgh0V
-X-Proofpoint-ORIG-GUID: GawOuAzjbGeZmEDcqcMoiSnUNK6Xgh0V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_09,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 phishscore=0 mlxlogscore=377 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310180092
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006151547.3.Ie582d33cfe46f9ec2248e7f2dabdd6bbd66486a6@changeid>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,27 +52,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 06, 2023 at 03:15:53PM -0700, Douglas Anderson wrote:
+> This is a partial revert of commit 44bd78dd2b88 ("irqchip/gic-v3:
+> Disable pseudo NMIs on Mediatek devices w/ firmware issues"). In the
+> patch ("arm64: Disable GiC priorities on Mediatek devices w/ firmware
+> issues") we've moved the quirk handling to another place and so it's
+> not needed in the GiC driver.
+> 
+> NOTE: this isn't a full revert because it leaves some of the changes
+> to the "quirks" structure around in case future code needs it.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
+I think it might make sense to fold this into the patch adding the cpucap
+detection. Otherwise, if you apply my suggestions to the first patch, there's a
+2-commit window where we'll have two places that log that NMI is being disabled
+due to the FW issue. That's not a functional issue, so doesn't matter that
+much.
 
-On 10/12/2023 3:36 PM, Pratyush Yadav wrote:
-> On Thu, Oct 12 2023, Michael Walle wrote:
-> 
->> Hi,
->>
->> Am 2023-10-12 07:51, schrieb Md Sadre Alam:
->>> Ensure that there are no pending spi operation inprogress
->>> when system halts.
->>
->> What operation might be in progress here? Did you encounter some problems?
->> Please explain it in more detail in the commit message.
-> 
-> +1
-> 
-> Ideally we should never reach this function with a pending operation. I
-> think we should do a proper wait in the place we did the operation that
-> needs waiting rather than here. That would make sure operations other
-> than shutdown, like reads, also work properly.
-> 
+Either way:
 
-   We have faced issue while doing nor flash read/write test with specific nor part.
-   Will check once again with the same part and post new patch.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> 
+>  drivers/irqchip/irq-gic-v3.c | 22 +---------------------
+>  1 file changed, 1 insertion(+), 21 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 787ccc880b22..9ff776709ae6 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -39,8 +39,7 @@
+>  
+>  #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
+>  #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
+> -#define FLAGS_WORKAROUND_MTK_GICR_SAVE		(1ULL << 2)
+> -#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 3)
+> +#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 2)
+>  
+>  #define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
+>  
+> @@ -1790,15 +1789,6 @@ static bool gic_enable_quirk_msm8996(void *data)
+>  	return true;
+>  }
+>  
+> -static bool gic_enable_quirk_mtk_gicr(void *data)
+> -{
+> -	struct gic_chip_data *d = data;
+> -
+> -	d->flags |= FLAGS_WORKAROUND_MTK_GICR_SAVE;
+> -
+> -	return true;
+> -}
+> -
+>  static bool gic_enable_quirk_cavium_38539(void *data)
+>  {
+>  	struct gic_chip_data *d = data;
+> @@ -1891,11 +1881,6 @@ static const struct gic_quirk gic_quirks[] = {
+>  		.compatible = "asr,asr8601-gic-v3",
+>  		.init	= gic_enable_quirk_asr8601,
+>  	},
+> -	{
+> -		.desc	= "GICv3: Mediatek Chromebook GICR save problem",
+> -		.property = "mediatek,broken-save-restore-fw",
+> -		.init	= gic_enable_quirk_mtk_gicr,
+> -	},
+>  	{
+>  		.desc	= "GICv3: HIP06 erratum 161010803",
+>  		.iidr	= 0x0204043b,
+> @@ -1957,11 +1942,6 @@ static void gic_enable_nmi_support(void)
+>  	if (!gic_prio_masking_enabled())
+>  		return;
+>  
+> -	if (gic_data.flags & FLAGS_WORKAROUND_MTK_GICR_SAVE) {
+> -		pr_warn("Skipping NMI enable due to firmware issues\n");
+> -		return;
+> -	}
+> -
+>  	rdist_nmi_refs = kcalloc(gic_data.ppi_nr + SGI_NR,
+>  				 sizeof(*rdist_nmi_refs), GFP_KERNEL);
+>  	if (!rdist_nmi_refs)
+> -- 
+> 2.42.0.609.gbb76f46606-goog
+> 
