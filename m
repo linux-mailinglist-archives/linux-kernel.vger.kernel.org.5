@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA457CDD19
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B965B7CDD1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbjJRNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
+        id S231589AbjJRNYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjJRNXS (ORCPT
+        with ESMTP id S231542AbjJRNYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:23:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0382D9B;
-        Wed, 18 Oct 2023 06:23:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0335BC433C8;
-        Wed, 18 Oct 2023 13:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697635396;
-        bh=joKmWNY9VbWhIfQ/mKSkRyaTHyCBreEtFSASbGm5sak=;
+        Wed, 18 Oct 2023 09:24:10 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7B783;
+        Wed, 18 Oct 2023 06:24:08 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7D5B040E0196;
+        Wed, 18 Oct 2023 13:24:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PW8Ammz9t8hd; Wed, 18 Oct 2023 13:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697635444; bh=KKdXn+jk+LH5SYspzTnz0xjWorkps4s5tMVwILJV4Ho=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LPOr7bruIYPbgt1xPhFtXldnnWQppBGI8uYTAkw1/Zbx/VLmsRGknJ6/ERtpXYKi3
-         JqM+yJCjFHWewSsb78yJKr98fUMBOcaHYBYptgp7ZNWRgA6foR7QVcBCsbgW/NWsjS
-         Uw+kFQ6UWji/O4jfJ+zX12tbmh1MoAAIENzkZt/w=
-Date:   Wed, 18 Oct 2023 15:23:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dorcas Litunya <anonolitunya@gmail.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>, outreachy@lists.linux.dev,
-        dan.carpenter@linaro.org, andi.shyti@linux.intel.com,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: sm750fb: Remove unused return value in
- program_mode_registers()
-Message-ID: <2023101836-earful-freight-9c51@gregkh>
-References: <cover.1697619623.git.anonolitunya@gmail.com>
- <492e63bbc58147fb534930ef9e1fb5d844ae8769.1697619623.git.anonolitunya@gmail.com>
- <4b7129ae-27f9-7ff4-845-9c327aff488c@inria.fr>
- <ZS/Wr9ShnEe3umeY@dorcaslitunya-virtual-machine>
+        b=M4b7m8JKo0YGIpM3N2VwSm5LFPcIiBd8+rSQK4C7Oh8S2VF85151KzPZ+8NKU016o
+         kToA08GsRix4kTyhQfM3L/NM8KRysJWbj8lHeAvbV7c29e+xfeMmoLcWY6QGt/qDrh
+         QtKhOx2j8eYjTzSzVucbwILtldiJrO9uLh6oDmiNXKbAyauPE3S4pkGiUr5n1HxCzx
+         f4HsvEa/8eBpA2+qxQxGgb/WSfF26tTurvZSeegohDDK5rJJbb0i7v00axWmio/8zZ
+         ir3ZhHZUG5/133AutcBEZ+pVUBqAxRasQ+0mbiclPqdGoJY9fr423LIi6ecY3Uekg4
+         4bqQTcQSsp3HLJONCSGsNMJAe38S+01e6KmLq6xApWyuB3Tzg4L4+qT3bKQyNKmrbX
+         yLHAjP6mPZXQt7GXInZMGH44NjgxzWQxAtK3qAEaCWuQJ3Rhc9OnZpMwEQU6S/RIfk
+         jr3DruKNXrbYZkF6fRPhDyziUouv6S7rzwDFsPmrrBeQfHjVeWHCm1EUkUdpvSb5Bq
+         Zsv7L51xV+ClYRnDrRDzZrqScaepMBun0FT+pgUii/JbCAucQyWRKLKdbDwyXLGVFn
+         87xmJKgeXa2ZHV/FNjmE9zdLnMr+DA/Ys9aF3A/y4bqaqxrUQ7uvWL65TCmnKRPrRF
+         nY8Eq+h3TFH5WdHRaGBBd2+o=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 81CA440E0177;
+        Wed, 18 Oct 2023 13:23:57 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 15:23:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        David Kaplan <david.kaplan@amd.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
+References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+ <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZS/Wr9ShnEe3umeY@dorcaslitunya-virtual-machine>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,54 +70,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:59:27PM +0300, Dorcas Litunya wrote:
-> On Wed, Oct 18, 2023 at 02:06:41PM +0200, Julia Lawall wrote:
-> > 
-> > 
-> > On Wed, 18 Oct 2023, Dorcas AnonoLitunya wrote:
-> > 
-> > > Modifies the return type of program_mode_registers()
-> > > to void from int as the return value is being ignored in
-> > > all subsequent function calls.
-> > >
-> > > This improves code readability and maintainability.
-> > >
-> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
-> > > ---
-> > >  drivers/staging/sm750fb/ddk750_mode.c | 5 ++---
-> > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> > > index 83ace6cc9583..e15039238232 100644
-> > > --- a/drivers/staging/sm750fb/ddk750_mode.c
-> > > +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> > > @@ -73,8 +73,8 @@ display_control_adjust_sm750le(struct mode_parameter *mode_param,
-> > >  }
-> > >
-> > >  /* only timing related registers will be  programed */
-> > > -static int program_mode_registers(struct mode_parameter *mode_param,
-> > > -				  struct pll_value *pll)
-> > > +static void program_mode_registers(struct mode_parameter *mode_param,
-> > > +				   struct pll_value *pll)
-> > >  {
-> > >  	int ret = 0;
-> > >  	int cnt = 0;
-> > > @@ -202,7 +202,6 @@ static int program_mode_registers(struct mode_parameter *mode_param,
-> > >  	} else {
-> > >  		ret = -1;
-> > 
-> > Is it still useful to have ret = -1?  Maybe the ret variable is not useful
-> > at all any more, but one would have to check the parts of the function
-> > that aren't shown.
-> >
-> I agree Julia. I will remove the setting part for ret = -1 but keep the
-> ret variable just in case it is being used by parts of the function not
-> shown.
+On Thu, Oct 12, 2023 at 05:50:35PM -0000, tip-bot2 for David Kaplan wrote:
+>  SYM_CODE_START(__x86_return_thunk)
+>  	UNWIND_HINT_FUNC
+>  	ANNOTATE_NOENDBR
+> -	ANNOTATE_UNRET_SAFE
+> -	ret
+> +	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret),"ud2", X86_FEATURE_ALWAYS
 
-No, don't do that, you will trip other static checkers if you do so.
-Remove it entirely as it is obviously not needed anymore.
+I'm wondering if panicking people's boxes isn't too harsh.
 
-thanks,
+Also, we don't BUG() if we can continue so perhaps this should be
+a really loud warn instead:
 
-greg k-h
+---
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index f93e9b96927a..f230f396c9c1 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -357,6 +357,8 @@ extern void entry_ibpb(void);
+ 
+ extern void (*x86_return_thunk)(void);
+ 
++extern void check_thunks(void);
++
+ #ifdef CONFIG_CALL_DEPTH_TRACKING
+ extern void call_depth_return_thunk(void);
+ 
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index bb0ab8466b91..e4b2dfbf3de5 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2849,3 +2849,8 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
+ 	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
+ }
+ #endif
++
++void check_thunks(void)
++{
++	WARN(1, "Unconverted return thunk\n");
++}
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 3f3a478b74dd..ca9024ef0a7c 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -366,8 +366,7 @@ SYM_FUNC_END(call_depth_return_thunk)
+ SYM_CODE_START(__x86_return_thunk)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+-	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret),"ud2", X86_FEATURE_ALWAYS
+-	int3
++	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret;int3),"call check_thunks; ret", X86_FEATURE_ALWAYS
+ SYM_CODE_END(__x86_return_thunk)
+ EXPORT_SYMBOL(__x86_return_thunk)
+ 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
