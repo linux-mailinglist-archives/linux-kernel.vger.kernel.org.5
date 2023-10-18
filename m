@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7C07CEB2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77407CEB29
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 00:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbjJRW1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 18:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S231835AbjJRW1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 18:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbjJRW1V (ORCPT
+        with ESMTP id S230051AbjJRW1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 18:27:21 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959EB119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:27:17 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b6559cbd74so1262650766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697668035; x=1698272835; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YKT0DhFzK/7HUpXkHzrCihZCJECXU9c5i5HWV8bW/EM=;
-        b=NN9SmvU2TJg1k06b6OhM/X5iwrPshR8TgLX6IJE3eX0j3o+09mvNILuymNT79an4W8
-         P9ydNx9uyvbwNLcxsxn3g6y0PIuEu3eBntnwumN/LCjLn2l9TkMM1NmYKmhFjrgV+sBV
-         Fff59sWtx76MOYelgYUQ3k1pJQaHhMtRSsTGfbO+hBURUS/spU54kcswDZfBX3ARL27L
-         bSo+TfB7IyONgQihkJjJoTyM8wA4iUkgo5MQH5PlMwB6zrBkZnAjujrfx554nQSvmeln
-         DMUrGHv3uxd2v7VCtqc4t0QH1bOn39Jeu4pkdFH8JwdwNDyBd4N06WalJ2OeY7zafjwM
-         QZPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697668035; x=1698272835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YKT0DhFzK/7HUpXkHzrCihZCJECXU9c5i5HWV8bW/EM=;
-        b=p+vil6xkwPIqacSrPX7P6/W+MjmUtl86sH84WXgkLuCg6XryHhD1vv11up+d/1TYgc
-         ZFnJqpRzfPvJILviUcmvUgbOS04bM9NpfbirNW67XziIAFzkXYHplfNn7RHvflPC3TNM
-         dLI+IP4tU2pUVZ6K8cnFvRSzOIsUN9tRHF0nR19ZgoaiZl2UF4aMn7T5J/QYPWMkvDdn
-         gcjsr7cZ+C0gsCo/JQ2vqtEGn30ukJxD/IcD1P2eEPr/uMVN//b+LAyRrhTD5ThVqmuh
-         o4VLoH3+MYYEQF3OiUBOabx0w2PGrwiJLs70rC5EzZwBGNRFAMGHmF0qn9C96RdkWboC
-         uExw==
-X-Gm-Message-State: AOJu0Yyknt1QPfh4HkDH60FA1JvGMw2G3wiziutXzNaTe5P3NCpjXGTS
-        XaIHsMXiuC1XMXuU+46gAKB4R86rzo0XrJcXeZkMrg==
-X-Google-Smtp-Source: AGHT+IHKpl2ijlZQSO51cM+Z8COTkTH4QpJBSq+LXSmEO/uccV7vxTLmHx/TF2yPMZHolRigJcKqb7McemsGrQI829g=
-X-Received: by 2002:a17:907:3f13:b0:9ae:69b8:322b with SMTP id
- hq19-20020a1709073f1300b009ae69b8322bmr426010ejc.60.1697668034993; Wed, 18
- Oct 2023 15:27:14 -0700 (PDT)
+        Wed, 18 Oct 2023 18:27:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD02114
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 15:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697668031; x=1729204031;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=75QujgEWINW/qGGyCr9s22g4nyJiNVG3a7cStBj1G6Y=;
+  b=Enh+iBuh+LHMVKC7G0ph17YNABdMBiiB/qtBgmQZrI9DJydxHAlwCQdc
+   otuWa/SGhER4rBjPbFOEHQAiNXQLz4vbYjQvCjAUQuq1Homc3riqk9xDv
+   fzoQjkrNvedR1GeHwYYH075qhIOmFUZUFmOP2SbrYdBenEprtD6D1WtzX
+   tutyKiVG8RHkLE/+lty3nMRFAqdQEwCJQwLOXocsT/cb3b5Zcetn58yta
+   fS7YkeV57tK1eCwEmy9eAgBR/Wk1pfPpc4FNusVKmMAx90VQrDxgOVfiG
+   3xSqQz+QFpYXhuQ4PKOG+Hpcxi0wbfMPYVgDz3mE3XUw12GywbZKD9a3Y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="452598562"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="452598562"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:26:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="750272751"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="750272751"
+Received: from minhjohn-mobl.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.212.43.53])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 15:26:48 -0700
+From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
+To:     Adam Dunlap <acdunlap@google.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, <kirill.shutemov@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Felix Held <felix-coreboot@felixheld.de>
+Subject: Reserved bits and commit x86/sev-es: Set x86_virt_bits to the
+ correct value straight away, instead of a two-phase approach
+Date:   Wed, 18 Oct 2023 15:26:47 -0700
+Message-ID: <87r0lry3bs.fsf@jcompost-mobl.amr.corp.intel.com>
+Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara,
+        CA 95052. USA
 MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-2-nphamcs@gmail.com>
-In-Reply-To: <20231017232152.2605440-2-nphamcs@gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 18 Oct 2023 15:26:36 -0700
-Message-ID: <CAJD7tkYAvi_WfzPb_zaq174FB+-kftmcqtUrHirTeB2NMhFcbA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] mm: list_lru: allow external numa node and cgroup tracking
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/mixed; boundary="=-=-="
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,207 +62,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> The interface of list_lru is based on the assumption that objects are
-> allocated on the correct node/memcg, with this change it is introduced th=
-e
-> possibility to explicitly specify numa node and memcgroup when adding and
-> removing objects. This is so that users of list_lru can track node/memcg
-> of the items outside of the list_lru, like in zswap, where the allocation=
-s
-> can be made by kswapd for data that's charged to a different cgroup.
->
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+--=-=-=
+Content-Type: text/plain
+Content-Disposition: inline
 
-I prefer what Johannes suggested, making list_lru_add() and friends
-take in the memcg and nid, and add list_lru_add_obj() (or similar) and
-friends that assume the object is on the right node and memcg. This is
-clearer and more explicit imo. I am not very familiar with list_lrus
-though, so I'll leave this to folks who actually are.
+Hi,
 
-> ---
->  include/linux/list_lru.h | 38 +++++++++++++++++++++++++++++++++++
->  mm/list_lru.c            | 43 +++++++++++++++++++++++++++++++++++-----
->  2 files changed, 76 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-> index b35968ee9fb5..0f5f39cacbbb 100644
-> --- a/include/linux/list_lru.h
-> +++ b/include/linux/list_lru.h
-> @@ -89,6 +89,24 @@ void memcg_reparent_list_lrus(struct mem_cgroup *memcg=
-, struct mem_cgroup *paren
->   */
->  bool list_lru_add(struct list_lru *lru, struct list_head *item);
->
-> +/**
-> + * __list_lru_add: add an element to a specific sublist.
-> + * @list_lru: the lru pointer
-> + * @item: the item to be added.
-> + * @memcg: the cgroup of the sublist to add the item to.
-> + * @nid: the node id of the sublist to add the item to.
-> + *
-> + * This function is similar to list_lru_add(), but it allows the caller =
-to
-> + * specify the sublist to which the item should be added. This can be us=
-eful
-> + * when the list_head node is not necessarily in the same cgroup and NUM=
-A node
-> + * as the data it represents, such as zswap, where the list_head node co=
-uld be
-> + * from kswapd and the data from a different cgroup altogether.
-> + *
-> + * Return value: true if the list was updated, false otherwise
-> + */
-> +bool __list_lru_add(struct list_lru *lru, struct list_head *item, int ni=
-d,
-> +                   struct mem_cgroup *memcg);
-> +
->  /**
->   * list_lru_del: delete an element to the lru list
->   * @list_lru: the lru pointer
-> @@ -102,6 +120,18 @@ bool list_lru_add(struct list_lru *lru, struct list_=
-head *item);
->   */
->  bool list_lru_del(struct list_lru *lru, struct list_head *item);
->
-> +/**
-> + * __list_lru_del: delete an element from a specific sublist.
-> + * @list_lru: the lru pointer
-> + * @item: the item to be deleted.
-> + * @memcg: the cgroup of the sublist to delete the item from.
-> + * @nid: the node id of the sublist to delete the item from.
-> + *
-> + * Return value: true if the list was updated, false otherwise.
-> + */
-> +bool __list_lru_del(struct list_lru *lru, struct list_head *item, int ni=
-d,
-> +                   struct mem_cgroup *memcg);
-> +
->  /**
->   * list_lru_count_one: return the number of objects currently held by @l=
-ru
->   * @lru: the lru pointer.
-> @@ -136,6 +166,14 @@ static inline unsigned long list_lru_count(struct li=
-st_lru *lru)
->  void list_lru_isolate(struct list_lru_one *list, struct list_head *item)=
-;
->  void list_lru_isolate_move(struct list_lru_one *list, struct list_head *=
-item,
->                            struct list_head *head);
-> +/*
-> + * list_lru_putback: undo list_lru_isolate.
-> + *
-> + * Since we might have dropped the LRU lock in between, recompute list_l=
-ru_one
-> + * from the node's id and memcg.
-> + */
-> +void list_lru_putback(struct list_lru *lru, struct list_head *item, int =
-nid,
-> +                     struct mem_cgroup *memcg);
->
->  typedef enum lru_status (*list_lru_walk_cb)(struct list_head *item,
->                 struct list_lru_one *list, spinlock_t *lock, void *cb_arg=
-);
-> diff --git a/mm/list_lru.c b/mm/list_lru.c
-> index a05e5bef3b40..63b75163c6ad 100644
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -119,13 +119,22 @@ list_lru_from_kmem(struct list_lru *lru, int nid, v=
-oid *ptr,
->  bool list_lru_add(struct list_lru *lru, struct list_head *item)
->  {
->         int nid =3D page_to_nid(virt_to_page(item));
-> +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
-> +               mem_cgroup_from_slab_obj(item) : NULL;
-> +
-> +       return __list_lru_add(lru, item, nid, memcg);
-> +}
-> +EXPORT_SYMBOL_GPL(list_lru_add);
-> +
-> +bool __list_lru_add(struct list_lru *lru, struct list_head *item, int ni=
-d,
-> +                   struct mem_cgroup *memcg)
-> +{
->         struct list_lru_node *nlru =3D &lru->node[nid];
-> -       struct mem_cgroup *memcg;
->         struct list_lru_one *l;
->
->         spin_lock(&nlru->lock);
->         if (list_empty(item)) {
-> -               l =3D list_lru_from_kmem(lru, nid, item, &memcg);
-> +               l =3D list_lru_from_memcg_idx(lru, nid, memcg_kmem_id(mem=
-cg));
->                 list_add_tail(item, &l->list);
->                 /* Set shrinker bit if the first element was added */
->                 if (!l->nr_items++)
-> @@ -138,17 +147,27 @@ bool list_lru_add(struct list_lru *lru, struct list=
-_head *item)
->         spin_unlock(&nlru->lock);
->         return false;
->  }
-> -EXPORT_SYMBOL_GPL(list_lru_add);
-> +EXPORT_SYMBOL_GPL(__list_lru_add);
->
->  bool list_lru_del(struct list_lru *lru, struct list_head *item)
->  {
->         int nid =3D page_to_nid(virt_to_page(item));
-> +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
-> +               mem_cgroup_from_slab_obj(item) : NULL;
-> +
-> +       return __list_lru_del(lru, item, nid, memcg);
-> +}
-> +EXPORT_SYMBOL_GPL(list_lru_del);
-> +
-> +bool __list_lru_del(struct list_lru *lru, struct list_head *item, int ni=
-d,
-> +                   struct mem_cgroup *memcg)
-> +{
->         struct list_lru_node *nlru =3D &lru->node[nid];
->         struct list_lru_one *l;
->
->         spin_lock(&nlru->lock);
->         if (!list_empty(item)) {
-> -               l =3D list_lru_from_kmem(lru, nid, item, NULL);
-> +               l =3D list_lru_from_memcg_idx(lru, nid, memcg_kmem_id(mem=
-cg));
->                 list_del_init(item);
->                 l->nr_items--;
->                 nlru->nr_items--;
-> @@ -158,7 +177,7 @@ bool list_lru_del(struct list_lru *lru, struct list_h=
-ead *item)
->         spin_unlock(&nlru->lock);
->         return false;
->  }
-> -EXPORT_SYMBOL_GPL(list_lru_del);
-> +EXPORT_SYMBOL_GPL(__list_lru_del);
->
->  void list_lru_isolate(struct list_lru_one *list, struct list_head *item)
->  {
-> @@ -175,6 +194,20 @@ void list_lru_isolate_move(struct list_lru_one *list=
-, struct list_head *item,
->  }
->  EXPORT_SYMBOL_GPL(list_lru_isolate_move);
->
-> +void list_lru_putback(struct list_lru *lru, struct list_head *item, int =
-nid,
-> +                     struct mem_cgroup *memcg)
-> +{
-> +       struct list_lru_one *list =3D
-> +               list_lru_from_memcg_idx(lru, nid, memcg_kmem_id(memcg));
-> +
-> +       if (list_empty(item)) {
-> +               list_add_tail(item, &list->list);
-> +               if (!list->nr_items++)
-> +                       set_shrinker_bit(memcg, nid, lru_shrinker_id(lru)=
-);
-> +       }
-> +}
-> +EXPORT_SYMBOL_GPL(list_lru_putback);
-> +
->  unsigned long list_lru_count_one(struct list_lru *lru,
->                                  int nid, struct mem_cgroup *memcg)
->  {
-> --
-> 2.34.1
+On both AMD and Intel platform, when memory encryption is enabled (TME
+on Intel, SME or SVE on AMD), the number of physical address bits
+should be lowered. Both AMD code (arch/x86/kernel/cpu/amd.c) and Intel
+code (arch/x86/kernel/cpu/intel.c) support this.
+
+I recently noticed though that Intel code is not lowering the number
+of physical address bits as part of the early cpu initialization
+(c_early_init) and this is leading to MTRRs sanity check failure in
+generic_get_mtrr() with the following logs.
+
+mtrr: your BIOS has configured an incorrect mask, fixing it.
+mtrr: your BIOS has configured an incorrect mask, fixing it.
+[...]
+
+I have been working on fixing this following a similar approach to
+what AMD code does: lower the number of physical address bits at early
+initialization.
+- AMD: early_init_amd() -> detect_tme()  -> c->x86_phys_bits -= [...]
+- Intel: early_init_intel() -> early_detect_mem_encrypt() -> c->x86_phys_bits -= [...]
+
+I posted the patch on the LKML (cf. <https://lore.kernel.org/lkml/65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com/T/>)
+
+It works just fine on v6.6-rc6. However, this morning Kirill brought
+up commit fbf6449f84bf ("x86/sev-es: Set x86_virt_bits to the correct
+value straight away, instead of a two-phase approach") on the tip
+branch to my attention and I believe it should break the AMD early
+flow and is breaking the patch I submitted on my local tests.
+
+This commit moves the get_cpu_address_sizes() call after
+the this_cpu->c_early_init() call.
+
+@@ -1601,7 +1607,6 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+		 cpu_detect(c);
+		 get_cpu_vendor(c);
+		 get_cpu_cap(c);
+- get_cpu_address_sizes(c);
+  setup_force_cpu_cap(X86_FEATURE_CPUID);
+  cpu_parse_early_param();
+
+@@ -1617,6 +1622,8 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+		 setup_clear_cpu_cap(X86_FEATURE_CPUID);
+	 }
+
++ get_cpu_address_sizes(c);
++ setup_force_cpu_cap(X86_FEATURE_ALWAYS);
+
+  cpu_set_bug_bits(c);
+
+In the light of commit fbf6449f84bf I am wondering what is the right
+approach to fix the regression for AMD and then fix the MTRR check for
+Intel. Should we introduce a new cpu_dev callback to read the number
+of reserved bits and take it into account in get_cpu_address_sizes() ?
+
+Regards,
+
+-- 
+*Jeremy*
+/One Emacs to rule them all/
+
+--=-=-=--
