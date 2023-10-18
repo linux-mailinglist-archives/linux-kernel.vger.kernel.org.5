@@ -2,73 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B581A7CE259
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE7B7CE457
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235287AbjJRQJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S231432AbjJRRYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbjJRQJH (ORCPT
+        with ESMTP id S232890AbjJRQJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:09:07 -0400
+        Wed, 18 Oct 2023 12:09:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D6D12A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:09:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12435C433C7;
-        Wed, 18 Oct 2023 16:08:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A76123
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:09:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919F0C433C8;
+        Wed, 18 Oct 2023 16:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697645342;
-        bh=4MR7iDZ+ixMX3Hkqy8fTKzN7HrpxuhyU6baJRTI8kUg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xu0yRV8xDJ2jramzFaTKjJu286TbqXgRtm6Fnu6t/XIWQN67j4ZKJzisW2q9Xc+43
-         aJP9Clv7ivguDYTQHxjOOg/UJX5LkCg35QqWSOk1mRuBGg4Ce8MxOKRICXSTUxQrFD
-         Z40rGO35IXupws5F9Y5gw5++KTerH/+BA213yF1MxOmm8HnglybT/1Mp2CJQeC2Ox6
-         /K6wEwD7y/RXAUVJvasd/7I7i5569LnWUiB7OBB9nj2O8wtl16qcrf6WQnu7LHd/8r
-         KCUYy6pEUiOMQx3fr0Dj+JxVLpZsI9C8CU2Ai/yYzsrCpleBTM3FBS+0Kf8RtHn68Q
-         +JZA55NQnJxww==
-Date:   Wed, 18 Oct 2023 18:08:55 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH net-next v2 08/11] net/mlx5: devlink health: use retained
- error fmsg API
-Message-ID: <20231018160855.GT1940501@kernel.org>
-References: <20231017105341.415466-1-przemyslaw.kitszel@intel.com>
- <20231017105341.415466-9-przemyslaw.kitszel@intel.com>
+        s=k20201202; t=1697645380;
+        bh=NyxodQYdJN0bXaAwMa3qhqruplmUOckpXetLVK/mv+U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Z9CbGLM/xDgsJI+RiGEhkR5IrBIVA64HzatG1ofgD+AuTv2gqNlE0kqg16r/Trjml
+         jQq0sGq/kL99bDSxXBM35tr6NoPr1/Jt3YLOjN2L/aA2Gnp80EWF1myFxMg52P83Ie
+         +I0Emft9mPi98sXvu9/3n2bqwAZUBWtj7kXwZjACj5NzS52Aa8hIGiwf4UI1FC/61Y
+         0dNmxtR4mJgxZdpraU0Eionu9ocgLYTv50XxFxgGyjJjpEpPj6R/HF2RkeSjfojMHJ
+         wYQvgZagwrQctELg/zCV0Rgr3bGqjo2NKELiph0xLGwSLZB45wwm7yJRS2g1R/cst0
+         Bw5sKw0UekQgQ==
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>, Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: [PATCH] docs: rust: add "The Rust experiment" section
+Date:   Wed, 18 Oct 2023 18:09:22 +0200
+Message-ID: <20231018160922.1018962-1-ojeda@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017105341.415466-9-przemyslaw.kitszel@intel.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,52 +54,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 12:53:38PM +0200, Przemek Kitszel wrote:
-> Drop unneeded error checking.
-> 
-> devlink_fmsg_*() family of functions is now retaining errors,
-> so there is no need to check for them after each call.
-> 
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Clarify that the Rust experiment is still going on to avoid
+confusion for both kernel maintainers and end users.
 
-...
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+---
+Andrew: I did not add a `Suggested-by` just in case, but please let me know
+if you want it, of course.
 
-> @@ -288,52 +206,31 @@ int mlx5e_health_rsc_fmsg_dump(struct mlx5e_priv *priv, struct mlx5_rsc_key *key
+ Documentation/rust/index.rst | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Hi Przemek,
+diff --git a/Documentation/rust/index.rst b/Documentation/rust/index.rst
+index e599be2cec9b..aaed36af15ce 100644
+--- a/Documentation/rust/index.rst
++++ b/Documentation/rust/index.rst
+@@ -6,6 +6,23 @@ Rust
+ Documentation related to Rust within the kernel. To start using Rust
+ in the kernel, please read the quick-start.rst guide.
 
-The code above this hunk looks like this:
++
++The Rust experiment
++-------------------
++
++The Rust support was merged in v6.1 into mainline in order to help in
++determining whether Rust as a language was suitable for the kernel, i.e. worth
++the tradeoffs.
++
++Currently, the Rust support is primarily intended for kernel developers and
++maintainers interested in the Rust support, so that they can start working on
++abstractions and drivers, as well as helping the development of infrastructure
++and tools.
++
++In particular, if you are an end user, please note that there are no in-tree
++drivers/modules suitable or intended for production use yet.
++
++
+ .. only:: rustdoc and html
 
-        do {
-                cmd_err = mlx5_rsc_dump_next(mdev, cmd, page, &size);
-                if (cmd_err < 0) {
-                        err = cmd_err;
+ 	You can also browse `rustdoc documentation <rustdoc/kernel/index.html>`_.
 
-clang-16 W=1 warns that err, which is used as the return value of the
-function, will be uninitialised if the loop never hits this condition.
-
-Smatch also warns about this.
-
->  			goto destroy_cmd;
->  		}
->  
-> -		err = mlx5e_health_rsc_fmsg_binary(fmsg, page_address(page), size);
-> -		if (err)
-> -			goto destroy_cmd;
-> -
-> +		mlx5e_health_rsc_fmsg_binary(fmsg, page_address(page), size);
->  	} while (cmd_err > 0);
->  
->  destroy_cmd:
->  	mlx5_rsc_dump_cmd_destroy(cmd);
-> -	end_err = devlink_fmsg_binary_pair_nest_end(fmsg);
-> -	if (end_err)
-> -		err = end_err;
-> +	devlink_fmsg_binary_pair_nest_end(fmsg);
->  free_page:
->  	__free_page(page);
->  	return err;
->  }
-
-...
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+--
+2.42.0
