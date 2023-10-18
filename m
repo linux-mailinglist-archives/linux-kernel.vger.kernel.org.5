@@ -2,240 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4447CDB76
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDFD7CDB72
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbjJRMVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S231398AbjJRMTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 08:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjJRMVI (ORCPT
+        with ESMTP id S229529AbjJRMTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:21:08 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836FC112
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:20:42 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c0ecb9a075so46321245ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 05:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697631642; x=1698236442; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bo5moLBTUoQHfJoA1LKj3zHr6PsF4ViCLevZ9oHJwHI=;
-        b=en8S0J2wxvLdAfpsybKy7ObQt33HTqQwxrmECeRWk0wwlY4s0Rw8G0AR2TLN9lJQnE
-         mb/HHWYYZntj/0hn70tOxfyW83W8dQc5tLp8Pr2CEnuDCKNx6itxBnMRZ54VrioXEo+B
-         74j+/3XewH4xR6Oc+bYGicwT1ShPFg6jlj0Do7P31ZHxjaOeV1BpAYcAPtIh78ZnVAdO
-         7DtGaMTOGAxO5YSVae0SdvTv87dgNAKl5Ye/UmDHSW6AlH7z7I8DLTDFDpgGjWsqpxwH
-         u4RdruVbSMBz/GdIx3BeehGA9LXMcK/eAic4TwPX0YOBK3DXdtnpDLeVBmLN+2pgv7cI
-         vjOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697631642; x=1698236442;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bo5moLBTUoQHfJoA1LKj3zHr6PsF4ViCLevZ9oHJwHI=;
-        b=nS4ZJcifIW+M9E2DJVxmRgti4Lz4S3v6siRUOe/FKdwE0OXWX7k6HSDQGBDMpfdu7K
-         PjK9ZE2QiCJUxwDH1GdO/rpiNfaKyfeLrVdZ+XzwyJSawtJecSyumNopAlmH1NDvLAJI
-         3/5vwpJLxo5H9o2isqV/g1YZL+rmJ5D2BweeVV7DwlMw8PtD/yg4poMlfnYJaw6AH+rU
-         fdSrEn84LPENnX0nd0Wx40eQEpDI9hcCuG+1wJmR5sZUxfvyQToY900VBzli4X1o2IjT
-         4r65y4Wl0z9AhzbUDbe3Kl1ZrPA4EW1fBhKqRVsOqo2CpbP5DP35Y+VQRtts8WmCEpSG
-         RITg==
-X-Gm-Message-State: AOJu0YyxRP7Dbzs05M64hTj/1jpYKwMf/atpoMqppNW2C2a2cPNuZ9P0
-        r8olScPKD89hrow6exM3+dFjZw==
-X-Google-Smtp-Source: AGHT+IH/dlKFdhiooDIWatgta3krCMDtgHat6P4/L4sS4r83UzhM2vfKuOjiKSjj/CajnMd/EpKlEQ==
-X-Received: by 2002:a17:902:d3c4:b0:1ca:64f:35ff with SMTP id w4-20020a170902d3c400b001ca064f35ffmr5185792plb.48.1697631641870;
-        Wed, 18 Oct 2023 05:20:41 -0700 (PDT)
-Received: from L6YN4KR4K9.bytedance.net ([61.213.176.6])
-        by smtp.gmail.com with ESMTPSA id i12-20020a170902eb4c00b001c9b384731esm3383452pli.270.2023.10.18.05.20.39
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 18 Oct 2023 05:20:41 -0700 (PDT)
-From:   Yunhui Cui <cuiyunhui@bytedance.com>
-To:     serge@hallyn.com, jmorris@namei.org, peterz@infradead.org,
-        cuiyunhui@bytedance.com, chris.hyser@oracle.com,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] capabilities: add a option PR_SET_CAPS for sys_prctl
-Date:   Wed, 18 Oct 2023 20:20:06 +0800
-Message-Id: <20231018122006.24899-1-cuiyunhui@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+        Wed, 18 Oct 2023 08:19:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A6E898;
+        Wed, 18 Oct 2023 05:19:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EDF3D2F4;
+        Wed, 18 Oct 2023 05:20:09 -0700 (PDT)
+Received: from [10.57.81.189] (unknown [10.57.81.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A07A3F762;
+        Wed, 18 Oct 2023 05:19:26 -0700 (PDT)
+Message-ID: <50c3fc7c-7f0a-4acb-b6da-b39dc123d9b9@arm.com>
+Date:   Wed, 18 Oct 2023 13:20:15 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] sched/schedutil: rework performance estimation
+Content-Language: en-US
+To:     Beata Michalska <beata.michalska@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        rafael@kernel.org, viresh.kumar@linaro.org, qyousef@layalina.io,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20231013151450.257891-1-vincent.guittot@linaro.org>
+ <20231013151450.257891-2-vincent.guittot@linaro.org>
+ <ZS-Df8swrqcqP3Ue@e129154.nice.arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <ZS-Df8swrqcqP3Ue@e129154.nice.arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By infecting the container process, the already running container is
-cloned, which means that each process of the container forks
-independently. But the process in the container lacks some permissions
-that cannot be completed.
 
-For a container that is already running, we cannot modify the
-configuration and restart it to complete the permission elevation.
-Since capset() can only complete the setting of a subset of the
-capabilities of the process, it cannot meet the requirements for
-raising permissions. So an option is added to prctl() to complete it.
 
-Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
----
- include/linux/capability.h |  1 +
- include/uapi/linux/prctl.h |  1 +
- kernel/capability.c        | 82 +++++++++++++++++++++++++++-----------
- security/commoncap.c       |  7 ++++
- 4 files changed, 67 insertions(+), 24 deletions(-)
+On 10/18/23 08:04, Beata Michalska wrote:
+> Hi Vincent,
+> 
+> On Fri, Oct 13, 2023 at 05:14:49PM +0200, Vincent Guittot wrote:
+>> The current method to take into account uclamp hints when estimating the
+>> target frequency can end into situation where the selected target
+>> frequency is finally higher than uclamp hints whereas there are no real
+>> needs. Such cases mainly happen because we are currently mixing the
+>> traditional scheduler utilization signal with the uclamp performance
+>> hints. By adding these 2 metrics, we loose an important information when
+>> it comes to select the target frequency and we have to make some
+>> assumptions which can't fit all cases.
 
-diff --git a/include/linux/capability.h b/include/linux/capability.h
-index ecce0f43c73a..b656c40b281c 100644
---- a/include/linux/capability.h
-+++ b/include/linux/capability.h
-@@ -211,6 +211,7 @@ extern bool capable(int cap);
- extern bool ns_capable(struct user_namespace *ns, int cap);
- extern bool ns_capable_noaudit(struct user_namespace *ns, int cap);
- extern bool ns_capable_setid(struct user_namespace *ns, int cap);
-+extern int _capset(cap_user_header_t header, const cap_user_data_t data, bool prctl);
- #else
- static inline bool has_capability(struct task_struct *t, int cap)
- {
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 82cb4210ba50..9a8dae2be801 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -246,6 +246,7 @@ struct prctl_mm_map {
- # define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
- # define PR_SCHED_CORE_MAX		4
- 
-+#define PR_SET_CAPS			63
- /* Clone and personalize thread */
- #define PR_PERSONALIZED_CLONE		1000
- /* Isolation eventfd & epollfd during fork */
-diff --git a/kernel/capability.c b/kernel/capability.c
-index 1444f3954d75..968edd8b3564 100644
---- a/kernel/capability.c
-+++ b/kernel/capability.c
-@@ -201,25 +201,29 @@ SYSCALL_DEFINE2(capget, cap_user_header_t, header, cap_user_data_t, dataptr)
- 	return ret;
- }
- 
--/**
-- * sys_capset - set capabilities for a process or (*) a group of processes
-- * @header: pointer to struct that contains capability version and
-- *	target pid data
-- * @data: pointer to struct that contains the effective, permitted,
-- *	and inheritable capabilities
-- *
-- * Set capabilities for the current process only.  The ability to any other
-- * process(es) has been deprecated and removed.
-- *
-- * The restrictions on setting capabilities are specified as:
-- *
-- * I: any raised capabilities must be a subset of the old permitted
-- * P: any raised capabilities must be a subset of the old permitted
-- * E: must be set to a subset of new permitted
-- *
-- * Returns 0 on success and < 0 on error.
-- */
--SYSCALL_DEFINE2(capset, cap_user_header_t, header, const cap_user_data_t, data)
-+static int __capset(struct cred *new,
-+	       const struct cred *old,
-+	       const kernel_cap_t *effective,
-+	       const kernel_cap_t *inheritable,
-+	       const kernel_cap_t *permitted)
-+{
-+	new->cap_effective   = *effective;
-+	new->cap_inheritable = *inheritable;
-+	new->cap_permitted   = *permitted;
-+
-+	/*
-+	 * Mask off ambient bits that are no longer both permitted and
-+	 * inheritable.
-+	 */
-+	new->cap_ambient = cap_intersect(new->cap_ambient,
-+					 cap_intersect(*permitted,
-+						       *inheritable));
-+	if (WARN_ON(!cap_ambient_invariant_ok(new)))
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+int _capset(cap_user_header_t header, const cap_user_data_t data, bool prctl)
- {
- 	struct __user_cap_data_struct kdata[_KERNEL_CAPABILITY_U32S];
- 	unsigned i, tocopy, copybytes;
-@@ -266,11 +270,17 @@ SYSCALL_DEFINE2(capset, cap_user_header_t, header, const cap_user_data_t, data)
- 	if (!new)
- 		return -ENOMEM;
- 
--	ret = security_capset(new, current_cred(),
--			      &effective, &inheritable, &permitted);
--	if (ret < 0)
--		goto error;
--
-+	if (!prctl) {
-+		ret = security_capset(new, current_cred(),
-+				&effective, &inheritable, &permitted);
-+		if (ret < 0)
-+			goto error;
-+	} else {
-+		ret = __capset(new, current_cred(),
-+				 &effective, &inheritable, &permitted);
-+		if (ret < 0)
-+			goto error;
-+	}
- 	audit_log_capset(new, current_cred());
- 
- 	return commit_creds(new);
-@@ -279,6 +289,30 @@ SYSCALL_DEFINE2(capset, cap_user_header_t, header, const cap_user_data_t, data)
- 	abort_creds(new);
- 	return ret;
- }
-+EXPORT_SYMBOL(_capset);
-+
-+/**
-+ * sys_capset - set capabilities for a process or (*) a group of processes
-+ * @header: pointer to struct that contains capability version and
-+ *	target pid data
-+ * @data: pointer to struct that contains the effective, permitted,
-+ *	and inheritable capabilities
-+ *
-+ * Set capabilities for the current process only.  The ability to any other
-+ * process(es) has been deprecated and removed.
-+ *
-+ * The restrictions on setting capabilities are specified as:
-+ *
-+ * I: any raised capabilities must be a subset of the old permitted
-+ * P: any raised capabilities must be a subset of the old permitted
-+ * E: must be set to a subset of new permitted
-+ *
-+ * Returns 0 on success and < 0 on error.
-+ */
-+SYSCALL_DEFINE2(capset, cap_user_header_t, header, const cap_user_data_t, data)
-+{
-+	return _capset(header, data, false);
-+}
- 
- /**
-  * has_ns_capability - Does a task have a capability in a specific user ns
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 482807dec118..dd7f058e7d03 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -1266,6 +1266,13 @@ int cap_task_prctl(int option, unsigned long arg2, unsigned long arg3,
- 			new->securebits &= ~issecure_mask(SECURE_KEEP_CAPS);
- 		return commit_creds(new);
- 
-+	case PR_SET_CAPS:
-+		if (unlikely(!access_ok((void __user *)arg2, sizeof(cap_user_header_t))))
-+			return -EFAULT;
-+		if (unlikely(!access_ok((void __user *)arg3, sizeof(cap_user_data_t))))
-+			return -EFAULT;
-+		return _capset((cap_user_header_t)arg2, (cap_user_data_t)arg3, true);
-+
- 	case PR_CAP_AMBIENT:
- 		if (arg2 == PR_CAP_AMBIENT_CLEAR_ALL) {
- 			if (arg3 | arg4 | arg5)
--- 
-2.20.1
+[snip]
 
+>>
+>> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+>> index b9caa01dfac4..adec808b371a 100644
+>> --- a/include/linux/energy_model.h
+>> +++ b/include/linux/energy_model.h
+>> @@ -243,7 +243,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>>   	scale_cpu = arch_scale_cpu_capacity(cpu);
+>>   	ps = &pd->table[pd->nr_perf_states - 1];
+>>   
+>> -	max_util = map_util_perf(max_util);
+> Even though the effective_cpu_util does no longer include the headroom, it is
+> being applied by sugov further down the line (sugov_effective_cpu_perf).
+> Won't that bring back the original problem when freq selection within EM is
+> not align with the one performed by sugov ?
+
+It should be OK here to remove the above line. The map_util_perf()
+is done before this em_cpu_energy() call, in the new code in
+
+
+[snip]
+
+>>   }
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 922905194c0c..d4f7b2f49c44 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7628,7 +7628,7 @@ static inline void eenv_pd_busy_time(struct energy_env *eenv,
+>>   	for_each_cpu(cpu, pd_cpus) {
+>>   		unsigned long util = cpu_util(cpu, p, -1, 0);
+>>   
+>> -		busy_time += effective_cpu_util(cpu, util, ENERGY_UTIL, NULL);
+>> +		busy_time += effective_cpu_util(cpu, util, NULL, NULL);
+>>   	}
+>>   
+>>   	eenv->pd_busy_time = min(eenv->pd_cap, busy_time);
+>> @@ -7651,7 +7651,7 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
+>>   	for_each_cpu(cpu, pd_cpus) {
+>>   		struct task_struct *tsk = (cpu == dst_cpu) ? p : NULL;
+>>   		unsigned long util = cpu_util(cpu, p, dst_cpu, 1);
+>> -		unsigned long eff_util;
+>> +		unsigned long eff_util, min, max;
+>>   
+>>   		/*
+>>   		 * Performance domain frequency: utilization clamping
+>> @@ -7660,7 +7660,23 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
+>>   		 * NOTE: in case RT tasks are running, by default the
+>>   		 * FREQUENCY_UTIL's utilization can be max OPP.
+>>   		 */
+>> -		eff_util = effective_cpu_util(cpu, util, FREQUENCY_UTIL, tsk);
+>> +		eff_util = effective_cpu_util(cpu, util, &min, &max);
+>> +
+>> +		/* Task's uclamp can modify min and max value */
+>> +		if (tsk && uclamp_is_used()) {
+>> +			min = max(min, uclamp_eff_value(p, UCLAMP_MIN));
+>> +
+>> +			/*
+>> +			 * If there is no active max uclamp constraint,
+>> +			 * directly use task's one otherwise keep max
+>> +			 */
+>> +			if (uclamp_rq_is_idle(cpu_rq(cpu)))
+>> +				max = uclamp_eff_value(p, UCLAMP_MAX);
+>> +			else
+>> +				max = max(max, uclamp_eff_value(p, UCLAMP_MAX));
+>> +		}
+>> +
+>> +		eff_util = sugov_effective_cpu_perf(cpu, eff_util, min, max);
+> This will include the headroom so won't it inflate the util here ?
+
+Yes, that's the goal. It will inflate when needed. Currently, the
+problem is that we always inflate (blindly) in the em_cpu_energy().
+We don't know if the util value which is comming is from uclamp_max
+and the frequency should not be higher, because something want to
+clamp it.
+
+The other question would be:
+What if the PD has 4 CPUs, the max util found is 500 and is from
+uclamp_max, but there is onother util on some other CPU 490?
+
+That CPU is allowed and can have the +20% freq in voting.
+In current design we don't punish the whole domain in such
+scenario.
