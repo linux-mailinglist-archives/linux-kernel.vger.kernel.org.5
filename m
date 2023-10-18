@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156947CE9BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4FC7CE9C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbjJRVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 17:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        id S231883AbjJRVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 17:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJRVIQ (ORCPT
+        with ESMTP id S230373AbjJRVJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:08:16 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59D913D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:08:13 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9e994fd94so48028315ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:08:13 -0700 (PDT)
+        Wed, 18 Oct 2023 17:09:26 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99863AB
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:09:24 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso12627570a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 14:09:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697663293; x=1698268093; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PVTN0DwGw7en9yc7Uz7tI+IpU6nI5xXmVaMMJdRBSvM=;
-        b=1bl+0KebzxdBeUoGPQ9rb0ky0fzroznmmfg0SS05gFbG/GXvgJ9W/Ic8P4pDQ1oLkO
-         lXvBy+9RtvC9DyGT2p1h3vQnGbpdQaeESexH/fo4V3amnpa+R8/2rqUToNVEvRJDzOA1
-         ELX+XLmLZiuVI3Gkn3NqIZQ/kWU1xPMY6CXux8fa2S999IWX/g3w+pCNmYX2y/otcwvS
-         kbjMKQjDHgnpgxBrXYO1JXUiarqIeBCG/Ucisqco7xvgLQFogq3uJPEHAyrL73lvsqtV
-         FeNHGTtjCa2zB44kCDdkh5494G+yW+425BTGcHFwt76/TfPlS8Bq7Apz0vzaDWGcizOU
-         MQhg==
+        d=gmail.com; s=20230601; t=1697663363; x=1698268163; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZuQOrHn5qschiscHqNh0CrL7M5eMboDDMfEuDpLQtI=;
+        b=jIlUX1rSnxxh6XIyIYfJQXScokjP2wvoZiJBSv76KIaSlu+djTG3E5AXDbOMLlkNsR
+         leWE0KEMHnDRjl6KtEdbdXkBsjq6/o2CJ8pyg++QUtsriOkUsYXWxYBZUIlgCo3arlVV
+         jBtyPJiFZ2HdU9ER6J5sHOWiVkk6WH/9bxOXeOcXPUQ25dkL8PwVqfW5Zf/Vbypa/qBe
+         tCcSduXWoUu4ZiDZhgGgcV/U7rRrRuzVZtlfciNJhUOLob8+4HrLau1hj109SsD6djT8
+         5UGjWBwOd9LF63VS3p23qOTtvvLPYMG3qFe1WbpaQiEPJHRbqu62EE7c1rAqWI0FMNZA
+         FXtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697663293; x=1698268093;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PVTN0DwGw7en9yc7Uz7tI+IpU6nI5xXmVaMMJdRBSvM=;
-        b=exuH175MuLJ4xWYmSmCeAhrHB+RIVSbttwWaq40xnJko6+hd9gQqRayLKHwV3OIYRJ
-         NbpQkIBHPQZnoI/9GoKybG5NIH3xsfP7CaP5Nw9FDW+3rvjjEAdULfMe5wAzSXi1Gvo9
-         MkzPD1cxkErfn7YXC3lijLMS3oKj4zrp1+RR9CmUv96XUT10WsY/BpwackzGUV6OCETc
-         M9AYtflwxjEWq+B0BSVeitWKHxF6KrZQ1w92VAD7tPCMcknqwEHG//7K+NbY+TinZUoW
-         QaTxT7iSApdnqgvrMFYUHCtlpVenhnL6Aol0CTVPNq18hL+1B2XYfzopeAs9Sxu8aNhQ
-         bCTw==
-X-Gm-Message-State: AOJu0YzQtIofMJbDOfFiJKomSynbKwSEtNZ94r2PLNINeB42sDPoCGO5
-        EEdaIx9v28hCIaXgRHd2//fXhhZha28=
-X-Google-Smtp-Source: AGHT+IGVBxOHZgerTVqsgICs+VuoL4YLyg1CdLr8SOLE1IDW1QAetoYCO7P1ttzgWgM3OSuZ2Sql8nHWrvQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:654d:b0:1ca:8868:8c97 with SMTP id
- d13-20020a170902654d00b001ca88688c97mr12081pln.0.1697663293202; Wed, 18 Oct
- 2023 14:08:13 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 14:08:11 -0700
-In-Reply-To: <20230927230811.2997443-1-xin@zytor.com>
-Mime-Version: 1.0
-References: <20230927230811.2997443-1-xin@zytor.com>
-Message-ID: <ZTBJO75Zu1JBsqvw@google.com>
-Subject: Re: [PATCH 1/1] KVM: VMX: Cleanup VMX basic information defines and usages
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Xin Li (Intel)" <xin@zytor.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, weijiang.yang@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697663363; x=1698268163;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YZuQOrHn5qschiscHqNh0CrL7M5eMboDDMfEuDpLQtI=;
+        b=fsOevXZFBXEd2lyIixvNb0pdgQ1CJsCBxjR/HeEAZs+B0sE8vXR1L3TEuMjqHUXDD8
+         TEQG+puIyy0nBnGwgpnsbdhWfElpOTVsS8VJ81haLGj3tMfe1UWmNqNlrD9X7I7TfYJk
+         ubsK0t9BVwpy6HcA26i0XlD2ZX08iLnCZjRACPssOIw3hANz/chUpiuPQ3kIS+e31zn5
+         jPcGeX32KVVns2NoAjIYq++BubCNpz7QkkIpGcgQ7vTj4V1xWpS0GiwhzfNMWn8OQwKv
+         lkCilXwVYNkAxpeePiwRIeaCw0ys/7djINNqHiHtLfs3ifv9X7Ld8iymXwd4PU74rNDi
+         tWNw==
+X-Gm-Message-State: AOJu0YxWiLGHeF/pWh0dPz4T5KXnNEJyrBRyUEUdoowzXQMPlxM03SNe
+        0XOxo1onm13M1c8QyyDTrstidsS4LKdza3+DuC0=
+X-Google-Smtp-Source: AGHT+IGxzwtSk0KkF3L2w0cIRCQA1sT4ezENGT9pCKEXbFSm0R7at/7JSl1pp+2MHQZC1iXNziJJWdHru4TJ/6W5DLw=
+X-Received: by 2002:a05:6402:50d3:b0:534:8bdf:a258 with SMTP id
+ h19-20020a05640250d300b005348bdfa258mr115761edb.31.1697663362698; Wed, 18 Oct
+ 2023 14:09:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com> <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+In-Reply-To: <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 18 Oct 2023 23:09:10 +0200
+Message-ID: <CAFULd4aWOOe47Kjh3vwyLAxMsfDmRre231CPuULDh7W2L61GLw@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,178 +102,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023, Xin Li (Intel) wrote:
-> From: Xin Li <xin3.li@intel.com>
-> 
-> Add IA32_VMX_BASIC MSR bitfield shift macros and use them to define VMX
-> basic information bitfields.
+On Wed, Oct 18, 2023 at 10:51=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wr=
+ote:
+>
+> On Wed, Oct 18, 2023 at 10:34=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Wed, 18 Oct 2023 at 13:22, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > And yes, sometimes we use actual volatile accesses for them
+> > > (READ_ONCE() and WRITE_ONCE()) but those are *horrendous* in general,
+> > > and are much too strict. Not only does gcc generally lose its mind
+> > > when it sees volatile (ie it stops doing various sane combinations
+> > > that would actually be perfectly valid), but it obviously also stops
+> > > doing CSE on the loads (as it has to).
+> >
+> > Note, in case you wonder what I mean by "lose its mind", try this
+> > (extremely stupid) test program:
+> >
+> >     void a(volatile int *i) { ++*i; }
+> >     void b(int *i) { ++*i; }
+> >
+> > and note that the non-volatile version does
+> >
+> >     addl $1, (%rdi)
+> >
+> > but the volatile version then refuses to combine the read+write into a
+> > rmw instruction, and generates
+> >
+> >     movl (%rdi), %eax
+> >     addl $1, %eax
+> >     movl %eax, (%rdi)
+> >
+> > instead.
+> >
+> > Sure, it's correct, but it's an example of how 'volatile' ends up
+> > disabling a lot of other optimizations than just the "don't remove the
+> > access".
+> >
+> > Doing the volatile as one rmw instruction would still have been very
+> > obviously valid - it's still doing a read and a write. You don't need
+> > two instructions for that.
+>
+> FYI: This is the reason RMW instructions in percpu.h are not (blindly)
+> converted to C ops.  They will remain in their (volatile or not) asm
+> form because of the above reason, and due to the fact that they don't
+> combine with anything.
+>
+> > I'm not complaining, and I understand *why* it happens - compiler
+> > writers very understandably go "oh, I'm not touching that".
+> >
+> > I'm just trying to point out that volatile really screws up code
+> > generation even aside from the "access _exactly_ once" issue.
+> >
+> > So using inline asm and relying on gcc doing (minimal) CSE will then
+> > generate better code than volatile ever could, even when we just use a
+> > simple 'mov" instruction. At least you get that basic combining
+> > effect, even if it's not great.
+>
+> Actually, RMW insns are better written in asm, while simple "mov"
+> should be converted to (volatile or not) memory access. On x86 "mov"s
+> from memory (reads) will combine nicely with almost all other
+> instructions.
 
-Why?  Unless something actually uses the shift independently, just define the
-BIT_ULL(...) straightaway.
+BTW: There was a discussion that GCC should construct RMW instructions
+also when the memory location is marked volatile, but there was no
+resolution reached. So, the "I'm not touching that" approach remains.
+However, GCC *will* combine a volatile read with a follow-up
+instruction.
 
-> Add VMX_BASIC_FEATURES and VMX_BASIC_RESERVED_BITS to form a valid bitmask
-> of IA32_VMX_BASIC MSR. As a result, to add a new VMX basic feature bit,
-> just change the 2 new macros in the header file.
-
-Not if a new feature bit lands in the middle of one of the reserved ranges, then
-the developer will have to update at least three macros, and add a new one. More
-below.
-
-> Also replace hardcoded VMX basic numbers with the new VMX basic macros.
-> 
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> ---
->  arch/x86/include/asm/msr-index.h       | 31 ++++++++++++++++++++------
->  arch/x86/kvm/vmx/nested.c              | 10 +++------
->  arch/x86/kvm/vmx/vmx.c                 |  2 +-
->  tools/arch/x86/include/asm/msr-index.h | 31 ++++++++++++++++++++------
-
-Please drop the tools/ update, copying kernel headers into tools is a perf tools
-thing that I want no part of.
-
-https://lore.kernel.org/all/Y8bZ%2FJ98V5i3wG%2Fv@google.com
-
->  4 files changed, 52 insertions(+), 22 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 1d111350197f..4607448ff805 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -1084,13 +1084,30 @@
->  #define MSR_IA32_VMX_PROCBASED_CTLS3	0x00000492
->  
->  /* VMX_BASIC bits and bitmasks */
-> -#define VMX_BASIC_VMCS_SIZE_SHIFT	32
-> -#define VMX_BASIC_TRUE_CTLS		(1ULL << 55)
-> -#define VMX_BASIC_64		0x0001000000000000LLU
-> -#define VMX_BASIC_MEM_TYPE_SHIFT	50
-> -#define VMX_BASIC_MEM_TYPE_MASK	0x003c000000000000LLU
-> -#define VMX_BASIC_MEM_TYPE_WB	6LLU
-> -#define VMX_BASIC_INOUT		0x0040000000000000LLU
-> +#define VMX_BASIC_VMCS_SIZE_SHIFT		32
-> +#define VMX_BASIC_ALWAYS_0			BIT_ULL(31)
-> +#define VMX_BASIC_RESERVED_RANGE_1		GENMASK_ULL(47, 45)
-> +#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT	48
-> +#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY		BIT_ULL(VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT)
-> +#define VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT	49
-> +#define VMX_BASIC_DUAL_MONITOR_TREATMENT	BIT_ULL(VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT)
-> +#define VMX_BASIC_MEM_TYPE_SHIFT		50
-> +#define VMX_BASIC_MEM_TYPE_WB			6LLU
-> +#define VMX_BASIC_INOUT_SHIFT			54
-> +#define VMX_BASIC_INOUT				BIT_ULL(VMX_BASIC_INOUT_SHIFT)
-> +#define VMX_BASIC_TRUE_CTLS_SHIFT		55
-> +#define VMX_BASIC_TRUE_CTLS			BIT_ULL(VMX_BASIC_TRUE_CTLS_SHIFT)
-> +#define VMX_BASIC_RESERVED_RANGE_2		GENMASK_ULL(63, 56)
-> +
-> +#define VMX_BASIC_FEATURES			\
-
-Maybe VMX_BASIC_FEATURES_MASK to make it more obvious it's a mask of multiple
-bits?
-
-> +	(VMX_BASIC_DUAL_MONITOR_TREATMENT |	\
-> +	 VMX_BASIC_INOUT |			\
-> +	 VMX_BASIC_TRUE_CTLS)
-> +
-> +#define VMX_BASIC_RESERVED_BITS			\
-> +	(VMX_BASIC_ALWAYS_0 |			\
-> +	 VMX_BASIC_RESERVED_RANGE_1 |		\
-> +	 VMX_BASIC_RESERVED_RANGE_2)
-
-I don't see any value in defining VMX_BASIC_RESERVED_RANGE_1 and
-VMX_BASIC_RESERVED_RANGE_2 separately.   Or VMX_BASIC_ALWAYS_0 for the matter.
-And I don't think these macros need to go in msr-index.h, e.g. just define them
-above vmx_restore_vmx_basic() as that's likely going to be the only user, ever.
-
-And what's really missing is a static_assert() or BUILD_BUG_ON() to ensure that
-VMX_BASIC_FEATURES doesn't overlap with VMX_BASIC_RESERVED_BITS.
-
->  /* Resctrl MSRs: */
->  /* - Intel: */
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index c5ec0ef51ff7..5280ba944c87 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1203,21 +1203,17 @@ static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
->  
->  static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
->  {
-> -	const u64 feature_and_reserved =
-> -		/* feature (except bit 48; see below) */
-> -		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
-> -		/* reserved */
-> -		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
->  	u64 vmx_basic = vmcs_config.nested.basic;
->  
-> -	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
-> +	if (!is_bitwise_subset(vmx_basic, data,
-> +			       VMX_BASIC_FEATURES | VMX_BASIC_RESERVED_BITS))
->  		return -EINVAL;
->  
->  	/*
->  	 * KVM does not emulate a version of VMX that constrains physical
->  	 * addresses of VMX structures (e.g. VMCS) to 32-bits.
->  	 */
-> -	if (data & BIT_ULL(48))
-> +	if (data & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
->  		return -EINVAL;
->  
->  	if (vmx_basic_vmcs_revision_id(vmx_basic) !=
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 72e3943f3693..f597243d6a72 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2701,7 +2701,7 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->  
->  #ifdef CONFIG_X86_64
->  	/* IA-32 SDM Vol 3B: 64-bit CPUs always have VMX_BASIC_MSR[48]==0. */
-> -	if (vmx_msr_high & (1u<<16))
-> +	if (vmx_msr_high & (1u << (VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT - 32)))
-
-In all honestly, I find the existing code easier to read.  I'm definitely not
-saying the existing code is good, but IMO this is at best a wash.
-
-I would much rather we do something like this and move away from the hi/lo crud
-entirely:
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 86ce9efe6c66..f103980c3d02 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2693,28 +2693,28 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
-                _vmexit_control &= ~x_ctrl;
-        }
- 
--       rdmsr(MSR_IA32_VMX_BASIC, vmx_msr_low, vmx_msr_high);
-+       rdmsrl(MSR_IA32_VMX_BASIC, vmx_msr);
- 
-        /* IA-32 SDM Vol 3B: VMCS size is never greater than 4kB. */
--       if ((vmx_msr_high & 0x1fff) > PAGE_SIZE)
-+       if ((VMX_BASIC_VMCS_SIZE(vmx_msr) > PAGE_SIZE)
-                return -EIO;
- 
- #ifdef CONFIG_X86_64
-        /* IA-32 SDM Vol 3B: 64-bit CPUs always have VMX_BASIC_MSR[48]==0. */
--       if (vmx_msr_high & (1u<<16))
-+       if (vmx_msr & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
-                return -EIO;
- #endif
- 
-        /* Require Write-Back (WB) memory type for VMCS accesses. */
--       if (((vmx_msr_high >> 18) & 15) != 6)
-+       if (VMX_BASIC_VMCS_MEMTYPE(vmx_msr) != VMX_BASIC_MEM_TYPE_WB)
-                return -EIO;
- 
-        rdmsrl(MSR_IA32_VMX_MISC, misc_msr);
- 
--       vmcs_conf->size = vmx_msr_high & 0x1fff;
--       vmcs_conf->basic_cap = vmx_msr_high & ~0x1fff;
-+       vmcs_conf->size = VMX_BASIC_VMCS_SIZE(vmx_msr);
-+       vmcs_conf->basic_cap = ????(vmx_msr);
- 
--       vmcs_conf->revision_id = vmx_msr_low;
-+       vmcs_conf->revision_id = (u32)vmx_msr;
- 
-        vmcs_conf->pin_based_exec_ctrl = _pin_based_exec_control;
-        vmcs_conf->cpu_based_exec_ctrl = _cpu_based_exec_control;
-
+Uros.
