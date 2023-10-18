@@ -2,118 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 594BE7CD17E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9528F7CD180
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 02:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjJRAzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 20:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        id S1344280AbjJRAz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 20:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJRAzt (ORCPT
+        with ESMTP id S229459AbjJRAzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 20:55:49 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9692;
-        Tue, 17 Oct 2023 17:55:48 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7dd65052aso85686407b3.0;
-        Tue, 17 Oct 2023 17:55:47 -0700 (PDT)
+        Tue, 17 Oct 2023 20:55:53 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57441FA
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:55:51 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7dd655566so97655997b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 17:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697590547; x=1698195347; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eBsdVbQfZnd0UbagwL4VN2FSW+PYWVlXpxtElHlS/LI=;
-        b=cR+u8GJ+jUtI+lDTbLL5LkooRSK8VIyiCaYpwn3+0F8YNbVPKJcbDg26wKofskAr51
-         KT9bKbXxB3O5aBGcpZL7hoieqdKSEWWCPbA932HBZ5AIxiODkcBAXctp7dP7uH4fZ5Ar
-         qadiNyimyaI8ToBmucMbPXX6PbR/DVufXIRMU22CEyQJb7/BFuSXJvU7iVccU4lED/ne
-         KjB28+Hw6nURMuAoW7vy/g6BO85pI7x1EHC9L2y7YtX3fZ/UK+qNktQCa5j/EptbgJmx
-         G3Gp4V6k5ymwu+CDmu4Sl1UFUCiUh/fKBmv3uk+kH6aXLZVmM/6EItS9VIbWxnemCPaw
-         sWhQ==
+        d=google.com; s=20230601; t=1697590550; x=1698195350; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RtN1cX7OnFY4c89ZOmsAINIHxJE4cdFfX8n5PNBpJGI=;
+        b=KgneW3Oe5RHM8xksCub1w77ZaBsnFs5fWKyELoxmpt+V5UjkrheW3h5b9u/KAVAc3Y
+         Go8N4AsXF7YHU84oRKrLsb+WxZVl5H27os50mzHla9C0a0FH3OiAC8g8rW5elmDHox50
+         QgFIxZpcVe665cpWJvsN1vSb0sC8Vl7zeq+BxNRGvGdHiwHnAsEj6+2/2MfdUS0GN4TI
+         kypfYCKgObKZoSU11IJnGFyR+lOLCYulYfgBGgDlwouTA2twT/sSUIuhuAggBWYUrZLD
+         bv89JGD9YhKGVEeNMCK/7ZC2UqFmFxX5IeyqWsYtFR+T+JWWEVe5oL6rZCNqZwNYtB/V
+         2NGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697590547; x=1698195347;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eBsdVbQfZnd0UbagwL4VN2FSW+PYWVlXpxtElHlS/LI=;
-        b=HK5PlOuOFclwKTERdkN8giwuWiWDzvMZATX1HWwsISMbjDAgC+hC2Squzuu4xm9rKs
-         Eb+XTL+n7VpuOY61MrQkV6IOVllSjPIWLZf5f01fpH5U6u9oOcDeMUzFtETazRO+7B16
-         BwJxaBd47vbmT/+EOLzrWLghlISq9GsoqUtCiCzm+zcLAreWtwFBEzzFPoGGqo8f5xmh
-         YvZ7bT5GrmxsOlIfCqHNICJjyTT8Z2R5vGucoMJWoz9y3zfYtV9l7yT7cu1jmNEIPM1E
-         wilIFDm/KM5tOqoc0ha2xANHtGNeSx6osT1nHF6OYzUC7C//lFcOMIHV5vsWqLjvv8HC
-         RVFw==
-X-Gm-Message-State: AOJu0YwK+y8BrwmqWRVFul52uTfRf6MdfTG+4zrbTNk+GlMiHtXvuTjY
-        k7Rk3ZX1H9/DgVz9dluFc7w=
-X-Google-Smtp-Source: AGHT+IEDzZCyUkIkQ55ygoudggAt4gMoCY+HI4SZTLbqxGuB8pzQ4sjzkhQriIESTr8MIe6flYXL4w==
-X-Received: by 2002:a05:690c:f96:b0:5a8:286d:339e with SMTP id df22-20020a05690c0f9600b005a8286d339emr4506682ywb.4.1697590547035;
-        Tue, 17 Oct 2023 17:55:47 -0700 (PDT)
-Received: from lanran-u22.. ([169.235.25.167])
-        by smtp.googlemail.com with ESMTPSA id u5-20020a17090add4500b002777001ee76sm135919pjv.18.2023.10.17.17.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 17:55:45 -0700 (PDT)
-From:   Haonan Li <lihaonan1105@gmail.com>
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Haonan Li <lihaonan1105@gmail.com>
-Subject: Re: [PATCH] pata_lagacy: Handle failed ATA timing computation in opti82c46x_set_piomode
-Date:   Wed, 18 Oct 2023 00:52:21 +0000
-Message-Id: <20231018005220.2551586-1-lihaonan1105@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <1a0c4378-29b2-43b4-982b-0d92dfb8ed4f@kernel.org>
-References: <1a0c4378-29b2-43b4-982b-0d92dfb8ed4f@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697590550; x=1698195350;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RtN1cX7OnFY4c89ZOmsAINIHxJE4cdFfX8n5PNBpJGI=;
+        b=cUw0j+DFFBuj1FswRgf66HvCExfXySG58bE2hh+5ze8thGEOn2Yh37VfnasirXAMGy
+         L22HbUoLKkT+MzagCJvmQgCrgpk8E+qRco59i6Cw45ahzv9T4nr+MEbzG7n2PQbehutq
+         WEWqsorLKENaoUiOKedly4PgQ1kWD0K+Vw1DbCfEEhTS4E2s/XG5JjSmW0KGbtuuhTHI
+         JkVU+ALiZXmOtl550ShA8RStvu1ar1qo9VjmOpzKx9GGkqrjXyp22TQkS+N6j8tACrz/
+         qVbmR3BsqlT2SyyFi4L3iXDu99i7zOy3WfTauBWPqm7bxGI336TDGjrnvzazSY9vdS+q
+         dL+A==
+X-Gm-Message-State: AOJu0YzTfGLWjoIPMTog3B4UzR3XHRKqdAuu6vo36Hew+fRCO8Ig9q1r
+        FhHjQAbLuaZoiZlHFhnEKu6S8/EuslP/apk2nw==
+X-Google-Smtp-Source: AGHT+IG3xQKinhI0hluOWrkIGk67L4r7161FfPWTDhQsiOFXX1Myf7Znfr216Md1QRT5RSFMskz/ufJkibAIW2xRaw==
+X-Received: from souravpanda.svl.corp.google.com ([2620:15c:2a3:200:26ea:df99:e4a5:e557])
+ (user=souravpanda job=sendgmr) by 2002:a81:4f94:0:b0:5a7:b9b0:d23f with SMTP
+ id d142-20020a814f94000000b005a7b9b0d23fmr80315ywb.6.1697590550545; Tue, 17
+ Oct 2023 17:55:50 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 17:55:47 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231018005548.3505662-1-souravpanda@google.com>
+Subject: [PATCH v2 0/1] mm: report per-page metadata information
+From:   Sourav Panda <souravpanda@google.com>
+To:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, david@redhat.com,
+        rdunlap@infradead.org, chenlinxuan@uniontech.com,
+        yang.yang29@zte.com.cn, souravpanda@google.com,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function opti82c46x_set_piomode utilizes the ata_timing_compute()
-to determine the appropriate ATA timings for a given device. However,
-in certain conditions where the ata_timing_find_mode() function does
-not find a valid mode, ata_timing_compute() returns an error (-EINVAL),
-leaving the tp struct uninitialized.
+Changelog:
+v2:
+	- Fixed the three bugs reported by kernel test robot.
+	- Enhanced the commit message as recommended by David Hildenbrand.
+	- Addressed comments from Matthew Wilcox:
+	  	- Simplified alloc_vmemmap_page_list() and
+		  free_page_ext() as recommended.
+		- Used the appropriate comment style in mm/vmstat.c.
+		- Replaced writeout_early_perpage_metadata() with
+		  store_early_perpage_metadata() to reduce ambiguity
+		  with what swap does.
+	- Addressed comments from Mike Rapoport:
+	  	- Simplified the loop in alloc_vmemmap_page_list().
+		- Could NOT address a comment to move
+		  store_early_perpage_metadata() near where nodes
+		  and page allocator are initialized.
+		- Included the vmalloc()ed page_ext in accounting
+		  within free_page_ext().
+		- Made early_perpage_metadata[MAX_NUMNODES] static.
 
-This patch checks the return value of ata_timing_compute() and print
-err message. This avoids any potential use of uninitialized `tp`
-struct in the opti82c46x_set_piomode function.
 
-Signed-off-by: Haonan Li <lihaonan1105@gmail.com>
----
- drivers/ata/pata_legacy.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Previous approaches and discussions
+-----------------------------------
+v1:
+https://lore.kernel.org/r/20230913173000.4016218-2-souravpanda@google.com
 
-diff --git a/drivers/ata/pata_legacy.c b/drivers/ata/pata_legacy.c
-index 448a511cbc17..3c7163f97aaf 100644
---- a/drivers/ata/pata_legacy.c
-+++ b/drivers/ata/pata_legacy.c
-@@ -579,12 +579,19 @@ static void opti82c46x_set_piomode(struct ata_port *ap, struct ata_device *adev)
- 	clock = 1000000000 / khz[sysclk];
- 
- 	/* Get the timing data in cycles */
--	ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000);
-+	if (ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000)) {
-+		dev_err(ap->dev, "adev: unknown mode %d\n", adev->pio_mode);
-+		return;
-+	}
- 
- 	/* Setup timing is shared */
- 	if (pair) {
- 		struct ata_timing tp;
--		ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000);
-+
-+		if (ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000)) {
-+			dev_err(ap->dev, "pair: unknown mode %d\n", pair->pio_mode);
-+			return;
-+		}
- 
- 		ata_timing_merge(&t, &tp, &t, ATA_TIMING_SETUP);
- 	}
+Hi!
+
+This patch adds a new per-node PageMetadata field to
+/sys/devices/system/node/nodeN/meminfo and a global PageMetadata field
+to /proc/meminfo. This information can be used by users to see how much
+memory is being used by per-page metadata, which can vary depending on
+build configuration, machine architecture, and system use.
+
+Per-page metadata is the amount of memory that Linux needs in order to
+manage memory at the page granularity. The majority of such memory is
+used by "struct page" and "page_ext" data structures.
+
+
+Background
+----------
+
+Kernel overhead observability is missing some of the largest
+allocations during runtime, including vmemmap (struct pages) and
+page_ext. This patch aims to address this problem by exporting a
+new metric PageMetadata.
+
+On the contrary, the kernel does provide observibility for boot memory
+allocations. For example, the metric reserved_pages depicts the pages
+allocated by the bootmem allocator. This can be simply calculated as
+present_pages - managed_pages, which are both exported in /proc/zoneinfo.
+The metric reserved_pages is primarily composed of struct pages and
+page_ext.
+
+What about the struct pages (allocated by bootmem allocator) that are
+free'd during hugetlbfs allocations and then allocated by buddy-allocator
+once hugtlbfs pages are free'd?
+
+/proc/meminfo MemTotal changes: MemTotal does not include memblock
+allocations but includes buddy allocations. However, during runtime
+memblock allocations can be shifted into buddy allocations, and therefore
+become part of MemTotal.
+
+Once the struct pages get allocated by buddy allocator, we lose track of
+these struct page allocations overhead accounting. Therefore, we must
+export a new metric that we shall refer to as PageMetadata (exported by
+node). This shall also comprise the struct page and page_ext allocations
+made during runtime.
+
+Results and analysis
+--------------------
+
+Memory model: Sparsemem-vmemmap
+$ echo 1 > /proc/sys/vm/hugetlb_optimize_vmemmap
+
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32918196 kB
+$ cat /proc/meminfo | grep Meta
+	PageMetadata:     589824 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+	Node 0 PageMetadata:     294912 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+	Node 1 PageMetadata:     294912 kB
+
+
+AFTER HUGTLBFS RESERVATION
+$ echo 512 > /proc/sys/vm/nr_hugepages
+
+$ cat /proc/meminfo | grep MemTotal
+
+MemTotal:       32934580 kB
+$ cat /proc/meminfo | grep Meta
+PageMetadata:     575488 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+Node 0 PageMetadata:     287744 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+Node 1 PageMetadata:     287744 kB
+
+AFTER FREEING HUGTLBFS RESERVATION
+$ echo 0 > /proc/sys/vm/nr_hugepages
+$ cat /proc/meminfo | grep MemTotal
+MemTotal:       32934580 kB
+$ cat /proc/meminfo | grep Meta
+PageMetadata:    589824 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+Node 0 PageMetadata:       294912 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+Node 1 PageMetadata:       294912 kB
+
+Sourav Panda (1):
+  mm: report per-page metadata information
+
+ Documentation/filesystems/proc.rst |  3 +++
+ drivers/base/node.c                |  2 ++
+ fs/proc/meminfo.c                  |  7 +++++++
+ include/linux/mmzone.h             |  3 +++
+ include/linux/vmstat.h             |  4 ++++
+ mm/hugetlb.c                       |  8 +++++++-
+ mm/hugetlb_vmemmap.c               |  8 +++++++-
+ mm/mm_init.c                       |  3 +++
+ mm/page_alloc.c                    |  1 +
+ mm/page_ext.c                      | 18 ++++++++++++++----
+ mm/sparse-vmemmap.c                |  3 +++
+ mm/sparse.c                        |  7 ++++++-
+ mm/vmstat.c                        | 24 ++++++++++++++++++++++++
+ 13 files changed, 84 insertions(+), 7 deletions(-)
+
 -- 
-2.34.1
+2.42.0.655.g421f12c284-goog
 
