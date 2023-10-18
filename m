@@ -2,192 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 392B27CE057
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E107CE069
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjJROrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
+        id S1344933AbjJROxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbjJROrH (ORCPT
+        with ESMTP id S1344854AbjJROxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:47:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6875AB;
-        Wed, 18 Oct 2023 07:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697640425; x=1729176425;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=u+T+iKRaurwpQNwOMiwI4EjeePRhU9Kjm9S+XLHlUw0=;
-  b=fL1layRmW22t2Twmh04o8tczQk1tL5iorn6x1xJbVpT7s6vpPG25qLK0
-   wf28GmhuBNZtECzMBjvdyFweBKkmyozGEp5TtlzcU0+DFUNOf5i1ts0ma
-   YfCBdCFplPg/vTD8FNuU3uEv/U9xTcmSiev1spX9/74Y19mltMeLhL4ku
-   JLMmtKvZNngCbzKYgVgie5DZm3dIM4I0fOCPqvMBiVhprNf94Izq//VIT
-   Q/RAKSp5mN9kNEaUNHAAciKVCMBTM4K88dJ9tcF4J5PZAf3K2YQ/isK2s
-   hWIzY5e2GHrf6DzUXWvawGRB5ibM0im+uU66TR9GTMlt+GwAMdRBQXjjX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="384908635"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="384908635"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:47:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756612071"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756612071"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.19.128]) ([10.93.19.128])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 07:46:58 -0700
-Message-ID: <020adf4b-5fd9-4216-9dac-7dabe53617d5@intel.com>
-Date:   Wed, 18 Oct 2023 22:46:55 +0800
+        Wed, 18 Oct 2023 10:53:04 -0400
+X-Greylist: delayed 306 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Oct 2023 07:52:57 PDT
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A20FA4;
+        Wed, 18 Oct 2023 07:52:57 -0700 (PDT)
+Received: from toolbox.int.toradex.com ([213.66.31.70]) by mrelay.perfora.net
+ (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0MWlJt-1r3Bwb0IDD-00XwKn;
+ Wed, 18 Oct 2023 16:47:42 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: [PATCH] Bluetooth: hci_sync: Fix Opcode prints in bt_dev_dbg/err
+Date:   Wed, 18 Oct 2023 16:47:35 +0200
+Message-Id: <20231018144735.33085-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86: Use the correct size of struct
- kvm_vcpu_pv_apf_data and fix the documentation
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231013070037.512051-1-xiaoyao.li@intel.com>
- <ZS7ERnnRqs8Fl0ZF@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZS7ERnnRqs8Fl0ZF@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:D/nAGp1wCpmkVnmgPEaC7LIjFl5TsnT5zxaMTY7Ho76ZvHh5B9H
+ PBN2aThukCNj0v4Vv/l5nvpg7CM4n+Q2dJ4OsgK89xUeRL/2XmbCfn5+LW8V2OPyhl6OA9D
+ KJkUn0e4sr5gr71l/55+u1z3vrgj+Ze7AjkEWyDx8nXxz4nmQyNlno7VciuRJ5MQt/PDHQj
+ 50S3iQtmjL6hb8szMuIEw==
+UI-OutboundReport: notjunk:1;M01:P0:i37tXkAfYkU=;H5zXuRURrCGlWwYeSx0YbqMTSod
+ Qgv6ir+k0/lTpHWMGiHA8zZvxkDTj/GrwcGQG/l4MuOdM+nvQEgdrHwFJcAXAGdrdil2PDZD4
+ hKenvAlpTY8e0x5rtGb8j1zgW5sPfwfPoQx+j0WVlIp4cWgtmCtQHhVdw76XmERfY2LGMG/I9
+ 3NEql875tGwLCxxXt3GojURPFxxh6yHv0vJ3Yi7cT3k0784UPxihUWrE1FglCD8M+QogGGGR2
+ FU3WtrSRnhPEs5MwKPfkaJ0OzwDxhF1DeCA+Wy3Yf6Ky1mSjbjbYI90aCfxo4P3x8g0ZYHLdX
+ aYV2iVp1LG84XDZXgXN8hDrVVKGsiqJ05naJ6IfVw5fCPDKj+gG8VqHiU9Ke/yxCjbIhhE+TF
+ qJmYXNMI+kli57LLGPYn1jKrSQtqQpHnkF1y/n/NgFTq2VWWE3XvAC+ukklokQ9X/DHj2k8K9
+ 1zoLp94oEHN5nYil7ZEepSr/3oDMUpMctHgHqltPprotbpAqxx4Xji1gAURB+hStmgylqqJLK
+ MSgPj4ZcAcFo0PywUmvEklBr810sJ71QcmnRjhMPXY65iRSjxxNmtUtu6nM6tdA/YDEDWnIoF
+ HAZ66SNdx8QIKsI7ydICEtQzpSY6IrGksJQyxk3H9iBNbol/Fmce6bC/LxK/AYfGR5nMYhXoK
+ Ad49AhUcRfWee6wi1dESSdnfR/uemwlxugv8DvEREKlg25/5BSEM6gDZWH9cfRz7NLuFelyPZ
+ F2Hhk+PVtj68uT9opZ8vRsr7pUYhQ7nL73ZYwHkNtyXzKJkiynzqgYgRWQtdDJJlm8BXVCSWU
+ 8QMLoOOAR9zMNB2tYwvVfmixmrl6u4mRYr/ke5N7Yb+3KGsyf9Q8Mu7oZAtey0na9M4LDzwpQ
+ I4S6/DtgoSaE7MA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/2023 1:28 AM, Sean Christopherson wrote:
-> On Fri, Oct 13, 2023, Xiaoyao Li wrote:
->> The size of struct kvm_vcpu_pv_apf_data is 68 bytes, not 64 bytes.
-> 
-> LOL, the messed up size is downright hilarious.  Not only was the math botched,
-> but the "enabled" field that pushes the struct beyond a cache line is completely
-> unnecessary.
-> 
-> AFAICT, KVM (the host side) has *never* read kvm_vcpu_pv_apf_data.enabled, and
-> the documentation clearly states that enabling is based solely on the bit in the
-> synthetic MSR.
-> 
-> So rather than update the documentation, what if we fix the goof?  KVM-as-a-host
-> obviously doesn't enforce anything or consume the size, and changing the header
-> will only affect guests that are rebuilt against the new header, so there's no
-> chance of ABI breakage between KVM and its guests.  The only possible breakage
-> is if some other hypervisor is emulating KVM's async #PF (LOL) and relies on the
-> guest to set kvm_vcpu_pv_apf_data.enabled.  But (a) I highly doubt such a hypervisor
-> exists, (b) that would arguably be a violation of KVM's "spec", and (c) the worst
-> case scenario is that the guest would simply lose async #PF functionality.
-> 
->> Fix the kvm_gfn_to_hva_cache_init() to use the correct size though KVM
->> only touches fist 8 bytes.
-> 
-> This isn't a fix.  There's actually meaningful value in precisely initializing the
-> cache as it guards against KVM writing into the padding, e.g. this WARN would fire:
-> 
-> 	if (WARN_ON_ONCE(len + offset > ghc->len))
-> 		return -EINVAL;
-> 
-> So it's a bit odd, but I would prefer to keep the current behavior of mapping only
-> the first 8 bytes.
-> 
-> Here's what I'm thinking to clean up the enabled field (compile tested only,
-> haven't touched the docs other than the obvious removal):
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-It looks better.
+Printed Opcodes may be missing leading zeros:
 
-Will you send out a formal patch yourself? or leave it to me?
+	Bluetooth: hci0: Opcode 0x c03 failed: -110
 
-> ---
->   Documentation/virt/kvm/x86/msr.rst   |  1 -
->   arch/x86/include/uapi/asm/kvm_para.h |  1 -
->   arch/x86/kernel/kvm.c                | 11 ++++++-----
->   3 files changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/x86/msr.rst b/Documentation/virt/kvm/x86/msr.rst
-> index 9315fc385fb0..f6d70f99a1a7 100644
-> --- a/Documentation/virt/kvm/x86/msr.rst
-> +++ b/Documentation/virt/kvm/x86/msr.rst
-> @@ -204,7 +204,6 @@ data:
->   		__u32 token;
->   
->   		__u8 pad[56];
-> -		__u32 enabled;
->   	  };
->   
->   	Bits 5-4 of the MSR are reserved and should be zero. Bit 0 is set to 1
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 6e64b27b2c1e..605899594ebb 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -142,7 +142,6 @@ struct kvm_vcpu_pv_apf_data {
->   	__u32 token;
->   
->   	__u8 pad[56];
-> -	__u32 enabled;
->   };
->   
->   #define KVM_PV_EOI_BIT 0
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index b8ab9ee5896c..2cd5f8d248a5 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -65,6 +65,7 @@ static int __init parse_no_stealacc(char *arg)
->   
->   early_param("no-steal-acc", parse_no_stealacc);
->   
-> +static DEFINE_PER_CPU_READ_MOSTLY(bool, async_pf_enabled);
->   static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_reason) __aligned(64);
->   DEFINE_PER_CPU_DECRYPTED(struct kvm_steal_time, steal_time) __aligned(64) __visible;
->   static int has_steal_clock = 0;
-> @@ -244,7 +245,7 @@ noinstr u32 kvm_read_and_reset_apf_flags(void)
->   {
->   	u32 flags = 0;
->   
-> -	if (__this_cpu_read(apf_reason.enabled)) {
-> +	if (__this_cpu_read(async_pf_enabled)) {
->   		flags = __this_cpu_read(apf_reason.flags);
->   		__this_cpu_write(apf_reason.flags, 0);
->   	}
-> @@ -295,7 +296,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
->   
->   	inc_irq_stat(irq_hv_callback_count);
->   
-> -	if (__this_cpu_read(apf_reason.enabled)) {
-> +	if (__this_cpu_read(async_pf_enabled)) {
->   		token = __this_cpu_read(apf_reason.token);
->   		kvm_async_pf_task_wake(token);
->   		__this_cpu_write(apf_reason.token, 0);
-> @@ -362,7 +363,7 @@ static void kvm_guest_cpu_init(void)
->   		wrmsrl(MSR_KVM_ASYNC_PF_INT, HYPERVISOR_CALLBACK_VECTOR);
->   
->   		wrmsrl(MSR_KVM_ASYNC_PF_EN, pa);
-> -		__this_cpu_write(apf_reason.enabled, 1);
-> +		__this_cpu_write(async_pf_enabled, true);
->   		pr_debug("setup async PF for cpu %d\n", smp_processor_id());
->   	}
->   
-> @@ -383,11 +384,11 @@ static void kvm_guest_cpu_init(void)
->   
->   static void kvm_pv_disable_apf(void)
->   {
-> -	if (!__this_cpu_read(apf_reason.enabled))
-> +	if (!__this_cpu_read(async_pf_enabled))
->   		return;
->   
->   	wrmsrl(MSR_KVM_ASYNC_PF_EN, 0);
-> -	__this_cpu_write(apf_reason.enabled, 0);
-> +	__this_cpu_write(async_pf_enabled, false);
->   
->   	pr_debug("disable async PF for cpu %d\n", smp_processor_id());
->   }
-> 
-> base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
+Fix this by always printing leading zeros:
+
+	Bluetooth: hci0: Opcode 0x0c03 failed: -110
+
+Fixes: d0b137062b2d ("Bluetooth: hci_sync: Rework init stages")
+Fixes: 6a98e3836fa2 ("Bluetooth: Add helper for serialized HCI command execution")
+
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+---
+
+ net/bluetooth/hci_sync.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+index d06e07a0ea5a..2c782b6a274d 100644
+--- a/net/bluetooth/hci_sync.c
++++ b/net/bluetooth/hci_sync.c
+@@ -152,7 +152,7 @@ struct sk_buff *__hci_cmd_sync_sk(struct hci_dev *hdev, u16 opcode, u32 plen,
+ 	struct sk_buff *skb;
+ 	int err = 0;
+ 
+-	bt_dev_dbg(hdev, "Opcode 0x%4x", opcode);
++	bt_dev_dbg(hdev, "Opcode 0x%4.4x", opcode);
+ 
+ 	hci_req_init(&req, hdev);
+ 
+@@ -248,7 +248,7 @@ int __hci_cmd_sync_status_sk(struct hci_dev *hdev, u16 opcode, u32 plen,
+ 	skb = __hci_cmd_sync_sk(hdev, opcode, plen, param, event, timeout, sk);
+ 	if (IS_ERR(skb)) {
+ 		if (!event)
+-			bt_dev_err(hdev, "Opcode 0x%4x failed: %ld", opcode,
++			bt_dev_err(hdev, "Opcode 0x%4.4x failed: %ld", opcode,
+ 				   PTR_ERR(skb));
+ 		return PTR_ERR(skb);
+ 	}
+-- 
+2.36.1
 
