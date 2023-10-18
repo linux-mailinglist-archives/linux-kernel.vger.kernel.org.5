@@ -2,178 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BED67CD782
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AF17CD787
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjJRJFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S229576AbjJRJHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjJRJFu (ORCPT
+        with ESMTP id S229482AbjJRJHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:05:50 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2798EA;
-        Wed, 18 Oct 2023 02:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uPGzn
-        fD2Jxiu6/QXi1pCYsVwDO+lI2Iyml9ofCWoSGI=; b=W7mtxSM0iWu4WL+1nYy6o
-        Vmswr9/QP44ONQkPyzXjYZrLNEoq4ja5DIBJBh6AEfx18+qG0/i9s3PygcwvjYln
-        WoIO1nB6MgFkqd9Kh/ir00u1qgp5xW3r719xt/Bffe1pOMoNLSKnGSwHWpjoeuNt
-        Yy8NE4gpUJhzv/urRNapMs=
-Received: from ubuntu.. (unknown [171.83.47.247])
-        by zwqz-smtp-mta-g3-3 (Coremail) with SMTP id _____wCXOGzgny9lgxGFAw--.2672S2;
-        Wed, 18 Oct 2023 17:05:36 +0800 (CST)
-From:   Charles Yi <be286@163.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Charles Yi <be286@163.com>
-Subject: [PATCH V2] usb: gadget: f_uac1: add adaptive sync support for capture
-Date:   Wed, 18 Oct 2023 17:05:09 +0800
-Message-Id: <20231018090509.1244839-1-be286@163.com>
+        Wed, 18 Oct 2023 05:07:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26AF9;
+        Wed, 18 Oct 2023 02:07:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8165EC433C8;
+        Wed, 18 Oct 2023 09:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697620055;
+        bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Es+vckhML6CwqSwgV65RXAlRZMWLbJFu15MMUKk8v2FW7P8yVmNtSfevXtU6CZVpi
+         1aXIT0xlmZQxoHDSB41Hd0M6Yl5gvFB9ndB/3MMRYkyK0SVbwmycZILJ34ScJgsEI1
+         MZkiuI/7TrNP63l93BvLPwohbV30RvwSgY0KJADjWYGGcJ4x2qNuqCiAWWW1CQej3z
+         +CgXIt6LkEbIqhSbQyziW92oHc+fMua0o8X8/UXdgEeNT6MJ66KP0XhIvN7LfbQTlu
+         zwj2I0fNQaXGsNv7zZnI7XS/xDrYK4X5emfstphKe1WOs4AyPbL86nShPFJAslBb0b
+         kaYvjnNnjiEUA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc:     Christian Brauner <brauner@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, willy@infradead.org,
+        joseph.qi@linux.alibaba.com, tj@kernel.org, jack@suse.cz,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH v3] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+Date:   Wed, 18 Oct 2023 11:07:20 +0200
+Message-Id: <20231018-dinkelbrot-botanik-b119bb8f4989@brauner>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
+References: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1313; i=brauner@kernel.org; h=from:subject:message-id; bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTqL9D597YqabVumacg890tWi7FOTdf1KYeag5488dwi5LI iveXOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSm8vI0GzdrhQdq1mSnma6TOJwtz XT0uMtbxSiu66+2fQ6IyFgKiPDR7GfSf1cU1mbQo5t+FomoMy+3rL19dQL72xfbnh0TDCOCwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXOGzgny9lgxGFAw--.2672S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAr15JF45Xr17KrWDWry7Awb_yoWrCFykpw
-        4UC3y0yr45ArZIqr48AF4rAF43Aa1xG345GrW7Ww4Yganxt3sava42yryFkF47AFWrCw40
-        qF4Fgw1a9w4kCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRwL08UUUUU=
-X-Originating-IP: [171.83.47.247]
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiWwYN0mI0cVp-TAABsN
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UAC1 has it's own freerunning clock and can update Host about
-real clock frequency through feedback endpoint so Host can align
-number of samples sent to the UAC1 to prevent overruns/underruns.
+On Sat, 14 Oct 2023 20:55:11 +0800, Jingbo Xu wrote:
+> The cgwb cleanup routine will try to release the dying cgwb by switching
+> the attached inodes.  It fetches the attached inodes from wb->b_attached
+> list, omitting the fact that inodes only with dirty timestamps reside in
+> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
+> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
+> with dirty timestamps can not be switched to a live cgwb for a long time.
+> 
+> [...]
 
-Change UAC1 driver to make it configurable through additional
-'c_sync' configfs file.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Default remains 'asynchronous' with possibility to switch it
-to 'adaptive'.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Signed-off-by: Charles Yi <be286@163.com>
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
----------
-Changes in V2:
-- Updated the indentation of commit message.
----
- drivers/usb/gadget/function/f_uac1.c | 30 ++++++++++++++++++++++++++++
- drivers/usb/gadget/function/u_uac1.h |  2 ++
- 2 files changed, 32 insertions(+)
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
-index 6f0e1d803dc2..7a6fcb40bb46 100644
---- a/drivers/usb/gadget/function/f_uac1.c
-+++ b/drivers/usb/gadget/function/f_uac1.c
-@@ -33,6 +33,8 @@
- #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
- 			|| (_opts)->c_volume_present)
- 
-+#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
-+
- struct f_uac1 {
- 	struct g_audio g_audio;
- 	u8 ac_intf, as_in_intf, as_out_intf;
-@@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
- 	.wLockDelay =		cpu_to_le16(1),
- };
- 
-+static struct usb_endpoint_descriptor as_fback_ep_desc = {
-+	.bLength = USB_DT_ENDPOINT_SIZE,
-+	.bDescriptorType = USB_DT_ENDPOINT,
-+
-+	.bEndpointAddress = USB_DIR_IN,
-+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
-+	.wMaxPacketSize = cpu_to_le16(3),
-+	.bInterval = 1,
-+};
-+
- static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
- 	.bLength =		0, /* filled on rate setup */
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
-@@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
- 
- 	(struct usb_descriptor_header *)&as_out_ep_desc,
- 	(struct usb_descriptor_header *)&as_iso_out_desc,
-+	(struct usb_descriptor_header *)&as_fback_ep_desc,
- 
- 	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
- 	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
-@@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
- 		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
-+		if (EPOUT_FBACK_IN_EN(opts)) {
-+			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
-+		}
- 	}
- 	if (EPIN_EN(opts)) {
- 		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
-@@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
- 		uac1->as_out_intf = status;
- 		uac1->as_out_alt = 0;
-+
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			as_out_ep_desc.bmAttributes =
-+			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
-+			as_out_interface_alt_1_desc.bNumEndpoints++;
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1354,6 +1376,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 			goto err_free_fu;
- 		audio->out_ep = ep;
- 		audio->out_ep->desc = &as_out_ep_desc;
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			audio->in_ep_fback = usb_ep_autoconfig(gadget, &as_fback_ep_desc);
-+			if (!audio->in_ep_fback) {
-+				goto err_free_fu;
-+			}
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1685,6 +1713,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
- 
- 	opts->req_number = UAC1_DEF_REQ_NUM;
- 
-+	opts->c_sync = UAC1_DEF_CSYNC;
-+
- 	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
- 
- 	return &opts->func_inst;
-diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
-index f7a616760e31..c6e2271e8cdd 100644
---- a/drivers/usb/gadget/function/u_uac1.h
-+++ b/drivers/usb/gadget/function/u_uac1.h
-@@ -27,6 +27,7 @@
- #define UAC1_DEF_MAX_DB		0		/* 0 dB */
- #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
- 
-+#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ASYNC
- 
- struct f_uac1_opts {
- 	struct usb_function_instance	func_inst;
-@@ -56,6 +57,7 @@ struct f_uac1_opts {
- 
- 	struct mutex			lock;
- 	int				refcnt;
-+	int				c_sync;
- };
- 
- #endif /* __U_UAC1_H */
--- 
-2.34.1
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
+[1/1] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+      https://git.kernel.org/vfs/vfs/c/27890db5162c
