@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DB77CD8C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8E47CD8C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjJRKAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S230359AbjJRKBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjJRKAj (ORCPT
+        with ESMTP id S230465AbjJRKBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:00:39 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E27A109
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:00:37 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B105D40E0196;
-        Wed, 18 Oct 2023 10:00:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id k4JyC3DMyeue; Wed, 18 Oct 2023 10:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697623233; bh=UWu64KdaBnReM2G1t6rB9kmANqjin4/4AXYGHUxgQpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RAC9BnFaxdaWSYwy9jsGcLFZrbYfyIsY/d2qRREb1IWQqD7BC3MCdn47UMTMAQmiP
-         1kSxaH4ClTLUOR0BJioN1Bpw1Vb7mqfhUE8msQ+fE/yz7+ZaC3mJhR+4G/uNDnf0jL
-         V5Rta+gGmBOsNROLMtahVKnaec5VGBj9Pk8emJlMvtgVFRNu6+lx07/GCaCBfzY/fi
-         m8ELeydF/4owoRR6u1kNW+YnLNqhxsWA8swE1HRkh84ZiUvHi1JOZoRIEIgWaTImGN
-         BHjbFx28mr1yCABKbZMyDa0LiobrGZa9w2eAVeCcT4rondVNRT1jHNW3HRP/OcZo/R
-         cxVZrRkDml2otYPnsG5Hyah9EpKMhjl3q5CuyAGtPv8khpBea8wYKWdolllWtnqc92
-         Ckqi3f4TqijgYhsZ0asZNvkw2YDX0hjRRSizxK86Qk+0Rjyim7QKV9HwQ9PfMITn3g
-         NGYtXP4Ue3JCd0SADYTbQa9z6nDK+7F9KwWhsinMtUVoHr8jspB85d4V+Ffg7bXpOc
-         L3EhFVhz6r4mW0MbVR861X3RFkEmMaZRSPuPNdWkTe4oKfeJUOWO4+gXdrcyoGnYFD
-         a33E/U29ylzECuhEwBnTH94bB74T0QpLGWwpklyBaZM0JSZKm+r+7vVHrCa0eSuaQa
-         Pnz698exjFTwX7T98wQLTjmg=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 106FB40E0193;
-        Wed, 18 Oct 2023 10:00:30 +0000 (UTC)
-Date:   Wed, 18 Oct 2023 12:00:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
-Subject: Re: [patch V5 03/39] x86/boot/32: De-uglify the 2/3 level paging
- difference in mk_early_pgtbl_32()
-Message-ID: <20231018100023.GAZS+st5ePdAQjnO4z@fat_crate.local>
-References: <20231017200758.877560658@linutronix.de>
- <20231017211722.111059491@linutronix.de>
+        Wed, 18 Oct 2023 06:01:03 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65945FD
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:01:00 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9c3aec5f326so681755366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 03:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697623259; x=1698228059; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kvddIZrQnxFTAaEhVpmcGqWDKOvzXW76dSFcJDMbgGc=;
+        b=CSiOKeMRRNOgmyD+aN6EhYz5Fg9L5WZo6E7qAnbwZJGiIRo+GMIht+AdCcfS8NlN4t
+         w2XHtvvLjyX1TioTOt7nnppWpvXdp64y4KODXKAQK3Umbqil85AzdXS3DAn0sAhIlzGq
+         0kOCTPimJYuCshARYjw6VB4jCS7kjIyMOzBaRc+XmxfY4MvpNRW2dX9e1C7Lm9D03Ak3
+         C+Vfs46I0F1DQrG223mu/OjlNFcHNj6zG2J4sW0146ta1MTRrwPlACQZGKi1Y0HCcgUN
+         gb9PINNDHb5blk3qnEKHYsDUcNl0hjwhGgRYpG6eBdvHLwMGtrYyZbT7kNzTUQOvwDCP
+         f3VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697623259; x=1698228059;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kvddIZrQnxFTAaEhVpmcGqWDKOvzXW76dSFcJDMbgGc=;
+        b=TDfFlYqdAnsK2ZomhO39pA8jHcNkjakRlFdk5J6s6mJ+Larulby4WQTepvnaomNbf7
+         y8RwTpta7OOE6mdTVV91XzkHfKqB1JAc2RrkhTmdVWJ7FHB0cCgeb2Yz5xoBAs7IppU4
+         XK8TlIXfTfi7rnKHJiMc0ANLRPBA//Z/lPeUayuhnG7ncI9PKxYjAaRdt4i5kJGsTEga
+         0elcE7lHCRKQJJ+elyXFyJoaDwfL7p2wve0tYhwiZYdEX7D49SpH9Ri5mF5j0H99VU4e
+         W7LQHgToBXYMzEJFeaNXzR6mYOr8IjyZyF3jCD5zRJHXZhRVLqHAinycLMJ1Pte/x2s2
+         pH5Q==
+X-Gm-Message-State: AOJu0YyzyQG3ki1Wh3el5EhDxgcPydx77HGbPdjVNVSD2IZxcuK8zmEn
+        uQJvLm0+VBsPaRK2950wPX7iDuWv6DoXU2rgesg=
+X-Google-Smtp-Source: AGHT+IH2vGShfrLckC4r3uYkums6iB07VTLBjoxIrR8Ioh3Mk+Ki1DtOQfKHterV7cnZBeX26EhQaQ==
+X-Received: by 2002:a17:907:948d:b0:9be:85c9:43f1 with SMTP id dm13-20020a170907948d00b009be85c943f1mr4180282ejc.7.1697623258684;
+        Wed, 18 Oct 2023 03:00:58 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id bt10-20020a170906b14a00b0098884f86e41sm1310004ejb.123.2023.10.18.03.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 03:00:58 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ASoC: codecs: wsa884x: allow sharing reset GPIO
+Date:   Wed, 18 Oct 2023 12:00:55 +0200
+Message-Id: <20231018100055.140847-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231017211722.111059491@linutronix.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 11:23:26PM +0200, Thomas Gleixner wrote:
-> Move the ifdeffery out of the function and use proper typedefs to make it
-> work for both 2 and 3 level paging.
-> 
-> No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V5: New patch
-> ---
->  arch/x86/kernel/head32.c |   38 +++++++++++++++++++++-----------------
->  1 file changed, 21 insertions(+), 17 deletions(-)
-> 
-> --- a/arch/x86/kernel/head32.c
-> +++ b/arch/x86/kernel/head32.c
-> @@ -71,39 +71,43 @@ asmlinkage __visible void __init __noret
->   */
->  void __init mk_early_pgtbl_32(void);
+On some boards with multiple WSA8840/WSA8845 speakers, the reset
+(shutdown) GPIO is shared between two speakers.  Request it as
+GPIOD_FLAGS_BIT_NONEXCLUSIVE to allow such configurations.
 
-Lemme zap that forward declaration too - it looks redundant.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/codecs/wsa884x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thx.
-
+diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
+index 993d76b18b53..bee6e763c700 100644
+--- a/sound/soc/codecs/wsa884x.c
++++ b/sound/soc/codecs/wsa884x.c
+@@ -1844,7 +1844,7 @@ static int wsa884x_probe(struct sdw_slave *pdev,
+ 		return ret;
+ 
+ 	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
+-						GPIOD_OUT_HIGH);
++						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
+ 	if (IS_ERR(wsa884x->sd_n))
+ 		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
+ 				     "Shutdown Control GPIO not found\n");
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
