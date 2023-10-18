@@ -2,197 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 455D17CDA76
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595F97CDA80
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbjJRLcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S229717AbjJRLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjJRLcn (ORCPT
+        with ESMTP id S229794AbjJRLdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:32:43 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88870189
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:32:37 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317c3ac7339so5827089f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697628755; x=1698233555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZHg4mM71KXb5DEEj0eqsenmzI1spOu0jlYYbZtbcLDI=;
-        b=Rb7AoKmqxPkjisuOjJrROZLZW3sWUFlo5t7cigeAb2dy/ppJTK0m1R9yMnT43yYgha
-         D0IhrtQJP2EffAqOHDZYg/PHvFWPMi4tX3WePuZBR+nHSS3wL7KYgENIqtZjfCoUI1rS
-         gW51HnDaskOiPkisgvUHVhkj3yf0ryKsomGKULwHDEm5hTcs3Yd1twFYMqCNyqoCzGrL
-         kIPH3uagFtsCMSSODSLkUY1UqLKY0o0f2MCdPu8Q4JOvcboaiZHpZrSjuZN918DY6Vsr
-         8cDAw3aNbmggm1FYCyruT2uZeHaB418jtxTuKi0t52aIFtWIIkFBwUOm1pyb7/LWang+
-         23hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697628755; x=1698233555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZHg4mM71KXb5DEEj0eqsenmzI1spOu0jlYYbZtbcLDI=;
-        b=wO1fWENimaBunt02sYWeTYFu+qNOyzuAhs1roij2ryKK5Pl4QwHXvarAyx8d3elVTx
-         jG+EnBWK/0DldoXYCcdxWu9QOMLEFIOiarBAuqGY7p+TzBA/9Td2FEY+vgKLq0FRoTbr
-         McvFs67bbbZV6PcT1ZmAuweV27Vksy344Zdl5PP+t9x/JGjOq3jCnMeYYhx3y75K56Qv
-         7wupWJj0aoimZ059GKiDZGEWU6x/dctWr7KmHmFs8xoJgLMw1cG4sy3bzqeJE+ji1DGo
-         6PauVTxunl6APOON7/4VOFGmEmxi9ZMnnz8VMqAe53/tBj8Farwziv9p/MRUWxE7vS4s
-         +dAA==
-X-Gm-Message-State: AOJu0Ywcq8NfFm0EVUA86hZCgCPmfqevYmTLeyA7ui+H7KTOuO3UTcth
-        jm4dJaORQ9f/fMz4u0diSlV7LpbhfRpWF1mT6e3NiQ==
-X-Google-Smtp-Source: AGHT+IE7XG0RKk8s+uBzZafDLTDJ6fdrdFzovu8zj80LYFemlglr4j6DZXpsSClEETmOBCTzjgEKBb3b1Jy3x7exweE=
-X-Received: by 2002:a5d:668d:0:b0:32d:9789:6066 with SMTP id
- l13-20020a5d668d000000b0032d97896066mr4216230wru.5.1697628755552; Wed, 18 Oct
- 2023 04:32:35 -0700 (PDT)
+        Wed, 18 Oct 2023 07:33:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD18114;
+        Wed, 18 Oct 2023 04:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697628813; x=1729164813;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9ROssOhumx09tQhub2UcmdGDVJ0uIUZmqJaxfmWuU/U=;
+  b=N5Cpkj4BNPLsA1zpf/oyijhvWTPLE3kKWvmeo5RSugmfpzFDul7qWnSn
+   iL1k0AJ9A9SxfrH1hPmrPBEfU1JiYdJOYLBxyWar3/ypfuGgopXG4cvfl
+   iUyIfl7bWQmueopJ3CXLRD6Xv4+HnwaMpJpb+h7nT/neQZ2+9+ujnVXRs
+   dsv7XcAk8mwEcQsyxOXjZWAudHpO0ZI5umfDDXZ91MpvIo2MARBFUKjAc
+   YMmQyyJcx8TndhL8zZYlMkshV0sTUPKlbCS1VaKp+njUqGwHz9dhYIY83
+   l/Y+QtK4TefvsCVQqTsyNVxo81LpPZyvgI5GIK+3WTlxWlU0mX0t9TNp2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="376365518"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="376365518"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:33:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="760191924"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="760191924"
+Received: from suguccin-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.44.63])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 04:33:29 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/7] PCI: Use FIELD_GET/PREP() & other reg field cleanups
+Date:   Wed, 18 Oct 2023 14:32:47 +0300
+Message-Id: <20231018113254.17616-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230911131224.61924-1-alexghiti@rivosinc.com>
- <20230911131224.61924-3-alexghiti@rivosinc.com> <79d8ca23-478d-4f88-afb3-343a85ed0fe6@sifive.com>
-In-Reply-To: <79d8ca23-478d-4f88-afb3-343a85ed0fe6@sifive.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 18 Oct 2023 13:32:24 +0200
-Message-ID: <CAHVXubiaYwQ3PeiA-688cKuBscdEb5QpNerbYSMWYqiXCm-FRw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] riscv: Improve flush_tlb_range() for hugetlb pages
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 7:53=E2=80=AFPM Samuel Holland <samuel.holland@sifiv=
-e.com> wrote:
->
-> Hi Alex,
->
-> On 2023-09-11 8:12 AM, Alexandre Ghiti wrote:
-> > flush_tlb_range() uses a fixed stride of PAGE_SIZE and in its current f=
-orm,
-> > when a hugetlb mapping needs to be flushed, flush_tlb_range() flushes t=
-he
-> > whole tlb: so set a stride of the size of the hugetlb mapping in order =
-to
-> > only flush the hugetlb mapping. However, if the hugepage is a NAPOT reg=
-ion,
-> > all PTEs that constitute this mapping must be invalidated, so the strid=
-e
-> > size must actually be the size of the PTE.
-> >
-> > Note that THPs are directly handled by flush_pmd_tlb_range().
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > ---
-> >  arch/riscv/mm/tlbflush.c | 39 ++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 38 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index fa03289853d8..5bda6d4fed90 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/mm.h>
-> >  #include <linux/smp.h>
-> >  #include <linux/sched.h>
-> > +#include <linux/hugetlb.h>
-> >  #include <asm/sbi.h>
-> >  #include <asm/mmu_context.h>
-> >
-> > @@ -147,7 +148,43 @@ void flush_tlb_page(struct vm_area_struct *vma, un=
-signed long addr)
-> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> >                    unsigned long end)
-> >  {
-> > -     __flush_tlb_range(vma->vm_mm, start, end - start, PAGE_SIZE);
-> > +     unsigned long stride_size;
-> > +
-> > +     stride_size =3D is_vm_hugetlb_page(vma) ?
-> > +                             huge_page_size(hstate_vma(vma)) :
-> > +                             PAGE_SIZE;
-> > +
-> > +#ifdef CONFIG_RISCV_ISA_SVNAPOT
-> > +     /*
-> > +      * As stated in the privileged specification, every PTE in a NAPO=
-T
-> > +      * region must be invalidated, so reset the stride in that case.
-> > +      */
-> > +     if (has_svnapot()) {
->
-> This whole block should probably go inside the is_vm_hugetlb_page(vma) ch=
-eck,
-> since we have to perform that check anyway.
+Hi,
 
-Yes, you're right.
+Here's what I think should cover most of the remaining FIELD_GET/PREP()
+conversions under drivers/pci/.
 
->
-> > +             unsigned long order, napot_size;
-> > +
-> > +             for_each_napot_order(order) {
-> > +                     napot_size =3D napot_cont_size(order);
-> > +
-> > +                     if (stride_size !=3D napot_size)
-> > +                             continue;
-> > +
-> > +                     if (napot_size >=3D PGDIR_SIZE)
->
-> Can you check stride_size here directly, and drop the loop? We should be =
-able to
-> assume that the huge page size is valid. Non-NAPOT hugepages will hit one=
- of the
-> equal-to cases below, which is fine.
+The patch from Bjorn is from
+  https://lore.kernel.org/linux-pci/20231010204436.1000644-7-helgaas@kernel.org/
+But has been adjusted to better blend in with the other DPC changes.
+I've preserved Bjorn as the main From/SoB, and added myself before his
+name instead (since I modified it but my main contribution was to
+remove stuff he had made to it).
 
-Yes, again, you're right.
+Bjorn Helgaas (1):
+  PCI/DPC: Use FIELD_GET()
 
-I'll respin a new version now, let it go through our CI and send it tomorro=
-w,
+Ilpo Järvinen (6):
+  PCI: cadence: Use FIELD_GET()
+  PCI: dwc: Use FIELD_GET/PREP()
+  PCI: hotplug: Use FIELD_GET/PREP()
+  PCI/DPC: Use defined fields with DPC_CTL register
+  PCI/DPC: Use defines with DPC reason fields
+  PCI/MSI: Use FIELD_GET/PREP()
 
-Thanks,
+ .../pci/controller/cadence/pcie-cadence-ep.c  |  9 ++--
+ .../pci/controller/dwc/pcie-designware-ep.c   |  7 ++--
+ drivers/pci/controller/dwc/pcie-tegra194.c    |  5 +--
+ drivers/pci/hotplug/pciehp_core.c             |  3 +-
+ drivers/pci/hotplug/pciehp_hpc.c              |  5 ++-
+ drivers/pci/hotplug/pnv_php.c                 |  3 +-
+ drivers/pci/msi/msi.c                         | 10 +++--
+ drivers/pci/pcie/dpc.c                        | 42 ++++++++++++-------
+ drivers/pci/quirks.c                          |  2 +-
+ include/uapi/linux/pci_regs.h                 |  9 ++++
+ 10 files changed, 61 insertions(+), 34 deletions(-)
 
-Alex
+-- 
+2.30.2
 
->
-> Regards,
-> Samuel
->
-> > +                             stride_size =3D PGDIR_SIZE;
-> > +                     else if (napot_size >=3D P4D_SIZE)
-> > +                             stride_size =3D P4D_SIZE;
-> > +                     else if (napot_size >=3D PUD_SIZE)
-> > +                             stride_size =3D PUD_SIZE;
-> > +                     else if (napot_size >=3D PMD_SIZE)
-> > +                             stride_size =3D PMD_SIZE;
-> > +                     else
-> > +                             stride_size =3D PAGE_SIZE;
-> > +
-> > +                     break;
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> > +     __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
-> >  }
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
-rt,
->
