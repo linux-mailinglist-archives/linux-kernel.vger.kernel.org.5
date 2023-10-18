@@ -2,48 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E42227CE145
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306877CE14E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 17:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjJRPeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 11:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S232265AbjJRPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 11:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbjJRPef (ORCPT
+        with ESMTP id S232358AbjJRPfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 11:34:35 -0400
+        Wed, 18 Oct 2023 11:35:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC372120
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:34:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45075C433C8;
-        Wed, 18 Oct 2023 15:34:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD9118
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 08:35:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0DD1C433CB;
+        Wed, 18 Oct 2023 15:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697643273;
-        bh=cYGyeDp5SnBhcx1NT6F6sYg9klshD6wB8OfpbqvYTUU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FCcjdnigmwW0UUMzK0/4ubBjxcwykgfdDQ8WXtCtoqRvTwX4lXh0RNMjnIj/cJFEc
-         yBUdqscgPg2gHCnabbCcoJmicjUkip12We9fDr1N8P3szNGXaBVDc7E0OgWOJfeniB
-         xpSFQtsjAnk5I9D2pm6dfa7doFVlC5JiFaaJQCDMhi51pXqvSos6FanXTBHpM0HZHF
-         UFq2pZqmhdnpDkdApqMQLgHMW3X958vu5IQSOVAe1l0894t9+etJwJWi4prH/b+1oM
-         kvLreUfWTc91yHmIYmF0ivBSKlyMEpYD3m60LFpseMSbeJwP6amEEmVKQtNMlqLJrv
-         f8iLMVDqsBneQ==
-Message-ID: <675c05a6-4568-4b53-ba1b-83b4b8c70382@kernel.org>
-Date:   Thu, 19 Oct 2023 00:34:30 +0900
+        s=k20201202; t=1697643318;
+        bh=G5i8rgjTCdOtkBia7NJ0E9GJAWq1PZebZiERkTNe52E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dX0U2cBoWRWmcHydY9D9KSYvZpUnGeb2cpV+ocZB3ONcBjC3T4ZKs49Ew9dA+8BoC
+         Y0JPEkDF4yajF2eBhJ2V0Xt0Ymf5AVbFjbu7VEgW+wXLXOuC5GFq583ukUYgH3JqbC
+         cA2L5DP6sa+LLunVH0l3Zpyj01qBLs5QkH2MhH3ArZ0m9ZXiLJh9qrgFwVWTIO3q37
+         jhOkDnSFGhKwCNxgk+tm9i9uYhM+dyQgI63KXCo9F+zea3MBS38B69SG+xmcY2yo42
+         C5seO0cGRTia54M0QNvEF5igJu2sECklqwkMi50rOnnVSffkQlmb2ftQ/g7t3wenX7
+         hSUx4dsqOuHiw==
+Date:   Wed, 18 Oct 2023 08:35:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related
+ API
+Message-ID: <20231018083516.60f64c1a@kernel.org>
+In-Reply-To: <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
+References: <20231013064827.61135-1-linyunsheng@huawei.com>
+        <20231016182725.6aa5544f@kernel.org>
+        <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
+        <20231017081303.769e4fbe@kernel.org>
+        <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH] mfd: Use i2c_get_match_data()
-To:     Rob Herring <robh@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lee Jones <lee@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-References: <20231017203603.2700864-1-robh@kernel.org>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20231017203603.2700864-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -55,28 +64,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 18. 05:36, Rob Herring wrote:
-> Use preferred i2c_get_match_data() instead of of_match_device() and
-> i2c driver_data to get the driver match data. With this, adjust the
-> includes to explicitly include the correct headers.
+On Wed, 18 Oct 2023 19:47:16 +0800 Yunsheng Lin wrote:
+> > mention it in the documentation. Plus the kdoc of the function should
+> > say that this is just a thin wrapper around other page pool APIs, and
+> > it's safe to mix it with other page pool APIs?  
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/mfd/lochnagar-i2c.c |  9 ++-------
->  drivers/mfd/lp87565.c       |  9 +++------
->  drivers/mfd/max14577.c      | 14 +++-----------
->  drivers/mfd/rn5t618.c       | 11 ++---------
->  drivers/mfd/wm831x-i2c.c    | 16 ++++------------
->  drivers/mfd/wm8994-core.c   | 11 +----------
->  6 files changed, 15 insertions(+), 55 deletions(-)
+> I am not sure I understand what do 'safe' and 'mix' mean here.
 > 
+> For 'safe' part, I suppose you mean if there is a va accociated with
+> a 'struct page' without calling some API like kmap()? For that, I suppose
+> it is safe when the driver is calling page_pool API without the
+> __GFP_HIGHMEM flag. Maybe we should mention that in the kdoc and give a
+> warning if page_pool_*alloc_va() is called with the __GFP_HIGHMEM flag?
 
-For max14577 mfd,
+Sounds good. Warning wrapped in #if CONFIG_DEBUG_NET perhaps?
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+> For the 'mix', I suppose you mean the below:
+> 1. Allocate a page with the page_pool_*alloc_va() API and free a page with
+>    page_pool_free() API.
+> 2. Allocate a page with the page_pool_*alloc() API and free a page with
+>    page_pool_free_va() API.
+> 
+> For 1, it seems it is ok as some virt_to_head_page() and page_address() call
+> between va and 'struct page' does not seem to change anything if we have
+> enforce page_pool_*alloc_va() to be called without the __GFP_HIGHMEM flag.
+> 
+> For 2, If the va is returned from page_address() which the allocation API is
+> called without __GFP_HIGHMEM flag. If not, the va is from kmap*()? which means
+> we may be calling page_pool_free_va() before kunmap*()? Is that possible?
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Right, if someone passes kmap()'ed address they are trying quite hard
+to break their own driver. Technically possible but I wouldn't worry.
 
+I just mean that in the common case of non-HIGHMEM page, calling
+page_pool_free_va() with the address returned by page_address() 
+is perfectly legal.
