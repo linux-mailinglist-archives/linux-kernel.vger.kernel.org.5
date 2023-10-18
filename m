@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CA37CE8DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280757CE8E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 22:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjJRU3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 16:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S232603AbjJRU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 16:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344608AbjJRU2y (ORCPT
+        with ESMTP id S232538AbjJRU3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 16:28:54 -0400
+        Wed, 18 Oct 2023 16:29:04 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047AA181;
-        Wed, 18 Oct 2023 13:28:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A181708;
+        Wed, 18 Oct 2023 13:28:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697660913; x=1729196913;
+  t=1697660924; x=1729196924;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=41Cw0M5oWSuOe/byt5eX4fcv0uhH1yjV2sbnWcgT1iQ=;
-  b=alXd+jUVz8lbLSi62cNi/x8Pb+wcWXmd0bTmB0UPPljTOUGbZlVeDkLs
-   qfVvrY4AwdnFqzsFhrjhPd9IzFZantBM1p2FQK2RAnOJEd+ggL9NWIj2l
-   jWszCyeBmxEFcccS0YKeKclzA0u7kNKX7a1C/udFQRJUy+553uBlwaBdP
-   Adx01rmzwEv4q8v46Bb1kVUbHbw9q9BNnFZzdVQAoA6WdB30vUTm8BCRY
-   FhllaYakrJEZcSISUwYf1JpzanaArkpbKTbnOpX8sHwUmomeVwv3k0ecB
-   L7fLm3yVlpd6s1W1mLpbXTghszTW1wq+87KxA2JzV1q1Tc7JIjegXABuN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="371168140"
+  bh=uyEoHGQiKnkWMZ6yCX0zP2KiXAwoBH/WB9KMO3r68l0=;
+  b=eBnGk4l176T/6pSUaaM/EpxdzEjwIgDd0ZXjGP0B7SjMRRDL4Ujd0cX8
+   cwVsmR2YLI33VQxu20cNo1x9ZsN2aBi1XSN2eJja0E4ObnkjGGdub/KZG
+   FOGNpu+Z0e7H9nFu7L8y675uvV+mOdnY7MSbB0i4wuzr6HOxXudj8l8MO
+   NbH0n0MSzcdUHytE3s+dSl5ajgsDZRBbPJ85Gm4Mwtccxo+G5P2erIDFJ
+   y0Gn7rqHbBoXQIIGjeDK7/t7HQrVAzcMbqJ3IGJywQCV8Q6UhwGpVWenR
+   06ctjQ2t+7ZV3DFHFmppLDxYcfrX826Yoahvyf2vMzigOe3BuFOH/z76n
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="371168167"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="371168140"
+   d="scan'208";a="371168167"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:28:32 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 13:28:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756722410"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756722424"
 X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756722410"
+   d="scan'208";a="756722424"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga002.jf.intel.com with ESMTP; 18 Oct 2023 13:28:23 -0700
+  by orsmga002.jf.intel.com with ESMTP; 18 Oct 2023 13:28:30 -0700
 Received: from pkitszel-desk.intel.com (unknown [10.255.194.180])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id 8C3B033E8B;
-        Wed, 18 Oct 2023 21:28:15 +0100 (IST)
+        by irvmail002.ir.intel.com (Postfix) with ESMTP id 65AA533E92;
+        Wed, 18 Oct 2023 21:28:23 +0100 (IST)
 From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
 To:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>,
@@ -74,9 +74,9 @@ Cc:     Brett Creeley <brett.creeley@amd.com>,
         linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>,
         Przemek Kitszel <przemyslaw.kitszel@intel.com>,
         Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next v3 10/11] staging: qlge: devlink health: use retained error fmsg API
-Date:   Wed, 18 Oct 2023 22:26:46 +0200
-Message-Id: <20231018202647.44769-11-przemyslaw.kitszel@intel.com>
+Subject: [PATCH net-next v3 11/11] devlink: convert most of devlink_fmsg_*() to return void
+Date:   Wed, 18 Oct 2023 22:26:47 +0200
+Message-Id: <20231018202647.44769-12-przemyslaw.kitszel@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
 References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
@@ -92,112 +92,503 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop unneeded error checking.
+Since struct devlink_fmsg retains error by now (see 1st patch of this
+series), there is no longer need to keep returning it in each call.
 
-devlink_fmsg_*() family of functions is now retaining errors,
-so there is no need to check for them after each call.
+This is a separate commit to allow per-driver conversion to stop using
+those return values.
 
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 ---
- drivers/staging/qlge/qlge_devlink.c | 60 ++++++++---------------------
- 1 file changed, 16 insertions(+), 44 deletions(-)
+add/remove: 0/0 grow/shrink: 7/12 up/down: 113/-86 (27)
+---
+ include/net/devlink.h |  60 +++++++-------
+ net/devlink/health.c  | 188 +++++++++++++++++++-----------------------
+ 2 files changed, 114 insertions(+), 134 deletions(-)
 
-diff --git a/drivers/staging/qlge/qlge_devlink.c b/drivers/staging/qlge/qlge_devlink.c
-index 0ab02d6d3817..0b19363ca2e9 100644
---- a/drivers/staging/qlge/qlge_devlink.c
-+++ b/drivers/staging/qlge/qlge_devlink.c
-@@ -2,51 +2,29 @@
- #include "qlge.h"
- #include "qlge_devlink.h"
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index fad8e36e3d98..9ac394bdfbe4 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -1854,36 +1854,36 @@ int devlink_info_version_running_put_ext(struct devlink_info_req *req,
+ 					 const char *version_value,
+ 					 enum devlink_info_version_type version_type);
  
--static int qlge_fill_seg_(struct devlink_fmsg *fmsg,
--			  struct mpi_coredump_segment_header *seg_header,
--			  u32 *reg_data)
-+static void qlge_fill_seg_(struct devlink_fmsg *fmsg,
-+			   struct mpi_coredump_segment_header *seg_header,
-+			   u32 *reg_data)
+-int devlink_fmsg_obj_nest_start(struct devlink_fmsg *fmsg);
+-int devlink_fmsg_obj_nest_end(struct devlink_fmsg *fmsg);
+-
+-int devlink_fmsg_pair_nest_start(struct devlink_fmsg *fmsg, const char *name);
+-int devlink_fmsg_pair_nest_end(struct devlink_fmsg *fmsg);
+-
+-int devlink_fmsg_arr_pair_nest_start(struct devlink_fmsg *fmsg,
+-				     const char *name);
+-int devlink_fmsg_arr_pair_nest_end(struct devlink_fmsg *fmsg);
+-int devlink_fmsg_binary_pair_nest_start(struct devlink_fmsg *fmsg,
+-					const char *name);
+-int devlink_fmsg_binary_pair_nest_end(struct devlink_fmsg *fmsg);
+-
+-int devlink_fmsg_u32_put(struct devlink_fmsg *fmsg, u32 value);
+-int devlink_fmsg_string_put(struct devlink_fmsg *fmsg, const char *value);
+-int devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
+-			    u16 value_len);
+-
+-int devlink_fmsg_bool_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			       bool value);
+-int devlink_fmsg_u8_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			     u8 value);
+-int devlink_fmsg_u32_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			      u32 value);
+-int devlink_fmsg_u64_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			      u64 value);
+-int devlink_fmsg_string_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-				 const char *value);
+-int devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-				 const void *value, u32 value_len);
++void devlink_fmsg_obj_nest_start(struct devlink_fmsg *fmsg);
++void devlink_fmsg_obj_nest_end(struct devlink_fmsg *fmsg);
++
++void devlink_fmsg_pair_nest_start(struct devlink_fmsg *fmsg, const char *name);
++void devlink_fmsg_pair_nest_end(struct devlink_fmsg *fmsg);
++
++void devlink_fmsg_arr_pair_nest_start(struct devlink_fmsg *fmsg,
++				      const char *name);
++void devlink_fmsg_arr_pair_nest_end(struct devlink_fmsg *fmsg);
++void devlink_fmsg_binary_pair_nest_start(struct devlink_fmsg *fmsg,
++					 const char *name);
++void devlink_fmsg_binary_pair_nest_end(struct devlink_fmsg *fmsg);
++
++void devlink_fmsg_u32_put(struct devlink_fmsg *fmsg, u32 value);
++void devlink_fmsg_string_put(struct devlink_fmsg *fmsg, const char *value);
++void devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
++			     u16 value_len);
++
++void devlink_fmsg_bool_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				bool value);
++void devlink_fmsg_u8_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			      u8 value);
++void devlink_fmsg_u32_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			       u32 value);
++void devlink_fmsg_u64_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			       u64 value);
++void devlink_fmsg_string_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				  const char *value);
++void devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				  const void *value, u32 value_len);
+ 
+ struct devlink_health_reporter *
+ devl_port_health_reporter_create(struct devlink_port *port,
+diff --git a/net/devlink/health.c b/net/devlink/health.c
+index 3858a436598e..89405e59f45c 100644
+--- a/net/devlink/health.c
++++ b/net/devlink/health.c
+@@ -566,16 +566,15 @@ static int devlink_health_do_dump(struct devlink_health_reporter *reporter,
+ 	if (!reporter->dump_fmsg)
+ 		return -ENOMEM;
+ 
+-	err = devlink_fmsg_obj_nest_start(reporter->dump_fmsg);
+-	if (err)
+-		goto dump_err;
++	devlink_fmsg_obj_nest_start(reporter->dump_fmsg);
+ 
+ 	err = reporter->ops->dump(reporter, reporter->dump_fmsg,
+ 				  priv_ctx, extack);
+ 	if (err)
+ 		goto dump_err;
+ 
+-	err = devlink_fmsg_obj_nest_end(reporter->dump_fmsg);
++	devlink_fmsg_obj_nest_end(reporter->dump_fmsg);
++	err = reporter->dump_fmsg->err;
+ 	if (err)
+ 		goto dump_err;
+ 
+@@ -675,273 +674,252 @@ static void devlink_fmsg_err_if_binary(struct devlink_fmsg *fmsg)
+ 		fmsg->err = -EINVAL;
+ }
+ 
+-static int devlink_fmsg_nest_common(struct devlink_fmsg *fmsg, int attrtype)
++static void devlink_fmsg_nest_common(struct devlink_fmsg *fmsg, int attrtype)
  {
- 	int regs_num = (seg_header->seg_size
- 			- sizeof(struct mpi_coredump_segment_header)) / sizeof(u32);
--	int err;
- 	int i;
+ 	struct devlink_fmsg_item *item;
  
--	err = devlink_fmsg_pair_nest_start(fmsg, seg_header->description);
--	if (err)
--		return err;
--	err = devlink_fmsg_obj_nest_start(fmsg);
--	if (err)
--		return err;
--	err = devlink_fmsg_u32_pair_put(fmsg, "segment", seg_header->seg_num);
--	if (err)
--		return err;
--	err = devlink_fmsg_arr_pair_nest_start(fmsg, "values");
--	if (err)
--		return err;
-+	devlink_fmsg_pair_nest_start(fmsg, seg_header->description);
-+	devlink_fmsg_obj_nest_start(fmsg);
-+	devlink_fmsg_u32_pair_put(fmsg, "segment", seg_header->seg_num);
-+	devlink_fmsg_arr_pair_nest_start(fmsg, "values");
- 	for (i = 0; i < regs_num; i++) {
--		err = devlink_fmsg_u32_put(fmsg, *reg_data);
--		if (err)
--			return err;
-+		devlink_fmsg_u32_put(fmsg, *reg_data);
- 		reg_data++;
+ 	if (fmsg->err)
+-		return fmsg->err;
++		return;
+ 
+ 	item = kzalloc(sizeof(*item), GFP_KERNEL);
+ 	if (!item) {
+ 		fmsg->err = -ENOMEM;
+-		return fmsg->err;
++		return;
  	}
--	err = devlink_fmsg_obj_nest_end(fmsg);
+ 
+ 	item->attrtype = attrtype;
+ 	list_add_tail(&item->list, &fmsg->item_list);
+-
+-	return 0;
+ }
+ 
+-int devlink_fmsg_obj_nest_start(struct devlink_fmsg *fmsg)
++void devlink_fmsg_obj_nest_start(struct devlink_fmsg *fmsg)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_OBJ_NEST_START);
++	devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_OBJ_NEST_START);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_obj_nest_start);
+ 
+-static int devlink_fmsg_nest_end(struct devlink_fmsg *fmsg)
++static void devlink_fmsg_nest_end(struct devlink_fmsg *fmsg)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_NEST_END);
++	devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_NEST_END);
+ }
+ 
+-int devlink_fmsg_obj_nest_end(struct devlink_fmsg *fmsg)
++void devlink_fmsg_obj_nest_end(struct devlink_fmsg *fmsg)
+ {
+-	return devlink_fmsg_nest_end(fmsg);
++	devlink_fmsg_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_obj_nest_end);
+ 
+ #define DEVLINK_FMSG_MAX_SIZE (GENLMSG_DEFAULT_SIZE - GENL_HDRLEN - NLA_HDRLEN)
+ 
+-static int devlink_fmsg_put_name(struct devlink_fmsg *fmsg, const char *name)
++static void devlink_fmsg_put_name(struct devlink_fmsg *fmsg, const char *name)
+ {
+ 	struct devlink_fmsg_item *item;
+ 
+ 	devlink_fmsg_err_if_binary(fmsg);
+ 	if (fmsg->err)
+-		return fmsg->err;
++		return;
+ 
+ 	if (strlen(name) + 1 > DEVLINK_FMSG_MAX_SIZE) {
+ 		fmsg->err = -EMSGSIZE;
+-		return fmsg->err;
++		return;
+ 	}
+ 
+ 	item = kzalloc(sizeof(*item) + strlen(name) + 1, GFP_KERNEL);
+ 	if (!item) {
+ 		fmsg->err = -ENOMEM;
+-		return fmsg->err;
++		return;
+ 	}
+ 
+ 	item->nla_type = NLA_NUL_STRING;
+ 	item->len = strlen(name) + 1;
+ 	item->attrtype = DEVLINK_ATTR_FMSG_OBJ_NAME;
+ 	memcpy(&item->value, name, item->len);
+ 	list_add_tail(&item->list, &fmsg->item_list);
+-
+-	return 0;
+ }
+ 
+-int devlink_fmsg_pair_nest_start(struct devlink_fmsg *fmsg, const char *name)
++void devlink_fmsg_pair_nest_start(struct devlink_fmsg *fmsg, const char *name)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+ 	devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_PAIR_NEST_START);
+-	return devlink_fmsg_put_name(fmsg, name);
++	devlink_fmsg_put_name(fmsg, name);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_pair_nest_start);
+ 
+-int devlink_fmsg_pair_nest_end(struct devlink_fmsg *fmsg)
++void devlink_fmsg_pair_nest_end(struct devlink_fmsg *fmsg)
+ {
+-	return devlink_fmsg_nest_end(fmsg);
++	devlink_fmsg_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_pair_nest_end);
+ 
+-int devlink_fmsg_arr_pair_nest_start(struct devlink_fmsg *fmsg,
+-				     const char *name)
++void devlink_fmsg_arr_pair_nest_start(struct devlink_fmsg *fmsg,
++				      const char *name)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+-	return devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_ARR_NEST_START);
++	devlink_fmsg_nest_common(fmsg, DEVLINK_ATTR_FMSG_ARR_NEST_START);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_arr_pair_nest_start);
+ 
+-int devlink_fmsg_arr_pair_nest_end(struct devlink_fmsg *fmsg)
++void devlink_fmsg_arr_pair_nest_end(struct devlink_fmsg *fmsg)
+ {
+ 	devlink_fmsg_nest_end(fmsg);
+-	return devlink_fmsg_nest_end(fmsg);
++	devlink_fmsg_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_arr_pair_nest_end);
+ 
+-int devlink_fmsg_binary_pair_nest_start(struct devlink_fmsg *fmsg,
+-					const char *name)
++void devlink_fmsg_binary_pair_nest_start(struct devlink_fmsg *fmsg,
++					 const char *name)
+ {
+-	int err;
+-
+-	err = devlink_fmsg_arr_pair_nest_start(fmsg, name);
 -	if (err)
 -		return err;
--	err = devlink_fmsg_arr_pair_nest_end(fmsg);
--	if (err)
--		return err;
--	err = devlink_fmsg_pair_nest_end(fmsg);
--	return err;
-+	devlink_fmsg_obj_nest_end(fmsg);
+-
++	devlink_fmsg_arr_pair_nest_start(fmsg, name);
+ 	fmsg->putting_binary = true;
+-	return 0;
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_binary_pair_nest_start);
+ 
+-int devlink_fmsg_binary_pair_nest_end(struct devlink_fmsg *fmsg)
++void devlink_fmsg_binary_pair_nest_end(struct devlink_fmsg *fmsg)
+ {
+ 	if (fmsg->err)
+-		return fmsg->err;
++		return;
+ 
+-	if (!fmsg->putting_binary) {
++	if (!fmsg->putting_binary)
+ 		fmsg->err = -EINVAL;
+-		return fmsg->err;
+-	}
+ 
+ 	fmsg->putting_binary = false;
+-	return devlink_fmsg_arr_pair_nest_end(fmsg);
 +	devlink_fmsg_arr_pair_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_binary_pair_nest_end);
+ 
+-static int devlink_fmsg_put_value(struct devlink_fmsg *fmsg,
+-				  const void *value, u16 value_len,
+-				  u8 value_nla_type)
++static void devlink_fmsg_put_value(struct devlink_fmsg *fmsg,
++				   const void *value, u16 value_len,
++				   u8 value_nla_type)
+ {
+ 	struct devlink_fmsg_item *item;
+ 
++	if (fmsg->err)
++		return;
++
+ 	if (value_len > DEVLINK_FMSG_MAX_SIZE) {
+ 		fmsg->err = -EMSGSIZE;
+-		return fmsg->err;
++		return;
+ 	}
+ 
+ 	item = kzalloc(sizeof(*item) + value_len, GFP_KERNEL);
+ 	if (!item) {
+ 		fmsg->err = -ENOMEM;
+-		return fmsg->err;
++		return;
+ 	}
+ 
+ 	item->nla_type = value_nla_type;
+ 	item->len = value_len;
+ 	item->attrtype = DEVLINK_ATTR_FMSG_OBJ_VALUE_DATA;
+ 	memcpy(&item->value, value, item->len);
+ 	list_add_tail(&item->list, &fmsg->item_list);
+-
+-	return 0;
+ }
+ 
+-static int devlink_fmsg_bool_put(struct devlink_fmsg *fmsg, bool value)
++static void devlink_fmsg_bool_put(struct devlink_fmsg *fmsg, bool value)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_FLAG);
++	devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_FLAG);
+ }
+ 
+-static int devlink_fmsg_u8_put(struct devlink_fmsg *fmsg, u8 value)
++static void devlink_fmsg_u8_put(struct devlink_fmsg *fmsg, u8 value)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U8);
++	devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U8);
+ }
+ 
+-int devlink_fmsg_u32_put(struct devlink_fmsg *fmsg, u32 value)
++void devlink_fmsg_u32_put(struct devlink_fmsg *fmsg, u32 value)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U32);
++	devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U32);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_u32_put);
+ 
+-static int devlink_fmsg_u64_put(struct devlink_fmsg *fmsg, u64 value)
++static void devlink_fmsg_u64_put(struct devlink_fmsg *fmsg, u64 value)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U64);
++	devlink_fmsg_put_value(fmsg, &value, sizeof(value), NLA_U64);
+ }
+ 
+-int devlink_fmsg_string_put(struct devlink_fmsg *fmsg, const char *value)
++void devlink_fmsg_string_put(struct devlink_fmsg *fmsg, const char *value)
+ {
+ 	devlink_fmsg_err_if_binary(fmsg);
+-	return devlink_fmsg_put_value(fmsg, value, strlen(value) + 1,
+-				      NLA_NUL_STRING);
++	devlink_fmsg_put_value(fmsg, value, strlen(value) + 1, NLA_NUL_STRING);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_string_put);
+ 
+-int devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
+-			    u16 value_len)
++void devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
++			     u16 value_len)
+ {
+-	if (!fmsg->putting_binary)
+-		return -EINVAL;
++	if (!fmsg->err && !fmsg->putting_binary)
++		fmsg->err = -EINVAL;
+ 
+-	return devlink_fmsg_put_value(fmsg, value, value_len, NLA_BINARY);
++	devlink_fmsg_put_value(fmsg, value, value_len, NLA_BINARY);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_binary_put);
+ 
+-int devlink_fmsg_bool_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			       bool value)
++void devlink_fmsg_bool_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				bool value)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+ 	devlink_fmsg_bool_put(fmsg, value);
+-	return devlink_fmsg_pair_nest_end(fmsg);
 +	devlink_fmsg_pair_nest_end(fmsg);
  }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_bool_pair_put);
  
--#define FILL_SEG(seg_hdr, seg_regs)			                    \
--	do {                                                                \
--		err = qlge_fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
--		if (err) {					            \
--			kvfree(dump);                                       \
--			return err;				            \
--		}                                                           \
--	} while (0)
-+#define FILL_SEG(seg_hdr, seg_regs) \
-+	qlge_fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs)
- 
- static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
- 				  struct devlink_fmsg *fmsg, void *priv_ctx,
-@@ -114,14 +92,8 @@ static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
- 	FILL_SEG(xfi_hss_tx_hdr, serdes_xfi_hss_tx);
- 	FILL_SEG(xfi_hss_rx_hdr, serdes_xfi_hss_rx);
- 	FILL_SEG(xfi_hss_pll_hdr, serdes_xfi_hss_pll);
--
--	err = qlge_fill_seg_(fmsg, &dump->misc_nic_seg_hdr,
--			     (u32 *)&dump->misc_nic_info);
--	if (err) {
--		kvfree(dump);
--		return err;
--	}
--
-+	qlge_fill_seg_(fmsg, &dump->misc_nic_seg_hdr,
-+		       (u32 *)&dump->misc_nic_info);
- 	FILL_SEG(intr_states_seg_hdr, intr_states);
- 	FILL_SEG(cam_entries_seg_hdr, cam_entries);
- 	FILL_SEG(nic_routing_words_seg_hdr, nic_routing_words);
-@@ -140,7 +112,7 @@ static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
- 	FILL_SEG(sem_regs_seg_hdr, sem_regs);
- 
- 	kvfree(dump);
--	return err;
-+	return 0;
+-int devlink_fmsg_u8_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			     u8 value)
++void devlink_fmsg_u8_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			      u8 value)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+ 	devlink_fmsg_u8_put(fmsg, value);
+-	return devlink_fmsg_pair_nest_end(fmsg);
++	devlink_fmsg_pair_nest_end(fmsg);
  }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_u8_pair_put);
  
- static const struct devlink_health_reporter_ops qlge_reporter_ops = {
+-int devlink_fmsg_u32_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			      u32 value)
++void devlink_fmsg_u32_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			       u32 value)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+ 	devlink_fmsg_u32_put(fmsg, value);
+-	return devlink_fmsg_pair_nest_end(fmsg);
++	devlink_fmsg_pair_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_u32_pair_put);
+ 
+-int devlink_fmsg_u64_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-			      u64 value)
++void devlink_fmsg_u64_pair_put(struct devlink_fmsg *fmsg, const char *name,
++			       u64 value)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+ 	devlink_fmsg_u64_put(fmsg, value);
+-	return devlink_fmsg_pair_nest_end(fmsg);
++	devlink_fmsg_pair_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_u64_pair_put);
+ 
+-int devlink_fmsg_string_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-				 const char *value)
++void devlink_fmsg_string_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				  const char *value)
+ {
+ 	devlink_fmsg_pair_nest_start(fmsg, name);
+ 	devlink_fmsg_string_put(fmsg, value);
+-	return devlink_fmsg_pair_nest_end(fmsg);
++	devlink_fmsg_pair_nest_end(fmsg);
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_string_pair_put);
+ 
+-int devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
+-				 const void *value, u32 value_len)
++void devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
++				  const void *value, u32 value_len)
+ {
+ 	u32 data_size;
+ 	u32 offset;
+-	int err;
+ 
+-	err = devlink_fmsg_binary_pair_nest_start(fmsg, name);
+-	if (err)
+-		return err;
++	devlink_fmsg_binary_pair_nest_start(fmsg, name);
+ 
+ 	for (offset = 0; offset < value_len; offset += data_size) {
+ 		data_size = value_len - offset;
+ 		if (data_size > DEVLINK_FMSG_MAX_SIZE)
+ 			data_size = DEVLINK_FMSG_MAX_SIZE;
+-		err = devlink_fmsg_binary_put(fmsg, value + offset, data_size);
+-		if (err)
+-			break;
+-		/* Exit from loop with a break (instead of
+-		 * return) to make sure putting_binary is turned off
+-		 */
++
++		devlink_fmsg_binary_put(fmsg, value + offset, data_size);
+ 	}
+ 
+-	err = devlink_fmsg_binary_pair_nest_end(fmsg);
++	devlink_fmsg_binary_pair_nest_end(fmsg);
+ 	fmsg->putting_binary = false;
+-
+-	return err;
+ }
+ EXPORT_SYMBOL_GPL(devlink_fmsg_binary_pair_put);
+ 
+@@ -1051,6 +1029,9 @@ static int devlink_fmsg_snd(struct devlink_fmsg *fmsg,
+ 	void *hdr;
+ 	int err;
+ 
++	if (fmsg->err)
++		return fmsg->err;
++
+ 	while (!last) {
+ 		int tmp_index = index;
+ 
+@@ -1104,6 +1085,9 @@ static int devlink_fmsg_dumpit(struct devlink_fmsg *fmsg, struct sk_buff *skb,
+ 	void *hdr;
+ 	int err;
+ 
++	if (fmsg->err)
++		return fmsg->err;
++
+ 	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+ 			  &devlink_nl_family, NLM_F_ACK | NLM_F_MULTI, cmd);
+ 	if (!hdr) {
+@@ -1143,17 +1127,13 @@ int devlink_nl_cmd_health_reporter_diagnose_doit(struct sk_buff *skb,
+ 	if (!fmsg)
+ 		return -ENOMEM;
+ 
+-	err = devlink_fmsg_obj_nest_start(fmsg);
+-	if (err)
+-		goto out;
++	devlink_fmsg_obj_nest_start(fmsg);
+ 
+ 	err = reporter->ops->diagnose(reporter, fmsg, info->extack);
+ 	if (err)
+ 		goto out;
+ 
+-	err = devlink_fmsg_obj_nest_end(fmsg);
+-	if (err)
+-		goto out;
++	devlink_fmsg_obj_nest_end(fmsg);
+ 
+ 	err = devlink_fmsg_snd(fmsg, info,
+ 			       DEVLINK_CMD_HEALTH_REPORTER_DIAGNOSE, 0);
 -- 
 2.38.1
 
