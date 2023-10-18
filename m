@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 324CC7CDAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92A47CDAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjJRLqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S230048AbjJRLqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjJRLpt (ORCPT
+        with ESMTP id S230013AbjJRLqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:45:49 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2218FE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:45:44 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso611318a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:45:44 -0700 (PDT)
+        Wed, 18 Oct 2023 07:46:19 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BFF123
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:46:17 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083740f92dso9999125e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697629543; x=1698234343; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VTINOs7IVK0NtmhaZm8Hxfp0zmQge6ZaL9u3C96Qtkk=;
-        b=RrSLeh03Z/Q/dAMWzai1S/m+J0txdbn5j10o+rQS7UxhfywO8gQb9hFuUcnmnWvQ1q
-         nrGatzVJl7/NZS4KwmmR5U2qc7kg34Cq1st3cCVLeO/xUKYXa5nqY6SSM2fdfuB3gl0r
-         9DIK3WoHBDO3WcbkF7fKFoQq94vtoAT43uXQI8OEC3kktqbpioVnX3d2eqmTD3UWR93Z
-         vOw12465Fe5SiSbwv6qRxmY7LujZcR1TACGrMNHByj+IQQCmr+XTVoJO+IwBTLZmBY77
-         YSoJD4EWNkhloUsCnZIXokTmn/Zg5YblrxAwFX3h+S77ev5XBoWM0sN4PtfmN0fqZh2T
-         nOlg==
+        d=linaro.org; s=google; t=1697629575; x=1698234375; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hIZB4xEFiDqc2+Z84fN6WVGzHYrI2kiuxOOK9C2i8+I=;
+        b=OsJYJIZ7N2aUiAtuMwVWHJsMh4uu2u34GY9Gwnv07oPTNrecxZCVY4KTbU+Ktw3CRj
+         3q57SyO8rPydvlVLdR69AqlO7YXRTbZ5yl1DRlaoZcFvGkebTFMDuFaArTRoybOAuQOf
+         TfLAwWd9OnfJ29M6SIx3NZ7RrM/hVgzPl27fzG4Ss1/vm7ijw+EJYfo3WZ9vE16ps0VS
+         ePpZa9ey+KrMFYVm+OKB1AwqKQyaiKO+HMhruH0gmaQ2kbfkzy1mtz3MoFvgDxnyGYfD
+         8+CQFdqF8GZ1L0bloWz7eMTYNU8PmtoaX2FNqAhmVpLVeJbBVB3vaYVQucP+Ltu+I9BN
+         YMDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697629543; x=1698234343;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VTINOs7IVK0NtmhaZm8Hxfp0zmQge6ZaL9u3C96Qtkk=;
-        b=M+/SLogiqbt701pbJxuLO213ndKelJ2oqfzvkLqJtVIKrCEECMz6VDzivs43gzKuW+
-         C2Z07UJJcHSQJvw6lfQspHMUQU5dQOJvPkKcAx1M8OHVPnrzXlfhF5Ul/332viBLVMdn
-         W+T/uM5jCUXNrvvJgJurT1aTX62EQnm6uA686n+XWR9tnquhEfVvR+c+F5cMM0JO5jyL
-         UMBVoXx+lb2iOtZqbFqq2GG9N9jaVr255Kj/R1nLcha/2kU3wFq6QHnOt+l/ZT2FZMj6
-         xivTvDCIYNWEj9o1wedNhq5pIIJ3wx0E+ZpSsXMxnQNaGyw3gROXvuiPjws4jnxsdPie
-         5IUg==
-X-Gm-Message-State: AOJu0YzwgNDtwrbv41XRgkOPsTZbVgVaJ7bvgyF5f5RgFbe2L28FC/fv
-        b1Gh3U42fUsHM+y10auhGlM=
-X-Google-Smtp-Source: AGHT+IGqXeNQawRBulQQP5v5T/ldgBTck2xmiz8UH0flZ10jQ2YZnQiB6VM/bXbO7Y22mMXA5ybPvg==
-X-Received: by 2002:a05:6402:4410:b0:530:bd6b:7a94 with SMTP id y16-20020a056402441000b00530bd6b7a94mr4825384eda.24.1697629543307;
-        Wed, 18 Oct 2023 04:45:43 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id t29-20020a50ab5d000000b0053ed70ebd7csm2720856edc.31.2023.10.18.04.45.42
+        d=1e100.net; s=20230601; t=1697629575; x=1698234375;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hIZB4xEFiDqc2+Z84fN6WVGzHYrI2kiuxOOK9C2i8+I=;
+        b=qsYKGm9C3ixSB4jVxcJwR9EpxmOg6pDiUZquYH13Ng6lMT2MRs6pYQfOcCRlo4D0Lo
+         zhOohqRbJ7PpcADA44CcNn/+IUANifvE1VBmcM6G0LMEP2olag6QlQEdeTrXVlE4o6iS
+         fDaNBo9DO0udj8O5lpdSmSRwppabQAh25pPJM2PHcpDPl+ThtAuLreLfcjQkTgNUnobE
+         65ORRTa3dHU1+Tq+tBrNULCPZKU/21UNx7Pv/cKYAzj+gbMU6CqqEuENYFZtKwu3YhAx
+         0FuvMBxJ8AWh80peBhPpuTVfMrRv7GQXu5Bl6K49Sj6P5uq+ABna86GPeaJdJTyJlZ4p
+         /NCQ==
+X-Gm-Message-State: AOJu0YwI1cqCKPqUUiyuvjlbb8Zm4AhctR/zndCTpWq83QjHBOzaTfjI
+        fOc/CkDkwVMoSsB5JiMaTEJMhA==
+X-Google-Smtp-Source: AGHT+IFST4zTv5e3F3vfbnDudoRjP5SBUIl6bdsoe+9WOadjGlN10iP2gifoV+us3GybdQCFKsaB5Q==
+X-Received: by 2002:a05:600c:468e:b0:405:3d04:5f52 with SMTP id p14-20020a05600c468e00b004053d045f52mr3756113wmo.24.1697629575441;
+        Wed, 18 Oct 2023 04:46:15 -0700 (PDT)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id bs30-20020a056000071e00b0032d9a1f2ec3sm1991631wrb.27.2023.10.18.04.46.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 04:45:42 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 18 Oct 2023 13:45:40 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     Hou Wenlong <houwenlong.hwl@antgroup.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>
-Subject: Re: [PATCH RFC 1/7] x86/head/64: Mark startup_gdt and
- startup_gdt_descr as __initdata
-Message-ID: <ZS/FZAq6lbxXtBtB@gmail.com>
-References: <cover.1689130310.git.houwenlong.hwl@antgroup.com>
- <c85903a7cfad37d14a7e5a4df9fc7119a3669fb3.1689130310.git.houwenlong.hwl@antgroup.com>
- <ZS0lEmEpQOz4iQ4Q@gmail.com>
- <20231017072311.GA46993@k08j02272.eu95sqa>
- <ZS6F46vJfca5f6f8@gmail.com>
- <77B66FD0-ED28-4D3F-8D28-467AC4FCD00D@zytor.com>
+        Wed, 18 Oct 2023 04:46:14 -0700 (PDT)
+Message-ID: <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
+Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set
+ the FUSE_INIT_EXT"
+From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To:     Bernd Schubert <bschubert@ddn.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 18 Oct 2023 12:46:13 +0100
+In-Reply-To: <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
+References: <20230904133321.104584-1-git@andred.net>
+         <20231018111508.3913860-1-git@andred.net>
+         <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77B66FD0-ED28-4D3F-8D28-467AC4FCD00D@zytor.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2023-10-18 at 11:39 +0000, Bernd Schubert wrote:
+> On 10/18/23 13:15, Andr=C3=A9 Draszik wrote:
+> > From: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> >=20
+> > This reverts commit 3066ff93476c35679cb07a97cce37d9bb07632ff.
+> >=20
+> > This patch breaks all existing userspace by requiring updates as
+> > mentioned in the commit message, which is not allowed.
+> >=20
+> > Revert to restore compatibility with existing userspace
+> > implementations.
+>=20
+> Which fuse file system does it exactly break? In fact there haven't
+> been=20
+> added too many flags after - what exactly is broken?
 
-* H. Peter Anvin <hpa@zytor.com> wrote:
+The original patch broke the existing kernel <-> user ABI by now
+requiring user space applications to pass in an extra flag.
+There are various side-effects of this, like unbootable systems, just
+because the kernel was updated.
+Breaking the ABI is the one thing that is not allowed. This is not
+specific to any particular fuse file system.
 
-> If the goal is better KASLR, then what we really should spend time on was 
-> Kristen Accardi's fgKASLR patches, which not only exponentially(!) 
-> increases the randomization entrophy but also *actually* avoids the "one 
-> leak and it's over" problem.
+Kind Regards,
+Andre
 
-Agreed. Going by this version of function-granularity KASLR from 3 years 
-ago:
-
-  https://lwn.net/Articles/824307/
-  https://lwn.net/ml/linux-kernel/20200623172327.5701-1-kristen@linux.intel.com/
-
-The fgKASLR feature looks entirely viable to me. Back then I presumed it 
-would get iterated beyond v3, and then it fell off my radar. :-/
-
-If Kristen or someone else would like to dust this off & submit a fresh 
-version it would be much appreciated!
-
-Thanks,
-
-	Ingo
