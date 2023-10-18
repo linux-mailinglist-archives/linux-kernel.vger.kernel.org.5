@@ -2,165 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84DF7CD7DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87A17CD7E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjJRJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S229750AbjJRJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjJRJYd (ORCPT
+        with ESMTP id S229572AbjJRJZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:24:33 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEA1FD;
-        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so5062178b3a.2;
-        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697621071; x=1698225871; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
-        b=EPTayhges6SubgIe2UQDVS+32aO3vGkKFe8kbYt7WgY5hcH5IN/IBe/xetyAZOouIf
-         LlNPKD+MK9kw0S1G9cJ46hqP5ipBjihPkUBJpN2h+tbZEZ0V6MIV3sY+bFu7VOcXgreS
-         IEee3cTr0iXdPN8+GmJUXgkwuCG3P05MGw4+vBL9al7KKq3AFkwSMQrO2cX2/Jk2Y+CE
-         mO1ehOBR0Fov9pdAkkmrnoZEY1+LqyCH/cho/jihaKRnRtl2iBKGU+2kNuevdoiB/s7N
-         1RAAdxgwIlbRZjJV2utvoYfz9HtlGmncc/Lli+GPOHffEiZrOW2LyRnuqHlN+MQIEK3P
-         uriA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697621071; x=1698225871;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
-        b=gmPPd5L32wREBlfvqCWqx2hUcUS07EvK7InIZKtmWAAzN7nrHQXnnylzuz/tMJfhSG
-         NhzhK0rLiE4GGsReWVqjeV4j2M57jCA9fW/Zc8tYpwFarzyTw4RdUw3sIB9BRM9jyhzj
-         5JWJaXbN9P5dfmKPTVa54uuOAj2n7r/ptPeDvee7e47cQG+tv9oPeVVSDWCiBAHYIJDI
-         su5/VmNrpP2c91NSnyWS+vhJTPn02Ni8TcEapWccFqlZAYPTTn2PUoUrsVernBw1s8wi
-         5leIY77do2xS085li/KKnMXFLj3Wa6ae8R1gro0z7Ej10XZu5t7o+ylItPoWVuLzqAmq
-         1aeA==
-X-Gm-Message-State: AOJu0Yw2u5JyP5V//GH0hPovQW7y6+SVdTs0wY0oL8UcVeAjwkH8Rkj2
-        IHwesTqlm6R/Yj3lfQ9bVsw=
-X-Google-Smtp-Source: AGHT+IHMtkomy48m2lIkAxF4mw34c4FzfowG/XQaP/plDDeQIwFErlB+vSFZKCbh1uGV3u+wOayZ5g==
-X-Received: by 2002:a05:6a00:218f:b0:68a:54e5:24e6 with SMTP id h15-20020a056a00218f00b0068a54e524e6mr5142412pfi.8.1697621071197;
-        Wed, 18 Oct 2023 02:24:31 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id n8-20020aa79848000000b00689f5940061sm2945737pfq.17.2023.10.18.02.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 02:24:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 17 Oct 2023 23:24:29 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH-cgroup 1/4] workqueue: Add
- workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask
-Message-ID: <ZS-kTXgSZoc985ul@slm.duckdns.org>
-References: <20231013181122.3518610-1-longman@redhat.com>
- <20231013181122.3518610-2-longman@redhat.com>
+        Wed, 18 Oct 2023 05:25:46 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117A7F7;
+        Wed, 18 Oct 2023 02:25:42 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 8A3F024E314;
+        Wed, 18 Oct 2023 17:25:40 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 17:25:40 +0800
+Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 18 Oct
+ 2023 17:25:39 +0800
+Message-ID: <687a4c58-3666-1c7b-fcfd-d586c28dea35@starfivetech.com>
+Date:   Wed, 18 Oct 2023 17:25:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013181122.3518610-2-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <changhuang.liang@starfivetech.com>
+References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+ <98297bfc-ab81-4bb5-acc3-619fdf879276@xs4all.nl>
+ <bb5b776c-f1dd-f53e-079c-8048af2e73f1@starfivetech.com>
+ <4a74a40c-ee3c-4563-87d1-27e859eb6982@xs4all.nl>
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+In-Reply-To: <4a74a40c-ee3c-4563-87d1-27e859eb6982@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Fri, Oct 13, 2023 at 02:11:19PM -0400, Waiman Long wrote:
-> When the "isolcpus" boot command line option is used to add a set
-> of isolated CPUs, those CPUs will be excluded automatically from
-> wq_unbound_cpumask to avoid running work functions from unbound
-> workqueues.
+
+On 2023/10/18 16:50, Hans Verkuil wrote:
+> Hi Jack,
 > 
-> Recently cpuset has been extended to allow the creation of partitions
-> of isolated CPUs dynamically. To make it closer to the "isolcpus"
-> in functionality, the CPUs in those isolated cpuset partitions should be
-> excluded from wq_unbound_cpumask as well. This can be done currently by
-> explicitly writing to the workqueue's cpumask sysfs file after creating
-> the isolated partitions. However, this process can be error prone.
-> Ideally, the cpuset code should be allowed to request the workqueue code
-> to exclude those isolated CPUs from wq_unbound_cpumask so that this
-> operation can be done automatically and the isolated CPUs will be returned
-> back to wq_unbound_cpumask after the destructions of the isolated
-> cpuset partitions.
+> On 18/10/2023 04:37, Jack Zhu wrote:
 > 
-> This patch adds a new workqueue_unbound_exclude_cpumask() to enable
-> that. This new function will exclude the specified isolated CPUs
-> from wq_unbound_cpumask. To be able to restore those isolated CPUs
-> back after the destruction of isolated cpuset partitions, a new
-> wq_user_unbound_cpumask is added to store the user provided unbound
-> cpumask either from the boot command line options or from writing to
-> the cpumask sysfs file. This new cpumask provides the basis for CPU
-> exclusion.
+> <snip>
+> 
+>>>> --------------------------------------------------------------------------------
+>>>> Compliance test for device /dev/v4l-subdev1:
+>>>>
+>>>> Driver Info:
+>>>> 	Driver version   : 6.6.0
+>>>> 	Capabilities     : 0x00000000
+>>>
+>>> But this does not appear for v4l-subdev1.
+>>>
+>>> I can't really tell why it doesn't show that. Can you debug a little bit?
+>>> The code is in v4l2-compliance.cpp, line 1086:
+>>>
+>>> ent_id = mi_media_info_for_fd(media_fd, node.g_fd(), &is_invalid, &node.function);
+>>>
+>>> The mi_media_info_for_fd() function calls ioctl(media_fd, MEDIA_IOC_DEVICE_INFO, &mdinfo),
+>>> and that fails for some reason. It could be that media_fd is invalid (would be weird).
+>>>
+>>> This could well be a v4l2-compliance bug that you hit with this driver.
+>>>
+>> 
+>> On the test board, /dev/v4l-subdev1 is imx219, and the corresponding directory is
+>> /sys/dev/char/81:3/device. Media0 does not exist in this directory. Therefore, the media_fd
+>> obtained through mi_get_media_fd(node.g_fd(), node.bus_info) is invalid.
+>> 
+>> I don't know why media0 does not exist in /sys/dev/char/81:3/device?
+>> 
+> 
+> Can you try again with this v4l2-compliance patch?
+> 
+> I need to dig a bit deeper as to why media0 is missing, but for now try this.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> diff --git a/utils/v4l2-compliance/v4l2-compliance.cpp b/utils/v4l2-compliance/v4l2-compliance.cpp
+> index 7169eefe..29475d6b 100644
+> --- a/utils/v4l2-compliance/v4l2-compliance.cpp
+> +++ b/utils/v4l2-compliance/v4l2-compliance.cpp
+> @@ -968,7 +968,7 @@ err:
+>  }
+> 
+>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
+> -	      unsigned frame_count, unsigned all_fmt_frame_count)
+> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd)
+>  {
+>  	struct node node2;
+>  	struct v4l2_capability vcap = {};
+> @@ -997,8 +997,12 @@ void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_
+>  		memset(&vcap, 0, sizeof(vcap));
+>  	}
+> 
+> -	if (!node.is_media())
+> -		media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
+> +	if (!node.is_media()) {
+> +		if (parent_media_fd >= 0)
+> +			media_fd = parent_media_fd;
+> +		else
+> +			media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
+> +	}
+> 
+>  	int fd = node.is_media() ? node.g_fd() : media_fd;
+>  	if (fd >= 0) {
+> diff --git a/utils/v4l2-compliance/v4l2-compliance.h b/utils/v4l2-compliance/v4l2-compliance.h
+> index 7caf254b..c47f25f5 100644
+> --- a/utils/v4l2-compliance/v4l2-compliance.h
+> +++ b/utils/v4l2-compliance/v4l2-compliance.h
+> @@ -308,7 +308,7 @@ int check_ustring(const __u8 *s, int len);
+>  int check_0(const void *p, int len);
+>  int restoreFormat(struct node *node);
+>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
+> -	      unsigned frame_count, unsigned all_fmt_frame_count);
+> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd = -1);
+>  std::string stream_from(const std::string &pixelformat, bool &use_hdr);
+> 
+>  // Media Controller ioctl tests
+> 
 
-The behaviors around wq_unbound_cpumask is getting pretty inconsistent:
+From the log, there is no change.
 
-1. Housekeeping excludes isolated CPUs on boot but allows user to override
-   it to include isolated CPUs afterwards.
+test log:
+--------------------------------------------------------------------------------
+Compliance test for device /dev/v4l-subdev1:
 
-2. If an unbound wq's cpumask doesn't have any intersection with
-   wq_unbound_cpumask we ignore the per-wq cpumask and falls back to
-   wq_unbound_cpumask.
+Driver Info:
+	Driver version   : 6.6.0
+	Capabilities     : 0x00000000
 
-3. You're adding a masking layer on top with exclude which fails to set if
-   the intersection is empty.
+Required ioctls:
+	test VIDIOC_SUDBEV_QUERYCAP: OK
+	test invalid ioctls: OK
 
-Can we do the followings for consistency?
+Allow for multiple opens:
+	test second /dev/v4l-subdev1 open: OK
+	test VIDIOC_SUBDEV_QUERYCAP: OK
+	test for unlimited opens: OK
 
-1. User's requested_unbound_cpumask is stored separately (as in this patch).
+Debug ioctls:
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
 
-2. The effect wq_unbound_cpumask is determined by requested_unbound_cpumask
-   & housekeeping_cpumask & cpuset_allowed_cpumask. The operation order
-   matters. When an & operation yields an cpumask, the cpumask from the
-   previous step is the effective one.
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
 
-3. Expose these cpumasks in sysfs so that what's happening is obvious.
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
 
-> +int workqueue_unbound_exclude_cpumask(cpumask_var_t exclude_cpumask)
-> +{
-> +	cpumask_var_t cpumask;
-> +	int ret = 0;
-> +
-> +	if (!zalloc_cpumask_var(&cpumask, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * The caller of this function may have called cpus_read_lock(),
-> +	 * use cpus_read_trylock() to avoid potential deadlock.
-> +	 */
-> +	if (!cpus_read_trylock())
-> +		return -EBUSY;
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
 
-This means that a completely unrelated cpus_write_lock() can fail this
-operation and thus cpuset config writes. Let's please not do this. Can't we
-just make sure that the caller holds the lock?
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 20 Private Controls: 0
 
-> +	mutex_lock(&wq_pool_mutex);
-> +
-> +	if (!cpumask_andnot(cpumask, wq_user_unbound_cpumask, exclude_cpumask))
-> +		ret = -EINVAL;	/* The new cpumask can't be empty */
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK (Not Supported)
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK (Not Supported)
+	test VIDIOC_TRY_FMT: OK (Not Supported)
+	test VIDIOC_S_FMT: OK (Not Supported)
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK (Not Supported)
+	test Composing: OK (Not Supported)
+	test Scaling: OK (Not Supported)
 
-For better or worse, the usual mode-of-failure for "no usable CPU" is just
-falling back to something which works rather than failing the operation.
-Let's follow that.
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
 
-Thanks.
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK (Not Supported)
+	test VIDIOC_EXPBUF: OK (Not Supported)
+	test Requests: OK (Not Supported)
+
+Total for device /dev/v4l-subdev1: 43, Succeeded: 43, Failed: 0, Warnings: 0
+
+Grand Total for starfive-camss device /dev/media0: 201, Succeeded: 201, Failed: 0, Warnings: 0
+# 
 
 -- 
-tejun
+Regards,
+
+Jack Zhu
