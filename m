@@ -2,111 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D16237CDDEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495187CDE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344783AbjJRNxh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Oct 2023 09:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S1344818AbjJRN5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344782AbjJRNxf (ORCPT
+        with ESMTP id S1344803AbjJRN5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:53:35 -0400
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6E095;
-        Wed, 18 Oct 2023 06:53:34 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d9a398f411fso7765504276.3;
-        Wed, 18 Oct 2023 06:53:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697637213; x=1698242013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zDpjjdShjqITiNCQrSVmXLGjWP750vEbHAu62sP/538=;
-        b=SwqArA01wiEYxfXGaB31wHqQw9jmrznCnIGCP06VWEyJQ7jO1DznAUzvOJAvWHEu8O
-         3jJV5itCY7sEpMdNa+q8wOZ+Oc2sc3A/h16Z6Kw9pqP3zWvct5po1nVUNP0J0EkkxvOe
-         O7Jx5YD70GiEA+qK39uEr1FEotpTUG7JywO+r0ctEE5IYnCjSu5ovbOogH0KC9oyCUdV
-         7YynolYu9NfI21eb9zflodX8H9USnwUSBFZFku6eOB2aTASfpwGB6c+RthIUrvj3Fgnt
-         96ywnwUm6MpY7swL4o/Diz6Q3RV9eKshMKAN+AjWIdv+9fU/f/fItXWG/Fqj7UM2kknJ
-         i7Ug==
-X-Gm-Message-State: AOJu0YxjLLkNq/qYLr79VOdP7D6+7v34ZyXs4C8Q6r9ZIRtn+5bnN4c2
-        hzJoa+jQb58WzHhtqRqetqyMvHbb30W6bA==
-X-Google-Smtp-Source: AGHT+IFZlOBIdbgBC3CLFzpg+EfQImir1AyZSm5XQ5WT+uVzl74PTWmsUDM+kx2PahPoPbhcwkUaCw==
-X-Received: by 2002:a25:8145:0:b0:d9a:5475:6aac with SMTP id j5-20020a258145000000b00d9a54756aacmr5280076ybm.48.1697637213269;
-        Wed, 18 Oct 2023 06:53:33 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id x16-20020a25ce10000000b00d9a36ded1besm1318895ybe.6.2023.10.18.06.53.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 06:53:32 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a7c7262d5eso86180347b3.1;
-        Wed, 18 Oct 2023 06:53:32 -0700 (PDT)
-X-Received: by 2002:a05:690c:10c:b0:5a7:afc9:3579 with SMTP id
- bd12-20020a05690c010c00b005a7afc93579mr6112881ywb.18.1697637212500; Wed, 18
- Oct 2023 06:53:32 -0700 (PDT)
+        Wed, 18 Oct 2023 09:57:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A2F109;
+        Wed, 18 Oct 2023 06:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697637436; x=1729173436;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WicXwt7zgwB0kjyvct5P6tuXn0cpYntJoR2pWn1NKFg=;
+  b=J1lPNlt4OescISxmlrr7cDzK8OYBkljeL2H6PUz2A35toDL4maZCKbm2
+   OnADgStwRMlL7T0IdbLcBY+I3gks9XsxGhLj7CKZsTF5Z41cANSF8758l
+   8Mz6ttm5kW2xlD+LU2f2mC25UDfRy176eeD1mHLh0cIZexaq0WO/Mdp6m
+   63fBsr5jtNhmOtesINuQrYLKgCZhhdaiKYcZtVovWR49X2zpvl+BjDLlJ
+   zkP7Lsk8pPVn71TnugCAUArwIc+C1LinQQr5LgPH3NTWrC8sPx3HxJ0M3
+   K4Ff1RoLmPK+zzTcQV5npy0uqlH1CLI6iRGmjU2pywlhr13HNb+eTX8/4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="472242459"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="472242459"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:57:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930209927"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="930209927"
+Received: from dmangels-mobl.amr.corp.intel.com (HELO [10.209.187.130]) ([10.209.187.130])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:57:14 -0700
+Message-ID: <925d7c03-c288-49a4-8bcd-395b32810d75@linux.intel.com>
+Date:   Wed, 18 Oct 2023 08:54:35 -0500
 MIME-Version: 1.0
-References: <20230709123329.33674-1-denghuilong@cdjrlc.com> <7554aadc5afb915ee1065cea56053cb6@208suo.com>
-In-Reply-To: <7554aadc5afb915ee1065cea56053cb6@208suo.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 18 Oct 2023 15:53:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWLxc7Tu2FNMRiO_LMjM2VSdtmHAiMeWv-+NgxA9+fqeQ@mail.gmail.com>
-Message-ID: <CAMuHMdWLxc7Tu2FNMRiO_LMjM2VSdtmHAiMeWv-+NgxA9+fqeQ@mail.gmail.com>
-Subject: Re: [PATCH] sh: heartbeat: prefer 'unsigned int' to bare use of 'unsigned'
-To:     xuanzhenggang001@208suo.com
-Cc:     ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 00/34] Introduce QC USB SND audio offloading support
+Content-Language: en-US
+To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <9942bb93-31ea-4574-940f-98d87a2fc127@linux.intel.com>
+ <366d50fa-500f-e884-d48a-197e65bb2fb7@quicinc.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <366d50fa-500f-e884-d48a-197e65bb2fb7@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 9, 2023 at 2:39 PM <xuanzhenggang001@208suo.com> wrote:
-> Fix the following warnings reported by checkpatch:
->
-> arch/sh/drivers/heartbeat.c:33: WARNING: Prefer 'unsigned int' to bare
-> use of 'unsigned'
-> arch/sh/drivers/heartbeat.c:62: WARNING: Prefer 'unsigned int' to bare
-> use of 'unsigned'
->
-> Signed-off-by: Zhenggang Xuan <xuanzhenggang001@208suo.com>
-> ---
->   arch/sh/drivers/heartbeat.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/sh/drivers/heartbeat.c b/arch/sh/drivers/heartbeat.c
-> index 24391b444b28..07f04ed0d517 100644
-> --- a/arch/sh/drivers/heartbeat.c
-> +++ b/arch/sh/drivers/heartbeat.c
-> @@ -30,7 +30,7 @@
->   static unsigned char default_bit_pos[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
->
->   static inline void heartbeat_toggle_bit(struct heartbeat_data *hd,
-> -                    unsigned bit, unsigned int inverted)
-> +                    unsigned int bit, unsigned int inverted)
->   {
->       unsigned int new;
->
-> @@ -59,7 +59,7 @@ static inline void heartbeat_toggle_bit(struct
-> heartbeat_data *hd,
 
-patch: **** malformed patch at line 19: heartbeat_data *hd,
 
-Please fix your email setup.
+On 10/17/23 19:25, Wesley Cheng wrote:
+> Hi Pierre,
+> 
+> On 10/17/2023 1:58 PM, Pierre-Louis Bossart wrote:
+>> It's been a very long time since I reviewed earlier versions, and I am
+>> still lost on terminology and concepts. The explanations below should
+>> really be added as a .rst file in Documentation for reference, not just
+>> as a cover letter.
+>>
+> 
+> Thanks for the review!
+> 
+> Sure, maybe I can write a more comprehensive documentation that saves
+> these details somewhere.  Will add a RST documentation for material
+> where necessary.
+> 
+>>> Several Qualcomm based chipsets can support USB audio offloading to a
+>>> dedicated audio DSP, which can take over issuing transfers to the USB
+>>> host controller.  The intention is to reduce the load on the main
+>>> processors in the SoC, and allow them to be placed into lower power
+>>> modes.
+>>> There are several parts to this design:
+>>>    1. Adding ASoC binding layer
+>>>    2. Create a USB backend for Q6DSP
+>>
+>> "backend" is a loaded terms for ASoC. Can you clarify which part of the
+>> ascii art below is a 'backend'?
+>>
+> 
+> This would be the Q6USB entity which is the DPCM backend for this
+> particular audio path.
 
-Gr{oetje,eeting}s,
+DPCM is about dailinks. Technically the q6usb entity is a codec dai
+which is part of a DPCM backend dailink.
+> 
+>>>    3. Introduce XHCI interrupter support
+>>>    4. Create vendor ops for the USB SND driver
+>>>
+>>>        USB                          |            ASoC
+>>> --------------------------------------------------------------------
+>>>                                     |  _________________________
+>>>                                     | |sm8250 platform card     |
+>>>                                     | |_________________________|
+>>>                                     |         |           |
+>>>                                     |      ___V____   ____V____
+>>>                                     |     |Q6USB   | |Q6AFE    |
+>>>                                     |     |"codec" | |"cpu"    |
+>>>                                     |     |________| |_________|
+>>>                                     |         ^  ^        ^
+>>>                                     |         |  |________|
+>>>                                     |      ___V____    |
+>>>                                     |     |SOC-USB |   |
+>>>     ________       ________               |        |   |
+>>>    |USB SND |<--->|QC offld|<------------>|________|   |
+>>>    |(card.c)|     |        |<----------                |
+>>>    |________|     |________|___     | |                |
+>>>        ^               ^       |    | |    ____________V_________
+>>>        |               |       |    | |   |APR/GLINK             |
+>>>     __ V_______________V_____  |    | |   |______________________|
+>>>    |USB SND (endpoint.c)     | |    | |              ^
+>>>    |_________________________| |    | |              |
+>>>                ^               |    | |   ___________V___________
+>>>                |               |    | |->|audio DSP              |
+>>>     ___________V_____________  |    |    |_______________________|
+>>>    |XHCI HCD                 |<-    |
+>>>    |_________________________|      |
+>>>
+>>>
+>>> Adding ASoC binding layer:
+>>> soc-usb: Intention is to treat a USB port similar to a headphone jack.
+>>
+>> What is a 'port'? USB refers to "interfaces" and "endpoints". Is a
+>> "port" a 1:1 mapping to "endpoint"?
+>>
+>> Below I read "AFE port" so not sure what concepts refer to what.
+>>
+> 
+> "Port" in this explanation refers to the USB port.  So the audio device
+> connected.  You are right that a USB device can enumerate w/ multiple
+> interfaces (ie UAC + HID + ...) so the closest relation to "port" is
+> "interface."  It is not a 1:1 mapping w/ the number of endpoints exposed
+> by a device.
+> 
+> "AFE port" is just something that has been termed from the audio DSP
+> end, so that concept of port is not related to the port where USB
+> devices are connected to.  This is something that is defined within the
+> audio DSP.
 
-                        Geert
+Wow. So there's a "USB port" and "AFE port". I would recommend avoiding
+the same term for completely different concepts. Why not use "USB device"?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>>>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
+>>>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
+>>
+>> How do you plan on exposing the USB PCM device?
+>>
+>> The lines above are really cryptic, and with no USB reference in any of
+>> the short/long card names it's not obvious that this card is different
+>> from the no-offload case, is it?
+>>
+> 
+> In the end, since the offload case is handled by the audio DSP, it would
+> have to go through the platform/machine sound card.  That is the sm8250
+> device above.
+> 
+>>>   1 [Audio          ]: USB-Audio - USB Audio
+>>>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4,
+>>> high speed
+>>
+>> likewise some sort of qualifier would be useful to show that card 0 and
+>> card 1 can target the same USB endpoints.
+>>
+> 
+> Do userspace entities look at this card string?  Assuming there is only
+> one platform card, there are situations where maybe multiple USB audio
+> devices are connected to the same USB root hub, so offloading can happen
+> on any one of them (not at the same time).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jaroslav cares, as measured by the changes over the years to make the
+card names more self-explanatory.
+
+I really don't see anything in the SM8250MTPWCD938 card name that would
+hint at the support of USB. If it's not in the card string, maybe this
+can be added in the component string as well (amixer -Dhw:0 info). The
+point is that userspace should not have to maintain an 'accept-list' of
+card names but have the means to check the USB offload capability with a
+vendor-neutral convention.
