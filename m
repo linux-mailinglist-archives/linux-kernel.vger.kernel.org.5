@@ -2,76 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2B27CDC80
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 14:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D5C7CDC88
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjJRM7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 08:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S231193AbjJRNCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbjJRM7g (ORCPT
+        with ESMTP id S230296AbjJRNCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 08:59:36 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FF6A3;
-        Wed, 18 Oct 2023 05:59:34 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40836ea8cbaso11734615e9.0;
-        Wed, 18 Oct 2023 05:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697633973; x=1698238773; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3l7KU10yNphdl5Vv+iDYUL4LqhI9vTGfAIrzdvNXoIs=;
-        b=bXqsgMPy0hjWDRpJ1FisdfP+n2/hFvLWGQxQkWs+Xmjga3qZGpMdH3sYCnZKJ70+lS
-         aTQvaLIRvUKuWCyGkhed7mV3nhJSLEjKqxR7c8dN72XMdQK7qUVJAVERDs7lWIc7hjwm
-         q8VS1mfs7nkIBiBW7a3oevFFWgNMqdeE/3iQzIrQwAPa6QGwZzpMVJNufq3JbOe7ZRe2
-         RdiCrS+jexJdwV+nmst8tpaZlqemvH8a0Oe1D3whpR3+W5BJFwzXLh5gQMebY90rDlxU
-         qrimKvXAhRcgEerSxJ5ByROEb+bPRXLZDGut4PgUk0T5fDhxIG75IeLf3miFP9s/xetp
-         oI/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697633973; x=1698238773;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3l7KU10yNphdl5Vv+iDYUL4LqhI9vTGfAIrzdvNXoIs=;
-        b=kmjk8Gs4UOraFKQXyMnvdZBqeio1ySO18INpdb1LhLV/Kjl8kHkxvAYMk1f302xHAL
-         XBDBnxxOmMZZvGXK/p/EVJ7Mi7WMsyJ5ofYOVWdRyYjnx7rbCM7S+Q3DBpQT9txAzgN1
-         yfLmHvRXnwHISXNoKppgAj0RXePs4/eUNCQVWos+QgIEEUyE7a+9OpmVSSuioR2a1mdc
-         EgHjJB0qah0PvVFlRgkOUDz4dtgrp8o2KqB3EzJo3Hb4ymygOaJv7A2lmsKHDGdPCMQQ
-         e8T0hfrHGZdiwl59F8za2Uu5J1rR4oDgfeXqiVovaqPY4ndEYiKOFGfvZ2YTvnHNvTqe
-         Fysw==
-X-Gm-Message-State: AOJu0YyUMxhfq82nkxeM9oN/ei6htJK7rdzrBPjzBUXC3IjIQKLkHOn2
-        uZZcpPO+fub2LEmokwwXFQ==
-X-Google-Smtp-Source: AGHT+IGorfdQKSOrVoY8L4UO3dsA6xUqICePH8OqA+pJtZnZPwhyw7zG0ELzN/8lhptrPKgSqkTmrg==
-X-Received: by 2002:a05:600c:1d22:b0:408:41b4:7fe0 with SMTP id l34-20020a05600c1d2200b0040841b47fe0mr134123wms.6.1697633972472;
-        Wed, 18 Oct 2023 05:59:32 -0700 (PDT)
-Received: from dorcaslitunya-virtual-machine ([105.163.0.137])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05600c450d00b0040651505684sm1640297wmo.29.2023.10.18.05.59.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 05:59:32 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 15:59:27 +0300
-From:   Dorcas Litunya <anonolitunya@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     outreachy@lists.linux.dev, dan.carpenter@linaro.org,
-        andi.shyti@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: sm750fb: Remove unused return value in
- program_mode_registers()
-Message-ID: <ZS/Wr9ShnEe3umeY@dorcaslitunya-virtual-machine>
-References: <cover.1697619623.git.anonolitunya@gmail.com>
- <492e63bbc58147fb534930ef9e1fb5d844ae8769.1697619623.git.anonolitunya@gmail.com>
- <4b7129ae-27f9-7ff4-845-9c327aff488c@inria.fr>
+        Wed, 18 Oct 2023 09:02:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72C6CA3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:02:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DCA12F4;
+        Wed, 18 Oct 2023 06:03:12 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.158])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44B493F762;
+        Wed, 18 Oct 2023 06:02:30 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 14:02:27 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andrea della Porta <andrea.porta@suse.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nik.borisov@suse.com
+Subject: Re: [PATCH 4/4] arm64: Make Aarch32 emulation boot time configurable
+Message-ID: <ZS_XYwHovY6B7Whp@FVFF77S0Q05N.cambridge.arm.com>
+References: <cover.1697614386.git.andrea.porta@suse.com>
+ <1029761eb218702d4aafa58d83c4bf9d3a760264.1697614386.git.andrea.porta@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4b7129ae-27f9-7ff4-845-9c327aff488c@inria.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <1029761eb218702d4aafa58d83c4bf9d3a760264.1697614386.git.andrea.porta@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,59 +45,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 02:06:41PM +0200, Julia Lawall wrote:
+On Wed, Oct 18, 2023 at 01:13:22PM +0200, Andrea della Porta wrote:
+> Distributions would like to reduce their attack surface as much as
+> possible but at the same time they'd want to retain flexibility to
+> cater to a variety of legacy software. This stems from the conjecture
+> that compat layer is likely rarely tested and could have latent
+> security bugs. Ideally distributions will set their default policy
+> and also give users the ability to override it as appropriate.
 > 
+> To enable this use case, introduce CONFIG_AARCH32_EMULATION_DEFAULT_DISABLED
+> compile time option, which controls whether 32bit processes/syscalls
+> should be allowed or not. This option is aimed mainly at distributions
+> to set their preferred default behavior in their kernels.
 > 
-> On Wed, 18 Oct 2023, Dorcas AnonoLitunya wrote:
+> To allow users to override the distro's policy, introduce the
+> 'aarch32_emulation' parameter which allows overriding
+> CONFIG_AARCH32_EMULATION_DEFAULT_DISABLED state at boot time.
 > 
-> > Modifies the return type of program_mode_registers()
-> > to void from int as the return value is being ignored in
-> > all subsequent function calls.
-> >
-> > This improves code readability and maintainability.
-> >
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
-> > ---
-> >  drivers/staging/sm750fb/ddk750_mode.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> > index 83ace6cc9583..e15039238232 100644
-> > --- a/drivers/staging/sm750fb/ddk750_mode.c
-> > +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> > @@ -73,8 +73,8 @@ display_control_adjust_sm750le(struct mode_parameter *mode_param,
-> >  }
-> >
-> >  /* only timing related registers will be  programed */
-> > -static int program_mode_registers(struct mode_parameter *mode_param,
-> > -				  struct pll_value *pll)
-> > +static void program_mode_registers(struct mode_parameter *mode_param,
-> > +				   struct pll_value *pll)
-> >  {
-> >  	int ret = 0;
-> >  	int cnt = 0;
-> > @@ -202,7 +202,6 @@ static int program_mode_registers(struct mode_parameter *mode_param,
-> >  	} else {
-> >  		ret = -1;
+> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+>  arch/arm64/Kconfig                              | 9 +++++++++
+>  arch/arm64/kernel/entry-common.c                | 8 +++++++-
+>  3 files changed, 23 insertions(+), 1 deletion(-)
 > 
-> Is it still useful to have ret = -1?  Maybe the ret variable is not useful
-> at all any more, but one would have to check the parts of the function
-> that aren't shown.
->
-I agree Julia. I will remove the setting part for ret = -1 but keep the
-ret variable just in case it is being used by parts of the function not
-shown. Thanks for the feedback.
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 0a1731a0f0ef..a41c5e6f5d2e 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1,3 +1,10 @@
+> +	aarch32_emulation=	[ARM64]
+> +			Format: <bool>
+> +			When true, allows loading 32-bit programs and executing
+> +			32-bit syscalls, essentially overriding
+> +			AARCH32_EMULATION_DEFAULT_DISABLED at boot time. when false,
+> +			unconditionally disables AARCH32 emulation.
 
-Dorcas
-> julia
+Can we please drop the 'emulation' part of the name? We don't use that
+terminology on arm64 for regular execution of compat tasks, and only use that
+to refer to true emulation of deprecated instructions.
+
+We already have the 'allow_mismatched_32bit_el0' option; can we please us a
+name that aligns with that? e.g. 'allow_32bit_el0=false' to disable support.
+
+Mark.
+
+> +
+>  	acpi=		[HW,ACPI,X86,ARM64,RISCV64]
+>  			Advanced Configuration and Power Interface
+>  			Format: { force | on | off | strict | noirq | rsdt |
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b10515c0200b..66c4cb273550 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1725,6 +1725,15 @@ config SETEND_EMULATION
+>  	  If unsure, say Y
+>  endif # ARMV8_DEPRECATED
+>  
+> +config AARCH32_EMULATION_DEFAULT_DISABLED
+> +	bool "Aarch32 emulation disabled by default"
+> +	default n
+> +	depends on COMPAT
+> +	help
+> +	  Make Aarch32 emulation disabled by default. This prevents loading 32-bit
+> +	  processes and access to 32-bit syscalls.
+> +
+> +	  If unsure, leave it to its default value.
+>  endif # COMPAT
+>  
+>  menu "ARMv8.1 architectural features"
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 32761760d9dd..07f2b4e632b8 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -897,7 +897,13 @@ asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
+>  		__el0_error_handler_common(regs);
+>  }
+>  
+> -bool __aarch32_enabled __ro_after_init = true;
+> +bool __aarch32_enabled __ro_after_init = !IS_ENABLED(CONFIG_AARCH32_EMULATION_DEFAULT_DISABLED);
+> +
+> +static int aarch32_emulation_override_cmdline(char *arg)
+> +{
+> +	return kstrtobool(arg, &__aarch32_enabled);
+> +}
+> +early_param("aarch32_emulation", aarch32_emulation_override_cmdline);
+>  #else /* CONFIG_COMPAT */
+>  UNHANDLED(el0t, 32, sync)
+>  UNHANDLED(el0t, 32, irq)
+> -- 
+> 2.35.3
 > 
-> >  	}
-> > -	return ret;
-> >  }
-> >
-> >  int ddk750_set_mode_timing(struct mode_parameter *parm, enum clock_type clock)
-> > --
-> > 2.42.0.345.gaab89be2eb
-> >
-> >
