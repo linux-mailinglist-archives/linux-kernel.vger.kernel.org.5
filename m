@@ -2,121 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F017CD990
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CBB7CD995
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 12:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbjJRKuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 06:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S235119AbjJRKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 06:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJRKuE (ORCPT
+        with ESMTP id S229702AbjJRKvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:50:04 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FBABA;
-        Wed, 18 Oct 2023 03:50:01 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39IAnjXp024461;
-        Wed, 18 Oct 2023 05:49:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697626185;
-        bh=PRR/CchuITDUkyqhMi378r92ynUX/7z2IpkPzLER2ps=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=P8pe9Skphkd88WLDMFQCrLQ4HFuI0hT5g1oOUuqA/yvHmHAisINnAmZAWaAqPHkdA
-         bl/w6G634IafqRh1ovqgNIdQWmqaUIQBdxqddmRjjRSbDfvHGRgwy53EQaTIkmuD/Y
-         iHOWAa3W3OPMz6886f0sJz4kWMtfXvYEKFOeRq+k=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39IAnjgH058097
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Oct 2023 05:49:45 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 18
- Oct 2023 05:49:45 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 18 Oct 2023 05:49:45 -0500
-Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39IAnfOZ042587;
-        Wed, 18 Oct 2023 05:49:41 -0500
-Message-ID: <025ec85f-78be-4b0f-9c5b-f59087610c67@ti.com>
-Date:   Wed, 18 Oct 2023 16:19:40 +0530
+        Wed, 18 Oct 2023 06:51:32 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F13DB0;
+        Wed, 18 Oct 2023 03:51:26 -0700 (PDT)
+Received: from weisslap.aisec.fraunhofer.de ([91.67.186.133]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MgRYd-1rSNl42vux-00hxGN; Wed, 18 Oct 2023 12:50:53 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Subject: [RFC PATCH v2 00/14] device_cgroup: guard mknod for non-initial user namespace
+Date:   Wed, 18 Oct 2023 12:50:19 +0200
+Message-Id: <20231018105033.13669-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     Bjorn Helgaas <helgaas@kernel.org>, <lpieralisi@kernel.org>,
-        <robh@kernel.org>, <kw@linux.com>, <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
-Content-Language: en-US
-To:     Serge Semin <fancer.lancer@gmail.com>
-References: <20231013184958.GA1118393@bhelgaas>
- <c11f4b9f-8cbe-1fd0-886b-f36547dc8d3c@ti.com>
- <klxzte53bzk774zinhfrdwdwalvv2hlvc2mqiuyecxcneqkdbt@qbkyc4fdlcka>
- <eacc8aa9-7480-f46c-8852-88f1f8f46bff@ti.com>
- <tlx5ysa4jnqzmhq5dpk5yk6uuddpwl5h2ieg6n2h3ozksqyx44@yx5mhvwg5miv>
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <tlx5ysa4jnqzmhq5dpk5yk6uuddpwl5h2ieg6n2h3ozksqyx44@yx5mhvwg5miv>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TCVDyjf67Quvox1tp4WburW/i7Xe/kyPWdjmzGhKsLmNJhAaQH2
+ JzqDx60rVSzXILqGgNPJ2FL262n2DzwsQ6lHSxTjmMndb/72enwe/eoNm5pmlTCJHeNKnM5
+ dY3QeS+AB/bMN/ItKAZkwHBTWhnX0kW0VBBMnMLu2JI3Uk+BZjRkcMZOJ7rnqbkerft4Pip
+ MRtE5jMbwlFMHhjk3227Q==
+UI-OutboundReport: notjunk:1;M01:P0:RSiS08FjHjk=;Xt8B6O+IPCTcbtrS0RzTbhWPatn
+ w4Z4ZjSOHsWVc9lHtN5nkEeQ8iw7Xh2igz/53X6wmdvRDci2y9ZAjJSj7c9es+e8UFs5UFqpY
+ VRokr4QZyegA+3LWLt4WyZFSioEaQhfnfPBDKAsBsWIhBK709nLKduJGmJGzGQFPEteSusHvT
+ x9q6zkl0zgB68OkonHBFIb054fNimuegxVPKGeuiVk46Db6BC+jo6bspNWD8LFE7ahr+dyAmt
+ lfptmIyGb0KQ1PAtWUmbcM07l4rc0+ICJfyosbG6IpmwAfnCq+JQBSNg2v0bTVomZ4xaxHdZS
+ GrRks1NqMSfCUFYuPPQYmREXQ3phcP5y9WAmyUhQs6AufjY0LwkMXyq6apA6/O9FSHt2voPpC
+ SsZQ8Toh5HISaW1fFK3p9jUXLCqIaBENwbj957443a684QIA4bqd7Q+SohWOIbTXIXoMLem9I
+ 6o85j/m6AqFvhZcy85GBcqWjny15LNndr+V+rpoZ35kvf0Juiy6U6tNeSgJAzrZ3UxKpi5+ww
+ B12HIhEtiyVxqx7xjegUhY0orNPI4jshap5F/7dhr9NoKshXUVHDupFXZRN7TxmMAOn4+THqb
+ WSjGe5lRJvcTV9SKpv9mZtdOmbFyNyfVwLnyKuqtMIMh58fYxiVHszG6L6NCT/QrIirfVFS/G
+ HfDW9+Qe1F3srC8VWJAPLfK/E6lgNtfFYNmBIZWJ2Axc6UaBglOqshsKIuyF0+zE7nuq9JfU2
+ CTRgwLQwiZf5did818d88choCVjif3EHrB/0hTVRueBqU4HsTQ2WfNdPKjXhdNZxnBbJZJIK3
+ puDMKfBvrHTB3sangcuBxHb5B0X4U0pSd4ZtYZ8Xh9kattEDOktAMqgbgR+be03/vjLOYuzZN
+ tsyEdzR2wfSEetBYFkdNB2m3QS8zNCm2KdSs=
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
+BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
+in non-initial user namespaces.
+
+If a container manager restricts its unprivileged (user namespaced)
+children by a device cgroup, it is not necessary to deny mknod()
+anymore. Thus, user space applications may map devices on different
+locations in the file system by using mknod() inside the container.
+
+A use case for this, we also use in GyroidOS, is to run virsh for
+VMs inside an unprivileged container. virsh creates device nodes,
+e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
+in a non-initial userns, even if a cgroup device white list with the
+corresponding major, minor of /dev/null exists. Thus, in this case
+the usual bind mounts or pre populated device nodes under /dev are
+not sufficient.
+
+To circumvent this limitation, allow mknod() by checking CAP_MKNOD
+in the userns by implementing the security_inode_mknod_nscap(). The
+hook implementation checks if the corresponding permission flag
+BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
+To avoid to create unusable inodes in user space the hook also
+checks SB_I_NODEV on the corresponding super block.
+
+Further, the security_sb_alloc_userns() hook is implemented using
+cgroup_bpf_current_enabled() to allow usage of device nodes on super
+blocks mounted by a guarded task.
+
+Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
+
+Patch 4 to 8 rework explicit calls to devcgroup_check_permission
+also as LSM hooks and finalize the conversion of the device_cgroup
+subsystem to a LSM.
+
+Patch 9 and 10 introduce new generic security hooks to be used
+for the actual mknod device guard implementation.
+
+Patch 11 wires up the security hooks in the vfs
+
+Patch 12 and 13 provide helper functions in the bpf cgroup
+subsystem.
+
+Patch 14 finally implement the LSM hooks to grand access
+
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+---
+Changes in v2:
+- Integrate this as LSM (Christian, Paul)
+- Switched to a device cgroup specific flag instead of a generic
+  bpf program flag (Christian)
+- do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
+  sb_alloc_super in fs/super.c
+- Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de
+
+Michael Weiß (14):
+  device_cgroup: Implement devcgroup hooks as lsm security hooks
+  vfs: Remove explicit devcgroup_inode calls
+  device_cgroup: Remove explicit devcgroup_inode hooks
+  lsm: Add security_dev_permission() hook
+  device_cgroup: Implement dev_permission() hook
+  block: Switch from devcgroup_check_permission to security hook
+  drm/amdkfd: Switch from devcgroup_check_permission to security hook
+  device_cgroup: Hide devcgroup functionality completely in lsm
+  lsm: Add security_inode_mknod_nscap() hook
+  lsm: Add security_sb_alloc_userns() hook
+  vfs: Wire up security hooks for lsm-based device guard in userns
+  bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
+  bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
+  device_cgroup: Allow mknod in non-initial userns if guarded
+
+ block/bdev.c                                 |   9 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
+ fs/namei.c                                   |  24 ++--
+ fs/super.c                                   |   6 +-
+ include/linux/bpf-cgroup.h                   |   2 +
+ include/linux/device_cgroup.h                |  67 -----------
+ include/linux/lsm_hook_defs.h                |   4 +
+ include/linux/security.h                     |  18 +++
+ include/uapi/linux/bpf.h                     |   1 +
+ init/Kconfig                                 |   4 +
+ kernel/bpf/cgroup.c                          |  14 +++
+ security/Kconfig                             |   1 +
+ security/Makefile                            |   2 +-
+ security/device_cgroup/Kconfig               |   7 ++
+ security/device_cgroup/Makefile              |   4 +
+ security/{ => device_cgroup}/device_cgroup.c |   3 +-
+ security/device_cgroup/device_cgroup.h       |  20 ++++
+ security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
+ security/security.c                          |  75 ++++++++++++
+ 19 files changed, 294 insertions(+), 88 deletions(-)
+ delete mode 100644 include/linux/device_cgroup.h
+ create mode 100644 security/device_cgroup/Kconfig
+ create mode 100644 security/device_cgroup/Makefile
+ rename security/{ => device_cgroup}/device_cgroup.c (99%)
+ create mode 100644 security/device_cgroup/device_cgroup.h
+ create mode 100644 security/device_cgroup/lsm.c
 
 
-On 18/10/23 16:12, Serge Semin wrote:
-> On Tue, Oct 17, 2023 at 09:44:51AM +0530, Siddharth Vadapalli wrote:
->> Hello,
->>
->> On 17/10/23 02:59, Serge Semin wrote:
->>> Hi Siddharth
->>>
->>
->> ...
->>
-
-...
-
-> 
-> Are you really sure that it's 4.90a? Here is what my DW PCIe RC
-> _v4.90_ HW databook says about the BARs:
-> 
-> "Base Address Registers (Offset: 0x10-x14) The Synopsys core does not
-> implement the optional BARs for the RC product. This is based on the
-> assumption that the RC host probably has registers on some other
-> internal bus and has knowledge and setup access to these registers
-> already."
-> 
-> What you cited resides in the _v5.x_ databooks. It makes my thinking
-> that in your case the IP-core isn't of 4.90a version.
-
-I reviewed the function ks_pcie_v3_65_add_bus() and it appears clear to me now
-that it is applicable only to 3.65a versions. The IP-core however is 4.90a. I
-have posted the v2 patch at:
-https://lore.kernel.org/r/20231018075038.2740534-1-s-vadapalli@ti.com/
-
-Also, as pointed out by Ravi on the v2 patch's thread at:
-https://lore.kernel.org/r/c546f8e9-f6ba-41b8-7dff-4a7921b6705f@ti.com/
-the culprit turned out to be:
-6ab15b5e7057 (PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus)
-which in the process of converting the .scan_bus() callback to .add_bus(), namely:
-ks_pcie_v3_65_scan_bus() -> ks_pcie_v3_65_add_bus()
-It added the .add_bus() method within "struct pci_ops ks_pcie_ops" which is
-actually shared with the 4.90a controller as well. So an "is_am6" check should
-have also been added to make it no-op for NON-3.65a controllers.
-
-I will be posting the v3 patch implementing the above fix if there is no further
-feedback on the v2 patch from others.
-
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
 -- 
-Regards,
-Siddharth.
+2.30.2
+
