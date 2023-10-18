@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112CA7CDFA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F8E7CDFB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345478AbjJRO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        id S1345713AbjJRO1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345260AbjJRO0p (ORCPT
+        with ESMTP id S1345560AbjJRO1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:26:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBFB4ED8;
-        Wed, 18 Oct 2023 07:25:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03FC1C433C7;
-        Wed, 18 Oct 2023 14:24:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697639099;
-        bh=Rg/y4kM5Gh6xCt0U7RMA1FJeqe5yyk+jYtUix12m2UA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=L5cHTsm/pbOD4v+x9Ok5JEbNEIF6yXgPRxH5hIQKGPifG+6Er4tEnsSS2WCJkKaKJ
-         Ca9oiEkU+K5JQ7XjWVAbitT0zrHUbezZz3s8KqxbUvdGqwxT0FkGKcd6Z2Hf1bRmNP
-         ob1x7W8ekYDDkvbEZv9wIH5zmByAc0qBcC2lfljD3LxhPU6HK5JVq4qW/fAw7WTztn
-         Fdxuh9lTdSbiiF4JzoEPIaovtPzFRiprFE+NZRhvJxb+ih9JYHQxFKn43TmdRi93+f
-         zjNggbrMifJdunyRZo+jUymYbXftsSc+ZvBYf1iY7+FU+xDs0bPc00fE8502kXCvkH
-         OZyfRHxJT25uA==
-Message-ID: <4a20bcf9-c0d7-45e9-ab19-e7e3bb073601@kernel.org>
-Date:   Wed, 18 Oct 2023 16:24:56 +0200
+        Wed, 18 Oct 2023 10:27:21 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F07170A
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:26:04 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso1108480766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 07:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697639163; x=1698243963; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yz7ZSvascT2J277a7QoKDS11yhfUPVtOBgADIA7AQis=;
+        b=wmq3JQ20vXZyMu83mEGpO4M+/tgOjw7Fvq3MRhcJw7KPLoHGCXyh9AQDpSWOacGHXG
+         RUY4WC8/A1qwSMcOs1dawNhH0g0n/fIactHppReBRMh6yOGIYI335QZfVVyihM3eOR7Y
+         VnudgIEQFx4jp+5iBO9AGbEtCx0OweB0bi6fZQ2VqfQOMEGPkhmfPh/MXazVOPQe4cuf
+         6JFN5JvHdZ6xLcZSgw0lZ5sOZ+9c547/0r2qmojZqElWF2eEwYShJply2860mnrP+Dbo
+         3ZrXgsyEPyNg9cPYv+fD3D17ywCv/BPYamsyUtjo5+ZwExYrSUUwBYnsPjQCPb9NuPwk
+         d0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697639163; x=1698243963;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yz7ZSvascT2J277a7QoKDS11yhfUPVtOBgADIA7AQis=;
+        b=DqCnm9VSfe4kW1cmh0qOQmq1OC4Vntu1EtbjJMZWKg4vppbkkeUSFQF+s2UVWCCiQx
+         CbpR6bn9YgePdDm/WAa8Qn1v+mJWAI7950RJSaY86X6yZJ0kgpZMltyK++mWl0FXlgGD
+         RvXtALG+WcrHteJAiU/qxKfgoIDDffMTp7ph+Y/EGfG1tXlkIBPEwl1o8XQFv6sywj39
+         EVCb86yZIbK9JrDM9KDuMf9tLzD7Iq7TpeARxfrFNhNeJ7V3H9glLTn1frG8rrG9GR6h
+         RLiKvGs7umoXwjN07UYrIfD92r0PgBDUkASPHW40RkR2JcD6+yyMo8Gq0oFOOGL41LZ8
+         F21w==
+X-Gm-Message-State: AOJu0YzB/DuciWeZal6DjPCyCnokc5p69MGymMcdjEbNpbQTns4zPZiQ
+        fbxJw25DETOxTuCe9/DlpUs2qg==
+X-Google-Smtp-Source: AGHT+IGXsHNg+vY54Vy7dLjS/eWTBxTI8IxUwjx0EIdkU+CBaq+/D+mx/PDV0nwXtR4BDJ5gjFnm5A==
+X-Received: by 2002:a17:907:3202:b0:9a5:9038:b1e7 with SMTP id xg2-20020a170907320200b009a59038b1e7mr4375120ejb.36.1697639162665;
+        Wed, 18 Oct 2023 07:26:02 -0700 (PDT)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id g11-20020a1709064e4b00b0099bcf1c07c6sm1784191ejw.138.2023.10.18.07.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 07:26:02 -0700 (PDT)
+Message-ID: <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
+Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set
+ the FUSE_INIT_EXT"
+From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To:     Bernd Schubert <bschubert@ddn.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 18 Oct 2023 15:26:01 +0100
+In-Reply-To: <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
+References: <20230904133321.104584-1-git@andred.net>
+         <20231018111508.3913860-1-git@andred.net>
+         <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
+         <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
+         <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4-1 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-Content-Language: en-US
-To:     Jyan Chou <jyanchou@realtek.com>, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, jh80.chung@samsung.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com
-References: <20231018055326.18256-1-jyanchou@realtek.com>
- <20231018055326.18256-5-jyanchou@realtek.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231018055326.18256-5-jyanchou@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 07:53, Jyan Chou wrote:
-> Document the device-tree bindings for Realtek SoCs mmc driver.
-> 
-> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+On Wed, 2023-10-18 at 11:52 +0000, Bernd Schubert wrote:
+> On 10/18/23 13:46, Andr=C3=A9 Draszik wrote:
+> > On Wed, 2023-10-18 at 11:39 +0000, Bernd Schubert wrote:
+> > > On 10/18/23 13:15, Andr=C3=A9 Draszik wrote:
+> > > > From: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+> > > >=20
+> > > > This reverts commit 3066ff93476c35679cb07a97cce37d9bb07632ff.
+> > > >=20
+> > > > This patch breaks all existing userspace by requiring updates
+> > > > as
+> > > > mentioned in the commit message, which is not allowed.
+> > > >=20
+> > > > Revert to restore compatibility with existing userspace
+> > > > implementations.
+> > >=20
+> > > Which fuse file system does it exactly break? In fact there
+> > > haven't
+> > > been
+> > > added too many flags after - what exactly is broken?
+> >=20
+> > The original patch broke the existing kernel <-> user ABI by now
+> > requiring user space applications to pass in an extra flag.
+> > There are various side-effects of this, like unbootable systems,
+> > just
+> > because the kernel was updated.
+> > Breaking the ABI is the one thing that is not allowed. This is not
+> > specific to any particular fuse file system.
+>=20
+> How exactly did it break it?
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+At least in Android, creating new files, or reading existing files
+returns -EFAULT
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+>  These are feature flags - is there really a=20
+> file system that relies on these flag to the extend that it does not=20
+> work anymore?
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+I don't know enough about the implementation details, but even outside
+Android user space had to be updated as a prerequisite for this kernel
+patch:
+https://lore.kernel.org/all/YmUKZQKNAGimupv7@redhat.com/
+https://github.com/libfuse/libfuse/pull/662
 
-Please kindly resend and include all necessary To/Cc entries.
+Which means any non-Android user space predating those changes isn't
+working anymore either.
 
-Also, coding style of your example is messy.
 
-Best regards,
-Krzysztof
+
+Cheers,
+Andre
 
