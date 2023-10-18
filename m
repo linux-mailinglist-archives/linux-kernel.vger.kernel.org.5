@@ -2,175 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0B87CD33A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC37CD33C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 06:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbjJREuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 00:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S235054AbjJREu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 00:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjJREuG (ORCPT
+        with ESMTP id S229936AbjJREt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 00:50:06 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FD783AB1;
-        Tue, 17 Oct 2023 21:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9+bkJ
-        6RZ2frbzu8BEZWdCRHTd8pNqz+uHuhFamiuem0=; b=j4H81xtVsI23dfAIUvNIc
-        ZX6FL9CQBvm1EMyQxO8taqRmirnu6Jl8dQ4MTXxv/7lJprO3PdPPqZ5z31BasQIr
-        O0fZLS5EjWhDgW5nw+hH0xrOQ3qEWJefGMQJwFq35isx63dSByAjVPhMpJyiAZNo
-        93KIpBB6nUbACFULH/cyAo=
-Received: from ubuntu.. (unknown [171.83.47.247])
-        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wC3FetvYS9lkz9qAw--.331S2;
-        Wed, 18 Oct 2023 12:39:11 +0800 (CST)
-From:   Charles Yi <be286@163.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Charles Yi <be286@163.com>
-Subject: [PATCH v2] usb: gadget: f_uac1: add adaptive sync support for capture
-Date:   Wed, 18 Oct 2023 12:39:07 +0800
-Message-Id: <20231018043907.1206817-1-be286@163.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 18 Oct 2023 00:49:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDBD55B2;
+        Tue, 17 Oct 2023 21:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697604098; x=1729140098;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=F/dSfCnfGZ0vy8R6NzqQ9H0Paj53OwpGh0/vX+zt4EU=;
+  b=l+Nei83eiXQqaeLM/51Ss2RoqbJMGj0GhxQd60bDHe1wHLgDuYUbQ14k
+   ddVktWDlsIHgLNYBedZ8g8XoKNaY3LUMiDL3gQVuJ6ak6m9iPdydcuVTY
+   yNZSVUkLZcmIXYaEk8sMAtBcwoLehj/JcGbGmaa2iFTEif8qUl52KyzBp
+   t3wExoaLZGWk3HzxodciPgyeSvBH1IA1kkXuQE43YvWjhI9EZS46la0Ks
+   hDL9AYjZOn2hagpTqEED5LBHKGJDEhIJQWmRhVo37xxETy/Yq8irdfrXL
+   jRlaCLM0xsZB9dWuxiEDoq5XNYhKMYLiehWcGp79PEDb5drspVt4WfxBr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383158307"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="383158307"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 21:39:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791453312"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="791453312"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Oct 2023 21:39:27 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+ <hl3elk273qrxqfajgn6izxwx2kkjq3osrbbtf77pvwcxvqy225@ryev3txohsm7>
+Date:   Tue, 17 Oct 2023 23:39:27 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wC3FetvYS9lkz9qAw--.331S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAr15JF45Xr17KrWDWry7Awb_yoWrCr4Upw
-        4UC3y0yr45ArZIqr4rAF4rAF43Aa1xG345GrW7W3yYgFsxt3sYva42yryFkF47AFWrCw40
-        qF4Fgw1a9w4kCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRrcT9UUUUU=
-X-Originating-IP: [171.83.47.247]
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiWwkM0mI0cUfwVAABsJ
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cztv1bewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <hl3elk273qrxqfajgn6izxwx2kkjq3osrbbtf77pvwcxvqy225@ryev3txohsm7>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UAC1 has it's own freerunning clock and can update Host about
-real clock frequency through feedback endpoint so Host can align
-number of samples sent to the UAC1 to prevent overruns/underruns.
+On Tue, 17 Oct 2023 14:13:22 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
 
-Change UAC1 driver to make it configurable through additional
-'c_sync' configfs file.
+> On Tue, Oct 17, 2023 at 08:54:48PM +0200, Michal Koutn=FD  =
 
-Default remains 'asynchronous' with possibility to switch it
-to 'adaptive'.
+> <mkoutny@suse.com> wrote:
+>> Is this distinction between preemptability of EPC pages mandated by t=
+he
+>> HW implementation? (host/"process" enclaves vs VM enclaves) Or do hav=
+e
+>> users an option to lock certain pages in memory that yields this
+>> difference?
+>
+> (After skimming Documentation/arch/x86/sgx.rst, Section "Virtual EPC")=
 
-Signed-off-by: Charles Yi <be286@163.com>
----
- drivers/usb/gadget/function/f_uac1.c | 30 ++++++++++++++++++++++++++++
- drivers/usb/gadget/function/u_uac1.h |  2 ++
- 2 files changed, 32 insertions(+)
+>
+> Or would these two types warrant also two types of miscresource? (To
+> deal with each in own way.)
 
-diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
-index 6f0e1d803dc2..7a6fcb40bb46 100644
---- a/drivers/usb/gadget/function/f_uac1.c
-+++ b/drivers/usb/gadget/function/f_uac1.c
-@@ -33,6 +33,8 @@
- #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
- 			|| (_opts)->c_volume_present)
- 
-+#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
-+
- struct f_uac1 {
- 	struct g_audio g_audio;
- 	u8 ac_intf, as_in_intf, as_out_intf;
-@@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
- 	.wLockDelay =		cpu_to_le16(1),
- };
- 
-+static struct usb_endpoint_descriptor as_fback_ep_desc = {
-+	.bLength = USB_DT_ENDPOINT_SIZE,
-+	.bDescriptorType = USB_DT_ENDPOINT,
-+
-+	.bEndpointAddress = USB_DIR_IN,
-+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
-+	.wMaxPacketSize = cpu_to_le16(3),
-+	.bInterval = 1,
-+};
-+
- static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
- 	.bLength =		0, /* filled on rate setup */
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
-@@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
- 
- 	(struct usb_descriptor_header *)&as_out_ep_desc,
- 	(struct usb_descriptor_header *)&as_iso_out_desc,
-+	(struct usb_descriptor_header *)&as_fback_ep_desc,
- 
- 	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
- 	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
-@@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
- 		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
-+		if (EPOUT_FBACK_IN_EN(opts)) {
-+			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
-+		}
- 	}
- 	if (EPIN_EN(opts)) {
- 		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
-@@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
- 		uac1->as_out_intf = status;
- 		uac1->as_out_alt = 0;
-+
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			as_out_ep_desc.bmAttributes =
-+			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
-+			as_out_interface_alt_1_desc.bNumEndpoints++;
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1354,6 +1376,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 			goto err_free_fu;
- 		audio->out_ep = ep;
- 		audio->out_ep->desc = &as_out_ep_desc;
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			audio->in_ep_fback = usb_ep_autoconfig(gadget, &as_fback_ep_desc);
-+			if (!audio->in_ep_fback) {
-+				goto err_free_fu;
-+			}
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1685,6 +1713,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
- 
- 	opts->req_number = UAC1_DEF_REQ_NUM;
- 
-+	opts->c_sync = UAC1_DEF_CSYNC;
-+
- 	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
- 
- 	return &opts->func_inst;
-diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
-index f7a616760e31..c6e2271e8cdd 100644
---- a/drivers/usb/gadget/function/u_uac1.h
-+++ b/drivers/usb/gadget/function/u_uac1.h
-@@ -27,6 +27,7 @@
- #define UAC1_DEF_MAX_DB		0		/* 0 dB */
- #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
- 
-+#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ASYNC
- 
- struct f_uac1_opts {
- 	struct usb_function_instance	func_inst;
-@@ -56,6 +57,7 @@ struct f_uac1_opts {
- 
- 	struct mutex			lock;
- 	int				refcnt;
-+	int				c_sync;
- };
- 
- #endif /* __U_UAC1_H */
--- 
-2.34.1
+They are from the same bucket of HW resource so I think it's more suitab=
+le  =
 
+to be one resource type. Otherwise need to policy to dividing the  =
+
+capacity, etc. And it is still possible in future vEPC become reclaimabl=
+e.
+
+My current thinking is we probably can get away with non-preemptive  =
+
+max_write for enclaves too. See my other reply.
+
+Thanks
+Haitao
