@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5EA7CE00C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461667CDFC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 16:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345900AbjJROgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 10:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S1345528AbjJRO32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 10:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345460AbjJROfl (ORCPT
+        with ESMTP id S1345529AbjJRO3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:35:41 -0400
+        Wed, 18 Oct 2023 10:29:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340C23C30;
-        Wed, 18 Oct 2023 07:15:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF05BC433D9;
-        Wed, 18 Oct 2023 14:14:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7733C38;
+        Wed, 18 Oct 2023 07:15:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3764DC07615;
+        Wed, 18 Oct 2023 14:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697638499;
-        bh=vCqRkI/QpXi9YjALHs1vE1Bu5/qQaJB2eIfCFOfVg7M=;
+        s=k20201202; t=1697638500;
+        bh=ft0/AN53UTiaKPN+jKMpJOtNFNfwVuQDgWaTMpXOFB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KOg3AhgXNrsJS53XTu+pfVtILVwUCf7YX/O4PsNC64MJJMTUl4K1bGoRoWnKIF9ex
-         r7G2qyNux9CxOGS1f1PbptYNbn3zWErVGomCSdGpqhEdOjWB5gkvlYw0EGMM5llDtS
-         LcAwOSgyiJ5QJEiSCbYuwNYEe7hx5jRW2Fpj0ZdPjj50sXYLugCkG+5x3y3BekcjTp
-         jnOd4BIBg+MKR/X+tHxDjT9hkf8BwDS7wvvdxgI++D1SKeANUkmW/Lu54Ukov42k5q
-         L0pdkYMy93gdDLKs8CVQn8JgoaTfinwi1n+Qzt/YQXxCBSRhxL7w0nO4Gjyhna1aFP
-         l+5PaU/WREcJw==
+        b=BvaAbrRxBx5nSPtFHOyv4j/dsMHtMM6QfzFnBDfksRWqjO4Iu6V+AvFp6k2tQElCh
+         97fgGzv4XAQycDVZLDFdePvujMnuO548U6TvrxWkinKYt3bNT+CZW5DvYfKIYEtR9G
+         p6fmYMmiZGj0n7dov0kqVs0EYzPXnq28zoiuybIxOk9T1hwwYM5/n0FXoB1eZiyUgV
+         932RtZjK0fOCNqs0lPE1E/1LWU7bTEhhkf4fDELd30H8grwpNXRbYBUMfklDqT8brT
+         qq398+QXc+6Xa7TYhKq0kCcGMFqjB3vBGwahX5FNoEAfZGFLNz37i3tH1BvSvL7EYy
+         vGH+zmkz/8+rQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Michael Smith <1973.mjsmith@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, hadess@hadess.net,
-        linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/11] Input: goodix - ensure int GPIO is in input for gpio_count == 1 && gpio_int_idx == 0 case
-Date:   Wed, 18 Oct 2023 10:14:44 -0400
-Message-Id: <20231018141455.1335353-2-sashal@kernel.org>
+Cc:     Zqiang <qiang.zhang1211@gmail.com>,
+        syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 03/11] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+Date:   Wed, 18 Oct 2023 10:14:45 -0400
+Message-Id: <20231018141455.1335353-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231018141455.1335353-1-sashal@kernel.org>
 References: <20231018141455.1335353-1-sashal@kernel.org>
@@ -54,90 +52,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-[ Upstream commit 423622a90abb243944d1517b9f57db53729e45c4 ]
+[ Upstream commit 643445531829d89dc5ddbe0c5ee4ff8f84ce8687 ]
 
-Add a special case for gpio_count == 1 && gpio_int_idx == 0 to
-goodix_add_acpi_gpio_mappings().
+Currently, for UNBOUND wq, if the apply_wqattrs_prepare() return error,
+the apply_wqattr_cleanup() will be called and use the pwq_release_worker
+kthread to release resources asynchronously. however, the kfree(wq) is
+invoked directly in failure path of alloc_workqueue(), if the kfree(wq)
+has been executed and when the pwq_release_workfn() accesses wq, this
+leads to the following scenario:
 
-It seems that on newer x86/ACPI devices the reset and irq GPIOs are no
-longer listed as GPIO resources instead there is only 1 GpioInt resource
-and _PS0 does the whole reset sequence for us.
+BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
 
-This means that we must call acpi_device_fix_up_power() on these devices
-to ensure that the chip is reset before we try to use it.
+CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+ kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
-This part was already fixed in commit 3de93e6ed2df ("Input: goodix - call
-acpi_device_fix_up_power() in some cases") by adding a call to
-acpi_device_fix_up_power() to the generic "Unexpected ACPI resources"
-catch all.
+Allocated by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-But it turns out that this case on some hw needs some more special
-handling. Specifically the firmware may bootup with the IRQ pin in
-output mode. The reset sequence from ACPI _PS0 (executed by
-acpi_device_fix_up_power()) should put the pin in input mode,
-but the GPIO subsystem has cached the direction at bootup, causing
-request_irq() to fail due to gpiochip_lock_as_irq() failure:
+Freed by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-[    9.119864] Goodix-TS i2c-GDIX1002:00: Unexpected ACPI resources: gpio_count 1, gpio_int_idx 0
-[    9.317443] Goodix-TS i2c-GDIX1002:00: ID 911, version: 1060
-[    9.321902] input: Goodix Capacitive TouchScreen as /devices/pci0000:00/0000:00:17.0/i2c_designware.4/i2c-5/i2c-GDIX1002:00/input/input8
-[    9.327840] gpio gpiochip0: (INT3453:00): gpiochip_lock_as_irq: tried to flag a GPIO set as output for IRQ
-[    9.327856] gpio gpiochip0: (INT3453:00): unable to lock HW IRQ 26 for IRQ
-[    9.327861] genirq: Failed to request resources for GDIX1002:00 (irq 131) on irqchip intel-gpio
-[    9.327912] Goodix-TS i2c-GDIX1002:00: request IRQ failed: -5
+This commit therefore flush pwq_release_worker in the alloc_and_link_pwqs()
+before invoke kfree(wq).
 
-Fix this by adding a special case for gpio_count == 1 && gpio_int_idx == 0
-which adds an ACPI GPIO lookup table for the int GPIO even though we cannot
-use it for reset purposes (as there is no reset GPIO).
-
-Adding the lookup will make the gpiod_int = gpiod_get(..., GPIOD_IN) call
-succeed, which will explicitly set the direction to input fixing the issue.
-
-Note this re-uses the acpi_goodix_int_first_gpios[] lookup table, since
-there is only 1 GPIO in the ACPI resources the reset entry in that
-lookup table will amount to a no-op.
-
-Reported-and-tested-by: Michael Smith <1973.mjsmith@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20231003215144.69527-1-hdegoede@redhat.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/goodix.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ kernel/workqueue.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 098115eb80841..53792a1b6ac39 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -820,6 +820,25 @@ static int goodix_add_acpi_gpio_mappings(struct goodix_ts_data *ts)
- 		dev_info(dev, "No ACPI GpioInt resource, assuming that the GPIO order is reset, int\n");
- 		ts->irq_pin_access_method = IRQ_PIN_ACCESS_ACPI_GPIO;
- 		gpio_mapping = acpi_goodix_int_last_gpios;
-+	} else if (ts->gpio_count == 1 && ts->gpio_int_idx == 0) {
-+		/*
-+		 * On newer devices there is only 1 GpioInt resource and _PS0
-+		 * does the whole reset sequence for us.
-+		 */
-+		acpi_device_fix_up_power(ACPI_COMPANION(dev));
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index fa0a0e59b3851..09031f48f447a 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4212,6 +4212,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+ 	}
+ 	put_online_cpus();
+ 
++	/* for unbound pwq, flush the pwq_release_worker ensures that the
++	 * pwq_release_workfn() completes before calling kfree(wq).
++	 */
++	if (ret)
++		kthread_flush_worker(pwq_release_worker);
 +
-+		/*
-+		 * Before the _PS0 call the int GPIO may have been in output
-+		 * mode and the call should have put the int GPIO in input mode,
-+		 * but the GPIO subsys cached state may still think it is
-+		 * in output mode, causing gpiochip_lock_as_irq() failure.
-+		 *
-+		 * Add a mapping for the int GPIO to make the
-+		 * gpiod_int = gpiod_get(..., GPIOD_IN) call succeed,
-+		 * which will explicitly set the direction to input.
-+		 */
-+		ts->irq_pin_access_method = IRQ_PIN_ACCESS_NONE;
-+		gpio_mapping = acpi_goodix_int_first_gpios;
- 	} else {
- 		dev_warn(dev, "Unexpected ACPI resources: gpio_count %d, gpio_int_idx %d\n",
- 			 ts->gpio_count, ts->gpio_int_idx);
+ 	return ret;
+ }
+ 
 -- 
 2.40.1
 
