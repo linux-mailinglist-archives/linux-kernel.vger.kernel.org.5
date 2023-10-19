@@ -2,45 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A257CF723
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39E87CF724
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbjJSLj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S1345399AbjJSLj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235274AbjJSLjZ (ORCPT
+        with ESMTP id S235219AbjJSLj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:39:25 -0400
+        Thu, 19 Oct 2023 07:39:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A79131
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:39:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1174C433C9;
-        Thu, 19 Oct 2023 11:39:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488AC18A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:39:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF650C433C7;
+        Thu, 19 Oct 2023 11:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697715561;
-        bh=676Rjq+LE+0fgew437xG06OYxKy/BUx3vyMw4uKlDRY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=nxuvfXr0NdkqgNKDibvY5zZVlOquM0vrsHJ6aWJa8REP1fYrVCrJY7tEm5597yMn6
-         AjB+GUHDS0cVa7DJkgTkLQculCExmRAxd/vb5CpFSCfHPJPJ3R/hWgXMPFehieFweP
-         3+cjJ8TtNGSpXeUysAOTJw8H+MJ6Ejd/iMXJ+AL43Im9+pPAZw7A4G16NpkQBTLZjF
-         NtKjRt4Iy9iAvKsULXe8sjSD9J8XBaq8224kdOHDuwCbugvwT31+bNgarWkV0EPQ52
-         ejXLmm7nNFx1EbleUkBO+uSVaJQt6NjFgZVlzIhIeWNSixEoP79NcVrxqBwZnyLhV2
-         QAJ9q4wZ0WFAg==
-From:   Mark Brown <broonie@kernel.org>
-To:     David Rau <David.Rau.opensource@dm.renesas.com>
-Cc:     support.opensource@diasemi.com, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231018064444.23186-1-David.Rau.opensource@dm.renesas.com>
-References: <20231018064444.23186-1-David.Rau.opensource@dm.renesas.com>
-Subject: Re: [PATCH] ASoC: da7213: Add new kcontrol for tonegen
-Message-Id: <169771555936.23143.9693813241096265778.b4-ty@kernel.org>
-Date:   Thu, 19 Oct 2023 12:39:19 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+        s=k20201202; t=1697715564;
+        bh=6+e6tFBhwXttTI2OnODBoBY84he1JXmNi2O8ceFHcY0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cGUkEUnkDwmjLpWSwji7kRrKtBa9/hEFyX1iZYjdhNx6Mv3SyPW5vmc99ct4ClHXl
+         Fuba2gKB5+qguHr7lh0RI7x1+WZKB6Gf1TCkOMWn94Ifjs9d/uylja4ccrJXyF6gTY
+         qCu5pS1LTACCS+mGdaj+KnJ54lqmY2kXfQj6oRwdyIoLcTAEeev2K8xqr5KYNEk80W
+         ZuFHhJuIrIbYJ1Tcf1lNkwpHxjiM2gzJq7oZlQgn9HTu7eTICP5wr8uC6ZYgp8HlQX
+         Mqg9fOlC/GP0m3p9WGXQuDk8x+lt/NPEY4GttIrCGOPYHXeYjC3biUr7tcPjWOMEVx
+         pe/fWT2I/Ex7Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qtRN4-005jF6-61;
+        Thu, 19 Oct 2023 12:39:22 +0100
+Date:   Thu, 19 Oct 2023 12:39:21 +0100
+Message-ID: <86jzrin8nq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Subject: Re: [PATCH v4 2/3] arm64: Add missing _EL2 encodings
+In-Reply-To: <20231016111743.30331-3-miguel.luis@oracle.com>
+References: <20231016111743.30331-1-miguel.luis@oracle.com>
+        <20231016111743.30331-3-miguel.luis@oracle.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, jingzhangos@google.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -51,36 +70,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 14:44:44 +0800, David Rau wrote:
-> Add new kcontrol for tone generator
+On Mon, 16 Oct 2023 12:17:41 +0100,
+Miguel Luis <miguel.luis@oracle.com> wrote:
 > 
+> Some _EL2 encodings are missing. Add them.
 > 
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+> ---
+>  arch/arm64/include/asm/sysreg.h | 39 +++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index ba5db50effec..8653fb67a339 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
 
-Applied to
+[...]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> +#define SYS_SDER32_EL2			sys_reg(3, 4, 1, 3, 1)
 
-Thanks!
+[...]
 
-[1/1] ASoC: da7213: Add new kcontrol for tonegen
-      commit: 64c3259b5f86963c5214e63cfadedaa2278ba0ed
+> +#define SYS_VSTTBR_EL2			sys_reg(3, 4, 2, 6, 0)
+> +#define SYS_VSTCR_EL2			sys_reg(3, 4, 2, 6, 2)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+[...]
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +#define SYS_CNTHVS_TVAL_EL2		sys_reg(3, 4, 14, 4, 0)
+> +#define SYS_CNTHVS_CTL_EL2		sys_reg(3, 4, 14, 4, 1)
+> +#define SYS_CNTHVS_CVAL_EL2		sys_reg(3, 4, 14, 4, 2)
+> +#define SYS_CNTHPS_TVAL_EL2		sys_reg(3, 4, 14, 5, 0)
+> +#define SYS_CNTHPS_CTL_EL2		sys_reg(3, 4, 14, 5, 1)
+> +#define SYS_CNTHPS_CVAL_EL2		sys_reg(3, 4, 14, 5, 2)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+While the secure definitions seem correct, what is the rationale
+behind their presence here? They cannot be trapped from non-secure,
+and the pseudocode is pretty explicit:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+	if !IsCurrentSecurityState(SS_Secure) then
+		UNDEFINED;
 
-Thanks,
-Mark
+Given that, they cannot be trapped, handled or accessed from a KVM
+guest, as Linux on arm64 *always* runs non-secure.
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
