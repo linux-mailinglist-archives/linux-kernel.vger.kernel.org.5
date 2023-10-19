@@ -2,119 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EDC7CFE0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE1C7CFE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346340AbjJSPhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S1346329AbjJSPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346296AbjJSPhc (ORCPT
+        with ESMTP id S235397AbjJSPif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:37:32 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EE7130;
-        Thu, 19 Oct 2023 08:37:29 -0700 (PDT)
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id F200720F2D;
-        Thu, 19 Oct 2023 17:37:27 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 17:37:26 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: serial: 8250_omap: add
- rs485-rts-active-high
-Message-ID: <ZTFNNudzuvDtSn4J@francesco-nb.int.toradex.com>
-References: <20230531111038.6302-1-francesco@dolcini.it>
- <CAMuHMdUkPiA=o_QLyuwsTYW7y1ksCjHAqyNSHFx2QZ-dP-HGsQ@mail.gmail.com>
- <ZTFFp8Yr7lq6HIab@francesco-nb.int.toradex.com>
- <CAMuHMdXtA3LNL6UkWyz6oytfNpSv77EShfF-uQvnPJktMUr40A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXtA3LNL6UkWyz6oytfNpSv77EShfF-uQvnPJktMUr40A@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 11:38:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF04126
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:38:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 766EDC433C8;
+        Thu, 19 Oct 2023 15:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697729912;
+        bh=ycoq5Lc59FjwrRFQFwpMQzKhRikFkuS/7XyiUSwe+t8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q78O0C+UzBUfGP1A6fuClgk3WfQceVEhpuqWj3b72Ne6WXsNUSdWOocVrH/TZkPwC
+         GDRkXiOD7dY9ijH9N+7DZSpMlo7VTbnc9gG3pZ00i9gRhHdIYjIWrJH54jYW5e1zu3
+         Zjh94unZ1gWU31LCZVVFw48PRLYJRcSEaTz9QqzHw839BWyYY+H/1numnLg/H4oIOV
+         6dwWp7trYA68O5Bwb7uYXcU7jxMeQc4fyf4LOjZnsddiEQ7FvNfok/fFVrkGvJkhc/
+         b+h0+QwjWoqlL/cCAKrZXwgFHaMwH21STc+xXHpW1qtTSUojzHubaMftIyLtWlyAmt
+         I6ha2syef8iaA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qtV6T-005pLp-T4;
+        Thu, 19 Oct 2023 16:38:29 +0100
+Date:   Thu, 19 Oct 2023 16:38:28 +0100
+Message-ID: <86fs26mxl7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
+Subject: Re: [PATCH v4 3/3] arm64/kvm: Fine grain _EL2 system registers list that affect nested virtualization
+In-Reply-To: <92F481A7-7A36-470C-9275-046ACDC958ED@oracle.com>
+References: <20231016111743.30331-1-miguel.luis@oracle.com>
+        <20231016111743.30331-4-miguel.luis@oracle.com>
+        <86il72n5si.wl-maz@kernel.org>
+        <92F481A7-7A36-470C-9275-046ACDC958ED@oracle.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, eric.auger@redhat.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:13:01PM +0200, Geert Uytterhoeven wrote:
-> Hi Franceso,
+On Thu, 19 Oct 2023 15:46:41 +0100,
+Miguel Luis <miguel.luis@oracle.com> wrote:
 > 
-> On Thu, Oct 19, 2023 at 5:05 PM Francesco Dolcini <francesco@dolcini.it> wrote:
-> > On Thu, Oct 19, 2023 at 12:09:06PM +0200, Geert Uytterhoeven wrote:
-> > > On Wed, May 31, 2023 at 1:14 PM Francesco Dolcini <francesco@dolcini.it> wrote:
-> > > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > >
-> > > > Add rs485-rts-active-high property, this was removed by mistake.
-> > > > In general we just use rs485-rts-active-low property, however the OMAP
-> > > > UART for legacy reason uses the -high one.
-> > > >
-> > > > Fixes: 767d3467eb60 ("dt-bindings: serial: 8250_omap: drop rs485 properties")
-> > > > Closes: https://lore.kernel.org/all/ZGefR4mTHHo1iQ7H@francesco-nb.int.toradex.com/
-> > > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > ---
-> > > > v2: removed reported-by
-> > >
-> > > Thanks for your patch, which is now commit 403e97d6ab2cb6fd
-> > > ("dt-bindings: serial: 8250_omap: add rs485-rts-active-high")
-> > > in v6.4-rc5.
-> > >
-> > > > --- a/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > > +++ b/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > > @@ -70,6 +70,7 @@ properties:
-> > > >    dsr-gpios: true
-> > > >    rng-gpios: true
-> > > >    dcd-gpios: true
-> > > > +  rs485-rts-active-high: true
-> > >
-> > > make dt_binding_check complains:
-> > >
-> > >     Documentation/devicetree/bindings/serial/8250_omap.yaml:
-> > > rs485-rts-active-high: missing type definition
-> >
-> > For some reasons it works for me (and worked when I did send the patch)
-> >
-> > $ make dt_binding_check DT_SCHEMA_FILES=8250_omap.yaml
-> > ...
-> >   HOSTCC  scripts/dtc/libfdt/fdt_overlay.o
-> >   HOSTCC  scripts/dtc/fdtoverlay.o
-> >   HOSTLD  scripts/dtc/fdtoverlay
-> >   LINT    Documentation/devicetree/bindings
-> > invalid config: unknown option "required" for rule "quoted-strings"
-> > xargs: /usr/bin/yamllint: exited with status 255; aborting
-> >   CHKDT   Documentation/devicetree/bindings/processed-schema.json
-> >   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml: ignoring, error in schema: properties: qcom,ls-fs-output-impedance-bp
-> > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/arm/vexpress-sysreg.yaml: ignoring, error in schema: properties: gpio-controller
-> > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/temperature/adi,ltc2983.yaml: ignoring, error in schema: patternProperties: ^thermistor@: properties: adi,excitation-current-nanoamp
-> > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml: ignoring, error in schema: patternProperties: ^channel@([0-9a-f])$: properties: adi,burnout-current-nanoamp
-> > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml: ignoring, error in schema: properties: adi,ext2-burnout-current-nanoamp
-> >   DTEX    Documentation/devicetree/bindings/serial/8250_omap.example.dts
-> >   DTC_CHK Documentation/devicetree/bindings/serial/8250_omap.example.dtb
-> >
-> >
-> > any idea on what could be different between us?
-> 
-> Are you using the latest dt-schema?
+> Should I spin v5 ?
 
-Nope, and I tried to update it and now everything fails in a miserable
-way.
+Nah, I fixed it locally, and added an extra patch to handle SPSR_*
+directly, without any reinjection.
 
-In any case the fix is clear and I am pretty confident the issue I had is
-what you just wrote, I'll send a patch.
+I'm currently running a couple of tests, and post the result shortly.
 
-Francesco
+Thanks,
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
