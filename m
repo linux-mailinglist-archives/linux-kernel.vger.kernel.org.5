@@ -2,168 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF9C7CF229
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9E37CF234
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbjJSIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S232752AbjJSIPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjJSIN6 (ORCPT
+        with ESMTP id S232788AbjJSIPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:13:58 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EBE12F;
-        Thu, 19 Oct 2023 01:13:54 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J8DYM2129962;
-        Thu, 19 Oct 2023 03:13:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697703214;
-        bh=0qE8V70UAtb0s2FCvY0TJ7HyrnlN4XuaTojCP/DiH5k=;
-        h=From:To:CC:Subject:Date;
-        b=VKH0H5pJ6IaUlMQbBm5IwFvd1NuE8jebHXM+jrmUvnZCIUvkuOtWbt8WRHkzyVJ3J
-         SOoYcMBbqN8Xj9nGswAzjgYJ4kcd3b/b9pPYnzj8ZImsPmmuHn2fLf84FxPCkEhnvi
-         52Z+Hakd7vUqBnnVWVYcGP/sZq0xxYUl/X2SOEAg=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J8DYMY080854
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Oct 2023 03:13:34 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
- Oct 2023 03:13:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 19 Oct 2023 03:13:34 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J8DUhM103191;
-        Thu, 19 Oct 2023 03:13:31 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>
-CC:     <fancer.lancer@gmail.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
-Date:   Thu, 19 Oct 2023 13:43:30 +0530
-Message-ID: <20231019081330.2975470-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 19 Oct 2023 04:15:49 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C628310F;
+        Thu, 19 Oct 2023 01:15:46 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53da72739c3so12633066a12.3;
+        Thu, 19 Oct 2023 01:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697703345; x=1698308145; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ruaMiJuGtsJumTJeYIOfH86pq5ZqFLQfKSz3PZmEz+Q=;
+        b=etdowPrmTcFOUMXbeF+imnNOuvWEoGV9pcUggZKcRG94cH/4O2QwAvh22PKA55A1hi
+         j4Xo7xiPfm4Kt0WqTiO1Y9RR2BrwaYzfX9JTs1Y1Q9CtRWlhtjTU2wgB1GeoP9/FeUEF
+         uP1MpcJ/NlPc4Kf8jUm3i1/U55DhzLz6lPHTKWdczfVzQbRqJQHWxThHrO8ZbUkEPvEv
+         bj8C/EnDHQtJWqpKJJP6AfDqoi4WCw1hYGl5sKp8EIyn7p4icYVxZUzwb8RY5RwSkUOs
+         LufVCnAeYEAAsgUe3Ix3C+FPt5sAdor5p31BzZuBLYqPrsKO/UGZiiioQnn0vP9YOJll
+         2t9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697703345; x=1698308145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ruaMiJuGtsJumTJeYIOfH86pq5ZqFLQfKSz3PZmEz+Q=;
+        b=YCYxMCgMSTCt32vwR1W+TdpQs8TK/iyTOJxOn74UV2nFmJFITrornIrvA2CYUyRhAu
+         lEtlG+b8RaXDhajUQqPcTRgl5ZBRXPNMeZd/up+e+I+DXLb0nk541/LMBMq85BET644C
+         AFaG7RTjKRPZHz1KHjbku9+Fx7mI7/GDBsibbypk/tyBDGn7Hvq5oF9Cq/5kg3hXdSma
+         6QPZ9a0+cmZlBq+dQMmeISwvQE5f82+Br7626H4jSn9mMLMcRGrYcyjr7ui8nVcLsrGP
+         x9QZ4tzStJ/r1DITADglAI/vb8GOPjSTjqEGunrFYq7tCMIgTA7hKAKHakEjV8RWbjT8
+         w7vA==
+X-Gm-Message-State: AOJu0YwbuEKIHrIrXUFhKM5mD7FqPuZCvVnlW4T2T9aOU20X+VUY2nBo
+        xpCMwQtR4AFPW70f8ZaKR00=
+X-Google-Smtp-Source: AGHT+IGZvWEBSs6V9QTW1DOouJsVNWD05agoGBu8+stsov0oNi8/seHGwdiTAKa9ns8s4PssONXfJg==
+X-Received: by 2002:a17:907:3e84:b0:9b9:b12c:133d with SMTP id hs4-20020a1709073e8400b009b9b12c133dmr1230168ejc.53.1697703344779;
+        Thu, 19 Oct 2023 01:15:44 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id h3-20020a1709063b4300b009b9aa8fffdasm3055677ejf.131.2023.10.19.01.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 01:15:44 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 19 Oct 2023 10:15:42 +0200
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+Message-ID: <ZTDlrkTXnkVN1cff@krava>
+References: <20231018151950.205265-1-masahiroy@kernel.org>
+ <20231018151950.205265-4-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018151950.205265-4-masahiroy@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the process of converting .scan_bus() callbacks to .add_bus(), the
-ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-to controller version 3.65a, while the .add_bus() method had been added
-to ks_pcie_ops which is shared between the controller versions 3.65a and
-4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-ks_pcie_v3_65_add_bus() method are applicable to the controller version
-4.90a which is present in AM654x SoCs.
+On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
+> newer_prereqs_except and if_changed_except are ugly hacks of the
+> newer-prereqs and if_changed in scripts/Kbuild.include.
+> 
+> Remove.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> Changes in v2:
+>   - Fix if_changed_except to if_changed
+> 
+>  scripts/Makefile.modfinal | 25 ++++++-------------------
+>  1 file changed, 6 insertions(+), 19 deletions(-)
+> 
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 9fd7a26e4fe9..fc07854bb7b9 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -19,6 +19,9 @@ vmlinux :=
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>  ifneq ($(wildcard vmlinux),)
+>  vmlinux := vmlinux
+> +cmd_btf = ; \
+> +	LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+> +	$(RESOLVE_BTFIDS) -b vmlinux $@
+>  else
+>  $(warning Skipping BTF generation due to unavailability of vmlinux)
+>  endif
+> @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+>        cmd_ld_ko_o +=							\
+>  	$(LD) -r $(KBUILD_LDFLAGS)					\
+>  		$(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)		\
+> -		-T scripts/module.lds -o $@ $(filter %.o, $^)
+> +		-T scripts/module.lds -o $@ $(filter %.o, $^)		\
+> +	$(cmd_btf)
+>  
+> -quiet_cmd_btf_ko = BTF [M] $@
 
-Thus, fix this by creating ks_pcie_am6_ops for the AM654x SoC which uses DW
-PCIe IP-core version 4.90a controller and omitting the .add_bus() method
-which is not applicable to the 4.90a controller. Update ks_pcie_host_init()
-accordingly in order to set the pci_ops to ks_pcie_am6_ops if the platform
-is AM654x SoC and to ks_pcie_ops otherwise, by making use of the "is_am6"
-flag.
+nit not sure it's intentional but we no longer display 'BTF [M] ...ko' lines,
+I don't mind not displaying that, but we should mention that in changelog
 
-Fixes: 6ab15b5e7057 ("PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus")
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
-Hello,
+jirka
 
-This patch is based on linux-next tagged next-20231018.
-
-The v2 of this patch is at:
-https://lore.kernel.org/r/20231018075038.2740534-1-s-vadapalli@ti.com/
-
-Changes since v2:
-- Implemented Serge's suggestion of adding a new pci_ops structure for
-  AM654x SoC using DWC PCIe IP-core version 4.90a controller.
-- Created struct pci_ops ks_pcie_am6_ops for AM654x SoC without the
-  .add_bus method while retaining other ops from ks_pcie_ops.
-- Updated ks_pcie_host_init() to set pci_ops to ks_pcie_am6_ops if the
-  platform is AM654x and to ks_pcie_ops otherwise by making use of the
-  already existing "is_am6" flag.
-- Combined the section:
-	if (!ks_pcie->is_am6)
- 		pp->bridge->child_ops = &ks_child_pcie_ops;
-  into the newly added ELSE condition.
-
-The v1 of this patch is at:
-https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
-
-While there are a lot of changes since v1 and this patch could have been
-posted as a v1 patch itself, I decided to post it as the v2 of the patch
-mentioned above since it aims to address the issue described by the v1
-patch and is similar in that sense. However, the solution to the issue
-described in the v1 patch appears to be completely different from what
-was implemented in the v1 patch. Thus, the commit message and subject of
-this patch have been modified accordingly.
-
-Changes since v1:
-- Updated patch subject and commit message.
-- Determined that issue is not with the absence of Link as mentioned in
-  v1 patch. Even with Link up and endpoint device connected, if
-  ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
-  MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
-  AER and PME services. The all Fs return value indicates that the MSI-X
-  configuration is failing even if Endpoint device is connected. This is
-  because the ks_pcie_v3_65_add_bus() function is not applicable to the
-  AM654x SoC which uses DW PCIe IP-core version 4.90a.
-
-Regards,
-Siddharth.
-
- drivers/pci/controller/dwc/pci-keystone.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 49aea6ce3e87..66341a0b6c6b 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -487,6 +487,12 @@ static struct pci_ops ks_pcie_ops = {
- 	.add_bus = ks_pcie_v3_65_add_bus,
- };
- 
-+static struct pci_ops ks_pcie_am6_ops = {
-+	.map_bus = dw_pcie_own_conf_map_bus,
-+	.read = pci_generic_config_read,
-+	.write = pci_generic_config_write,
-+};
-+
- /**
-  * ks_pcie_link_up() - Check if link up
-  * @pci: A pointer to the dw_pcie structure which holds the DesignWare PCIe host
-@@ -804,9 +810,12 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
- 	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
- 	int ret;
- 
--	pp->bridge->ops = &ks_pcie_ops;
--	if (!ks_pcie->is_am6)
-+	if (ks_pcie->is_am6) {
-+		pp->bridge->ops = &ks_pcie_am6_ops;
-+	} else {
-+		pp->bridge->ops = &ks_pcie_ops;
- 		pp->bridge->child_ops = &ks_child_pcie_ops;
-+	}
- 
- 	ret = ks_pcie_config_legacy_irq(ks_pcie);
- 	if (ret)
--- 
-2.34.1
-
+> -      cmd_btf_ko = 							\
+> -		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+> -		$(RESOLVE_BTFIDS) -b vmlinux $@
+> -
+> -# Same as newer-prereqs, but allows to exclude specified extra dependencies
+> -newer_prereqs_except = $(filter-out $(PHONY) $(1),$?)
+> -
+> -# Same as if_changed, but allows to exclude specified extra dependencies
+> -if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+> -	$(cmd);                                                              \
+> -	printf '%s\n' 'savedcmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
+> -
+> -# Re-generate module BTFs if either module's .ko or vmlinux changed
+>  %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
+> -	+$(call if_changed_except,ld_ko_o,vmlinux)
+> -ifdef vmlinux
+> -	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+> -endif
+> +	+$(call if_changed,ld_ko_o)
+>  
+>  targets += $(modules:%.o=%.ko) $(modules:%.o=%.mod.o)
+>  
+> -- 
+> 2.40.1
+> 
+> 
