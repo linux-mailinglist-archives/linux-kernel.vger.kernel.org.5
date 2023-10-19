@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F827CF89F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A67CF8A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345421AbjJSMVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1345484AbjJSMV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjJSMU6 (ORCPT
+        with ESMTP id S235280AbjJSMV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:20:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627CBB6;
-        Thu, 19 Oct 2023 05:20:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8027C433C8;
-        Thu, 19 Oct 2023 12:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697718057;
-        bh=XFuvtHIa7r/OH39BIUY2Rg3BlL4Ej+ED/kG0o9vR93Y=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=lL4GTEtH8PL5mUD4nerM8N3hrP2HgEf9TtWzriEIHLO3yBdd2r2F6bAKPz/5sMJYF
-         3WCw0BOPLH2CCqD3VYNPsuqDm+lSI7p8C6TYvJSFsqk+d8AOyi57JqO+DVSTxWjcwK
-         Bns62ClLB7ar2dsTvBWRtA7IfsyO1AtDSCt8A+lKIp9v7DL7Fw5czjPK5OFr5SGwkP
-         bIMQ1n/g6TqdfFWApd/I2YaJ76vJUVdGHdNSpRFf8ai+XXZNa5BptaBF33Qa+VfSB3
-         FUOua3sHRCbCgHj9B+LySXq82BuMiVqaPAO9pFSXJ21HHNye1BOL0dYB1Df77mJFjH
-         nc9b67gWxzvtg==
-From:   Lee Jones <lee@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Denis Osterland-Heim <denis.osterland@diehl.com>
-In-Reply-To: <20231016153051.1409074-1-andriy.shevchenko@linux.intel.com>
-References: <20231016153051.1409074-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: (subset) [PATCH v2 1/1] leds: core: Refactor
- led_update_brightness() to use standard pattern
-Message-Id: <169771805542.2469471.17417276812343058652.b4-ty@kernel.org>
-Date:   Thu, 19 Oct 2023 13:20:55 +0100
+        Thu, 19 Oct 2023 08:21:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84658CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697718084; x=1729254084;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ncUbsRiztzN7102zxWecLH6p+ntw3u7TveZwYYupNR4=;
+  b=ZfsslIk4DGvY5kmAYayKoJEZwkBCioZU3WYm2pc8kyCw5FaFuQ6qat1L
+   WTCUu7Oh2sDGhYpUaMKFggSowXkuxZXpbQBOcf7uvVhgUtH89/KTJchav
+   di6spt1/gcLm/HCLKIUrRkcRJgo+aCoC47i1I88KxBLJw6bOL5vcegEl/
+   GDgVoUZsHcgtrVMKWOcYwBmW69CPbZx7QOfrdFBOvhzT7GkKIkGHMnAc6
+   UmrXxMEU4tQLwmAHxgUPPZTpJDmuCfmSWdPHoxzwf7XbH+8BLQ3YXAB/F
+   Jk1lGoH5/Ej0/dXs95pecmBrD4UW74y53xW+1WDt1N+ZiVKPk7h9Xz6ej
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="371299090"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="371299090"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:21:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930588081"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="930588081"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:21:17 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qtS1a-00000006rHQ-2uXD;
+        Thu, 19 Oct 2023 15:21:14 +0300
+Date:   Thu, 19 Oct 2023 15:21:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, pmladek@suse.com,
+        rostedt@goodmis.org, senozhatsky@chromium.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] lib/vsprintf: Remove redundant code
+Message-ID: <ZTEfOiP3wO56rrRq@smile.fi.intel.com>
+References: <20231018064817.86721-1-jiapeng.chong@linux.alibaba.com>
+ <f89a00c8-2ea2-4ef1-909e-2eaf7bc17cf9@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f89a00c8-2ea2-4ef1-909e-2eaf7bc17cf9@rasmusvillemoes.dk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 18:30:51 +0300, Andy Shevchenko wrote:
-> The standard conditional pattern is to check for errors first and
-> bail out if any. Refactor led_update_brightness() accordingly.
-> 
-> While at it, drop unneeded assignment and return 0 unconditionally
-> on success.
-> 
-> 
-> [...]
+On Thu, Oct 19, 2023 at 01:51:45PM +0200, Rasmus Villemoes wrote:
+> On 18/10/2023 08.48, Jiapeng Chong wrote:
 
-Applied, thanks!
+...
 
-[1/1] leds: core: Refactor led_update_brightness() to use standard pattern
-      commit: 0e5bb700df6a6fe36d9487a4e0a82a4c7b1f7b4e
+>  Or may reveal that the current code is buggy.
 
---
-Lee Jones [李琼斯]
+...and hopefully didn't become a part of any ABIs...
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
