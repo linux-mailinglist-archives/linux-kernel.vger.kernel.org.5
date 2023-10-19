@@ -2,135 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191547CF09E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE3C7CF09A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjJSHDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        id S232854AbjJSHCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232835AbjJSHDC (ORCPT
+        with ESMTP id S232852AbjJSHCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:03:02 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52C6A12D;
-        Thu, 19 Oct 2023 00:02:58 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 39J71rZ9000896;
-        Thu, 19 Oct 2023 09:01:53 +0200
-Date:   Thu, 19 Oct 2023 09:01:53 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, ksummit@lists.linux.dev
-Subject: Re: the nul-terminated string helper desk chair rearrangement
-Message-ID: <ZTDUYSBS7AO9pAgm@1wt.eu>
-References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
- <20231019054642.GF14346@lst.de>
- <202310182248.9E197FFD5@keescook>
+        Thu, 19 Oct 2023 03:02:13 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1DB123
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:02:11 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405497850dbso71062495e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697698930; x=1698303730; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fZEt7qIR7S+43tnkwrfTmX3nIEaz+SLr7IXGcJvPzFw=;
+        b=RwJqcBfq5AWGFzXy3dwK9ySYdovqpICNh5HwuIJfoqZ613gK8IyhGegUPsnNSQMF0D
+         uw8c0g3C7p9vHS87U0wzaI6eOhErG28zCbQiHFJTqHzV8+89iSLgqEAtGahuEOq3+RdJ
+         cAjaGfl36wTvADnJnoCNaBrJg5cIeL3sXfCJksKC4aoAWOu7dCvZXHP/Gra4+7ar6Z6t
+         WYxLZzojgCDps0CQkBle+lAmybZJjajajJDDxqJ/AAeNs6ygZfQJ2Ky1PTmnVHL637qR
+         XtcTX+29chJONZmSzATVrpjP0BbnuFYXdtrGZOfR9HJvKUwrvVaXw7RH3UhyFR/1hRDh
+         SD1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697698930; x=1698303730;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fZEt7qIR7S+43tnkwrfTmX3nIEaz+SLr7IXGcJvPzFw=;
+        b=WZHz3394+cu7nCy7+WWOHXykRQJzSYA/0YL0Gn+BdKRLwSFmWn+m79qRKTLiYUwPOi
+         2Dmem8uc8KCspWzazxt7zrjMUvuzrc6OgYnTEulkSSdssBdi2W99OC6qNTWFxpVXk+2v
+         bN3Fz1ZkpQoTyzgKTT7kCZfM98okt6Pcs1CqCcLX2ICqAa1IkQeUaS6rUvSF/MBUiZVK
+         d/5Bs3fPPjdZrrID7xvJJexXvZegyTeaLyyE8NkTcmNW6eWQxVYVtYUyhL1dEQI+BVjB
+         lVWi/siv6V8J9zlR6LUtCFOmmtbhP4JO4VkbMaMh8RYOuW/twA2fQZ/c9t/SurASZ5rD
+         +Lzw==
+X-Gm-Message-State: AOJu0Yz2BXKB+t9i+OZTEt9WJ5c3s+JOE5Y33y+0aKU526WUeIBlNKwf
+        pRg9Dj8feZ86KVA3R51vT8tsqg==
+X-Google-Smtp-Source: AGHT+IHQM6baAzq7bG2CWbw4TD5MQZLpK8gfP/OoLNLBenxdNCeOcYisWaj81qNLM8uUGcaZDfJaPA==
+X-Received: by 2002:a05:600c:3ca2:b0:402:cc5c:c98 with SMTP id bg34-20020a05600c3ca200b00402cc5c0c98mr1036709wmb.13.1697698929522;
+        Thu, 19 Oct 2023 00:02:09 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.49])
+        by smtp.gmail.com with ESMTPSA id bh9-20020a05600c3d0900b003feae747ff2sm3612213wmb.35.2023.10.19.00.02.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 00:02:09 -0700 (PDT)
+Message-ID: <686d96e2-8346-4abb-8c3e-091aaabe2a49@linaro.org>
+Date:   Thu, 19 Oct 2023 09:02:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310182248.9E197FFD5@keescook>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios
+ property
+Content-Language: en-US
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        gregory.clement@bootlin.com, andi.shyti@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231018210805.1569987-1-chris.packham@alliedtelesis.co.nz>
+ <20231018210805.1569987-2-chris.packham@alliedtelesis.co.nz>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231018210805.1569987-2-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 11:01:54PM -0700, Kees Cook wrote:
-> On Thu, Oct 19, 2023 at 07:46:42AM +0200, Christoph Hellwig wrote:
-> > On Wed, Oct 18, 2023 at 10:48:49PM +0000, Justin Stitt wrote:
-> > > strncpy() is deprecated for use on NUL-terminated destination strings
-> > > [1] and as such we should prefer more robust and less ambiguous string
-> > > interfaces.
-> > 
-> > If we want that we need to stop pretendening direct manipulation of
-> > nul-terminate strings is a good idea.  I suspect the churn of replacing
-> > one helper with another, maybe slightly better, one probably
-> > introduces more bugs than it fixes.
-> > 
-> > If we want to attack the issue for real we need to use something
-> > better.
-> > 
-> > lib/seq_buf.c is a good start for a lot of simple cases that just
-> > append to strings including creating complex ones.  Kent had a bunch
-> > of good ideas on how to improve it, but couldn't be convinced to
-> > contribute to it instead of duplicating the functionality which
-> > is a bit sad, but I think we need to switch to something like
-> > seq_buf that actually has a counted string instead of all this messing
-> > around with the null-terminated strings.
+On 18/10/2023 23:08, Chris Packham wrote:
+> Add reset-gpios and reset-duration-us properties to the
+> marvell,mv64xxx-i2c binding. These can be used to describe hardware
+> where a common reset GPIO is connected to all downstream devices on and
+> I2C bus. This reset will be asserted then released before the downstream
+> devices on the bus are probed.
 > 
-> When doing more complex string creation, I agree. I spent some time
-> doing this while I was looking at removing strcat() and strlcat(); this
-> is where seq_buf shines. (And seq_buf is actually both: it maintains its
-> %NUL termination _and_ does the length counting.) The only thing clunky
-> about it was initialization, but all the conversions I experimented with
-> were way cleaner using seq_buf.
-(...)
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
 
-I also agree. I'm using several other schemes based on pointer+length in
-other projects and despite not being complete in terms of API (due to the
-slow migration of old working code), over time it proves much easier to
-use and requires far less controls.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-With NUL-teminated strings you need to perform checks for each and every
-operation. When the length is known and controlled, most often you can
-get rid of many tests on intermediate operations and perform a check at
-the end, thus you end up with less "if" and "goto fail" in the code,
-because the checks are no longer for "not crashing nor introducing
-vulnerabilities", but just "returning a correct result", which can often
-be detected more easily.
+Best regards,
+Krzysztof
 
-Another benefit I found by accident is that when you need to compare some
-tokens against multiple ones (say some keywords for example), it becomes
-much faster than strcmp()-based if/else series because in this case you
-start by comparing lengths instead of comparing contents. And when your
-macros allow you to constify string constants, the compiler will replace
-long "if" series with checks against constant values, and may even arrange
-them as a tree since all are constants, sometimes mixing with the first
-char as the discriminator. Typically on the test below I observe a 10x
-speedup at -O3 and ~5x at -O2 when I convert this:
-
-	if (!strcmp(name, "host") ||
-	    !strcmp(name, "content-length") ||
-	    !strcmp(name, "connection") ||
-	    !strcmp(name, "proxy-connection") ||
-	    !strcmp(name, "keep-alive") ||
-	    !strcmp(name, "upgrade") ||
-	    !strcmp(name, "te") ||
-	    !strcmp(name, "transfer-encoding"))
-		return 1;
-
-to this:
-
-	if (isteq(name, ist("host")) ||
-	    isteq(name, ist("content-length")) ||
-	    isteq(name, ist("connection")) ||
-	    isteq(name, ist("proxy-connection")) ||
-	    isteq(name, ist("keep-alive")) ||
-	    isteq(name, ist("upgrade")) ||
-	    isteq(name, ist("te")) ||
-	    isteq(name, ist("transfer-encoding")))
-		return 1;
-
-The code is larger but when compiled at -Os, it instead becomes smaller.
-
-Another interesting property I'm using in the API above, that might or
-might not apply there is that for most archs we care about, functions
-can take a struct of two words passed as registers, and can return
-such a struct as a pair of registers as well. This allows to chain
-functions by passing one function's return as the argument to another
-one, which is what users often want to do to avoid intermediate
-variables.
-
-All this to say that length-based strings do offer quite a lot of
-benefits over the long term.
-
-Willy
