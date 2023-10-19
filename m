@@ -2,141 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931A37D005A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294B67D00AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345170AbjJSRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        id S1346271AbjJSRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233017AbjJSRTW (ORCPT
+        with ESMTP id S1346331AbjJSRfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:19:22 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAACCF;
-        Thu, 19 Oct 2023 10:19:20 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso14195246a12.3;
-        Thu, 19 Oct 2023 10:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697735959; x=1698340759; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kuVTxDXsD5zLqnlIbrRzu0NzyI0nKgFfjwxin/PFwlU=;
-        b=ku1mMqYloz5mUBTRrXbNrE7DHw23gB1v7mpQhrMI6W32f2y4TM8ctFbxFcY4sDMAfj
-         sxZhXXgaYwa3GZPLmMApDObsKfxDOhx0lAhKkKiu+9/RVU5OHSTQWp+j/XiSCR+C/h5Z
-         0TBaysj/6dD2UWVkgmAVTSkbfjKxS/MHtQySVaItGcGHY43I0nuknng4O9mMp0mBoYeF
-         FpDer/brljutb5y3kYvYXOurpqzPzIYqQeg7iiIApu7uyEzCadLlJhfsI9lw450IosIy
-         iUFvZdEhOwPV0OIRBf9pUn3TzxJHb7meENGjvYfF7qYr/L3iUgBYSheKxOD0oI4Z2ziS
-         XXYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697735959; x=1698340759;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kuVTxDXsD5zLqnlIbrRzu0NzyI0nKgFfjwxin/PFwlU=;
-        b=PGkZkhlLsGHwnoqMIbSqzuq52d4iWP6H0QhlRafdRT0FZNAB7Y8AJ124bkal7Wvp1k
-         GVhLWFauUqp7NqiQpnp4iOnQbaoc024ykb02cpUHAsxlvvn5j+EbOgtOIUbhi6kDcQEP
-         FsbeRP47aCjl+S0c2x2IsimCZVk13lWq1hYEQhIF6zjO56+aDfRpwE3jwTVWs45rMTdN
-         GZ9y1+6aG6p78b02Q+XML7lOfRN2Lm1au0fH1qmUkHd17LZIqF9hO4Lp0cbsT68dgdVA
-         QF5SHqxSiF76500N4y/QsyD3UUi7+g+zjYR6gGzksjS+dqHo3q4J+UwLBcFr1USRgc3Z
-         avyA==
-X-Gm-Message-State: AOJu0YwPHqJ3CuJ85QdVTqX6++Q/3pnnZ2U+C/eXXftlWqITyhcFfOec
-        0H+oXBPUE3wTlKs4+vCL4ac=
-X-Google-Smtp-Source: AGHT+IGhfVwmPgjwxlHZqbpAewteoE+DkWqCmtTGfr9oV2jyUKq+NC85tBuQJGggMWKJhJhDvj3OMQ==
-X-Received: by 2002:a05:6402:27ca:b0:53e:f321:e6fd with SMTP id c10-20020a05640227ca00b0053ef321e6fdmr2359570ede.9.1697735959051;
-        Thu, 19 Oct 2023 10:19:19 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id ee16-20020a056402291000b0053e8f1f79afsm4810370edb.30.2023.10.19.10.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 10:19:18 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 20:19:16 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v6 7/9] net: dsa: microchip: Add error handling
- for ksz_switch_macaddr_get()
-Message-ID: <20231019171916.nu4aptbxl6owg2gi@skbuf>
-References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-8-o.rempel@pengutronix.de>
- <20231019171308.tpjdevvnrqhly6cu@skbuf>
+        Thu, 19 Oct 2023 13:35:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C9F137;
+        Thu, 19 Oct 2023 10:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697736900; x=1729272900;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oP1mt93DT3hlKeGPPwOROBVmLyrVMSuv6RGvzsjvmm8=;
+  b=PBiCIaOF48a4pooNWdBvV5L3TSXkRMYd6MpcaFlEIWGGBnwirtOJsArm
+   f/IIJGNn8acunyGJe+K9iiS9+j/92EBEfz1Amd5mDVVhJc7pbCDMjBZMa
+   cniZ2ppRyD465g1KpMknAMBzlQr5stD7R8G5cxG/6L4K3f70l0uRg838Z
+   DP1aeypv2crGzksU/eEbGq3+DI+d4SxyBJCSqbGiQSAikhiiUMlY8N5Xi
+   Zr8QClQW55bt3ny8P5shdxGrCkpveugGgLMbNkzQZobeUaVgxr4+6Wsd8
+   eUfTd/rrj3RFdJGmXsoWV+adhip6mINDQ5dFc/ygUTFATXXJWxy+rlFh1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="389184205"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="389184205"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:35:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760723540"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="760723540"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:34:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qtWg5-00000006wKs-45AS;
+        Thu, 19 Oct 2023 20:19:21 +0300
+Date:   Thu, 19 Oct 2023 20:19:21 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZTFlGUJYoMFf02iB@smile.fi.intel.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+ <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+ <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
+ <ZS7kY/+80Be4geGM@smile.fi.intel.com>
+ <ZS7_5VGvRnw99gzd@google.com>
+ <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
+ <ZTBfFIyCsl2gkp6f@google.com>
+ <ZTFeyt1PwxgC6ID1@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019171308.tpjdevvnrqhly6cu@skbuf>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZTFeyt1PwxgC6ID1@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 08:13:08PM +0300, Vladimir Oltean wrote:
-> On Thu, Oct 19, 2023 at 02:28:48PM +0200, Oleksij Rempel wrote:
-> > Enhance the ksz_switch_macaddr_get() function to handle errors that may
-> > occur during the call to ksz_write8(). Specifically, this update checks
-> > the return value of ksz_write8(), which may fail if regmap ranges
-> > validation is not passed and returns the error code.
+On Thu, Oct 19, 2023 at 07:52:26PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 18, 2023 at 03:41:24PM -0700, Dmitry Torokhov wrote:
+> > On Wed, Oct 18, 2023 at 08:01:23AM +0300, Andy Shevchenko wrote:
+> > > On Tue, Oct 17, 2023 at 02:43:01PM -0700, Dmitry Torokhov wrote:
+> > > > On Tue, Oct 17, 2023 at 10:45:39PM +0300, Andy Shevchenko wrote:
+> > > 
+> > > Thanks for your response.
+
+...
+
+> > > > I wonder, could you please post entire dmesg for your system?
+> > > 
+> > > Working, non-working or both?
 > > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> > ---
-> >  drivers/net/dsa/microchip/ksz_common.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-> > index 7b05de6fe987..79052a54880c 100644
-> > --- a/drivers/net/dsa/microchip/ksz_common.c
-> > +++ b/drivers/net/dsa/microchip/ksz_common.c
-> > @@ -3612,7 +3612,7 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
-> >  	struct ksz_switch_macaddr *switch_macaddr;
-> >  	struct ksz_device *dev = ds->priv;
-> >  	const u16 *regs = dev->info->regs;
-> > -	int i;
-> > +	int i, ret;
-> >  
-> >  	/* Make sure concurrent MAC address changes are blocked */
-> >  	ASSERT_RTNL();
-> > @@ -3639,8 +3639,11 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
-> >  	dev->switch_macaddr = switch_macaddr;
-> >  
-> >  	/* Program the switch MAC address to hardware */
-> > -	for (i = 0; i < ETH_ALEN; i++)
-> > -		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-> > +	for (i = 0; i < ETH_ALEN; i++) {
-> > +		ret = ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
+> > Non working, especially if you also enable debug logs in
+> > drivers/mmc/host/sdhci-pci-core.c.
 > 
-> I understand that you intend the error to be fatal, but this leaks memory and a refcount.
+> Here we are
+> https://paste.debian.net/hidden/5d778105/
 
-I didn't estimate correctly what would happen.
+For the sake of completeness
 
-If ksz_write8() fails as you say, we will leave behind the reference to
-dev->switch_macaddr, which points to valid memory. Which means that the
-second time around, the call to ksz_switch_macaddr_get() will succeed,
-because the driver thinks that the address has been programmed to
-hardware, and it is unaware of the previous failure. But it will not
-work. Am I correct?
+https://paste.debian.net/hidden/149933ac/
 
-If so, it needs to tear down properly, because if ksz_switch_macaddr_get()
-fails once to write to hardware, it should fail always.
+the working case on the same codebase (the hash is different due to patch that
+changes couple of BUG*() to WARN*(), other than that the code is identical).
+
+> > What I do not quite understand is that I think we should not be hitting
+> > the case where pinctrl is already created for the device, which is the
+> > code path my patch was changing. IIUIC we should be mostly executing the
+> > "pinctrl not found" path and that did not really change. Maybe you could
+> > also put some more annotations to show how/at what exact point the probe
+> > order changed? Maybe log find_pinctrl() calls and compare?
+> 
+> I see this order in dmesg
+> [   48.429681] sdhci-pci 0000:00:01.2: Mapped GSI37 to IRQ79
+> [   48.436219] sdhci-pci 0000:00:01.0: Mapped GSI0 to IRQ80
+> [   48.450347] sdhci-pci 0000:00:01.3: Mapped GSI38 to IRQ81
+> 
+> which suggests that PCI enabling devices are happening in parallel
+> (pcim_enable_device() in SDHCI PCI driver) and whoever wins first gets
+> the ID via IDA (see mmc_alloc_host() implementation). But PCI itself
+> guarantees that function 0 has to be always present, so the PCI itself
+> enumerates it _always_ in the same order (and we are talking about exactly
+> BDF == x:y.0 in this case).
+> 
+> > Linus, BTW, I think there are more problems there with pinctrl lookup,
+> > because, if we assume there are concurrent accesses to pinctrl_get(),
+> > the fact that we did not find an instance while scanning the list does
+> > not mean we will not find it when we go to insert a newly created one.
+> > 
+> > Another problem, as far as I can see, that there is not really a defined
+> > owner of pinctrl structure, it is created on demand, and destroyed when
+> > last user is gone. So if we execute last pintctrl_put() and there is
+> > another pinctrl_get() running simultaneously, we may get and bump up the
+> > refcount, and then release (pinctrl_free) will acquire the mutex, and
+> > zap the structure.
+> > 
+> > Given that there are more issues in that code, maybe we should revert
+> > the patch for now so Andy has a chance to convert to UUID/LABEL booting?
+> 
+> I'm testing a PoC of the script, so looks promising, but needs more time to
+> check other possibilities (see below) and deploy.
+
+...
+
+> > > > I think the right answer is "fix the userspace" really in this case. We
+> > > > could also try extend of_alias_get_id() to see if we could pass some
+> > > > preferred numbering on x86. But this will again be fragile if the
+> > > > knowledge resides in the driver and is not tied to a particular board
+> > > > (as it is in DT case): there could be multiple controllers, things will
+> > > > be shifting board to board...
+> > > 
+> > > Any suggestion how should it be properly done in the minimum shell environment?
+> > > (Busybox uses mdev with static tables IIRC and there is no fancy udev or so)
+> > 
+> > I'm not sure, so you have something like blkid running? You just need to
+> > locate the device and chroot there. This assumes you do have initramfs.
+> 
+> blkid shows UUID for the partition of interest and it doesn't have any label,
+> OTOH I could parse it for the specific template, while it's less reliable than
+> going via sysfs from PCI device name, that's defined by hardware and may not be
+> changed.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
