@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B76457CFD37
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF00D7CFD3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345596AbjJSOtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        id S1346232AbjJSOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346193AbjJSOtD (ORCPT
+        with ESMTP id S1346223AbjJSOt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:49:03 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BC4130
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697726939;
-        bh=YtPB/bcm1WOSJ3edgMyZVNvIWoEsNXaq7OYC/JmnN3w=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=R/zARI/GPSG2OhkM1+oFsFAmRhzZ15toStKv1R/paNjvOCh2Ya0ji0ftg23LCHlG5
-         pWqvwlYTBLEQd5+9PzDjl9v0iXbieigADwB7yJQmikhh/FVkhaSxfFPttaV9HPONvy
-         UdcPKW5gZ9q0BzBvd5tkirFZhgXST7f5w0T79RFBAOw+51LvA4cPEDjYKlXyZ+J13M
-         LiFVvn3rCG8HCmvHgrKVZkw6J0UeejkRIa2Dd3pbhN0QdVacQxDL6OH9d0B6nPiG8z
-         OE1G7itmdrPA09GGOnkMe+InuJlRnbvpDYl/kiqRRCIQkTe/dsEWc4jcuk6Ky+Kl9J
-         07q13Q53bc4Xw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SB9Zz0n4sz1Y2V;
-        Thu, 19 Oct 2023 10:48:59 -0400 (EDT)
-Message-ID: <6bb3bfe5-13d6-413a-bf31-cec5596757f2@efficios.com>
-Date:   Thu, 19 Oct 2023 10:49:09 -0400
+        Thu, 19 Oct 2023 10:49:29 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE79113D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:49:25 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a66bf80fa3so32338139f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1697726965; x=1698331765; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fgj14+mGbzySfqghRGEsyfUNl7FTLmyFIO5qq6g0dOQ=;
+        b=Bon1ZJ4ckznEr4+jOiE2FcyORSR3SwWDM/s9pd5dfT4aycF+iKpcv5xY9vBn3lHX87
+         CWGSklsZFWC2sHM5vHnN+nvj3hnYvpYAPfsHMJJTepbV/MElD/Qd5+j8XHp+bogiMUKv
+         eZxGgrIcepP/0ACg4HdSFePv10JmApSBcalXY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697726965; x=1698331765;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fgj14+mGbzySfqghRGEsyfUNl7FTLmyFIO5qq6g0dOQ=;
+        b=wzaTylhJVw1VYPK8rgMNArxQX1k8Xuyui5FpJXD/MUeGekrKjLBiyHVTaLH0AwMeBm
+         /stBWOslG9nMwggpBlWPT9qxr0ZINpDpO1QQrO5ebvsVCD43rL5pz0qXDiqcDZxPS6pd
+         igPkZr0VqPZCLON+aH0ClbhvMpUMIOu+HWssNnf8YGDDj7z+E8GtZbes+Y4uSEBmVHZe
+         tQIGlzECCzSY2oFQ9wW9DKoAsyZA0IL9bNllvmoAdXENU1haKYbx5FqjmfC7zGLoBbXW
+         4AJRH4zMKoz+sDEl77i3hm6cVjgZJaM7sVOFcmi/LH/CNE8EfSkJu23A8lg4QskOPMC5
+         AFLg==
+X-Gm-Message-State: AOJu0YwbQGWiDQq52C8HwcA7HpTrEPE5dLpY1iTjJLnyd9xUZgz7PL04
+        zehEm4hpuz+XzVQ5AXtqvBg68LFdtkUH3hpAb4I=
+X-Google-Smtp-Source: AGHT+IEJvu+NhAbAt9lOJPfJcfLfhJNG0EmCtjIrAEyfPzPGtvK3hdKzN6H7poN3HtanEjkNosuaeQ==
+X-Received: by 2002:a5e:db45:0:b0:79f:922b:3809 with SMTP id r5-20020a5edb45000000b0079f922b3809mr2364470iop.1.1697726965216;
+        Thu, 19 Oct 2023 07:49:25 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id x24-20020a6bfe18000000b007a6816de789sm748530ioh.48.2023.10.19.07.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 07:49:24 -0700 (PDT)
+Message-ID: <1ee483d6-3311-42b1-a3e0-3b6073913a21@linuxfoundation.org>
+Date:   Thu, 19 Oct 2023 08:49:24 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY feature
+Subject: Re: linux-next: manual merge of the kselftest tree with the
+ mm-hotfixes tree
 Content-Language: en-US
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20231018204511.1563390-1-mathieu.desnoyers@efficios.com>
- <20231018204511.1563390-2-mathieu.desnoyers@efficios.com>
- <ZTEUjBgthYhz7NXm@chenyu5-mobl2.ccr.corp.intel.com>
- <25e778e2-d91a-4f4d-9f6b-ff144eab3211@efficios.com>
-In-Reply-To: <25e778e2-d91a-4f4d-9f6b-ff144eab3211@efficios.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231019163310.6c24d6ac@canb.auug.org.au>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231019163310.6c24d6ac@canb.auug.org.au>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-19 09:28, Mathieu Desnoyers wrote:
-> On 2023-10-19 07:35, Chen Yu wrote:
-[...]
->>> +/*
->>> + * Returns true if adding the task utilization to the estimated
->>> + * utilization of the runnable tasks on @cpu does not exceed the
->>> + * capacity of @cpu.
->>> + *
->>> + * This considers only the utilization of _runnable_ tasks on the @cpu
->>> + * runqueue, excluding blocked and sleeping tasks. This is achieved by
->>> + * using the runqueue util_est.enqueued, and by estimating the capacity
->>> + * of @cpu based on arch_scale_cpu_capacity and 
->>> arch_scale_thermal_pressure
->>> + * rather than capacity_of() because capacity_of() considers
->>> + * blocked/sleeping tasks in other scheduler classes.
->>> + *
->>> + * The utilization vs capacity comparison is done without the margin
->>> + * provided by fits_capacity(), because fits_capacity() is used to
->>> + * validate whether the utilization of a task fits within the overall
->>> + * capacity of a cpu, whereas this function validates whether the task
->>> + * utilization fits within the _remaining_ capacity of the cpu, 
->>> which is
->>> + * more precise.
->>> + */
->>> +static inline bool task_fits_remaining_cpu_capacity(unsigned long 
->>> task_util,
->>> +                            int cpu)
->>> +{
->>> +    unsigned long total_util, capacity;
->>> +
->>> +    if (!sched_util_fits_capacity_active())
->>> +        return false;
->>> +    total_util = READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) + 
->>> task_util;
->>> +    capacity = arch_scale_cpu_capacity(cpu) - 
->>> arch_scale_thermal_pressure(cpu);
->>
->> scale_rt_capacity(cpu) could provide the remaining cpu capacity after 
->> substracted by
->> the side activity(rt tasks/thermal pressure/irq time), maybe it would 
->> be more accurate?
+On 10/18/23 23:33, Stephen Rothwell wrote:
+> Hi all,
 > 
-> AFAIU, scale_rt_capacity(cpu) works similarly to capacity_of(cpu) and 
-> considers blocked and sleeping tasks in the rq->avg_rt.util_avg and 
-> rq->avg_dl.util_avg. I'm not sure sure about rq->avg_irq.util_avg and 
-> thermal_load_avg().
+> Today's linux-next merge of the kselftest tree got a conflict in:
 > 
-> This goes against what is needed here: we need a utilization that only 
-> considers enqueued runnable tasks (exluding blocked and sleeping tasks). 
-> Or am I missing something ?
+>    tools/testing/selftests/clone3/clone3.c
+> 
+> between commit:
+> 
+>    fc7f04dc23db ("selftests/clone3: Fix broken test under !CONFIG_TIME_NS")
+> 
+> from the mm-hotfixes tree and commit:
+> 
+>    34dce23f7e40 ("selftests/clone3: Report descriptive test names")
+> 
+> from the kselftest tree.
+> 
+> I fixed it up (I used this files form the latter commit) and can carry the
+> fix as necessary. This is now fixed as far as linux-next is concerned,
+> but any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
 > 
 
-I was wrong. Looking more closely at dl and rt sched classes, unlike the 
-fair sched class, they don't appear to take into account 
-sleeping/blocked tasks in their util_avg. They just accumulate the rq 
-util_sum and derive a rq util_avg from it. Likewise for thermal and irq.
+Thank you Stephen.
 
-So both capacity_of(cpu) and scale_rt_capacity(cpu) would appear to do 
-what we need here, but AFAIU capacity_of(cpu) is based on a metric which 
-is only updated once per jiffy or so.
+I can rebase linux-kselftest next to pick up the following once it goes
+into Linus's tree.
 
-Let me try using scale_rt_capacity(cpu) then.
+fc7f04dc23db ("selftests/clone3: Fix broken test under !CONFIG_TIME_NS")
 
-Thanks!
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+thanks,
+-- Shuah
