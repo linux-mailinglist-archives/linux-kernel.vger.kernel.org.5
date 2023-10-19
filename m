@@ -2,199 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA897CEE7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2ADC7CEE80
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjJSDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 23:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
+        id S231709AbjJSDw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 23:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjJSDkI (ORCPT
+        with ESMTP id S229632AbjJSDwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 23:40:08 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D392F119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:40:06 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5ac88d2cfaaso4461912a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697686806; x=1698291606; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsofs2k6zHeKQD5ybugu7TrRiu+zkH9j5tthfb8AQqg=;
-        b=gk5/ewUeoCBNp21HAlbcgzuLj6YaB5kWjUAWTdsf1nTf0BETZmcz0MLtjJF6Iy38zL
-         gJu9Bgiy81VG1XQtrWGHAcplhy19ZVa/uGRaQFcrriXJe0Yclq8t8ArBHaDo2iHbpbC/
-         L6YaudLdzncPKn2n83c3XVBW16CzmjImJnGmDRbd7dBKSIJTTDy7gcEjpQplYT7GZ5Ep
-         odCvk11GpDtbihWyaLyoDiBhidTwazupFdE2kSQPR3QlrVJWg5aAGaJpezC8v3ow5zBs
-         COkYO1IdV3ujojNvZPvDc79hIvxgPtBlUOuvmIwlxQobDLsUhqxt5CFFr+/TV8/nuNiY
-         WwoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697686806; x=1698291606;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wsofs2k6zHeKQD5ybugu7TrRiu+zkH9j5tthfb8AQqg=;
-        b=FdAFTyAY6Xv8CFjjcmtw85aO7UGoZkIdMgF2Smbyd40/4x4u3WuJxKqWxZ/IK+58Pg
-         F/DAqjZpsWIn26wlquW4UdknXofLr7P/kzZBRkYApesza5EmcLHZKBssAnidbMPivPfn
-         /ZEg6MHwh8DZfumprLLgQm6x8vVD3Njyxo3kDHagWey8iUD+GZ1fW4WkkQM3dmCsZVLb
-         7CJmWaG5rYPKL2RuR8NEtBQ+aibS1ZbGNCH5shaalcWs/EkhkpKKuIA+NQXdx1qXqLKy
-         7mkHnQe9kPi4iVTYXUe6/wRO/FpRSNMFdORYaUH1OkwYElGDh9aEtDzZ9TARVYVHq5nY
-         CAFg==
-X-Gm-Message-State: AOJu0YzOTpijYl5MfQ/Hvh94x6NKMzTADmQAYrAtQs7NdB2Sq1x/qiJj
-        qa4yuo+lK2DMlf4ua4GNx1s=
-X-Google-Smtp-Source: AGHT+IEunCYOYptFzVz1AXznXSzgFQhTOcRtr+jKC9P7HYaV3Dv5vu0wSFCjNiy5+MhCxEMzSpdSgg==
-X-Received: by 2002:a05:6a21:99a9:b0:14c:daa9:5e22 with SMTP id ve41-20020a056a2199a900b0014cdaa95e22mr1122944pzb.45.1697686806137;
-        Wed, 18 Oct 2023 20:40:06 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id p17-20020a170902ead100b001c9db5e2929sm702972pld.93.2023.10.18.20.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 20:40:05 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id A9A108B8EDC7; Thu, 19 Oct 2023 10:40:02 +0700 (WIB)
-Date:   Thu, 19 Oct 2023 10:40:02 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     James Dutton <james.dutton@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Calvince Otieno <calvncce@gmail.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: Is strncpy really less secure than strscpy ?
-Message-ID: <ZTClEi_X9-SbiPFU@debian.me>
-References: <CAAMvbhG40h6pqSf91BurDHQqeoKfP30bwnpvSDRHBN4Hoygqew@mail.gmail.com>
- <ZTCLLinnaqIILXsJ@debian.me>
- <cf6950bc-32c8-459c-a4b1-ca0a291fc2f8@infradead.org>
- <202310181929.BCC265C@keescook>
+        Wed, 18 Oct 2023 23:52:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D943BE;
+        Wed, 18 Oct 2023 20:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697687571; x=1729223571;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EyExOR9MjyPbtRHp0H6mdIrgW/PyQazk4lBJT1IkEiA=;
+  b=OhBBvJqlOIBN4h8PuVnwIHIgy/+KMFiJch0MMNcQHTEAsGRa/ewW+zZS
+   +0KyQGjdm3tN3CxYjKFyXNcVDFoSsKjhINGh3VPEyhz3jblaq1BDV1HLT
+   YVpAdifJ86cb/WehfCpUuUgrq37mPLb8yOSiRxuP91qyVPut7TqEyjrVA
+   yImeNnsM7Ax2Z6v1r9Z50J+ZOjTf37BKhtBAtJlDKeK2gsEyJMJL8Vos6
+   xhNVpH8VkU3s2mlI/DvqwfCbZVmfltdlmbcK781O0/JW5tk1UPAh019ac
+   EqENtPvZBvy1Nsg+IX5KMeJTQ3NsYrsAKQ/kyAEv3DJIGzKKZCNkL/F4b
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="7720241"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="7720241"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 20:52:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900594508"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="900594508"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Oct 2023 20:50:40 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtK5U-0001Ya-0U;
+        Thu, 19 Oct 2023 03:52:44 +0000
+Date:   Thu, 19 Oct 2023 11:51:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tylor Yang <tylor_yang@himax.corp-partner.google.com>,
+        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        poyuan_chang@himax.corp-partner.google.com,
+        jingyliang@chromium.org, hbarnor@chromium.org, wuxy23@lenovo.com,
+        luolm1@lenovo.com, poyu_hung@himax.corp-partner.google.com,
+        Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+Subject: Re: [PATCH v3 4/4] HID: touchscreen: Add initial support for Himax
+ HID-over-SPI
+Message-ID: <202310191116.ulMkjBrE-lkp@intel.com>
+References: <20231017091900.801989-5-tylor_yang@himax.corp-partner.google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cr65md8gz4E8Td9w"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202310181929.BCC265C@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231017091900.801989-5-tylor_yang@himax.corp-partner.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tylor,
 
---cr65md8gz4E8Td9w
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-On Wed, Oct 18, 2023 at 07:56:36PM -0700, Kees Cook wrote:
-> On Wed, Oct 18, 2023 at 07:27:20PM -0700, Randy Dunlap wrote:
-> >=20
-> >=20
-> > On 10/18/23 18:49, Bagas Sanjaya wrote:
-> > > [Disclaimer: I have little to no knowledge of C, so things may be wro=
-ng.
-> > >  Please correct me if it is the case. Also Cc: recent people who work=
- on
-> > >  strscpy() conversion.]
->=20
-> Here are the current docs on the deprecated use of strncpy:
-> https://docs.kernel.org/process/deprecated.html#strncpy-on-nul-terminated=
--strings
-> which could probably be improved.
->=20
-> > Also Cc: the STRING maintainers.
-> >=20
-> > > On Thu, Oct 19, 2023 at 12:22:33AM +0100, James Dutton wrote:
-> > >> Is strncpy really less secure than strscpy ?
->=20
-> Very. :)
->=20
-> > >> If one uses strncpy and thus put a limit on the buffer size during t=
-he
-> > >> copy, it is safe. There are no writes outside of the buffer.
-> > >> If one uses strscpy and thus put a limit on the buffer size during t=
-he
-> > >> copy, it is safe. There are no writes outside of the buffer.
-> > >=20
-> > > Well, assuming that the string is NUL-terminated, the end result shou=
-ld
-> > > be the same.
->=20
-> Note the use of "If" in the above sentences. :) This is what makes
-> strncpy so dangerous -- it's only "correct" if the length argument is
-> less than the size of the _source_ buffer. And by "correct", I mean
-> that only then will strncpy produce a C-string. If not, it's a memcpy
-> and leaves the buffer unterminated. This lack of %NUL-termination leads
-> to all kinds of potential "downstream" problems with reading past the
-> end of the buffer, etc.
+[auto build test WARNING on hid/for-next]
+[also build test WARNING on dtor-input/next dtor-input/for-linus robh/for-next linus/master v6.6-rc6 next-20231018]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Oh, that's what I mean by the same results.
+url:    https://github.com/intel-lab-lkp/linux/commits/Tylor-Yang/dt-bindings-input-Introduce-Himax-HID-over-SPI-device/20231017-172156
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+patch link:    https://lore.kernel.org/r/20231017091900.801989-5-tylor_yang%40himax.corp-partner.google.com
+patch subject: [PATCH v3 4/4] HID: touchscreen: Add initial support for Himax HID-over-SPI
+config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20231019/202310191116.ulMkjBrE-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310191116.ulMkjBrE-lkp@intel.com/reproduce)
 
->=20
-> One of the easiest ways to avoid bugs is to remove ambiguity, and
-> strncpy is full of it. :P
->=20
-> Almost more important than the potential lack of %NUL-termination is
-> the fact that strncpy() doesn't tell other maintainers _why_ it was used
-> because it has several "effects" that aren't always intended:
->=20
-> - is the destination supposed to be %NUL terminated? (We covered this)
-> - is the destination supposed to be %NUL padded?
->=20
-> strncpy pads the destination -- is this needed? Is it a waste of CPU
-> time?
->=20
-> > >=20
-> > >> But, one can fit more characters in strncpy than strscpy because
-> > >> strscpy enforces the final \0 on the end.
-> > >> One could argue that strncpy is better because it might save the spa=
-ce
-> > >> of one char at the end of a string array.
->=20
-> At the cost of creating non-C-strings. And this is a completely bonkers
-> result for the "C String API" to produce. :P
->=20
-> > >> There are cases where strncpy might be unsafe. For example copying
-> > >> between arrays of different sizes, and that is a case where strscpy
-> > >> might be safer, but strncpy can be made safe if one ensures that the
-> > >> size used in strncpy is the smallest of the two different array size=
-s.
->=20
-> The CONFIG_FORTIFY_SOURCE option in the kernel adds a bunch of
-> sanity-checking to the APIs (some of which can be determined at compile
-> time), but it doesn't remove the ambiguity of using strncpy. We want the
-> kernel to have maintainable code, and when it's not clear which of a
-> handful of side-effects are _intended_ from an API, that's a bad API. :)
->=20
-> > >=20
-> > > Code example on both cases?
-> > >=20
-> > >>
-> > >> If one blindly replaces strncpy with strscpy across all uses, one
-> > >> could unintentionally be truncating the results and introduce new
-> > >> bugs.
->=20
-> Yes, of course. That's why we're not blindly replacing them. :) And the
-> diagnostic criteria has been carefully described:
-> https://github.com/KSPP/linux/issues/90
->=20
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310191116.ulMkjBrE-lkp@intel.com/
 
-Thanks for the explanation!
+All warnings (new ones prefixed by >>):
 
---=20
-An old man doll... just what I always wanted! - Clara
+>> drivers/hid/hx-hid/hx_plat.c:19:6: warning: no previous prototype for 'himax_rst_gpio_set' [-Wmissing-prototypes]
+      19 | void himax_rst_gpio_set(int pinnum, u8 value)
+         |      ^~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_plat.c:309:13: warning: no previous prototype for 'himax_ts_thread' [-Wmissing-prototypes]
+     309 | irqreturn_t himax_ts_thread(int irq, void *ptr)
+         |             ^~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_plat.c:461:6: warning: no previous prototype for 'hx_check_power_status' [-Wmissing-prototypes]
+     461 | void hx_check_power_status(struct work_struct *work)
+         |      ^~~~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_plat.c:473:5: warning: no previous prototype for 'pwr_notifier_callback' [-Wmissing-prototypes]
+     473 | int pwr_notifier_callback(struct notifier_block *self,
+         |     ^~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/kernel.h:30,
+                    from include/linux/cpumask.h:10,
+                    from include/linux/mm_types_task.h:14,
+                    from include/linux/mm_types.h:5,
+                    from include/linux/buildid.h:5,
+                    from include/linux/module.h:14,
+                    from drivers/hid/hx-hid/hx_core.h:5,
+                    from drivers/hid/hx-hid/hx_ic_core.h:6,
+                    from drivers/hid/hx-hid/hx_ic_core.c:16:
+   drivers/hid/hx-hid/hx_ic_core.c: In function 'hx_mcu_bin_desc_get':
+   include/linux/kern_levels.h:5:25: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+       5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
+         |                         ^~~~~~
+   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                         ^~~~
+   include/linux/printk.h:508:9: note: in expansion of macro 'printk'
+     508 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |         ^~~~~~
+   include/linux/kern_levels.h:12:25: note: in expansion of macro 'KERN_SOH'
+      12 | #define KERN_WARNING    KERN_SOH "4"    /* warning conditions */
+         |                         ^~~~~~~~
+   include/linux/printk.h:508:16: note: in expansion of macro 'KERN_WARNING'
+     508 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |                ^~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.h:64:24: note: in expansion of macro 'pr_warn'
+      64 | #define W(fmt, arg...) pr_warn("[HXTP][WARNING][%s]: " fmt "\n", __func__, ##arg)
+         |                        ^~~~~~~
+   drivers/hid/hx-hid/hx_ic_core.c:1595:25: note: in expansion of macro 'W'
+    1595 |                         W("hid_table_addr = %d, ts->hxfw->size = %lu!",
+         |                         ^
+   include/linux/kern_levels.h:5:25: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+       5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
+         |                         ^~~~~~
+   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                         ^~~~
+   include/linux/printk.h:508:9: note: in expansion of macro 'printk'
+     508 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |         ^~~~~~
+   include/linux/kern_levels.h:12:25: note: in expansion of macro 'KERN_SOH'
+      12 | #define KERN_WARNING    KERN_SOH "4"    /* warning conditions */
+         |                         ^~~~~~~~
+   include/linux/printk.h:508:16: note: in expansion of macro 'KERN_WARNING'
+     508 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |                ^~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.h:64:24: note: in expansion of macro 'pr_warn'
+      64 | #define W(fmt, arg...) pr_warn("[HXTP][WARNING][%s]: " fmt "\n", __func__, ##arg)
+         |                        ^~~~~~~
+   drivers/hid/hx-hid/hx_ic_core.c:1597:25: note: in expansion of macro 'W'
+    1597 |                         W("hid_rd_desc_addr = %d, rd_len = %d, ts->hxfw->size = %lu!",
+         |                         ^
+   drivers/hid/hx-hid/hx_ic_core.c: At top level:
+>> drivers/hid/hx-hid/hx_ic_core.c:2404:5: warning: no previous prototype for 'himax_zf_part_info' [-Wmissing-prototypes]
+    2404 | int himax_zf_part_info(const struct firmware *fw, struct himax_ts_data *ts,
+         |     ^~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_ic_core.c:2598:5: warning: no previous prototype for 'himax_mcu_firmware_update_0f' [-Wmissing-prototypes]
+    2598 | int himax_mcu_firmware_update_0f(const struct firmware *fw,
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_ic_core.c:2693:5: warning: no previous prototype for 'hx_0f_op_file_dirly' [-Wmissing-prototypes]
+    2693 | int hx_0f_op_file_dirly(char *file_name, struct himax_ts_data *ts)
+         |     ^~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_ic_core.c:2746:6: warning: no previous prototype for 'himax_mcu_read_sram_0f' [-Wmissing-prototypes]
+    2746 | void himax_mcu_read_sram_0f(struct himax_ts_data *ts,
+         |      ^~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_ic_core.c:2847:6: warning: no previous prototype for 'himax_mcu_read_all_sram' [-Wmissing-prototypes]
+    2847 | void himax_mcu_read_all_sram(struct himax_ts_data *ts, u8 *addr,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_ic_core.c:2905:6: warning: no previous prototype for 'himax_mcu_firmware_read_0f' [-Wmissing-prototypes]
+    2905 | void himax_mcu_firmware_read_0f(struct himax_ts_data *ts,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   drivers/hid/hx-hid/hx_core.c: In function 'himax_boot_upgrade':
+>> drivers/hid/hx-hid/hx_core.c:701:14: warning: variable 'fw_load_status' set but not used [-Wunused-but-set-variable]
+     701 |         bool fw_load_status = false;
+         |              ^~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.c: At top level:
+>> drivers/hid/hx-hid/hx_core.c:831:6: warning: no previous prototype for 'hx_hid_update' [-Wmissing-prototypes]
+     831 | void hx_hid_update(struct work_struct *work)
+         |      ^~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_core.c:890:6: warning: no previous prototype for 'himax_report_data_deinit' [-Wmissing-prototypes]
+     890 | void himax_report_data_deinit(struct himax_ts_data *ts)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_core.c:940:5: warning: no previous prototype for 'himax_chip_suspend' [-Wmissing-prototypes]
+     940 | int himax_chip_suspend(struct himax_ts_data *ts)
+         |     ^~~~~~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.c: In function 'himax_chip_suspend':
+>> drivers/hid/hx-hid/hx_core.c:942:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+     942 |         int ret = 0;
+         |             ^~~
+   drivers/hid/hx-hid/hx_core.c: At top level:
+>> drivers/hid/hx-hid/hx_core.c:983:5: warning: no previous prototype for 'himax_chip_resume' [-Wmissing-prototypes]
+     983 | int himax_chip_resume(struct himax_ts_data *ts)
+         |     ^~~~~~~~~~~~~~~~~
+>> drivers/hid/hx-hid/hx_core.c:1212:6: warning: no previous prototype for 'himax_chip_deinit' [-Wmissing-prototypes]
+    1212 | void himax_chip_deinit(struct himax_ts_data *ts)
+         |      ^~~~~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.c: In function 'himax_platform_init':
+>> drivers/hid/hx-hid/hx_core.c:1271:13: warning: variable 'err' set but not used [-Wunused-but-set-variable]
+    1271 |         int err = PROBE_FAIL;
+         |             ^~~
+   drivers/hid/hx-hid/hx_core.c: At top level:
+>> drivers/hid/hx-hid/hx_core.c:1353:5: warning: no previous prototype for 'himax_spi_drv_probe' [-Wmissing-prototypes]
+    1353 | int himax_spi_drv_probe(struct spi_device *spi)
+         |     ^~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/asm-generic/bug.h:22,
+                    from ./arch/xtensa/include/generated/asm/bug.h:1,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/xtensa/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:79,
+                    from include/linux/spinlock.h:56,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:16,
+                    from include/linux/hid.h:19,
+                    from drivers/hid/hx-hid/hx_hid.c:16:
+   drivers/hid/hx-hid/hx_hid.c: In function 'hx_hid_get_raw_report':
+>> drivers/hid/hx-hid/hx_core.h:66:33: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                                 ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:345:21: note: in definition of macro 'pr_fmt'
+     345 | #define pr_fmt(fmt) fmt
+         |                     ^~~
+   include/linux/dynamic_debug.h:248:9: note: in expansion of macro '__dynamic_func_call_cls'
+     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:250:9: note: in expansion of macro '_dynamic_func_call_cls'
+     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:269:9: note: in expansion of macro '_dynamic_func_call'
+     269 |         _dynamic_func_call(fmt, __dynamic_pr_debug,             \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:579:9: note: in expansion of macro 'dynamic_pr_debug'
+     579 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.h:66:24: note: in expansion of macro 'pr_debug'
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                        ^~~~~~~~
+   drivers/hid/hx-hid/hx_hid.c:264:9: note: in expansion of macro 'D'
+     264 |         D("reportnum:%d, len:%lu, report_type:%d", reportnum, len, report_type);
+         |         ^
+   drivers/hid/hx-hid/hx_hid.c: In function 'hx_hid_set_raw_report':
+>> drivers/hid/hx-hid/hx_core.h:66:33: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                                 ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:345:21: note: in definition of macro 'pr_fmt'
+     345 | #define pr_fmt(fmt) fmt
+         |                     ^~~
+   include/linux/dynamic_debug.h:248:9: note: in expansion of macro '__dynamic_func_call_cls'
+     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:250:9: note: in expansion of macro '_dynamic_func_call_cls'
+     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:269:9: note: in expansion of macro '_dynamic_func_call'
+     269 |         _dynamic_func_call(fmt, __dynamic_pr_debug,             \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:579:9: note: in expansion of macro 'dynamic_pr_debug'
+     579 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.h:66:24: note: in expansion of macro 'pr_debug'
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                        ^~~~~~~~
+   drivers/hid/hx-hid/hx_hid.c:437:9: note: in expansion of macro 'D'
+     437 |         D("reportnum:%d, len:%lu, report_type:%d", reportnum, len, report_type);
+         |         ^
+   drivers/hid/hx-hid/hx_hid.c: In function 'hx_raw_request':
+>> drivers/hid/hx-hid/hx_core.h:66:33: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                                 ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:345:21: note: in definition of macro 'pr_fmt'
+     345 | #define pr_fmt(fmt) fmt
+         |                     ^~~
+   include/linux/dynamic_debug.h:248:9: note: in expansion of macro '__dynamic_func_call_cls'
+     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:250:9: note: in expansion of macro '_dynamic_func_call_cls'
+     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dynamic_debug.h:269:9: note: in expansion of macro '_dynamic_func_call'
+     269 |         _dynamic_func_call(fmt, __dynamic_pr_debug,             \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/linux/printk.h:579:9: note: in expansion of macro 'dynamic_pr_debug'
+     579 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~
+   drivers/hid/hx-hid/hx_core.h:66:24: note: in expansion of macro 'pr_debug'
+      66 | #define D(fmt, arg...) pr_debug("[HXTP][DEBUG][%s]: " fmt "\n", __func__, ##arg)
+         |                        ^~~~~~~~
+   drivers/hid/hx-hid/hx_hid.c:621:9: note: in expansion of macro 'D'
+     621 |         D("report num %d, len %lu, rtype %d, reqtype %d", reportnum, len, rtype, reqtype);
+         |         ^
 
---cr65md8gz4E8Td9w
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+vim +/himax_rst_gpio_set +19 drivers/hid/hx-hid/hx_plat.c
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTClDgAKCRD2uYlJVVFO
-o7xeAP489Ie/HoB+vWO6ImArSb4o4Vg0dLOeod7/BazTDazfAQEA7pI79ussFSjl
-3dGEio/J7sGz7YNEDOwQhJ1JtnLZgwQ=
-=0Hki
------END PGP SIGNATURE-----
+    18	
+  > 19	void himax_rst_gpio_set(int pinnum, u8 value)
+    20	{
+    21		gpio_direction_output(pinnum, value);
+    22	}
+    23	
 
---cr65md8gz4E8Td9w--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
