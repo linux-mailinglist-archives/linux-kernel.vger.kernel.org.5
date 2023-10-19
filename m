@@ -2,58 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907E97CECAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EA7CECB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJSAQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
+        id S231950AbjJSAUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 20:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSAQm (ORCPT
+        with ESMTP id S229632AbjJSAUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:16:42 -0400
+        Wed, 18 Oct 2023 20:20:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD063FE;
-        Wed, 18 Oct 2023 17:16:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73910C433C7;
-        Thu, 19 Oct 2023 00:16:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA904FE;
+        Wed, 18 Oct 2023 17:20:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1753FC433C8;
+        Thu, 19 Oct 2023 00:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697674600;
-        bh=6uPwkZ4yiG6o3MMwW++45pNUHDSPtK16RZV1nf9Kw6w=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=f8izOVvgCNr3OCTnTZBVaFgBngHWPPx/mayolA5yr1fNK+U0NeZnCH63olaVpZGGC
-         NfJ9vsf3uh9bJK3bafY3C7e/J/GQcot0sgkqx7Rmc8TdKzGpBSem4ZEXcCKofmgz4I
-         X44gX+Z3yI1l5CGVHHmVwtRAPoZZ2Ottgaf6P82ir6k0eCzDpe2JUcXQXakXz2hTSm
-         GpvDSGHF5cl9AiuFxtArZGfoeINVdu3sYMBYiIvPyhiJmvZOkb2E5BXlTjiQrzFkH8
-         b9ZnHMLKHf4QeBiAWXy1HqKZ9I7NuNaWr5ZoCxh7oHkLsRvFlEsRZ1Wzfy7qILT2xm
-         CjQi+eAGTOKqg==
-Message-ID: <c3dfeecf5cde513cf675b2f1a382f7a4.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1697674806;
+        bh=dxFpRFGQyZYIt12hrHgMufWeqE05AdXR2afP4eEpMLU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EtTjOL6T7kpVGiMQBlY9JUSeIpRaurrIM4JwgzxgVfML6zjp89ZXotZhHt0JTWOk7
+         uDzhIRAcEWdRCHC/LLDwrIbj0fQKwQz1Vze+94phMo0XZbKViWkJie8TY89DF7gl4i
+         aPjAd7qDPTPyI0RCzmsoPFesF9ZAZDFnC/NrQw7TAwp5E+KCe3IK3dB7Pwqij6bLlC
+         BkF0xxU5lXKleXt6sJyC7zT71JpESUlIjVSiTGb2Jvejo35jb/ykViTcbOs9Gh3e/3
+         fnMDSMq5MgN/NFn4khDuhTqF4m38BINMJ6M7769H9qzcYxGKMudRLN8GPgylceOstA
+         CdAZAkyJpbyaw==
+Date:   Wed, 18 Oct 2023 17:20:05 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, pabeni@redhat.com,
+        martin.lau@linux.dev, krisman@suse.de,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org, Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v7 03/11] net/socket: Break down __sys_setsockopt
+Message-ID: <20231018172005.6c43c7ca@kernel.org>
+In-Reply-To: <20231016134750.1381153-4-leitao@debian.org>
+References: <20231016134750.1381153-1-leitao@debian.org>
+        <20231016134750.1381153-4-leitao@debian.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <76f3bc23-8677-42bd-a3a5-43b17cbe552e@linaro.org>
-References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com> <20230913-gpll_cleanup-v2-1-c8ceb1a37680@quicinc.com> <76f3bc23-8677-42bd-a3a5-43b17cbe552e@linaro.org>
-Subject: Re: [PATCH v2 01/11] clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        stable@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Devi Priya <quic_devipriy@quicinc.com>,
-        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Varadarajan Narayanan <quic_varada@quicinc.com>
-Date:   Wed, 18 Oct 2023 17:16:38 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,20 +54,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2023-09-15 05:19:56)
-> On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
-> > GPLL, NSS crypto PLL clock rates are fixed and shouldn't be scaled based
-> > on the request from dependent clocks. Doing so will result in the
-> > unexpected behaviour. So drop the CLK_SET_RATE_PARENT flag from the PLL
-> > clocks.
-> >=20
-> > Cc: stable@vger.kernel.org
-> > Fixes: b8e7e519625f ("clk: qcom: ipq8074: add remaining PLL=E2=80=99s")
-> > Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> > ---
-> Stephen, do you think there should be some sort of error
-> or at least warning thrown when SET_RATE_PARENT is used with
-> RO ops?
->=20
+On Mon, 16 Oct 2023 06:47:41 -0700 Breno Leitao wrote:
+> Split __sys_setsockopt() into two functions by removing the core
+> logic into a sub-function (do_sock_setsockopt()). This will avoid
+> code duplication when doing the same operation in other callers, for
+> instance.
+> 
+> do_sock_setsockopt() will be called by io_uring setsockopt() command
+> operation in the following patch.
 
-Sure? How would that be implemented?
+Acked-by: Jakub Kicinski <kuba@kernel.org>
