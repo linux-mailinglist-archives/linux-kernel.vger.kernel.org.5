@@ -2,185 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C72687CF268
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E787CF266
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbjJSIWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59558 "EHLO
+        id S1344938AbjJSIWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235293AbjJSIWQ (ORCPT
+        with ESMTP id S235272AbjJSIWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 04:22:16 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2073.outbound.protection.outlook.com [40.107.93.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C4F13D;
-        Thu, 19 Oct 2023 01:22:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KeP46Y6/mBi87lHCNZKVZVKOq/th7Ju+sSLEqOBZjUSD6J+Gn/fr+4u8Jk6fJS2zQjIFYUIuJhyqyq1H3jGzl5gOpB/4zknMvDL7PlYxIraIhHrgEkzSyNsHxT5k0f8qZYJnRr9p5KTvpdNdfpPnuHSZsIjz3hzQ6rFI7ArAmAA+yORPn8k+PyuTn4RQrfKSf2Ao0FxvVFgANYchHMBe5YPB7uf+b82X1AakLsSZWwAr3iJH/RIEbBeAi/vYzHHAc+TJRn/lrT3yfvd7lMDHsnjvEFAHUG9rqrQvnQVkRUC0R8vcuG4tHF02zSuyW/p9DDa2MSOW7vbZKKuUJnbWTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9c+wlIyjjSBKjSN4BGAK+jh1CNCSmYTfBY11bsOb3Cc=;
- b=XcH8ZDGwSM9nWchcZrzEAdgRyPx0XCPaeo4yfO/OdwtY0hs5okc4WP+WKCbRqTrg+n/xqvSs8azgqyB/9Qh9rydV85Q0LPypMiW6P4CslCZx3TwTEWrZPhdDPN5X4ss9E5GvEfe1kjKGT6OOxjfoS6fRdCHda5kIpvuGcdDMi0fJiYyBosBnBxTZFpD3ByebtfH4BqhWsUmvQTGogBIeO8GAA9q677v+D7b3+WKbyDMciH1kgmdIe/YF5VU9nikZ7DwQyRNKizfMWKiSGhmug+KtYHIEigZ0eWPH9oTbUkK6pW8ImJ602hk3Tc7wsmIdwZj52HE6ItzqxGJy0PQ4xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9c+wlIyjjSBKjSN4BGAK+jh1CNCSmYTfBY11bsOb3Cc=;
- b=sCzFjDp0rPs2RQv6VdIw02O+wpSCvgAxFRoX8y1q1xHTqZyZJ6zLarwP9gZfXlv6Ii0GmlhPQvhvI3LKTeqrmcIbBWx40hJRFdd/F/TX7aXrO298HzqOR+Yg3M3EfgR0piBywz7bbjaPuJH+T8yn8hveLz+3Xfqz/QwjaEhQTHtWwLdnHYN17CdE4fN87iYd1imrQGUFKwhFIcCJEH4tUU8Ur2Ru3TbRbHS7OYUhhhqfxny00RAuxNChJELu3vOw3BoLkRIgow2oQzYLfM883ug84YOwJrmucz4cvYq7YdtujwrYmZXSI+sgZnUqIBdrx3PeJKChR/0mHEudwXX1Lg==
-Received: from BL1P222CA0025.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::30)
- by IA1PR12MB8408.namprd12.prod.outlook.com (2603:10b6:208:3db::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Thu, 19 Oct
- 2023 08:22:12 +0000
-Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
- (2603:10b6:208:2c7:cafe::f1) by BL1P222CA0025.outlook.office365.com
- (2603:10b6:208:2c7::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.25 via Frontend
- Transport; Thu, 19 Oct 2023 08:22:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Thu, 19 Oct 2023 08:22:12 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 19 Oct
- 2023 01:21:59 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Thu, 19 Oct 2023 01:21:58 -0700
-Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Thu, 19 Oct 2023 01:21:56 -0700
-From:   Patrisious Haddad <phaddad@nvidia.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>
-CC:     Patrisious Haddad <phaddad@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-        <michaelgur@nvidia.com>
-Subject: [PATCH iproute2-next 3/3] rdma: Adjust man page for rdma system set privileged_qkey command
-Date:   Thu, 19 Oct 2023 11:21:38 +0300
-Message-ID: <20231019082138.18889-4-phaddad@nvidia.com>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <20231019082138.18889-1-phaddad@nvidia.com>
-References: <20231019082138.18889-1-phaddad@nvidia.com>
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C5A11B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9ba72f6a1so16325575ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697703712; x=1698308512; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rzWkTfJOR6mlT/tI7WZYHyubNo6hZu3yDARes/L4kiw=;
+        b=HYqDKoM2mP5sxb39zZEIDCQLxqTxoqogZqNliYz+2mQYbg/3T4jUBIyyB3KDRNbUCf
+         i0HICOkEfgaFo4E7GfzWC3pafHEEgEgZwf3suY5NJYstS7xL7H0QTdgFrf5mY2s1VkUL
+         /X357aRJ5nLaZXZXE7bXxVzkwRLvy+dDiVBsPXuwDUuxBRwJO6X4ZFD+fQDqTwaEagU2
+         zvl4U4idnpo/tfz8p3dELkM64Xyx9rhWJJFYWZIVAS3mhOOd2W57XEw8MYDYVud4ubJ5
+         hnJqg3mm6q/v+4P8Ymv7TkUNKVYRdSmHToBr6wulp53wJiftDuMlz40Sk5MP0c1Ihriz
+         XysA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697703712; x=1698308512;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzWkTfJOR6mlT/tI7WZYHyubNo6hZu3yDARes/L4kiw=;
+        b=g96Fv1oJaoMwdeNohuY+ZbnAqg2cuyKPwEuUvx9F4Rp/v4CjgP/jRgmzMG0EmT/avH
+         gnsxQ4XD4JF+DC3HxzAWwfNl79n8IxucK4fhrlLrkna0tVRQ4LpVoq/Dat/vl9e//P5K
+         Sz0sRvZBODYjyuC/IL4XHqGwoIF8VHR6mFS4C7DHLFVV/+zK5tMkCCO5sBv0jSjaomzl
+         hdriuVzeaDchGkNFT80IzHSmYpS+cUItKQmIPymX5fRzhX1+0tk1OWc8i1AvZbJdzf9R
+         ne+zMMI4bQLJZ0dZZ8eHQhwsrR+uVhP1qWVNpxXMZhy6SsapD79mxI6AcQArANKxVl+w
+         t3cQ==
+X-Gm-Message-State: AOJu0Ywp4WZrLwqZIpuebLhSn7BrbvOAzBLqCi4WqvosLWNpn9NZSsPH
+        F87wxtilNPyKscikqTmf5LnGyPS5l860ovxKlT0=
+X-Google-Smtp-Source: AGHT+IFT1ytJFHX459IjWo92YzEa15urreygDmo5AXzXIax+NPRaECoXEqMaMKWSFBvbAOF0ITdkfw==
+X-Received: by 2002:a17:903:288f:b0:1b8:9fc4:2733 with SMTP id ku15-20020a170903288f00b001b89fc42733mr1604217plb.3.1697703712010;
+        Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
+Received: from [10.84.155.153] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id a9-20020a1709027d8900b001bbc8d65de0sm1293994plm.67.2023.10.19.01.21.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 01:21:51 -0700 (PDT)
+Message-ID: <76c6f4af-959c-1d6f-7df8-a2c1f9cd3adc@bytedance.com>
+Date:   Thu, 19 Oct 2023 16:21:44 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|IA1PR12MB8408:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10fa9d37-4c92-44db-6445-08dbd07c7efb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VTm5lnvXUTIx532CrK7oBKy2t4cirUdvEE9piliFY2F2SGi8H8RBcVOAOvbgCFEV1pgnCqhH5HxtcHq0iNj/22pndqNSiaa0o/w3l3T0PTNuJsD9NCwwnjFIcYkIaZT1n80kI35hbcdmk5Bd+vY+ROTJb4OeFoyYN/XFv1Hpj/ehZQjkXZgamd49rV3Eog07djBv2da4KpuQxjVC0/pPi+pj8eQxaLGGpGfG4vjvdKNK4i2TbqD/Ewx6F+Xp0PQ6VSHP78K5liSg2O4VTSk0QjQVIm4vDX+MUKoqTxyCQh8+Bm7RL5JbJ41isTPDzKoaVDDyKqrESdF6c3m+/kRWsXqEe3J+6jw3qxqMqMc8XIGH85o8p9CJt07XmAbnIoPmHIq8ihc3L/gZ70jUt9oKRjB3nNjA29rom79H2sWuGm3JLiny2or959Oil01D8+Lu4dFmv0JoMg/Q3rCbpIR0VmXWH6x52p26Kfwjmn/rYOOvYq9Z/qx64P0hGvR7snv4SfLCOo3rDe00NEQ+ZkiSPJ3CkLcv6B9y2gy+n4Y7gQYLeso7+Svl0r0SWzkWleoSJixwUIIL+kX+AzBi4u/E7p848xomROlLbTVsiOSoR5w2N4ykUlqo5GygXlhSsXWpFBdQFSFGhAgBWR9LSwo4JFtELISFIbiParilG9lnvtJ9Wki2qbkrEyfOK37IFo57Opbk6AMUlwfOBYV2BJxKgiNBi+rjRqUeshYxR/kq7XcKsO9EwlIoUMp4KTrigpPG
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(451199024)(82310400011)(186009)(64100799003)(1800799009)(46966006)(40470700004)(36840700001)(40460700003)(47076005)(36860700001)(40480700001)(6666004)(7696005)(41300700001)(2906002)(2616005)(1076003)(336012)(26005)(7636003)(107886003)(356005)(36756003)(426003)(316002)(4326008)(70586007)(8936002)(110136005)(54906003)(70206006)(5660300002)(86362001)(8676002)(478600001)(82740400003)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 08:22:12.5952
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10fa9d37-4c92-44db-6445-08dbd07c7efb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB56.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8408
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/2] mm: page_alloc: skip memoryless nodes entirely
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, rppt@kernel.org, vbabka@suse.cz,
+        mhocko@suse.com, willy@infradead.org, mgorman@techsingularity.net,
+        mingo@kernel.org, aneesh.kumar@linux.ibm.com, ying.huang@intel.com,
+        hannes@cmpxchg.org, osalvador@suse.de,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1697687357.git.zhengqi.arch@bytedance.com>
+ <7928768f2658cd563978f5e5bf8109be1d559320.1697687357.git.zhengqi.arch@bytedance.com>
+ <cd210991-5038-4ad3-ac03-abb6761c67bd@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <cd210991-5038-4ad3-ac03-abb6761c67bd@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
----
- man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++-----
- 1 file changed, 27 insertions(+), 5 deletions(-)
+Hi David,
 
-diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
-index ab1d89fd..a2914eb8 100644
---- a/man/man8/rdma-system.8
-+++ b/man/man8/rdma-system.8
-@@ -23,16 +23,16 @@ rdma-system \- RDMA subsystem configuration
- 
- .ti -8
- .B rdma system set
--.BR netns
--.BR NEWMODE
-+.BR netns/privileged_qkey
-+.BR NEWMODE/NEWSTATE
- 
- .ti -8
- .B rdma system help
- 
- .SH "DESCRIPTION"
--.SS rdma system set - set RDMA subsystem network namespace mode
-+.SS rdma system set - set RDMA subsystem network namespace mode or privileged qkey mode
- 
--.SS rdma system show - display RDMA subsystem network namespace mode
-+.SS rdma system show - display RDMA subsystem network namespace mode and privileged qkey state
- 
- .PP
- .I "NEWMODE"
-@@ -49,12 +49,21 @@ network namespaces is not needed, shared mode can be used.
- 
- It is preferred to not change the subsystem mode when there is active
- RDMA traffic running, even though it is supported.
-+.PP
-+.I "NEWSTATE"
-+- specifies the new state of the privileged_qkey parameter. Either enabled or disabled.
-+Whereas this decides whether a non-privileged user is allowed to specify a controlled
-+QKEY or not, since such QKEYS are considered privileged.
-+
-+When this parameter is enabled, non-privileged users will be allowed to
-+specify a controlled QKEY.
- 
- .SH "EXAMPLES"
- .PP
- rdma system show
- .RS 4
--Shows the state of RDMA subsystem network namespace mode on the system.
-+Shows the state of RDMA subsystem network namespace mode on the system and
-+the state of privileged qkey parameter.
- .RE
- .PP
- rdma system set netns exclusive
-@@ -69,6 +78,19 @@ Sets the RDMA subsystem in network namespace shared mode. In this mode RDMA devi
- are shared among network namespaces.
- .RE
- .PP
-+.PP
-+rdma system set privileged_qkey enabled
-+.RS 4
-+Sets the privileged_qkey parameter to enabled. In this state non-privileged user
-+is allowed to specify a controlled QKEY.
-+.RE
-+.PP
-+rdma system set privileged_qkey disabled
-+.RS 4
-+Sets the privileged_qkey parameter to disabled. In this state non-privileged user
-+is *not* allowed to specify a controlled QKEY.
-+.RE
-+.PP
- 
- .SH SEE ALSO
- .BR rdma (8),
--- 
-2.18.1
+On 2023/10/19 16:07, David Hildenbrand wrote:
+> On 19.10.23 09:36, Qi Zheng wrote:
+>> In find_next_best_node(), We skipped the memoryless nodes
+>> when building the zonelists of other normal nodes (N_NORMAL),
+>> but did not skip the memoryless node itself when building
+>> the zonelist. This will cause it to be traversed at runtime.
+>>
+>> For example, say we have node0 and node1, node0 is memoryless
+>> node, then the fallback order of node0 and node1 as follows:
+>>
+>> [    0.153005] Fallback order for Node 0: 0 1
+>> [    0.153564] Fallback order for Node 1: 1
+>>
+>> After this patch, we skip memoryless node0 entirely, then
+>> the fallback order of node0 and node1 as follows:
+>>
+>> [    0.155236] Fallback order for Node 0: 1
+>> [    0.155806] Fallback order for Node 1: 1
+>>
+>> So it becomes completely invisible, which will reduce runtime
+>> overhead.
+>>
+>> And in this way, we will not try to allocate pages from memoryless
+>> node0, then the panic mentioned in [1] will also be fixed. Even though
+>> this problem has been solved by dropping the NODE_MIN_SIZE constrain
+>> in x86 [2], it would be better to fix it in core MM as well.
+>>
+>> [1]. 
+>> https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
+>> [2]. https://lore.kernel.org/all/20231017062215.171670-1-rppt@kernel.org/
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   mm/page_alloc.c | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index ee392a324802..e978272699d3 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5052,8 +5052,11 @@ int find_next_best_node(int node, nodemask_t 
+>> *used_node_mask)
+>>       int min_val = INT_MAX;
+>>       int best_node = NUMA_NO_NODE;
+>> -    /* Use the local node if we haven't already */
+>> -    if (!node_isset(node, *used_node_mask)) {
+>> +    /*
+>> +     * Use the local node if we haven't already. But for memoryless 
+>> local
+>> +     * node, we should skip it and fallback to other nodes.
+>> +     */
+>> +    if (!node_isset(node, *used_node_mask) && node_state(node, 
+>> N_MEMORY)) {
+>>           node_set(node, *used_node_mask);
+>>           return node;
+>>       }
+> 
+> Makes sense to me; I suspect that online_pages() will just to the right 
+> thing and call build_all_zonelists() to fix it up.
 
+Yes, the find_next_best_node() will be called by build_all_zonelists().
+
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
+
+Thanks.
+
+> 
