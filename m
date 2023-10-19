@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DEC7CF4D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521807CF4DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345163AbjJSKN1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 06:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        id S1345203AbjJSKON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345039AbjJSKN0 (ORCPT
+        with ESMTP id S1345039AbjJSKOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:13:26 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F8FAB;
-        Thu, 19 Oct 2023 03:13:24 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5a84204e7aeso65014587b3.0;
-        Thu, 19 Oct 2023 03:13:24 -0700 (PDT)
+        Thu, 19 Oct 2023 06:14:11 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8ADAB;
+        Thu, 19 Oct 2023 03:14:09 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4083f61322fso11861985e9.1;
+        Thu, 19 Oct 2023 03:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697710448; x=1698315248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IGUCtaetBy4DTIj7ObfcLLLAyE9bn8S8QtM2xGRSe0M=;
+        b=JVbdojPWtVN063RMLzfL/gFjF1t4T3dkK4CqwgluozovFS5JXcFSnzddmc1HHuQ5GO
+         gDf/Akgeh6jnAFKVd28jF9m0YkquBndOkYGLVJCtCCOJu8yO29Zulpg9bUp6eCZ5I+7F
+         0ZyosdaajNcSn6ZLiM/6C+H2yQHEAJuSJT4/6UXXEMw/9td0zykNqTWbg466B04tKFPs
+         F3aYVKXEvzDn10gNX89vIQv6GnpRQMnRb9jBDOYKU0VGj5SZzNx0Ncb6YTXJOD74wtza
+         re0F+QKc/lsC2FjMNLYMN9MrnuJdXlTMQ2MuMItJQz67woNMnPa7kzuV+lh3H9nyMdyQ
+         ep5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697710404; x=1698315204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ueVyERLupOWZhKoj+SNssW24wTSLCgkYTKYz8h4y1RM=;
-        b=YnOCKMQiD9C/Sel+jbYLet+aQK3GhU58LTfeboSleJeiAbNaZEkgiA6UdkBGsVQwLh
-         ZU4qwGMxaJF2SvjRMl+8nzcZV9uLzqn2wLwvXaxmky/Mi0arvySpkeIFjwvZeGzcCEYL
-         HxkPWhxNJTSVwSycZDpb8feVHE1AIXHQbZirM4F+OiVTYU6v1jQayLvMvQC0OJ5HkBEc
-         5KHsnHI2+Ow7HwJ0s8RTq27XIFrauSi2tvMVm8qWEyF6p6Es8zPTWtOm086K+cny5pDv
-         oxHEAvsAT7W75bfQRlz4o8zZMAgQaRsRog1wwn2gv2jdztocVggKdlSgBzdSuVWU8KOv
-         6JMg==
-X-Gm-Message-State: AOJu0YxuMQ0vvLWRC5Fp1mb2NRUeRJMqx0qPjC5cMR84jBYbrs3OclmM
-        ewLB1JGIuYFM4w69q7p8AFFE8cvhyhpUSw==
-X-Google-Smtp-Source: AGHT+IG9PLqA1Eo4NcE78tIWBOofiVo6xqgWFcEzka+pJQ8yHbhjef1YhW25nooaN1vznww+fP333g==
-X-Received: by 2002:a05:690c:f0f:b0:5a7:fcae:f3e2 with SMTP id dc15-20020a05690c0f0f00b005a7fcaef3e2mr2516003ywb.43.1697710403897;
-        Thu, 19 Oct 2023 03:13:23 -0700 (PDT)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
-        by smtp.gmail.com with ESMTPSA id i83-20020a819156000000b005a7bf9749c8sm2326246ywg.4.2023.10.19.03.13.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 03:13:23 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a7c93507d5so93135847b3.2;
-        Thu, 19 Oct 2023 03:13:23 -0700 (PDT)
-X-Received: by 2002:a81:4948:0:b0:5a8:d86b:7469 with SMTP id
- w69-20020a814948000000b005a8d86b7469mr2016094ywa.8.1697710401858; Thu, 19 Oct
- 2023 03:13:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697710448; x=1698315248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IGUCtaetBy4DTIj7ObfcLLLAyE9bn8S8QtM2xGRSe0M=;
+        b=O/9wDJe1U5Rl14YtI4O/glW1rhFswhy+lf6HwXyZm6BEGVjxmHHegM137jA7ITsbRM
+         LV9DLHnedqoe92VuLJcSENZpetHgl2HpePxFiGttEZBUfzvOCdIHYEmvoDd2Ql0CZLYe
+         odbxFIKihZKcWELG3E3LhF/GdS9LSUZwRYEKWhih9JYcpdRn92ibNRKvO9RXQebBL80f
+         F9GR4BRoU/Uv3Vs+TmkPliUEa0qPk7cxEt9kO9oRGvJgprAKzCEm8AreQpdV3fI/0X0Q
+         6JxQEWFMpHq39Y5K4ATzI7hNChOLvLksfPnXDrSr0oBZthw9l7ZzYTOB/I5wcCKkX6Lz
+         Fu/g==
+X-Gm-Message-State: AOJu0Yz9Tlfqv/SOJ83d2R4b5ytDYumS+pMi1SWVf5PkN7aC6g9kklsz
+        xYpmIFlsPhPWi5GTvJId4A==
+X-Google-Smtp-Source: AGHT+IHzEjL2ZofK/ahM41KnEDz2FgNb9Vtr//9lYhRkMtUZitajDwzkRFkzi1Y0FLbZVt3K6x+4uw==
+X-Received: by 2002:a05:600c:a07:b0:408:3f64:6553 with SMTP id z7-20020a05600c0a0700b004083f646553mr1397018wmp.16.1697710447394;
+        Thu, 19 Oct 2023 03:14:07 -0700 (PDT)
+Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.1.8])
+        by smtp.gmail.com with ESMTPSA id l32-20020a05600c1d2000b00402f713c56esm4109300wms.2.2023.10.19.03.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 03:14:07 -0700 (PDT)
+From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
+Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
+        julia.lawall@inria.fr, dan.carpenter@linaro.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] staging: sm750fb: Remove unused return values from functions
+Date:   Thu, 19 Oct 2023 13:13:35 +0300
+Message-ID: <20231019101348.22076-1-anonolitunya@gmail.com>
+X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
 MIME-Version: 1.0
-References: <20230619122212.304962-1-tomi.valkeinen@ideasonboard.com> <20230619122212.304962-6-tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230619122212.304962-6-tomi.valkeinen@ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 19 Oct 2023 12:13:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV9aRup14BwD9Do2hpiu=m2tjy14-VwVbSe1ckAbQQ-kw@mail.gmail.com>
-Message-ID: <CAMuHMdV9aRup14BwD9Do2hpiu=m2tjy14-VwVbSe1ckAbQQ-kw@mail.gmail.com>
-Subject: Re: [PATCH v15 5/8] dt-bindings: media: add TI DS90UB960 FPD-Link III Deserializer
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Matti Vaittinen <Matti.Vaittinen@fi.rohmeurope.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Rosin <peda@axentia.se>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mike Pagano <mpagano@gentoo.org>,
-        =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
-        Marek Vasut <marex@denx.de>,
-        Satish Nagireddy <satish.nagireddy@getcruise.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+Modifies the return type of different static functions to void and
+deletes unused return variables as the return value is being ignored 
+in all subsequent function calls thus not useful to have a return type.
 
-On Mon, Jun 19, 2023 at 2:27 PM Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
-> Add DT bindings for TI DS90UB960 FPD-Link III Deserializer.
->
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+This improves code readability and maintainability.
 
-Thanks for your patch, which is now commit 313e8b32c6166853 ("media:
-dt-bindings: media: add TI DS90UB960 FPD-Link III Deserializer")
-in v6.6-rc1.
+Changes in v2:
+- Ammend wording in cover letter.
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+- Drop variable 'ret' entirely as it is unused.
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org>, Dan Carpenter <dan.carpenter@linaro.org> 
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml
+Dorcas AnonoLitunya (2):
+  staging: sm750fb: Remove unused return value in
+    display_control_adjust_sm750le()
+  staging: sm750fb: Remove unused return variable in
+    program_mode_registers()
 
-> +  i2c-alias-pool:
-> +    minItems: 1
-> +    maxItems: 32
-> +
-> +  links:
-> +    type: object
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +      ti,manual-strobe:
-> +        type: boolean
-> +        description:
-> +          Enable manual strobe position and EQ level
-> +
-> +    patternProperties:
-> +      '^link@[0-3]$':
-> +        type: object
-> +        additionalProperties: false
-> +        properties:
-> +          reg:
-> +            description: The link number
-> +            maxItems: 1
-> +
-> +          i2c-alias:
-> +            description:
-> +              The I2C address used for the serializer. Transactions to this
-> +              address on the I2C bus where the deserializer resides are
-> +              forwarded to the serializer.
-
-make dt_binding_check:
-
-Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml:
-i2c-alias: missing type definition
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ drivers/staging/sm750fb/ddk750_mode.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.42.0.345.gaab89be2eb
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
