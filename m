@@ -2,104 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479B97CF16D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C06E7CF169
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbjJSHie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S232740AbjJSHhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjJSHic (ORCPT
+        with ESMTP id S235335AbjJSHgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:38:32 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3BE112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:38:07 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ca79b731f1so8971405ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697701087; x=1698305887; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iODpyYFwO1oG91Rx1B6vPWC8Bb1guLsLCVeteiWdg7A=;
-        b=b+O9s3zWTLNTNRkmQHEB/XQZXDu3cR9qEr7+srNOHV27W5pMHKo7JwG5VrvwnzoXl1
-         HsGHDMOowWNu/ZZ3t+3QhmuhCoC4lip3ri8mNsF5J2KkC3mYOkV0rShHbipyLsZIIJoR
-         BddiJ+avi7ILtv7nBNau93226MvcfzGvv0Ea/VQrizPaKDPUZhMvl49Vvoyv/ndKW4sZ
-         Yavy7KuyfuJwAF4ZKcL2pY/m/nMv+LME8zWHXZlLoVylEaW+eGLCLYsFOD10wIhZ0xIs
-         rUCsa6Q3B+Z6ZFmqLGftgF8ANdnsmZEYfpivBi/737Zegxoe3A67vlmrVqi2q2uNRWdq
-         PB9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697701087; x=1698305887;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iODpyYFwO1oG91Rx1B6vPWC8Bb1guLsLCVeteiWdg7A=;
-        b=QdhVIefaJ1+ijptYFvo9/ntuii6Q/p/+0QZdLf127t86sQINkOajet7cfMUfhZborO
-         fwfssaw2zzqVwX+RFGv72vaglCGYy0hYqX19YV20IoAQ7ss8YDT7sKaz3I92R3ur2djF
-         UaSj54L2Bff91rVHgLuOu9DJmLE0w7p34FFKEJSYMeskaK2WNbACRwQgth/y6gEvnCd0
-         ihW2mFYQlv27feG9igGH49k72FRcTVb1Fw/P8wkrQOq23blNmH+lH6f6E+UlUjRZDOcy
-         pCWlS2HMPbLRkILYVw/DX3TSPVyAWxtSK3bga/HmPn2HNdI6T9nuqRWI0hqYhH/C0dTS
-         hm7w==
-X-Gm-Message-State: AOJu0Ywl/CjGu9RcqILhYHD/6XsKD5wD5VqTc1IYPa6xqOYcZqEWHEia
-        eL47sffCWCEAGyw62uLf/NXixg==
-X-Google-Smtp-Source: AGHT+IHZNAoQ3zC9/VR613FTSuua5KOYEG6nqeGd8HRAUu3Xc/1tRXUy4L00rOw0qIrji0VgcHL0qQ==
-X-Received: by 2002:a17:903:288f:b0:1b8:9fc4:2733 with SMTP id ku15-20020a170903288f00b001b89fc42733mr1533490plb.3.1697701086997;
-        Thu, 19 Oct 2023 00:38:06 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d9-20020a170902854900b001c5d09e9437sm1194306plo.25.2023.10.19.00.38.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 00:38:06 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, rppt@kernel.org, david@redhat.com,
-        vbabka@suse.cz, mhocko@suse.com
-Cc:     willy@infradead.org, mgorman@techsingularity.net, mingo@kernel.org,
-        aneesh.kumar@linux.ibm.com, ying.huang@intel.com,
-        hannes@cmpxchg.org, osalvador@suse.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 0/2] handle memoryless nodes more appropriately
-Date:   Thu, 19 Oct 2023 15:36:25 +0800
-Message-Id: <cover.1697687357.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Thu, 19 Oct 2023 03:36:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FB5D4C
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:36:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54669C433C7;
+        Thu, 19 Oct 2023 07:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697701001;
+        bh=1N4xqqxOlozUS6OFkZvzJkSNGpLhAKLz8zkUg9AX4l8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uz86yeEo+4rJQd1joYCr0DJ3UEq4WWefPN841VPLcADI/aoJB7oJkd1LAFPl+SdG6
+         VgkiM8ekwjFm4MAe04jV7oE/aPuTwuo1JlveOqGgBNVhrDPEfE9qVD8+xaaeJHjtRh
+         npn9W2+8goCqBIplpCngJhqlt/k6HISK4JzErprE40+itghz/1fh36NSnVmqKbhrbY
+         0LVHegsXHl70rnvyH6SSw3wEFgx78M0wO4wvya4+eAZfS8rJ/PkaO2Wx7Gn0G/I4xV
+         OO6GzMAB3d+oHph00FY4VjYwd107IqU6pU6bIogv+uMavPvzORT5XlCfHfaWg6N2ca
+         CTsYbMBne5+Qg==
+Date:   Thu, 19 Oct 2023 10:36:25 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Liam Ni <zhiguangni01@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, chenhuacai@kernel.org,
+        kernel@xen0n.name, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        akpm@linux-foundation.org, maobibo@loongson.cn,
+        chenfeiyang@loongson.cn, zhoubinbin@loongson.cn
+Subject: Re: [PATCH V5] NUMA: optimize detection of memory with no node id
+ assigned by firmware
+Message-ID: <20231019073625.GB2824@kernel.org>
+References: <20231017083033.118643-1-zhiguangni01@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017083033.118643-1-zhiguangni01@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Oct 17, 2023 at 04:30:33PM +0800, Liam Ni wrote:
+> Sanity check that makes sure the nodes cover all memory loops over
+> numa_meminfo to count the pages that have node id assigned by the firmware,
+> then loops again over memblock.memory to find the total amount of memory
+> and in the end checks that the difference between the total memory and
+> memory that covered by nodes is less than some threshold. Worse, the loop
+> over numa_meminfo calls __absent_pages_in_range() that also partially
+> traverses memblock.memory.
+> 
+> It's much simpler and more efficient to have a single traversal of
+> memblock.memory that verifies that amount of memory not covered by nodes is
+> less than a threshold.
+> 
+> Introduce memblock_validate_numa_coverage() that does exactly that and use
+> it instead of numa_meminfo_cover_memory().
+> 
+> Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
+> ---
+>  arch/loongarch/kernel/numa.c | 28 +---------------------------
+>  arch/x86/mm/numa.c           | 34 ++--------------------------------
+>  include/linux/memblock.h     |  1 +
+>  mm/memblock.c                | 34 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 38 insertions(+), 59 deletions(-)
+> 
+> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+> index cb00804826f7..fca94d16be34 100644
+> --- a/arch/loongarch/kernel/numa.c
+> +++ b/arch/loongarch/kernel/numa.c
+> @@ -226,32 +226,6 @@ static void __init node_mem_init(unsigned int node)
+>  
+>  #ifdef CONFIG_ACPI_NUMA
+>  
+> -/*
+> - * Sanity check to catch more bad NUMA configurations (they are amazingly
+> - * common).  Make sure the nodes cover all memory.
+> - */
+> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> -{
+> -	int i;
+> -	u64 numaram, biosram;
+> -
+> -	numaram = 0;
+> -	for (i = 0; i < mi->nr_blks; i++) {
+> -		u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> -		u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> -
+> -		numaram += e - s;
+> -		numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> -		if ((s64)numaram < 0)
+> -			numaram = 0;
+> -	}
+> -	max_pfn = max_low_pfn;
+> -	biosram = max_pfn - absent_pages_in_range(0, max_pfn);
+> -
+> -	BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
+> -	return true;
+> -}
+> -
+>  static void __init add_node_intersection(u32 node, u64 start, u64 size, u32 type)
+>  {
+>  	static unsigned long num_physpages;
+> @@ -396,7 +370,7 @@ int __init init_numa_memory(void)
+>  		return -EINVAL;
+>  
+>  	init_node_memblock();
+> -	if (numa_meminfo_cover_memory(&numa_meminfo) == false)
+> +	if (memblock_validate_numa_coverage(SZ_1M >> 12) == false)
 
-Currently, in the process of initialization or offline memory, memoryless
-nodes will still be built into the fallback list of itself or other nodes.
+No magic constants please.
+Either use
 
-This is not what we expected, so this patch series removes memoryless
-nodes from the fallback list entirely.
+	SZ_1M >> PAGE_SIZE
 
-This series is based on the next-20231018.
+here, or make threshold in bytes and convert it to number of pages in
+memblock_validate_numa_coverage().
 
-Comments and suggestions are welcome.
+Besides, no need to compare to false,  
 
-Thanks,
-Qi
+	if (!memblock_validate_numa_coverage())
 
-Changlog in v1 -> v2:
- - modify the commit message in [PATCH 1/2], mention that it can also fix the
-   specific crash. (suggested by Ingo Molnar)
+will do
 
-Qi Zheng (2):
-  mm: page_alloc: skip memoryless nodes entirely
-  mm: memory_hotplug: drop memoryless node from fallback lists
+>  		return -EINVAL;
+>  
+>  	for_each_node_mask(node, node_possible_map) {
+> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> index 2aadb2019b4f..95376e7c263e 100644
+> --- a/arch/x86/mm/numa.c
+> +++ b/arch/x86/mm/numa.c
+> @@ -447,37 +447,6 @@ int __node_distance(int from, int to)
+>  }
+>  EXPORT_SYMBOL(__node_distance);
+>  
+> -/*
+> - * Sanity check to catch more bad NUMA configurations (they are amazingly
+> - * common).  Make sure the nodes cover all memory.
+> - */
+> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> -{
+> -	u64 numaram, e820ram;
+> -	int i;
+> -
+> -	numaram = 0;
+> -	for (i = 0; i < mi->nr_blks; i++) {
+> -		u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> -		u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> -		numaram += e - s;
+> -		numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> -		if ((s64)numaram < 0)
+> -			numaram = 0;
+> -	}
+> -
+> -	e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+> -
+> -	/* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> -	if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
+> -		printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB e820 RAM. Not used.\n",
+> -		       (numaram << PAGE_SHIFT) >> 20,
+> -		       (e820ram << PAGE_SHIFT) >> 20);
+> -		return false;
+> -	}
+> -	return true;
+> -}
+> -
+>  /*
+>   * Mark all currently memblock-reserved physical memory (which covers the
+>   * kernel's own memory ranges) as hot-unswappable.
+> @@ -583,7 +552,8 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
+>  			return -EINVAL;
+>  		}
+>  	}
+> -	if (!numa_meminfo_cover_memory(mi))
+> +
+> +	if (!memblock_validate_numa_coverage(SZ_1M >> 12))
+>  		return -EINVAL;
+>  
+>  	/* Finally register nodes. */
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 1c1072e3ca06..727242f4b54a 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -120,6 +120,7 @@ int memblock_physmem_add(phys_addr_t base, phys_addr_t size);
+>  void memblock_trim_memory(phys_addr_t align);
+>  bool memblock_overlaps_region(struct memblock_type *type,
+>  			      phys_addr_t base, phys_addr_t size);
+> +bool memblock_validate_numa_coverage(const u64 threshold_pages);
+>  int memblock_mark_hotplug(phys_addr_t base, phys_addr_t size);
+>  int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+>  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 0863222af4a4..4f1f2d8a8119 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -734,6 +734,40 @@ int __init_memblock memblock_add(phys_addr_t base, phys_addr_t size)
+>  	return memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
+>  }
+>  
+> +/**
+> + * memblock_validate_numa_coverage - calculating memory with no node id assigned by firmware
+> + * @threshold_pages: threshold memory of no node id assigned
+> + *
+> + * calculating memory with no node id assigned by firmware,
+> + * If the number is less than the @threshold_pages, it returns true,
+> + * otherwise it returns false.
+> + *
+> + * Return:
+> + * true on success, false on failure.
+> + */
 
- mm/memory_hotplug.c | 2 +-
- mm/page_alloc.c     | 7 +++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
+I'd suggest the below version:
+
+/**
+ * memblock_validate_numa_coverage - check if amount of memory with
+ * no node ID assigned is less than a threshold
+ * @threshold_pages: maximal number of pages that can have unassigned node
+ * ID (in pages).
+ *
+ * A buggy firmware may report memory that does not belong to any node.
+ * Check if amount of such memory is below @threshold_pages.
+ *
+ * Return: true on success, false on failure.
+ */
+
+> +bool __init_memblock memblock_validate_numa_coverage(const u64 threshold_pages)
+> +{
+> +	unsigned long nr_pages = 0;
+> +	unsigned long start_pfn, end_pfn, mem_size_mb;
+> +	int nid, i;
+> +
+> +	/* calculate lose page */
+> +	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+> +		if (nid == NUMA_NO_NODE)
+> +			nr_pages += end_pfn - start_pfn;
+> +	}
+> +
+> +	if (nr_pages >= threshold_pages) {
+> +		mem_size_mb = memblock_phys_mem_size() >> 20;
+> +		pr_err("NUMA: no nodes coverage for %luMB of %luMB RAM\n",
+> +		       (nr_pages << PAGE_SHIFT) >> 20, mem_size_mb);
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +
+>  /**
+>   * memblock_isolate_range - isolate given range into disjoint memblocks
+>   * @type: memblock type to isolate range for
+> -- 
+> 2.25.1
+> 
 
 -- 
-2.30.2
-
+Sincerely yours,
+Mike.
