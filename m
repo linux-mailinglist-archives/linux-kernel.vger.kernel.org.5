@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1CF7CFD51
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D267CFD55
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346182AbjJSOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        id S1346189AbjJSOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345895AbjJSOu7 (ORCPT
+        with ESMTP id S233265AbjJSOvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:50:59 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07E77C2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:50:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9ADC01474;
-        Thu, 19 Oct 2023 07:51:37 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E37183F5A1;
-        Thu, 19 Oct 2023 07:50:55 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 15:50:53 +0100
-From:   Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>
-To:     Andrea della Porta <andrea.porta@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nik.borisov@suse.com
-Subject: Re: [PATCH 2/4] arm64/process: Make loading of 32bit processes
- depend on aarch32_enabled()
-Message-ID: <ZTFCTXgCM6sW_0uh@FVFF77S0Q05N.cambridge.arm.com>
-References: <cover.1697614386.git.andrea.porta@suse.com>
- <a40565807874c9ca82d60c118225ee65fe668fcd.1697614386.git.andrea.porta@suse.com>
- <ZS_VJ29tFbEwNHAS@FVFF77S0Q05N.cambridge.arm.com>
- <ZTEjSD4_4xsJWkEi@apocalypse>
- <ZTE86PK5YJGV1xVq@FVFF77S0Q05N.cambridge.arm.com>
- <ZTE9-4ie8R6zw9od@apocalypse>
+        Thu, 19 Oct 2023 10:51:32 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD00138
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:51:30 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1dc9c2b2b79so3972344fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697727088; x=1698331888; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tQdIc8b8rLwyEGA7aYkkgb3aiLBGi2Off4qaN8J15KY=;
+        b=ZTxhDBjAtX+5kJhEDdpqeru5eZI8nysDBUP6DlZaFz0Y0kFnia8zam77Axgs6en1LB
+         zvLsqAEXBfrUuc52azb7eqvqb75jvlIwat3557ky/vQbi80BlssBumdgVcUiOpRzRDuR
+         0XOnq8esxkuh2ObH/G8yqeOvFQfcKw9Pk+oGbB+m5hol8p+heQO/NbQ3y19g0Y9Xen9t
+         mRbveExeqQw+/dW1YFYbnmrWY27/Ii5b/1IJU030oJ+q3kpwq15eh0x/yHMqap8W/lgd
+         Sc2OFdWEge1VGQDwTRuky2oASQTTV7RDYEvBXFXg/Fd0S4SQtul6bZ0oq3h7wyP2xuq9
+         1jaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697727088; x=1698331888;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tQdIc8b8rLwyEGA7aYkkgb3aiLBGi2Off4qaN8J15KY=;
+        b=omx+U5BN1En/N9QvzKu2mlNig2BjFVoKJJoH8c6Gi5fZqSbpetjnODJesOQ/Ude5MM
+         GE16xCbqrfm2B1xn9MjFb98DtCRxMZOINPq4Q03oA3NaBcazkO2VlYg+x7b6HTCkPdxw
+         7ZcNRtbICirKrxrU2917ai9mn/Ehf76lwbvHrci7FNtatS/zKahLQcYRpfzht5XyW1B3
+         4iJNJ1dVY0K4/b4FKzYQAxRZIjgGcB2DLah0YxHj+t8dYRuSY/Qa9WoIAKDNLhQAJarY
+         uhcz6rzNXGrhaP3FPIJ6ubzRRj0Cmr03w6T63sJnj51M3wTV843sZ5ycg1LSQrQGN5Ig
+         AvXQ==
+X-Gm-Message-State: AOJu0Yw3GUgumfvP2PXffiksMzQ0GWXFLruWr75QKE11i5wkd1PfvV61
+        DWsRjwu7pZygu3jl57KJThCbt5sVRgkL+6HVnLKrKLKc
+X-Google-Smtp-Source: AGHT+IHty6N7HTJwpNZ/GBo+XwmpY21HacXzaSadWjnIqIdv5tFUJe93vf7vOV7YvaUrmXuFxsys+iKlKN6c5XNdTMY=
+X-Received: by 2002:a05:6870:1205:b0:1ea:8645:6352 with SMTP id
+ 5-20020a056870120500b001ea86456352mr2048322oan.11.1697727088053; Thu, 19 Oct
+ 2023 07:51:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTE9-4ie8R6zw9od@apocalypse>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231019033826.127396-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20231019033826.127396-1-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 19 Oct 2023 10:51:16 -0400
+Message-ID: <CADnq5_OjCTV=-EAZ3coKVKBkpWZTBg+sH1zJBM8e9Ng3Kmh47A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: clean up some inconsistent indenting
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        Abaci Robot <abaci@linux.alibaba.com>, Xinhui.Pan@amd.com,
+        Rodrigo.Siqueira@amd.com, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 04:32:27PM +0200, Andrea della Porta wrote:
-> On 15:27 Thu 19 Oct     , Mark Rutland wrote:
-> > On Thu, Oct 19, 2023 at 02:38:32PM +0200, Andrea della Porta wrote:
-> > > On 13:52 Wed 18 Oct     , Mark Rutland wrote:
-> > > > On Wed, Oct 18, 2023 at 01:13:20PM +0200, Andrea della Porta wrote:
-> > > > > Major aspect of Aarch32 emulation is the ability to load 32bit
-> > > > > processes.
-> > > > > That's currently decided (among others) by compat_elf_check_arch().
-> > > > > 
-> > > > > Make the macro use aarch32_enabled() to decide if Aarch32 compat is
-> > > > > enabled before loading a 32bit process.
-> > > > > 
-> > > > > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
-> > > > 
-> > > > Why can't you make system_supports_32bit_el0() take the option into account
-> > > > instead?
-> > > >
-> > > 
-> > > I may be wrong here, but it seems to me that system_supports_32bit_el0()
-> > > answers teh question "can this system supports compat execution?" rather than
-> > > "do I want this system to run any compat execution?". That's the point of
-> > > aarch32_enabled(), to state whether we want teh system to run A32 code or not,
-> > > regardless of the system supporting it (of course, if the system does not
-> > > support A32 in EL0, this is a no-no, but that's another story).
-> > 
-> > That's what the implementation does today, but we're really using it as a "do
-> > we intend for 32-bit EL0 to work?" predicate, and generally the
-> > system_supports_${FEATURE}() helpers are affected by the combination of actual
-> > HW support, kernel config options, *and* kernel command line options. For
-> > example, system_supports_sve() is affected by both CONFIG_ARM64_SVE and the
-> > "arm64.nosve" command line option.
-> > 
-> > Thanks,
-> > Mark.
-> 
-> Many thanks for the explanation, then inserting aach32_enabled() in
-> system_supports_32bit_el0() is the way to go.
+Applied.  Thanks!
 
-I think what we should do here is clean up the way we implement
-system_supports_32bit_el0() such that it can be a cpucap, and have the
-conditions that would affect aarch32_enabled() feed into that. That way,
-system_supports_32bit_el0() will compile down to a single branch/nop (or elided
-entirely when known to be false at compile-time), and with that I think can
-reasonably fold the existing UNHANDLED() logic into the entry-common.c
-exception handlers as a simplification.
+Alex
 
-The only obviously painful part is that enable_mismatched_32bit_el0() allows
-(mismatched) AArch32 support to be enabled after we finalize system cpucaps, as
-part of a late hotplug. I suspect that was implemented that way for expedience
-rather than because we wanted to enable mismatched AArch32 after finalizing
-cpucaps.
-
-Will, do you remember why we used a cpuhp callback for enabling mismatched
-32-bit support? I couldn't see anything explicit in the commit message for:
-
-  2122a833316f2f3f ("arm64: Allow mismatched 32-bit EL0 support")
-
-... and I suspect it was just easier to write that way, rather than adding more
-code around setup_system_capabilities() ?
-
-Mark.
+On Wed, Oct 18, 2023 at 11:38=E2=80=AFPM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> No functional modification involved.
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:2902 dm_resum=
+e() warn: inconsistent indenting.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6940
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
+gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 801f87a12ccf..0e1f8c5d7f9b 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -2899,7 +2899,7 @@ static int dm_resume(void *handle)
+>         }
+>
+>         /* power on hardware */
+> -        dc_set_power_state(dm->dc, DC_ACPI_CM_POWER_STATE_D0);
+> +       dc_set_power_state(dm->dc, DC_ACPI_CM_POWER_STATE_D0);
+>
+>         /* program HPD filter */
+>         dc_resume(dm->dc);
+> --
+> 2.20.1.7.g153144c
+>
