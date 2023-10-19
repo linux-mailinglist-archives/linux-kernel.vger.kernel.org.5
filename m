@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B2F7D01DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809867D01E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346536AbjJSShp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S1346375AbjJSSiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346525AbjJSShh (ORCPT
+        with ESMTP id S235522AbjJSSiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:37:37 -0400
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D4F18A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:34 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-507bd64814fso4768148e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:34 -0700 (PDT)
+        Thu, 19 Oct 2023 14:38:02 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A3612F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:54 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so13962014a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740653; x=1698345453;
+        d=1e100.net; s=20230601; t=1697740672; x=1698345472;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EWc/Czxi9t2Z7zlNMCk/LxlIkgK5svsdNAgzUTiKjts=;
-        b=tjPb0qtATh4zACDu9bBOXHNnYukEbXDjd9O2LiUJdPpJHFj1baE/RvYKsneg8VkQyZ
-         Hx3P0exqEqNuiOpDqs2KPs/Uw0z+2T+H6jXd7/CkMfqxDWD1SPZWauMjMDuGLkMIP5wU
-         zO8SEwGjYOvEKxT7zWt12vh1v+BpkypDRiLD43q79HReWEXAiHyJ4heGAEbz/4KF2j4y
-         vx9i/bcsf8z0XN9kvYU7LkcKPR0fb58XirlKY9hv6T/SwxI9zuHdAuDPyNWGdqBwKybL
-         +wDZcq7QygeWH3m9ogqE4UPqZyoPlc/z9ZmL2gkjZePjSaOdEh5xxF4JozpbH0wPRXJy
-         W5ew==
-X-Gm-Message-State: AOJu0Yw+CpvA4U/yW52nb4Fn628cSTgb4F5bKEEYgKHj5waKJ6qqkoyg
-        y/GksJioUckY6PytWfBxWDM=
-X-Google-Smtp-Source: AGHT+IHs6t66gbAClEYrvuNxg3lTOk4qzOwhMX217+nh2fjkHcNIBjepArkgipE3q+XaaayxYtsp0g==
-X-Received: by 2002:a05:6512:32ac:b0:502:f2a8:d391 with SMTP id q12-20020a05651232ac00b00502f2a8d391mr2099674lfe.45.1697740652898;
-        Thu, 19 Oct 2023 11:37:32 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-003.fbsv.net. [2a03:2880:31ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id s24-20020a50ab18000000b0053de19620b9sm67412edc.2.2023.10.19.11.37.32
+        bh=yS71s5aU2feBlZQr47eNnAxpgHWN0kCF/NFV/Sl1WCk=;
+        b=e9ij5hvOgZa4Fcd4AsiV5GXy3KVHgSb6U1MgcLnCwj6PY1Bw6CUBdN3WhhqnFi2RFV
+         BnOqqI4m1S6pT8e1TnSQwVkddk07WxH5ZLjDMiP6Cv7UP0/g8JPO/vzyQOggLN3rHazI
+         Sp/zs21iup9STwQkvf2ooc8jRrMOkMQwXo92xAJU7c/tM76xqomqqNOBskYWhycMYmRP
+         jPS80hg299aDbWMnMmQH7GYLEWJmTf89dh3LwJT4OP0UE9ip50yldtz0xQkArwGoSKHM
+         5teY+hwMbwS9LiSg/hhTGS4hXZoLgpGlG8kN2TanPERn5DSIU9QULEJOeHQqqkoYwtow
+         Oegg==
+X-Gm-Message-State: AOJu0Yz9p9n0DiUWrE3bNRGGYn4QDYllFRjBD20PmFDOVo4XLqauN4k5
+        hyl5Wa7MtMWfy6GdOFAU60E=
+X-Google-Smtp-Source: AGHT+IFzLq15hNbXmujYZFK8p2u+XL/S6hJNgXkS8V4wUmQPCvh+blYAM5mv/9DGqAMk1hZtbf6oHA==
+X-Received: by 2002:a17:906:6a28:b0:9b7:292:85f6 with SMTP id qw40-20020a1709066a2800b009b7029285f6mr2117507ejc.12.1697740671906;
+        Thu, 19 Oct 2023 11:37:51 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-018.fbsv.net. [2a03:2880:31ff:12::face:b00c])
+        by smtp.gmail.com with ESMTPSA id x5-20020a170906710500b009b296ce13a3sm28870ejj.18.2023.10.19.11.37.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:37:32 -0700 (PDT)
+        Thu, 19 Oct 2023 11:37:51 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
         bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Cc:     leit@meta.com, Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Pavlu <petr.pavlu@suse.com>,
+Cc:     leit@meta.com, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, Sven Joachim <svenjoac@gmx.de>,
+        Ian Kent <raven@themaw.net>, Kees Cook <keescook@chromium.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jinghao Jia <jinghao@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
         64-BIT))
-Subject: [PATCH v5 09/12] x86/bugs: Rename CPU_SRSO to MITIGATION_SRSO
-Date:   Thu, 19 Oct 2023 11:11:55 -0700
-Message-Id: <20231019181158.1982205-10-leitao@debian.org>
+Subject: [PATCH v5 10/12] x86/bugs: Rename RETHUNK to MITIGATION_RETHUNK
+Date:   Thu, 19 Oct 2023 11:11:56 -0700
+Message-Id: <20231019181158.1982205-11-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
 References: <20231019181158.1982205-1-leitao@debian.org>
@@ -79,194 +91,241 @@ namespace.
 The mitigation options should have consistency and start with
 MITIGATION.
 
-Rename the Kconfig entry from CPU_SRSO to MITIGATION_SRSO.
+Rename the Kconfig entry from RETHUNK to MITIGATION_RETHUNK.
 
 Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- arch/x86/Kconfig                     |  2 +-
- arch/x86/include/asm/nospec-branch.h |  6 +++---
- arch/x86/kernel/cpu/bugs.c           |  8 ++++----
- arch/x86/kernel/vmlinux.lds.S        |  4 ++--
- arch/x86/lib/retpoline.S             | 10 +++++-----
- include/linux/objtool.h              |  2 +-
- scripts/Makefile.vmlinux_o           |  2 +-
- 7 files changed, 17 insertions(+), 17 deletions(-)
+ arch/x86/Kconfig                               | 8 ++++----
+ arch/x86/Makefile                              | 2 +-
+ arch/x86/configs/i386_defconfig                | 2 +-
+ arch/x86/include/asm/disabled-features.h       | 2 +-
+ arch/x86/include/asm/linkage.h                 | 4 ++--
+ arch/x86/include/asm/nospec-branch.h           | 4 ++--
+ arch/x86/include/asm/static_call.h             | 2 +-
+ arch/x86/kernel/alternative.c                  | 4 ++--
+ arch/x86/kernel/static_call.c                  | 2 +-
+ arch/x86/lib/retpoline.S                       | 4 ++--
+ scripts/Makefile.lib                           | 2 +-
+ tools/arch/x86/include/asm/disabled-features.h | 2 +-
+ 12 files changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index c53d2034a5ab..97004db07e38 100644
+index 97004db07e38..7a283602b257 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -2549,7 +2549,7 @@ config MITIGATION_IBRS_ENTRY
- 	  This mitigates both spectre_v2 and retbleed at great cost to
- 	  performance.
+@@ -2441,7 +2441,7 @@ config FINEIBT
  
--config CPU_SRSO
-+config MITIGATION_SRSO
- 	bool "Mitigate speculative RAS overflow on AMD"
- 	depends on CPU_SUP_AMD && X86_64 && RETHUNK
+ config HAVE_CALL_THUNKS
+ 	def_bool y
+-	depends on CC_HAS_ENTRY_PADDING && RETHUNK && OBJTOOL
++	depends on CC_HAS_ENTRY_PADDING && MITIGATION_RETHUNK && OBJTOOL
+ 
+ config CALL_THUNKS
+ 	def_bool n
+@@ -2484,7 +2484,7 @@ config MITIGATION_RETPOLINE
+ 	  branches. Requires a compiler with -mindirect-branch=thunk-extern
+ 	  support for full protection. The kernel may run slower.
+ 
+-config RETHUNK
++config MITIGATION_RETHUNK
+ 	bool "Enable return-thunks"
+ 	depends on MITIGATION_RETPOLINE && CC_HAS_RETURN_THUNK
+ 	select OBJTOOL if HAVE_OBJTOOL
+@@ -2497,7 +2497,7 @@ config RETHUNK
+ 
+ config MITIGATION_UNRET_ENTRY
+ 	bool "Enable UNRET on kernel entry"
+-	depends on CPU_SUP_AMD && RETHUNK && X86_64
++	depends on CPU_SUP_AMD && MITIGATION_RETHUNK && X86_64
  	default y
+ 	help
+ 	  Compile the kernel with support for the retbleed=unret mitigation.
+@@ -2551,7 +2551,7 @@ config MITIGATION_IBRS_ENTRY
+ 
+ config MITIGATION_SRSO
+ 	bool "Mitigate speculative RAS overflow on AMD"
+-	depends on CPU_SUP_AMD && X86_64 && RETHUNK
++	depends on CPU_SUP_AMD && X86_64 && MITIGATION_RETHUNK
+ 	default y
+ 	help
+ 	  Enable the SRSO mitigation needed on AMD Zen1-4 machines.
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 1ac5d6002f5f..206d15235466 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -22,7 +22,7 @@ RETPOLINE_VDSO_CFLAGS	:= -mretpoline
+ endif
+ RETPOLINE_CFLAGS	+= $(call cc-option,-mindirect-branch-cs-prefix)
+ 
+-ifdef CONFIG_RETHUNK
++ifdef CONFIG_MITIGATION_RETHUNK
+ RETHUNK_CFLAGS		:= -mfunction-return=thunk-extern
+ RETPOLINE_CFLAGS	+= $(RETHUNK_CFLAGS)
+ endif
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index 1b411bbf3cb0..bf90917f2656 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -42,7 +42,7 @@ CONFIG_EFI_STUB=y
+ CONFIG_HZ_1000=y
+ CONFIG_KEXEC=y
+ CONFIG_CRASH_DUMP=y
+-# CONFIG_RETHUNK is not set
++# CONFIG_MITIGATION_RETHUNK is not set
+ CONFIG_HIBERNATION=y
+ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index 151f0d50e7e0..36d0c1e05e60 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -57,7 +57,7 @@
+ 				 (1 << (X86_FEATURE_RETPOLINE_LFENCE & 31)))
+ #endif
+ 
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
+ # define DISABLE_RETHUNK	0
+ #else
+ # define DISABLE_RETHUNK	(1 << (X86_FEATURE_RETHUNK & 31))
+diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
+index 09e2d026df33..dc31b13b87a0 100644
+--- a/arch/x86/include/asm/linkage.h
++++ b/arch/x86/include/asm/linkage.h
+@@ -40,7 +40,7 @@
+ 
+ #ifdef __ASSEMBLY__
+ 
+-#if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
++#if defined(CONFIG_MITIGATION_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+ #define RET	jmp __x86_return_thunk
+ #else /* CONFIG_MITIGATION_RETPOLINE */
+ #ifdef CONFIG_MITIGATION_SLS
+@@ -52,7 +52,7 @@
+ 
+ #else /* __ASSEMBLY__ */
+ 
+-#if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
++#if defined(CONFIG_MITIGATION_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+ #define ASM_RET	"jmp __x86_return_thunk\n\t"
+ #else /* CONFIG_MITIGATION_RETPOLINE */
+ #ifdef CONFIG_MITIGATION_SLS
 diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index e25e98f012a3..9ea93a298a43 100644
+index 9ea93a298a43..33f76848c838 100644
 --- a/arch/x86/include/asm/nospec-branch.h
 +++ b/arch/x86/include/asm/nospec-branch.h
-@@ -212,7 +212,7 @@
+@@ -289,7 +289,7 @@
+  * where we have a stack but before any RET instruction.
   */
- .macro VALIDATE_UNRET_END
- #if defined(CONFIG_NOINSTR_VALIDATION) && \
--	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
-+	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_MITIGATION_SRSO))
- 	ANNOTATE_RETPOLINE_SAFE
- 	nop
- #endif
-@@ -271,7 +271,7 @@
- .Lskip_rsb_\@:
- .endm
+ .macro __UNTRAIN_RET ibpb_feature, call_depth_insns
+-#if defined(CONFIG_RETHUNK) || defined(CONFIG_MITIGATION_IBPB_ENTRY)
++#if defined(CONFIG_MITIGATION_RETHUNK) || defined(CONFIG_MITIGATION_IBPB_ENTRY)
+ 	VALIDATE_UNRET_END
+ 	ALTERNATIVE_3 "",						\
+ 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+@@ -328,7 +328,7 @@ extern retpoline_thunk_t __x86_indirect_thunk_array[];
+ extern retpoline_thunk_t __x86_indirect_call_thunk_array[];
+ extern retpoline_thunk_t __x86_indirect_jump_thunk_array[];
  
--#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
-+#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_MITIGATION_SRSO)
- #define CALL_UNTRAIN_RET	"call entry_untrain_ret"
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
+ extern void __x86_return_thunk(void);
  #else
- #define CALL_UNTRAIN_RET	""
-@@ -340,7 +340,7 @@ extern void retbleed_return_thunk(void);
- static inline void retbleed_return_thunk(void) {}
- #endif
+ static inline void __x86_return_thunk(void) {}
+diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
+index 343b722ccaf2..125c407e2abe 100644
+--- a/arch/x86/include/asm/static_call.h
++++ b/arch/x86/include/asm/static_call.h
+@@ -46,7 +46,7 @@
+ #define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
+ 	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, ".byte 0xe9; .long " #func " - (. + 4)")
  
--#ifdef CONFIG_CPU_SRSO
-+#ifdef CONFIG_MITIGATION_SRSO
- extern void srso_return_thunk(void);
- extern void srso_alias_return_thunk(void);
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
+ #define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
+ 	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "jmp __x86_return_thunk")
  #else
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index e11bacbd8f39..f2775417bda2 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2458,7 +2458,7 @@ static void __init srso_select_mitigation(void)
- 		break;
- 
- 	case SRSO_CMD_SAFE_RET:
--		if (IS_ENABLED(CONFIG_CPU_SRSO)) {
-+		if (IS_ENABLED(CONFIG_MITIGATION_SRSO)) {
- 			/*
- 			 * Enable the return thunk for generated code
- 			 * like ftrace, static_call, etc.
-@@ -2478,7 +2478,7 @@ static void __init srso_select_mitigation(void)
- 			else
- 				srso_mitigation = SRSO_MITIGATION_SAFE_RET_UCODE_NEEDED;
- 		} else {
--			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
-+			pr_err("WARNING: kernel not compiled with MITIGATION_SRSO.\n");
- 		}
- 		break;
- 
-@@ -2494,13 +2494,13 @@ static void __init srso_select_mitigation(void)
- 		break;
- 
- 	case SRSO_CMD_IBPB_ON_VMEXIT:
--		if (IS_ENABLED(CONFIG_CPU_SRSO)) {
-+		if (IS_ENABLED(CONFIG_MITIGATION_SRSO)) {
- 			if (!boot_cpu_has(X86_FEATURE_ENTRY_IBPB) && has_microcode) {
- 				setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
- 				srso_mitigation = SRSO_MITIGATION_IBPB_ON_VMEXIT;
- 			}
- 		} else {
--			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
-+			pr_err("WARNING: kernel not compiled with MITIGATION_SRSO.\n");
-                 }
- 		break;
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index ea9652eb455b..d0763dbb5719 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -685,7 +685,7 @@ void __init_or_module noinline apply_retpolines(s32 *start, s32 *end)
  	}
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index f5ee96a7bdd6..f54a4cf01a43 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -139,7 +139,7 @@ SECTIONS
- 		*(.text..__x86.rethunk_untrain)
- 		ENTRY_TEXT
+ }
  
--#ifdef CONFIG_CPU_SRSO
-+#ifdef CONFIG_MITIGATION_SRSO
- 		/*
- 		 * See the comment above srso_alias_untrain_ret()'s
- 		 * definition.
-@@ -518,7 +518,7 @@ INIT_PER_CPU(irq_stack_backing_store);
- . = ASSERT((retbleed_return_thunk & 0x3f) == 0, "retbleed_return_thunk not cacheline-aligned");
- #endif
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
  
--#ifdef CONFIG_CPU_SRSO
-+#ifdef CONFIG_MITIGATION_SRSO
- . = ASSERT((srso_safe_ret & 0x3f) == 0, "srso_safe_ret not cacheline-aligned");
  /*
-  * GNU ld cannot do XOR until 2.41.
+  * Rewrite the compiler generated return thunk tail-calls.
+@@ -758,7 +758,7 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
+ }
+ #else
+ void __init_or_module noinline apply_returns(s32 *start, s32 *end) { }
+-#endif /* CONFIG_RETHUNK */
++#endif /* CONFIG_MITIGATION_RETHUNK */
+ 
+ #else /* !CONFIG_MITIGATION_RETPOLINE || !CONFIG_OBJTOOL */
+ 
+diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
+index 77a9316da435..4eefaac64c6c 100644
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -172,7 +172,7 @@ void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+ }
+ EXPORT_SYMBOL_GPL(arch_static_call_transform);
+ 
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
+ /*
+  * This is called by apply_returns() to fix up static call trampolines,
+  * specifically ARCH_DEFINE_STATIC_CALL_NULL_TRAMP which is recorded as
 diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 03a065ef57ae..7834bde8afd1 100644
+index 7834bde8afd1..070121161176 100644
 --- a/arch/x86/lib/retpoline.S
 +++ b/arch/x86/lib/retpoline.S
-@@ -129,7 +129,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
+@@ -127,7 +127,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
+ #undef GEN
+ #endif
  
- #ifdef CONFIG_RETHUNK
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
  
--#ifdef CONFIG_CPU_SRSO
-+#ifdef CONFIG_MITIGATION_SRSO
+ #ifdef CONFIG_MITIGATION_SRSO
  
- /*
-  * srso_alias_untrain_ret() and srso_alias_safe_ret() are placed at
-@@ -216,10 +216,10 @@ SYM_CODE_END(srso_return_thunk)
+@@ -369,4 +369,4 @@ SYM_CODE_START(__x86_return_thunk)
+ SYM_CODE_END(__x86_return_thunk)
+ EXPORT_SYMBOL(__x86_return_thunk)
  
- #define JMP_SRSO_UNTRAIN_RET "jmp srso_untrain_ret"
- #define JMP_SRSO_ALIAS_UNTRAIN_RET "jmp srso_alias_untrain_ret"
--#else /* !CONFIG_CPU_SRSO */
-+#else /* !CONFIG_MITIGATION_SRSO */
- #define JMP_SRSO_UNTRAIN_RET "ud2"
- #define JMP_SRSO_ALIAS_UNTRAIN_RET "ud2"
--#endif /* CONFIG_CPU_SRSO */
-+#endif /* CONFIG_MITIGATION_SRSO */
+-#endif /* CONFIG_RETHUNK */
++#endif /* CONFIG_MITIGATION_RETHUNK */
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 0d5461276179..48a4a81edac1 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -263,7 +263,7 @@ objtool-args-$(CONFIG_HAVE_OBJTOOL_NOP_MCOUNT)		+= --mnop
+ endif
+ objtool-args-$(CONFIG_UNWINDER_ORC)			+= --orc
+ objtool-args-$(CONFIG_MITIGATION_RETPOLINE)		+= --retpoline
+-objtool-args-$(CONFIG_RETHUNK)				+= --rethunk
++objtool-args-$(CONFIG_MITIGATION_RETHUNK)		+= --rethunk
+ objtool-args-$(CONFIG_MITIGATION_SLS)			+= --sls
+ objtool-args-$(CONFIG_STACK_VALIDATION)			+= --stackval
+ objtool-args-$(CONFIG_HAVE_STATIC_CALL_INLINE)		+= --static-call
+diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
+index 4b816f55c634..bd7071f34f6b 100644
+--- a/tools/arch/x86/include/asm/disabled-features.h
++++ b/tools/arch/x86/include/asm/disabled-features.h
+@@ -57,7 +57,7 @@
+ 				 (1 << (X86_FEATURE_RETPOLINE_LFENCE & 31)))
+ #endif
  
- #ifdef CONFIG_MITIGATION_UNRET_ENTRY
- 
-@@ -307,7 +307,7 @@ SYM_FUNC_END(retbleed_untrain_ret)
- #define JMP_RETBLEED_UNTRAIN_RET "ud2"
- #endif /* CONFIG_MITIGATION_UNRET_ENTRY */
- 
--#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
-+#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_MITIGATION_SRSO)
- 
- SYM_FUNC_START(entry_untrain_ret)
- 	ALTERNATIVE_2 JMP_RETBLEED_UNTRAIN_RET,				\
-@@ -316,7 +316,7 @@ SYM_FUNC_START(entry_untrain_ret)
- SYM_FUNC_END(entry_untrain_ret)
- __EXPORT_THUNK(entry_untrain_ret)
- 
--#endif /* CONFIG_MITIGATION_UNRET_ENTRY || CONFIG_CPU_SRSO */
-+#endif /* CONFIG_MITIGATION_UNRET_ENTRY || CONFIG_MITIGATION_SRSO */
- 
- #ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
- 
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index d030671a4c49..b3b8d3dab52d 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -131,7 +131,7 @@
-  */
- .macro VALIDATE_UNRET_BEGIN
- #if defined(CONFIG_NOINSTR_VALIDATION) && \
--	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
-+	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_MITIGATION_SRSO))
- .Lhere_\@:
- 	.pushsection .discard.validate_unret
- 	.long	.Lhere_\@ - .
-diff --git a/scripts/Makefile.vmlinux_o b/scripts/Makefile.vmlinux_o
-index 6277dbd730bb..6de297916ce6 100644
---- a/scripts/Makefile.vmlinux_o
-+++ b/scripts/Makefile.vmlinux_o
-@@ -38,7 +38,7 @@ objtool-enabled := $(or $(delay-objtool),$(CONFIG_NOINSTR_VALIDATION))
- vmlinux-objtool-args-$(delay-objtool)			+= $(objtool-args-y)
- vmlinux-objtool-args-$(CONFIG_GCOV_KERNEL)		+= --no-unreachable
- vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr \
--							   $(if $(or $(CONFIG_MITIGATION_UNRET_ENTRY),$(CONFIG_CPU_SRSO)), --unret)
-+							   $(if $(or $(CONFIG_MITIGATION_UNRET_ENTRY),$(CONFIG_MITIGATION_SRSO)), --unret)
- 
- objtool-args = $(vmlinux-objtool-args-y) --link
- 
+-#ifdef CONFIG_RETHUNK
++#ifdef CONFIG_MITIGATION_RETHUNK
+ # define DISABLE_RETHUNK	0
+ #else
+ # define DISABLE_RETHUNK	(1 << (X86_FEATURE_RETHUNK & 31))
 -- 
 2.34.1
 
