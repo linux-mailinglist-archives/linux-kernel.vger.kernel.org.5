@@ -2,191 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A0A7CF209
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2237CF20B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjJSIJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S235146AbjJSIJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjJSIJL (ORCPT
+        with ESMTP id S232976AbjJSIJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:09:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4A111F;
-        Thu, 19 Oct 2023 01:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697702950; x=1729238950;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zieDz8mNVXN9EfjoP5z7KgDOFeY9VzEa+XusEh5hE+s=;
-  b=iM9neSlhJOW64guO1jRbnybUNIuWhKB2j84yo6oyaX1BzR7PvuP8Ngkj
-   Al0QMk1xoRF7tbUokj4OdNUFK1w1mAk7fcaG5Gq+buC8P98MpsY+8b2wE
-   dLe1qiw4QMc0vhPVHMbPepyZgdY0VdJfGfeIBo7PUry663Rp2NqcuFM4p
-   TSZIT2l0bCsxCvVsi5RV6sqHi1bhhbY851qvrk1/JEZuG3InrmDdC3Hz1
-   2hg80PofpFMa7TnSBxcsbRH514haKcPJcyfQ66z6+HvAdCvc/Wxh6U9ty
-   +DGnZDzCPLr+8Aw73LRFwGng17aGld5LOZpPUwI55uIGhTOyesmGJeA1z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="4791793"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="4791793"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 01:09:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="760551539"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="760551539"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga007.fm.intel.com with SMTP; 19 Oct 2023 01:09:05 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Oct 2023 11:09:04 +0300
-Date:   Thu, 19 Oct 2023 11:09:04 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     RD Babiera <rdbabiera@google.com>
-Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        badhri@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: only discover modes the port
- supports svids for
-Message-ID: <ZTDkIGLmjmL9HwJP@kuha.fi.intel.com>
-References: <20231016232816.3355132-2-rdbabiera@google.com>
+        Thu, 19 Oct 2023 04:09:24 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A6812E
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:09:22 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41995d42c3bso46188671cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:09:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697702962; x=1698307762; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g17DNvDuwsvkatPfQSbF1sKHfBdyAlQw+IX3K/EwR5U=;
+        b=PK/5iYDhgaAWconkr7GJg/THsBsGSORleaGjiqPczpqNfdxAQrchBLsjXo27kINYCQ
+         NUFWvt1Ft2TFPENu5OPDbaU+CyE1e6NkrPYXxPk8uWANeeKWMFvMZ981RYF4ACEflVo8
+         M29sQF/8M4TixCudldiS5o1E3sD2ae/yG6OqMT9olwtIjSnTriBXfRsIgQbuY/UDCyEJ
+         ZM5e/mkn+6sZxjhohXeqFwaQxZfki+a+TcFRbkDF8rSY+5XMB54tZbXRFCzhJGssgcWJ
+         Gy+lABOl13ak5JGw6R6ykKhLz7rMSGUAurKXWiRQQHwiKAKka5m+rbdIKd8m1bogEqZ7
+         tuOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697702962; x=1698307762;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g17DNvDuwsvkatPfQSbF1sKHfBdyAlQw+IX3K/EwR5U=;
+        b=ZP1F//0Q7ZZ8zLn82uIoqE+wEtXYOWlbtsC3oRED7tkYmdBbHS4veSpVVsxt8fsxWb
+         expXAI1nPheKBh09XQgmRSNNLKf8LSDokc/5mj5vYgL4SJjwTSGabPBxni5In/6eZEUl
+         oTodTId68OrIP5hlOLCoUVjaqideuqWnsHLQycR+o2lZ/gwyeizImJUuvVmfTtYhokdf
+         Muul1mtujuLTKltMWpcclsVb/8S+uuv2InwC2Awug51d3o6T9RKGmcyAuCPscIfCdbu8
+         YZwd0qxCokWP+4QUBAD+s9Sdtj+l9+f38cLoxAEPtB9CbpupYFfYO02p0xmwT5fsdTmH
+         RtNQ==
+X-Gm-Message-State: AOJu0YwJksqBYKiTBGzHt/0dZ7VY5+MMOv62kFdJArGVfD3Yv6FljRJT
+        9kI3paFE0nfHgUIcoJhAb9tr
+X-Google-Smtp-Source: AGHT+IFVAMwbWArjNUqTZoAOuQleXKPUfyMwsHgWl3UXcVvb1tGg/tO0sR0kKy3KACX/kIEkab+49w==
+X-Received: by 2002:a05:622a:83:b0:41b:8416:ea2a with SMTP id o3-20020a05622a008300b0041b8416ea2amr1895589qtw.40.1697702961759;
+        Thu, 19 Oct 2023 01:09:21 -0700 (PDT)
+Received: from localhost.localdomain ([117.202.186.25])
+        by smtp.gmail.com with ESMTPSA id bq15-20020a05622a1c0f00b0041520676966sm573553qtb.47.2023.10.19.01.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 01:09:21 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     mhi@lists.linux.dev
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] bus: mhi: ep: Add support for interrupt moderation timer
+Date:   Thu, 19 Oct 2023 13:39:11 +0530
+Message-Id: <20231019080911.57938-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016232816.3355132-2-rdbabiera@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+MHI spec defines the interrupt moderation timer feature using which the
+host can limit the number of interrupts being raised for an event ring by
+the device. This feature allows the host to process multiple event ring
+elements by a single IRQ from the device, thereby eliminating the need to
+process IRQ for each element.
 
-On Mon, Oct 16, 2023 at 11:28:17PM +0000, RD Babiera wrote:
-> DisplayPort Alt Mode CTS test 10.3.1 verifies that the device can
-> recognize the DP SVID in arbitrary locations within the Discover SVIDs
-> response message. The test expects that the TCPM sends Discover Modes for
-> the DisplayPort SVID first, but fails because the TCPM sends
-> Discover Modes for all SVIDs regardless of whether or not the port
-> supports them.
-> 
-> After discovering the port partner's SVIDs, skip to the first SVID
-> supported by the device when preparing the Discover Modes request. If
-> other modes need to be discovered after the first Discover Modes message
-> is returned, skip over SVIDs not supported by the device.
+The INTMODT field in the event context array provides the value to be used
+for delaying the IRQ generation from device. This value, along with the
+Block Event Interrupt (BEI) flag of the TRE defines how IRQ is generated to
+the host.
 
-I'm confused here. Is the device here the port or partner (or both)?
-Why are you skipping the first SVID?
+Support for interrupt moderation timer is implemented using delayed
+workqueue in kernel. And a separate delayed work item is used for each
+event ring.
 
-Please note that the Type-C specification puts priority on TBT over DP.
-Is this in conflict with that?
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/bus/mhi/ep/internal.h |  3 +++
+ drivers/bus/mhi/ep/main.c     | 22 +++++++++++++++++++---
+ drivers/bus/mhi/ep/ring.c     | 19 ++++++++++++++++++-
+ 3 files changed, 40 insertions(+), 4 deletions(-)
 
-> Fixes: f0690a25a140 ("staging: typec: USB Type-C Port Manager (tcpm)")
-
-I think that's wrong commit (perhaps you want 8afe9a3548f9d instead?).
-
-Right now I'm not convinced that this should be considered as a fix at
-all. I don't know anything about the test you are talking about, but
-if this patch is just about making it pass, then there is something
-seriously wrong.
-
-If you need the modes to be discovered in some specific order, then we
-need the framework to allow you to do that. So perhaps the tcpci
-drivers should be able to supply the preferred order to the tcpm?
-
-But as such, unless I'm mistaken, this patch will change the logic so
-that only the partner alt modes that the port supports get registered,
-and that way are exposed to the user. You can't do that - right now
-it's the only way we can inform the user about them. All partner
-alternate modes (at least the SVIDs) must be exposed to the user one
-way or the other, regardless does the port support them or not.
-
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 46 +++++++++++++++++++++++++++++++----
->  1 file changed, 41 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 6e843c511b85..96636a6f1f7c 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1543,6 +1543,38 @@ static bool svdm_consume_svids(struct tcpm_port *port, const u32 *p, int cnt)
->  	return false;
->  }
->  
-> +static bool svdm_port_supports_svid(struct tcpm_port *port, u16 svid)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ALTMODE_DISCOVERY_MAX; i++) {
-> +		struct typec_altmode *altmode = port->port_altmode[i];
-> +
-> +		if (!altmode)
-> +			return false;
-> +		if (altmode->svid == svid)
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
-> +/*
-> + * This helper will continue to return the next supported SVID that the port
-> + * needs to send DISCOVER_MODES to until the pmdata->svid_index is incremented after
-> + * svdm_consume_modes() in tcpm_pd_svdm().
-> + */
-> +static int svdm_get_next_supported_svid(struct tcpm_port *port, struct pd_mode_data *pmdata)
-> +{
-> +	while (pmdata->svid_index < pmdata->nsvids) {
-> +		u16 svid = pmdata->svids[pmdata->svid_index];
-> +
-> +		if (svdm_port_supports_svid(port, svid))
-> +			return svid;
-> +		pmdata->svid_index++;
-> +	}
-> +	return 0;
-> +}
-> +
->  static void svdm_consume_modes(struct tcpm_port *port, const u32 *p, int cnt)
->  {
->  	struct pd_mode_data *pmdata = &port->mode_data;
-> @@ -1705,9 +1737,11 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			if (svdm_consume_svids(port, p, cnt)) {
->  				response[0] = VDO(USB_SID_PD, 1, svdm_version, CMD_DISCOVER_SVID);
->  				rlen = 1;
-> -			} else if (modep->nsvids && supports_modal(port)) {
-> -				response[0] = VDO(modep->svids[0], 1, svdm_version,
-> -						  CMD_DISCOVER_MODES);
-> +			} else if (modep->nsvids && supports_modal(port) &&
-> +				   svdm_get_next_supported_svid(port, modep)) {
-> +				u16 svid = svdm_get_next_supported_svid(port, modep);
-> +
-> +				response[0] = VDO(svid, 1, svdm_version, CMD_DISCOVER_MODES);
->  				rlen = 1;
->  			}
->  			break;
-> @@ -1715,8 +1749,10 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			/* 6.4.4.3.3 */
->  			svdm_consume_modes(port, p, cnt);
->  			modep->svid_index++;
-> -			if (modep->svid_index < modep->nsvids) {
-> -				u16 svid = modep->svids[modep->svid_index];
-> +			if (modep->svid_index < modep->nsvids &&
-> +			    svdm_get_next_supported_svid(port, modep)) {
-> +				u16 svid = svdm_get_next_supported_svid(port, modep);
-> +
->  				response[0] = VDO(svid, 1, svdm_version, CMD_DISCOVER_MODES);
->  				rlen = 1;
->  			} else {
-> 
-> base-commit: d0d27ef87e1ca974ed93ed4f7d3c123cbd392ba6
-> -- 
-> 2.42.0.655.g421f12c284-goog
-
+diff --git a/drivers/bus/mhi/ep/internal.h b/drivers/bus/mhi/ep/internal.h
+index a2125fa5fe2f..8c5cf2b67951 100644
+--- a/drivers/bus/mhi/ep/internal.h
++++ b/drivers/bus/mhi/ep/internal.h
+@@ -126,6 +126,7 @@ struct mhi_ep_ring {
+ 	union mhi_ep_ring_ctx *ring_ctx;
+ 	struct mhi_ring_element *ring_cache;
+ 	enum mhi_ep_ring_type type;
++	struct delayed_work intmodt_work;
+ 	u64 rbase;
+ 	size_t rd_offset;
+ 	size_t wr_offset;
+@@ -135,7 +136,9 @@ struct mhi_ep_ring {
+ 	u32 ch_id;
+ 	u32 er_index;
+ 	u32 irq_vector;
++	u32 intmodt;
+ 	bool started;
++	bool irq_pending;
+ };
+ 
+ struct mhi_ep_cmd {
+diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
+index 834e7afadd64..78559a995b25 100644
+--- a/drivers/bus/mhi/ep/main.c
++++ b/drivers/bus/mhi/ep/main.c
+@@ -54,11 +54,27 @@ static int mhi_ep_send_event(struct mhi_ep_cntrl *mhi_cntrl, u32 ring_idx,
+ 	mutex_unlock(&mhi_cntrl->event_lock);
+ 
+ 	/*
+-	 * Raise IRQ to host only if the BEI flag is not set in TRE. Host might
+-	 * set this flag for interrupt moderation as per MHI protocol.
++	 * As per the MHI specification, section 4.3, Interrupt moderation:
++	 *
++	 * 1. If BEI flag is not set, cancel any pending intmodt work if started
++	 * for the event ring and raise IRQ immediately.
++	 *
++	 * 2. If both BEI and intmodt are set, and if no IRQ is pending for the
++	 * same event ring, start the IRQ delayed work as per the value of
++	 * intmodt. If previous IRQ is pending, then do nothing as the pending
++	 * IRQ is enough for the host to process the current event ring element.
++	 *
++	 * 3. If BEI is set and intmodt is not set, no need to raise IRQ.
+ 	 */
+-	if (!bei)
++	if (!bei) {
++		if (READ_ONCE(ring->irq_pending))
++			cancel_delayed_work(&ring->intmod_work);
++
+ 		mhi_cntrl->raise_irq(mhi_cntrl, ring->irq_vector);
++	} else if (ring->intmodt && !READ_ONCE(ring->irq_pending)) {
++		WRITE_ONCE(ring->irq_pending, true);
++		schedule_delayed_work(&ring->intmod_work, msecs_to_jiffies(ring->intmodt));
++	}
+ 
+ 	return 0;
+ 
+diff --git a/drivers/bus/mhi/ep/ring.c b/drivers/bus/mhi/ep/ring.c
+index 115518ec76a4..a1071c13761b 100644
+--- a/drivers/bus/mhi/ep/ring.c
++++ b/drivers/bus/mhi/ep/ring.c
+@@ -157,6 +157,15 @@ void mhi_ep_ring_init(struct mhi_ep_ring *ring, enum mhi_ep_ring_type type, u32
+ 	}
+ }
+ 
++static void mhi_ep_raise_irq(struct work_struct *work)
++{
++	struct mhi_ep_ring *ring = container_of(work, struct mhi_ep_ring, intmodt_work.work);
++	struct mhi_ep_cntrl *mhi_cntrl = ring->mhi_cntrl;
++
++	mhi_cntrl->raise_irq(mhi_cntrl, ring->irq_vector);
++	WRITE_ONCE(ring->irq_pending, false);
++}
++
+ int mhi_ep_ring_start(struct mhi_ep_cntrl *mhi_cntrl, struct mhi_ep_ring *ring,
+ 			union mhi_ep_ring_ctx *ctx)
+ {
+@@ -173,8 +182,13 @@ int mhi_ep_ring_start(struct mhi_ep_cntrl *mhi_cntrl, struct mhi_ep_ring *ring,
+ 	if (ring->type == RING_TYPE_CH)
+ 		ring->er_index = le32_to_cpu(ring->ring_ctx->ch.erindex);
+ 
+-	if (ring->type == RING_TYPE_ER)
++	if (ring->type == RING_TYPE_ER) {
+ 		ring->irq_vector = le32_to_cpu(ring->ring_ctx->ev.msivec);
++		ring->intmodt = FIELD_GET(EV_CTX_INTMODT_MASK,
++					  le32_to_cpu(ring->ring_ctx->ev.intmod));
++
++		INIT_DELAYED_WORK(&ring->intmodt_work, mhi_ep_raise_irq);
++	}
+ 
+ 	/* During ring init, both rp and wp are equal */
+ 	memcpy_fromio(&val, (void __iomem *) &ring->ring_ctx->generic.rp, sizeof(u64));
+@@ -201,6 +215,9 @@ int mhi_ep_ring_start(struct mhi_ep_cntrl *mhi_cntrl, struct mhi_ep_ring *ring,
+ 
+ void mhi_ep_ring_reset(struct mhi_ep_cntrl *mhi_cntrl, struct mhi_ep_ring *ring)
+ {
++	if (ring->type == RING_TYPE_ER)
++		cancel_delayed_work_sync(&ring->intmodt_work);
++
+ 	ring->started = false;
+ 	kfree(ring->ring_cache);
+ 	ring->ring_cache = NULL;
 -- 
-heikki
+2.25.1
+
