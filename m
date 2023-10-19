@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0897CFD15
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AFD7CFD17
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346183AbjJSOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S1346353AbjJSOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346274AbjJSOlK (ORCPT
+        with ESMTP id S1346287AbjJSOlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:41:10 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E2E12A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:02 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-325a78c806eso4096892f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:02 -0700 (PDT)
+        Thu, 19 Oct 2023 10:41:16 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C664A189
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:04 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4084001846eso10849185e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697726461; x=1698331261; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697726463; x=1698331263; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJmkGO5U4r+mD7otVz2tQyDmcZmvcXpFwejzcRHVYpw=;
-        b=WsJGL2Fswg/vOBaSm8tzcEvZ7jDyXFd/HRggbbWT7YqxQPHMllVIK88N/SfQEz9aHC
-         ZumNc+IQr7fZ0RbgeUCzpTCOAGjPCF1IP2hQYEV6AuCVegvnswiydecUuq4h2Ib8Ru4C
-         Z0SMFxrtxfzPyohvhCIMpuzrMYH/KML9iUX8Hi96mZPZcmFktx5Ga3ihBfj3j64VL51n
-         pIF4COcMS+dIciDLaJRjVWab25/JcbYNiWrJUiN8SQ0HLZaFWEMKQcFW7TzlpohiPXVb
-         VnJgZRkmN/p3AD6PR5/ReEW/admQocuoZIx544o+NQ8QtWw7jX0YcjdxFnZoZTlSmbBz
-         qtsQ==
+        bh=ElJlMelae52OVNRK43EtmIQAIoa6GhddKrR2iq/azSI=;
+        b=asgdwzoj6F8aCVnehYiJONbUZcey9CWQSdwYN22UB3GvoKR7giqGJuq2b/fLZyKLfU
+         TcL+yUN3hrSq2ZrR0VzDwaZLlHaXJ+XGuXQ4fKQHehQoXTtU/ci6CXmBrBY/78JNOhvJ
+         QB5Dtpu46gXJRLi2Sbt5lsUUs3zDTyZGtn000xirVylu5hxrIfQeQdX+rqcNkZ7NkAmo
+         AztzYPfHADfNu1lpJpKksaBj7lkP/cc39WX9Qeqt9uA1gp4wz+zpGN+TBFvn61YO2hNu
+         f+VwrvttLpq8DYgp7XNNbZlfNVDnb7eezeOtJqhhziF8TlfDALi9E84nfKNsnappMyPD
+         7ILg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697726461; x=1698331261;
+        d=1e100.net; s=20230601; t=1697726463; x=1698331263;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJmkGO5U4r+mD7otVz2tQyDmcZmvcXpFwejzcRHVYpw=;
-        b=suFurHvKp/WiOwNHuH/EbwE3W33R/Cffmz1CoE6uR4eK5iReZuOI4EDhL732JDhiLD
-         p9Y450bntDHC8hiGShgiNb3UDOXZ/eJqCZ6HWo2a37GGI5wyqJaZF8dG+TuvOZI0hs+G
-         log6AM2mB1RSn+ldejPF1s6rshRxY90Xf/Or64emFzUDjhqcueKUhbeeAKsbTYQ515kK
-         nDzj/xigxSSAE3kSXKxUqVOovxn84jiCxdtvjK4ns8HzpdASk0wk1K9ZPhWsvOCFpwep
-         0qIc/82BaFRAaN0eCSXkZvhmJLWf85iCEaEPyN1bs/wZdjVpuqzJvRC55j2+vzp8zZWK
-         usSQ==
-X-Gm-Message-State: AOJu0Yzg9i/4jbKXCK0gjFjUZiWAAzIiMQ/vXu8ckWoRhltnL0mg1rRW
-        letA1tO5Gxsswbn6aizdYdfB/QNW6N0owNX7KiI=
-X-Google-Smtp-Source: AGHT+IGqbx6iYGP+EpvwEdp/BMgDhteThNohvJ4szVaFgl3qs4h1dc83XvtOMzUVKD7OB/AmSajyYG2XUK5I1qtQdXo=
+        bh=ElJlMelae52OVNRK43EtmIQAIoa6GhddKrR2iq/azSI=;
+        b=SdbPv04nbMaoLE/Irzi+IbICwp1U5RoU5xB/AyCK20jOqYREbi4E7HzewdyyelP+Li
+         cBHJH4JUL9eW5Txw8p+TsSMl2s4WtjdjP8yQdzdrTAZYYaTSYqlhEOksvVVOoxxMMwrC
+         Mx2i3iq4oc91/cbtqskL/bVqVymeLSovsbKe5SRo+NfszwZxvxmS0ZaGzIq14V4JfNsn
+         oOsZBYzQdlySXLkiHf6spafTgOu3cpoWFtGspeIcKi1c+l/WoMpqFKZE6lTejPlC3sLt
+         Db+hPq0lgZ82IsGPFRESSvu053xZGzlt+tSK2O124PxESK95MbQbZYWDU2oyXo/Hd6DI
+         Cozw==
+X-Gm-Message-State: AOJu0YxrHEbUztRTgVVfuHfGjG3bsJzIHPiNYw04BDZM1/leJsa4DP73
+        El5VUXFcvSOOGio+CxfTe3j8cPVudsfrRbCSN5o=
+X-Google-Smtp-Source: AGHT+IFElnKsIi5dp2Ye8EDvnioIdKetK6LFJeeZwO4G65IWaMiQONCNVsOjqqbZrwPzyvGEqMqVtHvUbDt0zDruZF8=
 X-Received: from seb.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:31bd])
- (user=sebastianene job=sendgmr) by 2002:a5d:4e47:0:b0:32d:d785:e457 with SMTP
- id r7-20020a5d4e47000000b0032dd785e457mr20381wrt.8.1697726460839; Thu, 19 Oct
- 2023 07:41:00 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 14:40:29 +0000
+ (user=sebastianene job=sendgmr) by 2002:a5d:444f:0:b0:32d:83b1:338e with SMTP
+ id x15-20020a5d444f000000b0032d83b1338emr19447wrr.4.1697726463195; Thu, 19
+ Oct 2023 07:41:03 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 14:40:30 +0000
 In-Reply-To: <20231019144032.2943044-1-sebastianene@google.com>
 Mime-Version: 1.0
 References: <20231019144032.2943044-1-sebastianene@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231019144032.2943044-9-sebastianene@google.com>
-Subject: [PATCH v2 07/11] arm64: ptdump: Register a debugfs entry for the host
- stage-2 page-tables
+Message-ID: <20231019144032.2943044-10-sebastianene@google.com>
+Subject: [PATCH v2 08/11] arm64: ptdump: Parse the host stage-2 page-tables
+ from the snapshot
 From:   Sebastian Ene <sebastianene@google.com>
 To:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
         akpm@linux-foundation.org, maz@kernel.org
@@ -71,234 +71,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize a structures used to keep the state of the host stage-2 ptdump
-walker when pKVM is enabled. Create a new debugfs entry for the host
-stage-2 pagetables and hook the callbacks invoked when the entry is
-accessed. When the debugfs file is opened, allocate memory resources which
-will be shared with the hypervisor for saving the pagetable snapshot.
-On close release the associated memory and we unshare it from the
-hypervisor.
+Add a walker function which configures ptdump to parse the page-tables
+from the snapshot. Convert the physical address of the pagetable's start
+address to a host virtual address and use the ptdump walker to parse the
+page-table descriptors.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/include/asm/ptdump.h |   2 +
- arch/arm64/kvm/Kconfig          |  12 +++
- arch/arm64/mm/ptdump.c          | 161 ++++++++++++++++++++++++++++++++
- 3 files changed, 175 insertions(+)
+ arch/arm64/mm/ptdump.c | 63 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-index 88dcab1dab97..35b883524462 100644
---- a/arch/arm64/include/asm/ptdump.h
-+++ b/arch/arm64/include/asm/ptdump.h
-@@ -23,6 +23,8 @@ struct ptdump_info {
- 	void (*ptdump_walk)(struct seq_file *s, struct ptdump_info *info);
- 	void (*ptdump_end_walk)(struct ptdump_info *info);
- 	struct mutex			file_lock;
-+	size_t				mc_len;
-+	void				*priv;
- };
- 
- void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 83c1e09be42e..4b1847704bb3 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -71,4 +71,16 @@ config PROTECTED_NVHE_STACKTRACE
- 
- 	  If unsure, or not using protected nVHE (pKVM), say N.
- 
-+config NVHE_EL2_PTDUMP_DEBUGFS
-+	bool "Present the stage-2 pagetables to debugfs"
-+	depends on NVHE_EL2_DEBUG && PTDUMP_DEBUGFS && KVM
-+	help
-+	  Say Y here if you want to show the stage-2 kernel pagetables
-+	  layout in a debugfs file. This information is only useful for kernel developers
-+	  who are working in architecture specific areas of the kernel.
-+	  It is probably not a good idea to enable this feature in a production
-+	  kernel.
-+
-+	  If in doubt, say N.
-+
- endif # VIRTUALIZATION
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index fe239b9af50c..7c78b8994ca1 100644
+index 7c78b8994ca1..3ba4848272df 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
-@@ -466,6 +466,165 @@ void ptdump_check_wx(void)
- 		pr_info("Checked W+X mappings: passed, no W+X pages found\n");
+@@ -479,6 +479,11 @@ static void *ptdump_host_va(phys_addr_t phys)
+ 	return __va(phys);
  }
  
-+#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
-+static struct ptdump_info stage2_kernel_ptdump_info;
++static struct kvm_pgtable_mm_ops host_mmops = {
++	.phys_to_virt	=	ptdump_host_va,
++	.virt_to_phys	=	ptdump_host_pa,
++};
 +
-+static phys_addr_t ptdump_host_pa(void *addr)
+ static size_t stage2_get_pgd_len(void)
+ {
+ 	u64 mmfr0, mmfr1, vtcr;
+@@ -604,6 +609,63 @@ static void stage2_ptdump_end_walk(struct ptdump_info *info)
+ 	free_pages_exact(snapshot, PAGE_SIZE);
+ 	info->priv = NULL;
+ }
++
++static int stage2_ptdump_visitor(const struct kvm_pgtable_visit_ctx *ctx,
++				 enum kvm_pgtable_walk_flags visit)
 +{
-+	return __pa(addr);
++	struct pg_state *st = ctx->arg;
++	struct ptdump_state *pt_st = &st->ptdump;
++
++	if (st->pg_level[ctx->level].mask & ctx->old)
++		pt_st->note_page(pt_st, ctx->addr, ctx->level, ctx->old);
++
++	return 0;
 +}
 +
-+static void *ptdump_host_va(phys_addr_t phys)
-+{
-+	return __va(phys);
-+}
-+
-+static size_t stage2_get_pgd_len(void)
-+{
-+	u64 mmfr0, mmfr1, vtcr;
-+	u32 phys_shift = get_kvm_ipa_limit();
-+
-+	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
-+	mmfr1 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
-+	vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
-+
-+	return kvm_pgtable_stage2_pgd_size(vtcr);
-+}
-+
-+static void stage2_ptdump_prepare_walk(struct ptdump_info *info)
-+{
-+	struct kvm_pgtable_snapshot *snapshot;
-+	int ret, pgd_index, mc_index, pgd_pages_sz;
-+	void *page_hva;
-+	phys_addr_t pgd;
-+
-+	snapshot = alloc_pages_exact(PAGE_SIZE, GFP_KERNEL_ACCOUNT);
-+	if (!snapshot)
-+		return;
-+
-+	memset(snapshot, 0, PAGE_SIZE);
-+	ret = kvm_call_hyp_nvhe(__pkvm_host_share_hyp, virt_to_pfn(snapshot));
-+	if (ret)
-+		goto free_snapshot;
-+
-+	snapshot->pgd_len = stage2_get_pgd_len();
-+	pgd_pages_sz = snapshot->pgd_len / PAGE_SIZE;
-+	snapshot->pgd_hva = alloc_pages_exact(snapshot->pgd_len,
-+					      GFP_KERNEL_ACCOUNT);
-+	if (!snapshot->pgd_hva)
-+		goto unshare_snapshot;
-+
-+	for (pgd_index = 0; pgd_index < pgd_pages_sz; pgd_index++) {
-+		page_hva = snapshot->pgd_hva + pgd_index * PAGE_SIZE;
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_share_hyp,
-+					virt_to_pfn(page_hva));
-+		if (ret)
-+			goto unshare_pgd_pages;
-+	}
-+
-+	for (mc_index = 0; mc_index < info->mc_len; mc_index++) {
-+		page_hva = alloc_pages_exact(PAGE_SIZE, GFP_KERNEL_ACCOUNT);
-+		if (!page_hva)
-+			goto free_memcache_pages;
-+
-+		push_hyp_memcache(&snapshot->mc, page_hva, ptdump_host_pa);
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_share_hyp,
-+					virt_to_pfn(page_hva));
-+		if (ret) {
-+			pop_hyp_memcache(&snapshot->mc, ptdump_host_va);
-+			free_pages_exact(page_hva, PAGE_SIZE);
-+			goto free_memcache_pages;
-+		}
-+	}
-+
-+	ret = kvm_call_hyp_nvhe(__pkvm_copy_host_stage2, snapshot);
-+	if (ret)
-+		goto free_memcache_pages;
-+
-+	pgd = (phys_addr_t)snapshot->pgtable.pgd;
-+	snapshot->pgtable.pgd = phys_to_virt(pgd);
-+	info->priv = snapshot;
-+	return;
-+
-+free_memcache_pages:
-+	page_hva = pop_hyp_memcache(&snapshot->mc, ptdump_host_va);
-+	while (page_hva) {
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+					virt_to_pfn(page_hva));
-+		WARN_ON(ret);
-+		free_pages_exact(page_hva, PAGE_SIZE);
-+		page_hva = pop_hyp_memcache(&snapshot->mc, ptdump_host_va);
-+	}
-+unshare_pgd_pages:
-+	pgd_index = pgd_index - 1;
-+	for (; pgd_index >= 0; pgd_index--) {
-+		page_hva = snapshot->pgd_hva + pgd_index * PAGE_SIZE;
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+					virt_to_pfn(page_hva));
-+		WARN_ON(ret);
-+	}
-+	free_pages_exact(snapshot->pgd_hva, snapshot->pgd_len);
-+unshare_snapshot:
-+	WARN_ON(kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+				  virt_to_pfn(snapshot)));
-+free_snapshot:
-+	free_pages_exact(snapshot, PAGE_SIZE);
-+	info->priv = NULL;
-+}
-+
-+static void stage2_ptdump_end_walk(struct ptdump_info *info)
++static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
 +{
 +	struct kvm_pgtable_snapshot *snapshot = info->priv;
-+	void *page_hva;
-+	int pgd_index, ret, pgd_pages_sz;
-+
-+	if (!snapshot)
-+		return;
-+
-+	page_hva = pop_hyp_memcache(&snapshot->mc, ptdump_host_va);
-+	while (page_hva) {
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+					virt_to_pfn(page_hva));
-+		WARN_ON(ret);
-+		free_pages_exact(page_hva, PAGE_SIZE);
-+		page_hva = pop_hyp_memcache(&snapshot->mc, ptdump_host_va);
-+	}
-+
-+	pgd_pages_sz = snapshot->pgd_len / PAGE_SIZE;
-+	for (pgd_index = 0; pgd_index < pgd_pages_sz; pgd_index++) {
-+		page_hva = snapshot->pgd_hva + pgd_index * PAGE_SIZE;
-+		ret = kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+					virt_to_pfn(page_hva));
-+		WARN_ON(ret);
-+	}
-+
-+	free_pages_exact(snapshot->pgd_hva, snapshot->pgd_len);
-+	WARN_ON(kvm_call_hyp_nvhe(__pkvm_host_unshare_hyp,
-+				  virt_to_pfn(snapshot)));
-+	free_pages_exact(snapshot, PAGE_SIZE);
-+	info->priv = NULL;
-+}
-+#endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
-+
-+static void __init ptdump_register_host_stage2(void)
-+{
-+#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
-+	if (!is_protected_kvm_enabled())
-+		return;
-+
-+	stage2_kernel_ptdump_info = (struct ptdump_info) {
-+		.mc_len			= host_s2_pgtable_pages(),
-+		.ptdump_prepare_walk	= stage2_ptdump_prepare_walk,
-+		.ptdump_end_walk	= stage2_ptdump_end_walk,
++	struct pg_state st;
++	struct kvm_pgtable *pgtable;
++	u64 start_ipa = 0, end_ipa;
++	struct addr_marker ipa_address_markers[3];
++	struct kvm_pgtable_walker walker = (struct kvm_pgtable_walker) {
++		.cb	= stage2_ptdump_visitor,
++		.arg	= &st,
++		.flags	= KVM_PGTABLE_WALK_LEAF,
 +	};
 +
-+	mutex_init(&stage2_kernel_ptdump_info.file_lock);
++	if (snapshot == NULL || !snapshot->pgtable.pgd)
++		return;
 +
-+	ptdump_debugfs_register(&stage2_kernel_ptdump_info,
-+				"host_stage2_kernel_page_tables");
-+#endif
++	pgtable = &snapshot->pgtable;
++	pgtable->mm_ops = &host_mmops;
++	end_ipa = BIT(pgtable->ia_bits) - 1;
++
++	memset(&ipa_address_markers[0], 0, sizeof(ipa_address_markers));
++
++	ipa_address_markers[0].start_address = start_ipa;
++	ipa_address_markers[0].name = "IPA start";
++
++	ipa_address_markers[1].start_address = end_ipa;
++	ipa_address_markers[1].name = "IPA end";
++
++	st = (struct pg_state) {
++		.seq		= s,
++		.marker		= &ipa_address_markers[0],
++		.level		= pgtable->start_level - 1,
++		.pg_level	= &stage2_pg_level[0],
++		.ptdump		= {
++			.note_page	= note_page,
++			.range		= (struct ptdump_range[]) {
++				{start_ipa,	end_ipa},
++				{0,		0},
++			},
++		},
++	};
++
++	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
 +}
-+
- static int __init ptdump_init(void)
- {
- 	address_markers[PAGE_END_NR].start_address = PAGE_END;
-@@ -474,6 +633,8 @@ static int __init ptdump_init(void)
- #endif
- 	ptdump_initialize();
- 	ptdump_debugfs_register(&kernel_ptdump_info, "kernel_page_tables");
-+	ptdump_register_host_stage2();
-+
- 	return 0;
- }
- device_initcall(ptdump_init);
+ #endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
+ 
+ static void __init ptdump_register_host_stage2(void)
+@@ -616,6 +678,7 @@ static void __init ptdump_register_host_stage2(void)
+ 		.mc_len			= host_s2_pgtable_pages(),
+ 		.ptdump_prepare_walk	= stage2_ptdump_prepare_walk,
+ 		.ptdump_end_walk	= stage2_ptdump_end_walk,
++		.ptdump_walk		= stage2_ptdump_walk,
+ 	};
+ 
+ 	mutex_init(&stage2_kernel_ptdump_info.file_lock);
 -- 
 2.42.0.655.g421f12c284-goog
 
