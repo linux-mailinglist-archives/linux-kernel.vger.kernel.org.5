@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299E27D0347
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6E97D0349
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346556AbjJSUpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S1346561AbjJSUpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346397AbjJSUpD (ORCPT
+        with ESMTP id S1346397AbjJSUpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B85612F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697748251;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUmq71SFaV76lBrVYh6+KvqO/bkIhCdS1UYE4ErabTM=;
-        b=OF6EwuC2j9NM+CVaVDAlqtuZqVve4aDnYVQhEf8M1YvXmULARlzpEiuIbsFO4S8TOrW/E6
-        rd5Uq6wVVVYovP+MDEH3FK51BOhPNwOP5vySqgu/fxsduNo35rkezlOXU0P60TZicqUCI1
-        qQuaqdn7bNDZEt3bCud610MYajA6fos=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-249-ZQMDGzKmNQmzZtrAx86uCQ-1; Thu, 19 Oct 2023 16:43:59 -0400
-X-MC-Unique: ZQMDGzKmNQmzZtrAx86uCQ-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-59bbd849b22so146957b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:43:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697748239; x=1698353039;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 19 Oct 2023 16:45:15 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EF8124
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:45:13 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so4284a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697748311; x=1698353111; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tUmq71SFaV76lBrVYh6+KvqO/bkIhCdS1UYE4ErabTM=;
-        b=REdZlPtpL2/xKETdOyW3is8IqS7C9wP+fzyqCZXSOEVXQRX9YSRWY0Lp2ufR2LryAN
-         SmppAalx+ZQvW9/o2XqQld/qgf9XWyw7AUWoeIlU9EIae+u7Ai+c9C2H5EaO+Sqf0q/b
-         n7zK7TWG2iYbay4b3cUtV5zPxyLtAtzZet8jDCIXXB/NPEKA4ji3ZJgbAa+KnatUDkwg
-         fDNQY7ulSQSS+Ku+uGGdpAkFaCTI2YkILpPJ9TU+3BM/Ygf9+9PNN7klREiPKYjP4Bzi
-         AkSERiBmy8WHSDneyCQ6ElKa0EWuRARok00Ozknzi84vy/SgZx2ou/rvUq3ZFQBsDgKE
-         HcJQ==
-X-Gm-Message-State: AOJu0YxhS+CO2UVIeJIKhwm3pV3mivvC5aiCEQBUCGl21DSLdPT/x+sS
-        0frJ468USdfBB7LoiwJTgUi1zQQpxq3+lJktirahubPwTeoVPa6Cdwn8XWqYkldqvH8cvumxLdE
-        MYz5QU72+Or3BYjSF3iGKdkOz
-X-Received: by 2002:a05:690c:dc9:b0:5a7:b928:9e93 with SMTP id db9-20020a05690c0dc900b005a7b9289e93mr4048164ywb.5.1697748238867;
-        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEh6w+8ZXZ57cfOnUfzaZAee9HlNSSE1wHtnL/nhH2FMh9qNnuc/g7W0l/g4crX2wbdluxT3Q==
-X-Received: by 2002:a05:690c:dc9:b0:5a7:b928:9e93 with SMTP id db9-20020a05690c0dc900b005a7b9289e93mr4048123ywb.5.1697748238545;
-        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id bi12-20020a05620a318c00b00772662b7804sm82248qkb.100.2023.10.19.13.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:43:56 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <ZTGVDF5lJPyDF+c1@x1n>
-References: <ZShS3UT+cjJFmtEy@x1n>
- <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n>
- <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n>
- <8d187891-f131-4912-82d8-13112125b210@redhat.com>
- <ZS7ZqztMbhrG52JQ@x1n>
- <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
- <ZTGJHesvkV84c+l6@x1n>
- <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
+        bh=VVuCB44VLEjsZzvUgM1w7n2lvEI4MsHtEyH+2GVq2dY=;
+        b=EulO5Oy4vXgxAA88b1og3ur2Akh0sYSkPVfIpxvdGm4MMF93ZCwC1lj2M+zZLqG6eQ
+         A2Pyy0EJ4bXkkrdo7FlBfFVZtAmXDPTVpWgs4MiadRD84rCsdV957TmoxHIs8fAh5OJR
+         LWH+O7bqv3+BZ1CoAaTo7px+dZp2vRpOeiIoL5aSkVby89PJtAhnMCGpk9XMaHLfBIms
+         vaynbKJref+ZTPRmPnc+Wwjun2M1X65PfBJ5TVBm2ZAJOmc1H34QGZIw5Zo2QtFK0zqL
+         CK5pv1cXTUAZOIMeusY13UWvRnqzJaIS6rYMBqCJ7baIWJZlslahMbQxMbWwG3hfByDB
+         F+jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697748311; x=1698353111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVuCB44VLEjsZzvUgM1w7n2lvEI4MsHtEyH+2GVq2dY=;
+        b=V6XlJhOfgLZi6uDHFtUP7hPECkSA5si08lWqonfwg9qn0kX5RHquGq3LEteejvGISk
+         IeVfpa5x4kgK1bXNsWkM9xDlWa1yu1XH8P/mKK88iFVyV6Fg28odg+BZUg8GV/5YOzYM
+         t5NfxPLHyKayKGdPqxr3T+Wr7cjdoqUVAKuc5eVJ4omz209PPPK8S0ezc31MdI3Y0NHZ
+         q7+JSztfQLp4Gav/kIHk/wtdPi7KHFxRmeKcEXkjOIA+w4l+FhxR/kjCeg2xX8wIWWXX
+         4/taaGglfwj3YKP8G8I480tACLO3YaB4mMiJkEzeKXisvY8aYGGXq7wkVCJoK6m/kivT
+         m38w==
+X-Gm-Message-State: AOJu0Yx8zEBwEt3BD/Sus/pGPQcpTTRiqGXs4lk/QivEm+ldwGRXssBX
+        e4v+T8E9mPNhzWvnEKtcHRHKC6MQVLadWzCTdNZyoQ==
+X-Google-Smtp-Source: AGHT+IHFC9ybSiyivStLgYN8fa6C0ml9tRY1/5sGB2bF7uJu4CHMtn3ZiatZMgc3HYBkARDtPGQ6AHj9IsKbPrz5vok=
+X-Received: by 2002:a50:9f41:0:b0:53f:91cb:6904 with SMTP id
+ b59-20020a509f41000000b0053f91cb6904mr27602edf.4.1697748310674; Thu, 19 Oct
+ 2023 13:45:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231016232816.3355132-2-rdbabiera@google.com> <ZTDkIGLmjmL9HwJP@kuha.fi.intel.com>
+In-Reply-To: <ZTDkIGLmjmL9HwJP@kuha.fi.intel.com>
+From:   RD Babiera <rdbabiera@google.com>
+Date:   Thu, 19 Oct 2023 13:44:59 -0700
+Message-ID: <CALzBnUF-EZjFEHCc4XRLdFr5yP8dCq7De4SaNif32LcL5=tMYA@mail.gmail.com>
+Subject: Re: [PATCH v1] usb: typec: tcpm: only discover modes the port
+ supports svids for
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 01:02:39PM -0700, Suren Baghdasaryan wrote:
-> Hi Folks,
-> Sorry, I'm just catching up on all the comments in this thread after a
+Hi Heikki,
 
-Not a problem.
+On Thu, Oct 19, 2023 at 1:09=E2=80=AFAM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+> I'm confused here. Is the device here the port or partner (or both)?
 
-> week-long absence. Will be addressing other questions separately but
-> for cross-mm one, I think the best way forward would be for me to
-> split this patch into two with the second one adding cross-mm support.
-> That will clearly show how much additional code that requires and will
-> make it easier for us to decide whether to support it or not.
+The port, I'll make sure to be more precise when describing.
 
-Sounds good, thanks for that extra work.
+> Why are you skipping the first SVID?
 
-> TBH, I don't see the need for an additional flag even if the initial
-> version will be merged without cross-mm support. Once it's added the
-> manpage can mention that starting with a specific Linux version
-> cross-mm is supported, no?
+Skipping to the first SVID supported by the port when preparing
+the first Discover Modes message.
 
-It's about how an user app knows what the kernel supports.
+> Please note that the Type-C specification puts priority on TBT over DP.
+> Is this in conflict with that?
 
-On kernels that only support single-mm, UFFDIO_MOVE should fail if it found
-ctx->mm != current->mm.
+Not in this case. Assuming the port supports both TBT and DP, a Discover
+Modes message will be sent to both regardless of what order they return
+in the Discover SVIDs ACK message.
 
-I think the best way to let the user app be clear of what happened is one
-new feature bit if cross-mm will be supported separately.  Or the userapp
-will need to rely on a specific failure code of UFFDIO_MOVE, and only until
-the 1st MOVE being triggered.  Not as clear, IMHO.
+> > Fixes: f0690a25a140 ("staging: typec: USB Type-C Port Manager (tcpm)")
+>
+> I think that's wrong commit (perhaps you want 8afe9a3548f9d instead?).
 
-> Also from my quick read, it sounds like we want to prevent movements
-> of pinned pages regardless of cross-mm support. Is my understanding
-> correct?
+8afe9a3548f9d looks to be more concerned with the consumption and
+processing of the received payload, I had put f0690a25a140 because it
+contained the logic to determine if the Discover Mode message was being
+sent at all as well as preparing the response. 5e1d4c49fbc86 does touch
+the response formation but only the svdm_version and not the SVID.
 
-I prefer that, but that's only my 2 cents.  I just don't see how remap can
-work with pin.  IIUC pin is about coherency of processor view and DMA view.
-Then if so the VA is the only identifier of a "page" for an user app
-because real pfn is hidden, and remap changes that VA.  So it doesn't make
-sense to me to remap a pin in whatever form.
+> Right now I'm not convinced that this should be considered as a fix at
+> all. I don't know anything about the test you are talking about, but
+> if this patch is just about making it pass, then there is something
+> seriously wrong.
 
-For check pinning: I think I used to mention that it may again require
-proper locking over mm.write_protect_seq like fork() paths.  No, when
-thinking again I think I was wrong..  write_protect_seq requires mmap write
-lock, definitely not good.
+I use the VESA DisplayPort Alt Mode on USB Type-C CTS as a reference.
+In regards to this being a fix, if this ends up being more optional (discus=
+sed
+below), then I'll remove the fix tag.
 
-We can do what David mentioned before, after ptep_clear_flush() (so pte is
-cleared) we recheck page pinning, if pinned fail MOVE and put the page
-back.  Note that we can't do that check after installing it into dest
-pgtables, because then someone can start to pin it from dest mm already.
+> If you need the modes to be discovered in some specific order, then we
+> need the framework to allow you to do that. So perhaps the tcpci
+> drivers should be able to supply the preferred order to the tcpm?
+>
+> But as such, unless I'm mistaken, this patch will change the logic so
+> that only the partner alt modes that the port supports get registered,
+> and that way are exposed to the user. You can't do that - right now
+> it's the only way we can inform the user about them. All partner
+> alternate modes (at least the SVIDs) must be exposed to the user one
+> way or the other, regardless does the port support them or not.
 
-Thanks,
+The test this patch tries to fix could just be written without consideratio=
+n
+of this. My guess is that the test was designed such that the SVIDs before
+the DisplayPort SVID are unknown to the port under test so the mentality
+could have been "why should a port care about SVIDs it doesn't know
+about?"
 
--- 
-Peter Xu
+A defense I could make for it is that the USB PD CTS doesn't test
+to see if a port under test sends Discover Modes for every SVID returned
+in a Discover SVIDs ACK, so the interpretation isn't invalid. I've seen oth=
+er
+tcpm implementations handle Discover Modes this way as well.
 
+Regardless, you're definitely right that the user should know about all
+Alt Modes/SVIDs - the port would lose SVID information without
+registering a partner altmode for it. Currently I think the approaches to p=
+ass
+this test look like:
+    1. Your suggestion - let the tcpci decide if there should be a
+discovery order.
+Alternatively, let the tcpci decide if it wants to opt into this
+patch's behavior of
+only discovering modes for known SVIDs - a strict discovery flag.
+    2. Send a Discover Mode message to known SVIDs first in the order
+they come in, and then to unknown SVIDs. The test passes and no information
+is lost, but it's unnecessary refactoring just to pass one test for
+one Alt Mode.
+    3. Don't send a Discover Mode message to unknown SVIDs, but do register
+an Alt Mode with blank info for that SVID. It passes the test without havin=
+g to
+do any reordering compared to the first option and it preserves supported
+SVIDs. But, the port would lose information such as each SVID's Alt Modes
+VDO plus each SVID can support more than one Alt Mode.
+
+Let me know if any of these approaches sound worth pursuing; I do think
+Option 1 does make more sense than the others.
+
+---
+Thanks for the feedback,
+RD
