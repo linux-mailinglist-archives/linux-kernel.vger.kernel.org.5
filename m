@@ -2,304 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AD77CF73D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DE57CF742
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345383AbjJSLnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        id S1345400AbjJSLop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbjJSLnn (ORCPT
+        with ESMTP id S235244AbjJSLoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:43:43 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADE412F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:43:40 -0700 (PDT)
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231019114338epoutp011faf8e201c5f697019a13a4ebda0da42~Pf4q_hy7F0692206922epoutp016
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:43:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231019114338epoutp011faf8e201c5f697019a13a4ebda0da42~Pf4q_hy7F0692206922epoutp016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697715818;
-        bh=K1ITzz+sTFe6DaFJgr1p3d9Rn4oprGlq4PJl8l40mZQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=auFC0JBM9Zm/6kBYhdRRp2ocsK6OeCfkqUdsWkYaTrGk0VZ1W/QYvbBgDsDjKu7zQ
-         ZjKpK/CWHIHpjkheZQkbTwKYPgoMcy3u3A114yfl9lVtXz0NIPnXCCXcMKZqxY+q6P
-         BRUi5s9tdBV3s51BPdUnE6km5OfwVsUZxkpFphq0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20231019114337epcas1p49dcfa98fbe54331e5ca2ffc9f652b543~Pf4qWSjxt1956119561epcas1p4S;
-        Thu, 19 Oct 2023 11:43:37 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.38.235]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4SB5T45k8sz4x9Px; Thu, 19 Oct
-        2023 11:43:36 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        56.AC.10211.86611356; Thu, 19 Oct 2023 20:43:36 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231019114336epcas1p3f095e27fc7963b81600827776bcd46da~Pf4o2eh-p0809508095epcas1p3-;
-        Thu, 19 Oct 2023 11:43:36 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231019114336epsmtrp167c58f9a220bb591f15e5399838662ad~Pf4o1d5Eq1431314313epsmtrp1j;
-        Thu, 19 Oct 2023 11:43:36 +0000 (GMT)
-X-AuditID: b6c32a38-6d3fd700000027e3-85-65311668a211
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2A.78.07368.76611356; Thu, 19 Oct 2023 20:43:36 +0900 (KST)
-Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231019114335epsmtip21801ba4e2c8672366111816f39abca46~Pf4oiWFYt2627126271epsmtip2H;
-        Thu, 19 Oct 2023 11:43:35 +0000 (GMT)
-From:   "Chanwoo Choi" <cw00.choi@samsung.com>
-To:     "'Sascha Hauer'" <s.hauer@pengutronix.de>,
-        <linux-rockchip@lists.infradead.org>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        "'Heiko Stuebner'" <heiko@sntech.de>,
-        "'Chanwoo Choi'" <chanwoo@kernel.org>,
-        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
-        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Will Deacon'" <will@kernel.org>,
-        "'Mark Rutland'" <mark.rutland@arm.com>, <kernel@pengutronix.de>,
-        "'Michael Riesch'" <michael.riesch@wolfvision.net>,
-        "'Robin Murphy'" <robin.murphy@arm.com>,
-        "'Vincent Legoll'" <vincent.legoll@gmail.com>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "'Sebastian Reichel'" <sebastian.reichel@collabora.com>
-In-Reply-To: <20231018061714.3553817-9-s.hauer@pengutronix.de>
-Subject: RE: [PATCH v8 08/26] PM / devfreq: rk3399_dmc,dfi: generalize
- DDRTYPE defines
-Date:   Thu, 19 Oct 2023 20:43:35 +0900
-Message-ID: <000f01da0281$7ea9b9a0$7bfd2ce0$@samsung.com>
+        Thu, 19 Oct 2023 07:44:44 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C823A12F;
+        Thu, 19 Oct 2023 04:44:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BE88C1F38C;
+        Thu, 19 Oct 2023 11:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697715879; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=efj53zL1rdLnd7W+qZoipaW+aReVa2FuAUE+fELztug=;
+        b=h881vF6RySHtKPG75Fdo4HrIUgPdtPtnjzwnPiBQDnxmjTPDnWXpqc3bEryndNmbMhitPO
+        Iat5z7AilaYNNUpt0/U7tulr2pq9gWDPXZrG3w6XUphfZVJ9JXFVo6OXVuV96QCg1fioqc
+        lQKxIy0azBpF1WBs8MyqHL2aVBoVStk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697715879;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=efj53zL1rdLnd7W+qZoipaW+aReVa2FuAUE+fELztug=;
+        b=PiQowyEwE3OUAsgFC2SfBPGsGMJwgGg9lcpgAI4D1WlRq+p5yraFTooohj4whugNcKxhmS
+        yOyFJae/lCMppqDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADE27139C2;
+        Thu, 19 Oct 2023 11:44:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TGiEKqcWMWVtJgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 11:44:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 23A21A06B0; Thu, 19 Oct 2023 13:44:39 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 13:44:39 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH 3/4] ext4: avoid online resizing failures due to
+ oversized flex bg
+Message-ID: <20231019114439.45ytcripaettgpsg@quack3>
+References: <20231018114221.441526-1-libaokun1@huawei.com>
+ <20231018114221.441526-4-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: ko
-Thread-Index: AQFYMiMsP3soeW2GlDsie1R9CxInBwFnqumWAgXv2VuxOTGwQA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxze6W1vC4ztWl4HsrBylUQZjxZadljALKLuOmUSCZkzS1hHrxSB
-        tmuLzz0AeQhTHmFkWuQhgo6GDawohYgM6EDYMBpeRmkG8hilsjCIAkPGWi5u/Pf9vt/5zvf7
-        zoOH8edxL16iQkurFdJkEndk3+7cERggdxfRwrTOd1DRowE2qmu9z0IVpvsctPbUykH6kmY2
-        yp8ew1BfxjMuMowPcVB/y2UcLVwwATQ/uoahmuGHLNR+ZRt6kv4DjrJaTVzUPjfBQatNBjYy
-        Wz9C3T9O4ShzRPK+K1VXXgcoo7kaUM06M5cy6HNxamToDk7drP6GKlgVUvmNekA1DZVj1ILB
-        m6pYGQfRTkeSwuW0VEarBbQiXilLVCREkPtj4iLjJKFCUYAoDL1LChTSFDqC3H0gOmBvYrIt
-        ICk4Lk1OtVHRUo2GDNoZrlamammBXKnRRpC0SpaskqgCNdIUTaoiIVBBa98TCYXBEtvCz5Lk
-        BbX/sFU9QSdXjWWcNFCyPQ848CAhhgO1Rk4ecOTxCSOAtyw3WUwxD6Dh2xwuU7wAsL2oCH8l
-        GRus2Wi0Avi9+SnH3uATFgCH7x7PAzweTvjDyqVYO+1KxMKCe0aWHWPECw6cW9tnxw7ETmio
-        Gl2XuhCHYf6jv4Adswlf2DxZvO7lTIRBXZ9lA2+BPZcm2Mw+b8Om2csYM48ALk9e4zC8KyzN
-        zcYY313wZ3Mh2z4nJEodYN+dTg4j2A1Nc+c3sAuc6W7kMtgLWgqyuYygGMCHVivGFPUA3qjN
-        3LALgW01xSx7SozYAetbghjaBzavlAFmijfgn8/tBjwb7wzPZfOZJVth/6iZxWBPeDUnFy8E
-        pG5TNt2mbLpNeXT/m1UCth640ypNSgKtEanE/912vDLFANYfvx8ygrLZucAOwOKBDgB5GOnq
-        7EsJab6zTHrqNK1WxqlTk2lNB5DYTrsI83KLV9p+j0IbJxKHCcWhwSFiJAoVkR7OXTMXZHwi
-        Qaqlk2haRatf6Vg8B680FqlaESxhavEfJb95x3R0NUWcOLR2tzFm+dzCkVJFuF/e0kHZ8Lz/
-        57q38C9ZZdqMsfrCzIb6wWNRlV8v6Y9mBhUPf3dtyupR+tqpk/KK8vTcL0Ials8MrJw++nJx
-        b8Zjr98jfXqjXZ49Ca4cyj7RO2lwW1ZlV4kO74v0bsl5s+LK9oVAz4Pjh0YMU78uso/5W7+q
-        HmzonTmzGO+wyykq82W6hTWe+NPfe9p8bo1azvpNP451m+bfiLpXdRsFq8L8Z7Y9aPE3mWaW
-        B6IbPHw/1F/smtVuvdRdo3/+QNcT3l/ndj5rbouw+uwHTvsPXOdTw/X4L59+0vax+8U9aUOe
-        jlkdEZLXJ+pItkYuFflhao30XxC4HKKFBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNIsWRmVeSWpSXmKPExsWy7bCSvG6GmGGqwfpFjBYTb1xhsViz9xyT
-        xfwj51gt/j96zWqxaupOFou+Fw+ZLc42vWG32PT4GqvF5V1z2Cw+9x5htPj04D+zxdLrF5ks
-        Di5UsbjduILNonXvEXaLgx+esFr83b6JxeLuaz+L42ufsVm03DF1EPFYM28No8eOu0sYPXbO
-        usvusWlVJ5vHnWt72Dw2L6n36P9r4NG3ZRWjx/Zr85g9Pm+S85j/+zFjAHcUl01Kak5mWWqR
-        vl0CV0b/yn8sBSf1K/7umMvawDhVo4uRk0NCwETi4dWl7F2MXBxCArsZJTpuLmaGSEhKTLt4
-        FMjmALKFJQ4fLoaoec4ocfr9OrA4m4COxIIfoSDlIgKhEv0ndjCB1DALtLBJ7Fr2mQ2i4SCj
-        xNr9n1hAqjgF7CQ2LXrACmILC4RJ7Py0EsxmEVCV2Pl0MhuIzStgKTHr7EsoW1Di5MwnLCDL
-        mAX0JNo2MoKEmQXkJba/nQN1p4LEz6fLWCHiIhKzO9uYIQ5ykjhwdwLLBEbhWUgmzUKYNAvJ
-        pFlIuhcwsqxilEwtKM5Nz002LDDMSy3XK07MLS7NS9dLzs/dxAiOfy2NHYz35v/TO8TIxMF4
-        iFGCg1lJhFfVwyBViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkpQgLpiSWp2ampBalFMFkm
-        Dk6pBqbG2oT2XQqeLHWH5s+aef7ToWmXJb36/Ga/XVA02VpJOisoVUIgMlQspZW95OfO7zMf
-        bUjgPrXpq9tczqvvNu5n5PprG6fh9/Gz2GKV7UemlmrnloR8WZ6bPzU/2fIli9UHlnr2HkNh
-        ZdVSx+2yW40KOrmrY0XEzNdwxR1Mf5o1+eptxxmvJKvnHTrHGWT+5ldog32VkJGpVfn8DxGn
-        30/LPZCb8mF/GufXpsd2Qgpb4uVl1R6XnfNUen6g3WGd89YtaZcWNRawncn+fsBxc3jblZdm
-        vx5viFqnGNNz3j3Wj1/n5d0wxTcGNoFBcw6GBCav7dmZWHqPSzndcu6a/R8up/86duHem4js
-        NVx/0pRYijMSDbWYi4oTAS5nc6xuAwAA
-X-CMS-MailID: 20231019114336epcas1p3f095e27fc7963b81600827776bcd46da
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231018063650epcas1p1e1d5a928d4dd4b205cc9e2b71b35e23a
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
-        <CGME20231018063650epcas1p1e1d5a928d4dd4b205cc9e2b71b35e23a@epcas1p1.samsung.com>
-        <20231018061714.3553817-9-s.hauer@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231018114221.441526-4-libaokun1@huawei.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.10
+X-Spamd-Result: default: False [-5.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Sascha Hauer <s.hauer@pengutronix.de>
-> Sent: Wednesday, October 18, 2023 3:17 PM
-> To: linux-rockchip@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> linux-pm@vger.kernel.org; Heiko Stuebner <heiko@sntech.de>; Chanwoo Choi
-> <chanwoo@kernel.org>; Kyungmin Park <kyungmin.park@samsung.com>; MyungJoo
-> Ham <myungjoo.ham@samsung.com>; Will Deacon <will@kernel.org>; Mark
-> Rutland <mark.rutland@arm.com>; kernel@pengutronix.de; Michael Riesch
-> <michael.riesch@wolfvision.net>; Robin Murphy <robin.murphy@arm.com>;
-> Vincent Legoll <vincent.legoll@gmail.com>; Rob Herring
-> <robh+dt@kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> devicetree@vger.kernel.org; Sebastian Reichel
-> <sebastian.reichel@collabora.com>; Sascha Hauer <s.hauer@pengutronix.de>;
-> Chanwoo Choi <cw00.choi@samsung.com>
-> Subject: [PATCH v8 08/26] PM / devfreq: rk3399_dmc,dfi: generalize DDRTYPE
-> defines
+On Wed 18-10-23 19:42:20, Baokun Li wrote:
+> When we online resize an ext4 filesystem with a oversized flexbg_size,
 > 
-> The DDRTYPE defines are named to be RK3399 specific, but they can be used
-> for other Rockchip SoCs as well, so replace the RK3399_PMUGRF_ prefix with
-> ROCKCHIP_. They are defined in a SoC specific header file, so when
-> generalizing the prefix also move the new defines to a SoC agnostic header
-> file. While at it use GENMASK to define the DDRTYPE bitfield and give it a
-> name including the full register name.
+>      mkfs.ext4 -F -G 67108864 $dev -b 4096 100M
+>      mount $dev $dir
+>      resize2fs $dev 16G
 > 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> the following WARN_ON is triggered:
+> ==================================================================
+> WARNING: CPU: 0 PID: 427 at mm/page_alloc.c:4402 __alloc_pages+0x411/0x550
+> Modules linked in: sg(E)
+> CPU: 0 PID: 427 Comm: resize2fs Tainted: G  E  6.6.0-rc5+ #314
+> RIP: 0010:__alloc_pages+0x411/0x550
+> Call Trace:
+>  <TASK>
+>  __kmalloc_large_node+0xa2/0x200
+>  __kmalloc+0x16e/0x290
+>  ext4_resize_fs+0x481/0xd80
+>  __ext4_ioctl+0x1616/0x1d90
+>  ext4_ioctl+0x12/0x20
+>  __x64_sys_ioctl+0xf0/0x150
+>  do_syscall_64+0x3b/0x90
+> ==================================================================
+> 
+> This is because flexbg_size is too large and the size of the new_group_data
+> array to be allocated exceeds MAX_ORDER. Currently, the minimum value of
+> MAX_ORDER is 8, the minimum value of PAGE_SIZE is 4096, the corresponding
+> maximum number of groups that can be allocated is:
+> 
+>  (PAGE_SIZE << MAX_ORDER) / sizeof(struct ext4_new_group_data) ≈ 21845
+> 
+> And the value that is down-aligned to the power of 2 is 16384. Therefore,
+> this value is defined as MAX_RESIZE_BG, and the number of groups added
+> each time does not exceed this value during resizing, and is added multiple
+> times to complete the online resizing. The difference is that the metadata
+> in a flex_bg may be more dispersed.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  drivers/devfreq/event/rockchip-dfi.c |  9 +++++----
->  drivers/devfreq/rk3399_dmc.c         | 10 +++++-----
->  include/soc/rockchip/rk3399_grf.h    |  7 +------
->  include/soc/rockchip/rockchip_grf.h  | 17 +++++++++++++++++
->  4 files changed, 28 insertions(+), 15 deletions(-)  create mode 100644
-> include/soc/rockchip/rockchip_grf.h
+>  fs/ext4/resize.c | 25 +++++++++++++++++--------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c
-> b/drivers/devfreq/event/rockchip-dfi.c
-> index 28c18bbf6baa5..82d18c60538a5 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -18,8 +18,10 @@
->  #include <linux/list.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/bitfield.h>
->  #include <linux/bits.h>
-> 
-> +#include <soc/rockchip/rockchip_grf.h>
->  #include <soc/rockchip/rk3399_grf.h>
-> 
->  #define DMC_MAX_CHANNELS	2
-> @@ -75,9 +77,9 @@ static void rockchip_dfi_start_hardware_counter(struct
-> devfreq_event_dev *edev)
->  	writel_relaxed(CLR_DDRMON_CTRL, dfi_regs + DDRMON_CTRL);
-> 
->  	/* set ddr type to dfi */
-> -	if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR3)
-> +	if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR3)
->  		writel_relaxed(LPDDR3_EN, dfi_regs + DDRMON_CTRL);
-> -	else if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR4)
-> +	else if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR4)
->  		writel_relaxed(LPDDR4_EN, dfi_regs + DDRMON_CTRL);
-> 
->  	/* enable count, use software mode */
-> @@ -192,8 +194,7 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
-> 
->  	/* get ddr type */
->  	regmap_read(regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
-> -	dfi->ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
-> -			RK3399_PMUGRF_DDRTYPE_MASK;
-> +	dfi->ddr_type = FIELD_GET(RK3399_PMUGRF_OS_REG2_DDRTYPE, val);
-> 
->  	dfi->channel_mask = GENMASK(1, 0);
->  	dfi->max_channels = 2;
-> diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
-> index daff407026157..fd2c5ffedf41e 100644
-> --- a/drivers/devfreq/rk3399_dmc.c
-> +++ b/drivers/devfreq/rk3399_dmc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/suspend.h>
-> 
->  #include <soc/rockchip/pm_domains.h>
-> +#include <soc/rockchip/rockchip_grf.h>
->  #include <soc/rockchip/rk3399_grf.h>
->  #include <soc/rockchip/rockchip_sip.h>
-> 
-> @@ -381,17 +382,16 @@ static int rk3399_dmcfreq_probe(struct
-> platform_device *pdev)
->  	}
-> 
->  	regmap_read(data->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
-> -	ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
-> -		    RK3399_PMUGRF_DDRTYPE_MASK;
-> +	ddr_type = FIELD_GET(RK3399_PMUGRF_OS_REG2_DDRTYPE, val);
-> 
->  	switch (ddr_type) {
-> -	case RK3399_PMUGRF_DDRTYPE_DDR3:
-> +	case ROCKCHIP_DDRTYPE_DDR3:
->  		data->odt_dis_freq = data->ddr3_odt_dis_freq;
->  		break;
-> -	case RK3399_PMUGRF_DDRTYPE_LPDDR3:
-> +	case ROCKCHIP_DDRTYPE_LPDDR3:
->  		data->odt_dis_freq = data->lpddr3_odt_dis_freq;
->  		break;
-> -	case RK3399_PMUGRF_DDRTYPE_LPDDR4:
-> +	case ROCKCHIP_DDRTYPE_LPDDR4:
->  		data->odt_dis_freq = data->lpddr4_odt_dis_freq;
->  		break;
->  	default:
-> diff --git a/include/soc/rockchip/rk3399_grf.h
-> b/include/soc/rockchip/rk3399_grf.h
-> index 3eebabcb28123..775f8444bea8d 100644
-> --- a/include/soc/rockchip/rk3399_grf.h
-> +++ b/include/soc/rockchip/rk3399_grf.h
-> @@ -11,11 +11,6 @@
-> 
->  /* PMU GRF Registers */
->  #define RK3399_PMUGRF_OS_REG2		0x308
-> -#define RK3399_PMUGRF_DDRTYPE_SHIFT	13
-> -#define RK3399_PMUGRF_DDRTYPE_MASK	7
-> -#define RK3399_PMUGRF_DDRTYPE_DDR3	3
-> -#define RK3399_PMUGRF_DDRTYPE_LPDDR2	5
-> -#define RK3399_PMUGRF_DDRTYPE_LPDDR3	6
-> -#define RK3399_PMUGRF_DDRTYPE_LPDDR4	7
-> +#define RK3399_PMUGRF_OS_REG2_DDRTYPE		GENMASK(15, 13)
-> 
->  #endif
-> diff --git a/include/soc/rockchip/rockchip_grf.h
-> b/include/soc/rockchip/rockchip_grf.h
-> new file mode 100644
-> index 0000000000000..dde1a9796ccb5
-> --- /dev/null
-> +++ b/include/soc/rockchip/rockchip_grf.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index 0a57b199883c..e168a9f59600 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -218,10 +218,17 @@ struct ext4_new_flex_group_data {
+>  						   in the flex group */
+>  	__u16 *bg_flags;			/* block group flags of groups
+>  						   in @groups */
+> +	ext4_group_t resize_bg;			/* number of allocated
+> +						   new_group_data */
+>  	ext4_group_t count;			/* number of groups in @groups
+>  						 */
+>  };
+>  
 > +/*
-> + * Rockchip General Register Files definitions  */
+> + * Avoiding memory allocation failures due to too many groups added each time.
+> + */
+> +#define MAX_RESIZE_BG				16384
 > +
-> +#ifndef __SOC_ROCKCHIP_GRF_H
-> +#define __SOC_ROCKCHIP_GRF_H
+>  /*
+>   * alloc_flex_gd() allocates a ext4_new_flex_group_data with size of
+>   * @flexbg_size.
+> @@ -236,14 +243,18 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
+>  	if (flex_gd == NULL)
+>  		goto out3;
+>  
+> -	flex_gd->count = flexbg_size;
+> -	flex_gd->groups = kmalloc_array(flexbg_size,
+> +	if (unlikely(flexbg_size > MAX_RESIZE_BG))
+> +		flex_gd->resize_bg = MAX_RESIZE_BG;
+> +	else
+> +		flex_gd->resize_bg = flexbg_size;
 > +
-> +/* Rockchip DDRTYPE defines */
-> +enum {
-> +	ROCKCHIP_DDRTYPE_DDR3	= 3,
-> +	ROCKCHIP_DDRTYPE_LPDDR2	= 5,
-> +	ROCKCHIP_DDRTYPE_LPDDR3	= 6,
-> +	ROCKCHIP_DDRTYPE_LPDDR4	= 7,
-> +};
-> +
-> +#endif /* __SOC_ROCKCHIP_GRF_H */
-> --
-> 2.39.2
-
-
-Applied it. Thanks
-
-Best Regards,
-Chanwoo Choi
-
-
+> +	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+>  					sizeof(struct ext4_new_group_data),
+>  					GFP_NOFS);
+>  	if (flex_gd->groups == NULL)
+>  		goto out2;
+>  
+> -	flex_gd->bg_flags = kmalloc_array(flexbg_size, sizeof(__u16),
+> +	flex_gd->bg_flags = kmalloc_array(flex_gd->resize_bg, sizeof(__u16),
+>  					  GFP_NOFS);
+>  	if (flex_gd->bg_flags == NULL)
+>  		goto out1;
+> @@ -1602,8 +1613,7 @@ static int ext4_flex_group_add(struct super_block *sb,
+>  
+>  static int ext4_setup_next_flex_gd(struct super_block *sb,
+>  				    struct ext4_new_flex_group_data *flex_gd,
+> -				    ext4_fsblk_t n_blocks_count,
+> -				    unsigned int flexbg_size)
+> +				    ext4_fsblk_t n_blocks_count)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>  	struct ext4_super_block *es = sbi->s_es;
+> @@ -1627,7 +1637,7 @@ static int ext4_setup_next_flex_gd(struct super_block *sb,
+>  	BUG_ON(last);
+>  	ext4_get_group_no_and_offset(sb, n_blocks_count - 1, &n_group, &last);
+>  
+> -	last_group = group | (flexbg_size - 1);
+> +	last_group = group | (flex_gd->resize_bg - 1);
+>  	if (last_group > n_group)
+>  		last_group = n_group;
+>  
+> @@ -2130,8 +2140,7 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
+>  	/* Add flex groups. Note that a regular group is a
+>  	 * flex group with 1 group.
+>  	 */
+> -	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count,
+> -					      flexbg_size)) {
+> +	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count)) {
+>  		if (time_is_before_jiffies(last_update_time + HZ * 10)) {
+>  			if (last_update_time)
+>  				ext4_msg(sb, KERN_INFO,
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
