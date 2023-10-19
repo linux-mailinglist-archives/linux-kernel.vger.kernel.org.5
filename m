@@ -2,133 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE077CF04A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6227CF04C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjJSGpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        id S232815AbjJSGp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbjJSGp3 (ORCPT
+        with ESMTP id S232752AbjJSGpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:45:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7130B0;
-        Wed, 18 Oct 2023 23:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697697927; x=1729233927;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cQvFQ+sT0o2iZJGt5HiCb0jFbkLHAUn4K2XjF8tN1dY=;
-  b=cDyGASLtd+0AoYaC1s50+ocEtosGYylXDvg5axYf3AfUEpyhjJ5/IKY7
-   Fg6mdl2qaf33Rklr+1bPpeJfFcVBT+zkpuiAdLB0Rmgh8d5SAR70hZO2B
-   Z8p/QB230l7wFF+4/uRQ6+WL7nLGq5ZejZpsMShnELX4XN9dv7jDFWQi8
-   DN2bIshy5xGrUKBrDifYPXp7jS3IJV8XS/5DwNmMEZJJou+6Bpeh+jJbU
-   Qylr8Mc9r5a2hjwr9XiWbNGR9r5lt3T1nw1bgvPXmpe+9cv925GI2zqE8
-   CllJxWR8fO1/lqMfRrqjnlKqc/7lN7C+4renP37dmHFfv+mdWpTBg88cn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="417297366"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="417297366"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 23:45:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="873345628"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="873345628"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga002.fm.intel.com with SMTP; 18 Oct 2023 23:45:24 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Oct 2023 09:45:23 +0300
-Date:   Thu, 19 Oct 2023 09:45:23 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net, kyletso@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] usb: typec: tcpm: Add additional checks for
- contaminant
-Message-ID: <ZTDQg15FCdIM+wZd@kuha.fi.intel.com>
-References: <20231015053108.2349570-1-badhri@google.com>
+        Thu, 19 Oct 2023 02:45:53 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C0C10F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:45:50 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-564b6276941so5744240a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697697950; x=1698302750; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=VnD+4+o/AktznkdSPALDpojy3+u5FZvAU0rtTI4+TYE=;
+        b=FZBwIrRiMLZ6vbqL2h0xmarz1F1op4HVyQwQ6SYX5VFwklrCyiM+YuEMpgf8wFjtfb
+         Wo//DH0LiLw15xokIVf1egwAwNRwe7SzZVY/sSZMuAkvxxW3z3cGneVvmn2SP3O8Xpb9
+         1p+aFN6EKw7Y7MWMzKQHkaFfL8VOnzyEHjjZ1R6dJ/unCNrQSRPXPjrWz6BdmpcQXYK/
+         uU4lcy6Dznv+QAnrIA8HMFTfsGF6daMsSSxRgk6helsm6WEpshKofPaQgUIuZYtV5v62
+         FVL9bU/j5LfcLyu4TtaUV/Q01k9DzeYuDdaBmDhl/nTAttY3z4Zae/MN8Rj4F33sq44b
+         75Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697697950; x=1698302750;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VnD+4+o/AktznkdSPALDpojy3+u5FZvAU0rtTI4+TYE=;
+        b=DMYDL95lUnDY0yskupDhkNw6LZ3xsVez5okDT3GGuD1lrew6e77uglsogZZA8XQXhg
+         tJP0Hb9iChh9ISTpZCpdvLluoYJRAV++8y9sj60L6DPwsXbCAls98ko19EixQta7rG52
+         Z/E2/dH/yC961SbD0C+ec8aKY+KW5GJPQuFTNq90C229qzSGXkehA1ljGc8ECr282oFT
+         8nlvnxpfPflDlfkrhrQeKy7aISE2K8k4w44lS5DSUciXzXTlNQZhDcT54mIDAu7Z02WL
+         eD0wjdCO/qLy5JWcSrWZLF+JSUd35oOq+rHdYk/2woTq0tSfLk3CWUR75vTLWHFALSGe
+         SY1g==
+X-Gm-Message-State: AOJu0YyNDm1JETGUcvESygjtnya4ThAEGkp1wrsl8lSPQokrCwIFHdq4
+        TsFpDzyj8Ktd4DCJ8B5TZ58=
+X-Google-Smtp-Source: AGHT+IE1WPyhscv9usKnV6Tvcm7NkIcFn9ykGqFUpUm5bk7HtzJmvn92SJo6z7jtF5q3VfnCewsPhw==
+X-Received: by 2002:a17:90a:94c2:b0:27d:2b81:5798 with SMTP id j2-20020a17090a94c200b0027d2b815798mr1179229pjw.48.1697697950140;
+        Wed, 18 Oct 2023 23:45:50 -0700 (PDT)
+Received: from localhost (211-75-139-217.hinet-ip.hinet.net. [211.75.139.217])
+        by smtp.gmail.com with ESMTPSA id t8-20020a17090ae50800b0026b46ad94c9sm879353pjy.24.2023.10.18.23.45.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 23:45:49 -0700 (PDT)
+Sender: AceLan Kao <acelan@gmail.com>
+From:   AceLan Kao <acelan.kao@canonical.com>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: Lower the priority of the software reset failure message
+Date:   Thu, 19 Oct 2023 14:45:47 +0800
+Message-Id: <20231019064547.348446-1-acelan.kao@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231015053108.2349570-1-badhri@google.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 05:31:08AM +0000, Badhri Jagan Sridharan wrote:
-> When transitioning from SNK_DEBOUNCED to unattached, its worthwhile to
-> check for contaminant to mitigate wakeups.
-> 
-> ```
-> [81334.219571] Start toggling
-> [81334.228220] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [81334.305147] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> [81334.305162] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-> [81334.305187] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-> [81334.475515] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-> [81334.486480] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
-> [81334.486495] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-> [81334.486515] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
-> [81334.506621] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
-> [81334.506640] Start toggling
-> [81334.516972] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [81334.592759] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> [81334.592773] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-> [81334.592792] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-> [81334.762940] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-> [81334.773557] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
-> [81334.773570] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-> [81334.773588] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
-> [81334.793672] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
-> [81334.793681] Start toggling
-> [81334.801840] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [81334.878655] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> [81334.878672] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-> [81334.878696] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-> [81335.048968] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-> [81335.060684] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
-> [81335.060754] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-> [81335.060775] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
-> [81335.080884] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
-> [81335.080900] Start toggling
-> ```
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 599f008c257d ("usb: typec: tcpm: Add callbacks to mitigate wakeups due to contaminant")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Not all SPI drivers support soft reset enable and soft reset commands.
+This failure is expected and not critical. Thus, we avoid reporting it
+to regular users to prevent potential confusion regarding power-off issues.
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 6e843c511b85..1c7e8dc5282d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -3903,6 +3903,8 @@ static void run_state_machine(struct tcpm_port *port)
->  		port->potential_contaminant = ((port->enter_state == SRC_ATTACH_WAIT &&
->  						port->state == SRC_UNATTACHED) ||
->  					       (port->enter_state == SNK_ATTACH_WAIT &&
-> +						port->state == SNK_UNATTACHED) ||
-> +					       (port->enter_state == SNK_DEBOUNCED &&
->  						port->state == SNK_UNATTACHED));
->  
->  	port->enter_state = port->state;
-> 
-> base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
-> -- 
-> 2.42.0.655.g421f12c284-goog
+Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+---
+ drivers/mtd/spi-nor/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1b0c6770c14e..7bca8ffcd756 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3252,7 +3252,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 
+ 	ret = spi_mem_exec_op(nor->spimem, &op);
+ 	if (ret) {
+-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		dev_info(nor->dev, "Software reset failed: %d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -3262,7 +3262,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 
+ 	ret = spi_mem_exec_op(nor->spimem, &op);
+ 	if (ret) {
+-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		dev_info(nor->dev, "Software reset failed: %d\n", ret);
+ 		return;
+ 	}
+ 
 -- 
-heikki
+2.34.1
+
