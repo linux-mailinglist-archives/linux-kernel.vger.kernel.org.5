@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1A77CF7AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF5E7CF7B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345409AbjJSL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        id S1345464AbjJSL5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235269AbjJSL5X (ORCPT
+        with ESMTP id S1345407AbjJSL5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:57:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25D9CF;
-        Thu, 19 Oct 2023 04:57:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0177221A59;
-        Thu, 19 Oct 2023 11:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697716640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gmRwmATguFntU5/41/ZcC5nz8p9WbJDCy+6CvfCvobM=;
-        b=K1z4yfdIyqTYCEXUMU9mYyLu+z9zQJd/VWIZ8BwfK0F9ibMbVxg01KvhINiREbGIYbOQgC
-        5gwXiqFvD8V3NqOJqktb0+3jEugbj2IY/I098ZKbxOlduiwnFvm1CUfHJ/fZ6iWVaXPZL7
-        7Zx+rEXzsgVj2zmWlpikrxzOQqG2olI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697716640;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gmRwmATguFntU5/41/ZcC5nz8p9WbJDCy+6CvfCvobM=;
-        b=47mH8V7JwKrxo+7f5zdtr52EQOMI9+ImvRFWAIggyQSHfsKPJY63PnDpUHoCuyVfmnDT97
-        Uu2vYCTlWANTaSAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4B42139C2;
-        Thu, 19 Oct 2023 11:57:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ohjQN58ZMWUOLgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 11:57:19 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4A695A06B0; Thu, 19 Oct 2023 13:57:19 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 13:57:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 4/4] ext4: reduce unnecessary memory allocation in
- alloc_flex_gd()
-Message-ID: <20231019115719.54wd6q6dxanaodid@quack3>
-References: <20231018114221.441526-1-libaokun1@huawei.com>
- <20231018114221.441526-5-libaokun1@huawei.com>
+        Thu, 19 Oct 2023 07:57:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2101181
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:57:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 982A1C433C8;
+        Thu, 19 Oct 2023 11:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697716657;
+        bh=aN/DfaqxW2mupzGZTQqq7LpMPtxnK8oADvUqMvSY65g=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=JqzwZLWyRQTjQWXcatMe0Uv+b1vOa+q/PZuds8jO8WS9CX67GqR5iVjMRhlkYVQo2
+         BMMI8yUiXqpO8sVJ5shE+RQb9nHNcJLIJYsnuexpXqow/JI8/z0T1W6OIzWewApdiS
+         lmoYiC9/8feR7dvTBbaQA4j4N2nHiCpbnu9xUcbpwfOyD8I/meiGk3I6NtMMLeXuKk
+         ljPIDVZ6yeahzAe5ErgyK67L1QhRkac73YdQ1SXOvC0VgyOLRC1mcfcHC/iZp8hFJ7
+         Qes6EwTy1f+7ohwHxZWf7rFV3vhrX++y0iL3vgP3kqe+3ic3OX7z7RSxwvX2nwjFGj
+         1/8UuaVIRJM5w==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+In-Reply-To: <20231014205414.59415-1-hdegoede@redhat.com>
+References: <20231014205414.59415-1-hdegoede@redhat.com>
+Subject: Re: (subset) [PATCH] mfd: arizona-spi: Set pdata.hpdet_channel for
+ ACPI enumerated devs
+Message-Id: <169771665635.2458961.325195699541047126.b4-ty@kernel.org>
+Date:   Thu, 19 Oct 2023 12:57:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018114221.441526-5-libaokun1@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -4.87
-X-Spamd-Result: default: False [-4.87 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-2.77)[98.99%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com]
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 18-10-23 19:42:21, Baokun Li wrote:
-> When a large flex_bg file system is resized, the number of groups to be
-> added may be small, and a large amount of memory that will not be used will
-> be allocated. Therefore, resize_bg can be set to the size after the number
-> of new_group_data to be used is aligned upwards to the power of 2. This
-> does not affect the disk layout after online resize and saves some memory.
+On Sat, 14 Oct 2023 22:54:14 +0200, Hans de Goede wrote:
+> Commit 9e86b2ad4c11 changed the channel used for HPDET detection
+> (headphones vs lineout detection) from being hardcoded to
+> ARIZONA_ACCDET_MODE_HPL (HP left channel) to it being configurable
+> through arizona_pdata.hpdet_channel the DT/OF parsing added for
+> filling arizona_pdata on devicetree platforms ensures that
+> arizona_pdata.hpdet_channel gets set to ARIZONA_ACCDET_MODE_HPL
+> when not specified in the devicetree-node.
 > 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> [...]
 
-Looks good, just one small comment below. Feel free to add:
+Applied, thanks!
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[1/1] mfd: arizona-spi: Set pdata.hpdet_channel for ACPI enumerated devs
+      commit: 76a2f781da567a0ff7bd064d3ede064b29973b01
 
+--
+Lee Jones [李琼斯]
 
-> @@ -248,6 +250,14 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
->  	else
->  		flex_gd->resize_bg = flexbg_size;
->  
-> +	/* Avoid allocating new groups that will not be used. */
-
-Perhaps make the comment more understandable like:
-	/* Avoid allocating large 'groups' array if not needed */
-
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
