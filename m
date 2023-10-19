@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CBF7CFB7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4127CFB80
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346006AbjJSNoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
+        id S1345525AbjJSNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbjJSNow (ORCPT
+        with ESMTP id S235397AbjJSNpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:44:52 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BFA126
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:44:50 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9936b3d0286so1288178566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1697723089; x=1698327889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cDIa/2A+6yZh839uWJwLCiFpvbLP65/3nH2vhPGAYh4=;
-        b=R2o4Sha3hypVKhADo2600rPDKSwklCwGpqqzQf6GpQor/iTdGH8kr7Y1rZ9HRIPQNG
-         J/GV7VE9tAolUmBwvuLt63IqRCyMMfEqJkzHYuiBom3sLS7D9kkd2Mmd82XdE0AsPbbC
-         22NFp47iXO1wrVGr0f86zARYiLsuIQvKL8D23hsFK8EjWbSOCXBNqBaadRbQ1L/gZkJa
-         Mw92KX0bwrLhgxLwaasEQ+LQ/5p7ToBqftiFG6DG1of30dEngCSPpQef2flmZ8zaiw6B
-         UGY6t29UPmM4XbRk4pdB0g+sxtwi7LkEkr2hIqqbBPNNqfhu+oIqgZE9T/Itv6MNmjyy
-         UX+A==
+        Thu, 19 Oct 2023 09:45:19 -0400
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB8811F;
+        Thu, 19 Oct 2023 06:45:17 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-581d4f9a2c5so1613020eaf.0;
+        Thu, 19 Oct 2023 06:45:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697723089; x=1698327889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cDIa/2A+6yZh839uWJwLCiFpvbLP65/3nH2vhPGAYh4=;
-        b=YmqzFIF6XKjQVFZteUgD1ETwiS6tFLzLZiig4NayWrfmmByzQLB+dw5BbcXbYxobzU
-         pTMYscMwM3wIUttISzxleJs5AR85nRoviIKsWzOgY4dh9J7pIeZrp/eaVaIvcQ903qAq
-         vX5t4cGFsR1Y36NBOSl25Scup0CGZQHXFBd4Tq9w93IsRMq8r+3rKlz7MJay9nTil2BS
-         Txwk0/AH0ushzKb4LIPrvlVSsjaM55hf5Lojd/ktK7Ey6KvBPKYUowx5Y//5UA+Qi90d
-         538gEHugV5tz4vlTpHWBcLdGA5Et0QpuJf72yfYIhzVN8dy4QGaV4YQnioW+iWri6LGi
-         pYaw==
-X-Gm-Message-State: AOJu0Yz/DzRkvSEcH682bk7MikTp858QxqMbX1mhkwVdu154ISzndZmX
-        KM3hBJbPkHn/q/wd3QEJaiUyXQ==
-X-Google-Smtp-Source: AGHT+IETLLRDDnMEJLBCzEtlZkAeUnLoQo2/NWVU9pzn/11MjRj5stLhakDevcHcxNOLId/UiRPsjg==
-X-Received: by 2002:a17:907:2dab:b0:9bd:a063:39d2 with SMTP id gt43-20020a1709072dab00b009bda06339d2mr1859239ejc.16.1697723088637;
-        Thu, 19 Oct 2023 06:44:48 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id c15-20020a1709063f0f00b009ae6a6451fdsm3624414ejj.35.2023.10.19.06.44.47
+        d=1e100.net; s=20230601; t=1697723116; x=1698327916;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSXRmER3WgAhRNug88ev6LstRhcib4oUMzRNImQ+1AU=;
+        b=PwouMT6IXzgUlLN6a6W6u6XZU//B/W4yZZkPG5Z70VOzAU+ek4q8VlC4pNVQsx0x4G
+         YwwA0IHpzIB8XEHIDd/fQ5Dta6EV1AqhD1zrsXetiN241/L0CWWJtPSsSnoqNKZ5yflo
+         WEnzt1vv/i8f+Fzg5Vy2ooeA/n7UXzLVEQLHqZhPZh/AHxwqNVSRwlgiji2ET65HWXXu
+         4LImbKNGi/6RnCo8wVllZoJHzybKaN5uFE2SRiKuxefw+VAXSG4Y448EasYbAxM+aGqQ
+         aCMAhIdmyg1OAl9yEZLe3b/Wi/j6bx3Iymu/nAkKUdnUCmsxoi322+CXUdu1Ezp+vtWm
+         /yhw==
+X-Gm-Message-State: AOJu0YyK6zaoef5R5U9C6LlAUNQgUSyO9GRuM4YtRyUTPYRUtg8eiBb0
+        OrHIIbv7Sqy4y22tTR1klw==
+X-Google-Smtp-Source: AGHT+IG32dAaJ1o7CB4NsqboA8jJm+qAlsHz5yLXkF6WKvRAnU+FUYyc+kE9102jX/09adNZSXXWsg==
+X-Received: by 2002:a4a:e9b0:0:b0:581:e750:9995 with SMTP id t16-20020a4ae9b0000000b00581e7509995mr2227050ood.3.1697723115777;
+        Thu, 19 Oct 2023 06:45:15 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id y9-20020a0568301d8900b006ce2e464a45sm97418oti.29.2023.10.19.06.45.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 06:44:48 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 15:44:46 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+        Thu, 19 Oct 2023 06:45:15 -0700 (PDT)
+Received: (nullmailer pid 198509 invoked by uid 1000);
+        Thu, 19 Oct 2023 13:45:14 -0000
+Date:   Thu, 19 Oct 2023 08:45:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Coiby Xu <coiby.xu@gmail.com>, Simon Horman <horms@kernel.org>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>
-Subject: Re: [PATCH net-next v3 00/11] devlink: retain error in struct
- devlink_fmsg
-Message-ID: <ZTEyzpat4we6f4kE@nanopsycho>
-References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
+        Eric Dumazet <edumazet@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree@vger.kernel.org,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH net-next v4 2/7] dt-bindings: net: mvusb: Fix up DSA
+ example
+Message-ID: <20231019134514.GA193647-robh@kernel.org>
+References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-2-3ee0c67383be@linaro.org>
+ <169762516741.391849.18342287891015837205.robh@kernel.org>
+ <CACRpkdZff9fbeJdxqudCtjad=FVKTKQtvo_=GiEBOvnw5xQapw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZff9fbeJdxqudCtjad=FVKTKQtvo_=GiEBOvnw5xQapw@mail.gmail.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wed, Oct 18, 2023 at 10:26:36PM CEST, przemyslaw.kitszel@intel.com wrote:
->Extend devlink fmsg to retain error (patch 1),
->so drivers could omit error checks after devlink_fmsg_*() (patches 2-10),
->and finally enforce future uses to follow this practice by change to
->return void (patch 11)
->
->Note that it was compile tested only.
->
->bloat-o-meter for whole series:
->add/remove: 8/18 grow/shrink: 23/40 up/down: 2017/-5833 (-3816)
->
->changelog:
->v3: set err to correct value, thanks to Simon and smatch
->    (mlx5 patch, final patch);
+On Wed, Oct 18, 2023 at 01:37:10PM +0200, Linus Walleij wrote:
+> On Wed, Oct 18, 2023 at 12:32 PM Rob Herring <robh@kernel.org> wrote:
+> 
+> > dtschema/dtc warnings/errors:
+> > Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: /example-0/usb/mdio@1/ethernet-switch@0: failed to match any schema with compatible: ['marvell,mv88e6190']
+> 
+> Isn't that just because the bindings now come last in the series.
+> Which is in response to a review comment, hence this warning
+> didn't appear before.
 
-2 nits:
-- always better to have per-patch changelog so it is clear for the
-  reviewers what exactly did you change and where.
-- if you do any change in a patch, you should drop the
-  acked/reviewed/signedoff tags and get them again from people.
+Yes. The only option that avoids this is squashing the 2 patches. I 
+think it is fine to leave this as-is.
 
-that being said:
-set-
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Rob
