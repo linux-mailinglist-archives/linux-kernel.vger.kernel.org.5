@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ADA7D037D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBF77D0381
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346561AbjJSVGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S1346557AbjJSVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjJSVGX (ORCPT
+        with ESMTP id S235529AbjJSVGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:06:23 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300DC2;
-        Thu, 19 Oct 2023 14:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697749576;
-        bh=xdo63SOzzVchMGQgIKwnulHQABOQaumrm7jZgY2UPf4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QgOb9Je5hBuFKffqo/q/mqupySIWWd/JG7QQcAeNYh4wTFwCezD/Hp3Iv5yTP8CM5
-         hi0KhNdlGOFr7LbZ6/+wLEVAEcn5i6VQTGnJtGR3iyltcXSqDVfNPSCCCcAmCdCoNs
-         btuZRmuvQMpYVE1lZeOzZMsGswXM8NavZ4JS2/nhbuZ1+I5rep10FYjh5E9fuOfUdz
-         kTRYMboGdkxMEHMwbgbQfa48I40q4+KpuntWQACcR8Flpndv0/gEm9fHt/kNm9Zhix
-         liLy5Lo3eUWA3oxlA8PPH9IdmVJdHJuR95SK4Fwz7ftb7WqFRrdTTyYz1vFAu9jpdj
-         jBSrRnsfV/4pA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SBKyH6hqpz4xc1;
-        Fri, 20 Oct 2023 08:06:15 +1100 (AEDT)
-Date:   Fri, 20 Oct 2023 08:06:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the mips tree
-Message-ID: <20231020080613.0e257e5a@canb.auug.org.au>
+        Thu, 19 Oct 2023 17:06:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A54136;
+        Thu, 19 Oct 2023 14:06:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82639C433CA;
+        Thu, 19 Oct 2023 21:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697749601;
+        bh=VY5heIBy9yftU7sYBNfoeKWqOwP4esxHzVS+2WzNFSc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CEmtcQ4IqPvbJWnxJuekiXHzD9SNs3kIEH+DgJzWzEXC5Q9YETxOU8YLkGXLGKUZD
+         LnmoApJt7vYJgs5O6OxnIm6mCL+WZifbVTrMqDFyj3j8n9WK/u6a9JGGVw0FrIB4e/
+         5Ec87wTgg1DWo6q0vAky2XeorzhdFNdrkoUOS4P4rw4/UPgQSM3wprhoratuzDCwjB
+         dpQ00Eth8jNgLt60yQ1zOZOn/zmFE6+XPNVVZMV4Pm/yvRQKlzTdZ+j12nTp2epE08
+         GyWZqkZRb5O9qqcNfO4bl/jOeKK02zywE9o1qXRgg2cMd9Y5eLwNO91bQAmpyZ/uK/
+         stJt683nTgvqw==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-507bd19eac8so145444e87.0;
+        Thu, 19 Oct 2023 14:06:41 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwhovISxy2sJd/SVg0h9ENC8NbYVn3plQw43ETPCgGXMeSnYVka
+        Q5pmUT2rtWgSMUDowAY8tGJCY2/AukgH8qPzLA==
+X-Google-Smtp-Source: AGHT+IFNNqLHq7e9rbvmn7g8Kf+819v49MVg4TY+Jdh4Fqqqe3ifpRBgvC9663PPxlQqPustO9R2FgtjwWcYakFNqKY=
+X-Received: by 2002:ac2:5464:0:b0:504:3c1f:cbd9 with SMTP id
+ e4-20020ac25464000000b005043c1fcbd9mr2295837lfn.16.1697749599708; Thu, 19 Oct
+ 2023 14:06:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5CE+p+v4adeZT5ZKC7OuFDm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
+ <20231005160550.2423075-4-quic_devipriy@quicinc.com> <169710517252.1166696.13811645504228005200.b4-ty@kernel.org>
+In-Reply-To: <169710517252.1166696.13811645504228005200.b4-ty@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 19 Oct 2023 16:06:27 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKdvnb7c_oMaMsQiJQzm1YF5uV+Tb9nQSgX0_+tP1KD8g@mail.gmail.com>
+Message-ID: <CAL_JsqKdvnb7c_oMaMsQiJQzm1YF5uV+Tb9nQSgX0_+tP1KD8g@mail.gmail.com>
+Subject: Re: (subset) [PATCH V15 3/4] dt-bindings: mfd: qcom,tcsr: Add
+ simple-mfd support for IPQ6018
+To:     Lee Jones <lee@kernel.org>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        thierry.reding@gmail.com, ndesaulniers@google.com, trix@redhat.com,
+        baruch@tkos.co.il, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Devi Priya <quic_devipriy@quicinc.com>,
+        linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
+        nathan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5CE+p+v4adeZT5ZKC7OuFDm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 12, 2023 at 5:06=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
+>
+> On Thu, 05 Oct 2023 21:35:49 +0530, Devi Priya wrote:
+> > Update the binding to include pwm as the child node to TCSR block and
+> > add simple-mfd support for IPQ6018.
+> >
+> >
+>
+> Applied, thanks!
+>
+> [3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
+>       commit: b4a32d218d424b81a58fbd419e1114b1c1f76168
 
-Hi all,
+This is dependent on patch 2 being applied.
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
-
-  83767a67e7b6 ("MIPS: KVM: Fix a build warning about variable set but not =
-used")
-
-This is commit
-
-  e2145c99b53e ("KVM: MIPS: fix -Wunused-but-set-variable warning")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5CE+p+v4adeZT5ZKC7OuFDm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUxmkUACgkQAVBC80lX
-0GzGgwgAjQbXzYimVR7+rtrV9aO5BvSEQxFD8GXrZiUwBm6MVE4qSX4YBiTEHeq7
-Y6Imdb+1+36N6uNnKR4ZkA4V+7phjoLbOeViF+k/MDkPQksmRb4LVGcvyKGMCbfa
-K8CRL4vugv0bDexi4UN/c2E/PSHvtt4SV7tvQCCW6yqFz3Yt7IFNzGMP1iBZ7Xj0
-pbLrug8/FrYVruOfjjWyqbf963S8Nege+8ekiylE9gOofrv4wytUMshMrEKwUfju
-IXMlpMjaivHmpttuilPo+YzZR5Zbri7QtqQbBsPQP6l+7PmzhJ3I0/qy8lZ/p2Ow
-HRwtSyfA3xf/PbIasMvwZpoqryarlw==
-=H0QQ
------END PGP SIGNATURE-----
-
---Sig_/5CE+p+v4adeZT5ZKC7OuFDm--
+Rob
