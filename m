@@ -2,220 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE2C7CFC6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B087CFC6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345888AbjJSOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
+        id S1346021AbjJSO0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346077AbjJSOZz (ORCPT
+        with ESMTP id S1346083AbjJSO0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:25:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C86D13D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:25:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BEF9C433C7;
-        Thu, 19 Oct 2023 14:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697725552;
-        bh=c70oHRZIcX9ccV9DBUUmfsPIDAtoFzr6CLXIfVHsiyo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=P8JImrOq7BrNsIWUVCibxxKNRxUbaQaRl66JW6JSv2uweVcQXByVmBtooT/UYVDoC
-         AmOL/QJTk7FUg5NCdjz1p8Kr5CXtuIMJ0sY9bFQgzNLlNFt+ofPnjM87JrNzZ9wVWa
-         NI08CE2eYyatI0gft/69fqF3sZOp6WTyvM8Q5gccrB3wOqE/+MKRb7xwZc3H6Cv5Ze
-         COQ2TgNtoflMwduausqpBtEe6im0DFE4ikltZEvLOD/5w6C3TDTMU13chk72ar77NM
-         6eJ2k6gmK64lSrNDLUI1yX1ePWJ9eQa2EW9sVuF1BHTHtxRL41yOzqts8e5/T/u6sU
-         NMjKtH/XSZmWw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9A2E9CE0868; Thu, 19 Oct 2023 07:25:51 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 07:25:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, David Vernet <void@manifault.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
- atomic_set_release()
-Message-ID: <d16b1511-fe53-4fde-a85f-4b38a4370cf0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
- <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
- <f6526ae6-cd52-4d1d-ab2a-7d82e2c818fd@paulmck-laptop>
- <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
+        Thu, 19 Oct 2023 10:26:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5D8184
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697725566; x=1729261566;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Rt26PZjYnhYHypuMIJpKr6LQFndtnUTqnn7wgqP2D8k=;
+  b=NWewB2MFjw2ChB8T0CMcKOaAk8sWOGvTPE8h971cwFDzd7haxmFiK9iY
+   oaUPSa+DIeOWAHZpN8asOZYzKA0DG1qyhGnaTdMABpKKu8EsyrqDi/Q5p
+   pOij1HaPlCZfFHDy6qmy5xioSQa19V8acvAX4rO3cSDlxuQQH+ZNHAIOk
+   rCXKK7IVFAt4IaVqDxiMapyaI4/OUwm2iSUGZAMpmJpzaQ2IiiZXtd7K9
+   LBKs2B2AoFuCtd/HsR0Yf+XxdCUXq00lj1IQNssvWJi/0h14logEIBBnF
+   Wf5eRNy4mC5R+njRMoVVtGBBxC8HijqwML/jpnXxRO8D6ZdZa63BGIgjv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383485037"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="383485037"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:26:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760659258"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="760659258"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:26:04 -0700
+Received: from [10.212.5.13] (kliang2-mobl1.ccr.corp.intel.com [10.212.5.13])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id DDF1C580E30;
+        Thu, 19 Oct 2023 07:26:02 -0700 (PDT)
+Message-ID: <c23fa9e8-1b37-4d44-a554-f8f0508968b0@linux.intel.com>
+Date:   Thu, 19 Oct 2023 10:26:01 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 4/7] perf/x86/intel: Support LBR event logging
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
+References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
+ <20231004184044.3062788-4-kan.liang@linux.intel.com>
+ <20231019105231.GG36211@noisy.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231019105231.GG36211@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:20:35PM +0800, Hou Tao wrote:
-> Hi Paul,
+
+
+On 2023-10-19 6:52 a.m., Peter Zijlstra wrote:
+> On Wed, Oct 04, 2023 at 11:40:41AM -0700, kan.liang@linux.intel.com wrote:
 > 
-> On 10/19/2023 12:54 PM, Paul E. McKenney wrote:
-> > On Thu, Oct 19, 2023 at 09:07:07AM +0800, Hou Tao wrote:
-> >> Hi Paul,
-> >>
-> >> On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
-> >>> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
-> >>>
-> >>> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
-> >>> immediately preceded by smp_mb__before_atomic() so as to order storing
-> >>> of ring-buffer consumer and producer positions prior to the atomic_set()
-> >>> call's clearing of the ->busy flag, as follows:
-> >>>
-> >>>         smp_mb__before_atomic();
-> >>>         atomic_set(&rb->busy, 0);
-> >>>
-> >>> Although this works given current architectures and implementations, and
-> >>> given that this only needs to order prior writes against a later write.
-> >>> However, it does so by accident because the smp_mb__before_atomic()
-> >>> is only guaranteed to work with read-modify-write atomic operations,
-> >>> and not at all with things like atomic_set() and atomic_read().
-> >>>
-> >>> Note especially that smp_mb__before_atomic() will not, repeat *not*,
-> >>> order the prior write to "a" before the subsequent non-read-modify-write
-> >>> atomic read from "b", even on strongly ordered systems such as x86:
-> >>>
-> >>>         WRITE_ONCE(a, 1);
-> >>>         smp_mb__before_atomic();
-> >>>         r1 = atomic_read(&b);
-> >> The reason is smp_mb__before_atomic() is defined as noop and
-> >> atomic_read() in x86-64 is just READ_ONCE(), right ?
-> > The real reason is that smp_mb__before_atomic() is not defined to do
-> > anything unless followed by an atomic read-modify-write operation,
-> > and atomic_read(), atomic_64read(), atomic_set(), and so on are not
-> > read-modify-write operations.
+>> +#define ARCH_LBR_EVENT_LOG_WIDTH	2
+>> +#define ARCH_LBR_EVENT_LOG_MASK		0x3
 > 
-> I see. Thanks for explanation. It seems I did not read
-> Documentation/atomic_t.txt carefully, it said:
+> event log ?
+
+That's the name in the Intel spec. I will change it to the name used in
+Linux and add a comment to map the name event log to the name branch
+counter.
+
 > 
->     The barriers:
 > 
->     smp_mb__{before,after}_atomic()
+>> +static __always_inline void intel_pmu_update_lbr_event(u64 *lbr_events, int idx, int pos)
+>> +{
+>> +	u64 logs = *lbr_events >> (LBR_INFO_EVENTS_OFFSET +
+>> +				   idx * ARCH_LBR_EVENT_LOG_WIDTH);
+>> +
+>> +	logs &= ARCH_LBR_EVENT_LOG_MASK;
+>> +	*lbr_events |= logs << (pos * ARCH_LBR_EVENT_LOG_WIDTH);
+>> +}
+>> +
+>> +/*
+>> + * The enabled order may be different from the counter order.
+>> + * Update the lbr_events with the enabled order.
+>> + */
+>> +static void intel_pmu_lbr_event_reorder(struct cpu_hw_events *cpuc,
+>> +					struct perf_event *event)
+>> +{
+>> +	int i, j, pos = 0, enabled[X86_PMC_IDX_MAX];
+>> +	struct perf_event *leader, *sibling;
+>> +
+>> +	leader = event->group_leader;
+>> +	if (branch_sample_counters(leader))
+>> +		enabled[pos++] = leader->hw.idx;
+>> +
+>> +	for_each_sibling_event(sibling, leader) {
+>> +		if (!branch_sample_counters(sibling))
+>> +			continue;
+>> +		enabled[pos++] = sibling->hw.idx;
+>> +	}
 > 
->     only apply to the RMW atomic ops and can be used to augment/upgrade the
->     ordering inherent to the op.
-
-That is the place!
-
-> > As you point out, one implementation consequence of this is that
-> > smp_mb__before_atomic() is nothingness on x86.
-> >
-> >> And it seems that I also used smp_mb__before_atomic() in a wrong way for
-> >> patch [1]. The memory order in the posted patch is
-> >>
-> >> process X                                    process Y
-> >>     atomic64_dec_and_test(&map->usercnt)
-> >>     READ_ONCE(timer->timer)
-> >>                                             timer->time = t
-> > The above two lines are supposed to be accessing the same field, correct?
-> > If so, process Y's store really should be WRITE_ONCE().
+> Ok, so far so good: enabled[x] = y, is a mapping of hardware index (y)
+> to group order (x).
 > 
-> Yes. These two processes are accessing the same field (namely
-> timer->timer). Is WRITE_ONCE(xx) still necessary when the write of
-> timer->time in process Y is protected by a spin-lock ?
+> Although I would perhaps name that order[] instead of enabled[].
 
-If there is any possibility of a concurrent reader, that is, a reader
-not holding that same lock, then yes, you should use WRITE_ONCE().
+Sure
 
-Compilers can do pretty vicious things to unmarked reads and writes.
-But don't take my word for it, here are a few writeups:
-
-o	"Who's afraid of a big bad optimizing compiler?" (series)
-	https://lwn.net/Articles/793253, https://lwn.net/Articles/799218
-
-o	"An introduction to lockless algorithms" (Paolo Bonzini series)
-	https://lwn.net/Articles/844224, https://lwn.net/Articles/846700,
-	https://lwn.net/Articles/847481, https://lwn.net/Articles/847973,
-	https://lwn.net/Articles/849237, https://lwn.net/Articles/850202
-
-o	"Is Parallel Programming Hard, And, If So, What Can You Do About It?"
-	Section 4.3.4 ("Accessing Shared Variables")
-	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/
-perfbook.html
-
-> >>                                             // it won't work
-> >>                                             smp_mb__before_atomic()
-> >>                                             atomic64_read(&map->usercnt)
-> >>
-> >> For the problem, it seems I need to replace smp_mb__before_atomic() by
-> >> smp_mb() to fix the memory order, right ?
-> > Yes, because smp_mb() will order the prior store against that later load.
 > 
-> Thanks. Will fix the patch.
-
-Very good!
-
-							Thanx, Paul
-
-> Regards,
-> Hou
-> >
-> > 							Thanx, Paul
-> >
-> >> Regards,
-> >> Hou
-> >>
-> >> [1]:
-> >> https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
-> >>                                                                 
-> >>
-> >>> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
-> >>> atomic_set_release() as follows:
-> >>>
-> >>>         atomic_set_release(&rb->busy, 0);
-> >>>
-> >>> This is no slower (and sometimes is faster) than the original, and also
-> >>> provides a formal guarantee of ordering that the original lacks.
-> >>>
-> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >>> Acked-by: David Vernet <void@manifault.com>
-> >>> Cc: Andrii Nakryiko <andrii@kernel.org>
-> >>> Cc: Alexei Starovoitov <ast@kernel.org>
-> >>> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> >>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >>> Cc: Song Liu <song@kernel.org>
-> >>> Cc: Yonghong Song <yonghong.song@linux.dev>
-> >>> Cc: John Fastabend <john.fastabend@gmail.com>
-> >>> Cc: KP Singh <kpsingh@kernel.org>
-> >>> Cc: Stanislav Fomichev <sdf@google.com>
-> >>> Cc: Hao Luo <haoluo@google.com>
-> >>> Cc: Jiri Olsa <jolsa@kernel.org>
-> >>> Cc: <bpf@vger.kernel.org>
-> >>>
-> >>> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> >>> index f045fde632e5..0ee653a936ea 100644
-> >>> --- a/kernel/bpf/ringbuf.c
-> >>> +++ b/kernel/bpf/ringbuf.c
-> >>> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> >>>  	/* Prevent the clearing of the busy-bit from being reordered before the
-> >>>  	 * storing of any rb consumer or producer positions.
-> >>>  	 */
-> >>> -	smp_mb__before_atomic();
-> >>> -	atomic_set(&rb->busy, 0);
-> >>> +	atomic_set_release(&rb->busy, 0);
-> >>>  
-> >>>  	if (flags & BPF_RB_FORCE_WAKEUP)
-> >>>  		irq_work_queue(&rb->work);
-> >>>
-> >>> .
+>> +
+>> +	if (!pos)
+>> +		return;
 > 
+> How would we ever get here if this is the case?
+
+It should be a bug. I will use a WARN_ON_ONCE() to replace it.
+
+> 
+>> +
+>> +	for (i = 0; i < cpuc->lbr_stack.nr; i++) {
+>> +		for (j = 0; j < pos; j++)
+>> +			intel_pmu_update_lbr_event(&cpuc->lbr_events[i], enabled[j], j);
+> 
+> But this confuses me... per that function it:
+> 
+>  - extracts counter value for enabled[j] and,
+>  - or's it into the same variable at j
+> 
+> But what if j is already taken by something else?
+> 
+> That is, suppose enabled[] = {3,2,1,0}, and lbr_events = 11 10 01 00
+> 
+> Then: for (j) intel_pmu_update_lbt_event(&lbr_event, enabled[j], j);
+> 
+> 0: 3->0, 11 10 01 00 -> 11 10 01 11
+> 1: 2->1, 11 10 01 11 -> 11 10 11 11
+> 2: 1->2, 11 10 11 11 -> 11 11 11 11
+> 
+> 
+> 
+>> +
+>> +		/* Clear the original counter order */
+>> +		cpuc->lbr_events[i] &= ~LBR_INFO_EVENTS;
+>> +	}
+>> +}
+> 
+> Would not something like:
+> 
+> 	src = lbr_events[i];
+> 	dst = 0;
+> 	for (j = 0; j < pos; j++) {
+> 		cnt = (src >> enabled[j]*2) & 3;
+> 		dst |= cnt << j*2
+> 	}
+> 	lbr_events[i] = dst;
+> 
+> be *FAR* clearer, and actually work?
+
+The original LBR event data is saved at offset 32 of LBR_INFO register.
+In get_lbr_events(), the data was simply copied to the offset 32 of
+cpuc->lbr_events.
+
+The intel_pmu_update_lbr_event() reorders the value and saves it
+starting from the offset 0.
+
+I agree it's hard to read since it combines the src and dst into the
+same variable.
+
+I will use the suggested code and also update the get_lbr_events().
+
+	cpuc->lbr_events[i] = (info >> 32) & LBR_INFO_EVENTS;
+
+Thanks,
+Kan
