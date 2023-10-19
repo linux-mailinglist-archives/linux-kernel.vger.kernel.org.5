@@ -2,198 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100DE7CF291
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787967CF292
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344919AbjJSI3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        id S1344957AbjJSI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344876AbjJSI2x (ORCPT
+        with ESMTP id S1344876AbjJSI3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:28:53 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791A812D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:28:49 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so1263979666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697704128; x=1698308928; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MDQv+ujWG6OmO8Ra4/KfhFcajqhoF5+eHuDMkOXScoQ=;
-        b=vLHqVPkr/HKATG47GvVAOWmpcDJ++pMBW/S+Eq8LoHUcOdwKWSlEJDlRqnleJ3PzfQ
-         i6G3Yo8HtxdEOn0Q4pGw8eYkXsIDZ4EbUB6wsP2aG7XevN8Qq33ImRidnuBEXmqSBAsa
-         S1ULcJ79McFE/Kxq21eJa3pEeZUfAU0s2MJfjrMqMp2AmvTlj2pZSoHlXzE0QjSPU+ZZ
-         u+XDRtkhI/Jrs5nmD44L76TIbjAcljcP2orb63pxGjmyGe4Vpr4HA4LQh6dVU1U7yk9V
-         RDwPVhF2pZnhsL5+U282ZHoRXP/AQNryqp9yJK/cnUADdMf8HuTDWJPu7KuawBvmOK2N
-         Djsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697704128; x=1698308928;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MDQv+ujWG6OmO8Ra4/KfhFcajqhoF5+eHuDMkOXScoQ=;
-        b=vj+YUfBmntd2Zt2v6Rb6aU67ltF6DCVzmPYYgPSR1awOCoP7VGZ1FjQIiGlYtW7M5h
-         MSVwJ+ktZPUlWa8Pez9Gi3ksEYipkYNS4ps03Zr0yIDHyGMI/5baS57wXGDKS6iFBKtu
-         /lwCkGttEuk7miUeRRM2mJFcXAxO9hpT6h6NKsItqmQeMU2qihmf2AuW0iSFZsNfXVYQ
-         BkbfEM2euVUsDqWPKdU8nb7Bi7lEaUSHA8JwHEVjfdtOJJRA/piOjRHy4T5tiqoaqF0e
-         kTGBiAGljw4PGmZoDao8jLkcRvKgEWMC1OcglzfOdRN7ixqzSWIMTsPKZdBZpvFJhlBe
-         legQ==
-X-Gm-Message-State: AOJu0YwSPMsBxDcaAvArJXUJO1pj6cWSmyFsS1wX/OsoddXhCYAczZ/f
-        s8i7+E+26N6+H/r3OLxjvndpIEaW4JRWMSFLylcBdA==
-X-Google-Smtp-Source: AGHT+IH7E2FmlBTzpRteQDk+hDLSK7kOdRA2fpg7JZn3vIczrsCBy6izaVZ3GrO0E1/IgeAz22mjsQeaPCnhTYZyymw=
-X-Received: by 2002:a17:907:7e94:b0:9bf:10f3:e435 with SMTP id
- qb20-20020a1709077e9400b009bf10f3e435mr1350365ejc.1.1697704127553; Thu, 19
- Oct 2023 01:28:47 -0700 (PDT)
+        Thu, 19 Oct 2023 04:29:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DE0C0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:29:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697704139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTNZQn913nqK1MFyUXNs4QgdGxSHWbAGxR3c+5S3lyg=;
+        b=aCW4lG/JGZQAeeTE47th31hvvzEBUUubWaFTNjEOHbNAWQzr98BEkq17favj0ZA5gaS23t
+        //5cnN5mAIGQeMyzAp92cHrlaho9NjBobVEQ5FBcKPLu1gMHJbtHMIIyHKUPIGrkewfYtz
+        fiUZUmEtTnLdAj4BR2rIuxi3yNYVMSBLVTvp+XzhmbAXEuflOTIQ8bcour2g6GUQde6pKZ
+        HrJyBhM90Yl8jj+3wc1J8sPaYo46qNQMZ7PZ0zxAJP5+PjUrl9VP/JQTktHvziwCU3pd18
+        f5NeENB3EKLxtY2IIUcfETjjPSt8HQ9m4Vm7r3I4hSkiqlgVtpGMzJtzbe/GqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697704139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTNZQn913nqK1MFyUXNs4QgdGxSHWbAGxR3c+5S3lyg=;
+        b=FvsI0VKulDqobYZe25lzTSmtij9p6bo3ObNrhBWf04rtCv6nCrUhWb3BVXH4Ak7g9qUNWv
+        jKAB5Lc024NLbDBw==
+To:     Wei Gong <gongwei833x@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] genirq: avoid long loops in handle_edge_irq
+In-Reply-To: <ZTDUiXnb_Sn-5bT2@MacBook-Pro-3.local>
+References: <20230928100638.42116-1-gongwei833x@gmail.com>
+ <87r0m3q32t.ffs@tglx> <ZSf3KrAk8fpyNEZr@MacBook-Pro-3.local>
+ <877cnqlxmz.ffs@tglx> <ZTDUiXnb_Sn-5bT2@MacBook-Pro-3.local>
+Date:   Thu, 19 Oct 2023 10:28:58 +0200
+Message-ID: <87zg0f2eyd.ffs@tglx>
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
- <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
- <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
- <55960.1697566804@cvs.openbsd.org> <CALmYWFs81T=XnT=AXQTo0+9FXo=OBAV_4rrYPSn9-16O-gBTZg@mail.gmail.com>
- <95482.1697587015@cvs.openbsd.org> <CALmYWFtQX57Z7ttKxrdXQH4QupFn4vi5KfizUBH9NkmP-S1JDw@mail.gmail.com>
- <ZS/3GCKvNn5qzhC4@casper.infradead.org> <CALmYWFu_uY=cWzAQaLtS0CdNrm+cO7tKz4sY2Ff02WQ8mGUUXw@mail.gmail.com>
- <7071.1697661373@cvs.openbsd.org>
-In-Reply-To: <7071.1697661373@cvs.openbsd.org>
-From:   =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>
-Date:   Thu, 19 Oct 2023 10:28:32 +0200
-Message-ID: <CAEAAPHbB0yZfpXGMib4bbH8z5diKfur5M6mAfZuB6qi9UVpcPw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Theo de Raadt <deraadt@openbsd.org>
-Cc:     Jeff Xu <jeffxu@google.com>, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007e89ee06080d8bff"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000007e89ee06080d8bff
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Oct 19 2023 at 15:02, Wei Gong wrote:
+> O Fri, Oct 13, 2023 at 10:44:36AM +0200, Thomas Gleixner wrote:
+>> > By maintaining the original loop exit condition, if a mask mismatch is 
+>> > detected within the loop, we will not perform the unmask_irq operation. 
+>> > Instead, we will wait until the loop exits before executing unmask_irq.
+>> > Could this approach potentially solve the issue of lost interrupts?
+>> 
+>> How so exactly?
+>> 
+> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+> index 8f8f1d62f..b846659ce 100644
+> --- a/kernel/irq/chip.c
+> +++ b/kernel/irq/chip.c
+> @@ -823,7 +823,9 @@ void handle_edge_irq(struct irq_desc *desc)
+>  		 */
+>  		if (unlikely(desc->istate & IRQS_PENDING)) {
+>  			if (!irqd_irq_disabled(&desc->irq_data) &&
+> -			    irqd_irq_masked(&desc->irq_data))
+> +			    irqd_irq_masked(&desc->irq_data) &&
+> +			    cpumask_test_cpu(smp_processor_id(),
+> +				    irq_data_get_effective_affinity_mask(&desc->irq_data)))
+>  				unmask_irq(desc);
+>  		}
+>  
+> @@ -832,6 +834,10 @@ void handle_edge_irq(struct irq_desc *desc)
+>  	} while ((desc->istate & IRQS_PENDING) &&
+>  		 !irqd_irq_disabled(&desc->irq_data));
+>  
+> +if (!irqd_irq_disabled(&desc->irq_data) &&
+> +    irqd_irq_masked(&desc->irq_data))
+> +	unmask_irq(desc);
 
-> > IMO: The approaches mimmutable() and mseal() took are different, but
-> > we all want to seal the memory from attackers and make the linux
-> > application safer.
->
-> I think you are building mseal for chrome, and chrome alone.
->
-> I do not think this will work out for the rest of the application space
-> because
->
-> 1) it is too complicated
-> 2) experience with mimmutable() says that applications don't do any of it
->    themselves, it is all in execve(), libc initialization, and ld.so.
->    You don't strike me as an execve, libc, or ld.so developer.
+What is this supposed to solve? The last interrupt has been delivered
+already. It's the one which sets the PENDING bit.
 
-We do want to build this in a way that it can be applied automatically by ld.so
-and we appreciate all your feedback on this. The intention of
-splitting the sealing
-by syscall was to provide flexibility while still allowing ld.so to
-seal all operations.
-But it's clear from the feedback that both the fine grained split and
-the per-syscall
-approach are not the right way to go.
-Does Linus' proposal to just split munmap / mprotect sealing address your
-complexity concerns? ld.so would always use both flags which should then behave
-similar to mimmutable().
+Again:
 
---0000000000007e89ee06080d8bff
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+    CPU 0                                CPU 1
 
-MIIPoQYJKoZIhvcNAQcCoIIPkjCCD44CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz7MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-miiwZhqbFo3H+sN+36dVsCIwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYI
-KwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2Nh
-L2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei
-6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNv
-bS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBABDOrwE7xhhZ
-KPffKFRtuggfC0sfh0EHmrCzCXlyiQFmTpjm73me7rw+ibiPUnohQxkeqC9KvwDd/gF7OAY3un01
-f8y5iEmwoymOLIzkTKIMHDp6qOul60jFrAWe8EQMuBMEc9TQbOiXB4jFgLuDZX7AspyVvnmLA5sw
-msq0yrGgxTsEeZniQpdOP/qZNS2TJmvNH8a8HuQfHH/pd20lRWfTEuhSRN8cTkKihK7iO8wjCmrp
-EXefUessFdMqMUSfGI6rUaZTfU0SRfdrVHW4IE8onI30/UVurbGlFiugNF3LbDMXdqzs2/eTsLiD
-8Dv1+pt7SJqI4zNhzZFOpvBPVIkxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENB
-IDIwMjACEAFp/vXw/R/y8Lw9a5440YEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
-IPHNM1FLRZJiedGV78LWIbLcfhG44YthXIWK+1QlQlPyMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTAxOTA4Mjg0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
-CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQClgRkBURnQbzqSbTnU
-T7G/1KuIehcwYLsoU5DQD7ft8qGZJSJeywY20n6aEYRrkGXXvXQtzKPFRyZeW/yY7fCKR7vH7KQn
-v5W5UlbY4C/JNiLRQ3ET8sGcdowV+0SJOxZozLKCH2tcMry7L8+0+O4Vm/zTxlq67ISc6O6ieRg3
-JhOqXkH71KV4tx/RITrBrVKtAZucJxJMNvfWWXAjuY29a3XEkFnfIVs1GHxNBKNMk1bSGNrBWOxv
-ufUq/0Yszi4X/VgSRKHRSUyCQeeK76dWZ+u0t2qcSTFBD7dEHFMT8ZofzEI6TB0xTLIYcVvplyis
-Rxsy+CLwqIHgibltIWG/
---0000000000007e89ee06080d8bff--
+    interrupt #1
+	 set IN_PROGRESS
+	 do {
+					 change_affinity_to(CPU1);
+	    handle_irq_event()
+		 ack_in_device(interrupt #1)
+
+					 interrupt #2
+					    set PENDING
+                                            mask();
+	 } while (COND)
+
+         unmask();
+
+The unmask does not make the interrupt #2 magically reappear. This is
+edge, which is a fire and forget mechanism. That's why we have the
+PENDING bit logic for edge to ensure that no interrupt is lost.
+
+With your change interrupt #2 is lost forever.
+
+So if the device depends on ack_in_device() for being able to send the
+next interrupt, then the lack of ack_in_device() for interrupt #2 makes
+it stale.
+
+It may well be that your particular device does not need the
+ack_in_device() sequence, but this is generic core code which has to
+work for everything.
+
+I'm still having a hard time to understand why this is such a big
+issue at all. What's the practical impact of processing a bunch of
+interrupts on CPU0 after changing the affinity to CPU1?
+
+  It's obviously suboptimal in terms of locality, but that's a temporary
+  problem which resolves itself. It's suboptimal, but correct behaviour.
+
+Your attempts of "fixing" it at the core edge handler level result in a
+fundamental correctness problem.
+
+There are certainly ways to solve it at that level, but for that you
+have to fully understand and accept the fundamental properties and
+intricacies of edge triggered interrupts in the first place.
+
+Whether the resulting complexity is worth it, is a different
+question. As long as there is not a compelling reason to do so, the
+answer is simply no.
+
+Thanks,
+
+        tglx
