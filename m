@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E763B7CF271
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555967CF277
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344893AbjJSIX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        id S232383AbjJSIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235324AbjJSIXo (ORCPT
+        with ESMTP id S235109AbjJSIYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:23:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40470196;
-        Thu, 19 Oct 2023 01:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697703822; x=1729239822;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2MAyMgwN/G69lLL1g6/v1UJJ3TximyIFM4Z4LTNraxE=;
-  b=DdcHIQin5T7tpFmMTCNCwk6MxJaIU8bEwrzaeyJOvpf1cnyeTGbD3KdO
-   2OlCwen+WUkJ8k7PtEiPppQCl+G0wKkgbrLayb3n9bJZhNvHmv4BPe2Q5
-   W7ZZ7rK5Cdpvc6VO5UTlIzhAoI9muCDIvrFJ5h1o1yJaCeQRrCCIiO4mb
-   rTlI6rSBsAzk0mps7pGoPO9uS1o/EHFhQajRMsEXdpQ3aiDtipkuayqAT
-   6pn5OZzY1cHScddLDbqxeSk39elJuSVo8A3kUORKjsnRpXPIcxzD+7oe+
-   fwVAU0Oe+EXSUXkNEHe/eNb+UeomHA+S4LO2e1NRiirpW53xRp5QN64kq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="452668937"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="452668937"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 01:23:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930523829"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="930523829"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga005.jf.intel.com with SMTP; 19 Oct 2023 01:23:33 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Oct 2023 11:23:33 +0300
-Date:   Thu, 19 Oct 2023 11:23:33 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Jimmy Hu <hhhuuu@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, kyletso@google.com,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: Fix NULL pointer dereference in
- tcpm_pd_svdm()
-Message-ID: <ZTDnhbYDq7kq8vBj@kuha.fi.intel.com>
-References: <20231019060616.1988631-1-hhhuuu@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019060616.1988631-1-hhhuuu@google.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 04:24:08 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E3B196
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:24:05 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a828bdcfbaso92333627b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697703845; x=1698308645; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Lu+FeCyL3oCgR0FP+gkAe4hCPFiLBzzy7yX8rQh0MDk=;
+        b=KWMlBGzAEsg46eyBH395XpMNOG4zWRjOgLuLv2f+O28E4bLZ7UeUtPK/gzSwWg4oy6
+         yekOL3vFaP68khniqFLgEVn19MaqMrIc9CR5RFxbHi/WcyDOsTCExochl43yhC97Lf2B
+         jKUXgbF5nXGjALb6dxL+rg9puRQcbpmGX0ZyacdShthgORcv+/tKGTHsoWmnNIxV8cB8
+         tjGbQk/9pfn1ZAyXMFW62AD+q4OEROoWQZhKBXr9N7PWNP7HrZtcD/37kJO+2U50ffmC
+         sJ+XA2OVF2RcEg6RikjCBIPrkhWY6F8SCuK7GVf8Ss5gyKdb0mkzYNMw5H/8AfchiV6k
+         4gFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697703845; x=1698308645;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lu+FeCyL3oCgR0FP+gkAe4hCPFiLBzzy7yX8rQh0MDk=;
+        b=PYwBmFm3LoQeHOA8gNTTWxx1jkutxmghclKhWzMHgnoG03Io9rtbvBpqUMFwsk73W2
+         omvIp1LhhC9JdwwoEwhJIjnn+21njiWxKvrt3h8qXlyC1i5nfshvQOGDPdB6xKbkRIoi
+         Y68P33TqN+u5xYYL/a3m/UkGHe57+phKqi090ppVYWoMD6xFHISx36g7MMkGQb56F3hb
+         5NQ2v4BACvRAwrdTjm+C0jpj3L8fjUej6JiDIfoE/r4zXoqrLB+gokzz1ekHgOcIv6qY
+         9UrfFokOt2ca98YnRc3JXajSdp4vfaKTe27EdF8/DjFPJtIWHItKkCU7IqvjSHPs4Iq6
+         ENow==
+X-Gm-Message-State: AOJu0Yzh8kp/mPkmyn2T7zQjm+6+wGFvz1nTBwu9fWcnOLWBp+gQyL6r
+        zEVdwtCHYYHmTHD38hwaP/k6pzV7ggnH
+X-Google-Smtp-Source: AGHT+IEirk34VW4JdGjVi2e1kKViuhhou/6R9Dp0JdkMnk46P/V54IcYs4vDzb7/EWCv6K5nHuC1EamwU9FI
+X-Received: from wnhuang-p920.tpe.corp.google.com ([2401:fa00:fc:200:8537:873c:b8ab:6b48])
+ (user=wnhuang job=sendgmr) by 2002:a05:6902:134a:b0:d9a:58e0:c7c7 with SMTP
+ id g10-20020a056902134a00b00d9a58e0c7c7mr34535ybu.1.1697703845044; Thu, 19
+ Oct 2023 01:24:05 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:23:57 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231019082357.1505047-1-wnhuang@google.com>
+Subject: [PATCH] coresight: etm4x: Allow configuring cycle count threshold
+From:   Wei-Ning Huang <wnhuang@google.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        suzuki.poulose@arm.com, james.clark@arm.com, leo.yan@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Wei-Ning Huang <wnhuang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 06:06:16AM +0000, Jimmy Hu wrote:
-> It is possible that typec_register_partner() returns ERR_PTR on failure.
-> When port->partner is an error, a NULL pointer dereference may occur as
-> shown below.
-> 
-> [91222.095236][  T319] typec port0: failed to register partner (-17)
-> ...
-> [91225.061491][  T319] Unable to handle kernel NULL pointer dereference
-> at virtual address 000000000000039f
-> [91225.274642][  T319] pc : tcpm_pd_data_request+0x310/0x13fc
-> [91225.274646][  T319] lr : tcpm_pd_data_request+0x298/0x13fc
-> [91225.308067][  T319] Call trace:
-> [91225.308070][  T319]  tcpm_pd_data_request+0x310/0x13fc
-> [91225.308073][  T319]  tcpm_pd_rx_handler+0x100/0x9e8
-> [91225.355900][  T319]  kthread_worker_fn+0x178/0x58c
-> [91225.355902][  T319]  kthread+0x150/0x200
-> [91225.355905][  T319]  ret_from_fork+0x10/0x30
-> 
-> Add a check for port->partner to avoid dereferencing a NULL pointer.
-> 
-> Fixes: 5e1d4c49fbc8 ("usb: typec: tcpm: Determine common SVDM Version")
-> Signed-off-by: Jimmy Hu <hhhuuu@google.com>
+Allow userspace to configure cycle count threshold through
+perf_event_attr config. The last high 12-bit of config value is used to
+store the cycle count threshold.
 
-No CC stable...?
+Signed-off-by: Wei-Ning Huang <wnhuang@google.com>
+---
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |  6 +++++-
+ include/linux/coresight-pmu.h                      | 14 ++++++++------
+ tools/include/linux/coresight-pmu.h                | 14 ++++++++------
+ 3 files changed, 21 insertions(+), 13 deletions(-)
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 6e843c511b85..792ec4ac7d8d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1625,6 +1625,9 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			if (PD_VDO_VID(p[0]) != USB_SID_PD)
->  				break;
->  
-> +			if (IS_ERR_OR_NULL(port->partner))
-> +				break;
-> +
->  			if (PD_VDO_SVDM_VER(p[0]) < svdm_version) {
->  				typec_partner_set_svdm_version(port->partner,
->  							       PD_VDO_SVDM_VER(p[0]));
-
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 77b0271ce6eb..155441668b4a 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -645,6 +645,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	struct perf_event_attr *attr = &event->attr;
+ 	unsigned long cfg_hash;
+ 	int preset;
++	u64 cyc_threadhold;
+ 
+ 	/* Clear configuration from previous run */
+ 	memset(config, 0, sizeof(struct etmv4_config));
+@@ -667,7 +668,10 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	if (attr->config & BIT(ETM_OPT_CYCACC)) {
+ 		config->cfg |= TRCCONFIGR_CCI;
+ 		/* TRM: Must program this for cycacc to work */
+-		config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
++		cyc_threshold = ((attr->config >> ETM_OPT_CYC_THRESHOLD_SHIFT) &
++				 ETM_OPT_CYC_THRESHOLD_MASK;
++		config->ccctlr = cyc_threshold ? cyc_threshold :
++				 ETM_CYC_THRESHOLD_DEFAULT;
+ 	}
+ 	if (attr->config & BIT(ETM_OPT_TS)) {
+ 		/*
+diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
+index 51ac441a37c3..14f48658ff1c 100644
+--- a/include/linux/coresight-pmu.h
++++ b/include/linux/coresight-pmu.h
+@@ -29,12 +29,14 @@
+  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+  * directly use below macros as config bits.
+  */
+-#define ETM_OPT_BRANCH_BROADCAST 8
+-#define ETM_OPT_CYCACC		12
+-#define ETM_OPT_CTXTID		14
+-#define ETM_OPT_CTXTID2		15
+-#define ETM_OPT_TS		28
+-#define ETM_OPT_RETSTK		29
++#define ETM_OPT_BRANCH_BROADCAST	8
++#define ETM_OPT_CYCACC			12
++#define ETM_OPT_CTXTID			14
++#define ETM_OPT_CTXTID2			15
++#define ETM_OPT_TS			28
++#define ETM_OPT_RETSTK			29
++#define ETM_OPT_CYC_THRESHOLD_SHIFT	52
++#define ETM_OPT_CYC_THRESHOLD_MASK	0xfff
+ 
+ /* ETMv4 CONFIGR programming bits for the ETM OPTs */
+ #define ETM4_CFG_BIT_BB         3
+diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
+index 51ac441a37c3..14f48658ff1c 100644
+--- a/tools/include/linux/coresight-pmu.h
++++ b/tools/include/linux/coresight-pmu.h
+@@ -29,12 +29,14 @@
+  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+  * directly use below macros as config bits.
+  */
+-#define ETM_OPT_BRANCH_BROADCAST 8
+-#define ETM_OPT_CYCACC		12
+-#define ETM_OPT_CTXTID		14
+-#define ETM_OPT_CTXTID2		15
+-#define ETM_OPT_TS		28
+-#define ETM_OPT_RETSTK		29
++#define ETM_OPT_BRANCH_BROADCAST	8
++#define ETM_OPT_CYCACC			12
++#define ETM_OPT_CTXTID			14
++#define ETM_OPT_CTXTID2			15
++#define ETM_OPT_TS			28
++#define ETM_OPT_RETSTK			29
++#define ETM_OPT_CYC_THRESHOLD_SHIFT	52
++#define ETM_OPT_CYC_THRESHOLD_MASK	0xfff
+ 
+ /* ETMv4 CONFIGR programming bits for the ETM OPTs */
+ #define ETM4_CFG_BIT_BB         3
 -- 
-heikki
+2.42.0.655.g421f12c284-goog
+
