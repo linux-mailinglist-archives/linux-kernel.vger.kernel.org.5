@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AC67D007D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C627D0083
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345827AbjJSR13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
+        id S1345955AbjJSR3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbjJSR11 (ORCPT
+        with ESMTP id S235472AbjJSR3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:27:27 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFA5CF;
-        Thu, 19 Oct 2023 10:27:26 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JDfmcH010428;
-        Thu, 19 Oct 2023 17:27:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=U9G3NTV0pybnBgmSQBaCrwWGelgPxhZ1dOfQoqMdbQk=;
- b=fgZmmRcw8C0CqwuSGs1wiH+Ywy8BWadHowE0zC1poLakHVPKT6228JL1q34JEQU3h38k
- BKyVqEwkFQNT0cOwhRCF0j4KsqxN0kcitLwHdzuu65s5nDrzUv1D0vzvoH91wX+VB18r
- L/QHvdm0kSpGf19oI5V/atAOr4F0000o65rnNwsGXBJJfcX+vKlKRxPhya/qYCwZ/1ki
- lse7161NDIRMHRgDziGfEjvxTHg3ahTEpB5GqRQBfVsSl9+2x2MuIMd10RBlISZwdlKN
- 8XnPpJ2OYKuRrQAuddZzFmajkGQ5d+Akg5P8rJg6Ovbrl/Fbx0APe2H1kbmPbFsGg1Ty uQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tu49b0qdk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 17:27:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JHRLmR003677
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 17:27:21 GMT
-Received: from [10.48.241.70] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
- 2023 10:27:21 -0700
-Message-ID: <a13dd4f1-4058-4559-96f4-e110f7f4e16a@quicinc.com>
-Date:   Thu, 19 Oct 2023 10:27:20 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath11k: fix gtk offload status event locking
-Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>
-CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Carl Huang <quic_cjhuang@quicinc.com>
-References: <20231019155342.31631-1-johan+linaro@kernel.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231019155342.31631-1-johan+linaro@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dc76GSLz5aeiQPpj1bnMdk0McHTqslkm
-X-Proofpoint-GUID: dc76GSLz5aeiQPpj1bnMdk0McHTqslkm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_16,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=577
- impostorscore=0 phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- mlxscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190148
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 19 Oct 2023 13:29:09 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE9ACF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:29:06 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d815354ea7fso11165272276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697736546; x=1698341346; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2dM38oFA9Pe/oU12qt1pqIA50gOKDfSgpU7CFprv1yc=;
+        b=cHWdbIg0jyNGVyVEhDpxNzd/63un5tiuklbwUfrz2KzIOUWXh2jO82q85+9CcBe5U0
+         sgydZEpiY/wZRkzrXt4xvcXdWMpEKw8u0elwoFUMYZWL0hi8wVFUUMj8gKm7liIsO7mF
+         D1S4j+F6r3+5yOyyUovTPr9LIfRgrRt7Wt4m2xz5rHIBC7u8BLS0cJuzkED03NtbrKnH
+         O+1rJhBdt0YFmnmJxFGBfwCjTuiIO5rz0cXvsmiJFfD3M1STA0DTgurSQ4VE7RmCGppe
+         HANmIARbxkaNF6UpdavJkoWMS/4HnnQxpk5u24CC57NgyXhd2QylQOn6t3C1Y9mEclAD
+         1gqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697736546; x=1698341346;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2dM38oFA9Pe/oU12qt1pqIA50gOKDfSgpU7CFprv1yc=;
+        b=pzv48IXpHXN3FuVJ/izAejLXwS+sXG4odZVK6VSw/oyeu9Hd/m8wTAzFLdb8azCnlg
+         8ychbmRGG3jQp7cKKFJn19DHPXJeEus5A40uZEzuRaBso+Kt/U6zYxoZf0SGAIIYrd8f
+         sep3fZ0gZ0cWFSvMwRzWd1B1LhHmMdQPsNWSe2x358qAkH/JmK3t1TN7536EZ1cWUBcX
+         Beu2qoOEBvWqyMGFbqSYsOxFAQ+zpHM87zfLF34BmApapFkELZEx1/Yxv/TygDWS2gpi
+         9mW9SmjFRCbna5Q7cQ0qMP+Fu5akkwbgf7/POEbHmeixCycbh6rpf8ym5PP5iSjUUUOL
+         DCpA==
+X-Gm-Message-State: AOJu0YxXPn8iAvBetF8x8owNMLtnaHq2Szj1HLaS3Nxo4ZI1ii5AriG6
+        pz+g7hMwownLEb0qIZLjMn97wiEfUKl0sPTKxQ==
+X-Google-Smtp-Source: AGHT+IHny44lFcXUUZdQ9whIolzk/nLUcQB/99Ej3mtZ8rGAwmCLBlfTDxB6r6w+HnKOSx9S/ZCVp8RA1WGHhw/9Kw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a5b:584:0:b0:c78:c530:6345 with SMTP
+ id l4-20020a5b0584000000b00c78c5306345mr62074ybp.7.1697736546059; Thu, 19 Oct
+ 2023 10:29:06 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:29:01 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAFxnMWUC/52NQQ6CMBBFr0K6dkxbVNSV9zAsmmGAJtCSGVIlh
+ LtbiSdw85P3F++tSog9iboXq2JKXnwMGeyhUNi70BH4JrOy2pZGmwvIzAGnBRr2iVgg0AwvzzS
+ QCLh5pOG3CBW629lgW2HrVBZOTK1/77Fnnbn3Mkde9nYy3/evTDJgQJfXRlNV4knbRxdjN9AR4 6jqbds+HuzT1uUAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697736545; l=2387;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=XowZOHRhqMCWq2fZ6yqvbWeRdNj7KFUM/jYuUGt1iRs=; b=I3H8ns0MlDbP5d8HN0mCYlz9v6sQJLyJQnj1UZVv0uRXoG+50xHyRKxV+C0qMYGOmECPx9Ey5
+ 8hoyNmvhpxYC4k6QRDMvh7xD/gPJGHhPeCc3sOaKgXZJlWxe7qv5Yt4
+X-Mailer: b4 0.12.3
+Message-ID: <20231019-strncpy-drivers-net-wireless-atmel-atmel-c-v2-1-52e46fbea083@google.com>
+Subject: [PATCH v2] atmel: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2023 8:53 AM, Johan Hovold wrote:
-> The ath11k active pdevs are protected by RCU but the gtk offload status
-> event handling code calling ath11k_mac_get_arvif_by_vdev_id() was not
-> marked as a read-side critical section.
-> 
-> Mark the code in question as an RCU read-side critical section to avoid
-> any potential use-after-free issues.
-> 
-> Fixes: a16d9b50cfba ("ath11k: support GTK rekey offload")
-> Cc: stable@vger.kernel.org      # 5.18
-> Cc: Carl Huang <quic_cjhuang@quicinc.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
+
+We expect priv->firmware_id to be NUL-terminated based on its usage
+with seq_printf() and strlen() in atmel.c:
+1420 |       seq_printf(m, "%s loaded by host\n", priv->firmware_id);
+...
+3884 |       if (strlen(priv->firmware_id) == 0) {
+
+NUL-padding is not required, which is evident by the usage of a plain
+strcpy():
+3891 |   strcpy(priv->firmware_id, "atmel_at76c502.bin");
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+Let's also replace hard-coded lengths to be `sizeof(...)` for buffers
+that the compiler can detect the size for as this is less error prone.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy [2]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [3]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- leave strcpy() usage as is (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20231016-strncpy-drivers-net-wireless-atmel-atmel-c-v1-1-038d0e73c402@google.com
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/atmel/atmel.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/atmel/atmel.c b/drivers/net/wireless/atmel/atmel.c
+index 7c2d1c588156..99920430e8b4 100644
+--- a/drivers/net/wireless/atmel/atmel.c
++++ b/drivers/net/wireless/atmel/atmel.c
+@@ -2651,8 +2651,7 @@ static int atmel_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+ 
+ 		priv->firmware = new_firmware;
+ 		priv->firmware_length = com.len;
+-		strncpy(priv->firmware_id, com.id, 31);
+-		priv->firmware_id[31] = '\0';
++		strscpy(priv->firmware_id, com.id, sizeof(priv->firmware_id));
+ 		break;
+ 
+ 	case ATMELRD:
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231016-strncpy-drivers-net-wireless-atmel-atmel-c-7ca951cf7cfa
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
