@@ -2,187 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C71EB7CFAB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EDD7CFAB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345747AbjJSNRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S1345838AbjJSNR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233202AbjJSNRV (ORCPT
+        with ESMTP id S233202AbjJSNRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:17:21 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C8998;
-        Thu, 19 Oct 2023 06:17:15 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8106F240002;
-        Thu, 19 Oct 2023 13:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697721434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7kubKUOdyt7koTXOXKhU8wFECVMZDVp8kCAlvbhKcUI=;
-        b=evznZ03xPa0BEwhJfOpNDV6d3q5E4Ku96L8mhZfSmZ0WUAyqSyXEHUqqaCyyVLtItEGvJG
-        iI6qrODCXFvYvK78X9EaXwnN1EdVV5EAKy2i+nJLs5gM8vPTgBk+GtMRLOzf8QBS83sGmg
-        gmdd5uackLlA7rCLXeUjimx1JzlpafuKGeeXAcKIKTRILR+l8WSVFibee3PrOXIX+c03pf
-        niu31RkRhCXonSiGBCR+L6uJv25Lt15MaLuEN70pGQBMMk0ytJ5KRB5B/bXiQK13Mhdo/s
-        PYa9WxihA5q8z5ZuHkvs1Bbj0fK9rMBqAZ7Tw05nMfPXahSVtClavHN/lPGQhQ==
-From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 19 Oct 2023 15:16:41 +0200
-Subject: [PATCH net] Revert "ethtool: Fix mod state of verbose no_mask
- bitset"
+        Thu, 19 Oct 2023 09:17:23 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5159F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:17:22 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JDFKRw031740;
+        Thu, 19 Oct 2023 13:17:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=EOgzvUQafFoswcAE2D3pCuOjLCzcXDLuWGtEGqOfXfI=;
+ b=gd0mdJLseoT1YebgyINWi1IHUnXeGIwDzvyfySu/O+vBAgiKIBZed5aeDI+Q3DB6zD3+
+ bd3cWyqBHVMNV6JBYeE8gSLSe86GAT3O6evmwbeDaK9LsnQVv8j1tmu4L/NXA+6HrR8Y
+ 3M4bePQwTxRiOeir7PPXiEB+EhisCdbhyfRRJDV/KfCqnJBeAITUQwYxgVkV+sgVPgti
+ EbkNRHcYne68ahHehkeyomy8tZH7yv6RanVLsuukqC7WE4sp5tG41kUieyh/9kAGeHdR
+ 5vJjcc8WyyXsAucxKFZQ6dBcKTNi8foSHz1mKlap2c5fCSZ2MBg+GzMtXu8cVHMmBF4V zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu56003af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:17:04 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JDFlMx001441;
+        Thu, 19 Oct 2023 13:17:03 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu5600375-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:17:03 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JBDErr020105;
+        Thu, 19 Oct 2023 13:17:01 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6angxs8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:17:01 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JDGxcC15401710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Oct 2023 13:16:59 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B47820043;
+        Thu, 19 Oct 2023 13:16:59 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D60320040;
+        Thu, 19 Oct 2023 13:16:56 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Thu, 19 Oct 2023 13:16:56 +0000 (GMT)
+Date:   Thu, 19 Oct 2023 18:46:55 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/6] powerpc/smp: Disable MC domain for shared
+ processor
+Message-ID: <20231019131655.GJ2194132@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
+ <20231018163751.2423181-5-srikar@linux.vnet.ibm.com>
+ <87pm1b5ia7.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231019-feature_ptp_bitset_fix-v1-1-70f3c429a221@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIADgsMWUC/x2M0QqEIBQFfyXuc0ImFfUrEZJ13L0vJnqLhejfV
- 3qcgZmbMhIj01TdlHBx5iMU0HVF23cNHyjeC1PbtEY3elQeq5wJNkq0jiVDrOef6p0fun7Qzhh
- QiWNC0e94pgCh5Xn+yXvplG0AAAA=
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Simon Horman <horms@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Simon Horman <horms@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>, stable@vger.kernel.org,
-        Kory Maincent <kory.maincent@bootlin.com>,
-        Oleksij Rempel <linux@rempel-privat.de>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87pm1b5ia7.fsf@mail.lhotse>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -dcD9fF8egfTbF7mBqOUvkJVRQPDE2J_
+X-Proofpoint-GUID: 3bJV3pVYuW0ZlhfUtqPrhT849ube8twE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_11,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190114
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 108a36d07c01edbc5942d27c92494d1c6e4d45a0.
+* Michael Ellerman <mpe@ellerman.id.au> [2023-10-19 15:48:48]:
 
-It was reported that this fix breaks the possibility to remove existing WoL
-flags. For example:
-~$ ethtool lan2
-...
-        Supports Wake-on: pg
-        Wake-on: d
-...
-~$ ethtool -s lan2 wol gp
-~$ ethtool lan2
-...
-        Wake-on: pg
-...
-~$ ethtool -s lan2 wol d
-~$ ethtool lan2
-...
-        Wake-on: pg
-...
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> > Like L2-cache info, coregroup information which is used to determine MC
+> > sched domains is only present on dedicated LPARs. i.e PowerVM doesn't
+> > export coregroup information for shared processor LPARs. Hence disable
+> > creating MC domains on shared LPAR Systems.
+> >
+> > Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> > ---
+> >  arch/powerpc/kernel/smp.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> > index 498c2d51fc20..29da9262cb17 100644
+> > --- a/arch/powerpc/kernel/smp.c
+> > +++ b/arch/powerpc/kernel/smp.c
+> > @@ -1046,6 +1046,10 @@ static struct cpumask *cpu_coregroup_mask(int cpu)
+> >  
+> >  static bool has_coregroup_support(void)
+> >  {
+> > +	/* Coregroup identification not available on shared systems */
+> > +	if (is_shared_processor())
+> > +		return 0;
+> 
+> That will catch guests running under KVM too right? Do we want that?
+> 
 
-This worked correctly before this commit because we were always updating
-a zero bitmap (since commit 6699170376ab ("ethtool: fix application of
-verbose no_mask bitset"), that is) so that the rest was left zero
-naturally. But now the 1->0 change (old_val is true, bit not present in
-netlink nest) no longer works.
+Only dedicated LPARS on PowerVM expose coregroup or Hemisphere information.
+Currently other systems including KVMs don't expose this information to the
+OS.
 
-Reported-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Closes: https://lore.kernel.org/netdev/20231019095140.l6fffnszraeb6iiw@lion.mk-sys.cz/
-Cc: stable@vger.kernel.org
-Fixes: 108a36d07c01 ("ethtool: Fix mod state of verbose no_mask bitset")
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+> >  	return coregroup_enabled;
+> 
+> What does coregroup_enabled mean now?
+> 
+> I'd rather this was actually checking the presence of something, rather
+> than just hard coding that shared processor means no coregroup support.
+> 
 
-This patch is reverted for now as we are approaching the end of the
-merge-window. The real fix that fix the mod value will be sent later
-on the next merge-window.
----
- net/ethtool/bitset.c | 32 ++++++--------------------------
- 1 file changed, 6 insertions(+), 26 deletions(-)
+On a shared LPAR, the Hypervisors would like to have the flexibility to
+schedule LPAR on any core within the DIE without having to further think
+about the Hemisphere locality of the core.
 
-diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
-index 883ed9be81f9..0515d6604b3b 100644
---- a/net/ethtool/bitset.c
-+++ b/net/ethtool/bitset.c
-@@ -431,10 +431,8 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 			      ethnl_string_array_t names,
- 			      struct netlink_ext_ack *extack, bool *mod)
- {
--	u32 *orig_bitmap, *saved_bitmap = NULL;
- 	struct nlattr *bit_attr;
- 	bool no_mask;
--	bool dummy;
- 	int rem;
- 	int ret;
- 
-@@ -450,22 +448,8 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 	}
- 
- 	no_mask = tb[ETHTOOL_A_BITSET_NOMASK];
--	if (no_mask) {
--		unsigned int nwords = DIV_ROUND_UP(nbits, 32);
--		unsigned int nbytes = nwords * sizeof(u32);
--
--		/* The bitmap size is only the size of the map part without
--		 * its mask part.
--		 */
--		saved_bitmap = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
--		if (!saved_bitmap)
--			return -ENOMEM;
--		memcpy(saved_bitmap, bitmap, nbytes);
--		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
--		orig_bitmap = saved_bitmap;
--	} else {
--		orig_bitmap = bitmap;
--	}
-+	if (no_mask)
-+		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
- 
- 	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
- 		bool old_val, new_val;
-@@ -474,14 +458,13 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 		if (nla_type(bit_attr) != ETHTOOL_A_BITSET_BITS_BIT) {
- 			NL_SET_ERR_MSG_ATTR(extack, bit_attr,
- 					    "only ETHTOOL_A_BITSET_BITS_BIT allowed in ETHTOOL_A_BITSET_BITS");
--			ret = -EINVAL;
--			goto out;
-+			return -EINVAL;
- 		}
- 		ret = ethnl_parse_bit(&idx, &new_val, nbits, bit_attr, no_mask,
- 				      names, extack);
- 		if (ret < 0)
--			goto out;
--		old_val = orig_bitmap[idx / 32] & ((u32)1 << (idx % 32));
-+			return ret;
-+		old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
- 		if (new_val != old_val) {
- 			if (new_val)
- 				bitmap[idx / 32] |= ((u32)1 << (idx % 32));
-@@ -491,10 +474,7 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 		}
- 	}
- 
--	ret = 0;
--out:
--	kfree(saved_bitmap);
--	return ret;
-+	return 0;
- }
- 
- static int ethnl_compact_sanity_checks(unsigned int nbits,
+> cheers
 
----
-base-commit: a602ee3176a81280b829c9f0cf259450f7982168
-change-id: 20231019-feature_ptp_bitset_fix-6bf75671b33e
-
-Best regards,
 -- 
-Köry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
+Thanks and Regards
+Srikar Dronamraju
