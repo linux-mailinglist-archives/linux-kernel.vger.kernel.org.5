@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D131F7CFC9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116CC7CFC9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346235AbjJSOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
+        id S1346127AbjJSOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346140AbjJSO34 (ORCPT
+        with ESMTP id S1346121AbjJSO34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 10:29:56 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A43181;
-        Thu, 19 Oct 2023 07:29:52 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9C53760005;
-        Thu, 19 Oct 2023 14:29:49 +0000 (UTC)
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3AD18B;
+        Thu, 19 Oct 2023 07:29:53 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F03E660004;
+        Thu, 19 Oct 2023 14:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697725790;
+        t=1697725792;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=invxvvsNyaslfuOag5qFd3lmUeCZ/b8fEn5ZKD3SNsQ=;
-        b=jO3J2Ka4XF10T0+NOLw84LSwvILNZNBjDL3f2yR5bi/gwhoVsZU4pY2Vn9exOTP3GuQ5dp
-        k34SJ1O24Gn8izKa75kiBJ3P5b3zDwlQ8HLcNZq0G6sfgqNKxOTziDIBoeN0OsgAAG4alA
-        Yv8G44DxedX/3fylWJJZqyROt0CKWPhQGoPaKoPp+jNc6IkmseSNCIu21vjQbQi5Z+Dl3v
-        rgBWMNqnKJJobTLbExlKoWDqLSFulEZiiteExorWHq7yxcXbfvPCyI39iytKIaBYUD0I4F
-        sPclCslI7n21o6EbG9FyhMmSI1/mmsSk4mKWLeX/pkylc6QPj9ktghlbyxu82w==
+        bh=sa/BMAPjdibMp7a6uAHIuRY7wsT4sAFdEpwtOTUVtjo=;
+        b=MrW0+v9R9WtBjTYkzv16CJrNc9tDAoKkbOUU+KGqO8W+Yk4rna+ZJMqgMSNt1CYcnCdP8l
+        /aGUjxP3dSpbjlaOLyRcbuaqY8YByCgC29BTV4firAUaCZFOyc98lTjJoKi3D1ijFFsRNr
+        tkzuPWl97cO/SzYOUtraE72E2SSRHR258buBUC42zbPuOo8CQE3w6/FrgjfdyhmYQfNa22
+        RtbXlw25FRuhkVrQq9ynBDmiJzipq2X89YOOU3pvTcqIIBzNFjKhXIhDj7SuduOaj30MvJ
+        ykPveZuiJjbZ5o+L5VcJuCAf1W6s73h80d9FiZNtD0xhYqxbUSzEm4QpOCi2wQ==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 19 Oct 2023 16:29:23 +0200
-Subject: [PATCH net-next v6 08/16] net: ethtool: Add a command to expose
- current time stamping layer
+Date:   Thu, 19 Oct 2023 16:29:24 +0200
+Subject: [PATCH net-next v6 09/16] netlink: specs: Introduce new netlink
+ command to get current timestamp
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231019-feature_ptp_netnext-v6-8-71affc27b0e5@bootlin.com>
+Message-Id: <20231019-feature_ptp_netnext-v6-9-71affc27b0e5@bootlin.com>
 References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
 In-Reply-To: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
 To:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -68,336 +68,67 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.12.3
 X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Time stamping on network packets may happen either in the MAC or in
-the PHY, but not both.  In preparation for making the choice
-selectable, expose both the current layers via ethtool.
+Add a new commands allowing to get the current time stamping on a
+netdevice's link.
 
-In accordance with the kernel implementation as it stands, the current
-layer will always read as "phy" when a PHY time stamping device is
-present. Future patches will allow changing the current layer
-administratively.
+Example usage :
+./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do ts-get \
+	     --json '{"header":{"dev-name":"eth0"}}'
+{'header': {'dev-index': 3, 'dev-name': 'eth0'}, 'ts-layer': 1}
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-
 ---
-Changes in v2:
-- Move the introduction of selected_timestamping_layer variable in next
-  patch.
+ Documentation/netlink/specs/ethtool.yaml | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Changes in v3:
-- Move on to ethtool instead of syfs
-
-Changes in v4:
-- Move on to netlink ethtool instead of ioctl. I am not familiar with
-  netlink so there might be some code that does not follow the good code
-  practice.
-
-Changes in v5:
-- Rename timestamping layers.
-- Set a default value of ts_layer in __ethtool_get_ts_info function.
-- Separate TS_GET and TS_LIST_GET ethtool command in two separate patches.
-- Update documentation.
-
-Changes in v6:
-- Moved back to a timestamping_layer simple enum.
-- Moved back to MAC/PHY_TIMESTAMING namings.
-- Add SOFTWARE timestamping description.
----
- Documentation/networking/ethtool-netlink.rst | 23 ++++++++
- include/uapi/linux/ethtool_netlink.h         | 14 +++++
- include/uapi/linux/net_tstamp.h              | 10 ++++
- net/ethtool/Makefile                         |  2 +-
- net/ethtool/common.h                         |  1 +
- net/ethtool/netlink.c                        | 10 ++++
- net/ethtool/netlink.h                        |  2 +
- net/ethtool/ts.c                             | 88 ++++++++++++++++++++++++++++
- 8 files changed, 149 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
-index 2540c70952ff..644b3b764044 100644
---- a/Documentation/networking/ethtool-netlink.rst
-+++ b/Documentation/networking/ethtool-netlink.rst
-@@ -225,6 +225,7 @@ Userspace to kernel:
-   ``ETHTOOL_MSG_RSS_GET``               get RSS settings
-   ``ETHTOOL_MSG_MM_GET``                get MAC merge layer state
-   ``ETHTOOL_MSG_MM_SET``                set MAC merge layer parameters
-+  ``ETHTOOL_MSG_TS_GET``                get current timestamping
-   ===================================== =================================
+diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
+index 837b565577ca..49ee028e97ca 100644
+--- a/Documentation/netlink/specs/ethtool.yaml
++++ b/Documentation/netlink/specs/ethtool.yaml
+@@ -942,6 +942,16 @@ attribute-sets:
+       -
+         name: burst-tmr
+         type: u32
++  -
++    name: ts
++    attributes:
++      -
++        name: header
++        type: nest
++        nested-attributes: header
++      -
++        name: ts-layer
++        type: u32
  
- Kernel to userspace:
-@@ -268,6 +269,7 @@ Kernel to userspace:
-   ``ETHTOOL_MSG_PSE_GET_REPLY``            PSE parameters
-   ``ETHTOOL_MSG_RSS_GET_REPLY``            RSS settings
-   ``ETHTOOL_MSG_MM_GET_REPLY``             MAC merge layer status
-+  ``ETHTOOL_MSG_TS_GET_REPLY``             current timestamping
-   ======================================== =================================
- 
- ``GET`` requests are sent by userspace applications to retrieve device
-@@ -1994,6 +1996,26 @@ The attributes are propagated to the driver through the following structure:
- .. kernel-doc:: include/linux/ethtool.h
-     :identifiers: ethtool_mm_cfg
- 
-+TS_GET
-+======
+ operations:
+   enum-model: directional
+@@ -1692,3 +1702,17 @@ operations:
+       name: mm-ntf
+       doc: Notification for change in MAC Merge configuration.
+       notify: mm-get
++    -
++      name: ts-get
++      doc: Get current timestamp
 +
-+Gets current timestamping.
++      attribute-set: ts
 +
-+Request contents:
-+
-+  =================================  ======  ====================
-+  ``ETHTOOL_A_TS_HEADER``            nested  request header
-+  =================================  ======  ====================
-+
-+Kernel response contents:
-+
-+  =======================  ======  ==============================
-+  ``ETHTOOL_A_TS_HEADER``  nested  reply header
-+  ``ETHTOOL_A_TS_LAYER``   u32     current timestamping
-+  =======================  ======  ==============================
-+
-+This command get the current timestamp layer.
-+
- Request translation
- ===================
- 
-@@ -2100,4 +2122,5 @@ are netlink only.
-   n/a                                 ``ETHTOOL_MSG_PLCA_GET_STATUS``
-   n/a                                 ``ETHTOOL_MSG_MM_GET``
-   n/a                                 ``ETHTOOL_MSG_MM_SET``
-+  n/a                                 ``ETHTOOL_MSG_TS_GET``
-   =================================== =====================================
-diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
-index 73e2c10dc2cc..cb51136328cf 100644
---- a/include/uapi/linux/ethtool_netlink.h
-+++ b/include/uapi/linux/ethtool_netlink.h
-@@ -57,6 +57,7 @@ enum {
- 	ETHTOOL_MSG_PLCA_GET_STATUS,
- 	ETHTOOL_MSG_MM_GET,
- 	ETHTOOL_MSG_MM_SET,
-+	ETHTOOL_MSG_TS_GET,
- 
- 	/* add new constants above here */
- 	__ETHTOOL_MSG_USER_CNT,
-@@ -109,6 +110,7 @@ enum {
- 	ETHTOOL_MSG_PLCA_NTF,
- 	ETHTOOL_MSG_MM_GET_REPLY,
- 	ETHTOOL_MSG_MM_NTF,
-+	ETHTOOL_MSG_TS_GET_REPLY,
- 
- 	/* add new constants above here */
- 	__ETHTOOL_MSG_KERNEL_CNT,
-@@ -975,6 +977,18 @@ enum {
- 	ETHTOOL_A_MM_MAX = (__ETHTOOL_A_MM_CNT - 1)
- };
- 
-+/* TS LAYER */
-+
-+enum {
-+	ETHTOOL_A_TS_UNSPEC,
-+	ETHTOOL_A_TS_HEADER,			/* nest - _A_HEADER_* */
-+	ETHTOOL_A_TS_LAYER,			/* u32 */
-+
-+	/* add new constants above here */
-+	__ETHTOOL_A_TS_CNT,
-+	ETHTOOL_A_TS_MAX = (__ETHTOOL_A_TS_CNT - 1)
-+};
-+
- /* generic netlink info */
- #define ETHTOOL_GENL_NAME "ethtool"
- #define ETHTOOL_GENL_VERSION 1
-diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tstamp.h
-index df8091998c8d..4551fb3d7720 100644
---- a/include/uapi/linux/net_tstamp.h
-+++ b/include/uapi/linux/net_tstamp.h
-@@ -13,6 +13,16 @@
- #include <linux/types.h>
- #include <linux/socket.h>   /* for SO_TIMESTAMPING */
- 
-+/* Layer of the TIMESTAMPING provider */
-+enum timestamping_layer {
-+	NO_TIMESTAMPING,
-+	SOFTWARE_TIMESTAMPING,
-+	MAC_TIMESTAMPING,
-+	PHY_TIMESTAMPING,
-+
-+	__TIMESTAMPING_COUNT,
-+};
-+
- /* SO_TIMESTAMPING flags */
- enum {
- 	SOF_TIMESTAMPING_TX_HARDWARE = (1<<0),
-diff --git a/net/ethtool/Makefile b/net/ethtool/Makefile
-index 504f954a1b28..4ea64c080639 100644
---- a/net/ethtool/Makefile
-+++ b/net/ethtool/Makefile
-@@ -8,4 +8,4 @@ ethtool_nl-y	:= netlink.o bitset.o strset.o linkinfo.o linkmodes.o rss.o \
- 		   linkstate.o debug.o wol.o features.o privflags.o rings.o \
- 		   channels.o coalesce.o pause.o eee.o tsinfo.o cabletest.o \
- 		   tunnels.o fec.o eeprom.o stats.o phc_vclocks.o mm.o \
--		   module.o pse-pd.o plca.o mm.o
-+		   module.o pse-pd.o plca.o mm.o ts.o
-diff --git a/net/ethtool/common.h b/net/ethtool/common.h
-index 28b8aaaf9bcb..a264b635f7d3 100644
---- a/net/ethtool/common.h
-+++ b/net/ethtool/common.h
-@@ -35,6 +35,7 @@ extern const char wol_mode_names[][ETH_GSTRING_LEN];
- extern const char sof_timestamping_names[][ETH_GSTRING_LEN];
- extern const char ts_tx_type_names[][ETH_GSTRING_LEN];
- extern const char ts_rx_filter_names[][ETH_GSTRING_LEN];
-+extern const char ts_layer_names[][ETH_GSTRING_LEN];
- extern const char udp_tunnel_type_names[][ETH_GSTRING_LEN];
- 
- int __ethtool_get_link(struct net_device *dev);
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 3bbd5afb7b31..561c0931d055 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -306,6 +306,7 @@ ethnl_default_requests[__ETHTOOL_MSG_USER_CNT] = {
- 	[ETHTOOL_MSG_PLCA_GET_STATUS]	= &ethnl_plca_status_request_ops,
- 	[ETHTOOL_MSG_MM_GET]		= &ethnl_mm_request_ops,
- 	[ETHTOOL_MSG_MM_SET]		= &ethnl_mm_request_ops,
-+	[ETHTOOL_MSG_TS_GET]		= &ethnl_ts_request_ops,
- };
- 
- static struct ethnl_dump_ctx *ethnl_dump_context(struct netlink_callback *cb)
-@@ -1128,6 +1129,15 @@ static const struct genl_ops ethtool_genl_ops[] = {
- 		.policy = ethnl_mm_set_policy,
- 		.maxattr = ARRAY_SIZE(ethnl_mm_set_policy) - 1,
- 	},
-+	{
-+		.cmd	= ETHTOOL_MSG_TS_GET,
-+		.doit	= ethnl_default_doit,
-+		.start	= ethnl_default_start,
-+		.dumpit	= ethnl_default_dumpit,
-+		.done	= ethnl_default_done,
-+		.policy = ethnl_ts_get_policy,
-+		.maxattr = ARRAY_SIZE(ethnl_ts_get_policy) - 1,
-+	},
- };
- 
- static const struct genl_multicast_group ethtool_nl_mcgrps[] = {
-diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
-index 9a333a8d04c1..1e6085198acc 100644
---- a/net/ethtool/netlink.h
-+++ b/net/ethtool/netlink.h
-@@ -395,6 +395,7 @@ extern const struct ethnl_request_ops ethnl_rss_request_ops;
- extern const struct ethnl_request_ops ethnl_plca_cfg_request_ops;
- extern const struct ethnl_request_ops ethnl_plca_status_request_ops;
- extern const struct ethnl_request_ops ethnl_mm_request_ops;
-+extern const struct ethnl_request_ops ethnl_ts_request_ops;
- 
- extern const struct nla_policy ethnl_header_policy[ETHTOOL_A_HEADER_FLAGS + 1];
- extern const struct nla_policy ethnl_header_policy_stats[ETHTOOL_A_HEADER_FLAGS + 1];
-@@ -441,6 +442,7 @@ extern const struct nla_policy ethnl_plca_set_cfg_policy[ETHTOOL_A_PLCA_MAX + 1]
- extern const struct nla_policy ethnl_plca_get_status_policy[ETHTOOL_A_PLCA_HEADER + 1];
- extern const struct nla_policy ethnl_mm_get_policy[ETHTOOL_A_MM_HEADER + 1];
- extern const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1];
-+extern const struct nla_policy ethnl_ts_get_policy[ETHTOOL_A_TS_HEADER + 1];
- 
- int ethnl_set_features(struct sk_buff *skb, struct genl_info *info);
- int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info);
-diff --git a/net/ethtool/ts.c b/net/ethtool/ts.c
-new file mode 100644
-index 000000000000..066cb06f4d0b
---- /dev/null
-+++ b/net/ethtool/ts.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/net_tstamp.h>
-+#include <linux/phy.h>
-+
-+#include "netlink.h"
-+#include "common.h"
-+#include "bitset.h"
-+
-+struct ts_req_info {
-+	struct ethnl_req_info		base;
-+};
-+
-+struct ts_reply_data {
-+	struct ethnl_reply_data		base;
-+	enum timestamping_layer		ts_layer;
-+};
-+
-+#define TS_REPDATA(__reply_base) \
-+	container_of(__reply_base, struct ts_reply_data, base)
-+
-+/* TS_GET */
-+const struct nla_policy ethnl_ts_get_policy[] = {
-+	[ETHTOOL_A_TS_HEADER]		=
-+		NLA_POLICY_NESTED(ethnl_header_policy),
-+};
-+
-+static int ts_prepare_data(const struct ethnl_req_info *req_base,
-+			   struct ethnl_reply_data *reply_base,
-+			   const struct genl_info *info)
-+{
-+	struct ts_reply_data *data = TS_REPDATA(reply_base);
-+	struct net_device *dev = reply_base->dev;
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+	int ret;
-+
-+	ret = ethnl_ops_begin(dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (phy_has_tsinfo(dev->phydev)) {
-+		data->ts_layer = PHY_TIMESTAMPING;
-+	} else if (ops->get_ts_info) {
-+		struct ethtool_ts_info ts_info = {0};
-+
-+		ops->get_ts_info(dev, &ts_info);
-+		if (ts_info.so_timestamping &
-+		    SOF_TIMESTAMPING_HARDWARE_MASK)
-+			data->ts_layer = MAC_TIMESTAMPING;
-+
-+		if (ts_info.so_timestamping &
-+		    SOF_TIMESTAMPING_SOFTWARE_MASK)
-+			data->ts_layer = SOFTWARE_TIMESTAMPING;
-+	} else {
-+		data->ts_layer = NO_TIMESTAMPING;
-+	}
-+
-+	ethnl_ops_complete(dev);
-+
-+	return ret;
-+}
-+
-+static int ts_reply_size(const struct ethnl_req_info *req_base,
-+			 const struct ethnl_reply_data *reply_base)
-+{
-+	return nla_total_size(sizeof(u32));
-+}
-+
-+static int ts_fill_reply(struct sk_buff *skb,
-+			 const struct ethnl_req_info *req_base,
-+			 const struct ethnl_reply_data *reply_base)
-+{
-+	struct ts_reply_data *data = TS_REPDATA(reply_base);
-+
-+	return nla_put_u32(skb, ETHTOOL_A_TS_LAYER, data->ts_layer);
-+}
-+
-+const struct ethnl_request_ops ethnl_ts_request_ops = {
-+	.request_cmd		= ETHTOOL_MSG_TS_GET,
-+	.reply_cmd		= ETHTOOL_MSG_TS_GET_REPLY,
-+	.hdr_attr		= ETHTOOL_A_TS_HEADER,
-+	.req_info_size		= sizeof(struct ts_req_info),
-+	.reply_data_size	= sizeof(struct ts_reply_data),
-+
-+	.prepare_data		= ts_prepare_data,
-+	.reply_size		= ts_reply_size,
-+	.fill_reply		= ts_fill_reply,
-+};
++      do:
++        request:
++          attributes:
++            - header
++        reply:
++          attributes: &ts
++            - header
++            - ts-layer
 
 -- 
 2.25.1
