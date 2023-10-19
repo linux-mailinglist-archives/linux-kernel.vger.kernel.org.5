@@ -2,164 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C05B7D024D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BB97D024E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346117AbjJSTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
+        id S1346282AbjJSTNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjJSTNZ (ORCPT
+        with ESMTP id S235525AbjJSTNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:13:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7269DBE;
-        Thu, 19 Oct 2023 12:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697742804; x=1729278804;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=ZJC8rrHuNIoci9DqC6b4f56zRDd7mS77CoHPmU6d+kw=;
-  b=NyQQOOCm6L9/FOsUvr94GOEt4eijupD5Qz4/Q5KOQIwVE2teaNw8uehr
-   3yEjfoMUFC4XLCdghiveQ2ak/8CzhOdKklNy87Go9FkPCktXbOGJNo5xY
-   RsFGnMPlkJ7+q3H6YsKIfsanig/QNqqKQ4E+1OJqgoEolvJ4wmMK7nf+i
-   LdRz8iLu7wdUHdjRuomFNaWe1HgaYfXWECu9g6UDuC2HGT5rcU+pQUz+S
-   dikobMGafKCUinaCe2Fo6+4tvlKQYXyYOWoQ/PF/qQev9bDMzm40UI0l9
-   BiU07ZcwbEJEHHHW+QVHufPhdmVINwKk0fdi0LjY1IhAc5cXnRozYywIs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383559824"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="383559824"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 12:13:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="1004344527"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="1004344527"
-Received: from nsuwanda-mobl.amr.corp.intel.com (HELO [10.212.222.219]) ([10.212.222.219])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 12:13:22 -0700
-Message-ID: <73b02835-dbd6-4662-91f9-e8324d8cbf98@intel.com>
-Date:   Thu, 19 Oct 2023 12:13:20 -0700
+        Thu, 19 Oct 2023 15:13:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD39612F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:13:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D90EC433C9;
+        Thu, 19 Oct 2023 19:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697742812;
+        bh=5F7c+DzCanWM1o7nYFlSHxiqjgCB/AjLW0NZA2IhjJY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=enwPwC3/4hZui2ZTsCDLnxyKtRklvlk24OSqeSoBlmtseWM0ceD8UcWuAwUDItyuM
+         mY5xydQ9c/1223PuR5i0V68flNoiHamBcyPtsMBl920HJDR8UdotdodRWX1Xh2Sh6G
+         puFnCMuHwO2ghC2f4tesX8kBXNX3Rza/Zfl8tJ2o881UgWYm4GrcxmaG+VFzFGW8bB
+         1xrK6WVyQ1uzkbo/8WGmqHD3NFPPOEh/ZucwLvEKmjGCNVqDcAvGgH6TzhlsmuS2AO
+         CeHGe65MY2sdNdMncFIB9wRxckR6h1xZ+v2vEuF3tOhSaf1haNndja1eYlWIJgxb1w
+         QMNu/oxarrrQA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CD87ACE0D14; Thu, 19 Oct 2023 12:13:31 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 12:13:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <4c7d06b9-8f5b-43ff-a2d6-86f54116da52@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <87ttrngmq0.ffs@tglx>
+ <87jzshhexi.ffs@tglx>
+ <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
+ <87pm1c3wbn.ffs@tglx>
+ <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
+ <8734y74g34.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/10] Handle set_memory_XXcrypted() errors
-Content-Language: en-US
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "elena.reshetova@intel.com" <elena.reshetova@intel.com>,
-        "isaku.yamahata@intel.com" <isaku.yamahata@intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
- <BYAPR21MB1688075D6262FAA18941E40AD7D4A@BYAPR21MB1688.namprd21.prod.outlook.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <BYAPR21MB1688075D6262FAA18941E40AD7D4A@BYAPR21MB1688.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8734y74g34.ffs@tglx>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/23 10:05, Michael Kelley (LINUX) wrote:
-> I'm more in favor of the "simply panic" approach.   What you've done
-> in your Patch 1 and Patch 2 is an intriguing way to try to get the memory
-> back into a consistent state.  But I'm concerned that there are failure
-> modes that make it less than 100% foolproof (more on that below).  If
-> we can't be sure that the memory is back in a consistent state, then the
-> original problem isn't fully solved.   I'm also not sure of the value of
-> investing effort to ensure that some errors cases are handled without
-> panic'ing.  The upside benefit of not panic'ing seems small compared to
-> the downside risk of leaking guest VM data to the host.
+Thomas!
 
-panic() should be a last resort.  We *always* continue unless we know
-that something is so bad that we're going to make things worse by
-continuing to run.
+On Thu, Oct 19, 2023 at 02:21:35AM +0200, Thomas Gleixner wrote:
+> Paul!
+> 
+> On Wed, Oct 18 2023 at 10:19, Paul E. McKenney wrote:
+> > On Wed, Oct 18, 2023 at 03:16:12PM +0200, Thomas Gleixner wrote:
+> >> On Tue, Oct 17 2023 at 18:03, Paul E. McKenney wrote:
+> >> > Belatedly calling out some RCU issues.  Nothing fatal, just a
+> >> > (surprisingly) few adjustments that will need to be made.  The key thing
+> >> > to note is that from RCU's viewpoint, with this change, all kernels
+> >> > are preemptible, though rcu_read_lock() readers remain
+> >> > non-preemptible.
+> >> 
+> >> Why? Either I'm confused or you or both of us :)
+> >
+> > Isn't rcu_read_lock() defined as preempt_disable() and rcu_read_unlock()
+> > as preempt_enable() in this approach?  I certainly hope so, as RCU
+> > priority boosting would be a most unwelcome addition to many datacenter
+> > workloads.
+> 
+> Sure, but that's an orthogonal problem, really.
 
-We shouldn't panic() on the first little thing that goes wrong.  If
-folks want *that*, then they can set panic_on_warn.
+Orthogonal, parallel, skew, whatever, it and its friends still need to
+be addressed.
 
-> My concern about Patches 1 and 2 is that the encryption bit in the PTE
-> is not a reliable indicator of the state that the host thinks the page is
-> in.  Changing the state requires two steps (in either order):  1) updating
-> the guest VM PTEs, and 2) updating the host's view of the page state.
-> Both steps may be done on a range of pages.  If #2 fails, the guest
-> doesn't know which pages in the batch were updated and which were
-> not, so the guest PTEs may not match the host state.  In such a case,
-> set_memory_encrypted() could succeed based on checking the
-> PTEs when in fact the host still thinks some of the pages are shared.
-> Such a mismatch will produce a guest panic later on if the page is
-> referenced.
+> >> With this approach the kernel is by definition fully preemptible, which
+> >> means means rcu_read_lock() is preemptible too. That's pretty much the
+> >> same situation as with PREEMPT_DYNAMIC.
+> >
+> > Please, just no!!!
+> >
+> > Please note that the current use of PREEMPT_DYNAMIC with preempt=none
+> > avoids preempting RCU read-side critical sections.  This means that the
+> > distro use of PREEMPT_DYNAMIC has most definitely *not* tested preemption
+> > of RCU readers in environments expecting no preemption.
+> 
+> It does not _avoid_ it, it simply _prevents_ it by not preempting in
+> preempt_enable() and on return from interrupt so whatever sets
+> NEED_RESCHED has to wait for a voluntary invocation of schedule(),
+> cond_resched() or return to user space.
 
-I think that's OK.  In the end, the page state is controlled by the VMM.
- The guest has zero control.  All it can do is make the PTEs consistent
-and hold on for dear life.  That's a general statement and not specific
-to this problem.
+A distinction without a difference.  ;-)
 
-In other words, it's fine for CoCo folks to be paranoid.  It's fine for
-them to set panic_on_{warn,oops,whatever}=1.  But it's *NOT* fine to say
-that every TDX guest will want to do that.
+> But under the hood RCU is fully preemptible and the boosting logic is
+> active, but it does not have an effect until one of those preemption
+> points is reached, which makes the boosting moot.
+
+And for many distros, this appears to be just fine, not that I personally
+know of anyone running large numbers of systems in production with
+kernels built with CONFIG_PREEMPT_DYNAMIC=y and booted with preempt=none.
+And let's face it, if you want exactly the same binary to support both
+modes, you are stuck with the fully-preemptible implementation of RCU.
+But we should not make a virtue of such a distro's necessity.
+
+And some of us are not afraid to build our own kernels, which allows
+us to completely avoid the added code required to make RCU read-side
+critical sections be preemptible.
+
+> >> For throughput sake this fully preemptible kernel provides a mechanism
+> >> to delay preemption for SCHED_OTHER tasks, i.e. instead of setting
+> >> NEED_RESCHED the scheduler sets NEED_RESCHED_LAZY.
+> >> 
+> >> That means the preemption points in preempt_enable() and return from
+> >> interrupt to kernel will not see NEED_RESCHED and the tasks can run to
+> >> completion either to the point where they call schedule() or when they
+> >> return to user space. That's pretty much what PREEMPT_NONE does today.
+> >> 
+> >> The difference to NONE/VOLUNTARY is that the explicit cond_resched()
+> >> points are not longer required because the scheduler can preempt the
+> >> long running task by setting NEED_RESCHED instead.
+> >> 
+> >> That preemption might be suboptimal in some cases compared to
+> >> cond_resched(), but from my initial experimentation that's not really an
+> >> issue.
+> >
+> > I am not (repeat NOT) arguing for keeping cond_resched().  I am instead
+> > arguing that the less-preemptible variants of the kernel should continue
+> > to avoid preempting RCU read-side critical sections.
+> 
+> That's the whole point of the lazy mechanism:
+> 
+>    It avoids (repeat AVOIDS) preemption of any kernel code as much as it
+>    can by _not_ setting NEED_RESCHED.
+> 
+>    The only difference is that it does not _prevent_ it like
+>    preempt=none does. It will preempt when NEED_RESCHED is set.
+> 
+> Now the question is when will NEED_RESCHED be set?
+> 
+>    1) If the preempting task belongs to a scheduling class above
+>       SCHED_OTHER
+> 
+>       This is a PoC implementation detail. The lazy mechanism can be
+>       extended to any other scheduling class w/o a big effort.
+> 
+>       I deliberately did not do that because:
+> 
+>         A) I'm lazy
+> 
+>         B) More importantly I wanted to demonstrate that as long as
+>            there are only SCHED_OTHER tasks involved there is no forced
+>            (via NEED_RESCHED) preemption unless the to be preempted task
+>            ignores the lazy resched request, which proves that
+>            cond_resched() can be avoided.
+> 
+>            At the same time such a kernel allows a RT task to preempt at
+>            any time.
+> 
+>    2) If the to be preempted task does not react within a certain time
+>       frame (I used a full tick in my PoC) on the NEED_RESCHED_LAZY
+>       request, which is the prerequisite to get rid of cond_resched()
+>       and related muck.
+> 
+>       That's obviously mandatory for getting rid of cond_resched() and
+>       related muck, no?
+
+Keeping firmly in mind that there are no cond_resched() calls within RCU
+read-side critical sections, sure.  Or, if you prefer, any such calls
+are bugs.  And agreed, outside of atomic contexts (in my specific case,
+including RCU readers), there does eventually need to be a preemption.
+
+> I concede that there are a lot of details to be discussed before we get
+> there, but I don't see a real show stopper yet.
+
+Which is what I have been saying as well, at least as long as we can
+have a way of building a kernel with a non-preemptible build of RCU.
+And not just a preemptible RCU in which the scheduler (sometimes?)
+refrains from preempting the RCU read-side critical sections, but
+really only having the CONFIG_PREEMPT_RCU=n code built.
+
+Give or take the needs of the KLP guys, but again, I must defer to
+them.
+
+> The important point is that the details are basically boiling down to
+> policy decisions in the scheduler which are aided by hints from the
+> programmer.
+> 
+> As I said before we might end up with something like
+> 
+>    preempt_me_not_if_not_absolutely_required();
+>    ....
+>    preempt_me_I_dont_care();
+> 
+> (+/- name bike shedding) to give the scheduler a better understanding of
+> the context.
+> 
+> Something like that has distinct advantages over the current situation
+> with all the cond_resched() muck:
+> 
+>   1) It is clearly scope based
+> 
+>   2) It is properly nesting
+> 
+>   3) It can be easily made implicit for existing scope constructs like
+>      rcu_read_lock/unlock() or regular locking mechanisms.
+
+You know, I was on board with throwing cond_resched() overboard (again,
+give or take whatever KLP might need) when I first read of this in that
+LWN article.  You therefore cannot possibly gain anything by continuing
+to sell it to me, and, worse yet, you might provoke an heretofore-innocent
+bystander into pushing some bogus but convincing argument against.  ;-)
+
+Yes, there are risks due to additional state space exposed by the
+additional preemption.  However, at least some of this is already covered
+by quite a few people running preemptible kernels.  There will be some
+not covered, given our sensitivity to low-probability bugs, but there
+should also be some improvements in tail latency.  The process of getting
+the first cond_resched()-free kernel deployed will therefore likely be
+a bit painful, but overall the gains should be worth the pain.
+
+> The important point is that at the very end the scheduler has the
+> ultimate power to say: "Not longer Mr. Nice Guy" without the risk of any
+> random damage due to the fact that preemption count is functional, which
+> makes your life easier as well as you admitted already. But that does
+> not mean you can eat the cake and still have it. :)
+
+Which is exactly why I need rcu_read_lock() to map to preempt_disable()
+and rcu_read_unlock() to preempt_enable().  ;-)
+
+> That said, I completely understand your worries about the consequences,
+> but please take the step back and look at it from a conceptual point of
+> view.
+
+Conceptual point of view?  That sounds suspiciously academic.  Who are
+you and what did you do with the real Thomas Gleixner?  ;-)
+
+But yes, consequences are extremely important, as always.
+
+> The goal is to replace the hard coded (Kconfig or DYNAMIC) policy
+> mechanisms with a flexible scheduler controlled policy mechanism.
+
+Are you saying that CONFIG_PREEMPT_RT will also be selected at boot time
+and/or via debugfs?
+
+> That allows you to focus on one consolidated model and optimize that
+> for particular policy scenarios instead of dealing with optimizing the
+> hell out of hardcoded policies which force you to come up with
+> horrible workaround for each of them.
+> 
+> Of course the policies have to be defined (scheduling classes affected
+> depending on model, hint/annotation meaning etc.), but that's way more
+> palatable than what we have now. Let me give you a simple example:
+> 
+>   Right now the only way out on preempt=none when a rogue code path
+>   which lacks a cond_resched() fails to release the CPU is a big fat
+>   stall splat and a hosed machine.
+> 
+>   I rather prefer to have the fully controlled hammer ready which keeps
+>   the machine usable and the situation debuggable.
+> 
+>   You still can yell in dmesg, but that again is a flexible policy
+>   decision and not hard coded by any means.
+
+And I have agreed from my first read of that LWN article that allowing
+preemption of code where preempt_count()=0 is a good thing.
+
+The only thing that I am pushing back on is specifially your wish to
+always be running the CONFIG_PREEMPT_RCU=y RCU code.  Yes, that is what
+single-binary distros will do, just as they do now.  But again, some of
+us are happy to build our own kernels.
+
+There might be other things that I should be pushing back on, but that
+is all that I am aware of right now.  ;-)
+
+> >> > 3.	For nohz_full CPUs that run for a long time in the kernel,
+> >> > 	there are no scheduling-clock interrupts.  RCU reaches for
+> >> > 	the resched_cpu() hammer a few jiffies into the grace period.
+> >> > 	And it sets the ->rcu_urgent_qs flag so that the holdout CPU's
+> >> > 	interrupt-entry code will re-enable its scheduling-clock interrupt
+> >> > 	upon receiving the resched_cpu() IPI.
+> >> 
+> >> You can spare the IPI by setting NEED_RESCHED on the remote CPU which
+> >> will cause it to preempt.
+> >
+> > That is not sufficient for nohz_full CPUs executing in userspace,
+> 
+> That's not what I was talking about. You said:
+> 
+> >> > 3.	For nohz_full CPUs that run for a long time in the kernel,
+>                                                            ^^^^^^
+> Duh! I did not realize that you meant user space. For user space there
+> is zero difference to the current situation. Once the task is out in
+> user space it's out of RCU side critical sections, so that's obiously
+> not a problem.
+> 
+> As I said: I might be confused. :)
+
+And I might well also be confused.  Here is my view for nohz_full CPUs:
+
+o	Running in userspace.  RCU will ignore them without disturbing
+	the CPU, courtesy of context tracking.  As you say, there is
+	no way (absent extremely strange sidechannel attacks) to
+	have a kernel RCU read-side critical section here.
+
+	These CPUs will ignore NEED_RESCHED until they exit usermode
+	one way or another.  This exit will usually be supplied by
+	the scheduler's wakeup IPI for the newly awakened task.
+
+	But just setting NEED_RESCHED without otherwise getting the
+	CPU's full attention won't have any effect.
+
+o	Running in the kernel entry/exit code.	RCU will ignore them
+	without disturbing the CPU, courtesy of context tracking.
+	Unlike usermode, you can type rcu_read_lock(), but if you do,
+	lockdep will complain bitterly.
+
+	Assuming the time in the kernel is sharply bounded, as it
+	usually will be, these CPUs will respond to NEED_RESCHED in a
+	timely manner.	For longer times in the kernel, please see below.
+
+o	Running in the kernel in deep idle, that is, where RCU is not
+	watching.  RCU will ignore them without disturbing the CPU,
+	courtesy of context tracking.  As with the entry/exit code,
+	you can type rcu_read_lock(), but if you do, lockdep will
+	complain bitterly.
+
+	The exact response to NEED_RESCHED depends on the type of idle
+	loop, with (as I understand it) polling idle loops responding
+	quickly and other idle loops needing some event to wake up
+	the CPU.  This event is typically an IPI, as is the case when
+	the scheduler wakes up a task on the CPU in question.
+
+o	Running in other parts of the kernel, but with scheduling
+	clock interrupt enabled.  The next scheduling clock interrupt
+	will take care of both RCU and NEED_RESCHED.  Give or take
+	policy decisions, as you say above.
+
+o	Running in other parts of the kernel, but with scheduling clock
+	interrupt disabled.  If there is a grace period waiting on this
+	CPU, RCU will eventually set a flag and invoke resched_cpu(),
+	which will get the CPU's attention via an IPI and will also turn
+	the scheduling clock interrupt back on.
+
+	I believe that a wakeup from the scheduler has the same effect,
+	and that it uses an IPI to get the CPU's attention when needed,
+	but it has been one good long time since I traced out all the
+	details.
+
+	However, given that there is to be no cond_resched(), setting
+	NEED_RESCHED without doing something like an IPI to get that
+	CPU's attention will still not be guarantee to have any effect,
+	just as with the nohz_full CPU executing in userspace, correct?
+
+Did I miss anything?
+
+> >> In the end there is no CONFIG_PREEMPT_XXX anymore. The only knob
+> >> remaining would be CONFIG_PREEMPT_RT, which should be renamed to
+> >> CONFIG_RT or such as it does not really change the preemption
+> >> model itself. RT just reduces the preemption disabled sections with the
+> >> lock conversions, forced interrupt threading and some more.
+> >
+> > Again, please, no.
+> >
+> > There are situations where we still need rcu_read_lock() and
+> > rcu_read_unlock() to be preempt_disable() and preempt_enable(),
+> > repectively.  Those can be cases selected only by Kconfig option, not
+> > available in kernels compiled with CONFIG_PREEMPT_DYNAMIC=y.
+> 
+> Why are you so fixated on making everything hardcoded instead of making
+> it a proper policy decision problem. See above.
+
+Because I am one of the people who will bear the consequences.
+
+In that same vein, why are you so opposed to continuing to provide
+the ability to build a kernel with CONFIG_PREEMPT_RCU=n?  This code
+is already in place, is extremely well tested, and you need to handle
+preempt_disable()/preeempt_enable() regions of code in any case.  What is
+the real problem here?
+
+> >> > 8.	As has been noted elsewhere, in this new limited-preemption
+> >> > 	mode of operation, rcu_read_lock() readers remain preemptible.
+> >> > 	This means that most of the CONFIG_PREEMPT_RCU #ifdefs remain.
+> >> 
+> >> Why? You fundamentally have a preemptible kernel with PREEMPT_RCU, no?
+> >
+> > That is in fact the problem.  Preemption can be good, but it is possible
+> > to have too much of a good thing, and preemptible RCU read-side critical
+> > sections definitely is in that category for some important workloads. ;-)
+> 
+> See above.
+> 
+> >> > 10.	The cond_resched_rcu() function must remain because we still
+> >> > 	have non-preemptible rcu_read_lock() readers.
+> >> 
+> >> Where?
+> >
+> > In datacenters.
+> 
+> See above.
+> 
+> >> > 14.	The kernel/trace/trace_osnoise.c file's run_osnoise() function
+> >> > 	might need to do something for non-preemptible RCU to make
+> >> > 	up for the lack of cond_resched() calls.  Maybe just drop the
+> >> > 	"IS_ENABLED()" and execute the body of the current "if" statement
+> >> > 	unconditionally.
+> >> 
+> >> Again. There is no non-preemtible RCU with this model, unless I'm
+> >> missing something important here.
+> >
+> > And again, there needs to be non-preemptible RCU with this model.
+> 
+> See above.
+
+And back at you with all three instances of "See above".  ;-)
+
+							Thanx, Paul
