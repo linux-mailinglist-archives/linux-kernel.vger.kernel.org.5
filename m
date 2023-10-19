@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5B07D01D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3907D01DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346411AbjJSShc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
+        id S1346488AbjJSShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbjJSSh1 (ORCPT
+        with ESMTP id S235524AbjJSSh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:37:27 -0400
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860BA18D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:20 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so2367510a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:20 -0700 (PDT)
+        Thu, 19 Oct 2023 14:37:28 -0400
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A0FBE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:23 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so10484176e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740639; x=1698345439;
+        d=1e100.net; s=20230601; t=1697740641; x=1698345441;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XkoW5aQMoYpr1B6dX9DBsDIJXLRfmJm42oJji+E7lfc=;
-        b=N/zvqnKYWPT6hhX1sOlKfRabMBJVh0z8pLvjfntHrsnpzLL+DquQQmxgMSZiE0YCA5
-         p8Mj24uZmjri617k3CEde8P1dTk8j0qQsKXNFXrApDfDWT42JSHrDI6bT6XtHu76CVdi
-         GANLGFlM36aotG8mAJJuO2o0PeeiFWwsbqJkZUu+yWa3fL42T9WlkJmukebd/KwQRiDU
-         rmE56xcTsxgu8R4nVRaAYMNrZ3Ms0u6w0l/ZwDEek4Mrr3wOMG/UqQUKuOpufP8HcFhh
-         qIIPcTjA6PpVxB0uYmMbuY+e5v8sHNog+BnORpcfD66jExYAB4sHy6JWi4D9b8wjgt/X
-         V6fg==
-X-Gm-Message-State: AOJu0YzmcnIG4epP9cqZSOJo5TypIw/aEcOZ3LlH+ongFStGpLwUySjp
-        4g9pRgYhH2gi9taqoHsa5Co=
-X-Google-Smtp-Source: AGHT+IGZOnsQhJVuyPDMimbttYyYi4HGjt5UNBosM+BByJ70RMmM0ysu7XDhc7WiF/KMLTwGC5bVkA==
-X-Received: by 2002:a17:907:c205:b0:9ae:50ec:bd81 with SMTP id ti5-20020a170907c20500b009ae50ecbd81mr2258719ejc.21.1697740638313;
-        Thu, 19 Oct 2023 11:37:18 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-004.fbsv.net. [2a03:2880:31ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id c21-20020a50d655000000b00537963f692esm81680edj.0.2023.10.19.11.37.17
+        bh=Tdae9eZ6qccJdF0xGoTmxbAj070PFYdjsCv8qfK3SD8=;
+        b=t0npU7F9K78ZJQ8rVQu08M3XW0WkAYXpSeKN8yCuURmvj6oecg3d6DVHSQjKoF8UHu
+         Wn5TqevRL9vhR6wMI3ydB+1XgBgrw7JQZJhxKXoW6eBw82fRVAc7+w559MuGEc+teU/O
+         BfMHXHQ26HyJA8UbcitB5W81cZroP+OmVhz3eKHbff6133SprSkmEm77WofvZ6d3v5XN
+         ke7lErT5Q3dMsI11hPT+DIBnH2/lQuW+hQo4SkA23rBAUszyYG7aq8Hgcxwh/0v+Fod7
+         mOXpujxDb8HUO9zlDfbyKvzkDUL9btUQ+JGF3SQuuB8CPtAutlU9y2qg/2iR2ywGwkoD
+         V+6g==
+X-Gm-Message-State: AOJu0Yx2zUVz8aQ5nMeDWPzfwOJGPTy/o+d5N/T0fddWIQLKf41AOsxE
+        O8uvCeklb4wC3oEiOpr7vCY=
+X-Google-Smtp-Source: AGHT+IF5zteU2gYurAm3uoewqM5ZRAaG5X9F//7ikJUtqpyEniJ5r1l7zuTcRVbqlIf6dAF8u6G/wg==
+X-Received: by 2002:a05:6512:479:b0:503:1bb0:a658 with SMTP id x25-20020a056512047900b005031bb0a658mr1938796lfd.32.1697740640921;
+        Thu, 19 Oct 2023 11:37:20 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
+        by smtp.gmail.com with ESMTPSA id bx14-20020a0564020b4e00b0052ff9bae873sm66588edb.5.2023.10.19.11.37.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:37:17 -0700 (PDT)
+        Thu, 19 Oct 2023 11:37:20 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
         bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Cc:     leit@meta.com, Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Alexey Kardashevskiy <aik@amd.com>,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     leit@meta.com,
         linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
         64-BIT))
-Subject: [PATCH v5 07/12] x86/bugs: Rename CPU_UNRET_ENTRY to MITIGATION_UNRET_ENTRY
-Date:   Thu, 19 Oct 2023 11:11:53 -0700
-Message-Id: <20231019181158.1982205-8-leitao@debian.org>
+Subject: [PATCH v5 08/12] x86/bugs: Rename CPU_IBRS_ENTRY to MITIGATION_IBRS_ENTRY
+Date:   Thu, 19 Oct 2023 11:11:54 -0700
+Message-Id: <20231019181158.1982205-9-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
 References: <20231019181158.1982205-1-leitao@debian.org>
@@ -86,208 +74,73 @@ namespace.
 The mitigation options should have consistency and start with
 MITIGATION.
 
-Rename the Kconfig entry from CPU_UNRET_ENTRY to MITIGATION_UNRET_ENTRY.
+Rename the Kconfig entry from CPU_IBRS_ENTRY to MITIGATION_IBRS_ENTRY.
 
 Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- arch/x86/Kconfig                               |  2 +-
- arch/x86/include/asm/disabled-features.h       |  2 +-
- arch/x86/include/asm/nospec-branch.h           |  6 +++---
- arch/x86/kernel/cpu/amd.c                      |  2 +-
- arch/x86/kernel/cpu/bugs.c                     |  6 +++---
- arch/x86/kernel/vmlinux.lds.S                  |  2 +-
- arch/x86/lib/retpoline.S                       | 10 +++++-----
- include/linux/objtool.h                        |  2 +-
- scripts/Makefile.vmlinux_o                     |  2 +-
- tools/arch/x86/include/asm/disabled-features.h |  2 +-
- 10 files changed, 18 insertions(+), 18 deletions(-)
+ arch/x86/Kconfig           | 2 +-
+ arch/x86/entry/calling.h   | 4 ++--
+ arch/x86/kernel/cpu/bugs.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 9dd2fb555973..0e4c0c5c4818 100644
+index 0e4c0c5c4818..c53d2034a5ab 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -2495,7 +2495,7 @@ config RETHUNK
- 	  Requires a compiler with -mfunction-return=thunk-extern
- 	  support for full protection. The kernel may run slower.
+@@ -2540,7 +2540,7 @@ config MITIGATION_IBPB_ENTRY
+ 	help
+ 	  Compile the kernel with support for the retbleed=ibpb mitigation.
  
--config CPU_UNRET_ENTRY
-+config MITIGATION_UNRET_ENTRY
- 	bool "Enable UNRET on kernel entry"
- 	depends on CPU_SUP_AMD && RETHUNK && X86_64
+-config CPU_IBRS_ENTRY
++config MITIGATION_IBRS_ENTRY
+ 	bool "Enable IBRS on kernel entry"
+ 	depends on CPU_SUP_INTEL && X86_64
  	default y
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index 24e4010c33b6..151f0d50e7e0 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -63,7 +63,7 @@
- # define DISABLE_RETHUNK	(1 << (X86_FEATURE_RETHUNK & 31))
- #endif
- 
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- # define DISABLE_UNRET		0
- #else
- # define DISABLE_UNRET		(1 << (X86_FEATURE_UNRET & 31))
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index cab7c937c71b..e25e98f012a3 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -212,7 +212,7 @@
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index ace89d5c1ddd..2afdff42c107 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -297,7 +297,7 @@ For 32-bit we have the following conventions - kernel is built with
+  * Assumes x86_spec_ctrl_{base,current} to have SPEC_CTRL_IBRS set.
   */
- .macro VALIDATE_UNRET_END
- #if defined(CONFIG_NOINSTR_VALIDATION) && \
--	(defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
-+	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
- 	ANNOTATE_RETPOLINE_SAFE
- 	nop
- #endif
-@@ -271,7 +271,7 @@
- .Lskip_rsb_\@:
- .endm
+ .macro IBRS_ENTER save_reg
+-#ifdef CONFIG_CPU_IBRS_ENTRY
++#ifdef CONFIG_MITIGATION_IBRS_ENTRY
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_KERNEL_IBRS
+ 	movl	$MSR_IA32_SPEC_CTRL, %ecx
  
--#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
-+#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
- #define CALL_UNTRAIN_RET	"call entry_untrain_ret"
- #else
- #define CALL_UNTRAIN_RET	""
-@@ -334,7 +334,7 @@ extern void __x86_return_thunk(void);
- static inline void __x86_return_thunk(void) {}
- #endif
+@@ -326,7 +326,7 @@ For 32-bit we have the following conventions - kernel is built with
+  * regs. Must be called after the last RET.
+  */
+ .macro IBRS_EXIT save_reg
+-#ifdef CONFIG_CPU_IBRS_ENTRY
++#ifdef CONFIG_MITIGATION_IBRS_ENTRY
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_KERNEL_IBRS
+ 	movl	$MSR_IA32_SPEC_CTRL, %ecx
  
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- extern void retbleed_return_thunk(void);
- #else
- static inline void retbleed_return_thunk(void) {}
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index a8e042a685ba..0cf52efc7617 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -943,7 +943,7 @@ static void init_amd_bd(struct cpuinfo_x86 *c)
- 
- void init_spectral_chicken(struct cpuinfo_x86 *c)
- {
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- 	u64 value;
- 
- 	/*
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index fc46fd6447f9..2580368c32d1 100644
+index 2580368c32d1..e11bacbd8f39 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -982,10 +982,10 @@ static void __init retbleed_select_mitigation(void)
- 		return;
+@@ -1439,7 +1439,7 @@ static enum spectre_v2_mitigation_cmd __init spectre_v2_parse_cmdline(void)
+ 		return SPECTRE_V2_CMD_AUTO;
+ 	}
  
- 	case RETBLEED_CMD_UNRET:
--		if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY)) {
-+		if (IS_ENABLED(CONFIG_MITIGATION_UNRET_ENTRY)) {
- 			retbleed_mitigation = RETBLEED_MITIGATION_UNRET;
- 		} else {
--			pr_err("WARNING: kernel not compiled with CPU_UNRET_ENTRY.\n");
-+			pr_err("WARNING: kernel not compiled with MITIGATION_UNRET_ENTRY.\n");
- 			goto do_cmd_auto;
+-	if (cmd == SPECTRE_V2_CMD_IBRS && !IS_ENABLED(CONFIG_CPU_IBRS_ENTRY)) {
++	if (cmd == SPECTRE_V2_CMD_IBRS && !IS_ENABLED(CONFIG_MITIGATION_IBRS_ENTRY)) {
+ 		pr_err("%s selected but not compiled in. Switching to AUTO select\n",
+ 		       mitigation_options[i].option);
+ 		return SPECTRE_V2_CMD_AUTO;
+@@ -1565,7 +1565,7 @@ static void __init spectre_v2_select_mitigation(void)
+ 			break;
  		}
- 		break;
-@@ -1021,7 +1021,7 @@ static void __init retbleed_select_mitigation(void)
- 	case RETBLEED_CMD_AUTO:
- 		if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
- 		    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
--			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY))
-+			if (IS_ENABLED(CONFIG_MITIGATION_UNRET_ENTRY))
- 				retbleed_mitigation = RETBLEED_MITIGATION_UNRET;
- 			else if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY) &&
- 				 boot_cpu_has(X86_FEATURE_IBPB))
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 68654303c98e..f5ee96a7bdd6 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -514,7 +514,7 @@ INIT_PER_CPU(irq_stack_backing_store);
-            "fixed_percpu_data is not at start of per-cpu area");
- #endif
  
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- . = ASSERT((retbleed_return_thunk & 0x3f) == 0, "retbleed_return_thunk not cacheline-aligned");
- #endif
- 
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 910fd231b7d2..03a065ef57ae 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -221,7 +221,7 @@ SYM_CODE_END(srso_return_thunk)
- #define JMP_SRSO_ALIAS_UNTRAIN_RET "ud2"
- #endif /* CONFIG_CPU_SRSO */
- 
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- 
- /*
-  * Some generic notes on the untraining sequences:
-@@ -303,11 +303,11 @@ SYM_CODE_END(retbleed_return_thunk)
- SYM_FUNC_END(retbleed_untrain_ret)
- 
- #define JMP_RETBLEED_UNTRAIN_RET "jmp retbleed_untrain_ret"
--#else /* !CONFIG_CPU_UNRET_ENTRY */
-+#else /* !CONFIG_MITIGATION_UNRET_ENTRY */
- #define JMP_RETBLEED_UNTRAIN_RET "ud2"
--#endif /* CONFIG_CPU_UNRET_ENTRY */
-+#endif /* CONFIG_MITIGATION_UNRET_ENTRY */
- 
--#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
-+#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
- 
- SYM_FUNC_START(entry_untrain_ret)
- 	ALTERNATIVE_2 JMP_RETBLEED_UNTRAIN_RET,				\
-@@ -316,7 +316,7 @@ SYM_FUNC_START(entry_untrain_ret)
- SYM_FUNC_END(entry_untrain_ret)
- __EXPORT_THUNK(entry_untrain_ret)
- 
--#endif /* CONFIG_CPU_UNRET_ENTRY || CONFIG_CPU_SRSO */
-+#endif /* CONFIG_MITIGATION_UNRET_ENTRY || CONFIG_CPU_SRSO */
- 
- #ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
- 
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 33212e93f4a6..d030671a4c49 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -131,7 +131,7 @@
-  */
- .macro VALIDATE_UNRET_BEGIN
- #if defined(CONFIG_NOINSTR_VALIDATION) && \
--	(defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
-+	(defined(CONFIG_MITIGATION_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
- .Lhere_\@:
- 	.pushsection .discard.validate_unret
- 	.long	.Lhere_\@ - .
-diff --git a/scripts/Makefile.vmlinux_o b/scripts/Makefile.vmlinux_o
-index 25b3b587d37c..6277dbd730bb 100644
---- a/scripts/Makefile.vmlinux_o
-+++ b/scripts/Makefile.vmlinux_o
-@@ -38,7 +38,7 @@ objtool-enabled := $(or $(delay-objtool),$(CONFIG_NOINSTR_VALIDATION))
- vmlinux-objtool-args-$(delay-objtool)			+= $(objtool-args-y)
- vmlinux-objtool-args-$(CONFIG_GCOV_KERNEL)		+= --no-unreachable
- vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr \
--							   $(if $(or $(CONFIG_CPU_UNRET_ENTRY),$(CONFIG_CPU_SRSO)), --unret)
-+							   $(if $(or $(CONFIG_MITIGATION_UNRET_ENTRY),$(CONFIG_CPU_SRSO)), --unret)
- 
- objtool-args = $(vmlinux-objtool-args-y) --link
- 
-diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
-index d05158d8fe5f..4b816f55c634 100644
---- a/tools/arch/x86/include/asm/disabled-features.h
-+++ b/tools/arch/x86/include/asm/disabled-features.h
-@@ -63,7 +63,7 @@
- # define DISABLE_RETHUNK	(1 << (X86_FEATURE_RETHUNK & 31))
- #endif
- 
--#ifdef CONFIG_CPU_UNRET_ENTRY
-+#ifdef CONFIG_MITIGATION_UNRET_ENTRY
- # define DISABLE_UNRET		0
- #else
- # define DISABLE_UNRET		(1 << (X86_FEATURE_UNRET & 31))
+-		if (IS_ENABLED(CONFIG_CPU_IBRS_ENTRY) &&
++		if (IS_ENABLED(CONFIG_MITIGATION_IBRS_ENTRY) &&
+ 		    boot_cpu_has_bug(X86_BUG_RETBLEED) &&
+ 		    retbleed_cmd != RETBLEED_CMD_OFF &&
+ 		    retbleed_cmd != RETBLEED_CMD_STUFF &&
 -- 
 2.34.1
 
