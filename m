@@ -2,182 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A287D0499
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB347D049F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346621AbjJSWBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        id S1346639AbjJSWCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345256AbjJSWBh (ORCPT
+        with ESMTP id S1345256AbjJSWCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:01:37 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69BC112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:01:34 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507cee17b00so178601e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:01:34 -0700 (PDT)
+        Thu, 19 Oct 2023 18:02:31 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91C811D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9e95aa02dso1738845ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1697752893; x=1698357693; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RVH7g5Xn7KERhNbwCPYA3chPVbA58wuAlRpGYKpj+Ag=;
-        b=dM8DfLrQRsUlwILnQznK2dZd+bBw2FtHHDC/J5Pc/0SXxpdv2h0eg/Z0buMdSSyCz4
-         KxUSKjsXNFqOJ6JAAvwwIueelMMRmunjcM1WEUGyHOzWsotdopnCl45VXg8gPv9lsKts
-         DicbsMGt/obSa6o/vpKZ5du0KSqpzFY/1ruetv4sJX7Z1iiNAzbOhn5NWb7Kf85mZjpV
-         CTTFFBSBYgsoe691WM8H+0fKS+IHoiAZOg3KY6uoRCvCo5uQ6g4NNz9OOqGtZu0nUTaD
-         3iO6BsvlkQScJkbch9ec8sBvPdwM+xziFmDsX/1ZhYH9h7eCmIejZiJ7AeS03JbChj/v
-         VeKQ==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1697752948; x=1698357748; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tePTsAOLSKNkXxpi1DoTK7cPVwy/xFqcvNRJj1WQpQs=;
+        b=I0FNLpiU18se5kvNpe4QsjdhDDpne6tx46CXgQ76T5B2wlf12GH1YZMjxpUMtfLWYX
+         qgSirZkSkj10KFyCfsXs1vXvds4xh1Ucxeqh2H19RwtzVczGaDnC6T3Vc33wvmhNlZ27
+         UY4sHSnzATCZEPcg1FjxOGBGtVEk5r62s9LirQA5Y2Zd5kwRGT4akBIC42ekdXJyMQyu
+         sqINhf09Ih4aWfm/GvKWf6S1vxX/phB/2Kp69/+BtDtrpg9KhMsoMg6zyjgLnRVpN6CW
+         iMqsv0fgud+703tXf+ZlRfVmSKYmsCqautcJvdHtaqYO6n7wXPGzrS6tTMpM7LAMtNkH
+         ADVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697752893; x=1698357693;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVH7g5Xn7KERhNbwCPYA3chPVbA58wuAlRpGYKpj+Ag=;
-        b=QcKHPxEaacpvbiagQ3zsaraOUDpTgh75Md9yeis3OI5sVSAz1edkT384i9fVy9xSNc
-         tKbFhcu3TMZ/VHwcS36yOvI76g5nnCfGCO+wDhmtTEbg6eiAWLVWP5lWM3lfeoNomNpK
-         FvoszyaunofyCxFtNQNLGscW5zRMud8CsaS1gWXLRAU55e8G5WSLOINPwcbKlUupj3w9
-         qajLyXiuduHUw+AZ2ufyYfz10LxcXU2rd+I7Q2i+7ESoITncS89myJ6rEgLYK+AjIX6i
-         HIuVMBG+AebYQRCreExtoAgQZFAmc3DI6Usei9eXeavFNO2i9yUBFnSQ2FeoNqLjjVHP
-         LhKA==
-X-Gm-Message-State: AOJu0Yx5ZV0wDpOqzbKHzOJVNzp2XXck/455FI0aztqmDxbngmF8G/LD
-        Fnb1+HkUf7vZ4sNiPTaUpiUBgQ==
-X-Google-Smtp-Source: AGHT+IGr1MrtHZ96/nhgRMar71OOUSfXGMOyZYoXUPX+20SnusubhbiGhasbj3+M0aAya7InYsY03A==
-X-Received: by 2002:ac2:488e:0:b0:503:b65:5d95 with SMTP id x14-20020ac2488e000000b005030b655d95mr5431lfc.6.1697752892966;
-        Thu, 19 Oct 2023 15:01:32 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:a8cd:a90a:ba21:5ae1? ([2a02:8011:e80c:0:a8cd:a90a:ba21:5ae1])
-        by smtp.gmail.com with ESMTPSA id g11-20020adffc8b000000b0032dc24ae625sm289631wrr.12.2023.10.19.15.01.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 15:01:32 -0700 (PDT)
-Message-ID: <d1fa32d7-4b1a-4451-b717-e91f75f3c322@isovalent.com>
-Date:   Thu, 19 Oct 2023 23:01:30 +0100
+        d=1e100.net; s=20230601; t=1697752948; x=1698357748;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tePTsAOLSKNkXxpi1DoTK7cPVwy/xFqcvNRJj1WQpQs=;
+        b=IT4OJyZ4LNC90z+x3kLjBq+49mWEsKYGlwCWMK570PgeEBHRWifUrdv3MH+4dNrJN2
+         y0c2eyjUel/yIgRkuO2QsYmLTCjdoF395zlWFp6sFF1eZRhuwFeB9J8W5X+DGwH/O519
+         eVAfvUpD6na706aE6AWHvsrQoa9gntzUgKs6fC0vEawSlVW+rRPnwn847HpoLeZEW2W+
+         HQyYEPJZ3b5qXM38b6unyX+cniHhWjudEe3R++Np9LtBXzoOFATiJ8lrS7pdRKepgBIs
+         9q8hZQh877lwCr4IQC3eCwE/eIQR0gY3t0TyZnjqDkcvQ/UHZs1tIevSr3RkE+/6/4MG
+         YEWA==
+X-Gm-Message-State: AOJu0YzlgZoXWYAVIIXf1FHfkRtI9L0euGtiSK/i/FG3Zs1X23/sWRmE
+        tcXkNttazNFeImvt+YKaR99o8w==
+X-Google-Smtp-Source: AGHT+IGofu+MJKzCHfasjwiDGYCbXyVv9CGGJQIOinf95G43x5bHvvDHOMSsorB5TbxulBM699MT1g==
+X-Received: by 2002:a17:903:2447:b0:1c5:ecfc:2650 with SMTP id l7-20020a170903244700b001c5ecfc2650mr4379861pls.14.1697752948177;
+        Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm190994plb.180.2023.10.19.15.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 15:02:27 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qtb60-001JiA-2E;
+        Fri, 20 Oct 2023 09:02:24 +1100
+Date:   Fri, 20 Oct 2023 09:02:24 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZTGncMVw19QVJzI6@dread.disaster.area>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+ <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+ <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+ <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+ <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+ <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+ <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+ <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] tools build: Fix llvm feature detection, still used
- by bpftool
-Content-Language: en-GB
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, Manu Bretelle <chantr4@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        He Kuang <hekuang@huawei.com>, Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-References: <ZTGc8S293uaTqHja@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <ZTGc8S293uaTqHja@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 22:17, Arnaldo Carvalho de Melo wrote:
-> When removing the BPF event for perf a feature test that checks if the
-> llvm devel files are availabe was removed but that is also used by
-> bpftool.
+On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
+> On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > > Back to your earlier point though:
+> > > 
+> > > Is a global offset really a non-starter? I can see about doing something
+> > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
+> > > as ktime_get_coarse_ts64. I don't see the downside there for the non-
+> > > multigrain filesystems to call that.
+> > 
+> > I have to say that this doesn't excite me. This whole thing feels a bit
+> > hackish. I think that a change version is the way more sane way to go.
+> > 
 > 
-> bpftool uses it to decide what kind of disassembly it will use: llvm or
-> binutils based.
+> What is it about this set that feels so much more hackish to you? Most
+> of this set is pretty similar to what we had to revert. Is it just the
+> timekeeper changes? Why do you feel those are a problem?
 > 
-> Removing the tools/build/feature/test-llvm.cpp file made bpftool to
-> always fallback to binutils disassembly, even with the llvm devel files
-> installed, fix it by restoring just that small test-llvm.cpp test file.
+> > > 
+> > > On another note: maybe I need to put this behind a Kconfig option
+> > > initially too?
+> > 
+> > So can we for a second consider not introducing fine-grained timestamps
+> > at all. We let NFSv3 live with the cache problem it's been living with
+> > forever.
+> > 
+> > And for NFSv4 we actually do introduce a proper i_version for all
+> > filesystems that matter to it.
+> > 
+> > What filesystems exactly don't expose a proper i_version and what does
+> > prevent them from adding one or fixing it?
 > 
-> Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
-> Reported-by: Manu Bretelle <chantr4@gmail.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Carsten Haitzler <carsten.haitzler@arm.com>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Fangrui Song <maskray@google.com>
-> Cc: He Kuang <hekuang@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: llvm@lists.linux.dev
-> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Tom Rix <trix@redhat.com>
-> Cc: Wang Nan <wangnan0@huawei.com>
-> Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> Cc: Yang Jihong <yangjihong1@huawei.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: YueHaibing <yuehaibing@huawei.com>
-> Link: https://lore.kernel.org/lkml/ZTGa0Ukt7QyxWcVy@kernel.org
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/build/feature/test-llvm.cpp | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->  create mode 100644 tools/build/feature/test-llvm.cpp
+> Certainly we can drop this series altogether if that's the consensus.
 > 
-> diff --git a/tools/build/feature/test-llvm.cpp b/tools/build/feature/test-llvm.cpp
-> new file mode 100644
-> index 0000000000000000..88a3d1bdd9f6978e
-> --- /dev/null
-> +++ b/tools/build/feature/test-llvm.cpp
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "llvm/Support/ManagedStatic.h"
-> +#include "llvm/Support/raw_ostream.h"
-> +#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
-> +
-> +#if NUM_VERSION < 0x030900
-> +# error "LLVM version too low"
-> +#endif
-> +int main()
-> +{
-> +	llvm::errs() << "Hello World!\n";
-> +	llvm::llvm_shutdown();
-> +	return 0;
-> +}
+> The main exportable filesystem that doesn't have a suitable change
+> counter now is XFS. Fixing it will require an on-disk format change to
+> accommodate a new version counter that doesn't increment on atime
+> updates. This is something the XFS folks were specifically looking to
+> avoid, but maybe that's the simpler option.
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+And now we have travelled the full circle.
 
-Thanks Arnaldo, Manu!
+The problem NFS has with atime updates on XFS is a result of
+the default behaviour of relatime - it *always* forces a persistent
+atime update after mtime has changed. Hence a read-after-write
+operation will trigger an atime update because atime is older than
+mtime. This is what causes XFS to run a transaction (i.e. a
+persistent atime update) and that bumps iversion.
+
+lazytime does not behave this way - it delays all persistent
+timestamp updates until the next persistent change or until the
+lazytime aggregation period expires (24 hours). Hence with lazytime,
+read-after-write operations do not trigger a persistent atime
+update, and so XFS does not run a transaction to update atime. Hence
+i_version does not get bumped, and NFS behaves as expected.
+
+IOWs, what the NFS server actually wants from the filesytsems is for
+lazy timestamp updates to always be used on read operations. It does
+not want persistent timestamp updates that change on-disk state. The
+recent "redefinition" of when i_version should change effectively
+encodes this - i_version should only change when a persistent
+metadata or data change is made that also changes [cm]time.
+
+Hence the simple, in-memory solution to this problem is for NFS to
+tell the filesysetms that it needs to using lazy (in-memory) atime
+updates for the given operation rather than persistent atime updates.
+
+We already need to modify how atime updates work for io_uring -
+io_uring needs atime updates to be guaranteed non-blocking similar
+to updating mtime in the write IO path. If a persistent timestamp
+change needs to be run, then the timestamp update needs to return
+-EAGAIN rather than (potentially) blocking so the entire operation
+can be punted to a context that can block.
+
+This requires control flags to be passed to the core atime handling
+functions.  If a filesystem doesn't understand/support the flags, it
+can just ignore it and do the update however it was going to do it.
+It won't make anything work incorrectly, just might do something
+that is not ideal.
+
+With this new "non-blocking update only" flag for io_uring and a
+new "non-persistent update only" flag for NFS, we have a very
+similar conditional atime update requirements from two completely
+independent in-kernel applications.
+
+IOWs, this can be solved quite simply by having the -application-
+define the persistence semantics of the operation being performed.
+Add a RWF_LAZYTIME/IOCB_LAZYTIME flag for read IO that is being
+issued from the nfs daemon (i.e. passed to vfs_iter_read()) and then
+the vfs/filesystem can do exactly the right thing for the IO being
+issued.
+
+This is what io_uring does with IOCB_NOWAIT to tell the filesystems
+that the IO must be non-blocking, and it's the key we already use
+for non-blocking mtime updates and will use to trigger non-blocking
+atime updates....
+
+I also know of cases where a per-IO RWF_LAZYTIME flag would be
+beneficial - large databases are already using lazytime mount
+options so that their data IO doesn't take persistent mtime update
+overhead hits on every write IO.....
+
+> There is also bcachefs which I don't think has a change attr yet. They'd
+> also likely need a on-disk format change, but hopefully that's a easier
+> thing to do there since it's a brand new filesystem.
+
+It's not a "brand new filesystem". It's been out there for quite a
+long while, and it has many users that would be impacted by on-disk
+format changes at this point in it's life. on-disk format changes
+are a fairly major deal for filesystems, and if there is any way we
+can avoid them we should.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
