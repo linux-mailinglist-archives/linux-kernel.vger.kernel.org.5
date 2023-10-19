@@ -2,263 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D457E7CFE2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84557CFE68
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346399AbjJSPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        id S1346433AbjJSPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346087AbjJSPlF (ORCPT
+        with ESMTP id S1346434AbjJSPlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:41:05 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB618124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:00 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ace796374so10237821276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697730060; x=1698334860; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=adJjdu4zvZG+fV58j+myDpWsiZ+K2SAIeatTq8Py4kU=;
-        b=foQ+LfGo9+WT/avUhTGnzauJXTbM6NwkDppKG6a6BczeQrxlDRXJYrpTq7LFkp1oc3
-         ucia+fPj6pyW/NxlwRhedJ3svJTBZ+/AGrQBkx9TyAsDibGmGE4DsR8sW+8hzsAKznDG
-         frGCjG6YGA0Fq3jeKguwDSyq7nBf2JeH/YuyB9ydwEezF5hZODCsWKKhvyF4bSpOwXnd
-         tdi3jl9W+0rjmsORyEsXec/os1LOym/GmNtunZ0qGVoh8ositeNy0nYTY2lQVN47Hf8H
-         py0Yz8UVi9duYVDFfXWc57DedgXABf59d/dlWDXT4gRddiTnAUc/jIw5gTxOt4Ks45RR
-         So2w==
+        Thu, 19 Oct 2023 11:41:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E4C12A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697730068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=JJr/PRGCFlMD3E/uH7FWSeqfLKgpGGhQWrbZ5EJs+i0=;
+        b=SchFUOnsP32TyKsFDvyqGsW7ZyQVISl9Fxqb8osC7vy37ECDsFVIjqp4cPpC9W89tjvjLX
+        9lXFLXknGdyNd5RrVR88nuEIOMv1HI7dONdlFu6K1A0RZVBnK44XXots0uFkDHSX5wxryG
+        VLotnSS0mEj2RbFzRd7AmzYYJkhQQcQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-Gu5n9FShP86IAIXUJigf3w-1; Thu, 19 Oct 2023 11:41:05 -0400
+X-MC-Unique: Gu5n9FShP86IAIXUJigf3w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-406de77fb85so50636285e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697730060; x=1698334860;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=adJjdu4zvZG+fV58j+myDpWsiZ+K2SAIeatTq8Py4kU=;
-        b=YRaSVzCu0f7n+InsulssCcTTGqXC15Oest6tXf1VRiusuPBCMNyi5y258L5YbaA5nh
-         WP4e/Vx5XzgvrIiwvYM19UL4Unp925ZrRiXom/5CNy7P9SWnDYvUCbobsVNfrcIouRHP
-         DdsWZD0F8xbXz7uAUu4CRj+hX+p7m9MW6713lLGDv5qp3UopReCwTntYth1QfyiAUEM3
-         SVsI2iMOmjw5F0Gf2n2qKCRdhrYd3zUFfTJlYFvrj0ysyc6avUKhjOgD/CCvuFR+ZMNt
-         d+Hgd+gdYqas1H0+hKt2oRaWda4SXlRTQkMAIXDvNX7OQjn06tqevSwhpLEF6bBIGHjn
-         SZaw==
-X-Gm-Message-State: AOJu0YxMHOx/oMgPkVHEY8wy8myz1tLxaPkAQTfzHhgO7Ln/ASWXNOVG
-        3TjuFC87wbwGlE2y3G9MZQkasAlBl34=
-X-Google-Smtp-Source: AGHT+IEdAkwGSI4JXsyGWR6R4FkKE7IdPr0rYajN80sqqfNdMpoFfjfsMAfenGioX8KaYubfndjOkTOpzXY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:a04:0:b0:d9a:6855:6d31 with SMTP id
- k4-20020a5b0a04000000b00d9a68556d31mr59932ybq.3.1697730059906; Thu, 19 Oct
- 2023 08:40:59 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 08:40:58 -0700
-In-Reply-To: <87ttqm6d3f.fsf@redhat.com>
-Mime-Version: 1.0
-References: <20231018221123.136403-1-dongli.zhang@oracle.com> <87ttqm6d3f.fsf@redhat.com>
-Message-ID: <ZTFOCqMCuSiH8VEt@google.com>
-Subject: Re: [PATCH RFC 1/1] x86/paravirt: introduce param to disable pv sched_clock
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, x86@kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        pv-drivers@vmware.com, xen-devel@lists.xenproject.org,
-        linux-hyperv@vger.kernel.org, jgross@suse.com, akaher@vmware.com,
-        amakhalov@vmware.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        pbonzini@redhat.com, wanpengli@tencent.com, peterz@infradead.org,
-        dwmw2@infradead.org, joe.jin@oracle.com,
-        boris.ostrovsky@oracle.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697730064; x=1698334864;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JJr/PRGCFlMD3E/uH7FWSeqfLKgpGGhQWrbZ5EJs+i0=;
+        b=j807HmUoNvRSxpTb8UoFIIlNzo6/2OHxBzPTfvqiIv0HM4CV7Wh1QTvsJsVqkvBO/j
+         cm2MP0acHuoAnRjTyQWIO+htWm3wGxOZHDb41ne0lEIdy39EIhmzheoDDJnJtfJrFxoV
+         uImLaZDjLaErvQbQ1Icxw/yPbRQcEIP+hXkBi9E+KlcKzIZmlqwMOPzBSv9vMGnosKle
+         El7thAsJ3Sjlsqb1qeeGv5+OjHNwq41pSWrHWWduzhS51eN8czJgrBhvno4TyNlBCnaj
+         UghWgElhl/3LjF1xINQrxU7WYCt+jtLt7Ct+KxJSnd4ylDmhVhGj60V2djvPra+c2ndk
+         bJWw==
+X-Gm-Message-State: AOJu0YxMSnZcJKFC7cwfkyBPd0IwmpY3uaR9xOpwNrYTX2Ten7wshca7
+        HR950Zzwr4a61pL/lv4NQCnS9k4uPOxOezFKXDjX6Obl+WLQ66C1yurMKUEfvoHDpV3nr72RLVL
+        YGJOKvQ01o59UYkQ2l7fKhWIQ
+X-Received: by 2002:a05:600c:4592:b0:408:2686:e1cb with SMTP id r18-20020a05600c459200b004082686e1cbmr1998641wmo.23.1697730063996;
+        Thu, 19 Oct 2023 08:41:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFHKkD2UN+e0cvlgFYNJSwe9iV/QR1vJcmNnxULpah0wDYZWON0YAd8NW45+8h/OjODMZZOPg==
+X-Received: by 2002:a05:600c:4592:b0:408:2686:e1cb with SMTP id r18-20020a05600c459200b004082686e1cbmr1998620wmo.23.1697730063400;
+        Thu, 19 Oct 2023 08:41:03 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70b:500:6a06:17fc:810b:b054? (p200300cbc70b05006a0617fc810bb054.dip0.t-ipconnect.de. [2003:cb:c70b:500:6a06:17fc:810b:b054])
+        by smtp.gmail.com with ESMTPSA id x9-20020a05600c420900b004065e235417sm4630990wmh.21.2023.10.19.08.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 08:41:02 -0700 (PDT)
+Message-ID: <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
+Date:   Thu, 19 Oct 2023 17:41:01 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Lokesh Gidra <lokeshgidra@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
+ <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
+ <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
+ <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
+ <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
+ <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
+ <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
+ <ZS7ZqztMbhrG52JQ@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZS7ZqztMbhrG52JQ@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023, Vitaly Kuznetsov wrote:
-> Dongli Zhang <dongli.zhang@oracle.com> writes:
->=20
-> > As mentioned in the linux kernel development document, "sched_clock() i=
-s
-> > used for scheduling and timestamping". While there is a default native
-> > implementation, many paravirtualizations have their own implementations=
-.
-> >
-> > About KVM, it uses kvm_sched_clock_read() and there is no way to only
-> > disable KVM's sched_clock. The "no-kvmclock" may disable all
-> > paravirtualized kvmclock features.
+On 17.10.23 20:59, Peter Xu wrote:
+> David,
+> 
+> On Tue, Oct 17, 2023 at 05:55:10PM +0200, David Hildenbrand wrote:
+>> Don't get me wrong, but this feature is already complicated enough that we
+>> should really think twice if we want to make this even more complicated and
+>> harder to maintain -- because once it's in we all know it's hard to remove
+>> and we can easily end up with a maintenance nightmare without sufficiently
+>> good use cases.
+> 
+> Yes I agree it's non-trivial.  My point is adding cross-mm doesn't make it
+> even more complicated.. afaics.
 
-...
+That's not my main point. It can easily become a maintenance burden 
+without any real use cases yet that we are willing to support.
 
-> > Please suggest and comment if other options are better:
-> >
-> > 1. Global param (this RFC patch).
-> >
-> > 2. The kvmclock specific param (e.g., "no-vmw-sched-clock" in vmware).
-> >
-> > Indeed I like the 2nd method.
-> >
-> > 3. Enforce native sched_clock only when TSC is invariant (hyper-v metho=
-d).
-> >
-> > 4. Remove and cleanup pv sched_clock, and always use pv_sched_clock() f=
-or
-> > all (suggested by Peter Zijlstra in [3]). Some paravirtualizations may
-> > want to keep the pv sched_clock.
->=20
-> Normally, it should be up to the hypervisor to tell the guest which
-> clock to use, i.e. if TSC is reliable or not. Let me put my question
-> this way: if TSC on the particular host is good for everything, why
-> does the hypervisor advertises 'kvmclock' to its guests?
+> 
+> For example, could you provide a list of things that will be different to
+> support single mm or cross mm?  I see two things that can be different, but
+> I'd rather have all of them even if single-mm..
+> 
+>    - cgroup: I assume single-mm may avoid uncharge and charge again, but I
+>      prefer it be there even if we only allow single-mm.  For example, I'm
+>      not 100% sure whether memcg won't start to behave differently according
+>      to vma attribute in the future.
+> 
+>    - page pinning: I assume for single-mm we can avoid checking page pinning
+>      based on the fact that MMF_HAS_PINNED is per-mm, but I also prefer we
+>      fail explicitly on pinned pages over UFFDIO_MOVE because it doesn't
+>      sound correct, and avoid future changes on top of pinning solution that
+>      can change the assumption that "move a pin page within mm" is ok.
+> 
+> Is there anything else that will be different?  Did I miss something
+> important?
 
-I suspect there are two reasons.
+Again, that's not my main point. All I'm asking for is to separate it 
+out, make it a separate flag, and include it once we have reasonable use 
+cases that we are actually willing to support -- including actual data 
+why it's beneficial to have.
 
-  1. As is likely the case in our fleet, no one revisited the set of advert=
-ised
-     PV features when defining the VM shapes for a new generation of hardwa=
-re, or
-     whoever did the reviews wasn't aware that advertising kvmclock is actu=
-ally
-     suboptimal.  All the PV clock stuff in KVM is quite labyrinthian, so i=
-t's
-     not hard to imagine it getting overlooked.
+For the single-mm use it has been shown that there are reasonable, 
+existing use cases exist, and I think we are willing to support that.
 
-  2. Legacy VMs.  If VMs have been running with a PV clock for years, forci=
-ng
-     them to switch to a new clocksource is high-risk, low-reward.
+This patch set is close to doubling (!) the size of mm/userfaultfd.c, 
+and it already has every possible smell of maintanance nightmare IMHO. 
+It does things that shouldn't be specific to some MM subsystem. I'm 
+happy to see any possible complexity reduced. Moving pages between MMs 
+is added complexity.
 
-> If for some 'historical reasons' we can't revoke features we can always
-> introduce a new PV feature bit saying that TSC is preferred.
->=20
-> 1) Global param doesn't sound like a good idea to me: chances are that
-> people will be setting it on their guest images to workaround problems
-> on one hypervisor (or, rather, on one public cloud which is too lazy to
-> fix their hypervisor) while simultaneously creating problems on another.
->=20
-> 2) KVM specific parameter can work, but as KVM's sched_clock is the same
-> as kvmclock, I'm not convinced it actually makes sense to separate the
-> two. Like if sched_clock is known to be bad but TSC is good, why do we
-> need to use PV clock at all? Having a parameter for debugging purposes
-> may be OK though...
->=20
-> 3) This is Hyper-V specific, you can see that it uses a dedicated PV bit
-> (HV_ACCESS_TSC_INVARIANT) and not the architectural
-> CPUID.80000007H:EDX[8]. I'm not sure we can blindly trust the later on
-> all hypervisors.
->=20
-> 4) Personally, I'm not sure that relying on 'TSC is crap' detection is
-> 100% reliable. I can imagine cases when we can't detect that fact that
-> while synchronized across CPUs and not going backwards, it is, for
-> example, ticking with an unstable frequency and PV sched clock is
-> supposed to give the right correction (all of them are rdtsc() based
-> anyways, aren't they?).
-
-Yeah, practically speaking, the only thing adding a knob to turn off using =
-PV
-clocks for sched_clock will accomplish is creating an even bigger matrix of
-combinations that can cause problems, e.g. where guests end up using kvmclo=
-ck
-timekeeping but not scheduling.
-
-The explanation above and the links below fail to capture _the_ key point:
-Linux-as-a-guest already prioritizes the TSC over paravirt clocks as the cl=
-ocksource
-when the TSC is constant and nonstop (first spliced blob below).
-
-What I suggested is that if the TSC is chosen over a PV clock as the clocks=
-ource,
-then we have the kernel also override the sched_clock selection (second spl=
-iced
-blob below).
-
-That doesn't require the guest admin to opt-in, and doesn't create even mor=
-e
-combinations to support.  It also provides for a smoother transition for wh=
-en
-customers inevitably end up creating VMs on hosts that don't advertise kvmc=
-lock
-(or any PV clock).
-
-> > To introduce a param may be easier to backport to old kernel version.
-> >
-> > References:
-> > [1] https://lore.kernel.org/all/20230926230649.67852-1-dongli.zhang@ora=
-cle.com/
-> > [2] https://lore.kernel.org/all/20231018195638.1898375-1-seanjc@google.=
-com/
-> > [3] https://lore.kernel.org/all/20231002211651.GA3774@noisy.programming=
-.kicks-ass.net/
-
-On Mon, Oct 2, 2023 at 11:18=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
-> > Do we need to update the documentation to always suggest TSC when it is
-> > constant, as I believe many users still prefer pv clock than tsc?
-> >
-> > Thanks to tsc ratio scaling, the live migration will not impact tsc.
-> >
-> > >From the source code, the rating of kvm-clock is still higher than tsc=
-.
-> >
-> > BTW., how about to decrease the rating if guest detects constant tsc?
-> >
-> > 166 struct clocksource kvm_clock =3D {
-> > 167         .name   =3D "kvm-clock",
-> > 168         .read   =3D kvm_clock_get_cycles,
-> > 169         .rating =3D 400,
-> > 170         .mask   =3D CLOCKSOURCE_MASK(64),
-> > 171         .flags  =3D CLOCK_SOURCE_IS_CONTINUOUS,
-> > 172         .enable =3D kvm_cs_enable,
-> > 173 };
-> >
-> > 1196 static struct clocksource clocksource_tsc =3D {
-> > 1197         .name                   =3D "tsc",
-> > 1198         .rating                 =3D 300,
-> > 1199         .read                   =3D read_tsc,
->
-> That's already done in kvmclock_init().
->
->         if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
->             boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
->             !check_tsc_unstable())
->                 kvm_clock.rating =3D 299;
->
-> See also: https://lore.kernel.org/all/ZOjF2DMBgW%2FzVvL3@google.com
->
-> > 2. The sched_clock.
-> >
-> > The scheduling is impacted if there is big drift.
->
-> ...
->
-> > Unfortunately, the "no-kvmclock" kernel parameter disables all pv clock
-> > operations (not only sched_clock), e.g., after line 300.
->
-> ...
->
-> > Should I introduce a new param to disable no-kvm-sched-clock only, or t=
-o
-> > introduce a new param to allow the selection of sched_clock?
->
-> I don't think we want a KVM-specific knob, because every flavor of paravi=
-rt guest
-> would need to do the same thing.  And unless there's a good reason to use=
- a
-> paravirt clock, this really shouldn't be something the guest admin needs =
-to opt
-> into using.
+But I will stop arguing further; I hope I made my point clear and I have 
+other things to work on than fighting against overly-complicated uffd 
+features.
 
 
-On Mon, Oct 2, 2023 at 2:06=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Mon, Oct 02, 2023 at 11:18:50AM -0700, Sean Christopherson wrote:
-> > Assuming the desirable thing to do is to use native_sched_clock() in th=
-is
-> > scenario, do we need a separate rating system, or can we simply tie the
-> > sched clock selection to the clocksource selection, e.g. override the
-> > paravirt stuff if the TSC clock has higher priority and is chosen?
->
-> Yeah, I see no point of another rating system. Just force the thing back
-> to native (or don't set it to that other thing).
+> 
+> [...]
+> 
+>> BTW, wasn't there a way to do VM live-upgrade using fork() and replacing the
+>> binary? I recall that there was at some time either an implementation in
+>> QEMU or a proposal for an implementation; but I don't know how VM memory was
+>> provided. It's certainly harder to move VM memory using fork().
+> 
+> Maybe you meant the cpr project.  I didn't actually follow that much
+> previously (and will need to follow more after I took the migration
+> duties.. when there's a new post), but IIUC at least the latest version
+> needs to go with file memory only, not anonymous:
+> 
+> https://lore.kernel.org/all/1658851843-236870-1-git-send-email-steven.sistare@oracle.com/
+> 
+>          Guest RAM must be non-volatile across reboot, which can be achieved by
+>          backing it with a dax device, or /dev/shm PKRAM as proposed in...
+> 
+>          Guest RAM must be backed by a memory backend with share=on, but
+>          cannot be memory-backend-ram.  The memory is re-mmap'd in the
+>          updated process, so guest ram is efficiently preserved in place
+> 
+> My understanding is there used to have solution for anonymous but that
+> needs extra kernel changes (MADV_DOEXEC).
+
+Probably, I also stumbled over a paper from 2019 that mentioned that that.
+
+> 
+> https://lore.kernel.org/linux-mm/1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com/
+> 
+> I saw that you were part of the discussion, so maybe you will remember some
+> more clue of that part.
+> 
+
+Ouch, 2020. But my comments were only regarding mshare, not MADV_DOEXEC. 
+In fact, I don't even know why both discussions/threads show up as a 
+single one there..
+
+> IIUC one core requirement of the whole approach is also that it will cover
+> VFIO and maintenance of device DMA mappings, in which case it'll be
+> different with any approach to leverage UFFDIO_MOVE because VFIO will not
+> be allowed here; again I hope we start with forbid pinning. But it should
+> be much cleaner on the design when with UFFDIO_MOVE, just not working with
+> VFIO.
+> 
+> One thing I'd need to measure is latency of UFFDIO_MOVE on page fault
+> resolutions.  I expect no more than tens of microseconds or even less.
+> Should be drastically smaller than remote postcopy anyway.
+> 
+> I'm probably off topic.. To go back: let's try to figure out what is
+> special with cross-mm support.  It'll be very weird in the future for
+> anyone to propose a patch just add a feature flag and declaring cross-mm
+> support, if the code is mostly all there.  Nothing stops us from discussing
+> what a cross-mm design will need.
+
+Again, I hope I made my point clear.
+
+> 
+> [...]
+> 
+>> Is that and will that remain the case? I know people have been working on
+>> transparent user-space swapping using monitor processes using uffd. I
+>> thought there would have been ways to achieve that without any corporation
+>> of the dst.
+> 
+> Any example?
+
+Nothing concrete, I only heard about uffd monitors that implement 
+user-space based swapping. I don't recall if they require some kind of 
+support from a library that gets loaded into these processes,
+
+Same thoughts regarding CRIU using uffd.
+
+> 
+> For what I am aware, all corporation requires uffd desc forwarding.  I
+> think the trick here is any userfaultfd desc must be created by its own
+> process, so far nobody else.  That's more or less saying "I want to do
+> this" from its own opinion.  The next is forwarding that to someone else.
+> Parent process is fine taking uffd of child with EVENT_FORK, as I
+> mentioned, but besides that nothing else I can think of that can violate
+> this guard to manipulate a random process.
+
+Do you have any idea how CRIU makes that work (at least I recall that 
+they wanted to use UFFD).
+
+-- 
+Cheers,
+
+David / dhildenb
+
