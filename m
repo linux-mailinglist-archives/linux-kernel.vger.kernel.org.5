@@ -2,250 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D40E7CF1D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E0C7CF1DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbjJSH6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
+        id S231948AbjJSIAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjJSH6B (ORCPT
+        with ESMTP id S230297AbjJSIAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:58:01 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B497512E
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:57:58 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31fa15f4cc6so6529684f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:57:58 -0700 (PDT)
+        Thu, 19 Oct 2023 04:00:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343A3121
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:00:49 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9bf0ac97fdeso762677966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:00:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697702277; x=1698307077; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BaT0UAyyKtssFxQND155cWxNkiluUWACURFJFcXVWDk=;
-        b=OTQwklItlLRD3WcaPTmvA6bmBJJWVn+ObaccYbMF7ORoUMkWYRsnIWQvtTij5QRjtO
-         l6Op/ZOlu+qTMpm+oxpcw3DO7xabclvPURK+gHyUFd050a1mwc2C5aQ+2mEuBtYoV+tW
-         FoSeaRxJ/SDK8byHs5BC5vH44wCeQQrSQ+qEv/I1z3nt8/qPru7FRFe8FDHVuINUjAQE
-         R1EGRUl8aw3Eiy7bPQKNc0l1nC1SIffvRoZKp2wj8TmOrOYz5cXT311q4xCki1Pecp70
-         qx6g2aHoTX+YFH5m44wMQTSLDyOvCVJTFxcM/n9A5IaWvZERG8WtoI9ZidhLlw1Qfobo
-         gnOg==
+        d=google.com; s=20230601; t=1697702447; x=1698307247; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zzYQdttvG9czqkBaq4b4PXThZL9krcFidpTeUsDgElI=;
+        b=Dzirx8EbmhKtsZ6R10YyxzcB/lePoVxUpOkQCfoEGuaZmyuCD5iZOKP41MA1RK/5h0
+         bsLXpu5bckSEvhzfzAwCmcb4shL524EpzjzTzge3agKlN4Ra8OAzBKTnhXnr/siEziXh
+         G+NIFWog8upu7/1U2VC/v54obIex0TReND6bX0chflGOjUVqwrsRroOFH4DHUvRoHw/2
+         tUQFEzFmWmID4+CfR5hP1zfxzYKvtMwym+LoLCWC5DVZUhn/28/NnWEUds1x9SBqb2bI
+         Dg86AXICzKi0ZCJbSlQOSkwWWErMY/RNtoFlQT6rKps9237vdtMyxZBhqEHB/zb/Yeu5
+         2Tew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697702277; x=1698307077;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BaT0UAyyKtssFxQND155cWxNkiluUWACURFJFcXVWDk=;
-        b=ce9wQNlSAXe9BAItk3Igto3Z6071N7So5r2Tz8X2rvoMYI3CF+lHwqM2HG72HPXZpQ
-         dfuQL4ZsutWzNI7b12gpiwtU2YvZg8m+C1qVXXuDjRknURZGWEBJUapoUTwXom/m9jTf
-         OLurmHOWbQLnfJrwKfv1Jlf21QJF83QiEcAcR6aGGJtm2NxhRe8dyBsHQpm5GXGhMr6X
-         KDMeFUNUHV2nVjEKQ/yzqJGJgAYcqk14K7ZtaoMzViKxBQk6SzMfr0ILs4OPcuitBA5Z
-         8yUiIppmm3ZTVBCaFqSraBozlGZRiynl/H6QS7WylFOrIbZxQPhDTl0dm8MJ9zpmNIsU
-         HSlg==
-X-Gm-Message-State: AOJu0YyLaiKC3r9vHBciXA+jpR6F37XO9l2IFKv20I3PY0Kmuq8Jtsp7
-        gkr/K36eQAuPI2/XVLA2NHH6cg==
-X-Google-Smtp-Source: AGHT+IEK/SMb4NUNaf8d2WXTwiv7iPTtR4vQFuKO9GOmaPzBWNUEn6ZcPIJGemg9D6f0QM31YvDQsw==
-X-Received: by 2002:adf:f9cd:0:b0:32d:a335:e33d with SMTP id w13-20020adff9cd000000b0032da335e33dmr887824wrr.58.1697702277126;
-        Thu, 19 Oct 2023 00:57:57 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id i3-20020a5d6303000000b0032db4e660d9sm3831000wru.56.2023.10.19.00.57.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 00:57:56 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:57:55 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/8] RISC-V: KVM: Allow some SBI extensions to be
- disabled by default
-Message-ID: <20231019-1e6f411e1cbc4a3b0fbff3f5@orel>
-References: <20231012051509.738750-1-apatel@ventanamicro.com>
- <20231012051509.738750-4-apatel@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1697702447; x=1698307247;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zzYQdttvG9czqkBaq4b4PXThZL9krcFidpTeUsDgElI=;
+        b=kzkAugb9Fft0ZX92sL2Cqmt+gycu13r8YrYEdDJUM4/JlGHIZAIdyWQVwTFRXPEA+B
+         bXsb74GQAghE5ypxXr/G1syc3AbljlYzTT30BLqourvsgbwmLa85h/tzUtUnEdJkNYOn
+         IuzizrJszG90rTE4MShwOie9s4vBxsHvdWoYMA2RkRyoiSEamFWrUVfOgP2SoarlaRZE
+         wUMptpBMu1NraHu2iLL97EEYQD9bSFksMAjjBEhymKaUrHGbw4kxled2RJ99jFVtFqMT
+         dDHYP61gvmFjYvb48y3POyMcnLkWGbgh6BUdqtuYY7Lw8+CpXwIT29D7LxAxeHXWOJ6S
+         M82w==
+X-Gm-Message-State: AOJu0Yy+SP64cCzAt18/AdymnEHh+p48ay9VfA3qeR1h4zDzCeIi80Fe
+        J0qmMFVSMGsJMKPJkDehvGFi8VkN5QHWvTrtrV2zBg==
+X-Google-Smtp-Source: AGHT+IGvvBAOXddF5owRwRHOfUfE25ctm4Piy/qlWCUDwS2bRynHrk5Ji3mZ1+oA2JFNfhdLg+9pNtGTmYzliW9xAww=
+X-Received: by 2002:a17:907:786:b0:9be:834a:f80b with SMTP id
+ xd6-20020a170907078600b009be834af80bmr1206934ejb.75.1697702447293; Thu, 19
+ Oct 2023 01:00:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012051509.738750-4-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
+ <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
+ <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
+ <55960.1697566804@cvs.openbsd.org> <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
+In-Reply-To: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
+From:   =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>
+Date:   Thu, 19 Oct 2023 10:00:33 +0200
+Message-ID: <CAEAAPHYgg49WtpE7Jdq6HDecFp5RHPhdxtPTUaNF12RONu5aDA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Theo de Raadt <deraadt@openbsd.org>, Jeff Xu <jeffxu@google.com>,
+        jeffxu@chromium.org, akpm@linux-foundation.org,
+        keescook@chromium.org, jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
+        alex.sierra@amd.com, apopple@nvidia.com,
+        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
+        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
+        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
+        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
+        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
+        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
+        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
+        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
+        luto@kernel.org, linux-hardening@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000056a62e06080d27a1"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:45:04AM +0530, Anup Patel wrote:
-> Currently, all SBI extensions are enabled by default which is
-> problematic for SBI extensions (such as DBCN) which are forwarded
-> to the KVM user-space because we might have an older KVM user-space
-> which is not aware/ready to handle newer SBI extensions. Ideally,
-> the SBI extensions forwarded to the KVM user-space must be
-> disabled by default.
-> 
-> To address above, we allow certain SBI extensions to be disabled
-> by default so that KVM user-space must explicitly enable such
-> SBI extensions to receive forwarded calls from Guest VCPU.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/kvm_vcpu_sbi.h |  4 +++
->  arch/riscv/kvm/vcpu.c                 |  6 ++++
->  arch/riscv/kvm/vcpu_sbi.c             | 45 ++++++++++++++++-----------
->  3 files changed, 36 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> index 8d6d4dce8a5e..c02bda5559d7 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> @@ -35,6 +35,9 @@ struct kvm_vcpu_sbi_return {
->  struct kvm_vcpu_sbi_extension {
->  	unsigned long extid_start;
->  	unsigned long extid_end;
-> +
-> +	bool default_unavail;
-> +
->  	/**
->  	 * SBI extension handler. It can be defined for a given extension or group of
->  	 * extension. But it should always return linux error codes rather than SBI
-> @@ -59,6 +62,7 @@ int kvm_riscv_vcpu_get_reg_sbi_ext(struct kvm_vcpu *vcpu,
->  const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_find_ext(
->  				struct kvm_vcpu *vcpu, unsigned long extid);
->  int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run);
-> +void kvm_riscv_vcpu_sbi_init(struct kvm_vcpu *vcpu);
->  
->  #ifdef CONFIG_RISCV_SBI_V01
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_v01;
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index c061a1c5fe98..e087c809073c 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -141,6 +141,12 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  	if (rc)
->  		return rc;
->  
-> +	/*
-> +	 * Setup SBI extensions
-> +	 * NOTE: This must be the last thing to be initialized.
-> +	 */
-> +	kvm_riscv_vcpu_sbi_init(vcpu);
+--00000000000056a62e06080d27a1
+Content-Type: text/plain; charset="UTF-8"
 
-With this, we no longer defer probing to the first access (whether that's
-by the guest or KVM userspace). With our current small set of SBI
-extensions where only a single one has a probe function, then this
-simpler approach is good enough. We can always go back to the lazy
-approach later if needed.
-
-> +
->  	/* Reset VCPU */
->  	kvm_riscv_reset_vcpu(vcpu);
->  
-> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-> index 9cd97091c723..1b1cee86efda 100644
-> --- a/arch/riscv/kvm/vcpu_sbi.c
-> +++ b/arch/riscv/kvm/vcpu_sbi.c
-> @@ -155,14 +155,8 @@ static int riscv_vcpu_set_sbi_ext_single(struct kvm_vcpu *vcpu,
->  	if (!sext)
->  		return -ENOENT;
->  
-> -	/*
-> -	 * We can't set the extension status to available here, since it may
-> -	 * have a probe() function which needs to confirm availability first,
-> -	 * but it may be too early to call that here. We can set the status to
-> -	 * unavailable, though.
-> -	 */
-> -	if (!reg_val)
-> -		scontext->ext_status[sext->ext_idx] =
-> +	scontext->ext_status[sext->ext_idx] = (reg_val) ?
-> +			KVM_RISCV_SBI_EXT_AVAILABLE :
->  			KVM_RISCV_SBI_EXT_UNAVAILABLE;
-
-We're missing the change to riscv_vcpu_get_sbi_ext_single() which should
-also drop the comment block explaining the limits to status knowledge
-without initial probing (which we now do) and then just check for
-available, i.e.
-
-diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-index bb76c3cf633f..92c42d9aba1c 100644
---- a/arch/riscv/kvm/vcpu_sbi.c
-+++ b/arch/riscv/kvm/vcpu_sbi.c
-@@ -186,15 +186,8 @@ static int riscv_vcpu_get_sbi_ext_single(struct kvm_vcpu *vcpu,
- 	if (!sext)
- 		return -ENOENT;
- 
--	/*
--	 * If the extension status is still uninitialized, then we should probe
--	 * to determine if it's available, but it may be too early to do that
--	 * here. The best we can do is report that the extension has not been
--	 * disabled, i.e. we return 1 when the extension is available and also
--	 * when it only may be available.
--	 */
--	*reg_val = scontext->ext_status[sext->ext_idx] !=
--				KVM_RISCV_SBI_EXT_UNAVAILABLE;
-+	*reg_val = scontext->ext_status[sext->ext_idx] ==
-+				KVM_RISCV_SBI_EXT_AVAILABLE;
- 
- 	return 0;
- }
-
->  
->  	return 0;
-> @@ -337,18 +331,8 @@ const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_find_ext(
->  			    scontext->ext_status[entry->ext_idx] ==
->  						KVM_RISCV_SBI_EXT_AVAILABLE)
->  				return ext;
-> -			if (scontext->ext_status[entry->ext_idx] ==
-> -						KVM_RISCV_SBI_EXT_UNAVAILABLE)
-> -				return NULL;
-> -			if (ext->probe && !ext->probe(vcpu)) {
-> -				scontext->ext_status[entry->ext_idx] =
-> -					KVM_RISCV_SBI_EXT_UNAVAILABLE;
-> -				return NULL;
-> -			}
->  
-> -			scontext->ext_status[entry->ext_idx] =
-> -				KVM_RISCV_SBI_EXT_AVAILABLE;
-> -			return ext;
-> +			return NULL;
->  		}
->  	}
->  
-> @@ -419,3 +403,26 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
->  
->  	return ret;
->  }
-> +
-> +void kvm_riscv_vcpu_sbi_init(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_vcpu_sbi_context *scontext = &vcpu->arch.sbi_context;
-> +	const struct kvm_riscv_sbi_extension_entry *entry;
-> +	const struct kvm_vcpu_sbi_extension *ext;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(sbi_ext); i++) {
-> +		entry = &sbi_ext[i];
-> +		ext = entry->ext_ptr;
-> +
-> +		if (ext->probe && !ext->probe(vcpu)) {
-> +			scontext->ext_status[entry->ext_idx] =
-> +				KVM_RISCV_SBI_EXT_UNAVAILABLE;
-> +			continue;
-> +		}
-> +
-> +		scontext->ext_status[entry->ext_idx] = ext->default_unavail ?
-> +					KVM_RISCV_SBI_EXT_UNAVAILABLE :
-> +					KVM_RISCV_SBI_EXT_AVAILABLE;
-> +	}
-> +}
-> -- 
-> 2.34.1
+> I do like us starting with just "mimmutable()", since it already
+> exists. Particularly if chrome already knows how to use it.
 >
+> Maybe add a flag field (require it to be zero initially) just to allow
+> any future expansion. Maybe the chrome team has *wanted* to have some
+> finer granularity thing and currently doesn't use mimmutable() in some
+> case?
 
-Thanks,
-drew
+Yes, we do have a use case in Chrome to split the sealing into unmap and
+mprotect which will allow us to seal additional pages that we can't seal with
+pure mimmutable().
+For example, we have pkey-tagged RWX memory that we want to seal. Since
+the memory is already RWX and the pkey controls write access, we don't care
+about permission changes but sometimes we do need to mprotect data only
+pages.
+But the munmap sealing will provide protection against implicit changes of the
+pkey in this case which would happen if a page gets unmapped and another
+mapped in its place.
+
+--00000000000056a62e06080d27a1
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPoQYJKoZIhvcNAQcCoIIPkjCCD44CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz7MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+miiwZhqbFo3H+sN+36dVsCIwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYI
+KwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2Nh
+L2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei
+6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNv
+bS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBABDOrwE7xhhZ
+KPffKFRtuggfC0sfh0EHmrCzCXlyiQFmTpjm73me7rw+ibiPUnohQxkeqC9KvwDd/gF7OAY3un01
+f8y5iEmwoymOLIzkTKIMHDp6qOul60jFrAWe8EQMuBMEc9TQbOiXB4jFgLuDZX7AspyVvnmLA5sw
+msq0yrGgxTsEeZniQpdOP/qZNS2TJmvNH8a8HuQfHH/pd20lRWfTEuhSRN8cTkKihK7iO8wjCmrp
+EXefUessFdMqMUSfGI6rUaZTfU0SRfdrVHW4IE8onI30/UVurbGlFiugNF3LbDMXdqzs2/eTsLiD
+8Dv1+pt7SJqI4zNhzZFOpvBPVIkxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
+ExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENB
+IDIwMjACEAFp/vXw/R/y8Lw9a5440YEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
+IPi898HIh9BIwdhETZ7/O7Dh3D+SsJLi3hgcuaXknxYwMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
+BwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTAxOTA4MDA0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
+CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAZGA2Cd/UjtzNhs4zX
+p3eag/xW+BTUBF/ITizZRukko4vAy6z8c/uelsd47857pBOkhqW2SCgQ6A7YJOdqXi/IxYv1y+MH
+74cRBtTnZ3i2Qj/2oL0gXtuwLGWP2b8PwKnSigUOj6c06i8viH2pYF5QQkt9kJCYg7/BADl0VrCO
+KA0sChavPZ7DT2V7JwCH/i0okvfPuL3rGakweTdvuKK6VYUZJu+8MGoOp+Ybhtw574270ii8oC2a
+Dm/k/wQ+F0d38Tpfb9yxZoxzfOINM7H3ctc3gIXfjlSD90uAwcoriw5717lbvmHHQmfFH6Ny6kES
+y1ckI+KJBbzuPvnS6r8K
+--00000000000056a62e06080d27a1--
