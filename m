@@ -2,50 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2287CF7F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D70C7CFA4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345589AbjJSMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        id S1345757AbjJSNDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345641AbjJSMCt (ORCPT
+        with ESMTP id S235394AbjJSNDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:02:49 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05020D64;
-        Thu, 19 Oct 2023 05:02:41 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VuTwcF3_1697716956;
-Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuTwcF3_1697716956)
-          by smtp.aliyun-inc.com;
-          Thu, 19 Oct 2023 20:02:38 +0800
-Message-ID: <dacd7394-c57a-44ee-a506-3ae0aa9870f9@linux.alibaba.com>
-Date:   Thu, 19 Oct 2023 20:02:34 +0800
+        Thu, 19 Oct 2023 09:03:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4002181;
+        Thu, 19 Oct 2023 06:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697720588; x=1729256588;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VgSvxH67qt9LKjm5+c5G2G8wQo6a1gXmEAilB1I2dfg=;
+  b=J59FvaojU1bLb52ZkemRWNSr2TKWEa6heGKHIxtRL7pWr497hF41kZ02
+   zX/nm8+i662p0+nI+A64m9GY28SrghRQhW1TEHFTHir8lrlsBAgOcCnRD
+   mfylpcFwUjdw1lN7iKMDogrbOsBTBXUvC7anSeHyahCWQa7aM8MCmr7bz
+   QJYWs8ra9nkm7LCYNHou7Ued6Ob4JMDHS3Q/ks/ahhleQsuSGwQ3orX5f
+   9dfq7JI8qwNsGo4feX+NJKAfP0HiRJziRrvI0fIXYziRznmTerMtRJI99
+   CLwXU5hO2RU9HQqI18amuJVd995IVSCZihfdt0oIhkA3kIKf6E0PU12KP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="385115720"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="385115720"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 06:01:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="757014468"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="757014468"
+Received: from mttran4-mobl2.amr.corp.intel.com (HELO [10.213.160.204]) ([10.213.160.204])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 06:01:45 -0700
+Message-ID: <ec25bb67-6c83-430b-bc79-234c03801250@linux.intel.com>
+Date:   Wed, 18 Oct 2023 20:00:00 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Subject: Re: [PATCH v9 09/34] ASoC: qcom: qdsp6: Introduce USB AFE port to
+ q6dsp
+To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-10-quic_wcheng@quicinc.com>
+ <7aa4ea87-9d1f-400a-bcc5-b56e5b4500c6@linux.intel.com>
+ <c72bcf47-af0b-8819-1c30-06b51358381e@quicinc.com>
+ <2f05708e-3ee8-472e-a24f-6f3eb118133c@linux.intel.com>
+ <fcaa93ba-3ca4-5a18-d3bd-afebe8def327@quicinc.com>
 Content-Language: en-US
-To:     Yicong Yang <yangyicong@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     yangyicong@hisilicon.com, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
-        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com
-References: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
- <20231017013235.27831-4-xueshuai@linux.alibaba.com>
- <20231017103959.00006ec3@Huawei.com>
- <0704f9f6-1e9a-4587-b92f-c799b932b755@linux.alibaba.com>
- <a14fc5c1-522b-ba7b-fabd-55ef8871a3b0@huawei.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <a14fc5c1-522b-ba7b-fabd-55ef8871a3b0@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <fcaa93ba-3ca4-5a18-d3bd-afebe8def327@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,52 +78,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/10/19 16:05, Yicong Yang wrote:
-> On 2023/10/18 11:33, Shuai Xue wrote:
->>
-...
->>
+>>>>> Specifically, the QC ADSP can support all potential endpoints that are
+>>>>> exposed by the audio data interface.  This includes, feedback
+>>>>> endpoints
+>>>>> (both implicit and explicit) as well as the isochronous (data)
+>>>>> endpoints.
+>>>>
+>>>> implicit feedback means support for capture. This is confusing...
+>>>>
 >>>
->>>> +		return PTR_ERR(dwc_pcie_pmu_dev);
->>>> +	}
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static void __exit dwc_pcie_pmu_exit(void)
->>>> +{
->>>> +	platform_device_unregister(dwc_pcie_pmu_dev);
->>>> +	platform_driver_unregister(&dwc_pcie_pmu_driver);
->>>> +	cpuhp_remove_multi_state(dwc_pcie_pmu_hp_state);
->>>> +
->>>> +	if (dwc_pcie_pmu_notify)
->>>
->>> If you have something unusual like this a driver module_exit() it definitely
->>> deserves a comment on why.  I'm surprised by this as I'd expect the notifier
->>> to be unregistered in the driver remove so not sure why this is here.
->>> I've lost track of earlier discussions so if this was addressed then all
->>> we need is a comment here for the next person to run into it!
+>>> I mean, a USB device can expose a capture path, but as of now, we won't
+>>> enable the offloading to the audio DSP for it.  However, if we're
+>>> executing playback, and device does support implicit feedback, we will
+>>> pass that along to the audio DSP to utilize.
 >>
->> All replied above, I will unregistered the notifier by devm_add_action_or_reset().
+>> Not following. Implicit feedback means a capture stream *SHALL* be
+>> started. Are you saying this capture stream is hidden and handled at the
+>> DSP level only? If yes, what prevents you from exposing the capture
+>> stream to userspace as well?
 >>
->> I am curious about that what the difference between unregistered in module_exit()
->> and remove()?
+>> I must be missing something.
 >>
 > 
-> From my understanding, if you register it in probe() then should undo it in remove().
-> Otherwise you should register it in module_init(). Just make them coupled to make
-> sure cleanup the resources correctly.
-> 
-> This driver is a bit different since device and driver are created in module_init()
-> so will works fine in most cases, because the device/driver removal will happens the
-> same time when unloading the module. However if manually unbind the driver and device
-> without unloading the module, we'll miss to unregister the notifier in the currently
-> implementation.
-> 
+> My understanding is that with implicit feedback endpoints, it allows for
+> another data endpoint in the opposite direction to be utilized as a
+> feedback endpoint (versus having to expose another EP, such as in the
+> case of explicit feedback).  For example, if we are enabling the
+> playback path (and the device does have a capture data ep) then the data
+> ep used for the capture path can be used.
 
-I see, thank you for your patient explanation.
+That's right, so all the plumbing is enabled for the capture path...
+Making a decision to discard the data is very odd, all the work has
+already been done at lower levels, so why not expose the captured data?
 
-Thank you.
-
-Best Regards,
-Shuai
