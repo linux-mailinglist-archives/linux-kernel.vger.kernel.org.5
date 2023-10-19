@@ -2,168 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3074F7CED2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159217CED31
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjJSBHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 21:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S229721AbjJSBJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 21:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbjJSBHS (ORCPT
+        with ESMTP id S229456AbjJSBJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 21:07:18 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822C8128;
-        Wed, 18 Oct 2023 18:07:15 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9qLj5y8wz4f3l27;
-        Thu, 19 Oct 2023 09:07:09 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgC3RdU7gTBlOLFZDQ--.58008S2;
-        Thu, 19 Oct 2023 09:07:11 +0800 (CST)
-Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
- atomic_set_release()
-To:     paulmck@kernel.org, bpf@vger.kernel.org
-Cc:     David Vernet <void@manifault.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Wed, 18 Oct 2023 21:09:54 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B7E113
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 18:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1697677783;
+        bh=sP/cRV4QUGjTkFLtwW0tXTJRApQEfvV0GlECJSheTZ0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=OzA36ounnOpYrxRilcLyJmhKG74vt5b0xbblSnpZ38SXwXoRD+pqu81YjaU92OqiS
+         K12o3y54lx6qpe39yAAqNZhbD2Z3NftbZ3odfdwqgqNJ5pR9T+1d1SWyxv5ED4xLsP
+         8I7wuTWDCuUgDsuuejG9J4zE5bmBSREmXITfJ3eXHU8WKIgnmZAfrtpEVwlb5yQZV9
+         WNCMgxPvXT0laLMYP1cAF0XEPYLg5zqjCDWUsTrngP8pkzVgbM4HKfbkvRfDCowcFK
+         4C9L3k65lqlVMLkdmGCI0ViV1t4nAyuFMJNGHHeRywl+mYpfXEyyQkSWfovcLLvz3i
+         nY7Es8JiD1N/w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9qPf4HMkz4wcN;
+        Thu, 19 Oct 2023 12:09:42 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
-Date:   Thu, 19 Oct 2023 09:07:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Subject: Re: [PATCH v2] powerpc/paravirt: Improve vcpu_is_preempted
+In-Reply-To: <20231018155838.2332822-1-srikar@linux.vnet.ibm.com>
+References: <20231018155838.2332822-1-srikar@linux.vnet.ibm.com>
+Date:   Thu, 19 Oct 2023 12:09:38 +1100
+Message-ID: <877cnj76zx.fsf@mail.lhotse>
 MIME-Version: 1.0
-In-Reply-To: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgC3RdU7gTBlOLFZDQ--.58008S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1rGFWUJFykuFyxWry7trb_yoWrGF4Upr
-        48Kr4UtrWDXr48JwnrJw4UZ34fJr4DA345Gr45JFy8Zr1UKr4jvF18Xr4jgr15Jr4kGr1j
-        yr1UWryqv34UJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi Srikar,
 
-On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
-> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> PowerVM Hypervisor dispatches on a whole core basis. In a shared LPAR, a
+> CPU from a core that is CEDED or preempted may have a larger latency. In
+> such a scenario, its preferable to choose a different CPU to run.
 >
-> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
-> immediately preceded by smp_mb__before_atomic() so as to order storing
-> of ring-buffer consumer and producer positions prior to the atomic_set()
-> call's clearing of the ->busy flag, as follows:
+> If one of the CPUs in the core is active, i.e neither CEDED nor
+> preempted, then consider this CPU as not preempted.
 >
->         smp_mb__before_atomic();
->         atomic_set(&rb->busy, 0);
->
-> Although this works given current architectures and implementations, and
-> given that this only needs to order prior writes against a later write.
-> However, it does so by accident because the smp_mb__before_atomic()
-> is only guaranteed to work with read-modify-write atomic operations,
-> and not at all with things like atomic_set() and atomic_read().
->
-> Note especially that smp_mb__before_atomic() will not, repeat *not*,
-> order the prior write to "a" before the subsequent non-read-modify-write
-> atomic read from "b", even on strongly ordered systems such as x86:
->
->         WRITE_ONCE(a, 1);
->         smp_mb__before_atomic();
->         r1 = atomic_read(&b);
+> Also if any of the CPUs in the core has yielded but OS has not requested
+> CEDE or CONFER, then consider this CPU to be preempted.
 
-The reason is smp_mb__before_atomic() is defined as noop and
-atomic_read() in x86-64 is just READ_ONCE(), right ?
+I think the change is OK, but the change log and comments are slightly
+confusing IMHO.
 
-And it seems that I also used smp_mb__before_atomic() in a wrong way for
-patch [1]. The memory order in the posted patch is
+In several places you use "this CPU", but that usually means "the CPU
+the code is currently executing on".
 
-process X                                    process Y
-    atomic64_dec_and_test(&map->usercnt)
-    READ_ONCE(timer->timer)
-                                            timer->time = t
-                                            // it won't work
-                                            smp_mb__before_atomic()
-                                            atomic64_read(&map->usercnt)
+I think it would be clearer if you used eg. "target CPU" or something to
+make it clear that you're not talking about the currently executing CPU.
 
-For the problem, it seems I need to replace smp_mb__before_atomic() by
-smp_mb() to fix the memory order, right ?
+cheers
 
-Regards,
-Hou
-
-[1]:
-https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
-                                                                
-
+> Correct detection of preempted CPUs is important for detecting idle
+> CPUs/cores in task scheduler.
 >
-> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
-> atomic_set_release() as follows:
+> Changelog:
+> v1 -> v2: Handle lppaca_of(cpu) in !PPC_SPLPAR case.
+> v1: https://lore.kernel.org/r/20231009051740.17683-1-srikar%40linux.vnet.ibm.com
+> 1. Fixed some compilation issues reported by kernelbot
+> a. https://lore.kernel.org/oe-kbuild-all/202310102341.K0sgoqQL-lkp@intel.com/
+> b.  https://lore.kernel.org/oe-kbuild-all/202310091636.lElmJkYV-lkp@intel.com/
+> 2. Resolved comments from Shrikanth
+
+That change log should appear below the break "---".
+
+> Tested-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+> Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+>  arch/powerpc/include/asm/paravirt.h | 42 ++++++++++++++++++++++++++---
+>  1 file changed, 39 insertions(+), 3 deletions(-)
 >
->         atomic_set_release(&rb->busy, 0);
->
-> This is no slower (and sometimes is faster) than the original, and also
-> provides a formal guarantee of ordering that the original lacks.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Acked-by: David Vernet <void@manifault.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: <bpf@vger.kernel.org>
->
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index f045fde632e5..0ee653a936ea 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
->  	/* Prevent the clearing of the busy-bit from being reordered before the
->  	 * storing of any rb consumer or producer positions.
->  	 */
-> -	smp_mb__before_atomic();
-> -	atomic_set(&rb->busy, 0);
-> +	atomic_set_release(&rb->busy, 0);
+> diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
+> index e08513d73119..0372b0093f72 100644
+> --- a/arch/powerpc/include/asm/paravirt.h
+> +++ b/arch/powerpc/include/asm/paravirt.h
+> @@ -71,6 +71,11 @@ static inline void yield_to_any(void)
+>  {
+>  	plpar_hcall_norets_notrace(H_CONFER, -1, 0);
+>  }
+> +
+> +static inline bool is_vcpu_idle(int vcpu)
+> +{
+> +	return lppaca_of(vcpu).idle;
+> +}
+>  #else
+>  static inline bool is_shared_processor(void)
+>  {
+> @@ -100,6 +105,10 @@ static inline void prod_cpu(int cpu)
+>  	___bad_prod_cpu(); /* This would be a bug */
+>  }
 >  
->  	if (flags & BPF_RB_FORCE_WAKEUP)
->  		irq_work_queue(&rb->work);
->
-> .
+> +static inline bool is_vcpu_idle(int vcpu)
+> +{
+> +	return false;
+> +}
+>  #endif
+>  
+>  #define vcpu_is_preempted vcpu_is_preempted
+> @@ -121,9 +130,19 @@ static inline bool vcpu_is_preempted(int cpu)
+>  	if (!is_shared_processor())
+>  		return false;
+>  
+> +	if (!(yield_count_of(cpu) & 1))
+> +		return false;
 
+Would be nice for that to have a short comment too.
+
+> +
+> +	/*
+> +	 * If CPU has yielded to Hypervisor but OS has not requested idle
+> +	 * then this CPU is definitely preempted.
+
+eg. If the target CPU has yielded to the Hypervisor, but the OS has not
+requested idle then the target CPU has definitely been preempted.
+
+> +	 */
+> +	if (!is_vcpu_idle(cpu))
+> +		return true;
+> +
+>  #ifdef CONFIG_PPC_SPLPAR
+>  	if (!is_kvm_guest()) {
+> -		int first_cpu;
+> +		int first_cpu, i;
+>  
+>  		/*
+>  		 * The result of vcpu_is_preempted() is used in a
+> @@ -149,11 +168,28 @@ static inline bool vcpu_is_preempted(int cpu)
+>  		 */
+>  		if (cpu_first_thread_sibling(cpu) == first_cpu)
+>  			return false;
+> +
+> +		/*
+> +		 * If any of the threads of this core is not preempted or
+> +		 * ceded, then consider this CPU to be non-preempted
+> +		 */
+
+eg. If any of the threads of the target CPU's core are not preempted or
+ceded, then consider that the target CPU is also not preempted.
+
+> +		first_cpu = cpu_first_thread_sibling(cpu);
+> +		for (i = first_cpu; i < first_cpu + threads_per_core; i++) {
+> +			if (i == cpu)
+> +				continue;
+> +			if (!(yield_count_of(i) & 1))
+> +				return false;
+> +			if (!is_vcpu_idle(i))
+> +				return true;
+> +		}
+>  	}
+>  #endif
+>  
+> -	if (yield_count_of(cpu) & 1)
+> -		return true;
+> +	/*
+> +	 * None of the threads in this core are running but none of
+> +	 * them were preempted too. Hence assume the thread to be
+> +	 * non-preempted.
+> +	 */
+>  	return false;
+>  }
+>  
+>
+> base-commit: eddc90ea2af5933249ea1a78119f2c8ef8d07156
+> -- 
+> 2.31.1
