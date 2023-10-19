@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518D67CF386
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E757CF395
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344977AbjJSJHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S1344936AbjJSJJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344979AbjJSJG5 (ORCPT
+        with ESMTP id S229830AbjJSJJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:06:57 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D20FE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:06:54 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso6918913f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697706413; x=1698311213; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yTzH6q/KHuyR0ZINbw+hcjZ5+0x6X/p2cjmFJ06sw1g=;
-        b=d65+L4mh9pZwErGX3oVoWaQdFL63XZeAQHi/pUp2L5XSdRkkVTY4uxHcNTUC8Xac5T
-         aSH+MCjYoqmwWxBAD2ohaPKxBCc5CiEVIvm5zPPKdF6yV0zhpa2B50MkAmia7l08xkZq
-         76Z3WkoZiEi+uDpCJVKypBuQ/hdc9f9gze1TTwdociCtzuHtSDTF+fi9M+ZlgfkbXncs
-         q27xu3r2nMymlSkVXE6U/RxJAyi00GhN2ni9mI5+6IdAy1loyIQ2tCk/BNwPSPUPw1py
-         AwGresZqeYx+qOnVoRtNj5GLVBVDEWJSpLS/GyMKO7w6wW8N7ewxebVtePrWFHYYSM7d
-         Ww0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697706413; x=1698311213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yTzH6q/KHuyR0ZINbw+hcjZ5+0x6X/p2cjmFJ06sw1g=;
-        b=ekbZBA/7iz4U//oKHLgEeXm1Z6Q4VYgq0KUzz4PXQxjLZ8kK6+d+XiKLhd6MEay/E8
-         ceYjh6BhNHUJ2ghhHPX/lJ72N1kR9LMz0scbzGkE8AUx+MjOxRgvevs/FUhMedduLFbf
-         ivEHOlL1ka9RPBJgBSKdhu9JRp1TRGEzuVSw6BMDdGiE+UqPgydDKLkonPrmqlQbzTvD
-         n3b5/vnmHDYyGj/FmHx+Nc6o+xwoU5WpTARxQ+9QTA7S9yhLmsOW6Lae/CaPlDV5L8oJ
-         TJs7V2feB8/BATGYvQjumknlU0eRQzruhyQL3hhRinXS/5dEWeZ5JgpsccID4Rr6u3Pn
-         qutQ==
-X-Gm-Message-State: AOJu0YysUVUjImAhy4i59Sryi2yrbV7Z7VzjMt7yaDngdV/SEANE4Q5s
-        WWvYcflXig2WDZnfWdKMN1J9jggikxRHQEHUqDOBkg==
-X-Google-Smtp-Source: AGHT+IHSkQS9qNtpAIEMi6sxLaFTkgi+j6Rf7WXRtDe59N4GEvIdt/PZ1MtRQGPplsiQPNtP0AvAANDdTsTJLGZENEE=
-X-Received: by 2002:adf:db4b:0:b0:32d:b06c:80b5 with SMTP id
- f11-20020adfdb4b000000b0032db06c80b5mr1127928wrj.2.1697706413344; Thu, 19 Oct
- 2023 02:06:53 -0700 (PDT)
+        Thu, 19 Oct 2023 05:09:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CF4FA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fV1z2k4nSBlPKGMGNKd/maV/mZhDZnPwFRFtW32f3fo=; b=K1b7Hf2LhVB6E13z5zda6/keba
+        4fAwViwwcN4+gapip1teVxU76FP7ZDPa0HhhwIvlnoihNglQON2CGcmSsyyYCiMLxVK2aqDiMQHGI
+        I3NVjMQ2oLhHu0iyiHYSc9bxrOv/Ie2DtU+3o19vw7Y1M0VHxcizpPAD8mYGUO+4FUzjethqdkPH4
+        Uyo0Ie3innAGpHzHlOZJZQ/LlOeJFvFXl17J1iSqVKaZh/nikebG/Cvj9bVSxRn5+TqqZvMhOpXKf
+        pFfLWgsP6uzwbz//dIcom7RTUc0tphqlCgqWlmkdJft50k6JYjKw3tWt9AF6czalG4lCu4E3QjjI+
+        zTX+zOjw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qtP09-009kPT-2G;
+        Thu, 19 Oct 2023 09:09:33 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 258C8300392; Thu, 19 Oct 2023 11:07:33 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 11:07:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Nadav Amit <namit@vmware.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Message-ID: <20231019090733.GR33217@noisy.programming.kicks-ass.net>
+References: <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231002151031.110551-1-alexghiti@rivosinc.com>
- <20231002151031.110551-5-alexghiti@rivosinc.com> <20231012-envision-grooving-e6e0461099f1@spud>
- <20231012-exclusion-moaner-d26780f9eb00@spud> <20231013-19d487ddc6b6efd6d6f62f88@orel>
-In-Reply-To: <20231013-19d487ddc6b6efd6d6f62f88@orel>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 19 Oct 2023 11:06:42 +0200
-Message-ID: <CAHVXubgZ12x5O4Uo404u8uL2qhrtdN5w-DQFvnBib3XhhtrK1Q@mail.gmail.com>
-Subject: Re: [PATCH 4/5] riscv: Suffix all page table entry pointers with 'p'
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor, Marco, Andrew,
-
-On Fri, Oct 13, 2023 at 11:58=E2=80=AFAM Andrew Jones <ajones@ventanamicro.=
-com> wrote:
->
-> On Thu, Oct 12, 2023 at 12:35:00PM +0100, Conor Dooley wrote:
-> > On Thu, Oct 12, 2023 at 12:33:15PM +0100, Conor Dooley wrote:
-> > > Hey Alex,
-> > >
-> > > On Mon, Oct 02, 2023 at 05:10:30PM +0200, Alexandre Ghiti wrote:
-> > > > That makes it more clear what the underlying type is, no functional
-> > > > changes intended.
-> > >
-> > > Scanning through stuff on patchwork, this really doesn't seem worth t=
-he
-> > > churn. I thought this sort of Hungarian notation-esque stuff was a
-> > > relic of a time before I could read & our docs even go as far as to
+On Wed, Oct 18, 2023 at 03:40:05PM -0700, Linus Torvalds wrote:
+> On Wed, 18 Oct 2023 at 14:40, Uros Bizjak <ubizjak@gmail.com> wrote:
 > >
-> > s/go/went/, I see the language got changed in more recent releases of
-> > the kernel!
->
-> The documentation seems to still be against it, but, despite that and
-> the two very valid points raised by Marco (backporting and git-blame),
-> I think ptep is special and I'm mostly in favor of this change. We may
-> not need to s/r every instance, but certainly functions which need to
-> refer to both the pte and the ptep representations of entries becomes
-> more clear when using the 'p' convention (and then it's nice to have
-> ptep used everywhere else too for consistency...)
->
-> Anyway, just my 2 cents.
+> > The ones in "raw" form are not IRQ safe and these are implemented
+> > without volatile qualifier.
+> 
+> You are misreading it.
+> 
+> Both *are* irq safe - on x86.
 
-I started changing that in one function and another one, and another
-one...etc up to every instance. I still think that it makes things
-clearer, but that's subjective, you raised valid points and I'd really
-like to see this land in 6.7 so I'll revert this patch and send a v2.
+Stronger, x86 arch code very much relies on them being NMI-safe. Which
+makes the generic implementation insufficient. 
 
-Thanks for your feedbacks,
-
-Alex
-
->
-> Thanks,
-> drew
+They *must* be single RmW instructions on x86.
