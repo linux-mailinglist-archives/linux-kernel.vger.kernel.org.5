@@ -2,167 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 294B67D00AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E0F7D005E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346271AbjJSRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        id S1345940AbjJSRVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346331AbjJSRfD (ORCPT
+        with ESMTP id S235472AbjJSRVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:35:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C9F137;
-        Thu, 19 Oct 2023 10:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697736900; x=1729272900;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oP1mt93DT3hlKeGPPwOROBVmLyrVMSuv6RGvzsjvmm8=;
-  b=PBiCIaOF48a4pooNWdBvV5L3TSXkRMYd6MpcaFlEIWGGBnwirtOJsArm
-   f/IIJGNn8acunyGJe+K9iiS9+j/92EBEfz1Amd5mDVVhJc7pbCDMjBZMa
-   cniZ2ppRyD465g1KpMknAMBzlQr5stD7R8G5cxG/6L4K3f70l0uRg838Z
-   DP1aeypv2crGzksU/eEbGq3+DI+d4SxyBJCSqbGiQSAikhiiUMlY8N5Xi
-   Zr8QClQW55bt3ny8P5shdxGrCkpveugGgLMbNkzQZobeUaVgxr4+6Wsd8
-   eUfTd/rrj3RFdJGmXsoWV+adhip6mINDQ5dFc/ygUTFATXXJWxy+rlFh1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="389184205"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="389184205"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:35:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760723540"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="760723540"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:34:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qtWg5-00000006wKs-45AS;
-        Thu, 19 Oct 2023 20:19:21 +0300
-Date:   Thu, 19 Oct 2023 20:19:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ferry Toth <ftoth@exalondelft.nl>
-Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
- find_pinctrl()"
-Message-ID: <ZTFlGUJYoMFf02iB@smile.fi.intel.com>
-References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
- <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
- <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
- <ZS7kY/+80Be4geGM@smile.fi.intel.com>
- <ZS7_5VGvRnw99gzd@google.com>
- <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
- <ZTBfFIyCsl2gkp6f@google.com>
- <ZTFeyt1PwxgC6ID1@smile.fi.intel.com>
+        Thu, 19 Oct 2023 13:21:38 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28335126
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:21:36 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507d7b73b74so401231e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697736094; x=1698340894; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ba/oGqTPfrZodec+lJ/3NDrbOWqxCdK6uYtuTP2TGGA=;
+        b=afmTc8K/SLzZTpp1+IeUfchAiseqdx1Y2MP9y/prtsVLSHI/WAJ03iwvaQOP4kNzOX
+         iAZZ6qvBi/fSVO54veAsr+dFCiBh2geFJyrMl3Tvx9OyWFPmeTdUIGAmp3w13WnEYV24
+         NFD1iAblKCGc2jJT3PPcurTdjd4Xhih8khA6SFQqMhijKQ2AeLoiKKabmzc9pAMdV0Sd
+         tUS6JGHC97F6gA6s47mvCZovRgIQVeKZ/IONeRWS4HqxVr1AZpbjWc2R/qlTY/51uJuF
+         wyH19REAmlMK5SqJDq6t6eI8qumh6ZzftsGlHdYS4qGfULmKH/lxPV4CzmUJSqEdLS0m
+         dXNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697736094; x=1698340894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ba/oGqTPfrZodec+lJ/3NDrbOWqxCdK6uYtuTP2TGGA=;
+        b=etMnIXr/QzFFPI97/+MybNOXuUYNmjZ73xH3CbHzwBLxC9IiSZJidnKnuOK93v6sLp
+         H8ElMymwFftDlRT5kq5pPBun5mqG+lZ0XGBJSVy4XzOIbiW7FZ+jv/Jxma/GmiApBvQ0
+         jvUJW186NIoyJ+EI6Ab6mPve32wlvIHiebOdRs8HvgVsHjqbvNCiEPBq3lEwkpypT2Ea
+         DLnju7cHoBlsNQjYUT1wtwOlzinBAgWrfvHUZXDQOWgiIBO/Zg6Wf9LsNsNMngR+8f/Z
+         xoO577fd4z6uDmy/B3jedFiwvNEOtF7bvTjttNvar2XgaaDp7ViIwNjK3fuhMT7voAp3
+         W3xQ==
+X-Gm-Message-State: AOJu0YxQDRvmHeAODVY8dRWgQgiXRa9hTnpfLWiYslESahZ8t5hYKsfO
+        qv2I/NTsKNik+Ug9nQDb+LEFoxrZ+BHl+hZOqEI=
+X-Google-Smtp-Source: AGHT+IEw1S6NU05auS21hPUpgUEtWHBaIpgBlqmM2ymYmNY63YBhI9iyVylaDIBYigt5b27qry9WKnNxtp4wXBURO9A=
+X-Received: by 2002:ac2:5a50:0:b0:500:b5db:990b with SMTP id
+ r16-20020ac25a50000000b00500b5db990bmr1944154lfn.47.1697736094137; Thu, 19
+ Oct 2023 10:21:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTFeyt1PwxgC6ID1@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+ <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com> <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 19 Oct 2023 19:21:22 +0200
+Message-ID: <CAFULd4b91Tr9Q2p4a20eusC+QO6O81gxY+nP-zpFiFKGTmLpYg@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     peterz@infradead.org, Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 07:52:26PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 18, 2023 at 03:41:24PM -0700, Dmitry Torokhov wrote:
-> > On Wed, Oct 18, 2023 at 08:01:23AM +0300, Andy Shevchenko wrote:
-> > > On Tue, Oct 17, 2023 at 02:43:01PM -0700, Dmitry Torokhov wrote:
-> > > > On Tue, Oct 17, 2023 at 10:45:39PM +0300, Andy Shevchenko wrote:
-> > > 
-> > > Thanks for your response.
+On Thu, Oct 19, 2023 at 7:00=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, 19 Oct 2023 at 00:04, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > Let me explain how the compiler handles volatile.
+>
+> We're talking past each other.
+>
+> You are talking about the volatile *memory* ops, and the the
+> difference that "raw" vs "this" would cause with and without the
+> "volatile".
+>
+> While *I* am now convinced that the memory ops aren't even an option,
+> because they will generate worse code, because pretty much all users
+> use the "this" version (which would have to use volatile),
 
-...
+Please see [1]. Even with volatile access, with memory ops the
+compiler can propagate operands, resulting in ~8k code size reduction,
+and many hundreds (if not thousands) MOVs propagated into subsequent
+instructions. Please note many code examples in [1]. This is not
+possible with the asm variant.
 
-> > > > I wonder, could you please post entire dmesg for your system?
-> > > 
-> > > Working, non-working or both?
-> > 
-> > Non working, especially if you also enable debug logs in
-> > drivers/mmc/host/sdhci-pci-core.c.
-> 
-> Here we are
-> https://paste.debian.net/hidden/5d778105/
+[1] https://lore.kernel.org/lkml/20231004192404.31733-1-ubizjak@gmail.com/
 
-For the sake of completeness
+> Because if we just stick with inline asms, the need for "volatile"
+> simply goes away.
 
-https://paste.debian.net/hidden/149933ac/
+No, the compiler is then free to remove or duplicate the asm (plus
+other unwanted optimizations), please see the end of chapter 6.47.2.1
+in [2].
 
-the working case on the same codebase (the hash is different due to patch that
-changes couple of BUG*() to WARN*(), other than that the code is identical).
+[2] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Extended-Asm.html#Volatil=
+e-1
 
-> > What I do not quite understand is that I think we should not be hitting
-> > the case where pinctrl is already created for the device, which is the
-> > code path my patch was changing. IIUIC we should be mostly executing the
-> > "pinctrl not found" path and that did not really change. Maybe you could
-> > also put some more annotations to show how/at what exact point the probe
-> > order changed? Maybe log find_pinctrl() calls and compare?
-> 
-> I see this order in dmesg
-> [   48.429681] sdhci-pci 0000:00:01.2: Mapped GSI37 to IRQ79
-> [   48.436219] sdhci-pci 0000:00:01.0: Mapped GSI0 to IRQ80
-> [   48.450347] sdhci-pci 0000:00:01.3: Mapped GSI38 to IRQ81
-> 
-> which suggests that PCI enabling devices are happening in parallel
-> (pcim_enable_device() in SDHCI PCI driver) and whoever wins first gets
-> the ID via IDA (see mmc_alloc_host() implementation). But PCI itself
-> guarantees that function 0 has to be always present, so the PCI itself
-> enumerates it _always_ in the same order (and we are talking about exactly
-> BDF == x:y.0 in this case).
-> 
-> > Linus, BTW, I think there are more problems there with pinctrl lookup,
-> > because, if we assume there are concurrent accesses to pinctrl_get(),
-> > the fact that we did not find an instance while scanning the list does
-> > not mean we will not find it when we go to insert a newly created one.
-> > 
-> > Another problem, as far as I can see, that there is not really a defined
-> > owner of pinctrl structure, it is created on demand, and destroyed when
-> > last user is gone. So if we execute last pintctrl_put() and there is
-> > another pinctrl_get() running simultaneously, we may get and bump up the
-> > refcount, and then release (pinctrl_free) will acquire the mutex, and
-> > zap the structure.
-> > 
-> > Given that there are more issues in that code, maybe we should revert
-> > the patch for now so Andy has a chance to convert to UUID/LABEL booting?
-> 
-> I'm testing a PoC of the script, so looks promising, but needs more time to
-> check other possibilities (see below) and deploy.
+> The existing volatile on those percpu inline asms is *wrong*. It's a
+> historical mistake.
 
-...
+Please see above.
 
-> > > > I think the right answer is "fix the userspace" really in this case. We
-> > > > could also try extend of_alias_get_id() to see if we could pass some
-> > > > preferred numbering on x86. But this will again be fragile if the
-> > > > knowledge resides in the driver and is not tied to a particular board
-> > > > (as it is in DT case): there could be multiple controllers, things will
-> > > > be shifting board to board...
-> > > 
-> > > Any suggestion how should it be properly done in the minimum shell environment?
-> > > (Busybox uses mdev with static tables IIRC and there is no fancy udev or so)
-> > 
-> > I'm not sure, so you have something like blkid running? You just need to
-> > locate the device and chroot there. This assumes you do have initramfs.
-> 
-> blkid shows UUID for the partition of interest and it doesn't have any label,
-> OTOH I could parse it for the specific template, while it's less reliable than
-> going via sysfs from PCI device name, that's defined by hardware and may not be
-> changed.
+> And with just a plain non-volatile inline asm, the inline asm wins.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Please see [1] for the code propagation argument.
 
+> It doesn't have the (bad) read-once behavior of a volatile memory op.
+>
+> And it also doesn't have the (horrible correctness issue)
+> rematerialization behavior of a non-volatile memory op.
 
+Unfortunately, it does. Without volatile, asm can be rematerialized in
+the same way as it can be CSEd. OTOH, the memory op with memory-ops
+approach is casted to volatile in this_* case, so it for sure won't
+get rematerialized.
+
+> A compiler that were to rematerializes an inline asm (instead of
+> spilling) would be a bad joke. That's not an optimization, that's just
+> a crazy bad compiler with a code generation bug.
+
+But that is what the compiler does without volatile.
+
+Thanks,
+Uros.
