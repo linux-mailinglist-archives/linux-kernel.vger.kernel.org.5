@@ -2,74 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F807CF311
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC4B7CF317
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344977AbjJSInc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
+        id S1345009AbjJSIoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345121AbjJSInI (ORCPT
+        with ESMTP id S1345017AbjJSInw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:43:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690E6D56
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697704924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vGK+hSgFfYjiRKwMyBTzzh6ZEkWcBlSDg4646KYldsk=;
-        b=QqKY2OWFAEH68SFQ1OJ3PiN03R+txtGgkUmJGC0KcRgUZpIX/ZMoMzV85piKgIwVEZ8VL/
-        WkGhqkqsHD8snf3coHadL1GCdujlMBn6irgPyk6o2KObm/WT9+8JpNMePNXAJ0Lfb75ENA
-        88B4EDxqnOGJqEIICa0cu96gE/KAAW4=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-503-LXUdJkkdPUmWA9UrEXDLBg-1; Thu, 19 Oct 2023 04:42:02 -0400
-X-MC-Unique: LXUdJkkdPUmWA9UrEXDLBg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9c15543088aso63095966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:42:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697704921; x=1698309721;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vGK+hSgFfYjiRKwMyBTzzh6ZEkWcBlSDg4646KYldsk=;
-        b=ftSAn+wvaVbBhlfmRdmJI1pd6rD3i+uVRTVU+nxBQcC/uJp8sKbOLA8j24Lkj5Ilwz
-         rUNr/UxSwFO8wgJQ/JGDWsoUXPRKoYoZEou9guiX9TVGmxltqQGi7UvQZnglu8KmPBGs
-         +Bvy4Hxa3BHmgD2RzrmnbYJtWx1PVPW4ebSdoOQuY/QoRA5ZdTXl/RuIA4rxw3gG/vim
-         n8ehd7iRfXLMs9JG7H2m/lJixsh62LdNPVZWs4cI8tN6ztMn7VmEbQ0iBUWcJWddMiTU
-         O1o6Oa3GzuQ4SzEMxhIFOUc/e04Cxikdi7o8DFv1E5zlpbpCdcNV7YXTI4QZA6iOvLkH
-         2S1A==
-X-Gm-Message-State: AOJu0YwrsIVKsYoBjklFR7V6EBb0tT5rax+vQCLwlFexOj4lczgr5XYW
-        hQDaJ/RI6EqJKtEWe0wSLvOdBbO2YX++6G0TwlQyv74uwfqNzbXPGIv4QlqaN9so0InC7cBKDgc
-        XhYY2D8hvN37f82LhNgeRqXpkAkQXaLSnSeJaloT0ayOqMThdWxTE5BjB904h9MFi9FYrfzVl1n
-        sy0tBCmK64
-X-Received: by 2002:a17:906:7951:b0:9b2:be5e:3674 with SMTP id l17-20020a170906795100b009b2be5e3674mr1197950ejo.36.1697704921694;
-        Thu, 19 Oct 2023 01:42:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGQ1BG4b6jNv9iIaBTLiXVkoHYtlB43Tr9jZFdJbu5AO5W4UbtvXIvAh56Wk8wNUVrypXZoPg==
-X-Received: by 2002:a17:906:7951:b0:9b2:be5e:3674 with SMTP id l17-20020a170906795100b009b2be5e3674mr1197925ejo.36.1697704921302;
-        Thu, 19 Oct 2023 01:42:01 -0700 (PDT)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id y4-20020a1709064b0400b009b947aacb4bsm3117049eju.191.2023.10.19.01.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 01:42:00 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: Declare flush_remote_tlbs{_range}() hooks
- iff HYPERV!=n
-In-Reply-To: <20231018192325.1893896-1-seanjc@google.com>
-References: <20231018192325.1893896-1-seanjc@google.com>
-Date:   Thu, 19 Oct 2023 10:41:59 +0200
-Message-ID: <87wmvj57hk.fsf@redhat.com>
+        Thu, 19 Oct 2023 04:43:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E801BC1;
+        Thu, 19 Oct 2023 01:43:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21C63C433C7;
+        Thu, 19 Oct 2023 08:43:16 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [GIT PULL] LoongArch fixes for v6.6-rc7
+Date:   Thu, 19 Oct 2023 16:42:27 +0800
+Message-Id: <20231019084227.4111684-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,110 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+The following changes since commit 58720809f52779dc0f08e53e54b014209d13eebb:
 
-> Declare the kvm_x86_ops hooks used to wire up paravirt TLB flushes when
-> running under Hyper-V if and only if CONFIG_HYPERV!=n.  Wrapping yet more
-> code with IS_ENABLED(CONFIG_HYPERV) eliminates a handful of conditional
-> branches, and makes it super obvious why the hooks *might* be valid.
->
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/kvm-x86-ops.h |  2 ++
->  arch/x86/include/asm/kvm_host.h    | 12 ++++++++++++
->  arch/x86/kvm/mmu/mmu.c             | 12 ++++--------
->  3 files changed, 18 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index 26b628d84594..f482216bbdb8 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -55,8 +55,10 @@ KVM_X86_OP(set_rflags)
->  KVM_X86_OP(get_if_flag)
->  KVM_X86_OP(flush_tlb_all)
->  KVM_X86_OP(flush_tlb_current)
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  KVM_X86_OP_OPTIONAL(flush_remote_tlbs)
->  KVM_X86_OP_OPTIONAL(flush_remote_tlbs_range)
-> +#endif
->  KVM_X86_OP(flush_tlb_gva)
->  KVM_X86_OP(flush_tlb_guest)
->  KVM_X86_OP(vcpu_pre_run)
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 7c228ae05df0..f0d1ac871465 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1614,9 +1614,11 @@ struct kvm_x86_ops {
->  
->  	void (*flush_tlb_all)(struct kvm_vcpu *vcpu);
->  	void (*flush_tlb_current)(struct kvm_vcpu *vcpu);
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	int  (*flush_remote_tlbs)(struct kvm *kvm);
->  	int  (*flush_remote_tlbs_range)(struct kvm *kvm, gfn_t gfn,
->  					gfn_t nr_pages);
-> +#endif
->  
->  	/*
->  	 * Flush any TLB entries associated with the given GVA.
-> @@ -1825,6 +1827,7 @@ static inline struct kvm *kvm_arch_alloc_vm(void)
->  #define __KVM_HAVE_ARCH_VM_FREE
->  void kvm_arch_free_vm(struct kvm *kvm);
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
->  static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
->  {
-> @@ -1836,6 +1839,15 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
->  }
->  
->  #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
-> +static inline int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn,
-> +						   u64 nr_pages)
-> +{
-> +	if (!kvm_x86_ops.flush_remote_tlbs_range)
-> +		return -EOPNOTSUPP;
-> +
-> +	return static_call(kvm_x86_flush_remote_tlbs_range)(kvm, gfn, nr_pages);
-> +}
-> +#endif /* CONFIG_HYPERV */
->  
->  #define kvm_arch_pmi_in_guest(vcpu) \
->  	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 5d3dc7119e57..0702f5234d69 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -271,15 +271,11 @@ static inline unsigned long kvm_mmu_get_guest_pgd(struct kvm_vcpu *vcpu,
->  
->  static inline bool kvm_available_flush_remote_tlbs_range(void)
->  {
-> +#if IS_ENABLED(CONFIG_HYPERV)
->  	return kvm_x86_ops.flush_remote_tlbs_range;
-> -}
-> -
-> -int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pages)
-> -{
-> -	if (!kvm_x86_ops.flush_remote_tlbs_range)
-> -		return -EOPNOTSUPP;
-> -
-> -	return static_call(kvm_x86_flush_remote_tlbs_range)(kvm, gfn, nr_pages);
-> +#else
-> +	return false;
-> +#endif
->  }
->  
->  static gfn_t kvm_mmu_page_get_gfn(struct kvm_mmu_page *sp, int index);
->
-> base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
+  Linux 6.6-rc6 (2023-10-15 13:34:39 -0700)
 
-Makes sense,
+are available in the Git repository at:
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.6-3
 
-I can take it to my CONFIG_KVM_HYPERV series but it doesn't seem to
-intersect with it so I guess there's no need for that.
+for you to fetch changes up to 278be83601dd1725d4732241f066d528e160a39d:
 
--- 
-Vitaly
+  LoongArch: Disable WUC for pgprot_writecombine() like ioremap_wc() (2023-10-18 08:42:52 +0800)
 
+----------------------------------------------------------------
+LoongArch fixes for v6.6-rc7
+
+Fix 4-level pagetable building, disable WUC for pgprot_writecombine()
+like ioremap_wc(), use correct annotation for exception handlers, and
+a trivial cleanup.
+----------------------------------------------------------------
+Huacai Chen (2):
+      LoongArch: Export symbol invalid_pud_table for modules building
+      LoongArch: Replace kmap_atomic() with kmap_local_page() in copy_user_highpage()
+
+Icenowy Zheng (1):
+      LoongArch: Disable WUC for pgprot_writecombine() like ioremap_wc()
+
+Tiezhu Yang (1):
+      LoongArch: Use SYM_CODE_* to annotate exception handlers
+
+ arch/loongarch/include/asm/io.h           |  5 ++---
+ arch/loongarch/include/asm/linkage.h      |  8 +++++++
+ arch/loongarch/include/asm/pgtable-bits.h |  4 +++-
+ arch/loongarch/kernel/entry.S             |  4 ++--
+ arch/loongarch/kernel/genex.S             | 16 +++++++-------
+ arch/loongarch/kernel/setup.c             | 10 ++++-----
+ arch/loongarch/mm/init.c                  |  9 ++++----
+ arch/loongarch/mm/tlbex.S                 | 36 +++++++++++++++----------------
+ 8 files changed, 51 insertions(+), 41 deletions(-)
