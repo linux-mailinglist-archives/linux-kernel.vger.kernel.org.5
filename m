@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846567CFD12
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D247CFD14
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346218AbjJSOlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S1346340AbjJSOlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346244AbjJSOlC (ORCPT
+        with ESMTP id S1346253AbjJSOlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:41:02 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D767819F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:58 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id ffacd0b85a97d-32da47641b5so3245237f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:57 -0700 (PDT)
+        Thu, 19 Oct 2023 10:41:03 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7834F1AC
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:59 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9c4ae201e0so763923276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697726456; x=1698331256; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697726458; x=1698331258; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=irFQ7vIeF55X7D9u5W+RRcx8opaM8C3jS63aHLA7bAc=;
-        b=dw6M0l9Vn5e5um04nwj+TMG74kz79Jt3XloJl1liicKmNTg4H9BmhepT/fTpiEY2m9
-         bM2cWQ4utXql0EGd5P6FP76FKn/6HjU7mtlZMwNPbARqBsR3Q/1HhmnbcoUwT+Kx7TqG
-         L4WCyJFOIp7hNZYSyv12uLjYBPo5chFO0eemstPBzD9EKuHa+kR5uqrCllQgFSTYAVco
-         BG1rryErxuVQRJBg2nl/eHFZA0nmE2ptzOAM5l3QKVVREHkd/M4+tO3fKswV7yaaFaOO
-         7Cnb1Ot4Vnjwst8T5kSZE/ZM9q9PawZqVK+1xHWiGYidTFF4nJq6+B5VqJqpu/52eIRa
-         iPfA==
+        bh=xM59NTfupiUDLHnq4Q6FLBD9y4loLd8ebx5nbjkuBV4=;
+        b=bz21T66uxR9MeF2ke4RlDSoO4aD0YRWDmX9rcdXkXewElXhORVd+iwza0sYAqeIoR+
+         VU+ocHF590WqXTFOK0aYDaW5H9xKAaDG5oN0WjBLG+t7hAyUS9f9QtOyS7W6E2dMHVs7
+         KRmeG+BBPagPQEfMcK6vapvcjGVIpzwv/FoPt+xGnQJM66ullp1GMjhmr4+SMf02IbEC
+         f6nBEryH3R8rQBZRH0aHAfpDIvAgCpUNWnNO8a7F/d0k7w/2BR9vxJ5wpBiW0G+jhW8O
+         HQ52xUAFLlyPkOTrt77+JGsnJ10cAcrrI60HbgNjBoCOKiLbZTr5HJG69wNaOWTuWCkI
+         Kc3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697726456; x=1698331256;
+        d=1e100.net; s=20230601; t=1697726458; x=1698331258;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=irFQ7vIeF55X7D9u5W+RRcx8opaM8C3jS63aHLA7bAc=;
-        b=LTdER/fz5BgM/iIsoU4u2kL3he2XxsS+BYEj7KCefVPfogP+jrF8GG0nrDJDXXOOXG
-         brV1/ZjQ6SQDXHJEvpLAQ6CBiDrDOjEPOXbBBv8Ja6NqLEDpkm/XEQ7oNbMgFptMSdRd
-         dUfg92opHa2lJCUkhNaZyY8M1Du4t43GmuKFVQmcXagYNB8Spb4OWOSZQnuiI4XkJz7d
-         3ca88+VTRnyL93OWqyX0P6ZXQHChcwV82J+G8rFuVHPh6H2RZRsJW910c0V4bItVHGTF
-         /I7BlOWMAHs3pnpVhQo0XsnT5ryp3dGiNxc5AmrzjyR70daAsjuz9D6QmGcLV0w3UQEQ
-         jARw==
-X-Gm-Message-State: AOJu0Yxwh8KBbSEvCrjUjEGmJkXfDipwfzdyZBzEKEaCQI26wxvQzZTS
-        IRmLNr1/W6b5lZnmzTcb1N0flnbxwqKYccHSnFE=
-X-Google-Smtp-Source: AGHT+IF3GoLo/wBW4dX66SazO0VPZ6uH7fDzq+LUToDEwWy58v8WzEAJKiwN+7yzyFy+eCcQyInhEjV76d/RlRrkn68=
+        bh=xM59NTfupiUDLHnq4Q6FLBD9y4loLd8ebx5nbjkuBV4=;
+        b=PTV1DC6U8KUwC/ba9xVBES1R6W9G3BIYXI/PKfbWwwrQ3IbFCCDWQuaIOWksUTZ78w
+         ck+UbdTtNcT93lujOq9opIZCL4K7V2Xok5VYI6/vjy0KAn2spxGGR6iDXUSwdVLCE62D
+         5CrSob3/n2uwxK/7jvkgr8qyPg/6SzYEsu+i5V30bTsyiXcPeAWY4hMXPvqBJZGTueNX
+         TzHaVZ54lFgaeOdnso6UUpI/LKMGNNWtZxp1PbuAD9Iy3M2xQaTRa+L/Qh+SQ/0UIn14
+         nOSkIUrLgfn2vaaq5l4OLD89Td9WWnhit4HzAODR+nB+OB9NGnrcn/b6lL9gXcLRPx4m
+         /pDw==
+X-Gm-Message-State: AOJu0YyfOnIBlUqilb78pOjjER7HqLjGcHv4o/fWSAY8cy78OoPxbIzr
+        9OwAnKit9bad5fp/x1BhPBBqBD+GLHN2iIEIME4=
+X-Google-Smtp-Source: AGHT+IG8PnUAgdVOzgFJnXSouFnnC8HLG+an2r3K1uH0YuVQiR/aIH437YP18wYS6/QUlklnP1Kr3S2Yt4L3/KAbUeU=
 X-Received: from seb.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:31bd])
- (user=sebastianene job=sendgmr) by 2002:a05:6000:1372:b0:32d:a860:3257 with
- SMTP id q18-20020a056000137200b0032da8603257mr19560wrz.13.1697726456175; Thu,
- 19 Oct 2023 07:40:56 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 14:40:27 +0000
+ (user=sebastianene job=sendgmr) by 2002:a05:6902:691:b0:d9a:fd4d:d536 with
+ SMTP id i17-20020a056902069100b00d9afd4dd536mr51027ybt.3.1697726458604; Thu,
+ 19 Oct 2023 07:40:58 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 14:40:28 +0000
 In-Reply-To: <20231019144032.2943044-1-sebastianene@google.com>
 Mime-Version: 1.0
 References: <20231019144032.2943044-1-sebastianene@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231019144032.2943044-7-sebastianene@google.com>
-Subject: [PATCH v2 05/11] arm64: ptdump: Introduce stage-2 pagetables format description
+Message-ID: <20231019144032.2943044-8-sebastianene@google.com>
+Subject: [PATCH v2 06/11] arm64: ptdump: Add hooks on debugfs file operations
 From:   Sebastian Ene <sebastianene@google.com>
 To:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
         akpm@linux-foundation.org, maz@kernel.org
@@ -70,134 +70,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an array which holds human readable information about the format of
-a stage-2 descriptor. The array is then used by the descriptor parser
-to extract information about the memory attributes.
+Introduce callbacks invoked when the debugfs entry is accessed from
+userspace. This hooks will allow us to allocate and prepare the memory
+resources used by ptdump when the debugfs file is opened/closed.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/mm/ptdump.c | 87 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+ arch/arm64/include/asm/ptdump.h |  3 +++
+ arch/arm64/mm/ptdump.c          |  1 +
+ arch/arm64/mm/ptdump_debugfs.c  | 34 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 37 insertions(+), 1 deletion(-)
 
+diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
+index 1f6e0aabf16a..88dcab1dab97 100644
+--- a/arch/arm64/include/asm/ptdump.h
++++ b/arch/arm64/include/asm/ptdump.h
+@@ -19,7 +19,10 @@ struct ptdump_info {
+ 	struct mm_struct		*mm;
+ 	const struct addr_marker	*markers;
+ 	unsigned long			base_addr;
++	void (*ptdump_prepare_walk)(struct ptdump_info *info);
+ 	void (*ptdump_walk)(struct seq_file *s, struct ptdump_info *info);
++	void (*ptdump_end_walk)(struct ptdump_info *info);
++	struct mutex			file_lock;
+ };
+ 
+ void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index d531e24ea0b2..58a4ea975497 100644
+index 58a4ea975497..fe239b9af50c 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
 @@ -24,6 +24,7 @@
  #include <asm/memory.h>
  #include <asm/pgtable-hwdef.h>
  #include <asm/ptdump.h>
-+#include <asm/kvm_pgtable.h>
++#include <asm/kvm_pkvm.h>
+ #include <asm/kvm_pgtable.h>
  
  
- enum address_markers_idx {
-@@ -171,6 +172,66 @@ static const struct prot_bits pte_bits[] = {
- 	}
- };
- 
-+static const struct prot_bits stage2_pte_bits[] = {
-+	{
-+		.mask	= PTE_VALID,
-+		.val	= PTE_VALID,
-+		.set	= " ",
-+		.clear	= "F",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_HI_S2_XN,
-+		.val	= KVM_PTE_LEAF_ATTR_HI_S2_XN,
-+		.set	= "XN",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R,
-+		.set	= "R",
-+		.clear	= " ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W,
-+		.set	= "W",
-+		.clear	= " ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_AF,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_AF,
-+		.set	= "AF",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= PTE_NG,
-+		.val	= PTE_NG,
-+		.set	= "FnXS",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= PTE_CONT,
-+		.val	= PTE_CONT,
-+		.set	= "CON",
-+		.clear	= "   ",
-+	}, {
-+		.mask	= PTE_TABLE_BIT,
-+		.val	= PTE_TABLE_BIT,
-+		.set	= "   ",
-+		.clear	= "BLK",
-+	}, {
-+		.mask	= KVM_PGTABLE_PROT_SW0,
-+		.val	= KVM_PGTABLE_PROT_SW0,
-+		.set	= "SW0", /* PKVM_PAGE_SHARED_OWNED */
-+	}, {
-+		.mask   = KVM_PGTABLE_PROT_SW1,
-+		.val	= KVM_PGTABLE_PROT_SW1,
-+		.set	= "SW1", /* PKVM_PAGE_SHARED_BORROWED */
-+	}, {
-+		.mask	= KVM_PGTABLE_PROT_SW2,
-+		.val	= KVM_PGTABLE_PROT_SW2,
-+		.set	= "SW2",
-+	}, {
-+		.mask   = KVM_PGTABLE_PROT_SW3,
-+		.val	= KVM_PGTABLE_PROT_SW3,
-+		.set	= "SW3",
-+	},
-+};
-+
- struct pg_level {
- 	const struct prot_bits *bits;
- 	const char *name;
-@@ -202,6 +263,26 @@ static struct pg_level pg_level[] = {
- 	},
- };
- 
-+static struct pg_level stage2_pg_level[] = {
-+	{ /* pgd */
-+		.name	= "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pud */
-+		.name	= (CONFIG_PGTABLE_LEVELS > 3) ? "PUD" : "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pmd */
-+		.name	= (CONFIG_PGTABLE_LEVELS > 2) ? "PMD" : "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pte */
-+		.name	= "PTE",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	},
-+};
-+
- static void dump_prot(struct pg_state *st, const struct prot_bits *bits,
- 			size_t num)
- {
-@@ -340,6 +421,12 @@ static void __init ptdump_initialize(void)
- 		if (pg_level[i].bits)
- 			for (j = 0; j < pg_level[i].num; j++)
- 				pg_level[i].mask |= pg_level[i].bits[j].mask;
-+
-+	for (i = 0; i < ARRAY_SIZE(stage2_pg_level); i++)
-+		if (stage2_pg_level[i].bits)
-+			for (j = 0; j < stage2_pg_level[i].num; j++)
-+				stage2_pg_level[i].mask |=
-+					stage2_pg_level[i].bits[j].mask;
+diff --git a/arch/arm64/mm/ptdump_debugfs.c b/arch/arm64/mm/ptdump_debugfs.c
+index 7564519db1e6..14619452dd8d 100644
+--- a/arch/arm64/mm/ptdump_debugfs.c
++++ b/arch/arm64/mm/ptdump_debugfs.c
+@@ -15,7 +15,39 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 	put_online_mems();
+ 	return 0;
  }
+-DEFINE_SHOW_ATTRIBUTE(ptdump);
++
++static int ptdump_open(struct inode *inode, struct file *file)
++{
++	int ret;
++	struct ptdump_info *info = inode->i_private;
++
++	ret = single_open(file, ptdump_show, inode->i_private);
++	if (!ret && info->ptdump_prepare_walk) {
++		mutex_lock(&info->file_lock);
++		info->ptdump_prepare_walk(info);
++	}
++	return ret;
++}
++
++static int ptdump_release(struct inode *inode, struct file *file)
++{
++	struct ptdump_info *info = inode->i_private;
++
++	if (info->ptdump_end_walk) {
++		info->ptdump_end_walk(info);
++		mutex_unlock(&info->file_lock);
++	}
++
++	return single_release(inode, file);
++}
++
++static const struct file_operations ptdump_fops = {
++	.owner		= THIS_MODULE,
++	.open		= ptdump_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= ptdump_release,
++};
  
- static struct ptdump_info kernel_ptdump_info = {
+ void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name)
+ {
 -- 
 2.42.0.655.g421f12c284-goog
 
