@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3E97D0131
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50027D01B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346379AbjJSSM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
+        id S1346212AbjJSSfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346346AbjJSSMZ (ORCPT
+        with ESMTP id S233250AbjJSSfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:12:25 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19E9121
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:12:23 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso1332870966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:12:23 -0700 (PDT)
+        Thu, 19 Oct 2023 14:35:23 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89D0BE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:35:20 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso4395066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:35:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697739142; x=1698343942;
+        d=1e100.net; s=20230601; t=1697740519; x=1698345319;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KzUTZ2tVIcLFVmnHYkHPd+CZ+4cvt+7WkUIii7z93Do=;
-        b=u3dkRZQKwvIunbH7GFtq5EvNFLy9ycDhM9+M0OJjTdb1IhdyEwAv85bQrtFbhyCpuN
-         H8ZJZ4Lrc2uWK5EmfWlFORSNxgxrAhZo1X/cPpFZXy1atx0CVtxYxvDlWsSDxG/pR8fU
-         nROURLL+WsJhMHDyVqMk+d28fh6JD4PCqroH4lMcxASqjjw0OtjvVkKgL3utjBGGs4fS
-         YROmHvrFBEy6o4fzKAopUhjZA410CDTE2To0SrpLz8xMlSsu9X705dGDyZOGvL5VyzCl
-         1dm75k6bUY3lax6GwK5BB4UwRbKedYH3oQa493tu6c5E+NGBQOPSzbc8L2p10MZX5UiF
-         fj/w==
-X-Gm-Message-State: AOJu0YyAqxaPExopZPL8a369g8j7HSb2o43c+oV4GsJpUcUhxAX8ni3h
-        cEppB1KrTfljCcaPUQgBV50=
-X-Google-Smtp-Source: AGHT+IHBA/9wkWMKmPNWkP1F2DqifJnqOHnwndMOD6AtTOI5m70bmuDz3vc44lW8x+4/svOXw9kGIg==
-X-Received: by 2002:a17:906:6a1b:b0:9ae:5fe1:ef01 with SMTP id qw27-20020a1709066a1b00b009ae5fe1ef01mr2065867ejc.37.1697739142233;
-        Thu, 19 Oct 2023 11:12:22 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170906408d00b009932337747esm3922300ejj.86.2023.10.19.11.12.21
+        bh=XsnS4a36dsfrPKrQ6qYn/NJN9B6BlESMsP3eWITabwo=;
+        b=WL6irb24fMopcMnyXyzl3E/n9NOpyi7IjS9sOQIGUrsyYZSDZurRR8hkJQsZgop6fc
+         QxNSCDpwB4D7gPcl9gbclnNlP1DQfB4qLIyLMhnMcgVGKxKMEeoPNTd7tjgY3vPVVe9Q
+         Vl2jRKFNB1/7e1kZmXP7vX1vb1Ewa4MNmpuIj3QIFLm3UjsxR/I18XxmWY9wFv0w+R+/
+         zSfPUaft+ZFFd888QclH09RMCf23uprnvLQI+1UdUhJvtJO7hvglNEQ+AJQg5AEizqxp
+         jGJ+eGsx7/6iWtzpGX0qccDIqNrz/bXe19lLr/qC4ODNbkoEKKqEBMzcEGObRk4GP3hT
+         JeHw==
+X-Gm-Message-State: AOJu0YzW8AFQkahBbSafAZ9eTVyV2FXCegYcow4woUNwIQLTRdGkrYti
+        bysYNDom4jk/sMxLH6srRE4=
+X-Google-Smtp-Source: AGHT+IHgpjjnpEoPBWb7hVMLNDJeLnKj6FdfWLTKJ0qUNAp6i+aMEnoi+nW/9iPpTQsPwBa09plvSg==
+X-Received: by 2002:a17:907:318c:b0:9a1:c447:3c62 with SMTP id xe12-20020a170907318c00b009a1c4473c62mr2580445ejb.49.1697740518711;
+        Thu, 19 Oct 2023 11:35:18 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-013.fbsv.net. [2a03:2880:31ff:d::face:b00c])
+        by smtp.gmail.com with ESMTPSA id qk2-20020a170906d9c200b009b97aa5a3aesm26052ejb.34.2023.10.19.11.35.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:12:21 -0700 (PDT)
+        Thu, 19 Oct 2023 11:35:18 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
         bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     leit@meta.com,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Cc:     leit@meta.com, Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kai Huang <kai.huang@intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
         64-BIT))
-Subject: [PATCH v5 02/12] x86/bugs: Rename CPU_IBPB_ENTRY to MITIGATION_IBPB_ENTRY
-Date:   Thu, 19 Oct 2023 11:11:48 -0700
-Message-Id: <20231019181158.1982205-3-leitao@debian.org>
+Subject: [PATCH v5 03/12] x86/bugs: Rename CALL_DEPTH_TRACKING to MITIGATION_CALL_DEPTH_TRACKING
+Date:   Thu, 19 Oct 2023 11:11:49 -0700
+Message-Id: <20231019181158.1982205-4-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
 References: <20231019181158.1982205-1-leitao@debian.org>
@@ -73,85 +88,210 @@ namespace.
 The mitigation options should have consistency and start with
 MITIGATION.
 
-Rename the Kconfig entry from CPU_IBPB_ENTRY to MITIGATION_IBPB_ENTRY.
+Rename the Kconfig entry from CALL_DEPTH_TRACKING to
+MITIGATION_CALL_DEPTH_TRACKING.
 
 Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- arch/x86/Kconfig                     |  2 +-
- arch/x86/include/asm/nospec-branch.h |  2 +-
- arch/x86/kernel/cpu/bugs.c           | 11 ++++++-----
- 3 files changed, 8 insertions(+), 7 deletions(-)
+ arch/x86/Kconfig                               |  4 ++--
+ arch/x86/include/asm/current.h                 |  2 +-
+ arch/x86/include/asm/disabled-features.h       |  2 +-
+ arch/x86/include/asm/nospec-branch.h           | 10 +++++-----
+ arch/x86/kernel/asm-offsets.c                  |  2 +-
+ arch/x86/kernel/cpu/bugs.c                     |  6 +++---
+ arch/x86/lib/retpoline.S                       |  6 +++---
+ scripts/Makefile.lib                           |  2 +-
+ tools/arch/x86/include/asm/disabled-features.h |  2 +-
+ 9 files changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d0a9f5a5c8a4..b8965bb7443b 100644
+index b8965bb7443b..4d64519311c4 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -2533,7 +2533,7 @@ config CALL_THUNKS_DEBUG
- 	  Only enable this when you are debugging call thunks as this
- 	  creates a noticeable runtime overhead. If unsure say N.
+@@ -2502,7 +2502,7 @@ config CPU_UNRET_ENTRY
+ 	help
+ 	  Compile the kernel with support for the retbleed=unret mitigation.
  
--config CPU_IBPB_ENTRY
-+config MITIGATION_IBPB_ENTRY
- 	bool "Enable IBPB on kernel entry"
- 	depends on CPU_SUP_AMD && X86_64
- 	default y
+-config CALL_DEPTH_TRACKING
++config MITIGATION_CALL_DEPTH_TRACKING
+ 	bool "Mitigate RSB underflow with call depth tracking"
+ 	depends on CPU_SUP_INTEL && HAVE_CALL_THUNKS
+ 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+@@ -2522,7 +2522,7 @@ config CALL_DEPTH_TRACKING
+ 
+ config CALL_THUNKS_DEBUG
+ 	bool "Enable call thunks and call depth tracking debugging"
+-	depends on CALL_DEPTH_TRACKING
++	depends on MITIGATION_CALL_DEPTH_TRACKING
+ 	select FUNCTION_ALIGNMENT_32B
+ 	default n
+ 	help
+diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/current.h
+index a1168e7b69e5..d4ff517cfbd1 100644
+--- a/arch/x86/include/asm/current.h
++++ b/arch/x86/include/asm/current.h
+@@ -17,7 +17,7 @@ struct pcpu_hot {
+ 			struct task_struct	*current_task;
+ 			int			preempt_count;
+ 			int			cpu_number;
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ 			u64			call_depth;
+ #endif
+ 			unsigned long		top_of_stack;
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index 702d93fdd10e..c1d3a5795618 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -69,7 +69,7 @@
+ # define DISABLE_UNRET		(1 << (X86_FEATURE_UNRET & 31))
+ #endif
+ 
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ # define DISABLE_CALL_DEPTH_TRACKING	0
+ #else
+ # define DISABLE_CALL_DEPTH_TRACKING	(1 << (X86_FEATURE_CALL_DEPTH & 31))
 diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index f93e9b96927a..0676b077207c 100644
+index 0676b077207c..64d9f0e87419 100644
 --- a/arch/x86/include/asm/nospec-branch.h
 +++ b/arch/x86/include/asm/nospec-branch.h
-@@ -289,7 +289,7 @@
-  * where we have a stack but before any RET instruction.
-  */
- .macro __UNTRAIN_RET ibpb_feature, call_depth_insns
--#if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
-+#if defined(CONFIG_RETHUNK) || defined(CONFIG_MITIGATION_IBPB_ENTRY)
- 	VALIDATE_UNRET_END
- 	ALTERNATIVE_3 "",						\
- 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+@@ -73,7 +73,7 @@
+ # define CALL_THUNKS_DEBUG_INC_CTXSW
+ #endif
+ 
+-#if defined(CONFIG_CALL_DEPTH_TRACKING) && !defined(COMPILE_OFFSETS)
++#if defined(CONFIG_MITIGATION_CALL_DEPTH_TRACKING) && !defined(COMPILE_OFFSETS)
+ 
+ #include <asm/asm-offsets.h>
+ 
+@@ -309,7 +309,7 @@
+ 
+ 
+ .macro CALL_DEPTH_ACCOUNT
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ 	ALTERNATIVE "",							\
+ 		    __stringify(ASM_INCREMENT_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
+ #endif
+@@ -357,7 +357,7 @@ extern void entry_ibpb(void);
+ 
+ extern void (*x86_return_thunk)(void);
+ 
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ extern void call_depth_return_thunk(void);
+ 
+ #define CALL_DEPTH_ACCOUNT					\
+@@ -371,12 +371,12 @@ DECLARE_PER_CPU(u64, __x86_ret_count);
+ DECLARE_PER_CPU(u64, __x86_stuffs_count);
+ DECLARE_PER_CPU(u64, __x86_ctxsw_count);
+ #endif
+-#else /* !CONFIG_CALL_DEPTH_TRACKING */
++#else /* !CONFIG_MITIGATION_CALL_DEPTH_TRACKING */
+ 
+ static inline void call_depth_return_thunk(void) {}
+ #define CALL_DEPTH_ACCOUNT ""
+ 
+-#endif /* CONFIG_CALL_DEPTH_TRACKING */
++#endif /* CONFIG_MITIGATION_CALL_DEPTH_TRACKING */
+ 
+ #ifdef CONFIG_RETPOLINE
+ 
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index 6913b372ccf7..a98020bf31bb 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -109,7 +109,7 @@ static void __used common(void)
+ 	OFFSET(TSS_sp2, tss_struct, x86_tss.sp2);
+ 	OFFSET(X86_top_of_stack, pcpu_hot, top_of_stack);
+ 	OFFSET(X86_current_task, pcpu_hot, current_task);
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ 	OFFSET(X86_call_depth, pcpu_hot, call_depth);
+ #endif
+ #if IS_ENABLED(CONFIG_CRYPTO_ARIA_AESNI_AVX_X86_64)
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 3c7e27b58f0e..1de4791091ca 100644
+index 1de4791091ca..b906ed4f3091 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -994,10 +994,10 @@ static void __init retbleed_select_mitigation(void)
- 		if (!boot_cpu_has(X86_FEATURE_IBPB)) {
- 			pr_err("WARNING: CPU does not support IBPB.\n");
- 			goto do_cmd_auto;
--		} else if (IS_ENABLED(CONFIG_CPU_IBPB_ENTRY)) {
-+		} else if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY)) {
- 			retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
+@@ -1003,15 +1003,15 @@ static void __init retbleed_select_mitigation(void)
+ 		break;
+ 
+ 	case RETBLEED_CMD_STUFF:
+-		if (IS_ENABLED(CONFIG_CALL_DEPTH_TRACKING) &&
++		if (IS_ENABLED(CONFIG_MITIGATION_CALL_DEPTH_TRACKING) &&
+ 		    spectre_v2_enabled == SPECTRE_V2_RETPOLINE) {
+ 			retbleed_mitigation = RETBLEED_MITIGATION_STUFF;
+ 
  		} else {
--			pr_err("WARNING: kernel not compiled with CPU_IBPB_ENTRY.\n");
-+			pr_err("WARNING: kernel not compiled with MITIGATION_IBPB_ENTRY.\n");
+-			if (IS_ENABLED(CONFIG_CALL_DEPTH_TRACKING))
++			if (IS_ENABLED(CONFIG_MITIGATION_CALL_DEPTH_TRACKING))
+ 				pr_err("WARNING: retbleed=stuff depends on spectre_v2=retpoline\n");
+ 			else
+-				pr_err("WARNING: kernel not compiled with CALL_DEPTH_TRACKING.\n");
++				pr_err("WARNING: kernel not compiled with MITIGATION_CALL_DEPTH_TRACKING.\n");
+ 
  			goto do_cmd_auto;
  		}
- 		break;
-@@ -1023,7 +1023,8 @@ static void __init retbleed_select_mitigation(void)
- 		    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
- 			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY))
- 				retbleed_mitigation = RETBLEED_MITIGATION_UNRET;
--			else if (IS_ENABLED(CONFIG_CPU_IBPB_ENTRY) && boot_cpu_has(X86_FEATURE_IBPB))
-+			else if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY) &&
-+				 boot_cpu_has(X86_FEATURE_IBPB))
- 				retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
- 		}
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index db813113e637..910fd231b7d2 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -71,7 +71,7 @@ SYM_CODE_END(__x86_indirect_thunk_array)
+ #include <asm/GEN-for-each-reg.h>
+ #undef GEN
  
-@@ -2482,13 +2483,13 @@ static void __init srso_select_mitigation(void)
- 		break;
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ .macro CALL_THUNK reg
+ 	.align RETPOLINE_THUNK_SIZE
  
- 	case SRSO_CMD_IBPB:
--		if (IS_ENABLED(CONFIG_CPU_IBPB_ENTRY)) {
-+		if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY)) {
- 			if (has_microcode) {
- 				setup_force_cpu_cap(X86_FEATURE_ENTRY_IBPB);
- 				srso_mitigation = SRSO_MITIGATION_IBPB;
- 			}
- 		} else {
--			pr_err("WARNING: kernel not compiled with CPU_IBPB_ENTRY.\n");
-+			pr_err("WARNING: kernel not compiled with MITIGATION_IBPB_ENTRY.\n");
- 		}
- 		break;
+@@ -318,7 +318,7 @@ __EXPORT_THUNK(entry_untrain_ret)
  
+ #endif /* CONFIG_CPU_UNRET_ENTRY || CONFIG_CPU_SRSO */
+ 
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ 
+ 	.align 64
+ SYM_FUNC_START(call_depth_return_thunk)
+@@ -350,7 +350,7 @@ SYM_FUNC_START(call_depth_return_thunk)
+ 	int3
+ SYM_FUNC_END(call_depth_return_thunk)
+ 
+-#endif /* CONFIG_CALL_DEPTH_TRACKING */
++#endif /* CONFIG_MITIGATION_CALL_DEPTH_TRACKING */
+ 
+ /*
+  * This function name is magical and is used by -mfunction-return=thunk-extern
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 68d0134bdbf9..cc44c95c49cc 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -254,7 +254,7 @@ objtool := $(objtree)/tools/objtool/objtool
+ 
+ objtool-args-$(CONFIG_HAVE_JUMP_LABEL_HACK)		+= --hacks=jump_label
+ objtool-args-$(CONFIG_HAVE_NOINSTR_HACK)		+= --hacks=noinstr
+-objtool-args-$(CONFIG_CALL_DEPTH_TRACKING)		+= --hacks=skylake
++objtool-args-$(CONFIG_MITIGATION_CALL_DEPTH_TRACKING)	+= --hacks=skylake
+ objtool-args-$(CONFIG_X86_KERNEL_IBT)			+= --ibt
+ objtool-args-$(CONFIG_FINEIBT)				+= --cfi
+ objtool-args-$(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL)	+= --mcount
+diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
+index fafe9be7a6f4..3d61b2432991 100644
+--- a/tools/arch/x86/include/asm/disabled-features.h
++++ b/tools/arch/x86/include/asm/disabled-features.h
+@@ -69,7 +69,7 @@
+ # define DISABLE_UNRET		(1 << (X86_FEATURE_UNRET & 31))
+ #endif
+ 
+-#ifdef CONFIG_CALL_DEPTH_TRACKING
++#ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+ # define DISABLE_CALL_DEPTH_TRACKING	0
+ #else
+ # define DISABLE_CALL_DEPTH_TRACKING	(1 << (X86_FEATURE_CALL_DEPTH & 31))
 -- 
 2.34.1
 
