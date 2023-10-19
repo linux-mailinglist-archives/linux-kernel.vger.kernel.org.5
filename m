@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C53297D0055
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240767D005D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346151AbjJSROq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S1345484AbjJSRVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbjJSROo (ORCPT
+        with ESMTP id S233017AbjJSRU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:14:44 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF4C106;
-        Thu, 19 Oct 2023 10:14:42 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JGM1t2018904;
-        Thu, 19 Oct 2023 17:14:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=zvoS9bMPhzzMF3tou0VZrB8JXEoraLA843fYSqg5hws=;
- b=jvo6izvlWGta4R14+0jzMk3QcM0AUxLPrP0kUP4EyxxVm13Uv+W99wWjVbvWt+BqdoO9
- huyg8EvjYX5TNeRqz6gqdbvOXQOGy2ktT24YkSGeqsYHq3As8xY166uge2p0+17MBOtA
- QpM7sBXyPkafBMpuKVXvEySp0F3MHNAOpP76++7c+BFkxV+3SWmKcHglD+FjoTEfa/rJ
- W3n8cNfultTVuzXq+8v2njE43MnMQz7pfuCAfmp04VFOymi7Vhdx5Kn5QPumGGuNDv8i
- FhKbT9Xfkp55TS9kP/IuNoMMC6mfcDLU0CQrTdkEU337TUZJjOpuQHg0S7hp3pEWJPxR uA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tu1t6s24m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 17:14:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JHEbDI021346
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 17:14:37 GMT
-Received: from [10.48.241.70] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
- 2023 10:14:36 -0700
-Message-ID: <acc17669-2023-4658-a0d7-a3317aaf93ad@quicinc.com>
-Date:   Thu, 19 Oct 2023 10:14:36 -0700
+        Thu, 19 Oct 2023 13:20:58 -0400
+X-Greylist: delayed 313 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 Oct 2023 10:20:56 PDT
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA38A126;
+        Thu, 19 Oct 2023 10:20:56 -0700 (PDT)
+Received: from localhost ([31.220.118.173]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mnq4Q-1rIPAX3aHa-00pMUm; Thu, 19 Oct 2023 19:15:23 +0200
+Date:   Thu, 19 Oct 2023 19:15:22 +0200
+From:   Andreas Klinger <ak@it-klinger.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: bmp280: fix eoc interrupt usage
+Message-ID: <ZTFkKl6Qu4vpfcC4@anderl>
+References: <20231018152816.56589-1-ak@it-klinger.de>
+ <20231019162209.18872-1-ak@it-klinger.de>
+ <ZTFfRaShatWdxGB9@smile.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] wifi: ath11k: fix temperature event locking
-Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>
-CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20231019153115.26401-1-johan+linaro@kernel.org>
- <20231019153115.26401-2-johan+linaro@kernel.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231019153115.26401-2-johan+linaro@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TM-SAViKT_2mnuqUy9NfHbbhKBcv8E3r
-X-Proofpoint-ORIG-GUID: TM-SAViKT_2mnuqUy9NfHbbhKBcv8E3r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_16,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 malwarescore=0 mlxlogscore=503 phishscore=0 spamscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310190146
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTFfRaShatWdxGB9@smile.fi.intel.com>
+X-Provags-ID: V03:K1:MbuB95zQCzJCAuRmy9TbJEeUL+5uuxt06CS/DYsZ3ucmOQh4Qh3
+ tPnLIhM//dKKDbbYjbdNYrdjXndTFiCszas8Nz4UrKW1dsKCs7dKcv1Qp+HzsNgpfbZ+rv2
+ 47LPVi4da7N6P0uBk1qdpyicwB3aaTaJ6kp7gTDCnto70Vn5Y9fc+Q6i0XcXcbde0YgG0J0
+ Zqpjj+bcedRs7kffuOh9A==
+UI-OutboundReport: notjunk:1;M01:P0:8hVPFhKhLK8=;eztUtI2Qv6usiHJlHiN8ptlPj04
+ 2xuPNcmH3Cn4jhkvgtlYiZwUrvofz2zGtBfD8Z53AG+F9FXzc3cSZMheGjOOxL1G57lXhCvw8
+ O53xNPxnq29dRBCmj+VpIlz+2eoVWhIBH8P0xJFcx0hBbSltAMOqAkSQweJBEoXR1Svlw7W6Z
+ 0cHx7yAlpbG4pR3yFvEBglxIRM8avdsouO3i9TWvonlL5yy5uP0xl/evHJuofNpcSaR7XMedG
+ vFUYML2Chek9CshUbpylNG8bqK2FYgLMDB+27Gu1WbZKMlwtHOB64Pj94TV3yuhtSzRli0Ypo
+ ZtPwH+MihBvh8CCxIhHYjbV5Oy79DKyYpouv5iK5Kb1EhW0d9OX27Zsd8ln4MZFzsGc3E3kKw
+ UYzidNZtcewFV10ntUjEaw6LqtaZc/iY6qr0m11wLF129YQIpXMNjlZnbAJTn5nM4x8FmkS0V
+ lM7SCDjNTa0uSAlMfSFJRi4R3Ingy72l6ndDvNUlwbe/GXvnLl8wbVxP1U4/WngKy5ClUfkgj
+ gLG0WWU7LKHTKwCyKvGqVQ5FrpLXODodURfJNEYeyN6YRgge0mqtu6PMQ5tflmeMkI6x2aI22
+ +LUELIXll2feIXlIrV6zwkL+WrdZEla9SJF/ednSb/lcA4RkuUkMVLR2srFie90/veMa/foW7
+ 8R9wQm80ud/GYZhOVxvvWqEfjfUV7XTgpacQxP6Zsiun8DEg9bE/ryL2IU0wIAMvBFh0h4yYA
+ SsL3jvjy48OiuvzHsiwija3OcpC5kO+yiGWCYtEBtFp6rNI38QGpPH+jbMb/qJ1JOo3taIZIB
+ XRImQ/3H8w/imGZSJ2wnw5zG5NxsOdFjM3SmvGq+Jfzlc/D6BNqCnNaFpBajQ5/ioyvoBD1Gu
+ w183fzSGJdob9NaaCYgX/eCZnavnO5tSP30A=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,34 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2023 8:31 AM, Johan Hovold wrote:
-> The ath11k active pdevs are protected by RCU but the temperature event
-> handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
-> read-side critical section as reported by RCU lockdep:
+Hi Andy,
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> schrieb am Do, 19. Okt 19:54:
+> On Thu, Oct 19, 2023 at 06:22:09PM +0200, Andreas Klinger wrote:
+> > Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
+> > bmp085 and bmp180 share the same chip id. Therefore it's necessary to
+> > distinguish the case in which the interrupt is set.
+> > 
+> > Fix the if statement so that only when the interrupt is set and the chip
+> > id is recognized the interrupt is requested.
+> > 
+> > This bug exists since the support of EOC interrupt was introduced.
 > 
-> 	=============================
-> 	WARNING: suspicious RCU usage
-> 	6.6.0-rc6 #7 Not tainted
-> 	-----------------------------
-> 	drivers/net/wireless/ath/ath11k/mac.c:638 suspicious rcu_dereference_check() usage!
+> > Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
 > 
-> 	other info that might help us debug this:
+> As Jonathan already commented, this is part of a tag block below...
 > 
-> 	rcu_scheduler_active = 2, debug_locks = 1
-> 	no locks held by swapper/0/0.
-> 	...
-> 	Call trace:
-> 	...
-> 	 lockdep_rcu_suspicious+0x16c/0x22c
-> 	 ath11k_mac_get_ar_by_pdev_id+0x194/0x1b0 [ath11k]
-> 	 ath11k_wmi_tlv_op_rx+0xa84/0x2c1c [ath11k]
-> 	 ath11k_htc_rx_completion_handler+0x388/0x510 [ath11k]
+> > Also add a link to bmp085 datasheet for reference.
+> > 
 > 
-> Mark the code in question as an RCU read-side critical section to avoid
-> any potential use-after-free issues.
+> ...somewhere here.
 > 
-> Fixes: a41d10348b01 ("ath11k: add thermal sensor device support")
-> Cc: stable@vger.kernel.org      # 5.7
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> > Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+> > ---
+> >  v1 -> v2: Remove extra space (seen by Andy)
+> 
+> 
+> And seems Jonathan mentioned that this is already fixed in his tree.
+> Did I understand that correctly?
+
+I just read it in the archive. For some reason I didn't get Jonathans mail
+yesterday. Sorry for the spam.
+
+Andreas
 
