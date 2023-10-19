@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C33387CF663
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178267CF66D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345324AbjJSLOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
+        id S1345340AbjJSLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjJSLOe (ORCPT
+        with ESMTP id S1345336AbjJSLPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:14:34 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5145E112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:14:30 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxXOqUDzFl3i0zAA--.6397S3;
-        Thu, 19 Oct 2023 19:14:28 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbS+GDzFlXL4qAA--.24527S3;
-        Thu, 19 Oct 2023 19:14:27 +0800 (CST)
-Message-ID: <a23cfd62-af09-4aa3-902e-bb34756275c6@loongson.cn>
-Date:   Thu, 19 Oct 2023 19:14:13 +0800
+        Thu, 19 Oct 2023 07:15:21 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28C11F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:15:19 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtQzV-0000sz-RB; Thu, 19 Oct 2023 13:15:01 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtQzU-002mGC-Us; Thu, 19 Oct 2023 13:15:00 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtQzU-004CE1-2r;
+        Thu, 19 Oct 2023 13:15:00 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org,
+        Alexander Stein <alexander.stein@ew.tq-group.com>
+Subject: [PATCH net-next v3 0/3] fix forced link mode for KSZ886X switches
+Date:   Thu, 19 Oct 2023 13:14:57 +0200
+Message-Id: <20231019111459.1000218-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/loongson: Add support for the DC in LS2K1000 SoC
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Icenowy Zheng <uwu@icenowy.me>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20231011162638.819080-1-suijingfeng@loongson.cn>
- <26565c5e13e72c64214a7f67ab6f2d9d876fa4bd.camel@icenowy.me>
- <037ec619-c170-4ca6-897e-04fccd58c62a@loongson.cn>
- <76nxdwa6m7qyqvala4akc2rptuylhrqyoz2x5rjua4hppoxk7x@wwn37gwuvrms>
-Content-Language: en-US
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <76nxdwa6m7qyqvala4akc2rptuylhrqyoz2x5rjua4hppoxk7x@wwn37gwuvrms>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxbS+GDzFlXL4qAA--.24527S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Jr1kWr18AFy8KF4xKF43XFc_yoW8JF18pa
-        y5CanxKFs7tF1fAFy8twn5uF4Svr4ftr1Uu3yxCr1UW3ZrGw10va13Krn0kFy5Grn29a42
-        gw4YkFWFywnrAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWU
-        AwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1V
-        AFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xII
-        jxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4
-        A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI
-        43ZEXa7IU8fsqJUUUUU==
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -69,39 +62,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+changes v3:
+- squash patch 1 and 2
+- use genphy_config_aneg() instead of genphy_setup_forced()
 
+changes v2:
+- address kernel test robot warning
+- change comment explaining clearing of KSZ886X_CTRL_FORCE_LINK bit
+- s/PHY we create/PHY will create/
 
-On 2023/10/19 16:11, Maxime Ripard wrote:
-> On Fri, Oct 13, 2023 at 06:28:01PM +0800, Sui Jingfeng wrote:
->> Hi,
->>
->>
->> On 2023/10/13 16:22, Icenowy Zheng wrote:
->>> 在 2023-10-12星期四的 00:26 +0800，Sui Jingfeng写道：
->>>> LS2K1000 is a low end SoC (two core 1.0gHz), it don't has dedicated
->>>> VRAM.
->>>> It requires the framebuffer to be phisically continguous to scanout.
->>>> The
->>>> display controller in LS2K1000 don't has built-in GPIO hardware, the
->>>> structure (register bit field) of its pixel, DC, GPU, DDR PLL are
->>>> also
->>>> defferent from other model. But for the display controller itself,
->>>> Most of
->>>> hardware features of it are same with ls7a1000.
->>>>
->>>> Below is a simple dts for it.
->>> Why don't you write a proper, YAML-formatted binding?
->>>
->> This patch use only one DT property, that is the "memory-region = <&display_reserved>;".
->> But the memory-region property is a common property, I means that everyone know how to
->> use this property. I'm not sure the if YAML documentation is strictly required now.
-> AFAIK it is, and even if it's not, please do it.
+Oleksij Rempel (2):
+  net: dsa: microchip: ksz8: Enable MIIM PHY Control reg access
+  net: phy: micrel: Fix forced link mode for KSZ886X switches
 
-OK, thanks a lot for the feedback.
-I will try to solve this problem at the next version.
-I'm preparing the next version.
+ drivers/net/dsa/microchip/ksz8795.c | 86 ++++++++++++++++++++++++++++-
+ drivers/net/phy/micrel.c            | 22 ++++++++
+ include/linux/micrel_phy.h          |  4 ++
+ 3 files changed, 109 insertions(+), 3 deletions(-)
 
-
-> Maxime
+-- 
+2.39.2
 
