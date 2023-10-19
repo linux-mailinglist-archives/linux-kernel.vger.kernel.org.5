@@ -2,389 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1ED7CF851
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB3A7CF7FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345649AbjJSMHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S1345596AbjJSMDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345635AbjJSMGf (ORCPT
+        with ESMTP id S1345484AbjJSMDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:06:35 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A517B1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:04:34 -0700 (PDT)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231019120432epoutp04a7e369adda816c20361a84a470e60b0c~PgK7Wo0P61483214832epoutp04P
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:04:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231019120432epoutp04a7e369adda816c20361a84a470e60b0c~PgK7Wo0P61483214832epoutp04P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697717072;
-        bh=OJzVFQCb3WofjpZljeXnGBqYi+B32Cvdl/hefyKURJs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bi8CLoPCBUmwkFvI/JVM4HyjYompNST0RPr4v+pEa4iOAJpzqflbnS3PLdfmS00jH
-         pRxadRjgOzlKgeRCJ//8cDRHLV0oPmW5Fh4d27nBbbDljV6Mec9a/8QQMCfC/DaJLJ
-         3evzsc1yY3IVK/bJE1geQygBVy7z3E0cnA7IEKPE=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20231019120432epcas5p358fff75117ff942f9f13e08d787f00c3~PgK6pE52f1178011780epcas5p3f;
-        Thu, 19 Oct 2023 12:04:32 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.182]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4SB5xC01K8z4x9Pr; Thu, 19 Oct
-        2023 12:04:31 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        55.42.09672.E4B11356; Thu, 19 Oct 2023 21:04:30 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231019111014epcas5p461d1c994f489b9c71a6baf18922146b5~PfbhDQAmH2188221882epcas5p45;
-        Thu, 19 Oct 2023 11:10:14 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231019111014epsmtrp206f0641b0b89b0ccb652fcd40d91ffb5~PfbhA7aMl1629616296epsmtrp2T;
-        Thu, 19 Oct 2023 11:10:14 +0000 (GMT)
-X-AuditID: b6c32a4b-60bfd700000025c8-e8-65311b4e2145
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        11.77.07368.69E01356; Thu, 19 Oct 2023 20:10:14 +0900 (KST)
-Received: from green245.sa.corp.samsungelectronics.net (unknown
-        [107.99.41.245]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231019111011epsmtip107621e0d42a07c717dbe65573354f61f~Pfbdemp6B2869028690epsmtip1R;
-        Thu, 19 Oct 2023 11:10:10 +0000 (GMT)
-From:   Nitesh Shetty <nj.shetty@samsung.com>
-To:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        nitheshshetty@gmail.com, anuj1072538@gmail.com,
-        gost.dev@samsung.com, mcgrof@kernel.org,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        Vincent Fu <vincent.fu@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v17 12/12] null_blk: add support for copy offload
-Date:   Thu, 19 Oct 2023 16:31:40 +0530
-Message-Id: <20231019110147.31672-13-nj.shetty@samsung.com>
-X-Mailer: git-send-email 2.35.1.500.gb896f729e2
-In-Reply-To: <20231019110147.31672-1-nj.shetty@samsung.com>
-MIME-Version: 1.0
+        Thu, 19 Oct 2023 08:03:10 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2070.outbound.protection.outlook.com [40.107.13.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833BE1A5;
+        Thu, 19 Oct 2023 05:03:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fmb4RyS7QzOztt3XbR/5Az1rwCoV1lI/+aHZB6ScQUR0M3pmyT5UxCzFlx287FOa0KkLGgjJ9gikjYUzEHwyeh6PQQIRlKlvyfb/HLM/lUP8miwo5XHyDM+TWIS7D+JpOwANgj+Y8PP/sPk/YOWikeeN2t/cmwHOLy+ZHre0eb4Tg2unApMzq9cMiWE+FVOqDzuqWGCfaf9SibDLOix/ENtWAah8S+v66FeUa8zqGXe4KC1Vv1IFy2eynRTODo57X0gzb7pLG1Do8vrBb1Hhui8ETVW+zwUi7xjTHBrTUY616T+S6G8kyhbHsmNZsyzCViHZT1wL0YZjJCKUljHGIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Rzzf97LsmU+lWqSsOyQlrJY54xVth6Jr1ark7Dz4Xr4=;
+ b=E96vCIp1Hb+eH2njUpONQVROTr8Gw6C9NR0n5q9zAXI0agdOFJVZcwKPWPJbviBPSZQDT6/0PG8SIx2wYW9WVBNwjuPKVHpRVjQGZWZT8adTZEq/7JW9xbIJSKyq5K0pidzl07mSfuKK4T1r1ajYIdJbwyjQgYURkD96R3LuZcDKgBmL0RW7PJ+jz8Ryl2iXb9Mcxe14iD3avRBQLyLEPEwu6kQRRaMmu8ZyBRFoJsV3LMeBmaMLko3pWdgtSYMBBslz05qYpvgAQIsrgylQF2tGdSQcIO2FHkZgjnAnGJKmR2vcYeLZGIFWpyd44tV34WBBfilNIm041FrAzsYfag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rzzf97LsmU+lWqSsOyQlrJY54xVth6Jr1ark7Dz4Xr4=;
+ b=CnvwUIGU+G1aeMKlkRKqZF8BI8Bz2sUJnlVmoqWpXLXnXUDM1r9HdGzyb7rvUGsHI6ZSYjUJLO1dO2ZzRCTo+o247142fOME4Y30SaFru7PbaPu4N2pGgzTZwL4ERWYJZhTpJSabbJLt3jCBSSe69cZ1Gk2p8WTOR3jBWFtfYPs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by DBBPR04MB7961.eurprd04.prod.outlook.com (2603:10a6:10:1ee::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.7; Thu, 19 Oct
+ 2023 12:02:54 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6933.008; Thu, 19 Oct 2023
+ 12:02:54 +0000
+From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+To:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        sebastian.tobuschat@oss.nxp.com,
+        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net-next v7 2/7] net: macsec: documentation for macsec_context and macsec_ops
+Date:   Thu, 19 Oct 2023 15:02:04 +0300
+Message-Id: <20231019120209.290480-3-radu-nicolae.pirea@oss.nxp.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231019120209.290480-1-radu-nicolae.pirea@oss.nxp.com>
+References: <20231019120209.290480-1-radu-nicolae.pirea@oss.nxp.com>
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TbVBUZRSe9967l4WJvHxNL8uEzKqZEOyusPhiUKDkXNMJZsqZ6M+6sNcF
-        gWXbjwDLAmFDIAElKheVDwkUkoXlI1D5GBAWsYVZyQWZELNdP9qCwDJHINp1sfz3nOec5zzv
-        Oe8cNu7Z4MJhp8hUjEImTuOSbkTn4JbNwe/4CRh+YV8o0o0O42jhryUCHSlbwVHTTCmJbIOL
-        AFn6CwBaMo7jqLr2NIFu9ndj6HLtCQydbxrC0IkBM0DWG1oM9UwHoZrP6wh0uecqgSYuniJR
-        Vb3VBRVPdpGowfAPhqbKrAB1WXIB6lyqwlGzbZ5AI9N+6JfiowCNrxhY0X50t3bGhR6/1UrQ
-        E0Y1rW8sJOm2us/o+20nAX3pZg5Jny0pZ9HH8uZIulszy6IXrNMEPd97g6RL2hsB3XbtY/qh
-        3p/WW37H4qkPUiOTGbGEUQQwsqQMSYpMGsXd865op0gYzhcECyLQNm6ATJzORHFj98YH70pJ
-        sy+HG/CROE1tp+LFSiWX90akIkOtYgKSM5SqKC4jl6TJw+QhSnG6Ui2ThsgY1XYBn79VaC/c
-        n5pc8cUIITftyrrbYmLlgObtRcCVDakwuDTVRRYBN7YndQnAtvvzLGewCGCNuQFzBo8ALG4v
-        xZ9JVsqHCGeiB8ALvUOYI+FJaTDY9OPGIsBmk1QQvLbKdtR4Uxoc9v30G3AEOPUYh2cNBtIh
-        8KJi4JQ5z8WBCWoTbDp+9yl2p16HhZYrpKMRpHiwdNbDQbva6ZbiWtxZ4gGvnrQQDoxT62Fe
-        RyXu6A+pMVdoXjiHOV8aC2tyO1hO7AV/NbS7ODEHPpzrIZ04E57/8hzpFOcDqJ3UAmfiTagZ
-        dYzMtjtsgbqLPCf9MqwYbcacxi/CY0uWNS932HXmGd4Av9NVr/X3hea/c9cwDU2mxbWVlgCo
-        X60ny0CA9rmBtM8NpP3fuhrgjcCXkSvTpYxSKA+VMZn/fXNSRroePL2YwD1d4M7tP0IGAMYG
-        AwCyca63+yaaz3i6S8TZhxhFhkihTmOUA0BoX/hxnOOTlGE/OZlKJAiL4IeFh4eHRYSGC7gv
-        uds0pyWelFSsYlIZRs4onukwtisnB+t4oe2eRzOsM7klzM3mShNmDSmdB4J5DzQ+VdetXnHq
-        3qwn/tm5K8O7XaMLloPlWW+59WGc+kPKVV39EXmm0WNkK9xdWSeKPfjDQtKrIaOFbx8c09Ua
-        W0FLyUxUXfnt/IqIQlHTt7q9R7N38OAGo+7Kvo3VWduGFyYkhxNjIj+13fqq/5uvo5fNOxPG
-        7vF6Dj9ZFyka7eeRRX/qP4xkkZs5gdP++z9pQ9b56xfivs9dlyxcHzC23Fpw5v2QoJZHjw8A
-        AeP7ikGaH4UWw8fjbYuDeOVrO4zcTJ+8GJ/35r2iY7xL7tgE2sLOlLjE3vGpfRXZiYOTp4qF
-        D7KY7p8jTEEKLqFMFgsCcYVS/C/00qlQugQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsWy7bCSnO40PsNUg637tSzWnzrGbPHx628W
-        i6YJf5ktVt/tZ7N4ffgTo8WTA+2MFr/Pnme2WLBoLovFzQM7mSz2LJrEZLFy9VEmi0mHrjFa
-        PL06i8li7y1ti4VtS1gs9uw9yWJxedccNov5y56yW3Rf38Fmsfz4PyaLGxOeMlrseNLIaLHt
-        93xmi3Wv37NYnLglbfG4u4PR4vzf46wO0h47Z91l9zh/byOLx+WzpR6bVnWyeWxeUu/xYvNM
-        Ro/dNxvYPBb3TWb16G1+x+axs/U+q8fHp7dYPN7vu8rm0bdlFaPH5tPVHp83yXlsevKWKUAg
-        issmJTUnsyy1SN8ugStjas8JloKLbhXPNlxkbWBcZ9XFyMkhIWAi8XfyUZYuRi4OIYHdjBIf
-        7l1hgkhISiz7e4QZwhaWWPnvOTtEUTOTxKmGdqAiDg42AW2J0/85QOIiAv3MEu/+TmcCcZgF
-        OlgkLmzbyw7SLSzgKHHjWjOYzSKgKrF64jMwm1fAWqLzyRE2kEESAvoS/fcFQcKcQOEN3YvA
-        FgsJWEk8WPAYqlxQ4uTMJywgNrOAvETz1tnMExgFZiFJzUKSWsDItIpRMrWgODc9N9mwwDAv
-        tVyvODG3uDQvXS85P3cTIzgFaGnsYLw3/5/eIUYmDsZDjBIczEoivKoeBqlCvCmJlVWpRfnx
-        RaU5qcWHGKU5WJTEeQ1nzE4REkhPLEnNTk0tSC2CyTJxcEo1MHEfmLBVP128dcb8Nd5Z4sw7
-        b/w4cLp9mn79k+1yRrNXle/1+Jqt/7Hw013ddxU8Sb80TN/WTV36eaK+//ant6UFcybc2GGk
-        GfvrbzPvIpkle+eEvjhxqky+PbfOrPC3XJ3x/V+y10/+nz4zyPqp7VSTnb+1197YvKmshf20
-        1dqtCUeKw79daFNeu2db7qLKd6fmSh7JrRI7PjsoxeO3/JeuFa9LmkJ5DLXU8wWuLnFZUXPN
-        xuTT1FaekqPBZ0V0rI2Vn77KX7lG48tdjxaelDNMc1nuiTQfXnm47YXd9s2bZj1/H3Bgy5N5
-        1fd2q749t6P6uN3y01dydksIrfuofeL9G84Pi9Xe5zTp+Hfv4IgIVmIpzkg01GIuKk4EAPOw
-        tuxwAwAA
-X-CMS-MailID: 20231019111014epcas5p461d1c994f489b9c71a6baf18922146b5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231019111014epcas5p461d1c994f489b9c71a6baf18922146b5
-References: <20231019110147.31672-1-nj.shetty@samsung.com>
-        <CGME20231019111014epcas5p461d1c994f489b9c71a6baf18922146b5@epcas5p4.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR08CA0236.eurprd08.prod.outlook.com
+ (2603:10a6:802:15::45) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|DBBPR04MB7961:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c869b69-0d86-4c25-8453-08dbd09b53b5
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GL5LrQl1xA5AYYpCHilSQHWv7eibXh0XMCgcrDCulfxx5TRONQ9vKVgbc8HJH1ZUO3iHMAnliCJEakQsdHnnEwmXjkmL/KICHmsK2kiBsYtFRr6MP/1KtKGOf1ritUDPTNuJcn4u2McG9aadT2Q+PQ/Co+MkBDCjfSd+Gh6Pi5tqZ/vXU5jYOF/l/rw236HGwQUtr3mxdOYIFby6bJZeTNpj4oW5k658hO9Ztn6dhTOzn8wCqgtKUDT/VH4PH2vLhaScX8TOzqhZQXHAVrhj5HXIU83KWb4arPXPzLGxN1o+JC6nFh4qNvHfTZ8VpytFbIe0bqmE+uO1OiSMuMyW7zG61h/XRLFLLdSQFgxyNhMnXPI1Kmokc2w9lIn1TQPCix/aHTce7Y94yv2HYumDrchGQOnKTuitKJslIarP6DsOP3ANlHtCTwGuclK5SvWBzEcjS/OU+B3kCCYSFKj1t08NS14jeAZPoPkglW4Psp+VVaTbUdLlbmxkvW1XwDiKSDyrxIrcSGMhxGOeA56YkJ3QTqSh6IqFSue/HC/oGT3dfqqSuFfm/l/B4FWX5m2xw950ewJqKpEq9OC+71+VEj7cQzedN8SI8QtvXNErfq6gmxtj7JL6nUsS4s7YzsXq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(39860400002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(38350700005)(41300700001)(6506007)(38100700002)(4326008)(8676002)(2906002)(7416002)(86362001)(83380400001)(1076003)(26005)(6512007)(2616005)(52116002)(5660300002)(6486002)(6666004)(478600001)(8936002)(316002)(66476007)(66556008)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/gyz/BvqYgo45mKTjl1GkR9KPORYAxMltipwQmLC5Mqn54Bn4lQk6PXuCiv+?=
+ =?us-ascii?Q?Zwst+HUPMbW1SKQsScHBE5wpYRPZFEzEY9C0ghId7CmuWCs64mawX6cYZzWV?=
+ =?us-ascii?Q?aBKUtR7amC+dHD7UtY4IU3WAK17yJTGwbRDDTBgCWS1/anFis9BNXSBOynw+?=
+ =?us-ascii?Q?Zqq0/bHrmasdK/0ahgJwPEa9qg0uYUPpnldLa9yHhM+QRRrWLniOc4xa3BPc?=
+ =?us-ascii?Q?0fGC27i5QbBU4cUzkPst1A0X68Qdga7h/qOgbM5RFYWVG5kmVFntECRqCOb6?=
+ =?us-ascii?Q?lCSft3qPmiZrcSp2OdSPGmE7zo1OBTmX8etnkLfI8yIggU/0OUzcLqeQGsWY?=
+ =?us-ascii?Q?x03I4NaN/JR1mPga5LmXlRV/p6vWYrxdmKltrMR4GWGqouVx2dxXNOpz+XKd?=
+ =?us-ascii?Q?BFrEo/zAn0zl7iqMPDIwausnxrE+0x3HnLL565WrCE6B6c1i4rjydwEL0LZ8?=
+ =?us-ascii?Q?OoAjvIEYwpVjK+1ZH3/iA5BnFKJiLL8kAPJfKJAZLEBO94X73TuNPD4Do/k4?=
+ =?us-ascii?Q?M//wjzhDIWjaRu0aW1aOSU6JEXWomxPsRju9lo60p00ygOM/k7zHCnk+ELDd?=
+ =?us-ascii?Q?t0iEhvYKYHCJpokWkeKhc1186sYabsIAlZQwtKuPecwMnD0i75USJkbqwVnq?=
+ =?us-ascii?Q?a+BczRVlLmKxP7yIhWBVvFcwzb2skHTmWU9Eek15HlIeME0Yz8WuLGU2butP?=
+ =?us-ascii?Q?0vP/DwchCX57lMU//teuDTL+SdbT4MKP+0spn0Nx8+PeA4f3Dqf/SEQNx++z?=
+ =?us-ascii?Q?/PTWT9ZLSerHWUh6pvJYz6HSKSzCfHX787G+fKaFa9PG2DHWZI0blGTrz9cg?=
+ =?us-ascii?Q?x4zX8VaaCBwp1nawxiUgyeiifGRKwZfvakLksVSOM+fijaj0ytmLxbQLJRWi?=
+ =?us-ascii?Q?RyNZpsHQ5Ko/CpJrk+bhb9m/rS7alC/ULo+1Apg5Kn/NFteJeJbp1B1EGofP?=
+ =?us-ascii?Q?H+ozh6+Fq7i2UKymKHqElx7feakDg+Jh3aDhGHA7SI69v0tuzwIbrOrkDa+C?=
+ =?us-ascii?Q?ngQyeAOuG/Wk0/gc4X16UtVXmTW03ra+yPmr4Lx4o0H4lV2NppCVlQLcnps2?=
+ =?us-ascii?Q?W4qov5Ibx9mBAuXUYx45lw4CtnR5AKg6chZlEVLCaOUm0olPtn0LHjDuvrYR?=
+ =?us-ascii?Q?OwR2NgMvRAAJRr85UVOWpY7g8ebj3ARlAV8K3FL+ZIq87kmTG4TqSofM79il?=
+ =?us-ascii?Q?Ox7V6iyP+ZRlYCdb6lV5kOJKeagWX35aO2xs/zs11qFB25WKH/LHYH9eiaCo?=
+ =?us-ascii?Q?snpIe0WYuYcjauNRyZsQG2PL2RA7fjv/ouNgmAJIjzLa6EjdoEK35vqPpCTi?=
+ =?us-ascii?Q?GoVKKZDp86Y18naZedMQzh6mKCljnxmjzeMRqB8ZEtl9wTOxp3Ue4bqjXz7p?=
+ =?us-ascii?Q?L9qdP4BAlzSdjbZICIHlHfUt+rFgUDgzp+9pnJ1ERsMn3zwWzeRe0CBKMUna?=
+ =?us-ascii?Q?/4Yf/HnF2kThmpDIlvgwX+o+Umuo4aeYj9zcjkF4kvqBiMtI4gZ0BN45w4+f?=
+ =?us-ascii?Q?qTsgg2n66Gi3H/AlrvnEqSEnvPp0wcJXv/iWpWhcmApNLVyUWT5c9ISSu8oP?=
+ =?us-ascii?Q?jCDcnzx04W77AgjS95Ybce6bL9OKFk6m4nvZ7qzNP9iSZr3yl1AGjAt9J3MQ?=
+ =?us-ascii?Q?Kg=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c869b69-0d86-4c25-8453-08dbd09b53b5
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 12:02:54.7492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ETvSnFqGmKXv9MgVgVu4rzzNjhNWZd9qq1RoPPGCdga5vSm0Wwx0CCoVHcHHVa0m9FQ3KJW+p2uv4AciX24IAps3nHLvxeCbrVkrWT4+wNc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7961
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementation is based on existing read and write infrastructure.
-copy_max_bytes: A new configfs and module parameter is introduced, which
-can be used to set hardware/driver supported maximum copy limit.
-Only request based queue mode will support for copy offload.
-Added tracefs support to copy IO tracing.
+Add description for fields of struct macsec_context and struct
+macsec_ops.
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Suggested-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
-Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-Signed-off-by: Vincent Fu <vincent.fu@samsung.com>
+Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
 ---
- Documentation/block/null_blk.rst  |  5 ++
- drivers/block/null_blk/main.c     | 97 ++++++++++++++++++++++++++++++-
- drivers/block/null_blk/null_blk.h |  1 +
- drivers/block/null_blk/trace.h    | 23 ++++++++
- 4 files changed, 123 insertions(+), 3 deletions(-)
+Changes in v7:
+- added update_pn description
 
-diff --git a/Documentation/block/null_blk.rst b/Documentation/block/null_blk.rst
-index 4dd78f24d10a..6153e02fcf13 100644
---- a/Documentation/block/null_blk.rst
-+++ b/Documentation/block/null_blk.rst
-@@ -149,3 +149,8 @@ zone_size=[MB]: Default: 256
- zone_nr_conv=[nr_conv]: Default: 0
-   The number of conventional zones to create when block device is zoned.  If
-   zone_nr_conv >= nr_zones, it will be reduced to nr_zones - 1.
-+
-+copy_max_bytes=[size in bytes]: Default: COPY_MAX_BYTES
-+  A module and configfs parameter which can be used to set hardware/driver
-+  supported maximum copy offload limit.
-+  COPY_MAX_BYTES(=128MB at present) is defined in fs.h
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index c56bef0edc5e..22361f4d5f71 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -160,6 +160,10 @@ static int g_max_sectors;
- module_param_named(max_sectors, g_max_sectors, int, 0444);
- MODULE_PARM_DESC(max_sectors, "Maximum size of a command (in 512B sectors)");
+Changes in v4-v6:
+- none
+
+Changes in v3:
+- improved description for the netdev and phydev fields
+- fixed typo in mdo_get_rx_sc_stats description
+
+Changes in v2:
+- patch added in v2
+
+ include/net/macsec.h | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index a5665e9623f2..0821fa5088c0 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -247,6 +247,23 @@ struct macsec_secy {
  
-+static unsigned long g_copy_max_bytes = BLK_COPY_MAX_BYTES;
-+module_param_named(copy_max_bytes, g_copy_max_bytes, ulong, 0444);
-+MODULE_PARM_DESC(copy_max_bytes, "Maximum size of a copy command (in bytes)");
-+
- static unsigned int nr_devices = 1;
- module_param(nr_devices, uint, 0444);
- MODULE_PARM_DESC(nr_devices, "Number of devices to register");
-@@ -412,6 +416,7 @@ NULLB_DEVICE_ATTR(home_node, uint, NULL);
- NULLB_DEVICE_ATTR(queue_mode, uint, NULL);
- NULLB_DEVICE_ATTR(blocksize, uint, NULL);
- NULLB_DEVICE_ATTR(max_sectors, uint, NULL);
-+NULLB_DEVICE_ATTR(copy_max_bytes, uint, NULL);
- NULLB_DEVICE_ATTR(irqmode, uint, NULL);
- NULLB_DEVICE_ATTR(hw_queue_depth, uint, NULL);
- NULLB_DEVICE_ATTR(index, uint, NULL);
-@@ -553,6 +558,7 @@ static struct configfs_attribute *nullb_device_attrs[] = {
- 	&nullb_device_attr_queue_mode,
- 	&nullb_device_attr_blocksize,
- 	&nullb_device_attr_max_sectors,
-+	&nullb_device_attr_copy_max_bytes,
- 	&nullb_device_attr_irqmode,
- 	&nullb_device_attr_hw_queue_depth,
- 	&nullb_device_attr_index,
-@@ -659,7 +665,8 @@ static ssize_t memb_group_features_show(struct config_item *item, char *page)
- 			"poll_queues,power,queue_mode,shared_tag_bitmap,size,"
- 			"submit_queues,use_per_node_hctx,virt_boundary,zoned,"
- 			"zone_capacity,zone_max_active,zone_max_open,"
--			"zone_nr_conv,zone_offline,zone_readonly,zone_size\n");
-+			"zone_nr_conv,zone_offline,zone_readonly,zone_size,"
-+			"copy_max_bytes\n");
- }
+ /**
+  * struct macsec_context - MACsec context for hardware offloading
++ * @netdev: a valid pointer to a struct net_device if @offload ==
++ *	MACSEC_OFFLOAD_MAC
++ * @phydev: a valid pointer to a struct phy_device if @offload ==
++ *	MACSEC_OFFLOAD_PHY
++ * @offload: MACsec offload status
++ * @secy: pointer to a MACsec SecY
++ * @rx_sc: pointer to a RX SC
++ * @update_pn: when updating the SA, update the next PN
++ * @assoc_num: association number of the target SA
++ * @key: key of the target SA
++ * @rx_sa: pointer to an RX SA if a RX SA is added/updated/removed
++ * @tx_sa: pointer to an TX SA if a TX SA is added/updated/removed
++ * @tx_sc_stats: pointer to TX SC stats structure
++ * @tx_sa_stats: pointer to TX SA stats structure
++ * @rx_sc_stats: pointer to RX SC stats structure
++ * @rx_sa_stats: pointer to RX SA stats structure
++ * @dev_stats: pointer to dev stats structure
+  */
+ struct macsec_context {
+ 	union {
+@@ -277,6 +294,28 @@ struct macsec_context {
  
- CONFIGFS_ATTR_RO(memb_group_, features);
-@@ -725,6 +732,7 @@ static struct nullb_device *null_alloc_dev(void)
- 	dev->queue_mode = g_queue_mode;
- 	dev->blocksize = g_bs;
- 	dev->max_sectors = g_max_sectors;
-+	dev->copy_max_bytes = g_copy_max_bytes;
- 	dev->irqmode = g_irqmode;
- 	dev->hw_queue_depth = g_hw_queue_depth;
- 	dev->blocking = g_blocking;
-@@ -1274,6 +1282,81 @@ static int null_transfer(struct nullb *nullb, struct page *page,
- 	return err;
- }
- 
-+static inline int nullb_setup_copy(struct nullb *nullb, struct request *req,
-+				   bool is_fua)
-+{
-+	sector_t sector_in = 0, sector_out = 0;
-+	loff_t offset_in, offset_out;
-+	void *in, *out;
-+	ssize_t chunk, rem = 0;
-+	struct bio *bio;
-+	struct nullb_page *t_page_in, *t_page_out;
-+	u16 seg = 1;
-+	int status = -EIO;
-+
-+	if (blk_rq_nr_phys_segments(req) != BLK_COPY_MAX_SEGMENTS)
-+		return status;
-+
-+	/*
-+	 * First bio contains information about source and last bio contains
-+	 * information about destination.
-+	 */
-+	__rq_for_each_bio(bio, req) {
-+		if (seg == blk_rq_nr_phys_segments(req)) {
-+			sector_out = bio->bi_iter.bi_sector;
-+			if (rem != bio->bi_iter.bi_size)
-+				return status;
-+		} else {
-+			sector_in = bio->bi_iter.bi_sector;
-+			rem = bio->bi_iter.bi_size;
-+		}
-+		seg++;
-+	}
-+
-+	trace_nullb_copy_op(req, sector_out << SECTOR_SHIFT,
-+			    sector_in << SECTOR_SHIFT, rem);
-+
-+	spin_lock_irq(&nullb->lock);
-+	while (rem > 0) {
-+		chunk = min_t(size_t, nullb->dev->blocksize, rem);
-+		offset_in = (sector_in & SECTOR_MASK) << SECTOR_SHIFT;
-+		offset_out = (sector_out & SECTOR_MASK) << SECTOR_SHIFT;
-+
-+		if (null_cache_active(nullb) && !is_fua)
-+			null_make_cache_space(nullb, PAGE_SIZE);
-+
-+		t_page_in = null_lookup_page(nullb, sector_in, false,
-+					     !null_cache_active(nullb));
-+		if (!t_page_in)
-+			goto err;
-+		t_page_out = null_insert_page(nullb, sector_out,
-+					      !null_cache_active(nullb) ||
-+					      is_fua);
-+		if (!t_page_out)
-+			goto err;
-+
-+		in = kmap_local_page(t_page_in->page);
-+		out = kmap_local_page(t_page_out->page);
-+
-+		memcpy(out + offset_out, in + offset_in, chunk);
-+		kunmap_local(out);
-+		kunmap_local(in);
-+		__set_bit(sector_out & SECTOR_MASK, t_page_out->bitmap);
-+
-+		if (is_fua)
-+			null_free_sector(nullb, sector_out, true);
-+
-+		rem -= chunk;
-+		sector_in += chunk >> SECTOR_SHIFT;
-+		sector_out += chunk >> SECTOR_SHIFT;
-+	}
-+
-+	status = 0;
-+err:
-+	spin_unlock_irq(&nullb->lock);
-+	return status;
-+}
-+
- static int null_handle_rq(struct nullb_cmd *cmd)
- {
- 	struct request *rq = cmd->rq;
-@@ -1283,13 +1366,16 @@ static int null_handle_rq(struct nullb_cmd *cmd)
- 	sector_t sector = blk_rq_pos(rq);
- 	struct req_iterator iter;
- 	struct bio_vec bvec;
-+	bool fua = rq->cmd_flags & REQ_FUA;
-+
-+	if (op_is_copy(req_op(rq)))
-+		return nullb_setup_copy(nullb, rq, fua);
- 
- 	spin_lock_irq(&nullb->lock);
- 	rq_for_each_segment(bvec, rq, iter) {
- 		len = bvec.bv_len;
- 		err = null_transfer(nullb, bvec.bv_page, len, bvec.bv_offset,
--				     op_is_write(req_op(rq)), sector,
--				     rq->cmd_flags & REQ_FUA);
-+				    op_is_write(req_op(rq)), sector, fua);
- 		if (err) {
- 			spin_unlock_irq(&nullb->lock);
- 			return err;
-@@ -2053,6 +2139,9 @@ static int null_validate_conf(struct nullb_device *dev)
- 		return -EINVAL;
- 	}
- 
-+	if (dev->queue_mode == NULL_Q_BIO)
-+		dev->copy_max_bytes = 0;
-+
- 	return 0;
- }
- 
-@@ -2172,6 +2261,8 @@ static int null_add_dev(struct nullb_device *dev)
- 		dev->max_sectors = queue_max_hw_sectors(nullb->q);
- 	dev->max_sectors = min(dev->max_sectors, BLK_DEF_MAX_SECTORS);
- 	blk_queue_max_hw_sectors(nullb->q, dev->max_sectors);
-+	blk_queue_max_copy_hw_sectors(nullb->q,
-+				      dev->copy_max_bytes >> SECTOR_SHIFT);
- 
- 	if (dev->virt_boundary)
- 		blk_queue_virt_boundary(nullb->q, PAGE_SIZE - 1);
-diff --git a/drivers/block/null_blk/null_blk.h b/drivers/block/null_blk/null_blk.h
-index 929f659dd255..e82e53a2e2df 100644
---- a/drivers/block/null_blk/null_blk.h
-+++ b/drivers/block/null_blk/null_blk.h
-@@ -107,6 +107,7 @@ struct nullb_device {
- 	unsigned int queue_mode; /* block interface */
- 	unsigned int blocksize; /* block size */
- 	unsigned int max_sectors; /* Max sectors per command */
-+	unsigned long copy_max_bytes; /* Max copy offload length in bytes */
- 	unsigned int irqmode; /* IRQ completion handler */
- 	unsigned int hw_queue_depth; /* queue depth */
- 	unsigned int index; /* index of the disk, only valid with a disk */
-diff --git a/drivers/block/null_blk/trace.h b/drivers/block/null_blk/trace.h
-index 91446c34eac2..2f2c1d1c2b48 100644
---- a/drivers/block/null_blk/trace.h
-+++ b/drivers/block/null_blk/trace.h
-@@ -70,6 +70,29 @@ TRACE_EVENT(nullb_report_zones,
- );
- #endif /* CONFIG_BLK_DEV_ZONED */
- 
-+TRACE_EVENT(nullb_copy_op,
-+		TP_PROTO(struct request *req,
-+			 sector_t dst, sector_t src, size_t len),
-+		TP_ARGS(req, dst, src, len),
-+		TP_STRUCT__entry(
-+				 __array(char, disk, DISK_NAME_LEN)
-+				 __field(enum req_op, op)
-+				 __field(sector_t, dst)
-+				 __field(sector_t, src)
-+				 __field(size_t, len)
-+		),
-+		TP_fast_assign(
-+			       __entry->op = req_op(req);
-+			       __assign_disk_name(__entry->disk, req->q->disk);
-+			       __entry->dst = dst;
-+			       __entry->src = src;
-+			       __entry->len = len;
-+		),
-+		TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-+			  __print_disk_name(__entry->disk),
-+			  blk_op_str(__entry->op),
-+			  __entry->dst, __entry->src, __entry->len)
-+);
- #endif /* _TRACE_NULLB_H */
- 
- #undef TRACE_INCLUDE_PATH
+ /**
+  * struct macsec_ops - MACsec offloading operations
++ * @mdo_dev_open: called when the MACsec interface transitions to the up state
++ * @mdo_dev_stop: called when the MACsec interface transitions to the down
++ *	state
++ * @mdo_add_secy: called when a new SecY is added
++ * @mdo_upd_secy: called when the SecY flags are changed or the MAC address of
++ *	the MACsec interface is changed
++ * @mdo_del_secy: called when the hw offload is disabled or the MACsec
++ *	interface is removed
++ * @mdo_add_rxsc: called when a new RX SC is added
++ * @mdo_upd_rxsc: called when a certain RX SC is updated
++ * @mdo_del_rxsc: called when a certain RX SC is removed
++ * @mdo_add_rxsa: called when a new RX SA is added
++ * @mdo_upd_rxsa: called when a certain RX SA is updated
++ * @mdo_del_rxsa: called when a certain RX SA is removed
++ * @mdo_add_txsa: called when a new TX SA is added
++ * @mdo_upd_txsa: called when a certain TX SA is updated
++ * @mdo_del_txsa: called when a certain TX SA is removed
++ * @mdo_get_dev_stats: called when dev stats are read
++ * @mdo_get_tx_sc_stats: called when TX SC stats are read
++ * @mdo_get_tx_sa_stats: called when TX SA stats are read
++ * @mdo_get_rx_sc_stats: called when RX SC stats are read
++ * @mdo_get_rx_sa_stats: called when RX SA stats are read
+  */
+ struct macsec_ops {
+ 	/* Device wide */
 -- 
-2.35.1.500.gb896f729e2
+2.34.1
 
