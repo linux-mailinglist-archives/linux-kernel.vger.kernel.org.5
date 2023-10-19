@@ -2,105 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A1F7CF161
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CA67CF165
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344884AbjJSHgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        id S235295AbjJSHgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233025AbjJSHfr (ORCPT
+        with ESMTP id S235065AbjJSHgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:35:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085B3112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:35:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 41be03b00d2f7-5a1d89ff4b9so4589519a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697700945; x=1698305745; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XRnjGS3KZVpBTmWigSdwjX0vYClCmLeUmDVDKE/rAWM=;
-        b=eRjhMy8J0Prea6AraNmQc+wMvwniADdzuerlvXTgIyAYM1lOeKtagFxdX9nSIlknka
-         pbbxAUh3M9RvVkPIdOQ9liTefmX4QhrFxMr5CrBwatwOTd03apDEe5fskpgs2ATpGsKo
-         POUvzZAZieu90Dk2aALshHJ9VYFriPvEaztumvzZzAbIQ9NFbXgl2xrqkS5C+4UH6C8A
-         MN3RinGE297zxlDcco4Z7TekiM4lQO8q7cVv7HYgvsyHx5guHigljlxtSZ2z1E1rdH9A
-         0TziAfKJUrvgep2UJsfW2YibJeer9uCtMHNe/Datf2T6iQANWILsNwC7TMftlHKz1RgR
-         VvmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697700945; x=1698305745;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XRnjGS3KZVpBTmWigSdwjX0vYClCmLeUmDVDKE/rAWM=;
-        b=Gm2sal6jWHsjC1/LyRSU5xgplVMB4c5aPtcqgTBhCTq8ZsbFM68zFiJt/BYQVsmilT
-         s2O6hJWzrna+m+d+Uh5Q9i/7xDf0MVmb80xuNlIn5PqE+YtprTvjETeNbZWaD8qLrWKS
-         /fa9tZQf23QTG/LL7ZjsbB6ACzz8m45oC3FEEvQ0ak9SWEx8Djx6HEzs9TG42OVpstiU
-         bk82F7UMXcM8c0FQzxY9QijQurbSHc7DwvR0RDcDPeV7aVDo7vd853N7m4QPLLIPR8Mw
-         E++jhnx48OJANFyRs7aM/C4GiNu9KvoJdGOrj2MEBOiOFU2WG56opjAyT5a0NCZuESN0
-         NJFw==
-X-Gm-Message-State: AOJu0YyfuP2t+UmP1tlWPr7kh3YofMm9IZ9ptiDUFvIXQ2OZu1qncEcn
-        2l8QLjPwbDV8dCMp6ngvZVRC3JJV6oRD4TswbUc=
-X-Google-Smtp-Source: AGHT+IECIxTytTxMb/LtUGElOJKe2/N5aprzKfu3ROghaO1xcVAx4tQtzwCUjUJSJ0TtG3dJprL/RKWMKZfwWsI0Fpk=
-X-Received: by 2002:a05:6a20:ae1a:b0:15a:290:d83d with SMTP id
- dp26-20020a056a20ae1a00b0015a0290d83dmr1066463pzb.41.1697700945503; Thu, 19
- Oct 2023 00:35:45 -0700 (PDT)
+        Thu, 19 Oct 2023 03:36:16 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AFD19E;
+        Thu, 19 Oct 2023 00:35:58 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9zw80xWbz15NVB;
+        Thu, 19 Oct 2023 15:33:12 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 19 Oct 2023 15:35:55 +0800
+CC:     <robin.murphy@arm.com>, <baolin.wang@linux.alibaba.com>,
+        <Jonathan.Cameron@huawei.com>, <will@kernel.org>,
+        <helgaas@kernel.org>, <kaishen@linux.alibaba.com>,
+        <chengyou@linux.alibaba.com>, <yangyicong@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
+        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>,
+        <renyu.zj@linux.alibaba.com>
+Subject: Re: [PATCH v8 1/4] docs: perf: Add description for Synopsys
+ DesignWare PCIe PMU driver
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+References: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
+ <20231017013235.27831-2-xueshuai@linux.alibaba.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <f4b1515c-2135-61d6-0d4b-2be24fdb1cf6@huawei.com>
+Date:   Thu, 19 Oct 2023 15:35:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:8e8f:b0:4e4:5b97:a2f0 with HTTP; Thu, 19 Oct 2023
- 00:35:45 -0700 (PDT)
-Reply-To: ch4781.r@proton.me
-From:   Mrs madina <bl533179@gmail.com>
-Date:   Thu, 19 Oct 2023 09:35:45 +0200
-Message-ID: <CAG0OURYRXtDi0dpQwtQEXF3DJvCuQJq1TbiWdqtBfwQNoq4moA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.4 required=5.0 tests=ADVANCE_FEE_3_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,HK_NAME_FM_MR_MRS,
-        LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:541 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5003]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [bl533179[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [bl533179[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  1.5 HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.7 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  2.4 ADVANCE_FEE_3_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: *******
+In-Reply-To: <20231017013235.27831-2-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023/10/17 9:32, Shuai Xue wrote:
+> Alibaba's T-Head Yitan 710 SoC includes Synopsys' DesignWare Core PCIe
+> controller which implements which implements PMU for performance and
+> functional debugging to facilitate system maintenance.
 
-I have a personal Project in which i need your assistance I would like
-to be sure of your willingness, trustworthiness and commitment to
-execute this transaction with me. I seek your partnership in
-transferring  this fund {$US6,000,000}. If interested
-(mrs.madina2541@gmx.com ) for more details about the fund. For easy
-communication send me your whatsapp number .
+Double "which implements"?
 
-thank you.
+> 
+> Document it to provide guidance on how to use it.
+> 
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Mrs madina
+Others look good to me.
+
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+
+> ---
+>  .../admin-guide/perf/dwc_pcie_pmu.rst         | 94 +++++++++++++++++++
+>  Documentation/admin-guide/perf/index.rst      |  1 +
+>  2 files changed, 95 insertions(+)
+>  create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> 
+> diff --git a/Documentation/admin-guide/perf/dwc_pcie_pmu.rst b/Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> new file mode 100644
+> index 000000000000..eac1b6f36450
+> --- /dev/null
+> +++ b/Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> @@ -0,0 +1,94 @@
+> +======================================================================
+> +Synopsys DesignWare Cores (DWC) PCIe Performance Monitoring Unit (PMU)
+> +======================================================================
+> +
+> +DesignWare Cores (DWC) PCIe PMU
+> +===============================
+> +
+> +The PMU is a PCIe configuration space register block provided by each PCIe Root
+> +Port in a Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+> +injection, and Statistics).
+> +
+> +As the name indicates, the RAS DES capability supports system level
+> +debugging, AER error injection, and collection of statistics. To facilitate
+> +collection of statistics, Synopsys DesignWare Cores PCIe controller
+> +provides the following two features:
+> +
+> +- one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+> +  time spent in each low-power LTSSM state) and
+> +- one 32-bit counter for Event Counting (error and non-error events for
+> +  a specified lane)
+> +
+> +Note: There is no interrupt for counter overflow.
+> +
+> +Time Based Analysis
+> +-------------------
+> +
+> +Using this feature you can obtain information regarding RX/TX data
+> +throughput and time spent in each low-power LTSSM state by the controller.
+> +The PMU measures data in two categories:
+> +
+> +- Group#0: Percentage of time the controller stays in LTSSM states.
+> +- Group#1: Amount of data processed (Units of 16 bytes).
+> +
+> +Lane Event counters
+> +-------------------
+> +
+> +Using this feature you can obtain Error and Non-Error information in
+> +specific lane by the controller. The PMU event is select by:
+> +
+> +- Group i
+> +- Event j within the Group i
+> +- and Lane k
+> +
+> +Some of the event only exist for specific configurations.
+> +
+> +DesignWare Cores (DWC) PCIe PMU Driver
+> +=======================================
+> +
+> +This driver adds PMU devices for each PCIe Root Port named based on the BDF of
+> +the Root Port. For example,
+> +
+> +    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+> +
+> +the PMU device name for this Root Port is dwc_rootport_3018.
+> +
+> +The DWC PCIe PMU driver registers a perf PMU driver, which provides
+> +description of available events and configuration options in sysfs, see
+> +/sys/bus/event_source/devices/dwc_rootport_{bdf}.
+> +
+> +The "format" directory describes format of the config fields of the
+> +perf_event_attr structure. The "events" directory provides configuration
+> +templates for all documented events.  For example,
+> +"Rx_PCIe_TLP_Data_Payload" is an equivalent of "eventid=0x22,type=0x1".
+> +
+> +The "perf list" command shall list the available events from sysfs, e.g.::
+> +
+> +    $# perf list | grep dwc_rootport
+> +    <...>
+> +    dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/        [Kernel PMU event]
+> +    <...>
+> +    dwc_rootport_3018/rx_memory_read,lane=?/               [Kernel PMU event]
+> +
+> +Time Based Analysis Event Usage
+> +-------------------------------
+> +
+> +Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+> +
+> +    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+> +
+> +The average RX/TX bandwidth can be calculated using the following formula:
+> +
+> +    PCIe RX Bandwidth = PCIE_RX_DATA * 16B / Measure_Time_Window
+> +    PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
+> +
+> +Lane Event Usage
+> +-------------------------------
+> +
+> +Each lane has the same event set and to avoid generating a list of hundreds
+> +of events, the user need to specify the lane ID explicitly, e.g.::
+> +
+> +    $# perf stat -a -e dwc_rootport_3018/rx_memory_read,lane=4/
+> +
+> +The driver does not support sampling, therefore "perf record" will not
+> +work. Per-task (without "-a") perf sessions are not supported.
+> diff --git a/Documentation/admin-guide/perf/index.rst b/Documentation/admin-guide/perf/index.rst
+> index f60be04e4e33..6bc7739fddb5 100644
+> --- a/Documentation/admin-guide/perf/index.rst
+> +++ b/Documentation/admin-guide/perf/index.rst
+> @@ -19,6 +19,7 @@ Performance monitor support
+>     arm_dsu_pmu
+>     thunderx2-pmu
+>     alibaba_pmu
+> +   dwc_pcie_pmu
+>     nvidia-pmu
+>     meson-ddr-pmu
+>     cxl
+> 
