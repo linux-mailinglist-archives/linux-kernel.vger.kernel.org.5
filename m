@@ -2,106 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C0E7CFB84
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E407CFA1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345472AbjJSNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S1346116AbjJSM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346364AbjJSNEN (ORCPT
+        with ESMTP id S1346120AbjJSM6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:04:13 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB691FD7;
-        Thu, 19 Oct 2023 05:53:29 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id C215C3200ACE;
-        Thu, 19 Oct 2023 08:53:23 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 19 Oct 2023 08:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697720003; x=1697806403; bh=c+
-        OQf9mXsocdxZsSc7Qg9I7aF5FCLMuGCb54DwDnDIE=; b=iYYwDelQB/1pQrjDqD
-        +wxGOVgX15b5fVhHulX5D1KgWssBiLtEWMUm88IdtPhTBXrrU9TAAhOpVPuIRXAd
-        haM0sz6u4GsmCMqTZnboeJ19b/464N1s4W9XOb/c+kQl+rjHcxyug0YtC0Z0G7fH
-        Lo1s+nzXVPBk6KSGQdaPQ5YSYTSTI1X0Qjrv4O96eWvkvB73sNDiGS4ENUnryZxA
-        NNC2CKuqGgMR2DBoAh1Y6wCkll44M0s0+mvq8IPRFUF0zB/O8RxRjhGypTK9EpbC
-        lLqUFX0K6H9h4Rrot0pMdqcUgLY05kdLNbZn0kdKfwfrT6T7lgqX5rH4gqrofkIh
-        PiwA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697720003; x=1697806403; bh=c+OQf9mXsocdx
-        ZsSc7Qg9I7aF5FCLMuGCb54DwDnDIE=; b=mjx3p4xyhc148ce0bmL6NGiNVF1PH
-        2meSQ1Y0xo9jkztYxxZFxoOx17sAyptr3psxKQqa0+BItwMMmC1FBeHMJltK7+Fw
-        zwx9HSmRJfmu5jO+yLEZ5PToLdjzHgM94u006RLdD9ovfMO3O+bGeLmnazuCaYx5
-        ciN2DuwDBblj09x3ph3Sdnko+BJjvPWL36HJ1UPSmiF8I0X3UHv0gEwGHeI3EXd2
-        yPtWh7jXY83BOvm1qRWUG68wjzryk0qQyj9ON0OEmBRziZPp5RkXiNbD1iUlMcd2
-        2GTxSJiLqzT2C4DDykOJACpAXeIC+tfbFm0sNSgHElPCIED44huQMMFkQ==
-X-ME-Sender: <xms:wiYxZfvAYJ87OzL9VJN9VajqrAd9mgWFUIqvh_ipRUCu-oDhieqG8A>
-    <xme:wiYxZQfJ7aLYw3RUOtljHcmchazyXW_2og17Uv9qdFEdGeBWvD90Z6CJ1xuSNYCcU
-    NZBv0Z-xolbQEy2UFI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeigdehjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:wiYxZSw6r134fUYOgOhgv3ngUAo50bNAGvSy1QLaIZNf49-vBL7Cbg>
-    <xmx:wiYxZeO4Ul-zvjp16Ul8GX0sKIdVXOp2j_Z0qhNLwYD_8-gua6JlzA>
-    <xmx:wiYxZf9u3G-k4Z-_FQ-mwH9HDOaPIijI0xYy-wXAB9T3ew_sRQDhgg>
-    <xmx:wyYxZVFsp_WBSxC4d5aZFDo0KbDS7UHeT8xw3LEAywvqBYOea_Hrnw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2D5DEB60089; Thu, 19 Oct 2023 08:53:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
-MIME-Version: 1.0
-Message-Id: <22580470-7def-4723-b836-1688db6da038@app.fastmail.com>
-In-Reply-To: <CAG_fn=XcJ=rZEJN+L1zZwk=qA90KShhZK1MA6fdW0oh7BqSJKw@mail.gmail.com>
-References: <20231018182412.80291-1-hamza.mahfooz@amd.com>
- <CAMuHMdXSzMJe1zyJu1HkxWggTKJj_sxkPOejjbdRjg3FeFTVHQ@mail.gmail.com>
- <d764242f-cde0-47c0-ae2c-f94b199c93df@amd.com>
- <CAMuHMdXYDQi5+x1KxMG0wnjSfa=A547B9tgAbgbHbV42bbRu8Q@mail.gmail.com>
- <CAG_fn=XcJ=rZEJN+L1zZwk=qA90KShhZK1MA6fdW0oh7BqSJKw@mail.gmail.com>
-Date:   Thu, 19 Oct 2023 14:53:01 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Alexander Potapenko" <glider@google.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc:     "Hamza Mahfooz" <hamza.mahfooz@amd.com>,
-        linux-kernel@vger.kernel.org,
-        "Rodrigo Siqueira" <rodrigo.siqueira@amd.com>,
-        "Harry Wentland" <harry.wentland@amd.com>,
-        "Alex Deucher" <alexander.deucher@amd.com>, stable@vger.kernel.org,
-        "Miguel Ojeda" <ojeda@kernel.org>,
-        "Alex Gaynor" <alex.gaynor@gmail.com>,
-        "Wedson Almeida Filho" <wedsonaf@gmail.com>,
-        "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        "Nick Terrell" <terrelln@fb.com>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Tom Rix" <trix@redhat.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Zhaoyang Huang" <zhaoyang.huang@unisoc.com>,
-        "Li Hua" <hucool.lihua@huawei.com>, "Rae Moar" <rmoar@google.com>,
-        rust-for-linux@vger.kernel.org, bpf@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/Kconfig.debug: disable FRAME_WARN for kasan and kcsan
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        Thu, 19 Oct 2023 08:58:04 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0500C4796
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:55:42 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VuU4jLr_1697720101;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuU4jLr_1697720101)
+          by smtp.aliyun-inc.com;
+          Thu, 19 Oct 2023 20:55:02 +0800
+Message-ID: <1697720095.3742166-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 2/2] virtio_pci: Switch away from deprecated irq_set_affinity_hint
+Date:   Thu, 19 Oct 2023 20:54:55 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-team@cloudflare.com,
+        virtualization@lists.linux-foundation.org
+References: <20231019101625.412936-1-jakub@cloudflare.com>
+ <20231019101625.412936-2-jakub@cloudflare.com>
+In-Reply-To: <20231019101625.412936-2-jakub@cloudflare.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,56 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023, at 12:04, Alexander Potapenko wrote:
->> > > Are kernels with KASAN || KCSAN || KMSAN enabled supposed to be bootable?
->> >
->> > They are all intended to be used for runtime debugging, so I'd imagine so.
->>
->> Then I strongly suggest putting a nonzero value here.  As you write
->> that "with every release of LLVM, both of these sanitizers eat up more and more
->> of the stack", don't you want to have at least some canary to detect
->> when "more and more" is guaranteed to run into problems?
+On Thu, 19 Oct 2023 12:16:25 +0200, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> Since commit 65c7cdedeb30 ("genirq: Provide new interfaces for affinity
+> hints") irq_set_affinity_hint is being phased out.
 >
-> FRAME_WARN is a poor canary. First, it does not necessarily indicate
-> that a build is faulty (a single bloated stack frame won't crash the
-> system).
+> Switch to new interfaces for setting and applying irq affinity hints.
+>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 
-I agree it's flawed, but it does catch a lot of bugs, both in the
-driver and the compiler. What we should probably have is some better
-runtime debugging in addition to FRAME_WARN, but it's better than
-nothing.
+Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-One idea that I've suggested in the past is to add a soft stack
-limit that is lower than THREAD_SIZE, using VMAP_STACK with a custom
-stack start and a read-only page at the end to catch a thread
-exceeding the soft limit and print a backtrace before marking
-the page writable.
-
-> Second, devs are unlikely to fix a function because its stack frame is
-> too big under some exotic tool+compiler combination.
-
-I've probably sent hundreds of fixes for these in the past. Most
-of the time there is an actual driver bug, and almost always
-the driver maintainers are responsive and treat the report with
-the appropriate urgency: even if only some configurations actually
-push it over the limit, the general case is some data structure that
-is hundreds of bytes long and was not actually meant to be on
-the stack.
-
-The gcc bug reports also usually get addressed quickly, though
-we've had problems with clang not making progress on known
-bugs for years. It sounds like Nick has made some important
-progress on clang very recently, so we should be able to
-raise the minimum clang version for kasan and kcsan once
-there is a known good release.
-
-> So the remaining option would be to just increase the frame size every
-> time a new function surpasses the limit.
-
-That is clearly not an option, though we could try to
-add Kconfig dependencies that avoid the known bad combinations,
-such as annotating the AMD GPU driver as
-
-      depends on (CC_IS_GCC || CLANG_VERSION >=180000) || !(KASAN || KCSAN)
-
-    Arnd
+> ---
+>  drivers/virtio/virtio_pci_common.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> index 8927bc338f06..9fab99b540f1 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -242,7 +242,7 @@ void vp_del_vqs(struct virtio_device *vdev)
+>  			if (v != VIRTIO_MSI_NO_VECTOR) {
+>  				int irq = pci_irq_vector(vp_dev->pci_dev, v);
+>
+> -				irq_set_affinity_hint(irq, NULL);
+> +				irq_update_affinity_hint(irq, NULL);
+>  				free_irq(irq, vq);
+>  			}
+>  		}
+> @@ -440,7 +440,7 @@ int vp_set_vq_affinity(struct virtqueue *vq, const struct cpumask *cpu_mask)
+>
+>  	if (vp_dev->msix_enabled) {
+>  		irq = pci_irq_vector(vp_dev->pci_dev, info->msix_vector);
+> -		irq_set_affinity_hint(irq, cpu_mask);
+> +		irq_set_affinity_and_hint(irq, cpu_mask);
+>  	}
+>  	return 0;
+>  }
+> --
+> 2.41.0
+>
