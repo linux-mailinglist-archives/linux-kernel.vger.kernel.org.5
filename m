@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AB87CFBBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB41C7CFBC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345774AbjJSNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
+        id S1345827AbjJSN4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345498AbjJSNyj (ORCPT
+        with ESMTP id S1345616AbjJSN4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:54:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F782B0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697723631;
+        Thu, 19 Oct 2023 09:56:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BD6B0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:56:00 -0700 (PDT)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697723758;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HhuLAtEC9vvHEOX4edXMkoJRK35YOO0BifovbLT07EE=;
-        b=h6vOHpXWO6Jm8RLCp14DXSMM8RZMnOzHrwUf2rpXM4De4i/YSPPt19EOtNAszxeLWUrQ12
-        wVaSHVHwhYUosVJIqYn9X8eKvArurLc3O/brfK34R0iTUqXUkPh5muzbiS9HBgjndCNaXj
-        tXn6AYN0RC/dDc6YRdhGTtqWeyqMYxQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-359-kWHLDIYfO7KaAiIWsoYliQ-1; Thu, 19 Oct 2023 09:53:47 -0400
-X-MC-Unique: kWHLDIYfO7KaAiIWsoYliQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AFD1E185A78E;
-        Thu, 19 Oct 2023 13:53:45 +0000 (UTC)
-Received: from p1.luc.com (unknown [10.45.226.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8BF1111D782;
-        Thu, 19 Oct 2023 13:53:43 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAyla9zbEzBqXnPEaM8zZpPa8/CLifnjpeuStw/HUJ0=;
+        b=KPs/2QWrzTSaIlJjHYJ725VeUa+bJujeYRBqScppyHfMYv0181T/uWLbWWRUmV5xD+Xa++
+        nhUusnNSM5mDpAMm0bSR5gxtLMKRiagG1fbpaqrKfCaBpJpvkViNNLHAfJ12dlF4jV+yjX
+        SNYw8P9bOjErnLLlAXqt9hViPSRwTfD3Sf81OAtaZt9qCGFWqTw+tgLbqaoxUTvLNycMgc
+        IfwTz1RJGTqrQ3raaIk53VQlnyYrwrJCSD7d+63rzdfosQkihCG09kkNS2VTxMUImnk+Ym
+        GwWhXPRrl3lC1Cd7bN2ruVXLoz1duDSQ9pugk8I3irHP/8gronRPBvHzg7Rh9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697723758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAyla9zbEzBqXnPEaM8zZpPa8/CLifnjpeuStw/HUJ0=;
+        b=09pKiW5wUEXoEAJO0AcQ89lDst+MQj0V1KgrkapQy9PUHG8+PeisKwTlfwwWeb77ut8XWh
+        1/uR3rLryX+VnjAg==
+To:     K Prateek Nayak <kprateek.nayak@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Catherine Sullivan <catherine.sullivan@intel.com>,
-        Anjali Singhai Jain <anjali.singhai@intel.com>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
-Date:   Thu, 19 Oct 2023 15:53:42 +0200
-Message-ID: <20231019135342.1209152-1-ivecera@redhat.com>
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+Subject: Re: [PATCH v8 00/25] timer: Move from a push remote at enqueue to a
+ pull at expiry model
+In-Reply-To: <28563e2d-6746-e2c4-7d21-4ca39a82edc1@amd.com>
+References: <20231004123454.15691-1-anna-maria@linutronix.de>
+ <28563e2d-6746-e2c4-7d21-4ca39a82edc1@amd.com>
+Date:   Thu, 19 Oct 2023 15:55:57 +0200
+Message-ID: <87jzri90nm.fsf@somnus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The I40E_TXR_FLAGS_WB_ON_ITR is i40e_ring flag and not i40e_pf one.
+Hello Prateek,
 
-Fixes: 8e0764b4d6be42 ("i40e/i40evf: Add support for writeback on ITR feature for X722")
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+K Prateek Nayak <kprateek.nayak@amd.com> writes:
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 0b3a27f118fb97..9c36540846f7a9 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2847,7 +2847,7 @@ int i40e_napi_poll(struct napi_struct *napi, int budget)
- 		return budget;
- 	}
- 
--	if (vsi->back->flags & I40E_TXR_FLAGS_WB_ON_ITR)
-+	if (q_vector->tx.ring[0].flags & I40E_TXR_FLAGS_WB_ON_ITR)
- 		q_vector->arm_wb_state = false;
- 
- 	/* Exit the polling mode, but don't re-enable interrupts if stack might
--- 
-2.41.0
+> Hello Anna-Maria,
+>
+> Happy to report I don't see any regression with this version of series.
+> I'll leave the detailed report below.
+
+[...]
+
+> Thank you for debugging and helping fix the tbench regression.
+> If the series does not change drastically, feel free to add:
+>
+> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+>
+
+Thanks a lot for all the testing you did! When posting v9, I'll
+summarize the changes and if required, I'll ask for testing support, if
+it is ok?
+
+>> 
+>> Possible Next Steps
+>> ~~~~~~~~~~~~~~~~~~~
+>> 
+>> Simple deferrable timers are no longer required as they can be converted to
+>> global timers. If a CPU goes idle, a formerly deferrable timer will not
+>> prevent the CPU to sleep as long as possible. Only the last migrator CPU
+>> has to take care of them. Deferrable timers with timer pinned flags needs
+>> to be expired on the specified CPU but must not prevent CPU from going
+>> idle. They require their own timer base which is never taken into account
+>> when calculating the next expiry time. This conversation and required
+>> cleanup will be done in a follow up series.
+>> 
+>
+> I'll keep an eye out for future versions for testing.
+
+I'll keep you in the loop.
+
+Thanks,
+
+	Anna-Maria
 
