@@ -2,130 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A067CEF71
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604817CEFA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbjJSFzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        id S235167AbjJSF5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSFzs (ORCPT
+        with ESMTP id S232730AbjJSF4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:55:48 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2B1B6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:55:46 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J5tZGa093021;
-        Thu, 19 Oct 2023 00:55:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697694935;
-        bh=ArJauoiS4c+Rg2OUYmcejneHBpY4dxB+JR4rD3rs5so=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=XWoYvYOoAzHMQMkeREZLFeJDqw+gmzH9lA+qMza6sEzskVcRLuxx6U49Ip71lEiC/
-         TXvmNhgWPxWiEEDUUTBCDOs8Vwe9bzt1oFd38asGbgJM/Ee3hxIhGktMPA91jbOXF0
-         Sl7Sqfh/iNsHqFr4Jl+mZKhk3T3ANyPsWsQ+8ozA=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J5tZqM092947
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Oct 2023 00:55:35 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
- Oct 2023 00:55:35 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 19 Oct 2023 00:55:35 -0500
-Received: from [172.24.227.94] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J5tVTs034032;
-        Thu, 19 Oct 2023 00:55:32 -0500
-Message-ID: <e35d333a-7f24-4a3f-90e3-87bc859a18e3@ti.com>
-Date:   Thu, 19 Oct 2023 11:25:30 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] arm64: dts: ti: k3-am62p: Add nodes for more IPs
-Content-Language: en-US
-To:     Bryan Brattlof <bb@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Thu, 19 Oct 2023 01:56:37 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D15D12F;
+        Wed, 18 Oct 2023 22:56:34 -0700 (PDT)
+X-UUID: 3a70d73a6e4411ee8051498923ad61e6-20231019
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=hvEopTbQPgbeMG690XRwL0NDv7LUQkNAzw+G6eKIaHA=;
+        b=OBvr/vieTI6/d/TFd/ezO0bFn3tFSS183a6am98qqt3Jmt9pz8OiOVIFGh/uxMWSbOB9wBU+/903JFK2g5DeprIpL1w6Hy8h8AG9nag4LsdEYj6AlBaAO88eJXgA1ppUW3KQiVaD6mRieFhkuiHsHkoOobOinxGpRSUGwaF2eGU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:439dc539-0540-4758-a7d2-af1c437a6c02,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:aaa44dc4-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 3a70d73a6e4411ee8051498923ad61e6-20231019
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <shawn.sung@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 528609320; Thu, 19 Oct 2023 13:56:21 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 19 Oct 2023 13:56:20 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 19 Oct 2023 13:56:20 +0800
+From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        CK Hu <ck.hu@mediatek.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ARM Linux Mailing List <linux-arm-kernel@lists.infradead.org>
-References: <20231018194839.2689377-1-bb@ti.com>
- <20231018194839.2689377-2-bb@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20231018194839.2689377-2-bb@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        Hsiao Chien Sung <shawn.sung@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Nathan Lu <nathan.lu@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v10 00/24] Add display driver for MT8188 VDOSYS1
+Date:   Thu, 19 Oct 2023 13:55:55 +0800
+Message-ID: <20231019055619.19358-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series is based on mediatek-drm-next.
 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> index aaf4b793b58e7..e37f19f7e58ea 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> @@ -6,17 +6,35 @@
->  
->  &cbass_wakeup {
->  	wkup_conf: bus@43000000 {
-> -		bootph-all;
->  		compatible = "simple-bus";
->  		reg = <0x00 0x43000000 0x00 0x20000>;
->  		#address-cells = <1>;
->  		#size-cells = <1>;
->  		ranges = <0x00 0x00 0x43000000 0x20000>;
-> +		bootph-all;
->  
->  		chipid: chipid@14 {
-> -			bootph-all;
->  			compatible = "ti,am654-chipid";
->  			reg = <0x14 0x4>;
-> +			bootph-all;
-> +		};
-> +
-> +		cpsw_efuse: syscon@200 {
-> +			compatible = "syscon", "simple-mfd";
-> +			reg = <0x200 0x4>;
+Changes in v10:
+- Remove "Reviewed-by" tags of the following commits:
+    - drm/mediatek: Power on/off devices with function pointers
+    - drm/mediatek: Manage component's clock with function pointers
+- Separate the commit into smaller ones
+    - (new) drm/mediatek: Remove the redundant driver data for DPI
 
-This holds mac-address which is at least 48bits long
+Changes in v9:
+- Add a static inline function to power off the device
+- Change driver name to "mediatek-disp-padding"
+- Fix typo and kernel doc format error
 
-> +			bootph-all;
-> +		};
-> +
-> +		usb0_phy_pll_refclk: syscon@4008 {
-> +			compatible = "syscon", "simple-mfd";
-> +			reg = <0x4008 0x10>;
-> +			bootph-all;
-> +		};
-> +
-> +		usb1_phy_pll_refclk: syscon@4018 {
-> +			compatible = "syscon", "simple-mfd";
-> +			reg = <0x4018 0x10>;
-> +			bootph-all;
+Changes in v8:
+- Power on/off the components with .power_on() and .power_off()
+- Remove mtk_padding_config()
+- Remove "Reviewed-by" tags in "drm/mediatek: Add Padding to OVL adaptor"
+  because of the modifications.
 
-This adds new dtbs_check warnings:
+Changes in v7:
+- Start/Stop the components in OVL Adaptor with function pointers
+- Refine Padding driver
+- Fix underrun when the layer is switching off
 
-+/workdir/arch/arm64/boot/dts/ti/k3-am62p5-sk.dtb: syscon@100000: $nodename:0: 'syscon@100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|localbus|soc|axi|ahb|apb)(@.+)?$'
-+/workdir/arch/arm64/boot/dts/ti/k3-am62p5-sk.dtb: syscon@200: compatible: ['syscon', 'simple-mfd'] is too short
-+/workdir/arch/arm64/boot/dts/ti/k3-am62p5-sk.dtb: syscon@4008: compatible: ['syscon', 'simple-mfd'] is too short
-+/workdir/arch/arm64/boot/dts/ti/k3-am62p5-sk.dtb: syscon@4018: compatible: ['syscon', 'simple-mfd'] is too short
+Changes in v6:
+- Separate the commits into smaller ones
+- Add DPI input mode setting
+- Fix VDOSYS1 power-on issues
 
+Changes in v5:
+- Reuse .clk_enable/.clk_disable in struct mtk_ddp_comp_funcs
+  in mtk_disp_ovl_adaptor.c
+- Adjust commits order
 
-I suggest to drop them for now.
+Changes in v4:
+- Add new functions in mtk_disp_ovl_adaptor.c to enable/disable
+  components and reuse them when clock enable/disable
+- Rename components in mtk_disp_ovl_adaptor.c and sort them in
+  alphabetical order
 
-Please add a new yamls for these nodes or single yaml for top level wkup_conf to 
-cover am62/62a/62p SoCs and then introduce the nodes accordingly
+Changes in v3:
+- Define macro MMSYS_RST_NR in mtk-mmsys.h and update reset table
+- Fix typos (ETDHR -> ETHDR, VSNYC -> VSYNC)
+- Rebase dt-bindings on linux-next
+- Refine description of Padding
+- Squash reset bit map commits for VDO0 and VDO1 into one
 
-Regards
-Vignesh
+Changes in v2:
+- Remove redundant compatibles of MT8188 because it shares the same
+  configuration with MT8195
+- Separate dt-bindings by modules
+- Support reset bit mapping in mmsys driver
+
+Hsiao Chien Sung (24):
+  dt-bindings: display: mediatek: ethdr: Add compatible for MT8188
+  dt-bindings: display: mediatek: mdp-rdma: Add compatible for MT8188
+  dt-bindings: display: mediatek: merge: Add compatible for MT8188
+  dt-bindings: display: mediatek: padding: Add MT8188
+  dt-bindings: arm: mediatek: Add compatible for MT8188
+  dt-bindings: reset: mt8188: Add VDOSYS reset control bits
+  soc: mediatek: Support MT8188 VDOSYS1 in mtk-mmsys
+  soc: mediatek: Support MT8188 VDOSYS1 Padding in mtk-mmsys
+  soc: mediatek: Support reset bit mapping in mmsys driver
+  soc: mediatek: Add MT8188 VDOSYS reset bit map
+  drm/mediatek: Rename OVL_ADAPTOR_TYPE_RDMA
+  drm/mediatek: Add component ID to component match structure
+  drm/mediatek: Manage component's clock with function pointers
+  drm/mediatek: Power on/off devices with function pointers
+  drm/mediatek: Remove ineffectual power management codes
+  drm/mediatek: Start/Stop components with function pointers
+  drm/mediatek: Sort OVL adaptor components
+  drm/mediatek: Refine device table of OVL adaptor
+  drm/mediatek: Support MT8188 Padding in display driver
+  drm/mediatek: Add Padding to OVL adaptor
+  drm/mediatek: Return error if MDP RDMA failed to enable the clock
+  drm/mediatek: Remove the redundant driver data for DPI
+  drm/mediatek: Fix underrun in VDO1 when switches off the layer
+  drm/mediatek: Support MT8188 VDOSYS1 in display driver
+
+ .../bindings/arm/mediatek/mediatek,mmsys.yaml |   1 +
+ .../display/mediatek/mediatek,ethdr.yaml      |   6 +-
+ .../display/mediatek/mediatek,mdp-rdma.yaml   |   6 +-
+ .../display/mediatek/mediatek,merge.yaml      |   3 +
+ .../display/mediatek/mediatek,padding.yaml    |  81 ++++++
+ drivers/gpu/drm/mediatek/Makefile             |   3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h       |   8 +
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c     |   2 +-
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 274 +++++++++++-------
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |  16 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  28 +-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |   2 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  20 ++
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   5 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   2 +-
+ drivers/gpu/drm/mediatek/mtk_mdp_rdma.c       |  19 +-
+ drivers/gpu/drm/mediatek/mtk_padding.c        | 160 ++++++++++
+ drivers/soc/mediatek/mt8188-mmsys.h           | 210 ++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.c              |  27 ++
+ drivers/soc/mediatek/mtk-mmsys.h              |  32 ++
+ drivers/soc/mediatek/mtk-mutex.c              |  51 ++++
+ include/dt-bindings/reset/mt8188-resets.h     |  75 +++++
+ include/linux/soc/mediatek/mtk-mmsys.h        |   8 +
+ 23 files changed, 893 insertions(+), 146 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_padding.c
+
+--
+2.18.0
+
