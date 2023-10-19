@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367407CFBC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BEC7CFBD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345869AbjJSN4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S1345892AbjJSOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345848AbjJSN4K (ORCPT
+        with ESMTP id S1345616AbjJSOAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:56:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42B4131
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:56:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4BBDC433CA;
-        Thu, 19 Oct 2023 13:56:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697723768;
-        bh=yZ/ARB3p2Ke8tobvsFJ9flTddNYrmRG++q6KJRo0w3Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tc74ML9w33RHuzPXDk4Y/0aY9YgCu4WG2S+FQ6bNMA5UdG3O8Mb3PgIAQ7Tc+a3Q/
-         0ZL5nTecGbR8+xaaPo4O/FiCJVYmgI27BJ2lgquzmTQQR8JgyS6Ymj2IdCbyK9IBPa
-         81/sPnuoj7QsXhkHW822S2PbJMLzH+gRvjtTwQVioEcS8HoIf3/WRbPUSwffmZoMJK
-         LOonxjQLVsqd2n+87kEzJst2h5dF/St27OteDkkSqAhF0cccL+nCBW9uWW9aVyLH/f
-         tP04RxZbcGQo0ecHgE6XeIWOsl0kPN+3eczB7zs8or/sOJU2U098PDuONOzIaHv81/
-         v9ZzTgUYDBw9Q==
-Date:   Thu, 19 Oct 2023 06:56:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related
- API
-Message-ID: <20231019065606.525309a6@kernel.org>
-In-Reply-To: <fd8a3e6d-579f-666d-7674-67732e250978@huawei.com>
-References: <20231013064827.61135-1-linyunsheng@huawei.com>
-        <20231016182725.6aa5544f@kernel.org>
-        <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
-        <20231017081303.769e4fbe@kernel.org>
-        <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
-        <20231018083516.60f64c1a@kernel.org>
-        <fd8a3e6d-579f-666d-7674-67732e250978@huawei.com>
+        Thu, 19 Oct 2023 10:00:12 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A27B0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:00:09 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 39JDxaO4026745;
+        Thu, 19 Oct 2023 21:59:36 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Thu, 19 Oct 2023
+ 21:59:35 +0800
+From:   Yu Chien Peter Lin <peterlin@andestech.com>
+To:     <tglx@linutronix.de>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+CC:     <prabhakar.mahadev-lad.rj@bp.renesas.com>, <tim609@andestech.com>,
+        <dylan@andestech.com>, <locus84@andestech.com>,
+        <dminus@andestech.com>, <peterlin@andestech.com>,
+        Leo Yu-Chi Liang <ycliang@andestech.com>
+Subject: [RFC PATCH v2 02/10] irqchip/riscv-intc: Allow large non-standard hwirq number
+Date:   Thu, 19 Oct 2023 21:56:29 +0800
+Message-ID: <20231019135629.3656450-1-peterlin@andestech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.0.15.183]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 39JDxaO4026745
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 21:22:07 +0800 Yunsheng Lin wrote:
-> > Sounds good. Warning wrapped in #if CONFIG_DEBUG_NET perhaps?  
-> 
-> How about something like __get_free_pages() does with gfp flags?
-> https://elixir.free-electrons.com/linux/v6.4-rc6/source/mm/page_alloc.c#L4818
+Currently, the implementation of the RISC-V INTC driver uses the
+interrupt cause as hwirq and has a limitation of supporting a
+maximum of 64 hwirqs. However, according to the privileged spec,
+interrupt causes >= 16 are defined for platform use.
 
-Fine by me!
+This limitation prevents us from fully utilizing the available
+local interrupt sources. Additionally, the hwirqs used on RISC-V
+are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
+or T-Head's PMU irq) being currently used for supervisor mode.
+
+The patch switches to using irq_domain_create_tree() which
+creates the radix tree map, allowing us to handle a larger
+number of hwirqs.
+
+Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+Changes v1 -> v2:
+  - Fix irq mapping failure checking (suggested by Clément and Anup)
+---
+ drivers/irqchip/irq-riscv-intc.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index e8d01b14ccdd..79d049105384 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -24,10 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+ {
+ 	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+ 
+-	if (unlikely(cause >= BITS_PER_LONG))
+-		panic("unexpected interrupt cause");
+-
+-	generic_handle_domain_irq(intc_domain, cause);
++	if (generic_handle_domain_irq(intc_domain, cause))
++		pr_warn("Failed to handle interrupt (cause: %ld)\n", cause);
+ }
+ 
+ /*
+@@ -117,8 +115,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+ {
+ 	int rc;
+ 
+-	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
+-					       &riscv_intc_domain_ops, NULL);
++	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
++					     NULL);
+ 	if (!intc_domain) {
+ 		pr_err("unable to add IRQ domain\n");
+ 		return -ENXIO;
+@@ -132,8 +130,6 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+ 
+ 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+ 
+-	pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.34.1
+
