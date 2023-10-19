@@ -2,182 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18577CF946
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934F67CF94D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345562AbjJSMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        id S1345641AbjJSMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345380AbjJSMqo (ORCPT
+        with ESMTP id S1345380AbjJSMr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:46:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BBFF7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:46:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D4F4C433C7;
-        Thu, 19 Oct 2023 12:46:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697719603;
-        bh=zrChmdwZjapKXHOuDShzo54XNW6c5+Js5gqYUObtK/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O/pjOKSw15Eyq52t9nl85klJ8UdBJwT/YwJwJS+3+usiTv2DShKdWaInjqc3GJBu+
-         On2MmXCrAFp44XHG2X55Os2Y3DDHncbNWMtbFB8F6peVVN4RyLmSfgvt39KYcVOkVp
-         9ygwmt/C+n0oHLdJj5fl2VqHRxsZgDDb6abF925Jn8yGcmYFTkNFLVbPJAXL+814dF
-         mb/nJdZEIbkYb3dJhS+APNwFZH4GGhkOYbjyzYeqHOWwU9bZ7oXivEdvkVC+0j4jSn
-         5/T22RVnwa07bAzIKK1YarpkufcGDt0zrqKSDC2PoFcm9C4/IgHwiIQRJcR8Vdhhgu
-         5+3dfibFfiV1Q==
-Date:   Thu, 19 Oct 2023 13:46:36 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Gregory Clement <gregory.clement@bootlin.com>
-Subject: Re: [PATCH net-next v4 1/7] dt-bindings: net: dsa: Require ports or
- ethernet-ports
-Message-ID: <20231019-friday-fabulous-4882c4048b8c@spud>
-References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
- <20231018-marvell-88e6152-wan-led-v4-1-3ee0c67383be@linaro.org>
- <169762516670.391804.7528295251386913602.robh@kernel.org>
- <CACRpkdZ4hkiD6jwENqjZRX8ZHH9+3MSMMLcJe6tJa=6Yhn1w=g@mail.gmail.com>
- <ZTEL6Yw+Xcc0E4TJ@shell.armlinux.org.uk>
- <20231019-pulse-autopilot-166bb6c96090@spud>
- <ZTEgnUP0rFL2frkk@shell.armlinux.org.uk>
+        Thu, 19 Oct 2023 08:47:56 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF56F7;
+        Thu, 19 Oct 2023 05:47:53 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-581ed744114so1153021eaf.0;
+        Thu, 19 Oct 2023 05:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697719673; x=1698324473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qTpU2GJS0iJKwr+DejD1SyjMobqh5RXzZFM0nPMlyiQ=;
+        b=Wb4yZMFVpV6302Kaz1GFnY3+NzID71+thqOfjZjdqu4kkltn6j3Qxa4i8DBaY5gP+q
+         d3jjMfXUbGM9XHMmEzKdcKo+vLMcv3xYn5SxnKRbPoPDH+dqhMxuiVYKVY7S8gd6NdcX
+         BkYU0oUsgX3QX7IXWA4x5KWDgli5xCtFotsoE3eSk8IDmGApbYR1oXcUXijlK8uBw3XE
+         umYRfjzvvUpsqVtTBPBtqd9YFu759twLERo0vg3S7Ru934GJ37V6x0jHZMv0kbVGLxaa
+         5Ud2WTXfc86uKt1qMxniTRMqWusGt0xsuyHGAJDVzdHtF3q9hYis8OTfm3qcTsdUSO1t
+         EC6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697719673; x=1698324473;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qTpU2GJS0iJKwr+DejD1SyjMobqh5RXzZFM0nPMlyiQ=;
+        b=Py13+ZVskUAhh4tmF64CvafwHIXjAAG9eQO5bx5X6IGGWoY1iAx5LtuoAErHLz68FC
+         STE3MqPdLkHFpbxrpN2P5SZ5KmfSMUT9pc6B7rtS3MjABRlOpKgvvQXIB+ueXpB+qIBC
+         sIy0WLnARgDBWz0vFhF5ibwoHkvl3FOQnwjluW+u1AuyE9sc6o2+p4O88I/rOtNuFj9d
+         9Ow/Vnb5yJNoHVk4p8p2+kOK6wOtIAKeZHpRoZ8BPB9lF3xyv1Mhh3wVxA4V0VWWwR/m
+         ArI3sdEdJbndN1yuLnq5cGo2Kxhk9L1vZc2i8s20dHWZ3IeGQvpb4eOg4EMQg67LchTg
+         bBgA==
+X-Gm-Message-State: AOJu0YzsPJXVy9t3mq9a24FeaciKlniPtGUNVq4P7LAKTW7pSt1a4vXO
+        rOgpS7IqaLzFk3lXIYCW3h3eXEr01GflYPoEi8U=
+X-Google-Smtp-Source: AGHT+IGsI5edFB7RtfCwgkr7TTohQ6JOMBTVyhQPj6TmiAmJ9v7o9ujOevVEED1TbCLyOrToyxjZH2ABsCvpmdSRL04=
+X-Received: by 2002:a05:6358:455:b0:168:aed9:4806 with SMTP id
+ 21-20020a056358045500b00168aed94806mr83951rwe.22.1697719673117; Thu, 19 Oct
+ 2023 05:47:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hRWpvk1HDqmaTX1z"
-Content-Disposition: inline
-In-Reply-To: <ZTEgnUP0rFL2frkk@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-3-nphamcs@gmail.com>
+ <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com>
+ <CAKEwX=N3CnKE+gu-EP98Wr3goQV0Z8fXn_nBPW_H_rupjkBwhA@mail.gmail.com> <CAJD7tkbBBTatK7LUHw__0K_8hykoepygfYLJuZx01CD8V+CZvg@mail.gmail.com>
+In-Reply-To: <CAJD7tkbBBTatK7LUHw__0K_8hykoepygfYLJuZx01CD8V+CZvg@mail.gmail.com>
+From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Date:   Thu, 19 Oct 2023 14:47:42 +0200
+Message-ID: <CA+CLi1i9GHxMvMj16WPr7h_SNUhYo1rr9U8VtJDtOxiVhVznbg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] zswap: make shrinking memcg-aware
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 19, 2023 at 3:12=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Wed, Oct 18, 2023 at 4:47=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+> >
+> > On Wed, Oct 18, 2023 at 4:20=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > >
+> > > On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com>=
+ wrote:
+> > > >
+> > > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> > > >
+> > > > Currently, we only have a single global LRU for zswap. This makes i=
+t
+> > > > impossible to perform worload-specific shrinking - an memcg cannot
+> > > > determine which pages in the pool it owns, and often ends up writin=
+g
+> > > > pages from other memcgs. This issue has been previously observed in
+> > > > practice and mitigated by simply disabling memcg-initiated shrinkin=
+g:
+> > > >
+> > > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.=
+com/T/#u
+> > > >
+> > > > This patch fully resolves the issue by replacing the global zswap L=
+RU
+> > > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+> > > >
+> > > > a) When a store attempt hits an memcg limit, it now triggers a
+> > > >    synchronous reclaim attempt that, if successful, allows the new
+> > > >    hotter page to be accepted by zswap.
+> > > > b) If the store attempt instead hits the global zswap limit, it wil=
+l
+> > > >    trigger an asynchronous reclaim attempt, in which an memcg is
+> > > >    selected for reclaim in a round-robin-like fashion.
+> > >
+> > > Could you explain the rationale behind the difference in behavior her=
+e
+> > > between the global limit and the memcg limit?
+> >
+> > The global limit hit reclaim behavior was previously asynchronous too.
+> > We just added the round-robin part because now the zswap LRU is
+> > cgroup-aware :)
+> >
+> > For the cgroup limit hit, however, we cannot make it asynchronous,
+> > as it is a bit hairy to add a per-cgroup shrink_work. So, we just
+> > perform the reclaim synchronously.
+> >
+> > The question is whether it makes sense to make the global limit
+> > reclaim synchronous too. That is a task of its own IMO.
+>
+> Let's add such context to the commit log, and perhaps an XXX comment
+> in the code asking whether we should consider doing the reclaim
+> synchronously for the global limit too.
 
---hRWpvk1HDqmaTX1z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Makes sense, I wonder if the original reason for switching from a synchrono=
+us
+to asynchronous reclaim will still be valid with the shrinker in place.
 
-On Thu, Oct 19, 2023 at 01:27:09PM +0100, Russell King (Oracle) wrote:
-> On Thu, Oct 19, 2023 at 12:58:46PM +0100, Conor Dooley wrote:
-> > On Thu, Oct 19, 2023 at 11:58:49AM +0100, Russell King (Oracle) wrote:
-> > > On Wed, Oct 18, 2023 at 01:11:45PM +0200, Linus Walleij wrote:
-> > > > On Wed, Oct 18, 2023 at 12:32=E2=80=AFPM Rob Herring <robh@kernel.o=
-rg> wrote:
-> > > > > On Wed, 18 Oct 2023 11:03:40 +0200, Linus Walleij wrote:
-> > > >=20
-> > > > > > Bindings using dsa.yaml#/$defs/ethernet-ports specify that
-> > > > > > a DSA switch node need to have a ports or ethernet-ports
-> > > > > > subnode, and that is actually required, so add requirements
-> > > > > > using oneOf.
-> > > > > >
-> > > > > > Suggested-by: Rob Herring <robh@kernel.org>
-> > > > > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > > > > > ---
-> > > > > >  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 6 ++++++
-> > > > > >  1 file changed, 6 insertions(+)
-> > > > > >
-> > > > >
-> > > > > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_bindin=
-g_check'
-> > > > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > > > >
-> > > > > yamllint warnings/errors:
-> > > > > ./Documentation/devicetree/bindings/net/dsa/dsa.yaml:60:7: [warni=
-ng] wrong indentation: expected 8 but found 6 (indentation)
-> > > > > ./Documentation/devicetree/bindings/net/dsa/dsa.yaml:62:7: [warni=
-ng] wrong indentation: expected 8 but found 6 (indentation)
-> > > >=20
-> > > > Really?
-> > > >=20
-> > > > +  oneOf:
-> > > > +    - required:
-> > > > +      - ports
-> > > > +    - required:
-> > > > +      - ethernet-ports
-> > > >=20
-> > > > Two spaces after the oneOf, 2 spaces after a required as usual.
-> > > > I don't get it.
-> > >=20
-> > > Given the other python errors spat out in Rob's report, I would sugge=
-st
-> > > that the "bot" is running a development version that hasn't been fully
-> > > tested, so anything it spits out is suspect. Maybe Rob can comment on
-> > > the validity of the warnings in the report.
-> >=20
-> > In this case, I think it is correct.
-> > 2 spaces for the oneOf, 2 spaces the start of the required for the
-> > nested list, so:
-> > oneOf:
-> >   - required:
->=20
-> This is a total of two spaces indentation.
->=20
-> >       - ports
->=20
-> This is a total of six spaces indentation.
->=20
-> You mention 2 spaces for the oneOf, which explains why the "- required"
-> needs to be indented by two spaces. You also say 2 spaces for the
-> required nested list, but what about the other two spaces?
+>
+> >
+> > (FWIW, this somewhat mirrors the direct reclaimer v.s kswapd
+> > story to me, but don't quote me too hard on this).
+> >
+> [..]
+> >
+> > >
+> > > >         /* Hold a reference to prevent a free during writeback */
+> > > >         zswap_entry_get(entry);
+> > > >         spin_unlock(&tree->lock);
+> > > >
+> > > > -       ret =3D zswap_writeback_entry(entry, tree);
+> > > > +       writeback_result =3D zswap_writeback_entry(entry, tree);
+> > > >
+> > > >         spin_lock(&tree->lock);
+> > > > -       if (ret) {
+> > > > -               /* Writeback failed, put entry back on LRU */
+> > > > -               spin_lock(&pool->lru_lock);
+> > > > -               list_move(&entry->lru, &pool->lru);
+> > > > -               spin_unlock(&pool->lru_lock);
+> > > > +       if (writeback_result) {
+> > > > +               zswap_reject_reclaim_fail++;
+> > > > +               memcg =3D get_mem_cgroup_from_entry(entry);
+> > > > +               spin_lock(lock);
+> > > > +               /* we cannot use zswap_lru_add here, because it inc=
+rements node's lru count */
+> > > > +               list_lru_putback(&entry->pool->list_lru, item, entr=
+y_to_nid(entry), memcg);
+> > > > +               spin_unlock(lock);
+> > > > +               mem_cgroup_put(memcg);
+> > > > +               ret =3D LRU_RETRY;
+> > > >                 goto put_unlock;
+> > > >         }
+> > > > +       zswap_written_back_pages++;
+> > >
+> > > Why is this moved here from zswap_writeback_entry()? Also why is
+> > > zswap_reject_reclaim_fail incremented here instead of inside
+> > > zswap_writeback_entry()?
+> >
+> > Domenico should know this better than me, but my understanding
+> > is that moving it here protects concurrent modifications of
+> > zswap_written_back_pages with the tree lock.
+> >
+> > Is writeback single-threaded in the past? This counter is non-atomic,
+> > and doesn't seem to be protected by any locks...
+> >
+> > There definitely can be concurrent stores now though - with
+> > a synchronous reclaim from cgroup-limit hit and another
+> > from the old shrink worker.
+> >
+> > (and with the new zswap shrinker, concurrent reclaim is
+> > the expectation!)
+>
+> The comment above the stats definition stats that they are left
+> unprotected purposefully. If we want to fix that let's do it
+> separately. If this patch makes it significantly worse such that it
+> would cause a regression, let's at least do it in a separate patch.
+> The diff here is too large already.
+>
+> >
+> > zswap_reject_reclaim_fail was previously incremented in
+> > shrink_worker I think. We need it to be incremented
+> > for the shrinker as well, so might as well move it here.
+>
+> Wouldn't moving it inside zswap_writeback_entry() near incrementing
+> zswap_written_back_pages make it easier to follow?
 
-I a word that might've made it more clear.
-It is 2 spaces for the oneOf and 2 spaces _from_ the start of the
-required for the nested list.
+As Nhat said, zswap_reject_reclaim_fail++ had to be moved, I naturally move=
+d it
+here because it's where we act upon the result of the writeback. I then not=
+iced
+that zswap_written_back_pages++ was elsewhere and decided to move that as w=
+ell
+so that they're in the same place and at least they're under the tree lock.
 
-In theory you might have a contrived example that looks like:
-
-oneOf:
-  - required:
-      - ports
-    properties:
-      ethernet-ports: false
-
-  - required:
-      - ethernet-ports
-    properties:
-      ports: false
-
-Maybe with that example you can see that each option of the oneOf
-contains a `required` and a `properties` component at 4 spaces of
-indent, and then in turn the required properties, being sub-components
-of `required` grow 2 more spaces for 6.
-
-> I guess if you're a YAML expert, this all makes sense, but to those of
-> us who aren't, these quirky "features" of it just seem totally
-> illogical.
-
-If I were a yaml expert, I would probably be able to use the correct
-terminology to explain this better, but hopefully the example is useful.
-
---hRWpvk1HDqmaTX1z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTElLAAKCRB4tDGHoIJi
-0nGyAQCSissEbIBxRaCcFxF/SsIhIEna84/VQZA/TgqU6R+5eQEAqIrUvOveubc0
-111rEtBQs+tzwLNM+TuvJiUKGztktg0=
-=HXqE
------END PGP SIGNATURE-----
-
---hRWpvk1HDqmaTX1z--
+It's not meant to fix the unprotected counters, it's just a mitigation sinc=
+e we
+are forced to move at least one of them.
