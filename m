@@ -2,182 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C727D0252
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1307B7D0253
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346398AbjJSTOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        id S1346449AbjJSTPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjJSTOb (ORCPT
+        with ESMTP id S232935AbjJSTPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:14:31 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D481FCA
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:14:29 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-58e119bb28eso896067a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697742869; x=1698347669; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s0c2Ykg+NSYzL507uf61vrkxf/qCgVQVxVY+6Rum2lE=;
-        b=TurgLWkPUb9gIECPeFFa0pII8zJMpuzwADD7G42HEEv6AfHOkUoVAKbT32onR25b5L
-         0/wkjMxp0TNbfsLTpdWVtta7vv1wrTcsOjuvUP6+JBww7wVoIoHuPUfsN5Qu763gwXsQ
-         8iiack/2SSY2cNgVowSrJYHvuAwtwfVUxC/kOFn9bOY+Zw+RvCpCKTA19vLZ6GY825Vr
-         Iq4BAJ/T7LlWPPo6f6XZkV+H2dSwDr3WJhEbBY9C3xu6AeV20tEGVnqC4+uCiROteFBc
-         TGiApH6OiY8pKYK67RtuydovOwazHsomM2Ee6fddzfP5HMBgs6zQl2ETPRugLx/71b56
-         dGgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697742869; x=1698347669;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s0c2Ykg+NSYzL507uf61vrkxf/qCgVQVxVY+6Rum2lE=;
-        b=nEFWOtytYLi4J34BeeTQ8tboaELFFZcQSZ+hlWn5LUlcpJ2wjiBArmpeO0XU6U/KrA
-         oFvKTii293e9+eMNLU3zzeNuBH9m2NCHuxJ8ANO5Ow8HnVEKOiW/QyjjuSgebw5caO4u
-         r1bqhMEwXRLN/nB5JbUkrj+2oi3Sk2xOBN+lNfxWIj69FLGCB/lDB46O921xh9TiGXO1
-         vkxczUGjyhyr7Qn5kSJZjVmKHl1WAGVYIaBViMCJ+V82gZjN0heMSLMDvMTFSsA/iCaa
-         qeoGFQEn+3w5vBNQObPWfNic5lkD4jW7zvfjSYSCkGX4AHJhmrbC3AvWuxhw3KSHFxwp
-         Zqqg==
-X-Gm-Message-State: AOJu0Yyt5eZWm6o2uXzaBnh8h8LcWv6bPkY3k/LYewpKFnqgmn/KQK9n
-        pWPtHbpiJKEUDepH0hjk9Dc=
-X-Google-Smtp-Source: AGHT+IEAg0sopFfjPaXNffNo+Co1dZ3z90JYHckrKJv95HTWg1k/kLDXOPsZU++MoPY7CSEZUgh6mA==
-X-Received: by 2002:a17:90b:23d6:b0:277:3565:30cf with SMTP id md22-20020a17090b23d600b00277356530cfmr4267350pjb.6.1697742869255;
-        Thu, 19 Oct 2023 12:14:29 -0700 (PDT)
-Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id m8-20020a17090a4d8800b002791491f811sm124789pjh.8.2023.10.19.12.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 12:14:28 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 12:14:28 -0700
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Andi Shyti <andi.shyti@linux.intel.com>
-Cc:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v2 2/2] staging: vme_user: Use __func__ instead of
- function name
-Message-ID: <20231019191428.GA32717@Negi>
-References: <cover.1697696951.git.soumya.negi97@gmail.com>
- <996c9f92e7fd288f67c02dfb0ba524ab7c5fe421.1697696951.git.soumya.negi97@gmail.com>
- <ZTFOGIu5U+ZUodXW@ashyti-mobl2.lan>
+        Thu, 19 Oct 2023 15:15:30 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07B3CA;
+        Thu, 19 Oct 2023 12:15:27 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39JJFJg5028819;
+        Thu, 19 Oct 2023 14:15:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697742919;
+        bh=8nEpaNhdO0hr7HNZnd9/TJlw9Tmo4Ygz+3FhR0f/YRc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ef6jZKsfM92FeInDWOuShd2QIdoJoWMYpuAVKnPkyYPNZMK3Nvm1h4PEVAu1HTG8T
+         ES+PZOZpFqc4RFkNN5iLzzDsHIsiqDDN/W5xpmQ8/JDfCYSdiMfdAVEoX5jJJ8qrp9
+         NqpiWIV5yii8uFHGsBsKxOQrsVQdc+onF4cnvRL0=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39JJFJKC065298
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Oct 2023 14:15:19 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
+ Oct 2023 14:15:19 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 19 Oct 2023 14:15:19 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39JJFJTE113698;
+        Thu, 19 Oct 2023 14:15:19 -0500
+Date:   Thu, 19 Oct 2023 14:15:19 -0500
+From:   reidt <reidt@ti.com>
+To:     Vaishnav Achath <vaishnav.a@ti.com>
+CC:     <vigneshr@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <afd@ti.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <u-kumar1@ti.com>
+Subject: Re: [PATCH v4 2/2] arm64: dts: ti: k3-j7200-mcu-wakeup: Update fss
+ node and hbmc_mux
+Message-ID: <20231019191519.jksgyzv6gcrtltbs@reidt-HP-Z2>
+References: <20231009082452.30684-1-vaishnav.a@ti.com>
+ <20231009082452.30684-3-vaishnav.a@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZTFOGIu5U+ZUodXW@ashyti-mobl2.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231009082452.30684-3-vaishnav.a@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:41:12PM +0200, Andi Shyti wrote:
-> Hi Soumya,
+On 13:54-20231009, Vaishnav Achath wrote:
+> From: Nishanth Menon <nm@ti.com>
 > 
-> On Thu, Oct 19, 2023 at 12:20:10AM -0700, Soumya Negi wrote:
-> > Replace function names in message strings with __func__ to fix
-> > all checkpatch warnings like:
-> > 
-> >     WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
-> >              this function's name, in a string
-> > 
-> > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> FSS node claims to be a syscon node, while it actually is a simple bus
+> where OSPI, HBMC peripherals are located and a mux for path select
+> between OSPI and Hyperbus which can be modelled as a reg-mux. So model
+> it accordingly and use reg-mux to describe the hbmc_mux.
 > 
-> you forgot my ack here:
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> ---
 > 
-> Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
+> V2->V3:
+>  * Keep register regions unchanged as it is correct according to memory
+>   map.
+>  * Update commit messages as per Vignesh's suggestion.
 > 
-> Andi
+> V1->V2:
+>  * Address feedback from Udit to limit the FSS register region size as
+>  per TRM.
+>  * Use reg-mux changes to simplify the hbmc-mux modelling.
+>  * Update commit message to reflect changes.
+> 
+> Depends on:
+>  https://lore.kernel.org/all/20230911151030.71100-1-afd@ti.com/
+> 
+>  arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> index 2ee6215e38a6..4f98ea685d33 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> @@ -507,15 +507,16 @@
+>  		status = "disabled";
+>  	};
+>  
+> -	fss: syscon@47000000 {
+> -		compatible = "syscon", "simple-mfd";
+> +	fss: bus@47000000 {
+> +		compatible = "simple-bus";
+>  		reg = <0x00 0x47000000 0x00 0x100>;
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+>  		ranges;
+>  
+> -		hbmc_mux: hbmc-mux {
+> -			compatible = "mmio-mux";
+> +		hbmc_mux: mux-controller@47000004 {
+> +			compatible = "reg-mux";
+> +			reg = <0x00 0x47000004 0x00 0x2>;
+>  			#mux-control-cells = <1>;
+>  			mux-reg-masks = <0x4 0x2>; /* HBMC select */
+>  		};
+> -- 
+> 2.17.1
+> 
+> 
 
-Sorry I forgot the tag Andi. I'll add the tags in v3(Greg has suggested
-more changes). There will be some new patches, so I'll leave the tags out in 
-those as you may want to review them first.
-
-Regards,
-Soumya
-> 
-> > ---
-> > Changes in v2:
-> > * None
-> > 
-> >  drivers/staging/vme_user/vme.c | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > index 640b2dda3ac6..e533cce8e54e 100644
-> > --- a/drivers/staging/vme_user/vme.c
-> > +++ b/drivers/staging/vme_user/vme.c
-> > @@ -424,7 +424,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
-> >  	image = list_entry(resource->entry, struct vme_slave_resource, list);
-> >  
-> >  	if (!bridge->slave_get) {
-> > -		dev_err(bridge->parent, "vme_slave_get not supported\n");
-> > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -576,7 +576,7 @@ int vme_master_set(struct vme_resource *resource, int enabled,
-> >  	image = list_entry(resource->entry, struct vme_master_resource, list);
-> >  
-> >  	if (!bridge->master_set) {
-> > -		dev_warn(bridge->parent, "vme_master_set not supported\n");
-> > +		dev_warn(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -1576,7 +1576,7 @@ int vme_lm_set(struct vme_resource *resource, unsigned long long lm_base,
-> >  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
-> >  
-> >  	if (!bridge->lm_set) {
-> > -		dev_err(bridge->parent, "vme_lm_set not supported\n");
-> > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -1612,7 +1612,7 @@ int vme_lm_get(struct vme_resource *resource, unsigned long long *lm_base,
-> >  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
-> >  
-> >  	if (!bridge->lm_get) {
-> > -		dev_err(bridge->parent, "vme_lm_get not supported\n");
-> > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -1649,7 +1649,7 @@ int vme_lm_attach(struct vme_resource *resource, int monitor,
-> >  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
-> >  
-> >  	if (!bridge->lm_attach) {
-> > -		dev_err(bridge->parent, "vme_lm_attach not supported\n");
-> > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -1682,7 +1682,7 @@ int vme_lm_detach(struct vme_resource *resource, int monitor)
-> >  	lm = list_entry(resource->entry, struct vme_lm_resource, list);
-> >  
-> >  	if (!bridge->lm_detach) {
-> > -		dev_err(bridge->parent, "vme_lm_detach not supported\n");
-> > +		dev_err(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > @@ -1750,7 +1750,7 @@ int vme_slot_num(struct vme_dev *vdev)
-> >  	}
-> >  
-> >  	if (!bridge->slot_get) {
-> > -		dev_warn(bridge->parent, "vme_slot_num not supported\n");
-> > +		dev_warn(bridge->parent, "%s not supported\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > -- 
-> > 2.42.0
+Reviewed-by: Reid Tonking <reidt@ti.com>
