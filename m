@@ -2,155 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91277D0374
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53B57D037C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbjJSUzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S233304AbjJSVFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjJSUzn (ORCPT
+        with ESMTP id S229892AbjJSVFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:55:43 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0FAD7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:55:41 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b7f0170d7bso143383b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:55:41 -0700 (PDT)
+        Thu, 19 Oct 2023 17:05:11 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB418C2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:05:08 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-98377c5d53eso26232466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697748941; x=1698353741; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PbXLmjJs4tDfsTjbZlYEpWsUipeZmvWuN4h1mPUkDJ0=;
-        b=ZOi7CXqhJsiv9A5OCuhNTJmx79o2Q/ApOQXzoIsoAdbAVL3Qwu+lK0sOj0WOM8ZFgh
-         xV3GZt0qEQpZ0ZqDpG5zw7xhZbAdCgofF0MPS86WT/4G5M8CGXXDacJCu9KbX1oLRamJ
-         bx3Bs+DciM+voQwx6bCmI6nnxwT/NSt0a/jqGp4u+P12z9kDCjNLSep55qPbcPNe2uSL
-         c9I6mN2NhpR379wvjp2EgCwnSAi3Bk88sYqk0U3eCTMu+k90g2IZcVwBXyP29CcJsoc8
-         c1Q0MpJnxiSuxMmEyryIVEP26ipKhPZp0RNf6brAiOsbd0E502KPPcxlYg7Wp9ABnuDI
-         e4Ng==
+        d=linux-foundation.org; s=google; t=1697749507; x=1698354307; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bsd5+hpDI8TsggPTWMSXCW7cLx+ZstaAm/o7xK/YLak=;
+        b=L85AfNAo193uA8hzKnC+0BTApYIb1oEvVhFmMIfs/m4UtIswaZPbffJfUBRp5LdSx5
+         m0bdAKhyCEBj9uQzLXcwq8WbgkaZStVhyUQ2S8pZCJuhnYPsIdaXIHookKXu62wZOHLB
+         ao3ZnQmSBEM29maxp2Wvp7Fk3cfv7BB0DmsQo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697748941; x=1698353741;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PbXLmjJs4tDfsTjbZlYEpWsUipeZmvWuN4h1mPUkDJ0=;
-        b=dhZkxQjvPWVTWpgn8iuwU5lF9K3oUB+X8OzAHdUmr7OFm+Vn0noZXVCvfevESZjwHS
-         cRnYDv8Q0maIXPzP3xpo4kFPSCFDyltFEiyxOVplF9hD4LEeBwpYfjqLJ2aDwoJOXjYc
-         kdSaJ7um/8FAekKP7TaewUiwYIdmhs+hjUFZEkHD/J0ngcWUVLNQQ/NMb0nPPaKLrI5c
-         6WagNyydIH8Vrtf+9F4UTLBEF7zEu47RuObK+FIeXBP0klaagOSpW8pWgt3iSgsRWm2R
-         UgIUt9yG7+P9oSuhvkklqPbDlHjzCw9uZK/r4ShMTQFdXwqoFYNMOa69IJyrOI3v8l7E
-         GWBQ==
-X-Gm-Message-State: AOJu0Yx1lCapGEixgn/5SRl5Im3SSDi02nbZCXAO3ugGLSzQqg/j/NzW
-        sYeXRzKv7hqwSffEo0FXW4I=
-X-Google-Smtp-Source: AGHT+IH7Gs2YuSv4uXr04F6lQ+npE/GpevyFYc7uZJwJ5aXaB5RN8oXxxiVdsBQ8DsgKo/v/cXQFWQ==
-X-Received: by 2002:a05:6a20:7486:b0:17a:fa76:805f with SMTP id p6-20020a056a20748600b0017afa76805fmr3692636pzd.23.1697748940668;
-        Thu, 19 Oct 2023 13:55:40 -0700 (PDT)
-Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id l18-20020a17090aec1200b0027dc2af3a17sm1974326pjy.27.2023.10.19.13.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 13:55:40 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 13:55:39 -0700
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 1/2] staging: vme_user: Replace printk() with
- pr_*(),dev_*()
-Message-ID: <20231019205539.GA3017@Negi>
-References: <cover.1697601942.git.soumya.negi97@gmail.com>
- <a0579eeda5ce70f69b6bfdcbe534b9d37138096c.1697601942.git.soumya.negi97@gmail.com>
- <2023101823-unhidden-draw-d68c@gregkh>
- <20231018193855.GA32553@Negi>
- <2023101925-kudos-playful-7c5a@gregkh>
- <20231019190618.GA29750@Negi>
- <2023101941-poncho-disagree-8c77@gregkh>
+        d=1e100.net; s=20230601; t=1697749507; x=1698354307;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bsd5+hpDI8TsggPTWMSXCW7cLx+ZstaAm/o7xK/YLak=;
+        b=ZKYdfU2l1bEEMonm7L5mJzqpVkJdAw+SzsCH3IjSxu8/TGVP7c8nsPs212LbzuEE8I
+         QMHU/liTAf9E4ptt9tCCi1l8GUG++z6iJaB6LVP6Jzsl+P6F7NrcIURY/6D7URuzuSP1
+         O9OK51tk0a99EnIDtqIevyfPyeuwpWFLMWskqwc2dkR8/NmVtYD86/Zy3K6QW67YcldI
+         C0GRjPLL02xHuJiSQIq21jZdy79ba993I/ADJTpSvMvcHIeLOxn3tuaIm9L6ywVm4+rB
+         R7LlK+RNU5mVp02PjGdOl0VPHU0pgJzFB6z7vBhPdeUv6FqNAIclLv5CnaTPJhgYat7g
+         idfg==
+X-Gm-Message-State: AOJu0YxKoH2kiY174XdOREpzrHD4kq9UMer1uIfRCRwXSEd98BOhpBBY
+        GCuWNTc+UYp9VdLfot50vAU3dmdvy2EIpVkrrhZhJG4B
+X-Google-Smtp-Source: AGHT+IFtinl4QnWTtzoT4zysWnvf69L6doIfUl8MCYAgiIDgKvc4lMVfUAlIGk0oD0gAqXw2vzUjdQ==
+X-Received: by 2002:a17:907:a4b:b0:9ae:1872:d01a with SMTP id be11-20020a1709070a4b00b009ae1872d01amr2527613ejc.76.1697749506757;
+        Thu, 19 Oct 2023 14:05:06 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170906050c00b009c764341f74sm189900eja.71.2023.10.19.14.05.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 14:05:06 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso94152a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:05:05 -0700 (PDT)
+X-Received: by 2002:a17:907:3dac:b0:9c6:64be:a3ac with SMTP id
+ he44-20020a1709073dac00b009c664bea3acmr2932039ejc.49.1697749505619; Thu, 19
+ Oct 2023 14:05:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023101941-poncho-disagree-8c77@gregkh>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+ <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com>
+ <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+ <CAFULd4b91Tr9Q2p4a20eusC+QO6O81gxY+nP-zpFiFKGTmLpYg@mail.gmail.com>
+ <CAHk-=wi3LZ_4OGAMhvgO0JSTp-eEPOGp+siq1nJNLY1JAxdP5Q@mail.gmail.com> <CAFULd4YxvMtTEfQL-RiLisTxDwoJZZxXXB+3CWqCpzZkUf85JA@mail.gmail.com>
+In-Reply-To: <CAFULd4YxvMtTEfQL-RiLisTxDwoJZZxXXB+3CWqCpzZkUf85JA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 14:04:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj8qEwR1eGeJdup2q90WK7ZWBjpcXJEBi-TBp29p0n8oQ@mail.gmail.com>
+Message-ID: <CAHk-=wj8qEwR1eGeJdup2q90WK7ZWBjpcXJEBi-TBp29p0n8oQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     peterz@infradead.org, Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 09:42:26PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 19, 2023 at 12:06:18PM -0700, Soumya Negi wrote:
-> > On Thu, Oct 19, 2023 at 05:34:01PM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Oct 18, 2023 at 12:38:56PM -0700, Soumya Negi wrote:
-> > > > Hi Greg,
-> > > > 
-> > > > On Wed, Oct 18, 2023 at 03:26:07PM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Tue, Oct 17, 2023 at 09:36:32PM -0700, Soumya Negi wrote:
-> > > > > > vme.c uses printk() to log messages. To improve and standardize message
-> > > > > > formatting, use logging mechanisms pr_err()/pr_warn() and
-> > > > > > dev_err()/dev_warn() instead. Retain the printk log levels of the
-> > > > > > messages during replacement.
-> > > > > > 
-> > > > > > Issue found by checkpatch.pl
-> > > > > > 
-> > > > > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
-> > > > > > ---
-> > > > > >  drivers/staging/vme_user/vme.c | 175 ++++++++++++++++++---------------
-> > > > > >  1 file changed, 94 insertions(+), 81 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > > > > > index 6519a7c994a0..e8c2c1e77b7d 100644
-> > > > > > --- a/drivers/staging/vme_user/vme.c
-> > > > > > +++ b/drivers/staging/vme_user/vme.c
-> > > > > > @@ -9,6 +9,8 @@
-> > > > > >   * Copyright 2004 Motorola Inc.
-> > > > > >   */
-> > > > > >  
-> > > > > > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > > > > 
-> > > > > No, this is a driver, as others have pointed out, always use dev_*()
-> > > > > calls instead.
-> > > > 
-> > > > Some of the pr_ fns can be dev_, but I don't think all can.
-> > > > e.g. device NULL-check error messages
-> > > 
-> > > I would argue that those are pointless and can be removed and also the
-> > > check is probably not needed either.
-> > 
-> > Got it. The pr_() in find_bridge() can't be converted to dev_ so I'll remove 
-> > the message entirely in another patch.
-> > 
-> > I understand that the device-NULL checks should be done on the caller's side. 
-> > Since empty devices would mean something went wrong, would it be better to
-> > put in an assertion(..WARN_ON) when removing the check? 
-> 
-> WARN_ON() means "I have no idea what can happen here so I give up",
-> which is not a good idea in kernel development.  If that every hits,
-> then your machine will reboot as the huge majority of all Linux systems
-> in the world run with panic-on-warn enabled.
-> 
-> If it is impossible for something to happen (i.e. you control all
-> callers) then just do not check for it.  If it happens, you will get a
-> NULL-dereference which is the same as a WARN_ON() in a way.
-> 
-> No new WARN_ON() should ever be added to the kernel, especially in a
-> driver.  Handle the condition if it is possible to be hit.  If it can
-> never be hit, don't even check it.
-> 
-> thanks,
-> 
-> greg k-h
+On Thu, 19 Oct 2023 at 11:16, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> I wonder what are "certain circumstances" that the
+> documentation is referring to.
 
-Hi Greg,
+Looking more at that "under certain circumstances" statement, I
+actually think it refers even to the situation *with* "asm volatile".
 
-Thank you for explaining in detail. I'll remove the device NULL-checks
-completely.
+In particular, when doing loop unrolling, gcc will obviously duplicate
+the asm (both with and without volatile). That would obviously lead to
+exactly the kinds of problems that snippet of documentation then talks
+about:
 
-Regards,
-Soumya
+  "This can lead to unexpected duplicate symbol errors during
+compilation if your asm code defines symbols or labels"
 
+so that makes complete sense. It also matches up with the fact that
+this is all actually documented very much under the "volatile" label -
+ie this is a generic thing that happens even *with* volatile in place,
+and we should not expect that "one asm statement" will generate
+exactly one copy of the resulting assembler.
 
+It also matches up with the whole earlier preceding about "Note that
+the compiler can move even volatile asm instructions relative to other
+code, including across jump instructions". So I think what happened is
+exactly that somebody was declaring a variable or local label inside
+the asm, and then the docs were clarified to state that the asm can be
+duplicated in the output.
+
+Of course, this is all just by me reading the docs and looking at gcc
+output for way too many years. It's not based on any knowledge of the
+original issue.
+
+             Linus
