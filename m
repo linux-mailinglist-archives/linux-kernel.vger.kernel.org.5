@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DEB7CF5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C97CF5EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345298AbjJSKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S232860AbjJSKyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345285AbjJSKxG (ORCPT
+        with ESMTP id S230297AbjJSKyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:53:06 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506A2121;
-        Thu, 19 Oct 2023 03:53:04 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so95111741fa.3;
-        Thu, 19 Oct 2023 03:53:04 -0700 (PDT)
+        Thu, 19 Oct 2023 06:54:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8C3FA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:54:16 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bd0e1b1890so4088896b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697712782; x=1698317582; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2iJFIQZU3dMWJmF9fQqJT6sOJuhpG2IbdIzEIIeAV0=;
-        b=dMz2uwuSU7lYXT/hKRJL5HQ3W8Td6np6Idc0NASEawoS/cOZNPXZUZ70fPb0EkSMY3
-         /4nLqK4ym4DzImgE1lATwjbumLMqzZv1iTht9+HtDJb7XpNjQuX52HVsPvYLklOgo9/Y
-         VksStneetXYJSbyqPa1+ZPH1vyyHa6zXLZkKuAklvGvkmknT5YQHVTynKEK2eGQtES1z
-         62qNgWuJedYkJa2PlCPrkx8XQ6gzctVYIrpvxUdgb5eGOa0R2mD6CoSpta+ELwhVKj5J
-         OIkQZxU6ysIdJyAsuea+NBMKEcmcDTyVvYDPU169IfxvTzOvlrKiir/Nnr+1Q8uvscv2
-         f1DA==
+        d=tweaklogic.com; s=google; t=1697712856; x=1698317656; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LCtBQryfJ1xQsBGsjZIGIMJfT5cFTOyCYsWR74V1tfo=;
+        b=M65X0Y705n0y5rkgXCjvvbG+XYyCV8Ephfm92a/0PLDFxtZzvqwG9pW3ke1Y3P3U5H
+         pCgDS6YsLOf/R4DvhGmKzDtgyt4xcxZtD8d875Q4XNzfXDkIpd7ogo2auqc/YSQNm89O
+         P+NXxsh2GQvPDHH1nfe3DWjQJqDra3MFgQZyiQ9SuXP/n9pvevpe83J1hAX5RO+FqXj0
+         SFcgCUlAWbaGSYdLfn1vZXzd2YRibqaJymXL5FErUHxdh+o0lWi3FNxE3wadbz2l4cDz
+         LTzV178jkB7uMFl3f7CGIxc/HOlf84n/5txO0MjM6iM/X3hQfKfwoOTlp2bsuXm8NdqQ
+         N6sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697712782; x=1698317582;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a2iJFIQZU3dMWJmF9fQqJT6sOJuhpG2IbdIzEIIeAV0=;
-        b=iqxGzS8Ha1W2i0SREbYt6KLDaZ4lSOdSLwAuy7oSAsolVTqHFFsHNl0qVyqbdY+c8U
-         2VPNXT+bzrEBsDCxad2bq0Fy15838jwdsV+RU8BZ/N/Ox2SDrHB7fwjn59bZIXxMjCjK
-         bYhhNYgeKHeujj1p+2H+y/2CSMgvBe4BvGzVM7fS7Lc2z5JtOGkHQ62J00qU9rpsi1cs
-         G98lqH611mt7mArPM1KpPlMCs/gxUIInaXYfxh7QSCXyxJYmaJIJNFH1s1ulMZki1PcA
-         bi+d6ZQfjZt1WIc/uOP1fK7TkgGeZs/fV/eZ5881jcb8A0vIgGVz7Vgdurp/gp3aJpcr
-         1gKg==
-X-Gm-Message-State: AOJu0YxDpRQ91ZH6fmGQlZYimEUOBXUor4lHosqIWyEg3Sg4vTDxgSDb
-        AMzj61w2aGI/HNvZqoHSWl8=
-X-Google-Smtp-Source: AGHT+IGzZ6w/a2I2t2hj+OoCFUEN+jp/x1/0jBQjv+5/Krw0aEMmBE8FvF+3HQVEJYZ7RYhQGJX34g==
-X-Received: by 2002:ac2:5194:0:b0:503:9eb:47f0 with SMTP id u20-20020ac25194000000b0050309eb47f0mr1122559lfi.59.1697712782192;
-        Thu, 19 Oct 2023 03:53:02 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id fb21-20020a056512125500b005031641b40asm1043740lfb.159.2023.10.19.03.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 03:53:01 -0700 (PDT)
-Message-ID: <65310a8d.050a0220.28bdd.4114@mx.google.com>
-X-Google-Original-Message-ID: <ZTEKiUCiP/fMJUdl@Ansuel-xps.>
-Date:   Thu, 19 Oct 2023 12:52:57 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ilia Lin <ilia.lin@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        d=1e100.net; s=20230601; t=1697712856; x=1698317656;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LCtBQryfJ1xQsBGsjZIGIMJfT5cFTOyCYsWR74V1tfo=;
+        b=bsUEXipR70GvAkyeIcVl9/+lcKzcZXLsAvdbSq7mISPK46HQxP3L5MWx/Rum/jwjay
+         cr5AUCJf+kdJxhIualrOIHGDSrrcYU1JoAQVqkc0Au7WO68p/Pga1kTGRGtGDd9mdjdg
+         t3xDBAd/l7POSaOQh9/qXZv9GJN3NtSsk5SwohG1S4mWr7qwp3ZhKXA90yTxS9OxPPcx
+         DNJMLj6OuRSBSMJYMVQgQlG+WrMWF3S9ZUMkc4NLy0MeNzuR4+wk3C1N7I8MB4OS9X+y
+         eVjGapbf+5AkIbMdo6jbfmZO7l6ZZH0Wj5QVk4PABLoRrDlFcEKi7A0WblgkjEMuHvOb
+         S+NQ==
+X-Gm-Message-State: AOJu0YxiiKoi2uPIaBHZVqE80ookq1QfHiM23WGi/BqUnk0ByOjstk65
+        BT2ycSQZi+jLTzCAJbp9aGwMGQ==
+X-Google-Smtp-Source: AGHT+IGLRW71RGnN5LAjUmR5R+sXl/Ze6dKBRdRXdfp7qjEbJ8wSX6EjDuxyLcusqDV3QGklgp6WZA==
+X-Received: by 2002:a05:6a00:b53:b0:6b5:ec98:4289 with SMTP id p19-20020a056a000b5300b006b5ec984289mr1585918pfo.14.1697712855712;
+        Thu, 19 Oct 2023 03:54:15 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:43ac:2324:cc6e:9fa5? (2403-580d-82f4-0-43ac-2324-cc6e-9fa5.ip6.aussiebb.net. [2403:580d:82f4:0:43ac:2324:cc6e:9fa5])
+        by smtp.gmail.com with ESMTPSA id z11-20020aa79e4b000000b0068790c41ca2sm4825720pfq.27.2023.10.19.03.54.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 03:54:15 -0700 (PDT)
+Message-ID: <0084ddad-d6fc-ca26-2d26-ba71e81f5f8b@tweaklogic.com>
+Date:   Thu, 19 Oct 2023 21:24:09 +1030
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
+ schemas
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] cpufreq: qcom-nvmem: add support for ipq806x
-References: <20231013173854.7399-1-ansuelsmth@gmail.com>
- <20231019064653.feqpjdmblm7mmsug@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019064653.feqpjdmblm7mmsug@vireshk-i7>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
+ <20231019-rematch-ethically-9d482ca4607e@spud>
+ <20231019-theme-clunky-f4a2e1d122e7@spud>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20231019-theme-clunky-f4a2e1d122e7@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 12:16:53PM +0530, Viresh Kumar wrote:
-> On 13-10-23, 19:38, Christian Marangi wrote:
-> > The first patch of this series was split to a separate series as it
-> > doesn't depend on [1] and can be applied right away,
-> > [1] introduced some breaking change to function that ipq806x, ipq807x
-> > patch was dropped to permit an easier rebase and merge of both.
-> > 
-> > This small series adds support for ipq806x qcom-cpufreq-nvmem driver.
-> > Special function are required to make use of the opp-supported-hw
-> > binding by hardcoding custom bits based on the qcom SoC ID.
-> > 
-> > The qcom-cpufreq-nvmem driver had recent changes to also improve
-> > support for apq8064. Because of this, this series depends on a
-> > just merged series.
-> > 
-> > Depends on [1].
-> > 
-> > [1] https://lore.kernel.org/linux-pm/20231010063235.rj2ehxugtjr5x2xr@vireshk-i7/T/#t
-> > 
-> > Christian Marangi (4):
-> >   dt-bindings: cpufreq: qcom-cpufreq-nvmem: Document krait-cpu
-> >   dt-bindings: opp: opp-v2-kryo-cpu: Document named opp-microvolt
-> >     property
-> 
-> Applied above two. Thanks.
-> 
-> >   cpufreq: qcom-nvmem: add support for IPQ8064
-> 
-> This doesn't apply/build anymore.
->
+> Also:
+> <matt.ranostay@konsulko.com>: host aspmx.l.google.com said:
+>      550-5.1.1 The email account that you tried to reach does not exist.
+Thanks Conor for pointing this out. Can you please help me out with this?
+get_maintainer.pl suggested me to add this email ID.
 
-Hi, I sent v7 that fix the conflict problem. I dropped from the series
-the 2 applied patch and added the 2 dependent patch since it seems
-fixing the problem in the series might take longer times.
-
-Can you check? Thanks a lot for the help in accepting this series.
-
-> >   ARM: dts: qcom: ipq8064: Add CPU OPP table
-> 
-
--- 
-	Ansuel
+Regards,
+Subhajit Ghosh
