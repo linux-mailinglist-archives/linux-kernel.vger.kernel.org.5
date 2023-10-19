@@ -2,64 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8CB7CFBB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162B27CFBCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345838AbjJSNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S1345848AbjJSN5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345774AbjJSNvz (ORCPT
+        with ESMTP id S1345616AbjJSN5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:51:55 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7929B9B;
-        Thu, 19 Oct 2023 06:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1697723485; x=1698328285; i=w_armin@gmx.de;
-        bh=AxltyYmFHaymahO+4+pGheB+ct+TZ7Uc/Q3HcmAQ28w=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=TpAgjHZNerr30oSXW9odupHfYqOyzpcTTylA5GZdPCoQxg723mOm/enu/+NbzYpz
-         7Iq7OtCWCk9w4K8XPUuxB2YY2D4xJlZ6E8zugUt8sNfubK6z99YMqu/krMuVDho/h
-         14b9Mn84oCbwdd6nPWW1RhEH+/tlAk/a2xC6WLPrjLATPVXw9t7ych08O+I9GhW/l
-         pe2geY7+8lHgYJXkF2WldbFf1oLS0y0M3Srh8orjQfcGq+xtFhWQ1PeB5DzjvUNRZ
-         bczhgrsO/vHRuuHMSpAG3Q1rN03Z/WIkWR5oiWky7WIImSJW0HP9mH4Sn4XSYM/nQ
-         TiD31H/SdrcuBysQQA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MdvmY-1rUSPS20ZS-00b3j5; Thu, 19 Oct 2023 15:51:24 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     naveenkrishna.chatradhi@amd.com, carlos.bilbao@amd.com
-Cc:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86/amd/hsmp: Fix iomem handling
-Date:   Thu, 19 Oct 2023 15:51:22 +0200
-Message-Id: <20231019135122.21774-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+        Thu, 19 Oct 2023 09:57:41 -0400
+Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [IPv6:2001:41d0:203:375::c9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0064C124
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:57:37 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monoid.al; s=key1;
+        t=1697723856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VRxOEzF/DS5Ox8tHGrklu3RK67HNn0EYzNtroRBbeKU=;
+        b=NJ6zwTDuDXga4dSQHGU1ASUZ7/FmT03Ln4ldnJ2aO2liVnVdTHDSNG8tFsfnsqM31o3Iv1
+        PP8TC5fzlg7NKLcFBMZkQvos+rk/LepsOox6M0thx09qjEKwoeM9IHd2mK6N5jSzpPbmnr
+        Lex+Eo0VT9YeezKlTacm5DqVUOwZzL3aiUO0HNM+Cxpj+kt0UrAfpFGvSAXh6OIPb7DRxo
+        BNs05zLnD8mH2MTpMZbtgYqK2HHhjDN0my3Q29ipCy6+Fv4woa89g+q9asvR82dAuAVlTi
+        kpXzZ40HdMRpcEhQ2DCK5wXnnyjpFj2uWhvUQlEIn3iqGyMr3CHDh28pRMxSiQ==
+From:   Ellie Hermaszewska <kernel@monoid.al>
+To:     eugene.shalygin@gmail.com
+Cc:     Ellie Hermaszewska <kernel@monoid.al>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] hwmon: (asus-ec-sensors) add ROG Crosshair X670E Gene.
+Date:   Thu, 19 Oct 2023 21:51:58 +0800
+Message-ID: <20231019135640.434752-1-kernel@monoid.al>
+In-Reply-To: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
+References: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YSzIdPZ1K/kTuZ6D+lnJIC7iviBFVYhoLVUKouTZNBO4YXyhq/o
- 0BerRQS13EMJ1MqKY5ZGjTSXhZxvCbCp8q9qEw2NT2G3xFB3gOI3puxHGKZQ4FITX0giT+p
- WUNfRrlQfbn+1oVxJ8f9Q84HDnUm/YlA4XLuYiNdU+DVh0xuvW64l0ZzXhRY8bHyj37OqOV
- 27JgN3kVCo5vtIay69wow==
-UI-OutboundReport: notjunk:1;M01:P0:QxefclDEr/8=;EXIQQAbNvfU7ZWdsarCUokZIjbp
- OCtv9V4HEvbcs2Q00/0G87U1lDZk5cyeE+JvSWFxPbqiL+WxJHz6//QaoJVJPQlboihEu75vh
- D9WdnFKtMyo9ZLAC/vjzvQySryUUghxQARkQm+m0MhIh3CJXixPeN+W3Uznjc3WJMxVtpunxX
- l7XweQZ009hi3HyEaZ4kysOAgUwllJxZRl/SDCwzYjfqtI0/eoC8oi2KfOX94Y2oeoyEdIzeL
- EKZCgPbhYYz02wPsFm0lfSPwjoNy6+WX0y51SWa4KHEBrwQv2Vomk0Eoi4rYtctXE2fbIuQ8g
- 3FV6f8MImJmVddHeoU+Rbyl1KrWI/J5eOo8A9Bo32AHHjUmZq9Nzse3UCiRa0Ozf0HbN1wmH6
- U22LUvduqTLK0aoWchSn7kicLgdTrNkBoc++pWcz5Yq7VCTS4l84DDvztqub9E0lsYsbCK5pA
- tO7cgkmnSwWVh10+0arQokVXds163KNv0kAjpPRODlGL9XY6HQASI80GkOplbrnzLyEE2k88O
- fT+4tVvUSfMVW4dQ7XIqtFu87P+Ao11rKKK//ek28O6PG62rGgnGYEusCZgYuEZUYacvcuLCz
- Apdb81V8LfwFHijvLprqoy6pvtPLLf+QgmTUsWwS64IAebKqEAceHuTvkKw1VjeVNj9tJnGfd
- Aoy3IlOnHkD5AePePRN94NkfXG38PsR301M+yW+jnqAykJVI/4BRcfpn6c7T281A09qyS6+6m
- SR4gGJ5GzqnvrSviLiAYdeVq2SIRn01WHjH+0k/LDduYFHLYPsh2jjTjA4QJdYrfeCVw+P+RF
- Uf
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,32 +54,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the metrics table is marked as io memory,
-use memcpy_fromio() when copying its contents.
+These are two separate statements, describing the set of sensors
+implemented (those I could verify) and the specifics of the T_Sensor new
+to the X670E motherboards.
 
-Compile-tested only.
+Best wishes,
+Ellie
 
-Fixes: 5150542b8ec5 ("platform/x86/amd/hsmp: add support for metrics tbl")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/amd/hsmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Only the temp sensors that I can verify are present.
 
-diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hs=
-mp.c
-index b056a5c8654a..b55d80e29139 100644
-=2D-- a/drivers/platform/x86/amd/hsmp.c
-+++ b/drivers/platform/x86/amd/hsmp.c
-@@ -362,7 +362,7 @@ static ssize_t hsmp_metric_tbl_read(struct file *filp,=
- struct kobject *kobj,
- 	ret =3D hsmp_send_message(&msg);
- 	if (ret)
- 		return ret;
--	memcpy(buf, sock->metric_tbl_addr, bin_attr->size);
-+	memcpy_fromio(buf, sock->metric_tbl_addr, bin_attr->size);
+T_Sensor is the temperature reading of a 10kΩ β=3435K NTC thermistor
+optionally connected to the T_SENSOR header.
 
- 	return bin_attr->size;
- }
-=2D-
-2.39.2
+The other sensors are as found on the X670E HERO.
+
+Signed-off-by: Ellie Hermaszewska <kernel@monoid.al>
+---
+ Documentation/hwmon/asus_ec_sensors.rst |  1 +
+ drivers/hwmon/asus-ec-sensors.c         | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/Documentation/hwmon/asus_ec_sensors.rst b/Documentation/hwmon/asus_ec_sensors.rst
+index 7e3cd5b6686f..0bf99ba406dd 100644
+--- a/Documentation/hwmon/asus_ec_sensors.rst
++++ b/Documentation/hwmon/asus_ec_sensors.rst
+@@ -15,6 +15,7 @@ Supported boards:
+  * ROG CROSSHAIR VIII HERO
+  * ROG CROSSHAIR VIII IMPACT
+  * ROG CROSSHAIR X670E HERO
++ * ROG CROSSHAIR X670E GENE
+  * ROG MAXIMUS XI HERO
+  * ROG MAXIMUS XI HERO (WI-FI)
+  * ROG STRIX B550-E GAMING
+diff --git a/drivers/hwmon/asus-ec-sensors.c b/drivers/hwmon/asus-ec-sensors.c
+index 51f9c2db403e..36f9e38000d5 100644
+--- a/drivers/hwmon/asus-ec-sensors.c
++++ b/drivers/hwmon/asus-ec-sensors.c
+@@ -244,6 +244,8 @@ static const struct ec_sensor_info sensors_family_amd_600[] = {
+ 	EC_SENSOR("Motherboard", hwmon_temp, 1, 0x00, 0x32),
+ 	[ec_sensor_temp_vrm] =
+ 		EC_SENSOR("VRM", hwmon_temp, 1, 0x00, 0x33),
++	[ec_sensor_temp_t_sensor] =
++		EC_SENSOR("T_Sensor", hwmon_temp, 1, 0x00, 0x36),
+ 	[ec_sensor_temp_water_in] =
+ 		EC_SENSOR("Water_In", hwmon_temp, 1, 0x01, 0x00),
+ 	[ec_sensor_temp_water_out] =
+@@ -344,6 +346,14 @@ static const struct ec_board_info board_info_crosshair_x670e_hero = {
+ 	.family = family_amd_600_series,
+ };
+ 
++static const struct ec_board_info board_info_crosshair_x670e_gene = {
++	.sensors = SENSOR_TEMP_CPU | SENSOR_TEMP_CPU_PACKAGE |
++		SENSOR_TEMP_T_SENSOR |
++		SENSOR_TEMP_MB | SENSOR_TEMP_VRM,
++	.mutex_path = ACPI_GLOBAL_LOCK_PSEUDO_PATH,
++	.family = family_amd_600_series,
++};
++
+ static const struct ec_board_info board_info_crosshair_viii_dark_hero = {
+ 	.sensors = SENSOR_SET_TEMP_CHIPSET_CPU_MB |
+ 		SENSOR_TEMP_T_SENSOR |
+@@ -490,6 +500,8 @@ static const struct dmi_system_id dmi_table[] = {
+ 					&board_info_crosshair_viii_hero),
+ 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR X670E HERO",
+ 					&board_info_crosshair_x670e_hero),
++	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR X670E GENE",
++					&board_info_crosshair_x670e_gene),
+ 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG MAXIMUS XI HERO",
+ 					&board_info_maximus_xi_hero),
+ 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG MAXIMUS XI HERO (WI-FI)",
+-- 
+2.42.0
 
