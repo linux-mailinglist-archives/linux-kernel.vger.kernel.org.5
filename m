@@ -2,281 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEB67CFB51
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727C97CFB56
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346044AbjJSNjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        id S1346058AbjJSNjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345991AbjJSNjG (ORCPT
+        with ESMTP id S1345991AbjJSNjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:39:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E628D124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:39:03 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697722742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LeXdmUaym8oLSyJY6ptmmoOg3CJyGh3RytEUJSMW1kU=;
-        b=ySkj4UNZCiKRuipE6XIJlINtQQfdLDhe6jEfIZePuZBfCvQJJaWRpRCnunKzMipDIv1U+0
-        isvC6OWVDN5iNZyPOxwTzG1/KP3GO+M2944G3k0ycVmpgICRWAYqS3VmNa4pPYQocpr6u7
-        BoGJBAPtW5OXKTCXavsZ1hSWC1/tkdHECXzQyl7E2rsIRmXSAnEJLGpX7LtvmlLDeJ1bXS
-        CwXv4qDGOVuijDDgUIEEjuOlMY5lLqSP1Im9c40YmNpY/CLwycsVjcZD2PtVGrSSw+z2L6
-        Kq4MBQiYpQRWDGucZopnTeviN6XCg/T4wKhMwjIJbqEcGrpjTA5kFpEYFZtNJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697722742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LeXdmUaym8oLSyJY6ptmmoOg3CJyGh3RytEUJSMW1kU=;
-        b=ETce3lNOqLrPz+9iFChTrQ2j7wuXjb4KMs+PRLQrsOjeYAljucYAefaVQEdp9skcdDyS2w
-        C8ZKVyRb+0xFuXDw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>,
-        Chunlei Wang <chunlei.wang@mediatek.com>
-Subject: Re: [RFC PATCH printk v1] printk: ringbuffer: Do not skip
- non-finalized with prb_next_seq()
-In-Reply-To: <20231019132545.1190490-1-john.ogness@linutronix.de>
-References: <20231019132545.1190490-1-john.ogness@linutronix.de>
-Date:   Thu, 19 Oct 2023 15:45:00 +0206
-Message-ID: <87mswe20ln.fsf@jogness.linutronix.de>
+        Thu, 19 Oct 2023 09:39:23 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139E6126
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:39:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1697722756; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=EFD3QYbBNAwdIpiJCeXqcDPAWe8hCm0JWYvEzP88ly6Xj65qtskAfhsbd6dcrjPGQy
+    MD7awJq1dw6or2Uv+SaN+L+sra8ss5jqNJxp63+tz/lcNHE1n+JLk2g4MLVWg2gLUOrQ
+    JxC2L8btf3fJbiSB3AYrkuJjpdGdiACScE08DSroIUGfYXFkyBX/EjP84XUgxipMz7GQ
+    aCOGDbmAzKo6WZYvGgvKORuGNm45yGPOxPpu3EKb1uJf2+WjlGmGlZDSdt5KAYniaVK1
+    INhePkKyWz7YNTegGUkByLL3LTZoyknd8a5M2wgqqipzLnzlt/xWemvaviU++ZSytiAw
+    c65g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1697722756;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=IiAUACoAmD1dZiYlatQomGi3MwVID43ZHiBQH5Q1d+0=;
+    b=ljIvctqtJvBDkdGnIRJ89iB7acCc9h66+A11crb8qzilgureOvyhJmqOEaozHstcy4
+    sJvR3TpqSPwzJf/14S0vCHfJP9HiYLZjuipQF//++FlYHuOY2wVIYpj/Ansb6Uv3e5be
+    QevS51b6PuYjtrSqj2oDJ67Ans3cl1I0yz+RoruXCc/+CSCl5BCQGoUlj7JRn0ZA5RAd
+    LXNd2PdqNqLJPbxAkcsh/gNS0IBpbMU6hzZiLjbNYPBQG0aaezuA36KLtk8kcDLOkc0r
+    xpn8nYQJMGTYDRaXstoWXszfIbfGJdxuc63ht2MSS07IckNWnpfZVVQuPR5y4Q4EqZz1
+    Lepg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1697722756;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=IiAUACoAmD1dZiYlatQomGi3MwVID43ZHiBQH5Q1d+0=;
+    b=CXRdo6q2oEJBSO1pHcZjrJTrxUYyk04S2kUpFRHmpcxV8LaWVhb+Jtt3ec8qszNyGd
+    ZkOjqu3sOS0A+XVDJZL7tWoW1fQFepK4BR7TkOLIOyQH9CWbZpNGL2MRNkQNWXC1S4gc
+    8ZmZBFGFEhSGp4efXVDyHLs9+FIrRqyhTchT/Yd7L40fSy4cDjFWTDFnRFg6hseKto+/
+    DA+EYkHsEg1NdS+v98hBFIm1GyivoRUCMokKnqiM3ncmn1VrBdQGmUbW4lnwCAK7pX1n
+    Bfqd2HA5eIigfii4pDdz/W7u1sdijTNdf8SlCA1OqOpHz7cPk99jPu5PJy3pyho7bYiZ
+    S47w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1697722756;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=IiAUACoAmD1dZiYlatQomGi3MwVID43ZHiBQH5Q1d+0=;
+    b=JM9fLk3TtDDldKevllM9q3uJh8Tp3iozbo0xtn50KB3M9rODzOytQBlRSWBClThq4r
+    YdYZC6BDhDtiYyB5zLBQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA95vh"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
+    with ESMTPSA id j34a49z9JDdFDo9
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 19 Oct 2023 15:39:15 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 15:39:10 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net: wwan: replace deprecated strncpy with strscpy_pad
+Message-ID: <ZTExfv2aHPD2B1ze@gerhold.net>
+References: <20231018-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v1-1-4e343270373a@google.com>
+ <202310182232.A569D262@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202310182232.A569D262@keescook>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some suggested changes.
+On Wed, Oct 18, 2023 at 10:35:26PM -0700, Kees Cook wrote:
+> On Wed, Oct 18, 2023 at 10:14:55PM +0000, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> > 
+> > We expect chinfo.name to be NUL-terminated based on its use with format
+> > strings and sprintf:
+> > rpmsg/rpmsg_char.c
+> > 165:            dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+> > 368:    return sprintf(buf, "%s\n", eptdev->chinfo.name);
+> > 
+> > ... and with strcmp():
+> > |  static struct rpmsg_endpoint *qcom_glink_create_ept(struct rpmsg_device *rpdev,
+> > |  						    rpmsg_rx_cb_t cb,
+> > |  						    void *priv,
+> > |  						    struct rpmsg_channel_info
+> > |  									chinfo)
+> > |  ...
+> > |  const char *name = chinfo.name;
+> > |  ...
+> > |  		if (!strcmp(channel->name, name))
+> > 
+> > Moreover, as chinfo is not kzalloc'd, let's opt to NUL-pad the
+> > destination buffer
+> > 
+> > Similar change to:
+> > Commit 766279a8f85d ("rpmsg: qcom: glink: replace strncpy() with strscpy_pad()")
+> > and
+> > Commit 08de420a8014 ("rpmsg: glink: Replace strncpy() with strscpy_pad()")
+> > 
+> > Considering the above, a suitable replacement is `strscpy_pad` due to
+> > the fact that it guarantees both NUL-termination and NUL-padding on the
+> > destination buffer.
+> > 
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> > 
+> > Found with: $ rg "strncpy\("
+> > ---
+> >  drivers/net/wwan/rpmsg_wwan_ctrl.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/wwan/rpmsg_wwan_ctrl.c b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > index 86b60aadfa11..39f5e780c478 100644
+> > --- a/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > +++ b/drivers/net/wwan/rpmsg_wwan_ctrl.c
+> > @@ -37,7 +37,7 @@ static int rpmsg_wwan_ctrl_start(struct wwan_port *port)
+> >  		.dst = RPMSG_ADDR_ANY,
+> >  	};
+> 
+> "chinfo" is initialized immediately above here, which means that it is
+> actually already zero filled for all the members that aren't explicitly
+> initialized, so the _pad variant isn't needed. I suspect Dead Store
+> Elimination will optimize it all away anyway, so this is probably fine.
+> 
 
-On 2023-10-19, John Ogness <john.ogness@linutronix.de> wrote:
-> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-> index fde338606ce8..f9fbfa21c5b2 100644
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> @@ -1441,20 +1441,83 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
->  	return false;
->  }
->  
-> +#ifdef CONFIG_64BIT
-> +
-> +#define __u64seq_to_ulseq(u64seq) (u64seq)
-> +#define __ulseq_to_u64seq(ulseq) (ulseq)
-> +
-> +#else /* CONFIG_64BIT */
-> +
-> +static u64 prb_first_seq(struct printk_ringbuffer *rb);
-> +
-> +#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
-> +static inline u64 __ulseq_to_u64seq(u32 ulseq)
-> +{
-> +	u64 rb_first_seq = prb_first_seq(prb);
-> +	u64 seq;
-> +
-> +	/*
-> +	 * The provided sequence is only the lower 32 bits of the ringbuffer
-> +	 * sequence. It needs to be expanded to 64bit. Get the first sequence
-> +	 * number from the ringbuffer and fold it.
-> +	 */
-> +	seq = rb_first_seq - ((u32)rb_first_seq - ulseq);
-> +
-> +	return seq;
-> +}
-> +
-> +#endif /* CONFIG_64BIT */
-> +
-> +static u64 desc_last_finalized_seq(struct prb_desc_ring *desc_ring)
-> +{
-> +	unsigned long ulseq = atomic_long_read(&desc_ring->last_finalized_seq);
-> +
-> +	return __ulseq_to_u64seq(ulseq);
-> +}
-> +
-> +static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
-> +			    struct printk_record *r, unsigned int *line_count);
-> +
-> +/*
-> + * Check if there are records directly following @last_finalized_seq that are
-> + * finalized. If so, update @last_finalized_seq to the latest of these
-> + * records. It is not allowed to skip over records that are not yet finalized.
-> + */
-> +static void desc_update_last_finalized(struct printk_ringbuffer *rb)
-> +{
-> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-> +	u64 prev_seq = desc_last_finalized_seq(desc_ring);
-> +	u64 seq = prev_seq;
-> +
-> +	while (_prb_read_valid(rb, &seq, NULL, NULL)) {
-> +		unsigned long oldval = __u64seq_to_ulseq(prev_seq);
-> +		unsigned long newval = __u64seq_to_ulseq(seq);
-> +
+Hm, strscpy_pad() is neither a typical compiler builtin nor an inline
+function, so my naive assumption would be that this could only be
+optimized away with LTO?
 
-Generally there are not multiple CPUs racing to finalize records. So I
-would add an extra check for the first loop (where seq == prev_seq) to
-avoid the extra cmpxchg.
+But I don't think this is particularly performance critical code, so
+maybe it's even better to be explicit in case someone ever changes the
+way chinfo is allocated.
 
-+		if (prev_seq == seq) {
-+			; /* NOP */
-+		} else
+@Justin: Nevertheless I would appreciate if you could briefly reword the
+commit message and add a note about this. Someone reading it later might
+get confused or mislead by the "Moreover, as chinfo is not kzalloc'd,"
+part. As Kees wrote, even without kzalloc the struct initializer of
+chinfo does actually ensure proper zero initialization of the missing
+members.
 
-> +		if (atomic_long_try_cmpxchg_relaxed(&desc_ring->last_finalized_seq,
-> +						    &oldval, newval)) {
-> +			prev_seq = seq;
-> +		} else {
-> +			prev_seq = __ulseq_to_u64seq(oldval);
-> +		}
-> +
-> +		seq = prev_seq + 1;
-> +	}
-> +}
-> +
->  /*
->   * Attempt to finalize a specified descriptor. If this fails, the descriptor
->   * is either already final or it will finalize itself when the writer commits.
->   */
-> -static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
-> +static void desc_make_final(struct printk_ringbuffer *rb, unsigned long id)
->  {
-> +	struct prb_desc_ring *desc_ring = &rb->desc_ring;
->  	unsigned long prev_state_val = DESC_SV(id, desc_committed);
->  	struct prb_desc *d = to_desc(desc_ring, id);
->  
->  	atomic_long_cmpxchg_relaxed(&d->state_var, prev_state_val,
->  			DESC_SV(id, desc_finalized)); /* LMM(desc_make_final:A) */
->  
-> -	/* Best effort to remember the last finalized @id. */
-> -	atomic_long_set(&desc_ring->last_finalized_id, id);
-> +	desc_update_last_finalized(rb);
->  }
->  
->  /**
-> @@ -1550,7 +1613,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
->  	 * readers. (For seq==0 there is no previous descriptor.)
->  	 */
->  	if (info->seq > 0)
-> -		desc_make_final(desc_ring, DESC_ID(id - 1));
-> +		desc_make_final(rb, DESC_ID(id - 1));
->  
->  	r->text_buf = data_alloc(rb, r->text_buf_size, &d->text_blk_lpos, id);
->  	/* If text data allocation fails, a data-less record is committed. */
-> @@ -1643,7 +1706,7 @@ void prb_commit(struct prb_reserved_entry *e)
->  	 */
->  	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_commit:A) */
->  	if (head_id != e->id)
-> -		desc_make_final(desc_ring, e->id);
-> +		desc_make_final(e->rb, e->id);
->  }
->  
->  /**
-> @@ -1663,12 +1726,9 @@ void prb_commit(struct prb_reserved_entry *e)
->   */
->  void prb_final_commit(struct prb_reserved_entry *e)
->  {
-> -	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
-> -
->  	_prb_commit(e, desc_finalized);
->  
-> -	/* Best effort to remember the last finalized @id. */
-> -	atomic_long_set(&desc_ring->last_finalized_id, e->id);
-> +	desc_update_last_finalized(e->rb);
->  }
->  
->  /*
-> @@ -2017,33 +2077,19 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
->  u64 prb_next_seq(struct printk_ringbuffer *rb)
->  {
->  	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-> -	enum desc_state d_state;
-> -	unsigned long id;
->  	u64 seq;
->  
-> -	/* Check if the cached @id still points to a valid @seq. */
-> -	id = atomic_long_read(&desc_ring->last_finalized_id);
-> -	d_state = desc_read(desc_ring, id, NULL, &seq, NULL);
-> +	seq = __ulseq_to_u64seq(atomic_long_read(&desc_ring->last_finalized_seq));
-
-There is now a function for this. No need to open code it.
-
-+	seq = desc_last_finalized_seq(desc_ring);
-
->  
-> -	if (d_state == desc_finalized || d_state == desc_reusable) {
-> -		/*
-> -		 * Begin searching after the last finalized record.
-> -		 *
-> -		 * On 0, the search must begin at 0 because of hack#2
-> -		 * of the bootstrapping phase it is not known if a
-> -		 * record at index 0 exists.
-> -		 */
-> -		if (seq != 0)
-> -			seq++;
-> -	} else {
-> -		/*
-> -		 * The information about the last finalized sequence number
-> -		 * has gone. It should happen only when there is a flood of
-> -		 * new messages and the ringbuffer is rapidly recycled.
-> -		 * Give up and start from the beginning.
-> -		 */
-> -		seq = 0;
-> -	}
-> +	/*
-> +	 * Begin searching after the last finalized record.
-> +	 *
-> +	 * On 0, the search must begin at 0 because of hack#2
-> +	 * of the bootstrapping phase it is not known if a
-> +	 * record at index 0 exists.
-> +	 */
-> +	if (seq != 0)
-> +		seq++;
->  
->  	/*
->  	 * The information about the last finalized @seq might be inaccurate.
-> @@ -2085,7 +2131,7 @@ void prb_init(struct printk_ringbuffer *rb,
->  	rb->desc_ring.infos = infos;
->  	atomic_long_set(&rb->desc_ring.head_id, DESC0_ID(descbits));
->  	atomic_long_set(&rb->desc_ring.tail_id, DESC0_ID(descbits));
-> -	atomic_long_set(&rb->desc_ring.last_finalized_id, DESC0_ID(descbits));
-> +	atomic_long_set(&rb->desc_ring.last_finalized_seq, 0);
->  
->  	rb->text_data_ring.size_bits = textbits;
->  	rb->text_data_ring.data = text_buf;
-> diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-> index 18cd25e489b8..3374a5a3303e 100644
-> --- a/kernel/printk/printk_ringbuffer.h
-> +++ b/kernel/printk/printk_ringbuffer.h
-> @@ -75,7 +75,7 @@ struct prb_desc_ring {
->  	struct printk_info	*infos;
->  	atomic_long_t		head_id;
->  	atomic_long_t		tail_id;
-> -	atomic_long_t		last_finalized_id;
-> +	atomic_long_t		last_finalized_seq;
->  };
->  
->  /*
-> @@ -259,7 +259,7 @@ static struct printk_ringbuffer name = {							\
->  		.infos		= &_##name##_infos[0],						\
->  		.head_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
->  		.tail_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
-> -		.last_finalized_id = ATOMIC_INIT(DESC0_ID(descbits)),				\
-> +		.last_finalized_seq = ATOMIC_INIT(0),						\
->  	},											\
->  	.text_data_ring = {									\
->  		.size_bits	= (avgtextbits) + (descbits),					\
->
-> base-commit: a26f18f291f6c2eac6dac9faa12cc68fd1da5865
-> -- 
-> 2.39.2
-
-John
+Thanks!
+Stephan
