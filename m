@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 832B57CFD1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687977CFD21
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbjJSOmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S1346078AbjJSOnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235420AbjJSOl0 (ORCPT
+        with ESMTP id S235460AbjJSOmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:41:26 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E905198
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:16 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40790b0a224so25585415e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697726474; x=1698331274; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3cUBjMkJC/g12UTXIKA666/KHuBThA0FV+7EScypba4=;
-        b=mQNFyaM1U7vRrHT8xiLvJsxTDeMiHzI+yUtx/9Jx1o/a1kYZH6csHUsrdeKSknJJA+
-         mw3aS1Fg2cqFsGk2lVcsfKQLBb526ytKQktcRY0UXzS8gMFCEpTkACtxpo+MLON6IYWg
-         C5aNafeHkyv/K75TGarcCkPYHkkomXhSD0hbKokYW0F78tSsc/6BKLKezAWoCYLXL21q
-         epYrwVcjBb38Ipq7vjr978N+taSjFLwWEkTo+Oa3qmussmuyCif9skn0L6UmxrPwmOIV
-         kO5BRMCybIYUgShMDV2Ax6ioeUhM+Vy0vrPfc4sOnQ1osvy277gyrVfkTqIN/bkSzqoj
-         3QZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697726474; x=1698331274;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3cUBjMkJC/g12UTXIKA666/KHuBThA0FV+7EScypba4=;
-        b=FqID7/8XtucDZsGBPImR83UMQjOvf9eHpTwSyGkPEwVi96Vsywndoa8Xd/uswuo1/I
-         v/lC3Yc8sHHg4jMF/qKM7CbSk6pKlc89md5jh7FhVS/zS+80BlY99ekXL8nVN6yUYaJd
-         brrRRWn0mjMczw6duSUk2ND8YFQ9GBF1BtMAThQzbTYMl+agDolYqWPnVSyL+peo8y9l
-         wxWrDpX7UoFwNRl32yFt2Hgs+mcf/NTbd99c8MuNnagcmwlTLm6PWc0m2REoS1Pe3SWB
-         GjhXZANSPGLy+8yWjQgCSZmin6Jp4mDO+PkHM2aoptduqK7D11fq3ZeaYK1Q0DWkHonk
-         M9+Q==
-X-Gm-Message-State: AOJu0YxS2LG6m0l6Bt/2j06ZCvfVhXh1idQQWaxHrKv4AdwQywlZPnGo
-        fj20x3d+3am2TNzSEeU/yVeNuA==
-X-Google-Smtp-Source: AGHT+IEmDfsHc85L7p82ZauQvTVy06/R+u2RKdNGWHhKdMANg2TYxpvYzKkGaL8SdFUWt65CCdtlug==
-X-Received: by 2002:adf:e605:0:b0:32d:8401:404a with SMTP id p5-20020adfe605000000b0032d8401404amr1925406wrm.10.1697726474187;
-        Thu, 19 Oct 2023 07:41:14 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id b14-20020a05600c4e0e00b0040607da271asm4595657wmq.31.2023.10.19.07.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 07:41:13 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: codecs: wcd938x: use defines for entries in snd_soc_dai_driver array
-Date:   Thu, 19 Oct 2023 16:41:08 +0200
-Message-Id: <20231019144108.42853-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 19 Oct 2023 10:42:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A702D6D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:42:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A9CC433C7;
+        Thu, 19 Oct 2023 14:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697726560;
+        bh=gn8f0lL/c50dlaUtn0M4/uha7RqskTVC3QDEAjTmYtk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IBlfZeKj0ZEARoRcytYVE9gadpv1rPmLE4txHPWtP9AhEtGgruo0+zmCV9WyYb5rx
+         aGKg4aTjS9RZ0zwcXf5M7bg3mqIYWghj8IFs+EJDeue4WC3f6KOt2GvEoEHd9KoEoH
+         VvTRx7k4I0ia0xKM0AT8SJRqnNwl+9hq0Wgg+cmHBKIl8T40hEpctksfYBaRTLWGk+
+         TFcF/OdSWwoEYTlkoEr2nBEuFusUDej8Md4dTv5srofzCu44i2Z5FpJ7qoQGB51ZI6
+         A4dhEf5v0VbdKSRfOuNMbGC4CElFB1uKeqj/Nl0RnQ0qp/9YPN1OKQYy8l0LOK5D5o
+         HUo6JV7tWuvHg==
+Date:   Thu, 19 Oct 2023 07:42:37 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        George Cherian <george.cherian@marvell.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Subject: Re: [PATCH net-next v2 10/11] staging: qlge: devlink health: use
+ retained error fmsg API
+Message-ID: <20231019074237.7ef255d7@kernel.org>
+In-Reply-To: <ZTE884nkvAxKy2G3@d3>
+References: <20231017105341.415466-1-przemyslaw.kitszel@intel.com>
+        <20231017105341.415466-11-przemyslaw.kitszel@intel.com>
+        <20231017181543.70a75b82@kernel.org>
+        <ZTE884nkvAxKy2G3@d3>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-snd_soc_dai_driver array in wcd938x driver has two entries whose order
-must match order of wcd938x->sdw_priv array.  The wcd938x_bind() and
-wcd938x_codec_set_sdw_stream() rely on this order.  wcd938x->sdw_priv
-array is indexed by enum with AIF1_PB and AIF1_CAP, so use the same
-defines instead of raw numners for snd_soc_dai_driver array.
-No functional impact.
+On Thu, 19 Oct 2023 10:28:03 -0400 Benjamin Poirier wrote:
+> > Humpf. Unrelated to the set, when did qlge grow devlink support?!
+> > 
+> > Coiby, do you still use this HW?
+> > 
+> > It looks like the driver was moved to staging on account of being
+> > old and unused, and expecting that we'll delete it. Clearly that's
+> > not the case if people are adding devlink support, so should we
+> > move it back?  
+> 
+> AFAIK this was done by Coiby as an exercise in kernel programming.
+> Improving the debugging dump facilities was one of the tasks in the TODO
+> file.
+> 
+> I moved the driver to staging because it had many problems and it had
+> been abandoned by the vendor. There might be some qlge users left but is
+> that reason enough to move the driver back to drivers/net/
+> if there is no one who is interested in doing more than checkpatch
+> fixes on the driver?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/wcd938x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Staging is usually an area for code entering the kernel, not leaving.
+We should either suffer with it under drivers/net/ or delete it,
+as you say, nobody is working on significant improvements so having 
+the driver in staging is serving no purpose.
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index a3c680661377..a162bd46ba3e 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3392,7 +3392,7 @@ static const struct snd_soc_dai_ops wcd938x_sdw_dai_ops = {
- };
- 
- static struct snd_soc_dai_driver wcd938x_dais[] = {
--	[0] = {
-+	[AIF1_PB] = {
- 		.name = "wcd938x-sdw-rx",
- 		.playback = {
- 			.stream_name = "WCD AIF1 Playback",
-@@ -3405,7 +3405,7 @@ static struct snd_soc_dai_driver wcd938x_dais[] = {
- 		},
- 		.ops = &wcd938x_sdw_dai_ops,
- 	},
--	[1] = {
-+	[AIF1_CAP] = {
- 		.name = "wcd938x-sdw-tx",
- 		.capture = {
- 			.stream_name = "WCD AIF1 Capture",
--- 
-2.34.1
-
+How about we delete it completely, and if someone complains bring 
+it back under drivers/net ?
