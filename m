@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3349B7CF6E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E01E7CF6EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345329AbjJSLdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S1345372AbjJSLeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbjJSLdF (ORCPT
+        with ESMTP id S1345355AbjJSLeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:33:05 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21400C0;
-        Thu, 19 Oct 2023 04:33:04 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-77acb04309dso316593839f.2;
-        Thu, 19 Oct 2023 04:33:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697715183; x=1698319983; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vR4oIaKl7VukEPLoRxulPlCo1LPKKIgD+yZZhVz/lzA=;
-        b=TcahNRSDTocYilNNoeEygnawd+pCvgdLol9EvGTFsLktUX3WrgGHgNQK04qojWrAQT
-         DhvxEMJtjOSUeNAQzjrxg2t4zgEiPx5GonB5jJCBuCHB4O03Kz7UlglFzWB8znG7iaIz
-         k2Sd0nX3NWI85Kpq2bdrgZWdQpRyBzjVjF/F/rLeJW1ZIkDj/mZNYtcZw+n9haUp4ev3
-         8aKjwWXUlMAaP7SEZY6423Dg+2PKh0PgRLjJGzDhINuVQF/KJqJ7wNdHSzD5QHz+tZni
-         oxrre4KtcI8FHXsq4ALAEH22Ooir1o7nsLLxsF5odE5NAkibqLi18mr4M/E/JxKvy9q1
-         BIqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697715183; x=1698319983;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vR4oIaKl7VukEPLoRxulPlCo1LPKKIgD+yZZhVz/lzA=;
-        b=vWx71tl9vnNesxVUN6q9mIvXyWZIkWra6lVplTuZqTItNe0DATI7kma8GkOn4HGOYi
-         mZgz6sPh7svPbQqwS8i3NPFwJ8RpKhcWFRvJiUjn52BeBjnrjgUO+9/uqI53PBaEGy1l
-         0rlMwT4iH5hlIg8tNKk1eoCYhhtxrEETb4tstuqRQcI+dI7R50FTOypqlm5RqcR18wDj
-         JbY9/2IPVVAHtdpOz1A052q6hZGhighaiuKu+cOCfUN1PCdlItWIOuBtgfu8E/NIncA1
-         OwtV/5afWiF6e89atAg2RiSjypt0j7DicsoRe0z5l1mmxO8CiO/7OOH1vUAXZonDItVR
-         NPTA==
-X-Gm-Message-State: AOJu0YxKQH5hhD4EamS1ILWs78+NNypAXbxRkPJjjAlsRfjbzZoAAdmk
-        7tGEoljjN8Xgs4J7SzgPJvONJ8qcnEw2QYRmD/I=
-X-Google-Smtp-Source: AGHT+IFrDqKVC92ajXINvyayX7fRbh4tnLvmdy2wgUFpPgqZgbDrETvEaAKvR4BNzt3HU5dNk+czxTzLstg9Hoafm9M=
-X-Received: by 2002:a05:6602:2b0b:b0:787:34d:f1ea with SMTP id
- p11-20020a0566022b0b00b00787034df1eamr2626387iov.8.1697715183402; Thu, 19 Oct
- 2023 04:33:03 -0700 (PDT)
+        Thu, 19 Oct 2023 07:34:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3D5134;
+        Thu, 19 Oct 2023 04:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697715252; x=1729251252;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UZ2MRMETMkvC4Gm+iYt0qTrKR1exYOUbxk00Jvoitsk=;
+  b=Gbt63Zht8PB/vTNXBWDl39ZHZDdQPhHtRzKyRdN1l0OvpBWs7tbx6RZ4
+   k2XVjSaRNo+A+lty3OrH9oOP6SS7LBKcUb9phQrmTl/dEMEpAXujCgBg+
+   s23zQBAvFspiBzax6KIHojVLSzNboH36FDCM6WmAdr/4KvycsCh/M++mo
+   65TgNwxWq9QRkkbvY/2A07qztAQwNJivrSVMDwZh2B9/Ym0WVMldXebqz
+   Fo9E6B+gMj78+863qrfD74XeKozRLzRYMV59zeZpLciA8zszjA8AzHOhG
+   E6K7MjuL5wNuXsJjYzQt6c0XtBgTu30wzoRiWmEE2cqZS6u5ydkjmEi5n
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="7782520"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="7782520"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 04:34:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1004198450"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="1004198450"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 19 Oct 2023 04:34:09 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtRHy-00024T-22;
+        Thu, 19 Oct 2023 11:34:06 +0000
+Date:   Thu, 19 Oct 2023 19:33:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, virtualization@lists.linux-foundation.org,
+        kvm@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
+ alternative
+Message-ID: <202310191944.Z8sC9h8O-lkp@intel.com>
+References: <20231019091520.14540-2-jgross@suse.com>
 MIME-Version: 1.0
-References: <20231019032122.1594649-1-kernel@monoid.al> <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
-In-Reply-To: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Thu, 19 Oct 2023 13:32:52 +0200
-Message-ID: <CAB95QAStiK=8ZD8yaSEtWbzt4vbB+EhjrEs259DYiimJSREDDw@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: (asus-ec-sensors) add ROG Crosshair X670E Gene.
-To:     Ellie Hermaszewska <kernel@monoid.al>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019091520.14540-2-jgross@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oh, sorry, I misread the board name. Please scratch the bits about water temps.
+Hi Juergen,
 
-Cheers,
-Eugene
+kernel test robot noticed the following build warnings:
 
-On Thu, 19 Oct 2023 at 11:43, Eugene Shalygin <eugene.shalygin@gmail.com> wrote:
->
-> Hi,
->
-> Thank you for submitting the patch! I don't understand how does your
-> note that only the T_Sensor presence can be verified correlate with
-> SENSOR_TEMP_CPU | SENSOR_TEMP_CPU_PACKAGE |
-> SENSOR_TEMP_MB | SENSOR_TEMP_VRM enabled. Could you clarify, please?
->
-> Based on the EC registers dump you provided [1], I believe it is safe
-> to enable Water_In and Water_Oout sensors as well.
->
-> And please add the board name to list in Documentation/hwmon/asus_ec_sensors.rst
->
-> Cheers,
-> Eugene
->
-> [1] https://github.com/zeule/asus-ec-sensors/issues/42#issuecomment-1742062260
+[auto build test WARNING on kvm/queue]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Juergen-Gross/x86-paravirt-move-some-functions-and-defines-to-alternative/20231019-171709
+base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+patch link:    https://lore.kernel.org/r/20231019091520.14540-2-jgross%40suse.com
+patch subject: [PATCH v3 1/5] x86/paravirt: move some functions and defines to alternative
+reproduce: (https://download.01.org/0day-ci/archive/20231019/202310191944.Z8sC9h8O-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310191944.Z8sC9h8O-lkp@intel.com/
+
+# many are suggestions rather than must-fix
+
+ERROR:COMPLEX_MACRO: Macros with complex values should be enclosed in parentheses
+#32: FILE: arch/x86/include/asm/alternative.h:334:
++#define DEFINE_ASM_FUNC(func, instr, sec)		\
++	asm (".pushsection " #sec ", \"ax\"\n"		\
++	     ".global " #func "\n\t"			\
++	     ".type " #func ", @function\n\t"		\
++	     ASM_FUNC_ALIGN "\n"			\
++	     #func ":\n\t"				\
++	     ASM_ENDBR					\
++	     instr "\n\t"				\
++	     ASM_RET					\
++	     ".size " #func ", . - " #func "\n\t"	\
++	     ".popsection")
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
