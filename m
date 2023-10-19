@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8587CF4C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B917CF4C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345225AbjJSKJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
+        id S1345230AbjJSKK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345245AbjJSKJi (ORCPT
+        with ESMTP id S1345206AbjJSKKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:09:38 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818D518D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:09:33 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32dbbf3c782so341798f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697710172; x=1698314972; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tkUOzd+vqXC9Gk9LtENIqmvEDih8D3cQD5X39rjRw90=;
-        b=J6xFZ6pLgEkgt2Py5t0CnQRnASsBWoALpqk+aE+UlkGfzIZk+wLyJKC5B/1+8yTgw1
-         OdSlqFiLs8ZYndaeN7JA01pYWmlExh2tLZOW9O6fBhHhYGuodVpq/3oRCg/NELq0P9UV
-         NpBGAieXNXhGxUmXHC6mbq1XHnqn4QsSMrs7cjf1JyjDoeh9wbKhF5AQv4nIA+YXUC+o
-         4Q61fltjA0J9aIl9FWIEB/hFqQH2h4KIhnmPyJebK0jgOIp9lNgQTZSbndRbfgQ+0bJQ
-         e8SD+y0qbl0kya/s6nR4kr7oc5btjUzZsyuuunMf3NXaHJ8+wTBPl6xtVAZndRNl07/2
-         j8Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697710172; x=1698314972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tkUOzd+vqXC9Gk9LtENIqmvEDih8D3cQD5X39rjRw90=;
-        b=b3o0H2KiFZ51Xtvxa7h7tUA4AkaJQHIk1tN/Tpg1T+RkhrbN/vCdCyY6oaiiluBw7+
-         E0ucxcjCLS3mUPiBzCFUU2niwRTpydBa5V0TFLO19QumlahLX/WSJHW4lgVw2YNZKCqo
-         3EiKciRBQtdQBpahGvBiUwQsppKvzH7ToYOo+Lf+3cxbivhn5gy7MjyeT6sSbrpa+8Lu
-         HyZvGXFpBic7qLvc8r2zU30IBtUY9a2FxRpAuNcTSVRELQBOW651pIITUCUTljGfxTM8
-         3XpU+hSv+8FdmH3vaWioFYtkGrs9hAbxs+jthPazU/qTmE/PuvlbRCNNZGvU8bRpX9w7
-         5doQ==
-X-Gm-Message-State: AOJu0YwFsSkdXKA8HnjbcKstIu2QBe3X04s1qHaC3EbCYHIjPd4MLdvQ
-        yMOJdGORKsdzFD8Iwdu/9SIhig==
-X-Google-Smtp-Source: AGHT+IFl7jktVX1hBG6LQ8h+AJkNLRQtADGCzsqQdX2oIM5MlIP0CAGDx4nFhmRz3exViow5B+YusQ==
-X-Received: by 2002:adf:f80a:0:b0:32d:888d:7598 with SMTP id s10-20020adff80a000000b0032d888d7598mr1448946wrp.4.1697710171905;
-        Thu, 19 Oct 2023 03:09:31 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n13-20020adffe0d000000b0031ad2f9269dsm4098708wrr.40.2023.10.19.03.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 03:09:31 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 13:09:27 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     kartilak@cisco.com, sebaddel@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] scsi: snici: Remove dead code in
- snic_dr_clean_pending_req
-Message-ID: <15081b01-2915-42a4-bcda-0d8243741baa@kadam.mountain>
-References: <20231019083026.1525366-1-suhui@nfschina.com>
+        Thu, 19 Oct 2023 06:10:25 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA6911F;
+        Thu, 19 Oct 2023 03:10:23 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id CEEAEC0003;
+        Thu, 19 Oct 2023 10:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697710221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+QL1vCu0aBMDA8mdjFy+OQgIj/mtB+gsf9+18KdaYWI=;
+        b=Ds1OJJ0eeiL4VRdf2eS6s9Ljng/TBpOqfT2PgqU5widgB7GOb4ws4XinErF1rxi0EgDyV7
+        iWt7tSaobsU7voEZrtNtQRR/3sIPJ5uxjjt5eNjp7WgDodxVjfoHkK+mJ757RuEFvQrucS
+        BjtEc5u6ykbWRtk0ImRY+DRppb0F28MatC7EKssjWe0PN5AOpchiSXob3HLOBQqyZDPvth
+        zE+QMJrP1BETufYs7Gb/W1r8L66kI5raPR5P6Jie43r+EO8fL/B3oWNFPgZDGHpy8jVVGi
+        MUnpEW0+D0eHG0aahTU6ejX4gKMVPoQICutpZvrrSxj0rcEguhKYBHWjRjw2dw==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Peter Rosin <peda@axentia.se>,
+        Stephen Warren <swarren@nvidia.com>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: [PATCH v2 0/3] Fix i2c mux module refcount issues
+Date:   Thu, 19 Oct 2023 12:10:13 +0200
+Message-ID: <20231019101017.425284-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019083026.1525366-1-suhui@nfschina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,15 +60,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 04:30:27PM +0800, Su Hui wrote:
-> Value stored to 'ret' is never read, remove it to save space.
-> 
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+Hi,
 
-Could you do this a bit more thouroughly and remove all the
-"ret = FAILED;" and "ret = 0;" assignments.  Just "return FAILED;"
-and "return 0;" directly.
+Some i2c mux drivers wrongly use the pair of_find_i2c_adapter_by_node()
+/ i2c_put_adapter() to lock the parent adapter.
 
-regards,
-dan carpenter
+Indeed, i2c_put_adapter() decrements the module refcount while
+of_find_i2c_adapter_by_node() does not increment it. This leads to an
+overflow over zero of the parent adapter user counter.
+
+Identified mux drivers impacted are:
+- i2c-mux-gpmux
+- i2c-demux-pinctrl
+- i2c-mux-pinctrl
+
+Commit 48e9743dd648 ("i2c: core: add and export of_get_i2c_adapter_by_node()
+interface") introduces of_get_i2c_adapter_by_node() to correctly handle
+this refcount issue.
+
+This series fixes the 3 identified mux drivers replacing the
+of_find_i2c_adapter_by_node() call by an of_get_i2c_adapter_by_node()
+call.
+
+Compare to the previous iteration
+  https://lore.kernel.org/linux-kernel/20231019073533.386563-1-herve.codina@bootlin.com/
+This v2 series:
+ - Fixes commit log message
+ - Add Fixes and Acked-by tags
+
+Best regards,
+Hervé
+
+Changes v1 -> v2:
+  - All patches
+    Fix commit log
+    Add relevant Fixes tag
+    Add 'Acked-by: Peter Rosin <peda@axentia.se>'
+
+Herve Codina (3):
+  i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
+  i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
+  i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
+
+ drivers/i2c/muxes/i2c-demux-pinctrl.c | 2 +-
+ drivers/i2c/muxes/i2c-mux-gpmux.c     | 2 +-
+ drivers/i2c/muxes/i2c-mux-pinctrl.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+-- 
+2.41.0
 
