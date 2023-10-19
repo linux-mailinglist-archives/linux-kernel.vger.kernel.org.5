@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC507CF660
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33387CF663
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345307AbjJSLNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
+        id S1345324AbjJSLOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjJSLNj (ORCPT
+        with ESMTP id S233139AbjJSLOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:13:39 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FFE124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:13:36 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40790b0a224so23786115e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697714015; x=1698318815; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=POZqwrn3QOIkuNwW6uoa6fDBdqF1NUX/ckhVqnX/nGM=;
-        b=LnfDtTrXD+yj+uVRr8qunQ0kIOafx0qb8DABRt8tNjPpYjTdTcOvG5n6HP6sImfmxw
-         6wpjIFWq8SV9PODmf3K/oM8Z++Zifc1HIJ+qrsItCshl2KtKP0FKzV/8NyMBWhHox4aL
-         5uEi3u2H3V9bZJE9ZoFDwLQux8Y7L5yAcbZM2rTGfHEKMivz7O+WxPdShPu2RL/Wk7PU
-         BvXZjLz00igiX0SWJPnkeZhnzhPkJ1SGzQsbx4lXwwVlseA8G8DUuekgLc8SA9bNjvq5
-         UnSReHkaid1fEb8SzP016IjineELQ61fveMzZKFPpJUJ1dvXd4BUkrlYqyzOaRe+z2As
-         rR0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697714015; x=1698318815;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=POZqwrn3QOIkuNwW6uoa6fDBdqF1NUX/ckhVqnX/nGM=;
-        b=PzlbBicHR/I4YYHlOqLDmpEXAw0lSNg1otx4muAzM8rDFO48faLV9/6lgSd+gDEMiZ
-         noAJh4GY5qfIuydYl4hO45liB4Wt/Z9fIwz0rwOTpVthJ1MHuSUg9QquUDixKOQ3eM81
-         tfVYWnrB8V30YtCtCzOvm3ed8a0ZSyBNYYtev/dsfIfhEBFFFyu4vQm/ikVVJX8ibvU7
-         YWIM6GyGsHvcZqcBp+RWu0DKf2Z4cD+jfZkE7O0ahMLJYSrsbwr9YU8wNPKvptJV9egD
-         gYmSdaXqBUJAVufwjqVVCLPaxhm2peVtjBODvrcowftntPzoEJhm4kanQQLUo2xG1PN2
-         8JEA==
-X-Gm-Message-State: AOJu0YzhIzId43hYW51tKl+eU2mmvywGRms1b5hRha/7C35/Zos5St6C
-        TlValKu6YMFMO5xaMqjAPE94Sg==
-X-Google-Smtp-Source: AGHT+IESelDfNhrhBDzW3Tww8D/Nax8XajqTmvOsjCQY9+TpZo5BfDRDQhEygSKOyZRhdOccwizXEA==
-X-Received: by 2002:a05:600c:a0a:b0:408:3c10:ad47 with SMTP id z10-20020a05600c0a0a00b004083c10ad47mr1531323wmp.40.1697714014660;
-        Thu, 19 Oct 2023 04:13:34 -0700 (PDT)
-Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id q12-20020a05600c2e4c00b0040648217f4fsm4089784wmf.39.2023.10.19.04.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 04:13:34 -0700 (PDT)
-Message-ID: <1cdc2a68-a1e8-4cf2-8a1a-899d14f8db80@linaro.org>
-Date:   Thu, 19 Oct 2023 13:13:34 +0200
+        Thu, 19 Oct 2023 07:14:34 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5145E112
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:14:30 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxXOqUDzFl3i0zAA--.6397S3;
+        Thu, 19 Oct 2023 19:14:28 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbS+GDzFlXL4qAA--.24527S3;
+        Thu, 19 Oct 2023 19:14:27 +0800 (CST)
+Message-ID: <a23cfd62-af09-4aa3-902e-bb34756275c6@loongson.cn>
+Date:   Thu, 19 Oct 2023 19:14:13 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] iommu/arm-smmu-qcom: Add support for TBUs
+Subject: Re: [PATCH] drm/loongson: Add support for the DC in LS2K1000 SoC
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Icenowy Zheng <uwu@icenowy.me>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20231011162638.819080-1-suijingfeng@loongson.cn>
+ <26565c5e13e72c64214a7f67ab6f2d9d876fa4bd.camel@icenowy.me>
+ <037ec619-c170-4ca6-897e-04fccd58c62a@loongson.cn>
+ <76nxdwa6m7qyqvala4akc2rptuylhrqyoz2x5rjua4hppoxk7x@wwn37gwuvrms>
 Content-Language: en-US
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        will@kernel.org, robin.murphy@arm.com, joro@8bytes.org
-Cc:     devicetree@vger.kernel.org, andersson@kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        quic_cgoldswo@quicinc.com, quic_sukadev@quicinc.com,
-        quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com,
-        djakov@kernel.org
-References: <20231019021923.13939-1-quic_c_gdjako@quicinc.com>
- <20231019021923.13939-3-quic_c_gdjako@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231019021923.13939-3-quic_c_gdjako@quicinc.com>
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <76nxdwa6m7qyqvala4akc2rptuylhrqyoz2x5rjua4hppoxk7x@wwn37gwuvrms>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxbS+GDzFlXL4qAA--.24527S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Jr1kWr18AFy8KF4xKF43XFc_yoW8JF18pa
+        y5CanxKFs7tF1fAFy8twn5uF4Svr4ftr1Uu3yxCr1UW3ZrGw10va13Krn0kFy5Grn29a42
+        gw4YkFWFywnrAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
+        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWU
+        AwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1V
+        AFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xII
+        jxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4
+        A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI
+        43ZEXa7IU8fsqJUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,55 +69,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
 
-On 10/19/23 04:19, Georgi Djakov wrote:
-> The ARM MMU-500 implements a Translation Buffer Unit (TBU) for each
-> connected master besides a single TCU which controls and manages the
-> address translations.
-> 
-> Allow the Qualcomm SMMU driver to probe for any TBU devices that can
-> provide additional debug features like triggering transactions, logging
-> outstanding transactions, snapshot capture etc. The most basic use-case
-> would be to get information from the TBUs and print it during a context
-> fault.
-> 
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 12 ++++++++++++
->   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  4 +++-
->   2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 7f52ac67495f..655c7f50ca84 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -1,12 +1,14 @@
->   // SPDX-License-Identifier: GPL-2.0-only
->   /*
->    * Copyright (c) 2019, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved
->    */
->   
->   #include <linux/acpi.h>
->   #include <linux/adreno-smmu-priv.h>
->   #include <linux/delay.h>
->   #include <linux/of_device.h>
-> +#include <linux/of_platform.h>
->   #include <linux/firmware/qcom/qcom_scm.h>
->   
->   #include "arm-smmu.h"
-> @@ -466,6 +468,16 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
->   	qsmmu->smmu.impl = impl;
->   	qsmmu->cfg = data->cfg;
->   
-> +	/* Populate TBU devices if such are present in DT */
-> +	if (np && of_device_is_compatible(np, "arm,mmu-500")) {
-I'd say this can be unconditional.
+On 2023/10/19 16:11, Maxime Ripard wrote:
+> On Fri, Oct 13, 2023 at 06:28:01PM +0800, Sui Jingfeng wrote:
+>> Hi,
+>>
+>>
+>> On 2023/10/13 16:22, Icenowy Zheng wrote:
+>>> 在 2023-10-12星期四的 00:26 +0800，Sui Jingfeng写道：
+>>>> LS2K1000 is a low end SoC (two core 1.0gHz), it don't has dedicated
+>>>> VRAM.
+>>>> It requires the framebuffer to be phisically continguous to scanout.
+>>>> The
+>>>> display controller in LS2K1000 don't has built-in GPIO hardware, the
+>>>> structure (register bit field) of its pixel, DC, GPU, DDR PLL are
+>>>> also
+>>>> defferent from other model. But for the display controller itself,
+>>>> Most of
+>>>> hardware features of it are same with ls7a1000.
+>>>>
+>>>> Below is a simple dts for it.
+>>> Why don't you write a proper, YAML-formatted binding?
+>>>
+>> This patch use only one DT property, that is the "memory-region = <&display_reserved>;".
+>> But the memory-region property is a common property, I means that everyone know how to
+>> use this property. I'm not sure the if YAML documentation is strictly required now.
+> AFAIK it is, and even if it's not, please do it.
 
-> +		int ret;
-> +
-> +		INIT_LIST_HEAD(&qsmmu->tbu_list);
-This list is unused.
+OK, thanks a lot for the feedback.
+I will try to solve this problem at the next version.
+I'm preparing the next version.
 
-Konrad
+
+> Maxime
+
