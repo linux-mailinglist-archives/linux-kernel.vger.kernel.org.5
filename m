@@ -2,54 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09ED67CECC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2467CECCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbjJSA2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S229966AbjJSAcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 20:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjJSA15 (ORCPT
+        with ESMTP id S229632AbjJSAcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:27:57 -0400
+        Wed, 18 Oct 2023 20:32:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA16120;
-        Wed, 18 Oct 2023 17:27:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2589C433C9;
-        Thu, 19 Oct 2023 00:27:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B39FE;
+        Wed, 18 Oct 2023 17:32:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFFE6C433C7;
+        Thu, 19 Oct 2023 00:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697675275;
-        bh=2nh52jDJ6PylCe2C2NgD1C26nReaVji3095976lKB7Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=F8jNVxjwwNREaqtRMYhgWQLYcGrhhAcFqAvHSRLvDEMXpLEpQc5vcEyuuBIlaLBCc
-         8eYPCv/oKbh9BlkdyIo0MoAgFO+EVrmwbn8hPcy5+rAmK6c+Th3k3zd6r48xwfnMOC
-         npMX7cw86HSBBrcNGpXgmUSlyjScWsxfCRIcDMtF52OzyVtZZsdDRJm3NQOwMcWrfY
-         H/5Uy8uNIG7mc8qcgS5ZZOwjFMoy4r5jNBWCoc4fIHcO/NDB7C3gJOuOQ66wFZpkU+
-         2q2A4H6YDDL2cuC9g+fEzYj4Y/XKBwus5qeGAG/hbsj/6EszF8rXcnfkDo//f0fQ5j
-         6MCqABy3D2JfA==
-Date:   Wed, 18 Oct 2023 17:27:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/13] linkmode: convert
- linkmode_{test,set,clear,mod}_bit() to macros
-Message-ID: <20231018172754.3eec4885@kernel.org>
-In-Reply-To: <20231016165247.14212-5-aleksander.lobakin@intel.com>
-References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
-        <20231016165247.14212-5-aleksander.lobakin@intel.com>
+        s=k20201202; t=1697675525;
+        bh=iZGL4wXAMICOUSQLyjE/36oHOPVmQqhi52ipPzUGeYw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=pvcQUM17nHbvllmRLn1w5S27ng0/xLgzsSqEHrhlwPtI9KqXwCOnqVzfVQ+W2R0LW
+         5XGZGQ0WDiXaamqqF1XkxLKzweaEia53bLeqlnjZFdZ16rDNSFhmnwE4fOPNjANOE/
+         1k7cED0ubG5P6RiT5hxaAjmiFmFe70Q6gqfmBw3nmBZwVQI6Gz3a7VAOeMGZmbpTxe
+         9nzhiAP5wcqT+zBrxjuxv86wwSX3nhS6UPjBULhJVsKFHazZuIw3fi2ycFH4Ff8ybk
+         +Vks/CAOKs/yvnxy/pfD3OYwgLqaWyb4mlqJwotDWryulYQgA8zhBbtcizc3tVCM/m
+         2a0H+dmJ2rD5Q==
+Message-ID: <13d7cf46270082855174414b691fb3be.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230827023932.501102-1-sergio.paracuellos@gmail.com>
+References: <20230827023932.501102-1-sergio.paracuellos@gmail.com>
+Subject: Re: [PATCH v2] clk: ralink: mtmips: quiet unused variable warning
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        arnd@kernel.org, yangshiji66@outlook.com,
+        kernel test robot <lkp@intel.com>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-clk@vger.kernel.org
+Date:   Wed, 18 Oct 2023 17:32:02 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -59,25 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 18:52:38 +0200 Alexander Lobakin wrote:
-> Since commit b03fc1173c0c ("bitops: let optimize out non-atomic bitops
-> on compile-time constants"), the non-atomic bitops are macros which can
-> be expanded by the compilers into compile-time expressions, which will
-> result in better optimized object code. Unfortunately, turned out that
-> passing `volatile` to those macros discards any possibility of
-> optimization, as the compilers then don't even try to look whether
-> the passed bitmap is known at compilation time. In addition to that,
-> the mentioned linkmode helpers are marked with `inline`, not
-> `__always_inline`, meaning that it's not guaranteed some compiler won't
-> uninline them for no reason, which will also effectively prevent them
-> from being optimized (it's a well-known thing the compilers sometimes
-> uninline `2 + 2`).
-> Convert linkmode_*_bit() from inlines to macros. Their calling
-> convention are 1:1 with the corresponding bitops, so that it's not even
-> needed to enumerate and map the arguments, only the names. No changes in
-> vmlinux' object code (compiled by LLVM for x86_64) whatsoever, but that
-> doesn't necessarily means the change is meaningless.
+Quoting Sergio Paracuellos (2023-08-26 19:39:32)
+> When CONFIG_OF is disabled then the matching table is not referenced and
+> the following warning appears:
+>=20
+> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_=
+of_match' [-Wunused-const-variable]
+> 821 |   static const struct of_device_id mtmips_of_match[] =3D {
+>     |                          ^
+>=20
+> There are two match tables in the driver: one for the clock driver and the
+> other for the reset driver. The only difference between them is that the
+> clock driver uses 'data' and does not have 'ralink,rt2880-reset' compatib=
+le.
+> Both just can be merged into a single one just by adding the compatible
+> 'ralink,rt2880-reset' entry to 'mtmips_of_match[]', which will allow it to
+> be used for 'mtmips_clk_driver' (which doesn't use the data) as well as f=
+or
+> 'mtmips_clk_init()' (which doesn't need get called for 'ralink,rt2880-res=
+et').
+>=20
+> Doing in this way ensures that 'CONFIG_OF' is not disabled anymore so the
+> above warning disapears.
+>=20
+> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS =
+SoCs")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@i=
+ntel.com/
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-
-This one can go in with the rest, it's trivial enough.
+Applied to clk-next
