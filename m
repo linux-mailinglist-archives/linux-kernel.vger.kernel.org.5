@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF50C7D0530
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816797D0531
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346677AbjJSW45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        id S1346700AbjJSW5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjJSW4z (ORCPT
+        with ESMTP id S1346663AbjJSW5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:56:55 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F5A115;
-        Thu, 19 Oct 2023 15:56:53 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7743448d88eso9015485a.2;
-        Thu, 19 Oct 2023 15:56:53 -0700 (PDT)
+        Thu, 19 Oct 2023 18:57:20 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F7F131
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:57:18 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9e6a4ff2fso1578835ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:57:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697756213; x=1698361013; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CP2THLW7eHytlPbt5BfwCcXMf/R2fQdouS9d2T2WxRc=;
-        b=k8pWnrd2XDBKSQrZsOce0wWmdWD4NuuoM8713NzvK44dqGORSZwgwP/iRYlXBD7ztf
-         28d2Mj2PSMgKP4PTzjcmODUViGyazUSa9DYfRsBoNYWFXpVPxNQBPxWGkcIzsG5MC5N6
-         UvGNaeO+zVzgcnZOFFxp5nmDDJ8i+jqGkgEdzNaZ6PYiBgpSk3bGNoJuF05ZxU+kjzEO
-         VJXBlXSSIZfbCRGDHg53bnpQH0HN7KasO+IDYPkMztqXV6HsG09WTPRKoEu3+oSHo+YZ
-         uERz2J7lIHb4eVh1Cyn6qpbxoHJIBOuwmoaZAqimfPh45XKDsqWRRYiGMnKCCsE/dNeg
-         W2vg==
+        d=google.com; s=20230601; t=1697756238; x=1698361038; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Eogj0ZIYp5lAoNttJXlBaUD0mycxslTcJprZ08tb/AA=;
+        b=F794g3wQhCOU1YKzGPMaocjnYfHUI6QVS1UvsJM13eOlKOH4GFAxc1oU7eEwytJqTv
+         NTkypBwjsjpfCfPS6memfJeWJO5uZvQB/+hjskHHbywWhMpbr/w88wa7qZarDi8kwWP2
+         tkd9YSrhK73YlF6gzw3FOXvvOVKMsWSxa+JycgX+GU7JEBihWLAAUirKwyGxBJep24E7
+         03zRBbRtVS8mOcCuOSCoLdgwJISjYqgImMPgM7kQt1pcNXbpHM8k8/F0sO3EKN4ZhhOa
+         cY+4qxKl6XeIIRenBs6DvZPYa74nwz+9YFPP2YqdW4X7b5KLl3qmcMEbEmKAp18PCBEB
+         oRFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697756213; x=1698361013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CP2THLW7eHytlPbt5BfwCcXMf/R2fQdouS9d2T2WxRc=;
-        b=S3DwZoibSaSzHs6BdJhjjUc4/abysR/XgIpfbhTE0UIQ3EUMDdFt3eCbprIS3054FO
-         UDpm4zCqcvMPqrRmOGKhAWXQ/6Si6ory2caAkymXgNThqprZqYtTwyimUieXo3v5k/3s
-         C58bvq8JA48psnHa16MVe/Dy2ULApv6JHflCuowCwivXtxF/TXPdjFqHg/zCilp6CTsL
-         PlfBXBnP06JzTdodCoYbdQZxTOoPKr9atbfHoihFvthsbBW1CeNwh0DN60Vx8Y+OjpPT
-         DJnV1Vd5fwPGQPw0JAvSDYmTXoaGEWBydkwHHN0HDxW4+NAeyllhcr48klHNi15O+L6i
-         cBtA==
-X-Gm-Message-State: AOJu0YxT7XqaXYdmIIBKWZnp0n3KQx75AFH0z5/iDEk2I7ayKfYrfjDk
-        jJDk3C2FzU2EMZ5SLjLll1iNWbnTkV7Ep6EX0Tu4kSG1jcsPyg==
-X-Google-Smtp-Source: AGHT+IHciFs/BQ6U6a7rjOnDJ2Xq+ukEzpkuMKRLiU5U69JMH0j5zohwipplwWO5SP4nlGF81WuRLROHWoNhvgHtxmc=
-X-Received: by 2002:a67:a209:0:b0:457:b85e:a9fe with SMTP id
- l9-20020a67a209000000b00457b85ea9femr91187vse.27.1697755677500; Thu, 19 Oct
- 2023 15:47:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <ZS1URCBgwGGj9JtM@casper.infradead.org>
- <CAKbZUD2A+=bp_sd+Q0Yif7NJqMu8p__eb4yguq0agEcmLH8SDQ@mail.gmail.com>
- <CALmYWFtOgMAQDGNoM6k2Ev4kMHD396wwH+rVDODaSjsyVMDogg@mail.gmail.com>
- <CAKbZUD2j1jbomCAVxUX_JmG1rfa8udc=5SqVOpDgc-3GnSTbAQ@mail.gmail.com>
- <CALmYWFv7jzOj5HPcYct=UzYKPrwwvtN1EQeHioQHDPwGFvL5Ug@mail.gmail.com> <CALmYWFt71Vi6ySiZhW+tmE-LZL7Tnu-dQ1uMO10DUkASUTxzKA@mail.gmail.com>
-In-Reply-To: <CALmYWFt71Vi6ySiZhW+tmE-LZL7Tnu-dQ1uMO10DUkASUTxzKA@mail.gmail.com>
-From:   Pedro Falcato <pedro.falcato@gmail.com>
-Date:   Thu, 19 Oct 2023 23:47:46 +0100
-Message-ID: <CAKbZUD12pEaDCLysOpT3yL3064=P28Pm3c=UBqhOZYeBP026WA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
-        lstoakes@gmail.com, mawupeng1@huawei.com, linmiaohe@huawei.com,
-        namit@vmware.com, peterx@redhat.com, peterz@infradead.org,
-        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
-        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
-        dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        d=1e100.net; s=20230601; t=1697756238; x=1698361038;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Eogj0ZIYp5lAoNttJXlBaUD0mycxslTcJprZ08tb/AA=;
+        b=KGtqn8LRPeUk6e66dHCNZsIIrCRDjAYi0IUphdWc4rKSTM4daXy/h5rPtv81k47Nun
+         t3Zae18WCrVScF5cjEEVu+EngF5SmsAvEXho+ezjguab7EeGQyz0wOKF33Rchpszn8k2
+         5XhRxhhelTmSiEeRutqSzDgJ/rDjuLqQ8X2jiGpu4Dh86WhQdOf6IfCN2ZytyCVpj4nc
+         qGISRAsjSSB6fsKmqemQw904mx2GTVrBYMGnlw0MznQGL6YmdRDSCHq7GqJDd9il8Zgt
+         PgckgMM3Y+imFZ5RX3ojuSBtBliZb8RWKv8TjtoJP+VOjhptzp4kVeVruWoM38vdnlom
+         XKDQ==
+X-Gm-Message-State: AOJu0Yx3XB9zYdXakaBQtuU1+8ou3NMHDu6hL+Ykjf+T6eV3BwWamrqT
+        4B6oBo6SKTXv/KE2uJl+wd1IKK6Lt9Io4YuHHQ==
+X-Google-Smtp-Source: AGHT+IGqB8ePfZRfnc6eFr02PfyeXAhmA4mOPwWQgXiGl4wPSgLLHP9PZwQt6gAmJ10vDpPWoSqXiU8o2V125OsO1g==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6871:330c:b0:1e9:9b7f:a04f with
+ SMTP id nf12-20020a056871330c00b001e99b7fa04fmr107113oac.6.1697755678870;
+ Thu, 19 Oct 2023 15:47:58 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 22:47:58 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAB2yMWUC/x2NMQ6DMAwAv4I81xIJYaBfqTqA4xYvwbIrVIT4O
+ 4HhhlvudnA2YYdns4PxKi5LqRIeDdA8li+j5OoQ29iFNgzoPyukG2aTlc1Ri16MpIK0GCNhn/I wUYopdQw1pMYf+d+T1/s4Tp7JueN0AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697755678; l=2211;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=C6lzZd1cxmbbPTc6wyYJ22pu7h/P2ENQ5AFRalgiPpo=; b=ge/iP8gZqQZ3kKz0nqiurxoo3s00oFATnxJET06+lyq2Es+o9MhT5CXAqjQ4A8jC+RVZcccT+
+ yv2TMnhmGYPBHTrmirBrNyBkwKZfL1Jzoy9d6rUK4WbdCBk0xS8hzEK
+X-Mailer: b4 0.12.3
+Message-ID: <20231019-strncpy-drivers-pnp-pnpacpi-core-c-v1-1-4c634a73bcf3@google.com>
+Subject: [PATCH] ACPI: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,141 +75,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 6:30=E2=80=AFPM Jeff Xu <jeffxu@google.com> wrote:
->
-> Hi Pedro
->
-> Some followup on mmap() + mprotect():
->
-> On Wed, Oct 18, 2023 at 11:20=E2=80=AFAM Jeff Xu <jeffxu@google.com> wrot=
-e:
-> >
-> > On Tue, Oct 17, 2023 at 3:35=E2=80=AFPM Pedro Falcato <pedro.falcato@gm=
-ail.com> wrote:
-> > >
-> > > > >
-> > > > > I think it's worth pointing out that this suggestion (with PROT_*=
-)
-> > > > > could easily integrate with mmap() and as such allow for one-shot
-> > > > > mmap() + mseal().
-> > > > > If we consider the common case as 'addr =3D mmap(...); mseal(addr=
-);', it
-> > > > > definitely sounds like a performance win as we halve the number o=
-f
-> > > > > syscalls for a sealed mapping. And if we trivially look at e.g Op=
-enBSD
-> > > > > ld.so code, mmap() + mimmutable() and mprotect() + mimmutable() s=
-eem
-> > > > > like common patterns.
-> > > > >
-> > > > Yes. mmap() can support sealing as well, and memory is allocated as
-> > > > immutable from begining.
-> > > > This is orthogonal to mseal() though.
-> > >
-> > > I don't see how this can be orthogonal to mseal().
-> > > In the case we opt for adding PROT_ bits, we should more or less only
-> > > need to adapt calc_vm_prot_bits(), and the rest should work without
-> > > issues.
-> > > vma merging won't merge vmas with different prots. The current
-> > > interfaces (mmap and mprotect) would work just fine.
-> > > In this case, mseal() or mimmutable() would only be needed if you nee=
-d
-> > > to set immutability over a range of VMAs with different permissions.
-> > >
-> > Agreed. By orthogonal, I meant we can have two APIs:
-> > mmap() and mseal()/mprotect()
-> > i.e. we can't just rely on mmap() only without mseal()/mprotect()/mimmu=
-table().
-> > Sealing can be applied after initial memory creation.
-> >
-> > > Note: modifications should look kinda like this: https://godbolt.org/=
-z/Tbjjd14Pe
-> > > The only annoying wrench in my plans here is that we have effectively
-> > > run out of vm_flags bits in 32-bit architectures, so this approach as
-> > > I described is not compatible with 32-bit.
-> > >
-> > > > In case of ld.so, iiuc, memory can be first allocated as W, then la=
-ter
-> > > > changed to RO, for example, during symbol resolution.
-> > > > The important point is that the application can decide what type of
-> > > > sealing it wants, and when to apply it.  There needs to be an api()=
-,
-> > > > that can be mseal() or mprotect2() or mimmutable(), the naming is n=
-ot
-> > > > important to me.
-> > > >
-> > > > mprotect() in linux have the following signature:
-> > > > int mprotect(void addr[.len], size_t len, int prot);
-> > > > the prot bitmasks are all taken here.
-> > > > I have not checked the prot field in mmap(), there might be bits le=
-ft,
-> > > > even not, we could have mmap2(), so that is not an issue.
-> > >
-> > > I don't see what you mean. We have plenty of prot bits left (32-bits,
-> > > and we seem to have around 8 different bits used).
-> > > And even if we didn't, prot is the same in mprotect and mmap and mmap=
-2 :)
-> > >
-> > > The only issue seems to be that 32-bit ran out of vm_flags, but that
-> > > can probably be worked around if need be.
-> > >
-> > Ah, you are right about this. vm_flags is full, and prot in mprotect() =
-is not.
-> > Apology that I was wrong previously and caused confusion.
-> >
-> > There is a slight difference in the syntax of mprotect and mseal.
-> > Each time when mprotect() is called, the kernel takes all of RWX bits
-> > and updates vm_flags,
-> > In other words, the application sets/unset each RWX, and kernel takes i=
-t.
-> >
-> > In the mseal() case, the kernel will remember which seal types were
-> > applied previously, and the application doesn=E2=80=99t need to repeat =
-all
-> > existing seal types in the next mseal().  Once a seal type is applied,
-> > it can=E2=80=99t be unsealed.
-> >
-> > So if we want to use mprotect() for sealing, developers need to think
-> > of sealing bits differently than the rest of prot bits. It is a
-> > different programming model, might or might not be an obvious concept
-> > to developers.
-> >
-> This probably doesn't matter much to developers.
-> We can enforce the sealing bit to be the same as the rest of PROT bits.
-> If mprotect() tries to unset sealing, it will fail.
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Yep. Erroneous or malicious mprotects would all be caught. However, if
-we add a PROT_DOWNGRADEABLE (that could let you, lets say, mprotect()
-to less permissions or even downright munmap()) you'd want some care
-to preserve that bit when setting permissions.
+We know dev->name should be NUL-terminated based on the presence of a
+manual NUL-byte assignment.
 
->
-> > There is a difference in input check and error handling as well.
-> > for mseal(), if a given address range has a gap (unallocated memory),
-> > or if one of VMA is sealed with MM_SEAL_SEAL flag, none of VMAs is
-> > updated.
-> > For mprotect(), some VMAs can be updated, till an error happens to a VM=
-A.
-> >
-> This difference doesn't matter much.
->
-> For mprotect()/mmap(), is Linux implementation limited by POSIX ?
+NUL-padding is not required as dev is already zero-allocated which
+renders any further NUL-byte assignments redundant:
+dev = pnp_alloc_dev(&pnpacpi_protocol, num, pnpid); --->
+  dev = kzalloc(sizeof(struct pnp_dev), GFP_KERNEL);
 
-No. POSIX works merely as a baseline that UNIX systems aim towards.
-You can (and very frequently do) extend POSIX interfaces (in fact,
-it's how most of POSIX was written, through sheer
-"design-by-committee" on a bunch of UNIX systems' extensions).
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding. This simplifies the code and makes
+the intent/behavior more obvious.
 
-> This can be made backward compatible.
-> If there is no objection to adding linux specific values in mmap() and
-> mprotect(),
-> This works for me.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-Linux already has system-specific values for PROT_ (PROT_BTI,
-PROT_MTE, PROT_GROWSUP, PROT_GROWSDOWN, etc).
-Whether this is the right interface is another question. I do like it
-a lot, but there's of course value in being compatible with existing
-solutions (like mimmutable()).
+Found with: $ rg "strncpy\("
+---
+ drivers/pnp/pnpacpi/core.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---=20
-Pedro
+diff --git a/drivers/pnp/pnpacpi/core.c b/drivers/pnp/pnpacpi/core.c
+index 6ab272c84b7b..a0927081a003 100644
+--- a/drivers/pnp/pnpacpi/core.c
++++ b/drivers/pnp/pnpacpi/core.c
+@@ -250,12 +250,9 @@ static int __init pnpacpi_add_device(struct acpi_device *device)
+ 		dev->capabilities |= PNP_DISABLE;
+ 
+ 	if (strlen(acpi_device_name(device)))
+-		strncpy(dev->name, acpi_device_name(device), sizeof(dev->name));
++		strscpy(dev->name, acpi_device_name(device), sizeof(dev->name));
+ 	else
+-		strncpy(dev->name, acpi_device_bid(device), sizeof(dev->name));
+-
+-	/* Handle possible string truncation */
+-	dev->name[sizeof(dev->name) - 1] = '\0';
++		strscpy(dev->name, acpi_device_bid(device), sizeof(dev->name));
+ 
+ 	if (dev->active)
+ 		pnpacpi_parse_allocated_resource(dev);
+
+---
+base-commit: dab3e01664eaddae965699f1fec776609db0ea9d
+change-id: 20231019-strncpy-drivers-pnp-pnpacpi-core-c-54d9bc42443e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
