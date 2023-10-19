@@ -2,187 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A9D7CEC98
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D57C7CEC9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjJSAKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
+        id S231544AbjJSALo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 20:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSAKj (ORCPT
+        with ESMTP id S229632AbjJSALm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:10:39 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A17FA;
-        Wed, 18 Oct 2023 17:10:37 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39INBi2G013562;
-        Thu, 19 Oct 2023 00:10:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6hQElVCyOOnSkM+Zznfzy7HZx857FhWzEl1qsufSNo4=;
- b=SFCZ3WxOtDkGT2IZD6/38EC1pZOMIEbyZLOg0siVLOIn7mc1eyRbGB9fyZSSdHjtOFhW
- fXe0Qn4yePa6t8JF15Meq2bQi3ZgMlPsF7Xb7lmBXjIsZg+76ay4UqGq6fC5secPEb2f
- FBsGaSG0ZE5iPwYL0O1A6EZvwQ+FNnkZ6WcHoujpQqjfteGCWYWVJQY5MYdyGWbbLb4Z
- zUV3eWuyPNY/3wJwL1CTNLA9dhqPBSvX5r++T5KO/5lzcrUVw9LgmM5HYgThe8jIvJdX
- qbGB6SK0BCuAdXbiLvVCLSO0a8sUv0WJapFvYqBKCSy1t3XkB1HHPDqtTTJ2N4aszXV0 GQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttg82sb9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 00:10:16 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39J0AFLp024950
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 00:10:15 GMT
-Received: from [10.110.123.255] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
- 2023 17:10:14 -0700
-Message-ID: <c57ddcf6-81c3-6be4-a07e-0dbe7e8aa8f2@quicinc.com>
-Date:   Wed, 18 Oct 2023 17:10:14 -0700
+        Wed, 18 Oct 2023 20:11:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCEFFA;
+        Wed, 18 Oct 2023 17:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697674300; x=1729210300;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lfHfhXx4PmjARlwECHoOSOd7MwM+0A7zoQb6TM0qST4=;
+  b=P7cOSq46U9jQDcDzdAkjTM6PMs6iCttj9igkzFFwKEtvMNGj/LIyHRlr
+   dCtEfjxoK/yV2N9ZEdVybZFbVt1Fjhr0cKHffQgSWDaR89ojhAchEnJ5B
+   uV8KGoTgSlgYNPMqTL00HV41TZlE4GGi5yUWzr6sE9XblHiZtXepPOqNx
+   1+BLaJMLr32Fmuu9qhphYMD2BaR3GjYWfverSRUylCu4AWX+iIcjnTPAm
+   49IlBrIoBSd4BD1wHVWJfaU2QmADZ8z/4qzGaRKTXAbk2PNG5PCDlJxoK
+   82FVx9vL9JQdnvko5hdxEwM1cRijzY4UoQ9Eo4vad2Jn+0+Wd1nRBBY1D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389002345"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="389002345"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 17:11:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756799691"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="756799691"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 18 Oct 2023 17:11:36 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtGdR-0001JG-2c;
+        Thu, 19 Oct 2023 00:11:33 +0000
+Date:   Thu, 19 Oct 2023 08:10:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Anshul Dalal <anshulusr@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] input: joystick: driver for Adafruit Seesaw
+ Gamepad
+Message-ID: <202310190852.BCw4Ry7D-lkp@intel.com>
+References: <20231017034356.1436677-2-anshulusr@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v9 26/34] ASoC: qcom: qdsp6: q6afe: Split USB AFE
- dev_token param into separate API
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-27-quic_wcheng@quicinc.com>
- <c6a003eb-213d-4456-bc6a-e07c08c57396@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <c6a003eb-213d-4456-bc6a-e07c08c57396@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: blhNU9CerJ0mDNSk9ta5Q5PAa7V6Hd1o
-X-Proofpoint-ORIG-GUID: blhNU9CerJ0mDNSk9ta5Q5PAa7V6Hd1o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-18_18,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310180199
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017034356.1436677-2-anshulusr@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+Hi Anshul,
 
-On 10/17/2023 3:39 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 10/17/23 15:01, Wesley Cheng wrote:
->> The Q6USB backend can carry information about the available USB SND cards
->> and PCM devices discovered on the USB bus.  The dev_token field is used by
->> the audio DSP to notify the USB offload driver of which card and PCM index
->> to enable playback on.  Separate this into a dedicated API, so the USB
->> backend can set the dev_token accordingly.  The audio DSP does not utilize
->> this information until the AFE port start command is sent, which is done
->> during the PCM prepare phase.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   sound/soc/qcom/qdsp6/q6afe.c | 49 +++++++++++++++++++++++++-----------
->>   sound/soc/qcom/qdsp6/q6afe.h |  1 +
->>   2 files changed, 36 insertions(+), 14 deletions(-)
->>
->> diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
->> index 72c4e6fe20c4..f09a756246f8 100644
->> --- a/sound/soc/qcom/qdsp6/q6afe.c
->> +++ b/sound/soc/qcom/qdsp6/q6afe.c
->> @@ -1394,10 +1394,42 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port,
->>   }
->>   EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
->>   
->> -static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
->> +/**
->> + * afe_port_send_usb_dev_param() - Send USB dev token
->> + *
->> + * @port: Instance of afe port
->> + * @cardidx: USB SND card index to reference
->> + * @pcmidx: USB SND PCM device index to reference
->> + *
->> + * The USB dev token carries information about which USB SND card instance and
->> + * PCM device to execute the offload on.  This information is carried through
->> + * to the stream enable QMI request, which is handled by the offload class
->> + * driver.  The information is parsed to determine which USB device to query
->> + * the required resources for.
->> + */
->> +int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx)
->>   {
->> -	union afe_port_config *pcfg = &port->port_cfg;
->>   	struct afe_param_id_usb_audio_dev_params usb_dev;
->> +	int ret;
->> +
->> +	memset(&usb_dev, 0, sizeof(usb_dev));
->> +
->> +	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
->> +	usb_dev.dev_token = (cardidx << 16) | (pcmidx << 8);
->> +	ret = q6afe_port_set_param_v2(port, &usb_dev,
->> +				AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
->> +				AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
->> +	if (ret)
->> +		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
->> +			__func__, ret);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(afe_port_send_usb_dev_param);
->> +
->> +static int afe_port_send_usb_params(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
->> +{
->> +	union afe_port_config *pcfg = &port->port_cfg;
->>   	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
->>   	struct afe_param_id_usb_audio_svc_interval svc_int;
->>   	int ret = 0;
->> @@ -1408,20 +1440,9 @@ static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb
->>   		goto exit;
->>   	}
->>   
->> -	memset(&usb_dev, 0, sizeof(usb_dev));
->>   	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
->>   	memset(&svc_int, 0, sizeof(svc_int));
->>   
->> -	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
->> -	ret = q6afe_port_set_param_v2(port, &usb_dev,
->> -				      AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
->> -				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
->> -	if (ret) {
->> -		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
->> -			__func__, ret);
->> -		goto exit;
->> -	}
->> -
-> 
-> this feels like a questionable patch split. Why not introduce the new
-> helper earlier and avoid adding code then modifying the same code?
-> 
+kernel test robot noticed the following build warnings:
 
-Let me see if I can squash this with the change that adds the USB AFE port.
+[auto build test WARNING on dtor-input/next]
+[also build test WARNING on dtor-input/for-linus hid/for-next linus/master v6.6-rc6 next-20231018]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks
-Wesley Cheng
+url:    https://github.com/intel-lab-lkp/linux/commits/Anshul-Dalal/input-joystick-driver-for-Adafruit-Seesaw-Gamepad/20231017-160635
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
+patch link:    https://lore.kernel.org/r/20231017034356.1436677-2-anshulusr%40gmail.com
+patch subject: [PATCH v5 2/2] input: joystick: driver for Adafruit Seesaw Gamepad
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231019/202310190852.BCw4Ry7D-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310190852.BCw4Ry7D-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310190852.BCw4Ry7D-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/thread_info.h:27,
+                    from arch/sparc/include/asm/current.h:15,
+                    from include/linux/sched.h:12,
+                    from include/linux/delay.h:23,
+                    from drivers/input/joystick/adafruit-seesaw.c:17:
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+>> include/linux/bitops.h:52:11: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+      52 |           __builtin_constant_p(*(const unsigned long *)(addr))) ?       \
+         |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bitops.h:61:41: note: in expansion of macro 'bitop'
+      61 | #define test_bit(nr, addr)              bitop(_test_bit, nr, addr)
+         |                                         ^~~~~
+   drivers/input/joystick/adafruit-seesaw.c:89:27: note: in expansion of macro 'test_bit'
+      89 |         data->button_a = !test_bit(BUTTON_A, (long *)&result);
+         |                           ^~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In file included from include/linux/bitops.h:34:
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:89:20:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:90:20:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:91:20:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:92:20:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:93:24:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+   In function 'generic_test_bit',
+       inlined from 'seesaw_read_data' at drivers/input/joystick/adafruit-seesaw.c:94:25:
+>> include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 'long unsigned int[0]' is partly outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds=]
+     128 |         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+         |                       ~~~~^~~~~~~~~~~~~~
+   drivers/input/joystick/adafruit-seesaw.c: In function 'seesaw_read_data':
+   drivers/input/joystick/adafruit-seesaw.c:87:13: note: object 'result' of size 4
+      87 |         u32 result = get_unaligned_be32(&read_buf);
+         |             ^~~~~~
+
+
+vim +52 include/linux/bitops.h
+
+0e862838f29014 Alexander Lobakin 2022-06-24  35  
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  36  /*
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  37   * Many architecture-specific non-atomic bitops contain inline asm code and due
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  38   * to that the compiler can't optimize them to compile-time expressions or
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  39   * constants. In contrary, generic_*() helpers are defined in pure C and
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  40   * compilers optimize them just well.
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  41   * Therefore, to make `unsigned long foo = 0; __set_bit(BAR, &foo)` effectively
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  42   * equal to `unsigned long foo = BIT(BAR)`, pick the generic C alternative when
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  43   * the arguments can be resolved at compile time. That expression itself is a
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  44   * constant and doesn't bring any functional changes to the rest of cases.
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  45   * The casts to `uintptr_t` are needed to mitigate `-Waddress` warnings when
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  46   * passing a bitmap from .bss or .data (-> `!!addr` is always true).
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  47   */
+e69eb9c460f128 Alexander Lobakin 2022-06-24  48  #define bitop(op, nr, addr)						\
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  49  	((__builtin_constant_p(nr) &&					\
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  50  	  __builtin_constant_p((uintptr_t)(addr) != (uintptr_t)NULL) &&	\
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  51  	  (uintptr_t)(addr) != (uintptr_t)NULL &&			\
+b03fc1173c0c2b Alexander Lobakin 2022-06-24 @52  	  __builtin_constant_p(*(const unsigned long *)(addr))) ?	\
+b03fc1173c0c2b Alexander Lobakin 2022-06-24  53  	 const##op(nr, addr) : op(nr, addr))
+e69eb9c460f128 Alexander Lobakin 2022-06-24  54  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
