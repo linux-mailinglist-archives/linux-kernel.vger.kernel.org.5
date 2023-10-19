@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A0C7CFED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ED37CFED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346449AbjJSP53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S1346405AbjJSP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346427AbjJSP5Z (ORCPT
+        with ESMTP id S1346461AbjJSP5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:57:25 -0400
+        Thu, 19 Oct 2023 11:57:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7733124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:57:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E9CC433C8;
-        Thu, 19 Oct 2023 15:57:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371BA19F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:57:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C10B0C433C8;
+        Thu, 19 Oct 2023 15:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697731043;
-        bh=IyvcanNAQWnGPKBbEt2/asf2ufwI0jEwMEXgnN1yo2Y=;
+        s=k20201202; t=1697731063;
+        bh=aV4zjqdTfT5hQ+Z2OY2yVVJ9007OGiHOsvnzeD0O/ds=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WYRwDhwhqQwOsSO42kQ0SnAT5OGpQdlL+jYpQ/sz7hingpNSMF2WA9WmMCNobxTRV
-         dEjV1nmozpw+AK6sIf8cyGpOLrN93pce7iNDj5LeBy7Ys3I6bumvRbMbZye4Z27aNU
-         ZxKFsoIZcmoktWlRgbmKz5n8XN0NT3uzCUTufZfNgyQENBsEnH7SdEOziTA5CI4QWX
-         CSMMglJALjZO1Lkp7mmEnuHUoPZvLMLQpw/Q1xg3SA2F0D2LdFg9nCcUP70N9P3q4a
-         H8j6cqcYN/bzPu2LL3iuJGrL+uSdbOqp0J4q/oF8MdDY5KxNdS6W7yyYeEMf88mP4h
-         nR9YGoumrtLag==
-Date:   Thu, 19 Oct 2023 17:57:15 +0200
+        b=R7amKmKhwgcduuPk4cZHH2A/v5VghUZCV1R05tamsUU4eMloSv38OcUTUeQcP7two
+         AT9p3bjWlWF9hjZOYORos4KTOdS1mGajy0CdSBmlrAFlVggnJmH/HRgCP2SAO80TvQ
+         dtgSi27oCjKwrSotT8ejuUHuhN+fJnYQnmh4cvqsQwei5gyOHCihrnCOGJemI9eog4
+         +S0Fqv4wXJpgLQvJtQjsjdYQ7gbalJff2P96sUn6pGX8VJzLbVi7N6jVLeQYZZ1iCz
+         TD4mWA+Sbl8e3qh3S7iur6g5ugg3AydfpeC1l3UtiTZliE+TFNnfiK9c/9nXpz9+It
+         QfcmeyoL6PKKw==
+Date:   Thu, 19 Oct 2023 17:57:35 +0200
 From:   Simon Horman <horms@kernel.org>
 To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Cc:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
@@ -61,15 +61,15 @@ Cc:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net-next v3 05/11] hinic: devlink health: use retained
- error fmsg API
-Message-ID: <20231019155715.GN2100445@kernel.org>
+Subject: Re: [PATCH net-next v3 06/11] octeontx2-af: devlink health: use
+ retained error fmsg API
+Message-ID: <20231019155735.GO2100445@kernel.org>
 References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
- <20231018202647.44769-6-przemyslaw.kitszel@intel.com>
+ <20231018202647.44769-7-przemyslaw.kitszel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231018202647.44769-6-przemyslaw.kitszel@intel.com>
+In-Reply-To: <20231018202647.44769-7-przemyslaw.kitszel@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,7 +80,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:26:41PM +0200, Przemek Kitszel wrote:
+On Wed, Oct 18, 2023 at 10:26:42PM +0200, Przemek Kitszel wrote:
 > Drop unneeded error checking.
 > 
 > devlink_fmsg_*() family of functions is now retaining errors,
