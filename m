@@ -2,438 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9137CF2A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BB77CF2A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344946AbjJSIbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
+        id S1344920AbjJSIbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344936AbjJSIbl (ORCPT
+        with ESMTP id S232383AbjJSIbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:31:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1456E10F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697704259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EgqdFvICrpSjldvUtwyOCdnta4xz/KSaKCKvNTyERi8=;
-        b=fUu1lvmC7TpyUs21bidVr3Blmq2vzF6FLSKUZdaoB+/54A3aS2RwoyNBpKpziRyJL5Gs4u
-        zmIK3cfW/n14lmelnSSKKZ3SHfzW58GydLEQeiS9ObMKnClbXoSvrJNMYb2FnPOaNgPqBC
-        x4djgEcmz+R9CdIU5nNeVaKS8T7AB04=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-338-PSVoARkoNbywXeJtw1AUvQ-1; Thu, 19 Oct 2023 04:30:57 -0400
-X-MC-Unique: PSVoARkoNbywXeJtw1AUvQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d03dcdc6bso92502346d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:30:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697704257; x=1698309057;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EgqdFvICrpSjldvUtwyOCdnta4xz/KSaKCKvNTyERi8=;
-        b=G3py55R0+mj5DVbbxCOewreNrZQzTZgAN3ebgR15hO/ACnPoAmP+2HwZIHa9rjRR1o
-         JBzu3pzc/gNIa0Cxa6t08JuNcdouSFufoGwlyRY7arjMeL2fEgFzow48N1s4oAU+bwEU
-         7t3FTCrrdrUq9BPWRtykTmvnAosOnGVqHx8898ltUasvhdfs0U5LV6x3jfg0KEOXl/g9
-         xPY2hPkW0SJDNyK0y6r9f0WcMhQpA6aMGNRKFQsQYBlfyL7H8ELj61B2giWvNC+DlqPq
-         k6VLSemrqrM322V3VGiRUPEmuit5ErIQJ5+SYJE9AOr0mwHNy2CjZeQ8iAKk2Sao+5up
-         DdDQ==
-X-Gm-Message-State: AOJu0YwfoDQQ9iyUDWUozbok0Vb4Jwl/NZRJeKX+2XE03jeG0sVGftau
-        eT0NY41EF1z0yr1VFHG5B4m14T4fzfYHGpomkfNdPZ5jHsilo88PsUie7Xt3nh8ZDaF9WEslh8l
-        ItUjvxfSi4MNVfb3NRIsOmUCq
-X-Received: by 2002:ad4:5767:0:b0:66d:696b:db75 with SMTP id r7-20020ad45767000000b0066d696bdb75mr1871927qvx.32.1697704257209;
-        Thu, 19 Oct 2023 01:30:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmMIzXS2uJiirxfGPju6hGDbzRKYzq5R6ii7ABuToELhNMIxxO3lB/aRKd0C2zBN0Nbx5asw==
-X-Received: by 2002:ad4:5767:0:b0:66d:696b:db75 with SMTP id r7-20020ad45767000000b0066d696bdb75mr1871911qvx.32.1697704256889;
-        Thu, 19 Oct 2023 01:30:56 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:280:24f0:9db0:474c:ff43:9f5c? ([2a01:e0a:280:24f0:9db0:474c:ff43:9f5c])
-        by smtp.gmail.com with ESMTPSA id p18-20020a0cfad2000000b006564afc5908sm617837qvo.111.2023.10.19.01.30.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 01:30:56 -0700 (PDT)
-Message-ID: <4915e45f-2256-42b5-838c-be2e5eda69ac@redhat.com>
-Date:   Thu, 19 Oct 2023 10:30:53 +0200
+        Thu, 19 Oct 2023 04:31:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29FB711F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:31:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCFD82F4;
+        Thu, 19 Oct 2023 01:32:17 -0700 (PDT)
+Received: from [10.163.36.185] (unknown [10.163.36.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4F8F3F762;
+        Thu, 19 Oct 2023 01:31:34 -0700 (PDT)
+Message-ID: <96e31c6a-8de6-43dd-842e-ca56146d91d0@arm.com>
+Date:   Thu, 19 Oct 2023 14:01:31 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 1/2] vfio/migration: Add debugfs to live migration
- driver
+Subject: Re: [PATCH] arm64: Independently update HDFGRTR_EL2 and HDFGWTR_EL2
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        linux-kernel@vger.kernel.org
+References: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+ <86r0lsm7cq.wl-maz@kernel.org> <d8db313d-1161-4a6e-9edc-7dc1e22d2018@arm.com>
+ <8734y76q2w.wl-maz@kernel.org>
 Content-Language: en-US
-To:     liulongfang <liulongfang@huawei.com>, alex.williamson@redhat.com,
-        jgg@nvidia.com, shameerali.kolothum.thodi@huawei.com,
-        jonathan.cameron@huawei.com
-Cc:     bcreeley@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-References: <20231013090441.36417-1-liulongfang@huawei.com>
- <20231013090441.36417-2-liulongfang@huawei.com>
- <dee481c3-f6bd-4ba9-a2d4-528dfb668159@redhat.com>
- <d4a2f596-13c9-f3d3-3bbd-ee773f026341@huawei.com>
-From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clegoate@redhat.com>
-In-Reply-To: <d4a2f596-13c9-f3d3-3bbd-ee773f026341@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <8734y76q2w.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/23 10:03, liulongfang wrote:
-> On 2023/10/16 23:17, Cédric Le Goater wrote:
->> Hello Longfang,
->>
->> On 10/13/23 11:04, Longfang Liu wrote:
->>> There are multiple devices, software and operational steps involved
->>> in the process of live migration. An error occurred on any node may
->>> cause the live migration operation to fail.
->>> This complex process makes it very difficult to locate and analyze
->>> the cause when the function fails.
->>>
->>> In order to quickly locate the cause of the problem when the
->>> live migration fails, I added a set of debugfs to the vfio
->>> live migration driver.
->>>
->>>       +-------------------------------------------+
->>>       |                                           |
->>>       |                                           |
->>>       |                  QEMU                     |
->>>       |                                           |
->>>       |                                           |
->>>       +---+----------------------------+----------+
->>>           |      ^                     |      ^
->>>           |      |                     |      |
->>>           |      |                     |      |
->>>           v      |                     v      |
->>>        +---------+--+               +---------+--+
->>>        |src vfio_dev|               |dst vfio_dev|
->>>        +--+---------+               +--+---------+
->>>           |      ^                     |      ^
->>>           |      |                     |      |
->>>           v      |                     |      |
->>>      +-----------+----+           +-----------+----+
->>>      |src dev debugfs |           |dst dev debugfs |
->>>      +----------------+           +----------------+
->>>
->>> The entire debugfs directory will be based on the definition of
->>> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
->>> interfaces in vfio.h will be empty definitions, and the creation
->>> and initialization of the debugfs directory will not be executed.
->>>
->>>      vfio
->>>       |
->>>       +---<dev_name1>
->>>       |    +---migration
->>>       |        +--state
->>>       |
->>>       +---<dev_name2>
->>>            +---migration
->>>                +--state
->>>
->>> debugfs will create a public root directory "vfio" file.
->>> then create a dev_name() file for each live migration device.
->>> First, create a unified state acquisition file of "migration"
->>> in this device directory.
->>> Then, create a public live migration state lookup file "state".
->>>
->>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->>> ---
->>>    drivers/vfio/Kconfig      | 10 +++++
->>>    drivers/vfio/Makefile     |  1 +
->>>    drivers/vfio/debugfs.c    | 90 +++++++++++++++++++++++++++++++++++++++
->>>    drivers/vfio/vfio.h       | 14 ++++++
->>>    drivers/vfio/vfio_main.c  | 14 +++++-
->>>    include/linux/vfio.h      |  7 +++
->>>    include/uapi/linux/vfio.h |  1 +
->>>    7 files changed, 135 insertions(+), 2 deletions(-)
->>>    create mode 100644 drivers/vfio/debugfs.c
->>>
->>> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
->>> index 6bda6dbb4878..ceae52fd7586 100644
->>> --- a/drivers/vfio/Kconfig
->>> +++ b/drivers/vfio/Kconfig
->>> @@ -80,6 +80,16 @@ config VFIO_VIRQFD
->>>        select EVENTFD
->>>        default n
->>>    +config VFIO_DEBUGFS
->>> +    bool "Export VFIO internals in DebugFS"
->>> +    depends on DEBUG_FS
->>> +    help
->>> +      Allows exposure of VFIO device internals. This option enables
->>> +      the use of debugfs by VFIO drivers as required. The device can
->>> +      cause the VFIO code create a top-level debug/vfio directory
->>> +      during initialization, and then populate a subdirectory with
->>> +      entries as required.
->>> +
->>>    source "drivers/vfio/pci/Kconfig"
->>>    source "drivers/vfio/platform/Kconfig"
->>>    source "drivers/vfio/mdev/Kconfig"
->>> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
->>> index c82ea032d352..d43a699d55b1 100644
->>> --- a/drivers/vfio/Makefile
->>> +++ b/drivers/vfio/Makefile
->>> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
->>>    vfio-$(CONFIG_IOMMUFD) += iommufd.o
->>>    vfio-$(CONFIG_VFIO_CONTAINER) += container.o
->>>    vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
->>> +vfio-$(CONFIG_VFIO_DEBUGFS) += debugfs.o
->>>      obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
->>>    obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
->>> diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
->>> new file mode 100644
->>> index 000000000000..ae53d6110f47
->>> --- /dev/null
->>> +++ b/drivers/vfio/debugfs.c
->>> @@ -0,0 +1,90 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Copyright (c) 2023, HiSilicon Ltd.
->>> + */
->>> +
->>> +#include <linux/device.h>
->>> +#include <linux/debugfs.h>
->>> +#include <linux/seq_file.h>
->>> +#include <linux/vfio.h>
->>> +#include "vfio.h"
->>> +
->>> +static struct dentry *vfio_debugfs_root;
->>> +
->>> +static int vfio_device_state_read(struct seq_file *seq, void *data)
->>> +{
->>> +    struct device *vf_dev = seq->private;
->>> +    struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
->>> +    enum vfio_device_mig_state state;
->>> +    int ret;
->>> +
->>> +    BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
->>> +        VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
->>> +
->>> +    ret = vdev->mig_ops->migration_get_state(vdev, &state);
->>> +    if (ret)
->>> +        return -EINVAL;
->>> +
->>> +    switch (state) {
->>> +    case VFIO_DEVICE_STATE_ERROR:
->>> +        seq_printf(seq, "%s\n", "ERROR");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_STOP:
->>> +        seq_printf(seq, "%s\n", "STOP");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_RUNNING:
->>> +        seq_printf(seq, "%s\n", "RUNNING");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_STOP_COPY:
->>> +        seq_printf(seq, "%s\n", "STOP_COPY");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_RESUMING:
->>> +        seq_printf(seq, "%s\n", "RESUMING");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_RUNNING_P2P:
->>> +        seq_printf(seq, "%s\n", "RUNNING_P2P");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_PRE_COPY:
->>> +        seq_printf(seq, "%s\n", "PRE_COPY");
->>> +        break;
->>> +    case VFIO_DEVICE_STATE_PRE_COPY_P2P:
->>> +        seq_printf(seq, "%s\n", "PRE_COPY_P2P");
->>> +        break;
->>> +    default:
->>> +        seq_printf(seq, "%s\n", "Invalid");
->>
->> seq_puts() is more appropriate than seq_printf() above.
->>
-> 
-> There is no difference between seq_puts() and seq_printf() here,
-> no need to modify it.
 
-seq_puts is simply preferred for unformatted output.
 
->> I would suggest to add an array or some helper, that the VFIO drivers
->> could use to debug the migration flow with pr_* primitives. It can be
->> done later.
+On 10/19/23 12:45, Marc Zyngier wrote:
+> On Thu, 19 Oct 2023 04:36:15 +0100,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 >>
+>>
+>>
+>> On 10/18/23 18:10, Marc Zyngier wrote:
+>>> On Wed, 18 Oct 2023 04:00:07 +0100,
+>>> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>>>
+>>>> Currently PMSNEVFR_EL1 system register read, and write access EL2 traps are
+>>>> disabled, via setting the same bit (i.e 62) in HDFGRTR_EL2, and HDFGWTR_EL2
+>>>> respectively. Although very similar, bit fields are not exact same in these
+>>>> two EL2 trap configure registers particularly when it comes to read-only or
+>>>> write-only accesses such as ready-only 'HDFGRTR_EL2.nBRBIDR' which needs to
+>>>> be set while enabling BRBE on NVHE platforms. Using the exact same bit mask
+>>>> fields for both these trap register risk writing into their RESERVED areas,
+>>>> which is undesirable.
+>>>
+>>> Sorry, I don't understand at all what you are describing. You seem to
+>>> imply that the read and write effects of the FGT doesn't apply the
+>>> same way. But my reading of the ARM ARM is that  behave completely
+>>> symmetrically.
+>>>
+>>> Also, what is nBRBIDR doing here? It is still set to 0. What
+>>> 'RESERVED' state are you talking about?
+>>
+>> Let's observe the following example which includes the nBRBIDR problem,
+>> mentioned earlier.
+>>
+>> Read access trap configure
+>>
+>> HDFGRTR_EL2[59]	   - nBRBIDR
+>> HDFGRTR_EL2[58]	   - PMCEIDn_EL0
+>>
+>> Write access trap configure
+>>
+>> HDFGWTR_EL2[59:58] - RES0
+>>
+>> Because BRBIDR_EL1 and PMCEID<N>_EL0 are read only registers they don't
+>> have corresponding entries in HDFGWTR_EL2 for write trap configuration.
+>>
+>> Using the exact same value contained in 'x0' both for HDFGRTR_EL2, and
+>> HDFGWTR_EL2 will be problematic in case it contains bit fields that are
+>> available only in one of the registers but not in the other.
+>>
+>> If 'x0' contains nBRBIDR being set, it will be okay for HDFGRTR_EL2 but
+>> might not be okay for HDFGWTR_EL2 where it will get into RESERVED areas.
 > 
-> If you want to debug this migration process in the VFIO driver,
-> you can refer to vdev->mig_ops->migration_get_state() to read the status.
+> None of which matters for this patch. You keep arguing about something
+> that does not exist in the change you're proposing.
 > 
->>
->>> +    }
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +void vfio_device_debugfs_init(struct vfio_device *vdev)
->>> +{
->>> +    struct device *dev = &vdev->device;
->>> +
->>> +    vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
->>> +
->>> +    if (vdev->mig_ops) {
->>> +        struct dentry *vfio_dev_migration = NULL;
->>
->> mig_dir maybe ?
->>
+> [...]
 > 
-> "vfio_dev_migration " will not affect the readability of the code.
+>> I should have given more details in the commit message but hope
+>> you have some context now, but please do let me know if there
+>> is something still missing.
 > 
->> It would be easier to understand the nature of the variable IMHO.
->>
->>> +
->>> +        vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
->>> +        debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
->>> +                      vfio_device_state_read);
->>> +    }
->>> +}
->>> +
->>> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
->>> +{
->>> +    debugfs_remove_recursive(vdev->debug_root);
->>> +}
->>> +
->>> +void vfio_debugfs_create_root(void)
->>> +{
->>> +    vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
->>> +}
->>> +
->>> +void vfio_debugfs_remove_root(void)
->>> +{
->>> +    debugfs_remove_recursive(vfio_debugfs_root);
->>> +    vfio_debugfs_root = NULL;
->>> +}
->>> +
->>> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
->>> index 307e3f29b527..bde84ad344e5 100644
->>> --- a/drivers/vfio/vfio.h
->>> +++ b/drivers/vfio/vfio.h
->>> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
->>>    }
->>>    #endif
->>>    +#ifdef CONFIG_VFIO_DEBUGFS
->>> +void vfio_debugfs_create_root(void);
->>> +void vfio_debugfs_remove_root(void);
->>> +
->>> +void vfio_device_debugfs_init(struct vfio_device *vdev);
->>> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
->>> +#else
->>> +static inline void vfio_debugfs_create_root(void) { }
->>> +static inline void vfio_debugfs_remove_root(void) { }
->>> +
->>> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
->>> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
->>> +#endif /* CONFIG_VFIO_DEBUGFS */
->>> +
->>>    #endif
->>> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
->>> index e31e1952d7b8..9aec4c22f051 100644
->>> --- a/drivers/vfio/vfio_main.c
->>> +++ b/drivers/vfio/vfio_main.c
->>> @@ -309,7 +309,6 @@ static int __vfio_register_dev(struct vfio_device *device,
->>>          /* Refcounting can't start until the driver calls register */
->>>        refcount_set(&device->refcount, 1);
->>> -
->>
->> superfluous change.
->>
-> 
-> A blank line here is to separate it from the comment above.
-> Makes it easier to be read.
-> 
->>>        vfio_device_group_register(device);
->>>          return 0;
->>> @@ -320,7 +319,15 @@ static int __vfio_register_dev(struct vfio_device *device,
->>>      int vfio_register_group_dev(struct vfio_device *device)
->>>    {
->>> -    return __vfio_register_dev(device, VFIO_IOMMU);
->>> +    int ret;
->>> +
->>> +    ret = __vfio_register_dev(device, VFIO_IOMMU);
->>> +    if (ret)
->>> +        return ret;
->>> +
->>> +    vfio_device_debugfs_init(device);
->>
->> Can it be called from __vfio_register_dev() instead ? and mdev devices
->> would get debugfs support also.
->>
-> 
-> This is for symmetry in function calls.
-> The need for symmetry was mentioned in the previous review.
+> What is missing is a useful patch. This one just obfuscates things for
+> no particular purpose. If you have a useful change to contribute,
+> please send that instead (your BRBE change). We don't need an extra,
+> standalone and pointless patch such as this one.
 
-yes. But this is also exluding the mdev devices which is a large VFIO family.
-
-Thanks,
-
-C.
-  
-> 
->> Thanks,
->>
->> C.
->>
-> Thanks,
-> Longfang.
-> 
->>> +
->>> +    return 0;
->>>    }
->>>    EXPORT_SYMBOL_GPL(vfio_register_group_dev);
->>>    @@ -378,6 +385,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
->>>            }
->>>        }
->>>    +    vfio_device_debugfs_exit(device);
->>>        /* Balances vfio_device_set_group in register path */
->>>        vfio_device_remove_group(device);
->>>    }
->>> @@ -1676,6 +1684,7 @@ static int __init vfio_init(void)
->>>        if (ret)
->>>            goto err_alloc_dev_chrdev;
->>>    +    vfio_debugfs_create_root();
->>>        pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
->>>        return 0;
->>>    @@ -1691,6 +1700,7 @@ static int __init vfio_init(void)
->>>      static void __exit vfio_cleanup(void)
->>>    {
->>> +    vfio_debugfs_remove_root();
->>>        ida_destroy(&vfio.device_ida);
->>>        vfio_cdev_cleanup();
->>>        class_destroy(vfio.device_class);
->>> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
->>> index 454e9295970c..769d7af86225 100644
->>> --- a/include/linux/vfio.h
->>> +++ b/include/linux/vfio.h
->>> @@ -69,6 +69,13 @@ struct vfio_device {
->>>        u8 iommufd_attached:1;
->>>    #endif
->>>        u8 cdev_opened:1;
->>> +#ifdef CONFIG_DEBUG_FS
->>> +    /*
->>> +     * debug_root is a static property of the vfio_device
->>> +     * which must be set prior to registering the vfio_device.
->>> +     */
->>> +    struct dentry *debug_root;
->>> +#endif
->>>    };
->>>      /**
->>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
->>> index 7f5fb010226d..2b68e6cdf190 100644
->>> --- a/include/uapi/linux/vfio.h
->>> +++ b/include/uapi/linux/vfio.h
->>> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
->>>        VFIO_DEVICE_STATE_RUNNING_P2P = 5,
->>>        VFIO_DEVICE_STATE_PRE_COPY = 6,
->>>        VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
->>> +    VFIO_DEVICE_STATE_NR,
->>>    };
->>>      /**
->>
->> .
->>
-> 
-
+I will fold this patch with other BRBE changes as mentioned earlier but
+thought that - separating out updates for HDFGRTR_EL2, and HDFGWTR_EL2
+should be done as stand alone change in a preparatory patch. Seems like
+that was an incorrect assumption.
