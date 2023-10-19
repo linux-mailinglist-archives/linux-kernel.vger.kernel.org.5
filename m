@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E037D0370
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B2B7D0372
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbjJSUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
+        id S1346553AbjJSUyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjJSUwv (ORCPT
+        with ESMTP id S229892AbjJSUye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:52:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA12A113;
-        Thu, 19 Oct 2023 13:52:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC3CC433C9;
-        Thu, 19 Oct 2023 20:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697748769;
-        bh=3dzWUTFAxmU3wipGFobehTK7P0p+nDlBGaKxyhwIuDs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q/VUvGCPD+aQ6/tm3hG0GsY1Wb4EyUW3sIPOHEyFhKSir6VgPDFZ2LYB60y+uYptJ
-         PstLQ95C5kTtBd5omwncwSgHvwGBv1MhyUD7uEHyNh1acEgSjbenB/sUo6frnQbE3F
-         T/dTLZcrnByOzjg/YJ3YBKC6G6aF+td+nXVqf8nj98yM+kCTiBCwqLA9uEYCuFO8C5
-         VSHcEYoqE0WzAqcKCjUyo+SqBd1U003F6r8/6hjaJ4AamYyCAIb79kF1r1JmE6/x5r
-         sQraZdU6+3TVWPrUOzkD89mUoyMI0Aqm9F+BTNF+n/uLrw6fWHrLoxW7qPzYrLP0OO
-         cO0E+BfJD9TYQ==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2b9338e4695so1254721fa.2;
-        Thu, 19 Oct 2023 13:52:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YymY03qzHDIDNY+TooA7Tk081N1TSRjV93nSwmnGYRA7z8I/Di8
-        6x6v/Rh7sIJwE117MiH4kBCrn+zPVXNshblVkeo=
-X-Google-Smtp-Source: AGHT+IGCrajqrcehF155RNIPexecuwUd9uUBKdOjZSmNS43fowCn8+WhCmhmhyAmsVxzLrMoZ+cjhDv3FEXPDug63Zw=
-X-Received: by 2002:a2e:bc12:0:b0:2c5:8b1:7561 with SMTP id
- b18-20020a2ebc12000000b002c508b17561mr87872ljf.10.1697748767605; Thu, 19 Oct
- 2023 13:52:47 -0700 (PDT)
+        Thu, 19 Oct 2023 16:54:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2E5D7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697748873; x=1729284873;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=3NqRHsAR6XsnhK02RO1iSbeK91JgC8I9EUZ+LI6wcn8=;
+  b=esKlLJ9en2tPsE2Rhcc157cIuHVUnpRbnh+ODflPj/AsV50AqNDhdepH
+   lSROzCJXSiBeldChVPFIU6d/LtmPse7N8DRjvw5J6/VFp2yDDhEEdo2VQ
+   fKXW7x/EB60+vY3h08Rlyxl9b57VirDWcPnJEBG6ZfQ5BrvxZY7FujtI2
+   SJGrIJPp3m7DE531JURgqYPoEG15pq8rs6Puv6Hr/7Z8Okv2Ax7HeXKqd
+   NlSLADzBB/jSTRuiYbpdWqAW7ywHGUeZztcAHfTCNPDVyDnD1DJd5b/ZZ
+   j2fE5PM66O4NwPBdQWEp1FjW+4p5HKcdm5R/hddaD0DHMWyqIwa7fq7Ed
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="4974255"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="4974255"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 13:54:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="822978422"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="822978422"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Oct 2023 13:54:30 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qta2G-0002aY-0L;
+        Thu, 19 Oct 2023 20:54:28 +0000
+Date:   Fri, 20 Oct 2023 04:54:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be
+ truncated writing likely 5 or more bytes into a region of size between 3 and
+ 13
+Message-ID: <202310200443.iD3tUbbK-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231012230301.58500-1-Smita.KoralahalliChannabasappa@amd.com>
- <20231012230301.58500-2-Smita.KoralahalliChannabasappa@amd.com>
- <65288e68de994_2347eb294c2@iweiny-mobl.notmuch> <d5882c60-6636-f651-2886-02c433f77ae1@amd.com>
- <CAMj1kXFsqRuge48Ji5bujgBz_rzbPcLiN84dbXnRytH3yyJPjA@mail.gmail.com> <65302871abbc6_725832944e@dwillia2-xfh.jf.intel.com.notmuch>
-In-Reply-To: <65302871abbc6_725832944e@dwillia2-xfh.jf.intel.com.notmuch>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 19 Oct 2023 22:52:35 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGHoZS2x1u-J94P29-zxxOM=w0omN9__YZbSnj0xhUOaA@mail.gmail.com>
-Message-ID: <CAMj1kXGHoZS2x1u-J94P29-zxxOM=w0omN9__YZbSnj0xhUOaA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] efi/cper, cxl: Decode CXL Component Events General
- Media Event Record
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-efi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 at 20:48, Dan Williams <dan.j.williams@intel.com> wrote:
->
-> Ard Biesheuvel wrote:
-> > On Tue, 17 Oct 2023 at 22:52, Smita Koralahalli
-> > <Smita.KoralahalliChannabasappa@amd.com> wrote:
-> > >
-> > > Hi Ira,
-> > >
-> > > On 10/12/2023 5:25 PM, Ira Weiny wrote:
-> > > > Smita Koralahalli wrote:
-> > > >> Add support for decoding CXL Component Events General Media Event Record
-> > > >> as defined in CXL rev 3.0 section 8.2.9.2.1.1.
-> > > >>
-> > > >> All the event records as defined in Event Record Identifier field of the
-> > > >> Common Event Record Format in CXL rev 3.0 section 8.2.9.2.1 follow the
-> > > >> CPER format for representing the hardware errors if reported by a
-> > > >> platform.
-> > > >>
-> > > >> According to the CPER format, each event record including the General
-> > > >> Media is logged as a CXL Component Event as defined in UEFI 2.10
-> > > >> Section N.2.14 and is identified by a UUID as defined by Event Record
-> > > >> Identifier field in Common Event Record Format of CXL rev 3.0 section
-> > > >> 8.2.9.2.1. CXL Component Event Log field in Component Events Section
-> > > >> corresponds to the component/event specified by the section type UUID.
-> > > >>
-> > > >> Add support for decoding CXL Component Events as defined in UEFI 2.10
-> > > >> Section N.2.14 and decoding Common Event Record as defined in CXL rev 3.0
-> > > >> section 8.2.9.2.1.
-> > > >>
-> > > >> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> > > >
-> > > > [snip]
-> > > >
-> > > >> +
-> > > >> +/*
-> > > >> + * Compute Express Link Common Event Record
-> > > >> + * CXL rev 3.0 section 8.2.9.2.1; Table 8-42
-> > > >> + */
-> > > >> +struct common_event_record {
-> > > >> +    u8 identifier[16];
-> > > >
-> > > > I interpreted the CPER structure as not having this identifier here.
-> > > >
-> > > >  From Section N.2.14:
-> > > >
-> > > > "For the CXL Component Event Log: Refer to the Common Event Record field
-> > > > (Offset 16) of the Events Record Format for each CXL component."
-> > > >
-> > > > This implies that the data coming from the CPER record starts at length.
-> > >
-> > > Thanks for pointing this out. According to Spec, you are right. Our
-> > > records did show up the identifier. Hence, I added that field. We should
-> > > probably fix it from our end.
-> > >
-> > > Meanwhile, I'm taking a look at your patches.
-> > >
-> >
-> > Thanks
-> >
-> > Once you've compared notes, can you please let me know how to proceed?
-> > I will not consider Ira's patches or yours for merging before that.
->
-> Ard, I have a higher-level question. If these CPER records get routed to
-> the CXL subsystem to be emitted by code that is shared with the
-> native-driver record-retrieval mechanism, is there still motivation to
-> parse and emit them to the kernel log in the EFI code?
->
-> The difference with these CXL memory error records vs other records like
-> CPER_SEC_PLATFORM_MEM is that the record contains device-local addresses
-> that need translation to be of use to other system-software and that
-> translation needs topology information that the CXL subsystem has
-> enumerated.
->
-> So, my proposal is that the final form of this enabling would emit the
-> record for CXL to consume, but otherwise not emit it via printk().
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ce55c22ec8b223a90ff3e084d842f73cfba35588
+commit: 7108b80a542b9d65e44b36d64a700a83658c0b73 hwmon/coretemp: Handle large core ID value
+date:   1 year ago
+config: x86_64-sof-customedconfig-memory-debug-defconfig (https://download.01.org/0day-ci/archive/20231020/202310200443.iD3tUbbK-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200443.iD3tUbbK-lkp@intel.com/reproduce)
 
-Yes, that makes sense. If CXL is needed to make sense of this
-information, no point in printing the raw data.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310200443.iD3tUbbK-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/hwmon/coretemp.c: In function 'create_core_data':
+>> drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be truncated writing likely 5 or more bytes into a region of size between 3 and 13 [-Werror=format-truncation=]
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                                  ^~
+   drivers/hwmon/coretemp.c:393:26: note: assuming directive output of 5 bytes
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                          ^~~~~~~~~~~
+   drivers/hwmon/coretemp.c:392:17: note: 'snprintf' output 7 or more bytes (assuming 22) into a destination of size 19
+     392 |                 snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
+
+
+vim +393 drivers/hwmon/coretemp.c
+
+a321cedb129041 Carsten Emde       2010-05-24  378  
+d23e2ae1aae52b Paul Gortmaker     2013-06-19  379  static int create_core_attrs(struct temp_data *tdata, struct device *dev,
+d23e2ae1aae52b Paul Gortmaker     2013-06-19  380  			     int attr_no)
+199e0de7f5df31 Durgadoss R        2011-05-20  381  {
+1075305de47d8e Guenter Roeck      2014-02-16  382  	int i;
+e3204ed3a4a78c Jan Beulich        2011-09-23  383  	static ssize_t (*const rd_ptr[TOTAL_ATTRS]) (struct device *dev,
+199e0de7f5df31 Durgadoss R        2011-05-20  384  			struct device_attribute *devattr, char *buf) = {
+c814a4c7c4aad7 Durgadoss R        2011-07-12  385  			show_label, show_crit_alarm, show_temp, show_tjmax,
+f4af6fd6e21792 Guenter Roeck      2011-09-19  386  			show_ttarget };
+1055b5f9042405 Rasmus Villemoes   2015-02-12  387  	static const char *const suffixes[TOTAL_ATTRS] = {
+1055b5f9042405 Rasmus Villemoes   2015-02-12  388  		"label", "crit_alarm", "input", "crit", "max"
+1055b5f9042405 Rasmus Villemoes   2015-02-12  389  	};
+199e0de7f5df31 Durgadoss R        2011-05-20  390  
+c814a4c7c4aad7 Durgadoss R        2011-07-12  391  	for (i = 0; i < tdata->attr_size; i++) {
+1055b5f9042405 Rasmus Villemoes   2015-02-12  392  		snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
+1055b5f9042405 Rasmus Villemoes   2015-02-12 @393  			 "temp%d_%s", attr_no, suffixes[i]);
+4258781ac720ff Sergey Senozhatsky 2011-05-24  394  		sysfs_attr_init(&tdata->sd_attrs[i].dev_attr.attr);
+199e0de7f5df31 Durgadoss R        2011-05-20  395  		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
+0cd709d0ddbfc2 Guenter Roeck      2018-12-10  396  		tdata->sd_attrs[i].dev_attr.attr.mode = 0444;
+199e0de7f5df31 Durgadoss R        2011-05-20  397  		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
+199e0de7f5df31 Durgadoss R        2011-05-20  398  		tdata->sd_attrs[i].index = attr_no;
+1075305de47d8e Guenter Roeck      2014-02-16  399  		tdata->attrs[i] = &tdata->sd_attrs[i].dev_attr.attr;
+bebe467823c0d8 Rudolf Marek       2007-05-08  400  	}
+1075305de47d8e Guenter Roeck      2014-02-16  401  	tdata->attr_group.attrs = tdata->attrs;
+1075305de47d8e Guenter Roeck      2014-02-16  402  	return sysfs_create_group(&dev->kobj, &tdata->attr_group);
+199e0de7f5df31 Durgadoss R        2011-05-20  403  }
+199e0de7f5df31 Durgadoss R        2011-05-20  404  
+
+:::::: The code at line 393 was first introduced by commit
+:::::: 1055b5f90424056432430fa06f94f1d12db07fba hwmon: (coretemp) Allow format checking
+
+:::::: TO: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+:::::: CC: Guenter Roeck <linux@roeck-us.net>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
