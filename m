@@ -2,296 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500457D0382
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02A07D0388
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346572AbjJSVIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
+        id S1346576AbjJSVMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbjJSVIj (ORCPT
+        with ESMTP id S231495AbjJSVMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:08:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E94C2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:08:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7034BC433C8;
-        Thu, 19 Oct 2023 21:08:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697749716;
-        bh=H0JSXdQwr27GBoH0/fMX6fSYgLkqdrKVJuYB9tG8i1E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cX+nY9t/ak6xNjlOvV4hpYu77dyqggBi89tcXakzQrYV72t18gsnOwENnXitGzCkw
-         qpCpVU/7P6x5FbQMa+C9FU+xcsps4cwI0R+EtLsdfTnOoatS9j9tClJUl7WOeQEns5
-         f5DeHRyLdl8oyH+hGtrJlsDLOC3z+tvpoevyjswTuQQgeEd/sUiINrSKYIahsobPqe
-         V7qX8dw6jnwjgwkwtEM2gl+B6wYkrcpCfhRKUdDNbUtex8jOB1NFkz7t6tCgDCbnrD
-         nFVjeNdN0iYFRcTQ7vwtukdTDtRhd9ebZw969VY2lVlA0/rmuJ/rOm4YmcsIwjzO7S
-         OLFyN1urnAVUQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C43D740016; Thu, 19 Oct 2023 18:08:33 -0300 (-03)
-Date:   Thu, 19 Oct 2023 18:08:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Manu Bretelle <chantr4@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: Re: [PATCH v1 1/4] perf parse-events: Remove BPF event support
-Message-ID: <ZTGa0Ukt7QyxWcVy@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-2-irogers@google.com>
- <ZNZJCWi9MT/HZdQ/@kernel.org>
- <ZNZWsAXg2px1sm2h@kernel.org>
- <ZTGHRAlQtF7Fq8vn@surya>
+        Thu, 19 Oct 2023 17:12:34 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2124.outbound.protection.outlook.com [40.107.6.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CC9D7;
+        Thu, 19 Oct 2023 14:12:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XThOO+jHkcrohbNXqyR6gSQteX90DrtRemU1Mz/WkzrW4SNq1GqZc76uyzDfDdtC6kNfYx0jG1PtzEmjpe/r6YqLsRAK+HCP0Vq99w9uCSMU8x70mpjmqo2U78t6WjEe29kklDy9Dkmqo8YB7pR5nnfljnwNM0VgLz1xgty9YP8k8P/C4sbFoevrKDWOczmqUaZtWSFG7oQjJiVUYBYoqxVkPh+9RN76yrnAQTF+vIJr9WLCpc6diMKLY4/eP6RpeQ6M0tWN06bR8ja98E7qnlMIXhX4F1jsuYtfnIs3/ScOy7Laj5EYdBSGE/BqTydRyUBCqGAdSyHTbzF1mZ7CNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Woua/Rj9GplGQXQXwb4NyW4Z1ef05S0OcqrYFIdFHW0=;
+ b=ZT5h5/tEcUUyEU8IM1mbAKcReOtyrVxujbWSaG+uP6JGQEKfIAN3IhfyC0tux8Pg2e4DGin+XAipd1At2fiyx//Q7OHhppbx4Df7VZA6Nmo2HlPs58AnPEgV7WYUIzyyhYhJfPwzF3HSFqCidRaCBj4nB5CyXHZYdlbLcTyILkjmZ4PLSe/pa3oD7RuMYA+QbpWXFlvdmDp8sN7nLt4G5SCn9FddZqW8N3LaIRehQz8zBfcKLCqXnMuZ1DBYIYLj91zBRmTGRWuC8o1aH2RbmriElnMiY6Uwrym8G32Vrtw9JgHCHJwVnDc0rxqqJ3kdV4jDgTXMD0qsS5p9eLzVow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=uipath.com; dmarc=pass action=none header.from=uipath.com;
+ dkim=pass header.d=uipath.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uipath.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Woua/Rj9GplGQXQXwb4NyW4Z1ef05S0OcqrYFIdFHW0=;
+ b=k3lEW01B1ekUyGxK8U74f0XcTx6wXnfUdptDqKsdLc8UdUyzJnLu/9Kp5LOVLNQFO4cWTRCly9bVqBwUQbyrettt4gddHYp/2fQZ8Qa8pgoedQ4AstbxUw58Vww+3HJU8ndnQhuAaBAgbbtN756Xwv3I1Ao7vHOQOV3QphZnrzBzmoXLhMP7neVGXTP8gw6pMjb50mLEcZ84JDs9gUUbBaA85UH7AwjR8mYxqrBCVBjeaia2dPMUD5gUhaFegGGOo1781nz/P/McpqO95TTiltoG2toLp828TdK5shMuUzwgnHu9nUIdqUlTeccUNTbG9ZsHoXbfNjljF2hyUwpSbw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=uipath.com;
+Received: from VI1PR02MB4527.eurprd02.prod.outlook.com (2603:10a6:803:b1::28)
+ by DU0PR02MB9467.eurprd02.prod.outlook.com (2603:10a6:10:41b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Thu, 19 Oct
+ 2023 21:12:28 +0000
+Received: from VI1PR02MB4527.eurprd02.prod.outlook.com
+ ([fe80::717d:6e0d:ec4b:7668]) by VI1PR02MB4527.eurprd02.prod.outlook.com
+ ([fe80::717d:6e0d:ec4b:7668%6]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 21:12:27 +0000
+Message-ID: <f0112021-c664-41ad-981c-08311286bb43@uipath.com>
+Date:   Fri, 20 Oct 2023 00:12:04 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] vsock: initialize the_virtio_vsock before using VQs
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mihai Petrisor <mihai.petrisor@uipath.com>,
+        Viorel Canja <viorel.canja@uipath.com>
+References: <20231018183247.1827-1-alexandru.matei@uipath.com>
+ <a5lw3t5uaqoeeu5j3ertyoprgsyxxrsfqawyuqxjkkbsuxjywh@vh7povjz2s2c>
+Content-Language: en-US
+From:   Alexandru Matei <alexandru.matei@uipath.com>
+In-Reply-To: <a5lw3t5uaqoeeu5j3ertyoprgsyxxrsfqawyuqxjkkbsuxjywh@vh7povjz2s2c>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1P195CA0057.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:802:5a::46) To VI1PR02MB4527.eurprd02.prod.outlook.com
+ (2603:10a6:803:b1::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTGHRAlQtF7Fq8vn@surya>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR02MB4527:EE_|DU0PR02MB9467:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20173cd2-cf96-453a-6c4a-08dbd0e818d9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B4ZTHdHzqm9WL89yMPZuaV6y6KeOoigx5Z+qXKfILWbgnQyMDT6lPvB5GmKOfw/WUi1q9RmsfJstT/MyD5cMiDzDSVZXBUv1OdC9+D6w0fyxr1cLIgRPNBXjkAMYGcPHOlNabIyL/CiVvid7nXdMu1qn2XFLTNNW5tH+ioEff63XZIA5TumSxzUPAOu3LvKNuq4B9vRURWfz8tkBFQlOOOAFF1KNaxoHfF0WbNvunU3en2k+xsZUqZfX32TShvPSUNeDu+Y4dw9ESARbNIcFKHxdAxNnBOlPWMXHMISlZ+a9QyDX3Gb6JMuAZRIV4R4VrpEYXac6UPukVAF2bcH19R6f9unO+4JDWX8Wa3U7PgbukGUZmYftj9/4ujCDajgIw3Ak/05B9EK/WIDjZw/Fnm9SP8N1EO/KrVwpv0F/2vejqaeVwdWfjEBusoGm/EnVJJKm5Uwp6WTZq23h7pvvCsx3+ALgR1X0A8YJlizKWEHQPyD92FUO93EEaqZcjQf9t3uXEFtyZFgU8jqONw8N78Xo++S6Pab2YEC5l4+cZi2ji2K2HsBh5ZHhJnyAwtAFGajbWwB0H5gxbUDes8l4Ya28z+Q4PAR5vUD4iOHC6jYcxhO+HMd4pvckMt0J25odT53VAnxOM8QfmmqL8Us/1Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR02MB4527.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(396003)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(6916009)(31686004)(54906003)(2906002)(7416002)(5660300002)(26005)(8936002)(41300700001)(44832011)(4326008)(8676002)(107886003)(36756003)(31696002)(6512007)(6506007)(66476007)(66556008)(86362001)(38100700002)(2616005)(478600001)(6666004)(316002)(83380400001)(6486002)(66946007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S1ZEb1cyOHJwSmw3WDdiYWNMNG5VS2dBL0dGQTgwelRuUjFpdXFFbk5wOGZv?=
+ =?utf-8?B?c1h4QjdSZ2gxK3p2VjNkV1dQMDZzcFZMUFpaS2ovTVc3SXFIclNudzVCRnFP?=
+ =?utf-8?B?b3BrS2dhb3BIVXVoaXBBYXk2SG1LRzEvNXJHUlptT3FaMDVRenVFc2tBZldP?=
+ =?utf-8?B?emt5cHFYakVyRmhzd3ZwbTZtMkJrc09qMmpaMi9MZVJvT1NrVlBEMm01REdY?=
+ =?utf-8?B?OVVyUTEvcGNpdGloaVdwcUVEUXpGNDhwTWdIRHAwanF1TkovWk1RQWpEdlBH?=
+ =?utf-8?B?RkVJMmZHNGtFNnlDUTRRWFZJTE9qM2JRZDlqcElrdzVYVXhUY1VOcHB4QXhk?=
+ =?utf-8?B?YUJSTGh3WFNReFFhNzYvS2N1bGg2dk5GMmk3aEYzOFZjOEZCT3M5Z3dmN2Jq?=
+ =?utf-8?B?cjJQUkxuSXJGWitUMC9lZkFBaGoyQVNodllsQ0EzaGh1SkJXYWxmZ1J3d0NO?=
+ =?utf-8?B?WVV4c3RmUUxRZmVSUkJyRHQ3cU5kM2I1M3lZTk5vM2QxS0szVkkwbWgzSFgx?=
+ =?utf-8?B?Ym5IM0NhcDdicHc5dXRPT1FpbXpNWnRRMkRhQ3dGRWlsaGFLUVJBdTREckZh?=
+ =?utf-8?B?R3plYTQ4ZHVId2p4U0JadE1sSUpKdEQxQndQZ3VoSTZtMHgxSmlua0JJT29P?=
+ =?utf-8?B?T1I0ZEx6ZVdvVWVVLzRLYTRwY1BpUHR4YTNLZFNSaUhSeEJ4VmhTZVA0dkhG?=
+ =?utf-8?B?aEdZSmRGRUhDY3l1UFVINlBGMGV2UnFuelA4Zk5FZ29GZUdDU2FIMXpqYXdk?=
+ =?utf-8?B?L1BQR05PdnNLNk9qbDBHVzFuZC8wUXRXZ3l3dlpnOU0yTzdRVVBoVXhNQThM?=
+ =?utf-8?B?MlhPUjcyeHRydHJKODhINFFEV0c0VnNLMm9rWkt3Rk54djZlNVBlT24ydmtG?=
+ =?utf-8?B?dGxiY01oZFlpeHZUS1RJZGRIR25OYnRjcUtVRll6Z1RFTVg0TU5sc1VMSStE?=
+ =?utf-8?B?d2tVdTNRb01ZcTRSNEkwblYrNzF0RkQ3elNJOUIrcnNOT3p6VnJuV0ZLZ1dr?=
+ =?utf-8?B?V2hoMFBCRUdRNWJuOUxIbWhRSFFmRkVjQW40NHVONVNYMWFRTnJTdWVJemVF?=
+ =?utf-8?B?N1R1U2k3TG5veWV6NDk1b0lkNVZPbWh1UGtGbllSN0J0SmVoWmNKS3haYXgv?=
+ =?utf-8?B?ZE5jQmRKOWRwcU5CZVgyUXFJNHdVK0ptc1BDMzBjSEJHQnh1di9NNHRXLzg5?=
+ =?utf-8?B?bXdnK3RKZUl2THQyMVY2cE9RTTNheGF5VVVyaGYxdnJtVDhuQ2FobEdFSWt6?=
+ =?utf-8?B?Qk9scThwdHpFTEM5bzNFdURjME51NC9Wb1RlNVk3eVNJVjVweTRNVlYySlRJ?=
+ =?utf-8?B?dVhHMmhhK0dBcEtYSmlaNG5vY3pRdnlUdTZFRmxiUU1jdnZkb0RSRWxJeXha?=
+ =?utf-8?B?aCtuRThzMXhSNk55QWVHU1c0MzlvTURONFBpUmF1MFdudFpSUERsU3ZpN1kx?=
+ =?utf-8?B?bHBNUExKeVhMSWZVVVdtYWY3dlB0d1pKZ2VVNnltSkkyK3RpdzJNbFFuS2dH?=
+ =?utf-8?B?SEg2UzVmc1lMMFIyMFpvcXBnK0MrNFBwTnR1bjRkMFNmTyt4MTlZWldMeFRv?=
+ =?utf-8?B?djlUTko5cHlodHhBYWRRWUxHbXVRcElUcjNHVnVSTTRvL0JNSDZNdUZsaVdl?=
+ =?utf-8?B?Sk5wM01NNVpRbE9KeVF1Um9lU00yQkh2MnplTGd6VXd6aDA1UHN6N2xRQlZt?=
+ =?utf-8?B?ZUNYcStBdTUrOVdaVkE2eG9leHpJK2VkM0V1RXhwdnpudEUxbStLNEJVanZk?=
+ =?utf-8?B?T1FUZjJPMk8vSGg1RVdoNytlV0IxbTZJWmxjZUZBcklxU0xEMS82VlhBVG5p?=
+ =?utf-8?B?NEE3NFUrbnVQVTVHd01lS21Yb0RmZEwrb1lLNUltcE5BN1hQQlU2c1JMeXRN?=
+ =?utf-8?B?NHhXVXl2M0VaMmVOcjdXL2t6ak5tWjVwaXhVMWZLZWNrbnpQK25tWXNHRnVT?=
+ =?utf-8?B?alFqeXkzdkREWnpzeTQrSzh2YnhnRW5OeHAvejA2T1A2ZnI0TXphTnBJdXc5?=
+ =?utf-8?B?V1RPQjEyZUl5aFNmMkY5bURIZzZBMUE3YTBEcklWY0lpRnFOSTAxSGVDMzFI?=
+ =?utf-8?B?b1ZOUWdVaGVBbFd4SXhxcUtyT0I1WisrRTJVcDJFMUx4R3huZzdpMk1FSC9Q?=
+ =?utf-8?B?dm1qQUtJVzhYZnNuVElnVVVMS0dDOTNVbmFaOVM5Sk1KeWI5cmE5a05sZ0lD?=
+ =?utf-8?B?blE9PQ==?=
+X-OriginatorOrg: uipath.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20173cd2-cf96-453a-6c4a-08dbd0e818d9
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR02MB4527.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 21:12:27.3323
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d8353d2a-b153-4d17-8827-902c51f72357
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FhQC0c8AIsqLOZZ0NduWA7OMFNQXssnesCWSladJL88NgFSupKhzc7slQ/D6TzEl0g4r6pB1QRYLg+omNQ83H1E/jYZVuNmNzuIoSykLVV8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB9467
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 19, 2023 at 12:45:08PM -0700, Manu Bretelle escreveu:
-> cc @quentin
+On 10/19/2023 11:54 AM, Stefano Garzarella wrote:
+> On Wed, Oct 18, 2023 at 09:32:47PM +0300, Alexandru Matei wrote:
+>> Once VQs are filled with empty buffers and we kick the host, it can send
+>> connection requests. If 'the_virtio_vsock' is not initialized before,
+>> replies are silently dropped and do not reach the host.
 > 
-> On Fri, Aug 11, 2023 at 12:41:36PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Fri, Aug 11, 2023 at 11:43:22AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Right now it is not applying due to some clash with other changes and
-> > > when I tried to apply it manually there were some formatting issues:
-> > > 
-> > > ⬢[acme@toolbox perf-tools-next]$ head ~/wb/1.patch
-> > > From SRS0=EALy=D3=flex--irogers.bounces.google.com=3IDHVZAcKBAUnwtljwxlttlqj.htrfhrjpjwsjq.twl@kernel.org Thu Aug 10 17:53:46 2023
-> > > Delivered-To: arnaldo.melo@gmail.com
-> > > Received: from imap.gmail.com [64.233.186.109]
-> > > 	by quaco with IMAP (fetchmail-6.4.37)
-> > > 	for <acme@localhost> (single-drop); Thu, 10 Aug 2023 17:53:46 -0300 (-03)
-> > > Received: by 2002:a0c:ab03:0:b0:63d:780e:9480 with SMTP id h3csp908198qvb;
-> > >  Thu, 10 Aug 2023 11:49:52 -0700 (PDT)
-> > > X-Google-Smtp-Source: AGHT+IH9N/knUCyQ0tQ2Q0XBH0gqf8A8DB8/37YHWAJDKBmz7AGSV9CvCKYDuE3EwxriZFBwtZMs
-> > > X-Received: by 2002:a4a:6b4f:0:b0:56c:b2ab:9820 with SMTP id
-> > >  h15-20020a4a6b4f000000b0056cb2ab9820mr2695332oof.8.1691693392493; Thu, 10 Aug
-> > > ⬢[acme@toolbox perf-tools-next]$ patch -p1 < ~/wb/1.patch
-> > > patching file tools/perf/Documentation/perf-config.txt
-> > > patch: **** malformed patch at line 234: ith
-> > > 
-> > > ⬢[acme@toolbox perf-tools-next]$
-> > > 
-> > > I'm trying to apply it manually.
-> > 
-> > I have this extracted from this patch as the first patch in the series:
-> > 
-> > >From adc61b5774a9de62f34d593f164ca02daa6fb44c Mon Sep 17 00:00:00 2001
-> > From: Ian Rogers <irogers@google.com>
-> > Date: Fri, 11 Aug 2023 12:19:48 -0300
-> > Subject: [PATCH 1/1] perf bpf: Remove support for embedding clang for
-> >  compiling BPF events (-e foo.c)
-> > 
-> > This never was in the default build for perf, is difficult to maintain
-> > as it uses clang/llvm internals so ditch it, keeping, for now, the
-> > external compilation of .c BPF into .o bytecode and its subsequent
-> > loading, that is also going to be removed, do it separately to help
-> > bisection and to properly document what is being removed and why.
-> > 
-> > Committer notes:
-> > 
-> > Extracted from a larger patch and removed some leftovers, namely
-> > deleting these now unused feature tests:
-> > 
-> >     tools/build/feature/test-clang.cpp
-> >     tools/build/feature/test-cxx.cpp
-> >     tools/build/feature/test-llvm-version.cpp
-> >     tools/build/feature/test-llvm.cpp
-> > 
+> Are replies really dropped or we just miss the notification?
 > 
-> This seem to have broken `llvm` feature detection for `bpftool`.
+> Could the reverse now happen, i.e., the guest wants to send a connection request, finds the pointer assigned but can't use virtqueues because they haven't been initialized yet?
 > 
-> The feature detections are still available in `tools/build/Makefile.feature` [0]
-> but the .cpp files are gone.
+> Perhaps to avoid your problem, we could just queue vsock->rx_work at the bottom of the probe to see if anything was queued in the meantime.
 > 
-> `bpftool` still rely on the `llvm` feature:
+> Nit: please use "vsock/virtio" to point out that this problem is of the virtio transport.
 > 
->     $ git --no-pager grep 'feature-llvm'
->     tools/bpf/bpftool/Makefile:ifeq ($(feature-llvm),1)
-> 
-> The result of testing llvm feature is:
-> 
->     $ cat tools/build/feature/test-llvm.make.output
->     cc1plus: fatal error: test-llvm.cpp: No such file or directory
->     compilation terminated.
-> 
-> With current head:
-> 
->     make -j $((4*$(nproc))) -C tools/bpf/bpftool && ./tools/bpf/bpftool/bpftool --version
->     ...
->     Auto-detecting system features:
->     ...                         clang-bpf-co-re: [ on  ]
->     ...                                    llvm: [ OFF ]
->     ...                                  libcap: [ on  ]
->     ...                                  libbfd: [ on  ]
->     ...
->     ...
->     ...
->     bpftool v7.3.0
->     using libbpf v1.3
->     features: libbfd, skeletons
-> 
-> After applying
-> 
->     git show 56b11a2126bf2f422831ecf6112b87a4485b221b  tools/build/feature | \
->         patch -p1 -R
+> Thanks,
+> Stefano
 
+The replies are dropped , the scenario goes like this:
 
-Ouch, so probably we need just to reintroduce that one
-tools/build/feature/test-llvm.cpp file.
+  Once rx_run is set to true and rx queue is filled with empty buffers, the host sends a connection request.
+  The request is processed in virtio_transport_recv_pkt(), and since there is no bound socket, it calls virtio_transport_reset_no_sock() which tries to send a reset packet. 
+  In virtio_transport_send_pkt() it checks 'the_virtio_vsock' and because it is null it exits with -ENODEV, basically dropping the packet.
 
-Building perf these days ends up using bpftool, and the end result as
-noticed with me testing perf, perf trace with bpf, etc didn't change, so
-I didn't notice :-\
+I looked on your scenario and there is an issue from the moment we set the_virtio_vsock (in this patch) up until vsock->tx_run is set to TRUE. 
+virtio_transport_send_pkt() will queue the packet, but virtio_transport_send_pkt_work() will exit because tx_run is FALSE. This could be fixed by moving rcu_assign_pointer() after tx_run is set to TRUE.
+virtio_transport_cancel_pkt() uses the rx virtqueue once the_virtio_vsock is set, so rcu_assign_pointer() should be moved after virtio_find_vqs() is called.
 
-And:
+I think the way to go is to split virtio_vsock_vqs_init() in two: virtio_vsock_vqs_init() and virtio_vsock_vqs_fill(), as Vadim suggested. This should fix all the cases:
 
-ifeq ($(feature-llvm),1)
-  # If LLVM is available, use it for JIT disassembly
-  CFLAGS  += -DHAVE_LLVM_SUPPORT
-  LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
-  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-  LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-  ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
-    LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-    LIBS += -lstdc++
-  endif
-  LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
-else
-  # Fall back on libbfd
-  ifeq ($(feature-libbfd),1)
-    LIBS += -lbfd -ldl -lopcodes
-  else ifeq ($(feature-libbfd-liberty),1)
-    LIBS += -lbfd -ldl -lopcodes -liberty
-  else ifeq ($(feature-libbfd-liberty-z),1)
-    LIBS += -lbfd -ldl -lopcodes -liberty -lz
-  endif
+---
+ net/vmw_vsock/virtio_transport.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-  # If one of the above feature combinations is set, we support libbfd
-  ifneq ($(filter -lbfd,$(LIBS)),)
-    CFLAGS += -DHAVE_LIBBFD_SUPPORT
-
-    # Libbfd interface changed over time, figure out what we need
-    ifeq ($(feature-disassembler-four-args), 1)
-      CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
-    endif
-    ifeq ($(feature-disassembler-init-styled), 1)
-      CFLAGS += -DDISASM_INIT_STYLED
-    endif
-  endif
-endif
-
-And there is a fallback to using binutils, so most people ended up not
-noticing.
-
-I wonder how to improve the current situation to detect these kinds of
-problems in the future, i.e. how to notice that some file needed by some
-Makefile, etc got removed or that some feature test fails because some
-change in the test .c files makes them fail and thus activates fallbacks
-like the one above :-\
-
-
-So if I just get this back:
-
-⬢[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llvm.cpp
-// SPDX-License-Identifier: GPL-2.0
-#include "llvm/Support/ManagedStatic.h"
-#include "llvm/Support/raw_ostream.h"
-#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
-
-#if NUM_VERSION < 0x030900
-# error "LLVM version too low"
-#endif
-int main()
-{
-	llvm::errs() << "Hello World!\n";
-	llvm::llvm_shutdown();
-	return 0;
-}
-⬢[acme@toolbox perf-tools-next]$
-
-And install the llvm-devel package then it back working:
-
-⬢[acme@toolbox perf-tools-next]$ make -C tools/bpf/bpftool
-make: Entering directory '/home/acme/git/perf-tools-next/tools/bpf/bpftool'
-
-Auto-detecting system features:
-...                         clang-bpf-co-re: [ on  ]
-...                                    llvm: [ on  ]
-...                                  libcap: [ on  ]
-...                                  libbfd: [ on  ]
-<SNIP>
-⬢[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llvm.make.output
-⬢[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-llvm.
-test-llvm.bin          test-llvm.cpp          test-llvm.d            test-llvm.make.output
-⬢[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-llvm.bin
--rwxr-xr-x. 1 acme acme 17712 Oct 19 18:04 tools/build/feature/test-llvm.bin
-⬢[acme@toolbox perf-tools-next]$ ldd tools/build/feature/test-llvm.bin
-	linux-vdso.so.1 (0x00007ffcaf5d9000)
-	libLLVM-16.so => /lib64/libLLVM-16.so (0x00007fc4faefa000)
-	libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007fc4faca6000)
-	libm.so.6 => /lib64/libm.so.6 (0x00007fc4fabc5000)
-	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fc4faba1000)
-	libc.so.6 => /lib64/libc.so.6 (0x00007fc4fa9c3000)
-	libffi.so.8 => /lib64/libffi.so.8 (0x00007fc4fa9b7000)
-	libedit.so.0 => /lib64/libedit.so.0 (0x00007fc4fa978000)
-	libz.so.1 => /lib64/libz.so.1 (0x00007fc4fa95e000)
-	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fc4fa92b000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007fc502404000)
-⬢[acme@toolbox perf-tools-next]$ sudo dnf install llvm-devel
-
-I'll get this merged in my perf-tools-fixes-for-v6.6 that I'll submit
-tomorrow to Linus, thanks for reporting!
-
-I'll add your:
-
-Reported-by: Manu Bretelle <chantr4@gmail.com>
-
-And:
-
-Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
-
-Ok?
-
-- Arnaldo
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index ad64f403536a..1f95f98ddd3f 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -594,6 +594,11 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
+ 	vsock->tx_run = true;
+ 	mutex_unlock(&vsock->tx_lock);
+ 
++	return 0;
++}
++
++static void virtio_vsock_vqs_fill(struct virtio_vsock *vsock)
++{
+ 	mutex_lock(&vsock->rx_lock);
+ 	virtio_vsock_rx_fill(vsock);
+ 	vsock->rx_run = true;
+@@ -603,8 +608,6 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
+ 	virtio_vsock_event_fill(vsock);
+ 	vsock->event_run = true;
+ 	mutex_unlock(&vsock->event_lock);
+-
+-	return 0;
+ }
+ 
+ static void virtio_vsock_vqs_del(struct virtio_vsock *vsock)
+@@ -707,6 +710,7 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+ 		goto out;
+ 
+ 	rcu_assign_pointer(the_virtio_vsock, vsock);
++	virtio_vsock_vqs_fill(vsock);
+ 
+ 	mutex_unlock(&the_virtio_vsock_mutex);
+ 
+@@ -779,6 +783,7 @@ static int virtio_vsock_restore(struct virtio_device *vdev)
+ 		goto out;
+ 
+ 	rcu_assign_pointer(the_virtio_vsock, vsock);
++	virtio_vsock_vqs_fill(vsock);
+ 
+ out:
+ 	mutex_unlock(&the_virtio_vsock_mutex);
+-- 
