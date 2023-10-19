@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223337CECA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CF97CECA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbjJSAPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        id S231709AbjJSAMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 20:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSAPQ (ORCPT
+        with ESMTP id S231199AbjJSAMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:15:16 -0400
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D76E114
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1697674509;
-        bh=hnxxIpZ8NjvfQ45DRLgFlfpkz9K7rWLl47wksLh86AY=;
-        h=From:To:Subject:Date;
-        b=fu9rVy88v3T1/hGl2JJFv3UE/gyolWc90RuwNpcE4yWVpIEIQHfMCz7tpFlByJ/il
-         s2jM+IFwXU2ze0X+y7/hCb+1ZYsxZXk9ysedMY2qyvD+hucua1mRyGkPS9ZDWa/h3N
-         PrPXsSFZVa7iGOCGl9ZeiaDWi7V7hDZeMQ7RuD7U=
-Received: from RT-NUC.. ([39.156.73.12])
-        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
-        id 2DAA0C4A; Thu, 19 Oct 2023 08:11:26 +0800
-X-QQ-mid: xmsmtpt1697674286tihb8ygf5
-Message-ID: <tencent_4CD220721A6C0B39670D5D52AAE4BD2A8F0A@qq.com>
-X-QQ-XMAILINFO: NiAdzfE16ND44TJ/oeIGmlBa/ESiFxlAPa2rvifXfxu47kULg2W/yRCHdaIjBp
-         fU821CkTQSeMqlajNZOASck+jit4Bv8D+lnvI9JhdQKiOLgzdMpScUeGQtcYLb7X7pieUHR55Eih
-         Sh9G0UNONQGUEYfm6sKkhoByvCxqM3/j3PcIng6UDw3aOPtsKlPh9JWfiRk0TVFJj6JLz1pk7Wdw
-         QrljA31fjPbaUdyXNcQiuiMLoyjsM9YDw4p/NcH0GeZOBQeFByQ+1hZl8ToKbIBv7S9YEvQxPLsV
-         cZhx/0AEIJGBsEPYRoZGiNVhVeaA2QJALbBNj475wyhzcOi4cIgGiF154n5nuGpdcZVGiuW85kQs
-         gefeZGS0pAEtiThIm6CC78mqzEW5Y+v9VtTFxNpy8yp8FPBqYsNkW71oVwsW4yaICqpDOdFZkNcb
-         EVZtYmfBy0xYxsnw5RXtA0qtg1Pae5Bdu2KtFtTQah3HebHk8CB1BPDvzJ1b2iu6poE8A2Ev+qvh
-         9cyQ9tab/dPdOhbVapLUVzXpV2ANz+5yhfKgPzobMwtcIMrpZegaI3LmX0fl6i4NlOGD5kfu8TV1
-         Figg3VHGrPphupYuFgPALhOhS9vAAq9a9ZVWVRN1ARvBq5s27jykHDCABYzmq8FHKU/cVkukRL5E
-         +1U+fizpadtJ5pkyEmFt9lkL1EWNq0FPGsN9eex2Q5Cg4jPpFKoL4vHqpc1cpdkOK8zLrHQvIFR1
-         1C4JYrXLOj2ytZWEZJeKADu9hX7lcjVteFLZfOtLW5Mu478DoKYdvLROfC7nsqHU/CBwvS5TTz5q
-         1z3zGqCBAeLvmwnz1yDcZpfFvzFSeoe6naaBCk54OZaYDEhjUT9WZH5xkgIE5HcaNnGeTEtTS/c4
-         JiGH3WpWLHXQYvfa6J9H/4BYWXihg5UDwgGA/NEeDJoJM4FJ7ygmPqWfmtiXiyEjybPD28lzZvTi
-         5yR8u7/7dFZKbS5BLYAU9L/sNhIBvj
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     elver@google.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, peterz@infradead.org, rongtao@cestc.cn,
-        tglx@linutronix.de
-Subject: [PATCH v2] stop_machine: Avoid potential non-atomic read of multi_stop_data::state
-Date:   Thu, 19 Oct 2023 08:11:23 +0800
-X-OQ-MSGID: <20231019001123.289324-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 18 Oct 2023 20:12:44 -0400
+Received: from out-203.mta1.migadu.com (out-203.mta1.migadu.com [IPv6:2001:41d0:203:375::cb])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EF6124
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:12:41 -0700 (PDT)
+Message-ID: <f2d0aaad-70ca-4417-bf8e-0d7006be6ebc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697674360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eiFGcXBir5895gbTnSvVkUAxBA2ZOAi3wV+AILiCiwU=;
+        b=gYDHfis9ygwRm6l48oBXXssrXFtLKWBA7IorJAjoGE8Y7cjSK3C6oXw0KLLLCpy6zE4dCc
+        ZDd5n0hHsdxcVwqeXXZddcG8WfkDBsqheECQ//wETBy+XTwaaYas4ig9BUhzqjjEnFnkgT
+        OsgHmHHIzL+WgaterzAipWgib/DnH2Y=
+Date:   Thu, 19 Oct 2023 01:12:34 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] vsock: initialize the_virtio_vsock before using VQs
+Content-Language: en-US
+To:     Alexandru Matei <alexandru.matei@uipath.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mihai Petrisor <mihai.petrisor@uipath.com>,
+        Viorel Canja <viorel.canja@uipath.com>
+References: <20231018183247.1827-1-alexandru.matei@uipath.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20231018183247.1827-1-alexandru.matei@uipath.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On 18/10/2023 19:32, Alexandru Matei wrote:
+> Once VQs are filled with empty buffers and we kick the host, it can send
+> connection requests. If 'the_virtio_vsock' is not initialized before,
+> replies are silently dropped and do not reach the host.
+> 
+> Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
+> Signed-off-by: Alexandru Matei <alexandru.matei@uipath.com>
+> ---
+>   net/vmw_vsock/virtio_transport.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> index e95df847176b..eae0867133f8 100644
+> --- a/net/vmw_vsock/virtio_transport.c
+> +++ b/net/vmw_vsock/virtio_transport.c
+> @@ -658,12 +658,13 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+>   		vsock->seqpacket_allow = true;
+>   
+>   	vdev->priv = vsock;
+> +	rcu_assign_pointer(the_virtio_vsock, vsock);
+>   
+>   	ret = virtio_vsock_vqs_init(vsock);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		rcu_assign_pointer(the_virtio_vsock, NULL);
+>   		goto out;
+> -
+> -	rcu_assign_pointer(the_virtio_vsock, vsock);
+> +	}
+>   
+>   	mutex_unlock(&the_virtio_vsock_mutex);
+>   
 
-In commit b1fc58333575 ("stop_machine: Avoid potential race behaviour")
-fix both multi_cpu_stop() and set_state() access multi_stop_data::state,
-Pass curstate as a parameter to ack_state(), to avoid the non-atomic read.
-
-And replace smp_wmb()+WRITE_ONCE() with smp_store_release().
-
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
-v1: stop_machine: Avoid potential race behaviour of multi_stop_data::state
-    https://lore.kernel.org/lkml/tencent_705C16DF25978ACAEBD1E83E228881901006@qq.com/
----
- kernel/stop_machine.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-index cedb17ba158a..35a122ce2cbd 100644
---- a/kernel/stop_machine.c
-+++ b/kernel/stop_machine.c
-@@ -183,15 +183,15 @@ static void set_state(struct multi_stop_data *msdata,
- {
- 	/* Reset ack counter. */
- 	atomic_set(&msdata->thread_ack, msdata->num_threads);
--	smp_wmb();
--	WRITE_ONCE(msdata->state, newstate);
-+	smp_store_release(&msdata->state, newstate);
- }
- 
- /* Last one to ack a state moves to the next state. */
--static void ack_state(struct multi_stop_data *msdata)
-+static void ack_state(struct multi_stop_data *msdata,
-+		      enum multi_stop_state curstate)
- {
- 	if (atomic_dec_and_test(&msdata->thread_ack))
--		set_state(msdata, msdata->state + 1);
-+		set_state(msdata, curstate + 1);
- }
- 
- notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
-@@ -242,7 +242,7 @@ static int multi_cpu_stop(void *data)
- 			default:
- 				break;
- 			}
--			ack_state(msdata);
-+			ack_state(msdata, curstate);
- 		} else if (curstate > MULTI_STOP_PREPARE) {
- 			/*
- 			 * At this stage all other CPUs we depend on must spin
--- 
-2.42.0
+Looks like virtio_vsock_restore() needs the same changes. But
+virtio_vsock_vqs_init() can fail only in virtio_find_vqs(). Maybe it can 
+be split into 2 functions to avoid second rcu_assign_pointer() in case
+of error?
 
