@@ -2,145 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C4B7CEE71
+	by mail.lfdr.de (Postfix) with ESMTP id 6C52D7CEE72
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbjJSDg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 23:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        id S232350AbjJSDg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 23:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjJSDg0 (ORCPT
+        with ESMTP id S229632AbjJSDgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 23:36:26 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9501D119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:36:22 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9tbg6VQqz15NYC;
-        Thu, 19 Oct 2023 11:33:35 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 19 Oct 2023 11:36:19 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
-        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
-        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <rostedt@goodmis.org>, <bsegall@google.com>, <bristot@redhat.com>,
-        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <ego@linux.vnet.ibm.com>,
-        <srikar@linux.vnet.ibm.com>, <linuxarm@huawei.com>,
-        <21cnbao@gmail.com>, <kprateek.nayak@amd.com>,
-        <wuyun.abel@bytedance.com>
-Subject: [PATCH v11 3/3] sched/fair: Use candidate prev/recent_used CPU if scanning failed for cluster wakeup
-Date:   Thu, 19 Oct 2023 11:33:23 +0800
-Message-ID: <20231019033323.54147-4-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20231019033323.54147-1-yangyicong@huawei.com>
-References: <20231019033323.54147-1-yangyicong@huawei.com>
+        Wed, 18 Oct 2023 23:36:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4B541109
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:36:21 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D252F4;
+        Wed, 18 Oct 2023 20:37:01 -0700 (PDT)
+Received: from [10.163.36.185] (unknown [10.163.36.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B38CF3F64C;
+        Wed, 18 Oct 2023 20:36:18 -0700 (PDT)
+Message-ID: <d8db313d-1161-4a6e-9edc-7dc1e22d2018@arm.com>
+Date:   Thu, 19 Oct 2023 09:06:15 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: Independently update HDFGRTR_EL2 and HDFGWTR_EL2
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        linux-kernel@vger.kernel.org
+References: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+ <86r0lsm7cq.wl-maz@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <86r0lsm7cq.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
 
-Chen Yu reports a hackbench regression of cluster wakeup when
-hackbench threads equal to the CPU number [1]. Analysis shows
-it's because we wake up more on the target CPU even if the
-prev_cpu is a good wakeup candidate and leads to the decrease
-of the CPU utilization.
 
-Generally if the task's prev_cpu is idle we'll wake up the task
-on it without scanning. On cluster machines we'll try to wake up
-the task in the same cluster of the target for better cache
-affinity, so if the prev_cpu is idle but not sharing the same
-cluster with the target we'll still try to find an idle CPU within
-the cluster. This will improve the performance at low loads on
-cluster machines. But in the issue above, if the prev_cpu is idle
-but not in the cluster with the target CPU, we'll try to scan an
-idle one in the cluster. But since the system is busy, we're
-likely to fail the scanning and use target instead, even if
-the prev_cpu is idle. Then leads to the regression.
+On 10/18/23 18:10, Marc Zyngier wrote:
+> On Wed, 18 Oct 2023 04:00:07 +0100,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>
+>> Currently PMSNEVFR_EL1 system register read, and write access EL2 traps are
+>> disabled, via setting the same bit (i.e 62) in HDFGRTR_EL2, and HDFGWTR_EL2
+>> respectively. Although very similar, bit fields are not exact same in these
+>> two EL2 trap configure registers particularly when it comes to read-only or
+>> write-only accesses such as ready-only 'HDFGRTR_EL2.nBRBIDR' which needs to
+>> be set while enabling BRBE on NVHE platforms. Using the exact same bit mask
+>> fields for both these trap register risk writing into their RESERVED areas,
+>> which is undesirable.
+> 
+> Sorry, I don't understand at all what you are describing. You seem to
+> imply that the read and write effects of the FGT doesn't apply the
+> same way. But my reading of the ARM ARM is that  behave completely
+> symmetrically.
+> 
+> Also, what is nBRBIDR doing here? It is still set to 0. What
+> 'RESERVED' state are you talking about?
 
-This patch solves this in 2 steps:
-o record the prev_cpu/recent_used_cpu if they're good wakeup
-  candidates but not sharing the cluster with the target.
-o on scanning failure use the prev_cpu/recent_used_cpu if
-  they're recorded as idle
+Let's observe the following example which includes the nBRBIDR problem,
+mentioned earlier.
 
-[1] https://lore.kernel.org/all/ZGzDLuVaHR1PAYDt@chenyu5-mobl1/
+Read access trap configure
 
-Reported-by: Chen Yu <yu.c.chen@intel.com>
-Closes: https://lore.kernel.org/all/ZGsLy83wPIpamy6x@chenyu5-mobl1/
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- kernel/sched/fair.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+HDFGRTR_EL2[59]	   - nBRBIDR
+HDFGRTR_EL2[58]	   - PMCEIDn_EL0
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 02d842df5294..d508d1999ecc 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7346,7 +7346,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	bool has_idle_core = false;
- 	struct sched_domain *sd;
- 	unsigned long task_util, util_min, util_max;
--	int i, recent_used_cpu;
-+	int i, recent_used_cpu, prev_aff = -1;
+Write access trap configure
+
+HDFGWTR_EL2[59:58] - RES0
+
+Because BRBIDR_EL1 and PMCEID<N>_EL0 are read only registers they don't
+have corresponding entries in HDFGWTR_EL2 for write trap configuration.
+
+Using the exact same value contained in 'x0' both for HDFGRTR_EL2, and
+HDFGWTR_EL2 will be problematic in case it contains bit fields that are
+available only in one of the registers but not in the other.
+
+If 'x0' contains nBRBIDR being set, it will be okay for HDFGRTR_EL2 but
+might not be okay for HDFGWTR_EL2 where it will get into RESERVED areas.
+
+> 
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Oliver Upton <oliver.upton@linux.dev>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> This applies on v6.6-rc6.
+>>
+>> I guess it should be okay to use 'x2' as it is in the clobbered register
+>> list for init_el2_state() function. But please do let me know otherwise.
+>>
+>>  arch/arm64/include/asm/el2_setup.h | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+>> index 899b5c10f84c..c534afb1a30d 100644
+>> --- a/arch/arm64/include/asm/el2_setup.h
+>> +++ b/arch/arm64/include/asm/el2_setup.h
+>> @@ -206,16 +206,19 @@
+>>  	cbz	x1, .Lskip_fgt_\@
+>>  
+>>  	mov	x0, xzr
+>> +	mov	x2, xzr
+>>  	mrs	x1, id_aa64dfr0_el1
+>>  	ubfx	x1, x1, #ID_AA64DFR0_EL1_PMSVer_SHIFT, #4
+>>  	cmp	x1, #3
+>>  	b.lt	.Lset_debug_fgt_\@
+>> +
+>>  	/* Disable PMSNEVFR_EL1 read and write traps */
+>> -	orr	x0, x0, #(1 << 62)
+>> +	orr	x0, x0, #HDFGRTR_EL2_nPMSNEVFR_EL1_MASK
+>> +	orr	x2, x2, #HDFGWTR_EL2_nPMSNEVFR_EL1_MASK
+>>  
+>>  .Lset_debug_fgt_\@:
+>>  	msr_s	SYS_HDFGRTR_EL2, x0
+>> -	msr_s	SYS_HDFGWTR_EL2, x0
+>> +	msr_s	SYS_HDFGWTR_EL2, x2
+> 
+> So what has changed here, aside from clobbering an extra register? The
+> masks are the same, the initial values are the same... Is it in
+> preparation for some other work?
+
+Right, this is in preparation for the BRBE register and instructions trap
+configuration. Planning to add the following change for BRBE enablement.
+
+diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+index c534afb1a30d..128177465a9c 100644
+--- a/arch/arm64/include/asm/el2_setup.h
++++ b/arch/arm64/include/asm/el2_setup.h
+@@ -217,6 +217,32 @@
+        orr     x2, x2, #HDFGWTR_EL2_nPMSNEVFR_EL1_MASK
  
- 	/*
- 	 * On asymmetric system, update task utilization because we will check
-@@ -7379,6 +7379,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 
- 		if (cpus_share_resources(prev, target))
- 			return prev;
+ .Lset_debug_fgt_\@:
++#ifdef CONFIG_ARM64_BRBE
++       mrs     x1, id_aa64dfr0_el1
++       ubfx    x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
++       cbz     x1, .Lskip_brbe_reg_fgt_\@
 +
-+		prev_aff = prev;
- 	}
- 
- 	/*
-@@ -7411,6 +7413,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 
- 		if (cpus_share_resources(recent_used_cpu, target))
- 			return recent_used_cpu;
-+	} else {
-+		recent_used_cpu = -1;
- 	}
- 
- 	/*
-@@ -7451,6 +7455,17 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * For cluster machines which have lower sharing cache like L2 or
-+	 * LLC Tag, we tend to find an idle CPU in the target's cluster
-+	 * first. But prev_cpu or recent_used_cpu may also be a good candidate,
-+	 * use them if possible when no idle CPU found in select_idle_cpu().
-+	 */
-+	if ((unsigned int)prev_aff < nr_cpumask_bits)
-+		return prev_aff;
-+	if ((unsigned int)recent_used_cpu < nr_cpumask_bits)
-+		return recent_used_cpu;
++       /*
++        * Disable BRBINF_EL1, BRBINFINJ_EL1, BRBSRC_EL1, BRBSRCINJ_EL1,
++        * BRBTGT_EL1, BRBTGTINJ_EL1, and BRBTS_EL1 read traps.
++        */
++       orr     x0, x0, #HDFGRTR_EL2_nBRBDATA_MASK
 +
- 	return target;
- }
++       /*
++        * Disable BRBINFINJ_EL1, BRBSRCINJ_EL1, BRBTGTINJ_EL1, and
++        * BRBTS_EL1 write traps.
++        */
++       orr     x2, x2, #HDFGWTR_EL2_nBRBDATA_MASK
++
++       /* Disable BRBCR_EL1, BRBFCR_EL1 read and write traps */
++       orr     x0, x0, #HDFGRTR_EL2_nBRBCTL_MASK
++       orr     x2, x2, #HDFGWTR_EL2_nBRBCTL_MASK
++
++       /* Disable BRBIDR_EL1 read traps */
++       orr     x0, x0, #HDFGRTR_EL2_nBRBIDR_MASK
++
++.Lskip_brbe_reg_fgt_\@:
++#endif
+        msr_s   SYS_HDFGRTR_EL2, x0
+        msr_s   SYS_HDFGWTR_EL2, x2
  
--- 
-2.24.0
+@@ -241,7 +267,22 @@
+ .Lset_fgt_\@:
+        msr_s   SYS_HFGRTR_EL2, x0
+        msr_s   SYS_HFGWTR_EL2, x0
+-       msr_s   SYS_HFGITR_EL2, xzr
++
++       mov     x0, xzr
++#ifdef CONFIG_ARM64_BRBE
++       mrs     x1, id_aa64dfr0_el1
++       ubfx    x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
++       cbz     x1, .Lskip_brbe_insn_fgt_\@
++
++       /* Disable trapping for BRBIALL instruction */
++       orr     x0, x0, #HFGITR_EL2_nBRBIALL_MASK
++
++       /* Disable trapping for BRBINJ instruction */
++       orr     x0, x0, #HFGITR_EL2_nBRBINJ_MASK
++
++.Lskip_brbe_insn_fgt_\@:
++#endif
++       msr_s   SYS_HFGITR_EL2, x0
+ 
+        mrs     x1, id_aa64pfr0_el1             // AMU traps UNDEF without AMU
+        ubfx    x1, x1, #ID_AA64PFR0_EL1_AMU_SHIFT, #4
 
+After the above change, HDFGRTR_EL2_nBRBIDR_MASK only gets set
+inside HFGRTR_EL2 but not inside HFGWTR_EL2.
+
+> 
+> /me puzzled.
+
+I should have given more details in the commit message but hope
+you have some context now, but please do let me know if there
+is something still missing.
