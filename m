@@ -2,216 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5727D0419
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B66D7D041C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346608AbjJSVks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
+        id S1346610AbjJSVlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346557AbjJSVkr (ORCPT
+        with ESMTP id S232759AbjJSVl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:40:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48127BE;
-        Thu, 19 Oct 2023 14:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=b4HCbIcpuTf2AtCD4Gw8oaFAr3lLevKnvsjAPH9DoPw=; b=HvmpSS7kAWcYGs+Te9d8uMi2LS
-        avX/MnUrQidVGEn/cj37ZF4edJOaPxjKeng5T3EL1iVWhprMk+6WTfbOJOhFA+c8ieS8rsRbd6JFs
-        9Eus2DWJ/Effc8qVV6ed9rttxoAQBeqPvWKJZRHYLC4Zm/qDvz0YOD51PBtrL295nGb+Dv2CrjKTf
-        A7xKDWtHXzFD/bjogf+p+55FLq9ojxA1SGFBuaAPhebcAi4eL1YphFyHeVYdkyRKZM/YFQYrCQSkJ
-        9L9le5NOrlxZ2JgoyvgqE+03Tdz0i11NYmyIIebw++rR/T90G60xX900OXOs8llIPX0S+vjDbCqsD
-        gPIKZXLA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qtakt-009Mv5-BT; Thu, 19 Oct 2023 21:40:35 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH 1/1] trace: Move readpos from seq_buf to trace_seq
-Date:   Thu, 19 Oct 2023 22:40:33 +0100
-Message-Id: <20231019214033.2229099-1-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
+        Thu, 19 Oct 2023 17:41:29 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CE7BE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:41:27 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6cd09663b1cso108851a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697751687; x=1698356487; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1PmU2FKsnzb5ZXX3tTX1X2BdGNJX62qrZ4JKEx6OuTU=;
+        b=RSQnSbxYRBuvXaoCQ01q3gCI2eff6kej2TWKpMIVlrXyEq54bGzPhXwaNDmrJrQ1T1
+         7qTQxDu3kQ3s9a3fg6KEUUjmozjyE15xqzGpTgBUfQSea3d2xdoXDd87ThZGJd3OfuyH
+         VMZL6SJBNIuOMOF3XD03Gmtw8BZ6fEgDemJnfaKE+uwTGRsrN4SbtikCgDaevsvC5Myv
+         6dcImshVqSTSsNcSoYkn0mA81fucBcY7dwL1xzQcDlP+KkrSZwiAVwXhzuSsovpnpPDa
+         SQ7k4PpzVlEtzgSe/hXF6rv5nKpMzYKUo3iiB6fHJDmW+XJAtinG3TRub+UEaGMZHa8N
+         3w2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697751687; x=1698356487;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1PmU2FKsnzb5ZXX3tTX1X2BdGNJX62qrZ4JKEx6OuTU=;
+        b=UonLR+c2QHSXT9cKwALO9I9U8E5VVblxoBv+7lCiZ6IcCwDYseVxXk+ZKmcvLBPYWV
+         c5Sts94jENYb6I80ILBldf3ktoT1uscAF/QB5vf+fHbrW/RZ5D7RLBsgjhY1V8fry2aK
+         GM0cYmdZP2ecWp9T9kSEknaB5No7TCay8pu+qQHzSoHTtXCXzOJ7KQv40mT+QaAbRjhr
+         IJJRfUiTnHvdnqpmKOcgesXjropxbzi2rDaC2fxbVtUhCGMMAXf01EhJqrYy6vX8u0y4
+         DpK4DP8nAPEl2FNc8Ki9+4XrbQ7aT7PEF2cbS3dtO6AovZjW7Eo34VYiu9fK1I29bBSh
+         Pjqw==
+X-Gm-Message-State: AOJu0YxNOvgrQpyb5sngl+Xq6HmNAQaiqq3ayes51d5Mut8YvtAAJewW
+        f0nVIQmjJjL/xeRk7zAgeSUHBA==
+X-Google-Smtp-Source: AGHT+IGPG6w5SHcB8Fe6oTorM2i0pm9QlPdmNXgGhPxZK621WOn1cjYRCOOGGek68mhOHXfNeLdemw==
+X-Received: by 2002:a05:6830:25d4:b0:6b8:f588:2c79 with SMTP id d20-20020a05683025d400b006b8f5882c79mr59079otu.1.1697751687063;
+        Thu, 19 Oct 2023 14:41:27 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id x19-20020a9d6293000000b006ce2c785ac7sm81812otk.8.2023.10.19.14.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 14:41:26 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v6 0/3] riscv: Add remaining module relocations and tests
+Date:   Thu, 19 Oct 2023 14:41:23 -0700
+Message-Id: <20231019-module_relocations-v6-0-94726e644321@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIOiMWUC/23Q0WoDIRAF0F8JPneLOjpm+9T/KKHsOmMjJGvRR
+ FrC/ntNKGUpPt5h5gzcmyicIxfxsruJzDWWmJYW8Gkn/HFaPniI1LLQUoMc5X44J7qe+D3zKfn
+ p0rbLEBA8E1o1kxPt8DNziF8P9O3Q8jGWS8rfjx9V3ae/nIIeV9Ugh3kG2ht07EZ4zbGmEhf/7
+ NNZ3MWq/xQlJXYV3RTjLKKxEJh8R4GNovoKNGVCdIFQOsVjRzFbxXUV05QRXLAcQGGQHcVulW7
+ N1TaFAjNoMhT8/17Wdf0Bv9/ugM8BAAA=
+To:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make seq_buf more lightweight as a string buf, move the readpos member
-from seq_buf to its container, trace_seq.  That puts the responsibility
-of maintaining the readpos entirely in the tracing code.  If some future
-users want to package up the readpos with a seq_buf, we can define a
-new struct then.
+A handful of module relocations were missing, this patch includes the
+remaining ones. I also wrote some test cases to ensure that module
+loading works properly. Some relocations cannot be supported in the
+kernel, these include the ones that rely on thread local storage and
+dynamic linking.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+ULEB128 handling is a bit special because SET and SUB relocations must
+happen together, and SET must happen before SUB. A psABI proposal [1]
+mandates that the first SET_ULEB128 that appears before a SUB_ULEB128
+is the associated SET_ULEB128.
+
+This can be tested by enabling KUNIT, RUNTIME_KERNEL_TESTING_MENU, and
+RISCV_MODULE_LINKING_KUNIT.
+
+[1] https://github.com/riscv-non-isa/riscv-elf-psabi-doc/pull/403
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- include/linux/seq_buf.h   |  5 +----
- include/linux/trace_seq.h |  2 ++
- kernel/trace/trace.c      | 10 +++++-----
- kernel/trace/trace_seq.c  |  6 +++++-
- lib/seq_buf.c             | 13 +++++--------
- 5 files changed, 18 insertions(+), 18 deletions(-)
+Changes in v6:
+- Use (void *) instead of (u32 *) for handler type
+- Constrain ULEB128 to be consecutive relocations
+- Link to v5: https://lore.kernel.org/r/20231018-module_relocations-v5-0-dfee32d4dfc3@rivosinc.com
 
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index 515d7fcb9634..a0fb013cebdf 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -14,19 +14,16 @@
-  * @buffer:	pointer to the buffer
-  * @size:	size of the buffer
-  * @len:	the amount of data inside the buffer
-- * @readpos:	The next position to read in the buffer.
-  */
- struct seq_buf {
- 	char			*buffer;
- 	size_t			size;
- 	size_t			len;
--	loff_t			readpos;
- };
- 
- static inline void seq_buf_clear(struct seq_buf *s)
- {
- 	s->len = 0;
--	s->readpos = 0;
- }
- 
- static inline void
-@@ -143,7 +140,7 @@ extern __printf(2, 0)
- int seq_buf_vprintf(struct seq_buf *s, const char *fmt, va_list args);
- extern int seq_buf_print_seq(struct seq_file *m, struct seq_buf *s);
- extern int seq_buf_to_user(struct seq_buf *s, char __user *ubuf,
--			   int cnt);
-+			   size_t start, int cnt);
- extern int seq_buf_puts(struct seq_buf *s, const char *str);
- extern int seq_buf_putc(struct seq_buf *s, unsigned char c);
- extern int seq_buf_putmem(struct seq_buf *s, const void *mem, unsigned int len);
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 6be92bf559fe..3691e0e76a1a 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -14,6 +14,7 @@
- struct trace_seq {
- 	char			buffer[PAGE_SIZE];
- 	struct seq_buf		seq;
-+	size_t			readpos;
- 	int			full;
- };
- 
-@@ -22,6 +23,7 @@ trace_seq_init(struct trace_seq *s)
- {
- 	seq_buf_init(&s->seq, s->buffer, PAGE_SIZE);
- 	s->full = 0;
-+	s->readpos = 0;
- }
- 
- /**
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index abaaf516fcae..217cabd09c3e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1730,15 +1730,15 @@ static ssize_t trace_seq_to_buffer(struct trace_seq *s, void *buf, size_t cnt)
- {
- 	int len;
- 
--	if (trace_seq_used(s) <= s->seq.readpos)
-+	if (trace_seq_used(s) <= s->readpos)
- 		return -EBUSY;
- 
--	len = trace_seq_used(s) - s->seq.readpos;
-+	len = trace_seq_used(s) - s->readpos;
- 	if (cnt > len)
- 		cnt = len;
--	memcpy(buf, s->buffer + s->seq.readpos, cnt);
-+	memcpy(buf, s->buffer + s->readpos, cnt);
- 
--	s->seq.readpos += cnt;
-+	s->readpos += cnt;
- 	return cnt;
- }
- 
-@@ -7006,7 +7006,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
- 
- 	/* Now copy what we have to the user */
- 	sret = trace_seq_to_user(&iter->seq, ubuf, cnt);
--	if (iter->seq.seq.readpos >= trace_seq_used(&iter->seq))
-+	if (iter->seq.readpos >= trace_seq_used(&iter->seq))
- 		trace_seq_init(&iter->seq);
- 
- 	/*
-diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
-index bac06ee3b98b..7be97229ddf8 100644
---- a/kernel/trace/trace_seq.c
-+++ b/kernel/trace/trace_seq.c
-@@ -370,8 +370,12 @@ EXPORT_SYMBOL_GPL(trace_seq_path);
-  */
- int trace_seq_to_user(struct trace_seq *s, char __user *ubuf, int cnt)
- {
-+	int ret;
- 	__trace_seq_init(s);
--	return seq_buf_to_user(&s->seq, ubuf, cnt);
-+	ret = seq_buf_to_user(&s->seq, ubuf, s->readpos, cnt);
-+	if (ret > 0)
-+		s->readpos += ret;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(trace_seq_to_user);
- 
-diff --git a/lib/seq_buf.c b/lib/seq_buf.c
-index 45c450f423fa..0d218f3835ae 100644
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -340,7 +340,7 @@ int seq_buf_path(struct seq_buf *s, const struct path *path, const char *esc)
-  *
-  * Returns -EFAULT if the copy to userspace fails.
-  */
--int seq_buf_to_user(struct seq_buf *s, char __user *ubuf, int cnt)
-+int seq_buf_to_user(struct seq_buf *s, char __user *ubuf, size_t start, int cnt)
- {
- 	int len;
- 	int ret;
-@@ -350,20 +350,17 @@ int seq_buf_to_user(struct seq_buf *s, char __user *ubuf, int cnt)
- 
- 	len = seq_buf_used(s);
- 
--	if (len <= s->readpos)
-+	if (len <= start)
- 		return -EBUSY;
- 
--	len -= s->readpos;
-+	len -= start;
- 	if (cnt > len)
- 		cnt = len;
--	ret = copy_to_user(ubuf, s->buffer + s->readpos, cnt);
-+	ret = copy_to_user(ubuf, s->buffer + start, cnt);
- 	if (ret == cnt)
- 		return -EFAULT;
- 
--	cnt -= ret;
--
--	s->readpos += cnt;
--	return cnt;
-+	return cnt - ret;
- }
- 
- /**
+Changes in v5:
+- Brought in patch by Emil and fixed it up to force little endian
+- Fixed up issues with apply_r_riscv_32_pcrel_rela and
+  apply_r_riscv_plt32_rela (Samuel)
+- Added u8 cast in apply_r_riscv_sub6_rela (Andreas) 
+- Link to v4: https://lore.kernel.org/r/20231017-module_relocations-v4-0-937f5ef316f0@rivosinc.com
+
+Changes in v4:
+- Complete removal of R_RISCV_RVC_LUI
+- Fix bug in R_RISCV_SUB6 linking
+- Only build ULEB128 tests if supported by toolchain
+- Link to v3: https://lore.kernel.org/r/20231016-module_relocations-v3-0-a667fd6071e9@rivosinc.com
+
+Changes in v3:
+- Add prototypes to test_module_linking_main as recommended by intel
+  zero day bot
+- Improve efficiency of ULEB128 pair matching
+- Link to v2: https://lore.kernel.org/r/20231006-module_relocations-v2-0-47566453fedc@rivosinc.com
+
+Changes in v2:
+- Added ULEB128 relocations
+- Link to v1: https://lore.kernel.org/r/20230913-module_relocations-v1-0-bb3d8467e793@rivosinc.com
+
+---
+Charlie Jenkins (2):
+      riscv: Add remaining module relocations
+      riscv: Add tests for riscv module loading
+
+Emil Renner Berthing (1):
+      riscv: Avoid unaligned access when relocating modules
+
+ arch/riscv/Kconfig.debug                           |   1 +
+ arch/riscv/include/uapi/asm/elf.h                  |   5 +-
+ arch/riscv/kernel/Makefile                         |   1 +
+ arch/riscv/kernel/module.c                         | 368 +++++++++++++++------
+ arch/riscv/kernel/tests/Kconfig.debug              |  35 ++
+ arch/riscv/kernel/tests/Makefile                   |   1 +
+ arch/riscv/kernel/tests/module_test/Makefile       |  15 +
+ .../tests/module_test/test_module_linking_main.c   |  85 +++++
+ arch/riscv/kernel/tests/module_test/test_set16.S   |  23 ++
+ arch/riscv/kernel/tests/module_test/test_set32.S   |  20 ++
+ arch/riscv/kernel/tests/module_test/test_set6.S    |  23 ++
+ arch/riscv/kernel/tests/module_test/test_set8.S    |  23 ++
+ arch/riscv/kernel/tests/module_test/test_sub16.S   |  22 ++
+ arch/riscv/kernel/tests/module_test/test_sub32.S   |  22 ++
+ arch/riscv/kernel/tests/module_test/test_sub6.S    |  22 ++
+ arch/riscv/kernel/tests/module_test/test_sub64.S   |  27 ++
+ arch/riscv/kernel/tests/module_test/test_sub8.S    |  22 ++
+ arch/riscv/kernel/tests/module_test/test_uleb128.S |  20 ++
+ 18 files changed, 633 insertions(+), 102 deletions(-)
+---
+base-commit: 4d320c2d9a2b22f53523a1b012cda17a50220965
+change-id: 20230908-module_relocations-f63ced651bd7
 -- 
-2.40.1
+- Charlie
 
