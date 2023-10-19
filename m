@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD807CEE8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678717CEE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjJSEKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 00:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S232332AbjJSETd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 00:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjJSEKo (ORCPT
+        with ESMTP id S229894AbjJSETc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 00:10:44 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00730119;
-        Wed, 18 Oct 2023 21:10:42 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1ea05b3f228so3047934fac.1;
-        Wed, 18 Oct 2023 21:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697688642; x=1698293442; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=exlx/JOZFhxO7je5a84RZcfHQL1GXgStxtSXicAG0t8=;
-        b=Upf3vdHBJlJkC/QBNyAXGQPR/Out9kyx1WScJMSinCajOLR+S2OiX43j2g2RF+aVYY
-         FqEcGxSe/j99LMkkp7/SDJ4z8WW6TLcjIdPbdziO6CEzwMYfEyFIp876Ex4I9aotC93T
-         S1SWDf2+n51GVQPLjK8f6edc++8srOoerIEFBD4NJxBu71vt8i4+pZhV/yNlWZNRmgNs
-         DH6HoSNS2/3c/UqQWvDwOA03i6oMt5wL8AJnXQcHV0j1uLaRTheQmjGw/rm8bT2vrOCs
-         AO2/m2NKb1WTvzpqYUDv0ynLITp7Lma5PnlHvQG9IMgU9mFw2IE1AhjOq9zuMnvMAuMn
-         s2Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697688642; x=1698293442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=exlx/JOZFhxO7je5a84RZcfHQL1GXgStxtSXicAG0t8=;
-        b=YhFeNKGpZG0UeDnSTpkrbhH8x2IsHOs37FsqViK3GTZpuW2bp6EfCmRjcAUj4oRn0M
-         PEETqoqERwEQ81BlQvrfPEDzzS99UwL2D/uHGDuuto8FoQDjGYulBkWZt7h9usqEU9r/
-         X5lE/8YwQ53V+7GOFr+7AzIpmkcbyIX7zUUVcZgyf3w+ptrF8z+tfHnzLELLh0gG3tYZ
-         7CCfsWTm8x4eCB54CIUezG1WEKUSvwNQQOR+oKlrFhUrIYDQBHcyo9Y+O7++l0S5hcWW
-         zBby4HeVKJuCdAb0oU8XWBud3SVOIBSw/Xxc2LEWQDKIKbt0HF8D7qIsTIMBOydqf4/M
-         3HEw==
-X-Gm-Message-State: AOJu0YzIyTHjpc8Cd+XrmrTcK1sfPQYRrRMaAECI93h7SjMP1DKapTxV
-        PB8d1RAHjPQNs99/h76VO/LFu2IuRi16+afukur5Ky3J
-X-Google-Smtp-Source: AGHT+IFpttNbHnNs4OZvxDAywxepXeRJm16GxFMmxIIWBmhA+hzcWgp/FQNpot0HCKRlnpenGHI1MeRAOPKnF1J/on8=
-X-Received: by 2002:a05:6870:aa92:b0:1e9:64f1:9c30 with SMTP id
- gr18-20020a056870aa9200b001e964f19c30mr1632950oab.18.1697688642232; Wed, 18
- Oct 2023 21:10:42 -0700 (PDT)
+        Thu, 19 Oct 2023 00:19:32 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F85B121;
+        Wed, 18 Oct 2023 21:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697689168;
+        bh=y3lM9sVJ/5rYnLLJqPwGOLVQo3x0zH1aI0AdCt5lKvE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HolbH944Z1ffP79WWjoCrUJ2CLG2CKdtIwSX8nO83ZRu11ojSRssFEqqUp7blUHmo
+         z2s0goahOpwHspiWCOtfi/DNkcekJr/pR/Wcrqk2aQnmAm1pmyUV0pOK4TI0Z2twDN
+         pp9OzVCx2biirQ/XLxUy0YSaOQQ5ju+fEkPRdSQoS3tJgm0EIe+dWZ34QT0CtsdKkw
+         +jkDQn0PIdi4Tm7cyUTpuVWxRl8r1MkIulbEVutJIXYQazlehrjAa+mXGOOFUzfdkt
+         QfaIgtD6q69FVijmiHYouUzJhqVczF6rQhq8Siuz8BMGOS0km9ab8cPNdWnU4pPy0l
+         yJ+MVbK3XGfag==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9vcc04D4z4xWn;
+        Thu, 19 Oct 2023 15:19:27 +1100 (AEDT)
+Date:   Thu, 19 Oct 2023 15:19:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with the efi-fixes
+ tree
+Message-ID: <20231019151927.2a20d800@canb.auug.org.au>
+In-Reply-To: <20231019145404.63bd38ca@canb.auug.org.au>
+References: <20231019145404.63bd38ca@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230827023932.501102-1-sergio.paracuellos@gmail.com> <13d7cf46270082855174414b691fb3be.sboyd@kernel.org>
-In-Reply-To: <13d7cf46270082855174414b691fb3be.sboyd@kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 19 Oct 2023 06:10:30 +0200
-Message-ID: <CAMhs-H8ek=bGOQpeF7i7CnSnu-AYCUN+jTxTtOXW2EgLAmQXfg@mail.gmail.com>
-Subject: Re: [PATCH v2] clk: ralink: mtmips: quiet unused variable warning
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, tsbogend@alpha.franken.de,
-        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        ndesaulniers@google.com, arnd@kernel.org, yangshiji66@outlook.com,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Nu1=GzIZq1fgE2iaHx6JLVK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 2:32=E2=80=AFAM Stephen Boyd <sboyd@kernel.org> wro=
-te:
->
-> Quoting Sergio Paracuellos (2023-08-26 19:39:32)
-> > When CONFIG_OF is disabled then the matching table is not referenced an=
-d
-> > the following warning appears:
-> >
-> > drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmip=
-s_of_match' [-Wunused-const-variable]
-> > 821 |   static const struct of_device_id mtmips_of_match[] =3D {
-> >     |                          ^
-> >
-> > There are two match tables in the driver: one for the clock driver and =
-the
-> > other for the reset driver. The only difference between them is that th=
-e
-> > clock driver uses 'data' and does not have 'ralink,rt2880-reset' compat=
-ible.
-> > Both just can be merged into a single one just by adding the compatible
-> > 'ralink,rt2880-reset' entry to 'mtmips_of_match[]', which will allow it=
- to
-> > be used for 'mtmips_clk_driver' (which doesn't use the data) as well as=
- for
-> > 'mtmips_clk_init()' (which doesn't need get called for 'ralink,rt2880-r=
-eset').
-> >
-> > Doing in this way ensures that 'CONFIG_OF' is not disabled anymore so t=
-he
-> > above warning disapears.
-> >
-> > Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIP=
-S SoCs")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp=
-@intel.com/
-> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
->
-> Applied to clk-next
+--Sig_/Nu1=GzIZq1fgE2iaHx6JLVK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks Stephen!
+Hi all,
 
-Best regards,
-    Sergio Paracuellos
+On Thu, 19 Oct 2023 14:54:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the tip tree got a conflict in:
+>=20
+>   drivers/firmware/efi/libstub/x86-stub.c
+>=20
+> between commit:
+>=20
+>   db7724134c26 ("x86/boot: efistub: Assign global boot_params variable")
+>=20
+> from the efi-fixes tree and commit:
+>=20
+>   50dcc2e0d62e ("x86/boot: efistub: Assign global boot_params variable")
+>=20
+> from the tip tree.
+>=20
+> I fixed it up (I just arbitrarily chose the former) and can carry the
+> fix as necessary. This is now fixed as far as linux-next is concerned,
+> but any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
+
+Well, that didn't work :-(
+
+I ave used the latter version (i.e. the tip tree one) this time.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Nu1=GzIZq1fgE2iaHx6JLVK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwrk8ACgkQAVBC80lX
+0GxGUwf6Au6HrVYERwExXwObgn3HjPSeMtJnB5DI57PGkUUv07A6WAW3QZHY1Nuf
+F1WEMsKe3yNYkS0Y4h/48C7Y7Tfaz702+gF8YxOauZyMzLWZfZk8DiR7VisIQDa+
+9yqsrV7dNqFkUQ+7TAQXGrouxRfc20RZB2cmlLfqI7RtW5RRZ+IjarENzb59dFrM
+Otly3MmAo7J24smX+o1KgnRF6ijFLRPFKlsNbbe9Rt2nQqVdy3jmyaeKp1DJiNP3
+eTZVRg5eVleFQ5wTl7bmbGPBOqGovIILml5wWZlQFblh6kxLLp7fKGyo9rs1li5d
+x1ILa5BrrM/NQ/wHmCssV/84XJa+ag==
+=2arr
+-----END PGP SIGNATURE-----
+
+--Sig_/Nu1=GzIZq1fgE2iaHx6JLVK--
