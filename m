@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1307B7D0253
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3E97D0256
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346449AbjJSTPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S1345972AbjJSTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjJSTPa (ORCPT
+        with ESMTP id S232935AbjJSTP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:15:30 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07B3CA;
-        Thu, 19 Oct 2023 12:15:27 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39JJFJg5028819;
-        Thu, 19 Oct 2023 14:15:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697742919;
-        bh=8nEpaNhdO0hr7HNZnd9/TJlw9Tmo4Ygz+3FhR0f/YRc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ef6jZKsfM92FeInDWOuShd2QIdoJoWMYpuAVKnPkyYPNZMK3Nvm1h4PEVAu1HTG8T
-         ES+PZOZpFqc4RFkNN5iLzzDsHIsiqDDN/W5xpmQ8/JDfCYSdiMfdAVEoX5jJJ8qrp9
-         NqpiWIV5yii8uFHGsBsKxOQrsVQdc+onF4cnvRL0=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39JJFJKC065298
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Oct 2023 14:15:19 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
- Oct 2023 14:15:19 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 19 Oct 2023 14:15:19 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39JJFJTE113698;
-        Thu, 19 Oct 2023 14:15:19 -0500
-Date:   Thu, 19 Oct 2023 14:15:19 -0500
-From:   reidt <reidt@ti.com>
-To:     Vaishnav Achath <vaishnav.a@ti.com>
-CC:     <vigneshr@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <afd@ti.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <u-kumar1@ti.com>
-Subject: Re: [PATCH v4 2/2] arm64: dts: ti: k3-j7200-mcu-wakeup: Update fss
- node and hbmc_mux
-Message-ID: <20231019191519.jksgyzv6gcrtltbs@reidt-HP-Z2>
-References: <20231009082452.30684-1-vaishnav.a@ti.com>
- <20231009082452.30684-3-vaishnav.a@ti.com>
+        Thu, 19 Oct 2023 15:15:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC1BBE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:15:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44054C43391;
+        Thu, 19 Oct 2023 19:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697742957;
+        bh=czcO7pul0pidk9X5haDsczOJ7Z/4f1Lehio1PveG3/o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BCGTwJVb38aVHGQ6jIWqezw8ESZczOnhpdBcnCLqhiHM7FY0ZjWcbdgszxbVYEKxa
+         602a1McW7vib3FMLaasVsj5Yx3t2jY4YM67lvjiD5Q1j03rpIawNYo4+uSVSv521b/
+         1o0L5ePmESFgFgyYdOxZrPUqzft4TctM1t1p8lfgcUNnAAKCwwTeCmBn9WKCMDqHEY
+         lAkVgxgBFBdRQ3D2rtiyvrTD4grU3ZKXStkkuA/fAyV4hfYmxJk98dBvEiPv6xsc+/
+         zRTqLvY9yF9InhrDv/LL5MSkoLS+73mb5RHujiniGlKWuEYFeALFk8gkvst8zma+nM
+         Mis0QQBtozfPA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507b18cf2e1so6151494e87.3;
+        Thu, 19 Oct 2023 12:15:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyYfdQ2B/J/AETjAaBVGwY2F79Q5yOJGQURNU1k7qnp9e5Q/CXp
+        szwWxR3B223LqajaK0uWI0oxzDOtrc17aEFlRA==
+X-Google-Smtp-Source: AGHT+IHaK3/fQu58LwNVXyEcMTjvuZkQtps1qGk5hQ/5nVuxeS7lpPPatdI4JWkX1iBzto62YR0/Tk8NJlhYkkCMeFc=
+X-Received: by 2002:a19:380a:0:b0:507:a624:3f35 with SMTP id
+ f10-20020a19380a000000b00507a6243f35mr1957100lfa.41.1697742955464; Thu, 19
+ Oct 2023 12:15:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231009082452.30684-3-vaishnav.a@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20231006145732.3419115-1-andriy.shevchenko@linux.intel.com>
+ <169756785858.2487391.2620832432762980006.robh@kernel.org> <ZS7VrxX6If8Afl5R@smile.fi.intel.com>
+In-Reply-To: <ZS7VrxX6If8Afl5R@smile.fi.intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 19 Oct 2023 14:15:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLsdjiAYupw-U-voLWGaJoiUTW49PJJYXAhG1podivP5w@mail.gmail.com>
+Message-ID: <CAL_JsqLsdjiAYupw-U-voLWGaJoiUTW49PJJYXAhG1podivP5w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] amba: bus: balance firmware node reference counting
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hanjun Guo <guohanjun@huawei.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Len Brown <lenb@kernel.org>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:54-20231009, Vaishnav Achath wrote:
-> From: Nishanth Menon <nm@ti.com>
-> 
-> FSS node claims to be a syscon node, while it actually is a simple bus
-> where OSPI, HBMC peripherals are located and a mux for path select
-> between OSPI and Hyperbus which can be modelled as a reg-mux. So model
-> it accordingly and use reg-mux to describe the hbmc_mux.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
-> ---
-> 
-> V2->V3:
->  * Keep register regions unchanged as it is correct according to memory
->   map.
->  * Update commit messages as per Vignesh's suggestion.
-> 
-> V1->V2:
->  * Address feedback from Udit to limit the FSS register region size as
->  per TRM.
->  * Use reg-mux changes to simplify the hbmc-mux modelling.
->  * Update commit message to reflect changes.
-> 
-> Depends on:
->  https://lore.kernel.org/all/20230911151030.71100-1-afd@ti.com/
-> 
->  arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> index 2ee6215e38a6..4f98ea685d33 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> @@ -507,15 +507,16 @@
->  		status = "disabled";
->  	};
->  
-> -	fss: syscon@47000000 {
-> -		compatible = "syscon", "simple-mfd";
-> +	fss: bus@47000000 {
-> +		compatible = "simple-bus";
->  		reg = <0x00 0x47000000 0x00 0x100>;
->  		#address-cells = <2>;
->  		#size-cells = <2>;
->  		ranges;
->  
-> -		hbmc_mux: hbmc-mux {
-> -			compatible = "mmio-mux";
-> +		hbmc_mux: mux-controller@47000004 {
-> +			compatible = "reg-mux";
-> +			reg = <0x00 0x47000004 0x00 0x2>;
->  			#mux-control-cells = <1>;
->  			mux-reg-masks = <0x4 0x2>; /* HBMC select */
->  		};
-> -- 
-> 2.17.1
-> 
-> 
+On Tue, Oct 17, 2023 at 1:43=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Oct 17, 2023 at 01:37:43PM -0500, Rob Herring wrote:
+> > On Fri, 06 Oct 2023 17:57:31 +0300, Andy Shevchenko wrote:
+>
+> ...
+>
+> > Applied, thanks!
+>
+> Thanks, I hope w.o. patch 2 as it seems it can't be enabled on non-ARM
+> platforms due to some strange MM APIs.
 
-Reviewed-by: Reid Tonking <reidt@ti.com>
+Yes, just patch 1. Isn't it just the driver with the error that can't
+be enabled, not all ARM_AMBA. I suspect there's a more portable
+variant of what was causing the error, but didn't investigate more.
+
+Rob
