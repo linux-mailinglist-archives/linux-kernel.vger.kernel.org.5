@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605047CF6CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3302A7CF6DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345369AbjJSL3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S1345331AbjJSLb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345364AbjJSL3I (ORCPT
+        with ESMTP id S1345357AbjJSLbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:29:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449110C7;
-        Thu, 19 Oct 2023 04:28:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A89C433C7;
-        Thu, 19 Oct 2023 11:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697714932;
-        bh=frnWz1sFRBQuYonb5RmQwPk5jf/lF7GP4WLN8JSXa7M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HBA7HSvGoIRn7e8pKkbEW9dLvkhR6UbP9YryXoyb0yOjeGBF3+t2/uXVAqhO8+5XZ
-         g0zjGzFjnXF/LfXiIIdiO8O+s2WH1DbOU5PxZHMy5BGmXDF1pxMFXw5belLfcYtN7H
-         99/gEqDLZv0OG5nrh2/sMZTcmW/PdfrhuOSXelnXPQnJC1BordF3CwVUQNbDT7FTNG
-         nn177O3fNCLQE2ooDHVnWEyFQh2gHAsFOuYPrlz1K/YrfOpU/ht9vUd3N/Bwu8Bm8m
-         10CRzoGlUcfNESgswU4BLKxSdAsGBM5bqEhUzQbS/iUBrFcZX0/oc11HUt7teGBqNa
-         7K8NLvWb7IZrw==
-Message-ID: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 19 Oct 2023 07:28:48 -0400
-In-Reply-To: <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 19 Oct 2023 07:31:25 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8D6191
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:31:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6bcbfecf314so1091562b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697715080; x=1698319880; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HJEDujWnPhanwrnYk+UI82QdYkyiqzOJ40ODb2Z7lao=;
+        b=Bnu1ulTFo67GEcErM/P/jVFHma/ial2Y3bm2bhqoCGzaQUlFDdc7uO05HVBZlWlIri
+         JJXHzQN4oPz2oTHG0dMWnXjdltMHFQ5zOVI396HSIXUsWUAz2TV3GttiOFkyOx9FOHrX
+         JUchIMfa39N2iPsBOLRCel6KrHLGF5MDVRoXX4rBQWvbsoC7Z9KYfYMJjbt53XQtjd9R
+         AVOcj+aZ9MfNUC+9V/2/2T2FF8ZU/SmNxerf/3Jlokl27v1v7bj69o+rNQt/nmQUoSQX
+         40+6BgqqwTAi1ll7oL9KC8gXLzqW1+y2JkmUjHXVIG6hCaI7m995Mun/T2ClWHUoOUKS
+         MTcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697715080; x=1698319880;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HJEDujWnPhanwrnYk+UI82QdYkyiqzOJ40ODb2Z7lao=;
+        b=JUzl1itpPKTe4fQcmfCdsSpCQQNKawqWQxnc44gs+jpinfkluk8nqFfzQgxOrZm+Rb
+         h8fVlTw9RZaWVZYRZx/5Qv3rzE1R1SleLyEl3S8iBHDkJ2bTd59+mjiQwQ9sOyYnuL5p
+         WQ+r+Gwqn/K8Ie/oybPe1vDlHdBiD3uHUDpCJOmy/RwGJWYumtBUuMxhGvowJYJvrDyN
+         wRTg8snVTveD/NRsM745GJL4CN1CmgRo1vwy/cI6m0lWqlnwNnxGkkx4iiGpyGXQj4k/
+         OZzRWzCE5F0b4Qh3fINTjMGABQkT00h51PYZftliLzTFZux9cw4REZddnYZkt8wg6yG6
+         JWFQ==
+X-Gm-Message-State: AOJu0YyPRRQfedVJOpmF7KFP0UpBk+k7KbeHayHr0kHeRsxk7K8GAo12
+        r7qZsPWxO/gWReQMrNXVVPyeLQ==
+X-Google-Smtp-Source: AGHT+IFXp+26yCOoLOpCkwrAISkzg74LEy3nMtbDkNz0ybskISntSdYhBYketZUQIwWSWMVvA3nNnA==
+X-Received: by 2002:a05:6a20:4292:b0:15a:2c0b:6c81 with SMTP id o18-20020a056a20429200b0015a2c0b6c81mr1938815pzj.3.1697715080193;
+        Thu, 19 Oct 2023 04:31:20 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id w2-20020a1709029a8200b001ca23f2470bsm1706154plp.196.2023.10.19.04.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 04:31:19 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     ming.lei@redhat.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+In-Reply-To: <20231019030444.53680-1-jiapeng.chong@linux.alibaba.com>
+References: <20231019030444.53680-1-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] block: ublk_drv: Remove unused function
+Message-Id: <169771507904.2601781.4738608164721336393.b4-ty@kernel.dk>
+Date:   Thu, 19 Oct 2023 05:31:19 -0600
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-26615
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > Back to your earlier point though:
-> >=20
-> > Is a global offset really a non-starter? I can see about doing somethin=
-g
-> > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-> > as ktime_get_coarse_ts64. I don't see the downside there for the non-
-> > multigrain filesystems to call that.
->=20
-> I have to say that this doesn't excite me. This whole thing feels a bit
-> hackish. I think that a change version is the way more sane way to go.
->=20
 
-What is it about this set that feels so much more hackish to you? Most
-of this set is pretty similar to what we had to revert. Is it just the
-timekeeper changes? Why do you feel those are a problem?
+On Thu, 19 Oct 2023 11:04:44 +0800, Jiapeng Chong wrote:
+> The function are defined in the ublk_drv.c file, but not called
+> elsewhere, so delete the unused function.
+> 
+> drivers/block/ublk_drv.c:1211:20: warning: unused function 'ublk_abort_io_cmds'.
+> 
+> 
 
-> >=20
-> > On another note: maybe I need to put this behind a Kconfig option
-> > initially too?
->=20
-> So can we for a second consider not introducing fine-grained timestamps
-> at all. We let NFSv3 live with the cache problem it's been living with
-> forever.
->=20
-> And for NFSv4 we actually do introduce a proper i_version for all
-> filesystems that matter to it.
->=20
-> What filesystems exactly don't expose a proper i_version and what does
-> prevent them from adding one or fixing it?
+Applied, thanks!
 
-Certainly we can drop this series altogether if that's the consensus.
+[1/1] block: ublk_drv: Remove unused function
+      commit: 411957553bca681f6c6a64f419c352bb7d87c2a5
 
-The main exportable filesystem that doesn't have a suitable change
-counter now is XFS. Fixing it will require an on-disk format change to
-accommodate a new version counter that doesn't increment on atime
-updates. This is something the XFS folks were specifically looking to
-avoid, but maybe that's the simpler option.
+Best regards,
+-- 
+Jens Axboe
 
-There is also bcachefs which I don't think has a change attr yet. They'd
-also likely need a on-disk format change, but hopefully that's a easier
-thing to do there since it's a brand new filesystem.
 
-There are a smattering of lesser-used local filesystems (f2fs, nilfs2,
-etc.) that have no i_version support. Multigrain timestamps would make
-it simple to add better change attribute support there, but they can (in
-principle) all undergo an on-disk format change too if they decide to
-add one.
 
-Then there are filesystems like ntfs that are exportable, but where we
-can't extend the on-disk format. Those could probably benefit from
-multigrain timestamps, but those are much lower priority. Not many
-people sharing their NTFS filesystem via NFS anyway.
---=20
-Jeff Layton <jlayton@kernel.org>
