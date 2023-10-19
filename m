@@ -2,112 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C63B7CFFE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A477CFFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345167AbjJSQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S1345173AbjJSQu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjJSQqs (ORCPT
+        with ESMTP id S233035AbjJSQuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:46:48 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793A413E
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:46:45 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5a586da6so8280097b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697734004; x=1698338804; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TpEPzMpbmRE7S67/u7J3M2Dti06L1rP8ZIHmBIwQBxQ=;
-        b=oRdsyrrTg/a/sxyEmhjry+QyhUC2XFHXJt8eVHcq8zN+egLarC6Ra3fjwGdpaCY/0j
-         CUulr1Iow+3ani9thHw6DryW2JeMSSA58xEMNU1XSYuq0HOPRQkqeriOE06GUL4G+d+V
-         406W0OFbCZ16oc93zH1DgRgdowLa28o/6Uhxot/k/H4eGBIL2l0BKPW0hwYuLRcRm8sN
-         JNV0kZGDDHYMYwX9d94C0w9Z2PhoWFK6yNCWtD8nT07BzO6qwtPHd45pw/ikUvqc+KXT
-         cWKLAyvWK2O/r7OLUVezLXO1yPrl1OcTloqhEziIw9k89tIsjrHCN0Sz+VVyFn0hEjVQ
-         NlBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697734004; x=1698338804;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TpEPzMpbmRE7S67/u7J3M2Dti06L1rP8ZIHmBIwQBxQ=;
-        b=WoUWl0MlM7Oa2t/59Y7kZ7Hkpe7jWUcuUXQLBfp3t46sr06eOTbuSvlN7JNV9pjmsG
-         dUompE5nyz7LvKzIvt7tblraMsB3CTiGw3zXwg6V+XwA8DeElXqUc3QjpiR1Ia+AVx8a
-         ZVGNifLYA/VtrFZalq8Fg45RcNy9lKcbROVfL6UGE3zkw/bp4NZHsXVFdJqtMPt/1jYF
-         oLTakPYdH0lI6n4l29QvRWC8HknLzoO7XU/TBPbTfkDhjxCVCYn6iBG2CznY2Zfy/Wjc
-         JoookyBY71iM8jXfxNUEWvJluc8riMXRNnVGS8Msx3mB19q5UxQAWwZCdvVxuvjH4IEN
-         T3yg==
-X-Gm-Message-State: AOJu0YzGkmfygNcjQjQ0VXbvt3zZFxuwisQH+xlCu/bH7heKUhgzuC+P
-        acfkyUlJ8Ga37SnfMNCKHjl+Kv4ra8c=
-X-Google-Smtp-Source: AGHT+IEY4l1tLFRd4OKDMZ5BEmKfsOkdl3pCTB2Bb27l0R7GZ2kCcrsoaryqlPd22mnjSHSD4UHcORKmX0Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4fcb:0:b0:5a7:b4d5:5f27 with SMTP id
- d194-20020a814fcb000000b005a7b4d55f27mr63990ywb.5.1697734004668; Thu, 19 Oct
- 2023 09:46:44 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:46:43 -0700
-In-Reply-To: <2f1459d7c3e3e81cdca931e104c3ade71dfcfee5.camel@infradead.org>
-Mime-Version: 1.0
-References: <20231018221123.136403-1-dongli.zhang@oracle.com>
- <87ttqm6d3f.fsf@redhat.com> <ZTFOCqMCuSiH8VEt@google.com> <2f1459d7c3e3e81cdca931e104c3ade71dfcfee5.camel@infradead.org>
-Message-ID: <ZTFdczzpORPBNpbx@google.com>
-Subject: Re: [PATCH RFC 1/1] x86/paravirt: introduce param to disable pv sched_clock
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>, x86@kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        pv-drivers@vmware.com, xen-devel@lists.xenproject.org,
-        linux-hyperv@vger.kernel.org, jgross@suse.com, akaher@vmware.com,
-        amakhalov@vmware.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        pbonzini@redhat.com, wanpengli@tencent.com, peterz@infradead.org,
-        joe.jin@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 12:50:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D63411F;
+        Thu, 19 Oct 2023 09:50:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A32C433C7;
+        Thu, 19 Oct 2023 16:50:18 +0000 (UTC)
+Date:   Thu, 19 Oct 2023 22:20:13 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/2] PCI: dwc: Add new accessors to enable/disable DBI
+ CS2 while setting the BAR size
+Message-ID: <20231019165013.GB7254@thinkpad>
+References: <20231017-pcie-qcom-bar-v1-0-3e26de07bec0@linaro.org>
+ <20231017-pcie-qcom-bar-v1-1-3e26de07bec0@linaro.org>
+ <rsv5vgle2d36skx75ds4hqzmlqwldmj4g4ghrlyfuu3ideb3rh@74mnro7qnp4v>
+ <20231019052835.GC5142@thinkpad>
+ <vg7n2epn7ln77s34il5ojm6ixnboj6is4yq2jlfabnnjqmm4a6@ycsnoaixdnyn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <vg7n2epn7ln77s34il5ojm6ixnboj6is4yq2jlfabnnjqmm4a6@ycsnoaixdnyn>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023, David Woodhouse wrote:
-> On Thu, 2023-10-19 at 08:40 -0700, Sean Christopherson wrote:
-> > > If for some 'historical reasons' we can't revoke features we can always
-> > > introduce a new PV feature bit saying that TSC is preferred.
+On Thu, Oct 19, 2023 at 05:37:39PM +0300, Serge Semin wrote:
+> On Thu, Oct 19, 2023 at 10:58:35AM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Oct 18, 2023 at 05:13:41PM +0300, Serge Semin wrote:
+> > > On Tue, Oct 17, 2023 at 11:47:54AM +0530, Manivannan Sadhasivam wrote:
+> > > > From: Manivannan Sadhasivam <mani@kernel.org>
+> > > > 
+> > > > As per the DWC databook v4.21a, section M.4.1, in order to write some read
+> > > > only and shadow registers through application DBI, the device driver should
+> > > > assert DBI Chip Select 2 (CS2) in addition to DBI Chip Select (CS).
+> > > > 
+> > > > This is a requirement at least on the Qcom platforms while programming the
+> > > > BAR size, as the BAR mask registers are marked RO. So let's add two new
+> > > > accessors dw_pcie_dbi_cs2_{en/dis} to enable/disable CS2 access in a vendor
+> > > > specific way while programming the BAR size.
+> > > 
+> > > Emm, it's a known thing for all IP-core versions: dbi_cs2 must be
+> > > asserted to access the shadow DW PCIe CSRs space for both RC and
+> > > EP including the BARs mask and their enabling/disabling flag (there
+> > > are many more shadow CSRs available on DW PCIe EPs, and a few in DW
+> > > PCIe RCs). That's why the dw_pcie_ops->writel_dbi2 pointer has been
+> > > defined in the first place (dbi2 suffix means dbi_cs2). You should use
+> > > it to create the platform-specific dbi_cs2 write accessors like it's
+> > > done in pci-keystone.c and pcie-bt1.c. For instance like this:
+> > > 
+> > > static void qcom_pcie_write_dbi2(struct dw_pcie *pci, u32 reg, size_t size, u32 val)
+> > > {
+> > > 	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > > 	int ret;
+> > > 
+> > > 	writel(1, pcie_ep->elbi + ELBI_CS2_ENABLE);
+> > > 
+> > > 	ret = dw_pcie_write(pci->dbi_base2 + reg, size, val);
+> > > 	if (ret)
+> > > 		dev_err(pci->dev, "write DBI address failed\n");
+> > > 
+> > > 	writel(0, pcie_ep->elbi + ELBI_CS2_ENABLE);
+> > > }
+> > > 
+> > 
 > 
-> Don't we already have one? It's the PVCLOCK_TSC_STABLE_BIT. Why would a
-> guest ever use kvmclock if the PVCLOCK_TSC_STABLE_BIT is set?
->
-> The *point* in the kvmclock is that the hypervisor can mess with the
-> epoch/scaling to try to compensate for TSC brokenness as the host
-> scales/sleeps/etc.
+> > Hmm, I was not aware that this write_dbi2() callback is supposed to enable the
+> > CS2 access internally. But this approach doesn't look good to me.
+> > 
+> > We already have accessors for enabling write access to DBI RO registers:
+> > 
+> > dw_pcie_dbi_ro_wr_en()
+> > dw_pcie_dbi_ro_wr_dis()
+> > 
+> > And IMO DBI_CS2 access should also be done this way instead of hiding it inside
+> > the register write callback.
 > 
-> And the *problem* with the kvmclock is that it does just that, even
-> when the host TSC hasn't done anything wrong and the kvmclock shouldn't
-> have changed at all.
+> No, for many-many reasons.
 > 
-> If the PVCLOCK_TSC_STABLE_BIT is set, a guest should just use the guest
-> TSC directly without looking to the kvmclock for adjusting it.
+> First of all, DBI RO/RW switch and DBI/DBI2 are absolutely different
+> things. Former one switches the CSRs access attributes in both DBI and
+> DBI2 CSR spaces. The later one are two CSR spaces, which access to is
+> platform-specific. They can't and shouldn't be compared.  DBI2 space
+> is a shadow DBI CSRs space, which registers aren't just the RW
+> versions of the DBI space, but its CSRs normally have different
+> semantics with respect to the normal DBI CSRs available on the same
+> offsets. I.e. BAR0 contains MEM/IO, TYPE, PREF flags and base address,
+> meanwhile DBI2-BAR0 - BAR enable/disable flag, BAR mask. From that
+> perspective having the dw_pcie_ops.write_dbi2 callback utilized for
+> the DBI2 space access would provide an interface looking similar to
+> the just DBI space - dw_pcie_ops.{write_dbi,read_dbi}. Thus the
+> unified access interface would provide much more readable code, where
+> based on the method name you'll be able to immediately infer the space
+> being accessed to.
 > 
-> No?
+> Secondly, DBI RO/RW switch is a straight-forward CSR flag
+> clearing/setting DBI_RO_WR_EN. This mechanism is available on all DW
+> PCIe IP-cores and works in the _same_ way on all of them: just the
+> MISC_CONTROL_1_OFF.DBI_RO_WR_EN flag switching. It switches RO/RW
+> access attributes on both DBI_CS and DBI_CS2. So it's a cross-platform
+> thing independent from the vendor-specific IP-core settings. That's
+> why having generic functions for the RO/RW switch was the best choice:
+> it's cross-platform so no need in the platform-specific callbacks, it
+> works for both DBI and DBI2 so instead of implementing two additional
+> RW-accessors you can call the RW en/dis method around the DBI and DBI2
+> accessors whenever you need to switch the access attributes.
+> 
+> On the contrary DBI_CS2 is the DW PCIe IP-core input signal which
+> activation is platform-specific. Some platforms have it switchable via
+> a system-controller, some - via an additional elbi CSRs space, some -
+> provide an additional CSR space mapping DBI2 with no need in the
+> direct DBI_CS2 flag toggle, some may have an intermix of these
+> setups or may need some additional manipulation to access the DBI2
+> space. So your case of having the DBI_CS2 flag available via the elbi
+> space and having the DBI/DBI2 space mapped within the 4K offset with
+> respect to DBI is just a single possible option.
+> 
+> Finally, it's all about simplicity, maintainability and KIS principle.
+> Your approach would imply having additional platform-specific
+> callbacks, meanwhile there is already available DBI2 space accessor
+> which is more than enough to implement what you need.  Even if you
+> drop the later one (and convert all the already available LLDDs to
+> supporting what you want), having two callbacks instead of one will
+> still make things harder to read, because the kernel hacker would need
+> to keep in mind the DBI/DBI2 access context. Additionally calling
+> _three_ methods instead of a _single_ one will look much more complex.
+> Moreover having on/off antagonists prune to errors since a developer
+> may forget to disable the DBI2 flag, which on some platforms will
+> change the DBI CSRs semantics. Such error will be just impossible to
+> meet should the current interface is preserved unless the
+> platform-specific DBI2 accessor is incorrectly implemented, which
+> would be still specific to the particular platform, but not for the
+> entire DW PCIe driver. The last but not least, as I already mentioned
+> dw_pcie_ops.write_dbi2 and respective wrappers look as much like the
+> normal DBI accessors dw_pcie_ops.{write_dbi,read_dbi} which greatly
+> improves the code readability.
+> 
 
-No :-)
+Hmm, thanks for the detailed clarification, really appreciated.
 
-PVCLOCK_TSC_STABLE_BIT doesn't provide the guarantees that are needed to use the
-raw TSC directly.  It's close, but there is at least one situation where using TSC
-directly even when the TSC is stable is bad idea: when hardware doesn't support TSC
-scaling and the guest virtual TSC is running at a higher frequency than the hardware
-TSC.  The guest doesn't have to worry about the TSC going backwards, but using the
-TSC directly would cause the guest's time calculations to be inaccurate.
+My understanding about the DBI2 space was not clear and your reply clarified
+that. I will implement the write_dbi2() callback as suggested.
 
-And PVCLOCK_TSC_STABLE_BIT is also much more dynamic as it's tied to a given
-generation/sequence.  E.g. if KVM stops using its masterclock for whatever reason,
-then kvm_guest_time_update() will effectively clear PVCLOCK_TSC_STABLE_BIT and the
-guest-side __pvclock_clocksource_read() will be forced to do a bit of extra work
-to ensure the clock is monotonically increasing.
+- Mani
+
+> So no, I failed to find any firm justification for the approach you
+> suggest.
+> 
+> -Serge(y)
+> 
+> > 
+> > - Mani
+> > 
+> > > /* Common DWC controller ops */
+> > > static const struct dw_pcie_ops pci_ops = {
+> > > 	.link_up = qcom_pcie_dw_link_up,
+> > > 	.start_link = qcom_pcie_dw_start_link,
+> > > 	.stop_link = qcom_pcie_dw_stop_link,
+> > > 	.write_dbi2 = qcom_pcie_write_dbi2,
+> > > };
+> > > 
+> > > For that reason there is absolutely no need in adding the new
+> > > callbacks.
+> > > 
+> > > -Serge(y)
+> > > 
+> > > > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-designware-ep.c |  6 ++++++
+> > > >  drivers/pci/controller/dwc/pcie-designware.h    | 13 +++++++++++++
+> > > >  2 files changed, 19 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > index d34a5e87ad18..1874fb3d8df4 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > @@ -269,11 +269,17 @@ static int dw_pcie_ep_set_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
+> > > >  
+> > > >  	dw_pcie_dbi_ro_wr_en(pci);
+> > > >  
+> > > > +	dw_pcie_dbi_cs2_en(pci);
+> > > >  	dw_pcie_writel_dbi2(pci, reg_dbi2, lower_32_bits(size - 1));
+> > > > +	dw_pcie_dbi_cs2_dis(pci);
+> > > > +
+> > > >  	dw_pcie_writel_dbi(pci, reg, flags);
+> > > >  
+> > > >  	if (flags & PCI_BASE_ADDRESS_MEM_TYPE_64) {
+> > > > +		dw_pcie_dbi_cs2_en(pci);
+> > > >  		dw_pcie_writel_dbi2(pci, reg_dbi2 + 4, upper_32_bits(size - 1));
+> > > > +		dw_pcie_dbi_cs2_dis(pci);
+> > > > +
+> > > >  		dw_pcie_writel_dbi(pci, reg + 4, 0);
+> > > >  	}
+> > > >  
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > > > index 55ff76e3d384..3cba27b5bbe5 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> > > > @@ -379,6 +379,7 @@ struct dw_pcie_ops {
+> > > >  			     size_t size, u32 val);
+> > > >  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
+> > > >  			      size_t size, u32 val);
+> > > > +	void	(*dbi_cs2_access)(struct dw_pcie *pcie, bool enable);
+> > > >  	int	(*link_up)(struct dw_pcie *pcie);
+> > > >  	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
+> > > >  	int	(*start_link)(struct dw_pcie *pcie);
+> > > > @@ -508,6 +509,18 @@ static inline void dw_pcie_dbi_ro_wr_dis(struct dw_pcie *pci)
+> > > >  	dw_pcie_writel_dbi(pci, reg, val);
+> > > >  }
+> > > >  
+> > > > +static inline void dw_pcie_dbi_cs2_en(struct dw_pcie *pci)
+> > > > +{
+> > > > +	if (pci->ops && pci->ops->dbi_cs2_access)
+> > > > +		pci->ops->dbi_cs2_access(pci, true);
+> > > > +}
+> > > > +
+> > > > +static inline void dw_pcie_dbi_cs2_dis(struct dw_pcie *pci)
+> > > > +{
+> > > > +	if (pci->ops && pci->ops->dbi_cs2_access)
+> > > > +		pci->ops->dbi_cs2_access(pci, false);
+> > > > +}
+> > > > +
+> > > >  static inline int dw_pcie_start_link(struct dw_pcie *pci)
+> > > >  {
+> > > >  	if (pci->ops && pci->ops->start_link)
+> > > > 
+> > > > -- 
+> > > > 2.25.1
+> > > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
+-- 
+மணிவண்ணன் சதாசிவம்
