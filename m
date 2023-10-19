@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F017CEFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DE7CEFF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbjJSGOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S232583AbjJSGQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSGOd (ORCPT
+        with ESMTP id S229894AbjJSGQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:14:33 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEDB112
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FsnePBghqO3tkfqMRARy7A6haZ3KodYua8YFPKFKu8Q=; b=CXhLhePPygSEVKgjWVrVTG0kiT
-        OsCC14hmm/sJUuc+PC1MzQ8nmU2AdbUcvhylu+jwYLT9BqpgvUBV1qu3qHlPIauq8hBF7yr7EJHOl
-        aoaevoAcDpx06uGvo1g5hf0ISWhTDcI1H/0s0KY7XLwB9sgJ1RcxNR6psToT0lZEbtpSvDfphbJDx
-        w8dzGI9dYDxVhqBtV9c0ptxaZOIH2QlPrj2BVnNDNNDXTNOLo5UCzwb2NwgLe12eWacL8JD6qo0g7
-        +FSP5hNNo1XfP+gOWaowwe9plE/b0gle8HaiZttVDaX4FSyuui9o4pGJWkPsbqIIv5R8MwRdh12UE
-        6UBz9SNQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtMId-002fOo-0u;
-        Thu, 19 Oct 2023 06:14:27 +0000
-Date:   Thu, 19 Oct 2023 07:14:27 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     gus Gusenleitner Klaus <gus@keba.com>
-Cc:     Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-Message-ID: <20231019061427.GW800259@ZenIV>
-References: <VI1PR0702MB3840EB26EF2A1A35BFEA53BFD9D5A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231018154205.GT800259@ZenIV>
- <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231019050250.GV800259@ZenIV>
+        Thu, 19 Oct 2023 02:16:16 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C26BE
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:16:12 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6be0277c05bso3358239b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697696171; x=1698300971; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yH/UjLgq32jH++PpMoUqJLeIFE0ZYZEDnxQSEj9bfyQ=;
+        b=XhQ9rch0+74TVCHpR01n3JHumgle+KuMfQscJmbaLNgjAh2Jqde2xQDbA+N3Crk8fi
+         a2WLAWqMwipqF4DdSDHumJCyN0L6bWFQHLcb0DSkiqrOZQsaZVDkuVVYrdBGAIGqhCxK
+         QPaze6Bn84FFwXoDAKtSUzhWGnzxYS1FWprqj50rGJiyaCtbHTxHzdIQlf2jSfA/Dyh3
+         igPWdmrg3yYoUtBVGldc6ENP7hzbihwScFYDNLDW0UiKAqQz2V7EX4N29/lx7CVN8fWB
+         7n4+r2S4GCQMCjJQUNWKJzZ4fecndvvLrJERZsd9xw+6eeu0NI3k+qUlTfdM3gYhGc8l
+         h1Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697696171; x=1698300971;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yH/UjLgq32jH++PpMoUqJLeIFE0ZYZEDnxQSEj9bfyQ=;
+        b=pgLKjWP0CrbxJq84Svu/XGIx1lajG8MIeC7xAWuHbZvONTVzGA+a6fRA+Un/6cdoXJ
+         6Te98JmrihmgEo7v8H8gAryiHjab6Rz7tKZu174oMx3PFF6hzwivQ7al22DZxPLIe1Rs
+         jq+PxRPpBbqVUgGkiu1mnng2a9kegTqVr2an8X8MyQZ64gXk8a5ad1fdzG4TRTdGhfyB
+         EREbWOUU4Ue2T7fW43UI0VUxH8tDD+U2kTwrgfrR0SpgVnjBmg5u9T8Cb4JUKrkzW9rp
+         J4jbkj9H9dku/SzWSpZEDjl1GjO6TNL3JVKmiJE3N2VO9/zT54NRdA96NyLEx4T/r4xS
+         JvhA==
+X-Gm-Message-State: AOJu0YzWTQgRpGCawrNW2a/If6QXxB79T+vsLUX0Iwf2QAcso87s4aMR
+        uNWUScP1mIXNw6QPj5ruzEATGg==
+X-Google-Smtp-Source: AGHT+IFaTXuhZLlg7nK3UyK8fM+1t0TG+C2O2i5DXfpYAeJ5f2mO+dwIkmiwoqHBiZRsQHyYhwplMQ==
+X-Received: by 2002:a05:6a00:1a8f:b0:6be:3c44:c18b with SMTP id e15-20020a056a001a8f00b006be3c44c18bmr1167269pfv.25.1697696171321;
+        Wed, 18 Oct 2023 23:16:11 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id x13-20020aa79a4d000000b006be0bd6a4d8sm4325600pfj.36.2023.10.18.23.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 23:16:10 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 11:46:08 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] cpufreq: Add basic cpufreq scaling for Qualcomm
+ MSM8909
+Message-ID: <20231019061608.wjlf4orkdlpnv3a5@vireshk-i7>
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019050250.GV800259@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 06:02:50AM +0100, Al Viro wrote:
-> On Thu, Oct 19, 2023 at 04:44:04AM +0000, gus Gusenleitner Klaus wrote:
-> > > On Wed, Oct 18, 2023 at 06:18:05AM +0000, gus Gusenleitner Klaus wrote:
-> > > > The checksum calculation is wrong in case of an source buffer
-> > > > containing zero bytes only. The expected return value is 0, the
-> > > > actual return value is 0xfffffff.
-> > > 
-> > > Expected where?  The actual checksum is defined modulo 0xffff, so
-> > > 0 and 0xffffffff represent the same final value.
-> > > 
-> > > The only twist is that in some situations we internally use 0 for
-> > > "not calculated yet".
-> > > 
-> > > > This problem occurs when a ICMP echo reply is sent that has set
-> > > > zero identifier, sequence number and data.
-> > > 
-> > > What problem?  Could you please either point to specific RFC or
-> > > show that packets are rejected by some existing system, or...?
-> > 
-> > Here's our situation:
-> > Our device gets pinged by a third party manufacturer robot controller.
-> > We have updated the kernel in our device to 5.15 from 4.9, the robot
-> > controller is kept unchanged. At 4.9, our device's ping reply is accepted
-> > by the robot controller, at 5.15 it's not.
-> > 
-> > Wireshark shows a bad checksum warning:
-> >  'Checksum: 0x0000 incorrect, should be 0xffff' 
-> > 
+On 18-10-23, 10:06, Stephan Gerhold wrote:
+> Add the necessary definitions to the qcom-cpufreq-nvmem driver to
+> support basic cpufreq scaling on the Qualcomm MSM8909 SoC. In practice
+> the necessary power domains vary depending on the actual PMIC the SoC
+> was combined with. With PM8909 the VDD_APC power domain is shared with
+> VDD_CX so the RPM firmware handles all voltage adjustments, while with
+> PM8916 and PM660 Linux is responsible to do adaptive voltage scaling
+> of a dedicated CPU regulator using CPR.
 > 
-> Lovely.  I think I see what's going on, give me a few to think about it...
+> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 
-The real source of trouble was switching csum_and_copy_{to,from}_user()
-to reporting faults as 0.  And yes, it's broken.  Bugger...
+Applied patch 1 and 3. Thanks.
+
+-- 
+viresh
