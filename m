@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B0B7CFB9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCB57CFBA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345790AbjJSNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S1345809AbjJSNu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345770AbjJSNtH (ORCPT
+        with ESMTP id S1345498AbjJSNu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:49:07 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D75131;
-        Thu, 19 Oct 2023 06:49:06 -0700 (PDT)
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ce322b62aeso36480a34.3;
-        Thu, 19 Oct 2023 06:49:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697723345; x=1698328145;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yIV3i/HNvLNPgakCfPrtUZcxVqXEXL+6MGsHZ5K0R4c=;
-        b=lbux8vF8nb38xutkF1CdRga1j26YSU09LD94x1AJGNs49rELLtYm4QN91+UM3u97Rs
-         ve/R+fmcV0Bsbg26rK/dSso04sq8bh3bu/rfNc4Dacuw3xhR6MwEjuJms7FtqiJy+DoW
-         3Wqq0AJIDCtNi/KBkJwLhLKHvtGE2P03VbnIcSTdndglx8qA9V/qRobxs+RizxDYl4iE
-         YzIn9CS00emL33C0hv1bIfmI3kPtPPECT3Ecwxd4WOqJbeafUjZtfXnv1qyZphnr9CJL
-         1vxgL8TsqPVz0OmIZJQ+Lfwp+8djOT82wFVAiFVHjzdYCn30vbtO0psEDwTou7TEI7dv
-         9Y+A==
-X-Gm-Message-State: AOJu0YxhL61fi4h8xo2AcG/k/irpK8LY1PRCSdkPFxgkPcTlsjl9a9y7
-        wSeBbnYUmSlQdoYhVZ6JBQ==
-X-Google-Smtp-Source: AGHT+IHaI9B2fdB9P1qbAVcNfrBoo52VF4jz72k0QyakB+AzmRV/J8sHTzlfshedfS+sXMw3Y6J4+g==
-X-Received: by 2002:a9d:6f19:0:b0:6b9:8357:61e6 with SMTP id n25-20020a9d6f19000000b006b9835761e6mr2027067otq.35.1697723345302;
-        Thu, 19 Oct 2023 06:49:05 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id bt55-20020a05683039f700b006ce2dd80f3csm107382otb.17.2023.10.19.06.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 06:49:04 -0700 (PDT)
-Received: (nullmailer pid 203372 invoked by uid 1000);
-        Thu, 19 Oct 2023 13:49:02 -0000
-Date:   Thu, 19 Oct 2023 08:49:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net-next v4 6/7] dt-bindings: marvell: Rewrite MV88E6xxx
- in schema
-Message-ID: <20231019134902.GB193647-robh@kernel.org>
-References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
- <20231018-marvell-88e6152-wan-led-v4-6-3ee0c67383be@linaro.org>
- <169762516805.391872.4190043734592153628.robh@kernel.org>
- <CACRpkdZz_+WAt7GG4Chm_xRiBNBP=pin2dx39z27Nx0PuyVN7w@mail.gmail.com>
+        Thu, 19 Oct 2023 09:50:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF43A124;
+        Thu, 19 Oct 2023 06:50:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 49C7AC433CA;
+        Thu, 19 Oct 2023 13:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697723424;
+        bh=KGkjy3SWE/bKA0U7i+Yr3cNTc5UcUvO6Rcal+ZDSr/c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Fkn9QIdXC75u7o2BeSQnw8oriqaVsbkdmn8v7q3Y4UoyL+L4MJZ6h9ik/lLagxydE
+         DiwqkqGxNnBtwxyWLLVyiJQXVHd4QfSCRXI47MpLNXPHoB3UeMqiBqVYOCVgwVxpuz
+         WGVUQeHGqcB31bycdXPE+CMA2FBzGfJVQCcYtQy1Mw+XRXhVFzDmvemnA03138jiaX
+         QRTCN/gxN/c9idAg16/UIMcJsg98IMHOjg3hZ1pBKVuKkgMb6hcxP+4shcAWE0G4tv
+         WHlcF8N2+AfteiNJsG2Qabz7gH0V/Ge5Ytg+YR2AF6mqMRIBmoaNbdKTdVpPzoJveJ
+         8FBb2rjRTJuwA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C8F1C595CE;
+        Thu, 19 Oct 2023 13:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZz_+WAt7GG4Chm_xRiBNBP=pin2dx39z27Nx0PuyVN7w@mail.gmail.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: Re: [net-next PATCH v4 0/4] net: stmmac: improve tx timer logic
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169772342417.4360.7732259077441281905.git-patchwork-notify@kernel.org>
+Date:   Thu, 19 Oct 2023 13:50:24 +0000
+References: <20231018123550.27110-1-ansuelsmth@gmail.com>
+In-Reply-To: <20231018123550.27110-1-ansuelsmth@gmail.com>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     rajur@chelsio.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        pkshih@realtek.com, kvalo@kernel.org, horms@kernel.org,
+        daniel@iogearbox.net, jiri@resnulli.us, liuhangbin@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 01:39:45PM +0200, Linus Walleij wrote:
-> On Wed, Oct 18, 2023 at 12:32 PM Rob Herring <robh@kernel.org> wrote:
-> 
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
-> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
-> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
-> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
-> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-> 
-> Fixed in patch 2/7?
+Hello:
 
-Yes. If one patch has errors we drop it. I should probably just give up 
-on the rest of the series instead.
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Rob
+On Wed, 18 Oct 2023 14:35:46 +0200 you wrote:
+> This series comes with the intention of restoring original performance
+> of stmmac on some router/device that used the stmmac driver to handle
+> gigabit traffic.
+> 
+> More info are present in patch 3. This cover letter is to show results
+> and improvements of the following change.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v4,1/4] net: introduce napi_is_scheduled helper
+    https://git.kernel.org/netdev/net-next/c/7f3eb2174512
+  - [net-next,v4,2/4] net: stmmac: improve TX timer arm logic
+    https://git.kernel.org/netdev/net-next/c/2d1a42cf7f77
+  - [net-next,v4,3/4] net: stmmac: move TX timer arm after DMA enable
+    https://git.kernel.org/netdev/net-next/c/a594166387fe
+  - [net-next,v4,4/4] net: stmmac: increase TX coalesce timer to 5ms
+    https://git.kernel.org/netdev/net-next/c/039550960a22
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
