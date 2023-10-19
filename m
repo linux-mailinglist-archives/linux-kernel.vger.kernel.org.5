@@ -2,69 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CEE7CF029
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172F07CF02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjJSGhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S232789AbjJSGhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjJSGh3 (ORCPT
+        with ESMTP id S232788AbjJSGhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:37:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E8DA4;
-        Wed, 18 Oct 2023 23:37:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15ECCC433C9;
-        Thu, 19 Oct 2023 06:37:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697697447;
-        bh=Y3hYUjPnYSdEpl04Dd6goNmE7HdP1OIA87Z6D8VoM6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p382420D05s74IJRLfvRTylYPf9zQa3pHT+Fn5897b1XY3V6fP0ZnQaLzl0cKxJwV
-         vD2liDu+NXz5BNHjYgmZ3Hi39YDpBbUFsl3xJUFanniwnSCzTa2KUuqqNRhyzblzOx
-         Z5CpnJu/xRZcxVDKZxpaog0+sgRnLfeXtdsAx/5/zy/0U/UnCGiieKVxRd64U4pyHt
-         BU38Cbg6QRF1ER48IKV0vhUMSPtAi/KENwClVG+W9am8wzuBupF+NOJRYulQXOEGyQ
-         QHBKSfH4hzUPSYbdl6ZbEjGNPOSi14sY/NOO13pCa938KOSokatmJYq/LKCiaaQb/O
-         2Xpb/+n/ZYqmQ==
-Date:   Thu, 19 Oct 2023 09:37:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Patrisious Haddad <phaddad@nvidia.com>
-Cc:     jgg@ziepe.ca, dsahern@gmail.com, stephen@networkplumber.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
-Subject: Re: [RFC iproute2-next 0/3] Add support to set privileged qkey
- parameter
-Message-ID: <20231019063723.GJ5392@unreal>
-References: <20231016063103.19872-1-phaddad@nvidia.com>
+        Thu, 19 Oct 2023 02:37:41 -0400
+Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24A9122;
+        Wed, 18 Oct 2023 23:37:38 -0700 (PDT)
+Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
+        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 84E0D1D37;
+        Thu, 19 Oct 2023 06:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1697697095;
+        bh=+tR/SuZ12C+bYNNqeuZZw4rfTtUeq8KRTtUUgfqHkLs=;
+        h=Date:To:CC:From:Subject;
+        b=NedFf5gfh5tADmdDx5q86t6uEtubFn1wv2MeXjZx0+0yVTst4PvpV7UcjcBgrWvnr
+         nEfQLilrW+VEiMJMfep48oPMi0Cf3spHQAV+J1jFSu3MuQnw5bOM/ntydf/szP2k7n
+         V4XKnyoPdNcaOC0j70rk/lTnPP9/e0LCXWCGGw+c=
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 775971D0F;
+        Thu, 19 Oct 2023 06:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1697697456;
+        bh=+tR/SuZ12C+bYNNqeuZZw4rfTtUeq8KRTtUUgfqHkLs=;
+        h=Date:To:CC:From:Subject;
+        b=WUhCjrIuj9DWkUf07Y5v2FiNF+TvDI3o0/uSXL9Ll199ygCc/zw5rcBVgCHzjJo5V
+         G08crjljCF8UbWRvbEydVcFvFp6ma8zpZ+LRh9dRx4uqDtHOdMcBtbYWFVMF+q1NOW
+         Sz3PWmXq/OVhCp4PPzImCH0i/j+ks+hlKuYxm/SQ=
+Received: from [172.16.192.129] (192.168.211.127) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 19 Oct 2023 09:37:35 +0300
+Message-ID: <e7b035ea-320e-465f-966f-0c370f9848be@paragon-software.com>
+Date:   Thu, 19 Oct 2023 09:37:33 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016063103.19872-1-phaddad@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     <torvalds@linux-foundation.org>
+CC:     <ntfs3@lists.linux.dev>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
+Subject: [GIT PULL] ntfs3: bugfixes for 6.6
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.211.127]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 09:31:00AM +0300, Patrisious Haddad wrote:
-> This patchset adds support to enable or disable privileged QKEY.
-> When enabled, non-privileged users will be allowed to specify a controlled QKEY.
-> The corresponding kernel commit is yet to be merged so currently there
-> is no hash but the commit name is
-> ("RDMA/core: Add support to set privileged qkey parameter")
-> 
-> All the information regarding the added parameter and its usage are included
-> in the commits below and the edited man page.
-> 
-> Patrisious Haddad (3):
->   rdma: update uapi headers
+Hi Linus,
 
-Kernel patch was accepted https://lore.kernel.org/all/169769714759.2016184.7321591466660624597.b4-ty@kernel.org/
-Please resend the series with right "rdma: update uapi headers" patch.
+Please pull this branch containing ntfs3 code for 6.6.
 
-Thanks
+Fixed:
+- memory leak;
+- some logic errors, NULL dereferences;
+- some code was refactored.
+
+Added:
+- more checks.
+
+All changed code was in linux-next branch for several weeks.
+
+Regards,
+
+Konstantin
+
+----------------------------------------------------------------
+
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+
+    Linux 6.6-rc1 (Sun Sep 10 16:28:41 2023 -0700)
+
+are available in the Git repository at:
+
+    https://github.com/Paragon-Software-Group/linux-ntfs3.git ntfs3_for_6.6
+
+for you to fetch changes up to e4494770a5cad3c9d1d2a65ed15d07656c0d9b82:
+
+    fs/ntfs3: Avoid possible memory leak (Mon Sep 25 12:48:07 2023 +0800)
+
+----------------------------------------------------------------
+
+Gabriel Marcano (1):
+   fs/ntfs3: Fix directory element type detection
+
+Konstantin Komarov (14):
+   fs/ntfs3: Add ckeck in ni_update_parent()
+   fs/ntfs3: Write immediately updated ntfs state
+   fs/ntfs3: Use kvmalloc instead of kmalloc(... __GFP_NOWARN)
+   fs/ntfs3: Add more attributes checks in mi_enum_attr()
+   fs/ntfs3: fix deadlock in mark_as_free_ex
+   fs/ntfs3: Fix shift-out-of-bounds in ntfs_fill_super
+   fs/ntfs3: Use inode_set_ctime_to_ts instead of inode_set_ctime
+   fs/ntfs3: Allow repeated call to ntfs3_put_sbi
+   fs/ntfs3: Fix alternative boot searching
+   fs/ntfs3: Refactoring and comments
+   fs/ntfs3: Add more info into /proc/fs/ntfs3/<dev>/volinfo
+   fs/ntfs3: Do not allow to change label if volume is read-only
+   fs/ntfs3: Fix possible NULL-ptr-deref in ni_readpage_cmpr()
+   fs/ntfs3: Fix NULL pointer dereference on error in
+     attr_allocate_frame()
+
+Pavel Skripkin (1):
+   fs/ntfs3: Fix OOB read in ntfs_init_from_boot
+
+Su Hui (1):
+   fs/ntfs3: Avoid possible memory leak
+
+Zeng Heng (1):
+   fs/ntfs3: fix panic about slab-out-of-bounds caused by ntfs_list_ea()
+
+Ziqi Zhao (1):
+   fs/ntfs3: Fix possible null-pointer dereference in hdr_find_e()
+
+  fs/ntfs3/attrib.c   |  12 +++--
+  fs/ntfs3/attrlist.c |  15 ++++++-
+  fs/ntfs3/bitmap.c   |   4 +-
+  fs/ntfs3/dir.c      |   6 ++-
+  fs/ntfs3/file.c     |   4 +-
+  fs/ntfs3/frecord.c  |   8 +++-
+  fs/ntfs3/fslog.c    |   6 ++-
+  fs/ntfs3/fsntfs.c   |  19 ++++----
+  fs/ntfs3/index.c    |   3 ++
+  fs/ntfs3/inode.c    |   5 ++-
+  fs/ntfs3/namei.c    |   6 +--
+  fs/ntfs3/ntfs.h     |   2 +-
+  fs/ntfs3/ntfs_fs.h  |   4 +-
+  fs/ntfs3/record.c   |  74 ++++++++++++++++++++++++-------
+  fs/ntfs3/super.c    | 104 +++++++++++++++++++++++++++++++-------------
+  fs/ntfs3/xattr.c    |   7 ++-
+  16 files changed, 197 insertions(+), 82 deletions(-)
+
+
