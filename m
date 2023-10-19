@@ -2,280 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021687CF8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044257CF8A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345735AbjJSMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        id S1345472AbjJSMWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbjJSM3z (ORCPT
+        with ESMTP id S233195AbjJSMWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:29:55 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7790D7C
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:29:46 -0700 (PDT)
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231019122944epoutp04b4a5f0c235f415be601af58f244e47a1~Pgg7Yzqsu3056030560epoutp04_
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:29:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231019122944epoutp04b4a5f0c235f415be601af58f244e47a1~Pgg7Yzqsu3056030560epoutp04_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697718584;
-        bh=TDOo3bhcjq1V1M/NiUKjoKU/btNbYwTzVuBWaGqt1jA=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=cl/2Eu7eVWSTruIkRdW9+FxDst3qASL4DHoh8/P4QdrM78qM69lPUJ0ME8I/eiGCw
-         1wih8B2vhZjdgOgBBWj6HHOBMVS0ghOiOuRsHn5dF0Qb6qgt75EZv8L7bUx6gZCN3s
-         bHKaxz68guR4GgJcZzw51EhRcMXSl0ADgtq7sTak=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20231019122943epcas1p3a7aaf6b7d57a12d30e0823eed1168a5d~Pgg56k4hP0139501395epcas1p3b;
-        Thu, 19 Oct 2023 12:29:43 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.36.134]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4SB6VG20VKz4x9Ps; Thu, 19 Oct
-        2023 12:29:42 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        87.01.09731.63121356; Thu, 19 Oct 2023 21:29:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231019122941epcas1p1f094121c91f61fea36f4b02fa9c219b5~Pgg4YTgsV1912419124epcas1p1a;
-        Thu, 19 Oct 2023 12:29:41 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231019122157epsmtrp166d30538f20c5191acf82727c5059119~PgaIHUUbd0316803168epsmtrp1M;
-        Thu, 19 Oct 2023 12:21:57 +0000 (GMT)
-X-AuditID: b6c32a36-a7dff70000002603-f0-65312136c29f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7E.99.18939.56F11356; Thu, 19 Oct 2023 21:21:57 +0900 (KST)
-Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231019122157epsmtip2c2dc2144b509f4fa568996ea3089c182~PgaH1ozco1190911909epsmtip2T;
-        Thu, 19 Oct 2023 12:21:57 +0000 (GMT)
-From:   "Chanwoo Choi" <cw00.choi@samsung.com>
-To:     "'Chanwoo Choi'" <chanwoo@kernel.org>,
-        "'Sascha Hauer'" <s.hauer@pengutronix.de>,
-        <linux-rockchip@lists.infradead.org>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        "'Heiko Stuebner'" <heiko@sntech.de>,
-        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
-        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Will Deacon'" <will@kernel.org>,
-        "'Mark Rutland'" <mark.rutland@arm.com>, <kernel@pengutronix.de>,
-        "'Michael Riesch'" <michael.riesch@wolfvision.net>,
-        "'Robin Murphy'" <robin.murphy@arm.com>,
-        "'Vincent Legoll'" <vincent.legoll@gmail.com>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "'Sebastian Reichel'" <sebastian.reichel@collabora.com>
-In-Reply-To: <ffcf4521-5bf0-4933-a25c-22574035f774@kernel.org>
-Subject: RE: [PATCH v8 19/26] PM / devfreq: rockchip-dfi: add support for
- RK3588
-Date:   Thu, 19 Oct 2023 21:21:57 +0900
-Message-ID: <002c01da0286$da5fde00$8f1f9a00$@samsung.com>
+        Thu, 19 Oct 2023 08:22:34 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AB5A3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1697718150;
+        bh=HLdF5+iRS16V2LnewyEPDHcCGuf4XKcDvsdDlHMTKMg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=kILPIOWQASmoPxMG9KgzwSELmJKaoB58CEji73tRv4pjHD+HGwfdEDEK/b3RGROzZ
+         dexNxfmbOtVIuzU/rumzQ6Q1MaUvaYINHEzB6pg9rCXakzMIHQoVWTvPd0Mwee+xZR
+         plz0s7qr7Qe8MAffNy3CcN2RPQebLwTgxdFNuNjTdperVUGJ8SsD5McsW6YoQ8gRr2
+         x2giqVQ0/BnkhTfnGuTYT/QTIlaWPgeW/3Q8EKKgyxr9LsKvTRKBfpSgP4Gk+12lbT
+         TTK3v2Y1Qgl2bGOFXzCmIaKX1+IPRo/4ObLpMI/ukn9d/FoTUN3LW+ORPT5VLjv2xI
+         Hlw8ZtCUOny1w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SB6Ky0wksz4xcF;
+        Thu, 19 Oct 2023 23:22:30 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/perf: Optimize find_alternatives_list() using
+ binary search
+In-Reply-To: <20231019035630.GC576715@sivslab-System-Product-Name>
+References: <20231013175714.2142775-1-visitorckw@gmail.com>
+ <871qdr75ie.fsf@mail.lhotse>
+ <20231019035630.GC576715@sivslab-System-Product-Name>
+Date:   Thu, 19 Oct 2023 23:22:26 +1100
+Message-ID: <87edhq6bul.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: ko
-Thread-Index: AQFYMiMsP3soeW2GlDsie1R9CxInBwGxyFXuAqDH4QoCVt350rEfXexA
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUxTVxTP7Xt9LTr0Wdi8EDfKQx0QPlps4bIA0+jgJTMLUTGREfGFvgGh
-        tF1bFrbIxofA+BYBxVoUMsCOoMTKBAz4ARjG4iAORJ2QMQtOKBCEMfmYYS0PJ//9zu/8zj3n
-        d+69Qkw0R7gKE1V6VqtilBSxCb/R5eXrG+guZSUV/Q6o9PEgjho7+njoUncfH60+s/JRQ0Ub
-        jopf/ImhXzOnBMhsGeKjgZtGAs0XdQM0N7qKobpHD3jobs1O9DTDRKDsjm4Bujs7xkevW8w4
-        GrF+hnquPCfQqWH5Xme68WIjoFtHagHdZhgR0OaGPIIeHmon6Ou139ElryV0cXMDoFuGLmL0
-        vPkD+tKKBURujk4KSWAZBasVs6o4tSJRFR9KfXo4dn+sPFAi9ZUGoyBKrGKS2VDqwMFI3/BE
-        pc0gJf6KUabYqEhGp6P8w0K06hQ9K05Q6/ShFKtRKDVyjZ+OSdalqOL9VKz+I6lEEiC3CU8k
-        JZQVl2OaIa/UlwVLeDowUfnAQQhJGawbM4F8sEkoIlsBTLf0EFwwB2BT5vDb4GFjFvGm5Mlg
-        hoBLtAFYMLEssCdE5ASAU5nR+UAoJEgfWL0YZaedyZPwr4I/+HY9RvbzYc1UDd+ecCDDYH3X
-        OdyOnchDsH32OmbHOLkLzvcOrJ3pSAbDFyXLBIe3wd7zY2t6jHSDLdNGjBtIDJfG6/kc7wwv
-        5OVgXONwmFH++/rQFxygaTCOwwfgrdP167wTnOxpFnDYFU6U5KwZg2QZgA+sVowLmgC89uOp
-        9W574O26Mp7dJUZ6waab/hztDttWqgA3xBY4s1DIt0sg6Qi/zxFxEg84MDrC47AL/CE3jzgN
-        KMMGa4YN1gwb7BjeNqsGeAN4j9XokuNZnVQT8P9tx6mTzWDt8XsHtoIz07N+nYAnBJ0ACjHK
-        2XEXLWFFjgrm629YrTpWm6JkdZ1Ablt2Keb6bpza9ntU+lipLFgiCwzYI0PSQCm13dFoKVKI
-        yHhGzyaxrIbVvqnjCR1c03lh0zt+c+r7cvynbGl/2/19vTP5nildioo7qzHN59yijRkLz8yU
-        T2UfiBAWqPW12/HK7H8KrYrew+HyiMw0tzuxvcA96PLZEMJw1rkzu/BVYn/3QRdmufJ82ecR
-        k3XYsajloQ5TUPUV7RHfX5TH82YMRYsdgg6LvPzGoTT9nPWLe1mG8v3d21Y9d7TjJ0+kPvow
-        a1+MOmJvasCM+NoMLrOoswuXPl7M/TfC+Gpgy0OXfrfb94q9/ibSco5UeUzmlvoYE66+kx/f
-        GVm8Nf3bqlvhMZt3/uw97q8wTpk+2f20yWB9WV+reHL0vmfF1mNBHqrjCz6j77uvXB09qp5q
-        eiwWPQ+PonBdAiP1xrQ65j8LiMUjhQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsWy7bCSvG6qvGGqwfljYhYTb1xhsViz9xyT
-        xfwj51gt/j96zWqxaupOFou+Fw+ZLc42vWG32PT4GqvF5V1z2Cw+9x5htPj04D+zxdLrF5ks
-        Di5UsbjduILNonXvEXaLgx+esFr83b6JxeLuaz+L42ufsVm03DF1EPFYM28No8eOu0sYPXbO
-        usvusWlVJ5vHnWt72Dw2L6n36P9r4NG3ZRWjx/Zr85g9Pm+S85j/+zFjAHcUl01Kak5mWWqR
-        vl0CV8bkvinMBdc0Kz52/2RpYFyh1MXIySEhYCJx80ojexcjF4eQwHZGic5L35khEpIS0y4e
-        BbI5gGxhicOHiyFqnjNK7Ns+iw0kziagI7HgRyhIuYhAncTk7l1sIDXMArdZJRZO/8UM0fCF
-        UWJu6wdGkCpOATuJZYens4DYwgIBEs+bToEtYxFQlfh88jI7iM0rYCnxov8XG4QtKHFy5hOw
-        emYBbYmnN59C2fIS29/OgTpUQeLn02WsEHERidmdbcwQF7lJNE65xTaBUXgWklGzkIyahWTU
-        LCTtCxhZVjGKphYU56bnJhcY6hUn5haX5qXrJefnbmIEx75W0A7GZev/6h1iZOJgPMQowcGs
-        JMKr6mGQKsSbklhZlVqUH19UmpNafIhRmoNFSZxXOaczRUggPbEkNTs1tSC1CCbLxMEp1cCU
-        9q/c5OqhiafqJ7iWTFBYGvcwcq6I1ox31ZeabjyeuElj0urcPskvOX+LUhQ+6b18nzD33dMO
-        0Y7L0l+2nzp3ZivvcXvRGyUSp+/uqrgbe+PXjeg1z5WFuWXDlWMfJZ+OvRLl6OLxWH/7b9b3
-        +rM3f7C7qbftbWf51o5A8Scq92Wi97QnrjcUm/+xce2L6dfnyEWL6GmUck5dzXplV1+kzc73
-        B7k9zy5U279vGkNXkUVqwregxR7KHKtW36+NEXNzODJrWtHBvheFrxa1/17atPX/q4KqSazH
-        /p3zju+bttw36MpWxX1tqTyObw7M26g0q1GtbIbNhAkXVCYvmW6Qkv9uwb5KGfmYAw82b/5z
-        8b8SS3FGoqEWc1FxIgDz1POobAMAAA==
-X-CMS-MailID: 20231019122941epcas1p1f094121c91f61fea36f4b02fa9c219b5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231018151237epcas1p343048db94d5678e0dd8ab865f7cad8a1
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
-        <20231018061714.3553817-20-s.hauer@pengutronix.de>
-        <CGME20231018151237epcas1p343048db94d5678e0dd8ab865f7cad8a1@epcas1p3.samsung.com>
-        <ffcf4521-5bf0-4933-a25c-22574035f774@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kuan-Wei Chiu <visitorckw@gmail.com> writes:
+> On Thu, Oct 19, 2023 at 12:41:45PM +1100, Michael Ellerman wrote:
+>> Kuan-Wei Chiu <visitorckw@gmail.com> writes:
+>> > This patch improves the performance of event alternative lookup by
+>> > replacing the previous linear search with a more efficient binary
+>> > search. This change reduces the time complexity for the search process
+>> > from O(n) to O(log(n)). A pre-sorted table of event values and their
+>> > corresponding indices has been introduced to expedite the search
+>> > process.
+>> 
+>> Thanks for the patch.
+>> 
+>> How did you test this? I assume you don't have a Power6 machine lying
+>> around? :)
+>
+> I indeed do not have a Power6 machine for testing. Therefore, I designed
+> a simple unit test [1] to verify the functionality of the patch. In this
+> test, I ran a loop from 0 to UINT_MAX, using these values as inputs to
+> compare the return values of the original function with the new function
+> I implemented, which utilizes binary search. If you have any suggestions
+> for a more suitable testing method, please let me know. I would greatly
+> appreciate your feedback.
 
+That's an excellent technique :)
 
-> -----Original Message-----
-> From: Chanwoo Choi <chanwoo@kernel.org>
-> Sent: Thursday, October 19, 2023 12:12 AM
-> To: Sascha Hauer <s.hauer@pengutronix.de>; linux-
-> rockchip@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> linux-pm@vger.kernel.org; Heiko Stuebner <heiko@sntech.de>; Kyungmin Park
-> <kyungmin.park@samsung.com>; MyungJoo Ham <myungjoo.ham@samsung.com>; Will
-> Deacon <will@kernel.org>; Mark Rutland <mark.rutland@arm.com>;
-> kernel@pengutronix.de; Michael Riesch <michael.riesch@wolfvision.net>;
-> Robin Murphy <robin.murphy@arm.com>; Vincent Legoll
-> <vincent.legoll@gmail.com>; Rob Herring <robh+dt@kernel.org>; Krzysztof
-> Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>; devicetree@vger.kernel.org; Sebastian Reichel
-> <sebastian.reichel@collabora.com>; Jonathan Cameron
-> <Jonathan.Cameron@huawei.com>
-> Subject: Re: [PATCH v8 19/26] PM / devfreq: rockchip-dfi: add support for
-> RK3588
-> 
-> On 23. 10. 18. 15:17, Sascha Hauer wrote:
-> > Add support for the RK3588 to the driver. The RK3588 has four DDR
-> > channels with a register stride of 0x4000 between the channel
-> > registers, also it has a DDRMON_CTRL register per channel.
-> >
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/devfreq/event/rockchip-dfi.c | 36 +++++++++++++++++++++++++++-
-> >  include/soc/rockchip/rk3588_grf.h    | 18 ++++++++++++++
-> >  2 files changed, 53 insertions(+), 1 deletion(-)  create mode 100644
-> > include/soc/rockchip/rk3588_grf.h
-> >
-> > diff --git a/drivers/devfreq/event/rockchip-dfi.c
-> > b/drivers/devfreq/event/rockchip-dfi.c
-> > index bf38829a2a4af..794f36e7eebd1 100644
-> > --- a/drivers/devfreq/event/rockchip-dfi.c
-> > +++ b/drivers/devfreq/event/rockchip-dfi.c
-> > @@ -26,8 +26,9 @@
-> >  #include <soc/rockchip/rockchip_grf.h>  #include
-> > <soc/rockchip/rk3399_grf.h>  #include <soc/rockchip/rk3568_grf.h>
-> > +#include <soc/rockchip/rk3588_grf.h>
-> >
-> > -#define DMC_MAX_CHANNELS	2
-> > +#define DMC_MAX_CHANNELS	4
-> >
-> >  #define HIWORD_UPDATE(val, mask)	((val) | (mask) << 16)
-> >
-> > @@ -723,9 +724,42 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
-> >  	return 0;
-> >  };
-> >
-> > +static int rk3588_dfi_init(struct rockchip_dfi *dfi) {
-> > +	struct regmap *regmap_pmu = dfi->regmap_pmu;
-> > +	u32 reg2, reg3, reg4;
-> > +
-> > +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG2, &reg2);
-> > +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG3, &reg3);
-> > +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG4, &reg4);
-> > +
-> > +	/* lower 3 bits of the DDR type */
-> > +	dfi->ddr_type = FIELD_GET(RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO,
-> > +reg2);
-> > +
-> > +	/*
-> > +	 * For version three and higher the upper two bits of the DDR type
-> are
-> > +	 * in RK3588_PMUGRF_OS_REG3
-> > +	 */
-> > +	if (FIELD_GET(RK3588_PMUGRF_OS_REG3_SYSREG_VERSION, reg3) >= 0x3)
-> > +		dfi->ddr_type |=
-> FIELD_GET(RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3,
-> > +reg3) << 3;
-> > +
-> > +	dfi->buswidth[0] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH0, reg2) ==
-> 0 ? 4 : 2;
-> > +	dfi->buswidth[1] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg2) ==
-> 0 ? 4 : 2;
-> > +	dfi->buswidth[2] = FIELD_GET(RK3568_PMUGRF_OS_REG2_BW_CH0, reg4) ==
-> 0 ? 4 : 2;
-> > +	dfi->buswidth[3] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg4) ==
-> 0 ? 4 : 2;
-> > +	dfi->channel_mask = FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg2)
-> |
-> > +			    FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg4) << 2;
-> > +	dfi->max_channels = 4;
-> > +
-> > +	dfi->ddrmon_stride = 0x4000;
-> > +
-> > +	return 0;
-> > +};
-> > +
-> >  static const struct of_device_id rockchip_dfi_id_match[] = {
-> >  	{ .compatible = "rockchip,rk3399-dfi", .data = rk3399_dfi_init },
-> >  	{ .compatible = "rockchip,rk3568-dfi", .data = rk3568_dfi_init },
-> > +	{ .compatible = "rockchip,rk3588-dfi", .data = rk3588_dfi_init },
-> >  	{ },
-> >  };
-> >
-> > diff --git a/include/soc/rockchip/rk3588_grf.h
-> > b/include/soc/rockchip/rk3588_grf.h
-> > new file mode 100644
-> > index 0000000000000..630b35a550640
-> > --- /dev/null
-> > +++ b/include/soc/rockchip/rk3588_grf.h
-> > @@ -0,0 +1,18 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */ #ifndef __SOC_RK3588_GRF_H
-> > +#define __SOC_RK3588_GRF_H
-> > +
-> > +#define RK3588_PMUGRF_OS_REG2		0x208
-> > +#define RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO		GENMASK(15, 13)
-> > +#define RK3588_PMUGRF_OS_REG2_BW_CH0			GENMASK(3, 2)
-> > +#define RK3588_PMUGRF_OS_REG2_BW_CH1                    GENMASK(19, 18)
-> > +#define RK3588_PMUGRF_OS_REG2_CH_INFO                   GENMASK(29, 28)
-> > +
-> > +#define RK3588_PMUGRF_OS_REG3		0x20c
-> > +#define RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3		GENMASK(13, 12)
-> > +#define RK3588_PMUGRF_OS_REG3_SYSREG_VERSION		GENMASK(31, 28)
-> > +
-> > +#define RK3588_PMUGRF_OS_REG4           0x210
-> > +#define RK3588_PMUGRF_OS_REG5           0x214
-> > +
-> > +#endif /* __SOC_RK3588_GRF_H */
-> 
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> 
-> --
-> Best Regards,
-> Samsung Electronics
-> Chanwoo Choi
+The other option would be to test it using qemu.
 
+You can't actually emulate a Power6 with qemu, but you can emulate a
+Power7 which is similar. The code in power7-pmu.c is similar enough that
+you could copy this code into there and test it that way.
 
-Applied it. Thanks
+But I don't expect you to do all that. I have an actual Power6 I can
+give it a quick test on, and your unit test should have found any bugs
+anyway.
 
-Best Regards,
-Chanwoo Choi
+For future reference you can add extra detail about testing and so on
+below the "---" line in your patch, ie. below the diffstat but above the
+diff. Content in there will not appear in the final commit, so it's good
+for information you want to tell the maintainer, but is a bit verbose to
+be in the permanant change log - like for example how you tested
+something.
 
+My only other comment would be to change the name of
+"presort_event_table" to "presorted_event_table" - but I can do that
+when applying.
+
+I'll pick this up for v6.7.
+
+cheers
+
+> [1]:
+> /* return 0 on success and return non-zero on failure */
+> int test()
+> {
+>     u64 event = 0;
+>     for (u64 event = 0; event <= UINT_MAX; event++) {
+>         /* result of the current function in the linux kernel */
+> 	int result_old = find_alternatives_list(event);
+> 	/* result of the new function using binary search */
+> 	int result_new = find_alternatives_list_new(event);
+>
+> 	if (result_old != result_new)
+> 	    return 1;
+>     }
+>     return 0;
+> }
+>
+>
+>> > diff --git a/arch/powerpc/perf/power6-pmu.c b/arch/powerpc/perf/power6-pmu.c
+>> > index 5729b6e059de..b6030ea130eb 100644
+>> > --- a/arch/powerpc/perf/power6-pmu.c
+>> > +++ b/arch/powerpc/perf/power6-pmu.c
+>> > @@ -335,25 +335,34 @@ static const unsigned int event_alternatives[][MAX_ALT] = {
+>> >  	{ 0x3000fe, 0x400056 },			/* PM_DATA_FROM_L3MISS */
+>> >  };
+>> >  
+>> > -/*
+>> > - * This could be made more efficient with a binary search on
+>> > - * a presorted list, if necessary
+>> > - */
+>> >  static int find_alternatives_list(u64 event)
+>> >  {
+>> > -	int i, j;
+>> > -	unsigned int alt;
+>> > -
+>> > -	for (i = 0; i < ARRAY_SIZE(event_alternatives); ++i) {
+>> > -		if (event < event_alternatives[i][0])
+>> > -			return -1;
+>> > -		for (j = 0; j < MAX_ALT; ++j) {
+>> > -			alt = event_alternatives[i][j];
+>> > -			if (!alt || event < alt)
+>> > -				break;
+>> > -			if (event == alt)
+>> > -				return i;
+>> > -		}
+>> > +	const unsigned int presort_event_table[] = {
+>> > +		0x0130e8, 0x080080, 0x080088, 0x10000a, 0x10000b, 0x10000d, 0x10000e,
+>> > +		0x100010, 0x10001a, 0x100026, 0x100054, 0x100056, 0x1000f0, 0x1000f8,
+>> > +		0x1000fc, 0x200008, 0x20000e, 0x200010, 0x200012, 0x200054, 0x2000f0,
+>> > +		0x2000f2, 0x2000f4, 0x2000f5, 0x2000f6, 0x2000f8, 0x2000fc, 0x2000fe,
+>> > +		0x2d0030, 0x30000a, 0x30000c, 0x300010, 0x300012, 0x30001a, 0x300056,
+>> > +		0x3000f0, 0x3000f2, 0x3000f6, 0x3000f8, 0x3000fc, 0x3000fe, 0x400006,
+>> > +		0x400007, 0x40000a, 0x40000e, 0x400010, 0x400018, 0x400056, 0x4000f0,
+>> > +		0x4000f8, 0x600005};
+>> > +	const unsigned int event_index_table[] = {
+>> > +		0,  1,  2,  3,  4,  1, 5,  6,  7,  8,  9,  10, 11, 12, 13, 12, 14,
+>> > +		7,  15, 2,  9,  16, 3, 4,  0,  17, 10, 18, 19, 20, 1,  17, 15, 19,
+>> > +		18, 2,  16, 21, 8,  0, 22, 13, 14, 11, 21, 5,  20, 22, 1,  6,  3};
+>> > +	int lo = 0;
+>> > +	int hi = ARRAY_SIZE(presort_event_table) - 1;
+>> > +
+>> > +	while (lo <= hi) {
+>> > +		int mid = lo + (hi - lo) / 2;
+>> > +		unsigned int alt = presort_event_table[mid];
+>> > +
+>> > +		if (alt < event)
+>> > +			lo = mid + 1;
+>> > +		else if (alt > event)
+>> > +			hi = mid - 1;
+>> > +		else
+>> > +			return event_index_table[mid];
+>> >  	}
+>> >  	return -1;
+>> >  }
+>> > -- 
+>> > 2.25.1
