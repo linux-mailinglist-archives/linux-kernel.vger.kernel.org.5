@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A9C7D0036
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E87D003B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345562AbjJSRIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        id S1345932AbjJSRI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235462AbjJSRIP (ORCPT
+        with ESMTP id S1345614AbjJSRIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:08:15 -0400
+        Thu, 19 Oct 2023 13:08:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0D1130
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:08:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26875C433C9;
-        Thu, 19 Oct 2023 17:08:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2204B12A;
+        Thu, 19 Oct 2023 10:08:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6BCAC433C8;
+        Thu, 19 Oct 2023 17:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697735293;
-        bh=kEzdmpSgsxge4iZIBXYMW8Gp5G9qVQ9vuxRAIEUfpFM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pLjfFdKCKN12svlbXRJA6ki21TrS1ROSPHqtfafi41SnggTJHm1p2huPJK2mAYm7W
-         qfSPlsyw2QbJFBDpSQB7wSxJwI4AJxo25UMQFmpQIDX+FO39EsOBhKmCsyF3/4M13J
-         i001iXULoot0xzcFy32pMpLm0Wofjw96lT5izSCBJ0JWLkHuW+KPPrLrRzlPDSI6An
-         zaYGvWKKSZIlZlv+Upp5cMnQoculcTZFscjUyUAXCFYXdWgvYG2BveJzn35suhiWK7
-         hDnGlt5VnSStQwl5eeK4LqawH9Nqm4zjvTctRkN6OSTtdpHL2q+tBhYjvxGoxVy3Bu
-         f0v0AvGqZPi+w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9EA6CE0CF9; Thu, 19 Oct 2023 10:08:12 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 10:08:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <cdec2fb1-f5f4-48ab-a941-8cc963daa102@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <87ttrngmq0.ffs@tglx>
- <87jzshhexi.ffs@tglx>
- <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
- <87pm1c3wbn.ffs@tglx>
- <20231018103146.4856caa8@gandalf.local.home>
- <ff85b142-c833-4a79-970d-ff691f9b60b7@paulmck-laptop>
- <20231018140035.107f5177@gandalf.local.home>
- <98f9ff35-5d71-4706-afe1-7e039afbcaaf@paulmck-laptop>
- <05066f9d-b8c9-4a22-b573-928df4263e49@kernel.org>
+        s=k20201202; t=1697735301;
+        bh=pG0Qit3AqQuyW6KGy3cTGUjC4taxXCYceYbhQqKPpi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iuYT4D0VMaEuj+thGqbHAXol5XSAP+gpQW0FvmhrZUDfxLXv+/ZVEXa7HboYTdjfS
+         6IW13fpGKYOraD3SUYgFKSKngtaiTn4eZnS5/t4No3Bd9JUpA/YN36SlzCfxP3r8Qo
+         GSGIhhQuUcl2bZWr7R2xIlGjz0vg5FexGBIpOTGda3+rKYYtVhgWVsIhxkX6hbI0gm
+         mcLC1qwZc2f1UoNDZu97OVSCneDpDNOnMk0J/9pg1MhLPNaMhehC5h9M8hK61gX85H
+         oCvpdUL6LgDGxSu2UPoMDo+pZMMxQOrswwQOGCVnwHabAhbK25KaSViVEB0JO0/a2D
+         NKmdSxXCL95kQ==
+Date:   Thu, 19 Oct 2023 18:08:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <8a158486-f0b9-4f25-b673-998726a40528@sirena.org.uk>
+References: <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+ <ZOTnL1SDJWZjHPUW@arm.com>
+ <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
+ <ZOXa98SqwYPwxzNP@arm.com>
+ <ZOYFazB1gYjzDRdA@arm.com>
+ <ZRWw7aa3C0LlMPTH@arm.com>
+ <38edb5c3-367e-4ab7-8cb7-aa1a5c0e330c@sirena.org.uk>
+ <ZRvUxLgMse8QYlGS@arm.com>
+ <a7d2fd66-c06b-4033-bca2-4b14afc4904f@sirena.org.uk>
+ <ZR7w/mr0xZbpIPc5@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kNvCjmZsgc4H4SyY"
 Content-Disposition: inline
-In-Reply-To: <05066f9d-b8c9-4a22-b573-928df4263e49@kernel.org>
+In-Reply-To: <ZR7w/mr0xZbpIPc5@arm.com>
+X-Cookie: Beware of dog.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,66 +83,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:37:23PM +0200, Daniel Bristot de Oliveira wrote:
-> On 10/18/23 20:13, Paul E. McKenney wrote:
-> > On Wed, Oct 18, 2023 at 02:00:35PM -0400, Steven Rostedt wrote:
-> >> On Wed, 18 Oct 2023 10:55:02 -0700
-> >> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >>
-> >>>> If everything becomes PREEMPT_RCU, then the above should be able to be
-> >>>> turned into just:
-> >>>>
-> >>>>                 if (!disable_irq)
-> >>>>                         local_irq_disable();
-> >>>>
-> >>>>                 rcu_momentary_dyntick_idle();
-> >>>>
-> >>>>                 if (!disable_irq)
-> >>>>                         local_irq_enable();
-> >>>>
-> >>>> And no cond_resched() is needed.  
-> >>>
-> >>> Even given that CONFIG_PREEMPT_RCU=n still exists, the fact that
-> >>> run_osnoise() is running in kthread context with preemption and everything
-> >>> else enabled (am I right?), then the change you suggest should work fine.
-> >>
-> >> There's a user space option that lets you run that loop with preemption and/or
-> >> interrupts disabled.
-> > 
-> > Ah, thank you.  Then as long as this function is not expecting an RCU
-> > reader to span that call to rcu_momentary_dyntick_idle(), all is well.
-> > This is a kthread, so there cannot be something else expecting an RCU
-> > reader to span that call.
-> 
-> Sorry for the delay, this thread is quite long (and I admit I should be paying
-> attention to it).
-> 
-> It seems that you both figure it out without me anyways. This piece of
-> code is preemptive unless a config is set to disable irq or preemption (as
-> steven mentioned). That call is just a ping to RCU to say that things
-> are fine.
-> 
-> So Steven's suggestion should work.
 
-Very good!
+--kNvCjmZsgc4H4SyY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >>>>> Again. There is no non-preemtible RCU with this model, unless I'm
-> >>>>> missing something important here.  
-> >>>>
-> >>>> Daniel?  
-> >>>
-> >>> But very happy to defer to Daniel.  ;-)
-> >>
-> >> But Daniel could also correct me ;-)
-> > 
-> > If he figures out a way that it is broken, he gets to fix it.  ;-)
-> 
-> It works for me, keep in the loop for the patches and I can test and
-> adjust osnoise accordingly. osnoise should not be a reason to block more
-> important things like this patch set, and we can find a way out in
-> the osnoise tracer side. (I might need an assistance from rcu
-> people, but I know I can count on them :-).
+On Thu, Oct 05, 2023 at 06:23:10PM +0100, Catalin Marinas wrote:
 
-For good or for bad, we will be here.  ;-)
+> I haven't checked how many clone() or clone3() uses outside the libc are
+> (I tried some quick search in Debian but did not dig into the specifics
+> to see how generic that code is). I agree that having to change valid
+> cases outside of libc is not ideal. Even if we have the same clone3()
+> interface for x86 and arm64, we'd have other architectures that need
+> #ifdef'ing.
 
-							Thanx, Paul
+FTR the set of Debian source packages that have references to the string
+__NR_clone (which picks up clone3 too) is below.  At least some (eg,
+kore) just have things that look like a copy of the syscall table rather
+than things that look like calls, though equally it's likely we're
+missing some.
+
+aflplusplus
+android-platform-tools
+binutils-avr
+box64
+brltty
+bubblewrap
+chromium
+chrony
+crash
+criu
+crun
+dietlibc
+elogind
+emscripten
+fakeroot-ng
+falcosecurity-libs
+firefox
+firefox-esr
+flatpak
+gcc-9
+gcc-10
+gcc-11
+gcc-12
+gcc-13
+gcc-arm-none-eabi
+gcc-snapshot
+gdb-msp430
+glibc
+gnumach
+hurd
+klibc
+kore
+libpod
+libseccomp
+linux
+llvm-toolchain-14
+llvm-toolchain-15
+llvm-toolchain-16
+lxc
+lxcfs
+lxd
+musl
+newlib
+notcurses
+purelibc
+pwntools
+qemu
+qt6-base
+qt6-webengine
+qtbase-opensource-src
+qtbase-opensource-src-gles
+qtwebengine-opensource-src
+radare2
+rumur
+rustc
+rust-linux-raw-sys
+rust-rustix
+strace
+stress-ng
+swtpm
+systemd
+systemtap
+termpaint
+thunderbird
+tor
+uclibc
+umview
+valgrind
+vsftpd
+wasi-libc
+webkit2gtk
+wpewebkit
+
+--kNvCjmZsgc4H4SyY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUxYnsACgkQJNaLcl1U
+h9BPuwf/ckJjx9BnOVP9ZzZPFpa7pKsXZe4D8gbrhkTsTNPX6DKdD77294DX72gh
+Q3LR3m5Xdw3nFoR/pP6cUgZ24o8sV/iUz8fLdBvuOOnemVmgoPIRcB/TNueOcq9P
+1rIwQ44UzdUfxc/5Ny1QKCvurTnCs4dFc3Llt0GdVvDy+Ec6FK9hX/Wwe48hsvLr
+6kDkKqvYz3IF3xnnTmGyHxD7EdaHnYPHrU8mWr33e1j8/MWMn6ywGyCRV6ZgrQxW
+VuTTod0EwhsDlW/u8yYNGmLBirZQszpmt3Wp2QCv4vcjHbjxa+xh7SYq8P5BNRj3
+ZgUagp/WsyNXXW6iGiQlgqb1YHdFdg==
+=ZvaR
+-----END PGP SIGNATURE-----
+
+--kNvCjmZsgc4H4SyY--
