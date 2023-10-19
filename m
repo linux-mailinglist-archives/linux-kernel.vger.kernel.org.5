@@ -2,162 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79D97CFADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1567CFADF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345891AbjJSNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        id S1345498AbjJSNWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345923AbjJSNWO (ORCPT
+        with ESMTP id S1345962AbjJSNWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:22:14 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A96B114;
-        Thu, 19 Oct 2023 06:22:11 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SB7ZV1q4wzRt4X;
-        Thu, 19 Oct 2023 21:18:26 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 19 Oct
- 2023 21:22:08 +0800
-Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related API
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-References: <20231013064827.61135-1-linyunsheng@huawei.com>
- <20231016182725.6aa5544f@kernel.org>
- <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
- <20231017081303.769e4fbe@kernel.org>
- <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
- <20231018083516.60f64c1a@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fd8a3e6d-579f-666d-7674-67732e250978@huawei.com>
-Date:   Thu, 19 Oct 2023 21:22:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 19 Oct 2023 09:22:39 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5228219A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:22:37 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso7185367a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697721755; x=1698326555; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8cshwpkgCLbTspjqCkooWC3GYTc/d734V8fjxUCe9U=;
+        b=B+DqpKCV7AjlrCoptxWpFe7LFl8btJ2lOOz65W8Qg7Ff1tTgq5Nq4a4Gcj+3zPcVQe
+         DwrENh1AMCNaUK2A+v/jg/6uLMygPlK22Ze4wWo95SdM26B1yn94PIPKRj69HkCKVFbR
+         CemeqnBrKruSOm4oy5zL5dZmJa1FBr9XzkYYI1VXQhq2bLiR5CJJOUCH88g75yqRMlBr
+         UOyvQdqjupMwQxHsyQy7Vxlsfn3WJxk6j4Xc5F88c7RdlSrHU3zSAF+pRu825pHHPj+l
+         TNzO7W82raSLAU146+XHim2t7Qgst57d9lNCO4p3FLn1u3I6U5hhczz+fzgO9DzOxSq8
+         rp8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697721755; x=1698326555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R8cshwpkgCLbTspjqCkooWC3GYTc/d734V8fjxUCe9U=;
+        b=tmcDa/aCFc0qK7YMEjQ7DACUvKPc+tQdOkSwQ9VpP+CNspIe+sCeW4WaUCzrwgS45Q
+         3u1nPuuzsxs/mb06cB+NufBF6quf2AbraI45jErHpkmFqGupI65Ub1Li1tWLn+XREUX0
+         KZNLm3YyEbUIH/iZjxeE4Qv0sRevVV7qwPximmPRsZ+S9DX7982uwNW7t9QwNLXJJHwK
+         +Kdl3JRjlOjMsiz+alnBafdIyv0lnxGfZeyAt4nBJLNiT5DsmEYosaot18f6SLgLuGZF
+         5bZxUc+wT7vVUkNenr/I3EnosyhtMBSUiNyR0yS8OIzQrChq0Pp4EzCmKD09wcj621C4
+         H0YA==
+X-Gm-Message-State: AOJu0YxIGzCg0R4+TSS3RqKbeI3GLVadf9bmB9U9i9z9z05z1476d88o
+        KhGUR5C1aJLWfEK+YJrGzZ+Nig9jDmJRN118Ie0=
+X-Google-Smtp-Source: AGHT+IFPL/1FhYZwjLu6LkmXsGrA81vCOzj3CTlwBJoJIEQ18X/ItdKqq5VrIGrSD1ZtYqQYtpfFY5X5OPQFNKtCuQM=
+X-Received: by 2002:a17:907:2d0f:b0:9ae:6a51:87c3 with SMTP id
+ gs15-20020a1709072d0f00b009ae6a5187c3mr1975859ejc.9.1697721755248; Thu, 19
+ Oct 2023 06:22:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20231018083516.60f64c1a@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231017083033.118643-1-zhiguangni01@gmail.com> <20231019073625.GB2824@kernel.org>
+In-Reply-To: <20231019073625.GB2824@kernel.org>
+From:   Liam Ni <zhiguangni01@gmail.com>
+Date:   Thu, 19 Oct 2023 21:22:23 +0800
+Message-ID: <CACZJ9cWTCrUciq4S8Z=x+_aH23RuRhwAyiP8hYvmkavWnnUV6Q@mail.gmail.com>
+Subject: Re: [PATCH V5] NUMA: optimize detection of memory with no node id
+ assigned by firmware
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, chenhuacai@kernel.org,
+        kernel@xen0n.name, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        akpm@linux-foundation.org, maobibo@loongson.cn,
+        chenfeiyang@loongson.cn, zhoubinbin@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/18 23:35, Jakub Kicinski wrote:
-> On Wed, 18 Oct 2023 19:47:16 +0800 Yunsheng Lin wrote:
->>> mention it in the documentation. Plus the kdoc of the function should
->>> say that this is just a thin wrapper around other page pool APIs, and
->>> it's safe to mix it with other page pool APIs?  
->>
->> I am not sure I understand what do 'safe' and 'mix' mean here.
->>
->> For 'safe' part, I suppose you mean if there is a va accociated with
->> a 'struct page' without calling some API like kmap()? For that, I suppose
->> it is safe when the driver is calling page_pool API without the
->> __GFP_HIGHMEM flag. Maybe we should mention that in the kdoc and give a
->> warning if page_pool_*alloc_va() is called with the __GFP_HIGHMEM flag?
-> 
-> Sounds good. Warning wrapped in #if CONFIG_DEBUG_NET perhaps?
-
-How about something like __get_free_pages() does with gfp flags?
-https://elixir.free-electrons.com/linux/v6.4-rc6/source/mm/page_alloc.c#L4818
-
-how about something like below on top of this patchset:
-diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 7550beeacf3d..61cee55606c0 100644
---- a/include/net/page_pool/helpers.h
-+++ b/include/net/page_pool/helpers.h
-@@ -167,13 +167,13 @@ static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
-        return page_pool_alloc(pool, offset, size, gfp);
- }
-
--static inline void *page_pool_cache_alloc(struct page_pool *pool,
--                                         unsigned int *size, gfp_t gfp)
-+static inline void *page_pool_alloc_va(struct page_pool *pool,
-+                                      unsigned int *size, gfp_t gfp)
- {
-        unsigned int offset;
-        struct page *page;
-
--       page = page_pool_alloc(pool, &offset, size, gfp);
-+       page = page_pool_alloc(pool, &offset, size, gfp & ~__GFP_HIGHMEM);
-        if (unlikely(!page))
-                return NULL;
-
-@@ -181,21 +181,22 @@ static inline void *page_pool_cache_alloc(struct page_pool *pool,
- }
-
- /**
-- * page_pool_dev_cache_alloc() - allocate a cache.
-+ * page_pool_dev_alloc_va() - allocate a page or a page fragment.
-  * @pool: pool from which to allocate
-  * @size: in as the requested size, out as the allocated size
-  *
-- * Get a cache from the page allocator or page_pool caches.
-+ * This is just a thin wrapper around the page_pool_alloc() API, and
-+ * it returns va of the allocated page or page fragment.
-  *
-  * Return:
-- * Return the addr for the allocated cache, otherwise return NULL.
-+ * Return the va for the allocated page or page fragment, otherwise return NULL.
-  */
--static inline void *page_pool_dev_cache_alloc(struct page_pool *pool,
--                                             unsigned int *size)
-+static inline void *page_pool_dev_alloc_va(struct page_pool *pool,
-+                                          unsigned int *size)
- {
-        gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
-
--       return page_pool_cache_alloc(pool, size, gfp);
-+       return page_pool_alloc_va(pool, size, gfp);
- }
-
- /**
-@@ -338,17 +339,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
-                (sizeof(dma_addr_t) > sizeof(unsigned long))
-
- /**
-- * page_pool_cache_free() - free a cache into the page_pool
-- * @pool: pool from which cache was allocated
-- * @data: addr of cache to be free
-+ * page_pool_free_va() - free a va into the page_pool
-+ * @pool: pool from which va was allocated
-+ * @va: va to be free
-  * @allow_direct: freed by the consumer, allow lockless caching
-  *
-  * Free a cache allocated from page_pool_dev_cache_alloc().
-  */
--static inline void page_pool_cache_free(struct page_pool *pool, void *data,
--                                       bool allow_direct)
-+static inline void page_pool_free_va(struct page_pool *pool, void *va,
-+                                    bool allow_direct)
- {
--       page_pool_put_page(pool, virt_to_head_page(data), -1, allow_direct);
-+       page_pool_put_page(pool, virt_to_head_page(va), -1, allow_direct);
- }
+Thanks, I will prepare V6 based on your suggestion.
 
 
-
+On Thu, 19 Oct 2023 at 15:36, Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Tue, Oct 17, 2023 at 04:30:33PM +0800, Liam Ni wrote:
+> > Sanity check that makes sure the nodes cover all memory loops over
+> > numa_meminfo to count the pages that have node id assigned by the firmware,
+> > then loops again over memblock.memory to find the total amount of memory
+> > and in the end checks that the difference between the total memory and
+> > memory that covered by nodes is less than some threshold. Worse, the loop
+> > over numa_meminfo calls __absent_pages_in_range() that also partially
+> > traverses memblock.memory.
+> >
+> > It's much simpler and more efficient to have a single traversal of
+> > memblock.memory that verifies that amount of memory not covered by nodes is
+> > less than a threshold.
+> >
+> > Introduce memblock_validate_numa_coverage() that does exactly that and use
+> > it instead of numa_meminfo_cover_memory().
+> >
+> > Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
+> > ---
+> >  arch/loongarch/kernel/numa.c | 28 +---------------------------
+> >  arch/x86/mm/numa.c           | 34 ++--------------------------------
+> >  include/linux/memblock.h     |  1 +
+> >  mm/memblock.c                | 34 ++++++++++++++++++++++++++++++++++
+> >  4 files changed, 38 insertions(+), 59 deletions(-)
+> >
+> > diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+> > index cb00804826f7..fca94d16be34 100644
+> > --- a/arch/loongarch/kernel/numa.c
+> > +++ b/arch/loongarch/kernel/numa.c
+> > @@ -226,32 +226,6 @@ static void __init node_mem_init(unsigned int node)
+> >
+> >  #ifdef CONFIG_ACPI_NUMA
+> >
+> > -/*
+> > - * Sanity check to catch more bad NUMA configurations (they are amazingly
+> > - * common).  Make sure the nodes cover all memory.
+> > - */
+> > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> > -{
+> > -     int i;
+> > -     u64 numaram, biosram;
+> > -
+> > -     numaram = 0;
+> > -     for (i = 0; i < mi->nr_blks; i++) {
+> > -             u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> > -             u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> > -
+> > -             numaram += e - s;
+> > -             numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> > -             if ((s64)numaram < 0)
+> > -                     numaram = 0;
+> > -     }
+> > -     max_pfn = max_low_pfn;
+> > -     biosram = max_pfn - absent_pages_in_range(0, max_pfn);
+> > -
+> > -     BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
+> > -     return true;
+> > -}
+> > -
+> >  static void __init add_node_intersection(u32 node, u64 start, u64 size, u32 type)
+> >  {
+> >       static unsigned long num_physpages;
+> > @@ -396,7 +370,7 @@ int __init init_numa_memory(void)
+> >               return -EINVAL;
+> >
+> >       init_node_memblock();
+> > -     if (numa_meminfo_cover_memory(&numa_meminfo) == false)
+> > +     if (memblock_validate_numa_coverage(SZ_1M >> 12) == false)
+>
+> No magic constants please.
+> Either use
+>
+>         SZ_1M >> PAGE_SIZE
+>
+> here, or make threshold in bytes and convert it to number of pages in
+> memblock_validate_numa_coverage().
+>
+> Besides, no need to compare to false,
+>
+>         if (!memblock_validate_numa_coverage())
+>
+> will do
+>
+> >               return -EINVAL;
+> >
+> >       for_each_node_mask(node, node_possible_map) {
+> > diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> > index 2aadb2019b4f..95376e7c263e 100644
+> > --- a/arch/x86/mm/numa.c
+> > +++ b/arch/x86/mm/numa.c
+> > @@ -447,37 +447,6 @@ int __node_distance(int from, int to)
+> >  }
+> >  EXPORT_SYMBOL(__node_distance);
+> >
+> > -/*
+> > - * Sanity check to catch more bad NUMA configurations (they are amazingly
+> > - * common).  Make sure the nodes cover all memory.
+> > - */
+> > -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> > -{
+> > -     u64 numaram, e820ram;
+> > -     int i;
+> > -
+> > -     numaram = 0;
+> > -     for (i = 0; i < mi->nr_blks; i++) {
+> > -             u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> > -             u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> > -             numaram += e - s;
+> > -             numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> > -             if ((s64)numaram < 0)
+> > -                     numaram = 0;
+> > -     }
+> > -
+> > -     e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+> > -
+> > -     /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> > -     if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
+> > -             printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB e820 RAM. Not used.\n",
+> > -                    (numaram << PAGE_SHIFT) >> 20,
+> > -                    (e820ram << PAGE_SHIFT) >> 20);
+> > -             return false;
+> > -     }
+> > -     return true;
+> > -}
+> > -
+> >  /*
+> >   * Mark all currently memblock-reserved physical memory (which covers the
+> >   * kernel's own memory ranges) as hot-unswappable.
+> > @@ -583,7 +552,8 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
+> >                       return -EINVAL;
+> >               }
+> >       }
+> > -     if (!numa_meminfo_cover_memory(mi))
+> > +
+> > +     if (!memblock_validate_numa_coverage(SZ_1M >> 12))
+> >               return -EINVAL;
+> >
+> >       /* Finally register nodes. */
+> > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > index 1c1072e3ca06..727242f4b54a 100644
+> > --- a/include/linux/memblock.h
+> > +++ b/include/linux/memblock.h
+> > @@ -120,6 +120,7 @@ int memblock_physmem_add(phys_addr_t base, phys_addr_t size);
+> >  void memblock_trim_memory(phys_addr_t align);
+> >  bool memblock_overlaps_region(struct memblock_type *type,
+> >                             phys_addr_t base, phys_addr_t size);
+> > +bool memblock_validate_numa_coverage(const u64 threshold_pages);
+> >  int memblock_mark_hotplug(phys_addr_t base, phys_addr_t size);
+> >  int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+> >  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+> > diff --git a/mm/memblock.c b/mm/memblock.c
+> > index 0863222af4a4..4f1f2d8a8119 100644
+> > --- a/mm/memblock.c
+> > +++ b/mm/memblock.c
+> > @@ -734,6 +734,40 @@ int __init_memblock memblock_add(phys_addr_t base, phys_addr_t size)
+> >       return memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
+> >  }
+> >
+> > +/**
+> > + * memblock_validate_numa_coverage - calculating memory with no node id assigned by firmware
+> > + * @threshold_pages: threshold memory of no node id assigned
+> > + *
+> > + * calculating memory with no node id assigned by firmware,
+> > + * If the number is less than the @threshold_pages, it returns true,
+> > + * otherwise it returns false.
+> > + *
+> > + * Return:
+> > + * true on success, false on failure.
+> > + */
+>
+> I'd suggest the below version:
+>
+> /**
+>  * memblock_validate_numa_coverage - check if amount of memory with
+>  * no node ID assigned is less than a threshold
+>  * @threshold_pages: maximal number of pages that can have unassigned node
+>  * ID (in pages).
+>  *
+>  * A buggy firmware may report memory that does not belong to any node.
+>  * Check if amount of such memory is below @threshold_pages.
+>  *
+>  * Return: true on success, false on failure.
+>  */
+>
+> > +bool __init_memblock memblock_validate_numa_coverage(const u64 threshold_pages)
+> > +{
+> > +     unsigned long nr_pages = 0;
+> > +     unsigned long start_pfn, end_pfn, mem_size_mb;
+> > +     int nid, i;
+> > +
+> > +     /* calculate lose page */
+> > +     for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+> > +             if (nid == NUMA_NO_NODE)
+> > +                     nr_pages += end_pfn - start_pfn;
+> > +     }
+> > +
+> > +     if (nr_pages >= threshold_pages) {
+> > +             mem_size_mb = memblock_phys_mem_size() >> 20;
+> > +             pr_err("NUMA: no nodes coverage for %luMB of %luMB RAM\n",
+> > +                    (nr_pages << PAGE_SHIFT) >> 20, mem_size_mb);
+> > +             return false;
+> > +     }
+> > +
+> > +     return true;
+> > +}
+> > +
+> > +
+> >  /**
+> >   * memblock_isolate_range - isolate given range into disjoint memblocks
+> >   * @type: memblock type to isolate range for
+> > --
+> > 2.25.1
+> >
+>
+> --
+> Sincerely yours,
+> Mike.
