@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 714C47D040C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1A87D040F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346591AbjJSV3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        id S1345256AbjJSVcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346602AbjJSV3G (ORCPT
+        with ESMTP id S230039AbjJSVcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:29:06 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 Oct 2023 14:29:04 PDT
-Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2A393
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:29:04 -0700 (PDT)
-Received: from localhost (88-113-24-34.elisa-laajakaista.fi [88.113.24.34])
-        by fgw22.mail.saunalahti.fi (Halon) with ESMTP
-        id 5fac9ca2-6ec6-11ee-a9de-005056bdf889;
-        Fri, 20 Oct 2023 00:27:58 +0300 (EEST)
-From:   andy.shevchenko@gmail.com
-Date:   Fri, 20 Oct 2023 00:27:58 +0300
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC v2 0/5] gpio: add pinctrl based generic gpio driver
-Message-ID: <ZTGfXsLc_Z6yj_HB@surfacebook.localdomain>
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
+        Thu, 19 Oct 2023 17:32:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E8F93
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697751140; x=1729287140;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cw5t3VXt7tUZOXYsPRrDLRYcGpbLTXZ9huugpFgVVdo=;
+  b=S5tk2/F/nh2Set71ZKZOWU4D2DwKz60DiX5gpgxGBCaruI8nVzPm5gV1
+   6KtB6p9mYkBLriFKTr/Y8D7TcUPU9txR/GH7T0M24Z3PHk0r77ZJ7c8Hb
+   14hAK53DAIHSCZhJqtvL/R5Ikt54NnHw9EJtkFHAdKVkywX/VxjeSeim3
+   JofTF1u59F1x8ypJk7OoUXCDJANcief6UENbz02cB4FUCdk4ebaZmfQuJ
+   AoW99bVewz6eCWLu/U4dhaS31gaLI3cAKdL2axC2HdeR9GkFyZG8TyC0j
+   L4A+fXJ6HEsa2XMirJyeLAniOQ/p6KkjJ6r6GZ/5EN4n31Ljmu+8YPDYo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="390258002"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="390258002"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 14:32:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="707002209"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="707002209"
+Received: from xuanyaoo-mobl.gar.corp.intel.com (HELO intel.com) ([10.214.165.172])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 14:32:13 -0700
+Date:   Thu, 19 Oct 2023 23:32:04 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] staging: vme_user: Use __func__ instead of
+ function name
+Message-ID: <ZTGgVNBoxOtWOuE8@ashyti-mobl2.lan>
+References: <cover.1697696951.git.soumya.negi97@gmail.com>
+ <996c9f92e7fd288f67c02dfb0ba524ab7c5fe421.1697696951.git.soumya.negi97@gmail.com>
+ <ZTFOGIu5U+ZUodXW@ashyti-mobl2.lan>
+ <20231019191428.GA32717@Negi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005025843.508689-1-takahiro.akashi@linaro.org>
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231019191428.GA32717@Negi>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Oct 05, 2023 at 11:58:38AM +0900, AKASHI Takahiro kirjoitti:
-> This is a revised version of my previous RFC[1]. Although I modified
-> the commits to make them look SCMI-independent, they are still posted
-> as RFC because I have never tested them on real hardware.
-> 
-> (background)
-> I'm currently working on implementing SCMI pinctrl/gpio drivers
-> on U-Boot[2]. Although the pinctrl driver for the kernel[3] was submitted
-> by EPAM, it doesn't contain the gpio driver and I believe that we should
-> discuss a couple of points on the kernel side to finalize my design for
-> U-Boot. 
-> 
-> So this RFC is intended for reviews, especially to raise some issues.
-> 
-> 1) how to obtain a value on an input pin
->    All the existing gpio drivers are set to obtain a value on an input
->    pin by accessing the hardware directly. In SCMI case, however, this is
->    just impossible in its nature and must be supported via a protocol
->    using "Input-value" configuration type. (See the spec[4], table-23.)
-> 
->    The current pinconf framework is missing the feature (the pinconf
->    parameter and a helper function). See patch#1, #2 and #3.
-> 
->    Please note that there is an issue around the pin configuration in
->    EPAM's current pinctrl driver as I commented[5].
-> 
-> 2) DT bindings
->    I would like to propose a generic binding for pinctrl based gpio driver.
->    This allows a "consumer" driver to handle gpio pins like as other
->    normal gpio controllers support. (patch#5)
-> 
-> 3) generic GPIO driver
->    Based on (2), I tried to prototype a generic driver in patch#4.
->    Thanks to a set of existing pinctrl_gpio helper functions, except (1),
->    It seems that the driver can be implemented not relying on pin controller
->    specific code, at least for SCMI pinctrl.
-> 
-> I will appreciate any comments.
+Hi Soumya,
 
-Any comment here: I'm listed as a designated reviewer of GPIO patches, why am I
-not Cc'ed on this? I definitely have some comments against the code (no DT,
-though). Please, use (up-to-date) MAINTAINERS in your v3.
+> > On Thu, Oct 19, 2023 at 12:20:10AM -0700, Soumya Negi wrote:
+> > > Replace function names in message strings with __func__ to fix
+> > > all checkpatch warnings like:
+> > > 
+> > >     WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
+> > >              this function's name, in a string
+> > > 
+> > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> > 
+> > you forgot my ack here:
+> > 
+> > Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
+> > 
+> > Andi
+> 
+> Sorry I forgot the tag Andi. I'll add the tags in v3(Greg has suggested
+> more changes). There will be some new patches, so I'll leave the tags out in 
+> those as you may want to review them first.
 
--- 
-With Best Regards,
-Andy Shevchenko
+no problem.
 
+I don't see reviews from Greg in this v2 series. If you are
+referring to the changelog, then you don't need to resend.
 
+Andi
