@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CCE7CF184
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C498D7CF189
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbjJSHoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
+        id S233122AbjJSHox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjJSHn7 (ORCPT
+        with ESMTP id S1344874AbjJSHow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:43:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C28B6;
-        Thu, 19 Oct 2023 00:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9mnHWCvj7nBYGABXmxzYKP27v8fhXB//VHIMzUSyq88=; b=H6QUdqDnlPSm/VF5tTCY9c5+9q
-        cfJ/qQqVVzgQgYWw5CHwBWWlp+NLpSDdXbUdBEQxfLNfzrMkfPRc70ta90AND5CLwgcGNIcYJEP5P
-        mn2oLwxct5c2miFqwQXnyemT3OvSoHYVoE1mRL2LvNG8CniQY9LA7YZy2yIqGfr6PDh29i/YBxQbj
-        86r18rLJbioQBkhgdku4SVuIp/Td90YhLYLdEh0fvWVDjHW6wfFxTLKfAH4sHmYncpWadayzmG/Ba
-        95wtue8RgD0XfcuLKOqUtsFRhnY/19ZNbB2idcbnSPrj1YEKOTDonoQr/UUZAVaiUKuDbhDef6B3S
-        te8ogUZA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtNh0-009gqh-2m;
-        Thu, 19 Oct 2023 07:43:43 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8693D300392; Thu, 19 Oct 2023 09:43:42 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 09:43:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231019074342.GL33217@noisy.programming.kicks-ass.net>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
- <ZS/f8DeEIWhBtBeb@gmail.com>
- <20231018151245.GCZS/17QhDGe7q6K+w@fat_crate.local>
- <20231018155433.z4auwckr5s27wnig@treble>
- <20231018175531.GEZTAcE2p92U1AuVp1@fat_crate.local>
- <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
+        Thu, 19 Oct 2023 03:44:52 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D72AB6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:44:49 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id CAEFAA3A;
+        Thu, 19 Oct 2023 09:44:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1697701484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UHhHJ2y+Q+UNfBPleafnf7D6uFO4IuCG7DUy+7588gM=;
+        b=wbPuvufBMzu65294UcblHg5bAM0606+pdGi0GET0b+BpVlJEl4pNBRDa0QDCeanql6EVpd
+        0wRWaVh2cgZXwVCQ92fBWMNy/T2Cl3TPtW5V8z0SgLyl35ZGLQ8UGxyxOPnvjigrDE4xRc
+        Bj9BwtuvhAg3N0hOTgN2AditZXB+y3NDgDTS7A1mqA5I7/45RckfrskC5o0FcSRBoiZNHG
+        p2rBMgMxKrt5cUTFuL3YOkUR+uVEvfCKjMf4GojW0psIsBPm1J2cR4jN5KMLMhQYBpWQnd
+        DNGXi5VKpWrit+UTMh2sYMJ9ftjzkz0W2lSFpDFJBfFCIoKTFiDhJlDMU7U8tA==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
+Date:   Thu, 19 Oct 2023 09:44:44 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: Lower the priority of the software reset
+ failure message
+In-Reply-To: <20231019064547.348446-1-acelan.kao@canonical.com>
+References: <20231019064547.348446-1-acelan.kao@canonical.com>
+Message-ID: <cf4143937dea52a4a4f40ed602ec74b1@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,30 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:37:47PM +0200, Borislav Petkov wrote:
+Hi,
 
-> And here's the fix:
+> Not all SPI drivers support soft reset enable and soft reset commands.
+> This failure is expected and not critical.
+
+This is not really expected. What driver is this? Let me guess, the 
+intel
+SPI driver.
+
+Please mention this in the commit message.
+
+> Thus, we avoid reporting it
+> to regular users to prevent potential confusion regarding power-off 
+> issues.
 > 
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 73be3931e4f0..50d64f5226f4 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -748,14 +748,20 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
->                         continue;
->  
->                 op = insn.opcode.bytes[0];
-> -               if (op == JMP32_INSN_OPCODE)
-> +               if (op == JMP32_INSN_OPCODE || op == JMP8_INSN_OPCODE)
->                         dest = addr + insn.length + insn.immediate.value;
->  
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> I'd still prefer the revert, though, that close to the MW. We can work
-> at those things later, at leisure.
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 1b0c6770c14e..7bca8ffcd756 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3252,7 +3252,7 @@ static void spi_nor_soft_reset(struct spi_nor 
+> *nor)
+> 
+>  	ret = spi_mem_exec_op(nor->spimem, &op);
+>  	if (ret) {
+> -		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> +		dev_info(nor->dev, "Software reset failed: %d\n", ret);
 
-Yet another fall-out from removing the section... When in it's own
-section the compiler must emit long form jump because it doesn't know
-where the target is.
+What is the value of ret here? Ideally it should be -EOPNOTSUPP and then
+don't print this message at all. Otherwise leave it at dev_warn(). Also,
+please add a comment here.
 
-Now, not so much.
-
-Anyway, yes, that seems trivial enough as a fix.
+-michael
