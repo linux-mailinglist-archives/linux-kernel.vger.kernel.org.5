@@ -2,161 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 095C77D0146
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFFB7D0149
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346167AbjJSSV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S1346398AbjJSSVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235471AbjJSSV0 (ORCPT
+        with ESMTP id S235519AbjJSSVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:21:26 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38405124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:21:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a3942461aso12021206276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:21:24 -0700 (PDT)
+        Thu, 19 Oct 2023 14:21:42 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABA712A;
+        Thu, 19 Oct 2023 11:21:40 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9b95622c620so2432166b.0;
+        Thu, 19 Oct 2023 11:21:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697739683; x=1698344483; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d4Js1cGoVd6Is4II9UaSATIKgACWkFcGE+hiHb+zhb4=;
-        b=UlxO7jfJT7LrfqoagBtOhuJDKklt5UatDzxoL19uExnG3cHnbhVlAteA8K+lq02Oak
-         dWEfb5nmtOerLFmeSsKEkQag+GAyLAycW9koeRTLFwOEbvIQRHLcY4wAly7fJoAmBk1L
-         Y7C3fOlOdIXERSKauJTLIvPRvu0hKm7itahJNkLNu39jtxbL1yEunOBXMJbZBCm99yPK
-         +JZmI6xScf3C7E4CXYZBnWj7fUBGNSyaHk0sN5uk2I5WmAJwxfrQfSoGmt+C/MNtNHZs
-         cl1adaMhd5QgbswD6DIPUXRI2DaHdgPX370WE7OhwZf9uDvCX/Ctb4puB+id2KI07K76
-         Y1TA==
+        d=gmail.com; s=20230601; t=1697739699; x=1698344499; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b6ChytOvOHSvApPA10oZhEcP/0JgPMv0U+va/XQPN/I=;
+        b=TAoIOJbfY9f0MSk4rDqfpM5o22ZZr9ClnuOpH27qgMPUXRzKGzylvHwvUX61zWgdgA
+         HpGljrbEpXF47slWwP/K8XBlxaR5VYxNLAiaWsCJ2cutGrhdhjqrZaIeTCFFMFmOkRpp
+         mi3ppEVJSOoaDC99NVJGHByauNHutV7CqWWL1GGDQ1ixpdPclRHOIw9vPCCjI2M9Bbld
+         kY8IFeJhptiweNRWWsC1v61OLSp5sgghU51IEgMs9qv0jHLJSz3bPNdex0lN26GkDqtY
+         E7nFbauMfc4k14cFxtAzXq0IVVRHNHd+pQTjpaYVQAUO9cuX17509bhW7vupTj285Gmc
+         n3Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697739683; x=1698344483;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d4Js1cGoVd6Is4II9UaSATIKgACWkFcGE+hiHb+zhb4=;
-        b=amN0FFR0Kx8CP+ixj7yDH3+IClHyqWmXtF0ILkmiRu75sBgdVpV4oKpLneCZsSNp+X
-         lFujMx5JB5JXIbhpYHBf4AsLtKysn8ZOoWkwKJD1r5BBTSi71n9eQW0bnjKqLgBKifzB
-         ptSl0APEAPFA3WlE6Yk/pc4CtuWfEWDMoXO+uUB9+pgUjX/W1qZyI9vR89dHbJfXCX9B
-         xsQtUcfpNpbc+Oet+QpNb1ESkf/Y/750Hnh+RmnuNLJDcXVzd2rD+eAAgUbZSq6UEsSD
-         SbSJdeGc0MDrC79fZdF2yaB6z8KI4mQVMJXP+ppmQAwYvDd8BvYs/sJDF+/dK6c3MfLX
-         7etw==
-X-Gm-Message-State: AOJu0YxwmZHwjBAz6+KsAITYvhRhX1wCXIMlAtzym4BQBRTp2RSkiQ+D
-        PlByMXinpbp8Ri8luLzf5JJYLM2SCD8qarRlwA==
-X-Google-Smtp-Source: AGHT+IFlXICmJcfbDSmoO7A7EUA6iVEF74betNl2k852/gxnaf3TEuSWEbGfjZQ7BNIH7NpUBEkFg+ungfm4ArnZtQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:ec02:0:b0:d9a:3dac:6c1a with SMTP
- id j2-20020a25ec02000000b00d9a3dac6c1amr73575ybh.11.1697739683357; Thu, 19
- Oct 2023 11:21:23 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 18:21:22 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKFzMWUC/52NSwqDMBRFt1Iy7iv5iJaOuo8iEuIzBjSRlxAr4
- t4bXUJn99zBOTuLSA4je912RphddMEXkPcbM6P2FsH1hZnkUgkunhATebNs0JPLSBE8JlhX7YG
- WOdrunJ1JNIEBNdSSaz30StasCBfCwX2v2KctPLqYAm1XO4vz/SuTBQioUFVKNlw1Sr9tCHbCh wkza4/j+AHiV2SL5QAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697739682; l=2821;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=fmlQfhWbiCM67LS2nuJX0KI/1NzFMdegLgKJe+cta+Q=; b=wDUtP3Ror/d2KFXBRlN9RT2CDGzEW5TDMAgY6ZpEV6DYbx7hZuns1er9Wb2wR7lXEPmqCtncN
- RTkxhUuMmpTDTdSDV0A6ncnIw87LXyDFbMHjm6T7oMQfm5T/3jQHUTh
-X-Mailer: b4 0.12.3
-Message-ID: <20231019-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v2-1-ecf9b5a39430@google.com>
-Subject: [PATCH v2] net: wwan: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697739699; x=1698344499;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b6ChytOvOHSvApPA10oZhEcP/0JgPMv0U+va/XQPN/I=;
+        b=o2CHh8nCXZeLt4kVFrVt0NprJ8GVNYDQ1WhA3+uenQPwxiEIkLhpZVhnX3cYXhMGGc
+         9fBEHy4W/RI/Y2525An3Fn5eR0Xl61DY5NcFuQXAxilitYBjMvT+QKXSCsJeL4k3b4/x
+         JoxSWW46a939H8g43UbzGSoP4LtppY5gQqq/Vi5ruBR0KfrjUQ3pBKFkYNofIzWYozDG
+         6NOEBdMbqdMsU9m4m4U0/I+VQnoLBQEUWqMqkJ6Lwm9GvdNNWEVV+MncAIZDTqe8WXYw
+         qaKvYMi19HUnz8zUdhEM34/dS1loMv0zLqvcC8WqWNc+C9zHe0RLg3VuJR45EHj0e9U/
+         IOCw==
+X-Gm-Message-State: AOJu0YzJ0WbWasEb9oizBfIgN+XpsMqBAk/+fv408MdoqEfOZ4LKTgMU
+        oSKJqHZfsQjotfJniQRviGuEM8mlvpCGatLivl4O0W8YVXA=
+X-Google-Smtp-Source: AGHT+IGPy+2NGA4piGc9nGNaki1VKwUL6BWmW3JjGx9kyj/GPH7rKau/mmskiWQzT1zypgBA7yToxBHkQvs085xxeOA=
+X-Received: by 2002:a17:906:c155:b0:9bd:d8d6:c1ad with SMTP id
+ dp21-20020a170906c15500b009bdd8d6c1admr2399045ejc.61.1697739698858; Thu, 19
+ Oct 2023 11:21:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZTEt7NqfDHPOkm8j@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+In-Reply-To: <ZTEt7NqfDHPOkm8j@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+From:   Jagath Jog J <jagathjog1996@gmail.com>
+Date:   Thu, 19 Oct 2023 23:51:27 +0530
+Message-ID: <CAM+2Eu+ndzS9NLvsZaX_=YTHb_+t4cE5GjQevJ1Lgc2EBO20rA@mail.gmail.com>
+Subject: Re: [PATCH] iio: kx022a: Fix acceleration value scaling
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mehdi Djait <mehdi.djait.k@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Hi Matti,
 
-We expect chinfo.name to be NUL-terminated based on its use with format
-strings and sprintf:
-rpmsg/rpmsg_char.c
-165:            dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
-368:    return sprintf(buf, "%s\n", eptdev->chinfo.name);
+On Thu, Oct 19, 2023 at 6:54=E2=80=AFPM Matti Vaittinen
+<mazziesaccount@gmail.com> wrote:
+>
+> The IIO ABI mandates acceleration values from accelerometer to be
+> emitted in m/s^2. The KX022A was emitting values in micro m/s^2.
+>
+> Fix driver to report the correct scale values.
+>
+> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> Reported-by: Jagath Jog J <jagathjog1996@gmail.com>
+> Fixes: 7c1d1677b322 ("iio: accel: Support Kionix/ROHM KX022A acceleromete=
+r")
+>
+> ---
+> The fix is somewhat crude and just crops the last 3 digits (rounds) of th=
+e
+> scale while using IIO_VAL_INT_PLUS_NANO. I played with a thought of using
+> IIO_VAL_FRACTIONAL, which could have modelled the computation
+> G_range * g * scaling / (2^16 * scaling) - where scaling 10000 would
+> have allowed using g value 980665.
+>
+> This would have worked fine for reporting scale and available scales -
+> but would be somewhat tricky when converting the user-supplied scale to
+> register values in write_raw().
+>
+> Well, the g varies from 9.832 (poles) to 9.780 (equator) according to
+> some website - no proper source check done but this sounds about right -
+> so maybe the loss of accuracy is acceptable.
+>
+> I did only very quick testing on KX022A and iio_generic_buffer. After
+> the patch the values seemed to be correct order of magnitude. Further
+> testing is appreciated :)
 
-... and with strcmp():
-|  static struct rpmsg_endpoint *qcom_glink_create_ept(struct rpmsg_device *rpdev,
-|  						    rpmsg_rx_cb_t cb,
-|  						    void *priv,
-|  						    struct rpmsg_channel_info
-|  									chinfo)
-|  ...
-|  const char *name = chinfo.name;
-|  ...
-|  		if (!strcmp(channel->name, name))
+Values are correct with this change, Thank you for fixing.
+Tested-by: Jagath Jog J <jagathjog1996@gmail.com>
 
-Since chinfo is initialized as such (just above the strscpy()):
+Regards
+Jagath
 
-|       struct rpmsg_channel_info chinfo = {
-|               .src = rpwwan->rpdev->src,
-|               .dst = RPMSG_ADDR_ANY,
-|       };
 
-... we know other members are zero-initialized. This means no
-NUL-padding is required (as any NUL-byte assignments are redundant).
-
-Considering the above, a suitable replacement is `strscpy` due to the
-fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
-Changes in v2:
-- clarify chinfo _is_ zero-init'd in commit msg (thanks Stephan)
-- use strscpy instead (thanks Kees, Stephan)
-- Link to v1: https://lore.kernel.org/r/20231018-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v1-1-4e343270373a@google.com
----
-Note: found with grep
-Note: build-tested only
-
-I've rolled Kees' RB into this patch from v1 as it matches his previous
-review.
----
- drivers/net/wwan/rpmsg_wwan_ctrl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wwan/rpmsg_wwan_ctrl.c b/drivers/net/wwan/rpmsg_wwan_ctrl.c
-index 86b60aadfa11..26756ff0e44d 100644
---- a/drivers/net/wwan/rpmsg_wwan_ctrl.c
-+++ b/drivers/net/wwan/rpmsg_wwan_ctrl.c
-@@ -37,7 +37,7 @@ static int rpmsg_wwan_ctrl_start(struct wwan_port *port)
- 		.dst = RPMSG_ADDR_ANY,
- 	};
- 
--	strncpy(chinfo.name, rpwwan->rpdev->id.name, RPMSG_NAME_SIZE);
-+	strscpy(chinfo.name, rpwwan->rpdev->id.name, sizeof(chinfo.name));
- 	rpwwan->ept = rpmsg_create_ept(rpwwan->rpdev, rpmsg_wwan_ctrl_callback,
- 				       rpwwan, chinfo);
- 	if (!rpwwan->ept)
-
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231018-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-3f620aafd326
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+>
+> ---
+>  drivers/iio/accel/kionix-kx022a.c | 37 ++++++++++++++++++++++---------
+>  1 file changed, 26 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/iio/accel/kionix-kx022a.c b/drivers/iio/accel/kionix=
+-kx022a.c
+> index 4ea3c6718ed4..971fc60efef0 100644
+> --- a/drivers/iio/accel/kionix-kx022a.c
+> +++ b/drivers/iio/accel/kionix-kx022a.c
+> @@ -273,17 +273,17 @@ static const unsigned int kx022a_odrs[] =3D {
+>   *     (range / 2^bits) * g =3D (range / 2^bits) * 9.80665 m/s^2
+>   *     =3D> KX022A uses 16 bit (HiRes mode - assume the low 8 bits are z=
+eroed
+>   *     in low-power mode(?) )
+> - *     =3D> +/-2G  =3D> 4 / 2^16 * 9,80665 * 10^6 (to scale to micro)
+> - *     =3D> +/-2G  - 598.550415
+> - *        +/-4G  - 1197.10083
+> - *        +/-8G  - 2394.20166
+> - *        +/-16G - 4788.40332
+> + *     =3D> +/-2G  =3D> 4 / 2^16 * 9,80665
+> + *     =3D> +/-2G  - 0.000598550415
+> + *        +/-4G  - 0.00119710083
+> + *        +/-8G  - 0.00239420166
+> + *        +/-16G - 0.00478840332
+>   */
+>  static const int kx022a_scale_table[][2] =3D {
+> -       { 598, 550415 },
+> -       { 1197, 100830 },
+> -       { 2394, 201660 },
+> -       { 4788, 403320 },
+> +       { 0, 598550 },
+> +       { 0, 1197101 },
+> +       { 0, 2394202 },
+> +       { 0, 4788403 },
+>  };
+>
+>  static int kx022a_read_avail(struct iio_dev *indio_dev,
+> @@ -302,7 +302,7 @@ static int kx022a_read_avail(struct iio_dev *indio_de=
+v,
+>                 *vals =3D (const int *)kx022a_scale_table;
+>                 *length =3D ARRAY_SIZE(kx022a_scale_table) *
+>                           ARRAY_SIZE(kx022a_scale_table[0]);
+> -               *type =3D IIO_VAL_INT_PLUS_MICRO;
+> +               *type =3D IIO_VAL_INT_PLUS_NANO;
+>                 return IIO_AVAIL_LIST;
+>         default:
+>                 return -EINVAL;
+> @@ -366,6 +366,20 @@ static int kx022a_turn_on_unlock(struct kx022a_data =
+*data)
+>         return ret;
+>  }
+>
+> +static int kx022a_write_raw_get_fmt(struct iio_dev *idev,
+> +                                   struct iio_chan_spec const *chan,
+> +                                   long mask)
+> +{
+> +       switch (mask) {
+> +       case IIO_CHAN_INFO_SCALE:
+> +               return IIO_VAL_INT_PLUS_NANO;
+> +       case IIO_CHAN_INFO_SAMP_FREQ:
+> +               return IIO_VAL_INT_PLUS_MICRO;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +}
+> +
+>  static int kx022a_write_raw(struct iio_dev *idev,
+>                             struct iio_chan_spec const *chan,
+>                             int val, int val2, long mask)
+> @@ -510,7 +524,7 @@ static int kx022a_read_raw(struct iio_dev *idev,
+>
+>                 kx022a_reg2scale(regval, val, val2);
+>
+> -               return IIO_VAL_INT_PLUS_MICRO;
+> +               return IIO_VAL_INT_PLUS_NANO;
+>         }
+>
+>         return -EINVAL;
+> @@ -712,6 +726,7 @@ static int kx022a_fifo_flush(struct iio_dev *idev, un=
+signed int samples)
+>  static const struct iio_info kx022a_info =3D {
+>         .read_raw =3D &kx022a_read_raw,
+>         .write_raw =3D &kx022a_write_raw,
+> +       .write_raw_get_fmt =3D &kx022a_write_raw_get_fmt,
+>         .read_avail =3D &kx022a_read_avail,
+>
+>         .validate_trigger       =3D iio_validate_own_trigger,
+> --
+> 2.41.0
+>
+>
+> --
+> Matti Vaittinen, Linux device drivers
+> ROHM Semiconductors, Finland SWDC
+> Kiviharjunlenkki 1E
+> 90220 OULU
+> FINLAND
+>
+> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+> Simon says - in Latin please.
+> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+> Thanks to Simon Glass for the translation =3D]
