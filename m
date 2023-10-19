@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DEA7CFAA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7387CFAA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345835AbjJSNNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S1345855AbjJSNOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345839AbjJSNNs (ORCPT
+        with ESMTP id S233202AbjJSNN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:13:48 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C03018A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:13:46 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7dd65052aso106982957b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:13:46 -0700 (PDT)
+        Thu, 19 Oct 2023 09:13:58 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C33E106
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:13:57 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so476165f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697721225; x=1698326025; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=u5ChxAd/tAofPv7khr4Z6g73hAZNzmOJAjL/O4rF+Kk=;
-        b=dFG1cjb+9/V16wKOVwYPMCamWFW3GTEW/Woju68SieEcec0+vf279DTCU4xqrGIf2z
-         KG45eTcGp95GaOSFNK4kpMY7lKCEsSEL/M5hf8ovvz8NJ+Po2BShUlLXvluMOIQwieXi
-         AVNXwUbTsWs5DPr/gaHUcCnnTNfblslxPd6IK0TCrGkdGhiiIJ5ngzWz85EP0++1Q0oQ
-         MXH68ZGKNrlOiQA8gCcO+o9kwR8iwIZ9K6Gs6hw8mhNciDm56i1bLbu2tynWDyYPXKWX
-         YRjJSD1qGLd32mb+0vyYXltFcJp8m3B2SVwkE7uxubY93to+g0/FbG3OjaD6E+OXWbfX
-         B1Yg==
+        d=ventanamicro.com; s=google; t=1697721235; x=1698326035; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N03EBFrOrhm4ozhPfKNWvNg3xihPBb+hk1YZrDAavPs=;
+        b=eqes1V25OAkuybz6hBU7iZxhKrTDyUotvbAA50EzYYsSSAahOSX0OLx0/avdz4UjCJ
+         nPb+zOJzN56bgSnmAID8Oh+/Ew9AG/zKO7MRcJ3BIR2dp6ZsET9gNwjnhz7To/1PSXuD
+         aVgFqT4sVYGJbJKZQzMJ3RHGnzknNAiSdkPI4j7nimm70/eJidxKlzSg/KRTyo+6s2eq
+         SiXZ16SsxETATuEnYwCJm5EjA+B8Of++DE5A29XJj0tFl2h7uoJhqoSve0pswa0js0yf
+         9aAypnu752U2rhuJR5wkZUwnJ7cXQoLP9tRac7m1793cjFAMTiMhpl6n05oi2izGcbVD
+         YoQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697721225; x=1698326025;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u5ChxAd/tAofPv7khr4Z6g73hAZNzmOJAjL/O4rF+Kk=;
-        b=otWc882QcHZo0e6hJMh6dO1yPpfavF1WjNZCRAhJAdqG0cNA3lF/jFIliOnCf/1OZG
-         TCZwp4Wz248FHsCRh2TQpZPrq9MqQCJbuwolxojMNynWHcM89NsTBymDZTUwMacOTxFe
-         2edQlT29aPF/IEq5TVzuFMAnN46cLv2fR4TAtmoSF75OAWm53NF1pA/xcyC3kpOWcshL
-         sv+lche25LCQiG+j/tJ6kFl+EOeRXeQzjbvBnWk3hs0rG4rGt99bTvA44XGo/kVcUoIA
-         0gg6z1LRtmVwNJ3RxIsMuKNnG2k5NcAkFzfQJl2PtlkjwbpUog4nPLuvY63JTt1s+fpx
-         Ljuw==
-X-Gm-Message-State: AOJu0Yw92Y6MMA+B94KN2ci4Pi5BwB+v/Bh2WV1OKPd7QNLk/4W7h9Pp
-        us98Z7GUNI4VyZsvxWE7LmTJLm/Pm/muloQxtj4iKQ==
-X-Google-Smtp-Source: AGHT+IHHv5diCJ9edZeJViOL3pSd2253dXP9+SzRMkkAG2TKUPLe4GDcEKLsBUj2IrUb1nL3nyd6h1S4hyQu5T850po=
-X-Received: by 2002:a0d:f281:0:b0:589:f995:eb9f with SMTP id
- b123-20020a0df281000000b00589f995eb9fmr2396557ywf.45.1697721225666; Thu, 19
- Oct 2023 06:13:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697721235; x=1698326035;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N03EBFrOrhm4ozhPfKNWvNg3xihPBb+hk1YZrDAavPs=;
+        b=Lc2RkYRkzuXbfZqkfeaNbASzrftiQBoL3K2AuMFPPirrt6g8N6ltpQBaXAtxtJf3Iz
+         J+qY5V8Eq5gjP9v//HBeSEeuSCPvEWESgziJ/Ly6YmrogdFkB7gy+GfbsKq36HSd0yWz
+         tZhDj5M/xDnJROGb4ZMDbwkU8zelwVeqMupRjTMsiq7XPSv/qSFtTCuslFHGTglpLQWZ
+         IW9OTgJjWA7fRjnnzNp1g0EKP0b0hIGC3Q3unFxWCjSEGt93Eck3+KQIBSTOE5I6/BK4
+         RQmWIBhjfS0gUUyLim0XrlGoQxg6wx5gf3riM36rtS8gMtR1OgJ11ZV6t7bEWpoJ5r78
+         SbfA==
+X-Gm-Message-State: AOJu0Yz8zlakhH1rnBNWtWOif5R0+LJVr0oABS7/68xquD4qfvrIk4S2
+        jbmtTWtiuOOsLqihPdlK17JSHA==
+X-Google-Smtp-Source: AGHT+IHVpuS8hLyuLWw4Px3QWlJbDZ+QDUh/yMexumeLdkjcwmWR59jO4qWMTCApvVqtlz0eu/0iSw==
+X-Received: by 2002:a5d:4fca:0:b0:32d:dcee:a909 with SMTP id h10-20020a5d4fca000000b0032ddceea909mr1535446wrw.1.1697721234645;
+        Thu, 19 Oct 2023 06:13:54 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id s5-20020a5d69c5000000b0032db8cccd3asm4439698wrw.114.2023.10.19.06.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 06:13:53 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 15:13:52 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Thomas Huth <thuth@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: selftests: Use TAP in the steal_time test
+Message-ID: <20231019-2946dcc38c3e95e0e7433eae@orel>
+References: <20231019095900.450467-1-thuth@redhat.com>
 MIME-Version: 1.0
-References: <cover.1697694811.git.quic_varada@quicinc.com> <5e1c2ff9522dd29e69f286dbbe1c867433763629.1697694811.git.quic_varada@quicinc.com>
-In-Reply-To: <5e1c2ff9522dd29e69f286dbbe1c867433763629.1697694811.git.quic_varada@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 19 Oct 2023 16:13:34 +0300
-Message-ID: <CAA8EJpp64kdRbGYSqP302FikKuP2MYmRGePN0zKMygShPsCjKQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] clk: qcom: clk-alpha-pll: introduce stromer plus ops
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, ilia.lin@kernel.org,
-        sivaprak@codeaurora.org, quic_kathirav@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019095900.450467-1-thuth@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 11:42, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> Stromer plus APSS PLL does not support dynamic frequency scaling.
-> To switch between frequencies, we have to shut down the PLL,
-> configure the L and ALPHA values and turn on again. So introduce the
-> separate set of ops for Stromer Plus PLL.
->
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+On Thu, Oct 19, 2023 at 11:59:00AM +0200, Thomas Huth wrote:
+> For easier use of the tests in automation and for having some
+> status information for the user while the test is running, let's
+> provide some TAP output in this test.
+> 
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
 > ---
-> v4:     Ensure PLL is enabled before re-enabling
-> v3:     Use prepare/unprepare instead of disable/enable in clk_alpha_pll_stromer_plus_ops
-> v2:     Use clk_alpha_pll_stromer_determine_rate, instead of adding new
->         clk_alpha_pll_stromer_plus_determine_rate as the alpha pll width
->         is same for both
+>  NB: This patch does not use the interface from kselftest_harness.h
+>      since it is not very suitable for the for-loop in this patch.
+> 
+>  tools/testing/selftests/kvm/steal_time.c | 46 ++++++++++++------------
+>  1 file changed, 23 insertions(+), 23 deletions(-)
 >
->         Fix review comments
->                 udelay(50) -> usleep_range(50, 60)
->                 Remove SoC-specific from print message
-> ---
->  drivers/clk/qcom/clk-alpha-pll.c | 63 ++++++++++++++++++++++++++++++++++++++++
->  drivers/clk/qcom/clk-alpha-pll.h |  1 +
->  2 files changed, 64 insertions(+)
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
--- 
-With best wishes
-Dmitry
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
