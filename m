@@ -2,180 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF9D7D01EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB527D01F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346409AbjJSSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S1345214AbjJSSm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344662AbjJSSjT (ORCPT
+        with ESMTP id S233020AbjJSSmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:39:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A310FCA;
-        Thu, 19 Oct 2023 11:39:17 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-577fff1cae6so23005a12.1;
-        Thu, 19 Oct 2023 11:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697740757; x=1698345557; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vvpiQJ6k/a5eGoEtij7HD0ulJSwtg8u7MSw+T7gzmSU=;
-        b=mwPHfm+cMNOwd2lEL1PXmjFvb5jUhWSyhwcgCoor3V6HX8jCTosQ0ynfmUzFPH0GDo
-         Am0l/qKB3MbntO81ZvFVFxrPvB0PQCwRhmhfNw4dYhSQReiNfhzQuWrelXsMEHV0Pojr
-         mZu3/FnCenYCY33GduxKsX6KWfj7Pxc5FpmSW9fzzskadlNGxz5hqKfa7AZZOZCIf7vL
-         Z20oGzVDJcqn0rWxCI16Bvu7bZ4N8cI44AWaznYBESM8LkXu1xvP7ziiNAXwoFDcP7wv
-         LcSSn8tYxLZFoe2YHWd7a2BMaYaqitTq3V6yadGshxXFoA4MXBeTUpw/ZpKW7zszaCUf
-         qTJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740757; x=1698345557;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vvpiQJ6k/a5eGoEtij7HD0ulJSwtg8u7MSw+T7gzmSU=;
-        b=aZYU7YrEDZ1gLzW0ZMZQhJr5PdjsGf6R3MXsUgIWcTKeMYIPtxvnqJo49JoR7qMZaz
-         GoJMMfsXvo/IW7RJE3qALczTchmUwXjdp9yGTBk+xD+0v3iUyjXwW5gItKboEVobfH+C
-         Z4FEK6Wdt/4YJVwZWNQwJwz78UIEkv/TzhIpMBONkaQ6qyX7KVaDr9kypF2hgMfXyGdo
-         ieu2uej3mcBAkqOl5kI9t9oEn47pm/cVcyWLyTIAhcUF4ni28Efgr7awqPjXXGrBvO3q
-         Kv5Kl4bkJUC2WAUW5JKkFimq2H7sGH3sgUgb6XNTXwrw60p2yw92yfGitpgXNkNYeM4c
-         JfRg==
-X-Gm-Message-State: AOJu0YzU4bTYtgyXKGpoJr2c2cZLfoZ4mMNZNtMVnrd6BKTdG5q6KkPm
-        fuY2MOnEej7fQ06+Ohw0M5V8TO51ngdUGABZ
-X-Google-Smtp-Source: AGHT+IGbvNaUkXhmHNOJH60DIlmREOyBTMp0AT7sUzSL3oI7VuUV2u2yhSbTsgI9O7bI1wNMFch8Sw==
-X-Received: by 2002:a17:90b:48c4:b0:274:8951:b5ed with SMTP id li4-20020a17090b48c400b002748951b5edmr3943674pjb.20.1697740756903;
-        Thu, 19 Oct 2023 11:39:16 -0700 (PDT)
-Received: from swarup-virtual-machine ([171.76.85.44])
-        by smtp.gmail.com with ESMTPSA id q15-20020a17090a7a8f00b00256b67208b1sm1830933pjf.56.2023.10.19.11.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:39:16 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 00:09:11 +0530
-From:   swarup <swarupkotikalapudi@gmail.com>
-To:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] selftests: capabilities: namespace create varies for
- root and normal user
-Message-ID: <ZTF3z9gKJCn3bQ7w@swarup-virtual-machine>
-References: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
+        Thu, 19 Oct 2023 14:42:55 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656B9126;
+        Thu, 19 Oct 2023 11:42:53 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JHLeYc017772;
+        Thu, 19 Oct 2023 18:42:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+WYtO5cbSnOWSh4A3pWMM/G3dupE15Bp2QKlH1BzWsI=;
+ b=nT+MmY2WzSPKW196i552YTH0gwyJZGiZFYXUqprsFbil4DZFgftzvGeEKVvtUYaJAuGA
+ huN0YQQjWNiQxTBRtKOTZeBhCEfRJ1tMhBBBn7ly5a3/CJTqGGw6q0F0Nu/bhogk/eCj
+ dfhBZz7M3gqqWRzcleJk5qT2TAhsNipbDp/VXxkTMsMcD29Los9LHhRUmivk5de8tn8V
+ yUDhfQI/UejhX4nCJS0olgOh9OQ2mlPz/qjuiigwRt3EuzxQQlq0Bvaq6drtH1jC7Olb
+ TiTHgqy7GkJ4x4/67NmIiTiOQHtSafjQysNEJEmO3wUiaO/dksSr0JLXefRGG4iasLzO IQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttg82ums4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 18:42:24 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JIgNob007271
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 18:42:23 GMT
+Received: from [10.110.99.208] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 11:42:22 -0700
+Message-ID: <c39df4c7-ea78-0505-a8d9-db41119fc977@quicinc.com>
+Date:   Thu, 19 Oct 2023 11:42:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v9 09/34] ASoC: qcom: qdsp6: Introduce USB AFE port to
+ q6dsp
+Content-Language: en-US
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-10-quic_wcheng@quicinc.com>
+ <7aa4ea87-9d1f-400a-bcc5-b56e5b4500c6@linux.intel.com>
+ <c72bcf47-af0b-8819-1c30-06b51358381e@quicinc.com>
+ <2f05708e-3ee8-472e-a24f-6f3eb118133c@linux.intel.com>
+ <fcaa93ba-3ca4-5a18-d3bd-afebe8def327@quicinc.com>
+ <ec25bb67-6c83-430b-bc79-234c03801250@linux.intel.com>
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <ec25bb67-6c83-430b-bc79-234c03801250@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: k5nkufEfbNCtKUCx8FQH5sYfnPcPKmKk
+X-Proofpoint-ORIG-GUID: k5nkufEfbNCtKUCx8FQH5sYfnPcPKmKk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_17,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_spam policy=outbound score=65 clxscore=1015 impostorscore=0
+ mlxlogscore=-26 spamscore=65 priorityscore=1501 adultscore=0 bulkscore=0
+ mlxscore=65 suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310190159
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-esOn Fri, Sep 29, 2023 at 06:23:48PM +0530, Swarup Laxman Kotiaklapudi wrote:
-> Change namespace creation for root and non-root
-> user differently in create_and_enter_ns() function
+Hi Pierre,
+
+On 10/18/2023 6:00 PM, Pierre-Louis Bossart wrote:
 > 
-> Test result with root user:
-> $sudo make  TARGETS="capabilities" kselftest
->  ...
->  TAP version 13
->  1..1
->  timeout set to 45
->  selftests: capabilities: test_execve
->  TAP version 13
->  1..12
->  [RUN]       +++ Tests with uid == 0 +++
->  [NOTE]      Using global UIDs for tests
->  [RUN]       Root => ep
->  ...
->  ok 12 Passed
->  Totals: pass:12 fail:0 xfail:0 xpass:0 skip:0 error:0
->  ==================================================
->  TAP version 13
->  1..9
->  [RUN]       +++ Tests with uid != 0 +++
->  [NOTE]      Using global UIDs for tests
->  [RUN]       Non-root => no caps
->  ...
->  ok 9 Passed
->  Totals: pass:9 fail:0 xfail:0 xpass:0 skip:0 error:0
 > 
-> Test result without root or normal user:
-> $make  TARGETS="capabilities" kselftest
->  ...
->  timeout set to 45
->  selftests: capabilities: test_execve
->  TAP version 13
->  1..12
->  [RUN]       +++ Tests with uid == 0 +++
->  [NOTE]      Using a user namespace for tests
->  [RUN]       Root => ep
->  validate_cap:: Capabilities after execve were correct
->  ok 1 Passed
->  Check cap_ambient manipulation rules
->  ok 2 PR_CAP_AMBIENT_RAISE failed on non-inheritable cap
->  ok 3 PR_CAP_AMBIENT_RAISE failed on non-permitted cap
->  ok 4 PR_CAP_AMBIENT_RAISE worked
->  ok 5 Basic manipulation appears to work
->  [RUN]       Root +i => eip
->  validate_cap:: Capabilities after execve were correct
->  ok 6 Passed
->  [RUN]       UID 0 +ia => eipa
->  validate_cap:: Capabilities after execve were correct
->  ok 7 Passed
->  ok 8 # SKIP SUID/SGID tests (needs privilege)
->  Planned tests != run tests (12 != 8)
->  Totals: pass:7 fail:0 xfail:0 xpass:0 skip:1 error:0
->  ==================================================
->  TAP version 13
->  1..9
->  [RUN]       +++ Tests with uid != 0 +++
->  [NOTE]      Using a user namespace for tests
->  [RUN]       Non-root => no caps
->  validate_cap:: Capabilities after execve were correct
->  ok 1 Passed
->  Check cap_ambient manipulation rules
->  ok 2 PR_CAP_AMBIENT_RAISE failed on non-inheritable cap
->  ok 3 PR_CAP_AMBIENT_RAISE failed on non-permitted cap
->  ok 4 PR_CAP_AMBIENT_RAISE worked
->  ok 5 Basic manipulation appears to work
->  [RUN]       Non-root +i => i
->  validate_cap:: Capabilities after execve were correct
->  ok 6 Passed
->  [RUN]       UID 1 +ia => eipa
->  validate_cap:: Capabilities after execve were correct
->  ok 7 Passed
->  ok 8 # SKIP SUID/SGID tests (needs privilege)
->  Planned tests != run tests (9 != 8)
->  Totals: pass:7 fail:0 xfail:0 xpass:0 skip:1 error:0
+>>>>>> Specifically, the QC ADSP can support all potential endpoints that are
+>>>>>> exposed by the audio data interface.  This includes, feedback
+>>>>>> endpoints
+>>>>>> (both implicit and explicit) as well as the isochronous (data)
+>>>>>> endpoints.
+>>>>>
+>>>>> implicit feedback means support for capture. This is confusing...
+>>>>>
+>>>>
+>>>> I mean, a USB device can expose a capture path, but as of now, we won't
+>>>> enable the offloading to the audio DSP for it.  However, if we're
+>>>> executing playback, and device does support implicit feedback, we will
+>>>> pass that along to the audio DSP to utilize.
+>>>
+>>> Not following. Implicit feedback means a capture stream *SHALL* be
+>>> started. Are you saying this capture stream is hidden and handled at the
+>>> DSP level only? If yes, what prevents you from exposing the capture
+>>> stream to userspace as well?
+>>>
+>>> I must be missing something.
+>>>
+>>
+>> My understanding is that with implicit feedback endpoints, it allows for
+>> another data endpoint in the opposite direction to be utilized as a
+>> feedback endpoint (versus having to expose another EP, such as in the
+>> case of explicit feedback).  For example, if we are enabling the
+>> playback path (and the device does have a capture data ep) then the data
+>> ep used for the capture path can be used.
 > 
-> Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-> ---
->  tools/testing/selftests/capabilities/test_execve.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> That's right, so all the plumbing is enabled for the capture path...
+> Making a decision to discard the data is very odd, all the work has
+> already been done at lower levels, so why not expose the captured data?
 > 
-> diff --git a/tools/testing/selftests/capabilities/test_execve.c b/tools/testing/selftests/capabilities/test_execve.c
-> index df0ef02b4036..8236150d377e 100644
-> --- a/tools/testing/selftests/capabilities/test_execve.c
-> +++ b/tools/testing/selftests/capabilities/test_execve.c
-> @@ -96,11 +96,7 @@ static bool create_and_enter_ns(uid_t inner_uid)
->  	outer_uid = getuid();
->  	outer_gid = getgid();
->  
-> -	/*
-> -	 * TODO: If we're already root, we could skip creating the userns.
-> -	 */
-> -
-> -	if (unshare(CLONE_NEWNS) == 0) {
-> +	if (outer_uid == 0 && unshare(CLONE_NEWNS) == 0) {
->  		ksft_print_msg("[NOTE]\tUsing global UIDs for tests\n");
->  		if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) != 0)
->  			ksft_exit_fail_msg("PR_SET_KEEPCAPS - %s\n",
-> -- 
-> 2.34.1
-> 
-Hi Shuah,
-Please review this patchset.
-Thanks,
-Swarup
+
+So that would be at the USB level, but from the audio DSP end, there are 
+still things that need to be enabled to route the data properly.  For 
+feedback endpoints, the data we're actually sending won't involve the 
+audio streaming side of things on the DSP.
+
+Thanks
+Wesley Cheng
