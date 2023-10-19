@@ -2,48 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EEA7CF3E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794477CF3E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345039AbjJSJSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S1345054AbjJSJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJSJSf (ORCPT
+        with ESMTP id S229830AbjJSJTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:18:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C97A3;
-        Thu, 19 Oct 2023 02:18:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 575FCC433C7;
-        Thu, 19 Oct 2023 09:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697707113;
-        bh=+jRQYiZmWjmg+Ein5ROKbm4COq8vpFQB7NVE2U5e3W4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j0qtC5d5JyG0KR1ZLfPDM8Q+Ll173YHe4qZEXwikLkLU9fwvJcq4Zuh0FDCpsZ94q
-         xklnP5285dUOIxOs3Zuz1gXnnJ5lSfxD/dRUlCCjJDAZj2Z7auOvK72mn+lBFKhV3z
-         8eEmfqE5qdWUnQa9XeOKGnAC6OHmJk6s20+QtsG4mFGe/wRMRBazn2Jc6vi93LlL4F
-         Re2N4kyAQ0bhYJVrD7CfmBhoysxtmWX5eo1nthQGeOemp0Hpn+Zke+98GA1YtEcFmu
-         U7kJjyG229f2C+C5iDVpwnev2JjcVAwSA+Nbt04scaAsiUEvyh8ZTPkwgOZYoYo+j8
-         rkvOYz2P3G8ng==
-Date:   Thu, 19 Oct 2023 11:18:29 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the vfs-brauner tree
-Message-ID: <20231019-verpfiffen-geste-f7c14c77e019@brauner>
-References: <20231019101231.174f1124@canb.auug.org.au>
- <CAOQ4uxh8ydr+YdyKtD9yR1_kpkqkt+MdjvAzkA48F2UNSxz40w@mail.gmail.com>
+        Thu, 19 Oct 2023 05:19:37 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F29A3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:19:34 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-249-cGV1VhXOMa6ASajv7ojwdQ-1; Thu, 19 Oct 2023 10:19:32 +0100
+X-MC-Unique: cGV1VhXOMa6ASajv7ojwdQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 19 Oct
+ 2023 10:19:29 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 19 Oct 2023 10:19:29 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'jeffxu@chromium.org'" <jeffxu@chromium.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "sroettger@google.com" <sroettger@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+CC:     "jeffxu@google.com" <jeffxu@google.com>,
+        "jorgelo@chromium.org" <jorgelo@chromium.org>,
+        "groeck@chromium.org" <groeck@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "surenb@google.com" <surenb@google.com>,
+        "alex.sierra@amd.com" <alex.sierra@amd.com>,
+        "apopple@nvidia.com" <apopple@nvidia.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "axelrasmussen@google.com" <axelrasmussen@google.com>,
+        "ben@decadent.org.uk" <ben@decadent.org.uk>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "hughd@google.com" <hughd@google.com>,
+        "joey.gouly@arm.com" <joey.gouly@arm.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
+        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "mawupeng1@huawei.com" <mawupeng1@huawei.com>,
+        "linmiaohe@huawei.com" <linmiaohe@huawei.com>,
+        "namit@vmware.com" <namit@vmware.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
+        "shr@devkernel.io" <shr@devkernel.io>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "xiujianfeng@huawei.com" <xiujianfeng@huawei.com>,
+        "yu.ma@intel.com" <yu.ma@intel.com>,
+        "zhangpeng362@huawei.com" <zhangpeng362@huawei.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [RFC PATCH v2 0/8] Introduce mseal() syscall
+Thread-Topic: [RFC PATCH v2 0/8] Introduce mseal() syscall
+Thread-Index: AQHaANl9uNyZCjtaekqZ4TrOWO2ruLBQ2GGA
+Date:   Thu, 19 Oct 2023 09:19:29 +0000
+Message-ID: <b3508782e1304074b4b43040be2d1f1b@AcuMS.aculab.com>
+References: <20231017090815.1067790-1-jeffxu@chromium.org>
+In-Reply-To: <20231017090815.1067790-1-jeffxu@chromium.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxh8ydr+YdyKtD9yR1_kpkqkt+MdjvAzkA48F2UNSxz40w@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,7 +97,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Maybe it would be easier to rebase vfs.misc over vfs.mount.write?
+RnJvbTogamVmZnh1QGNocm9taXVtLm9yZw0KPiBTZW50OiAxNyBPY3RvYmVyIDIwMjMgMTA6MDgN
+Cj4gDQo+IFRoaXMgcGF0Y2hzZXQgcHJvcG9zZXMgYSBuZXcgbXNlYWwoKSBzeXNjYWxsIGZvciB0
+aGUgTGludXgga2VybmVsLg0KDQpJJ20gc3VyZSB5b3UgY2FuIGdpdmUgaXQgYSBiZXR0ZXIgbmFt
+ZSwgdGhlcmUgaXNuJ3QgYSA2IGNoYXJhY3Rlcg0KbGltaXQgb24gaWRlbnRpZmllcnMhDQoNCkZX
+SVcgeW91IGNvdWxkIGFsc28gdXNlIG1wcm90ZWN0KGFkZHIsIGxlbiwgSU1NVVRBQkxFKTsNCg0K
+CURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
+b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
+Mzk3Mzg2IChXYWxlcykNCg==
 
-So I've now rebased vfs.misc onto vfs.mount.write.
-Thanks for the report.
