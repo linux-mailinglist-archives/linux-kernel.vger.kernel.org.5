@@ -2,231 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0891A7D001B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB63D7D001C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345642AbjJSQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        id S235493AbjJSQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235506AbjJSQ6D (ORCPT
+        with ESMTP id S235556AbjJSQ6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:58:03 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0777B12A;
-        Thu, 19 Oct 2023 09:57:57 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JGK4pa025592;
-        Thu, 19 Oct 2023 16:57:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=tR4P2i779nsa9la0a1oQcjUVlyZDjWN0SOTtc95npQY=;
- b=LNw+n11ENLwhTidLjHPsy6zf2IQitcis9u+q5Ri/jSoLfsmAtI08PnfwGm+Y6m/0x8om
- af4QhFU/33wvOegxueAAnteNK5q0REe+WPbVPUz//sMRZvHo2HsxjnwmgbptDpZmYk81
- Nv4uHBUrCT6IcfnT+2EdqO9xXWoxjjhFosJcu2AJL8QqEZLRhLSvFCwmWVK+qpGnWKhH
- bvwLyGje1uaDGXtaIDNsTWjwUzE9yHwV47sT83sGWqVoeLur1Qik97PcM1AJAVsFHQxw
- F5eMTP8IggWKScXxNLbaZxKOQOq7wBeb8u60cAa2OtuDywxuPqY4+D5KpobQ8AvjexNE YQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttgw3u4s4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 16:57:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JGvp2m013559
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 16:57:51 GMT
-Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Thu, 19 Oct 2023 09:57:50 -0700
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-Date:   Thu, 19 Oct 2023 09:57:50 -0700
-Subject: [PATCH] wifi: ath12k: Introduce and use ath12k_sta_to_arsta()
+        Thu, 19 Oct 2023 12:58:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B764D63
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:58:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03BD42F4;
+        Thu, 19 Oct 2023 09:58:57 -0700 (PDT)
+Received: from [10.57.67.150] (unknown [10.57.67.150])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BA973F5A1;
+        Thu, 19 Oct 2023 09:58:13 -0700 (PDT)
+Message-ID: <ac2e17c6-4a8d-24bb-a41d-c57ab60e8415@arm.com>
+Date:   Thu, 19 Oct 2023 17:58:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231019-upstream-ath12k_sta_to_arsta-v1-1-06f06f693338@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAA1gMWUC/x3MQQqEMAxA0atI1lNoqwv1KsNQok01yKgknUEQ7
- 25x99/mn6AkTAp9dYLQn5W3tcC9KhhnXCcyHIvBW1876zrz2zUL4ddgnp1fgmYMeQsoJQw1qUu
- 2jS0NEcpiF0p8PPv357puMbs+NG4AAAA=
-To:     Kalle Valo <kvalo@kernel.org>
-CC:     <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.12.3
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: QOfkKJB6CH5rWAuetTmXJRU8CO4iYf13
-X-Proofpoint-GUID: QOfkKJB6CH5rWAuetTmXJRU8CO4iYf13
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_15,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 bulkscore=0
- impostorscore=0 adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=694
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190143
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 4/6] arm64: KVM: Add interface to set guest value for
+ TRFCR register
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        broonie@kernel.org, maz@kernel.org
+References: <20231005125757.649345-1-james.clark@arm.com>
+ <20231005125757.649345-5-james.clark@arm.com>
+ <de8083f5-eb62-77d2-236b-6ad46ceb6142@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <de8083f5-eb62-77d2-236b-6ad46ceb6142@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the logic to return an ath12k_sta pointer, given a
-ieee80211_sta pointer, uses typecasting throughout the driver. In
-general, conversion functions are preferable to typecasting since
-using a conversion function allows the compiler to validate the types
-of both the input and output parameters.
 
-ath12k already defines a conversion function ath12k_vif_to_arvif() for
-a similar conversion. So introduce ath12k_sta_to_arsta() for this use
-case, and convert all of the existing typecasting to use this
-function.
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/net/wireless/ath/ath12k/core.h   |  5 +++++
- drivers/net/wireless/ath/ath12k/dp_mon.c |  4 ++--
- drivers/net/wireless/ath/ath12k/dp_rx.c  |  6 +++---
- drivers/net/wireless/ath/ath12k/mac.c    | 12 ++++++------
- 4 files changed, 16 insertions(+), 11 deletions(-)
+On 05/10/2023 17:58, Suzuki K Poulose wrote:
+> On 05/10/2023 13:57, James Clark wrote:
+>> Add an interface for the Coresight driver to use to set the value of the
+>> TRFCR register for the guest. This register controls the exclude
+> 
+> 
+> 
+>> settings for trace at different exception levels, and is used to
+>> honor the exclude_host and exclude_guest parameters from the Perf
+>> session. This will be used to later write TRFCR_EL1 on nVHE at guest
+>> switch. For VHE, TRFCR_EL1 is written immediately. Because guest writes
+> 
+> minor nit: May be it would be clearer to say:
+> 
+> For VHE, the host trace is controlled by TRFCR_EL2 and thus we can
+> write to the TRFCR_EL1 immediately. Because, ...
+> 
+>> to the register are trapped, the value will persist and can't be
+>> modified.
+>>
+>> The settings must be copied to the vCPU before each run in the same
+>> way that PMU events are because the per-cpu struct isn't accessible in
+> 
+> super minor nit:
+> 
+> way that PMU events are, because ...
+> >> protected mode.
+>>
+>> Now that both guest and host values are saved, rename trfcr_el1 to
+>> host_trfcr_el1 to make it clear that's the value that should be restored
+> 
+> This seems obsolete ? I couldn't find any reference to host_trfcr_el1
+> anywhere ?
+> 
 
-diff --git a/drivers/net/wireless/ath/ath12k/core.h b/drivers/net/wireless/ath/ath12k/core.h
-index fafb2a5b9350..68c42ca44fcb 100644
---- a/drivers/net/wireless/ath/ath12k/core.h
-+++ b/drivers/net/wireless/ath/ath12k/core.h
-@@ -852,6 +852,11 @@ static inline struct ath12k_vif *ath12k_vif_to_arvif(struct ieee80211_vif *vif)
- 	return (struct ath12k_vif *)vif->drv_priv;
- }
- 
-+static inline struct ath12k_sta *ath12k_sta_to_arsta(struct ieee80211_sta *sta)
-+{
-+	return (struct ath12k_sta *)sta->drv_priv;
-+}
-+
- static inline struct ath12k *ath12k_ab_to_ar(struct ath12k_base *ab,
- 					     int mac_id)
- {
-diff --git a/drivers/net/wireless/ath/ath12k/dp_mon.c b/drivers/net/wireless/ath/ath12k/dp_mon.c
-index 1698a7712494..f44bc5494ce7 100644
---- a/drivers/net/wireless/ath/ath12k/dp_mon.c
-+++ b/drivers/net/wireless/ath/ath12k/dp_mon.c
-@@ -2374,7 +2374,7 @@ ath12k_dp_mon_rx_update_user_stats(struct ath12k *ar,
- 		return;
- 	}
- 
--	arsta = (struct ath12k_sta *)peer->sta->drv_priv;
-+	arsta = ath12k_sta_to_arsta(peer->sta);
- 	rx_stats = arsta->rx_stats;
- 
- 	if (!rx_stats)
-@@ -2550,7 +2550,7 @@ int ath12k_dp_mon_rx_process_stats(struct ath12k *ar, int mac_id,
- 			}
- 
- 			if (ppdu_info->reception_type == HAL_RX_RECEPTION_TYPE_SU) {
--				arsta = (struct ath12k_sta *)peer->sta->drv_priv;
-+				arsta = ath12k_sta_to_arsta(peer->sta);
- 				ath12k_dp_mon_rx_update_peer_su_stats(ar, arsta,
- 								      ppdu_info);
- 			} else if ((ppdu_info->fc_valid) &&
-diff --git a/drivers/net/wireless/ath/ath12k/dp_rx.c b/drivers/net/wireless/ath/ath12k/dp_rx.c
-index 54e0a09bf8dd..670901437cb6 100644
---- a/drivers/net/wireless/ath/ath12k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath12k/dp_rx.c
-@@ -1054,7 +1054,7 @@ int ath12k_dp_rx_ampdu_start(struct ath12k *ar,
- 			     struct ieee80211_ampdu_params *params)
- {
- 	struct ath12k_base *ab = ar->ab;
--	struct ath12k_sta *arsta = (void *)params->sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(params->sta);
- 	int vdev_id = arsta->arvif->vdev_id;
- 	int ret;
- 
-@@ -1072,7 +1072,7 @@ int ath12k_dp_rx_ampdu_stop(struct ath12k *ar,
- {
- 	struct ath12k_base *ab = ar->ab;
- 	struct ath12k_peer *peer;
--	struct ath12k_sta *arsta = (void *)params->sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(params->sta);
- 	int vdev_id = arsta->arvif->vdev_id;
- 	bool active;
- 	int ret;
-@@ -1410,7 +1410,7 @@ ath12k_update_per_peer_tx_stats(struct ath12k *ar,
- 	}
- 
- 	sta = peer->sta;
--	arsta = (struct ath12k_sta *)sta->drv_priv;
-+	arsta = ath12k_sta_to_arsta(sta);
- 
- 	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
- 
-diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
-index aebbb762dcfb..fc0d14ea328e 100644
---- a/drivers/net/wireless/ath/ath12k/mac.c
-+++ b/drivers/net/wireless/ath/ath12k/mac.c
-@@ -3247,7 +3247,7 @@ static int ath12k_mac_op_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 		ath12k_warn(ab, "peer %pM disappeared!\n", peer_addr);
- 
- 	if (sta) {
--		arsta = (struct ath12k_sta *)sta->drv_priv;
-+		arsta = ath12k_sta_to_arsta(sta);
- 
- 		switch (key->cipher) {
- 		case WLAN_CIPHER_SUITE_TKIP:
-@@ -3637,7 +3637,7 @@ static int ath12k_mac_station_add(struct ath12k *ar,
- {
- 	struct ath12k_base *ab = ar->ab;
- 	struct ath12k_vif *arvif = ath12k_vif_to_arvif(vif);
--	struct ath12k_sta *arsta = (struct ath12k_sta *)sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(sta);
- 	struct ath12k_wmi_peer_create_arg peer_param;
- 	int ret;
- 
-@@ -3744,7 +3744,7 @@ static int ath12k_mac_op_sta_state(struct ieee80211_hw *hw,
- {
- 	struct ath12k *ar = hw->priv;
- 	struct ath12k_vif *arvif = ath12k_vif_to_arvif(vif);
--	struct ath12k_sta *arsta = (struct ath12k_sta *)sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(sta);
- 	struct ath12k_peer *peer;
- 	int ret = 0;
- 
-@@ -3892,7 +3892,7 @@ static void ath12k_mac_op_sta_rc_update(struct ieee80211_hw *hw,
- 					u32 changed)
- {
- 	struct ath12k *ar = hw->priv;
--	struct ath12k_sta *arsta = (struct ath12k_sta *)sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(sta);
- 	struct ath12k_vif *arvif = ath12k_vif_to_arvif(vif);
- 	struct ath12k_peer *peer;
- 	u32 bw, smps;
-@@ -6762,7 +6762,7 @@ static void ath12k_mac_set_bitrate_mask_iter(void *data,
- 					     struct ieee80211_sta *sta)
- {
- 	struct ath12k_vif *arvif = data;
--	struct ath12k_sta *arsta = (struct ath12k_sta *)sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(sta);
- 	struct ath12k *ar = arvif->ar;
- 
- 	spin_lock_bh(&ar->data_lock);
-@@ -7051,7 +7051,7 @@ static void ath12k_mac_op_sta_statistics(struct ieee80211_hw *hw,
- 					 struct ieee80211_sta *sta,
- 					 struct station_info *sinfo)
- {
--	struct ath12k_sta *arsta = (struct ath12k_sta *)sta->drv_priv;
-+	struct ath12k_sta *arsta = ath12k_sta_to_arsta(sta);
- 
- 	sinfo->rx_duration = arsta->rx_duration;
- 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_RX_DURATION);
+Yep it was from an old version. I remove it and fixed all of the above too.
 
----
-base-commit: 2e66190e0d87a7266c89728565e0681b22e68f30
-change-id: 20231019-upstream-ath12k_sta_to_arsta-e4f9f08d8ebd
+> Otherwise looks good to me.
+> 
+> Suzuki
+> 
 
+
+> 
+>> on return to the host.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   arch/arm64/include/asm/kvm_host.h |  3 +++
+>>   arch/arm64/kvm/arm.c              |  1 +
+>>   arch/arm64/kvm/debug.c            | 26 ++++++++++++++++++++++++++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_host.h
+>> b/arch/arm64/include/asm/kvm_host.h
+>> index b5200f199692..8f2b4ec8ea61 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -1123,6 +1123,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct
+>> kvm_vcpu *vcpu);
+>>   void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+>>   void kvm_clr_pmu_events(u32 clr);
+>>   bool kvm_set_pmuserenr(u64 val);
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
+>> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu);
+>>   #else
+>>   static inline void kvm_set_pmu_events(u32 set, struct
+>> perf_event_attr *attr) {}
+>>   static inline void kvm_clr_pmu_events(u32 clr) {}
+>> @@ -1130,6 +1132,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
+>>   {
+>>       return false;
+>>   }
+>> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
+>>   #endif
+>>     void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
+>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>> index 78b0970eb8e6..22fab356b88f 100644
+>> --- a/arch/arm64/kvm/arm.c
+>> +++ b/arch/arm64/kvm/arm.c
+>> @@ -1012,6 +1012,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>           kvm_vgic_flush_hwstate(vcpu);
+>>             kvm_pmu_update_vcpu_events(vcpu);
+>> +        kvm_etm_update_vcpu_events(vcpu);
+>>             /*
+>>            * Ensure we set mode to IN_GUEST_MODE after we disable
+>> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+>> index 6a1bad1a921b..19e722359154 100644
+>> --- a/arch/arm64/kvm/debug.c
+>> +++ b/arch/arm64/kvm/debug.c
+>> @@ -23,6 +23,12 @@
+>>     static DEFINE_PER_CPU(u64, mdcr_el2);
+>>   +/*
+>> + * Per CPU value for TRFCR that should be applied to any guest vcpu
+>> that may
+>> + * run on that core in the future.
+>> + */
+>> +static DEFINE_PER_CPU(u64, guest_trfcr);
+>> +
+>>   /**
+>>    * save/restore_guest_debug_regs
+>>    *
+>> @@ -342,3 +348,23 @@ void kvm_arch_vcpu_put_debug_state_flags(struct
+>> kvm_vcpu *vcpu)
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>>   }
+>> +
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+>> +{
+>> +    if (has_vhe())
+>> +        write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
+>> +    else
+>> +        *this_cpu_ptr(&guest_trfcr) = trfcr_guest;
+>> +}
+>> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
+>> +
+>> +/*
+>> + * Updates the vcpu's view of the etm events for this cpu. Must be
+>> + * called before every vcpu run after disabling interrupts, to ensure
+>> + * that an interrupt cannot fire and update the structure.
+>> + */
+>> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu)
+>> +{
+>> +    if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+>> +        ctxt_sys_reg(&vcpu->arch.ctxt, TRFCR_EL1) =
+>> *this_cpu_ptr(&guest_trfcr);
+>> +}
+> 
