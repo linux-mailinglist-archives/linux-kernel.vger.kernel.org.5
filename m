@@ -2,198 +2,910 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891617CFFC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ABA7CFFD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345060AbjJSQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S1345033AbjJSQmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbjJSQjy (ORCPT
+        with ESMTP id S232326AbjJSQmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:39:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46136182;
-        Thu, 19 Oct 2023 09:39:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15EFC433C8;
-        Thu, 19 Oct 2023 16:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697733591;
-        bh=ZexdEiNNC+LPRHxIe+2g3JjtbdL/fbrUvs+KMs1hAvQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=N6on/NJddQzika1XMcjbHj7toTNRJyuR5KMRzPvp7mA8LgX+IY8GvugaHVCy8Hzel
-         rNFneoedbIvB2CQR7cczq3CPe3P83aryz7sCMA9uqJh3XCNYeXNVbkUGBykaLyiLOb
-         r2A2UooAjRrfk/UetsSuxAJqx4xzh6yeaepQR8pGGmVyjM7np6xSrfncQ+REhCfVM1
-         oHTHI4vBzhnYuNzjDm//El38reWyxjJ2N/HfEhLUp1e/evBBN1KX+SKt+2i+tvqCNt
-         GBva0BVUyySgpUl6P35iC0kLE8DzcFih3R/xXqMEX1lVY0eloheMEX6uuY5GjrunOb
-         Ux+QZo26gYhkQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6DA82CE041E; Thu, 19 Oct 2023 09:39:51 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:39:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
- transformation and address deps
-Message-ID: <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
- <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
- <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+        Thu, 19 Oct 2023 12:42:51 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FB4124;
+        Thu, 19 Oct 2023 09:42:46 -0700 (PDT)
+Received: from [192.168.0.206] (unknown [179.221.49.105])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4CD0B6607342;
+        Thu, 19 Oct 2023 17:42:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697733765;
+        bh=2RbakX/Kl5ONKU5KD0EqIyWHhXup10iMwph1v7bITgY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hwNZutZznqaTGfpj5IRNK0ixxGPrc8g/h85mApAmslAWe1yKnL9tyaryXs3d5Zk6B
+         42c6EFoBCbwrEn9iG5O78BK83yzMfDxx9hviKztK8tY6z6OQ1E6GFlRba5gP/p+eBW
+         V9jH3swozAHZ75PNux5Wu9gpyV4o3JTBTGcmeoRLdKNdACmxo70/5Jgnxa8rY6WWwZ
+         3TaRcTPCjtvaAORSmAiiaNFHnUyRLzZfkWCZxPu2mIcCjqRe85y4LL4lh7xvLAw03n
+         RZqb3RHnBgp4ZMLFCKolqNOy2TsavVgIaQzV5p2q3ptbGFR6jlEC5ApYyADRIec25S
+         MCM1iKln1ccqA==
+Message-ID: <33b9f155-3c7c-408b-9863-54b451cb14f2@collabora.com>
+Date:   Thu, 19 Oct 2023 13:42:33 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 9/9] drm: ci: Update xfails
+To:     Vignesh Raman <vignesh.raman@collabora.com>, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
+        guilherme.gallo@collabora.com, daniels@collabora.com,
+        gustavo.padovan@collabora.com, emma@anholt.net,
+        robdclark@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+References: <20231019070650.61159-1-vignesh.raman@collabora.com>
+ <20231019070650.61159-10-vignesh.raman@collabora.com>
+Content-Language: en-US
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20231019070650.61159-10-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 12:11:58PM +0200, Jonas Oberhauser wrote:
-> Hi Paul,
+
+
+On 19/10/2023 04:06, Vignesh Raman wrote:
+> Update msm-apq8016-fails, mediatek-mt8173-fails and
+> virtio_gpu-none-fails to include the tests which fail.
+> Update mediatek-mt8173-flakes to include the tests which flakes.
+> Update virtio_gpu-none-skips to include the tests that need to be skipped.
 > 
-> on a second thought. Why can't the compiler always do, e.g.,
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> ---
 > 
->     int *p = READ_ONCE(shared_ptr);
+> v2:
+>    - No changes
 > 
->     assert (*p == 0);
+> v3:
+>    - No changes
 > 
-> ~>
+> v4:
+>    - No changes
 > 
->     int *p = READ_ONCE(shared_ptr);
+> v5:
+>    - Generate fails and flakes file with the updated xfails script - https://www.spinics.net/lists/kernel/msg4959630.html
 > 
->     int val = x; // x is some object that definitely won't segfault, but may
-> very well be owned by another thread right now
->     if (p != &x) val = *p;
-
-The compiler is forbidden from inventing pointer comparisons.
-
->     assert (val == 0);
+> ---
+>   .../drm/ci/xfails/mediatek-mt8173-fails.txt   |  24 +-
+>   .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |   9 +
+>   .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |  17 +-
+>   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  65 +-
+>   .../drm/ci/xfails/virtio_gpu-none-skips.txt   | 632 +++++++++++++++++-
+>   5 files changed, 682 insertions(+), 65 deletions(-)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
 > 
-> and in case p == &x, the address dependency is elided
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> index 671916067dba..d2261a40db11 100644
+> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> @@ -1,5 +1,7 @@
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013011
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012894
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012949
+>   kms_3d,Fail
+> -kms_addfb_basic@addfb25-bad-modifier,Fail
+>   kms_bw@linear-tiling-1-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+> @@ -9,20 +11,22 @@ kms_bw@linear-tiling-2-displays-3840x2160p,Fail
+>   kms_bw@linear-tiling-3-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-3-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-3-displays-3840x2160p,Fail
+> -kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
+> -kms_color@pipe-B-invalid-gamma-lut-sizes,Fail
+> -kms_force_connector_basic@force-connector-state,Fail
+> -kms_force_connector_basic@force-edid,Fail
+> -kms_force_connector_basic@force-load-detect,Fail
+> -kms_force_connector_basic@prune-stale-modes,Fail
+> +kms_color@invalid-gamma-lut-sizes,Fail
+> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_flip@flip-vs-suspend,Fail
+> +kms_flip@flip-vs-suspend-interruptible,Fail
+> +kms_hdmi_inject@inject-4k,Fail
+>   kms_invalid_mode@int-max-clock,Fail
+> +kms_plane_scaling@planes-downscale-factor-0-25-upscale-20x20,Fail
+> +kms_plane_scaling@planes-downscale-factor-0-5-upscale-20x20,Fail
+> +kms_plane_scaling@planes-downscale-factor-0-75-upscale-20x20,Fail
+>   kms_plane_scaling@planes-upscale-20x20,Fail
+>   kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-25,Fail
+>   kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-5,Fail
+>   kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-75,Fail
+> -kms_plane_scaling@upscale-with-modifier-20x20,Fail
+> -kms_plane_scaling@upscale-with-pixel-format-20x20,Fail
+> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
+>   kms_properties@get_properties-sanity-atomic,Fail
+>   kms_properties@plane-properties-atomic,Fail
+>   kms_properties@plane-properties-legacy,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> new file mode 100644
+> index 000000000000..8b12e97d59f3
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> @@ -0,0 +1,9 @@
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013138
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012894
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013011
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013055
+> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
+> +kms_force_connector_basic@force-edid
+> +kms_force_connector_basic@prune-stale-modes
+> +kms_prop_blob@invalid-set-prop
+> +kms_prop_blob@invalid-set-prop-any
+> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> index 9981682feab2..dcc49d560cef 100644
+> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> @@ -1,15 +1,8 @@
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012932
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012894
+>   kms_3d,Fail
+>   kms_addfb_basic@addfb25-bad-modifier,Fail
+> -kms_cursor_legacy@all-pipes-forked-bo,Fail
+> -kms_cursor_legacy@all-pipes-forked-move,Fail
+> -kms_cursor_legacy@all-pipes-single-bo,Fail
+> -kms_cursor_legacy@all-pipes-single-move,Fail
+> -kms_cursor_legacy@all-pipes-torture-bo,Fail
+> -kms_cursor_legacy@all-pipes-torture-move,Fail
+> -kms_cursor_legacy@pipe-A-forked-bo,Fail
+> -kms_cursor_legacy@pipe-A-forked-move,Fail
+> -kms_cursor_legacy@pipe-A-single-bo,Fail
+> -kms_cursor_legacy@pipe-A-single-move,Fail
+> -kms_cursor_legacy@pipe-A-torture-bo,Fail
+> -kms_cursor_legacy@pipe-A-torture-move,Fail
+> +kms_cursor_legacy@forked-bo,Fail
+> +kms_cursor_legacy@forked-move,Fail
+> +kms_force_connector_basic@force-edid,Fail
+>   kms_hdmi_inject@inject-4k,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> index 9586b2339f6f..4281bc25303f 100644
+> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> @@ -1,38 +1,27 @@
+> -kms_addfb_basic@addfb25-bad-modifier,Fail
+> -kms_addfb_basic@bad-pitch-65536,Fail
+> -kms_addfb_basic@bo-too-small,Fail
+> -kms_addfb_basic@size-max,Fail
+> -kms_addfb_basic@too-high,Fail
+> -kms_atomic_transition@plane-primary-toggle-with-vblank-wait,Fail
+> -kms_bw@linear-tiling-1-displays-1920x1080p,Fail
+> -kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+> -kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+> -kms_bw@linear-tiling-2-displays-1920x1080p,Fail
+> -kms_bw@linear-tiling-2-displays-2560x1440p,Fail
+> -kms_bw@linear-tiling-2-displays-3840x2160p,Fail
+> -kms_invalid_mode@int-max-clock,Fail
+> -kms_plane_scaling@downscale-with-modifier-factor-0-25,Fail
+> -kms_plane_scaling@downscale-with-rotation-factor-0-25,Fail
+> -kms_plane_scaling@planes-upscale-20x20,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-25,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-5,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-75,Fail
+> -kms_plane_scaling@upscale-with-modifier-20x20,Fail
+> -kms_plane_scaling@upscale-with-modifier-factor-0-25,Fail
+> -kms_plane_scaling@upscale-with-pixel-format-20x20,Fail
+> -kms_plane_scaling@upscale-with-pixel-format-factor-0-25,Fail
+> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
+> -kms_vblank@crtc-id,Fail
+> -kms_vblank@invalid,Fail
+> -kms_vblank@pipe-A-accuracy-idle,Fail
+> -kms_vblank@pipe-A-query-busy,Fail
+> -kms_vblank@pipe-A-query-forked,Fail
+> -kms_vblank@pipe-A-query-forked-busy,Fail
+> -kms_vblank@pipe-A-query-idle,Fail
+> -kms_vblank@pipe-A-ts-continuation-idle,Fail
+> -kms_vblank@pipe-A-ts-continuation-modeset,Fail
+> -kms_vblank@pipe-A-ts-continuation-suspend,Fail
+> -kms_vblank@pipe-A-wait-busy,Fail
+> -kms_vblank@pipe-A-wait-forked,Fail
+> -kms_vblank@pipe-A-wait-forked-busy,Fail
+> -kms_vblank@pipe-A-wait-idle,Fail
+> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013138
+> +kms_flip@absolute-wf_vblank,Fail
+> +kms_flip@absolute-wf_vblank-interruptible,Fail
+> +kms_flip@basic-flip-vs-wf_vblank,Fail
+> +kms_flip@blocking-absolute-wf_vblank,Fail
+> +kms_flip@blocking-absolute-wf_vblank-interruptible,Fail
+> +kms_flip@blocking-wf_vblank,Fail
+> +kms_flip@busy-flip,Fail
+> +kms_flip@dpms-vs-vblank-race,Fail
+> +kms_flip@dpms-vs-vblank-race-interruptible,Fail
+> +kms_flip@flip-vs-absolute-wf_vblank,Fail
+> +kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
+> +kms_flip@flip-vs-blocking-wf-vblank,Fail
+> +kms_flip@flip-vs-expired-vblank,Fail
+> +kms_flip@flip-vs-expired-vblank-interruptible,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_flip@flip-vs-wf_vblank-interruptible,Fail
+> +kms_flip@modeset-vs-vblank-race,Fail
+> +kms_flip@modeset-vs-vblank-race-interruptible,Fail
+> +kms_flip@plain-flip-fb-recreate,Fail
+> +kms_flip@plain-flip-fb-recreate-interruptible,Fail
+> +kms_flip@plain-flip-ts-check,Fail
+> +kms_flip@plain-flip-ts-check-interruptible,Fail
+> +kms_flip@wf_vblank-ts-check,Fail
+> +kms_flip@wf_vblank-ts-check-interruptible,Fail
+> +kms_setmode@basic,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+> index 78be18174012..e40bd2cac849 100644
+> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+> @@ -1,6 +1,628 @@
+> -# Hits a "refcount_t: underflow; use-after-free" in virtio_gpu_fence_event_process
+> -# When run in a particular order with other tests
+> -kms_cursor_legacy.*
+> -
+>   # Job just hangs without any output
+> -kms_flip@flip-vs-suspend.*
+> \ No newline at end of file
+> +kms_flip@flip-vs-suspend.*
+> +
+> +# Some tests crashes with malloc error and IGT tests floods
+> +# the CI log with error messages and we end up with a warning message
+> +# Job's log exceeded limit of 4194304 bytes.
+> +# Job execution will continue but no more output will be collected.
+> +# Below is the error log:
+> +# malloc(): corrupted top size
+> +# Received signal SIGABRT.
+> +# Stack trace:
+> +#  #0 [fatal_sig_handler+0x17b]
+> +#  #1 [__sigaction+0x40]
+> +#  #2 [pthread_key_delete+0x14c]
+> +#  #3 [gsignal+0x12]
+> +#  #4 [abort+0xd3]
+> +#  #5 [__fsetlocking+0x290]
+> +#  #6 [timer_settime+0x37a]
+> +#  #7 [__default_morecore+0x1f1b]
+> +#  #8 [__libc_calloc+0x161]
+> +#  #9 [drmModeGetPlaneResources+0x44]
+> +#  #10 [igt_display_require+0x194]
+> +#  #11 [__igt_unique____real_main1356+0x93c]
+> +#  #12 [main+0x3f]
+> +#  #13 [__libc_init_first+0x8a]
+> +#  #14 [__libc_start_main+0x85]
+> +#  #15 [_start+0x21]
+> +# malloc(): corrupted top size
+> +# So skip these tests until the issue is fixed.
+> +drm_read@empty-block
+> +drm_read@empty-nonblock
+> +drm_read@fault-buffer
+> +drm_read@invalid-buffer
+> +drm_read@short-buffer-block
+> +drm_read@short-buffer-nonblock
+> +drm_read@short-buffer-wakeup
+> +kms_addfb_basic@addfb25-4-tiled
+> +kms_addfb_basic@addfb25-bad-modifier
+> +kms_addfb_basic@addfb25-framebuffer-vs-set-tiling
+> +kms_addfb_basic@addfb25-modifier-no-flag
+> +kms_addfb_basic@addfb25-x-tiled-legacy
+> +kms_addfb_basic@addfb25-x-tiled-mismatch-legacy
+> +kms_addfb_basic@addfb25-y-tiled-legacy
+> +kms_addfb_basic@addfb25-y-tiled-small-legacy
+> +kms_addfb_basic@addfb25-yf-tiled-legacy
+> +kms_addfb_basic@bad-pitch-0
+> +kms_addfb_basic@bad-pitch-1024
+> +kms_addfb_basic@bad-pitch-128
+> +kms_addfb_basic@bad-pitch-256
+> +kms_addfb_basic@bad-pitch-32
+> +kms_addfb_basic@bad-pitch-63
+> +kms_addfb_basic@bad-pitch-65536
+> +kms_addfb_basic@bad-pitch-999
+> +kms_addfb_basic@basic
+> +kms_addfb_basic@basic-x-tiled-legacy
+> +kms_addfb_basic@basic-y-tiled-legacy
+> +kms_addfb_basic@bo-too-small
+> +kms_addfb_basic@bo-too-small-due-to-tiling
+> +kms_addfb_basic@clobberred-modifier
+> +kms_addfb_basic@framebuffer-vs-set-tiling
+> +kms_addfb_basic@invalid-get-prop
+> +kms_addfb_basic@invalid-get-prop-any
+> +kms_addfb_basic@invalid-set-prop
+> +kms_addfb_basic@invalid-set-prop-any
+> +kms_addfb_basic@invalid-smem-bo-on-discrete
+> +kms_addfb_basic@legacy-format
+> +kms_addfb_basic@master-rmfb
+> +kms_addfb_basic@no-handle
+> +kms_addfb_basic@size-max
+> +kms_addfb_basic@small-bo
+> +kms_addfb_basic@tile-pitch-mismatch
+> +kms_addfb_basic@too-high
+> +kms_addfb_basic@too-wide
+> +kms_addfb_basic@unused-handle
+> +kms_addfb_basic@unused-modifier
+> +kms_addfb_basic@unused-offsets
+> +kms_addfb_basic@unused-pitches
+> +kms_async_flips@alternate-sync-async-flip
+> +kms_async_flips@async-flip-with-page-flip-events
+> +kms_async_flips@crc
+> +kms_async_flips@invalid-async-flip
+> +kms_async_flips@test-cursor
+> +kms_async_flips@test-time-stamp
+> +kms_atomic@atomic-invalid-params
+> +kms_atomic@atomic_plane_damage
+> +kms_atomic@crtc-invalid-params
+> +kms_atomic@crtc-invalid-params-fence
+> +kms_atomic@plane-cursor-legacy
+> +kms_atomic@plane-immutable-zpos
+> +kms_atomic@plane-invalid-params
+> +kms_atomic@plane-invalid-params-fence
+> +kms_atomic@plane-overlay-legacy
+> +kms_atomic@plane-primary-legacy
+> +kms_atomic@plane-primary-overlay-mutable-zpos
+> +kms_atomic@test-only
+> +kms_atomic_interruptible@atomic-setmode
+> +kms_atomic_interruptible@legacy-cursor
+> +kms_atomic_interruptible@legacy-dpms
+> +kms_atomic_interruptible@legacy-pageflip
+> +kms_atomic_interruptible@legacy-setmode
+> +kms_atomic_interruptible@universal-setplane-cursor
+> +kms_atomic_interruptible@universal-setplane-primary
+> +kms_atomic_transition@modeset-transition
+> +kms_atomic_transition@modeset-transition-fencing
+> +kms_atomic_transition@modeset-transition-nonblocking
+> +kms_atomic_transition@modeset-transition-nonblocking-fencing
+> +kms_atomic_transition@plane-all-modeset-transition
+> +kms_atomic_transition@plane-all-modeset-transition-fencing
+> +kms_atomic_transition@plane-all-modeset-transition-fencing-internal-panels
+> +kms_atomic_transition@plane-all-modeset-transition-internal-panels
+> +kms_atomic_transition@plane-all-transition
+> +kms_atomic_transition@plane-all-transition-fencing
+> +kms_atomic_transition@plane-all-transition-nonblocking
+> +kms_atomic_transition@plane-all-transition-nonblocking-fencing
+> +kms_atomic_transition@plane-primary-toggle-with-vblank-wait
+> +kms_atomic_transition@plane-toggle-modeset-transition
+> +kms_atomic_transition@plane-use-after-nonblocking-unbind
+> +kms_atomic_transition@plane-use-after-nonblocking-unbind-fencing
+> +kms_bw@linear-tiling-1-displays-1920x1080p
+> +kms_bw@linear-tiling-1-displays-2560x1440p
+> +kms_bw@linear-tiling-1-displays-3840x2160p
+> +kms_bw@linear-tiling-2-displays-1920x1080p
+> +kms_bw@linear-tiling-2-displays-2560x1440p
+> +kms_bw@linear-tiling-2-displays-3840x2160p
+> +kms_bw@linear-tiling-3-displays-1920x1080p
+> +kms_bw@linear-tiling-3-displays-2560x1440p
+> +kms_bw@linear-tiling-3-displays-3840x2160p
+> +kms_bw@linear-tiling-4-displays-1920x1080p
+> +kms_bw@linear-tiling-4-displays-2560x1440p
+> +kms_bw@linear-tiling-4-displays-3840x2160p
+> +kms_bw@linear-tiling-5-displays-1920x1080p
+> +kms_bw@linear-tiling-5-displays-2560x1440p
+> +kms_bw@linear-tiling-5-displays-3840x2160p
+> +kms_bw@linear-tiling-6-displays-1920x1080p
+> +kms_bw@linear-tiling-6-displays-2560x1440p
+> +kms_bw@linear-tiling-6-displays-3840x2160p
+> +kms_bw@linear-tiling-7-displays-1920x1080p
+> +kms_bw@linear-tiling-7-displays-2560x1440p
+> +kms_bw@linear-tiling-7-displays-3840x2160p
+> +kms_bw@linear-tiling-8-displays-1920x1080p
+> +kms_bw@linear-tiling-8-displays-2560x1440p
+> +kms_bw@linear-tiling-8-displays-3840x2160p
+> +kms_color@ctm-0-25
+> +kms_color@ctm-0-50
+> +kms_color@ctm-0-75
+> +kms_color@ctm-blue-to-red
+> +kms_color@ctm-green-to-red
+> +kms_color@ctm-max
+> +kms_color@ctm-negative
+> +kms_color@ctm-red-to-blue
+> +kms_color@ctm-signed
+> +kms_color@deep-color
+> +kms_color@degamma
+> +kms_color@gamma
+> +kms_color@invalid-ctm-matrix-sizes
+> +kms_color@invalid-degamma-lut-sizes
+> +kms_color@invalid-gamma-lut-sizes
+> +kms_color@legacy-gamma
+> +kms_color@legacy-gamma-reset
+> +kms_concurrent@pipe-A
+> +kms_concurrent@pipe-B
+> +kms_concurrent@pipe-C
+> +kms_concurrent@pipe-D
+> +kms_concurrent@pipe-E
+> +kms_concurrent@pipe-F
+> +kms_concurrent@pipe-G
+> +kms_concurrent@pipe-H
+> +kms_content_protection@LIC
+> +kms_content_protection@atomic
+> +kms_content_protection@atomic-dpms
+> +kms_content_protection@content_type_change
+> +kms_content_protection@dp-mst-lic-type-0
+> +kms_content_protection@dp-mst-lic-type-1
+> +kms_content_protection@dp-mst-type-0
+> +kms_content_protection@dp-mst-type-1
+> +kms_content_protection@legacy
+> +kms_content_protection@mei_interface
+> +kms_content_protection@srm
+> +kms_content_protection@type1
+> +kms_content_protection@uevent
+> +kms_cursor_crc@cursor-alpha-opaque
+> +kms_cursor_crc@cursor-alpha-transparent
+> +kms_cursor_crc@cursor-dpms
+> +kms_cursor_crc@cursor-offscreen-128x128
+> +kms_cursor_crc@cursor-offscreen-128x42
+> +kms_cursor_crc@cursor-offscreen-256x256
+> +kms_cursor_crc@cursor-offscreen-256x85
+> +kms_cursor_crc@cursor-offscreen-32x10
+> +kms_cursor_crc@cursor-offscreen-32x32
+> +kms_cursor_crc@cursor-offscreen-512x170
+> +kms_cursor_crc@cursor-offscreen-512x512
+> +kms_cursor_crc@cursor-offscreen-64x21
+> +kms_cursor_crc@cursor-offscreen-64x64
+> +kms_cursor_crc@cursor-offscreen-max-size
+> +kms_cursor_crc@cursor-onscreen-128x128
+> +kms_cursor_crc@cursor-onscreen-128x42
+> +kms_cursor_crc@cursor-onscreen-256x256
+> +kms_cursor_crc@cursor-onscreen-256x85
+> +kms_cursor_crc@cursor-onscreen-32x10
+> +kms_cursor_crc@cursor-onscreen-32x32
+> +kms_cursor_crc@cursor-onscreen-512x170
+> +kms_cursor_crc@cursor-onscreen-512x512
+> +kms_cursor_crc@cursor-onscreen-64x21
+> +kms_cursor_crc@cursor-onscreen-64x64
+> +kms_cursor_crc@cursor-onscreen-max-size
+> +kms_cursor_crc@cursor-random-128x128
+> +kms_cursor_crc@cursor-random-128x42
+> +kms_cursor_crc@cursor-random-256x256
+> +kms_cursor_crc@cursor-random-256x85
+> +kms_cursor_crc@cursor-random-32x10
+> +kms_cursor_crc@cursor-random-32x32
+> +kms_cursor_crc@cursor-random-512x170
+> +kms_cursor_crc@cursor-random-512x512
+> +kms_cursor_crc@cursor-random-64x21
+> +kms_cursor_crc@cursor-random-64x64
+> +kms_cursor_crc@cursor-random-max-size
+> +kms_cursor_crc@cursor-rapid-movement-128x128
+> +kms_cursor_crc@cursor-rapid-movement-128x42
+> +kms_cursor_crc@cursor-rapid-movement-256x256
+> +kms_cursor_crc@cursor-rapid-movement-256x85
+> +kms_cursor_crc@cursor-rapid-movement-32x10
+> +kms_cursor_crc@cursor-rapid-movement-32x32
+> +kms_cursor_crc@cursor-rapid-movement-512x170
+> +kms_cursor_crc@cursor-rapid-movement-512x512
+> +kms_cursor_crc@cursor-rapid-movement-64x21
+> +kms_cursor_crc@cursor-rapid-movement-64x64
+> +kms_cursor_crc@cursor-rapid-movement-max-size
+> +kms_cursor_crc@cursor-size-change
+> +kms_cursor_crc@cursor-sliding-128x128
+> +kms_cursor_crc@cursor-sliding-128x42
+> +kms_cursor_crc@cursor-sliding-256x256
+> +kms_cursor_crc@cursor-sliding-256x85
+> +kms_cursor_crc@cursor-sliding-32x10
+> +kms_cursor_crc@cursor-sliding-32x32
+> +kms_cursor_crc@cursor-sliding-512x170
+> +kms_cursor_crc@cursor-sliding-512x512
+> +kms_cursor_crc@cursor-sliding-64x21
+> +kms_cursor_crc@cursor-sliding-64x64
+> +kms_cursor_crc@cursor-sliding-max-size
+> +kms_cursor_crc@cursor-suspend
+> +kms_cursor_legacy@2x-cursor-vs-flip-atomic
+> +kms_cursor_legacy@2x-cursor-vs-flip-legacy
+> +kms_cursor_legacy@2x-flip-vs-cursor-atomic
+> +kms_cursor_legacy@2x-flip-vs-cursor-legacy
+> +kms_cursor_legacy@2x-long-cursor-vs-flip-atomic
+> +kms_cursor_legacy@2x-long-cursor-vs-flip-legacy
+> +kms_cursor_legacy@2x-long-flip-vs-cursor-atomic
+> +kms_cursor_legacy@2x-long-flip-vs-cursor-legacy
+> +kms_cursor_legacy@2x-long-nonblocking-modeset-vs-cursor-atomic
+> +kms_cursor_legacy@2x-nonblocking-modeset-vs-cursor-atomic
+> +kms_cursor_legacy@basic-busy-flip-before-cursor-atomic
+> +kms_cursor_legacy@basic-busy-flip-before-cursor-legacy
+> +kms_cursor_legacy@basic-busy-flip-before-cursor-varying-size
+> +kms_cursor_legacy@basic-flip-after-cursor-atomic
+> +kms_cursor_legacy@basic-flip-after-cursor-legacy
+> +kms_cursor_legacy@basic-flip-after-cursor-varying-size
+> +kms_cursor_legacy@basic-flip-before-cursor-atomic
+> +kms_cursor_legacy@basic-flip-before-cursor-legacy
+> +kms_cursor_legacy@basic-flip-before-cursor-varying-size
+> +kms_cursor_legacy@cursor-vs-flip-atomic
+> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
+> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions-varying-size
+> +kms_cursor_legacy@cursor-vs-flip-legacy
+> +kms_cursor_legacy@cursor-vs-flip-toggle
+> +kms_cursor_legacy@cursor-vs-flip-varying-size
+> +kms_cursor_legacy@cursorA-vs-flipA-atomic
+> +kms_cursor_legacy@cursorA-vs-flipA-atomic-transitions
+> +kms_cursor_legacy@cursorA-vs-flipA-atomic-transitions-varying-size
+> +kms_cursor_legacy@cursorA-vs-flipA-legacy
+> +kms_cursor_legacy@cursorA-vs-flipA-toggle
+> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
+> +kms_cursor_legacy@cursorA-vs-flipB-atomic
+> +kms_cursor_legacy@cursorA-vs-flipB-atomic-transitions
+> +kms_cursor_legacy@cursorA-vs-flipB-atomic-transitions-varying-size
+> +kms_cursor_legacy@cursorA-vs-flipB-legacy
+> +kms_cursor_legacy@cursorA-vs-flipB-toggle
+> +kms_cursor_legacy@cursorA-vs-flipB-varying-size
+> +kms_cursor_legacy@cursorB-vs-flipA-atomic
+> +kms_cursor_legacy@cursorB-vs-flipA-atomic-transitions
+> +kms_cursor_legacy@cursorB-vs-flipA-atomic-transitions-varying-size
+> +kms_cursor_legacy@cursorB-vs-flipA-legacy
+> +kms_cursor_legacy@cursorB-vs-flipA-toggle
+> +kms_cursor_legacy@cursorB-vs-flipA-varying-size
+> +kms_cursor_legacy@cursorB-vs-flipB-atomic
+> +kms_cursor_legacy@cursorB-vs-flipB-atomic-transitions
+> +kms_cursor_legacy@cursorB-vs-flipB-atomic-transitions-varying-size
+> +kms_cursor_legacy@cursorB-vs-flipB-legacy
+> +kms_cursor_legacy@cursorB-vs-flipB-toggle
+> +kms_cursor_legacy@cursorB-vs-flipB-varying-size
+> +kms_cursor_legacy@flip-vs-cursor-atomic
+> +kms_cursor_legacy@flip-vs-cursor-atomic-transitions
+> +kms_cursor_legacy@flip-vs-cursor-atomic-transitions-varying-size
+> +kms_cursor_legacy@flip-vs-cursor-busy-crc-atomic
+> +kms_cursor_legacy@flip-vs-cursor-busy-crc-legacy
+> +kms_cursor_legacy@flip-vs-cursor-crc-atomic
+> +kms_cursor_legacy@flip-vs-cursor-crc-legacy
+> +kms_cursor_legacy@flip-vs-cursor-legacy
+> +kms_cursor_legacy@flip-vs-cursor-toggle
+> +kms_cursor_legacy@flip-vs-cursor-varying-size
+> +kms_cursor_legacy@forked-bo
+> +kms_cursor_legacy@forked-move
+> +kms_cursor_legacy@long-nonblocking-modeset-vs-cursor-atomic
+> +kms_cursor_legacy@nonblocking-modeset-vs-cursor-atomic
+> +kms_cursor_legacy@short-busy-flip-before-cursor-atomic-transitions
+> +kms_cursor_legacy@short-busy-flip-before-cursor-atomic-transitions-varying-size
+> +kms_cursor_legacy@short-busy-flip-before-cursor-toggle
+> +kms_cursor_legacy@short-flip-after-cursor-atomic-transitions
+> +kms_cursor_legacy@short-flip-after-cursor-atomic-transitions-varying-size
+> +kms_cursor_legacy@short-flip-after-cursor-toggle
+> +kms_cursor_legacy@short-flip-before-cursor-atomic-transitions
+> +kms_cursor_legacy@short-flip-before-cursor-atomic-transitions-varying-size
+> +kms_cursor_legacy@short-flip-before-cursor-toggle
+> +kms_cursor_legacy@single-bo
+> +kms_cursor_legacy@single-move
+> +kms_cursor_legacy@torture-bo
+> +kms_cursor_legacy@torture-move
+> +kms_dither@FB-8BPC-Vs-Panel-6BPC
+> +kms_dither@FB-8BPC-Vs-Panel-8BPC
+> +kms_flip_event_leak@basic
+> +kms_getfb@getfb-handle-not-fb
+> +kms_getfb@getfb2-handle-not-fb
+> +kms_hdr@bpc-switch
+> +kms_hdr@bpc-switch-dpms
+> +kms_hdr@bpc-switch-suspend
+> +kms_hdr@invalid-hdr
+> +kms_hdr@invalid-metadata-sizes
+> +kms_hdr@static-swap
+> +kms_hdr@static-toggle
+> +kms_hdr@static-toggle-dpms
+> +kms_hdr@static-toggle-suspend
+> +kms_invalid_mode@bad-hsync-end
+> +kms_invalid_mode@bad-hsync-start
+> +kms_invalid_mode@bad-htotal
+> +kms_invalid_mode@bad-vsync-end
+> +kms_invalid_mode@bad-vsync-start
+> +kms_invalid_mode@bad-vtotal
+> +kms_invalid_mode@clock-too-high
+> +kms_invalid_mode@int-max-clock
+> +kms_invalid_mode@uint-max-clock
+> +kms_invalid_mode@zero-clock
+> +kms_invalid_mode@zero-hdisplay
+> +kms_invalid_mode@zero-vdisplay
+> +kms_panel_fitting@atomic-fastset
+> +kms_panel_fitting@legacy
+> +kms_plane_cursor@overlay
+> +kms_plane_cursor@primary
+> +kms_plane_cursor@viewport
+> +kms_plane_scaling@2x-scaler-multi-pipe
+> +kms_plane_scaling@intel-max-src-size
+> +kms_plane_scaling@invalid-num-scalers
+> +kms_plane_scaling@invalid-parameters
+> +kms_plane_scaling@plane-downscale-with-modifiers-factor-0-25
+> +kms_plane_scaling@plane-downscale-with-modifiers-factor-0-5
+> +kms_plane_scaling@plane-downscale-with-modifiers-factor-0-75
+> +kms_plane_scaling@plane-downscale-with-pixel-format-factor-0-25
+> +kms_plane_scaling@plane-downscale-with-pixel-format-factor-0-5
+> +kms_plane_scaling@plane-downscale-with-pixel-format-factor-0-75
+> +kms_plane_scaling@plane-downscale-with-rotation-factor-0-25
+> +kms_plane_scaling@plane-downscale-with-rotation-factor-0-5
+> +kms_plane_scaling@plane-downscale-with-rotation-factor-0-75
+> +kms_plane_scaling@plane-scaler-with-clipping-clamping-modifiers
+> +kms_plane_scaling@plane-scaler-with-clipping-clamping-pixel-formats
+> +kms_plane_scaling@plane-scaler-with-clipping-clamping-rotation
+> +kms_plane_scaling@plane-scaler-with-modifiers-unity-scaling
+> +kms_plane_scaling@plane-scaler-with-pixel-format-unity-scaling
+> +kms_plane_scaling@plane-scaler-with-rotation-unity-scaling
+> +kms_plane_scaling@plane-upscale-with-modifiers-20x20
+> +kms_plane_scaling@plane-upscale-with-modifiers-factor-0-25
+> +kms_plane_scaling@plane-upscale-with-pixel-format-20x20
+> +kms_plane_scaling@plane-upscale-with-pixel-format-factor-0-25
+> +kms_plane_scaling@plane-upscale-with-rotation-20x20
+> +kms_plane_scaling@plane-upscale-with-rotation-factor-0-25
+> +kms_plane_scaling@planes-downscale-factor-0-25
+> +kms_plane_scaling@planes-downscale-factor-0-25-unity-scaling
+> +kms_plane_scaling@planes-downscale-factor-0-25-upscale-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-25-upscale-factor-0-25
+> +kms_plane_scaling@planes-downscale-factor-0-5
+> +kms_plane_scaling@planes-downscale-factor-0-5-unity-scaling
+> +kms_plane_scaling@planes-downscale-factor-0-5-upscale-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-5-upscale-factor-0-25
+> +kms_plane_scaling@planes-downscale-factor-0-75
+> +kms_plane_scaling@planes-downscale-factor-0-75-unity-scaling
+> +kms_plane_scaling@planes-downscale-factor-0-75-upscale-20x20
+> +kms_plane_scaling@planes-downscale-factor-0-75-upscale-factor-0-25
+> +kms_plane_scaling@planes-scaler-unity-scaling
+> +kms_plane_scaling@planes-unity-scaling-downscale-factor-0-25
+> +kms_plane_scaling@planes-unity-scaling-downscale-factor-0-5
+> +kms_plane_scaling@planes-unity-scaling-downscale-factor-0-75
+> +kms_plane_scaling@planes-upscale-20x20
+> +kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-25
+> +kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-5
+> +kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-75
+> +kms_plane_scaling@planes-upscale-factor-0-25
+> +kms_plane_scaling@planes-upscale-factor-0-25-downscale-factor-0-25
+> +kms_plane_scaling@planes-upscale-factor-0-25-downscale-factor-0-5
+> +kms_plane_scaling@planes-upscale-factor-0-25-downscale-factor-0-75
+> +kms_prime@D3hot
+> +kms_prime@basic-crc-hybrid
+> +kms_prime@basic-crc-vgem
+> +kms_prime@basic-modeset-hybrid
+> +kms_properties@connector-properties-atomic
+> +kms_properties@connector-properties-legacy
+> +kms_properties@crtc-properties-atomic
+> +kms_properties@crtc-properties-legacy
+> +kms_properties@get_properties-sanity-atomic
+> +kms_properties@get_properties-sanity-non-atomic
+> +kms_properties@invalid-properties-atomic
+> +kms_properties@invalid-properties-legacy
+> +kms_properties@plane-properties-atomic
+> +kms_properties@plane-properties-legacy
+> +kms_rmfb@close-fd
+> +kms_rmfb@rmfb-ioctl
+> +kms_scaling_modes@scaling-mode-center
+> +kms_scaling_modes@scaling-mode-full
+> +kms_scaling_modes@scaling-mode-full-aspect
+> +kms_scaling_modes@scaling-mode-none
+> +kms_tiled_display@basic-test-pattern
+> +kms_tiled_display@basic-test-pattern-with-chamelium
+> +kms_vblank@crtc-id
+> +kms_vblank@invalid
+> +kms_vblank@pipe-A-accuracy-idle
+> +kms_vblank@pipe-A-query-busy
+> +kms_vblank@pipe-A-query-busy-hang
+> +kms_vblank@pipe-A-query-forked
+> +kms_vblank@pipe-A-query-forked-busy
+> +kms_vblank@pipe-A-query-forked-busy-hang
+> +kms_vblank@pipe-A-query-forked-hang
+> +kms_vblank@pipe-A-query-idle
+> +kms_vblank@pipe-A-query-idle-hang
+> +kms_vblank@pipe-A-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-A-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-A-ts-continuation-idle
+> +kms_vblank@pipe-A-ts-continuation-idle-hang
+> +kms_vblank@pipe-A-ts-continuation-modeset
+> +kms_vblank@pipe-A-ts-continuation-modeset-hang
+> +kms_vblank@pipe-A-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-A-ts-continuation-suspend
+> +kms_vblank@pipe-A-wait-busy
+> +kms_vblank@pipe-A-wait-busy-hang
+> +kms_vblank@pipe-A-wait-forked
+> +kms_vblank@pipe-A-wait-forked-busy
+> +kms_vblank@pipe-A-wait-forked-busy-hang
+> +kms_vblank@pipe-A-wait-forked-hang
+> +kms_vblank@pipe-A-wait-idle
+> +kms_vblank@pipe-A-wait-idle-hang
+> +kms_vblank@pipe-B-accuracy-idle
+> +kms_vblank@pipe-B-query-busy
+> +kms_vblank@pipe-B-query-busy-hang
+> +kms_vblank@pipe-B-query-forked
+> +kms_vblank@pipe-B-query-forked-busy
+> +kms_vblank@pipe-B-query-forked-busy-hang
+> +kms_vblank@pipe-B-query-forked-hang
+> +kms_vblank@pipe-B-query-idle
+> +kms_vblank@pipe-B-query-idle-hang
+> +kms_vblank@pipe-B-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-B-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-B-ts-continuation-idle
+> +kms_vblank@pipe-B-ts-continuation-idle-hang
+> +kms_vblank@pipe-B-ts-continuation-modeset
+> +kms_vblank@pipe-B-ts-continuation-modeset-hang
+> +kms_vblank@pipe-B-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-B-ts-continuation-suspend
+> +kms_vblank@pipe-B-wait-busy
+> +kms_vblank@pipe-B-wait-busy-hang
+> +kms_vblank@pipe-B-wait-forked
+> +kms_vblank@pipe-B-wait-forked-busy
+> +kms_vblank@pipe-B-wait-forked-busy-hang
+> +kms_vblank@pipe-B-wait-forked-hang
+> +kms_vblank@pipe-B-wait-idle
+> +kms_vblank@pipe-B-wait-idle-hang
+> +kms_vblank@pipe-C-accuracy-idle
+> +kms_vblank@pipe-C-query-idle
+> +kms_vblank@pipe-C-query-busy
+> +kms_vblank@pipe-C-query-busy-hang
+> +kms_vblank@pipe-C-query-forked
+> +kms_vblank@pipe-C-query-forked-busy
+> +kms_vblank@pipe-C-query-forked-busy-hang
+> +kms_vblank@pipe-C-query-forked-hang
+> +kms_vblank@pipe-C-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-C-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-C-ts-continuation-idle
+> +kms_vblank@pipe-C-ts-continuation-idle-hang
+> +kms_vblank@pipe-C-ts-continuation-modeset
+> +kms_vblank@pipe-C-ts-continuation-modeset-hang
+> +kms_vblank@pipe-C-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-C-ts-continuation-suspend
+> +kms_vblank@pipe-C-wait-busy
+> +kms_vblank@pipe-C-wait-busy-hang
+> +kms_vblank@pipe-C-wait-forked
+> +kms_vblank@pipe-C-wait-forked-busy
+> +kms_vblank@pipe-C-wait-forked-busy-hang
+> +kms_vblank@pipe-C-wait-forked-hang
+> +kms_vblank@pipe-C-wait-idle
+> +kms_vblank@pipe-C-wait-idle-hang
+> +kms_vblank@pipe-D-accuracy-idle
+> +kms_vblank@pipe-D-query-busy
+> +kms_vblank@pipe-D-query-busy-hang
+> +kms_vblank@pipe-D-query-forked
+> +kms_vblank@pipe-D-query-forked-busy
+> +kms_vblank@pipe-D-query-forked-busy-hang
+> +kms_vblank@pipe-D-query-forked-hang
+> +kms_vblank@pipe-D-query-idle
+> +kms_vblank@pipe-D-query-idle-hang
+> +kms_vblank@pipe-D-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-D-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-D-ts-continuation-idle
+> +kms_vblank@pipe-D-ts-continuation-idle-hang
+> +kms_vblank@pipe-D-ts-continuation-modeset
+> +kms_vblank@pipe-D-ts-continuation-modeset-hang
+> +kms_vblank@pipe-D-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-D-ts-continuation-suspend
+> +kms_vblank@pipe-D-wait-busy
+> +kms_vblank@pipe-D-wait-busy-hang
+> +kms_vblank@pipe-D-wait-forked
+> +kms_vblank@pipe-D-wait-forked-busy
+> +kms_vblank@pipe-D-wait-forked-busy-hang
+> +kms_vblank@pipe-D-wait-forked-hang
+> +kms_vblank@pipe-D-wait-idle
+> +kms_vblank@pipe-D-wait-idle-hang
+> +kms_vblank@pipe-E-accuracy-idle
+> +kms_vblank@pipe-E-query-busy
+> +kms_vblank@pipe-E-query-busy-hang
+> +kms_vblank@pipe-E-query-forked
+> +kms_vblank@pipe-E-query-forked-busy
+> +kms_vblank@pipe-E-query-forked-busy-hang
+> +kms_vblank@pipe-E-query-forked-hang
+> +kms_vblank@pipe-E-query-idle
+> +kms_vblank@pipe-E-query-idle-hang
+> +kms_vblank@pipe-E-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-E-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-E-ts-continuation-idle
+> +kms_vblank@pipe-E-ts-continuation-idle-hang
+> +kms_vblank@pipe-E-ts-continuation-modeset
+> +kms_vblank@pipe-E-ts-continuation-modeset-hang
+> +kms_vblank@pipe-E-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-E-ts-continuation-suspend
+> +kms_vblank@pipe-E-wait-busy
+> +kms_vblank@pipe-E-wait-busy-hang
+> +kms_vblank@pipe-E-wait-forked
+> +kms_vblank@pipe-E-wait-forked-busy
+> +kms_vblank@pipe-E-wait-forked-busy-hang
+> +kms_vblank@pipe-E-wait-forked-hang
+> +kms_vblank@pipe-E-wait-idle
+> +kms_vblank@pipe-E-wait-idle-hang
+> +kms_vblank@pipe-F-accuracy-idle
+> +kms_vblank@pipe-F-query-busy
+> +kms_vblank@pipe-F-query-busy-hang
+> +kms_vblank@pipe-F-query-forked
+> +kms_vblank@pipe-F-query-forked-busy
+> +kms_vblank@pipe-F-query-forked-busy-hang
+> +kms_vblank@pipe-F-query-forked-hang
+> +kms_vblank@pipe-F-query-idle
+> +kms_vblank@pipe-F-query-idle-hang
+> +kms_vblank@pipe-F-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-F-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-F-ts-continuation-idle
+> +kms_vblank@pipe-F-ts-continuation-idle-hang
+> +kms_vblank@pipe-F-ts-continuation-modeset
+> +kms_vblank@pipe-F-ts-continuation-modeset-hang
+> +kms_vblank@pipe-F-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-F-ts-continuation-suspend
+> +kms_vblank@pipe-F-wait-busy
+> +kms_vblank@pipe-F-wait-busy-hang
+> +kms_vblank@pipe-F-wait-forked
+> +kms_vblank@pipe-F-wait-forked-busy
+> +kms_vblank@pipe-F-wait-forked-busy-hang
+> +kms_vblank@pipe-F-wait-forked-hang
+> +kms_vblank@pipe-F-wait-idle
+> +kms_vblank@pipe-F-wait-idle-hang
+> +kms_vblank@pipe-G-accuracy-idle
+> +kms_vblank@pipe-G-query-busy
+> +kms_vblank@pipe-G-query-busy-hang
+> +kms_vblank@pipe-G-query-forked
+> +kms_vblank@pipe-G-query-forked-busy
+> +kms_vblank@pipe-G-query-forked-busy-hang
+> +kms_vblank@pipe-G-query-forked-hang
+> +kms_vblank@pipe-G-query-idle
+> +kms_vblank@pipe-G-query-idle-hang
+> +kms_vblank@pipe-G-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-G-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-G-ts-continuation-idle
+> +kms_vblank@pipe-G-ts-continuation-idle-hang
+> +kms_vblank@pipe-G-ts-continuation-modeset
+> +kms_vblank@pipe-G-ts-continuation-modeset-hang
+> +kms_vblank@pipe-G-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-G-ts-continuation-suspend
+> +kms_vblank@pipe-G-wait-busy
+> +kms_vblank@pipe-G-wait-busy-hang
+> +kms_vblank@pipe-G-wait-forked
+> +kms_vblank@pipe-G-wait-forked-busy
+> +kms_vblank@pipe-G-wait-forked-busy-hang
+> +kms_vblank@pipe-G-wait-forked-hang
+> +kms_vblank@pipe-G-wait-idle
+> +kms_vblank@pipe-G-wait-idle-hang
+> +kms_vblank@pipe-H-accuracy-idle
+> +kms_vblank@pipe-H-query-busy
+> +kms_vblank@pipe-H-query-busy-hang
+> +kms_vblank@pipe-H-query-forked
+> +kms_vblank@pipe-H-query-forked-busy
+> +kms_vblank@pipe-H-query-forked-busy-hang
+> +kms_vblank@pipe-H-query-forked-hang
+> +kms_vblank@pipe-H-query-idle
+> +kms_vblank@pipe-H-query-idle-hang
+> +kms_vblank@pipe-H-ts-continuation-dpms-rpm
+> +kms_vblank@pipe-H-ts-continuation-dpms-suspend
+> +kms_vblank@pipe-H-ts-continuation-idle
+> +kms_vblank@pipe-H-ts-continuation-idle-hang
+> +kms_vblank@pipe-H-ts-continuation-modeset
+> +kms_vblank@pipe-H-ts-continuation-modeset-hang
+> +kms_vblank@pipe-H-ts-continuation-modeset-rpm
+> +kms_vblank@pipe-H-ts-continuation-suspend
+> +kms_vblank@pipe-H-wait-busy
+> +kms_vblank@pipe-H-wait-busy-hang
+> +kms_vblank@pipe-H-wait-forked
+> +kms_vblank@pipe-H-wait-forked-busy
+> +kms_vblank@pipe-H-wait-forked-busy-hang
+> +kms_vblank@pipe-H-wait-forked-hang
+> +kms_vblank@pipe-H-wait-idle
+> +kms_vblank@pipe-H-wait-idle-hang
+> +kms_vrr@flip-basic
+> +kms_vrr@flip-dpms
+> +kms_vrr@flip-suspend
+> +kms_vrr@flipline
+> +kms_vrr@negative-basic
+> +kms_writeback@writeback-check-output
+> +kms_writeback@writeback-fb-id
+> +kms_writeback@writeback-invalid-parameters
+> +kms_writeback@writeback-pixel-formats
 
-But yes, this is one reason why Documentation/RCU/rcu_dereference.rst
-warns about pointer comparisons.
+I wonder if we could just do
 
-> Best wishes,
-> 
-> jonas
-> 
-> Am 10/6/2023 um 6:39 PM schrieb Jonas Oberhauser:
-> > Hi Paul,
-> > 
-> > The "more up-to-date information" makes it sound like (some of) the
-> > information in this section is out-of-date/no longer valid.
+drm_read.*
+kms_addfb_basic.*
+kms_atomic.*
+kms_bw.*
+kms_color.*
+kms_concurrent.*
+kms_content_protection.*
+kms_cursor_crc.*
+kms_cursor_legacy.*
 
-The old smp_read_barrier_depends() that these section cover really
-does no longer exist.
+... (and so on)
 
-> > But after reading the sections, it seems the information is valid, but
-> > discusses mostly the history of address dependency barriers.
-> > 
-> > Given that the sepcond part  specifically already starts with a
-> > disclaimer that this information is purely relevant to people interested
-> > in history or working on alpha, I think it would make more sense to
-> > modify things slightly differently.
-> > 
-> > Firstly I'd remove the "historical" part in the first section, and add
-> > two short paragraphs explaining that
-> > 
-> > - every marked access implies a address dependency barrier
+to simplify this list (in case most of the tests with that prefix are 
+provoking that issue).
 
-This is covered in rcu_dereference.rst.  Or is something missing there?
-Please note that the atomic_read() primitives operate on integers
-rather than pointers, so are off the table.  Yes, in theory, some of
-the value-returning atomic read-modify-write operations could head a
-dependency chain, but these things are sufficiently heavyweight that
-most situations would be better served by an _acquire() suffix than by
-a relaxed version of such an atomic operation.
-
-> > - address dependencies considered by the model are *semantic*
-> > dependencies, meaning that a *syntactic* dependency is not sufficient to
-> > imply ordering; see the rcu file for some examples where compilers can
-> > elide syntactic dependencies
-
-There is a bunch of text in rcu_dereference.rst to this effect.  Or
-is there some aspect that is missing from that document?
-
-The longer-term direction, perhaps a few years from now, is for the
-first section to simply reference rcu_dereference.rst and for the second
-section to be removed completely.
-
-> > Secondly, I'd not add the disclaimer to the second section; there's
-> > already a link to rcu_dereference in that section ( https://github.com/torvalds/linux/blob/master/Documentation/memory-barriers.txt#L634
-> > ), and already a small text explaining that the section is historical.
-
-The problem is that people insist on diving into the middle of documents,
-so sometimes repetition is a necessary form of self defense.  ;-)
-
-But I very much appreciate your review and feedback, and I also apologize
-for my slowness.
-
-							Thanx, Paul
-
-> > Best wishes,
-> > 
-> > jonas
-> > 
-> > 
-> > Am 10/5/2023 um 6:53 PM schrieb Paul E. McKenney:
-> > > The compiler has the ability to cause misordering by destroying
-> > > address-dependency barriers if comparison operations are used. Add a
-> > > note about this to memory-barriers.txt in the beginning of both the
-> > > historical address-dependency sections and point to rcu-dereference.rst
-> > > for more information.
-> > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > 
-> > > diff --git a/Documentation/memory-barriers.txt
-> > > b/Documentation/memory-barriers.txt
-> > > index 06e14efd8662..d414e145f912 100644
-> > > --- a/Documentation/memory-barriers.txt
-> > > +++ b/Documentation/memory-barriers.txt
-> > > @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
-> > >        (2) Address-dependency barriers (historical).
-> > > +     [!] This section is marked as HISTORICAL: For more up-to-date
-> > > +     information, including how compiler transformations related to
-> > > pointer
-> > > +     comparisons can sometimes cause problems, see
-> > > +     Documentation/RCU/rcu_dereference.rst.
-> > >          An address-dependency barrier is a weaker form of read
-> > > barrier.  In the
-> > >        case where two loads are performed such that the second
-> > > depends on the
-> > > @@ -556,6 +560,9 @@ There are certain things that the Linux kernel
-> > > memory barriers do not guarantee:
-> > >     ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
-> > >   ----------------------------------------
-> > > +[!] This section is marked as HISTORICAL: For more up-to-date
-> > > information,
-> > > +including how compiler transformations related to pointer
-> > > comparisons can
-> > > +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
-> > >     As of v4.15 of the Linux kernel, an smp_mb() was added to
-> > > READ_ONCE() for
-> > >   DEC Alpha, which means that about the only people who need to pay
-> > > attention
-> 
+Regards,
+Helen
