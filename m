@@ -2,130 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B007CFDF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004177CFDF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346301AbjJSPdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S1346328AbjJSPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346325AbjJSPdT (ORCPT
+        with ESMTP id S1346308AbjJSPdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 11:33:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DDE18D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697729596; x=1729265596;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2Z40rGQaojX6+GkIeTG0oClzzBjXurZIcm+e6oHdqJQ=;
-  b=jxcvGmr5QG3DUaW8oNlN7uVbhzl60o73hjYkAqVIPtJjOQdIHW0vt8xU
-   GjcFGiQOVgmg67IZ1Xgo4/WNK1y7/vrlcKDKDK8oftakgzvRVmpPoFjpV
-   SXGmLEEUOd1cIbkp+gz+kI2TcbJe8XsaxCgyPMKI20KzbRpB+JaNBPNFv
-   yYY/L8idPbXX1WASCqKnDC7mFZowyIkZovQZ3dWnB+lZIsMSxau3QnAAV
-   b4LuYAf7ArA05QepgogH9QT4Dm2pm5lVPemKEaLZbri6IDSJtPK2QgaHJ
-   627W/RtUI6KKPMtrvQgs8fU6YXEY3x5tjGnqBWv39fw4wcdB6XNJV1ZN1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="386107896"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="386107896"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 08:33:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930645181"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="930645181"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 19 Oct 2023 08:33:14 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtV1L-0002DC-30;
-        Thu, 19 Oct 2023 15:33:11 +0000
-Date:   Thu, 19 Oct 2023 23:33:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array subscript 0
- is outside array bounds of 'struct sg_table[0]'
-Message-ID: <202310192300.lurP44yG-lkp@intel.com>
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2892F18F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:33:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C5FDC433C8;
+        Thu, 19 Oct 2023 15:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697729597;
+        bh=HwwRNCwT8BYB1JzATrYA1vnmNd3NZ1gsX/BTgIeQxys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N97pbG5eH+rIsR4tEcQlulJ2kgrWW2CryHjiZOTPl5Li7NNuRFr7bLP5lcqz06mb8
+         I0yq83Oz7HW3+xQj2QxqHqRZvb7UvfQQJF1JLaAWhqjApWcvYt5CgteXF7OEntP3yB
+         e+/sKHHlXiqrMgRmA4oy/muxqBC44EUPh76dQMzwrY0Q2fZCNuCkwhNoGlaDwqFvUj
+         sE7xiMKRnN68hE7eoJDiEVZFu6KO0BWkPpeMdESqXx22QsqFKg/vGJYnu+DVeb0iO3
+         JQQygDm6uKa9lDbcIXYvBau0PjJay6LR1B6BRuy4WnGAk+j+4F0fAkFEuO55Zb2lfA
+         CeA7SsZiSU+9A==
+Date:   Thu, 19 Oct 2023 16:33:12 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc:     Evan Green <evan@rivosinc.com>, Jerry Shih <jerry.shih@sifive.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Subject: Re: [PATCH v2 05/19] riscv: add ISA extension parsing for vector
+ crypto extensions
+Message-ID: <20231019-nuclear-vista-ef3e0b9bef71@spud>
+References: <20231017131456.2053396-1-cleger@rivosinc.com>
+ <20231017131456.2053396-6-cleger@rivosinc.com>
+ <DA8B4610-D514-4733-B875-C247FFCCC7AA@sifive.com>
+ <af785f0f-9de7-4548-9cdb-f392cde1cc2b@rivosinc.com>
+ <CALs-HstEBt-ntCcETa9YwS6On3nGyoEc2p7R-gaBLG9+aFJL5w@mail.gmail.com>
+ <7626f978-e9ea-4f8f-b814-aeac02bd3712@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VdNzOK6fe6sE2V7+"
 Content-Disposition: inline
+In-Reply-To: <7626f978-e9ea-4f8f-b814-aeac02bd3712@rivosinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   dd72f9c7e512da377074d47d990564959b772643
-commit: 592627ccbdff0ec6fff00fc761142a76db750dd4 RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
-date:   9 months ago
-config: sparc-randconfig-c023-20211015 (https://download.01.org/0day-ci/archive/20231019/202310192300.lurP44yG-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310192300.lurP44yG-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310192300.lurP44yG-lkp@intel.com/
+--VdNzOK6fe6sE2V7+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All warnings (new ones prefixed by >>):
+On Thu, Oct 19, 2023 at 11:35:59AM +0200, Cl=C3=A9ment L=C3=A9ger wrote:
+>=20
+>=20
+> On 18/10/2023 19:26, Evan Green wrote:
+> > On Wed, Oct 18, 2023 at 5:53=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger=
+@rivosinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 18/10/2023 03:45, Jerry Shih wrote:
+> >>> On Oct 17, 2023, at 21:14, Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.c=
+om> wrote:
+> >>>> @@ -221,6 +261,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[]=
+ =3D {
+> >>>>      __RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
+> >>>>      __RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
+> >>>>      __RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
+> >>>> +    __RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
+> >>>> +    __RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
+> >>>> +    __RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
+> >>>
+> >>> The `Zvkb` is the subset of `Zvbb`[1]. So, the `Zvkb` should be bundl=
+ed with `Zvbb`.
+> >>
+> >> Hi Jerry,
+> >>
+> >> Thanks for catching this, I think some other extensions will fall in
+> >> this category as well then (Zvknha/Zvknhb). I will verify that.
+> >=20
+> > The bundling mechanism works well when an extension is a pure lasso
+> > around other extensions. We'd have to tweak that code if we wanted to
+> > support cases like this, where the extension is a superset of others,
+> > but also contains loose change not present anywhere else (and
+> > therefore also needs to stand as a separate bit).
+>=20
+> For Zvbb and Zvknhb, I used the following code:
+>=20
+> static const unsigned int riscv_zvbb_bundled_exts[] =3D {
+> 	RISCV_ISA_EXT_ZVKB,
+> 	RISCV_ISA_EXT_ZVBB
+> };
+>=20
+> static const unsigned int riscv_zvknhb_bundled_exts[] =3D {
+> 	RISCV_ISA_EXT_ZVKNHA,
+> 	RISCV_ISA_EXT_ZVKNHB
+> };
+>=20
+> Which correctly results in both extension (superset + base set) being
+> enabled when only one is set. Is there something that I'm missing ?
+>=20
+> >=20
+> > IMO, decomposing "pure" bundles makes sense since otherwise usermode
+> > would have to query multiple distinct bitmaps that meant the same
+> > thing (eg check the Zk bit, or maybe check the Zkn/Zkr/Zkt bits, or
+> > maybe check the Zbkb/Zbkc... bits, and they're all equivalent). But
+> > when an extension is a superset that also contains loose change, there
+> > really aren't two equivalent bitmasks, each bit adds something new.
+>=20
+> Agreed but if a system only report ZVBB for instance and the user wants
+> ZVKB, then it is clear that ZVKB should be reported as well I guess. So
+> in the end, it works much like "bundle" extension, just that the bundle
+> is actually a "real" ISA extension by itself.
+>=20
+> Cl=C3=A9ment
+>=20
+> >=20
+> > There's an argument to be made for still turning on the containing
+> > extensions to cover for silly ISA strings (eg ISA strings that
+> > advertise the superset but fail to advertise the containing
+> > extensions). We can decide if we want to work that hard to cover
+> > hypothetical broken ISA strings now, or wait until they show up.
+> > Personally I would wait until something broken shows up. But others
+> > may feel differently.
 
-   drivers/infiniband/sw/rxe/rxe_mr.c: In function 'rxe_mr_fill_pages_from_sgt.constprop':
->> drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array subscript 0 is outside array bounds of 'struct sg_table[0]' [-Warray-bounds=]
-     106 |         __sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: note: source object is likely at address zero
->> drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array subscript 0 is outside array bounds of 'struct sg_table[0]' [-Warray-bounds=]
-   cc1: note: source object is likely at address zero
+I'm not really sure that those are "silly" ISA strings. People are going
+to do it that way because it is much easier than spelling out 5 dozen
+sub-components, and it is pretty inevitable that subsets will be
+introduced in the future for extensions we currently have.
 
+IMO, it's perfectly valid to say you have the supersets and not spell
+out all the subcomponents.
 
-vim +106 drivers/infiniband/sw/rxe/rxe_mr.c
+--VdNzOK6fe6sE2V7+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    98	
-    99	static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
-   100	{
-   101		XA_STATE(xas, &mr->page_list, 0);
-   102		struct sg_page_iter sg_iter;
-   103		struct page *page;
-   104		bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
-   105	
- > 106		__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
-   107		if (!__sg_page_iter_next(&sg_iter))
-   108			return 0;
-   109	
-   110		do {
-   111			xas_lock(&xas);
-   112			while (true) {
-   113				page = sg_page_iter_page(&sg_iter);
-   114	
-   115				if (persistent && !is_pmem_page(page)) {
-   116					rxe_dbg_mr(mr, "Page can't be persistent\n");
-   117					xas_set_err(&xas, -EINVAL);
-   118					break;
-   119				}
-   120	
-   121				xas_store(&xas, page);
-   122				if (xas_error(&xas))
-   123					break;
-   124				xas_next(&xas);
-   125				if (!__sg_page_iter_next(&sg_iter))
-   126					break;
-   127			}
-   128			xas_unlock(&xas);
-   129		} while (xas_nomem(&xas, GFP_KERNEL));
-   130	
-   131		return xas_error(&xas);
-   132	}
-   133	
+-----BEGIN PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTFMOAAKCRB4tDGHoIJi
+0jJxAQDXlhaCx8sNyUh8SSBPQepeS21XzSfsPqfo0fiwFpQb7wD/QhyzMzwWfC/1
+nl0r8JLAMrkerLCK3Mpf0dfHXirH+Ag=
+=NsYQ
+-----END PGP SIGNATURE-----
+
+--VdNzOK6fe6sE2V7+--
