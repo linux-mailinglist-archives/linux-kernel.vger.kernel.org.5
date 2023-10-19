@@ -2,180 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 853D37CEFD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6547CEFD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbjJSGGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
+        id S232638AbjJSGHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbjJSGGn (ORCPT
+        with ESMTP id S232123AbjJSGH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:06:43 -0400
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E660116;
-        Wed, 18 Oct 2023 23:06:41 -0700 (PDT)
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40675f06f1fso1910395e9.1;
-        Wed, 18 Oct 2023 23:06:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697695600; x=1698300400;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XdiAvv6/GMuTeUsasZL+eYHRNQDVY32PG9JD+9V4JpE=;
-        b=QolD7BAHCDacCmnkUybPnty0O6ZRfFUSBaXVmzRohafHhtLe5zysYVjQ4UZT7M2Qfo
-         r0ag1PoqxwaiIqN1JUoEvi3QKi1GJWyVedWNCZrImmyqjbKAT/yI+0LXzmO6to6C1Dy1
-         EGdAH/oDikMGjmwlbsH55HH0tj9JZf2tAlLc80LneK/PgyLaff1ZxYtVgk+5dJWv7rso
-         X2lNjkawkZYmdGArbFL4MX5l7f8yV1NHrIcLUBQ5RAcQ9UI2vHSc0uIh1frZFs8E6FiT
-         xdHLqgSpZNkAi5XF6Lmv/Fz5gbOQZXN34VO0ho8I3d3qVhnyEky/qWBwYE4KwPF5aYwp
-         QuBg==
-X-Gm-Message-State: AOJu0YzhbP70S0Dx9PHvyZ72vMdwjPQxfrf1iTWEfDtlBYP9bXEs/UPo
-        ZNfX9drBNzl5yZDszBjn6nY=
-X-Google-Smtp-Source: AGHT+IFtl04YdsvvvMm7EAt3S4aCtSBLxCu7nzX9l49zHKIKRYbzcyqgRCdEFPcgyGwh0rnkOLekRw==
-X-Received: by 2002:a05:600c:1e20:b0:407:5de2:ea4d with SMTP id ay32-20020a05600c1e2000b004075de2ea4dmr705836wmb.13.1697695599524;
-        Wed, 18 Oct 2023 23:06:39 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id j20-20020a05600c191400b0040641a9d49bsm3521225wmq.17.2023.10.18.23.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 23:06:39 -0700 (PDT)
-Message-ID: <3332a86c-1a1d-4b78-bbfa-8ac3e2e642a1@kernel.org>
-Date:   Thu, 19 Oct 2023 08:06:38 +0200
+        Thu, 19 Oct 2023 02:07:27 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2074.outbound.protection.outlook.com [40.107.92.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B95212D;
+        Wed, 18 Oct 2023 23:07:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TDoMR7myCgBIDJNMU4mXQFc1NZWwolc2Ir4bfpGu9sT2UWM0A+sdoJZBcI5woQ91KOHZaO2TV8mV/hQkyrhIrAuQwYSA1dXRkil1xQQGvrH+hsucisVvojY8QVL9fo8vMCstUyZCYVjXkMvb9tqlL4PTKaqqqPMP4+gc4jwgEWNoxUNe5HYCnEbQT1gwvdjOnDQQb7kT69wo57vpRvvWNdhedihQfC1izqfSeBil+RqOx6hIyNo+/hY5RcvM68j1xlDCGWx2f7EscOYsxZhcFOECeEvIvNOwrsJmeO416zarKemdJRPuQFzFPwEMzyfisfGuK47fRzRelmxQSTubzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L/5k9hNy0feuj1WgnI9PSTSCTzRzRCjd++wt5Yq2a9Y=;
+ b=DzxFB9B52xFHm+8uiMc3HSkuK0LBoTNX9GxW5TZmeoNhoYRaVnOgClXTHx7r1RR+FuJ95BiiMxlWuK4NCddm88wzJYAzboIspck1GVCvHJu5KBNY90brv1r40quX+fVoz/yQkmn3Q3Kbcx5rX+Y4zGuzkrorFcHhwyvCM4U6Jk5+tpE7htbqJK8naCWSJAo85VryBqHDRZPSKWiXkFsansiHkT96GdjX1DFU9iKItDaF5vLUoBIb0OdMol9A/V66r56C8NYLKhlUtH4GL15p/MZecvOWBGXOWWETEguz2VuD4lG+A/tXFp3Xu7ifQ647Agl57Netax3vtMaWTGlLBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L/5k9hNy0feuj1WgnI9PSTSCTzRzRCjd++wt5Yq2a9Y=;
+ b=5hfgz3AtwzDjDtoZWMjssTW3WgDzEwF7Ze6RB0pT3180HooXV5Tkh3HDetNHlEh8bEW5dXTkZ3m0+KNoXHkeGGGwjV6CJnSz3VI6Rb8RfG5HcXlPa2t+j60Hihzcx0pQbFNdPhV1xOFfdBTRRuOCMjgzBckIp2o+TvdHJLi6d74=
+Received: from CH2PR19CA0017.namprd19.prod.outlook.com (2603:10b6:610:4d::27)
+ by MW3PR12MB4428.namprd12.prod.outlook.com (2603:10b6:303:57::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Thu, 19 Oct
+ 2023 06:07:20 +0000
+Received: from DS3PEPF000099D6.namprd04.prod.outlook.com
+ (2603:10b6:610:4d:cafe::a7) by CH2PR19CA0017.outlook.office365.com
+ (2603:10b6:610:4d::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.37 via Frontend
+ Transport; Thu, 19 Oct 2023 06:07:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099D6.mail.protection.outlook.com (10.167.17.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6907.20 via Frontend Transport; Thu, 19 Oct 2023 06:07:20 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 19 Oct
+ 2023 01:07:17 -0500
+Received: from xhdharshah40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Thu, 19 Oct 2023 01:07:15 -0500
+From:   Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
+To:     <srinivas.kandagatla@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <michal.simek@amd.com>, <praveent@amd.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH V2 0/5] Add ZynqMP efuse access support
+Date:   Thu, 19 Oct 2023 11:36:46 +0530
+Message-ID: <20231019060651.23341-1-praveen.teja.kundanala@amd.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/6] tty: serial: 8250: Add support for MOXA PCIe
- boards to switch interface between RS422/RS485
-Content-Language: en-US
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
- <20231018091739.10125-7-crescentcy.hsieh@moxa.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20231018091739.10125-7-crescentcy.hsieh@moxa.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D6:EE_|MW3PR12MB4428:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8fcec08-bdcd-42bc-c628-08dbd069a791
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ILHqAuz/27PKjHjT6DgsIHPYkGxvOGrKxjRL+KrWhDexNGdq9F5OKGRjKmq2NMZ6aTCvBHDnbM/lXcTqZ8FfcjGasZZNhaFjHFx2GcfP7ixMZ6IcYP9ZvjIE/jzqf+DSmO6w+EChsf+OeERaJ8Ijc7hNEJPvS+9V1IfM9uAcKZepYYHnqK79kzyABu7zFd5uTX4CfaG6zfq7QVuSzlNJAht9uCK7PYnG350Zt2wq+tHSm5leOQ3QZgUR3nd+aW/RxNZK/BVBWxctHjS6/Wrl1BMnI01Y3itGDLTb01Us9yVxT4cPPw1chuNFfhlivPn4DhwaBBfQcW8bjimxyuFbJyKgeFS4AQbrKxBzSpuQtXvG3uEWKPD0SMjg8C3eg3h+2zpwiw+pT+aitU7Quig4vK4lOgFR/CaOLTdTtr8GHFD4EGPUJ99FMy1tpXWqAZeBeASiRc83dDH9F1hHKdk7e2J+fxlP3vAd/1GyxMCbZvLPv4o6wXNwaXys/QaPAWOdUsEfrJMrgteVsquN5WWMmAhXTKuaeAS9DiPCb18AV3Z08XccYYOyAX3xA7L56iTGVh2l/+tSoA9jmCjYgSj9eT8hv+YjoGmjVt2H/LqVgOfU0QftUs+kG5YyfQC+zX+Yx6x4EBDeKjEqrI+S2DvIGiyXo3uKLQ1hPN85N5KcMPOvE4G7v8qaGFoZS1ODiErrrJeSEZeZXt1QyE2zNey8L6Lk6utKewhVo97lH6qnLfkUZEfq/A9OAf1TLFJiUl3ZTex6jFa80baAT688uhbYOA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(396003)(376002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799009)(40470700004)(46966006)(36840700001)(40460700003)(1076003)(2616005)(426003)(336012)(6666004)(83380400001)(2906002)(47076005)(8936002)(8676002)(4326008)(5660300002)(41300700001)(478600001)(70586007)(110136005)(70206006)(316002)(356005)(81166007)(82740400003)(86362001)(26005)(40480700001)(36756003)(103116003)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 06:07:20.3611
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8fcec08-bdcd-42bc-c628-08dbd069a791
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D6.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4428
+X-Spam-Status: No, score=1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 10. 23, 11:17, Crescent CY Hsieh wrote:
-> MOXA PCIe boards have 4 serial interfaces and don't require additional
-> stuff to switch between interfaces:
-> 
-> - RS232
-> - RS422
-> - RS485_2W (half-duplex)
-> - RS485_4W (full-duplex)
-> 
-> By using ioctl command "TIOCRS485", it can switch between default
-> interface and RS485 if supported.
-> 
-> That means, for RS422/RS485 board, it can switch between RS422 and
-> RS485 by setting the flags within struct serial_rs485.
-> 
-> However, for the RS232/RS422/RS485 board, it can only switch between
-> RS232 and RS485, there's no flag for switching interface into RS422.
-> 
-> This patch uses "SER_RS485_TERMINATE_BUS" to represent RS422 as a
-> workaround solution:
-> 
-> - RS232                   = (no flags are set)
-> - RS422                   = SER_RS485_ENABLED | SER_RS485_TERMINATE_BUS
-> - RS485_2W (half-duplex)  = SER_RS485_ENABLED
-> - RS485_4W (full-duplex)  = SER_RS485_ENABLED | SER_RS485_RX_DURING_TX
-> 
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-> ---
->   drivers/tty/serial/8250/8250_pci.c | 58 ++++++++++++++++++++++++++++++
->   1 file changed, 58 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 29a28e72b..098ac466b 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -1974,6 +1974,10 @@ pci_sunix_setup(struct serial_private *priv,
->   #define MOXA_RS485_2W	0x0F
->   #define MOXA_UIR_OFFSET	0x04
->   
-> +static const struct serial_rs485 pci_moxa_rs485_supported = {
-> +	.flags = SER_RS485_ENABLED | SER_RS485_RX_DURING_TX | SER_RS485_TERMINATE_BUS,
-> +};
-> +
->   static bool pci_moxa_is_mini_pcie(unsigned short device)
->   {
->   	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
-> @@ -2024,6 +2028,46 @@ static int pci_moxa_set_interface(const struct pci_dev *dev,
->   	return 0;
->   }
->   
-> +/*
-> + * MOXA PCIe boards support switching the serial interface using the ioctl
-> + * command "TIOCSRS485", but there is currently no dedicated flag for switching
-> + * to RS422. As a workaround, we utilize the "SER_RS485_TERMINATE_BUS" flag to
-> + * represent RS422.
-> + *
-> + *	RS232			= (no flags are set)
-> + *	RS422			= SER_RS485_ENABLED | SER_RS485_TERMINATE_BUS
+Add following support
+ - ZynqMP efuse firmware API for efuse access
+ - Convert txt to yaml file
+ - Add nodes for ZynqMP efuses in yaml file
+ - Add device tree(DT) nodes for nvmem access
+ - Update driver to provide support to
+    read/write ZynqMP efuse memory
+ - Add maintainer list for ZynqMP NVMEM driver
 
-Oh, I noticed only now. Can we implement this properly? I mean by 
-defining e.g. SER_RS422_ENABLED? And add checks to 
-uart_check_rs485_flags() that only one of 485/422 is set and whatever 
-else makes sense.
+Praveen Teja Kundanala (5):
+  firmware: xilinx: Add ZynqMP efuse access API
+  dt-bindings: nvmem: Convert xlnx,zynqmp-nvmem.txt to yaml
+  arm64: zynqmp: Add ZynqnMP nvmem nodes
+  nvmem: zynqmp_nvmem: Add support to access efuse
+  MAINTAINERS: Add maintainers for ZynqMP NVMEM driver
 
-> + *	RS485_2W (half-duplex)	= SER_RS485_ENABLED
-> + *	RS485_4W (full-duplex)	= SER_RS485_ENABLED | SER_RS485_RX_DURING_TX
-> + */
+ .../bindings/nvmem/xlnx,zynqmp-nvmem.txt      |  46 ----
+ .../bindings/nvmem/xlnx,zynqmp-nvmem.yaml     |  40 ++++
+ MAINTAINERS                                   |   8 +
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  59 ++++-
+ drivers/firmware/xilinx/zynqmp.c              |  25 ++
+ drivers/nvmem/zynqmp_nvmem.c                  | 218 +++++++++++++++---
+ include/linux/firmware/xlnx-zynqmp.h          |   8 +
+ 7 files changed, 324 insertions(+), 80 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
+ create mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml
 
-thanks,
 -- 
-js
-suse labs
+2.36.1
 
