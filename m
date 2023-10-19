@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9207CFC84
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFF67CFC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346076AbjJSO2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S1346108AbjJSO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235419AbjJSO2u (ORCPT
+        with ESMTP id S1346139AbjJSO27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:28:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B977181
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:28:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF1DBC433C8;
-        Thu, 19 Oct 2023 14:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697725727;
-        bh=vrmCvzbkkBVSxXWM3SZHEqQqXmxnifCIGVOhub0zocA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jSoIP1BvdZ+4pK32XX6bDu52py28olAPlSy2C1zHeWXO/zpTECaHzWH4A/NX9Mh15
-         b1I7Z/k+aDZkHCHgp63m1dL7cbiFWjeD6omFbo7dV7Knf2jUfAnmVapMPJKnHS2Vva
-         KEervM3AFGoVRIuAprZH1N5DApVKDRSgZZuVQ/GBomFTl6QMuRSDimtsm8UcVk1KYs
-         iDcIIZ5yFZnFYH3HBJTPaoJfjuaOSK9v+bFT38ay4vLJdfvV5vi7EB0NHygZNDSYtU
-         R3tR4CumlrVQ9Z7ciMMcEym65Rs8iwuydm4cVM2eJhVeq4syldPJ7I9KfNUpHJjsPz
-         BKqP6zhWLyrVQ==
-Date:   Thu, 19 Oct 2023 15:28:43 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Kris Chaplin <kris.chaplin@amd.com>
-Cc:     thomas.delev@amd.com, michal.simek@amd.com,
-        krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, git@amd.com
-Subject: Re: [PATCH v2 0/2] w1: Add AXI 1-wire host driver for AMD
- programmable logic IP core
-Message-ID: <20231019-dilation-monogamy-580b3be46638@spud>
-References: <20231013093109.37165-1-kris.chaplin@amd.com>
- <20231019142526.10592-1-kris.chaplin@amd.com>
+        Thu, 19 Oct 2023 10:28:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1DB134
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:28:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697725738; x=1729261738;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=V/kslxMcngujt96Vh/coI6ImjBlQYF9tepCmAIzXbNc=;
+  b=lhHWFPnbX6fi804PUsnpW7VdGRJCb+sRPyvpijH8JVcXq6pqT+PBldoG
+   ZG9VmBCk3JxTZ1cGvquF82SehaQ9WB2v2zAPcgT1ZbeOndqOvS8l92oKg
+   EMlTsGKqrFPClug6u3v2WcnbqtsHSdS1f1xYIbIw9bPzuMAEcrBCTW5yK
+   AKCweYv1yhxcYQn6ko+TlP/Stg+4RI4B2qEbqoWHqzzjDWB36ZT9cEMrA
+   sV2Wuph+817aDL9Ea3SXWAi4xANcwWIt1L6JIQE/Xh9pBDHV/CUcyo3VF
+   g74q92BUvI2pTjHwF5pi7U1zxtAKQWeEGYNlH/zMLi3qMezVP6jFZgVLX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="417381381"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="417381381"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:28:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="900767998"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="900767998"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:26:49 -0700
+Received: from [10.212.5.13] (kliang2-mobl1.ccr.corp.intel.com [10.212.5.13])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id EA539580BE3;
+        Thu, 19 Oct 2023 07:28:53 -0700 (PDT)
+Message-ID: <6850dc71-e709-42ce-9113-9cb5a7a590f7@linux.intel.com>
+Date:   Thu, 19 Oct 2023 10:28:52 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MgQN09eSoyCijghA"
-Content-Disposition: inline
-In-Reply-To: <20231019142526.10592-1-kris.chaplin@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 4/7] perf/x86/intel: Support LBR event logging
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
+References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
+ <20231004184044.3062788-4-kan.liang@linux.intel.com>
+ <20231019110056.GH36211@noisy.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231019110056.GH36211@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,61 +74,37 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---MgQN09eSoyCijghA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 19, 2023 at 07:24:16AM -0700, Kris Chaplin wrote:
-> Changes since v1:
->  Updated IP name and binding to axi-1wire-host and filenames to match
->  Comment pruning where operation obvious, additional comments where not
->  Unwrapped helper functions for register read/writes
->  Removed un-necessary device reset on fail to add device
->  Fixed duplicate clock disable in remove function
->  Move bus master structure to per instance
->  Improved hardware testing with multiple w1 instances
->=20
-> Add a host driver to support the AMD 1-Wire programmable logic IP block.
-> This block guarantees protocol timing for driving off-board devices such =
-as thermal sensors, proms, etc.
+On 2023-10-19 7:00 a.m., Peter Zijlstra wrote:
+> On Wed, Oct 04, 2023 at 11:40:41AM -0700, kan.liang@linux.intel.com wrote:
+> 
+>> +static ssize_t branch_counter_width_show(struct device *cdev,
+>> +					 struct device_attribute *attr,
+>> +					 char *buf)
+>> +{
+>> +	return snprintf(buf, PAGE_SIZE, "2\n");
+>> +}
+> 
+>> +#define ARCH_LBR_EVENT_LOG_WIDTH	2
+> 
+> I'm assuming this is the same '2' ? And having it hard-coded in two
+> locations is awesome..
+> 
+>> +#define ARCH_LBR_EVENT_LOG_MASK		0x3
+> 
+> Should probably be ((1<<2)-1)
+> 
+> As per that other email, the naming is confusing, should this not be:
+> 
+> ARCH_LBR_EVENT_COUNTER_BITS
+> 
+> or, since it's all local to lbr.c something shorter still, like:
+> 
+> LBR_COUNTER_BITS
+> 
+> hmm?
 
-btw, please do not send a vN as a response to the v(N-1) patchset. It
-ends up hiding things in the depths of people's mailboxes that sort by
-threads.
+Sure, I will use the name LBR_COUNTER_BITS.
 
-Cheers,
-Conor.
-
->=20
-> Kris Chaplin (2):
->   dt-bindings: w1: Add YAML DT schema for AMD AXI w1 host and
->     MAINTAINERS entry
->   w1: Add AXI 1-wire host driver for AMD programmable logic IP core
->=20
->  .../bindings/w1/amd,axi-1wire-host.yaml       |  44 ++
->  MAINTAINERS                                   |   8 +
->  drivers/w1/masters/Kconfig                    |  11 +
->  drivers/w1/masters/Makefile                   |   1 +
->  drivers/w1/masters/amd_axi_w1.c               | 395 ++++++++++++++++++
->  5 files changed, 459 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/w1/amd,axi-1wire-ho=
-st.yaml
->  create mode 100644 drivers/w1/masters/amd_axi_w1.c
->=20
-> --=20
-> 2.42.GIT
->=20
-
---MgQN09eSoyCijghA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTE9GwAKCRB4tDGHoIJi
-0r3oAP4/hAJWtFGlfZ1oFX0R/zBl4H3FGxM0AOyERrzTlQgmvAD/amRWRevk1fWr
-jByhe3brBXKMb/OxEUO+GZe+PFmoiQQ=
-=8IRd
------END PGP SIGNATURE-----
-
---MgQN09eSoyCijghA--
+Thanks,
+Kan
