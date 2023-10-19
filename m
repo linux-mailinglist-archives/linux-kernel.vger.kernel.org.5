@@ -2,121 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A1B7CEE67
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC2A7CEE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbjJSDZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 23:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S232576AbjJSDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 23:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSDZp (ORCPT
+        with ESMTP id S231470AbjJSDg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 23:25:45 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9F011F
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:25:43 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1ca82f015e4so28359975ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697685943; x=1698290743; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MHUzNIzJOVcPaGrU00gF++IjKBsdiY8jEN9JO/P5KMw=;
-        b=FYmXjFW2iOyvLr9PktujmgX55Ir/JiwpHrAyVS8t/RuMEltAr5GGgxpFzQSu/oAwu5
-         2OM3sejoyOcBRxrN0Nn4TEsz/iBwJaE4Bumjev8HuC2cG9v97dygEfvbLKkoKacx6F5u
-         V6Mi3Q4ke+GRJiPrUD+yp7nm8SPe1o+NEY9qU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697685943; x=1698290743;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MHUzNIzJOVcPaGrU00gF++IjKBsdiY8jEN9JO/P5KMw=;
-        b=K21whiYz8zs1kNJgiwH4/qPIjNHA7jAqPEuqW90q8hlLP9iYVsnlwf6CRcZCXJJXCa
-         7OIWioRC/KSktl+8yxnxISn02BDkL9vxAg0wUTiHnNsZZMrXjBxIQvI0qDOA55TDwoJQ
-         7uoj3xNNCVeY+V4KRpJQu0HDvqqBojumTtaHGK45B3mtiJ5ZG5R4qwICZxmklBvF+u6D
-         mv7++mUG5E/Zhx22K2Sfk0ePbVRs4rpdx+3FF/DDYQzU+UP4J7nITX/yZ1NFm/zAj6kK
-         Fkw6pvIMSBPCW3ImYjuVDF5T0EdoewIpqiFEs3WZCGJ2xlFE4+1uIVyQmWntkM2q3wfn
-         Kt8Q==
-X-Gm-Message-State: AOJu0YwpsxE8Fsd0uq0prA5FxEc0M9eSEA7xD2CBu2vP9ua7qLd3cq3b
-        TTta8FruW4PwaCenBGyx2bovKo/f2c1digc0A/U=
-X-Google-Smtp-Source: AGHT+IF29KrVEu+UcCAxusXSjkxkDhirwB1hv8T6FJruleVOAqxDINURrXK3y03uADL6MugBT4krDQ==
-X-Received: by 2002:a17:902:bd0c:b0:1c6:2ae1:dc28 with SMTP id p12-20020a170902bd0c00b001c62ae1dc28mr1082672pls.36.1697685942788;
-        Wed, 18 Oct 2023 20:25:42 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170902d38600b001c9d2360b2asm681051pld.22.2023.10.18.20.25.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 20:25:41 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 20:25:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] wifi: wl1251: replace deprecated strncpy with strscpy
-Message-ID: <202310182025.8A48543E6@keescook>
-References: <20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com>
+        Wed, 18 Oct 2023 23:36:26 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2800122
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:36:22 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S9tZB6KyxzNmgs;
+        Thu, 19 Oct 2023 11:32:18 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 19 Oct 2023 11:36:18 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
+        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
+        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <rostedt@goodmis.org>, <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <ego@linux.vnet.ibm.com>,
+        <srikar@linux.vnet.ibm.com>, <linuxarm@huawei.com>,
+        <21cnbao@gmail.com>, <kprateek.nayak@amd.com>,
+        <wuyun.abel@bytedance.com>
+Subject: [PATCH v11 0/3] sched/fair: Scan cluster before scanning LLC in wake-up path
+Date:   Thu, 19 Oct 2023 11:33:20 +0800
+Message-ID: <20231019033323.54147-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 09:15:23PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> Based on other assignments of similar fw_version fields we can see that
-> NUL-termination is required but not NUL-padding:
-> ethernet/intel/ixgbe/ixgbe_ethtool.c
-> 1111:   strscpy(drvinfo->fw_version, adapter->eeprom_id,
-> 1112:           sizeof(drvinfo->fw_version));
-> 
-> ethernet/intel/igc/igc_ethtool.c
-> 147:    scnprintf(adapter->fw_version,
-> 148:              sizeof(adapter->fw_version),
-> 153:    strscpy(drvinfo->fw_version, adapter->fw_version,
-> 154:            sizeof(drvinfo->fw_version));
-> 
-> wireless/broadcom/brcm80211/brcmfmac/core.c
-> 569:    strscpy(info->fw_version, drvr->fwver, sizeof(info->fw_version));
-> 
-> wireless/broadcom/brcm80211/brcmsmac/main.c
-> 7867:           snprintf(wlc->wiphy->fw_version,
-> 7868:                    sizeof(wlc->wiphy->fw_version), "%u.%u", rev, patch);
-> 
-> wireless/broadcom/b43legacy/main.c
-> 1765:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
-> 
-> wireless/broadcom/b43/main.c
-> 2730:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
-> 
-> wireless/intel/iwlwifi/dvm/main.c
-> 1465:   snprintf(priv->hw->wiphy->fw_version,
-> 1466:            sizeof(priv->hw->wiphy->fw_version),
-> 
-> wireless/intel/ipw2x00/ipw2100.c
-> 5905:   snprintf(info->fw_version, sizeof(info->fw_version), "%s:%d:%s",
-> 
-> A suitable replacement is `strscpy` due to the fact that it guarantees
-> NUL-termination on the destination buffer without unnecessarily
-> NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Yup, looks like a clean replacement.
+This is the follow-up work to support cluster scheduler. Previously
+we have added cluster level in the scheduler for both ARM64[1] and
+X86[2] to support load balance between clusters to bring more memory
+bandwidth and decrease cache contention. This patchset, on the other
+hand, takes care of wake-up path by giving CPUs within the same cluster
+a try before scanning the whole LLC to benefit those tasks communicating
+with each other.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+[1] 778c558f49a2 ("sched: Add cluster scheduler level in core and related Kconfig for ARM64")
+[2] 66558b730f25 ("sched: Add cluster scheduler level for x86")
+
+Change since v10:
+- Add tags from Vincent and Gautham for Patch 2/3, thanks!
+- Remove redundant idle check for prev/recent_used cpu in Patch 3/3.
+Link: https://lore.kernel.org/all/20231012121707.51368-1-yangyicong@huawei.com/
+
+Change since v9:
+- Since EEVDF merged in mainline, rebase and test on tip-sched-core
+- Split a Patch 3/3 to solve the hackbench regression on Jacobsville, for easier review
+Link: https://lore.kernel.org/lkml/20230719092838.2302-1-yangyicong@huawei.com/
+
+Change since v8:
+- Peter find cpus_share_lowest_cache() is weired so fallback to cpus_share_resources()
+  suggested in v4
+- Use sd->groups->flags to find the cluster when scanning, save one per-cpu pointer
+- Fix sched_cluster_active enabled incorrectly on domain degeneration
+- Use sched_cluster_active to avoid repeated check on non-cluster machines, per Gautham
+Link: https://lore.kernel.org/all/20230530070253.33306-1-yangyicong@huawei.com/
+
+Change since v7:
+- Optimize by choosing prev_cpu/recent_used_cpu when possible after failed to
+  scanning for an idle CPU in cluster/LLC. Thanks Chen Yu for testing on Jacobsville
+Link: https://lore.kernel.org/all/20220915073423.25535-1-yangyicong@huawei.com/
+
+Change for RESEND:
+- Collect tag from Chen Yu and rebase on the latest tip/sched/core. Thanks.
+Link: https://lore.kernel.org/lkml/20220822073610.27205-1-yangyicong@huawei.com/
+
+Change since v6:
+- rebase on 6.0-rc1
+Link: https://lore.kernel.org/lkml/20220726074758.46686-1-yangyicong@huawei.com/
+
+Change since v5:
+- Improve patch 2 according to Peter's suggestion:
+  - use sched_cluster_active to indicate whether cluster is active
+  - consider SMT case and use wrap iteration when scanning cluster
+- Add Vincent's tag
+Thanks.
+Link: https://lore.kernel.org/lkml/20220720081150.22167-1-yangyicong@hisilicon.com/
+
+Change since v4:
+- rename cpus_share_resources to cpus_share_lowest_cache to be more informative, per Tim
+- return -1 when nr==0 in scan_cluster(), per Abel
+Thanks!
+Link: https://lore.kernel.org/lkml/20220609120622.47724-1-yangyicong@hisilicon.com/
+
+Change since v3:
+- fix compile error when !CONFIG_SCHED_CLUSTER, reported by lkp test.
+Link: https://lore.kernel.org/lkml/20220608095758.60504-1-yangyicong@hisilicon.com/
+
+Change since v2:
+- leverage SIS_PROP to suspend redundant scanning when LLC is overloaded
+- remove the ping-pong suppression
+- address the comment from Tim, thanks.
+Link: https://lore.kernel.org/lkml/20220126080947.4529-1-yangyicong@hisilicon.com/
+
+Change since v1:
+- regain the performance data based on v5.17-rc1
+- rename cpus_share_cluster to cpus_share_resources per Vincent and Gautham, thanks!
+Link: https://lore.kernel.org/lkml/20211215041149.73171-1-yangyicong@hisilicon.com/
+
+Barry Song (2):
+  sched: Add cpus_share_resources API
+  sched/fair: Scan cluster before scanning LLC in wake-up path
+
+Yicong Yang (1):
+  sched/fair: Use candidate prev/recent_used CPU if scanning failed for
+    cluster wakeup
+
+ include/linux/sched/sd_flags.h |  7 ++++
+ include/linux/sched/topology.h |  8 ++++-
+ kernel/sched/core.c            | 12 +++++++
+ kernel/sched/fair.c            | 58 +++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        | 25 +++++++++++++++
+ 6 files changed, 106 insertions(+), 6 deletions(-)
 
 -- 
-Kees Cook
+2.24.0
+
