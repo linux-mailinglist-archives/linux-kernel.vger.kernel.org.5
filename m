@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 615837CF358
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115417CF35D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbjJSIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        id S229830AbjJSIzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbjJSIy7 (ORCPT
+        with ESMTP id S235292AbjJSIz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:54:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22CE10F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rBlcqozqb9PEqqWS5+27nL/e6vnrwo7p0Rz9TLGfws8=; b=QQaLURf7X9dzo6EYuq47jY3PSS
-        rqMw+Xltl3zrtwNCUOa1mnELoQvSQ5h7JK+08foOa6nC0jisHy0lEAU+4+J6VgFFbGpsddAZP97Nu
-        fZFMpG918bwkg5IfSu510rmS/X9kKo5ZDSi71lRD952SXJKQ5iCDnzpkxe75yGi5k5Pb6wjxMVgjH
-        Kgs9k/tH5z+mfZrzQkVvD4cF+AjeCzEMX89RbwTFhJw7Y8E/WPxVJvJVlgW6JVkfGQ6FHzO5RoBcR
-        JweOeREPZEQt0eDu6LZQ0OrT0UcIlJO9mfTcdI8MfMVE8XuEn7FaYoV06WeK7x0v2jXBBjwq580Q7
-        odE6jlFw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtOnY-009j1Y-2C;
-        Thu, 19 Oct 2023 08:54:33 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 59493300392; Thu, 19 Oct 2023 10:54:32 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 10:54:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Nadav Amit <namit@vmware.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Message-ID: <20231019085432.GQ33217@noisy.programming.kicks-ass.net>
-References: <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
- <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
- <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
- <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
- <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
- <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
- <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
- <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
- <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
- <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+        Thu, 19 Oct 2023 04:55:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF217181;
+        Thu, 19 Oct 2023 01:55:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69789C433C8;
+        Thu, 19 Oct 2023 08:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697705724;
+        bh=gwlgcQ3ZqyeFuGLncdKSOGMnNI0cOD810MBreEhi+TA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uC7TqhGnUNd9QLr+ZDwKcbNn/09s1m/SZE5jgShNsWSpCzha/Mg2pmU2qn+iKBJvV
+         175spQuQlBcmKSeSTj6ATSrykDAcdidoADKNqB8Gu0oLbzefD9HCGg7To1a1XRiCIu
+         2Sy6Z8SYNnPtnhD4gmUDE+4zJsz82aJBJROKbMXTrs9xOcxsk+iVNfYkFSVm4xX3js
+         hZrGQ8e/OqgOFkP+8aeZPWg6c084t8/yDfvKPsDzmJeRwjJ+U6XDIEfZqVy+rImaHP
+         ksM19pQHmkDzO38FBOPFlmwQBmpaNPNCEV9wxxfnV6/QHZHq82H2QCo8v7qvOf0jQi
+         GMvDs+dkCTIdg==
+Date:   Thu, 19 Oct 2023 09:55:20 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
+ schemas
+Message-ID: <20231019-theme-clunky-f4a2e1d122e7@spud>
+References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
+ <20231019-rematch-ethically-9d482ca4607e@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="o+iwHg08XNFzcdm3"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20231019-rematch-ethically-9d482ca4607e@spud>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,32 +58,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:40:05PM -0700, Linus Torvalds wrote:
 
-> Look at the *REAL* sequence counter code in <linux/seqlock.h>. Notice
-> how in raw_read_seqcount_begin() we have
-> 
->         unsigned _seq = __read_seqcount_begin(s);
->         smp_rmb();
-> 
-> because it actually does the proper barriers. Notice how the garbage
-> code in __cyc2ns_read() doesn't have them - and how it was buggy as a
-> result.
-> 
-> (Also notice how this all predates our "we should use load_acquire()
-> instead of smb_rmb()", but whatever).
+--o+iwHg08XNFzcdm3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-seqlock actually wants rmb even today, the pattern is:
+On Thu, Oct 19, 2023 at 09:51:39AM +0100, Conor Dooley wrote:
+> On Thu, Oct 19, 2023 at 06:34:37PM +1030, Subhajit Ghosh wrote:
+> > Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
+> > file and removing the other.
+>=20
+> > Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dcef@=
+linaro.org/
+>=20
+> "Yes, they look similar. I will combine them all in a single yaml file in
+> the next revision. Thank you Krzysztof."
+>=20
+> Yet this is a follow-up patch, not a version 2. The original patches
+> seem to not have been applied, so I am not sure why you didn't send a
+> v2?
 
-    do {
-	seq = load-seq
-	rmb
-	load-data
-	rmb
-    } while (seq != re-load-seq)
+> > ---
+> >  .../bindings/iio/light/avago,apds9300.yaml    | 35 ++++++++++++---
+> >  .../bindings/iio/light/avago,apds9960.yaml    | 44 -------------------
+> >  2 files changed, 29 insertions(+), 50 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,a=
+pds9960.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300=
+=2Eyaml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
+> > index 206af44f2c43..7826a1749fcd 100644
+> > --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
+> > @@ -4,17 +4,26 @@
+> >  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
+> >  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> > =20
+> > -title: Avago APDS9300 ambient light sensor
+> > +title: Avago Gesture, RGB, ALS and Proximity sensors
+> > =20
+> >  maintainers:
+> >    - Jonathan Cameron <jic23@kernel.org>
+> > +  - Matt Ranostay <matt.ranostay@konsulko.com>
 
-we specifically only care about loads, and the data loads must be
-between the sequence number loads.
+Also:
+<matt.ranostay@konsulko.com>: host aspmx.l.google.com said:
+    550-5.1.1 The email account that you tried to reach does not exist.
 
-As such, load-acquire is not a natural match.
+--o+iwHg08XNFzcdm3
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTDu+AAKCRB4tDGHoIJi
+0tM1AP9J/187nzeXOZeMBjJXBvsCk/bdcxHKOI8Ee9RtLaDCCgEA+a8TvoojE6Un
+eEsrqDgO1U5PGqZlkiKhLw+x22TA+wo=
+=Hpaq
+-----END PGP SIGNATURE-----
+
+--o+iwHg08XNFzcdm3--
