@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D247CF397
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD507CF3A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344920AbjJSJKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        id S1344967AbjJSJLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJSJKN (ORCPT
+        with ESMTP id S232788AbjJSJLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:10:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A774DFA;
-        Thu, 19 Oct 2023 02:10:11 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 447F46607322;
-        Thu, 19 Oct 2023 10:10:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697706610;
-        bh=6NkwFDgWb/X/jYOH8bEds6VmnsGIsFGtiEKSMzCUZYY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Y/7g/d7dL9TZcG3/BQm1YCsHmANvQhFhrsYk0HkfUkSBmpTeJXt1DxN2itG6BUQJT
-         Let4OzWB82X6Y4F7gQ8HcpnUS1rHwZFWejXoGmNnemPihgPKntGLGWlxLuWV+LMTcY
-         Bsde1Wptf5usUVAjD1iEWHPLrIPeRDVKeXKctKX88q/Yzk7GxtXdZhcGLiITl35r02
-         P7nk4zcCmW/8rSGHt+ntGsRtd+opQ8DVjBJQvoDDtml4ZPp8B/Ja/nnwW9ttfXUTdA
-         yslzYhQ/XtnC+cyf83ydPthWd7vvyeZWmA+rvRky1UScwl9pEReOBxyp5U2qC8x22O
-         tZMN9vHxlEfyA==
-Message-ID: <0a3b0755-73e3-4698-9a3a-be38578ceb3f@collabora.com>
-Date:   Thu, 19 Oct 2023 11:10:07 +0200
+        Thu, 19 Oct 2023 05:11:39 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60564129;
+        Thu, 19 Oct 2023 02:11:37 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d122f6294so49991396d6.0;
+        Thu, 19 Oct 2023 02:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697706696; x=1698311496; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o4MfVkjTMc7fccstJOqrfKSItoKmWfmNa1V33PWbhoI=;
+        b=g1Je7CJ5nzWVJOKZsw91Qnx08YffthyF7LTB3hbWFSGTSwsv6ydCj5+JPEtctISe4b
+         oKdvarGe5JHgsdcERk0ZieBHykD0tRgmSjkCU5NKHSbrEV785Y2gPyr/mbUcPYWbkG5B
+         TCGmsP/hRDKf7JgoHOdWf1rk94h6a7AgWv+EeUoC/fjFgviQpUo0hEG+OS/mRXqdfJB6
+         UAnUcwZl7F+fqGyJBMBOasuHnfXmw7rbqYVnTbQSQF98c7P3LdXWPUBMe++VoK+XqsAg
+         hrUEUNQt8wubOdZO8+SfDnaa/vg3WmxRHtjb0UcuY/wGoBee99ITByqQGf4dHFhVKZDd
+         d7fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697706696; x=1698311496;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o4MfVkjTMc7fccstJOqrfKSItoKmWfmNa1V33PWbhoI=;
+        b=lVEYsJmNm3nM4abPAvUaYLE05fw5rdZQyK2LaSo/Hf2ukUfcfcHWGNayA8FKS8sHl8
+         /b05m44jmevjNRpEV8iTnAJaVFztn33oqfyHzqemsf6PKU0/6/MvUwHXTsNUJtv8nxsZ
+         BZwB2rMS6W6u5QyijCSY8rYggN237O2pqIiMPCAHH77KHQFtVYJALmO/biVz1n4AE8hV
+         Ng3yKs0A0lahfHNXeMIihkhH20ENlY3lDBgz/OFhhBSd4FJ2jnNZaG1dBivlmcPXaDMT
+         Hv/Yn6W5F0d/tiFY1bIVrBaWqMvvLXzI0NcrZeNgoSDRWz8TRuCEGTZ3DWSHDRdFRjFm
+         tddw==
+X-Gm-Message-State: AOJu0YxUsHEMKfFaSMJR4V/V0+miiosGKtVFa8oHgtd3kO3y4aXpW2R9
+        4Oe8dgoGRYZfVCeevzF5WaQ8lzLz4v8PkxcIqXk=
+X-Google-Smtp-Source: AGHT+IFKvUJzMKNIFZwmj6Nh/2FY9BLhZkBq2xT09jrp42+mrBBAqOadAUpwagi6FNtEWCpUc1GOKlB37G/7HlW7iC4=
+X-Received: by 2002:ad4:5b8b:0:b0:66d:4a22:d7cd with SMTP id
+ 11-20020ad45b8b000000b0066d4a22d7cdmr1776970qvp.60.1697706696428; Thu, 19 Oct
+ 2023 02:11:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 20/24] drm/mediatek: Add Padding to OVL adaptor
-Content-Language: en-US
-To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231019055619.19358-1-shawn.sung@mediatek.com>
- <20231019055619.19358-21-shawn.sung@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231019055619.19358-21-shawn.sung@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231018182943.18700-1-ddrokosov@salutedevices.com> <20231018182943.18700-10-ddrokosov@salutedevices.com>
+In-Reply-To: <20231018182943.18700-10-ddrokosov@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Oct 2023 12:10:50 +0300
+Message-ID: <CAHp75Ve+1j26UAqcipHX7JAOFDAEUMHBTv1aq2XPhUCGyW90nA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] leds: aw200xx: add support for aw20108 device
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org,
+        George Stark <gnstark@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 19/10/23 07:56, Hsiao Chien Sung ha scritto:
-> Add MT8188 Padding to OVL adaptor to probe the driver.
-> 
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> ---
->   .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 26 +++++++++++++++++++
->   1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> index f46ca1c68610..f693b47745ba 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> @@ -29,6 +29,7 @@ enum mtk_ovl_adaptor_comp_type {
->   	OVL_ADAPTOR_TYPE_ETHDR,
->   	OVL_ADAPTOR_TYPE_MDP_RDMA,
->   	OVL_ADAPTOR_TYPE_MERGE,
-> +	OVL_ADAPTOR_TYPE_PADDING,
->   	OVL_ADAPTOR_TYPE_NUM,
->   };
->   
-> @@ -46,6 +47,14 @@ enum mtk_ovl_adaptor_comp_id {
->   	OVL_ADAPTOR_MERGE1,
->   	OVL_ADAPTOR_MERGE2,
->   	OVL_ADAPTOR_MERGE3,
-> +	OVL_ADAPTOR_PADDING0,
-> +	OVL_ADAPTOR_PADDING1,
-> +	OVL_ADAPTOR_PADDING2,
-> +	OVL_ADAPTOR_PADDING3,
-> +	OVL_ADAPTOR_PADDING4,
-> +	OVL_ADAPTOR_PADDING5,
-> +	OVL_ADAPTOR_PADDING6,
-> +	OVL_ADAPTOR_PADDING7,
->   	OVL_ADAPTOR_ID_MAX
->   };
->   
-> @@ -66,6 +75,7 @@ static const char * const private_comp_stem[OVL_ADAPTOR_TYPE_NUM] = {
->   	[OVL_ADAPTOR_TYPE_ETHDR]	= "ethdr",
->   	[OVL_ADAPTOR_TYPE_MDP_RDMA]	= "vdo1-rdma",
->   	[OVL_ADAPTOR_TYPE_MERGE]	= "merge",
-> +	[OVL_ADAPTOR_TYPE_PADDING]	= "padding",
->   };
->   
->   static const struct mtk_ddp_comp_funcs ethdr = {
-> @@ -80,6 +90,13 @@ static const struct mtk_ddp_comp_funcs merge = {
->   	.clk_disable = mtk_merge_clk_disable,
->   };
->   
-> +static const struct mtk_ddp_comp_funcs padding = {
-> +	.clk_enable = mtk_padding_clk_enable,
-> +	.clk_disable = mtk_padding_clk_disable,
-> +	.start = mtk_padding_start,
-> +	.stop = mtk_padding_stop,
-> +};
-> +
->   static const struct mtk_ddp_comp_funcs rdma = {
->   	.power_on = mtk_mdp_rdma_power_on,
->   	.power_off = mtk_mdp_rdma_power_off,
-> @@ -101,6 +118,14 @@ static const struct ovl_adaptor_comp_match comp_matches[OVL_ADAPTOR_ID_MAX] = {
->   	[OVL_ADAPTOR_MERGE1] = { OVL_ADAPTOR_TYPE_MERGE, DDP_COMPONENT_MERGE2, 2, &merge },
->   	[OVL_ADAPTOR_MERGE2] = { OVL_ADAPTOR_TYPE_MERGE, DDP_COMPONENT_MERGE3, 3, &merge },
->   	[OVL_ADAPTOR_MERGE3] = { OVL_ADAPTOR_TYPE_MERGE, DDP_COMPONENT_MERGE4, 4, &merge },
-> +	[OVL_ADAPTOR_PADDING0] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING0, 0, &padding },
-> +	[OVL_ADAPTOR_PADDING1] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING1, 1, &padding },
-> +	[OVL_ADAPTOR_PADDING2] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING2, 2, &padding },
-> +	[OVL_ADAPTOR_PADDING3] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING3, 3, &padding },
-> +	[OVL_ADAPTOR_PADDING4] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING4, 4, &padding },
-> +	[OVL_ADAPTOR_PADDING5] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING5, 5, &padding },
-> +	[OVL_ADAPTOR_PADDING6] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING6, 6, &padding },
-> +	[OVL_ADAPTOR_PADDING7] = { OVL_ADAPTOR_TYPE_PADDING, DDP_COMPONENT_PADDING7, 7, &padding },
->   };
->   
->   void mtk_ovl_adaptor_layer_config(struct device *dev, unsigned int idx,
-> @@ -436,6 +461,7 @@ static int ovl_adaptor_comp_get_id(struct device *dev, struct device_node *node,
->   }
->   
->   static const struct of_device_id mtk_ovl_adaptor_comp_dt_ids[] = {
-> +	{ .compatible = "mediatek,mt8188-padding", .data = (void *)OVL_ADAPTOR_TYPE_PADDING },
+On Wed, Oct 18, 2023 at 9:30=E2=80=AFPM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
+>
+> From: George Stark <gnstark@salutedevices.com>
+>
+> Add support for Awinic aw20108 device from the same LED drivers famliy.
 
-Uhm, for consistency I'd call this "mediatek,mt8188-disp-padding" (you don't have
-to drop Reviewed-by tags for such a change, not here and not in the yaml commit),
-but it's fine if you have reasons against that.
+family
 
-So, regardless of this being changed or not
+> New device supports 108 leds using matrix of 12x9 outputs.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+LEDs
+a matrix
 
->   	{ .compatible = "mediatek,mt8195-disp-ethdr", .data = (void *)OVL_ADAPTOR_TYPE_ETHDR },
->   	{ .compatible = "mediatek,mt8195-disp-merge", .data = (void *)OVL_ADAPTOR_TYPE_MERGE },
->   	{ .compatible = "mediatek,mt8195-vdo1-rdma", .data = (void *)OVL_ADAPTOR_TYPE_MDP_RDMA },
+...
 
+> -         This option enables support for the AW20036/AW20054/AW20072 LED=
+ driver.
+> -         It is a 3x12/6x9/6x12 matrix LED driver programmed via
+> -         an I2C interface, up to 36/54/72 LEDs or 12/18/24 RGBs,
+> +         This option enables support for the AW20036/AW20054/AW20072/AW2=
+0108
+> +         LED driver. It is a 3x12/6x9/6x12/9x12 matrix LED driver progra=
+mmed via
+> +         an I2C interface, up to 36/54/72/108 LEDs or 12/18/24/36 RGBs,
+>           3 pattern controllers for auto breathing or group dimming contr=
+ol.
 
+For better maintenance I always suggest in the cases like this to
+convert help to provide a list of the supported devices, like:
+
+  This option enables support for the following Awinic LED drivers:
+    - AW20036 (3x12)
+    - ...
+   ...
+
+And if any new comes to this, it will be just a one liner change.
+
+--
+With Best Regards,
+Andy Shevchenko
