@@ -2,76 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3277E7CFFC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891617CFFC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344979AbjJSQjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S1345060AbjJSQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjJSQjj (ORCPT
+        with ESMTP id S233230AbjJSQjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:39:39 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B157124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:39:36 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50906f941so98798101fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697733574; x=1698338374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YhLduK0yhp1pFpU5JcX7yKUnA0pQoHHCTqO4z0oJ4w=;
-        b=AEG9vFVDqfsctBkFVwMTY5fzqj6ij08+gx4M03d5fd2pA0o3UziknZA+9xPvkNVKIa
-         ewdEuo0sto3CKkXgh3nAU7EOgYsGFEdvlBkeh7HNG6cuvn7BtmrlUbnrZxBka0gLIBsQ
-         JAJr/seRTE97DJBZYfICBcwpytrOCrujaR46ClP6C02839A8pB9g5yzB+1+SI3SlGb6e
-         rSl3Bp1v4N3SmdZ8tA9Om7UInV0CC/2wJh7z3fFdFXXseTI3D0IgQKq/pvuQp97nmSmg
-         RlJn2g5gQVh2ZkoRJO3tTpIKnFyVbO0NKvONJrLIffMql5AhVozF+PGti9W4p6IcQLpM
-         2qMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697733574; x=1698338374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4YhLduK0yhp1pFpU5JcX7yKUnA0pQoHHCTqO4z0oJ4w=;
-        b=oFI+Hf8PvRa8Pn2Ort2A8jWjGed4WJ7Cm60BxBKHtMPSTbaFWrSChiIi7ZZheXBdfY
-         FsFVrRtZI0t0oQG3HZzFHU7xr43MxerzwcjFIfxGSTnfKKqyfmpA1jzQ6cHAibFnW8v6
-         hAYCOZ00KCKBtxAA2dPD1TfVKtImghoB1qfwCm5mwvShH9ixOuXptjuP1Xu0cJOGladz
-         4erycaMbdQUA5TphoUGWVdMqpYjlu6oWuiWGsEJXYHayvba1CUxEyPmFlDfHX1sqjMXD
-         XffYoQhYon3g2qA/aQTcQ+A20WD5UJYv58C0hQmTM6xi64ByAMZf37pLWJb6k50wM+JI
-         MPww==
-X-Gm-Message-State: AOJu0Yw0fAPN0o0cR/E23ruObQ+svEtHDMulX3gI/KpsdWhSNvwSq3Jn
-        J0HekdBOs7t80l9bNq8jG84=
-X-Google-Smtp-Source: AGHT+IFhX1ejSOP4RoHUmqnCAncA2fYu2iqR48uuBkVtYK2asxYzCcdlV7qull1tJSbkzyYsQ0uSzQ==
-X-Received: by 2002:a2e:a98a:0:b0:2c5:40a:5d92 with SMTP id x10-20020a2ea98a000000b002c5040a5d92mr1968156ljq.28.1697733574039;
-        Thu, 19 Oct 2023 09:39:34 -0700 (PDT)
-Received: from localhost ([2001:171b:c9bb:4130:c056:27ff:fec4:81cb])
-        by smtp.gmail.com with ESMTPSA id i18-20020a05600c481200b00407b93d8085sm4753875wmo.27.2023.10.19.09.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 09:39:33 -0700 (PDT)
-Received: from localhost (localhost [local])
-        by localhost (OpenSMTPD) with ESMTPA id 998b6a53;
-        Thu, 19 Oct 2023 16:39:32 +0000 (UTC)
-Date:   Thu, 19 Oct 2023 18:39:32 +0200
-From:   David =?utf-8?B?TGF6xINy?= <dlazar@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
-        hpa@linux.intel.com, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: PIC probing code from e179f6914152 failing
-Message-ID: <ZTFbxAS3mKPkEzHP@localhost>
-References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
- <878r7z4kb4.ffs@tglx>
+        Thu, 19 Oct 2023 12:39:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46136182;
+        Thu, 19 Oct 2023 09:39:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15EFC433C8;
+        Thu, 19 Oct 2023 16:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697733591;
+        bh=ZexdEiNNC+LPRHxIe+2g3JjtbdL/fbrUvs+KMs1hAvQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=N6on/NJddQzika1XMcjbHj7toTNRJyuR5KMRzPvp7mA8LgX+IY8GvugaHVCy8Hzel
+         rNFneoedbIvB2CQR7cczq3CPe3P83aryz7sCMA9uqJh3XCNYeXNVbkUGBykaLyiLOb
+         r2A2UooAjRrfk/UetsSuxAJqx4xzh6yeaepQR8pGGmVyjM7np6xSrfncQ+REhCfVM1
+         oHTHI4vBzhnYuNzjDm//El38reWyxjJ2N/HfEhLUp1e/evBBN1KX+SKt+2i+tvqCNt
+         GBva0BVUyySgpUl6P35iC0kLE8DzcFih3R/xXqMEX1lVY0eloheMEX6uuY5GjrunOb
+         Ux+QZo26gYhkQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6DA82CE041E; Thu, 19 Oct 2023 09:39:51 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 09:39:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
+ transformation and address deps
+Message-ID: <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
+ <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
+ <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MCdo3BrMYb1JOR2q"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <878r7z4kb4.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,56 +68,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 12:11:58PM +0200, Jonas Oberhauser wrote:
+> Hi Paul,
+> 
+> on a second thought. Why can't the compiler always do, e.g.,
+> 
+>     int *p = READ_ONCE(shared_ptr);
+> 
+>     assert (*p == 0);
+> 
+> ~>
+> 
+>     int *p = READ_ONCE(shared_ptr);
+> 
+>     int val = x; // x is some object that definitely won't segfault, but may
+> very well be owned by another thread right now
+>     if (p != &x) val = *p;
 
---MCdo3BrMYb1JOR2q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The compiler is forbidden from inventing pointer comparisons.
 
+>     assert (val == 0);
+> 
+> and in case p == &x, the address dependency is elided
 
---- On Thu, 19 Oct 2023, Thomas Gleixner wrote:
-> Can I please get the following information from an affected machine:
->=20
->   1) dmesg with 'apic=3Dverbose' on the command line
->   2) /proc/interrupts
->   3) /sys/kernel/debug/irq/irqs/{0..15}
->=20
->   #3 requires CONFIG_GENERIC_IRQ_DEBUGFS to be set.
->=20
-> Two versions of that please:
->=20
->   1) Unpatched kernel
->   2) Patched kernel
+But yes, this is one reason why Documentation/RCU/rcu_dereference.rst
+warns about pointer comparisons.
 
-Since they're a lot of files, I've uploaded them in a .tar.gz[0]
-attached to the bug[1].
+> Best wishes,
+> 
+> jonas
+> 
+> Am 10/6/2023 um 6:39 PM schrieb Jonas Oberhauser:
+> > Hi Paul,
+> > 
+> > The "more up-to-date information" makes it sound like (some of) the
+> > information in this section is out-of-date/no longer valid.
 
-[0] https://bugzilla.kernel.org/attachment.cgi?id=3D305266&action=3Dedit
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D218003
+The old smp_read_barrier_depends() that these section cover really
+does no longer exist.
 
-Hope this helps.
+> > But after reading the sections, it seems the information is valid, but
+> > discusses mostly the history of address dependency barriers.
+> > 
+> > Given that the sepcond part  specifically already starts with a
+> > disclaimer that this information is purely relevant to people interested
+> > in history or working on alpha, I think it would make more sense to
+> > modify things slightly differently.
+> > 
+> > Firstly I'd remove the "historical" part in the first section, and add
+> > two short paragraphs explaining that
+> > 
+> > - every marked access implies a address dependency barrier
 
-Cheers,
--=3D[david]=3D-
+This is covered in rcu_dereference.rst.  Or is something missing there?
+Please note that the atomic_read() primitives operate on integers
+rather than pointers, so are off the table.  Yes, in theory, some of
+the value-returning atomic read-modify-write operations could head a
+dependency chain, but these things are sufficiently heavyweight that
+most situations would be better served by an _acquire() suffix than by
+a relaxed version of such an atomic operation.
 
---MCdo3BrMYb1JOR2q
-Content-Type: application/pgp-signature; name="signature.asc"
+> > - address dependencies considered by the model are *semantic*
+> > dependencies, meaning that a *syntactic* dependency is not sufficient to
+> > imply ordering; see the rcu file for some examples where compilers can
+> > elide syntactic dependencies
 
------BEGIN PGP SIGNATURE-----
+There is a bunch of text in rcu_dereference.rst to this effect.  Or
+is there some aspect that is missing from that document?
 
-iQIzBAABCgAdFiEEpHbgpJsdP0daUC+MREXGZf+tmuAFAmUxW7wACgkQREXGZf+t
-muAWYBAAnaDCjG7X9xZAdJyo9FjWdrxMlpU7WhpfuIzo+ou4svjdYjoi7H0UO6pb
-UA/L5MHHs/iQ6UI8SK+U8HU0PE1wB+NslKRbNeX6636t0i67vi88B6+/++9ctb8q
-5Hd0Y3mhy4gRpjfTiQ+dGNkba+B/HCGKj2sA1Qm4+Okx8v/mVIDlheAPf3w5OpDA
-RZQd9e91+ZRA55jKMjChJPPjoI4R1us16UI+fPGcawC8dsYa2bWPx1tWQCY22Lcz
-iC0AdmjHxfZI8YgFX+u6JF/AK9riwKjkvkb62NvbQWLUOtk2HS4ETqvfghczhb6h
-fPqDSvagSKgIRBgh37pFQtvR1NTL9S0lhz5x/verpuWD4EplfQDxX/2QB9aH+Si1
-6VL+KWi9/gtTb88vp7yVSKovOby5MFFooKJVtEAeGgP3cGnPsGGfmFxd8BSAwdx4
-qWaMOSW35yQ8aCzFiUreMKy3giAbo8ZIH0lohiIfCkZKMH1Li692L8fmgSt4ry7X
-gIsDbm5TA5Z4An35tIpGa3RrQmzs1don2Maf0WdEE+pxEayYak9HWwIAau3hvfzW
-z8eYMRMz5HThG6XG5vJiO6YJa/9sHZkTStt8H9ADlOfizEAMADpJepPEPGINweze
-7DExbci9m/jA/r09BRooq99eWBdfB5O/NlvKkhOhaFpUrGxNBO0=
-=Jh0K
------END PGP SIGNATURE-----
+The longer-term direction, perhaps a few years from now, is for the
+first section to simply reference rcu_dereference.rst and for the second
+section to be removed completely.
 
---MCdo3BrMYb1JOR2q--
+> > Secondly, I'd not add the disclaimer to the second section; there's
+> > already a link to rcu_dereference in that section ( https://github.com/torvalds/linux/blob/master/Documentation/memory-barriers.txt#L634
+> > ), and already a small text explaining that the section is historical.
+
+The problem is that people insist on diving into the middle of documents,
+so sometimes repetition is a necessary form of self defense.  ;-)
+
+But I very much appreciate your review and feedback, and I also apologize
+for my slowness.
+
+							Thanx, Paul
+
+> > Best wishes,
+> > 
+> > jonas
+> > 
+> > 
+> > Am 10/5/2023 um 6:53 PM schrieb Paul E. McKenney:
+> > > The compiler has the ability to cause misordering by destroying
+> > > address-dependency barriers if comparison operations are used. Add a
+> > > note about this to memory-barriers.txt in the beginning of both the
+> > > historical address-dependency sections and point to rcu-dereference.rst
+> > > for more information.
+> > > 
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > diff --git a/Documentation/memory-barriers.txt
+> > > b/Documentation/memory-barriers.txt
+> > > index 06e14efd8662..d414e145f912 100644
+> > > --- a/Documentation/memory-barriers.txt
+> > > +++ b/Documentation/memory-barriers.txt
+> > > @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
+> > >        (2) Address-dependency barriers (historical).
+> > > +     [!] This section is marked as HISTORICAL: For more up-to-date
+> > > +     information, including how compiler transformations related to
+> > > pointer
+> > > +     comparisons can sometimes cause problems, see
+> > > +     Documentation/RCU/rcu_dereference.rst.
+> > >          An address-dependency barrier is a weaker form of read
+> > > barrier.  In the
+> > >        case where two loads are performed such that the second
+> > > depends on the
+> > > @@ -556,6 +560,9 @@ There are certain things that the Linux kernel
+> > > memory barriers do not guarantee:
+> > >     ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
+> > >   ----------------------------------------
+> > > +[!] This section is marked as HISTORICAL: For more up-to-date
+> > > information,
+> > > +including how compiler transformations related to pointer
+> > > comparisons can
+> > > +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
+> > >     As of v4.15 of the Linux kernel, an smp_mb() was added to
+> > > READ_ONCE() for
+> > >   DEC Alpha, which means that about the only people who need to pay
+> > > attention
+> 
