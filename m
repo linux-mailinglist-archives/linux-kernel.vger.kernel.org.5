@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D267CF254
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E927CF258
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjJSIVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S235231AbjJSIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjJSIVJ (ORCPT
+        with ESMTP id S232846AbjJSIWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:21:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623B111F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697703630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6JocWFvICwQAu51spYQ9UkYkn/vFA+DgKSrhAcOeN84=;
-        b=HPqAOsmeq6IymvWkm9YEcOzKvts+k3fgyvU6aGKjgQ1PvOFIGWheWXO0hYVK7xDqzsbx++
-        WxHUrmj+NxySPYefvdhav69BQFsvufrJbcAYeZkMQbk1n7CLT1NAHl8Ps2h4Ho1ZJFYQWq
-        0yCqG1PMgj/jA2k4EfHIgDzJNTvFHCs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-8-kY8aLpDiOBClVDAnba0TFA-1; Thu, 19 Oct 2023 04:20:28 -0400
-X-MC-Unique: kY8aLpDiOBClVDAnba0TFA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-997c891a88dso567022766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:20:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697703627; x=1698308427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6JocWFvICwQAu51spYQ9UkYkn/vFA+DgKSrhAcOeN84=;
-        b=BRdRWMQfzTiLRxCKGcZmlgZ2XZBPo6fdHaFzHkx8+PO2tIKfUpNBlC8/cJR6beHl1f
-         d0sIO6u00rFN2mkkzyEslXiPx7BDX58JAy/LfH5sFD43if6Gsmr5mmMWfk2t7mAk4V1x
-         UKKUk+E0/gKTbll3MfydYhGDShKrr0FIQjwK0r33gi1WdwxuJY8hxv89lIcuzaPLGSJG
-         9kebkBxWTaA8bXguVNdQUNtJ/HxrzQ1Wsrb0RjoMI7cqss6H3FPw3hzRNZpQyUCaBABB
-         5/uAFXeZf0pQ9VwekMz8O2Xj/v69IWCtIiGwQiwcGDzTKjdGHdGDg9mYTlHH1HtfaQ/j
-         IXhQ==
-X-Gm-Message-State: AOJu0Yx7uqrl86fWRPFVeneRJIITv1UZSJgS8j9Lnt9fFyTLGdQx5FSs
-        mS+fM72XplI40WL+yVKIcLoemnpHtgDDnAE6MBT5GsupOnv63x67NHvAt0rD7DvIT35IypGZoJR
-        GqI83nwT+EWOuDujsDj7yukub
-X-Received: by 2002:a17:907:7b89:b0:9c5:844f:a7f4 with SMTP id ne9-20020a1709077b8900b009c5844fa7f4mr1416920ejc.35.1697703627222;
-        Thu, 19 Oct 2023 01:20:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGTnMKXbHzCyh0CpWl8FqNt59EDAGlNA5Kw8X7mQsKbdb09VixEWWMGkJGLb9zHxDpsNDg2ag==
-X-Received: by 2002:a17:907:7b89:b0:9c5:844f:a7f4 with SMTP id ne9-20020a1709077b8900b009c5844fa7f4mr1416904ejc.35.1697703626942;
-        Thu, 19 Oct 2023 01:20:26 -0700 (PDT)
-Received: from localhost ([193.32.126.216])
-        by smtp.gmail.com with ESMTPSA id rn1-20020a170906d92100b0099d45ed589csm3040281ejb.125.2023.10.19.01.20.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 01:20:26 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 10:20:25 +0200
-From:   Maxime Ripard <mripard@redhat.com>
-To:     Vignesh Raman <vignesh.raman@collabora.com>
-Cc:     helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
-        david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
-        guilherme.gallo@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robdclark@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 9/9] drm: ci: Update xfails
-Message-ID: <clpne3ctm2aptl6whv4nxqsjcrqfggkdckocusxjksjirvflsm@6dppwwlqg4bt>
-References: <20231019070650.61159-1-vignesh.raman@collabora.com>
- <20231019070650.61159-10-vignesh.raman@collabora.com>
+        Thu, 19 Oct 2023 04:22:03 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241B210F;
+        Thu, 19 Oct 2023 01:22:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YOVRVijlUdLF/CwmXCtFswG0H/iopeztK6OVmwvx8EZP9ZEUZ1TWPDwqJhWu2NlcWfKLcedJI/psrIQbfFCOkaGzVbTEVWunC3sNMZpasJrOoMWhVobjJgnuFNhWi7Wm+lI+A6gRdXuEJPPubCJ2wORtMnQInxTI/+nWVyRsqKtIc6v5NC42eC555WxY8Zo2VNB8UTZHoilw9/V5GcFhWNiaZCOw5AatVH2CqZYp8XZxU5U/7SchjCOR0lpTcpe3WFQIEevm955TCX1BN1X99i1ARWYapHIAW3mpoWrLzudozJDdZDEu1Ii7x6TCVfIAp/lmVRQliuy6M9fIEB+MDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+AdJIbffa/C+UCtx2rDWrPWIiq32Ep3/j507QlCH0Yw=;
+ b=meGejmB5HnsUpM030y7G8mgJIoSHY+fKsZtPTefpJ2Qbp3996HsvwiYg1dWdGW+3OefPKTW43fPFdfWO7O8R+ocxVS/63ZU997U6+Eni8TFA+exZLxbOawmi7CVimToxJCf/e4TbPJAQUYMumfjUuyTnBc5pQ1tyxfdzly0briTjDsbYR/84LGQO0dXKIw7D/Wh5tjdyguq8t2GQlDAj5swpLgWL2eOuG8CliaHmW8MaeduQibtl9R5dltKqzz5rKpB3J4Qr0LvkEcQ+/cPM9H9G/7pSQU81OW5UvBvg61eD4Qos2/vl29ZSBEyGD8iIRidjP8fNvVXs9Qz8wPkMvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+AdJIbffa/C+UCtx2rDWrPWIiq32Ep3/j507QlCH0Yw=;
+ b=U6CGFBDCN8m+ppBjXUh4lg6HkuBcDr3/AI47GC8/nWbzR0/vfqjfrzA0HDYUObF+W5Li9iRxUNVkomDh+jZzNh70Nt94sPMniX7elXi89XOOhVzFJ2wGmiizwl32x5pw6CUiRosSu/JRezQqyrI+wARLLRlDJKK1hT/A7PtA5bnUCXVuUXKLDXAz8ly0f48O9ss3rooEN/c9GGc1jmgaRdNpZpSWQ7swl+uQErvojf3LYjfkVHZ8HH2KgQlV9MXWR4xBzOn8egK90BnP+wTatWUfJzmL0NL3JbU2GKAOPAgJyfTDD8y8vKXJ5Ls3Skp633hGGZJiDZbhFpc+G2daHQ==
+Received: from BL0PR0102CA0061.prod.exchangelabs.com (2603:10b6:208:25::38) by
+ DS7PR12MB8291.namprd12.prod.outlook.com (2603:10b6:8:e6::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.26; Thu, 19 Oct 2023 08:21:59 +0000
+Received: from BL6PEPF0001AB53.namprd02.prod.outlook.com
+ (2603:10b6:208:25:cafe::7c) by BL0PR0102CA0061.outlook.office365.com
+ (2603:10b6:208:25::38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.25 via Frontend
+ Transport; Thu, 19 Oct 2023 08:21:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL6PEPF0001AB53.mail.protection.outlook.com (10.167.241.5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Thu, 19 Oct 2023 08:21:58 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 19 Oct
+ 2023 01:21:45 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Thu, 19 Oct 2023 01:21:44 -0700
+Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Thu, 19 Oct 2023 01:21:41 -0700
+From:   Patrisious Haddad <phaddad@nvidia.com>
+To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
+        <stephen@networkplumber.org>
+CC:     Patrisious Haddad <phaddad@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
+        <michaelgur@nvidia.com>
+Subject: [PATCH iproute2-next 0/3] Add support to set privileged qkey parameter
+Date:   Thu, 19 Oct 2023 11:21:35 +0300
+Message-ID: <20231019082138.18889-1-phaddad@nvidia.com>
+X-Mailer: git-send-email 2.18.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019070650.61159-10-vignesh.raman@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB53:EE_|DS7PR12MB8291:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0baf44fe-2266-4f43-7a3f-08dbd07c76c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oV2WQfxQvE2akGjYoMYpqkmnptITXXYI6uwrAqN3GpyTRjjrC5kGvXwuXrVsv01Yh0yqhFsrIq4GGvU9xvFGMTMswE9GUD9bst7y1Vbwk3HsFH+Ct88xfeu4mI/BJQfUK3nNdrkW8N+WkydUM5+UUMSF8FfBVOmJ0J1mPu7Xm+0F/9A92miZcI8m1bk5xdBOVLppLqiDii9GE0nltckg346hvuz7NkGlo74DJXszB1lzg1Rj7otry5y6VkwZiWPYbwY8AZHuTmgmk4XWJnZQSgdcj6pYJHsikniKzV/ORcAxaOpHzwkXEH2+uECm5yThoTuy2Pglvcl4Y0oROQINmHNQ45kB+hQOS5nbacvPa2a279MRwajnTV635ia5ebq655X6eR9SXJBST+Pa87a0euPtDQcgT3A5aMtiv25KZ7umZ9X/8kNHVxzTSoGpJrH2TXBXw0p+u4OSpSm4bw1hNjGNQhoyDv/tZLWs+QILTqzBFfkgiTqZrvaBU7ruYTUXztocRtGc6BsKw0cQCB+2fHjKEEB8f9f2gVUeeATqXl6ZRhdueuK1bvIHbHl2rGizQthrWyQC2EJZNQHfy62ggp0txfmb4BCuImixCHwF0t4q0OcedtBpB54CFrjUETAvX9Z6emM1aKEGt5J8eYFgF7IJcHPkRdNP4nmVGAKqJWdeo2TEuNECMuylkKaIhaLR7OAn6FkeblusnYrKefj4Qw05AIEe9/l4TmLl3dMf/z+rYko8HGpcPgSm+wCuLzQH
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(40460700003)(70586007)(70206006)(110136005)(54906003)(316002)(6666004)(478600001)(8936002)(8676002)(5660300002)(36756003)(41300700001)(4326008)(4744005)(2906002)(86362001)(7696005)(47076005)(36860700001)(107886003)(2616005)(1076003)(83380400001)(7636003)(26005)(356005)(426003)(336012)(82740400003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 08:21:58.8357
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0baf44fe-2266-4f43-7a3f-08dbd07c76c5
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB53.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8291
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset adds support to enable or disable privileged QKEY.
+When enabled, non-privileged users will be allowed to specify a controlled QKEY.
+The corresponding kernel commit is 36ce80759f8c
+("RDMA/core: Add support to set privileged qkey parameter")
 
-On Thu, Oct 19, 2023 at 12:36:50PM +0530, Vignesh Raman wrote:
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> new file mode 100644
-> index 000000000000..8b12e97d59f3
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> @@ -0,0 +1,9 @@
-> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013138
-> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1012894
-> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013011
-> +# https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1013055
-> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
-> +kms_force_connector_basic@force-edid
-> +kms_force_connector_basic@prune-stale-modes
-> +kms_prop_blob@invalid-set-prop
-> +kms_prop_blob@invalid-set-prop-any
+All the information regarding the added parameter and its usage are included
+in the commits below and the edited man page.
 
-We agreed recently to provide more context to flakes going forward, see:
-https://lore.kernel.org/dri-devel/ax6tspeffujmk2vpvh6rwclqkkavpezvcubra25vs2ev7f5njs@2rpnycg2rgnj/
+Patrisious Haddad (3):
+  rdma: update uapi headers
+  rdma: Add an option to set privileged QKEY parameter
+  rdma: Adjust man page for rdma system set privileged_qkey command
 
-I'll send a doc update to make that formal (and discuss it at XDC if needed)
+ man/man8/rdma-system.8                | 32 +++++++++++---
+ rdma/include/uapi/rdma/rdma_netlink.h |  6 +++
+ rdma/sys.c                            | 64 ++++++++++++++++++++++++++-
+ rdma/utils.c                          |  1 +
+ 4 files changed, 96 insertions(+), 7 deletions(-)
 
-Maxime
+-- 
+2.18.1
 
