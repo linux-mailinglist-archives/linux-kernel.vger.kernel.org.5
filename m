@@ -2,228 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F060B7D010E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15707D010C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346334AbjJSR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S1346247AbjJSR7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbjJSR7Z (ORCPT
+        with ESMTP id S233277AbjJSR7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:59:25 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DB0121
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:59:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507a0907896so8247120e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697738361; x=1698343161; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wPpqFnRlR4uSK16DavFgn7RP6vUonhIX0hmH74GxJEI=;
-        b=qC1dqfqmsu1VgHCC8aGnOvqKSBJIJB8pDqKEA3FemWzHwsZ3/XLW0r8o7Cdo/I+rVB
-         05LWJobCopszkmmamFZe1LQAtyqepUGJhbT9cLuPgpsGE6FIlVSyqQ6CYHHbQmbJuFlk
-         rTD1CHCVYK8kAffg0h80e1TXrKw52NCoJ0k3aM2sTknQe2QAnu8g7IS4l0tGBd6d9ZVY
-         AlsIzXfM9HEG2QK/qhxalw4GdWN8eaDrt4FIDASDgd3HD75aG20SMEAtGQWf3uhPc3tA
-         JVaqd4mBHkp41fMtDRJ7CpS7V63ZBDXTotTow23surWdfI2ateLyCO5NLHficie1GDuX
-         I9ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697738361; x=1698343161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wPpqFnRlR4uSK16DavFgn7RP6vUonhIX0hmH74GxJEI=;
-        b=Ov3Nsy2dtUP9gT1GnPkUk0hah0eIJvTvksVvQXnXfoiYPAm+AuN4EjHb+C6drSsMa5
-         pWIKyWRzgj5sQBVA/dY9x2u7MI/NYBITCVv833Xc2CcO9cRqqxkbxoxWgrHjyzTNyjx9
-         OHUIWs6bOfhDm71xxJYxnUAzhx431PdNPhhUvXu7SHK8Mzx+c3F008LZ+m7UCgV2I2xi
-         cng2qDjZ0h6EQcrdebvjR4iH+6xyzOSxUCNoFtlkVrCDLRz/F9AuMgK+UofSeHRrkQNF
-         H6rNBnwAASxeElbrBVsijYhV3pvtmJqmddm5yHVb+iCdny7duZNk487AO3JOgcEdyz03
-         RE7g==
-X-Gm-Message-State: AOJu0Yw8MwcZh+wCFHnyujxozIPGbhpHrcGTDWSateDCCRLQHG3cHTOX
-        5LFOVPPotV46bg/sBCqaMFE4/yuDEKyKsHGzqCAQmQ==
-X-Google-Smtp-Source: AGHT+IGZf3CoKIiKhyBtdv8sWG6RzJ6x50GjhcgoVZKdnvbl0TdRVmE4DPWaxT7rZJE37reFkRerDzjsiL6e4QWS7oY=
-X-Received: by 2002:ac2:5052:0:b0:4fb:94c6:fd63 with SMTP id
- a18-20020ac25052000000b004fb94c6fd63mr1983277lfm.17.1697738361215; Thu, 19
- Oct 2023 10:59:21 -0700 (PDT)
+        Thu, 19 Oct 2023 13:59:22 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12F3E8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:59:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LztAXkraogPVFx9+aV0ZpGGUAM8v4stVaTLl6g/pSDGzpagXRS4aDKtrXnCxRsq/i03OQ+5yfvgo+wcEi/6NarcS7YnVgx0ZAoQIerFWLh5XNrUTwLOHqiF/c+WiFSTLEhRnpfciBFTJJORDQXHqDqQXZI8hf3lmaHidhHDQPxVF1MIOwPMsJcTL7b1kgOW0/Ar6PNr3R1WzMPUR9IAqYN9Y0kFLBycispZhFMrYv9imc7uAbhQP83moyLlhi45F3OlyMpJ/vsYPgbmqYZvHN9x94uAcn4jYnqGdQMaFBEPJTuHg2I1T4E2rSQRdgKPo5OFMztHL4iba5z5YIDAX/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cNf/0NubxBMXjbfE2EIgKOXUndD5ElNt9Ew352KodkY=;
+ b=DmVnO0tVUHdasqjWijvDlDNjITX9wWKGWN9fLKZD4qVG6L73GBAIEA/iNhKSQDFqJznZnLcnGXlh8uOwBtRC8JlzZ0OOxRC6/LuUfX8pa1EI8vtkMA1G58DrIlBW0rdj4BSComUWzLr1WopEIhVpRDg4h0gLfShSFSb6ZaHsFxyLE18uZcwZtzYD8U/9FmsEtFka0hL1yJ8zeAOwXcjKrJC15xaMfn10zQO01nfkTfQvDR45YRG9PP29/yspnmQZ+39ISICQJ0ByM1LWXgmGx/ncLkKv83Plw6WeT9dQyCBrvAD7xWeuoDpYk4P7jRLvf0tCZKIGA2QZdVnc3M+ELQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cNf/0NubxBMXjbfE2EIgKOXUndD5ElNt9Ew352KodkY=;
+ b=EVFKmw4Oby5gXvKgjn8iiysPcTdwlY39+bXv9I0cnv5skT4A3QQOVvaALRPk2Ujujctp/4vENwkVuUlkLFOVfU+ZrXvlVnUe9X3YnWWMubsWaBYo9xmJ6amlcz0jA/i920aDTdk/9zs1hMrN9IxFcK8yaYYJE4QHNGlsTAAOqR00wMpjIqt9UnSNTJ1QLPW754h2ChmCsDbJCr02V9hHmP5jc6T6CVS8TFG3GE3+xMuhayMEwXsYaGlleVqHPRePmSmGjr9hF1dYgUp4hPhjrk3i20BmjeOz5Ry3ht46fAOb4GViq8YxoPOT4Dv9v0PHAgoeNYKwsr5N9ObkI1iuuA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9134.namprd12.prod.outlook.com (2603:10b6:408:180::21)
+ by PH7PR12MB9126.namprd12.prod.outlook.com (2603:10b6:510:2f0::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 19 Oct
+ 2023 17:59:17 +0000
+Received: from LV8PR12MB9134.namprd12.prod.outlook.com
+ ([fe80::b15c:1b79:292f:31db]) by LV8PR12MB9134.namprd12.prod.outlook.com
+ ([fe80::b15c:1b79:292f:31db%4]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 17:59:16 +0000
+Date:   Thu, 19 Oct 2023 10:59:14 -0700
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: mlx5 ConnectX diagnostic misc driver
+Message-ID: <ZTFucmfKqU18Hkbs@x130>
+References: <20231019082451.785aa123@kernel.org>
+ <2023101923-tried-provable-72e7@gregkh>
+ <20231019160145.GS3952@nvidia.com>
+ <20231019092346.3387fad6@kernel.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231019092346.3387fad6@kernel.org>
+X-ClientProxiedBy: BY3PR04CA0016.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::21) To LV8PR12MB9134.namprd12.prod.outlook.com
+ (2603:10b6:408:180::21)
 MIME-Version: 1.0
-References: <20231018-strncpy-drivers-nvdimm-btt-c-v1-1-58070f7dc5c9@google.com>
- <CAFhGd8o-ftoGQ4qvrdGM2tSYWBqvYbF7Qb7O+UfsbzYxVmU6sA@mail.gmail.com> <ZTBrSb/h13YzE3Ws@aschofie-mobl2>
-In-Reply-To: <ZTBrSb/h13YzE3Ws@aschofie-mobl2>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 19 Oct 2023 10:59:09 -0700
-Message-ID: <CAFhGd8pC+uhovQPezcWoddFgPaJjB3Hpf1sTOhiKgMfRLsAFrg@mail.gmail.com>
-Subject: Re: [PATCH] block: replace deprecated strncpy with strscpy
-To:     Alison Schofield <alison.schofield@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9134:EE_|PH7PR12MB9126:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d4a95cf-0ab0-486f-dfcd-08dbd0cd1bed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gYZyYpaXQ3bBtv/Q5EHRLJRHIZhK66LNOqUvg8arciHj+IlL/dJnaDsbGbi5VcLOipfnU/YsZlWKF89iJxqtZrjL1KAdxbR12yj6Jjqy1OeXYml1XWgnEz3BkZIIPJv7B5UZ1ByQLy+Rnp2iPCnljQVg50KBVGPPbWEGlCvf4dxhi70FDKb/pD0XFC5mZBzk2LjjrD3tZwSEArG4PBEp22o/+GntEjLJGepT56B2zxhTLxyShjXYA+BpZwUEsOMvk6GZgYZ7KuiUgrpDMx/K0GDLIpIpxDgy6yGR8ha79ZxCe8EB0eA8FQ82JWVi0XlIcA5CSu0UZsH4YwN9ViN5Urly6GJxavxZLkVnB9lpSeuqqNyo9o3DLfUuXXfRlXGQhtyPz0joI89lXTgdQBNas0WPh9V72WosaZMdE6H4RljBMblLtLg1eaB2iLYVAAM2Wh5lis1anDZ9+gzl9RgSqsZY4j7CCkYwnP6O7lF4N9uxuVgDh5dEspBFUZQoS3LuSeHp/QkRv7tv5H4KiPknsjs1y48nDAXTWG4ixGnhGXOkCRUstywBCp57+B7t3JJKh3GyJWyEUsfgZsOUi7jJ+mtYkhJwhSxLF+A7vzN31RQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9134.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(366004)(136003)(376002)(346002)(396003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(478600001)(966005)(6486002)(6512007)(6506007)(9686003)(6916009)(316002)(5660300002)(66946007)(66556008)(54906003)(66476007)(83380400001)(33716001)(26005)(2906002)(41300700001)(38100700002)(4326008)(8936002)(8676002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cvK6GfwqJs0ywkNmuDAP1ZkN2xiLwN9b4hTu+JMyMzy2SrUy0vGdtNDj+l0/?=
+ =?us-ascii?Q?2hc0TpJzsUVKZx5fWAFrYpYnbCLYHeEdGOabJImbXzTiBmZdT6KunkS2Px7H?=
+ =?us-ascii?Q?60iYlMIhaZYIxxtyGicEqjpDWeKNdkE44ah4nCFvz3RG5pLNydquClmm3UHV?=
+ =?us-ascii?Q?T7ff16oRG7uHNpcZi1ZtdJHc8wTacSu+2bac9zd3I8p0tVdg7BQlXnh1JKF8?=
+ =?us-ascii?Q?XTSMXCJlHBpiyggjDhUehOGhFo52X4dW/DrTY1rmXB2EIjllfUbR93E1o4z+?=
+ =?us-ascii?Q?dEg/4wHthpuvC8V8E1LpZuxmDlGK516NSuhQE0r1dWeNLlJ7vh/Vhf8d0vQl?=
+ =?us-ascii?Q?AeNQ7ol5ObhDPr7++aKJfv0L/Aqrs/MAQ4JLMdoehNbqml3AeIgkhTp+2l/Z?=
+ =?us-ascii?Q?yOZ0GidoNT22NRC+kQqk5KANkQdOnbrQgYIfWTpXrruN+QxB1bSAFcQyy7oc?=
+ =?us-ascii?Q?UVBrmidwoHNmRHLUlCyvYZ7iSfex1Hz7K7uaTZ8YlXwCio5dF5b5usKneMj2?=
+ =?us-ascii?Q?c2MyWTPfYnHzBH4HXWXmTrmjmPJsmEEqhVzrmZ2atHczV2fBiU+t1Yj8lQJn?=
+ =?us-ascii?Q?HrJ7gVL8WEdhwe+Fe0a2fbvPa+NIpVvQDsSqe34mOgLXXpiMR6X+Sxfn7jj9?=
+ =?us-ascii?Q?2qlYDEYBCUwDlbOaQv/Vn/qSTOdILT1+CytZxGM+PXPZqNzy5GvDqn08b25u?=
+ =?us-ascii?Q?SuIJ4waAQQyltCv6PbeeF6LDMgKzmt/+BGEt9AUyn6k/+nfrfBpmucVwoUcw?=
+ =?us-ascii?Q?RRgAlezJ6IgHv13nXsCEvawrU/zkSuHRbvlMjwZ3u2hlM6Tm1CzriU5A0yK/?=
+ =?us-ascii?Q?zpSkSmaEI4n1Cycqv2h9Bj6YopRsw1Az46rWyLFYaKgmE+dSNMZqv0Z5Ciam?=
+ =?us-ascii?Q?WBjPSvRAUyTRCMPqVrqp1+gsjTcpYHXqeXslFyLxxYnR3I/AxRmgZkC7/5Yv?=
+ =?us-ascii?Q?BKz1yPzm0gJZ4Ex5grY8Ue0pc25Z+t9TxhAuzr4knmr+sVbG1o1Kn3kuGRpr?=
+ =?us-ascii?Q?sDMkat09J06J/DXg2BX3g6i6Zp08mOVJ60eTM9tbNcAXcYUB5RX3mtWF5/tr?=
+ =?us-ascii?Q?uHAZOgP8fu1J1NvYxa2cbbmvcMK24/SoqIK96DRRSWOxSdQcANRkGQYRoQ+S?=
+ =?us-ascii?Q?jKmtDT4YUmWdbHSP+A8fvTMz8Z9DQ5Tu9rVoOM/HxacqrED1yMrwnblLmN1L?=
+ =?us-ascii?Q?DjTP/iVgQva4rF/yFtJzhbqHw1jeSVHDVdR82k9n7v+zJ+Jp3JSdZxJqzuDw?=
+ =?us-ascii?Q?AAzJ6sCbohNY4/JAL0/oAUDvQYZNoFRCZ90tSwgQnDp9c6VjwOaLjNRLnlW3?=
+ =?us-ascii?Q?ZpUaN5EVzlW/2C1pBW1s0fCwWU8NqokcW8/FsvVCMZR/8VelPIfzM8phAoPO?=
+ =?us-ascii?Q?OYhiBy4u6fyiorJwAEjI5xQjuB4p0aMKjLEa7wn43LkQ655VjBxBSlj2DsVY?=
+ =?us-ascii?Q?wZVwYUgRcMCFUK7NxYIlcgGJWVtC0RGUmiO++t4x52qPft/prPIjpVspqrum?=
+ =?us-ascii?Q?2JZt15tjZu/qnKkBD8L8uwobMuy+lnMdUklSTwUFv5hieqEt55wdbbBFUB34?=
+ =?us-ascii?Q?wHZlRUA4aMrZTdU/GFcxFZ2NotLVB3jv2waZrdeL?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d4a95cf-0ab0-486f-dfcd-08dbd0cd1bed
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9134.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 17:59:15.9400
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 14tS43Xf09Wx/lFCPKqNb9vJ5+CeH3Ix4Horl9urZQ7BWsL9rKWNlYcbxHj0eBNgcDdHxeLP85/hG9gcpjtrnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9126
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 4:33=E2=80=AFPM Alison Schofield
-<alison.schofield@intel.com> wrote:
+On 19 Oct 09:23, Jakub Kicinski wrote:
+>On Thu, 19 Oct 2023 13:01:45 -0300 Jason Gunthorpe wrote:
+>> Do you have a lore link?
 >
-> On Wed, Oct 18, 2023 at 03:39:59PM -0700, Justin Stitt wrote:
-> > I have a feeling I may have botched the subject line for this patch.
-> > Can anyone confirm if it's good or not?
-> >
-> > Automated tooling told me that this was the most common patch
-> > prefix but it may be caused by large patch series that just
-> > happened to touch this file once.
-> >
-> > Should the subject be: nvdimm/btt: ... ?
-> >
-> > Judging from [1] I see a few "block" and a few of nvdimm/btt.
+>No, it was pitched at conferences:
 >
-> Hi Justin,
->
-> It should be nvdimm/btt because it only touches btt.c.
+>Last year's LPC: https://www.youtube.com/watch?v=JGR9ZCeiW-E
 
-Got it. I just sent a [v2].
+Yes this was one of the problems I discussed at LPC, please keep in mind
+that I raised multiple other unrelated problems too.
 
->
-> Here's the old school way that I use to find prefixes. Maybe you can
-> train your automated tooling to do this, and then share it with me ;)
+In this project we discuss the debug-ability features only,
+The orchestration features are a separate project that is still
+on-going work to be under devlink.
 
-I use a gently modified version of [1] which I've hardwired into my b4
-installation to automatically set the prefix when creating a patch.
+We all agreed that devlink isn't the place for such vast device debug
+options, hence this is our proposal, a separate aux device that works in 
+unison with other aux devices such as virtio, vpda,rdma,netdev, etc .. 
 
+>This year's netconf / KR, but Saeed didn't have slides:
+>https://netdev.bots.linux.dev/netconf/2023/index.html
 >
-> I do:
->
-> ~/git/linux/drivers/nvdimm$ git log --pretty=3Doneline --abbrev-commit bt=
-t.c
->
-> 3222d8c2a7f8 block: remove ->rw_page
-> ba229aa8f249 nvdimm-btt: Use the enum req_op type
-> 86947df3a923 block: Change the type of the last .rw_page() argument
-> 8b9ab6266204 block: remove blk_cleanup_disk
-> 3205190655ea nvdimm-btt: use bvec_kmap_local in btt_rw_integrity
-> 322cbb50de71 block: remove genhd.h
->
-> And I see a few choices, with 'block' being pretty common.
-> I peek in those patches and see that block was used when the patch
-> included files in drivers/block AND also in nvdimm/btt.
->
-> Use nvdimm/btt for your patch.
->
-> A bit more below -
->
-> >
-> > On Wed, Oct 18, 2023 at 3:35=E2=80=AFPM Justin Stitt <justinstitt@googl=
-e.com> wrote:
-> > >
-> > > strncpy() is deprecated for use on NUL-terminated destination strings
-> > > [1] and as such we should prefer more robust and less ambiguous strin=
-g
-> > > interfaces.
-> > >
-> > > We expect super->signature to be NUL-terminated based on its usage wi=
-th
-> > > memcpy against a NUL-term'd buffer:
-> > > btt_devs.c:
-> > > 253 | if (memcmp(super->signature, BTT_SIG, BTT_SIG_LEN) !=3D 0)
-> > > btt.h:
-> > > 13  | #define BTT_SIG "BTT_ARENA_INFO\0"
-> > >
-> > > NUL-padding is not required as `super` is already zero-allocated:
-> > > btt.c:
-> > > 985 | super =3D kzalloc(sizeof(struct btt_sb), GFP_NOIO);
-> > > ... rendering any additional NUL-padding superfluous.
-> > >
-> > > Considering the above, a suitable replacement is `strscpy` [2] due to
-> > > the fact that it guarantees NUL-termination on the destination buffer
-> > > without unnecessarily NUL-padding.
-> > >
-> > > Let's also use the more idiomatic strscpy usage of (dest, src,
-> > > sizeof(dest)) instead of (dest, src, XYZ_LEN) for buffers that the
-> > > compiler can determine the size of. This more tightly correlates the
-> > > destination buffer to the amount of bytes copied.
-> > >
-> > > Side note, this pattern of memcmp() on two NUL-terminated strings sho=
-uld
-> > > really be changed to just a strncmp(), if i'm not mistaken? I see
-> > > multiple instances of this pattern in this system.
->
-> I'm not following this note about memcmp() usage. Where is that?
 
-Sorry, I wasn't very clear. I've added more info in [v2] but tl;dr is that
-it seems weird to me to use memcmp() on two NUL-terminated strings
-when we have something like strncmp() or strcmp() for that purpose.
-See [2].
+At netconf/KR I only discussed the orchestration project we are working
+on to improve an going work we are doing, multi netdev interface, such
+as the socket direct issue we discussed, this has nothing to do with 
+this project proposal which cover RDMA,VDPA,netdev,virtio,Blue-Field,
+etc .. ConnectX debug-ability and diagnosis problem.
 
+>Really, you should be asking Saeed this, not me.
 >
-> > >
-> > > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#=
-strncpy-on-nul-terminated-strings [1]
-> > > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.=
-en.html [2]
-> > > Link: https://github.com/KSPP/linux/issues/90
-> > > Cc: linux-hardening@vger.kernel.org
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > > Note: build-tested only.
-> > >
-> > > Found with: $ rg "strncpy\("
->
-> How you found it goes in the commit log, not below the line.
 
-Whoops, fixed in [v2].
 
->
-> > > ---
-> > >  drivers/nvdimm/btt.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-> > > index d5593b0dc700..9372c36e8f76 100644
-> > > --- a/drivers/nvdimm/btt.c
-> > > +++ b/drivers/nvdimm/btt.c
-> > > @@ -986,7 +986,7 @@ static int btt_arena_write_layout(struct arena_in=
-fo *arena)
-> > >         if (!super)
-> > >                 return -ENOMEM;
-> > >
-> > > -       strncpy(super->signature, BTT_SIG, BTT_SIG_LEN);
-> > > +       strscpy(super->signature, BTT_SIG, sizeof(super->signature));
-> > >         export_uuid(super->uuid, nd_btt->uuid);
-> > >         export_uuid(super->parent_uuid, parent_uuid);
-> > >         super->flags =3D cpu_to_le32(arena->flags);
-> > >
-> > > ---
-> > > base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-> > > change-id: 20231018-strncpy-drivers-nvdimm-btt-c-15f93879989e
-> > >
-> > > Best regards,
-> > > --
-> > > Justin Stitt <justinstitt@google.com>
-> > >
-> >
-> > [1]: https://lore.kernel.org/all/?q=3Ddfn%3Adrivers%2Fnvdimm%2Fbtt.c
-> >
-> > Thanks
-> > Justin
-> >
-
-[v2]: https://lore.kernel.org/r/20231019-strncpy-drivers-nvdimm-btt-c-v2-1-=
-366993878cf0@google.com
-[1] https://github.com/kees/kernel-tools/blob/trunk/helpers/get-prefix
-[2]: https://elixir.bootlin.com/linux/v6.6-rc6/source/drivers/nvdimm/btt_de=
-vs.c#L253
-
-Thanks
-Justin
