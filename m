@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 272E77CFF16
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9227CFF1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345398AbjJSQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
+        id S1345100AbjJSQK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjJSQJN (ORCPT
+        with ESMTP id S229660AbjJSQKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:09:13 -0400
+        Thu, 19 Oct 2023 12:10:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A335C119;
-        Thu, 19 Oct 2023 09:09:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4B042C433C8;
-        Thu, 19 Oct 2023 16:09:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE3B112
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:10:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3EC5BC433C8;
+        Thu, 19 Oct 2023 16:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697731752;
-        bh=x1d7HrapiAXh/Tag7OTeOm/D+TYb3TqIZdXhliR6v0Y=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GZnpHsTka7nbHD6FudWrw9JE6e0Hap8FBJYKJWCcTZwvZAkKasQBw4OK+ncWMJcK/
-         f10kxTfLUYdKKVEMN+9yqUQdVaa6xe0P+ZZPUZlAohDbcSM/KojMTx4FuEgUm/mVDA
-         CYFefN2KDPBF0eUwWFBfzRwQrjjR+2hZon9bZN9ZLSDj+QGdW92j/QP3RCGKwuyNK3
-         v/tzYDMcAoccDd7ILiZpng1gSI6CFbWDAoxgAp8dDtBTjjiVWlazmEM/p+BtrGTfrD
-         UOFnAG/Lnt454HGxmMhOcufPGYP7+F7fpHIWU2DkAlXN/1MttvNbzy4ZZS1SAnLBHI
-         qWafrAG1YB6gA==
+        s=k20201202; t=1697731822;
+        bh=cBykJKHjrNAgWJmxcWiJVzH9YSi11Z2q3/uU3/UjPow=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=EzctAb/TkV4IHS5t4wBsWrt4eEnL//5F+R3/e4URIS6ajH9qIDAbNSTQ2niR53SCA
+         7ovlN06BWaG1bwo+uMIvvO1S42qGIFR6obEit1Lh+2PQZ/zF8rF+OOCq4ydp+w0CNz
+         lOwdkcJgMVS1gFeNUe20BVZyLBK6qLCbVTyWJvibVBrQbj8j/OHPqMsBdKxV3BrWHO
+         r64ktG+jeaW+X+o9+ukJr2UGXuKzzsyD/MIui+DJxgdVGeHLKxcpy0CmA0Ou8BgUiG
+         yEKZpcJ9KSkCWfrYztLENpp0DR4HD1CWMnQaOBSb5lZF5bzxiKV8kA4KJDtzEwgWLy
+         1/9tYJKmGHAqw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3622BC04DD9;
-        Thu, 19 Oct 2023 16:09:12 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 6.6-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1697555249.git.dsterba@suse.com>
-References: <cover.1697555249.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1697555249.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc6-tag
-X-PR-Tracked-Commit-Id: 8a540e990d7da36813cb71a4a422712bfba448a4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7cf4bea77ab60742c128c2ceb4b1b8078887b823
-Message-Id: <169773175220.31060.12834433081282827720.pr-tracker-bot@kernel.org>
-Date:   Thu, 19 Oct 2023 16:09:12 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 238FDC04DD9;
+        Thu, 19 Oct 2023 16:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] net: ti: icssg-prueth: Fix r30 CMDs bitmasks
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169773182214.32102.11595509429600832386.git-patchwork-notify@kernel.org>
+Date:   Thu, 19 Oct 2023 16:10:22 +0000
+References: <20231018150715.3085380-1-danishanwar@ti.com>
+In-Reply-To: <20231018150715.3085380-1-danishanwar@ti.com>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     andrew@lunn.ch, grygorii.strashko@ti.com, vigneshr@ti.com,
+        jacob.e.keller@intel.com, rogerq@kernel.org, pabeni@redhat.com,
+        kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
+        r-gunasekaran@ti.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,15 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 17 Oct 2023 17:34:56 +0200:
+Hello:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc6-tag
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7cf4bea77ab60742c128c2ceb4b1b8078887b823
+On Wed, 18 Oct 2023 20:37:15 +0530 you wrote:
+> The bitmasks for EMAC_PORT_DISABLE and EMAC_PORT_FORWARD r30 commands are
+> wrong in the driver.
+> 
+> Update the bitmasks of these commands to the correct ones as used by the
+> ICSSG firmware. These bitmasks are backwards compatible and work with
+> any ICSSG firmware version.
+> 
+> [...]
 
-Thank you!
+Here is the summary with links:
+  - [net,v3] net: ti: icssg-prueth: Fix r30 CMDs bitmasks
+    https://git.kernel.org/netdev/net/c/389db4fd673e
 
+You are awesome, thank you!
 -- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
