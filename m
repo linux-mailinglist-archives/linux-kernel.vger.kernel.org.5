@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921C37D0561
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567B57D0563
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346705AbjJSXZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 19:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S1346705AbjJSX2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 19:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbjJSXZs (ORCPT
+        with ESMTP id S233300AbjJSX2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 19:25:48 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED10E124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:25:46 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a5836ab12so280765276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:25:46 -0700 (PDT)
+        Thu, 19 Oct 2023 19:28:07 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390A9119
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:28:06 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5b7179ff4easo199429a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697757946; x=1698362746; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697758085; x=1698362885; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SxadM6dkbOYlTvs8yd6/RgRBOylyunzhgUiG5TSJo8s=;
-        b=tFyYNex/QqOe5/QCcaYL6FLmuy8gZ81cr1w0YxT9RHUXes4Q6tmp5TaK+vEAndWEJw
-         H84sr102FwvYKWkCTgiFFrOfEpUpw0c9EYPRJ6LZo5ElhmjCeItgogxgc3WT9wpPs0iv
-         wI35P0YHMyLL2/Ouj5DZTDXooQlQArRnc4asLFMBPjDP6XlQ4ev3YeBHn+QBpKfz/Z5g
-         OjQzTF6oj9F3DJ5vQxQzzlolqQH7TdP/bbot7BYg+/c4txSii/V4lTU+j/xIKZNfnE1O
-         bEQ3t1h5eSENcpCrJdVhFbvOw5eWVXjsO91MeaFGC4rJGVJc62oDClHJvaYFsG2jPJJg
-         JEGA==
+        bh=dOmP8c5NeeH7TXcXaN2HrwkjPkwyGFnNq0SijEHuFgE=;
+        b=RoRvil4TJtnHo2SeBus3MFbxC3BHtsZ+wpc4SjxxEb7xnKmfWGxc8ZxobJzIL312Kx
+         tQeanAhGMrIDCdQbjBhSM3BQ5BSFQng4SXZ7BVDqYdOnGreWzJRYS55J5B55Gfi6V9Nf
+         t1LCV/ZxFHi7e2qV/cyPr9re2ye4plxsCCzeOcqZv0pvepgiapzBB9ZED9DZCf8D672X
+         muOHGhFnt1QZdecK5G7eS2/lKU0Kp6aLiJESKcfVW91eCL0Prfz1pThXnzgOU7+WsG8v
+         naNbNXgh2WvUcfBjvmtf/cackSCgmGcRT9X5dG0jsHf/4Zei/wCaFxy1+4KJtJijFRLA
+         7vng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697757946; x=1698362746;
+        d=1e100.net; s=20230601; t=1697758085; x=1698362885;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SxadM6dkbOYlTvs8yd6/RgRBOylyunzhgUiG5TSJo8s=;
-        b=U5Fb49xfnu6FatoEsy/A9X4RlIfA8mzpccbmruN15OvyoJ9cjJZl5YQA605IVV+ES+
-         tqhWRTdIpjGPRuPQEiLaALqMgEJ2Xy2mJ2Kjv9Asv7annu0gsq3fdBaoXZT7we5IsJgT
-         YsPmHrrrMU5Hry3KckmsGQWIhMHgYx8BUJM1UFGLge00KXBvTpdeg4EcRO96XILJxQVN
-         Lj/y7G9JZR0aKPxuDlv8coNBqFHq+P3YhkbW5qP0jBkuDMtftz6wcTFty0SYZMYXKaoo
-         403SFeqgVUhghip//ZrH/bV7yfqJMkr4XYPemegdU+G6KthbW4UTU041VtaEdBU0D5WY
-         cznw==
-X-Gm-Message-State: AOJu0YxAGWgFrqT20c+/UuxzzgQdEc0zB1U1wn3S+CiVilMIu8R8kpqF
-        9poTzbvoSKZaPl1DNKCQNYVD3tS98Kk=
-X-Google-Smtp-Source: AGHT+IESFIEpog5mgYIynPrnCsSyXLSYX2fnHymO36oJ2DKvdCCno9OkUpLvvn9OEvYlySwvbQyyi0tSEdc=
+        bh=dOmP8c5NeeH7TXcXaN2HrwkjPkwyGFnNq0SijEHuFgE=;
+        b=NeVZFMv3T8LsIk2cmOXMC+qHofVkErSeb5pSH+FkCS9LNpARHY1n1RQsHmAD51P/rK
+         vlqFXCAjjwsI0/ck7onTNx3NG123s85+dKwIGISF0NgbMyoXfUgaEUBblOMsTPbDBdFT
+         pPtnhzBvC5dAEOa/Ak+1hjeNu5WTzqf5DhO0UmvrwvAkKIbwdmo5QJbeAii17VLZBWH/
+         CT865ckDU8bCKUtBcuUK3bzAENBuzfxkn+gLs0WxDCKNOISO3QMvW4xMCrgCepOup59O
+         FuTUxRwcT0d7/PbqIQDMB4sXEpZVp/XVOnyS0wAZuADANxPvSledpSuynNYHmgsB5C0V
+         HcCA==
+X-Gm-Message-State: AOJu0Yyzk2OKgZhc3laiuDQl43LxFq2YSSUgRf1HY3fMUttj9KRPxHgM
+        /OIqDqRiNhPm/o3NkOLrUS85L1Tr1Cs=
+X-Google-Smtp-Source: AGHT+IH8Q4XvOBKeGesjh2tb2no8ri27Cqj7zrJ6/8fyIzUPHsWTfMLWnCrsI2XRDTMoThWz7GyYdqVeBVQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
- v3-20020a056902108300b00d9ac3b84274mr10132ybu.7.1697757946202; Thu, 19 Oct
- 2023 16:25:46 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:25:44 -0700
-In-Reply-To: <85e332bf-decf-427c-a2e5-95ab872d4ea6@arm.com>
+ (user=seanjc job=sendgmr) by 2002:a63:1f59:0:b0:5b5:5e20:b802 with SMTP id
+ q25-20020a631f59000000b005b55e20b802mr2138pgm.0.1697758085515; Thu, 19 Oct
+ 2023 16:28:05 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:28:03 -0700
+In-Reply-To: <20230911114347.85882-2-cloudliang@tencent.com>
 Mime-Version: 1.0
-References: <20231018173409.1871540-1-seanjc@google.com> <85e332bf-decf-427c-a2e5-95ab872d4ea6@arm.com>
-Message-ID: <ZTG6-GalaSf2lMBq@google.com>
-Subject: Re: [PATCH] swiotlb: Rewrite comment explaining why the source is
- preserved on DMA_FROM_DEVICE
+References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-2-cloudliang@tencent.com>
+Message-ID: <ZTG7g7__AgUBbWIk@google.com>
+Subject: Re: [PATCH v4 1/9] KVM: selftests: Add vcpu_set_cpuid_property() to
+ set properties
 From:   Sean Christopherson <seanjc@google.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Yan Zhao <yan.y.zhao@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023, Robin Murphy wrote:
-> On 2023-10-18 18:34, Sean Christopherson wrote:
-> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > index 01637677736f..e071415a75dc 100644
-> > --- a/kernel/dma/swiotlb.c
-> > +++ b/kernel/dma/swiotlb.c
-> > @@ -1296,11 +1296,13 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
-> >   		pool->slots[index + i].orig_addr = slot_addr(orig_addr, i);
-> >   	tlb_addr = slot_addr(pool->start, index) + offset;
-> >   	/*
-> > -	 * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
-> > -	 * to the tlb buffer, if we knew for sure the device will
-> > -	 * overwrite the entire current content. But we don't. Thus
-> > -	 * unconditional bounce may prevent leaking swiotlb content (i.e.
-> > -	 * kernel memory) to user-space.
-> > +	 * When the device is writing memory, i.e. dir == DMA_FROM_DEVICE, copy
-> > +	 * the original buffer to the TLB buffer before initiating DMA in order
-> > +	 * to preserve the original's data if the device does a partial write,
-> > +	 * i.e. if the device doesn't overwrite the entire buffer.  Preserving
-> > +	 * the original data, even if it's garbage, is necessary to match
-> > +	 * hardware behavior (use of swiotlb is supposed to be transparent) and
+On Mon, Sep 11, 2023, Jinrong Liang wrote:
+> From: Jinrong Liang <cloudliang@tencent.com>
 > 
-> Super-nit: I think that last "and" is superfluous (i.e. unwritten memory not
-> magically corrupting itself *is* the aforementioned hardware behaviour).
+> Add vcpu_set_cpuid_property() helper function for setting properties,
+> which simplifies the process of setting CPUID properties for vCPUs.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+>  .../selftests/kvm/include/x86_64/processor.h       |  4 ++++
+>  tools/testing/selftests/kvm/lib/x86_64/processor.c | 14 ++++++++++++++
+>  2 files changed, 18 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+> index 4fd042112526..6b146e1c6736 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+> @@ -973,6 +973,10 @@ static inline void vcpu_set_cpuid(struct kvm_vcpu *vcpu)
+>  
+>  void vcpu_set_cpuid_maxphyaddr(struct kvm_vcpu *vcpu, uint8_t maxphyaddr);
+>  
+> +void vcpu_set_cpuid_property(struct kvm_vcpu *vcpu,
+> +			     struct kvm_x86_cpu_property property,
+> +			     uint32_t value);
 
-Ah yeah, agreed.  How about this?
-
-	/*
-	 * When the device is writing memory, i.e. dir == DMA_FROM_DEVICE, copy
-	 * the original buffer to the TLB buffer before initiating DMA in order
-	 * to preserve the original's data if the device does a partial write,
-	 * i.e. if the device doesn't overwrite the entire buffer.  Preserving
-	 * the original data, even if it's garbage, is necessary to match
-	 * hardware behavior.  Use of swiotlb is supposed to be transparent,
-	 * i.e. swiotlb must not corrupt memory by clobbering unwritten bytes.
-	 */
+The vcpu_set_cpuid_maxphyaddr() helper right above this can and should be converted
+as part of this patch.  X86_PROPERTY_MAX_PHY_ADDR is already defined, i.e. it's a
+trivial conversion, and that way there's an immediate user of the the new helper.
