@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FD07D010A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832AF7D0124
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346329AbjJSR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        id S1346359AbjJSSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbjJSR5Z (ORCPT
+        with ESMTP id S1346353AbjJSSFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:57:25 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAD9136
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:57:23 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so14428116a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697738242; x=1698343042; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rD0auMna/G8UtkxOnP1VpkXXubqCDzIy0ubtyJSg/vM=;
-        b=H8B575Ba75TdEA7Ll5fW87YgPLRBGkc1ikCqxYIUeKZqmQvLd/Y5lvilg/hBAlVvSk
-         cR0WnkjqXULKDYbnRQdx8IBpKE9Ik9bBp36NwWWbgN4mOP2ek+UIj99I6eMXPvDrAdYF
-         isuxNCmpZGijRokW4mFYnIyr0vQOyyhRAh0kbG6KKdQvoMkBadLns564Lr8OeHI58SBC
-         YV7LAQUTRzc3eV9+lH6z92K6+kLFvHIHYqJR+xRBTHjyVR7YcVLCYr67/slH+Ofz/pZW
-         EMLzYDAl6MFRZ9xxD69h49PTROI56AJ7G2t1ayocTfGRrfetMsoj2nU+VorlsFLTRGsO
-         08tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697738242; x=1698343042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rD0auMna/G8UtkxOnP1VpkXXubqCDzIy0ubtyJSg/vM=;
-        b=vr+R1RC1fj6HhB+/eBcXa03cCUGSFmohIGExR7IyJb5mF/Z5Qlul3a0To/I1/uV3Z2
-         dmexWcpopy8hHPiECx/GMkKVNshcnJN20x7VRbhi9094uDjVYLKXaGPuLhoMs7Ggjm8L
-         hn1J2S3hbQvLX6Rlk0bYVMJfcAfny+TFOybdVZSCjIm478EUj0snbTHAGLb+YzyGufk9
-         8wo42OXtkxW4SGzJ3Kni3RqJQIw4Keg81SD6RmfAmo30iZfHGc+KxEN2cL6z0J8HBnCt
-         pqyfi0pXuaZrB2IQnW5c/RVQPfz6sn2EhR1Ky5LF0wfpo+E2jHo1IC/PF5zO5KU+T2kX
-         6zww==
-X-Gm-Message-State: AOJu0YyciCOaRZG+YriV24E5//2g8/0zFQMIRFB+hO4NpO56No3t/DaI
-        Z80ByVoXrzGL53gyG0t1542ICTw3KGKR9N96MDE=
-X-Google-Smtp-Source: AGHT+IExQxo8T6PTUcrbYgciOHSYdKfFSAI7/IPwOx3zjfdkQm5nlBIQUtYa+IETYSXcTvrtKQcwD7oLrDniRgkRWpM=
-X-Received: by 2002:a17:907:930a:b0:9c5:64b5:45cc with SMTP id
- bu10-20020a170907930a00b009c564b545ccmr2183910ejc.14.1697738241303; Thu, 19
- Oct 2023 10:57:21 -0700 (PDT)
+        Thu, 19 Oct 2023 14:05:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C087D11D;
+        Thu, 19 Oct 2023 11:05:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5330EC433CA;
+        Thu, 19 Oct 2023 18:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697738739;
+        bh=13yt5cryvUi1YLdWtQi3541qTBZX6Xxnaa5Zjb/IhK0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FBweXG01tz7i3yGhEu0rZq9X3fHqysIn62AciqqqNTXgJLPWeTA0KqGLV7NAv4dAG
+         6phlNA4RBO9tcom4ns5IXNNy+JNzgUjqyjQYx/NgwnEi1oklxKi6sLCG8gtr5+lNCH
+         jXyziYWk4el32e877PCAHSFXEH7eoixVQxEePW9pO2BnOz/WBNtXiJkW3xmhOLOCc5
+         1OybPsPseRw8gqbnbzyS04USEyT/hwk7WQccCevEbkgj2IEWmEGxllhO2wBxzzxTtb
+         DS9weU2uiT5IFoy4AB7uv3+RAdvd/5yn6fn620OD5zc1EWyOhz0xcWggEWZctJAbw8
+         ncKbR4aDyRlOg==
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40842752c6eso11782365e9.1;
+        Thu, 19 Oct 2023 11:05:39 -0700 (PDT)
+X-Gm-Message-State: AOJu0YybPUd5hgq1N23qGQNYpBVI+Q5Qk1EkHPHD6uxc7sLuKlhZtNYE
+        ekl85pZxs6co1Hua3wv3eiLUw17qRJm/zZPTTg==
+X-Google-Smtp-Source: AGHT+IEjbNUU8g3b3xf9dnd0eY+00UyD/xRWPuvjqCt6uPBJrdf2zudScRRu1FwHOHQso0cwFJ/4Jb+Lufriea1TdN4=
+X-Received: by 2002:a19:ad05:0:b0:500:d4d9:25b5 with SMTP id
+ t5-20020a19ad05000000b00500d4d925b5mr2093637lfc.56.1697738717670; Thu, 19 Oct
+ 2023 11:05:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAAMvbhG40h6pqSf91BurDHQqeoKfP30bwnpvSDRHBN4Hoygqew@mail.gmail.com>
- <ZTCLLinnaqIILXsJ@debian.me> <cf6950bc-32c8-459c-a4b1-ca0a291fc2f8@infradead.org>
-In-Reply-To: <cf6950bc-32c8-459c-a4b1-ca0a291fc2f8@infradead.org>
-From:   James Dutton <james.dutton@gmail.com>
-Date:   Thu, 19 Oct 2023 19:13:38 +0100
-Message-ID: <CAAMvbhHvyiWKb9Pn9=JUuE_efWK2EMcy2SBP6p_BvLGCjwW_VA@mail.gmail.com>
-Subject: Re: Is strncpy really less secure than strscpy ?
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Calvince Otieno <calvncce@gmail.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>
+References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org> <20231019131806.lbzydoplodybvb62@skbuf>
+In-Reply-To: <20231019131806.lbzydoplodybvb62@skbuf>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 19 Oct 2023 13:05:04 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJmUe9XtHEwU+GVMZc8RrKy5OV5RM6pfE2KqwMhRekMOw@mail.gmail.com>
+Message-ID: <CAL_JsqJmUe9XtHEwU+GVMZc8RrKy5OV5RM6pfE2KqwMhRekMOw@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/8] dt-bindings: net: Add missing
+ (unevaluated|additional)Properties on child node schemas
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        =?UTF-8?B?bsOnIMOcTkFM?= <arinc.unal@arinc9.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        John Crispin <john@phrozen.org>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,22 +102,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 02:49, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+On Thu, Oct 19, 2023 at 8:18=E2=80=AFAM Vladimir Oltean <olteanv@gmail.com>=
+ wrote:
 >
-[snip]
+> Hi Rob,
 >
-> What if printf("a is  %.*s\n", a);?
-Um, it fails to compile.
->
+> On Mon, Oct 16, 2023 at 04:44:20PM -0500, Rob Herring wrote:
+> > Just as unevaluatedProperties or additionalProperties are required at
+> > the top level of schemas, they should (and will) also be required for
+> > child node schemas. That ensures only documented properties are
+> > present for any node.
 > >
+> > Add unevaluatedProperties or additionalProperties as appropriate.
 > >
-> > So, why isn't the printk format specifier "%.*s" used more instead of
-> > "%s" in the kernel?
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5p=
+sw.yaml b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> > index 833d2f68daa1..ea285ef3e64f 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> > +++ b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> > @@ -61,17 +61,11 @@ properties:
+> >
+> >    ethernet-ports:
+> >      type: object
+> > -    properties:
+> > -      '#address-cells':
+> > -        const: 1
+> > -      '#size-cells':
+> > -        const: 0
+> > -
+> > +    additionalProperties: true
+> >      patternProperties:
+> >        "^(ethernet-)?port@[0-4]$":
+> >          type: object
+> > -        description: Ethernet switch ports
+> > -
+> > +        additionalProperties: true
+> >          properties:
+> >            pcs-handle:
+> >              maxItems: 1
 >
-> Since basically strings are pointers.
-Um, I was trying to draw people's attention to the fact that "%.*s" is
-much safer than "%s".
-"%s" is like strcpy() but for print statements.
-"%.*s" is like strncpy() but for print statements.
+> For my edification, this patch removes #address-cells and #size-cells
+> at the same time, because "additionalProperties: true" (which was also
+> implied before) doesn't care if they aren't defined in this sub-schema,
+> and they are defined through $ref: dsa.yaml#/$defs/ethernet-ports,
+> right?
 
-Why wasn't "%.*s" also included in the string discussions previously?
+Yes, they are ultimately checked via ethernet-switch.yaml which
+dsa.yaml references.
+
+Rob
