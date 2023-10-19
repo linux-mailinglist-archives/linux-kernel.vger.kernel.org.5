@@ -2,518 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3067D043F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F31A7D0444
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346617AbjJSVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        id S1346606AbjJSV5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbjJSVzj (ORCPT
+        with ESMTP id S235540AbjJSV5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:55:39 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAF8116
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:55:34 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-565ece76be4so129977a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:55:34 -0700 (PDT)
+        Thu, 19 Oct 2023 17:57:18 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C9E116
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:57:16 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507a5edc2ebso407e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697752533; x=1698357333; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IyZf18g/hYMw/jx0X9JN9Tk6unDLwOWA43LEOcC1puk=;
-        b=Jj+TqqpnTZuDzPGI1WP9bh2fYY4JwqEWF+ByYYMSathayPkWqjoSYzNxMcymyv5K4q
-         cXAdUod3Db0hANJ/F8HzImtRLq34UJEoWxVciDrCC77s5sLuzj0XwD3NRIVCxvUuGQ5Q
-         AYj89yigrLul3tyot/wByavcleDDFZOkvno4LMU9sU/VkCRq/GAUOGmMACGlheF1ZfEq
-         ycPwT7Uj4y65VDrCNlM0ukxdaYJ0p7S1ko2qAwNDF1Di1u0+nl+13PEJcIEC1FGvnWja
-         kkIV4C/mWpIDQSi6NZbkgbx3LhJu8QARsIl+QL8hU38tYlIBAILT6R/IdvpYb/HOgloy
-         4OaQ==
+        d=google.com; s=20230601; t=1697752634; x=1698357434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XajYlYAO8Kk7inISBTtrUw4bdn+rl2BtGkmrWxdlT40=;
+        b=ArzAO0WTS7lHFUI+IYunE+dQkaAWbfx4sCzlH248DNc8OZeXw4EEG1Goa5bgrUo8uY
+         qivCEttsgruQTYchqg31D+XjBbN2WlQJD96vxBHM75oH8HQwIS02yIEf90IpOIQu/NHU
+         5cMBzv6C3YjRQz/SJ8GtviFLigx5H3xe8mJsHR/G8c7wje+i0iYLVGcNW9+IvMekODDA
+         O1peJE29o3XGMKDqz9wfETt05RHF1MFnE6iyfJgdkrDeprWgm6NE3dVMU4qVHjuxFgbm
+         ne7XnFGFMcuWCXmvL5LGiGbjUv9SPfSDtg/WD9IfYMq9LTkAnWUVg0SXPXndOuryXNLO
+         oarQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697752533; x=1698357333;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IyZf18g/hYMw/jx0X9JN9Tk6unDLwOWA43LEOcC1puk=;
-        b=aU6IaPqEMN+cHf92A/8j+dEkaW+6edk7SXrWXa9RuiyAYv8a9+mx82ojtL8543FIoG
-         gXpbCmrPupcdxg+2SInVe0R9mazaz9QxaS1/kqWIFo6IFpWuqHYZvOV5eylTy0w4MiIL
-         DhPdbZhGI5m71L2fvc7mlWekfCmtUg4OefCmnCQVtCJvq66qHi9UYOrB7nOw/faaib4/
-         qW5x2zn2eNd+L9SxpcH+7h21J3KGuuLE3Wmr5hLzjUttNWigug+O/bhDMRvDIRDFX6Kb
-         Q0wwMpuBVzeTxsriR6S2er96KHOEbGL4l3CgIOLe+/UCF4eDZNOpUIwzWXngtNq9NuMP
-         SDBg==
-X-Gm-Message-State: AOJu0YwJUSiZcoKahcBTGlNSf4xnMn4w7xeDY/n5YXgz+5sjsCiPJAwc
-        OquuMyPsZvg3Qw79RFf9T6uJu9C/JDg=
-X-Google-Smtp-Source: AGHT+IFhM6iY9A2x/so/AKEdbzE7+tV/XbrroYuetQU4DJej5VAahm9NkFuritc/lWDx7bQBQWQvrEv4fNY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:7fc6:b0:1c9:e830:15fa with SMTP id
- t6-20020a1709027fc600b001c9e83015famr3079plb.0.1697752533448; Thu, 19 Oct
- 2023 14:55:33 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 21:55:32 +0000
-In-Reply-To: <20231019201138.2076865-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20231019201138.2076865-1-seanjc@google.com>
-Message-ID: <ZTGl1FgIpYbybqrw@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Stop zapping invalidated TDP MMU roots asynchronously
-From:   Sean Christopherson <seanjc@google.com>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pattara Teerapong <pteerapong@google.com>,
-        David Stevens <stevensd@google.com>,
-        Yiwei Zhang <zzyiwei@google.com>,
-        Paul Hsia <paulhsia@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697752634; x=1698357434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XajYlYAO8Kk7inISBTtrUw4bdn+rl2BtGkmrWxdlT40=;
+        b=v8xkTfM7ub5wZCZRtsJkkaqBnU7PtwvooCD1/EY3cqP9FoS69sQHE4DoEDHmX3LnDv
+         v3wc1tOz7ocX7m+yJwB8infbB/V+QzoqUWcp96gQG0q7GBFc8AZMcSafZwuYICY60PPc
+         qYB6zpOFKK9hYgkFHHY4uRgYTkRfEd9mbAibJM3w1SNMiZgmEWeMQV0pvAcA9WfGEh6D
+         MOo5LH0kgo+8X6eze/ggClzGEayNrgo3LUJKgxf4ZC6xwmMkGn1z0q1uWGPJNfcwuVle
+         YAyax4IePuTfp7Ut9xFNWSj3y2UBbehKf91OVF/uTsWUv4EZG7JvFs69QhEkK9E6aU9P
+         nbqg==
+X-Gm-Message-State: AOJu0Yy8+gkTc82ZED8kDvpZm9LdT0OFxQkhvaLsgfAn51EDpFP+DrZ+
+        eZLz8Yz6/VjxJc4MtZuGs27PZXxuZTH20EuHvjeDBQ==
+X-Google-Smtp-Source: AGHT+IE2v4Wr4RNxELB1a8mWDC9skPvwIt1rxIqCVgLu5Uiyjg78Fr/2hugh2CoSyopYsjyCQHrqzyBSgJpifeeul5A=
+X-Received: by 2002:a05:6512:754:b0:502:a55e:fec0 with SMTP id
+ c20-20020a056512075400b00502a55efec0mr19637lfs.6.1697752634350; Thu, 19 Oct
+ 2023 14:57:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230810184853.2860737-1-irogers@google.com> <20230810184853.2860737-2-irogers@google.com>
+ <ZNZJCWi9MT/HZdQ/@kernel.org> <ZNZWsAXg2px1sm2h@kernel.org>
+ <ZTGHRAlQtF7Fq8vn@surya> <ZTGa0Ukt7QyxWcVy@kernel.org>
+In-Reply-To: <ZTGa0Ukt7QyxWcVy@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 19 Oct 2023 14:57:00 -0700
+Message-ID: <CAP-5=fU9DHYDAcGuX=7SHy2J09bqcYpP+_8NXKbnVDtSjrw01g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] perf parse-events: Remove BPF event support
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Manu Bretelle <chantr4@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gah, sorry Greg, forgot to say that this is for 6.1-stable.
+On Thu, Oct 19, 2023 at 2:08=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, Oct 19, 2023 at 12:45:08PM -0700, Manu Bretelle escreveu:
+> > cc @quentin
+> >
+> > On Fri, Aug 11, 2023 at 12:41:36PM -0300, Arnaldo Carvalho de Melo wrot=
+e:
+> > > Em Fri, Aug 11, 2023 at 11:43:22AM -0300, Arnaldo Carvalho de Melo es=
+creveu:
+> > > > Right now it is not applying due to some clash with other changes a=
+nd
+> > > > when I tried to apply it manually there were some formatting issues=
+:
+> > > >
+> > > > =E2=AC=A2[acme@toolbox perf-tools-next]$ head ~/wb/1.patch
+> > > > From SRS0=3DEALy=3DD3=3Dflex--irogers.bounces.google.com=3D3IDHVZAc=
+KBAUnwtljwxlttlqj.htrfhrjpjwsjq.twl@kernel.org Thu Aug 10 17:53:46 2023
+> > > > Delivered-To: arnaldo.melo@gmail.com
+> > > > Received: from imap.gmail.com [64.233.186.109]
+> > > >   by quaco with IMAP (fetchmail-6.4.37)
+> > > >   for <acme@localhost> (single-drop); Thu, 10 Aug 2023 17:53:46 -03=
+00 (-03)
+> > > > Received: by 2002:a0c:ab03:0:b0:63d:780e:9480 with SMTP id h3csp908=
+198qvb;
+> > > >  Thu, 10 Aug 2023 11:49:52 -0700 (PDT)
+> > > > X-Google-Smtp-Source: AGHT+IH9N/knUCyQ0tQ2Q0XBH0gqf8A8DB8/37YHWAJDK=
+Bmz7AGSV9CvCKYDuE3EwxriZFBwtZMs
+> > > > X-Received: by 2002:a4a:6b4f:0:b0:56c:b2ab:9820 with SMTP id
+> > > >  h15-20020a4a6b4f000000b0056cb2ab9820mr2695332oof.8.1691693392493; =
+Thu, 10 Aug
+> > > > =E2=AC=A2[acme@toolbox perf-tools-next]$ patch -p1 < ~/wb/1.patch
+> > > > patching file tools/perf/Documentation/perf-config.txt
+> > > > patch: **** malformed patch at line 234: ith
+> > > >
+> > > > =E2=AC=A2[acme@toolbox perf-tools-next]$
+> > > >
+> > > > I'm trying to apply it manually.
+> > >
+> > > I have this extracted from this patch as the first patch in the serie=
+s:
+> > >
+> > > >From adc61b5774a9de62f34d593f164ca02daa6fb44c Mon Sep 17 00:00:00 20=
+01
+> > > From: Ian Rogers <irogers@google.com>
+> > > Date: Fri, 11 Aug 2023 12:19:48 -0300
+> > > Subject: [PATCH 1/1] perf bpf: Remove support for embedding clang for
+> > >  compiling BPF events (-e foo.c)
+> > >
+> > > This never was in the default build for perf, is difficult to maintai=
+n
+> > > as it uses clang/llvm internals so ditch it, keeping, for now, the
+> > > external compilation of .c BPF into .o bytecode and its subsequent
+> > > loading, that is also going to be removed, do it separately to help
+> > > bisection and to properly document what is being removed and why.
+> > >
+> > > Committer notes:
+> > >
+> > > Extracted from a larger patch and removed some leftovers, namely
+> > > deleting these now unused feature tests:
+> > >
+> > >     tools/build/feature/test-clang.cpp
+> > >     tools/build/feature/test-cxx.cpp
+> > >     tools/build/feature/test-llvm-version.cpp
+> > >     tools/build/feature/test-llvm.cpp
+> > >
+> >
+> > This seem to have broken `llvm` feature detection for `bpftool`.
+> >
+> > The feature detections are still available in `tools/build/Makefile.fea=
+ture` [0]
+> > but the .cpp files are gone.
+> >
+> > `bpftool` still rely on the `llvm` feature:
+> >
+> >     $ git --no-pager grep 'feature-llvm'
+> >     tools/bpf/bpftool/Makefile:ifeq ($(feature-llvm),1)
+> >
+> > The result of testing llvm feature is:
+> >
+> >     $ cat tools/build/feature/test-llvm.make.output
+> >     cc1plus: fatal error: test-llvm.cpp: No such file or directory
+> >     compilation terminated.
+> >
+> > With current head:
+> >
+> >     make -j $((4*$(nproc))) -C tools/bpf/bpftool && ./tools/bpf/bpftool=
+/bpftool --version
+> >     ...
+> >     Auto-detecting system features:
+> >     ...                         clang-bpf-co-re: [ on  ]
+> >     ...                                    llvm: [ OFF ]
+> >     ...                                  libcap: [ on  ]
+> >     ...                                  libbfd: [ on  ]
+> >     ...
+> >     ...
+> >     ...
+> >     bpftool v7.3.0
+> >     using libbpf v1.3
+> >     features: libbfd, skeletons
+> >
+> > After applying
+> >
+> >     git show 56b11a2126bf2f422831ecf6112b87a4485b221b  tools/build/feat=
+ure | \
+> >         patch -p1 -R
+>
+>
+> Ouch, so probably we need just to reintroduce that one
+> tools/build/feature/test-llvm.cpp file.
+>
+> Building perf these days ends up using bpftool, and the end result as
+> noticed with me testing perf, perf trace with bpf, etc didn't change, so
+> I didn't notice :-\
+>
+> And:
+>
+> ifeq ($(feature-llvm),1)
+>   # If LLVM is available, use it for JIT disassembly
+>   CFLAGS  +=3D -DHAVE_LLVM_SUPPORT
+>   LLVM_CONFIG_LIB_COMPONENTS :=3D mcdisassembler all-targets
+>   CFLAGS  +=3D $(shell $(LLVM_CONFIG) --cflags --libs $(LLVM_CONFIG_LIB_C=
+OMPONENTS))
+>   LIBS    +=3D $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS=
+))
+>   ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
+>     LIBS +=3D $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMP=
+ONENTS))
+>     LIBS +=3D -lstdc++
+>   endif
+>   LDFLAGS +=3D $(shell $(LLVM_CONFIG) --ldflags)
+> else
+>   # Fall back on libbfd
+>   ifeq ($(feature-libbfd),1)
+>     LIBS +=3D -lbfd -ldl -lopcodes
+>   else ifeq ($(feature-libbfd-liberty),1)
+>     LIBS +=3D -lbfd -ldl -lopcodes -liberty
+>   else ifeq ($(feature-libbfd-liberty-z),1)
+>     LIBS +=3D -lbfd -ldl -lopcodes -liberty -lz
+>   endif
+>
+>   # If one of the above feature combinations is set, we support libbfd
+>   ifneq ($(filter -lbfd,$(LIBS)),)
+>     CFLAGS +=3D -DHAVE_LIBBFD_SUPPORT
+>
+>     # Libbfd interface changed over time, figure out what we need
+>     ifeq ($(feature-disassembler-four-args), 1)
+>       CFLAGS +=3D -DDISASM_FOUR_ARGS_SIGNATURE
+>     endif
+>     ifeq ($(feature-disassembler-init-styled), 1)
+>       CFLAGS +=3D -DDISASM_INIT_STYLED
+>     endif
+>   endif
+> endif
+>
+> And there is a fallback to using binutils, so most people ended up not
+> noticing.
+>
+> I wonder how to improve the current situation to detect these kinds of
+> problems in the future, i.e. how to notice that some file needed by some
+> Makefile, etc got removed or that some feature test fails because some
+> change in the test .c files makes them fail and thus activates fallbacks
+> like the one above :-\
+>
+>
+> So if I just get this back:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llv=
+m.cpp
+> // SPDX-License-Identifier: GPL-2.0
+> #include "llvm/Support/ManagedStatic.h"
+> #include "llvm/Support/raw_ostream.h"
+> #define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR <=
+< 8) + LLVM_VERSION_PATCH)
+>
+> #if NUM_VERSION < 0x030900
+> # error "LLVM version too low"
+> #endif
+> int main()
+> {
+>         llvm::errs() << "Hello World!\n";
+>         llvm::llvm_shutdown();
+>         return 0;
+> }
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+> And install the llvm-devel package then it back working:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ make -C tools/bpf/bpftool
+> make: Entering directory '/home/acme/git/perf-tools-next/tools/bpf/bpftoo=
+l'
+>
+> Auto-detecting system features:
+> ...                         clang-bpf-co-re: [ on  ]
+> ...                                    llvm: [ on  ]
+> ...                                  libcap: [ on  ]
+> ...                                  libbfd: [ on  ]
+> <SNIP>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llv=
+m.make.output
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-=
+llvm.
+> test-llvm.bin          test-llvm.cpp          test-llvm.d            test=
+-llvm.make.output
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-=
+llvm.bin
+> -rwxr-xr-x. 1 acme acme 17712 Oct 19 18:04 tools/build/feature/test-llvm.=
+bin
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ ldd tools/build/feature/test-llv=
+m.bin
+>         linux-vdso.so.1 (0x00007ffcaf5d9000)
+>         libLLVM-16.so =3D> /lib64/libLLVM-16.so (0x00007fc4faefa000)
+>         libstdc++.so.6 =3D> /lib64/libstdc++.so.6 (0x00007fc4faca6000)
+>         libm.so.6 =3D> /lib64/libm.so.6 (0x00007fc4fabc5000)
+>         libgcc_s.so.1 =3D> /lib64/libgcc_s.so.1 (0x00007fc4faba1000)
+>         libc.so.6 =3D> /lib64/libc.so.6 (0x00007fc4fa9c3000)
+>         libffi.so.8 =3D> /lib64/libffi.so.8 (0x00007fc4fa9b7000)
+>         libedit.so.0 =3D> /lib64/libedit.so.0 (0x00007fc4fa978000)
+>         libz.so.1 =3D> /lib64/libz.so.1 (0x00007fc4fa95e000)
+>         libtinfo.so.6 =3D> /lib64/libtinfo.so.6 (0x00007fc4fa92b000)
+>         /lib64/ld-linux-x86-64.so.2 (0x00007fc502404000)
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ sudo dnf install llvm-devel
+>
+> I'll get this merged in my perf-tools-fixes-for-v6.6 that I'll submit
+> tomorrow to Linus, thanks for reporting!
+>
+> I'll add your:
+>
+> Reported-by: Manu Bretelle <chantr4@gmail.com>
+>
+> And:
+>
+> Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang fo=
+r compiling BPF events (-e foo.c)")
+>
+> Ok?
 
-On Thu, Oct 19, 2023, Sean Christopherson wrote:
-> [ Upstream commit 0df9dab891ff0d9b646d82e4fe038229e4c02451 ]
-> 
-> Stop zapping invalidate TDP MMU roots via work queue now that KVM
-> preserves TDP MMU roots until they are explicitly invalidated.  Zapping
-> roots asynchronously was effectively a workaround to avoid stalling a vCPU
-> for an extended during if a vCPU unloaded a root, which at the time
-> happened whenever the guest toggled CR0.WP (a frequent operation for some
-> guest kernels).
-> 
-> While a clever hack, zapping roots via an unbound worker had subtle,
-> unintended consequences on host scheduling, especially when zapping
-> multiple roots, e.g. as part of a memslot.  Because the work of zapping a
-> root is no longer bound to the task that initiated the zap, things like
-> the CPU affinity and priority of the original task get lost.  Losing the
-> affinity and priority can be especially problematic if unbound workqueues
-> aren't affined to a small number of CPUs, as zapping multiple roots can
-> cause KVM to heavily utilize the majority of CPUs in the system, *beyond*
-> the CPUs KVM is already using to run vCPUs.
-> 
-> When deleting a memslot via KVM_SET_USER_MEMORY_REGION, the async root
-> zap can result in KVM occupying all logical CPUs for ~8ms, and result in
-> high priority tasks not being scheduled in in a timely manner.  In v5.15,
-> which doesn't preserve unloaded roots, the issues were even more noticeable
-> as KVM would zap roots more frequently and could occupy all CPUs for 50ms+.
-> 
-> Consuming all CPUs for an extended duration can lead to significant jitter
-> throughout the system, e.g. on ChromeOS with virtio-gpu, deleting memslots
-> is a semi-frequent operation as memslots are deleted and recreated with
-> different host virtual addresses to react to host GPU drivers allocating
-> and freeing GPU blobs.  On ChromeOS, the jitter manifests as audio blips
-> during games due to the audio server's tasks not getting scheduled in
-> promptly, despite the tasks having a high realtime priority.
-> 
-> Deleting memslots isn't exactly a fast path and should be avoided when
-> possible, and ChromeOS is working towards utilizing MAP_FIXED to avoid the
-> memslot shenanigans, but KVM is squarely in the wrong.  Not to mention
-> that removing the async zapping eliminates a non-trivial amount of
-> complexity.
-> 
-> Note, one of the subtle behaviors hidden behind the async zapping is that
-> KVM would zap invalidated roots only once (ignoring partial zaps from
-> things like mmu_notifier events).  Preserve this behavior by adding a flag
-> to identify roots that are scheduled to be zapped versus roots that have
-> already been zapped but not yet freed.
-> 
-> Add a comment calling out why kvm_tdp_mmu_invalidate_all_roots() can
-> encounter invalid roots, as it's not at all obvious why zapping
-> invalidated roots shouldn't simply zap all invalid roots.
-> 
-> Reported-by: Pattara Teerapong <pteerapong@google.com>
-> Cc: David Stevens <stevensd@google.com>
-> Cc: Yiwei Zhang<zzyiwei@google.com>
-> Cc: Paul Hsia <paulhsia@google.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Message-Id: <20230916003916.2545000-4-seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
-> 
-> Folks on Cc, it would be nice to get extra testing and/or reviews for this one
-> before it's picked up for 6.1, there were quite a few conflicts to resolve.
-> All of the conflicts were pretty straightforward, but I'd still appreciate an
-> extra set of eyeballs or three.  Thanks! 
-> 
->  arch/x86/include/asm/kvm_host.h |   3 +-
->  arch/x86/kvm/mmu/mmu.c          |   9 +--
->  arch/x86/kvm/mmu/mmu_internal.h |  15 ++--
->  arch/x86/kvm/mmu/tdp_mmu.c      | 135 +++++++++++++-------------------
->  arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
->  arch/x86/kvm/x86.c              |   5 +-
->  6 files changed, 69 insertions(+), 102 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 08a84f801bfe..c1dcaa3d2d6e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1324,7 +1324,6 @@ struct kvm_arch {
->  	 * the thread holds the MMU lock in write mode.
->  	 */
->  	spinlock_t tdp_mmu_pages_lock;
-> -	struct workqueue_struct *tdp_mmu_zap_wq;
->  #endif /* CONFIG_X86_64 */
->  
->  	/*
-> @@ -1727,7 +1726,7 @@ void kvm_mmu_vendor_module_exit(void);
->  
->  void kvm_mmu_destroy(struct kvm_vcpu *vcpu);
->  int kvm_mmu_create(struct kvm_vcpu *vcpu);
-> -int kvm_mmu_init_vm(struct kvm *kvm);
-> +void kvm_mmu_init_vm(struct kvm *kvm);
->  void kvm_mmu_uninit_vm(struct kvm *kvm);
->  
->  void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2a6fec4e2d19..d30325e297a0 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5994,19 +5994,16 @@ static void kvm_mmu_invalidate_zap_pages_in_memslot(struct kvm *kvm,
->  	kvm_mmu_zap_all_fast(kvm);
->  }
->  
-> -int kvm_mmu_init_vm(struct kvm *kvm)
-> +void kvm_mmu_init_vm(struct kvm *kvm)
->  {
->  	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
-> -	int r;
->  
->  	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
->  	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
->  	INIT_LIST_HEAD(&kvm->arch.lpage_disallowed_mmu_pages);
->  	spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
->  
-> -	r = kvm_mmu_init_tdp_mmu(kvm);
-> -	if (r < 0)
-> -		return r;
-> +	kvm_mmu_init_tdp_mmu(kvm);
->  
->  	node->track_write = kvm_mmu_pte_write;
->  	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
-> @@ -6019,8 +6016,6 @@ int kvm_mmu_init_vm(struct kvm *kvm)
->  
->  	kvm->arch.split_desc_cache.kmem_cache = pte_list_desc_cache;
->  	kvm->arch.split_desc_cache.gfp_zero = __GFP_ZERO;
-> -
-> -	return 0;
->  }
->  
->  static void mmu_free_vm_memory_caches(struct kvm *kvm)
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 582def531d4d..0a9d5f2925c3 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -56,7 +56,12 @@ struct kvm_mmu_page {
->  
->  	bool tdp_mmu_page;
->  	bool unsync;
-> -	u8 mmu_valid_gen;
-> +	union {
-> +		u8 mmu_valid_gen;
-> +
-> +		/* Only accessed under slots_lock.  */
-> +		bool tdp_mmu_scheduled_root_to_zap;
-> +	};
->  	bool lpage_disallowed; /* Can't be replaced by an equiv large page */
->  
->  	/*
-> @@ -92,13 +97,7 @@ struct kvm_mmu_page {
->  		struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
->  		tdp_ptep_t ptep;
->  	};
-> -	union {
-> -		DECLARE_BITMAP(unsync_child_bitmap, 512);
-> -		struct {
-> -			struct work_struct tdp_mmu_async_work;
-> -			void *tdp_mmu_async_data;
-> -		};
-> -	};
-> +	DECLARE_BITMAP(unsync_child_bitmap, 512);
->  
->  	struct list_head lpage_disallowed_link;
->  #ifdef CONFIG_X86_32
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 9b9fc4e834d0..c3b0f973375b 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -14,24 +14,16 @@ static bool __read_mostly tdp_mmu_enabled = true;
->  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
->  
->  /* Initializes the TDP MMU for the VM, if enabled. */
-> -int kvm_mmu_init_tdp_mmu(struct kvm *kvm)
-> +void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
->  {
-> -	struct workqueue_struct *wq;
-> -
->  	if (!tdp_enabled || !READ_ONCE(tdp_mmu_enabled))
-> -		return 0;
-> -
-> -	wq = alloc_workqueue("kvm", WQ_UNBOUND|WQ_MEM_RECLAIM|WQ_CPU_INTENSIVE, 0);
-> -	if (!wq)
-> -		return -ENOMEM;
-> +		return;
->  
->  	/* This should not be changed for the lifetime of the VM. */
->  	kvm->arch.tdp_mmu_enabled = true;
->  	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
->  	spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
->  	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
-> -	kvm->arch.tdp_mmu_zap_wq = wq;
-> -	return 1;
->  }
->  
->  /* Arbitrarily returns true so that this may be used in if statements. */
-> @@ -57,20 +49,15 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
->  	 * ultimately frees all roots.
->  	 */
->  	kvm_tdp_mmu_invalidate_all_roots(kvm);
-> -
-> -	/*
-> -	 * Destroying a workqueue also first flushes the workqueue, i.e. no
-> -	 * need to invoke kvm_tdp_mmu_zap_invalidated_roots().
-> -	 */
-> -	destroy_workqueue(kvm->arch.tdp_mmu_zap_wq);
-> +	kvm_tdp_mmu_zap_invalidated_roots(kvm);
->  
->  	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_pages));
->  	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
->  
->  	/*
->  	 * Ensure that all the outstanding RCU callbacks to free shadow pages
-> -	 * can run before the VM is torn down.  Work items on tdp_mmu_zap_wq
-> -	 * can call kvm_tdp_mmu_put_root and create new callbacks.
-> +	 * can run before the VM is torn down.  Putting the last reference to
-> +	 * zapped roots will create new callbacks.
->  	 */
->  	rcu_barrier();
->  }
-> @@ -97,46 +84,6 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
->  	tdp_mmu_free_sp(sp);
->  }
->  
-> -static void tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
-> -			     bool shared);
-> -
-> -static void tdp_mmu_zap_root_work(struct work_struct *work)
-> -{
-> -	struct kvm_mmu_page *root = container_of(work, struct kvm_mmu_page,
-> -						 tdp_mmu_async_work);
-> -	struct kvm *kvm = root->tdp_mmu_async_data;
-> -
-> -	read_lock(&kvm->mmu_lock);
-> -
-> -	/*
-> -	 * A TLB flush is not necessary as KVM performs a local TLB flush when
-> -	 * allocating a new root (see kvm_mmu_load()), and when migrating vCPU
-> -	 * to a different pCPU.  Note, the local TLB flush on reuse also
-> -	 * invalidates any paging-structure-cache entries, i.e. TLB entries for
-> -	 * intermediate paging structures, that may be zapped, as such entries
-> -	 * are associated with the ASID on both VMX and SVM.
-> -	 */
-> -	tdp_mmu_zap_root(kvm, root, true);
-> -
-> -	/*
-> -	 * Drop the refcount using kvm_tdp_mmu_put_root() to test its logic for
-> -	 * avoiding an infinite loop.  By design, the root is reachable while
-> -	 * it's being asynchronously zapped, thus a different task can put its
-> -	 * last reference, i.e. flowing through kvm_tdp_mmu_put_root() for an
-> -	 * asynchronously zapped root is unavoidable.
-> -	 */
-> -	kvm_tdp_mmu_put_root(kvm, root, true);
-> -
-> -	read_unlock(&kvm->mmu_lock);
-> -}
-> -
-> -static void tdp_mmu_schedule_zap_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> -{
-> -	root->tdp_mmu_async_data = kvm;
-> -	INIT_WORK(&root->tdp_mmu_async_work, tdp_mmu_zap_root_work);
-> -	queue_work(kvm->arch.tdp_mmu_zap_wq, &root->tdp_mmu_async_work);
-> -}
-> -
->  void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->  			  bool shared)
->  {
-> @@ -222,11 +169,11 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->  #define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared)	\
->  	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
->  
-> -#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)			\
-> -	for (_root = tdp_mmu_next_root(_kvm, NULL, false, false);		\
-> +#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
-> +	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, false);		\
->  	     _root;								\
-> -	     _root = tdp_mmu_next_root(_kvm, _root, false, false))		\
-> -		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, false)) {		\
-> +	     _root = tdp_mmu_next_root(_kvm, _root, _shared, false))		\
-> +		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
->  		} else
->  
->  /*
-> @@ -305,7 +252,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
->  	 * by a memslot update or by the destruction of the VM.  Initialize the
->  	 * refcount to two; one reference for the vCPU, and one reference for
->  	 * the TDP MMU itself, which is held until the root is invalidated and
-> -	 * is ultimately put by tdp_mmu_zap_root_work().
-> +	 * is ultimately put by kvm_tdp_mmu_zap_invalidated_roots().
->  	 */
->  	refcount_set(&root->tdp_mmu_root_count, 2);
->  
-> @@ -963,7 +910,7 @@ bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush)
->  {
->  	struct kvm_mmu_page *root;
->  
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root)
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
->  		flush = tdp_mmu_zap_leafs(kvm, root, start, end, true, flush);
->  
->  	return flush;
-> @@ -985,7 +932,7 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->  	 * is being destroyed or the userspace VMM has exited.  In both cases,
->  	 * KVM_RUN is unreachable, i.e. no vCPUs will ever service the request.
->  	 */
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root)
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
->  		tdp_mmu_zap_root(kvm, root, false);
->  }
->  
-> @@ -995,18 +942,47 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->   */
->  void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
->  {
-> -	flush_workqueue(kvm->arch.tdp_mmu_zap_wq);
-> +	struct kvm_mmu_page *root;
-> +
-> +	read_lock(&kvm->mmu_lock);
-> +
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, true) {
-> +		if (!root->tdp_mmu_scheduled_root_to_zap)
-> +			continue;
-> +
-> +		root->tdp_mmu_scheduled_root_to_zap = false;
-> +		KVM_BUG_ON(!root->role.invalid, kvm);
-> +
-> +		/*
-> +		 * A TLB flush is not necessary as KVM performs a local TLB
-> +		 * flush when allocating a new root (see kvm_mmu_load()), and
-> +		 * when migrating a vCPU to a different pCPU.  Note, the local
-> +		 * TLB flush on reuse also invalidates paging-structure-cache
-> +		 * entries, i.e. TLB entries for intermediate paging structures,
-> +		 * that may be zapped, as such entries are associated with the
-> +		 * ASID on both VMX and SVM.
-> +		 */
-> +		tdp_mmu_zap_root(kvm, root, true);
-> +
-> +		/*
-> +		 * The referenced needs to be put *after* zapping the root, as
-> +		 * the root must be reachable by mmu_notifiers while it's being
-> +		 * zapped
-> +		 */
-> +		kvm_tdp_mmu_put_root(kvm, root, true);
-> +	}
-> +
-> +	read_unlock(&kvm->mmu_lock);
->  }
->  
->  /*
->   * Mark each TDP MMU root as invalid to prevent vCPUs from reusing a root that
->   * is about to be zapped, e.g. in response to a memslots update.  The actual
-> - * zapping is performed asynchronously.  Using a separate workqueue makes it
-> - * easy to ensure that the destruction is performed before the "fast zap"
-> - * completes, without keeping a separate list of invalidated roots; the list is
-> - * effectively the list of work items in the workqueue.
-> + * zapping is done separately so that it happens with mmu_lock with read,
-> + * whereas invalidating roots must be done with mmu_lock held for write (unless
-> + * the VM is being destroyed).
->   *
-> - * Note, the asynchronous worker is gifted the TDP MMU's reference.
-> + * Note, kvm_tdp_mmu_zap_invalidated_roots() is gifted the TDP MMU's reference.
->   * See kvm_tdp_mmu_get_vcpu_root_hpa().
->   */
->  void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
-> @@ -1031,19 +1007,20 @@ void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
->  	/*
->  	 * As above, mmu_lock isn't held when destroying the VM!  There can't
->  	 * be other references to @kvm, i.e. nothing else can invalidate roots
-> -	 * or be consuming roots, but walking the list of roots does need to be
-> -	 * guarded against roots being deleted by the asynchronous zap worker.
-> +	 * or get/put references to roots.
->  	 */
-> -	rcu_read_lock();
-> -
-> -	list_for_each_entry_rcu(root, &kvm->arch.tdp_mmu_roots, link) {
-> +	list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link) {
-> +		/*
-> +		 * Note, invalid roots can outlive a memslot update!  Invalid
-> +		 * roots must be *zapped* before the memslot update completes,
-> +		 * but a different task can acquire a reference and keep the
-> +		 * root alive after its been zapped.
-> +		 */
->  		if (!root->role.invalid) {
-> +			root->tdp_mmu_scheduled_root_to_zap = true;
->  			root->role.invalid = true;
-> -			tdp_mmu_schedule_zap_root(kvm, root);
->  		}
->  	}
-> -
-> -	rcu_read_unlock();
->  }
->  
->  /*
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index d0a9fe0770fd..c82a8bb321bb 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -65,7 +65,7 @@ u64 *kvm_tdp_mmu_fast_pf_get_last_sptep(struct kvm_vcpu *vcpu, u64 addr,
->  					u64 *spte);
->  
->  #ifdef CONFIG_X86_64
-> -int kvm_mmu_init_tdp_mmu(struct kvm *kvm);
-> +void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
->  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
->  static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return sp->tdp_mmu_page; }
->  
-> @@ -86,7 +86,7 @@ static inline bool is_tdp_mmu(struct kvm_mmu *mmu)
->  	return sp && is_tdp_mmu_page(sp) && sp->root_count;
->  }
->  #else
-> -static inline int kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return 0; }
-> +static inline void kvm_mmu_init_tdp_mmu(struct kvm *kvm) {}
->  static inline void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm) {}
->  static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return false; }
->  static inline bool is_tdp_mmu(struct kvm_mmu *mmu) { return false; }
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1931d3fcbbe0..b929254c7876 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12442,9 +12442,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  	if (ret)
->  		goto out;
->  
-> -	ret = kvm_mmu_init_vm(kvm);
-> -	if (ret)
-> -		goto out_page_track;
-> +	kvm_mmu_init_vm(kvm);
->  
->  	ret = static_call(kvm_x86_vm_init)(kvm);
->  	if (ret)
-> @@ -12489,7 +12487,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  
->  out_uninit_mmu:
->  	kvm_mmu_uninit_vm(kvm);
-> -out_page_track:
->  	kvm_page_track_cleanup(kvm);
->  out:
->  	return ret;
-> 
-> base-commit: adc4d740ad9ec780657327c69ab966fa4fdf0e8e
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+> - Arnaldo
