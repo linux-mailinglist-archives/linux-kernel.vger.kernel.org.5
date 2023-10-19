@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 180357CFD34
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA22D7CFD2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346167AbjJSOtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S1345822AbjJSOsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbjJSOsu (ORCPT
+        with ESMTP id S233200AbjJSOsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:48:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52CE114;
-        Thu, 19 Oct 2023 07:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697726929; x=1729262929;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TTxcbDUvyh2vAsNIAVwilw773kfOc9seLoPaqLvLi/M=;
-  b=iBeyiZmqHsbhKpw5JUYU1wuIcoG9LWv90Oh5qNU+29cHcIgCYlQgPK34
-   a7lMf2eDIkE1dJxRMbgv32uwhM0oyU0DZlQL+E6+fXgerEOH3B+3BbtLK
-   hi5aU7slquEMDdKZBFC/UtrPp8JBynCfkcedjLqnEw/iV/o6TrkECEfQ3
-   Dv/pW7H8dBhMbbD4k1FsRJvLr0LsvEG5+JEpSioRAMuS2VW5c62k0WbZV
-   X1AoTWwsVIXhKs+H+E+ykvBpZN1dXV0gxDQqROVY3r8C0NGqEoyTcgpkD
-   wSHKEdtwF57LKtcIk8xmjtJhipRNNq2DdoV3hKrVRR/ywBNJRMldVTx2S
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7832255"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="7832255"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:48:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="706872108"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="706872108"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga003.jf.intel.com with ESMTP; 19 Oct 2023 07:48:45 -0700
-Date:   Thu, 19 Oct 2023 22:47:39 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     gregkh@linuxfoundation.org, Marco Pagani <marpagan@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fpga: disable KUnit test suites when module support is
- enabled
-Message-ID: <ZTFBi7vfmEpR9TB0@yilunxu-OptiPlex-7050>
-References: <20231018163814.100803-1-marpagan@redhat.com>
+        Thu, 19 Oct 2023 10:48:45 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7D1130;
+        Thu, 19 Oct 2023 07:48:42 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4587f9051e3so596151137.0;
+        Thu, 19 Oct 2023 07:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697726921; x=1698331721; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b30rUo9xIidkzyjBtbhasOWY/ZbF9XIuRRAYaEaFhXU=;
+        b=CCFevrp3P7+zJ4FHC9QfN+qXJiLe1qBRNDg8HVSZBpk6gggPWwoP5PzFsx2NRApNlB
+         OJcQoKwMtHZZYDKCQis+FsXb3P0lnqwQ/QEHpi3dvDRLHg/besvVP45PwUroVhw52K5u
+         QDXCIJd1lL/++Pj11CNu+NkBAwp8xDZRILgiDJgEm89LnhT4m08UwMJzBQXWtlQfLbvT
+         ckKGQTYkzK2nFu7RNd7TG38quijkUBhosu5xOyyCL8Q5FtEPkZCjukIFnSQ5nhGlLmpm
+         GwVRO4e3AMs0hO+bu3vyTavC7beosYXyd+E1iSvFLvyXLDP90XWH0EWzlu4WQym7BVfa
+         wTvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697726921; x=1698331721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b30rUo9xIidkzyjBtbhasOWY/ZbF9XIuRRAYaEaFhXU=;
+        b=XMe7fxQ88jbxaAv/6aJJGwiD8/O2VJ2OU/VubpmoGnD9p1h6H6My3RX5k/Z+SzmLmo
+         bdC/q8Bg30UxDGq8QwJuPcjP2xnm5Ob2zd5x1dvuwp9xFqZAPTgZPmydSTm5W0O+rks5
+         RX8Y+T+FjAzAnrXlPT7mroE9shXcU4m8gHUCg+ztDdZRgC2IhFzNVpbPL9XPyGaLqdxU
+         GmA5cpz53vPOzAUVWhlbZme15EW7sc187hWKfG30NCfZ/LBqYsyk5PJCrGb6t1fu4oz7
+         9BqiE1yb2E5Ub83jYVwViZeAELWLMTqk24iQw7OZ6dqVIpJnsK7jqrlKUXiUxU7EhtDl
+         HBHQ==
+X-Gm-Message-State: AOJu0Yz+TCr7b4kFTDjN9K5OLUUqZtHjGagNKnQLTXzHy10EieZirT3u
+        zSeaS9M3+6YJCmzkhP7LMqCV1rasAELgHYevyBs=
+X-Google-Smtp-Source: AGHT+IHfKG6TgpivWYvKVUQ/ejBTh+LvTGzFACYFJt5iSwJHvTy53oC3RG9tprM79RoBpo6FxpZwZsUoCzx5dkH7zs4=
+X-Received: by 2002:a05:6102:100a:b0:457:6999:968a with SMTP id
+ q10-20020a056102100a00b004576999968amr2145047vsp.7.1697726921465; Thu, 19 Oct
+ 2023 07:48:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018163814.100803-1-marpagan@redhat.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com> <20231019-feature_ptp_netnext-v6-7-71affc27b0e5@bootlin.com>
+In-Reply-To: <20231019-feature_ptp_netnext-v6-7-71affc27b0e5@bootlin.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 19 Oct 2023 10:48:04 -0400
+Message-ID: <CAF=yD-+O6QxuYJzijMes7J_DHHd7yYCz8sBLFERM1U6pYN0Gkg@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 07/16] net_tstamp: Add TIMESTAMPING SOFTWARE
+ and HARDWARE mask
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 06:38:13PM +0200, Marco Pagani wrote:
-> The fpga core currently assumes that all manager, bridge, and region
-> devices have a parent device associated with a driver that can be used
-> to take the module's refcount. This behavior causes the fpga test suites
-> to crash with a null-ptr-deref since parent fake devices do not have a
-> driver. This patch disables all fpga KUnit test suites when loadable
-> module support is enabled until the fpga core is fixed. Test suites
-> can still be run using the KUnit default UML kernel.
-> 
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+On Thu, Oct 19, 2023 at 10:29=E2=80=AFAM Kory Maincent
+<kory.maincent@bootlin.com> wrote:
+>
+> Timestamping software or hardware flags are often used as a group,
+> therefore adding these masks will easier future use.
 
-LGTM, I've tested on my machine.
+This assumes that device support for timestamping is often symmetric:
+a device supports both rx and tx, or neither.
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
+All devices support software receive timestamping, as that timestamp
+is taken in the core network stack. But to support transmit timestamps
+drivers have to call sbk_tstamp_tx in their ndo_start_xmit.
 
-Hi Greg:
+For hardware timestamping it may be more common to support both or
+neither, not sure.
 
-Could you help review and pull it in for 6.6-final if it's OK.
-
-https://lore.kernel.org/linux-fpga/2023101825-ligament-undergrad-cc4d@gregkh/
-
-Thanks,
-Yilun
-
+> I did not use SOF_TIMESTAMPING_SYS_HARDWARE flag as it is deprecated and
+> not use at all.
+>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 > ---
->  drivers/fpga/tests/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/fpga/tests/Kconfig b/drivers/fpga/tests/Kconfig
-> index e4a64815f16d..d4e55204c092 100644
-> --- a/drivers/fpga/tests/Kconfig
-> +++ b/drivers/fpga/tests/Kconfig
-> @@ -1,6 +1,6 @@
->  config FPGA_KUNIT_TESTS
-> -	tristate "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
-> -	depends on FPGA && FPGA_REGION && FPGA_BRIDGE && KUNIT=y
-> +	bool "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
-> +	depends on FPGA=y && FPGA_REGION=y && FPGA_BRIDGE=y && KUNIT=y && MODULES=n
->  	default KUNIT_ALL_TESTS
->          help
->            This builds unit tests for the FPGA subsystem
-> -- 
-> 2.41.0
-> 
+>  include/uapi/linux/net_tstamp.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tst=
+amp.h
+> index a2c66b3d7f0f..df8091998c8d 100644
+> --- a/include/uapi/linux/net_tstamp.h
+> +++ b/include/uapi/linux/net_tstamp.h
+> @@ -48,6 +48,14 @@ enum {
+>                                          SOF_TIMESTAMPING_TX_SCHED | \
+>                                          SOF_TIMESTAMPING_TX_ACK)
+>
+> +#define SOF_TIMESTAMPING_SOFTWARE_MASK (SOF_TIMESTAMPING_RX_SOFTWARE | \
+> +                                        SOF_TIMESTAMPING_TX_SOFTWARE | \
+> +                                        SOF_TIMESTAMPING_SOFTWARE)
+> +
+> +#define SOF_TIMESTAMPING_HARDWARE_MASK (SOF_TIMESTAMPING_RX_HARDWARE | \
+> +                                        SOF_TIMESTAMPING_TX_HARDWARE | \
+> +                                        SOF_TIMESTAMPING_RAW_HARDWARE)
+> +
+>  /**
+>   * struct so_timestamping - SO_TIMESTAMPING parameter
+>   *
+>
+> --
+> 2.25.1
+>
