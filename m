@@ -2,213 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9E17CF274
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE5B7CF27B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344918AbjJSIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
+        id S235260AbjJSIZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235308AbjJSIYF (ORCPT
+        with ESMTP id S235109AbjJSIZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:24:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15014182;
-        Thu, 19 Oct 2023 01:24:03 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 08:23:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697703840;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ATmV+shENxojKtOgLX8bX5Ko5VODxesMS6F+xBHm3TA=;
-        b=IYCjluzwcIrVVHp6/It2Clz1236LclJy3xsuqgHEfrN1dWRCv/kqQFJAlLWQ9gXwQvogmG
-        c2l19LdpXDT4L4MtKJ9WlezYgKV9q3ocCG9dBQSuXV1/FOdO7v6NHiNO92pKhbEMQGi6c3
-        iCbDN9e3cGG0GiAt8ujYnljzVDx1LC07OtzTDy437bUmFwdurDVNxEymCBRY3K67/P6OYs
-        tNcoaGPaDg3hc0pO91sbayQ/cxgpgT25P14vyeBcFq0ak0g8KtS0MyAtzg7iI4bbxaL9vh
-        DXBPb6Vrjkpco3/ePc20HwVntP56rasFUlL0yVbFh5e2kJSvgOSNF9+q+8YCKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697703840;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ATmV+shENxojKtOgLX8bX5Ko5VODxesMS6F+xBHm3TA=;
-        b=HHMawuVsLa5nSxJr+aRXzbbpTudgOMa5mvW5AigGl424YCceLV00ZfI+FFax9oQ3uKup0m
-        vSFUQS/cgGfUweAQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf: Disallow mis-matched inherited group reads
-Cc:     Budimir Markovic <markovicbudimir@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231018115654.GK33217@noisy.programming.kicks-ass.net>
-References: <20231018115654.GK33217@noisy.programming.kicks-ass.net>
+        Thu, 19 Oct 2023 04:25:27 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9445A10F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:25:21 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so13422927a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1697703920; x=1698308720; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v8Difn/D+XiTI90dIkn0xG+fv+x0la3KPldZ4kHjxUY=;
+        b=bEesxWPAlR1bISkAQbiFTBxFSfpRlI3fooncKBzg49Gz9IbE2gvDgX57PxmV8iFntk
+         X5hQlPh6STA4Ypv0wEkjLF7TgDeIwMSX44rVXVLP0NwQjqkyBknLFeNFYdpuAMCbiMP1
+         Qv95+frDa3MPRMsTJWRh1flbThlvwGMl8MwO1/fCFBpwCFoMMBA5ZSw4/bacPkGz4xZ0
+         lXAj9dKeZGvaC1a8M8e7/v2KVS3YTnwKzdWEc3rfCXLKJCJ1V8ttseXSzPmbcyV8IR9J
+         TLgQ7euzZ0n6SIgTmq7GKRwhOiBy56Wgj2ear9Bj2lW4vFauQlqpXLA7X4hhS0lILeVL
+         XDQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697703920; x=1698308720;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v8Difn/D+XiTI90dIkn0xG+fv+x0la3KPldZ4kHjxUY=;
+        b=Ncr8cMBpxB/TvI/9CRf7dbvF/u3daYezvSPX3ss890ejlypj7PlZHhyDyVp0rueYoZ
+         XyCnK3FFp1YpDenGWWozdJk6J0h0/pzvGcmfZys7Ykr2lyVVe/CKq6w0734exbNuAAP4
+         kTa7TMDryo9pX8vAB+WXDvVPjADw8eLiNBwC0b/bGIz7uhg63Kkl27rW7AaGNZLdaKVM
+         +Acyxv8N6SMUCdu0uEVVzEBDWErru6HNeDBtCefAZ843nQ5MZCAdRtY2Wkl8HInrcYTx
+         2p3/o5zZmkM2CczI0KSCDEPyJK5FVdqnkn+p5L7yycMtjr6DBcMQREnIxl1kobR2jaZL
+         di6Q==
+X-Gm-Message-State: AOJu0YyC6vBmzG5E2QakZ0kvt/zayO+JD9sbotMfyJb5bo+RqkLvIi44
+        +DKWlYUFLqhTLrGR5uqPD0YSEMseWpQKClZ85Zg+zw==
+X-Google-Smtp-Source: AGHT+IERXq0bO1AmEurHewxhpzh6tNz4IbqMPHu+sifIOgs6RxCQnRc88SwKIglHJnVB5fDIiwqiPj8rxg9FYRI0joA=
+X-Received: by 2002:a17:907:97c2:b0:9c1:4343:60ab with SMTP id
+ js2-20020a17090797c200b009c1434360abmr974298ejc.10.1697703919882; Thu, 19 Oct
+ 2023 01:25:19 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169770383951.3135.17771457264387517954.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231019070650.61159-1-vignesh.raman@collabora.com> <20231019070650.61159-10-vignesh.raman@collabora.com>
+In-Reply-To: <20231019070650.61159-10-vignesh.raman@collabora.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Thu, 19 Oct 2023 10:25:07 +0200
+Message-ID: <CAPj87rP=22Fw0h42U-p9fHd=6OHOu9Lj9kbpVMQVqL9U6BRE1A@mail.gmail.com>
+Subject: Re: [PATCH v5 9/9] drm: ci: Update xfails
+To:     Vignesh Raman <vignesh.raman@collabora.com>
+Cc:     helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        daniels@collabora.com, emma@anholt.net,
+        gustavo.padovan@collabora.com, linux-arm-msm@vger.kernel.org,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        david.heidelberg@collabora.com, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Hi Vignesh,
 
-Commit-ID:     32671e3799ca2e4590773fd0e63aaa4229e50c06
-Gitweb:        https://git.kernel.org/tip/32671e3799ca2e4590773fd0e63aaa4229e50c06
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 18 Oct 2023 13:56:54 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 19 Oct 2023 10:09:42 +02:00
+On Thu, 19 Oct 2023 at 09:07, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+> +# Some tests crashes with malloc error and IGT tests floods
+> +# the CI log with error messages and we end up with a warning message
+> +# Job's log exceeded limit of 4194304 bytes.
+> +# Job execution will continue but no more output will be collected.
 
-perf: Disallow mis-matched inherited group reads
+This is just from GitLab warning that we have a huge log, so not
+related to the actual fails here.
 
-Because group consistency is non-atomic between parent (filedesc) and children
-(inherited) events, it is possible for PERF_FORMAT_GROUP read() to try and sum
-non-matching counter groups -- with non-sensical results.
+> +# Below is the error log:
+> +# malloc(): corrupted top size
+> +# Received signal SIGABRT.
+> +# Stack trace:
+> +#  #0 [fatal_sig_handler+0x17b]
+> +#  #1 [__sigaction+0x40]
+> +#  #2 [pthread_key_delete+0x14c]
+> +#  #3 [gsignal+0x12]
+> +#  #4 [abort+0xd3]
+> +#  #5 [__fsetlocking+0x290]
+> +#  #6 [timer_settime+0x37a]
+> +#  #7 [__default_morecore+0x1f1b]
+> +#  #8 [__libc_calloc+0x161]
+> +#  #9 [drmModeGetPlaneResources+0x44]
+> +#  #10 [igt_display_require+0x194]
+> +#  #11 [__igt_unique____real_main1356+0x93c]
+> +#  #12 [main+0x3f]
+> +#  #13 [__libc_init_first+0x8a]
+> +#  #14 [__libc_start_main+0x85]
+> +#  #15 [_start+0x21]
+> +# malloc(): corrupted top size
 
-Add group_generation to distinguish the case where a parent group removes and
-adds an event and thus has the same number, but a different configuration of
-events as inherited groups.
+By the time we get this error, it indicates that there was previously
+memory corruption, but it is only being noticed at a later point. The
+skip lists here are way too big - stuff like drm_read is common
+testing not affected by virtio at all - so we really need to isolate
+the test which is actually breaking things.
 
-This became a problem when commit fa8c269353d5 ("perf/core: Invert
-perf_read_group() loops") flipped the order of child_list and sibling_list.
-Previously it would iterate the group (sibling_list) first, and for each
-sibling traverse the child_list. In this order, only the group composition of
-the parent is relevant. By flipping the order the group composition of the
-child (inherited) events becomes an issue and the mis-match in group
-composition becomes evident.
+The way to do this would be to use valgrind to detect where the memory
+corruption is. VirtIO can be run locally so this is something you can
+do on your machine.
 
-That said; even prior to this commit, while reading of a group that is not
-equally inherited was not broken, it still made no sense.
-
-(Ab)use ECHILD as error return to indicate issues with child process group
-composition.
-
-Fixes: fa8c269353d5 ("perf/core: Invert perf_read_group() loops")
-Reported-by: Budimir Markovic <markovicbudimir@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20231018115654.GK33217@noisy.programming.kicks-ass.net
----
- include/linux/perf_event.h |  1 +-
- kernel/events/core.c       | 39 +++++++++++++++++++++++++++++++------
- 2 files changed, 34 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index e85cd1c..7b5406e 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -704,6 +704,7 @@ struct perf_event {
- 	/* The cumulative AND of all event_caps for events in this group. */
- 	int				group_caps;
- 
-+	unsigned int			group_generation;
- 	struct perf_event		*group_leader;
- 	/*
- 	 * event->pmu will always point to pmu in which this event belongs.
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4c72a41..d0663b9 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1954,6 +1954,7 @@ static void perf_group_attach(struct perf_event *event)
- 
- 	list_add_tail(&event->sibling_list, &group_leader->sibling_list);
- 	group_leader->nr_siblings++;
-+	group_leader->group_generation++;
- 
- 	perf_event__header_size(group_leader);
- 
-@@ -2144,6 +2145,7 @@ static void perf_group_detach(struct perf_event *event)
- 	if (leader != event) {
- 		list_del_init(&event->sibling_list);
- 		event->group_leader->nr_siblings--;
-+		event->group_leader->group_generation++;
- 		goto out;
- 	}
- 
-@@ -5440,7 +5442,7 @@ static int __perf_read_group_add(struct perf_event *leader,
- 					u64 read_format, u64 *values)
- {
- 	struct perf_event_context *ctx = leader->ctx;
--	struct perf_event *sub;
-+	struct perf_event *sub, *parent;
- 	unsigned long flags;
- 	int n = 1; /* skip @nr */
- 	int ret;
-@@ -5450,6 +5452,33 @@ static int __perf_read_group_add(struct perf_event *leader,
- 		return ret;
- 
- 	raw_spin_lock_irqsave(&ctx->lock, flags);
-+	/*
-+	 * Verify the grouping between the parent and child (inherited)
-+	 * events is still in tact.
-+	 *
-+	 * Specifically:
-+	 *  - leader->ctx->lock pins leader->sibling_list
-+	 *  - parent->child_mutex pins parent->child_list
-+	 *  - parent->ctx->mutex pins parent->sibling_list
-+	 *
-+	 * Because parent->ctx != leader->ctx (and child_list nests inside
-+	 * ctx->mutex), group destruction is not atomic between children, also
-+	 * see perf_event_release_kernel(). Additionally, parent can grow the
-+	 * group.
-+	 *
-+	 * Therefore it is possible to have parent and child groups in a
-+	 * different configuration and summing over such a beast makes no sense
-+	 * what so ever.
-+	 *
-+	 * Reject this.
-+	 */
-+	parent = leader->parent;
-+	if (parent &&
-+	    (parent->group_generation != leader->group_generation ||
-+	     parent->nr_siblings != leader->nr_siblings)) {
-+		ret = -ECHILD;
-+		goto unlock;
-+	}
- 
- 	/*
- 	 * Since we co-schedule groups, {enabled,running} times of siblings
-@@ -5483,8 +5512,9 @@ static int __perf_read_group_add(struct perf_event *leader,
- 			values[n++] = atomic64_read(&sub->lost_samples);
- 	}
- 
-+unlock:
- 	raw_spin_unlock_irqrestore(&ctx->lock, flags);
--	return 0;
-+	return ret;
- }
- 
- static int perf_read_group(struct perf_event *event,
-@@ -5503,10 +5533,6 @@ static int perf_read_group(struct perf_event *event,
- 
- 	values[0] = 1 + leader->nr_siblings;
- 
--	/*
--	 * By locking the child_mutex of the leader we effectively
--	 * lock the child list of all siblings.. XXX explain how.
--	 */
- 	mutex_lock(&leader->child_mutex);
- 
- 	ret = __perf_read_group_add(leader, read_format, values);
-@@ -13346,6 +13372,7 @@ static int inherit_group(struct perf_event *parent_event,
- 		    !perf_get_aux_event(child_ctr, leader))
- 			return -EINVAL;
- 	}
-+	leader->group_generation = parent_event->group_generation;
- 	return 0;
- }
- 
+Cheers,
+Daniel
