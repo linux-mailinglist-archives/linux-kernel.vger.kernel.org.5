@@ -2,85 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CD37CF51A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C6D7CF51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbjJSKYj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 06:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S1345155AbjJSKZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbjJSKYh (ORCPT
+        with ESMTP id S233029AbjJSKZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:24:37 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1811A11F;
-        Thu, 19 Oct 2023 03:24:34 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qtQCS-002Qg9-HK; Thu, 19 Oct 2023 12:24:20 +0200
-Received: from p5dc558c2.dip0.t-ipconnect.de ([93.197.88.194] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qtQCS-003C07-9F; Thu, 19 Oct 2023 12:24:20 +0200
-Message-ID: <7877cb3f8deeb4ab4acf3dbcdc36ea7c7ef0d666.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 0/2] sh: Revive BIOS earlyprintk support
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 19 Oct 2023 12:24:19 +0200
-In-Reply-To: <cover.1697708489.git.geert+renesas@glider.be>
-References: <cover.1697708489.git.geert+renesas@glider.be>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.0 
+        Thu, 19 Oct 2023 06:25:01 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E99712D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:24:58 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7eef0b931so95966687b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697711097; x=1698315897; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUZeb0jKJJtlyWUIyBlImNnt+JsfVfhEYz3giXl9GK4=;
+        b=rREWxOlM9g3ay2zIZ3oLts2zMVCD3kO7bBZ9nMPrTAvDojb5XYZMHKZbbFekI5nUwI
+         6c7Ok3nnuAfXgC2xIK8pDwADsjQYhI0OWlD8LA+IVYdOFIF5dLZwh5/+9AXRHVjsbDrt
+         IockE7zLQhxYTZ939YteA4NamOdOOBRrKLWKfxVSoAZqEjTNgagIERBajAbhLLuElFZC
+         No05RNG02PKwKO3xoOho3C/Ih3ffHL9TxtExz49MwXFabcP9DHjrpp95XpSOX7Rh7cP8
+         Xf68LKlCXE/cfb8kFEri+DOATQ7p2Uf7ZRWdfGIdX7NGv3ZjTtuMPEfv3u0q2SubN0p3
+         paaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697711097; x=1698315897;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gUZeb0jKJJtlyWUIyBlImNnt+JsfVfhEYz3giXl9GK4=;
+        b=n4LGOmldiB5t5Y/8QEpjfI06egkoxHvdfi6QEjJ80XmL144ENWBU6zH9ojWRakI8el
+         vVbBnwKTmOo2roW5Unis8UBrNc4pgHThMnJrYiU5BkN7XaaU7Om80ifDL95Tm2STo6cr
+         pzAXaORIV1M7ipuAxojlYteDxuJLIh8yt1zwdsZ0tuHAqsTFhL1mCZemHj7O4obco/ro
+         g9NNWOQE7bBK4k+PlyheV85z25dH3NRlYhlwKcoj/PxQuth8tQDdRiUOrPttqWSRP/kf
+         OaFNGOhvNCNdNkiGAr/I9ooLX58U3pcGH3021cqG4dmDslDvByWDOhtBr4yzKWe7Dnoz
+         RIjQ==
+X-Gm-Message-State: AOJu0YwqrGDy/sTULdOvLJduGb4lGVgg3vCO/gq3uWXJJs83HJsFdsXJ
+        hK6E27fimGwym7bhf0945OUQBx0cf/xecyD3MtYRXQ==
+X-Google-Smtp-Source: AGHT+IG3U91pn35gIMk/Vq4gvaPipHWqVQVRkkFkCZcPQu2WHiqMSphaji7MC775+JS3hurbXo66wbnl/P6oFsyG/oU=
+X-Received: by 2002:a25:ac1c:0:b0:d9a:c4cf:a066 with SMTP id
+ w28-20020a25ac1c000000b00d9ac4cfa066mr2011553ybi.34.1697711097377; Thu, 19
+ Oct 2023 03:24:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 93.197.88.194
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com> <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+In-Reply-To: <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 19 Oct 2023 12:24:21 +0200
+Message-ID: <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert!
+On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
+<stephan.gerhold@kernkonzept.com> wrote:
+>
+> The genpd core caches performance state votes from devices that are
+> runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
+> runtime PM performance state handling"). They get applied once the
+> device becomes active again.
+>
+> To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
+> calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
+> devices that use runtime PM only to control the enable and performance
+> state for the attached power domain.
+>
+> However, at the moment nothing ever resumes the virtual devices created
+> for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
+> means that performance state votes made during cpufreq scaling get
+> always cached and never applied to the hardware.
+>
+> Fix this by enabling the devices after attaching them and use
+> dev_pm_syscore_device() to ensure the power domains also stay on when
+> going to suspend. Since it supplies the CPU we can never turn it off
+> from Linux. There are other mechanisms to turn it off when needed,
+> usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
 
-On Thu, 2023-10-19 at 11:46 +0200, Geert Uytterhoeven wrote:
-> SuperH BIOS earlyprintk support was accidently disabled.
-> This series revives it, and records its existence in the documentation.
-> 
-> This was tested on landisk using "earlyprintk=bios" and
-> "earlyprintk=bios,keep".
-> 
-> Thanks for your comments!
+I believe we discussed using dev_pm_syscore_device() for the previous
+version. It's not intended to be used for things like the above.
 
-Thanks for catching this and fixing this! I will pick this up ASAP!
+Moreover, I was under the impression that it wasn't really needed. In
+fact, I would think that this actually breaks things for system
+suspend/resume, as in this case the cpr driver's genpd
+->power_on|off() callbacks are no longer getting called due this,
+which means that the cpr state machine isn't going to be restored
+properly. Or did I get this wrong?
 
-Adrian
+Kind regards
+Uffe
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+>
+> Without this fix performance states votes are silently ignored, and the
+> CPU/CPR voltage is never adjusted. This has been broken since 5.14 but
+> for some reason no one noticed this on QCS404 so far.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 1cb8339ca225 ("cpufreq: qcom: Add support for qcs404 on nvmem driver")
+> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> ---
+>  drivers/cpufreq/qcom-cpufreq-nvmem.c | 49 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 46 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> index 82a244f3fa52..3794390089b0 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/pm_opp.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/slab.h>
+>  #include <linux/soc/qcom/smem.h>
+>
+> @@ -47,6 +48,7 @@ struct qcom_cpufreq_match_data {
+>
+>  struct qcom_cpufreq_drv_cpu {
+>         int opp_token;
+> +       struct device **virt_devs;
+>  };
+>
+>  struct qcom_cpufreq_drv {
+> @@ -268,6 +270,18 @@ static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
+>         .get_version = qcom_cpufreq_ipq8074_name_version,
+>  };
+>
+> +static void qcom_cpufreq_put_virt_devs(struct qcom_cpufreq_drv *drv, unsigned cpu)
+> +{
+> +       const char * const *name = drv->data->genpd_names;
+> +       int i;
+> +
+> +       if (!drv->cpus[cpu].virt_devs)
+> +               return;
+> +
+> +       for (i = 0; *name; i++, name++)
+> +               pm_runtime_put(drv->cpus[cpu].virt_devs[i]);
+> +}
+> +
+>  static int qcom_cpufreq_probe(struct platform_device *pdev)
+>  {
+>         struct qcom_cpufreq_drv *drv;
+> @@ -321,6 +335,7 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+>         of_node_put(np);
+>
+>         for_each_possible_cpu(cpu) {
+> +               struct device **virt_devs = NULL;
+>                 struct dev_pm_opp_config config = {
+>                         .supported_hw = NULL,
+>                 };
+> @@ -341,7 +356,7 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+>
+>                 if (drv->data->genpd_names) {
+>                         config.genpd_names = drv->data->genpd_names;
+> -                       config.virt_devs = NULL;
+> +                       config.virt_devs = &virt_devs;
+>                 }
+>
+>                 if (config.supported_hw || config.genpd_names) {
+> @@ -352,6 +367,30 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+>                                 goto free_opp;
+>                         }
+>                 }
+> +
+> +               if (virt_devs) {
+> +                       const char * const *name = config.genpd_names;
+> +                       int i, j;
+> +
+> +                       for (i = 0; *name; i++, name++) {
+> +                               ret = pm_runtime_resume_and_get(virt_devs[i]);
+> +                               if (ret) {
+> +                                       dev_err(cpu_dev, "failed to resume %s: %d\n",
+> +                                               *name, ret);
+> +
+> +                                       /* Rollback previous PM runtime calls */
+> +                                       name = config.genpd_names;
+> +                                       for (j = 0; *name && j < i; j++, name++)
+> +                                               pm_runtime_put(virt_devs[j]);
+> +
+> +                                       goto free_opp;
+> +                               }
+> +
+> +                               /* Keep CPU power domain always-on */
+> +                               dev_pm_syscore_device(virt_devs[i], true);
+> +                       }
+> +                       drv->cpus[cpu].virt_devs = virt_devs;
+> +               }
+>         }
+>
+>         cpufreq_dt_pdev = platform_device_register_simple("cpufreq-dt", -1,
+> @@ -365,8 +404,10 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+>         dev_err(cpu_dev, "Failed to register platform device\n");
+>
+>  free_opp:
+> -       for_each_possible_cpu(cpu)
+> +       for_each_possible_cpu(cpu) {
+> +               qcom_cpufreq_put_virt_devs(drv, cpu);
+>                 dev_pm_opp_clear_config(drv->cpus[cpu].opp_token);
+> +       }
+>         return ret;
+>  }
+>
+> @@ -377,8 +418,10 @@ static void qcom_cpufreq_remove(struct platform_device *pdev)
+>
+>         platform_device_unregister(cpufreq_dt_pdev);
+>
+> -       for_each_possible_cpu(cpu)
+> +       for_each_possible_cpu(cpu) {
+> +               qcom_cpufreq_put_virt_devs(drv, cpu);
+>                 dev_pm_opp_clear_config(drv->cpus[cpu].opp_token);
+> +       }
+>  }
+>
+>  static struct platform_driver qcom_cpufreq_driver = {
+>
+> --
+> 2.39.2
+>
