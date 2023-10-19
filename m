@@ -2,180 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D19847CFA30
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8330F7CFA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbjJSNBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
+        id S1345730AbjJSNDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbjJSNBg (ORCPT
+        with ESMTP id S233220AbjJSNDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:01:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6AA1737
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:00:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F03D1C116AC;
-        Thu, 19 Oct 2023 13:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697720448;
-        bh=UaNVdnVtS+6Y8Bshaztbg+8lEOSi39R7ycoX+4dZ6pA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ryaqfFw+Um1JiXJ/cvml2Ts72RDlw1VPiTE4HrJJc83VENXKHBG9V3jrfo7BzweXJ
-         nCq2j6VVCnj/fo9L7NyyXpzPJ61jsS8RGDvy1SohZCp4r5eW7sBqfps7Syn2QLlMue
-         fGKx4RRFnojw3NO8i3Vd10Amvrz/CG1BM0NmpN4Odh/BmiLtmYXO6OPknPTkLumujH
-         6OGEkfXgW5uKna/ST3fNefqE4abgz9oIfM8MUzd7BLNqDXGN859DLI7oHfvhcU/XO9
-         DkZZTCMojrif7yFjcdyqR7hAit9YA3jkQ2e7qrsOmRoRLc2Utd97u99taPCdBYm3+B
-         6SGCSUFP1/uCg==
-Date:   Thu, 19 Oct 2023 15:00:37 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net-next v3 01/11] devlink: retain error in struct
- devlink_fmsg
-Message-ID: <20231019130037.GI2100445@kernel.org>
-References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
- <20231018202647.44769-2-przemyslaw.kitszel@intel.com>
+        Thu, 19 Oct 2023 09:03:03 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602872116
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:02:54 -0700 (PDT)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b2f3015ce6so1929842b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:02:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697720573; x=1698325373;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FBNP1tjaj9MbQbmtok49dbADEOYYCt3XlzEy19nNEb8=;
+        b=g54kPwDS6bXQbWDcqZzHB43O6JaYRbQxuv49JwmRQaLIw1CK76S8DbkumEBliVZ7LG
+         feIgF/1NN/Cc4tswpRe9ZAHMPr4CoSTRTlFLzo+rLS4Erg3we2dkLWh4M+BycwNCEP3H
+         Nzc/rzPqF1zDlBpAWiKoOxm6ArW3taVWxapVKUjFGILOn6cWx4ELj+be/Kxq0Eg/p1RE
+         mHufO2QnVfrdwuh23FzXZ/YN6XJ0bV22z5T5YRJ09HFcNvm98eHEG0jLJgVP0fE0gRBt
+         gMrnYK4F1fuXKTNJnO/ZG9KqVkGZ89nRmGCabvawglptbyDBL0ipBF2hvoOU9br8ilAA
+         TyqA==
+X-Gm-Message-State: AOJu0Yzv2E1Iurt+nvW0FpBj0lPIZtSGWGKNyi0qZUAWepwOjWUAW4mP
+        X2VvxeD6ato5iwGxOAEzSVGsCCTBipQXccWkriywYt2jRk6LaG4=
+X-Google-Smtp-Source: AGHT+IGg8Q1r+CVggRz6KiOFuZ/SN8TWdBUheImtYjC8J3q6ehFHQ9uyn62X9S++KomznuVlCPuN7SNYMmaP5yEl1OYKcaPPkgrd
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018202647.44769-2-przemyslaw.kitszel@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2014:b0:3a7:3488:bc37 with SMTP id
+ q20-20020a056808201400b003a73488bc37mr860667oiw.9.1697720573738; Thu, 19 Oct
+ 2023 06:02:53 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 06:02:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b9c6c10608115f20@google.com>
+Subject: [syzbot] Monthly rds report (Oct 2023)
+From:   syzbot <syzbot+listd579a3fc6bc036474a33@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:26:37PM +0200, Przemek Kitszel wrote:
-> Retain error value in struct devlink_fmsg, to relieve drivers from
-> checking it after each call.
-> Note that fmsg is an in-memory builder/buffer of formatted message,
-> so it's not the case that half baked message was sent somewhere.
-> 
-> We could find following scheme in multiple drivers:
->   err = devlink_fmsg_obj_nest_start(fmsg);
->   if (err)
->   	return err;
->   err = devlink_fmsg_string_pair_put(fmsg, "src", src);
->   if (err)
->   	return err;
->   err = devlink_fmsg_something(fmsg, foo, bar);
->   if (err)
-> 	return err;
->   // and so on...
->   err = devlink_fmsg_obj_nest_end(fmsg);
-> 
-> With retaining error API that translates to:
->   devlink_fmsg_obj_nest_start(fmsg);
->   devlink_fmsg_string_pair_put(fmsg, "src", src);
->   devlink_fmsg_something(fmsg, foo, bar);
->   // and so on...
->   devlink_fmsg_obj_nest_end(fmsg);
-> 
-> What means we check error just when is time to send.
-> 
-> Possible error scenarios are developer error (API misuse) and memory
-> exhaustion, both cases are good candidates to choose readability
-> over fastest possible exit.
-> 
-> Note that this patch keeps returning errors, to allow per-driver conversion
-> to the new API, but those are not needed at this point already.
-> 
-> This commit itself is an illustration of benefits for the dev-user,
-> more of it will be in separate commits of the series.
-> 
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Hello rds maintainers/developers,
 
-...
+This is a 31-day syzbot report for the rds subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/rds
 
-> @@ -1027,14 +934,12 @@ int devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 5 issues are still open and 20 have been fixed so far.
 
-Hi Przemek,
+Some of the still happening issues:
 
-The line before this hunk is:
+Ref Crashes Repro Title
+<1> 13      Yes   possible deadlock in rds_wake_sk_sleep (4)
+                  https://syzkaller.appspot.com/bug?extid=dcd73ff9291e6d34b3ab
+<2> 7       No    WARNING in rds_conn_connect_if_down
+                  https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
+<3> 1       No    KCSAN: data-race in rds_sendmsg / rds_sendmsg
+                  https://syzkaller.appspot.com/bug?extid=00563755980a79a575f6
 
-		err = devlink_fmsg_binary_put(fmsg, value + offset, data_size);
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-And, as of this patch, the implementation of
-devlink_fmsg_binary_pair_nest_start() looks like this:
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-int devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
-                            u16 value_len)
-{
-        if (!fmsg->putting_binary)
-                return -EINVAL;
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-        return devlink_fmsg_put_value(fmsg, value, value_len, NLA_BINARY);
-}
-
-Which may return an error, if the if condition is met, without setting
-fmsg->err.
-
->  		if (err)
->  			break;
->  		/* Exit from loop with a break (instead of
-> -		 * return) to make sure putting_binary is turned off in
-> -		 * devlink_fmsg_binary_pair_nest_end
-> +		 * return) to make sure putting_binary is turned off
->  		 */
->  	}
->  
-> -	end_err = devlink_fmsg_binary_pair_nest_end(fmsg);
-> -	if (end_err)
-> -		err = end_err;
-
-Prior to this patch, the value of err from the loop above was preserved,
-unless devlink_fmsg_binary_pair_nest_end generated an error.
-
-> +	err = devlink_fmsg_binary_pair_nest_end(fmsg);
-
-But now it looks like this is only the case if fmsg->err corresponds to err
-when the loop was exited.
-
-Or in other words, the err returned by devlink_fmsg_binary_put()
-is not propagated to the caller if !fmsg->putting_binary.
-
-If so, is this intentional?
-
-> +	fmsg->putting_binary = false;
->  
->  	return err;
->  }
-> -- 
-> 2.38.1
-> 
+You may send multiple commands in a single email message.
