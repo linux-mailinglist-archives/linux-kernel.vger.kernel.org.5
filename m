@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A284F7D0263
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D9A7D0266
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346397AbjJSTVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        id S1346457AbjJSTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345878AbjJSTVU (ORCPT
+        with ESMTP id S233086AbjJSTX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:21:20 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96522114;
-        Thu, 19 Oct 2023 12:21:16 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d129e2e7cso71415a91.3;
-        Thu, 19 Oct 2023 12:21:16 -0700 (PDT)
+        Thu, 19 Oct 2023 15:23:57 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39491CA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:23:56 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7be88e9ccso104963897b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697743276; x=1698348076; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HI2GVWsYasNpFkCUuFSfyfrgfawERt55U8XyVGdh4SA=;
-        b=Ovci2yKXiQ1jgKsGCoSxXz/PI+mDEm06VI1sUUvZnF+NsvhGIrnqeITtc447fue2jr
-         IyPjwX8XurfX3a/HeEFoe6wsfGokRa5foPqJcHv1517tmN59gIFLGWPn1jzY/PUdreLi
-         PsRpsfhqlUxHoTooZtNKiLp/v7TctG3owlFMdYSSx9S+r0f9vFUaMTAPhXzKCSPrI68x
-         KopxamLzKwDSFdzN2mkwiJkbrbTHCadHQdMKhIgJ0InJ0/8mME1jBfDaRqRKpv3eQIO1
-         3eDvjvS8zJVqQJgSQ17ok66JiMGrx51jaLFwWpuGV7WVILTjIBqXp25HElmDEAc9BQc3
-         62Ag==
+        d=google.com; s=20230601; t=1697743435; x=1698348235; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5uuyl1yr0QlhVwcr/kFqbwwoVuwQhjrCV37xzZewFRc=;
+        b=UrEZKkZWWXlJ75gCppsV/r9DeolapG0AgzSDhmxjoYciCdTf+VyOZkBzooMRli6RTr
+         pTVaA3iKJ/6tD+KUG6QV2dUR9lPmMFHpqANh0QPUM/AVbw/w2wJX4th+eQXidEy9mx5D
+         AbQhpMneY4L4rKtE42muq/ZTlF7DnNKSCgh3Za6z5FDTmzi7XadPl7hF7TOq/eFlYby7
+         ptXHEtnY8g1/n62Bnb1lqt8dz1hgE+OCcPOurxFq6Dl2J+xL7r/HX9QWvOTw/zBWdZyg
+         vbng9AgE9l6HHzr2HUcclMfRfzk37Ue9WpFdktIARaQu/ctZKALI6I+b68n5/+znKVym
+         dV0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697743276; x=1698348076;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HI2GVWsYasNpFkCUuFSfyfrgfawERt55U8XyVGdh4SA=;
-        b=OfBkBkiLWnyYvv3NwEQhBg2u+3wI5hhxy565wZICSohErGw28WF8iEStbxx+PvNjnA
-         GGpwQB77Mj5TIygFPHCtMF+JgMgBkJSBCVM6qslmQZSfFj/4FALCrivaiu9JVYt/l1Nk
-         5e4t5a9OBEu3KyvhKiz0IxIrX2dNw8Tb3Yb/Od6Ml8mH61jpi6iZTf47PaKVDmSoGacY
-         x3gPBQ5vtFvjXROg4bqm+xk/au+mfKATT86oL71qIrxzv+zJ+vqx8C/mgSVdGym8Xvek
-         u/5Kpn0dW/qy/mkiOkStmc7OHgPe9+QAXgxWw2IBCknRPiPyB+pMjqyMJwwkwrGAHmqz
-         TX9Q==
-X-Gm-Message-State: AOJu0YxmnjT5UXcqfyx0jSq5elfkgd9h5cvRIid2ru5wmGkSOPqrYPWu
-        16IUi2ZPu5NMzKOgrNPK4+ZNnElT52s=
-X-Google-Smtp-Source: AGHT+IG6uLhIiISw4NsI2oZ3knWAOF7551FfjEQY1Xf9H8/u/9rkw7UwL9aAGqUk9V7ANx7JwR5qLA==
-X-Received: by 2002:a17:90a:196:b0:27d:8d42:6def with SMTP id 22-20020a17090a019600b0027d8d426defmr2975229pjc.34.1697743275856;
-        Thu, 19 Oct 2023 12:21:15 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:c4c4:bbd9:2220:727f])
-        by smtp.gmail.com with ESMTPSA id k5-20020a17090a7f0500b00267b38f5e13sm134133pjl.2.2023.10.19.12.21.14
+        d=1e100.net; s=20230601; t=1697743435; x=1698348235;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5uuyl1yr0QlhVwcr/kFqbwwoVuwQhjrCV37xzZewFRc=;
+        b=a33OoA2wA79u+2F1Ft9zYkpWdVPM45/sgvKw7UsQJlQo2GktMXFpsdjiSHrX8xFtrN
+         q89Gn+ffoOJAN+gBzGVM46ghl04wKS0JhmT5JdJaGZuRSppfgw/0Ttd+TIKrYJp/EKWm
+         VL1hhJwlX+01SAyo7zlghyR7VmiTMMsmPtMAyZbd3UQD513gb+bVL9+1lMrbzWLXFZ8z
+         sQDHl/jvgP/uHnpcpDnxxmqyolOVMC0LoXDhLNn6Z+IrcNbESysAzH7IeEVOsw1o/gL8
+         G16PkyIIA6wX+vp/v/4/C4LWDHEeoCWRUSIHmGVHdCdqI7ORHaMibxN81DuyaJ3SZdP4
+         zRoQ==
+X-Gm-Message-State: AOJu0Yzz8XEXPPpoeWg4H3nR/Rb97BkjDmPZuqVeB/Vq19h7vw47po6p
+        s4ppJGmazHl2VGVaXn8q+fg2DA==
+X-Google-Smtp-Source: AGHT+IF5RSaxdFZ8Qw7h9TmLML1tBIzoDCSUVaslk5eNl4uxiHalrl0qJkYPCIrJgQLx5qXnJXrtUw==
+X-Received: by 2002:a5b:291:0:b0:d9a:c5ac:9a60 with SMTP id x17-20020a5b0291000000b00d9ac5ac9a60mr3055680ybl.1.1697743435190;
+        Thu, 19 Oct 2023 12:23:55 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id v9-20020a258489000000b00bcd91bb300esm20035ybk.54.2023.10.19.12.23.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 12:21:15 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 12:21:12 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ferry Toth <ftoth@exalondelft.nl>
-Subject: Re: [PATCH v1 2/3] gpiolib: Fix debug messaging in
- gpiod_find_and_request()
-Message-ID: <ZTGBqEUzgGCcZP1B@google.com>
-References: <20231019173457.2445119-1-andriy.shevchenko@linux.intel.com>
- <20231019173457.2445119-3-andriy.shevchenko@linux.intel.com>
+        Thu, 19 Oct 2023 12:23:54 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 12:23:44 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>,
+        hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v3 0/5] workload-specific and memory pressure-driven
+ zswap writeback
+In-Reply-To: <20231019113627.bca226b1ac17fe9c3beecb21@linux-foundation.org>
+Message-ID: <78f9b0da-d69b-d709-946e-f10fec180233@google.com>
+References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231019101204.179a9a1d2c7a05b604dad182@linux-foundation.org> <CAJD7tkYZ826ysjnoSbYnTH3h7eWKOE=ObHNCADb78c4x7NBHzg@mail.gmail.com> <CAKEwX=PyoBfaGqH9sb07ZgjLnsGmssCDvWQo34T7brrqfZJAvg@mail.gmail.com>
+ <20231019113627.bca226b1ac17fe9c3beecb21@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019173457.2445119-3-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,16 +79,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 08:34:56PM +0300, Andy Shevchenko wrote:
-> When consolidating GPIO lookups in ACPI code, the debug messaging
-> had been broken and hence lost a bit of sense. Restore debug
-> messaging in gpiod_find_and_request() when configuring the GPIO
-> line via gpiod_configure_flags().
+On Thu, 19 Oct 2023, Andrew Morton wrote:
+> On Thu, 19 Oct 2023 11:31:17 -0700 Nhat Pham <nphamcs@gmail.com> wrote:
+> 
+> > > There are parts of the code that I would feel more comfortable if
+> > > someone took a look at (which I mentioned in individual patches). So
+> > > unless this happens in the next few days I wouldn't say so.
+> > >
+> > 
+> > I'm not super familiar with the other series. How big is the dependency?
+> > Looks like it's just a small part in the swapcache code right?
+> > 
+> > If this is the case, I feel like the best course of action is to rebase
+> > the mempolicy patch series on top of mm-unstable, and resolve
+> > this merge conflict.
+> 
+> OK, thanks.
+> 
+> Hugh, do you have time to look at rebasing on the mm-stable which I
+> pushed out 15 minutes ago?
 
-Could you give an example of the before/after messages to show exavtly
-what is being improved?
+Okay, I'm on it - but (unless you insist otherwise) it's only a v3 of
+the 10/12 "mempolicy: alloc_pages_mpol() for NUMA policy without vma"
+that I'm expecting to send you - the rest should just cherry-pick in
+cleanly.  I'll check that of course, but I'm afraid of losing details
+(e.g. any Acks you've meanwhile added) if I resend the lot.
 
-Thanks.
+Hugh
 
--- 
-Dmitry
+> 
+> > I will then send out v4 of the zswap shrinker,
+> > rebased on top of the mempolicy patch series.
+> > 
+> > If this is not the case, one thing we can do is:
+> > 
+> > a) Fix bugs (there's one kernel test robot it seems)
+> > b) Fix user-visible details (writeback counter for e.g)
+> > 
+> > and just merge the series for now. FWIW, this is an optional
+> > feature and disabled by default. So performance optimization
+> > and aesthetics change (list_lru_add() renaming etc.) can wait.
+> > 
+> > We can push out v4 by the end of today and early tomorrow
+> > if all goes well. Then everyone can review and comment on it.
