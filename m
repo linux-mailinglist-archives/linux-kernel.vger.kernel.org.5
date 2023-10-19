@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAF27CFB3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACAE7CFB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345976AbjJSNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S1346014AbjJSNhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbjJSNhE (ORCPT
+        with ESMTP id S1345990AbjJSNhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:37:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEE3F7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:37:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD1F7C433C8;
-        Thu, 19 Oct 2023 13:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697722623;
-        bh=hM+GejcJeFcJCk6KTLmHyaaUGKGdyIQVu+CbBQkyHVs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sFZavaTSnWpnr81R6GEtyBi4bc6qO6knFBvhsUxzWiktE2ODUy9AlGntNnj8SdFZg
-         yWYUXnIg1v0XTRd+hZKuecgV5fUiCf/Pfs/dEO6kObv3SzE7qHTPqlSd2sVoEfpbSd
-         I2hbmPsaDUNntIiYt2S0xQYrxYycWYz+mXCUAlQF2YwmRL8VKki+Z6Pt1kQFJP5V60
-         LPvEK+I+/NbACjosUduFqecYQl9CtNQ86twUFMKY4LZYq3CfWfCp3wTIUZ+seLZtdJ
-         SyDzTOg2pAS9wbu6b1VZg3bCr20oGIRc/CskA3CjTD0pygrDryDKCah/L91votRdSJ
-         CS2qlXRlOpmxg==
-Message-ID: <1046b929-8eb6-43bc-9660-a5a1a43916d8@kernel.org>
-Date:   Thu, 19 Oct 2023 15:36:58 +0200
+        Thu, 19 Oct 2023 09:37:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1809FF7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:37:13 -0700 (PDT)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697722630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OM2GoBUexM8Y1Ck7LQ4oTD8qZmSDa+roy4ad+WON+bk=;
+        b=Uouh5MFux3ETuWZpQp7hP4sDxbBr1lXlOpz96wmLJOAS8x5QRnwG/RZv08fI9vtxdnZpQR
+        GSyFCroWbwyJTLe/8uisa5+eODupO1TLZqfLPiPEArh9itFDFIkersCe779yPfo13ayxKc
+        WfrA98hs/3oEhomsXKDybcmhH+1qQactA1uNSVV6q1zhQ4VQ2E0WB3kvLZXFWmRHBnHI6W
+        kxCvC+cOyAb0n3tXURS4k9tXWfOtPxnDQoXNxXhC3mdHt1KPLL6nSoRLdkGKvAvJSZGpr6
+        87p6+xYikUt7i7ncUDkW/xz3/7lIW9BBNMjBEx1fgvUel79CO5CPO0FDLd7ePA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697722630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OM2GoBUexM8Y1Ck7LQ4oTD8qZmSDa+roy4ad+WON+bk=;
+        b=NAwmKZz0v2LcoAB1Wx3HvXiosMEQnD9agr/XJU1iCyrySVgi9mfMChTtR5T87Vs3LXNVoF
+        N9i9nHbqVcr0ZJBQ==
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v8 10/25] timers: Move marking timer bases idle into
+ tick_nohz_stop_tick()
+In-Reply-To: <ZSgWUTsV37rEeh3t@localhost.localdomain>
+References: <20231004123454.15691-1-anna-maria@linutronix.de>
+ <20231004123454.15691-11-anna-maria@linutronix.de>
+ <ZSgWUTsV37rEeh3t@localhost.localdomain>
+Date:   Thu, 19 Oct 2023 15:37:10 +0200
+Message-ID: <87ttqm91ix.fsf@somnus>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: drivers/memory/tegra/tegra186.c:74:49: warning: '%u' directive
- output may be truncated writing between 1 and 10 bytes into a region of size
- 6
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Ashish Mhetre <amhetre@nvidia.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Thierry Reding <treding@nvidia.com>
-References: <202310182004.0XOYolzI-lkp@intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <202310182004.0XOYolzI-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,26 +75,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 14:32, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   06dc10eae55b5ceabfef287a7e5f16ceea204aa0
-> commit: a7cffa11fa9232eabf0c4f441dc53002978ab526 memory: tegra: Add memory controller channels support
-> date:   1 year, 5 months ago
-> config: arm64-randconfig-r036-20230512 (https://download.01.org/0day-ci/archive/20231018/202310182004.0XOYolzI-lkp@intel.com/config)
-> compiler: aarch64-linux-gcc (GCC) 11.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310182004.0XOYolzI-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310182004.0XOYolzI-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-Ashish,
+> Le Wed, Oct 04, 2023 at 02:34:39PM +0200, Anna-Maria Behnsen a =C3=A9crit=
+ :
+>>  static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+>>  {
+>>  	struct clock_event_device *dev =3D __this_cpu_read(tick_cpu_device.evt=
+dev);
+>> +	unsigned long basejiff =3D ts->last_jiffies;
+>>  	u64 basemono =3D ts->timer_expires_base;
+>> -	u64 expires =3D ts->timer_expires;
+>> +	bool timer_idle =3D ts->tick_stopped;
+>> +	u64 expires;
+>>=20=20
+>>  	/* Make sure we won't be trying to stop it twice in a row. */
+>>  	ts->timer_expires_base =3D 0;
+>>=20=20
+>> +	/*
+>> +	 * Now the tick should be stopped definitely - so timer base needs to =
+be
+>> +	 * marked idle as well to not miss a newly queued timer.
+>> +	 */
+>> +	expires =3D timer_set_idle(basejiff, basemono, &timer_idle);
+>> +	if (!timer_idle) {
+>> +		/*
+>> +		 * Do not clear tick_stopped here when it was already set - it will
+>> +		 * be retained on next idle iteration when tick expired earlier
+>> +		 * than expected.
+>> +		 */
+>> +		expires =3D basemono + TICK_NSEC;
+>> +
+>> +		/* Undo the effect of timer_set_idle() */
+>> +		timer_clear_idle();
+>
+> Looks like you don't even need to clear ->is_idle on failure. timer_set_i=
+dle()
+> does it for you.
 
-Are you planning to respond to this?
+You are right. I tried several approaches and then forgot to remove it
+here.
 
-Best regards,
-Krzysztof
+>> +	} else if (expires < ts->timer_expires) {
+>> +		ts->timer_expires =3D expires;
+>> +	} else {
+>> +		expires =3D ts->timer_expires;
+>
+> Is it because timer_set_idle() doesn't recalculate the next hrtimer (as o=
+pposed
+> to get_next_timer_interrupt())? And since tick_nohz_next_event() did, the=
+ fact
+> that ts->timer_expires has a lower value may mean there is an hrtimer to =
+take
+> into account and so you rather use the old calculation?
 
+Yes and because power things rely on it.
+
+> If so please add a comment explaining that because it's not that obvious.=
+ It's
+> worth noting also the side effect that the nearest timer may have been ca=
+ncelled
+> in-between and we might reprogram too-early but the event should be rare =
+enough
+> that we don't care.
+>
+> Another reason also is that cpuidle may have programmed a shallow C-state
+> because it saw an early next expiration estimation. And if the related ti=
+mer is
+> cancelled in-between and we didn't keep the old expiration estimation, we=
+ would
+> otherwise stop the tick for a long time with a shallow C-state.
+
+I'll add a comment covering all your input! Thanks!
+The probability that there happens a lot of enqueue and dequeue of
+timers between get_next_timer_interrupt() and setting timer base idle is
+not very high. But we have to make sure that we do not miss a new first
+timer there.
+
+>> @@ -926,7 +944,7 @@ static void tick_nohz_stop_tick(struct tick_sched *t=
+s, int cpu)
+>>  	 * first call we save the current tick time, so we can restart
+>>  	 * the scheduler tick in nohz_restart_sched_tick.
+>>  	 */
+>> -	if (!ts->tick_stopped) {
+>> +	if (!ts->tick_stopped && timer_idle) {
+>
+> In fact, if (!ts->tick_stopped && !timer_idle) then you
+> should return now and avoid the reprogramming.
+
+You are right. I'll add it and test it.
+
+>> @@ -1950,6 +1950,40 @@ u64 get_next_timer_interrupt(unsigned long basej,=
+ u64 basem)
+>>  	if (cpu_is_offline(smp_processor_id()))
+>>  		return expires;
+>>=20=20
+>> +	raw_spin_lock(&base->lock);
+>> +	nextevt =3D __get_next_timer_interrupt(basej, base);
+>> +	raw_spin_unlock(&base->lock);
+>
+> It's unfortunate we have to lock here, which means we lock twice
+> on the idle path. But I can't think of a better way and I guess
+> the follow-up patches rely on that.
+
+We have to do it like this, because power people need the sleep length
+information to able to decide whether to stop the tick or not. If we do
+not want to have the timer base locked two times in idle path, we will
+not be able to move timer base idle marking into
+tick_nohz_stop_tick(). But the good thing is, that we do not mark timer
+bases idle, when tick is not stopped with this approach.
+
+btw, I try to rewrite this patch completely as tglx was not happy about
+some parts of code duplication. I'll make sure that your remarks are
+also covered.
+
+Thanks,
+
+	Anna-Maria
