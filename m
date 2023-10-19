@@ -2,167 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252D47D0057
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931A37D005A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345115AbjJSRQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        id S1345170AbjJSRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233017AbjJSRQS (ORCPT
+        with ESMTP id S233017AbjJSRTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:16:18 -0400
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F030CCF;
-        Thu, 19 Oct 2023 10:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1697735770; x=1697994970;
-        bh=w1TaW2ie2JiPlJ9irZEgwnd/XHXqHoBuv2KG6JL9RIk=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=DxYTL6RNUPIK+Pkqg7PZhn5B1I/ZpvkB4MkGcHjo25tMOxKN+Qs9lWrTAaCriWePB
-         Kpl6+tLqx6CHEUoUBAfLi/wPDhHdAYLRIPRY5hz0kDtUbryQlTbro3BTazNY7xKg1h
-         2etDSAcayiLP95yAyIUJxaZuFM0iGkPwQuF+teaJ1Q32iL1tL3ev+otHyLudpYkvu2
-         t84xY+bZidkLwGS3MZ4HFzwe0fRtNRU0x4RYO1SBLG1PZbw5IEx+PQcACBDTiEb8zi
-         0ZXXWc2ICPgYQONrZ9mbJvfunyZvWgl0/KWTR4XCaAgRFkdyycNC57sWL4/dDsyE/k
-         u3IkKr8MkSOXw==
-Date:   Thu, 19 Oct 2023 17:15:53 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rust: macros: improve `#[vtable]` documentation
-Message-ID: <20231019171540.259173-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+        Thu, 19 Oct 2023 13:19:22 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAACCF;
+        Thu, 19 Oct 2023 10:19:20 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso14195246a12.3;
+        Thu, 19 Oct 2023 10:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697735959; x=1698340759; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kuVTxDXsD5zLqnlIbrRzu0NzyI0nKgFfjwxin/PFwlU=;
+        b=ku1mMqYloz5mUBTRrXbNrE7DHw23gB1v7mpQhrMI6W32f2y4TM8ctFbxFcY4sDMAfj
+         sxZhXXgaYwa3GZPLmMApDObsKfxDOhx0lAhKkKiu+9/RVU5OHSTQWp+j/XiSCR+C/h5Z
+         0TBaysj/6dD2UWVkgmAVTSkbfjKxS/MHtQySVaItGcGHY43I0nuknng4O9mMp0mBoYeF
+         FpDer/brljutb5y3kYvYXOurpqzPzIYqQeg7iiIApu7uyEzCadLlJhfsI9lw450IosIy
+         iUFvZdEhOwPV0OIRBf9pUn3TzxJHb7meENGjvYfF7qYr/L3iUgBYSheKxOD0oI4Z2ziS
+         XXYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697735959; x=1698340759;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kuVTxDXsD5zLqnlIbrRzu0NzyI0nKgFfjwxin/PFwlU=;
+        b=PGkZkhlLsGHwnoqMIbSqzuq52d4iWP6H0QhlRafdRT0FZNAB7Y8AJ124bkal7Wvp1k
+         GVhLWFauUqp7NqiQpnp4iOnQbaoc024ykb02cpUHAsxlvvn5j+EbOgtOIUbhi6kDcQEP
+         FsbeRP47aCjl+S0c2x2IsimCZVk13lWq1hYEQhIF6zjO56+aDfRpwE3jwTVWs45rMTdN
+         GZ9y1+6aG6p78b02Q+XML7lOfRN2Lm1au0fH1qmUkHd17LZIqF9hO4Lp0cbsT68dgdVA
+         QF5SHqxSiF76500N4y/QsyD3UUi7+g+zjYR6gGzksjS+dqHo3q4J+UwLBcFr1USRgc3Z
+         avyA==
+X-Gm-Message-State: AOJu0YwPHqJ3CuJ85QdVTqX6++Q/3pnnZ2U+C/eXXftlWqITyhcFfOec
+        0H+oXBPUE3wTlKs4+vCL4ac=
+X-Google-Smtp-Source: AGHT+IGhfVwmPgjwxlHZqbpAewteoE+DkWqCmtTGfr9oV2jyUKq+NC85tBuQJGggMWKJhJhDvj3OMQ==
+X-Received: by 2002:a05:6402:27ca:b0:53e:f321:e6fd with SMTP id c10-20020a05640227ca00b0053ef321e6fdmr2359570ede.9.1697735959051;
+        Thu, 19 Oct 2023 10:19:19 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id ee16-20020a056402291000b0053e8f1f79afsm4810370edb.30.2023.10.19.10.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 10:19:18 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 20:19:16 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v6 7/9] net: dsa: microchip: Add error handling
+ for ksz_switch_macaddr_get()
+Message-ID: <20231019171916.nu4aptbxl6owg2gi@skbuf>
+References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
+ <20231019122850.1199821-8-o.rempel@pengutronix.de>
+ <20231019171308.tpjdevvnrqhly6cu@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019171308.tpjdevvnrqhly6cu@skbuf>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traits marked with `#[vtable]` need to provide default implementations
-for optional functions. The C side represents these with `NULL` in the
-vtable, so the default functions are never actually called. We do not
-want to replicate the default behavior from C in Rust, because that is
-not maintainable. Therefore we should use `build_error` in those default
-implementations. The error message for that is provided at
-`kernel::error::VTABLE_DEFAULT_ERROR`.
+On Thu, Oct 19, 2023 at 08:13:08PM +0300, Vladimir Oltean wrote:
+> On Thu, Oct 19, 2023 at 02:28:48PM +0200, Oleksij Rempel wrote:
+> > Enhance the ksz_switch_macaddr_get() function to handle errors that may
+> > occur during the call to ksz_write8(). Specifically, this update checks
+> > the return value of ksz_write8(), which may fail if regmap ranges
+> > validation is not passed and returns the error code.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > ---
+> >  drivers/net/dsa/microchip/ksz_common.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+> > index 7b05de6fe987..79052a54880c 100644
+> > --- a/drivers/net/dsa/microchip/ksz_common.c
+> > +++ b/drivers/net/dsa/microchip/ksz_common.c
+> > @@ -3612,7 +3612,7 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
+> >  	struct ksz_switch_macaddr *switch_macaddr;
+> >  	struct ksz_device *dev = ds->priv;
+> >  	const u16 *regs = dev->info->regs;
+> > -	int i;
+> > +	int i, ret;
+> >  
+> >  	/* Make sure concurrent MAC address changes are blocked */
+> >  	ASSERT_RTNL();
+> > @@ -3639,8 +3639,11 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
+> >  	dev->switch_macaddr = switch_macaddr;
+> >  
+> >  	/* Program the switch MAC address to hardware */
+> > -	for (i = 0; i < ETH_ALEN; i++)
+> > -		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
+> > +	for (i = 0; i < ETH_ALEN; i++) {
+> > +		ret = ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> 
+> I understand that you intend the error to be fatal, but this leaks memory and a refcount.
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
----
-v1 -> v2:
-- removed imperative mode in the paragraph describing optional
-  functions.
+I didn't estimate correctly what would happen.
 
- rust/kernel/error.rs |  4 ++++
- rust/macros/lib.rs   | 32 ++++++++++++++++++++++++--------
- 2 files changed, 28 insertions(+), 8 deletions(-)
+If ksz_write8() fails as you say, we will leave behind the reference to
+dev->switch_macaddr, which points to valid memory. Which means that the
+second time around, the call to ksz_switch_macaddr_get() will succeed,
+because the driver thinks that the address has been programmed to
+hardware, and it is unaware of the previous failure. But it will not
+work. Am I correct?
 
-diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-index 05fcab6abfe6..1373cde025ef 100644
---- a/rust/kernel/error.rs
-+++ b/rust/kernel/error.rs
-@@ -335,3 +335,7 @@ pub(crate) fn from_result<T, F>(f: F) -> T
-         Err(e) =3D> T::from(e.to_errno() as i16),
-     }
- }
-+
-+/// Error message for calling a default function of a [`#[vtable]`](macros=
-::vtable) trait.
-+pub const VTABLE_DEFAULT_ERROR: &str =3D
-+    "This function must not be called, see the #[vtable] documentation.";
-diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
-index c42105c2ff96..daf1ef8baa62 100644
---- a/rust/macros/lib.rs
-+++ b/rust/macros/lib.rs
-@@ -87,27 +87,41 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// implementation could just return `Error::EINVAL`); Linux typically use=
- C
- /// `NULL` pointers to represent these functions.
- ///
--/// This attribute is intended to close the gap. Traits can be declared an=
-d
--/// implemented with the `#[vtable]` attribute, and a `HAS_*` associated c=
-onstant
--/// will be generated for each method in the trait, indicating if the impl=
-ementor
--/// has overridden a method.
-+/// This attribute closes that gap. A trait can be annotated with the `#[v=
-table]` attribute.
-+/// Implementers of the trait will then also have to annotate the trait wi=
-th `#[vtable]`. This
-+/// attribute generates a `HAS_*` associated constant bool for each method=
- in the trait that is set
-+/// to true if the implementer has overridden the associated method.
-+///
-+/// For a function to be optional, it must have a default implementation. =
-But this default
-+/// implementation will never be executed, since these functions are exclu=
-sively called from
-+/// callbacks from the C side. This is because the vtable will have a `NUL=
-L` entry and the C side
-+/// will execute the default behavior. Since it is not maintainable to rep=
-licate the default
-+/// behavior in Rust, the default implementation should be:
-+///
-+/// ```compile_fail
-+/// # use kernel::error::VTABLE_DEFAULT_ERROR;
-+/// kernel::build_error(VTABLE_DEFAULT_ERROR)
-+/// ```
-+///
-+/// note that you might need to import [`kernel::error::VTABLE_DEFAULT_ERR=
-OR`].
- ///
--/// This attribute is not needed if all methods are required.
-+/// This macro should not be used when all function are required.
- ///
- /// # Examples
- ///
- /// ```ignore
-+/// # use kernel::error::VTABLE_DEFAULT_ERROR;
- /// use kernel::prelude::*;
- ///
- /// // Declares a `#[vtable]` trait
- /// #[vtable]
--/// pub trait Operations: Send + Sync + Sized {
-+/// pub trait Operations {
- ///     fn foo(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- ///
- ///     fn bar(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- /// }
- ///
-@@ -125,6 +139,8 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// assert_eq!(<Foo as Operations>::HAS_FOO, true);
- /// assert_eq!(<Foo as Operations>::HAS_BAR, false);
- /// ```
-+///
-+/// [`kernel::error::VTABLE_DEFAULT_ERROR`]: ../kernel/error/constant.VTAB=
-LE_DEFAULT_ERROR.html
- #[proc_macro_attribute]
- pub fn vtable(attr: TokenStream, ts: TokenStream) -> TokenStream {
-     vtable::vtable(attr, ts)
-
-base-commit: a7135d10754760f0c038497b44c2c2f2b0fb5651
---=20
-2.41.0
-
-
+If so, it needs to tear down properly, because if ksz_switch_macaddr_get()
+fails once to write to hardware, it should fail always.
