@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7CA7CF1E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDFC7CF1E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjJSICB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        id S232976AbjJSIDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbjJSIB7 (ORCPT
+        with ESMTP id S232958AbjJSIDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:01:59 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5F912F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:01:57 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c50906f941so90378131fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697702515; x=1698307315; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wThBUxBh7v0znNn0ZPl0WI7OQvkdGdCrZ1lZ3b6Zyy4=;
-        b=TKDKNnH7UEYugL3PqHv4G/pue0itDTbyzaWo4llf4Jg5vd7fKtuAYkA5nJpkma0VZV
-         b7md8SubrS+e136mFp1dk48jczJRFHnqvLCgLIVNHiqavQUTHDVi+AIGUdQoS3g3Rkyk
-         fsUQCSwrUcUTSIb3A5ngKK4jA83PTx8dynJkIH1iETBUXNj4KjRIXZOIpqoYM3O33pn5
-         S7MMRIMmwqnjtcCD8eu5bRjfCuD/tcpJpjGf9yzfI7R7+ZtDsoFoYFSq8pJe6P11Mj0/
-         wcxsOWxzYnjSyKbBqK1Z7dxKC2RaI6NXPJ5Igmx0c10jouzK2ddM3g4NeR74AvPTrt9X
-         Xrbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697702515; x=1698307315;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wThBUxBh7v0znNn0ZPl0WI7OQvkdGdCrZ1lZ3b6Zyy4=;
-        b=QLG+pGKUXYRBoBCQ/YQYpKYq1Cz5mffhxaG0tVtPV10d9riIZA+GgP2QrhRyDIZRUs
-         wDW7nSoMv+X8Bp6Ngo3qhxGU6buvwLcs5NckSjndXaxOpuIWEYwzLp4582Z6uHAsvura
-         0ViDUXf0hRt04QhN3f4ICjaWpnNjRwcNRZ4ldCcUiJGlNoIA29BFCQOjbyNYkPTKm/wl
-         AMrZ4yAUHKcEgiJGsBB7mGACv+RqpnSNB+/sDox6XXu1w9MaD8wLebRjlFGCqRjcA13m
-         rp7FN8GgLUaEuV6O4XggFwtFSY7jm0HQWonRdZ362AUCQPL2xRUVcmhegdNE7IU0gY87
-         RaSQ==
-X-Gm-Message-State: AOJu0YyMZklzerlJq+LKl5vkcTsgKK3RMKpuZodmCoMnnUjiU7g3RMI0
-        jjnic4DAhrgVPC6O4tmG8aHRTg==
-X-Google-Smtp-Source: AGHT+IEkF+Ae4mUiCJOXGTWK+iVSfRk0ko7bvAOvA0qtVmbQYW0wA+W8atiyY1iQZ4X9vKJwGK3qXg==
-X-Received: by 2002:a2e:bc04:0:b0:2c5:13e8:e6dc with SMTP id b4-20020a2ebc04000000b002c513e8e6dcmr1149965ljf.31.1697702515155;
-        Thu, 19 Oct 2023 01:01:55 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id je6-20020a05600c1f8600b004063ea92492sm3790133wmb.22.2023.10.19.01.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 01:01:54 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 10:01:53 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/8] RISC-V: KVM: Forward SBI DBCN extension to
- user-space
-Message-ID: <20231019-5e79c16a0731f60d862ddfff@orel>
-References: <20231012051509.738750-1-apatel@ventanamicro.com>
- <20231012051509.738750-5-apatel@ventanamicro.com>
+        Thu, 19 Oct 2023 04:03:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B82212F;
+        Thu, 19 Oct 2023 01:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697702586; x=1729238586;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=el3R2q8bJhLS09Xe5Rkf62rAafB0MmVgXTxS+XNrHKM=;
+  b=bhS9k0pWr95zLvPH2C1EfROxDbZefiJm2HS7TJvdeTbVd6d6CDFWEKyh
+   jumPHEiWsCNJclkgf2TlpatJ1+5c/uap7+z6o2htCputpOnpXWIppQ/EV
+   Ld+29SWe5M5t7nu6+A4Q7Id/BA6vR/z46NYH9GDl0Nq0suwX6Ug5dq10U
+   1jHofbXL2X+Ib/ybqFPsgTwMXzFEeZPMcQ4M5/05DrMImouYcp+oBvmON
+   oJIVmvSUxNpHgvvZFR383roUv6q2FV8A2Bon9/rRzbW/go5FerSchA5KE
+   hd3sEg3dIwvmUJ6KLbKSYGb++OeUi0EPOxlqtttcY/thSzYDoQSkmGb8L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="452665935"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="452665935"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 01:03:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="750427438"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="750427438"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 19 Oct 2023 01:03:00 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtNzd-0001qW-1u;
+        Thu, 19 Oct 2023 08:02:57 +0000
+Date:   Thu, 19 Oct 2023 16:01:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Julien Massot <julien.massot@iot.bzh>,
+        Trevor Wu <trevor.wu@mediatek.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Simon Glass <sjg@chromium.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Drop kernel copy of common reserved-memory
+ bindings
+Message-ID: <202310191537.20z1Aolb-lkp@intel.com>
+References: <20231013200851.347042-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012051509.738750-5-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20231013200851.347042-1-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,109 +83,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:45:05AM +0530, Anup Patel wrote:
-> The frozen SBI v2.0 specification defines the SBI debug console
-> (DBCN) extension which replaces the legacy SBI v0.1 console
-> functions namely sbi_console_getchar() and sbi_console_putchar().
-> 
-> The SBI DBCN extension needs to be emulated in the KVM user-space
-> (i.e. QEMU-KVM or KVMTOOL) so we forward SBI DBCN calls from KVM
-> guest to the KVM user-space which can then redirect the console
-> input/output to wherever it wants (e.g. telnet, file, stdio, etc).
-> 
-> The SBI debug console is simply a early console available to KVM
-> guest for early prints and it does not intend to replace the proper
-> console devices such as 8250, VirtIO console, etc.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/kvm_vcpu_sbi.h |  1 +
->  arch/riscv/include/uapi/asm/kvm.h     |  1 +
->  arch/riscv/kvm/vcpu_sbi.c             |  4 ++++
->  arch/riscv/kvm/vcpu_sbi_replace.c     | 32 +++++++++++++++++++++++++++
->  4 files changed, 38 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> index c02bda5559d7..6a453f7f8b56 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> @@ -73,6 +73,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_ipi;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_rfence;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_srst;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
-> +extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_dbcn;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_experimental;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_vendor;
->  
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-> index 917d8cc2489e..60d3b21dead7 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -156,6 +156,7 @@ enum KVM_RISCV_SBI_EXT_ID {
->  	KVM_RISCV_SBI_EXT_PMU,
->  	KVM_RISCV_SBI_EXT_EXPERIMENTAL,
->  	KVM_RISCV_SBI_EXT_VENDOR,
-> +	KVM_RISCV_SBI_EXT_DBCN,
->  	KVM_RISCV_SBI_EXT_MAX,
->  };
->  
-> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-> index 1b1cee86efda..bb76c3cf633f 100644
-> --- a/arch/riscv/kvm/vcpu_sbi.c
-> +++ b/arch/riscv/kvm/vcpu_sbi.c
-> @@ -66,6 +66,10 @@ static const struct kvm_riscv_sbi_extension_entry sbi_ext[] = {
->  		.ext_idx = KVM_RISCV_SBI_EXT_PMU,
->  		.ext_ptr = &vcpu_sbi_ext_pmu,
->  	},
-> +	{
-> +		.ext_idx = KVM_RISCV_SBI_EXT_DBCN,
-> +		.ext_ptr = &vcpu_sbi_ext_dbcn,
-> +	},
->  	{
->  		.ext_idx = KVM_RISCV_SBI_EXT_EXPERIMENTAL,
->  		.ext_ptr = &vcpu_sbi_ext_experimental,
-> diff --git a/arch/riscv/kvm/vcpu_sbi_replace.c b/arch/riscv/kvm/vcpu_sbi_replace.c
-> index 7c4d5d38a339..23b57c931b15 100644
-> --- a/arch/riscv/kvm/vcpu_sbi_replace.c
-> +++ b/arch/riscv/kvm/vcpu_sbi_replace.c
-> @@ -175,3 +175,35 @@ const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_srst = {
->  	.extid_end = SBI_EXT_SRST,
->  	.handler = kvm_sbi_ext_srst_handler,
->  };
-> +
-> +static int kvm_sbi_ext_dbcn_handler(struct kvm_vcpu *vcpu,
-> +				    struct kvm_run *run,
-> +				    struct kvm_vcpu_sbi_return *retdata)
-> +{
-> +	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> +	unsigned long funcid = cp->a6;
-> +
-> +	switch (funcid) {
-> +	case SBI_EXT_DBCN_CONSOLE_WRITE:
-> +	case SBI_EXT_DBCN_CONSOLE_READ:
-> +	case SBI_EXT_DBCN_CONSOLE_WRITE_BYTE:
-> +		/*
-> +		 * The SBI debug console functions are unconditionally
-> +		 * forwarded to the userspace.
-> +		 */
-> +		kvm_riscv_vcpu_sbi_forward(vcpu, run);
-> +		retdata->uexit = true;
-> +		break;
-> +	default:
-> +		retdata->err_val = SBI_ERR_NOT_SUPPORTED;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_dbcn = {
-> +	.extid_start = SBI_EXT_DBCN,
-> +	.extid_end = SBI_EXT_DBCN,
-> +	.default_unavail = true,
-> +	.handler = kvm_sbi_ext_dbcn_handler,
-> +};
-> -- 
-> 2.34.1
->
+Hi Rob,
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on krzk-dt/for-next remoteproc/rproc-next broonie-sound/for-next linus/master v6.6-rc6 next-20231018]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Rob-Herring/dt-bindings-Drop-kernel-copy-of-common-reserved-memory-bindings/20231017-125913
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20231013200851.347042-1-robh%40kernel.org
+patch subject: [PATCH] dt-bindings: Drop kernel copy of common reserved-memory bindings
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231019/202310191537.20z1Aolb-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231019/202310191537.20z1Aolb-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310191537.20z1Aolb-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   sort: -:2: disorder: 2023.8.dev2+gd5e5147
+>> ERROR: dtschema minimum version is v2023.9
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
