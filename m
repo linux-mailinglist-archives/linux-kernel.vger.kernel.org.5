@@ -2,179 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 713CD7D0504
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6532A7D0508
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346650AbjJSWwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S1346686AbjJSWxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjJSWwV (ORCPT
+        with ESMTP id S235553AbjJSWxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:52:21 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD3298;
-        Thu, 19 Oct 2023 15:52:19 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-57ad95c555eso115883eaf.3;
-        Thu, 19 Oct 2023 15:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697755939; x=1698360739; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gw+NhNs7Kd8Sn7Jgw+a43o7ZL5jXRR/xNu8rKmPPZ40=;
-        b=cqUlDcOn8B2qnMUm367lem/JMGujVIYophyIKNq4aMiXtD9SllwQvbetUbydstn//8
-         ufOcYr7Q6jGEB1uFhd6xR/RilEZGFKExrP+XabRSdG/v0KRLY7OQoDRk3K0TVsLtEsgC
-         pir6osLTnzboHD8z37Ih0WNL/OjzI6wGwmvwtmieNFZ2P0amKhKOhfdNAbbmYQJvJwh4
-         QRqOzVF0xvO3q7C4NZVwggTEtJinGXcUPmyNytBqrVrMl39DGMNGu7gNUVojaYjA4QZG
-         2oFE8bjTV9SyxxCt6LdvvYzcdd4OVk+gJe2ySANO/8CZnVG9AZNhYQcVj5LFT4zCDFym
-         Uqgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697755939; x=1698360739;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gw+NhNs7Kd8Sn7Jgw+a43o7ZL5jXRR/xNu8rKmPPZ40=;
-        b=vG40LavUgaRsEZq88dlRznRPSkgk/EfTgieDjRjJbjWycsHFP5GLsyUwBWHOGRVdeE
-         n6A9mzhcf6b0EdUk8LT8etvCLo85EvqT8ouFOZZYP6I2I6uGR+2hBfEPJCU3mOBTIC1K
-         I+tfwqv4XRtMWrvufsidyzCsxFdvbFAZeSC15Hge3RY5csyYBb5jIwdkxb+dngs/94cP
-         13QQ+tzt7R4rToZw7Pq27fBb4mv+LPwPAGHH0PD5MgRsVO4CtluH8vELz8hoSGukEU46
-         fzMN5rM9P3ednzmgMSS2a0SxSW1gc8hIQYRf/hJy93rEfyu8Lrx3v9Rx0sdZFY758fvC
-         bHJg==
-X-Gm-Message-State: AOJu0YxHBDqIa7hmwCEjdBIPcPwrtlKfs1Qvvc5t8BXQeTzfr21xzSIu
-        aWZvwpiUkrDU1O6LMzLRlzg=
-X-Google-Smtp-Source: AGHT+IFYnyvkEDIVfG+6uXEDLM3MsKx6hhZ2KQYVQfuI264k9/7LuO5GxhihGAcLJrxNg6KXaIO4ZQ==
-X-Received: by 2002:a05:6358:724e:b0:166:dc89:8c92 with SMTP id i14-20020a056358724e00b00166dc898c92mr108490rwa.26.1697755938799;
-        Thu, 19 Oct 2023 15:52:18 -0700 (PDT)
-Received: from surya ([2600:1700:3ec2:2011:b14a:c750:3938:f592])
-        by smtp.gmail.com with ESMTPSA id x26-20020aa79ada000000b006be5af77f06sm289689pfp.2.2023.10.19.15.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 15:52:18 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 15:52:15 -0700
-From:   Manu Bretelle <chantr4@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        He Kuang <hekuang@huawei.com>, Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/1] tools build: Fix llvm feature detection, still used
- by bpftool
-Message-ID: <ZTGzHzhZwJv0+xBH@surya>
-References: <ZTGc8S293uaTqHja@kernel.org>
+        Thu, 19 Oct 2023 18:53:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DF4124;
+        Thu, 19 Oct 2023 15:53:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E2BAC433C8;
+        Thu, 19 Oct 2023 22:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697755983;
+        bh=4QWPJAIM+Q/aCyrT5OkgDDJq9iMWdUi9V0YvpsfpZ88=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aVduFb5pNRpQcQMJiDrYPHiDS0fntkHHzp9NxGuevyHM93LUoA0kRcOpYlxWFSnAj
+         Ag4/ybpQRGHtmBx2JTAJrMWPe5Dy33FiPkmVqJy7aAtwWVo8E89ng1poSJGMhYO3cY
+         2jYHMM4+YvQ4AT4KVVdqH8yArboj7T3w3Fij5A4ucvAEgoMAVLKsPJw64J4ZQqfO3Q
+         M1wAodPDnYW6xBPvZx50gzd6k3JSSf44scmp0B4Vw45fn16Urrq+qCHS+xJj6h1X4t
+         aeJyXyrTTU9MFgGZKCkPXrzCkjtr+uuUxXyhbEX0y3AfyoyaMfxcAr7n+RIT8AYbwP
+         WOCyxpG3HETWw==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] f2fs: do not return EFSCORRUPTED, but try to run online repair
+Date:   Thu, 19 Oct 2023 15:53:00 -0700
+Message-ID: <20231019225300.1846362-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTGc8S293uaTqHja@kernel.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 06:17:37PM -0300, Arnaldo Carvalho de Melo wrote:
-> When removing the BPF event for perf a feature test that checks if the
-> llvm devel files are availabe was removed but that is also used by
-> bpftool.
-> 
-> bpftool uses it to decide what kind of disassembly it will use: llvm or
-> binutils based.
-> 
-> Removing the tools/build/feature/test-llvm.cpp file made bpftool to
-> always fallback to binutils disassembly, even with the llvm devel files
-> installed, fix it by restoring just that small test-llvm.cpp test file.
-> 
-> Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
-> Reported-by: Manu Bretelle <chantr4@gmail.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Carsten Haitzler <carsten.haitzler@arm.com>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Fangrui Song <maskray@google.com>
-> Cc: He Kuang <hekuang@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: llvm@lists.linux.dev
-> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Tom Rix <trix@redhat.com>
-> Cc: Wang Nan <wangnan0@huawei.com>
-> Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> Cc: Yang Jihong <yangjihong1@huawei.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: YueHaibing <yuehaibing@huawei.com>
-> Link: https://lore.kernel.org/lkml/ZTGa0Ukt7QyxWcVy@kernel.org
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/build/feature/test-llvm.cpp | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->  create mode 100644 tools/build/feature/test-llvm.cpp
-> 
-> diff --git a/tools/build/feature/test-llvm.cpp b/tools/build/feature/test-llvm.cpp
-> new file mode 100644
-> index 0000000000000000..88a3d1bdd9f6978e
-> --- /dev/null
-> +++ b/tools/build/feature/test-llvm.cpp
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "llvm/Support/ManagedStatic.h"
-> +#include "llvm/Support/raw_ostream.h"
-> +#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
-> +
-> +#if NUM_VERSION < 0x030900
-> +# error "LLVM version too low"
-> +#endif
-> +int main()
-> +{
-> +	llvm::errs() << "Hello World!\n";
-> +	llvm::llvm_shutdown();
-> +	return 0;
-> +}
+If we return the error, there's no way to recover the status as of now, since
+fsck does not fix the xattr boundary issue.
 
-Thanks for the quick turnaround!
+Cc: stable@vger.kernel.org
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/node.c  |  4 +++-
+ fs/f2fs/xattr.c | 20 +++++++++++++-------
+ 2 files changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 1c8bf56c834c..256270d6a065 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2750,7 +2750,9 @@ int f2fs_recover_xattr_data(struct inode *inode, struct page *page)
+ 	f2fs_update_inode_page(inode);
+ 
+ 	/* 3: update and set xattr node page dirty */
+-	memcpy(F2FS_NODE(xpage), F2FS_NODE(page), VALID_XATTR_BLOCK_SIZE);
++	if (page)
++		memcpy(F2FS_NODE(xpage), F2FS_NODE(page),
++				VALID_XATTR_BLOCK_SIZE);
+ 
+ 	set_page_dirty(xpage);
+ 	f2fs_put_page(xpage, 1);
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index a657284faee3..465d145360de 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -364,10 +364,10 @@ static int lookup_all_xattrs(struct inode *inode, struct page *ipage,
+ 
+ 	*xe = __find_xattr(cur_addr, last_txattr_addr, NULL, index, len, name);
+ 	if (!*xe) {
+-		f2fs_err(F2FS_I_SB(inode), "inode (%lu) has corrupted xattr",
++		f2fs_err(F2FS_I_SB(inode), "lookup inode (%lu) has corrupted xattr",
+ 								inode->i_ino);
+ 		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_FSCK);
+-		err = -EFSCORRUPTED;
++		err = -ENODATA;
+ 		f2fs_handle_error(F2FS_I_SB(inode),
+ 					ERROR_CORRUPTED_XATTR);
+ 		goto out;
+@@ -584,13 +584,12 @@ ssize_t f2fs_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size)
+ 
+ 		if ((void *)(entry) + sizeof(__u32) > last_base_addr ||
+ 			(void *)XATTR_NEXT_ENTRY(entry) > last_base_addr) {
+-			f2fs_err(F2FS_I_SB(inode), "inode (%lu) has corrupted xattr",
++			f2fs_err(F2FS_I_SB(inode), "list inode (%lu) has corrupted xattr",
+ 						inode->i_ino);
+ 			set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_FSCK);
+-			error = -EFSCORRUPTED;
+ 			f2fs_handle_error(F2FS_I_SB(inode),
+ 						ERROR_CORRUPTED_XATTR);
+-			goto cleanup;
++			break;
+ 		}
+ 
+ 		if (!prefix)
+@@ -650,7 +649,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 
+ 	if (size > MAX_VALUE_LEN(inode))
+ 		return -E2BIG;
+-
++retry:
+ 	error = read_all_xattrs(inode, ipage, &base_addr);
+ 	if (error)
+ 		return error;
+@@ -660,7 +659,14 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 	/* find entry with wanted name. */
+ 	here = __find_xattr(base_addr, last_base_addr, NULL, index, len, name);
+ 	if (!here) {
+-		f2fs_err(F2FS_I_SB(inode), "inode (%lu) has corrupted xattr",
++		if (!F2FS_I(inode)->i_xattr_nid) {
++			f2fs_notice(F2FS_I_SB(inode),
++				"recover xattr in inode (%lu)", inode->i_ino);
++			f2fs_recover_xattr_data(inode, NULL);
++			kfree(base_addr);
++			goto retry;
++		}
++		f2fs_err(F2FS_I_SB(inode), "set inode (%lu) has corrupted xattr",
+ 								inode->i_ino);
+ 		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_FSCK);
+ 		error = -EFSCORRUPTED;
+-- 
+2.42.0.655.g421f12c284-goog
 
