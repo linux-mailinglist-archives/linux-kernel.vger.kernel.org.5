@@ -2,102 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A0E7CFA65
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971297CFA6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345688AbjJSNIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
+        id S1345737AbjJSNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbjJSNIO (ORCPT
+        with ESMTP id S1345837AbjJSNKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:08:14 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8914E9F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:08:12 -0700 (PDT)
-Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SB7HS0pcBzrTF9;
-        Thu, 19 Oct 2023 21:05:24 +0800 (CST)
-Received: from [10.67.120.218] (10.67.120.218) by
- dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 19 Oct 2023 21:08:08 +0800
-Subject: Re: [PATCH 3/3] coresight: ultrasoc-smb: fix uninitialized before use
- buf_hw_base
-To:     Yicong Yang <yangyicong@huawei.com>
-References: <20231012094706.21565-1-hejunhao3@huawei.com>
- <20231012094706.21565-4-hejunhao3@huawei.com>
- <fe5af067-d2f4-7967-e75b-272b00e6275f@huawei.com>
-CC:     <james.clark@arm.com>, <suzuki.poulose@arm.com>,
-        <yangyicong@hisilicon.com>, <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>
-From:   hejunhao <hejunhao3@huawei.com>
-Message-ID: <3e67ba5a-4022-0089-1ede-46f73ad70afa@huawei.com>
-Date:   Thu, 19 Oct 2023 21:08:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 19 Oct 2023 09:10:03 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6222189
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:09:06 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JD5pnw022703;
+        Thu, 19 Oct 2023 13:08:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=wefq5l/NfyiUOh2/K3hLXsYdyjlw2nsfgUdvc6uHmaQ=;
+ b=VU0RxPDgFnJIB9glY0+FpWzyhm0tw+o/UmuH//TM0WfFCSGo+/s3Juz4nuiNlEkkjF4c
+ Y1vrRtrUJQPgEWoXjIZkCi7w+ig5iCN5FDk2YeQNH/jxosmlWn6qO5D7mTovlbu27D/U
+ MEe/RFU8N+ylgffyGx2mIpZycrlsWSm1as9y/CPr7Le/0AOmeE/jz26zDqBgcmn2ZVrp
+ zBGfopV7+3kAxvQEo0oQy1Z9GGWCFNMKiPZHS912RaIzL9Qj6b0jo+8AN1ggDuWj+zeQ
+ vXT5nGaSvM8uzcHbn59Rfk5h9Fj+z8DfyFlZ7qEYp6GqpUJmveawHutekVAUqfdW4VX4 qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu51nr7f7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:08:51 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JD6NIw026640;
+        Thu, 19 Oct 2023 13:08:50 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu51nr7dy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:08:50 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JAF9GS019900;
+        Thu, 19 Oct 2023 13:08:49 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr8120evx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 13:08:49 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JD8ll344302644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Oct 2023 13:08:47 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88C6320043;
+        Thu, 19 Oct 2023 13:08:47 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9DFB420040;
+        Thu, 19 Oct 2023 13:08:44 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Thu, 19 Oct 2023 13:08:44 +0000 (GMT)
+Date:   Thu, 19 Oct 2023 18:38:43 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] powerpc/smp: Move shared_processor static key to
+ smp.h
+Message-ID: <20231019130843.GI2194132@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
+ <20231018163751.2423181-4-srikar@linux.vnet.ibm.com>
+ <87sf675im3.fsf@mail.lhotse>
 MIME-Version: 1.0
-In-Reply-To: <fe5af067-d2f4-7967-e75b-272b00e6275f@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.120.218]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500002.china.huawei.com (7.185.36.158)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87sf675im3.fsf@mail.lhotse>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: aU8TME1IjwVF9r22d_NEiqeu4_u4_b1W
+X-Proofpoint-GUID: 27h_Y8VBQgPyYVsbJj6D0z1NkvNofouQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_11,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=793 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190112
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Michael Ellerman <mpe@ellerman.id.au> [2023-10-19 15:41:40]:
 
-On 2023/10/19 10:34, Yicong Yang wrote:
-> On 2023/10/12 17:47, Junhao He wrote:
->> In smb_reset_buffer, the sdb->buf_hw_base variable is uninitialized
->> before use, which initializes it in smb_init_data_buffer. And the SMB
->> regiester are set in smb_config_inport.
->> So move the call after smb_config_inport.
->>
->> Fixes: 06f5c2926aaa ("drivers/coresight: Add UltraSoc System Memory Buffer driver")
->>
->> Signed-off-by: Junhao He <hejunhao3@huawei.com>
->> ---
->>   drivers/hwtracing/coresight/ultrasoc-smb.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
->> index e78edc3480ce..21ba473786e5 100644
->> --- a/drivers/hwtracing/coresight/ultrasoc-smb.c
->> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
->> @@ -475,7 +475,6 @@ static int smb_init_data_buffer(struct platform_device *pdev,
->>   static void smb_init_hw(struct smb_drv_data *drvdata)
->>   {
->>   	smb_disable_hw(drvdata);
->> -	smb_reset_buffer(drvdata);
->>   
->>   	writel(SMB_LB_CFG_LO_DEFAULT, drvdata->base + SMB_LB_CFG_LO_REG);
->>   	writel(SMB_LB_CFG_HI_DEFAULT, drvdata->base + SMB_LB_CFG_HI_REG);
->> @@ -597,6 +596,7 @@ static int smb_probe(struct platform_device *pdev)
->>   	}
->>   
->>   	platform_set_drvdata(pdev, drvdata);
->> +	smb_reset_buffer(drvdata);
-> Shouldn't we reset the buffer before registering the sink? Otherwise it'll
-> be possible for user to access an unreset one.
->
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> > The ability to detect if the system is running in a shared processor
+> > mode is helpful in few more generic cases not just in
+> > paravirtualization.
+> > For example: At boot time, different scheduler/ topology flags may be
+> > set based on the processor mode. Hence move it to a more generic file.
+> 
+> I'd rather you just included paravirt.h in the few files where you need it.
 
-Hi Yicong,
 
-Thanks for the comments!
+I thought, detecting if a Processor was shared or not was more a
+smp/processor related than a paravirt related.
 
-The code after the smb_register_sink() function also needs to moved.
-I will fix all in next version.
+Will drop as suggested.
 
-Best regards,
-Junhao.
+> 
+> cheers
+> 
+> > diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
+> > index 0372b0093f72..cf83e837a571 100644
+> > --- a/arch/powerpc/include/asm/paravirt.h
+> > +++ b/arch/powerpc/include/asm/paravirt.h
+> > @@ -15,13 +15,6 @@
+> >  #include <asm/kvm_guest.h>
+> >  #include <asm/cputhreads.h>
+> >  
+> > -DECLARE_STATIC_KEY_FALSE(shared_processor);
+> > -
+> > -static inline bool is_shared_processor(void)
+> > -{
+> > -	return static_branch_unlikely(&shared_processor);
+> > -}
+> > -
+> >  #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+> >  extern struct static_key paravirt_steal_enabled;
+> >  extern struct static_key paravirt_steal_rq_enabled;
+> > @@ -77,11 +70,6 @@ static inline bool is_vcpu_idle(int vcpu)
+> >  	return lppaca_of(vcpu).idle;
+> >  }
+> >  #else
+> > -static inline bool is_shared_processor(void)
+> > -{
+> > -	return false;
+> > -}
+> > -
+> >  static inline u32 yield_count_of(int cpu)
+> >  {
+> >  	return 0;
+> > diff --git a/arch/powerpc/include/asm/smp.h b/arch/powerpc/include/asm/smp.h
+> > index aaaa576d0e15..08631b2a4528 100644
+> > --- a/arch/powerpc/include/asm/smp.h
+> > +++ b/arch/powerpc/include/asm/smp.h
+> > @@ -34,6 +34,20 @@ extern bool coregroup_enabled;
+> >  extern int cpu_to_chip_id(int cpu);
+> >  extern int *chip_id_lookup_table;
+> >  
+> > +#ifdef CONFIG_PPC_SPLPAR
+> > +DECLARE_STATIC_KEY_FALSE(shared_processor);
+> > +
+> > +static inline bool is_shared_processor(void)
+> > +{
+> > +	return static_branch_unlikely(&shared_processor);
+> > +}
+> > +#else
+> > +static inline bool is_shared_processor(void)
+> > +{
+> > +	return false;
+> > +}
+> > +#endif
+> > +
+> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l1_cache_map);
+> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l2_cache_map);
+> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l3_cache_map);
+> > -- 
+> > 2.31.1
 
+-- 
+Thanks and Regards
+Srikar Dronamraju
