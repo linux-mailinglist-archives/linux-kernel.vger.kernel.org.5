@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DA27CF6B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A133E7CF6C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbjJSL1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
+        id S1345375AbjJSL2d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 07:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345346AbjJSL07 (ORCPT
+        with ESMTP id S1345324AbjJSL2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:26:59 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D055612F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:26:56 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so8340479276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697714816; x=1698319616; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PUrrcj+/ipouo/XR5RIgfw8wVuJ5J+7IILf/FghVZXQ=;
-        b=L9f38YWU39ice32PN6Gk6IneWrA7GTaQko/2pMcAvyIFSspRayFYidiSyXxz2TvxN2
-         WN+AT23DvUuAmVfiqxO5t7JJvOjTG45teXEl1i17H6KohaXZ2J3HaEv4C1ZzxyqS7CSF
-         XDCY/nfkOClC2h/6Idw1icUqG5+fRg1yqlGOJjZgDiNHGJkLpOXPyvs8sHnJj5rhox1B
-         BIvDcp+Iy3H/Ax05TllbFrTpBmXIJ/lSJOP4Ebbl8eBdcc+w0f4Mwwh0bcjBz9O7taiH
-         WJ9OTdif9c/a0MKh1izip+0iJM2a1P6I0Ba36ezCz5zfbM2xput761mY9GEDuN0WUnMr
-         c5jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697714816; x=1698319616;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PUrrcj+/ipouo/XR5RIgfw8wVuJ5J+7IILf/FghVZXQ=;
-        b=TJ9id/EbbXl48KsQxOc1pgy7pC3Q8Y/c0gofh1D9UAP9G+NqR/n/kxgCV+XvQNeDnu
-         3JlIF9FH2dxh8Y2afVhp/CcPOwNxmaYJn1tgs0QJdWpWBQTwkulolKewd/eaPs7lEhzW
-         meoxP/OqfLVlkr9ry3uPP/6bC2b8kmd2IkIHMndaM+l0kQRsGZjpiE3qRETY3fP2jj2W
-         4jn+iu1i6pkPXJNFOvqTrHxOEVMmr6NHVOiqw4eOY3xmEt/NViHPKiZu+njKwKg788W7
-         pokJSmbLrBruHXJqRkHVVqm4/px91vxE/YTXHXUgCgQ7T/NV1LrQZN8IOKWbkd75+eN1
-         YFvA==
-X-Gm-Message-State: AOJu0YxnidCGlcdoddEDJidQS0yzMlohsTfQrDVfk+dzU6SSD4DZwjN9
-        Rs09k5cWqwklix887PtqNTow7fXqWIdYgrYMiCZxMw==
-X-Google-Smtp-Source: AGHT+IHHpyH97w+iL3El9mSizFMVO4FKJ8HXRgdkh6mPyu1/bq7yU2Ex3EFkQtcuQTKmfRtzWjhohIwy1xpnLV3M9ik=
-X-Received: by 2002:a25:ae99:0:b0:d9a:fc8e:7c05 with SMTP id
- b25-20020a25ae99000000b00d9afc8e7c05mr1859738ybj.45.1697714816028; Thu, 19
- Oct 2023 04:26:56 -0700 (PDT)
+        Thu, 19 Oct 2023 07:28:30 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FCE112
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:28:28 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=9670043017=fe@dev.tdt.de>)
+        id 1qtRCJ-00GiEP-Pv; Thu, 19 Oct 2023 13:28:15 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1qtRCI-00ElGy-Rk; Thu, 19 Oct 2023 13:28:14 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 7241724004B;
+        Thu, 19 Oct 2023 13:28:14 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id C3699240040;
+        Thu, 19 Oct 2023 13:28:13 +0200 (CEST)
+Received: from localhost.localdomain (unknown [10.2.3.40])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 1CB822062B;
+        Thu, 19 Oct 2023 13:28:13 +0200 (CEST)
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
+        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        ansuelsmth@gmail.com, m.brock@vanmierlo.com
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: [PATCH v4 0/3] ledtrig-tty: add additional tty state evaluation
+Date:   Thu, 19 Oct 2023 13:28:06 +0200
+Message-ID: <20231019112809.881730-1-fe@dev.tdt.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
- <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com> <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
-In-Reply-To: <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 19 Oct 2023 13:26:19 +0200
-Message-ID: <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Type: text/plain; charset=UTF-8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8BIT
+X-purgate-type: clean
+X-purgate-ID: 151534::1697714895-CEEF23D8-7DBE2A5B/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
-> <stephan.gerhold@kernkonzept.com> wrote:
-> >
-> > The genpd core caches performance state votes from devices that are
-> > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
-> > runtime PM performance state handling"). They get applied once the
-> > device becomes active again.
-> >
-> > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
-> > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
-> > devices that use runtime PM only to control the enable and performance
-> > state for the attached power domain.
-> >
-> > However, at the moment nothing ever resumes the virtual devices created
-> > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
-> > means that performance state votes made during cpufreq scaling get
-> > always cached and never applied to the hardware.
-> >
-> > Fix this by enabling the devices after attaching them and use
-> > dev_pm_syscore_device() to ensure the power domains also stay on when
-> > going to suspend. Since it supplies the CPU we can never turn it off
-> > from Linux. There are other mechanisms to turn it off when needed,
-> > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
->
-> I believe we discussed using dev_pm_syscore_device() for the previous
-> version. It's not intended to be used for things like the above.
->
-> Moreover, I was under the impression that it wasn't really needed. In
-> fact, I would think that this actually breaks things for system
-> suspend/resume, as in this case the cpr driver's genpd
-> ->power_on|off() callbacks are no longer getting called due this,
-> which means that the cpr state machine isn't going to be restored
-> properly. Or did I get this wrong?
+Changes in v4:
+- Merging patch 3/4 into patch number 4/4 from previous series, because
+  it fixes a problem that does not exist upstream. This was a note from
+  the build robot regarding my change that I added with previous series.
+  This change was never upstream and therefore this is not relevant.
+- Update the commit message of patch 1/3 of this series, that this commit
+  also changes the 'ndashes' to simple dashes. There were no changes, so
+  I add the 'Reviewed-by' that the commit received before.
+- With this patchset version I have reworked my implementation for the
+  evaluation of the additional line state, so that this changes becomes
+  smaller. As basis I have used the staged commits from Christian Marangi
+  that makes this changes to the netdev trigger. This has already been
+  applied to 'for-leds-next-next' by Lee Jones. I adapted this to the
+  tty trigger.
+  Convert device attr to macro:
+  https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git/commit/drivers/leds/trigger?h=for-leds-next-next&id=509412749002f4bac4c29f2012fff90c08d8afca
+  Unify sysfs and state handling:
+  https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git/commit/drivers/leds/trigger?h=for-leds-next-next&id=0fd93ac8582627bee9a3c824489f302dff722881
 
-BTW, if you really need something like the above, the proper way to do
-it would instead be to call device_set_awake_path() for the device.
+Changes in v3:
+- Add missing 'kernel test robot' information to the commit message.
+- Additional information added to the commit message
 
-This informs genpd that the device needs to stay powered-on during
-system suspend (assuming that GENPD_FLAG_ACTIVE_WAKEUP has been set
-for it), hence it will keep the corresponding PM domain powered-on
-too.
+Changes in v2:
+- rename new function from tty_get_mget() to tty_get_tiocm() as
+  requested by 'Jiri Slaby'.
+- As suggested by 'Jiri Slaby', fixed tabs in function documentation
+  throughout the file '/drivers/tty/tty_io.c' in a separate commit.
+- Move the variable definition to the top in function
+  'ledtrig_tty_work()'.
+  This was reported by the 'kernel test robot' after my change in v1.
+- Also set the 'max_brightness' to 'blink_brightness' if no
+  'blink_brightness' was set. This fixes a problem at startup when the
+  brightness is still set to 0 and only 'line_*' is evaluated. I looked
+  in the netdev trigger and that's exactly how it's done there.
 
-[...]
+v1:
+This is a follow-up patchset, based on the mailing list discussion from
+March 2023 based on the old patchset v8 [1]. I have changed, the LED
+trigger handling via the sysfs interfaces as suggested by Uwe Kleine-König.
+[1] https://lore.kernel.org/linux-leds/20230306094113.273988-1-fe@dev.tdt.de/
 
-Kind regards
-Uffe
+Florian Eckert (3):
+  tty: whitespaces in descriptions corrected by replacing tabs with
+    spaces
+  tty: add new helper function tty_get_tiocm
+  leds: ledtrig-tty: add new line mode evaluation
+
+ .../ABI/testing/sysfs-class-led-trigger-tty   |  54 +++++
+ drivers/leds/trigger/ledtrig-tty.c            | 192 +++++++++++++++++-
+ drivers/tty/tty_io.c                          | 130 ++++++------
+ include/linux/tty.h                           |   1 +
+ 4 files changed, 309 insertions(+), 68 deletions(-)
+
+-- 
+2.30.2
+
