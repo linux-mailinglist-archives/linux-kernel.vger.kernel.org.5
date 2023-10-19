@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FF87CF556
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAF27CF55A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345272AbjJSK36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S1345238AbjJSKa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345206AbjJSK3y (ORCPT
+        with ESMTP id S233027AbjJSKaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:29:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F182119
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:29:51 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C6CBD21AC1;
-        Thu, 19 Oct 2023 10:29:49 +0000 (UTC)
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 652832C4F5;
-        Thu, 19 Oct 2023 10:29:49 +0000 (UTC)
-Date:   Thu, 19 Oct 2023 12:29:49 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
-Message-ID: <ZTEFHdWhB-UZynVI@alley>
-References: <20231013204340.1112036-1-john.ogness@linutronix.de>
- <20231013204340.1112036-4-john.ogness@linutronix.de>
- <ZS5vrte2OZXcIc9L@alley>
- <87mswh6iwq.fsf@jogness.linutronix.de>
- <ZS_Vg4vvT29LxWSD@alley>
- <874jio6o2y.fsf@jogness.linutronix.de>
- <ZS_5Xd7zPWvSHuqq@alley>
- <87zg0g53qb.fsf@jogness.linutronix.de>
+        Thu, 19 Oct 2023 06:30:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F4AFA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:30:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6C948C433CB;
+        Thu, 19 Oct 2023 10:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697711423;
+        bh=ISlzwNBz4S/jH+y76V1s9eoZT46G5gS6n3EopdgQWHA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MS7usoPGfOXtFgpfdTA4GpSCDCKwDC2R+9mnJT0e3cISZPXFPK8kFSxrbYKmZDQJy
+         x1t4PYCaUCYoh1mdWlO2za66uoHDtV0qEkYR+h5ynkiCbVv8HHgB7DBIe6tKs5TUP5
+         Or6bJeHYQ+fEZuUjC1iNcEN+huiuJcmH9j0R6NcxcyDNCbLQfuwXwsUTFS3NZhQCW1
+         TJWyV6/FhXtxRP0rfhTqdVhSH9IQTE1YJ97Hz1yqyGtM5I0RPSBwDIEablfKGrQZB9
+         TlJnDwH8ZaS4efuYH+BuXpr5F/3D4h7m00/3Mux7Bv0SjxXVAg8ufvMzr2V+4mKdzF
+         4rRqsIp945Ivw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51100C73FE1;
+        Thu, 19 Oct 2023 10:30:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zg0g53qb.fsf@jogness.linutronix.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: C6CBD21AC1
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 1/1] net: stmmac: Remove redundant checking for
+ rx_coalesce_usecs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169771142332.4277.11760009172331855104.git-patchwork-notify@kernel.org>
+Date:   Thu, 19 Oct 2023 10:30:23 +0000
+References: <20231018030802.741923-1-yi.fang.gan@intel.com>
+In-Reply-To: <20231018030802.741923-1-yi.fang.gan@intel.com>
+To:     Gan@ci.codeaurora.org, Yi Fang <yi.fang.gan@intel.com>
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, mcoquelin.stm32@gmail.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hong.aun.looi@intel.com, weifeng.voon@intel.com,
+        yoong.siang.song@intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,41 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2023-10-18 17:56:52, John Ogness wrote:
-> On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
-> > So it is the _last_ finalized id from the timing POV. If there are
-> > more CPUs storing and finalizing the messages in parallel then
-> > it might change forth and back. There might be earlier non-finalized
-> > records and newer finalized ones.
-> >
-> > It means that prb_next_seq() really is the best effort and
-> > the description is not valid:
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Wed, 18 Oct 2023 11:08:02 +0800 you wrote:
+> From: Gan Yi Fang <yi.fang.gan@intel.com>
 > 
-> Well, the description was valid until prb_next_seq() was optimized and
-> converted to best-effort with:
+> The datatype of rx_coalesce_usecs is u32, always larger or equal to zero.
+> Previous checking does not include value 0, this patch removes the
+> checking to handle the value 0. This change in behaviour making the
+> value of 0 cause an error is not a problem because 0 is out of
+> range of rx_coalesce_usecs.
 > 
-> commit f244b4dc53e5 ("printk: ringbuffer: Improve prb_next_seq() performance")
-> 
-> > It would be great to document these subtle details especially when
-> > we are going to depend on them.
-> 
-> Going through the various call sites of prb_next_seq(), I would argue
-> that the above optimization introduced some bugs. I will investigate if
-> prb_next_seq() can be fixed to match its description because the current
-> users already depend on that.
+> [...]
 
-I thought about caching the last seq returned by
-prb_next_seq() instead of caching the last finalized record.
+Here is the summary with links:
+  - [net-next,v2,1/1] net: stmmac: Remove redundant checking for rx_coalesce_usecs
+    https://git.kernel.org/netdev/net-next/c/392c226cda94
 
-Also I thought about the highest sequence number accessed
-by _prb_read_valid(). But it can be done lockless way only
-on 64-bit systems. Well, it might be good enough. I doubt that
-there are big 32-bit systems.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> WRT to this series, I have put together an alternative implementation
-> that does not use prb_next_seq().
 
-Great.
-
-Best Regards,
-Petr
