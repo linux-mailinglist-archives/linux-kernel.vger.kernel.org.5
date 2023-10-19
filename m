@@ -2,269 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734DD7CFBF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18F77CFBF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbjJSOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S1345932AbjJSOEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345996AbjJSOEf (ORCPT
+        with ESMTP id S1345858AbjJSOEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:04:35 -0400
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0840193
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:04:31 -0700 (PDT)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 39JE4KY5031507;
-        Thu, 19 Oct 2023 22:04:20 +0800 (+08)
-        (envelope-from peterlin@andestech.com)
-Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Thu, 19 Oct 2023
- 22:04:19 +0800
-From:   Yu Chien Peter Lin <peterlin@andestech.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <will@kernel.org>, <mark.rutland@arm.com>,
-        <atishp@atishpatra.org>, <anup@brainfault.org>,
-        <conor.dooley@microchip.com>, <evan@rivosinc.com>,
-        <jszhang@kernel.org>, <ajones@ventanamicro.com>,
-        <peterlin@andestech.com>, <rdunlap@infradead.org>,
-        <heiko@sntech.de>, <samuel@sholland.org>, <guoren@kernel.org>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <uwu@icenowy.me>,
-        <sunilvl@ventanamicro.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <tim609@andestech.com>, <dylan@andestech.com>,
-        <locus84@andestech.com>, <dminus@andestech.com>
-Subject: [RFC PATCH v2 07/10] perf: RISC-V: Move T-Head PMU to CPU feature alternative framework
-Date:   Thu, 19 Oct 2023 22:01:19 +0800
-Message-ID: <20231019140119.3659651-1-peterlin@andestech.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 19 Oct 2023 10:04:14 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0572CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:04:12 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so98035851fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697724251; x=1698329051; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ApwA47W5sfKWNkq2IymUPAqINYWJl4bGVtXFqY2oGI=;
+        b=qgE4SeXWR6CDa0IIomrLXrozVcK608ca9OB63IxhfA+xwbDzfUAT7kGEAFMg0bQEeV
+         EVHqMaYTivUkEV8aptjmHY/GOSfGT+/oCGLQFGdFOys+EFTINgsVFH5MvETwOJaw2Dws
+         /TzhvtXzzQ+r2fdHsfXmL2WtMO4dl+Yv3x7gFKGNgSSiaGxuJGzDy5PhzTG1xw6tJbDJ
+         PdDzOV4vs7mC8J8KDfYavVjnrHYFQAksx1rbsrfHiLMyuEGHonn2ExqGB1TbpqbRi9JT
+         4e1vQX3PxcR06DXbKlrPDlvvezcVZHMfldiQSM1CrvezbylDP7GwxY5rYhzU8ms0aU/1
+         M91w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697724251; x=1698329051;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ApwA47W5sfKWNkq2IymUPAqINYWJl4bGVtXFqY2oGI=;
+        b=DGeWq+sg1MbDoHkYVeN/YeoKFIpa9NL/OWG60xm5rLyu2pSP5T88M7c0Aod2bbeI+f
+         mswT6/KFlQf6HVTkgR621covciGOXRD/7pjnVmNuQ92LSRZXqCK49t0rxyf8gY3d0ej0
+         uomhY7r/k9PB30g8rYbWY+mrPLhFh61lb1lhMcp6JnqV8qRdeqKO/1UTEqLg7Zgm+JEZ
+         Cb15scfpcOabYLEVgjx02QbRQNcxKsSNbKZsgKLYdMRZbODpWU9YnPNms/WItFIZX0FD
+         0EvheQAKiA4/SHiXhP8HrHWuDJZEFRtJXLfr7IL5DWOTmgWRsO25vcPXmrPsvJZO2vHe
+         sOoQ==
+X-Gm-Message-State: AOJu0YzCVy+7biwHgyNpObkDJ8XTs0SEtnfGnR1SSMdLuVlgFrypR0M7
+        OmbAQdcYAetYIbmr+4oW+wfIFQ==
+X-Google-Smtp-Source: AGHT+IEBYCq6FlJQnZX7dLdouPmrLmiH7GFteySmGUDpOnC8cPojpOsH5qTZKNPlCuCg8e75j80KCg==
+X-Received: by 2002:a05:651c:1502:b0:2c5:1ad0:e2ff with SMTP id e2-20020a05651c150200b002c51ad0e2ffmr2017092ljf.39.1697724250744;
+        Thu, 19 Oct 2023 07:04:10 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id az15-20020a05600c600f00b00406447b798bsm4543769wmb.37.2023.10.19.07.04.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 07:04:05 -0700 (PDT)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH v5 2/4] riscv: Improve flush_tlb_range() for hugetlb pages
+Date:   Thu, 19 Oct 2023 16:01:49 +0200
+Message-Id: <20231019140151.21629-3-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231019140151.21629-1-alexghiti@rivosinc.com>
+References: <20231019140151.21629-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.15.183]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 39JE4KY5031507
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The custom PMU extension was developed to support perf event sampling
-prior to the ratification of Sscofpmf. Instead of utilizing the standard
-bits and CSR of Sscofpmf, a set of custom CSRs is added. So we may
-consider it as a CPU feature rather than an erratum.
+flush_tlb_range() uses a fixed stride of PAGE_SIZE and in its current form,
+when a hugetlb mapping needs to be flushed, flush_tlb_range() flushes the
+whole tlb: so set a stride of the size of the hugetlb mapping in order to
+only flush the hugetlb mapping. However, if the hugepage is a NAPOT region,
+all PTEs that constitute this mapping must be invalidated, so the stride
+size must actually be the size of the PTE.
 
-T-Head cores need to append "xtheadpmu" to the riscv,isa-extensions
-for each cpu node in device tree, and enable CONFIG_THEAD_CUSTOM_PMU
-for proper functioning as of this commit.
+Note that THPs are directly handled by flush_pmd_tlb_range().
 
-Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 ---
-Hi All,
+ arch/riscv/mm/tlbflush.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-This is in preparation for introducing other PMU alternative.
-We follow Conor's suggestion [1] to use cpu feature alternative
-framework rather than errta, if you want to stick with errata
-alternative or have other issues, please let me know. Thanks.
-
-[1] https://patchwork.kernel.org/project/linux-riscv/patch/20230907021635.1002738-4-peterlin@andestech.com/#25503860
-
-Changes v1 -> v2:
-  - New patch
----
- arch/riscv/Kconfig.errata            | 13 -------------
- arch/riscv/errata/thead/errata.c     | 19 -------------------
- arch/riscv/include/asm/errata_list.h | 15 +--------------
- arch/riscv/include/asm/hwcap.h       |  1 +
- arch/riscv/kernel/cpufeature.c       |  1 +
- drivers/perf/Kconfig                 | 13 +++++++++++++
- drivers/perf/riscv_pmu_sbi.c         | 16 ++++++++++++++--
- 7 files changed, 30 insertions(+), 48 deletions(-)
-
-diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-index 566bcefeab50..35dfb19d6a29 100644
---- a/arch/riscv/Kconfig.errata
-+++ b/arch/riscv/Kconfig.errata
-@@ -85,17 +85,4 @@ config ERRATA_THEAD_CMO
- 
- 	  If you don't know what to do here, say "Y".
- 
--config ERRATA_THEAD_PMU
--	bool "Apply T-Head PMU errata"
--	depends on ERRATA_THEAD && RISCV_PMU_SBI
--	default y
--	help
--	  The T-Head C9xx cores implement a PMU overflow extension very
--	  similar to the core SSCOFPMF extension.
--
--	  This will apply the overflow errata to handle the non-standard
--	  behaviour via the regular SBI PMU driver and interface.
--
--	  If you don't know what to do here, say "Y".
--
- endmenu # "CPU errata selection"
-diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-index 0554ed4bf087..5de5f7209132 100644
---- a/arch/riscv/errata/thead/errata.c
-+++ b/arch/riscv/errata/thead/errata.c
-@@ -53,22 +53,6 @@ static bool errata_probe_cmo(unsigned int stage,
- 	return true;
- }
- 
--static bool errata_probe_pmu(unsigned int stage,
--			     unsigned long arch_id, unsigned long impid)
--{
--	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_PMU))
--		return false;
--
--	/* target-c9xx cores report arch_id and impid as 0 */
--	if (arch_id != 0 || impid != 0)
--		return false;
--
--	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
--		return false;
--
--	return true;
--}
--
- static u32 thead_errata_probe(unsigned int stage,
- 			      unsigned long archid, unsigned long impid)
- {
-@@ -80,9 +64,6 @@ static u32 thead_errata_probe(unsigned int stage,
- 	if (errata_probe_cmo(stage, archid, impid))
- 		cpu_req_errata |= BIT(ERRATA_THEAD_CMO);
- 
--	if (errata_probe_pmu(stage, archid, impid))
--		cpu_req_errata |= BIT(ERRATA_THEAD_PMU);
--
- 	return cpu_req_errata;
- }
- 
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index c190393aa9db..1b5354a50d55 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -25,8 +25,7 @@
- #ifdef CONFIG_ERRATA_THEAD
- #define	ERRATA_THEAD_PBMT 0
- #define	ERRATA_THEAD_CMO 1
--#define	ERRATA_THEAD_PMU 2
--#define	ERRATA_THEAD_NUMBER 3
-+#define	ERRATA_THEAD_NUMBER 2
- #endif
- 
- #ifdef __ASSEMBLY__
-@@ -147,18 +146,6 @@ asm volatile(ALTERNATIVE_2(						\
- 	    "r"((unsigned long)(_start) + (_size))			\
- 	: "a0")
- 
--#define THEAD_C9XX_RV_IRQ_PMU			17
--#define THEAD_C9XX_CSR_SCOUNTEROF		0x5c5
--
--#define ALT_SBI_PMU_OVERFLOW(__ovl)					\
--asm volatile(ALTERNATIVE(						\
--	"csrr %0, " __stringify(CSR_SSCOUNTOVF),			\
--	"csrr %0, " __stringify(THEAD_C9XX_CSR_SCOUNTEROF),		\
--		THEAD_VENDOR_ID, ERRATA_THEAD_PMU,			\
--		CONFIG_ERRATA_THEAD_PMU)				\
--	: "=r" (__ovl) :						\
--	: "memory")
--
- #endif /* __ASSEMBLY__ */
- 
- #endif
-diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-index b7b58258f6c7..d3082391c901 100644
---- a/arch/riscv/include/asm/hwcap.h
-+++ b/arch/riscv/include/asm/hwcap.h
-@@ -58,6 +58,7 @@
- #define RISCV_ISA_EXT_ZICSR		40
- #define RISCV_ISA_EXT_ZIFENCEI		41
- #define RISCV_ISA_EXT_ZIHPM		42
-+#define RISCV_ISA_EXT_XTHEADPMU		43
- 
- #define RISCV_ISA_EXT_MAX		64
- 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 1cfbba65d11a..4a3fb017026c 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -181,6 +181,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
- 	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
- 	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
- 	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-+	__RISCV_ISA_EXT_DATA(xtheadpmu, RISCV_ISA_EXT_XTHEADPMU),
- };
- 
- const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
-diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-index 273d67ecf6d2..c71b6f16bdfa 100644
---- a/drivers/perf/Kconfig
-+++ b/drivers/perf/Kconfig
-@@ -86,6 +86,19 @@ config RISCV_PMU_SBI
- 	  full perf feature support i.e. counter overflow, privilege mode
- 	  filtering, counter configuration.
- 
-+config THEAD_CUSTOM_PMU
-+	bool "T-Head custom PMU support"
-+	depends on RISCV_ALTERNATIVE && RISCV_PMU_SBI
-+	default y
-+	help
-+	  The T-Head C9xx cores implement a PMU overflow extension very
-+	  similar to the core SSCOFPMF extension.
-+
-+	  This will patch the overflow CSR and handle the non-standard
-+	  behaviour via the regular SBI PMU driver and interface.
-+
-+	  If you don't know what to do here, say "Y".
-+
- config ARM_PMU_ACPI
- 	depends on ARM_PMU && ACPI
- 	def_bool y
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index f340db9ce1e2..790fc20fe094 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -20,10 +20,21 @@
- #include <linux/cpu_pm.h>
- #include <linux/sched/clock.h>
- 
--#include <asm/errata_list.h>
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index fa03289853d8..5933744df91a 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -3,6 +3,7 @@
+ #include <linux/mm.h>
+ #include <linux/smp.h>
+ #include <linux/sched.h>
++#include <linux/hugetlb.h>
  #include <asm/sbi.h>
- #include <asm/hwcap.h>
+ #include <asm/mmu_context.h>
  
-+#define THEAD_C9XX_RV_IRQ_PMU		17
-+#define THEAD_C9XX_CSR_SCOUNTEROF	0x5c5
+@@ -147,7 +148,35 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		     unsigned long end)
+ {
+-	__flush_tlb_range(vma->vm_mm, start, end - start, PAGE_SIZE);
++	unsigned long stride_size;
 +
-+#define ALT_SBI_PMU_OVERFLOW(__ovl)					\
-+asm volatile(ALTERNATIVE(						\
-+	"csrr %0, " __stringify(CSR_SSCOUNTOVF),			\
-+	"csrr %0, " __stringify(THEAD_C9XX_CSR_SCOUNTEROF),		\
-+		0, RISCV_ISA_EXT_XTHEADPMU,				\
-+		CONFIG_THEAD_CUSTOM_PMU)				\
-+	: "=r" (__ovl) :						\
-+	: "memory")
++	if (!is_vm_hugetlb_page(vma)) {
++		stride_size = PAGE_SIZE;
++	} else {
++		stride_size = huge_page_size(hstate_vma(vma));
 +
- #define SYSCTL_NO_USER_ACCESS	0
- #define SYSCTL_USER_ACCESS	1
- #define SYSCTL_LEGACY		2
-@@ -805,7 +816,8 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu *pmu, struct platform_device *pde
- 	if (riscv_isa_extension_available(NULL, SSCOFPMF)) {
- 		riscv_pmu_irq_num = RV_IRQ_PMU;
- 		riscv_pmu_use_irq = true;
--	} else if (IS_ENABLED(CONFIG_ERRATA_THEAD_PMU) &&
-+	} else if (riscv_isa_extension_available(NULL, XTHEADPMU) &&
-+		   IS_ENABLED(CONFIG_THEAD_CUSTOM_PMU) &&
- 		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID &&
- 		   riscv_cached_marchid(0) == 0 &&
- 		   riscv_cached_mimpid(0) == 0) {
++#ifdef CONFIG_RISCV_ISA_SVNAPOT
++		/*
++		 * As stated in the privileged specification, every PTE in a
++		 * NAPOT region must be invalidated, so reset the stride in that
++		 * case.
++		 */
++		if (has_svnapot()) {
++			if (stride_size >= PGDIR_SIZE)
++				stride_size = PGDIR_SIZE;
++			else if (stride_size >= P4D_SIZE)
++				stride_size = P4D_SIZE;
++			else if (stride_size >= PUD_SIZE)
++				stride_size = PUD_SIZE;
++			else if (stride_size >= PMD_SIZE)
++				stride_size = PMD_SIZE;
++			else
++				stride_size = PAGE_SIZE;
++		}
++#endif
++	}
++
++	__flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+ }
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
 -- 
-2.34.1
+2.39.2
 
