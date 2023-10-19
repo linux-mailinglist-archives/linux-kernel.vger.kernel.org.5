@@ -2,46 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA13F7CECCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AFE7CECDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 02:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjJSAck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 20:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        id S231500AbjJSAjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 20:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSAcj (ORCPT
+        with ESMTP id S231199AbjJSAji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 20:32:39 -0400
-Received: from out-197.mta1.migadu.com (out-197.mta1.migadu.com [95.215.58.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9402111D;
-        Wed, 18 Oct 2023 17:32:37 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 20:32:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697675555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hwS7/DcUtHPt4kJq4hSNEacDz1a7ECv/zqs7i4aI0Eg=;
-        b=EnOF/bKtp+QW7N3HS2qa+3qrbx+KqloGAi0gphqa7ayhh+LjdKDLCnEhls/ElClHD6wMYw
-        Y8oaqaEJrneKjjqeYz5ZUWTInl6kNnkeYYpK6Fo0QaKzV9VIC7+4hiKvsinpxOM32psro6
-        YdGflUMi+/JeK4oGK29uqBksKWyQUqQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] bcachefs: Refactor memcpy into direct assignment
-Message-ID: <20231019003232.5uwphr7de7nybsra@moria.home.lan>
-References: <20231018230728.make.202-kees@kernel.org>
+        Wed, 18 Oct 2023 20:39:38 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7104312B
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:39:35 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40662119cd0so21685e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 17:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697675974; x=1698280774; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iWzCLiLZGdTDQE6Mm3c5UmIIcTECp3y/VYTIRTvbYV4=;
+        b=U6U/OWnosDk6Gs1AtcU0u9pf31irMk4F8qLim6fgpQmQPsaT5xspNc4OZcQFnd6CNu
+         f3YYjPYCiRudNUwZCCz9sDhqk5NGlCUR/MO00/NZjgcGG0ZSnwOK8Ml3W0+t9JVCtMzQ
+         CWC1Sp2fn4vqOLXJHiuWIEO3BkYK7Fj61DM8mvCOTorb64G0FfKpn4R1SNxZBvAKGOHG
+         PcbyJMimEQoZo5gvmDi3TSnnnTa2Tp/a9JRwVOu5t+4t8iwy09rUgJpDu5f/fVZLkg5P
+         xNMUyEgMYnP9Sjas/KQBky8w4Z+wpsu8Nd6nNUBF6TjOIavFq3Fod3t2e3vOCXFBA1r9
+         JvwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697675974; x=1698280774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iWzCLiLZGdTDQE6Mm3c5UmIIcTECp3y/VYTIRTvbYV4=;
+        b=WXUuLpz9Yfai6RZPnsdvudyA0N+kj24qlNDSiEyfHlmvBKi6u4ajr34Dhh+jSvrFmJ
+         zsnG6LfocxPHVYiwF6gX7TdUcP5rzgLXvURX9q8N86HaoN1fAYnZqoGStK6iJ6ZITMCD
+         CuCBpyRX8evPohsLVb11B6s2LjRDNak1OeMSI9rAngLVVp+Q6bc8iCOE+1SbCfebA9Mx
+         itNhubkY6FN0cSZvP61Vmv7Mv5Uksp3rvOeBmd3miY0cJylY+94syyFZpD9S0iotqSjq
+         egj4dOKa/ULdAsLMw6YrP84pkSkCPN8LlCGXMQQOtfWYAacYm87M7+b8Og0wm7BM27Dz
+         IrZw==
+X-Gm-Message-State: AOJu0YwB27B/EUpQLCfnlyP8+Y01NgfWfMTaFh6raIR/FIkFqwFsO4kR
+        2VO+ud+Om4Eljkfz3iHwqk2hQtQb9EhODVXLCeyvQg==
+X-Google-Smtp-Source: AGHT+IGSSTVjmeIukqthlIjrszaciDHvBd9CrEJpr+LhL33bCUc+CagV3HWVpPBehmpBbckPuve+vWKYaUL9O2mnlM4=
+X-Received: by 2002:a05:600c:1615:b0:3f7:3e85:36a with SMTP id
+ m21-20020a05600c161500b003f73e85036amr38163wmn.7.1697675973589; Wed, 18 Oct
+ 2023 17:39:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018230728.make.202-kees@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-14-irogers@google.com>
+ <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
+In-Reply-To: <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 18 Oct 2023 17:39:21 -0700
+Message-ID: <CAP-5=fU6ghEpYqy0FhSvxUQ_RSan34Mjp0GDys84FyPcRz_W0w@mail.gmail.com>
+Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        German Gomez <german.gomez@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Artem Savkov <asavkov@redhat.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,40 +90,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 04:07:32PM -0700, Kees Cook wrote:
-> The memcpy() in bch2_bkey_append_ptr() is operating on an embedded fake
-> flexible array which looks to the compiler like it has 0 size. This
-> causes W=1 builds to emit warnings due to -Wstringop-overflow:
-> 
->    In file included from include/linux/string.h:254,
->                     from include/linux/bitmap.h:11,
->                     from include/linux/cpumask.h:12,
->                     from include/linux/smp.h:13,
->                     from include/linux/lockdep.h:14,
->                     from include/linux/radix-tree.h:14,
->                     from include/linux/backing-dev-defs.h:6,
->                     from fs/bcachefs/bcachefs.h:182:
->    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
->    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
->       57 | #define __underlying_memcpy     __builtin_memcpy
->          |                                 ^
->    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
->      648 |         __underlying_##op(p, q, __fortify_size);                        \
->          |         ^~~~~~~~~~~~~
->    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
->      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
->          |                          ^~~~~~~~~~~~~~~~~~~~
->    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
->      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
->          |                 ^~~~~~
->    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
->      287 |                 struct bch_val  v;
->          |                                 ^
-> 
-> Avoid making any structure changes and just replace the u64 copy into a
-> direct assignment, side-stepping the entire problem.
+On Wed, Oct 18, 2023 at 4:30=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Wed, Oct 11, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > struct thread values hold onto references to mmaps, dsos, etc. When a
+> > thread exits it is necessary to clean all of this memory up by
+> > removing the thread from the machine's threads. Some tools require
+> > this doesn't happen, such as perf report if offcpu events exist or if
+> > a task list is being generated, so add a symbol_conf value to make the
+> > behavior optional. When an exited thread is left in the machine's
+> > threads, mark it as exited.
+> >
+> > This change relates to commit 40826c45eb0b ("perf thread: Remove
+> > notion of dead threads"). Dead threads were removed as they had a
+> > reference count of 0 and were difficult to reason about with the
+> > reference count checker. Here a thread is removed from threads when it
+> > exits, unless via symbol_conf the exited thread isn't remove and is
+> > marked as exited. Reference counting behaves as it normally does.
+>
+> Maybe we can do it the other way around.  IOW tools can access
+> dead threads for whatever reason if they are dealing with a data
+> file.  And I guess the main concern is perf top to reduce memory
+> footprint, right?  Then we can declare to remove the dead threads
+> for perf top case only IMHO.
 
-This does make me wonder about the usefulness of the fortify source
-stuff if it can be sidestepped this way, but hey, I'll take it :)
+Thanks I did consider this but I think this order makes most sense.
+The only tool relying on access to dead threads is perf report, but
+its uses are questionable:
 
-Pulled it into the testing branch, https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-testing
+ - task printing - the tools wants to show all threads from a perf run
+and assumes they are in threads. By replacing tool.exit it would be
+easy to record dead threads for this, as the maps aren't required the
+memory overhead could be improved by just recording the necessary
+task's data.
+
+ - offcpu - it would be very useful to have offcpu samples be real
+samples, rather than an aggregated sample at the end of the data file
+with a timestamp greater-than when the thread exited. These samples
+would happen before the exit event is processed and so the reason to
+keep dead threads around would be removed. I think we could do some
+kind of sample aggregation using BPF, but I think we need to think it
+through with exit events. Perhaps we can fix things in the short-term
+by generating BPF samples with aggregation when threads exit in the
+offcpu BPF code, but then again, if you have this going it seems as
+easy just to keep to record all offcpu events as distinct.
+
+Other commands like perf top and perf script don't currently have
+dependencies on dead threads and I'm kind of glad, for
+understandability, memory footprint, etc. Having the default be that
+dead threads linger on will just encourage the kind of issues we see
+currently in perf report and having to have every tool, perf script
+declare it doesn't want dead threads seems burdensome.
+
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
+>
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-report.c   |  7 +++++++
+> >  tools/perf/util/machine.c     | 10 +++++++---
+> >  tools/perf/util/symbol_conf.h |  3 ++-
+> >  tools/perf/util/thread.h      | 14 ++++++++++++++
+> >  4 files changed, 30 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> > index dcedfe00f04d..749246817aed 100644
+> > --- a/tools/perf/builtin-report.c
+> > +++ b/tools/perf/builtin-report.c
+> > @@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
+> >         if (ret < 0)
+> >                 goto exit;
+> >
+> > +       /*
+> > +        * tasks_mode require access to exited threads to list those th=
+at are in
+> > +        * the data file. Off-cpu events are synthesized after other ev=
+ents and
+> > +        * reference exited threads.
+> > +        */
+> > +       symbol_conf.keep_exited_threads =3D true;
+> > +
+> >         annotation_options__init(&report.annotation_opts);
+> >
+> >         ret =3D perf_config(report__config, &report);
+> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> > index 6ca7500e2cf4..5cda47eb337d 100644
+> > --- a/tools/perf/util/machine.c
+> > +++ b/tools/perf/util/machine.c
+> > @@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *=
+machine, union perf_event *event
+> >         if (dump_trace)
+> >                 perf_event__fprintf_task(event, stdout);
+> >
+> > -       if (thread !=3D NULL)
+> > -               thread__put(thread);
+> > -
+> > +       if (thread !=3D NULL) {
+> > +               if (symbol_conf.keep_exited_threads)
+> > +                       thread__set_exited(thread, /*exited=3D*/true);
+> > +               else
+> > +                       machine__remove_thread(machine, thread);
+> > +       }
+> > +       thread__put(thread);
+> >         return 0;
+> >  }
+> >
+> > diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_con=
+f.h
+> > index 2b2fb9e224b0..6040286e07a6 100644
+> > --- a/tools/perf/util/symbol_conf.h
+> > +++ b/tools/perf/util/symbol_conf.h
+> > @@ -43,7 +43,8 @@ struct symbol_conf {
+> >                         disable_add2line_warn,
+> >                         buildid_mmap2,
+> >                         guest_code,
+> > -                       lazy_load_kernel_maps;
+> > +                       lazy_load_kernel_maps,
+> > +                       keep_exited_threads;
+> >         const char      *vmlinux_name,
+> >                         *kallsyms_name,
+> >                         *source_prefix,
+> > diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+> > index e79225a0ea46..0df775b5c110 100644
+> > --- a/tools/perf/util/thread.h
+> > +++ b/tools/perf/util/thread.h
+> > @@ -36,13 +36,22 @@ struct thread_rb_node {
+> >  };
+> >
+> >  DECLARE_RC_STRUCT(thread) {
+> > +       /** @maps: mmaps associated with this thread. */
+> >         struct maps             *maps;
+> >         pid_t                   pid_; /* Not all tools update this */
+> > +       /** @tid: thread ID number unique to a machine. */
+> >         pid_t                   tid;
+> > +       /** @ppid: parent process of the process this thread belongs to=
+. */
+> >         pid_t                   ppid;
+> >         int                     cpu;
+> >         int                     guest_cpu; /* For QEMU thread */
+> >         refcount_t              refcnt;
+> > +       /**
+> > +        * @exited: Has the thread had an exit event. Such threads are =
+usually
+> > +        * removed from the machine's threads but some events/tools req=
+uire
+> > +        * access to dead threads.
+> > +        */
+> > +       bool                    exited;
+> >         bool                    comm_set;
+> >         int                     comm_len;
+> >         struct list_head        namespaces_list;
+> > @@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct th=
+read *thread)
+> >         return &RC_CHK_ACCESS(thread)->refcnt;
+> >  }
+> >
+> > +static inline void thread__set_exited(struct thread *thread, bool exit=
+ed)
+> > +{
+> > +       RC_CHK_ACCESS(thread)->exited =3D exited;
+> > +}
+> > +
+> >  static inline bool thread__comm_set(const struct thread *thread)
+> >  {
+> >         return RC_CHK_ACCESS(thread)->comm_set;
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
