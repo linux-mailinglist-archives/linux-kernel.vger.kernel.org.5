@@ -2,81 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F5C7CF865
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B127CF863
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345659AbjJSMJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S235336AbjJSMJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345830AbjJSMJH (ORCPT
+        with ESMTP id S1345841AbjJSMJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:09:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7E335BD;
-        Thu, 19 Oct 2023 05:07:05 -0700 (PDT)
+        Thu, 19 Oct 2023 08:09:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE04385D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697717225; x=1729253225;
+  t=1697717231; x=1729253231;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=cZrpDI17ZMb/Ton/XpJWiGZ39wcbVjXpretuf1XL3Y0=;
-  b=FBuS/3O4hKI2dUyrTn5pPJ3cDchgTXMQ/DWXLfaK9kugYgv78FJx+Fii
-   XIW3kSV47et8wWFnpfIJCYPROtRG3TbFOvmqX+AUYRg2CV34UU/CS4uiw
-   Y1bnGyJ7YfmQ7XP6zbJQvlEYLxjGGpblLpynX8vnzSlg5quHqPm48e8M2
-   d3pBGqgQ8hZgH/BRuzEmnGNSQQObgy6obg9Rj2SUJxi0c2YpRiswpQTJ3
-   2/VTEL5mEtQVUgPoJAusSHPlU2ycvhnQZAos06l2r/kMlziFJOslmzTL9
-   VMwVkkJfx1ilYlNMm1nXnu+QFTbAy/K19ECDMlZjRDvNFyAIkXctgBChh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="7786902"
+   mime-version:in-reply-to;
+  bh=rbsBJpmkS47G9tV6+xTsrI+g7quKxqgTbZfC3LaxFAw=;
+  b=KPBhMqdrJ3E2t2pak4T0w0c9uTFqXyPCTFG/vbcHxFKAHpUBz3dzDtdA
+   HFO/IqFX0iOK/fC5he0lPLCbnZqUyJt3d3SEiD+P+aj0dQ237Ge4Fk431
+   J3RpcZ5l9rGa8O8VNsflxsTRCrZO+Wzkmo+VAFN0XTOD4Tw0LgrPLAISo
+   Y5l7buBLX3K20zSaHUJ6JB4KIbpe/k92lsHUU0VBnQkUM8P44dTCHZG2S
+   zL3ObaQu4sX3VPS2mUOcmONRQCEMK7mhOQ2hjVPN83vjJ+wElhDy8fylj
+   SBOZmUtK6NqB89EK/S4LEWdT9NQxtC7QcW2h1D/36yswTyElREk/sGF2J
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366473293"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="7786902"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:05:59 -0700
+   d="scan'208";a="366473293"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:07:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1004211901"
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1088342758"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="1004211901"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:05:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qtRmf-00000006r6E-12MY;
-        Thu, 19 Oct 2023 15:05:49 +0300
-Date:   Thu, 19 Oct 2023 15:05:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v1 2/6] device property: Add
- fwnode_property_match_property_string()
-Message-ID: <ZTEbnIy9fWdez/Ff@smile.fi.intel.com>
-References: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
- <20230808162800.61651-3-andriy.shevchenko@linux.intel.com>
- <20230809185944.1ae78e34@jic23-huawei>
- <ZNTlniWf8Ou9hHOT@smile.fi.intel.com>
- <20230828190101.50f70921@jic23-huawei>
- <CAJZ5v0gOXsX98jQTRSwoYmfYBfva1RHTsDaLL++m7c+kLjStVA@mail.gmail.com>
- <ZS7jyHkKJcubVxws@smile.fi.intel.com>
- <20231018203755.06cb1118@jic23-huawei>
+   d="scan'208";a="1088342758"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Oct 2023 05:07:09 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtRnv-00025W-0K;
+        Thu, 19 Oct 2023 12:07:07 +0000
+Date:   Thu, 19 Oct 2023 20:06:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, virtualization@lists.linux-foundation.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v3 5/5] x86/paravirt: remove no longer needed paravirt
+ patching code
+Message-ID: <202310191909.USSRXzXc-lkp@intel.com>
+References: <20231019091520.14540-6-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231018203755.06cb1118@jic23-huawei>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20231019091520.14540-6-jgross@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,39 +66,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 08:37:55PM +0100, Jonathan Cameron wrote:
-> On Tue, 17 Oct 2023 22:43:04 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Oct 17, 2023 at 09:19:30PM +0200, Rafael J. Wysocki wrote:
-> > > On Mon, Aug 28, 2023 at 8:00 PM Jonathan Cameron <jic23@kernel.org> wrote:  
+Hi Juergen,
 
-...
+kernel test robot noticed the following build warnings:
 
-> > > Sorry for the delay, I've lost track of this.  
-> > 
-> > NP!
-> > 
-> > > Honestly, I have no strong opinion, but I think that this is going to
-> > > reduce some code duplication which is a valid purpose, so please feel
-> > > free to add
-> > > 
-> > > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> > > 
-> > > to this patch.  
-> > 
-> > Thank you!
-> > 
-> > Jonathan, are we all set for applying this series?
-> > 
-> Applied, but it might end up as 6.8 material depending on exactly how
-> timing turns out.  I have one pull request sent and I'm not sure I'll get
-> another one in this cycle. Given I just applied some big drivers I'd like to, but
-> not sure yet...
+[auto build test WARNING on kvm/queue]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-It's fine, I'm not in hurry with this and thank you!
+url:    https://github.com/intel-lab-lkp/linux/commits/Juergen-Gross/x86-paravirt-move-some-functions-and-defines-to-alternative/20231019-171709
+base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+patch link:    https://lore.kernel.org/r/20231019091520.14540-6-jgross%40suse.com
+patch subject: [PATCH v3 5/5] x86/paravirt: remove no longer needed paravirt patching code
+reproduce: (https://download.01.org/0day-ci/archive/20231019/202310191909.USSRXzXc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310191909.USSRXzXc-lkp@intel.com/
+
+# many are suggestions rather than must-fix
+
+WARNING:SPLIT_STRING: quoted string split across lines
+#327: FILE: arch/x86/tools/relocs.c:69:
+ 	"__x86_cpu_dev_(start|end)|"
++	"__alt_instructions(_end)?|"
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
