@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF0B7CF8CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243D97CF8D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345582AbjJSM3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47976 "EHLO
+        id S235384AbjJSM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345534AbjJSM3R (ORCPT
+        with ESMTP id S1345562AbjJSM3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:29:17 -0400
+        Thu, 19 Oct 2023 08:29:18 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38861CF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD39132
         for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:29:15 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1qtS8y-0006Kx-OT; Thu, 19 Oct 2023 14:28:52 +0200
+        id 1qtS8y-0006Kz-OX; Thu, 19 Oct 2023 14:28:52 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ore@pengutronix.de>)
-        id 1qtS8x-002mrr-Ln; Thu, 19 Oct 2023 14:28:51 +0200
+        id 1qtS8x-002mrt-N3; Thu, 19 Oct 2023 14:28:51 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <ore@pengutronix.de>)
-        id 1qtS8x-00529h-1p;
+        id 1qtS8x-00529r-1u;
         Thu, 19 Oct 2023 14:28:51 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -48,9 +48,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
-Subject: [PATCH net-next v6 7/9] net: dsa: microchip: Add error handling for ksz_switch_macaddr_get()
-Date:   Thu, 19 Oct 2023 14:28:48 +0200
-Message-Id: <20231019122850.1199821-8-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v6 8/9] net: dsa: microchip: Refactor switch shutdown routine for WoL preparation
+Date:   Thu, 19 Oct 2023 14:28:49 +0200
+Message-Id: <20231019122850.1199821-9-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231019122850.1199821-1-o.rempel@pengutronix.de>
 References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
@@ -69,44 +69,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enhance the ksz_switch_macaddr_get() function to handle errors that may
-occur during the call to ksz_write8(). Specifically, this update checks
-the return value of ksz_write8(), which may fail if regmap ranges
-validation is not passed and returns the error code.
+Centralize the switch shutdown routine in a dedicated function,
+ksz_switch_shutdown(), to enhance code maintainability and reduce
+redundancy. This change abstracts the common shutdown operations
+previously duplicated in ksz9477_i2c_shutdown() and ksz_spi_shutdown().
+
+This refactoring is a preparatory step for an upcoming patch to avoid
+reset on shutdown if Wake-on-LAN (WoL) is enabled.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- drivers/net/dsa/microchip/ksz_common.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/dsa/microchip/ksz9477_i2c.c |  5 +----
+ drivers/net/dsa/microchip/ksz_common.c  | 19 +++++++++++++++++++
+ drivers/net/dsa/microchip/ksz_common.h  |  1 +
+ drivers/net/dsa/microchip/ksz_spi.c     |  5 +----
+ 4 files changed, 22 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
+index 2710afad4f3a..cac4a607e54a 100644
+--- a/drivers/net/dsa/microchip/ksz9477_i2c.c
++++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
+@@ -66,10 +66,7 @@ static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
+ 	if (!dev)
+ 		return;
+ 
+-	if (dev->dev_ops->reset)
+-		dev->dev_ops->reset(dev);
+-
+-	dsa_switch_shutdown(dev->ds);
++	ksz_switch_shutdown(dev);
+ 
+ 	i2c_set_clientdata(i2c, NULL);
+ }
 diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 7b05de6fe987..79052a54880c 100644
+index 79052a54880c..08556b1dc452 100644
 --- a/drivers/net/dsa/microchip/ksz_common.c
 +++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -3612,7 +3612,7 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
- 	struct ksz_switch_macaddr *switch_macaddr;
- 	struct ksz_device *dev = ds->priv;
- 	const u16 *regs = dev->info->regs;
--	int i;
-+	int i, ret;
+@@ -3810,6 +3810,25 @@ struct ksz_device *ksz_switch_alloc(struct device *base, void *priv)
+ }
+ EXPORT_SYMBOL(ksz_switch_alloc);
  
- 	/* Make sure concurrent MAC address changes are blocked */
- 	ASSERT_RTNL();
-@@ -3639,8 +3639,11 @@ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
- 	dev->switch_macaddr = switch_macaddr;
++/**
++ * ksz_switch_shutdown - Shutdown routine for the switch device.
++ * @dev: The switch device structure.
++ *
++ * This function is responsible for initiating a shutdown sequence for the
++ * switch device. It invokes the reset operation defined in the device
++ * operations, if available, to reset the switch. Subsequently, it calls the
++ * DSA framework's shutdown function to ensure a proper shutdown of the DSA
++ * switch.
++ */
++void ksz_switch_shutdown(struct ksz_device *dev)
++{
++	if (dev->dev_ops->reset)
++		dev->dev_ops->reset(dev);
++
++	dsa_switch_shutdown(dev->ds);
++}
++EXPORT_SYMBOL(ksz_switch_shutdown);
++
+ static void ksz_parse_rgmii_delay(struct ksz_device *dev, int port_num,
+ 				  struct device_node *port_dn)
+ {
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index 8fc3210d7a3d..34a8e9784cca 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -399,6 +399,7 @@ extern const struct ksz_chip_data ksz_switch_chips[];
+ int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
+ 			   struct netlink_ext_ack *extack);
+ void ksz_switch_macaddr_put(struct dsa_switch *ds);
++void ksz_switch_shutdown(struct ksz_device *dev);
  
- 	/* Program the switch MAC address to hardware */
--	for (i = 0; i < ETH_ALEN; i++)
--		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-+	for (i = 0; i < ETH_ALEN; i++) {
-+		ret = ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-+		if (ret)
-+			return ret;
-+	}
+ /* Common register access functions */
+ static inline struct regmap *ksz_regmap_8(struct ksz_device *dev)
+diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
+index 279338451621..6f6d878e742c 100644
+--- a/drivers/net/dsa/microchip/ksz_spi.c
++++ b/drivers/net/dsa/microchip/ksz_spi.c
+@@ -114,10 +114,7 @@ static void ksz_spi_shutdown(struct spi_device *spi)
+ 	if (!dev)
+ 		return;
  
- 	return 0;
+-	if (dev->dev_ops->reset)
+-		dev->dev_ops->reset(dev);
+-
+-	dsa_switch_shutdown(dev->ds);
++	ksz_switch_shutdown(dev);
+ 
+ 	spi_set_drvdata(spi, NULL);
  }
 -- 
 2.39.2
