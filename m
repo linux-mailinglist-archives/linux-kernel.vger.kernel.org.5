@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B79F87CF732
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45DB7CF738
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345329AbjJSLmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        id S1345405AbjJSLml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235234AbjJSLl7 (ORCPT
+        with ESMTP id S1345393AbjJSLmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:41:59 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6645812D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:41:57 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7ad24b3aaso96349767b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697715716; x=1698320516; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGiL/+7v3o1x68ttyGPtRHltt+XNK187tB89lDdG1nc=;
-        b=jOm3/KhX7RqQ3CaiTLvHtdU2quhIqCQt41QY6lMDZQbdI4cAMhvsvqp2F9ghBSvx5i
-         X0s16SVJ5zSAmQpz9BgkMlNJ34HLA/bn8khzzI0QO7i61svvwCiLTlSWcUuIhohxAj4v
-         9cC2d1yzyX9mXZs98Trt0Ja9Ddf66Kc0qB/ObNunz1BTJ8qj3Dv1X+pYHHynrRZSRxnZ
-         9Po3+5jWaVyI5uyyNRfHpENSc7yzgJwaKMRo7ZqrcKqYvbQaUmf8sI9+0vlSdH7hLktC
-         /OLlrV8d6z+LypNRqM4WsPHOAsrhaRR7RztsX62b2wr/rgH2+LfKOU+YP1beVaQNgmU1
-         8D8Q==
+        Thu, 19 Oct 2023 07:42:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE11BE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697715712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2TI/4hZfm5I46y0D29HAGjnS5oa9EwhobJ1CLerArnE=;
+        b=Zeeb002vtfB57UtFfyNrl5OVnq/RbdNJow8xHrtE9hnZlFKtIXhEvsIC5LYhEYCIGlXWwD
+        4ciBp3Hb8ndwdOtRROFUBcgegEIhSyeNwAmS6h0N7/cxEaWM9PwsA7Ir8Tu58+uJqeEfS2
+        q+lPVp7iP+a2k0BBwskQ9pgcoGuVZOE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-HPIcWzPoPAGAnoBghXv9SQ-1; Thu, 19 Oct 2023 07:41:51 -0400
+X-MC-Unique: HPIcWzPoPAGAnoBghXv9SQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9c39f53775fso63448566b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:41:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697715716; x=1698320516;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TGiL/+7v3o1x68ttyGPtRHltt+XNK187tB89lDdG1nc=;
-        b=VlytIlkSEMhkO7Wi1+cUT9AVfmkncAi1ZLw/r9wwiu/7ra0fqZazGuB6kdGRjF+n6W
-         N4AKPZiKseBZi3UOrPDH4gCm/cOghQjjVcYAMdNYzsWd+jlhA9+ZX47ZEc5IYFDwqkVX
-         L0qpeGqm/K1ng6eBlU357zwQdRHn9qlbj97utyIFteEmEACBhFu7DY2EMVfxo/lVf/Mb
-         LOpLpLk2Jig5om61XDZjHKl5+dTV/o2f9/XLidHr515J6AN5BwyN7a8GmF3PEo+0H0Cw
-         xLiaS0MZqMZjTOt2EuZ66doTkqycpbs841AChgXLOZtEW11iCdcJA0cTy6avQnwddclo
-         r1/g==
-X-Gm-Message-State: AOJu0YwQJUJofWGiyCkh0nmTeUgXx9uO2yhopp21PIx59t1vYO7mJbPK
-        /CrtJ12aN3nEl1iYUGAdUuaDioO7xjqd0J2cuQ/JWg==
-X-Google-Smtp-Source: AGHT+IGlt7hzb+MeY42d0/BXzUGLA1J54UUaBUV7CnjW88OazHYdq5SUlmUQ758w0j6yMywc0mxbSPMhC1W9mneTaL8=
-X-Received: by 2002:a5b:a8e:0:b0:d85:df88:a7c4 with SMTP id
- h14-20020a5b0a8e000000b00d85df88a7c4mr1937717ybq.18.1697715716577; Thu, 19
- Oct 2023 04:41:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <1143f3d4d26b4e7a8b3cc0d68caaa5ba@realtek.com>
-In-Reply-To: <1143f3d4d26b4e7a8b3cc0d68caaa5ba@realtek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 19 Oct 2023 13:41:20 +0200
-Message-ID: <CAPDyKFrmeDGvRMQ8CsueJhxPoFNWDLTEpx3OFRkWozrgT3tU1w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mmc: rtsx: add rts5264 to support sd express card
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "frank.li@vivo.com" <frank.li@vivo.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1697715710; x=1698320510;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2TI/4hZfm5I46y0D29HAGjnS5oa9EwhobJ1CLerArnE=;
+        b=SJ1gOQfbPm9KQ3bAHPTLjtTH9quMJHwQIA7tYFgm/G9Rzl9B0kxuJylAaF69RQlerr
+         Bcr95fijJeiphxD7f9p7qCZJzgUAK+cz4pGX2Sg+92uiA0H5DBL8QMuCYC6CdT4tT8nS
+         kxcfXzuB8hXQz1rHBddFvtpe+uFQh5ncrDXBe+/R4IWG4f054nPb8rlgs1BgoBYqM+YC
+         k8BRzAhNYcHC0Q72pN39Q2uaS/k7Hz0Yci7mtWfluCeEZe+Nayl1ic/rWH2tvqWhPKUe
+         5pFadvmSxEgK5zAWTCgxJ6/xVmvzEaVHHa8kZEzCoiE8B8n7eLCEJHIDYBzAKbNjG1xx
+         Z4OQ==
+X-Gm-Message-State: AOJu0Yyo6WVzlYZDJps5LL612j14c46/PftXjInmRGoeWQbsx7uWY5zj
+        QQiQR1bMF1uVhX7x6SUJO0rcKonqN4sT59rkgxl07/DCdn/lpZGk8seBiROJR6jCQiB36nMEoka
+        gn34kh9slVrz94HVksNmjf9Au
+X-Received: by 2002:a17:906:4784:b0:9c3:cefa:93c9 with SMTP id cw4-20020a170906478400b009c3cefa93c9mr1808807ejc.1.1697715710014;
+        Thu, 19 Oct 2023 04:41:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzMsXhjyZ1KyMPesr+FdqrKQeZhrb69MrG73o73/8eoTBlCnEASSAFf3oHjlmBS3SYfsbjBg==
+X-Received: by 2002:a17:906:4784:b0:9c3:cefa:93c9 with SMTP id cw4-20020a170906478400b009c3cefa93c9mr1808793ejc.1.1697715709608;
+        Thu, 19 Oct 2023 04:41:49 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-237-142.dyn.eolo.it. [146.241.237.142])
+        by smtp.gmail.com with ESMTPSA id g13-20020a1709063b0d00b009ae3e6c342asm3421743ejf.111.2023.10.19.04.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 04:41:49 -0700 (PDT)
+Message-ID: <4c68b650b02b2a49f90cdf3a0084cf31bd6c7979.camel@redhat.com>
+Subject: Re: Re: [PATCH net-next v2 3/3] sock: Fix improper heuristic on
+ raising memory
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 19 Oct 2023 13:41:48 +0200
+In-Reply-To: <c3110f12-5d9f-4907-a712-5a1004ec4fdc@bytedance.com>
+References: <20231016132812.63703-1-wuyun.abel@bytedance.com>
+         <20231016132812.63703-3-wuyun.abel@bytedance.com>
+         <d1271d557adb68b5f77649861faf470f265e9f6b.camel@redhat.com>
+         <c3110f12-5d9f-4907-a712-5a1004ec4fdc@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,72 +87,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 05:01, Ricky WU <ricky_wu@realtek.com> wrote:
->
-> add rts5264 register setting when sd express card insert
->
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+On Thu, 2023-10-19 at 19:23 +0800, Abel Wu wrote:
+> On 10/19/23 4:53 PM, Paolo Abeni Wrote:
+> > On Mon, 2023-10-16 at 21:28 +0800, Abel Wu wrote:
+> > > Before sockets became aware of net-memcg's memory pressure since
+> > > commit e1aab161e013 ("socket: initial cgroup code."), the memory
+> > > usage would be granted to raise if below average even when under
+> > > protocol's pressure. This provides fairness among the sockets of
+> > > same protocol.
+> > >=20
+> > > That commit changes this because the heuristic will also be
+> > > effective when only memcg is under pressure which makes no sense.
+> > > Fix this by reverting to the behavior before that commit.
+> > >=20
+> > > After this fix, __sk_mem_raise_allocated() no longer considers
+> > > memcg's pressure. As memcgs are isolated from each other w.r.t.
+> > > memory accounting, consuming one's budget won't affect others.
+> > > So except the places where buffer sizes are needed to be tuned,
+> > > allow workloads to use the memory they are provisioned.
+> > >=20
+> > > Fixes: e1aab161e013 ("socket: initial cgroup code.")
+> >=20
+> > I think it's better to drop this fixes tag. This is a functional change
+> > and with such tag on at this point of the cycle, will land soon into
+> > every stable tree. That feels not appropriate.
+> >=20
+> > Please repost without such tag, thanks!
+> >=20
+> > You can send the change to stables trees later, if needed.
+>=20
+> OK. Shall I add a Acked-by tag for you?
 
-I wasn't cc'd patch1 and not the mmc-list. Can you please resubmit so
-we can see the complete series?
+Let's be formal:
 
-Kind regards
-Uffe
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-> ---
-> v3: split up mmc part from v2 patch
-> ---
->  drivers/mmc/host/rtsx_pci_sdmmc.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> index 87d78432a1e0..7dfe7c4e0077 100644
-> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> @@ -7,6 +7,7 @@
->   *   Wei WANG <wei_wang@realsil.com.cn>
->   */
->
-> +#include <linux/pci.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/highmem.h>
-> @@ -947,7 +948,7 @@ static int sd_power_on(struct realtek_pci_sdmmc *host, unsigned char power_mode)
->         /* send at least 74 clocks */
->         rtsx_pci_write_register(pcr, SD_BUS_STAT, SD_CLK_TOGGLE_EN, SD_CLK_TOGGLE_EN);
->
-> -       if (PCI_PID(pcr) == PID_5261) {
-> +       if ((PCI_PID(pcr) == PID_5261) || (PCI_PID(pcr) == PID_5264)) {
->                 /*
->                  * If test mode is set switch to SD Express mandatorily,
->                  * this is only for factory testing.
-> @@ -1364,6 +1365,14 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
->         struct realtek_pci_sdmmc *host = mmc_priv(mmc);
->         struct rtsx_pcr *pcr = host->pcr;
->
-> +       if (PCI_PID(pcr) == PID_5264) {
-> +               pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
-> +                               PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_2_5GT);
-> +               pci_write_config_byte(pcr->pci, 0x80e, 0x02);
-> +               pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
-> +                               PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_5_0GT);
-> +       }
-> +
->         /* Set relink_time for changing to PCIe card */
->         relink_time = 0x8FFF;
->
-> @@ -1379,6 +1388,12 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
->         if (pcr->ops->disable_auto_blink)
->                 pcr->ops->disable_auto_blink(pcr);
->
-> +       if (PCI_PID(pcr) == PID_5264) {
-> +               rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG2,
-> +                       RTS5264_CHIP_RST_N_SEL, RTS5264_CHIP_RST_N_SEL);
-> +               rtsx_pci_write_register(pcr, GPIO_CTL, 0x02, 0x00);
-> +       }
-> +
->         /* For PCIe/NVMe mode can't enter delink issue */
->         pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
->         rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
-> --
-> 2.25.1
+/P
+
