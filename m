@@ -2,239 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDBC7CFF04
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA7C7CFF0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346488AbjJSQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        id S1346328AbjJSQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346441AbjJSQFV (ORCPT
+        with ESMTP id S1345210AbjJSQGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:05:21 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCC512F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697731517;
-        bh=7KjakoOURxZ/nx5qRaNnouSfOxFpDE60GWEDDF8aPR0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E3ncLwrHo6ePWoeW8vT6xsQj3rEYaahoc+fCloRXoSnPqIR7kUE6m/IPavp/F9AmV
-         6jBdiWZoWefRoaoAn8R/i61pbwou8jNFdpXZs2mu7wuXwO3sgSggfEarS9+thXzO1X
-         nDEPH8IMO+JTFhoDA0kGQs2kY1x6XbSZdOCcwd5P2UNqAjZf4uI9JWenCOWcE55cI2
-         8o2u4KYm1HPH4V74D9krsG/S5anR5aQHl0FwYX0ULoFhvO3DxF480SATejrPvfm/oN
-         W21hL0LuEPnJDTARijYQEFqmm2/k8gSiWv4GoAZwUkO+46RrHA+R8Ga8qjCwyYeDmc
-         1F8RkJv1NP9Dw==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SBCH05vxzz1Y9Q;
-        Thu, 19 Oct 2023 12:05:16 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH v2 2/2] sched/fair: Introduce SELECT_BIAS_PREV to reduce migrations
-Date:   Thu, 19 Oct 2023 12:05:23 -0400
-Message-Id: <20231019160523.1582101-3-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
-References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+        Thu, 19 Oct 2023 12:06:46 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A4DB6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:44 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9c41e95efcbso715632866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697731603; x=1698336403; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8GAxqLkLulnMymSLsUeXBip1R0X962Uf1zax2/IweI4=;
+        b=Cb/LAcA6Tj05FCBJ9PcxVmA815gWHITa/38TzDz/ehHiaecDtnFWjI/goAffLCvAwA
+         cJkCmAMSEpwxYLTk7HlgsDQFnYLrSVNHl8co/JugZbj8PFMaNaHFQCHykYpX4hFXRm12
+         XeICnwyb+pjB0ajHskYKn342JRfEnK/EUIQRM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697731603; x=1698336403;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8GAxqLkLulnMymSLsUeXBip1R0X962Uf1zax2/IweI4=;
+        b=apcRCP+5d+KBdXuznOqYhUMVO8L2ZwxZDUwDZTeQHF0BK5CHAVut6q11Rqserhp6VD
+         vbffRiqcoptQiyWYGAx23XeCC+ED/iBNA4UnykKNtgrg5v/NqRg2AKKiat0rmyJLp3Qi
+         eQ0n+MxgdN7zIspcu0oc0QJeD/nSj3TquFK+D+MGfbnval+CSO6uuA2hHlKnrMPfxHPK
+         /p2/Rt46EV2yyUpAykPNocKmO2dUCwRWm04HslmiROzvuJsq2ZYbsP8hY/T13MdUsbAv
+         uAQ13CB/XZP5tCdroou7sdNdiS09NiXhjkDkSIxxyyKbLlbNHdd8DhvoRyUjkx8ypAfZ
+         p7oA==
+X-Gm-Message-State: AOJu0YzYPj1roKuY8so1foO5JlXayscP+z0QfMgeg+TOGUP5wkAJp4Pc
+        MDd2RHnycy4MT8NoLrkPDk8hklw3OjYmifzJz6DzqPA6
+X-Google-Smtp-Source: AGHT+IHT8D+AVJA6sDqAtutnxb6EkjcOW5YU2z5XXYDFlsu5q7tuqBG6YHGAO9nGCfs+6yBpbJCwsw==
+X-Received: by 2002:a17:907:5cd:b0:9bf:77ae:3aa9 with SMTP id wg13-20020a17090705cd00b009bf77ae3aa9mr2265799ejb.24.1697731603033;
+        Thu, 19 Oct 2023 09:06:43 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id os20-20020a170906af7400b0099cc36c4681sm3792025ejb.157.2023.10.19.09.06.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 09:06:41 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9b9faf05f51so1255520766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:41 -0700 (PDT)
+X-Received: by 2002:a17:907:3603:b0:9c3:bb0e:d4c7 with SMTP id
+ bk3-20020a170907360300b009c3bb0ed4c7mr1914249ejc.28.1697731601256; Thu, 19
+ Oct 2023 09:06:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <cover.1697555249.git.dsterba@suse.com> <20231019151204.GA13867@twin.jikos.cz>
+In-Reply-To: <20231019151204.GA13867@twin.jikos.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 09:06:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whiXFXaVrvN2pYUuzDX+xsuU6ogpU69v9yiPS7F+dFbOQ@mail.gmail.com>
+Message-ID: <CAHk-=whiXFXaVrvN2pYUuzDX+xsuU6ogpU69v9yiPS7F+dFbOQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs fix for 6.6-rc7
+To:     dave@jikos.cz, torvalds@linux-foundation.org,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the SELECT_BIAS_PREV scheduler feature to reduce the task
-migration rate.
+On Thu, 19 Oct 2023 at 08:12, David Sterba <dave@jikos.cz> wrote:
+>
+> I don't see this pull request merged after 2 days and I don't see any
+> reply from you that there would be any problem.
 
-It needs to be used with the UTIL_FITS_CAPACITY scheduler feature to
-show benchmark improvements.
+Indeed, I don't see the original in my mailbox, so re-sending it was
+most definitely the right thing to do.
 
-For scenarios where the system is under-utilized (CPUs are partly idle),
-eliminate frequent task migrations from CPUs with sufficient remaining
-capacity left to completely idle CPUs by introducing a bias towards the
-previous CPU if it is idle or has enough capacity left.
+> The mail is in lore archives
+> https://lore.kernel.org/all/cover.1697555249.git.dsterba@suse.com/
+> https://lore.kernel.org/linux-btrfs/cover.1697555249.git.dsterba@suse.com/
 
-For scenarios where the system is fully or over-utilized (CPUs are
-almost never idle), favor the previous CPU (rather than the target CPU)
-if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
+Usually it goes the other way, where I see emails in my mailbox, but
+not in lore.
 
-The following benchmarks are performed on a v6.5.5 kernel with
-mitigations=off.
+I do check my spambox daily too, but honestly, it's a "quick scan" not
+some deeper thing. So might have gotten deleted if it didn't stand out
+to me clearly enough.
 
-This speeds up the following hackbench workload on a 192 cores AMD EPYC
-9654 96-Core Processor (over 2 sockets):
+> what's a bit suspicious is the "X-Spamd-Bar: +++++++++++++++" header in
+> the raw message, this could explain it. Please let me know how to
+> proceed, thanks.
 
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+This was the right way - re-send in a couple of days if you feel like
+things aren't moving along as they should and normally do.
 
-from 49s to 29s. (41% speedup)
+Obviously the first merge window week is different - at that point it
+can take me a few days just to get to it - so then "two days" might be
+more like "four or five days".
 
-Elapsed time comparison:
-
-Baseline:                               48-49 s
-UTIL_FITS_CAPACITY:                     39-40 s
-SELECT_BIAS_PREV:                       48-50 s
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    29-30 s
-
-We can observe that the number of migrations is reduced significantly
-(-80%) with this patch, which may explain the speedup:
-
-Baseline:                               117M cpu-migrations  (9.355 K/sec)
-UTIL_FITS_CAPACITY:                      48M cpu-migrations  (3.977 K/sec)
-SELECT_BIAS_PREV:                        75M cpu-migrations  (5.674 K/sec)
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:     23M cpu-migrations  (2.316 K/sec)
-
-The CPU utilization is also improved:
-
-Baseline:                            253.275 CPUs utilized
-UTIL_FITS_CAPACITY:                  271.367 CPUs utilized
-SELECT_BIAS_PREV:                    276.526 CPUs utilized
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV: 303.356 CPUs utilized
-
-Interestingly, the rate of context switch increases with the patch, but
-it does not appear to be an issue performance-wise:
-
-Baseline:                               445M context-switches (35.516 K/sec)
-UTIL_FITS_CAPACITY:                     586M context-switches (48.823 K/sec)
-SELECT_BIAS_PREV:                       655M context-switches (49.074 K/sec)
-UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    571M context-switches (57.714 K/sec)
-
-This was developed as part of the investigation into a weird regression
-reported by AMD where adding a raw spinlock in the scheduler context
-switch accelerated hackbench. It turned out that changing this raw
-spinlock for a loop of 10000x cpu_relax within do_idle() had similar
-benefits.
-
-This patch achieves a similar effect without the busy-waiting by
-allowing select_task_rq to favor the previously used CPUs based on the
-utilization of that CPU.
-
-Feedback is welcome. I am especially interested to learn whether this
-patch has positive or detrimental effects on performance of other
-workloads.
-
-Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
-Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
-Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
-Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231017221204.1535774-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231018204511.1563390-1-mathieu.desnoyers@efficios.com/
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
-Cc: x86@kernel.org
----
- kernel/sched/fair.c     | 28 ++++++++++++++++++++++++++--
- kernel/sched/features.h |  6 ++++++
- 2 files changed, 32 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cc86d1ffeb27..0aae1f15cb0e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7164,15 +7164,30 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
-+	/*
-+	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine and the task fits within the prev cpu capacity,
-+	 * prefer the previous CPU to the target CPU to inhibit costly
-+	 * task migration.
-+	 */
-+	if (sched_feat(SELECT_BIAS_PREV) &&
-+	    (prev == target || cpus_share_cache(prev, target)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
-+	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
-+	    asym_fits_cpu(task_util, util_min, util_max, prev))
-+		return prev;
-+
- 	if ((available_idle_cpu(target) || sched_idle_cpu(target) ||
- 	    task_fits_remaining_cpu_capacity(task_util, target)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, target))
- 		return target;
- 
- 	/*
--	 * If the previous CPU is cache affine and idle, don't be stupid:
-+	 * Without the SELECT_BIAS_PREV feature, use the previous CPU if
-+	 * it is cache affine and idle if the target cpu is not idle.
- 	 */
--	if (prev != target && cpus_share_cache(prev, target) &&
-+	if (!sched_feat(SELECT_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target) &&
- 	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
- 	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
-@@ -7245,6 +7260,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine, prefer the previous CPU when all CPUs are busy
-+	 * to inhibit migration.
-+	 */
-+	if (sched_feat(SELECT_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target))
-+		return prev;
-+
- 	return target;
- }
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 9a84a1401123..a56d6861c553 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -103,6 +103,12 @@ SCHED_FEAT(UTIL_EST_FASTUP, true)
-  */
- SCHED_FEAT(UTIL_FITS_CAPACITY, true)
- 
-+/*
-+ * Bias runqueue selection towards the previous runqueue over the target
-+ * runqueue.
-+ */
-+SCHED_FEAT(SELECT_BIAS_PREV, true)
-+
- SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
--- 
-2.39.2
-
+              Linus
