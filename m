@@ -2,355 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2587CEF28
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503E27CEF2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjJSFkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S235173AbjJSFlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjJSFkn (ORCPT
+        with ESMTP id S232694AbjJSFlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:40:43 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64FA130;
-        Wed, 18 Oct 2023 22:40:40 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J5eYeQ089725;
-        Thu, 19 Oct 2023 00:40:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697694034;
-        bh=OJwJczYEBzzPpNVwb8s8CngqmcOB5tHxnM+BVrR1Dqk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=yqY6CULtb9LXw7Qa6vjfxQh3Pcgs7oiCTPqYWVWF2G8QxO99/HMNDzGTfwerKTyJe
-         TvS13LCChSWJGN3BmVXZvx+C56bBoM6wLNO9guCh8DTWUnv0B5rG+cK82daoYVoBIi
-         lBZhpl7EXle1lTmBeYTX+8L7tnCzmrIT7Lra0v/8=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J5eYwi083628
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Oct 2023 00:40:34 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
- Oct 2023 00:40:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 19 Oct 2023 00:40:34 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J5eXCk020430;
-        Thu, 19 Oct 2023 00:40:33 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <vigneshr@ti.com>, <nm@ti.com>, <a-bhatia1@ti.com>,
-        <rogerq@kernel.org>
-CC:     <afd@ti.com>, <s-vadapalli@ti.com>, <conor+dt@kernel.org>,
-        <r-ravikumar@ti.com>, <sabiya.d@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
-Subject: [PATCH v12 5/5] arm64: dts: ti: k3-am69-sk: Add DP and HDMI support
-Date:   Thu, 19 Oct 2023 11:10:22 +0530
-Message-ID: <20231019054022.175163-6-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231019054022.175163-1-j-choudhary@ti.com>
-References: <20231019054022.175163-1-j-choudhary@ti.com>
+        Thu, 19 Oct 2023 01:41:17 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC1D130
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:41:05 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c5249d55so2912150e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697694063; x=1698298863; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j7kAytioghDE6xyX4BghBa8cMFVr3L8tOR2ZoNefZ9k=;
+        b=ShZvUG+1JR3qVMpEfH65avvEMaqfjUGfzA7Tw9k+nhDlNjbBKWUx6EnqXuTBj1qhy0
+         R5HuGQjlfC0H4abtWZnLN2l2WJZ/HuN55vDAEk/aWIqhefiod4fMjj1hF6IdKpc25vgV
+         sJs7+ISghdHMCTaT/uXZ4sKngFAiU8tW5gBYZ1NYubbFx8HREk/3vO+F3/xapT3B2iIt
+         XaqOVN5FlLb4B6nxnQewwuTK17AS+5w0W3hoIiBKYETzLEyLpwcFYYIcXcrTI7CJZuKE
+         Xp3Ip6H6WVe2u8sudTjgJ3JQlHRXZFGi6SIYOKW8uSyYq6jry77XgHJiPqxx8pZ++0Rx
+         nTew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697694063; x=1698298863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j7kAytioghDE6xyX4BghBa8cMFVr3L8tOR2ZoNefZ9k=;
+        b=O8mL/372UcAgtdHyDaCdOw0XDOmt912ffdx7cWrwKD1TQvbKxfZG08aHtmzwgOLqRw
+         RGXgMtC+Qgsl+tSSv+qkJPpMPCgP9v50rBFDdiuEVdTb//XliFUsIGAdB2r1ZjXcE6G6
+         qYrSF804b1TaJ/qLJZaRFU9DICzrlBPfDXSHKvEY8OFzFb0CBwYjjkHwoipgdbs/L+B4
+         EuGqZzm+sIE0sFSF6oV76x4WlMyZx4kC6Try7lJpstHS/HnruVPj5ovOHhkqH6m+W/yg
+         GZhLXRqmOCIhAgCaUFPP/4aE6u0JX3ore50columbEZtgAU9mj/0IblIq/ZWGxz9kv8V
+         mWnA==
+X-Gm-Message-State: AOJu0YzJhNIWTgncN38QHwju7rQryA8A/cnccIQZLmnDceNku3kjSbpB
+        U6B9wMyg9UER/1RCYqbZdO3JZw==
+X-Google-Smtp-Source: AGHT+IG5EtVlCxnFhKx6/IWeIkVIlcJyQiopIMW7380LSHeSu/QzSQA6+QwuSQOi3ZAsfzcZcIDbKg==
+X-Received: by 2002:a19:5011:0:b0:503:388f:30a3 with SMTP id e17-20020a195011000000b00503388f30a3mr677846lfb.26.1697694063124;
+        Wed, 18 Oct 2023 22:41:03 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id i6-20020adfe486000000b0032415213a6fsm3580699wrm.87.2023.10.18.22.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 22:41:02 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 08:40:59 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Philip Li <philip.li@intel.com>, oe-kbuild@lists.linux.dev,
+        Lorenzo Stoakes <lstoakes@gmail.com>, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
+ could be null (see line 3667)
+Message-ID: <0eddb8b4-47a1-4d94-ae44-707addae77c8@kadam.mountain>
+References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
+ <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
+ <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
+ <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
+ <ZS/TVMT9ed7OdyNy@rli9-mobl>
+ <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
+ <20231018085248.6f3f36101cbdfe0990c8b467@linux-foundation.org>
+ <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dasnavis Sabiya <sabiya.d@ti.com>
+On Thu, Oct 19, 2023 at 10:28:21AM +0800, Baoquan He wrote:
+> On 10/18/23 at 08:52am, Andrew Morton wrote:
+> > On Wed, 18 Oct 2023 23:15:31 +0800 Baoquan He <bhe@redhat.com> wrote:
+> > 
+> > > From: Baoquan He <bhe@redhat.com>
+> > > Date: Wed, 18 Oct 2023 22:50:14 +0800
+> > > Subject: [PATCH] mm/vmalloc: fix the unchecked dereference warning in vread_iter()
+> > > Content-type: text/plain
+> > > 
+> > > LKP reported smatch warning as below:
+> > > 
+> > > ===================
+> > > smatch warnings:
+> > > mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
+> > > ......
+> > > 06c8994626d1b7  @3667 size = vm ? get_vm_area_size(vm) : va_size(va);
+> > > ......
+> > > 06c8994626d1b7  @3689 else if (!(vm->flags & VM_IOREMAP))
+> > >                                  ^^^^^^^^^
+> > > Unchecked dereference
+> > > =====================
+> > > 
+> > > So add checking on whether 'vm' is not null when dereferencing it in
+> > > vread_iter(). This mutes smatch complaint.
+> > > 
+> > > ...
+> > >
+> > > --- a/mm/vmalloc.c
+> > > +++ b/mm/vmalloc.c
+> > > @@ -3813,7 +3813,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+> > >  
+> > >  		if (flags & VMAP_RAM)
+> > >  			copied = vmap_ram_vread_iter(iter, addr, n, flags);
+> > > -		else if (!(vm->flags & VM_IOREMAP))
+> > > +		else if (!(vm && (vm->flags & VM_IOREMAP)))
+> > >  			copied = aligned_vread_iter(iter, addr, n);
+> > >  		else /* IOREMAP area is treated as memory hole */
+> > >  			copied = zero_iter(iter, n);
+> > 
+> > So is this not a real runtime bug?  We're only doing this to suppress a
+> > smatch warning?
+> > 
+> > If so, can we please include a description of *why* this wasn't a bug? 
+> > What conditions ensure that vm!=NULL at this point?
+> 
+> I think this is not a real runtime bug. The only chance it can hapen is
+> when (flags == VMAP_BLOCK) is true. That has been warned and could never
+> happen. I updated patch log and paste v2 here. 
+> 
+>                 /*
+>                  * VMAP_BLOCK indicates a sub-type of vm_map_ram area, need
+>                  * be set together with VMAP_RAM.
+>                  */
+>                 WARN_ON(flags == VMAP_BLOCK);
+>  
+>                 if (!vm && !flags)
+>                         continue;
+> 
+> 
 
-AM69 starter kit features an HDMI port and an eDP port.
+Thanks.  If you want you could just ignore the warning.  It's a one time
+warning so we won't send the mail again and if people have questions
+about it, they can just look it up on lore.
 
-Add assigned clocks for DSS, DT node for DisplayPort PHY,
-pinmux for HDMI hotplug and power down, mcu_i2c1 and dss_vout
-for HDMI.
-Also enable Serdes4 settings for DP display.
+The truth is when I was reviewing this code the first time I got mixed
+up between flags and vm->flags so that's part of why I reported it.
 
-Add the endpoint nodes to describe connection from:
-DSS => MHDP => DisplayPort connector
-DSS => TI TFP410 DPI-to-DVI Bridge => HDMI connector
+Smatch ignores the WARN_ON().  Historically WARN_ON() has been useless
+for indicating whether something can happen or not.  These days,
+WARN_ON() is treated as a syzkaller bug so we prefer pr_warn() if
+something can actually happen.  We still see a lot of WARN_ON()s
+happening in real life so I'm not eager to make Smatch treat them like a
+BUG_ON().
 
-Signed-off-by: Dasnavis Sabiya <sabiya.d@ti.com>
-[j-choudhary@ti.com: Fix dvi-bridge, dss, mhdp and serdes-refclk]
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
----
- arch/arm64/boot/dts/ti/k3-am69-sk.dts | 232 ++++++++++++++++++++++++++
- 1 file changed, 232 insertions(+)
+Also, sadly, even if we changed the WARN_ON() to a BUG_ON() it still
+wouldn't silence the warning because Smatch is not quite clever enough
+to parse that.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-index bc1d21ff6d03..9868c7049bfb 100644
---- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-@@ -251,6 +251,76 @@ vdd_sd_dv: regulator-tlv71033 {
- 		states = <1800000 0x0>,
- 			 <3300000 0x1>;
- 	};
-+
-+	dp0_pwr_3v3: regulator-dp0-pwr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "dp0-pwr";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&dp_pwr_en_pins_default>;
-+		gpio = <&main_gpio0 4 0>;	/* DP0_3V3 _EN */
-+		enable-active-high;
-+	};
-+
-+	dp0: connector-dp0 {
-+		compatible = "dp-connector";
-+		label = "DP0";
-+		type = "full-size";
-+		dp-pwr-supply = <&dp0_pwr_3v3>;
-+
-+		port {
-+			dp0_connector_in: endpoint {
-+				remote-endpoint = <&dp0_out>;
-+			};
-+		};
-+	};
-+
-+	connector-hdmi {
-+		compatible = "hdmi-connector";
-+		label = "hdmi";
-+		type = "a";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hdmi_hpd_pins_default>;
-+		ddc-i2c-bus = <&mcu_i2c1>;
-+		hpd-gpios = <&main_gpio0 0 GPIO_ACTIVE_HIGH>;	/* HDMI_HPD */
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&tfp410_out>;
-+			};
-+		};
-+	};
-+
-+	bridge-dvi {
-+		compatible = "ti,tfp410";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hdmi_pdn_pins_default>;
-+		powerdown-gpios = <&wkup_gpio0 14 GPIO_ACTIVE_LOW>;	/* HDMI_PDn */
-+		ti,deskew = <0>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				tfp410_in: endpoint {
-+					remote-endpoint = <&dpi1_out0>;
-+					pclk-sample = <1>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+
-+				tfp410_out: endpoint {
-+					remote-endpoint = <&hdmi_connector_in>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &main_pmx0 {
-@@ -308,6 +378,57 @@ J784S4_IOPAD(0x008, PIN_INPUT, 7) /* (AJ33) MCAN12_RX.GPIO0_2 */
- 			J784S4_IOPAD(0x004, PIN_INPUT, 7) /* (AG36) MCAN12_TX.GPIO0_1 */
- 		>;
- 	};
-+
-+	dp0_pins_default: dp0-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x014, PIN_INPUT, 13) /* (AG33) MCAN14_TX.DP0_HPD */
-+		>;
-+	};
-+
-+	dp_pwr_en_pins_default: dp-pwr-en-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x010, PIN_INPUT, 7) /* (AH33) MCAN13_RX.GPIO0_4 */
-+		>;
-+	};
-+
-+	dss_vout0_pins_default: dss-vout0-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x074, PIN_OUTPUT, 2) /* (AC33) MCAN2_TX.VOUT0_DATA0 */
-+			J784S4_IOPAD(0x070, PIN_OUTPUT, 2) /* (AH38) MCAN1_RX.VOUT0_DATA1 */
-+			J784S4_IOPAD(0x07c, PIN_OUTPUT, 2) /* (AJ38) MCASP0_AXR3.VOUT0_DATA2 */
-+			J784S4_IOPAD(0x068, PIN_OUTPUT, 2) /* (AE38) MCAN0_RX.VOUT0_DATA3 */
-+			J784S4_IOPAD(0x064, PIN_OUTPUT, 2) /* (AF38) MCAN0_TX.VOUT0_DATA4 */
-+			J784S4_IOPAD(0x060, PIN_OUTPUT, 2) /* (AE36) MCASP2_AXR1.VOUT0_DATA5 */
-+			J784S4_IOPAD(0x05c, PIN_OUTPUT, 2) /* (AC36) MCASP2_AXR0.VOUT0_DATA6 */
-+			J784S4_IOPAD(0x058, PIN_OUTPUT, 2) /* (AE37) MCASP2_AFSX.VOUT0_DATA7 */
-+			J784S4_IOPAD(0x054, PIN_OUTPUT, 2) /* (AD37) MCASP2_ACLKX.VOUT0_DATA8 */
-+			J784S4_IOPAD(0x050, PIN_OUTPUT, 2) /* (AC37) MCASP1_AXR2.VOUT0_DATA9 */
-+			J784S4_IOPAD(0x04c, PIN_OUTPUT, 2) /* (AC32) MCASP1_AXR1.VOUT0_DATA10 */
-+			J784S4_IOPAD(0x048, PIN_OUTPUT, 2) /* (AK33) MCASP0_AXR2.VOUT0_DATA11 */
-+			J784S4_IOPAD(0x044, PIN_OUTPUT, 2) /* (AG37) MCASP0_AXR1.VOUT0_DATA12 */
-+			J784S4_IOPAD(0x040, PIN_OUTPUT, 2) /* (AF37) MCASP0_AXR0.VOUT0_DATA13 */
-+			J784S4_IOPAD(0x03c, PIN_OUTPUT, 2) /* (AK38) MCASP0_AFSX.VOUT0_DATA14 */
-+			J784S4_IOPAD(0x038, PIN_OUTPUT, 2) /* (AK35) MCASP0_ACLKX.VOUT0_DATA15 */
-+			J784S4_IOPAD(0x0c8, PIN_OUTPUT, 2) /* (AJ32) EXT_REFCLK1.VOUT0_DATA16 */
-+			J784S4_IOPAD(0x030, PIN_OUTPUT, 2) /* (AK37) GPIO0_12.VOUT0_DATA17 */
-+			J784S4_IOPAD(0x02c, PIN_OUTPUT, 2) /* (AL32) GPIO0_11.VOUT0_DATA18 */
-+			J784S4_IOPAD(0x028, PIN_OUTPUT, 2) /* (AE33) MCAN16_RX.VOUT0_DATA19 */
-+			J784S4_IOPAD(0x024, PIN_OUTPUT, 2) /* (AH34) MCAN16_TX.VOUT0_DATA20 */
-+			J784S4_IOPAD(0x020, PIN_OUTPUT, 2) /* (AJ35) MCAN15_RX.VOUT0_DATA21 */
-+			J784S4_IOPAD(0x01c, PIN_OUTPUT, 2) /* (AG34) MCAN15_TX.VOUT0_DATA22 */
-+			J784S4_IOPAD(0x018, PIN_OUTPUT, 2) /* (AK36) MCAN14_RX.VOUT0_DATA23 */
-+			J784S4_IOPAD(0x084, PIN_OUTPUT, 2) /* (AG38) MCASP0_AXR5.VOUT0_DE */
-+			J784S4_IOPAD(0x080, PIN_OUTPUT, 2) /* (AK34) MCASP0_AXR4.VOUT0_HSYNC */
-+			J784S4_IOPAD(0x078, PIN_OUTPUT, 2) /* (AH37) MCAN2_RX.VOUT0_PCLK */
-+			J784S4_IOPAD(0x088, PIN_OUTPUT, 2) /* (AF36) MCASP0_AXR6.VOUT0_VSYNC */
-+		>;
-+	};
-+
-+	hdmi_hpd_pins_default: hdmi-hpd-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x000, PIN_INPUT, 7) /* (AN35) EXTINTN.GPIO0_0 */
-+		>;
-+	};
- };
- 
- &wkup_pmx2 {
-@@ -382,6 +503,21 @@ J784S4_WKUP_IOPAD(0x064, PIN_INPUT, 7) /* (J36) WKUP_GPIO0_3 */
- 			J784S4_WKUP_IOPAD(0x11c, PIN_INPUT, 7) /* (M34) WKUP_GPIO0_67 */
- 		>;
- 	};
-+
-+	mcu_i2c1_pins_default: mcu-i2c1-default-pins {
-+		pinctrl-single,pins = <
-+			/* (L35) WKUP_GPIO0_8.MCU_I2C1_SCL */
-+			J784S4_WKUP_IOPAD(0x078, PIN_INPUT_PULLUP, 0)
-+			/* (L34) WKUP_GPIO0_9.MCU_I2C1_SDA */
-+			J784S4_WKUP_IOPAD(0x07c, PIN_INPUT_PULLUP, 0)
-+		>;
-+	};
-+
-+	hdmi_pdn_pins_default: hdmi-pdn-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_WKUP_IOPAD(0x090, PIN_INPUT, 7) /* (H37) WKUP_GPIO0_14 */
-+		>;
-+	};
- };
- 
- &wkup_pmx3 {
-@@ -666,3 +802,99 @@ &c71_3 {
- 	memory-region = <&c71_3_dma_memory_region>,
- 			<&c71_3_memory_region>;
- };
-+
-+&wkup_gpio_intr {
-+	status = "okay";
-+};
-+
-+&mcu_i2c1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_i2c1_pins_default>;
-+	clock-frequency = <100000>;
-+};
-+
-+&serdes_refclk {
-+	status = "okay";
-+	clock-frequency = <100000000>;
-+};
-+
-+&dss {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&dss_vout0_pins_default>;
-+	assigned-clocks = <&k3_clks 218 2>,
-+			  <&k3_clks 218 5>,
-+			  <&k3_clks 218 14>,
-+			  <&k3_clks 218 18>;
-+	assigned-clock-parents = <&k3_clks 218 3>,
-+				 <&k3_clks 218 7>,
-+				 <&k3_clks 218 16>,
-+				 <&k3_clks 218 22>;
-+};
-+
-+&serdes_wiz4 {
-+	status = "okay";
-+};
-+
-+&serdes4 {
-+	status = "okay";
-+	serdes4_dp_link: phy@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <4>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_DP>;
-+		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
-+			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
-+	};
-+};
-+
-+&mhdp {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&dp0_pins_default>;
-+	phys = <&serdes4_dp_link>;
-+	phy-names = "dpphy";
-+};
-+
-+&dss_ports {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	/* DP */
-+	port@0 {
-+		reg = <0>;
-+
-+		dpi0_out: endpoint {
-+			remote-endpoint = <&dp0_in>;
-+		};
-+	};
-+
-+	/* HDMI */
-+	port@1 {
-+		reg = <1>;
-+
-+		dpi1_out0: endpoint {
-+			remote-endpoint = <&tfp410_in>;
-+		};
-+	};
-+};
-+
-+&dp0_ports {
-+
-+	port@0 {
-+		reg = <0>;
-+
-+		dp0_in: endpoint {
-+			remote-endpoint = <&dpi0_out>;
-+		};
-+	};
-+
-+	port@4 {
-+		reg = <4>;
-+
-+		dp0_out: endpoint {
-+			remote-endpoint = <&dp0_connector_in>;
-+		};
-+	};
-+};
--- 
-2.25.1
+regards,
+dan carpenter
+
 
