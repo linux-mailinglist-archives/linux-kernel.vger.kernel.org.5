@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5043E7D0140
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423247D0144
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345100AbjJSSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
+        id S1346378AbjJSSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjJSSSm (ORCPT
+        with ESMTP id S1346352AbjJSSUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:18:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEFC121
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rFjZthvUcRHrev6/lNwdhcugrXSRgmA/ZDr/SVp/L4E=; b=h2dxGRcHaMBvH3z5pMDJFe2nei
-        g6qmdgv7ovT9leyG2BQs/zEoVQ47YY92FE7Ef79BMCGvjXBORkv7I5Ni5AceIzLNzknZbgIgueiCH
-        3UYypSyvNoBVj/2WEH+FyskYxvO9JXHd9Z9RKUYX9/R9woTX4bq2giaKpD41nDKJKag3EDl2sHxAG
-        TVwaNVbavwP308iVI3UfYxaKQrEraGhJPXSE8pDY+nyEoAcHmyYhgVkjMPI8FvhnqfdiAj8MERsia
-        7/ZsEKU7R81Eow5e60pEh9UygpYB86R65iA2LCYBzgx09adQJYrQ8wx91eK2pMktNF3MEPjvP9622
-        5H7Minag==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qtXbH-008Uwk-Pw; Thu, 19 Oct 2023 18:18:27 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 78AFE300392; Thu, 19 Oct 2023 20:18:27 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 20:18:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
-Subject: Re: [PATCH V4 4/7] perf/x86/intel: Support LBR event logging
-Message-ID: <20231019181827.GB35308@noisy.programming.kicks-ass.net>
-References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
- <20231004184044.3062788-4-kan.liang@linux.intel.com>
- <20231019105231.GG36211@noisy.programming.kicks-ass.net>
- <c23fa9e8-1b37-4d44-a554-f8f0508968b0@linux.intel.com>
+        Thu, 19 Oct 2023 14:20:46 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ECA11F;
+        Thu, 19 Oct 2023 11:20:44 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-27d23f1e3b8so29646a91.1;
+        Thu, 19 Oct 2023 11:20:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697739644; x=1698344444;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u7vDvNz6BQO2aw2lrYmPjXprDOYt8FbI7nemZ3te0lQ=;
+        b=DhNn27RAPrOBMpkkXC8fgPivysbSL6LY5QidA0Jse/SPh5wR75y9DZAxELq0R5YyQ6
+         4hQvhdVhTPSyoC3F43ImrCqTlAJQvM98nhrSYonCzwX6kQnM/gnJyWt9BV3hLvrjg0/x
+         QBMN11wEdQrS/cErYoFSv7jUaye+jL3UWvypiSL1MKSScIfFD/vPmZJYxF0/OlGgghcj
+         J39dtmO5tAGKfUnG/WtWJacFxEyEeUkp0FR/RVaXVLM//PYZIUT4DIqk38IgJhHbl1T4
+         /zxxN1buqeHk4htIWVmPeCFpr+uYYCN99a7t8G1hY08/K47NmTMwl3x/ktWmIM8fiVnM
+         Kl1A==
+X-Gm-Message-State: AOJu0YwDgA4u+vvJKbVr38DqgrDYiBeE9JVwOn4QNMS/RFVvl+tKKqZW
+        Nkul9YZBlRxyqTLDE9jJu/Y=
+X-Google-Smtp-Source: AGHT+IHLvlmNMcFMWxSwriIsRlybnjbvrnsIbfuCI095aX/soipMtp1C6oFTKung7GTUB7phSX8R+w==
+X-Received: by 2002:a17:90a:df89:b0:27c:f48e:e245 with SMTP id p9-20020a17090adf8900b0027cf48ee245mr2886389pjv.24.1697739643885;
+        Thu, 19 Oct 2023 11:20:43 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:3306:3a7f:54e8:2149? ([2620:15c:211:201:3306:3a7f:54e8:2149])
+        by smtp.gmail.com with ESMTPSA id 4-20020a170902ee4400b001c877f27d1fsm17322plo.11.2023.10.19.11.20.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 11:20:43 -0700 (PDT)
+Message-ID: <ec1a2b51-6b46-441d-99e2-8e5bc48ba2d2@acm.org>
+Date:   Thu, 19 Oct 2023 11:20:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c23fa9e8-1b37-4d44-a554-f8f0508968b0@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] scsi: ufs: core: support WB buffer resize function
+Content-Language: en-US
+To:     Lu Hongfei <luhongfei@vivo.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>, Can Guo <quic_cang@quicinc.com>,
+        Arthur Simchaev <arthur.simchaev@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
+        Po-Wen Kao <powen.kao@mediatek.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20230911055810.879-1-luhongfei@vivo.com>
+ <86e5cc25-80f7-451b-9067-a220c7a2c39e@vivo.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <86e5cc25-80f7-451b-9067-a220c7a2c39e@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 10:26:01AM -0400, Liang, Kan wrote:
+On 10/18/23 21:50, Lu Hongfei wrote:
+> Are there any new developments in this group of patches?
 
-> The original LBR event data is saved at offset 32 of LBR_INFO register.
-> In get_lbr_events(), the data was simply copied to the offset 32 of
-> cpuc->lbr_events.
+The JEDEC ballot about resizing the WriteBooster buffer has not yet been
+approved. Please wait with posting patches that implement support for a
+JEDEC feature until agreement has been reached in JEDEC.
 
-Urgh, missed that. Clearly reading is a skill :-)
+Thanks,
 
-> 
-> The intel_pmu_update_lbr_event() reorders the value and saves it
-> starting from the offset 0.
-> 
-> I agree it's hard to read since it combines the src and dst into the
-> same variable.
-> 
-> I will use the suggested code and also update the get_lbr_events().
+Bart.
 
-Thanks!
