@@ -2,166 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8AE7CF37C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518D67CF386
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344949AbjJSJFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
+        id S1344977AbjJSJHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjJSJFQ (ORCPT
+        with ESMTP id S1344979AbjJSJG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:05:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D9FA;
-        Thu, 19 Oct 2023 02:05:14 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E7F3821861;
-        Thu, 19 Oct 2023 09:05:12 +0000 (UTC)
-Received: from lion.mk-sys.cz (unknown [10.163.44.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 283F82C4CD;
-        Thu, 19 Oct 2023 09:05:12 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 30EBB2016B; Thu, 19 Oct 2023 11:05:10 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 11:05:10 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Kory Maincent <kory.maincent@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net v1 1/1] ethtool: fix clearing of WoL flags
-Message-ID: <20231019090510.bbcmh7stzqqgchdd@lion.mk-sys.cz>
-References: <20231019070904.521718-1-o.rempel@pengutronix.de>
+        Thu, 19 Oct 2023 05:06:57 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D20FE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:06:54 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso6918913f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697706413; x=1698311213; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yTzH6q/KHuyR0ZINbw+hcjZ5+0x6X/p2cjmFJ06sw1g=;
+        b=d65+L4mh9pZwErGX3oVoWaQdFL63XZeAQHi/pUp2L5XSdRkkVTY4uxHcNTUC8Xac5T
+         aSH+MCjYoqmwWxBAD2ohaPKxBCc5CiEVIvm5zPPKdF6yV0zhpa2B50MkAmia7l08xkZq
+         76Z3WkoZiEi+uDpCJVKypBuQ/hdc9f9gze1TTwdociCtzuHtSDTF+fi9M+ZlgfkbXncs
+         q27xu3r2nMymlSkVXE6U/RxJAyi00GhN2ni9mI5+6IdAy1loyIQ2tCk/BNwPSPUPw1py
+         AwGresZqeYx+qOnVoRtNj5GLVBVDEWJSpLS/GyMKO7w6wW8N7ewxebVtePrWFHYYSM7d
+         Ww0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697706413; x=1698311213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yTzH6q/KHuyR0ZINbw+hcjZ5+0x6X/p2cjmFJ06sw1g=;
+        b=ekbZBA/7iz4U//oKHLgEeXm1Z6Q4VYgq0KUzz4PXQxjLZ8kK6+d+XiKLhd6MEay/E8
+         ceYjh6BhNHUJ2ghhHPX/lJ72N1kR9LMz0scbzGkE8AUx+MjOxRgvevs/FUhMedduLFbf
+         ivEHOlL1ka9RPBJgBSKdhu9JRp1TRGEzuVSw6BMDdGiE+UqPgydDKLkonPrmqlQbzTvD
+         n3b5/vnmHDYyGj/FmHx+Nc6o+xwoU5WpTARxQ+9QTA7S9yhLmsOW6Lae/CaPlDV5L8oJ
+         TJs7V2feB8/BATGYvQjumknlU0eRQzruhyQL3hhRinXS/5dEWeZ5JgpsccID4Rr6u3Pn
+         qutQ==
+X-Gm-Message-State: AOJu0YysUVUjImAhy4i59Sryi2yrbV7Z7VzjMt7yaDngdV/SEANE4Q5s
+        WWvYcflXig2WDZnfWdKMN1J9jggikxRHQEHUqDOBkg==
+X-Google-Smtp-Source: AGHT+IHSkQS9qNtpAIEMi6sxLaFTkgi+j6Rf7WXRtDe59N4GEvIdt/PZ1MtRQGPplsiQPNtP0AvAANDdTsTJLGZENEE=
+X-Received: by 2002:adf:db4b:0:b0:32d:b06c:80b5 with SMTP id
+ f11-20020adfdb4b000000b0032db06c80b5mr1127928wrj.2.1697706413344; Thu, 19 Oct
+ 2023 02:06:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rxorobu3bnor6cuj"
-Content-Disposition: inline
-In-Reply-To: <20231019070904.521718-1-o.rempel@pengutronix.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         TAGGED_RCPT(0.00)[];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: E7F3821861
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231002151031.110551-1-alexghiti@rivosinc.com>
+ <20231002151031.110551-5-alexghiti@rivosinc.com> <20231012-envision-grooving-e6e0461099f1@spud>
+ <20231012-exclusion-moaner-d26780f9eb00@spud> <20231013-19d487ddc6b6efd6d6f62f88@orel>
+In-Reply-To: <20231013-19d487ddc6b6efd6d6f62f88@orel>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Thu, 19 Oct 2023 11:06:42 +0200
+Message-ID: <CAHVXubgZ12x5O4Uo404u8uL2qhrtdN5w-DQFvnBib3XhhtrK1Q@mail.gmail.com>
+Subject: Re: [PATCH 4/5] riscv: Suffix all page table entry pointers with 'p'
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Conor, Marco, Andrew,
 
---rxorobu3bnor6cuj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 13, 2023 at 11:58=E2=80=AFAM Andrew Jones <ajones@ventanamicro.=
+com> wrote:
+>
+> On Thu, Oct 12, 2023 at 12:35:00PM +0100, Conor Dooley wrote:
+> > On Thu, Oct 12, 2023 at 12:33:15PM +0100, Conor Dooley wrote:
+> > > Hey Alex,
+> > >
+> > > On Mon, Oct 02, 2023 at 05:10:30PM +0200, Alexandre Ghiti wrote:
+> > > > That makes it more clear what the underlying type is, no functional
+> > > > changes intended.
+> > >
+> > > Scanning through stuff on patchwork, this really doesn't seem worth t=
+he
+> > > churn. I thought this sort of Hungarian notation-esque stuff was a
+> > > relic of a time before I could read & our docs even go as far as to
+> >
+> > s/go/went/, I see the language got changed in more recent releases of
+> > the kernel!
+>
+> The documentation seems to still be against it, but, despite that and
+> the two very valid points raised by Marco (backporting and git-blame),
+> I think ptep is special and I'm mostly in favor of this change. We may
+> not need to s/r every instance, but certainly functions which need to
+> refer to both the pte and the ptep representations of entries becomes
+> more clear when using the 'p' convention (and then it's nice to have
+> ptep used everywhere else too for consistency...)
+>
+> Anyway, just my 2 cents.
 
-On Thu, Oct 19, 2023 at 09:09:04AM +0200, Oleksij Rempel wrote:
-> With current kernel it is possible to set flags, but not possible to remo=
-ve
-> existing WoL flags. For example:
-> ~$ ethtool lan2
-> ...
->         Supports Wake-on: pg
->         Wake-on: d
-> ...
-> ~$ ethtool -s lan2 wol gp
-> ~$ ethtool lan2
-> ...
->         Wake-on: pg
-> ...
-> ~$ ethtool -s lan2 wol d
-> ~$ ethtool lan2
-> ...
->         Wake-on: pg
-> ...
->=20
-> This patch makes it work as expected
->=20
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  net/ethtool/wol.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->=20
-> diff --git a/net/ethtool/wol.c b/net/ethtool/wol.c
-> index 0ed56c9ac1bc..fcefc1bbfa2e 100644
-> --- a/net/ethtool/wol.c
-> +++ b/net/ethtool/wol.c
-> @@ -108,15 +108,16 @@ ethnl_set_wol(struct ethnl_req_info *req_info, stru=
-ct genl_info *info)
->  	struct net_device *dev =3D req_info->dev;
->  	struct nlattr **tb =3D info->attrs;
->  	bool mod =3D false;
-> +	u32 wolopts =3D 0;
->  	int ret;
-> =20
->  	dev->ethtool_ops->get_wol(dev, &wol);
-> -	ret =3D ethnl_update_bitset32(&wol.wolopts, WOL_MODE_COUNT,
-> +	ret =3D ethnl_update_bitset32(&wolopts, WOL_MODE_COUNT,
->  				    tb[ETHTOOL_A_WOL_MODES], wol_mode_names,
->  				    info->extack, &mod);
->  	if (ret < 0)
->  		return ret;
-> -	if (wol.wolopts & ~wol.supported) {
-> +	if (wolopts & ~wol.supported) {
->  		NL_SET_ERR_MSG_ATTR(info->extack, tb[ETHTOOL_A_WOL_MODES],
->  				    "cannot enable unsupported WoL mode");
->  		return -EINVAL;
-> @@ -132,8 +133,9 @@ ethnl_set_wol(struct ethnl_req_info *req_info, struct=
- genl_info *info)
->  				    tb[ETHTOOL_A_WOL_SOPASS], &mod);
->  	}
-> =20
-> -	if (!mod)
-> +	if (!mod && wolopts =3D=3D wol.wolopts)
->  		return 0;
-> +	wol.wolopts =3D wolopts;
->  	ret =3D dev->ethtool_ops->set_wol(dev, &wol);
->  	if (ret)
->  		return ret;
-> --=20
-> 2.39.2
+I started changing that in one function and another one, and another
+one...etc up to every instance. I still think that it makes things
+clearer, but that's subjective, you raised valid points and I'd really
+like to see this land in 6.7 so I'll revert this patch and send a v2.
 
-This doesn't look right, AFAICS with this patch, the resulting WoL flags
-would not depend on current values at all, i.e. it would certainly break
-non-absolute commands like
+Thanks for your feedbacks,
 
-  ethtool -s eth0 wol +g
-  ethtool -s eth0 wol -u+g
-  ethtool -s etho wol 32/34
+Alex
 
-How recent was the kernel where you encountered the issue? I suspect the
-issue might be related to recent 108a36d07c01 ("ethtool: Fix mod state
-of verbose no_mask bitset"), I'll look into it closer.
-
-Michal
-
---rxorobu3bnor6cuj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmUw8UIACgkQ538sG/LR
-dpWtggf+Lk2CxYPUS9ik4oz2X5eoDAAvN9rI80fF2DckMVDfGF6mK7n0KOpBN+6o
-Ag8CxEt1FyVKp96fYts93EjYPwByvqFpeNkQnhNHOpVPo9HUNAZl2eiGZtyZabU9
-FbM04TlORojQbS+4h7qrv4bYW3Tg1w9EzQbtXvfF8gve/fqbYWqVYGSrEY3QO7z9
-tWD6YuOpmeZog8dkLljA7bjV2kocDpYa5+pW8eUSfdut+VF8e13WK9PsMcYCNdk+
-mpgo7RURmd8pYTYSO5GySbTSxf4V9PBWUUBYtGT0VwdigHLk/XATArmywppjMvSW
-PAQOzhgZlIUEs1aUXjiJyBH47oNdMw==
-=Np2f
------END PGP SIGNATURE-----
-
---rxorobu3bnor6cuj--
+>
+> Thanks,
+> drew
