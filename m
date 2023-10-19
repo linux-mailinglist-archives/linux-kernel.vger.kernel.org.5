@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57ED67CEEE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956C17CEEE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjJSFDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
+        id S232538AbjJSFG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjJSFDA (ORCPT
+        with ESMTP id S231421AbjJSFGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:03:00 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DCD114
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OPsw8MvYsqR+rnUHtpa1MRKpBSHQOzp/OTrHhOj2ZcM=; b=PojmyVZnWvHDhJ/lCJ9rKInP5E
-        AcUramE3nuJFUZsHIHZtDNIgM6d6To9b7uuWe/zzNaHs9xXSjkNUpsxxltgtJQzmgEKLsHBWo1Z6Z
-        JlyJU4vXvWeazhjwMxjCHchzUkX9qO4wNeAEOxtjQynttS1vx0w5MCuY516DpIOhfO5y51ROlpKcl
-        6IHLChR8QK4WUE+w+q/aSURzdzSbkkX6Jkm8ri/jGfXTXxjgzDPM9mkG10GbtT6BuyCR37r7ALMzn
-        51q7oNT+/IhAos3qKraKcbF1YR8eV1TWjp/v7bIlIWn+8c215Zf5ZhicLSp7ClE0KYUe9taa+zs/F
-        4oqEupkQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtLBK-002eH5-1B;
-        Thu, 19 Oct 2023 05:02:50 +0000
-Date:   Thu, 19 Oct 2023 06:02:50 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     gus Gusenleitner Klaus <gus@keba.com>
-Cc:     Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-Message-ID: <20231019050250.GV800259@ZenIV>
-References: <VI1PR0702MB3840EB26EF2A1A35BFEA53BFD9D5A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231018154205.GT800259@ZenIV>
- <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+        Thu, 19 Oct 2023 01:06:24 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265BA114;
+        Wed, 18 Oct 2023 22:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697691978;
+        bh=N8IuZt5BMmOQpNcf4OCrWamIx0I7KgYeX3TNRQ2Tf5s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RbAs9QtCtLGs9RG252YUq2KVlXSlhBRRxIcankrKD9QWCfSJnO4dyNX/oWnFeokwh
+         xt8o3sxeS2+jr334wPhYPOb6pmJh6ksFfJ3SEAlDKXjGN+/FpYXjP+lP1u4exx3Ebu
+         YW9I5uIR/tSm++v9XK8ZaDjcfDocADjKK5aETJX9YCQmBMXeCPr44oCbrWEYHuzV3O
+         z6/QqwMQMl2imOlkPgB1da2Oe6hGc7HeCmL3lvY5G/swcLpD2yOhkEb5Yi5bErUA73
+         4UCpPBJ2iSw7Hwq/IFyc6Cd03sitgeK2qdEwKXx2ltc2iIN5MsnXJTOJVQxbs4p0DW
+         MRT3QomfyRRAA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9wff3xNrz4xMC;
+        Thu, 19 Oct 2023 16:06:18 +1100 (AEDT)
+Date:   Thu, 19 Oct 2023 16:06:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: linux-next: manual merge of the gpio-brgl tree with the
+ gpio-brgl-fixes tree
+Message-ID: <20231019160616.55eac2b8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/gKMLqWJsE9g7n6NH+h6h7wc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 04:44:04AM +0000, gus Gusenleitner Klaus wrote:
-> > On Wed, Oct 18, 2023 at 06:18:05AM +0000, gus Gusenleitner Klaus wrote:
-> > > The checksum calculation is wrong in case of an source buffer
-> > > containing zero bytes only. The expected return value is 0, the
-> > > actual return value is 0xfffffff.
-> > 
-> > Expected where?  The actual checksum is defined modulo 0xffff, so
-> > 0 and 0xffffffff represent the same final value.
-> > 
-> > The only twist is that in some situations we internally use 0 for
-> > "not calculated yet".
-> > 
-> > > This problem occurs when a ICMP echo reply is sent that has set
-> > > zero identifier, sequence number and data.
-> > 
-> > What problem?  Could you please either point to specific RFC or
-> > show that packets are rejected by some existing system, or...?
-> 
-> Here's our situation:
-> Our device gets pinged by a third party manufacturer robot controller.
-> We have updated the kernel in our device to 5.15 from 4.9, the robot
-> controller is kept unchanged. At 4.9, our device's ping reply is accepted
-> by the robot controller, at 5.15 it's not.
-> 
-> Wireshark shows a bad checksum warning:
->  'Checksum: 0x0000 incorrect, should be 0xffff' 
-> 
+--Sig_/gKMLqWJsE9g7n6NH+h6h7wc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Lovely.  I think I see what's going on, give me a few to think about it...
+Hi all,
+
+Today's linux-next merge of the gpio-brgl tree got a conflict in:
+
+  drivers/gpio/gpio-vf610.c
+
+between commit:
+
+  fc363413ef8e ("gpio: vf610: set value before the direction to avoid a gli=
+tch")
+
+from the gpio-brgl-fixes tree and commit:
+
+  b57587f11f81 ("gpio: vf610: simplify code by dropping data check")
+
+from the gpio-brgl tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpio/gpio-vf610.c
+index 656d6b1dddb5,a89ae84a1fa0..000000000000
+--- a/drivers/gpio/gpio-vf610.c
++++ b/drivers/gpio/gpio-vf610.c
+@@@ -126,9 -140,7 +140,9 @@@ static int vf610_gpio_direction_output(
+  	unsigned long mask =3D BIT(gpio);
+  	u32 val;
+ =20
+ +	vf610_gpio_set(chip, gpio, value);
+ +
+- 	if (port->sdata && port->sdata->have_paddr) {
++ 	if (port->sdata->have_paddr) {
+  		val =3D vf610_gpio_readl(port->gpio_base + GPIO_PDDR);
+  		val |=3D mask;
+  		vf610_gpio_writel(val, port->gpio_base + GPIO_PDDR);
+
+--Sig_/gKMLqWJsE9g7n6NH+h6h7wc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwuUgACgkQAVBC80lX
+0Gyd2gf/dQ6zSSR8z670iJGYg4EzgEZingaVqUsYF2m2hKyCUw2N2KC6sq4mZz9C
+/GAOtcpgBQ6jcImdeJBzvz1AQnSq9ciXJBNTnZEvKXNLIgJX0V+2cE/i5J4ByaJw
+pORWOAUfkZdFYll3wMo//wgo7MRbFjyGF/r3oTEzvG8sjwrKLhhANUiFuGPpetdo
+WxJR6mVXACFSDqRJAI9YYb1RQ92HRXSdd3Ah/IrnL9Lg//8gHDdsOtkuxEzRm8pL
+4ofuI42wicK27IR7w+Bm6abWBuzWrJnWUk8LmZ9kf9QX5PGmTgV9hZqsgdcSXMdx
+NtuDpqqMzcBhlt9tJJxA3bhnlq1mQw==
+=Z+a7
+-----END PGP SIGNATURE-----
+
+--Sig_/gKMLqWJsE9g7n6NH+h6h7wc--
