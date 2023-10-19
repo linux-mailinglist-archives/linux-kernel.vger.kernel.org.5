@@ -2,129 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 421987CF36E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2857CF371
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjJSJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        id S1344997AbjJSJCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344941AbjJSJCQ (ORCPT
+        with ESMTP id S232876AbjJSJC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:02:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A68129;
-        Thu, 19 Oct 2023 02:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697706134; x=1729242134;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2/4AyS1e2tjsGBL4YIeikHIx8MmAhIxdN+ZKAi+aHQs=;
-  b=XcpblU8xISCc3a8aPW/vEYxuYsfSdL9ySpvh5NWK7ozRqpnQrq49VCIO
-   wh3TaJXimaiZyhyqimTfJelabkLmdzK/DSbhjyVbRKXX1xNr/ofv35Y07
-   E5O0rYiHjou6nI1uOZ0CVzczXGBxPoOAeZGD9Xf3I58nInZ0uiGO3B2I1
-   jKZzpjaDWbrYeEf+U3vyOMPBzEwwVZV1PXZF9tp0yVpfuyVx2SWQkDxL9
-   Ww2rCDGFHPcegwTTtCZKq7s4eRr0BQw2k+Wbt37EZIcrGXxvTHxg0lleY
-   17TjyMfmekflgaVA/mmuJcBZncflZf2S9TAwOKGLoDa0nZctAG3qAvQlN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="376581661"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="376581661"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 02:01:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="750446625"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="750446625"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 19 Oct 2023 02:01:02 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtOto-0001tj-0R;
-        Thu, 19 Oct 2023 09:01:00 +0000
-Date:   Thu, 19 Oct 2023 17:00:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jyan Chou <jyanchou@realtek.com>, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, jh80.chung@samsung.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        jyanchou@realtek.com
-Subject: Re: [PATCH V2][1/4] mmc: solve DMA boundary limitation of CQHCI
- driver
-Message-ID: <202310191631.Hp1KsdtD-lkp@intel.com>
-References: <20231018055326.18256-2-jyanchou@realtek.com>
+        Thu, 19 Oct 2023 05:02:26 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B84312A;
+        Thu, 19 Oct 2023 02:02:25 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-777719639adso180183885a.3;
+        Thu, 19 Oct 2023 02:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697706144; x=1698310944; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sk9NQQyJeBXT6Ol7GG+VsgF3Sb2L3l2NxoYE0zAyB7Y=;
+        b=XBmsi3ugdFmtjgaaaqxGewgMvjah8ALh+ojOFpIpgujGYnwMav513m7o7p1j1riTJf
+         Bw7B1FRlJGSwXuejzIuhNj8JRGD8HlIj3bJ45HSq3qAJjCh6U0fK+UVVPC5EVHiEhchx
+         6720Nhjq8GFZ4AgJtp6TXsYs7aoZMYw/Xaj0uXlRVgp0vsRA9GnZXaBAq2f9G+gyTRGx
+         c3sNX1hu1WJug192PCemjYGA+wXBXyEByyzs6wS21p6CZw26Bg+4EdFGtYqULeMze3yh
+         XMYwcHrvLTxpjHR52QTx2K3My3FNEHD+4bzF27OXbGcO7fM5UekanZbxWT8TmQYkK+6s
+         +ZIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697706144; x=1698310944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sk9NQQyJeBXT6Ol7GG+VsgF3Sb2L3l2NxoYE0zAyB7Y=;
+        b=hlr65v3HO8/4Zy5EKcHeQ363sCMtwCAdmtEhMOHngfsZ1Li1Msu6MJRjaupRcwixzI
+         LjpVqzk3lAaOnVG7mirhuAPfUGbBYIE3zWgRtmKNa6GPs/73Ss62fOQk/Eldy83k4Uw+
+         W4ITATQCYkJbI90vlRyTrelpWyV0L/hz8FOgm53W1T/lFF4IBS84/F4o1hcReND6tPhZ
+         gPiSOLKkKS48AQYz6pyjdh2n3hT9mOCf6j4rurAeDLY5GfrkCDFG6w5umnyTL9xKiWsc
+         x8VHn0vpFyXgBnzyjxSiNfmJCgPxs43V/DtQTAIsz+r7EvyK9xk8jo8Yom8Ja7Ut9WbA
+         QhqQ==
+X-Gm-Message-State: AOJu0YyhPKxQnwJxrojdRhJAXvHt8HdeDZ9OuuL9NYbu/5MyiT+uPM4k
+        uvZqgFEqjd1Vc/K9stauTiVI5VrbVWWY7kUXTrU=
+X-Google-Smtp-Source: AGHT+IEkwz3nH9dOruaO1NEUCt0OBItrJ53vHuOwtCxwOfN7piQjEzoeY6VF8XfRjIQJmiAe07nLOHfOuR5PVr4GjRU=
+X-Received: by 2002:a05:6214:2421:b0:66d:10fd:4abb with SMTP id
+ gy1-20020a056214242100b0066d10fd4abbmr1782016qvb.16.1697706144215; Thu, 19
+ Oct 2023 02:02:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018055326.18256-2-jyanchou@realtek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018182943.18700-1-ddrokosov@salutedevices.com> <20231018182943.18700-5-ddrokosov@salutedevices.com>
+In-Reply-To: <20231018182943.18700-5-ddrokosov@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Oct 2023 12:01:48 +0300
+Message-ID: <CAHp75VeTVU-1mSzAX4j7s9bbDGxDR_FwgFL7dnC4_6OhsN8kpw@mail.gmail.com>
+Subject: Re: [PATCH v2 04/11] leds: aw200xx: calculate dts property
+ display_rows in driver
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org,
+        George Stark <gnstark@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jyan,
+On Wed, Oct 18, 2023 at 9:30=E2=80=AFPM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
+>
+> From: George Stark <gnstark@salutedevices.com>
+>
+> Get rid of device tree property "awinic,display-rows" and calculate it
+> in driver using led definition nodes. display-row actually means number
+> of current switches and depends on how leds are connected to the device.
 
-kernel test robot noticed the following build warnings:
+Still the commit message does not answer the question why it's safe
+for the users that have this property enabled in their DTBs (note B
+letter).
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on ulf-hansson-mmc-mirror/next v6.6-rc6 next-20231018]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+...
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jyan-Chou/mmc-solve-DMA-boundary-limitation-of-CQHCI-driver/20231018-135532
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231018055326.18256-2-jyanchou%40realtek.com
-patch subject: [PATCH V2][1/4] mmc: solve DMA boundary limitation of CQHCI driver
-config: csky-randconfig-001-20231019 (https://download.01.org/0day-ci/archive/20231019/202310191631.Hp1KsdtD-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310191631.Hp1KsdtD-lkp@intel.com/reproduce)
+> +       device_for_each_child_node(dev, child) {
+> +               u32 source;
+> +               int ret;
+> +
+> +               ret =3D fwnode_property_read_u32(child, "reg", &source);
+> +               if (ret || source >=3D chip->cdef->channels)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310191631.Hp1KsdtD-lkp@intel.com/
+Perhaps a warning?
 
-All warnings (new ones prefixed by >>):
+    dev_warn(dev, "Unable to read from %pfw or apply a source channel
+number\n", child);
 
-   In file included from drivers/mmc/host/sdhci_am654.c:17:
->> drivers/mmc/host/cqhci.h:292:40: warning: 'struct mmc_data' declared inside parameter list will not be visible outside of this definition or declaration
-     292 |         void (*setup_tran_desc)(struct mmc_data *data,
-         |                                        ^~~~~~~~
---
->> drivers/mmc/host/cqhci-core.c:477:6: warning: no previous prototype for 'cqhci_set_tran_desc' [-Wmissing-prototypes]
-     477 | void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
-         |      ^~~~~~~~~~~~~~~~~~~
+> +                       continue;
+> +
+> +               max_source =3D max(max_source, source);
+> +       }
 
+...
 
-vim +292 drivers/mmc/host/cqhci.h
+> +       chip->display_rows =3D max_source / chip->cdef->display_size_colu=
+mns + 1;
+> +       if (!chip->display_rows) {
+> +               dev_err(dev, "No valid led definitions found\n");
+> +               return -EINVAL;
 
-   281	
-   282	struct cqhci_host_ops {
-   283		void (*dumpregs)(struct mmc_host *mmc);
-   284		void (*write_l)(struct cqhci_host *host, u32 val, int reg);
-   285		u32 (*read_l)(struct cqhci_host *host, int reg);
-   286		void (*enable)(struct mmc_host *mmc);
-   287		void (*disable)(struct mmc_host *mmc, bool recovery);
-   288		void (*update_dcmd_desc)(struct mmc_host *mmc, struct mmc_request *mrq,
-   289					 u64 *data);
-   290		void (*pre_enable)(struct mmc_host *mmc);
-   291		void (*post_disable)(struct mmc_host *mmc);
- > 292		void (*setup_tran_desc)(struct mmc_data *data,
-   293			struct cqhci_host *cq_host, u8 *desc, int sg_count);
-   294	#ifdef CONFIG_MMC_CRYPTO
-   295		int (*program_key)(struct cqhci_host *cq_host,
-   296				   const union cqhci_crypto_cfg_entry *cfg, int slot);
-   297	#endif
-   298	};
-   299	
+So, this part is in ->probe() flow only, correct? If so,
+  return dev_err_probe(...);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +       }
+
+...
+
+> +       if (aw200xx_probe_get_display_rows(dev, chip))
+> +               return -EINVAL;
+
+Why is the error code shadowed?
+
+--=20
+With Best Regards,
+Andy Shevchenko
