@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44A27CF5C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F387CF5C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjJSKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        id S233086AbjJSKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjJSKu1 (ORCPT
+        with ESMTP id S233023AbjJSKu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 06:50:27 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77081124;
-        Thu, 19 Oct 2023 03:50:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso71216595e9.2;
-        Thu, 19 Oct 2023 03:50:23 -0700 (PDT)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60A8134;
+        Thu, 19 Oct 2023 03:50:24 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso71216715e9.2;
+        Thu, 19 Oct 2023 03:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697712621; x=1698317421; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697712623; x=1698317423; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0naVyUeSmTC7NBi/QXx7z14rWsTMmPuek5i541kbChk=;
-        b=PgF6XgDNP/o1D1DfUjFz9ONNlBUv5VN2XhOX/7P9MmOyDwYVYakd8ZW2dWuUsV0Il6
-         68jW/qzjqIIQkG9u/k/L5iXOVCuuz2JgwOD3qETgwcl6UFUVe0uhDaOaBxNgLrKLoShy
-         5/ZvJL4JxerqFXlqXEw/KxVIWAIbwNgtKvI9SkhnRMb65iutqY5LxqtbiL3K/rdt9JTV
-         5vnG7YOzs1Py2BowahGUs/3JTabqvYdVNQeOk+ZqY8MzU9BoOl8S8lZ0t/TklpQYVv/g
-         ln4TAk8JG/ETZSqQz9FYfPeEg+Cp83zQI8pEdo30nF6Eoa5ueCZTmu2TfP2ZP8e8T1zV
-         6ngQ==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZPqEeVVKIhz21/2Qmdn4Au69nSgOnfpcZtoCP0yo2Is=;
+        b=Q4mG8m2CbLCSu5femUZ46Srq+HPWUSrlYXn1fi9SQCpnPQF7RRal5SwlxgmlQzw/72
+         DunJyPn0NXRprTIE2knT8fUn8X7ovm8fcM6KpbC+c5Zc1KS7MW0CrTk97l8cGUZz/yVs
+         UBDSA4NZEMz8ChwuiOYKJGjsQXzB4ZzbQWoo3/tOk9mYSnFXJ9P4h3/XfISEScldG2xO
+         yhkpZ1WGvsFJTIxomumvtB2esmsrhY4SV43oF/olB5BbluOSoRGpF3PyCpv+qbPpdDZ9
+         cnOJXkiS++ZD8WkfsULP5p4Pr+FWKYA4O5VNiPZa3A9lx0Ewf7S99+Ygq9ScEuCjZyL9
+         lk4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697712621; x=1698317421;
+        d=1e100.net; s=20230601; t=1697712623; x=1698317423;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0naVyUeSmTC7NBi/QXx7z14rWsTMmPuek5i541kbChk=;
-        b=PKr5jcztOHCifB5iV/fb2c1XACiz/wARgRjrzywx2Xd7+AFB0r10KtE6rnoBksi3uJ
-         MlQLJbWa0xq2/qHAKxYV05rOwxU0qOo4teszuBaMgvdvvZASFL+ZJ+J4Vs3RXmRQ+Wiu
-         iimwFHPiiUoWsH1N7k62DpdlUDJc4y+rugbKBax2Ak17mZXfepsvN2Sc2a78cu+89Ly7
-         iiEGtXQeRXjVxxl7qulkeZFYWDjYMlj4c3oNR6+kVpg3yO49v0RNAUdMyq85P04GqZo0
-         3iq7U5AgNbzfffrWNc6T9PnLNRIX4VNrcqiqy8eDJwHBGb7jV2BESwNyv7i/YmaVDO7C
-         mIIw==
-X-Gm-Message-State: AOJu0Yzas7Xq6Zr8rBanM2U/yg6N+riQKyyqCmDCOkCoopc2+WplXhmq
-        sG/TDQXo7BCUlEvgJ3g3x9nKbyudDnE=
-X-Google-Smtp-Source: AGHT+IH1D92oyQQikNYUtEM82hVGX1QwIVrW7tZZA0+9MqH36DSuOwfz16ZteI8WYuigyQLCFiUeNw==
-X-Received: by 2002:a05:600c:511b:b0:402:ee9e:ed98 with SMTP id o27-20020a05600c511b00b00402ee9eed98mr1488997wms.34.1697712621541;
-        Thu, 19 Oct 2023 03:50:21 -0700 (PDT)
+        bh=ZPqEeVVKIhz21/2Qmdn4Au69nSgOnfpcZtoCP0yo2Is=;
+        b=hC2eEUCTvg8OxgYF7z0XK3iMroncDHWRdYjYpeSkpsWrnjzFPk0YPnUlQedtZIpsil
+         wUQZebsWI+y6pQSLr9pNC8STzITwY5s73XjFuxep1qUNN+5VC4LM8Cp3Dld6J9Vp7azf
+         rZ2Py+eOvsw81ATSCXdhmNBvY8tm8m7G4hFzHgQhfD9NmEyjDMDRDt4ZHH7TkEnpJt8g
+         cuFYjQQS4pDsZTF9bIfwEd3Gbcj/eYEIGpzb2cqbuUuLyjU2epqDNvI2TB6GjUoUmlgu
+         5qcmvwDuWmJp1FRCr6C13msskgk6MXSF3xYY97PezW4+OOYnK/mLLKrEmkEIprsxMq4K
+         wSeA==
+X-Gm-Message-State: AOJu0YysYu30kmmGCYPyFWnkQSlkrptF1TyRNw31Tu9gJ6B5lhYwBvZS
+        YwQcitwCz3NT4Vy+cfdZ/U8=
+X-Google-Smtp-Source: AGHT+IG6ZSKt2vKvydkP6jFITJ4LeqoYwXH5H5K5Iav582b1CvGiZLOD+qsqtxTFuJSfEzlubds/ZQ==
+X-Received: by 2002:a05:600c:46d1:b0:405:37bb:d942 with SMTP id q17-20020a05600c46d100b0040537bbd942mr1442544wmo.4.1697712622877;
+        Thu, 19 Oct 2023 03:50:22 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id bh9-20020a05600c3d0900b003feae747ff2sm4129511wmb.35.2023.10.19.03.50.20
+        by smtp.googlemail.com with ESMTPSA id bh9-20020a05600c3d0900b003feae747ff2sm4129511wmb.35.2023.10.19.03.50.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 03:50:21 -0700 (PDT)
+        Thu, 19 Oct 2023 03:50:22 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,10 +64,9 @@ To:     Andy Gross <agross@kernel.org>,
         Sricharan Ramabadhran <quic_srichara@quicinc.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v7 2/4] cpufreq: qcom-nvmem: also accept operating-points-v2-krait-cpu
-Date:   Thu, 19 Oct 2023 12:50:09 +0200
-Message-Id: <20231019105011.7289-3-ansuelsmth@gmail.com>
+Subject: [PATCH v7 3/4] cpufreq: qcom-nvmem: add support for IPQ8064
+Date:   Thu, 19 Oct 2023 12:50:10 +0200
+Message-Id: <20231019105011.7289-4-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231019105011.7289-1-ansuelsmth@gmail.com>
 References: <20231019105011.7289-1-ansuelsmth@gmail.com>
@@ -83,38 +82,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+IPQ8064 comes in 3 families:
+* IPQ8062 up to 1.0GHz
+* IPQ8064/IPQ8066/IPQ8068 up to 1.4GHz
+* IPQ8065/IPQ8069 up to 1.7Ghz
 
-the qcom-cpufreq-nvmem driver attempts to support both Qualcomm Kryo
-(newer 64-bit ARMv8 cores) and Krait (older 32-bit ARMv7 cores). It
-makes no sense to use 'operating-points-v2-kryo-cpu' compatibility node
-for the Krait cores. Add support for 'operating-points-v2-krait-cpu'
-compatibility string.
+So, in order to be able to support one OPP table, add support for
+IPQ8064 family based of SMEM SoC ID-s and correctly set the version so
+opp-supported-hw can be correctly used.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Bit are set with the following logic:
+* IPQ8062 BIT 0
+* IPQ8064/IPQ8066/IPQ8068 BIT 1
+* IPQ8065/IPQ8069 BIT 2
+
+speed is never fused, only pvs values are fused.
+
+IPQ806x SoC doesn't have pvs_version so we drop and we use the new
+pattern:
+opp-microvolt-speed0-pvs<PSV_VALUE>
+
+Example:
+- for ipq8062 psv2
+  opp-microvolt-speed0-pvs2 = < 925000 878750 971250>
+
+Fixes: a8811ec764f9 ("cpufreq: qcom: Add support for krait based socs")
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
 Changes v7:
-* Add this patch from reverted other series
+* Rebase on top of vireshk cpufreq/arm/linux-next
+
+Changes v6:
+* Rebase on top of dependant series
+* Fix leaking speedbin nvmem
+* Fix format_a function to follow new functions
+* Improve snprintf as suggested from Konrad
+
+Changes v5:
+* Fix leaking speedbin nvmem
+
+Changes in v3:
+* Use enum for SoC version
+* Dont evaluate speed as its not fused, only pvs
+
+Changes in v2:
+* Include IPQ8064 support
 ---
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/cpufreq/qcom-cpufreq-nvmem.c | 67 +++++++++++++++++++++++++++-
+ 1 file changed, 66 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index c399b5014b49..57842d60d6ec 100644
+index 57842d60d6ec..59b045471f91 100644
 --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
 +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -369,7 +369,8 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
- 	if (!np)
- 		return -ENOENT;
+@@ -35,6 +35,12 @@ enum ipq8074_versions {
+ 	IPQ8074_ACORN_VERSION,
+ };
  
--	ret = of_device_is_compatible(np, "operating-points-v2-kryo-cpu");
-+	ret = of_device_is_compatible(np, "operating-points-v2-kryo-cpu") ||
-+	      of_device_is_compatible(np, "operating-points-v2-krait-cpu");
- 	if (!ret) {
- 		of_node_put(np);
- 		return -ENOENT;
++enum ipq806x_versions {
++	IPQ8062_VERSION = 0,
++	IPQ8064_VERSION,
++	IPQ8065_VERSION,
++};
++
+ #define IPQ6000_VERSION	BIT(2)
+ 
+ struct qcom_cpufreq_drv;
+@@ -231,6 +237,61 @@ static int qcom_cpufreq_krait_name_version(struct device *cpu_dev,
+ 	return ret;
+ }
+ 
++static int qcom_cpufreq_ipq8064_name_version(struct device *cpu_dev,
++					     struct nvmem_cell *speedbin_nvmem,
++					     char **pvs_name,
++					     struct qcom_cpufreq_drv *drv)
++{
++	int speed = 0, pvs = 0;
++	int msm_id, ret = 0;
++	u8 *speedbin;
++	size_t len;
++
++	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++	if (IS_ERR(speedbin))
++		return PTR_ERR(speedbin);
++
++	if (len != 4) {
++		dev_err(cpu_dev, "Unable to read nvmem data. Defaulting to 0!\n");
++		ret = -ENODEV;
++		goto exit;
++	}
++
++	get_krait_bin_format_a(cpu_dev, &speed, &pvs, speedbin);
++
++	ret = qcom_smem_get_soc_id(&msm_id);
++	if (ret)
++		goto exit;
++
++	switch (msm_id) {
++	case QCOM_ID_IPQ8062:
++		drv->versions = BIT(IPQ8062_VERSION);
++		break;
++	case QCOM_ID_IPQ8064:
++	case QCOM_ID_IPQ8066:
++	case QCOM_ID_IPQ8068:
++		drv->versions = BIT(IPQ8064_VERSION);
++		break;
++	case QCOM_ID_IPQ8065:
++	case QCOM_ID_IPQ8069:
++		drv->versions = BIT(IPQ8065_VERSION);
++		break;
++	default:
++		dev_err(cpu_dev,
++			"SoC ID %u is not part of IPQ8064 family, limiting to 1.0GHz!\n",
++			msm_id);
++		drv->versions = BIT(IPQ8062_VERSION);
++		break;
++	}
++
++	/* IPQ8064 speed is never fused. Only pvs values are fused. */
++	snprintf(*pvs_name, sizeof("speed0-pvsXX"), "speed0-pvs%d", pvs);
++
++exit:
++	kfree(speedbin);
++	return ret;
++}
++
+ static int qcom_cpufreq_ipq8074_name_version(struct device *cpu_dev,
+ 					     struct nvmem_cell *speedbin_nvmem,
+ 					     char **pvs_name,
+@@ -345,6 +406,10 @@ static const struct qcom_cpufreq_match_data match_data_ipq6018 = {
+ 	.get_version = qcom_cpufreq_ipq6018_name_version,
+ };
+ 
++static const struct qcom_cpufreq_match_data match_data_ipq8064 = {
++	.get_version = qcom_cpufreq_ipq8064_name_version,
++};
++
+ static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
+ 	.get_version = qcom_cpufreq_ipq8074_name_version,
+ };
+@@ -477,7 +542,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+ 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
+ 	{ .compatible = "qcom,ipq6018", .data = &match_data_ipq6018 },
+-	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
++	{ .compatible = "qcom,ipq8064", .data = &match_data_ipq8064 },
+ 	{ .compatible = "qcom,ipq8074", .data = &match_data_ipq8074 },
+ 	{ .compatible = "qcom,apq8064", .data = &match_data_krait },
+ 	{ .compatible = "qcom,msm8974", .data = &match_data_krait },
 -- 
 2.40.1
 
