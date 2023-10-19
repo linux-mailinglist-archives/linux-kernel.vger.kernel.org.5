@@ -2,109 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D39F7CF5B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FFB7CF5D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345202AbjJSKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
+        id S1345302AbjJSKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjJSKuV (ORCPT
+        with ESMTP id S1345318AbjJSKvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:50:21 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0568F121
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:50:19 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ca052ec63bso54015835ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:50:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1697712618; x=1698317418; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F+23JhXChJ2upiI1yweoZc95DCKyTZufxmMJiUGUuS4=;
-        b=FyMqDZwRb+QEk92GcepdsEvKfOmyKRHRB3D1MaTgocUSqfGef/GfErWJXR7t3zOndR
-         zOdICYYevKX7yHX3w0aWoGU3SPcC8tyofNq0f2Dcd72l5XnLgdHdMTRmIMFHxGoqbU47
-         gCu6IGzqBG/8y4fXFeo8/f8K8RnyKk/e9orHe16wmFrM2+UKmpiufti/bv73hFbrWRHb
-         fx4dKUVkjP+QY5OxBer1h3DDuB1T/Sy/h/iW4LFsBNt4vDS1fklk/B1fJ5+39U18ItZ2
-         p4jhVPUUoMz2jp9y6notl3kSdBk/tGhfRQ1a/z4AHTb9ZjIqDrb/gqfnWb+3MroMlSie
-         wgtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697712618; x=1698317418;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F+23JhXChJ2upiI1yweoZc95DCKyTZufxmMJiUGUuS4=;
-        b=lsW/s276edHZ0FWSoZk6DGNMV62tM7YSCWZdC/BcTVjpcy/03eu+ed0KWAc/mcCgiY
-         hkHCmOk3Y2+3BRfNRZBwuVv05+jG0JIGMFKyFQnDzH28NyexylgWyrzC4pdtaeuZYZhR
-         QZ/x7NdNdJCCDCwI5r8zzSfsUzjlY4eX2vtAv6F8cXlrP8IwKHEGHf37CCRIlS671MFY
-         F06mbQi0X4t4yMthzwEbxtYFDhsdPQVtcF9/1vfR7fpChx50lvYvUveRgowmmfPlvlcP
-         /suEy48d+uKc7lOjNMoT8A5XJ40vrhW9kVHa4cXQ/sos6UVKxE2Jpvx2qOK5ElUgSHkV
-         LqrQ==
-X-Gm-Message-State: AOJu0YwYkSMRR9rB1IV7eAJDOZ9s+/1LTlxcDk/sJZi0CfjG4FZG2BSD
-        8kR2WFsbiCbzhcNAzIh1e4LK5w==
-X-Google-Smtp-Source: AGHT+IFCyfxJyRzphA3v3M3Qp58I614V6//BnX9R0uapcsA82NS8ukmHZJFgqxcRKdAYmP2SozoV8A==
-X-Received: by 2002:a17:902:d48f:b0:1c9:cf1e:f907 with SMTP id c15-20020a170902d48f00b001c9cf1ef907mr2142794plg.57.1697712618416;
-        Thu, 19 Oct 2023 03:50:18 -0700 (PDT)
-Received: from ?IPV6:2403:580d:82f4:0:43ac:2324:cc6e:9fa5? (2403-580d-82f4-0-43ac-2324-cc6e-9fa5.ip6.aussiebb.net. [2403:580d:82f4:0:43ac:2324:cc6e:9fa5])
-        by smtp.gmail.com with ESMTPSA id f18-20020a170902ce9200b001bc18e579aesm1612043plg.101.2023.10.19.03.50.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 03:50:18 -0700 (PDT)
-Message-ID: <6b856b0d-4f69-70ac-59a7-237fd21d1a92@tweaklogic.com>
-Date:   Thu, 19 Oct 2023 21:20:12 +1030
+        Thu, 19 Oct 2023 06:51:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE53B6;
+        Thu, 19 Oct 2023 03:50:52 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 119EC1FD8C;
+        Thu, 19 Oct 2023 10:50:51 +0000 (UTC)
+Received: from lion.mk-sys.cz (unknown [10.163.44.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A11482C503;
+        Thu, 19 Oct 2023 10:50:50 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id B44FA2016B; Thu, 19 Oct 2023 12:50:48 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 12:50:48 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net v1 1/1] ethtool: fix clearing of WoL flags
+Message-ID: <20231019105048.l64jp2nd46fxjewt@lion.mk-sys.cz>
+References: <20231019070904.521718-1-o.rempel@pengutronix.de>
+ <20231019090510.bbcmh7stzqqgchdd@lion.mk-sys.cz>
+ <20231019095140.l6fffnszraeb6iiw@lion.mk-sys.cz>
+ <20231019122114.5b4a13a9@kmaincent-XPS-13-7390>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
- schemas
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
- <20231019-rematch-ethically-9d482ca4607e@spud>
-Content-Language: en-US
-From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <20231019-rematch-ethically-9d482ca4607e@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mumhc6hbb5xme4hm"
+Content-Disposition: inline
+In-Reply-To: <20231019122114.5b4a13a9@kmaincent-XPS-13-7390>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+         TAGGED_RCPT(0.00)[];
+         REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 119EC1FD8C
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/23 19:21, Conor Dooley wrote:
-> On Thu, Oct 19, 2023 at 06:34:37PM +1030, Subhajit Ghosh wrote:
->> Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
->> file and removing the other.
-> 
->> Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dcef@linaro.org/
-> 
-> "Yes, they look similar. I will combine them all in a single yaml file in
-> the next revision. Thank you Krzysztof."
-> 
-> Yet this is a follow-up patch, not a version 2. The original patches
-> seem to not have been applied, so I am not sure why you didn't send a
-> v2?
-> 
-> Cheers,
-> Conor.
 
-Sorry, I should have put a longer description and a longer commit message.
-That patch series adds a new driver - apds9306 which is separate to this
-patch. As per Krzysztof's comments, first operation is to merge the existing
-apds9300 and apds9960 schemas. This patch is the first operation.
+--mumhc6hbb5xme4hm
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Second operation will be to add apds9306 support on top of that. I will
-explain more on Krzysztof's comments. Thank you for reviewing.
+On Thu, Oct 19, 2023 at 12:21:14PM +0200, K=F6ry Maincent wrote:
+> On Thu, 19 Oct 2023 11:51:40 +0200 > Michal Kubecek <mkubecek@suse.cz> wr=
+ote:
+> >=20
+> > The issue was indeed introduced by commit 108a36d07c01 ("ethtool: Fix
+> > mod state of verbose no_mask bitset"). The problem is that a "no mask"
+> > verbose bitset only contains bit attributes for bits to be set. This
+> > worked correctly before this commit because we were always updating
+> > a zero bitmap (since commit 6699170376ab ("ethtool: fix application of
+> > verbose no_mask bitset"), that is) so that the rest was left zero
+> > naturally. But now the 1->0 change (old_val is true, bit not present in
+> > netlink nest) no longer works.
+>=20
+> Doh I had not seen this issue! Thanks you for reporting it.
+> I will send the revert then and will update the fix for next merge-window.
 
-Regards,
-Subhajit Ghosh
+Something like the diff below (against current mainline) might do the
+trick but it's just an idea, not even build tested.
+
+Michal
+
+
+diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
+index 883ed9be81f9..4d4398879c95 100644
+--- a/net/ethtool/bitset.c
++++ b/net/ethtool/bitset.c
+@@ -74,6 +74,28 @@ static void ethnl_bitmap32_clear(u32 *dst, unsigned int =
+start, unsigned int end,
+ 	}
+ }
+=20
++/**
++  * ethnl_bitmap32_equal() - Compare two bitmaps
++  * @map1:  first bitmap
++  * @map2:  second bitmap
++  * @nbits: bit size to compare
++  *
++  * Return: true if first @nbits are equal, false if not
++  */
++
++static bool ethnl_bitmap32_equal(const u32 *map1, const u32 *map2,
++				 unsigned int nbits)
++{
++	bool ret;
++
++	if (memcmp(map1, map2, nbits / 32 * sizeof(u32)))
++		return false;
++	if (nbits % 32 =3D=3D 0)
++		return true;
++	return !((map1[nbits / 32] ^ map2[nbits / 32]) &
++		 ethnl_lower_bits(nbits % 32));
++}
++
+ /**
+  * ethnl_bitmap32_not_zero() - Check if any bit is set in an interval
+  * @map:   bitmap to test
+@@ -431,7 +453,7 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int=
+ nbits,
+ 			      ethnl_string_array_t names,
+ 			      struct netlink_ext_ack *extack, bool *mod)
+ {
+-	u32 *orig_bitmap, *saved_bitmap =3D NULL;
++	u32 *saved_bitmap =3D NULL;
+ 	struct nlattr *bit_attr;
+ 	bool no_mask;
+ 	bool dummy;
+@@ -462,9 +484,6 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int=
+ nbits,
+ 			return -ENOMEM;
+ 		memcpy(saved_bitmap, bitmap, nbytes);
+ 		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
+-		orig_bitmap =3D saved_bitmap;
+-	} else {
+-		orig_bitmap =3D bitmap;
+ 	}
+=20
+ 	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
+@@ -481,7 +500,7 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int=
+ nbits,
+ 				      names, extack);
+ 		if (ret < 0)
+ 			goto out;
+-		old_val =3D orig_bitmap[idx / 32] & ((u32)1 << (idx % 32));
++		old_val =3D bitmap[idx / 32] & ((u32)1 << (idx % 32));
+ 		if (new_val !=3D old_val) {
+ 			if (new_val)
+ 				bitmap[idx / 32] |=3D ((u32)1 << (idx % 32));
+@@ -490,6 +509,8 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int=
+ nbits,
+ 			*mod =3D true;
+ 		}
+ 	}
++	if (saved_bitmap)
++		*mod =3D ethnl_bitmap32_cmp(saved_bitmap, bitmap, nbits);
+=20
+ 	ret =3D 0;
+ out:
+
+--mumhc6hbb5xme4hm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmUxCgQACgkQ538sG/LR
+dpX6Agf6Aht9OqISQ9BQEbmfWk3BZYKgfcBISlXEq1+XD2W1wIP0ZoDjTxDcBFt7
+uQS9NdTZ1VS3ESDaF3s3JMOjEjr8n9I5qGsyjJhZdznSMn9+z5kqK512iS8ntpnM
+1QyutXBb7cWaoBR9ixvc98J3NbjuBCzJoDCvir6tb4oDM/rHouPV51BctF3Aoxef
+bLZkWnwVupeFMB3qAOiGfFVzuxS62oaVKySuReJNKil/A+g5EXkVJj2GGKTqOcJ0
+VNRSscGq0B2IMOqiGJA8e1csQZZ90qD+ZmpXKf+QlOdqF/ddhkpkMj/lqK6WVL2X
+lXwPSVtCwiJ0IJdji5uKvNpyLgXNdQ==
+=I33N
+-----END PGP SIGNATURE-----
+
+--mumhc6hbb5xme4hm--
