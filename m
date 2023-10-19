@@ -2,56 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F3D7CFEFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8418C7CFF01
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345620AbjJSQC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        id S1346384AbjJSQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345951AbjJSQC1 (ORCPT
+        with ESMTP id S235445AbjJSQE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:02:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDC2124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:02:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F30FCC433C7;
-        Thu, 19 Oct 2023 16:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697731345;
-        bh=yZXzCmRk3ufriSIQXgt6TeP6axLbf0VDHMcw/aRKvKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ha4MIUcOWDM7KryrnXdqTqRki9LFrT+ZiU8klxqgx9E5zJ2tEPgOkSmjU9KM8sV6v
-         EYu9Qdi7wK1elAyP6K0JEc4nff0FHIxl1+P8YXxwGgnOuMBqMCBJJ6sRwBKOCkItTe
-         GN0G6KNB47iwp0RvTWKHSK6uVOR2+pmvwWyD3GuSo38wCRzNdvvxLaYFPB+ZhW7Z4K
-         vpbT0QbhZ8q9/4GVzGiR34VkhGulJK96eAP92C9mfEKGRNq9jxiJws+HCaIJLTarxB
-         sBtQlK7pQqMfhzLI9MKpMpCW3GjCvgXepBAMja6QBjf+s7nwP4eNBfSC93WR5UZ9VG
-         wXmqb6peDMoYw==
-Date:   Thu, 19 Oct 2023 17:02:18 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, will@kernel.org, mark.rutland@arm.com,
-        atishp@atishpatra.org, anup@brainfault.org,
-        conor.dooley@microchip.com, ajones@ventanamicro.com,
-        heiko@sntech.de, jszhang@kernel.org, evan@rivosinc.com,
-        sunilvl@ventanamicro.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, tim609@andestech.com,
-        dylan@andestech.com, locus84@andestech.com, dminus@andestech.com,
-        Leo Yu-Chi Liang <ycliang@andestech.com>
-Subject: Re: [RFC PATCH v2 08/10] perf: RISC-V: Introduce Andes PMU for perf
- event sampling
-Message-ID: <20231019-daybed-preschool-8663d5a86798@spud>
-References: <20231019140156.3660000-1-peterlin@andestech.com>
+        Thu, 19 Oct 2023 12:04:59 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C44114
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:04:58 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7af45084eso104461497b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697731497; x=1698336297; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FJCfgpMRGm8SsO7MCIzXVFxgcyw3Voi3ZeI75VxR5RI=;
+        b=VIwrVYtlnOSHTbVDklPkd70WvNR2cEVQ828duGNQKvlKmhjbdlRYJjkckdjyCmmz03
+         /6NcnrSwCY57uggjhyuMD+Rn2ucZJ1v6IZuOuyyDvS6EgTzC9SL0ZwFks09JcxjX8Az8
+         6Empif8/A1jmKg+glbHm3IioIkq2mKwHF/e20G96DPVpY1lg7WQ3QsibuCKIDThUJHNB
+         xX7d+nAgvd+3zsoxSnS2Welq/Y8oItZiw8YD3tJPwEzcBIyscjZ3rJIle873a+9Pe0TY
+         Vo5JV6Uv0m9k49vWETiD/roNrpIFEcXioul+jVilsAeLUNoho/SHOPptVy2uERqy8Hga
+         N2Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697731497; x=1698336297;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FJCfgpMRGm8SsO7MCIzXVFxgcyw3Voi3ZeI75VxR5RI=;
+        b=WzqoyIDCQaciwQJkXwqUIJWKmbwCpAgvEtJ3GVCeAlZGPNiW3GB3ZaKz16o7b033Xx
+         RnFovSzTFc/26ptURDXEaa56JdjY3sTh09dLLSmWN2+UpdRvMPrUexuh4tQccO3FYehQ
+         RbytaGf/HMitiuWDJyD1ATymzAKJt5PJh0MA+YIqybQIkxqsxiWMdIfCbBZmqiyanzsi
+         UnaDPMRfAthk8uugPDlGb1EYawWVq6RxmpaxoUF93Gc9n2mwaiBIVedhhCnh7tjHMU50
+         yqU5g4HawDJCL/hEOjBVtytAhGo0yHmNHtjwGdmCvXRiLn0EbQ1egeaDGZitxU05ci2A
+         jL0Q==
+X-Gm-Message-State: AOJu0Yza72kwBb8YYbsXWWc7RrcUiBDDoFG5gYoA2VbfYfrDmhtg1bf2
+        126bJSe3l1x7NjlUmHxwqwDvwq1uQ7BSkXg6FrJPIQ==
+X-Google-Smtp-Source: AGHT+IH1D29/O0i8UviSHMrOwOrO8R9BtMQS0JHXYMFTn+oVrBtqRHHkWddl7TTkxHuw7IQcBZ9cvkq+gOGTUsgWMF0=
+X-Received: by 2002:a81:498b:0:b0:5a8:2d2b:ca9c with SMTP id
+ w133-20020a81498b000000b005a82d2bca9cmr2962189ywa.32.1697731496606; Thu, 19
+ Oct 2023 09:04:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="x6otgCaD773VMsNY"
-Content-Disposition: inline
-In-Reply-To: <20231019140156.3660000-1-peterlin@andestech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <ZST/WggW4hSVs9d4@gmail.com> <202310101641075436843@zte.com.cn> <ZScQZLTssSfq19Jm@gmail.com>
+In-Reply-To: <ZScQZLTssSfq19Jm@gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 19 Oct 2023 09:04:45 -0700
+Message-ID: <CAJuCfpH8mBCx-YvL0bLzUSHf_N+k4ii9uWpRX5JxOHxvD=Rdbw@mail.gmail.com>
+Subject: Re: [PATCH linux-next v3 2/4] sched/psi: Avoid update triggers and
+ rtpoll_total when it is unnecessary
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     yang.yang29@zte.com.cn, peterz@infradead.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        mingo@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,75 +72,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 2:15=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrot=
+e:
+>
+>
+> * yang.yang29@zte.com.cn <yang.yang29@zte.com.cn> wrote:
+>
+> > From: Yang Yang <yang.yang29@zte.com.cn>
+> >
+> > When psimon wakes up and there are no state changes for rtpoll_states,
+> > it's unnecessary to update triggers and rtpoll_total because the pressu=
+res
+> > being monitored by user had not changed.
+> > This will help to slightly reduce unnecessary computations of psi.
+> >
+> > Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> > Cc: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> > Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> > ---
+> >  kernel/sched/psi.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > index be853f227e40..143f8eb34f9d 100644
+> > --- a/kernel/sched/psi.c
+> > +++ b/kernel/sched/psi.c
+> > @@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *gro=
+up)
+> >       }
+> >
+> >       if (now >=3D group->rtpoll_next_update) {
+> > -             update_triggers(group, now, &update_total, PSI_POLL);
+> >               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
+iod;
+> > -             if (update_total)
+> > +             if (changed_states & group->rtpoll_states) {
+> > +                     update_triggers(group, now, &update_total, PSI_PO=
+LL);
+> >                       memcpy(group->rtpoll_total, group->total[PSI_POLL=
+],
+> >                                  sizeof(group->rtpoll_total));
+> > +             }
+>
+> Yeah, so I believe we may have been talking past each other for past
+> versions of this patch: why is this patch modifying the order of the
+> modification to group->rtpoll_next_update?
+>
+> It should do the below sequence, nothing more - see the patch attached
+> below. This is basically a combination of patches #2 and #3.
+>
+> And then the final patch removes the now superfluous 'update_total'
+> parameter, which is always true.
+>
+> Here are the commits I applied to tip:sched/core:
+>
+>   e03dc9fa0663 sched/psi: Change update_triggers() to a 'void' function
+>   ...
+>   80cc1d1d5ee3 sched/psi: Avoid updating PSI triggers and ->rtpoll_total =
+when there are no state changes
+>   3657680f38cd sched/psi: Delete the 'update_total' function parameter fr=
+om update_triggers()
+>
+> I rewrote the changelogs for readability.
+>
+> Thanks,
+>
+>         Ingo
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D>
+> From: Yang Yang <yang.yang29@zte.com.cn>
+> Date: Tue, 10 Oct 2023 16:41:07 +0800
+> Subject: [PATCH] sched/psi: Avoid updating PSI triggers and ->rtpoll_tota=
+l when there are no state changes
+>
+> When psimon wakes up and there are no state changes for ->rtpoll_states,
+> it's unnecessary to update triggers and ->rtpoll_total because the pressu=
+res
+> being monitored by the user have not changed.
+>
+> This will help to slightly reduce unnecessary computations of PSI.
+>
+> [ mingo: Changelog updates ]
+>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Peter Ziljstra <peterz@infradead.org>
+> Link: https://lore.kernel.org/r/202310101641075436843@zte.com.cn
 
---x6otgCaD773VMsNY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This version looks correct to me.
 
-On Thu, Oct 19, 2023 at 10:01:56PM +0800, Yu Chien Peter Lin wrote:
-> The Andes PMU extension provides the same mechanism as Sscofpmf,
-> allowing us to reuse the SBI PMU driver to support event sampling
-> and mode filtering.
->=20
-> To make use of this custom PMU extension, "xandespmu" needs
-> to be appended to the riscv,isa-extensions for each cpu node
-> in device-tree, and enable CONFIG_ANDES_CUSTOM_PMU.
->=20
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
-> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> Co-developed-by: Locus Wei-Han Chen <locus84@andestech.com>
-> Signed-off-by: Locus Wei-Han Chen <locus84@andestech.com>
+Acked-by: Suren Baghdasaryan <surenb@google.com>
+
 > ---
-> Changes v1 -> v2:
->   - New patch
-> ---
->  arch/riscv/include/asm/hwcap.h |  1 +
->  arch/riscv/kernel/cpufeature.c |  1 +
->  drivers/perf/Kconfig           | 14 ++++++++++++++
->  drivers/perf/riscv_pmu_sbi.c   | 35 +++++++++++++++++++++++++++++-----
->  4 files changed, 46 insertions(+), 5 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index d3082391c901..eecfe95d5050 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -59,6 +59,7 @@
->  #define RISCV_ISA_EXT_ZIFENCEI		41
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_XTHEADPMU		43
-> +#define RISCV_ISA_EXT_XANDESPMU		44
-> =20
->  #define RISCV_ISA_EXT_MAX		64
-> =20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 4a3fb017026c..a8e71c6dfb3e 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
->  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
->  	__RISCV_ISA_EXT_DATA(xtheadpmu, RISCV_ISA_EXT_XTHEADPMU),
-> +	__RISCV_ISA_EXT_DATA(xandespmu, RISCV_ISA_EXT_XANDESPMU),
-
-This does not following the ordering convention (see the comment above
-this datastructure) and is not documented in the dt-binding AFAICT.
-
-Cheers,
-Conor.
-
---x6otgCaD773VMsNY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTFTCgAKCRB4tDGHoIJi
-0nKIAP0UYudx+3t/W6mnFhUaOfIabhcVo8jVyLwKpJExRKvqSQEA5xL0ZAdqpAiu
-Ivu2MDucdOVHqs2n8o6sWhz+K4N3UAY=
-=k5/I
------END PGP SIGNATURE-----
-
---x6otgCaD773VMsNY--
+>  kernel/sched/psi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index be853f227e40..79f8db0c6150 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *group=
+)
+>         }
+>
+>         if (now >=3D group->rtpoll_next_update) {
+> -               update_triggers(group, now, &update_total, PSI_POLL);
+> -               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
+iod;
+> -               if (update_total)
+> +               if (changed_states & group->rtpoll_states) {
+> +                       update_triggers(group, now, &update_total, PSI_PO=
+LL);
+>                         memcpy(group->rtpoll_total, group->total[PSI_POLL=
+],
+>                                    sizeof(group->rtpoll_total));
+> +               }
+> +               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
+iod;
+>         }
+>
+>         psi_schedule_rtpoll_work(group,
