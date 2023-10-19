@@ -2,174 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 514BD7CF876
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C683E7CF878
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345495AbjJSMNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
+        id S1345531AbjJSMNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjJSMNG (ORCPT
+        with ESMTP id S1345479AbjJSMNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:13:06 -0400
-Received: from outbound-smtp43.blacknight.com (outbound-smtp43.blacknight.com [46.22.139.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8AEBE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:13:03 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp43.blacknight.com (Postfix) with ESMTPS id 38B1A20BC
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:13:02 +0100 (IST)
-Received: (qmail 26744 invoked from network); 19 Oct 2023 12:13:02 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.199.31])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 19 Oct 2023 12:13:01 -0000
-Date:   Thu, 19 Oct 2023 13:12:58 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH -V3 4/9] mm: restrict the pcp batch scale factor to avoid
- too long latency
-Message-ID: <20231019121258.52y5o7aaivyq2ex7@techsingularity.net>
-References: <20231016053002.756205-1-ying.huang@intel.com>
- <20231016053002.756205-5-ying.huang@intel.com>
+        Thu, 19 Oct 2023 08:13:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA02AB;
+        Thu, 19 Oct 2023 05:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697717622; x=1729253622;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=i4WwgJ3o94Vpc1j4dMgWvIKNhHkKPOtwMgr1IzruUfo=;
+  b=miNFtG/8cYi/neVyXhNPGvm5yuHDfIIgmgDT3KmTC5G0ufruanoOop1u
+   78EuY2RtZk27BzuTseb8dG/NI6Qixj6Vz83F0nbjRFZziM6JAl6FoqChR
+   iAKjt2BIu+D/fmxIV0oWCqznwYdWJRKy4OmZ9xKVqLM1L/au6Ow6pSL7u
+   W2Cd1uQfdmxDJhxA6mnLalZudXTIjjvQWzZa55grQHYkGlnmbNBWgNs64
+   8lODLhXNYEmF4Py2INWJSJ6LrFEmgQMBgX+q/RT6aRWLvIBvYWG9rHRRb
+   YNYAoyb2jx3HnTmtWAaViiG7kGeR5/Q3+HY35LqNBg9VblmVb6zFaAkeP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="7788028"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="7788028"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:13:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1004213877"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="1004213877"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:13:40 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qtRuD-00000006rBf-346f;
+        Thu, 19 Oct 2023 15:13:37 +0300
+Date:   Thu, 19 Oct 2023 15:13:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZTEdcVQH00911hfc@smile.fi.intel.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+ <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+ <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
+ <ZS7kY/+80Be4geGM@smile.fi.intel.com>
+ <ZS7_5VGvRnw99gzd@google.com>
+ <ZS9mo4/jnRNoTE+v@smile.fi.intel.com>
+ <ZTBfFIyCsl2gkp6f@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016053002.756205-5-ying.huang@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZTBfFIyCsl2gkp6f@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 01:29:57PM +0800, Huang Ying wrote:
-> In page allocator, PCP (Per-CPU Pageset) is refilled and drained in
-> batches to increase page allocation throughput, reduce page
-> allocation/freeing latency per page, and reduce zone lock contention.
-> But too large batch size will cause too long maximal
-> allocation/freeing latency, which may punish arbitrary users.  So the
-> default batch size is chosen carefully (in zone_batchsize(), the value
-> is 63 for zone > 1GB) to avoid that.
-> 
-> In commit 3b12e7e97938 ("mm/page_alloc: scale the number of pages that
-> are batch freed"), the batch size will be scaled for large number of
-> page freeing to improve page freeing performance and reduce zone lock
-> contention.  Similar optimization can be used for large number of
-> pages allocation too.
-> 
-> To find out a suitable max batch scale factor (that is, max effective
-> batch size), some tests and measurement on some machines were done as
-> follows.
-> 
-> A set of debug patches are implemented as follows,
-> 
-> - Set PCP high to be 2 * batch to reduce the effect of PCP high
-> 
-> - Disable free batch size scaling to get the raw performance.
-> 
-> - The code with zone lock held is extracted from rmqueue_bulk() and
->   free_pcppages_bulk() to 2 separate functions to make it easy to
->   measure the function run time with ftrace function_graph tracer.
-> 
-> - The batch size is hard coded to be 63 (default), 127, 255, 511,
->   1023, 2047, 4095.
-> 
-> Then will-it-scale/page_fault1 is used to generate the page
-> allocation/freeing workload.  The page allocation/freeing throughput
-> (page/s) is measured via will-it-scale.  The page allocation/freeing
-> average latency (alloc/free latency avg, in us) and allocation/freeing
-> latency at 99 percentile (alloc/free latency 99%, in us) are measured
-> with ftrace function_graph tracer.
-> 
-> The test results are as follows,
-> 
-> Sapphire Rapids Server
-> ======================
-> Batch	throughput	free latency	free latency	alloc latency	alloc latency
-> 	page/s		avg / us	99% / us	avg / us	99% / us
-> -----	----------	------------	------------	-------------	-------------
->   63	513633.4	 2.33		 3.57		 2.67		  6.83
->  127	517616.7	 4.35		 6.65		 4.22		 13.03
->  255	520822.8	 8.29		13.32		 7.52		 25.24
->  511	524122.0	15.79		23.42		14.02		 49.35
-> 1023	525980.5	30.25		44.19		25.36		 94.88
-> 2047	526793.6	59.39		84.50		45.22		140.81
-> 
-> Ice Lake Server
-> ===============
-> Batch	throughput	free latency	free latency	alloc latency	alloc latency
-> 	page/s		avg / us	99% / us	avg / us	99% / us
-> -----	----------	------------	------------	-------------	-------------
->   63	620210.3	 2.21		 3.68		 2.02		 4.35
->  127	627003.0	 4.09		 6.86		 3.51		 8.28
->  255	630777.5	 7.70		13.50		 6.17		15.97
->  511	633651.5	14.85		22.62		11.66		31.08
-> 1023	637071.1	28.55		42.02		20.81		54.36
-> 2047	638089.7	56.54		84.06		39.28		91.68
-> 
-> Cascade Lake Server
-> ===================
-> Batch	throughput	free latency	free latency	alloc latency	alloc latency
-> 	page/s		avg / us	99% / us	avg / us	99% / us
-> -----	----------	------------	------------	-------------	-------------
->   63	404706.7	 3.29		  5.03		 3.53		  4.75
->  127	422475.2	 6.12		  9.09		 6.36		  8.76
->  255	411522.2	11.68		 16.97		10.90		 16.39
->  511	428124.1	22.54		 31.28		19.86		 32.25
-> 1023	414718.4	43.39		 62.52		40.00		 66.33
-> 2047	429848.7	86.64		120.34		71.14		106.08
-> 
-> Commet Lake Desktop
-> ===================
-> Batch	throughput	free latency	free latency	alloc latency	alloc latency
-> 	page/s		avg / us	99% / us	avg / us	99% / us
-> -----	----------	------------	------------	-------------	-------------
-> 
->   63	795183.13	 2.18		 3.55		 2.03		 3.05
->  127	803067.85	 3.91		 6.56		 3.85		 5.52
->  255	812771.10	 7.35		10.80		 7.14		10.20
->  511	817723.48	14.17		27.54		13.43		30.31
-> 1023	818870.19	27.72		40.10		27.89		46.28
-> 
-> Coffee Lake Desktop
-> ===================
-> Batch	throughput	free latency	free latency	alloc latency	alloc latency
-> 	page/s		avg / us	99% / us	avg / us	99% / us
-> -----	----------	------------	------------	-------------	-------------
->   63	510542.8	 3.13		  4.40		 2.48		 3.43
->  127	514288.6	 5.97		  7.89		 4.65		 6.04
->  255	516889.7	11.86		 15.58		 8.96		12.55
->  511	519802.4	23.10		 28.81		16.95		26.19
-> 1023	520802.7	45.30		 52.51		33.19		45.95
-> 2047	519997.1	90.63		104.00		65.26		81.74
-> 
-> From the above data, to restrict the allocation/freeing latency to be
-> less than 100 us in most times, the max batch scale factor needs to be
-> less than or equal to 5.
-> 
-> Although it is reasonable to use 5 as max batch scale factor for the
-> systems tested, there are also slower systems.  Where smaller value
-> should be used to constrain the page allocation/freeing latency.
-> 
-> So, in this patch, a new kconfig option (PCP_BATCH_SCALE_MAX) is added
-> to set the max batch scale factor.  Whose default value is 5, and
-> users can reduce it when necessary.
-> 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Acked-by: Andrew Morton <akpm@linux-foundation.org>
+On Wed, Oct 18, 2023 at 03:41:24PM -0700, Dmitry Torokhov wrote:
+> On Wed, Oct 18, 2023 at 08:01:23AM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 17, 2023 at 02:43:01PM -0700, Dmitry Torokhov wrote:
+> > > On Tue, Oct 17, 2023 at 10:45:39PM +0300, Andy Shevchenko wrote:
+> > 
+> > Thanks for your response.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+...
+
+> > > I wonder, could you please post entire dmesg for your system?
+> > 
+> > Working, non-working or both?
+> 
+> Non working, especially if you also enable debug logs in
+> drivers/mmc/host/sdhci-pci-core.c.
+> 
+> What I do not quite understand is that I think we should not be hitting
+> the case where pinctrl is already created for the device, which is the
+> code path my patch was changing. IIUIC we should be mostly executing the
+> "pinctrl not found" path and that did not really change. Maybe you could
+> also put some more annotations to show how/at what exact point the probe
+> order changed? Maybe log find_pinctrl() calls and compare?
+> 
+> Linus, BTW, I think there are more problems there with pinctrl lookup,
+> because, if we assume there are concurrent accesses to pinctrl_get(),
+> the fact that we did not find an instance while scanning the list does
+> not mean we will not find it when we go to insert a newly created one.
+> 
+> Another problem, as far as I can see, that there is not really a defined
+> owner of pinctrl structure, it is created on demand, and destroyed when
+> last user is gone. So if we execute last pintctrl_put() and there is
+> another pinctrl_get() running simultaneously, we may get and bump up the
+> refcount, and then release (pinctrl_free) will acquire the mutex, and
+> zap the structure.
+
+Oh, that's a lot of fixing ahead! But if you send anything to test, I would
+happy do it.
+
+> Given that there are more issues in that code, maybe we should revert
+> the patch for now so Andy has a chance to convert to UUID/LABEL booting?
+
+I believe it's not feasible, see below why.
+
+...
+
+> > > I think the right answer is "fix the userspace" really in this case. We
+> > > could also try extend of_alias_get_id() to see if we could pass some
+> > > preferred numbering on x86. But this will again be fragile if the
+> > > knowledge resides in the driver and is not tied to a particular board
+> > > (as it is in DT case): there could be multiple controllers, things will
+> > > be shifting board to board...
+> > 
+> > Any suggestion how should it be properly done in the minimum shell environment?
+> > (Busybox uses mdev with static tables IIRC and there is no fancy udev or so)
+> 
+> I'm not sure, so you have something like blkid running? You just need to
+> locate the device and chroot there. This assumes you do have initramfs.
+
+I don't think this is working solution.
+
+My case is: I have build an environment with a script that has hardcoded
+mmcblk0 to mount from. When I run this script I do not know _which_ exact
+board I run on, it should work on any of them (same boards, but different
+UUIDs).
+
+While writing this I realised that the common denominator I have here is
+the physical device (as it's a PCI one), and it's on-SoC, so can't change
+its BDF. So, there seem to be a solution. Let me try to implement that.
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
