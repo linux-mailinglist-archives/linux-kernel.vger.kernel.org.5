@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369E67D0008
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C697D0009
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345305AbjJSQ4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
+        id S235486AbjJSQ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345242AbjJSQ4B (ORCPT
+        with ESMTP id S1345284AbjJSQ4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:56:01 -0400
+        Thu, 19 Oct 2023 12:56:08 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38AD2134
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:55:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 23BE118A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:56:06 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC460143D;
-        Thu, 19 Oct 2023 09:56:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE7FC1476;
+        Thu, 19 Oct 2023 09:56:46 -0700 (PDT)
 Received: from e127643.arm.com (unknown [10.57.67.150])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AB0223F5A1;
-        Thu, 19 Oct 2023 09:55:54 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8CEFD3F5A1;
+        Thu, 19 Oct 2023 09:56:02 -0700 (PDT)
 From:   James Clark <james.clark@arm.com>
 To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         kvmarm@lists.linux.dev, maz@kernel.org, suzuki.poulose@arm.com
@@ -37,12 +37,11 @@ Cc:     broonie@kernel.org, James Clark <james.clark@arm.com>,
         Rob Herring <robh@kernel.org>,
         Jintack Lim <jintack.lim@linaro.org>,
         Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
         Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/6] arm64/sysreg: Move TRFCR definitions to sysreg
-Date:   Thu, 19 Oct 2023 17:54:59 +0100
-Message-Id: <20231019165510.1966367-2-james.clark@arm.com>
+Subject: [PATCH v3 2/6] arm64: KVM: Move SPE and trace registers to the sysreg array
+Date:   Thu, 19 Oct 2023 17:55:00 +0100
+Message-Id: <20231019165510.1966367-3-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019165510.1966367-1-james.clark@arm.com>
 References: <20231019165510.1966367-1-james.clark@arm.com>
@@ -57,105 +56,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add separate definitions for ELx and EL2 as TRFCR_EL1 doesn't have CX.
-This also mirrors the previous definition so no code change is required.
+pmscr_el1 and trfcr_el1 are currently special cased in the
+host_debug_state struct, but they're just registers after all so give
+them entries in the sysreg array and refer to them through the host
+context.
 
-Also add TRFCR_EL12 which will start to be used in a later commit.
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/arm64/include/asm/sysreg.h | 12 ----------
- arch/arm64/tools/sysreg         | 41 +++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+), 12 deletions(-)
+ arch/arm64/include/asm/kvm_host.h  |  6 ++--
+ arch/arm64/include/asm/kvm_hyp.h   |  4 +--
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c | 44 +++++++++++++++---------------
+ arch/arm64/kvm/hyp/nvhe/switch.c   |  4 +--
+ 4 files changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 38296579a4fd..068dd6abe273 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -278,8 +278,6 @@
- #define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
- #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 4a966c0d7373..7c82927ddaf2 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -437,6 +437,8 @@ enum vcpu_sysreg {
+ 	CNTHP_CVAL_EL2,
+ 	CNTHV_CTL_EL2,
+ 	CNTHV_CVAL_EL2,
++	PMSCR_EL1,	/* Statistical profiling extension */
++	TRFCR_EL1,	/* Self-hosted trace filters */
  
--#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
--
- #define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
+ 	NR_SYS_REGS	/* Nothing after this line! */
+ };
+@@ -570,10 +572,6 @@ struct kvm_vcpu_arch {
+ 	struct {
+ 		/* {Break,watch}point registers */
+ 		struct kvm_guest_debug_arch regs;
+-		/* Statistical profiling extension */
+-		u64 pmscr_el1;
+-		/* Self-hosted trace */
+-		u64 trfcr_el1;
+ 	} host_debug_state;
  
- #define SYS_APIAKEYLO_EL1		sys_reg(3, 0, 2, 1, 0)
-@@ -496,7 +494,6 @@
- #define SYS_VTTBR_EL2			sys_reg(3, 4, 2, 1, 0)
- #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+ 	/* VGIC state */
+diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+index 66efd67ea7e8..52ac90d419e7 100644
+--- a/arch/arm64/include/asm/kvm_hyp.h
++++ b/arch/arm64/include/asm/kvm_hyp.h
+@@ -103,8 +103,8 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
+ void __debug_switch_to_host(struct kvm_vcpu *vcpu);
  
--#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
- #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
- #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
- #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
-@@ -904,15 +901,6 @@
- /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
- #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+ #ifdef __KVM_NVHE_HYPERVISOR__
+-void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu);
+-void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu);
++void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
++void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
+ #endif
  
--#define TRFCR_ELx_TS_SHIFT		5
--#define TRFCR_ELx_TS_MASK		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_EL2_CX			BIT(3)
--#define TRFCR_ELx_ExTRE			BIT(1)
--#define TRFCR_ELx_E0TRE			BIT(0)
--
- /* GIC Hypervisor interface registers */
- /* ICH_MISR_EL2 bit definitions */
- #define ICH_MISR_EOI		(1 << 0)
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index 76ce150e7347..5bf0d91ac073 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -2628,3 +2628,44 @@ Field	5	F
- Field	4	P
- Field	3:0	Align
- EndSysreg
-+
-+SysregFields TRFCR_EL2
-+Res0	63:7
-+UnsignedEnum	6:5	TS
-+	0b0000	USE_TRFCR_EL1_TS
-+	0b0001	VIRTUAL
-+	0b0010	GUEST_PHYSICAL
-+	0b0011	PHYSICAL
-+EndEnum
-+Res0	4
-+Field	3	CX
-+Res0	2
-+Field	1	E2TRE
-+Field	0	E0HTRE
-+EndSysregFields
-+
-+# TRFCR_EL1 doesn't have the CX bit so redefine it without CX instead of
-+# using a shared definition between TRFCR_EL2 and TRFCR_EL1
-+SysregFields TRFCR_ELx
-+Res0	63:7
-+UnsignedEnum	6:5	TS
-+	0b0001	VIRTUAL
-+	0b0010	GUEST_PHYSICAL
-+	0b0011	PHYSICAL
-+EndEnum
-+Res0	4:2
-+Field	1	ExTRE
-+Field	0	E0TRE
-+EndSysregFields
-+
-+Sysreg	TRFCR_EL1	3	0	1	2	1
-+Fields	TRFCR_ELx
-+EndSysreg
-+
-+Sysreg	TRFCR_EL2	3	4	1	2	1
-+Fields	TRFCR_EL2
-+EndSysreg
-+
-+Sysreg	TRFCR_EL12	3	5	1	2	1
-+Fields	TRFCR_ELx
-+EndSysreg
+ void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
+diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+index 4558c02eb352..f389ee59788c 100644
+--- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
++++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+@@ -14,12 +14,12 @@
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+ 
+-static void __debug_save_spe(u64 *pmscr_el1)
++static void __debug_save_spe(struct kvm_cpu_context *host_ctxt)
+ {
+ 	u64 reg;
+ 
+ 	/* Clear pmscr in case of early return */
+-	*pmscr_el1 = 0;
++	ctxt_sys_reg(host_ctxt, PMSCR_EL1) = 0;
+ 
+ 	/*
+ 	 * At this point, we know that this CPU implements
+@@ -31,7 +31,7 @@ static void __debug_save_spe(u64 *pmscr_el1)
+ 		return;
+ 
+ 	/* Yes; save the control register and disable data generation */
+-	*pmscr_el1 = read_sysreg_s(SYS_PMSCR_EL1);
++	ctxt_sys_reg(host_ctxt, PMSCR_EL1) = read_sysreg_s(SYS_PMSCR_EL1);
+ 	write_sysreg_s(0, SYS_PMSCR_EL1);
+ 	isb();
+ 
+@@ -39,21 +39,21 @@ static void __debug_save_spe(u64 *pmscr_el1)
+ 	psb_csync();
+ }
+ 
+-static void __debug_restore_spe(u64 pmscr_el1)
++static void __debug_restore_spe(struct kvm_cpu_context *host_ctxt)
+ {
+-	if (!pmscr_el1)
++	if (!ctxt_sys_reg(host_ctxt, PMSCR_EL1))
+ 		return;
+ 
+ 	/* The host page table is installed, but not yet synchronised */
+ 	isb();
+ 
+ 	/* Re-enable data generation */
+-	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
++	write_sysreg_s(ctxt_sys_reg(host_ctxt, PMSCR_EL1), SYS_PMSCR_EL1);
+ }
+ 
+-static void __debug_save_trace(u64 *trfcr_el1)
++static void __debug_save_trace(struct kvm_cpu_context *host_ctxt)
+ {
+-	*trfcr_el1 = 0;
++	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = 0;
+ 
+ 	/* Check if the TRBE is enabled */
+ 	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
+@@ -63,30 +63,30 @@ static void __debug_save_trace(u64 *trfcr_el1)
+ 	 * Since access to TRFCR_EL1 is trapped, the guest can't
+ 	 * modify the filtering set by the host.
+ 	 */
+-	*trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
++	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
+ 	write_sysreg_s(0, SYS_TRFCR_EL1);
+ 	isb();
+ 	/* Drain the trace buffer to memory */
+ 	tsb_csync();
+ }
+ 
+-static void __debug_restore_trace(u64 trfcr_el1)
++static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt)
+ {
+-	if (!trfcr_el1)
++	if (!ctxt_sys_reg(host_ctxt, TRFCR_EL1))
+ 		return;
+ 
+ 	/* Restore trace filter controls */
+-	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
++	write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
+ }
+ 
+-void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
++void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
+ {
+ 	/* Disable and flush SPE data generation */
+-	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
+-		__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
++	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
++		__debug_save_spe(host_ctxt);
+ 	/* Disable and flush Self-Hosted Trace generation */
+-	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRBE))
+-		__debug_save_trace(&vcpu->arch.host_debug_state.trfcr_el1);
++	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRBE))
++		__debug_save_trace(host_ctxt);
+ }
+ 
+ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+@@ -94,12 +94,12 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+ 	__debug_switch_to_guest_common(vcpu);
+ }
+ 
+-void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
++void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
+ {
+-	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
+-		__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
+-	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRBE))
+-		__debug_restore_trace(vcpu->arch.host_debug_state.trfcr_el1);
++	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
++		__debug_restore_spe(host_ctxt);
++	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRBE))
++		__debug_restore_trace(host_ctxt);
+ }
+ 
+ void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+index c50f8459e4fc..6b4b24ae077f 100644
+--- a/arch/arm64/kvm/hyp/nvhe/switch.c
++++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+@@ -278,7 +278,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+ 	 * translation regime to EL2 (via MDCR_EL2_E2PB == 0) and
+ 	 * before we load guest Stage1.
+ 	 */
+-	__debug_save_host_buffers_nvhe(vcpu);
++	__debug_save_host_buffers_nvhe(host_ctxt);
+ 
+ 	/*
+ 	 * We're about to restore some new MMU state. Make sure
+@@ -345,7 +345,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+ 	 * This must come after restoring the host sysregs, since a non-VHE
+ 	 * system may enable SPE here and make use of the TTBRs.
+ 	 */
+-	__debug_restore_host_buffers_nvhe(vcpu);
++	__debug_restore_host_buffers_nvhe(host_ctxt);
+ 
+ 	if (pmu_switch_needed)
+ 		__pmu_switch_to_host(vcpu);
 -- 
 2.34.1
 
