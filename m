@@ -2,195 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8418C7CFF01
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6C57CFF09
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346384AbjJSQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
+        id S1346181AbjJSQGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235445AbjJSQE7 (ORCPT
+        with ESMTP id S1345210AbjJSQGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:04:59 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C44114
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:04:58 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7af45084eso104461497b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697731497; x=1698336297; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJCfgpMRGm8SsO7MCIzXVFxgcyw3Voi3ZeI75VxR5RI=;
-        b=VIwrVYtlnOSHTbVDklPkd70WvNR2cEVQ828duGNQKvlKmhjbdlRYJjkckdjyCmmz03
-         /6NcnrSwCY57uggjhyuMD+Rn2ucZJ1v6IZuOuyyDvS6EgTzC9SL0ZwFks09JcxjX8Az8
-         6Empif8/A1jmKg+glbHm3IioIkq2mKwHF/e20G96DPVpY1lg7WQ3QsibuCKIDThUJHNB
-         xX7d+nAgvd+3zsoxSnS2Welq/Y8oItZiw8YD3tJPwEzcBIyscjZ3rJIle873a+9Pe0TY
-         Vo5JV6Uv0m9k49vWETiD/roNrpIFEcXioul+jVilsAeLUNoho/SHOPptVy2uERqy8Hga
-         N2Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697731497; x=1698336297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FJCfgpMRGm8SsO7MCIzXVFxgcyw3Voi3ZeI75VxR5RI=;
-        b=WzqoyIDCQaciwQJkXwqUIJWKmbwCpAgvEtJ3GVCeAlZGPNiW3GB3ZaKz16o7b033Xx
-         RnFovSzTFc/26ptURDXEaa56JdjY3sTh09dLLSmWN2+UpdRvMPrUexuh4tQccO3FYehQ
-         RbytaGf/HMitiuWDJyD1ATymzAKJt5PJh0MA+YIqybQIkxqsxiWMdIfCbBZmqiyanzsi
-         UnaDPMRfAthk8uugPDlGb1EYawWVq6RxmpaxoUF93Gc9n2mwaiBIVedhhCnh7tjHMU50
-         yqU5g4HawDJCL/hEOjBVtytAhGo0yHmNHtjwGdmCvXRiLn0EbQ1egeaDGZitxU05ci2A
-         jL0Q==
-X-Gm-Message-State: AOJu0Yza72kwBb8YYbsXWWc7RrcUiBDDoFG5gYoA2VbfYfrDmhtg1bf2
-        126bJSe3l1x7NjlUmHxwqwDvwq1uQ7BSkXg6FrJPIQ==
-X-Google-Smtp-Source: AGHT+IH1D29/O0i8UviSHMrOwOrO8R9BtMQS0JHXYMFTn+oVrBtqRHHkWddl7TTkxHuw7IQcBZ9cvkq+gOGTUsgWMF0=
-X-Received: by 2002:a81:498b:0:b0:5a8:2d2b:ca9c with SMTP id
- w133-20020a81498b000000b005a82d2bca9cmr2962189ywa.32.1697731496606; Thu, 19
- Oct 2023 09:04:56 -0700 (PDT)
+        Thu, 19 Oct 2023 12:06:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E15B3;
+        Thu, 19 Oct 2023 09:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697731570; x=1729267570;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=SlREd5rAEUIr1hUoGq+4u2bMdbm4gp8hOc98GrHIKzc=;
+  b=Wp/gCMcvxeR10KjXSZY4XOGCPz9mab5GtZ/iH6uc4gIx9bTwAAqybh3o
+   CTcObgWhQtIfLifNBOp1nvsYyZk95FqKW2RyQ9eVppN5jBvi8d9WCiB5Y
+   Gxe9fdoiFMbXhMIyIQwqUcIcu8hm7FRBY5trEAf1pTkRxylAjEVhKRlD1
+   Mg8583Hj/mw0RbLIZ7MGf1azOMiGe6MVaKS6Xh2Y5/JrLhw37crssFVic
+   Rf/R4dhb0gN1SAmMYYC8SUQ+b5hnv7MRdtZvyVbL3g2I9A/rAi6219DQB
+   iCqat+Nw7noxezcMqjEudXyHiQQRVgzSL+Vki4a50pXkKqIblA612AWzv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="4898559"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="4898559"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:05:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930664073"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="930664073"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 19 Oct 2023 09:05:22 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com, zhiquan1.li@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
+        anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+        yangjie@microsoft.com
+Subject: Re: [PATCH v5 16/18] x86/sgx: Limit process EPC usage with misc
+ cgroup controller
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-17-haitao.huang@linux.intel.com>
+ <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
+Date:   Thu, 19 Oct 2023 11:05:18 -0500
 MIME-Version: 1.0
-References: <ZST/WggW4hSVs9d4@gmail.com> <202310101641075436843@zte.com.cn> <ZScQZLTssSfq19Jm@gmail.com>
-In-Reply-To: <ZScQZLTssSfq19Jm@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 19 Oct 2023 09:04:45 -0700
-Message-ID: <CAJuCfpH8mBCx-YvL0bLzUSHf_N+k4ii9uWpRX5JxOHxvD=Rdbw@mail.gmail.com>
-Subject: Re: [PATCH linux-next v3 2/4] sched/psi: Avoid update triggers and
- rtpoll_total when it is unnecessary
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     yang.yang29@zte.com.cn, peterz@infradead.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        mingo@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2c2ka4kwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 2:15=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrot=
-e:
->
->
-> * yang.yang29@zte.com.cn <yang.yang29@zte.com.cn> wrote:
->
-> > From: Yang Yang <yang.yang29@zte.com.cn>
-> >
-> > When psimon wakes up and there are no state changes for rtpoll_states,
-> > it's unnecessary to update triggers and rtpoll_total because the pressu=
-res
-> > being monitored by user had not changed.
-> > This will help to slightly reduce unnecessary computations of psi.
-> >
-> > Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> > Cc: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> > Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> > ---
-> >  kernel/sched/psi.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> > index be853f227e40..143f8eb34f9d 100644
-> > --- a/kernel/sched/psi.c
-> > +++ b/kernel/sched/psi.c
-> > @@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *gro=
-up)
-> >       }
-> >
-> >       if (now >=3D group->rtpoll_next_update) {
-> > -             update_triggers(group, now, &update_total, PSI_POLL);
-> >               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
-iod;
-> > -             if (update_total)
-> > +             if (changed_states & group->rtpoll_states) {
-> > +                     update_triggers(group, now, &update_total, PSI_PO=
-LL);
-> >                       memcpy(group->rtpoll_total, group->total[PSI_POLL=
-],
-> >                                  sizeof(group->rtpoll_total));
-> > +             }
->
-> Yeah, so I believe we may have been talking past each other for past
-> versions of this patch: why is this patch modifying the order of the
-> modification to group->rtpoll_next_update?
->
-> It should do the below sequence, nothing more - see the patch attached
-> below. This is basically a combination of patches #2 and #3.
->
-> And then the final patch removes the now superfluous 'update_total'
-> parameter, which is always true.
->
-> Here are the commits I applied to tip:sched/core:
->
->   e03dc9fa0663 sched/psi: Change update_triggers() to a 'void' function
->   ...
->   80cc1d1d5ee3 sched/psi: Avoid updating PSI triggers and ->rtpoll_total =
-when there are no state changes
->   3657680f38cd sched/psi: Delete the 'update_total' function parameter fr=
-om update_triggers()
->
-> I rewrote the changelogs for readability.
->
-> Thanks,
->
->         Ingo
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D>
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> Date: Tue, 10 Oct 2023 16:41:07 +0800
-> Subject: [PATCH] sched/psi: Avoid updating PSI triggers and ->rtpoll_tota=
-l when there are no state changes
->
-> When psimon wakes up and there are no state changes for ->rtpoll_states,
-> it's unnecessary to update triggers and ->rtpoll_total because the pressu=
-res
-> being monitored by the user have not changed.
->
-> This will help to slightly reduce unnecessary computations of PSI.
->
-> [ mingo: Changelog updates ]
->
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Peter Ziljstra <peterz@infradead.org>
-> Link: https://lore.kernel.org/r/202310101641075436843@zte.com.cn
+On Tue, 17 Oct 2023 13:54:54 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
 
-This version looks correct to me.
+> On Fri, Sep 22, 2023 at 08:06:55PM -0700, Haitao Huang  =
 
-Acked-by: Suren Baghdasaryan <surenb@google.com>
+> <haitao.huang@linux.intel.com> wrote:
+>> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
+>
+> It should check for !epc_cg since the misc controller implementation
+> in misc_cg_alloc() would roll back even on non-allocated resources.
 
-> ---
->  kernel/sched/psi.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+Good catch. Will fix.
+
 >
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index be853f227e40..79f8db0c6150 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *group=
-)
->         }
+>> +	cancel_work_sync(&epc_cg->reclaim_work);
+>> +	kfree(epc_cg);
+>> +}
+>> +
+>> +static void sgx_epc_cgroup_max_write(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_reclaim_control rc;
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
+>> +
+>> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
+>> +	/* Let the reclaimer to do the work so user is not blocked */
+>> +	queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
 >
->         if (now >=3D group->rtpoll_next_update) {
-> -               update_triggers(group, now, &update_total, PSI_POLL);
-> -               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
-iod;
-> -               if (update_total)
-> +               if (changed_states & group->rtpoll_states) {
-> +                       update_triggers(group, now, &update_total, PSI_PO=
-LL);
->                         memcpy(group->rtpoll_total, group->total[PSI_POLL=
-],
->                                    sizeof(group->rtpoll_total));
-> +               }
-> +               group->rtpoll_next_update =3D now + group->rtpoll_min_per=
-iod;
->         }
+> This is weird. The writer will never learn about the result of the
+> operation.
 >
->         psi_schedule_rtpoll_work(group,
+Right. With the new plan, this callback will be removed.
+
+Thanks
+Haitao
