@@ -2,258 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0F37D0E04
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECE37D1074
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377269AbjJTK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        id S1377405AbjJTNYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377197AbjJTK4m (ORCPT
+        with ESMTP id S1377002AbjJTNYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:56:42 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC6A10DA;
-        Fri, 20 Oct 2023 03:56:23 -0700 (PDT)
+        Fri, 20 Oct 2023 09:24:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B81D19E;
+        Fri, 20 Oct 2023 06:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1697799383; x=1729335383;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=SYMYe2HHJULwyFDbn+FSCP14QHIorY7iifD9AdYUFbs=;
-  b=QVS9n+WGf2EaJ4lODaoqR7UmcCvFQxTV6T4FQiOjR85uZ0BvOZ2tJYbt
-   iS4acZCyjYNk6c6aA8Bv4mfHGDi/5z7cieFcB3AwO/wAWx5oICEHwEOch
-   EkJSZk5ekvojfXnzoFPW0/53Zf2lCr/YS/euZThQnKjsum+Gl3tZ7NVu6
-   uym+YwHoeia/U2vnA9ny3MWfaDHZwsKMpdblnitnW3uueKYlRwCaz9Dn1
-   TY4iuqqpjpEJ2LmBDwacwgzpZPURHD+P9WIP//mdYJPVh7LC9kYQSsICP
-   fCal1N5Y5r96bvPExf0It+oYLYvofrz3SkWZMvXWO8swceuhlLxquCzNI
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697808278; x=1729344278;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=k6ndI6jcwy64xNeCRwxhVgSos4puSIbLOL6kbeJBH7s=;
+  b=KrY84MeWUn2joZ8mdQaWKyBvM6+RiIX87I1NRSEUlEjltT28aj8ZzplK
+   a1qSDYuX0C34WHKgv4Rvtfb2rFLeq7ftcFbGjTPdVb+KraORMzrY8AAz3
+   B6hH8Dbnqaz2djMosEFIlWAv4WzGCz49nM/WicEy5W4mYbODb2OYSQWGH
+   TRQ+BW8fyVWGZmRh++0rWIPqwRQg8VHrYviHkqJZwo5wLtCy9OvNbPvu4
+   vAxcuXAsyNdLgTh1jt/ih2DPXmj1qcaVnuFbN2nq08BbDISBuNZZAwLxZ
+   DEladML93+8SnPMRYIlF1g4ZExNZb142fHgJ8YNujT1Gs2PhUcHRgI7xX
    Q==;
-X-CSE-ConnectionGUID: RVZyG8nFStKSThuyJ81xIw==
-X-CSE-MsgGUID: XXlTzESNQ+Gp3W7cPA3jIQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="10424440"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Oct 2023 03:56:22 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 20 Oct 2023 03:56:18 -0700
-Received: from che-dk-ungapp05lx.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 20 Oct 2023 03:56:15 -0700
-From:   Vishvambar Panth S <vishvambarpanth.s@microchip.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <jacob.e.keller@intel.com>, <kuba@kernel.org>
-CC:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
-        <richardcochran@gmail.com>
-Subject: [PATCH v3 net-next] net: microchip: lan743x: improve throughput with rx timestamp config
-Date:   Sat, 21 Oct 2023 00:28:01 +0530
-Message-ID: <20231020185801.25649-1-vishvambarpanth.s@microchip.com>
-X-Mailer: git-send-email 2.25.1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="385372620"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="385372620"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 06:24:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="881083826"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="881083826"
+Received: from mtadesse-mobl.amr.corp.intel.com (HELO [10.209.140.77]) ([10.209.140.77])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 06:24:36 -0700
+Message-ID: <5bc82aca-04f2-463b-ba52-34bcae6724d5@linux.intel.com>
+Date:   Thu, 19 Oct 2023 12:00:19 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk
+ detection
+Content-Language: en-US
+To:     Mark Hasemeyer <markhas@chromium.org>,
+        =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Brady Norander <bradynorander@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+References: <20231018235944.1860717-1-markhas@chromium.org>
+ <7b08520e-8f36-45a1-9b7a-316a33c8e8c4@linux.intel.com>
+ <CANg-bXDvZ00ZHEgbUf1NwDrOKfDF4vpBOxZ4hGEp-ohs6-pZpw@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <CANg-bXDvZ00ZHEgbUf1NwDrOKfDF4vpBOxZ4hGEp-ohs6-pZpw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently all RX frames are timestamped which results in a performance
-penalty when timestamping is not needed.  The default is now being
-changed to not timestamp any Rx frames (HWTSTAMP_FILTER_NONE), but
-support has been added to allow changing the desired RX timestamping
-mode (HWTSTAMP_FILTER_ALL -  which was the previous setting and
-HWTSTAMP_FILTER_PTP_V2_EVENT are now supported) using
-SIOCSHWTSTAMP. All settings were tested using the hwstamp_ctl application.
-It is also noted that ptp4l, when started, preconfigures the device to
-timestamp using HWTSTAMP_FILTER_PTP_V2_EVENT, so this driver continues
-to work properly "out of the box".
 
-Test setup:  x64 PC with LAN7430 ---> x64 PC as partner
 
-iperf3 with - Timestamp all incoming packets:
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-5.05   sec   517 MBytes   859 Mbits/sec    0    sender
-[  5]   0.00-5.00   sec   515 MBytes   864 Mbits/sec         receiver
+On 10/19/23 11:43, Mark Hasemeyer wrote:
+>> I would assume that platform that has DMI_SYS_VENDOR set to "Google",
+>> also has DMI_BIOS_VERSION set to "Google", so perhaps just replace
+>> DMI_SYS_VENDOR match with DMI_BIOS_VERSION, to keep table small? Or is
+>> that not a case?
+> 
+> That is the case. But I'm inclined to keep it for two reasons:
+> 1. There is precedent in the kernel to use DMI_SYS_VENDOR=="Google"
+> for Chromebook detection.
+> 2. If the coreboot version schema for Chromebooks were to change, this
+> check would fail for all JSL Chromebooks instead of just a few models.
 
-iperf Done.
+I also prefer a low-risk addition to a higher-risk change. It's not like
+we really care about the size of the table at this point.
 
-iperf3 with - Timestamp only PTP packets:
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-5.04   sec   563 MBytes   937 Mbits/sec    0    sender
-[  5]   0.00-5.00   sec   561 MBytes   941 Mbits/sec         receiver
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: Vishvambar Panth S <vishvambarpanth.s@microchip.com>
----
-Change Log:
-v2->v3
-        * Added static to lan743x_rx_cfg_b_tstamp_config
+FWIW we use this other quirk:
+DMI_MATCH(DMI_PRODUCT_FAMILY, "Google"),
 
-v1->v2
-        * As per community comments, dropped netif_warn
-        * dropped HWTSTAMP_FILTER_PTP_V2_DELAY_REQ & SYNC cases.
-        * replaced two separate decision points with mask & setting
-
- .../net/ethernet/microchip/lan743x_ethtool.c  |  3 +-
- drivers/net/ethernet/microchip/lan743x_main.c | 45 ++++++++++++++++++-
- drivers/net/ethernet/microchip/lan743x_main.h |  8 ++++
- drivers/net/ethernet/microchip/lan743x_ptp.c  |  9 ++++
- 4 files changed, 63 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-index 2db5949b4c7e..6961cfc55fb9 100644
---- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-@@ -1047,7 +1047,8 @@ static int lan743x_ethtool_get_ts_info(struct net_device *netdev,
- 			    BIT(HWTSTAMP_TX_ON) |
- 			    BIT(HWTSTAMP_TX_ONESTEP_SYNC);
- 	ts_info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) |
--			      BIT(HWTSTAMP_FILTER_ALL);
-+			      BIT(HWTSTAMP_FILTER_ALL) |
-+			      BIT(HWTSTAMP_FILTER_PTP_V2_EVENT);
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index a36f6369f132..afbd4a785f0d 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1864,6 +1864,50 @@ static int lan743x_tx_get_avail_desc(struct lan743x_tx *tx)
- 		return last_head - last_tail - 1;
- }
- 
-+static void lan743x_rx_cfg_b_tstamp_config(struct lan743x_adapter *adapter,
-+					   int rx_ts_config)
-+{
-+	int channel_number;
-+	int index;
-+	u32 data;
-+
-+	for (index = 0; index < LAN743X_USED_RX_CHANNELS; index++) {
-+		channel_number = adapter->rx[index].channel_number;
-+		data = lan743x_csr_read(adapter, RX_CFG_B(channel_number));
-+		data &= RX_CFG_B_TS_MASK_;
-+		data |= rx_ts_config;
-+		lan743x_csr_write(adapter, RX_CFG_B(channel_number),
-+				  data);
-+	}
-+}
-+
-+int lan743x_rx_set_tstamp_mode(struct lan743x_adapter *adapter,
-+			       int rx_filter)
-+{
-+	u32 data;
-+
-+	switch (rx_filter) {
-+	case HWTSTAMP_FILTER_PTP_V2_EVENT:
-+			lan743x_rx_cfg_b_tstamp_config(adapter,
-+						       RX_CFG_B_TS_DESCR_EN_);
-+			data = lan743x_csr_read(adapter, PTP_RX_TS_CFG);
-+			data |= PTP_RX_TS_CFG_EVENT_MSGS_;
-+			lan743x_csr_write(adapter, PTP_RX_TS_CFG, data);
-+			break;
-+	case HWTSTAMP_FILTER_NONE:
-+			lan743x_rx_cfg_b_tstamp_config(adapter,
-+						       RX_CFG_B_TS_NONE_);
-+			break;
-+	case HWTSTAMP_FILTER_ALL:
-+			lan743x_rx_cfg_b_tstamp_config(adapter,
-+						       RX_CFG_B_TS_ALL_RX_);
-+			break;
-+	default:
-+			return -ERANGE;
-+	}
-+	return 0;
-+}
-+
- void lan743x_tx_set_timestamping_mode(struct lan743x_tx *tx,
- 				      bool enable_timestamping,
- 				      bool enable_onestep_sync)
-@@ -2938,7 +2982,6 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
- 		data |= RX_CFG_B_RX_PAD_2_;
- 	data &= ~RX_CFG_B_RX_RING_LEN_MASK_;
- 	data |= ((rx->ring_size) & RX_CFG_B_RX_RING_LEN_MASK_);
--	data |= RX_CFG_B_TS_ALL_RX_;
- 	if (!(adapter->csr.flags & LAN743X_CSR_FLAG_IS_A0))
- 		data |= RX_CFG_B_RDMABL_512_;
- 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
-index 52609fc13ad9..b648461787d2 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.h
-+++ b/drivers/net/ethernet/microchip/lan743x_main.h
-@@ -522,6 +522,8 @@
- 	(((u32)(rx_latency)) & 0x0000FFFF)
- #define PTP_CAP_INFO				(0x0A60)
- #define PTP_CAP_INFO_TX_TS_CNT_GET_(reg_val)	(((reg_val) & 0x00000070) >> 4)
-+#define PTP_RX_TS_CFG				(0x0A68)
-+#define PTP_RX_TS_CFG_EVENT_MSGS_               GENMASK(3, 0)
- 
- #define PTP_TX_MOD				(0x0AA4)
- #define PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_	(0x10000000)
-@@ -657,6 +659,9 @@
- 
- #define RX_CFG_B(channel)			(0xC44 + ((channel) << 6))
- #define RX_CFG_B_TS_ALL_RX_			BIT(29)
-+#define RX_CFG_B_TS_DESCR_EN_			BIT(28)
-+#define RX_CFG_B_TS_NONE_			0
-+#define RX_CFG_B_TS_MASK_			(0xCFFFFFFF)
- #define RX_CFG_B_RX_PAD_MASK_			(0x03000000)
- #define RX_CFG_B_RX_PAD_0_			(0x00000000)
- #define RX_CFG_B_RX_PAD_2_			(0x02000000)
-@@ -991,6 +996,9 @@ struct lan743x_rx {
- 	struct sk_buff *skb_head, *skb_tail;
- };
- 
-+int lan743x_rx_set_tstamp_mode(struct lan743x_adapter *adapter,
-+			       int rx_filter);
-+
- /* SGMII Link Speed Duplex status */
- enum lan743x_sgmii_lsd {
- 	POWER_DOWN = 0,
-diff --git a/drivers/net/ethernet/microchip/lan743x_ptp.c b/drivers/net/ethernet/microchip/lan743x_ptp.c
-index 39e1066ecd5f..2f04bc77a118 100644
---- a/drivers/net/ethernet/microchip/lan743x_ptp.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ptp.c
-@@ -1493,6 +1493,10 @@ int lan743x_ptp_open(struct lan743x_adapter *adapter)
- 	temp = lan743x_csr_read(adapter, PTP_TX_MOD2);
- 	temp |= PTP_TX_MOD2_TX_PTP_CLR_UDPV4_CHKSUM_;
- 	lan743x_csr_write(adapter, PTP_TX_MOD2, temp);
-+
-+	/* Default Timestamping */
-+	lan743x_rx_set_tstamp_mode(adapter, HWTSTAMP_FILTER_NONE);
-+
- 	lan743x_ptp_enable(adapter);
- 	lan743x_csr_write(adapter, INT_EN_SET, INT_BIT_1588_);
- 	lan743x_csr_write(adapter, PTP_INT_EN_SET,
-@@ -1653,6 +1657,9 @@ static void lan743x_ptp_disable(struct lan743x_adapter *adapter)
- {
- 	struct lan743x_ptp *ptp = &adapter->ptp;
- 
-+	/* Disable Timestamping */
-+	lan743x_rx_set_tstamp_mode(adapter, HWTSTAMP_FILTER_NONE);
-+
- 	mutex_lock(&ptp->command_lock);
- 	if (!lan743x_ptp_is_enabled(adapter)) {
- 		netif_warn(adapter, drv, adapter->netdev,
-@@ -1785,6 +1792,8 @@ int lan743x_ptp_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
- 		break;
- 	}
- 
-+	ret = lan743x_rx_set_tstamp_mode(adapter, config.rx_filter);
-+
- 	if (!ret)
- 		return copy_to_user(ifr->ifr_data, &config,
- 			sizeof(config)) ? -EFAULT : 0;
--- 
-2.25.1
-
+How many engineers does it take to identify a Chromebook, eh?
