@@ -2,138 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AE97D04F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6810C7D04FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346677AbjJSWjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S1346689AbjJSWlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346679AbjJSWjs (ORCPT
+        with ESMTP id S233286AbjJSWlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:39:48 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7AE115
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:39:46 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so239042b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697755186; x=1698359986; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nk5hgpxDNd4N0lz+8mzHBYcat9RckdgLCs9Hpp0Hrl4=;
-        b=kF0XhPbELP6oTvH8kfJrP9mocVPm5ymLVEjHbo2WZHp+JGMMqOzxm/X/f4BhA8vmQc
-         j6/bbpiRYIh8ygblKmPxUdOyZpCanOOXKFZ2RqnFudLkhBpG91UfhKRLjhWgWz/7SeKc
-         LV1N4WWX9ik6xGcCEQGuesPSAlMfp0FTzVCgfW4gBDO+2MyOb2JPBDvfQbY/RoQSCjCb
-         NS+3lDu15s1F+09NK39e+rIZrc/A7zPdL0UAGaVscuK1DMEC23kqYTm7l2Ez7KoLdYaa
-         rjTIwr3P1HiynYySBefXaHj4C7GH1u+GEm3cKpVM16RX6C2Yl0sNCzFNzcgsBvqt4l3D
-         vH1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697755186; x=1698359986;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Nk5hgpxDNd4N0lz+8mzHBYcat9RckdgLCs9Hpp0Hrl4=;
-        b=V1LKJ7NG7ho/9HGtKx9sfoyK1DittcqoAcQQ9iUzOnS81awHmX7tNr671eOvawPLtJ
-         uTLN3jQnjpegpGGlDBQD9NCuqnCpAqcdv9Tf+xwk0AbbX5x/b9+Y36QX5hl4EFJY9esw
-         YbYPfQ4lIE83czKfphx9VyEoGh+yXelayZgGGWs2xWIqUTtom46u/hl8SH3UwbVMMBsn
-         KLHNvKDxcpyyFa8wzKuw/Xi2msQc47HlvL86mzvexbzDIJBYNcIP/6bR4p/lVQyxh4y7
-         rVBNBqwMiXgqYRpHW0RZAPl+nmpgjZ49wU2gRLzTthOfcWQJcw5zYUS+aKZVZXd3QRMk
-         9qQg==
-X-Gm-Message-State: AOJu0YzuBSBSvhX4IW+P9Zj7FfTiMAsOEBJiknAKJbGw+ehIogYBT0g4
-        tYnB8IWA2BHzlX3SqAQkxxsYQw==
-X-Google-Smtp-Source: AGHT+IE90P/nVzSPZkpSJdRYwbJEj3N78riHlVw7983RV92yexc9Yl2KuouLz6HteMvs72bJQ5wNIQ==
-X-Received: by 2002:a05:6a20:12c7:b0:16b:c20d:f979 with SMTP id v7-20020a056a2012c700b0016bc20df979mr190878pzg.13.1697755186034;
-        Thu, 19 Oct 2023 15:39:46 -0700 (PDT)
-Received: from ?IPV6:2601:645:8100:1350:e143:75f5:fe6d:948c? ([2601:645:8100:1350:e143:75f5:fe6d:948c])
-        by smtp.gmail.com with ESMTPSA id q15-20020a63f94f000000b005b2f3b5d3a4sm256831pgk.24.2023.10.19.15.39.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 15:39:45 -0700 (PDT)
-Message-ID: <4ca94f99-fe07-49c2-adc7-84df519792f5@google.com>
-Date:   Thu, 19 Oct 2023 15:39:44 -0700
+        Thu, 19 Oct 2023 18:41:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88482FA;
+        Thu, 19 Oct 2023 15:41:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA01C433C7;
+        Thu, 19 Oct 2023 22:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697755273;
+        bh=QrXcJSvkmaQhGlxDlCzTaTqOEgDsZKKUGEg6yjmzxzg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tr1q75UNywUIX/G6rnqagELNuFJwsL6pDbS6FlXWZlik9RgUeQusLFYc5diqKK9ql
+         mPjhMDQEuo8T1/QLme8z+3R0ZkNkPifdGSSwtsihpkHyjk8zrZ4bs4nfZMqb+RYomH
+         XCkUotEhvIKc70pvPqo7Hn7c9pK+iaGc8QakV7aEv9AkvvYxFRdoJPJC08VvICsx7O
+         wI8hLrYDRlOYjC4B7ldOO0oIL1GWcH7h16/zWoqPqjyZPVhwwvj37JF480Bx7XLNLq
+         eMckjH8mw2HavbZ1wfJqhXhq/euFpxU2lvg6uyIVp1VQNmfOE2UgS+b6AWTZyRGyjS
+         FrUgtEfZHaF+w==
+Message-ID: <69b627f565d6ca92182b7100cd1178a28646eef0.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Thu, 19 Oct 2023 18:41:09 -0400
+In-Reply-To: <87o7gu2rxw.ffs@tglx>
+References: <87o7gu2rxw.ffs@tglx>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>, balbi@kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "arakesh@google.com" <arakesh@google.com>,
-        "etalvala@google.com" <etalvala@google.com>
-From:   Jayant Chowdhary <jchowdhary@google.com>
-Subject: [PATCH] usb:gadget:uvc: Add super speed plus descriptors
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the UVC gadget driver doesn't support super speed
-plus connections since it doesn't advertise super speed plus descriptors.
-This patch re-uses the super speed descriptors for super-speed plus.
-As a result, hosts can recognize gadget devices when using a super
-speed plus connection.
+On Fri, 2023-10-20 at 00:00 +0200, Thomas Gleixner wrote:
+> Jeff!
+>=20
+> On Wed, Oct 18 2023 at 13:41, Jeff Layton wrote:
+> > +void ktime_get_mg_fine_ts64(struct timespec64 *ts)
+> > +{
+> > +	struct timekeeper *tk =3D &tk_core.timekeeper;
+> > +	unsigned long flags;
+> > +	u32 nsecs;
+> > +
+> > +	WARN_ON(timekeeping_suspended);
+> > +
+> > +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
+> > +	write_seqcount_begin(&tk_core.seq);
+>=20
+> Depending on the usage scenario, this will end up as a scalability issue
+> which affects _all_ of timekeeping.
+>=20
+> The usage of timekeeper_lock and the sequence count has been carefully
+> crafted to be as non-contended as possible. We went a great length to
+> optimize that because the ktime_get*() functions are really hotpath all
+> over the place.
+>=20
 
-Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
----
- drivers/usb/gadget/function/f_uvc.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+> Exposing such an interface which wreckages that is a recipe for disaster
+> down the road. It might be a non-issue today, but once we hit the
+> bottleneck of that global lock, we are up the creek without a
+> paddle.
+>=20
 
-diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index 32f2c1645467..fa96306f2209 100644
---- a/drivers/usb/gadget/function/f_uvc.c
-+++ b/drivers/usb/gadget/function/f_uvc.c
-@@ -492,6 +492,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 	void *mem;
- 
- 	switch (speed) {
-+	case USB_SPEED_SUPER_PLUS:
- 	case USB_SPEED_SUPER:
- 		uvc_control_desc = uvc->desc.ss_control;
- 		uvc_streaming_cls = uvc->desc.ss_streaming;
-@@ -536,7 +537,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 	      + uvc_control_ep.bLength + uvc_control_cs_ep.bLength
- 	      + uvc_streaming_intf_alt0.bLength;
- 
--	if (speed == USB_SPEED_SUPER) {
-+	if (speed == USB_SPEED_SUPER || speed == USB_SPEED_SUPER_PLUS) {
- 		bytes += uvc_ss_control_comp.bLength;
- 		n_desc = 6;
- 	} else {
-@@ -580,7 +581,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 	uvc_control_header->baInterfaceNr[0] = uvc->streaming_intf;
- 
- 	UVC_COPY_DESCRIPTOR(mem, dst, &uvc_control_ep);
--	if (speed == USB_SPEED_SUPER)
-+	if (speed == USB_SPEED_SUPER || speed == USB_SPEED_SUPER_PLUS)
- 		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_ss_control_comp);
- 
- 	UVC_COPY_DESCRIPTOR(mem, dst, &uvc_control_cs_ep);
-@@ -742,7 +743,14 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
- 			goto error;
- 		}
- 	}
--
-+	if (gadget_is_superspeed_plus(c->cdev->gadget)) {
-+		f->ssp_descriptors = uvc_copy_descriptors(uvc, USB_SPEED_SUPER_PLUS);
-+		if (IS_ERR(f->ssp_descriptors)) {
-+			ret = PTR_ERR(f->ssp_descriptors);
-+			f->ssp_descriptors = NULL;
-+			goto error;
-+		}
-+	}
- 	/* Preallocate control endpoint request. */
- 	uvc->control_req = usb_ep_alloc_request(cdev->gadget->ep0, GFP_KERNEL);
- 	uvc->control_buf = kmalloc(UVC_MAX_REQUEST_SIZE, GFP_KERNEL);
--- 
+Thanks for taking the explanation, Thomas. That's understandable, and
+that was my main worry with this set. I'll look at doing this another
+way given your feedback. I just started by plumbing this into the
+timekeeping code since that seemed like the most obvious place to do it.
 
+I think it's probably still possible to do this by caching the values
+returned by the timekeeper at the vfs layer, but there seems to be some
+reticence to the basic idea that I don't quite understand yet.
+
+> Well not really, but all we can do then is fall back to
+> ktime_get_real(). So let me ask the obvious question:
+>=20
+>      Why don't we do that right away?
+>=20
+> Many moons ago when we added ktime_get_real_coarse() the main reason was
+> that reading the time from the underlying hardware was insanely
+> expensive.
+>=20
+> Many moons later this is not true anymore, except for the stupid case
+> where the BIOS wreckaged the TSC, but that's a hopeless case for
+> performance no matter what. Optimizing for that would be beyond stupid.
+>=20
+> I'm well aware that ktime_get_real_coarse() is still faster than
+> ktime_get_real() in micro-benchmarks, i.e. 5ns vs. 15ns on the four
+> years old laptop I'm writing this.
+>=20
+> Many moons ago it was in the ballpark of 40ns vs. 5us due to TSC being
+> useless and even TSC read was way more expensive (factor 8-10x IIRC) in
+> comparison. That really mattered for FS, but does todays overhead still
+> make a difference in the real FS use case scenario?
+>=20
+> I'm not in the position of running meaningful FS benchmarks to analyze
+> that, but I think the delta between ktime_get_real_coarse() and
+> ktime_get_real() on contemporary hardware is small enough that it
+> justifies this question.
+>=20
+> The point is that both functions have pretty much the same D-cache
+> pattern because they access the same data in the very same
+> cacheline. The only difference is the actual TSC read and the extra
+> conversion, but that's it. The TSC read has been massively optimized by
+> the CPU vendors. I know that the ARM64 counter has been optimized too,
+> though I have no idea about PPC64 and S390, but I would be truly
+> surprised if they didn't optimize the hell out of it because time read
+> is really used heavily both in kernel and user space.
+>=20
+> Does anyone have numbers on contemporary hardware to shed some light on
+> that in the context of FS and the problem at hand?
+
+That was sort of my suspicion and it's good to have confirmation that
+fetching a fine-grained timespec64 from the timekeeper is cheap. It
+looked that way when I was poking around in there, but I wasn't sure
+whether it was always the case.
+
+It turns out however that the main benefit of using a coarse-grained
+timestamp is that it allows the file system to skip a lot of inode
+metadata updates.
+
+The way it works today is that when we go to update the timestamp on an
+inode, we check whether they have made any visible change, and we dirty
+the inode metadata if so. This means that we only really update the
+inode on disk once per jiffy or so when an inode is under heavy writes.
+
+The idea with this set is to only use fine-grained timestamps when
+someone is actively fetching them via getattr. When the mtime or ctime
+is viewed via getattr, we mark the inode and then the following
+timestamp update will get a fine-grained timestamp (unless the coarse-
+grained clock has already ticked).
+
+That allows us to keep the number of inode updates down to a bare
+minimum, but still allows an observer to always see a change in the
+timestamp when there have been changes to the inode.
+
+Thanks again for the review! For the next iteration I (probably) won't
+need to touch the timekeeper.
+--=20
+Jeff Layton <jlayton@kernel.org>
