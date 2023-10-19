@@ -2,116 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB6E7D033E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299E27D0347
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346557AbjJSUk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
+        id S1346556AbjJSUpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346397AbjJSUkz (ORCPT
+        with ESMTP id S1346397AbjJSUpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:40:55 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E389A3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:40:54 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-581edcde26cso70450eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:40:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697748053; x=1698352853; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HqBe46cf+1uCNWo/kZkQ81aBcvgfQlBh32t3mKrqU5A=;
-        b=hJkI0gXJCGvtU5WUxlfX7lo+F6a+5ULFqjXrMBzkawXhPTV6vCr4S3GRw0uUhFAZ+r
-         dXB3WeYTd1or1wjbdZLdodZ0zKuziXV8qr7VGCXK7Va0tVxe84+9YQGBYW/0PZxA4r2Z
-         5hN0MlvpdgE8FMO5pHTPCsQSJSpKdXpgvXgkOVLLn20HgB4pTHzUWqryYlenKlq8wPYP
-         rrjZHnfd/wuu00yD7QAemf3ncgce9qAt3mEJ3JFCrZFIPEMLIuIlnYWp0gJkLQ4Auw7+
-         qn2r4drcVNn4OSzDQyzGNuNjpBjKHe+aEjQooWYgwOTD31IBR6i+JkEHme/roQrekrR0
-         R6XQ==
+        Thu, 19 Oct 2023 16:45:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B85612F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697748251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tUmq71SFaV76lBrVYh6+KvqO/bkIhCdS1UYE4ErabTM=;
+        b=OF6EwuC2j9NM+CVaVDAlqtuZqVve4aDnYVQhEf8M1YvXmULARlzpEiuIbsFO4S8TOrW/E6
+        rd5Uq6wVVVYovP+MDEH3FK51BOhPNwOP5vySqgu/fxsduNo35rkezlOXU0P60TZicqUCI1
+        qQuaqdn7bNDZEt3bCud610MYajA6fos=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-ZQMDGzKmNQmzZtrAx86uCQ-1; Thu, 19 Oct 2023 16:43:59 -0400
+X-MC-Unique: ZQMDGzKmNQmzZtrAx86uCQ-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-59bbd849b22so146957b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:43:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697748053; x=1698352853;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HqBe46cf+1uCNWo/kZkQ81aBcvgfQlBh32t3mKrqU5A=;
-        b=cAS8TzruKicycZgkVNabGl+6Q9zVR0dg1NJREH5WiI7NPstvJW+mImdfwUerRqVvPv
-         yEVWQ7P+IaZvsG//3LcykkNkeB0dK/PY29s+L8PPx6EkJyOe4D0LyQpa/0/RR6+MeVGT
-         6DFPAPlSgb5MiYtJUC+sUIHBE0RmHsEqFKep0GbOrk+lDsveMorklr2GpfcLFAkmMutv
-         TTrcX4Ny5yoOKjJd0H8EK+/T+fCx/6oQdVhz+mmEA0I8kCNXA1f7CaN1dbNSMqUyMf4T
-         fAglpkuG6IiUhf9AKXf4dL7V6UgZ9ap+jaevZGjtnmwtCUN4LFvMkDt6X6qerjkQ5kDn
-         u1JA==
-X-Gm-Message-State: AOJu0YxOJKsjJ7VoteCNUSRWQG58XRbqmumchDUeWtvyY9f+JiuujuDp
-        p9uF18oo7GdPa+dR8eDyGi0=
-X-Google-Smtp-Source: AGHT+IFgRxHrJtUJe6V5adEOFj0eHEhBFonyw3wYe+z73eRjXmlDeEHiCHNMm1KdPeHUGwWPOCbGoQ==
-X-Received: by 2002:a4a:bb8d:0:b0:581:ed38:5506 with SMTP id h13-20020a4abb8d000000b00581ed385506mr77516oop.4.1697748053515;
-        Thu, 19 Oct 2023 13:40:53 -0700 (PDT)
-Received: from [192.168.1.224] (067-048-091-116.res.spectrum.com. [67.48.91.116])
-        by smtp.gmail.com with ESMTPSA id r2-20020a4aa2c2000000b00584078d1e17sm75950ool.45.2023.10.19.13.40.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 13:40:53 -0700 (PDT)
-Message-ID: <4f36de79-6271-ab6f-19fe-ba189e748b8f@gmail.com>
-Date:   Thu, 19 Oct 2023 15:40:48 -0500
+        d=1e100.net; s=20230601; t=1697748239; x=1698353039;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tUmq71SFaV76lBrVYh6+KvqO/bkIhCdS1UYE4ErabTM=;
+        b=REdZlPtpL2/xKETdOyW3is8IqS7C9wP+fzyqCZXSOEVXQRX9YSRWY0Lp2ufR2LryAN
+         SmppAalx+ZQvW9/o2XqQld/qgf9XWyw7AUWoeIlU9EIae+u7Ai+c9C2H5EaO+Sqf0q/b
+         n7zK7TWG2iYbay4b3cUtV5zPxyLtAtzZet8jDCIXXB/NPEKA4ji3ZJgbAa+KnatUDkwg
+         fDNQY7ulSQSS+Ku+uGGdpAkFaCTI2YkILpPJ9TU+3BM/Ygf9+9PNN7klREiPKYjP4Bzi
+         AkSERiBmy8WHSDneyCQ6ElKa0EWuRARok00Ozknzi84vy/SgZx2ou/rvUq3ZFQBsDgKE
+         HcJQ==
+X-Gm-Message-State: AOJu0YxhS+CO2UVIeJIKhwm3pV3mivvC5aiCEQBUCGl21DSLdPT/x+sS
+        0frJ468USdfBB7LoiwJTgUi1zQQpxq3+lJktirahubPwTeoVPa6Cdwn8XWqYkldqvH8cvumxLdE
+        MYz5QU72+Or3BYjSF3iGKdkOz
+X-Received: by 2002:a05:690c:dc9:b0:5a7:b928:9e93 with SMTP id db9-20020a05690c0dc900b005a7b9289e93mr4048164ywb.5.1697748238867;
+        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEh6w+8ZXZ57cfOnUfzaZAee9HlNSSE1wHtnL/nhH2FMh9qNnuc/g7W0l/g4crX2wbdluxT3Q==
+X-Received: by 2002:a05:690c:dc9:b0:5a7:b928:9e93 with SMTP id db9-20020a05690c0dc900b005a7b9289e93mr4048123ywb.5.1697748238545;
+        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id bi12-20020a05620a318c00b00772662b7804sm82248qkb.100.2023.10.19.13.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 13:43:58 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:43:56 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+Message-ID: <ZTGVDF5lJPyDF+c1@x1n>
+References: <ZShS3UT+cjJFmtEy@x1n>
+ <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
+ <ZSlragGjFEw9QS1Y@x1n>
+ <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
+ <ZS2IjEP479WtVdMi@x1n>
+ <8d187891-f131-4912-82d8-13112125b210@redhat.com>
+ <ZS7ZqztMbhrG52JQ@x1n>
+ <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
+ <ZTGJHesvkV84c+l6@x1n>
+ <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4] driver core: shut down devices asynchronously
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Tanjore Suresh <tansuresh@google.com>,
-        Martin Belanger <Martin.Belanger@dell.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>
-References: <20230921163443.9224-1-stuart.w.hayes@gmail.com>
- <2023100507-refocus-stooge-08dd@gregkh>
-From:   stuart hayes <stuart.w.hayes@gmail.com>
-In-Reply-To: <2023100507-refocus-stooge-08dd@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 19, 2023 at 01:02:39PM -0700, Suren Baghdasaryan wrote:
+> Hi Folks,
+> Sorry, I'm just catching up on all the comments in this thread after a
 
+Not a problem.
 
-On 10/5/2023 4:36 AM, Greg Kroah-Hartman wrote:
-> On Thu, Sep 21, 2023 at 11:34:43AM -0500, Stuart Hayes wrote:
->> Shut down devices asynchronously, ensuring that each device is shut down
->> before its parents.
->>
->> This can dramatically reduce system shutdown/reboot time on systems that
->> have devices that take many seconds to shut down, such as some NVMe drives.
->> On one system tested, the shutdown time went from 11 minutes without this
->> patch to 55 seconds with the patch.
-> 
-> That's a nice improvement, but I think we need a lot more testing on a
-> wide range of systems before we can take a patch like this.
-> 
-> Also, what about busses that don't want this type of shutdown?  We allow
-> busses to opt-in for async probing, shouldn't that be also done for
-> shutting them down to resolve issues for busses that can not handle
-> this?
-> 
-> thanks,
-> 
-> greg k-h
+> week-long absence. Will be addressing other questions separately but
+> for cross-mm one, I think the best way forward would be for me to
+> split this patch into two with the second one adding cross-mm support.
+> That will clearly show how much additional code that requires and will
+> make it easier for us to decide whether to support it or not.
 
-Yes, I could add something like what is done for async probing, so drivers
-have to opt in to async shutdown of their devices.
+Sounds good, thanks for that extra work.
 
-But I'm not sure how to get it tested on a wide range of systems, other than
-than having the patch in the kernel.  What if it defaults to synchronous
-shutdown for now, but the option is there so people are able to test async
-shutdown by changing an attribute in sysfs?  Then drivers could be patched
-later to opt in to async shutdown of their devices by default...?
+> TBH, I don't see the need for an additional flag even if the initial
+> version will be merged without cross-mm support. Once it's added the
+> manpage can mention that starting with a specific Linux version
+> cross-mm is supported, no?
 
-Thanks for the feedback!
+It's about how an user app knows what the kernel supports.
+
+On kernels that only support single-mm, UFFDIO_MOVE should fail if it found
+ctx->mm != current->mm.
+
+I think the best way to let the user app be clear of what happened is one
+new feature bit if cross-mm will be supported separately.  Or the userapp
+will need to rely on a specific failure code of UFFDIO_MOVE, and only until
+the 1st MOVE being triggered.  Not as clear, IMHO.
+
+> Also from my quick read, it sounds like we want to prevent movements
+> of pinned pages regardless of cross-mm support. Is my understanding
+> correct?
+
+I prefer that, but that's only my 2 cents.  I just don't see how remap can
+work with pin.  IIUC pin is about coherency of processor view and DMA view.
+Then if so the VA is the only identifier of a "page" for an user app
+because real pfn is hidden, and remap changes that VA.  So it doesn't make
+sense to me to remap a pin in whatever form.
+
+For check pinning: I think I used to mention that it may again require
+proper locking over mm.write_protect_seq like fork() paths.  No, when
+thinking again I think I was wrong..  write_protect_seq requires mmap write
+lock, definitely not good.
+
+We can do what David mentioned before, after ptep_clear_flush() (so pte is
+cleared) we recheck page pinning, if pinned fail MOVE and put the page
+back.  Note that we can't do that check after installing it into dest
+pgtables, because then someone can start to pin it from dest mm already.
+
+Thanks,
+
+-- 
+Peter Xu
+
