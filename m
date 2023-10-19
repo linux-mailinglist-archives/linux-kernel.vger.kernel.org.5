@@ -2,205 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E957D04A6
+	by mail.lfdr.de (Postfix) with ESMTP id DAF397D04A7
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbjJSWI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S1346634AbjJSWJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjJSWIv (ORCPT
+        with ESMTP id S235563AbjJSWJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:08:51 -0400
+        Thu, 19 Oct 2023 18:09:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DF3112;
-        Thu, 19 Oct 2023 15:08:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C607C433C8;
-        Thu, 19 Oct 2023 22:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697753329;
-        bh=5nWEspGQsqIlXLWlQgxxPQ2KwD63lq+0D9hGkCIuI9s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=UY7WFPw7Knkz/fhmpDW3uN5R3SE/bYFYam4auTj32WhIEkai6nT1cgsj52xtnd5ed
-         6v9RQTW3IigxxbLXTzcYBrYAJOTM1aV/OEWr9VAG6mZ+AUYVSaT+bZ/UhLwPP3fvD6
-         LnQF+o+bF+cBhVlSbkx5KfdbFB3WZMQRNcPh03cKIVS8EdanJ2Agcoxz42tlETKg5N
-         3GUDq9lQHGxMvlM4Brao5bR25dEzJG8IncTqbCF2QiOCta7/SGjeV8uHOAsqW8fjVq
-         6YLn3+7d0FILOrYNfDVc6M/HtW1ersC8z/lsXzThZh8msYv0rbJYX3TeLleFzf9JnP
-         KzcoL/W1oy4/A==
-Date:   Thu, 19 Oct 2023 17:08:47 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Siddharth Vadapalli <s-vadapalli@ti.com>, bhelgaas@google.com,
-        lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, r-gunasekaran@ti.com,
-        srk@ti.com
-Subject: Re: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <20231019220847.GA1413474@bhelgaas>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AFC116
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:09:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E260AC433C8;
+        Thu, 19 Oct 2023 22:09:05 +0000 (UTC)
+Date:   Thu, 19 Oct 2023 18:09:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        oe-kbuild-all@lists.linux.dev, Kees Cook <keescook@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kent Overstreet <kmo@daterainc.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH 1/1] trace: Move readpos from seq_buf to trace_seq
+Message-ID: <20231019180904.70e623f1@gandalf.local.home>
+In-Reply-To: <202310200523.ggyHvT6w-lkp@intel.com>
+References: <20231019194514.2115506-2-willy@infradead.org>
+        <202310200523.ggyHvT6w-lkp@intel.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nw5myorissautj3uzhe2h32imu5v7bycjo3studma7v7dt37g6@tffgtog7x3j5>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 01:05:24PM +0300, Serge Semin wrote:
-> On Thu, Oct 19, 2023 at 01:43:30PM +0530, Siddharth Vadapalli wrote:
-> > In the process of converting .scan_bus() callbacks to .add_bus(), the
-> > ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-> > The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-> > to controller version 3.65a, while the .add_bus() method had been added
-> > to ks_pcie_ops which is shared between the controller versions 3.65a and
-> > 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-> > ks_pcie_v3_65_add_bus() method are applicable to the controller version
-> > 4.90a which is present in AM654x SoCs.
-> > 
-> > Thus, fix this by creating ks_pcie_am6_ops for the AM654x SoC which uses DW
-> > PCIe IP-core version 4.90a controller and omitting the .add_bus() method
-> > which is not applicable to the 4.90a controller. Update ks_pcie_host_init()
-> > accordingly in order to set the pci_ops to ks_pcie_am6_ops if the platform
-> > is AM654x SoC and to ks_pcie_ops otherwise, by making use of the "is_am6"
-> > flag.
-> > 
-> > Fixes: 6ab15b5e7057 ("PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus")
-> > Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> 
-> LGTM. Thanks!
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> One more note is further just to draw attention to possible driver
-> simplifications.
-> 
-> > ---
-> > Hello,
-> > 
-> > This patch is based on linux-next tagged next-20231018.
-> > 
-> > The v2 of this patch is at:
-> > https://lore.kernel.org/r/20231018075038.2740534-1-s-vadapalli@ti.com/
-> > 
-> > Changes since v2:
-> > - Implemented Serge's suggestion of adding a new pci_ops structure for
-> >   AM654x SoC using DWC PCIe IP-core version 4.90a controller.
-> > - Created struct pci_ops ks_pcie_am6_ops for AM654x SoC without the
-> >   .add_bus method while retaining other ops from ks_pcie_ops.
-> > - Updated ks_pcie_host_init() to set pci_ops to ks_pcie_am6_ops if the
-> >   platform is AM654x and to ks_pcie_ops otherwise by making use of the
-> >   already existing "is_am6" flag.
-> > - Combined the section:
-> > 	if (!ks_pcie->is_am6)
-> >  		pp->bridge->child_ops = &ks_child_pcie_ops;
-> >   into the newly added ELSE condition.
-> > 
-> > The v1 of this patch is at:
-> > https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
-> > 
-> > While there are a lot of changes since v1 and this patch could have been
-> > posted as a v1 patch itself, I decided to post it as the v2 of the patch
-> > mentioned above since it aims to address the issue described by the v1
-> > patch and is similar in that sense. However, the solution to the issue
-> > described in the v1 patch appears to be completely different from what
-> > was implemented in the v1 patch. Thus, the commit message and subject of
-> > this patch have been modified accordingly.
-> > 
-> > Changes since v1:
-> > - Updated patch subject and commit message.
-> > - Determined that issue is not with the absence of Link as mentioned in
-> >   v1 patch. Even with Link up and endpoint device connected, if
-> >   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
-> >   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
-> >   AER and PME services. The all Fs return value indicates that the MSI-X
-> >   configuration is failing even if Endpoint device is connected. This is
-> >   because the ks_pcie_v3_65_add_bus() function is not applicable to the
-> >   AM654x SoC which uses DW PCIe IP-core version 4.90a.
-> > 
-> > Regards,
-> > Siddharth.
-> > 
-> >  drivers/pci/controller/dwc/pci-keystone.c | 13 +++++++++++--
-> >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> > index 49aea6ce3e87..66341a0b6c6b 100644
-> > --- a/drivers/pci/controller/dwc/pci-keystone.c
-> > +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> > @@ -487,6 +487,12 @@ static struct pci_ops ks_pcie_ops = {
-> >  	.add_bus = ks_pcie_v3_65_add_bus,
-> >  };
-> >  
-> > +static struct pci_ops ks_pcie_am6_ops = {
-> > +	.map_bus = dw_pcie_own_conf_map_bus,
-> > +	.read = pci_generic_config_read,
-> > +	.write = pci_generic_config_write,
-> > +};
-> > +
-> >  /**
-> >   * ks_pcie_link_up() - Check if link up
-> >   * @pci: A pointer to the dw_pcie structure which holds the DesignWare PCIe host
-> > @@ -804,9 +810,12 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
-> >  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
-> >  	int ret;
-> >  
-> > -	pp->bridge->ops = &ks_pcie_ops;
-> > -	if (!ks_pcie->is_am6)
-> > +	if (ks_pcie->is_am6) {
-> > +		pp->bridge->ops = &ks_pcie_am6_ops;
-> > +	} else {
-> 
-> > +		pp->bridge->ops = &ks_pcie_ops;
-> >  		pp->bridge->child_ops = &ks_child_pcie_ops;
-> 
-> Bjorn, could you please clarify the next suggestion? I'm not that
-> fluent in the PCIe core details, but based on the
-> pci_host_bridge.child_ops and pci_host_bridge.ops names, the first ops
-> will be utilized for the child (non-root) PCIe buses, meanwhile the
-> later ones - for the root bus only (see pci_alloc_child_bus()). Right?
+On Fri, 20 Oct 2023 05:59:36 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-I think so.  07e292950b93 ("PCI: Allow root and child buses to have
-different pci_ops") says:
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  323) /**
+> 9dbbc3b9d09d6d lib/seq_buf.c          Zhen Lei                 2021-07-07  324   * seq_buf_to_user - copy the sequence buffer to user space
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  325)  * @s: seq_buf descriptor
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  326)  * @ubuf: The userspace memory location to copy to
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  327)  * @cnt: The amount to copy
 
-  PCI host bridges often have different ways to access the root and child
-  bus config spaces. The host bridge drivers have invented their own
-  abstractions to handle this. Let's support having different root and
-  child bus pci_ops so these per driver abstractions can be removed.
+When you resend, I guess you should add the @start as well.
 
-https://git.kernel.org/linus/07e292950b93
+-- Steve
 
-> If so then either the pci_is_root_bus() check can be dropped from the
-> ks_pcie_v3_65_add_bus() method since the ops it belong to will be
-> utilized for the root bus anyway, or the entire ks_child_pcie_ops
-> instance can be dropped since the ks_pcie_v3_65_add_bus() method will
-> be no-op for the child buses anyway meanwhile ks_child_pcie_ops
-> matches to ks_pcie_ops in the rest of the ops. After doing that I
-> would have also changed the ks_pcie_v3_65_add_bus name to
-> ks_pcie_v3_65_add_root_bus() in anyway. Am I right?
-
-Probably so.
-
-But I don't think this code should be in an .add_bus() method in the
-first place.  Ideally I think the content of ks_pcie_v3_65_add_bus()
-would move to the ks_pcie_host_init() path so we wouldn't need the
-.add_bus() hook at all.
-
-I think it was added as ks_dw_pcie_v3_65_scan_bus() by 0c4ffcfe1fbc
-("PCI: keystone: Add TI Keystone PCIe driver"), which doesn't explain
-why doing this after scanning the secondary bus is needed.
-
-The .scan_bus() hook was added by b14a3d1784a9 ("PCI: designware: Add
-support for v3.65 hardware"), which says:
-
-  3. MSI interrupt generation requires EP to write to the RC's
-     application register.  So enhance the driver to allow setup of
-     inbound access to MSI IRQ register as a post scan bus API callback.
-
-That's not a convincing argument for why the BAR setup has to be done
-*after* enumerating the endpoints, but presumably there was some
-reason.
-
-Bjorn
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  328)  *
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  329)  * Copies the sequence buffer into the userspace memory pointed to
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  330)  * by @ubuf. It starts from the last read position (@s->readpos)
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  331)  * and writes up to @cnt characters or till it reaches the end of
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  332)  * the content in the buffer (@s->len), which ever comes first.
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  333)  *
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  334)  * On success, it returns a positive number of the number of bytes
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  335)  * it copied.
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  336)  *
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  337)  * On failure it returns -EBUSY if all of the content in the
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  338)  * sequence has been already read, which includes nothing in the
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  339)  * sequence (@s->len == @s->readpos).
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  340)  *
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  341)  * Returns -EFAULT if the copy to userspace fails.
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  342)  */
+> 9377093a882be0 lib/seq_buf.c          Matthew Wilcox (Oracle   2023-10-19  343) int seq_buf_to_user(struct seq_buf *s, char __user *ubuf, size_t start, int cnt)
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25 @344) {
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  345) 	int len;
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  346) 	int ret;
+> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  347) 
