@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA43A7CF1BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995927CF1C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344906AbjJSHzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S235187AbjJSHzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbjJSHzA (ORCPT
+        with ESMTP id S233083AbjJSHzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:55:00 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CD9124;
-        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507c5249d55so3058587e87.3;
-        Thu, 19 Oct 2023 00:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697702097; x=1698306897; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
-        b=e0DCnjIJ0KC82mf+oqwh0/o+YUCkFPpsjshuG/5RB7trYriLGI0Q0xZ/GrZz/acjOk
-         bUJi6HsW+tPDbwXNmaCnkuh4yE6WKk4Vm+5KLI9Iz5bgNIi/z6HwnMO9/7JDyfWwyfIX
-         uC1qBvJnPApas892IwlilYShHIzJ2qL+THAjq82nrmqOe8F3JiWFemfhWcs5BgmdfLI4
-         44+pua6NizIl3/SHcqfKUA+Lov5OvMktkOFRguzbnSa4GCevDPDigREHISn/dxRk++I/
-         lOrgBb0RbgeI9f/KUWQfL0P4kb6BhyLlDTbeCtag22qR9l5nIe8C04Wsbgd9VOlWrvP3
-         YIYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697702097; x=1698306897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rXJ/Mr+spXECJ9u0aAvXnCzzdApNwtlPUw+XhQPOmiE=;
-        b=WHg6W5QMBMfLh+V1IrMG8lBzFTYoKp76oDKv8MNAwTzwl8P49M6mPUCD6mnZ4TXcDX
-         dBa4CKYALW1Tay0zqrINczffF5fFg7pErXX7wV8dpCR52RWrBjuNZtITdkDZDps6sZbm
-         /fZqtlXA5aDLFZAnLlv5yZao7HpuSmCBGT62Qr/QE4UEDDcGOoU9D6vUeiSyze5Z45BE
-         HAsqBTMSVDKVxCb+NMndj2Oe4bjaei6RZgc60Gly23cU05dez+enmqNC7MnY/tNKCodN
-         MG2YAE5Kgz6qD3Vn+B1X+Uu3IUTX8XZD88TtHUEU6ztFEcBlaozPWeQdxeegwIBS3vgD
-         e81A==
-X-Gm-Message-State: AOJu0YxYjaDZ2eJAjNj1HZPDLyWhmK/ZEiDrrSOeIx6fmu3HdgE06RfZ
-        dPtRFgQzmPvwZrvIyOzXfxCFzx/j2Ns=
-X-Google-Smtp-Source: AGHT+IGhBCdv3F02RoO6WXb7swa56I2T+hnTKGyT76SnzWyqXbwC7LTjG7c2oBJSqzEOTMfGgxaX3A==
-X-Received: by 2002:a05:6512:455:b0:507:9dfd:f840 with SMTP id y21-20020a056512045500b005079dfdf840mr909014lfk.68.1697702096870;
-        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id c18-20020adfe712000000b0032da49e18fasm3881275wrm.23.2023.10.19.00.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 00:54:56 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] bcachefs: Fix spelling mistake "strcuct" -> "struct"
-Date:   Thu, 19 Oct 2023 08:54:55 +0100
-Message-Id: <20231019075455.369650-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 19 Oct 2023 03:55:17 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9506129;
+        Thu, 19 Oct 2023 00:55:14 -0700 (PDT)
+X-UUID: d217ccdc6e5411ee8051498923ad61e6-20231019
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=E4JZXGwaqgiVk9kx6+mbob/fL/CJEEXGEBYv/EI5zPY=;
+        b=GXLiA0sStNmD8TVnfggAxSAItZkFjiKc/Loex3Flu8UF+pbOx+5AheJ3FtPPkO1/TNvQyPJXQ3QyUARp1cRqNhC+0Q1fYrbG9I9s5keZYcu0ynco7+J4wOOCj1N4ompiGVL/K46ITmtZnhNoNZVrM6/XS7/4ywDAzf43Kg7gl4Y=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:1f5bc17d-8121-4a62-a194-5f4412a0f8cf,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:a540faf0-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: d217ccdc6e5411ee8051498923ad61e6-20231019
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+        (envelope-from <jason-ch.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1632491990; Thu, 19 Oct 2023 15:55:07 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 19 Oct 2023 15:55:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 19 Oct 2023 15:55:06 +0800
+From:   Jason-ch Chen <jason-ch.chen@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Alexandre Mergnat <amergnat@baylibre.com>
+CC:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        jason-ch chen <Jason-ch.Chen@mediatek.com>
+Subject: [PATCH v5 2/4] dt-bindings: arm: mediatek: Add mt8188 pericfg compatible
+Date:   Thu, 19 Oct 2023 15:54:56 +0800
+Message-ID: <20231019075458.28290-3-jason-ch.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20231019075458.28290-1-jason-ch.chen@mediatek.com>
+References: <20231019075458.28290-1-jason-ch.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,26 +79,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in an unsafe_memcpy message. Fix it.
+From: jason-ch chen <Jason-ch.Chen@mediatek.com>
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Add mt8188 pericfg compatible to binding document.
+
+Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- fs/bcachefs/buckets.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml       | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/bcachefs/buckets.c b/fs/bcachefs/buckets.c
-index a1a4b5feadaa..9e93de2670d5 100644
---- a/fs/bcachefs/buckets.c
-+++ b/fs/bcachefs/buckets.c
-@@ -475,7 +475,7 @@ static inline int update_replicas_list(struct btree_trans *trans,
- 	n->delta = sectors;
- 	unsafe_memcpy((void *) n + offsetof(struct replicas_delta, r),
- 		      r, replicas_entry_bytes(r),
--		      "flexible array member embedded in strcuct with padding");
-+		      "flexible array member embedded in struct with padding");
- 	bch2_replicas_entry_sort(&n->r);
- 	d->used += b;
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
+index 26158d0d72f3..33c94c491828 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
+@@ -28,6 +28,7 @@ properties:
+               - mediatek,mt8173-pericfg
+               - mediatek,mt8183-pericfg
+               - mediatek,mt8186-pericfg
++              - mediatek,mt8188-pericfg
+               - mediatek,mt8195-pericfg
+               - mediatek,mt8516-pericfg
+           - const: syscon
 -- 
-2.39.2
+2.18.0
 
