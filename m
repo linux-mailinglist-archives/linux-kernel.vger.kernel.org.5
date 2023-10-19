@@ -2,148 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9BD7CFC69
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE2C7CFC6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345647AbjJSOZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
+        id S1345888AbjJSOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbjJSOZp (ORCPT
+        with ESMTP id S1346077AbjJSOZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:25:45 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8752B0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:25:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 659A62F4;
-        Thu, 19 Oct 2023 07:26:23 -0700 (PDT)
-Received: from [10.57.68.54] (unknown [10.57.68.54])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2F723F762;
-        Thu, 19 Oct 2023 07:25:40 -0700 (PDT)
-Message-ID: <4b351eaa-c2db-408b-9ce2-4b12e3d6b30a@arm.com>
-Date:   Thu, 19 Oct 2023 15:25:39 +0100
+        Thu, 19 Oct 2023 10:25:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C86D13D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:25:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BEF9C433C7;
+        Thu, 19 Oct 2023 14:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697725552;
+        bh=c70oHRZIcX9ccV9DBUUmfsPIDAtoFzr6CLXIfVHsiyo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=P8JImrOq7BrNsIWUVCibxxKNRxUbaQaRl66JW6JSv2uweVcQXByVmBtooT/UYVDoC
+         AmOL/QJTk7FUg5NCdjz1p8Kr5CXtuIMJ0sY9bFQgzNLlNFt+ofPnjM87JrNzZ9wVWa
+         NI08CE2eYyatI0gft/69fqF3sZOp6WTyvM8Q5gccrB3wOqE/+MKRb7xwZc3H6Cv5Ze
+         COQ2TgNtoflMwduausqpBtEe6im0DFE4ikltZEvLOD/5w6C3TDTMU13chk72ar77NM
+         6eJ2k6gmK64lSrNDLUI1yX1ePWJ9eQa2EW9sVuF1BHTHtxRL41yOzqts8e5/T/u6sU
+         NMjKtH/XSZmWw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9A2E9CE0868; Thu, 19 Oct 2023 07:25:51 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 07:25:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, David Vernet <void@manifault.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
+ atomic_set_release()
+Message-ID: <d16b1511-fe53-4fde-a85f-4b38a4370cf0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
+ <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
+ <f6526ae6-cd52-4d1d-ab2a-7d82e2c818fd@paulmck-laptop>
+ <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Tim Chen <tim.c.chen@linux.intel.com>
-References: <20231017161302.2518826-1-ryan.roberts@arm.com>
- <20231017161302.2518826-3-ryan.roberts@arm.com>
- <87r0ls773p.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <c1c5881c-f00d-4302-a305-fbd6a9998b22@arm.com>
- <87mswfuppr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87mswfuppr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 06:49, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
+On Thu, Oct 19, 2023 at 02:20:35PM +0800, Hou Tao wrote:
+> Hi Paul,
 > 
->> On 18/10/2023 07:55, Huang, Ying wrote:
->>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>
+> On 10/19/2023 12:54 PM, Paul E. McKenney wrote:
+> > On Thu, Oct 19, 2023 at 09:07:07AM +0800, Hou Tao wrote:
+> >> Hi Paul,
+> >>
+> >> On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
+> >>> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
+> >>>
+> >>> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
+> >>> immediately preceded by smp_mb__before_atomic() so as to order storing
+> >>> of ring-buffer consumer and producer positions prior to the atomic_set()
+> >>> call's clearing of the ->busy flag, as follows:
+> >>>
+> >>>         smp_mb__before_atomic();
+> >>>         atomic_set(&rb->busy, 0);
+> >>>
+> >>> Although this works given current architectures and implementations, and
+> >>> given that this only needs to order prior writes against a later write.
+> >>> However, it does so by accident because the smp_mb__before_atomic()
+> >>> is only guaranteed to work with read-modify-write atomic operations,
+> >>> and not at all with things like atomic_set() and atomic_read().
+> >>>
+> >>> Note especially that smp_mb__before_atomic() will not, repeat *not*,
+> >>> order the prior write to "a" before the subsequent non-read-modify-write
+> >>> atomic read from "b", even on strongly ordered systems such as x86:
+> >>>
+> >>>         WRITE_ONCE(a, 1);
+> >>>         smp_mb__before_atomic();
+> >>>         r1 = atomic_read(&b);
+> >> The reason is smp_mb__before_atomic() is defined as noop and
+> >> atomic_read() in x86-64 is just READ_ONCE(), right ?
+> > The real reason is that smp_mb__before_atomic() is not defined to do
+> > anything unless followed by an atomic read-modify-write operation,
+> > and atomic_read(), atomic_64read(), atomic_set(), and so on are not
+> > read-modify-write operations.
 > 
-> [snip]
+> I see. Thanks for explanation. It seems I did not read
+> Documentation/atomic_t.txt carefully, it said:
 > 
->>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>> index a073366a227c..35cbbe6509a9 100644
->>>> --- a/include/linux/swap.h
->>>> +++ b/include/linux/swap.h
->>>> @@ -268,6 +268,12 @@ struct swap_cluster_info {
->>>>  struct percpu_cluster {
->>>>  	struct swap_cluster_info index; /* Current cluster index */
->>>>  	unsigned int next; /* Likely next allocation offset */
->>>> +	unsigned int large_next[];	/*
->>>> +					 * next free offset within current
->>>> +					 * allocation cluster for large folios,
->>>> +					 * or UINT_MAX if no current cluster.
->>>> +					 * Index is (order - 1).
->>>> +					 */
->>>>  };
->>>>
->>>>  struct swap_cluster_list {
->>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>> index b83ad77e04c0..625964e53c22 100644
->>>> --- a/mm/swapfile.c
->>>> +++ b/mm/swapfile.c
->>>> @@ -987,35 +987,70 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
->>>>  	return n_ret;
->>>>  }
->>>>
->>>> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
->>>> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
->>>> +			    unsigned int nr_pages)
->>>
->>> This looks hacky.  IMO, we should put the allocation logic inside
->>> percpu_cluster framework.  If percpu_cluster framework doesn't work for
->>> you, just refactor it firstly.
->>
->> I'm not sure I really understand what you are suggesting - could you elaborate?
->> What "framework"? I only see a per-cpu data structure and
->> scan_swap_map_try_ssd_cluster(), which is very much geared towards order-0
->> allocations.
+>     The barriers:
 > 
-> I suggest to share as much code as possible between order-0 and order >
-> 0 swap entry allocation.  I think that we can make
-> scan_swap_map_try_ssd_cluster() works for order > 0 swap entry allocation.
+>     smp_mb__{before,after}_atomic()
 > 
+>     only apply to the RMW atomic ops and can be used to augment/upgrade the
+>     ordering inherent to the op.
 
-[...]
+That is the place!
 
->>>> +		/*
->>>> +		 * If scan_swap_map_slots() can't find a free cluster, it will
->>>> +		 * check si->swap_map directly. To make sure this standby
->>>> +		 * cluster isn't taken by scan_swap_map_slots(), mark the swap
->>>> +		 * entries bad (occupied). (same approach as discard).
->>>> +		 */
->>>> +		memset(si->swap_map + offset + nr_pages, SWAP_MAP_BAD,
->>>> +			SWAPFILE_CLUSTER - nr_pages);
->>>
->>> There's an issue with this solution.  If the free space of swap device
->>> runs low, it's possible that
->>>
->>> - some cluster are put in the percpu_cluster of some CPUs
->>>   the swap entries there are marked as used
->>>
->>> - no free swap entries elsewhere
->>>
->>> - nr_swap_pages isn't 0
->>>
->>> So, we will still scan LRU, but swap allocation fails, although there's
->>> still free swap space.
+> > As you point out, one implementation consequence of this is that
+> > smp_mb__before_atomic() is nothingness on x86.
+> >
+> >> And it seems that I also used smp_mb__before_atomic() in a wrong way for
+> >> patch [1]. The memory order in the posted patch is
+> >>
+> >> process X                                    process Y
+> >>     atomic64_dec_and_test(&map->usercnt)
+> >>     READ_ONCE(timer->timer)
+> >>                                             timer->time = t
+> > The above two lines are supposed to be accessing the same field, correct?
+> > If so, process Y's store really should be WRITE_ONCE().
+> 
+> Yes. These two processes are accessing the same field (namely
+> timer->timer). Is WRITE_ONCE(xx) still necessary when the write of
+> timer->time in process Y is protected by a spin-lock ?
 
-I'd like to decide how best to solve this problem before I can figure out how
-much code sharing I can do for the order-0 vs order > 0 allocators.
+If there is any possibility of a concurrent reader, that is, a reader
+not holding that same lock, then yes, you should use WRITE_ONCE().
 
-I see a couple of potential options:
+Compilers can do pretty vicious things to unmarked reads and writes.
+But don't take my word for it, here are a few writeups:
 
-1) Manipulate nr_swap_pages to include the entries that are marked SWAP_MAP_BAD,
-so when reserving a new per-order/per-cpu cluster, subtract SWAPFILE_CLUSTER,
-and then add nr_pages for each allocation from that cluster.
+o	"Who's afraid of a big bad optimizing compiler?" (series)
+	https://lwn.net/Articles/793253, https://lwn.net/Articles/799218
 
-2) Don't mark the entries in the reserved cluster as SWAP_MAP_BAD, which would
-allow the scanner to steal (order-0) entries. The scanner could set a flag in
-the cluster info to mark it as having been allocated from by the scanner, so the
-next attempt to allocate a high order from it would cause discarding it as the
-cpu's current cluster and trying to get a fresh cluster from the free list.
+o	"An introduction to lockless algorithms" (Paolo Bonzini series)
+	https://lwn.net/Articles/844224, https://lwn.net/Articles/846700,
+	https://lwn.net/Articles/847481, https://lwn.net/Articles/847973,
+	https://lwn.net/Articles/849237, https://lwn.net/Articles/850202
 
-While option 2 is a bit more complex, I prefer it as a solution. What do you think?
+o	"Is Parallel Programming Hard, And, If So, What Can You Do About It?"
+	Section 4.3.4 ("Accessing Shared Variables")
+	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/
+perfbook.html
+
+> >>                                             // it won't work
+> >>                                             smp_mb__before_atomic()
+> >>                                             atomic64_read(&map->usercnt)
+> >>
+> >> For the problem, it seems I need to replace smp_mb__before_atomic() by
+> >> smp_mb() to fix the memory order, right ?
+> > Yes, because smp_mb() will order the prior store against that later load.
+> 
+> Thanks. Will fix the patch.
+
+Very good!
+
+							Thanx, Paul
+
+> Regards,
+> Hou
+> >
+> > 							Thanx, Paul
+> >
+> >> Regards,
+> >> Hou
+> >>
+> >> [1]:
+> >> https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
+> >>                                                                 
+> >>
+> >>> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
+> >>> atomic_set_release() as follows:
+> >>>
+> >>>         atomic_set_release(&rb->busy, 0);
+> >>>
+> >>> This is no slower (and sometimes is faster) than the original, and also
+> >>> provides a formal guarantee of ordering that the original lacks.
+> >>>
+> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >>> Acked-by: David Vernet <void@manifault.com>
+> >>> Cc: Andrii Nakryiko <andrii@kernel.org>
+> >>> Cc: Alexei Starovoitov <ast@kernel.org>
+> >>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> >>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> >>> Cc: Song Liu <song@kernel.org>
+> >>> Cc: Yonghong Song <yonghong.song@linux.dev>
+> >>> Cc: John Fastabend <john.fastabend@gmail.com>
+> >>> Cc: KP Singh <kpsingh@kernel.org>
+> >>> Cc: Stanislav Fomichev <sdf@google.com>
+> >>> Cc: Hao Luo <haoluo@google.com>
+> >>> Cc: Jiri Olsa <jolsa@kernel.org>
+> >>> Cc: <bpf@vger.kernel.org>
+> >>>
+> >>> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> >>> index f045fde632e5..0ee653a936ea 100644
+> >>> --- a/kernel/bpf/ringbuf.c
+> >>> +++ b/kernel/bpf/ringbuf.c
+> >>> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
+> >>>  	/* Prevent the clearing of the busy-bit from being reordered before the
+> >>>  	 * storing of any rb consumer or producer positions.
+> >>>  	 */
+> >>> -	smp_mb__before_atomic();
+> >>> -	atomic_set(&rb->busy, 0);
+> >>> +	atomic_set_release(&rb->busy, 0);
+> >>>  
+> >>>  	if (flags & BPF_RB_FORCE_WAKEUP)
+> >>>  		irq_work_queue(&rb->work);
+> >>>
+> >>> .
+> 
