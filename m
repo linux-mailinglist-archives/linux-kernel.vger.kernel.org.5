@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 354087CFFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6077CFFB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbjJSQiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
+        id S232952AbjJSQht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbjJSQiS (ORCPT
+        with ESMTP id S232946AbjJSQhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:38:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E3711F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697733449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aCk5y5U6S6pBpWhKJtSh1SurFp9oD5gnKu4jbHvlKmo=;
-        b=X6fTaqQqICf7mhj4EQS+pNAH1onDIkUXPFcgHa0ZbnoU1e9I67MUrgYdLZTTNDCtg93COO
-        w+TVYzjuOGOcN6V/RkCCnNlO3xhL11OnuJhAsaW19ySl9yiU2lNmBaXhESlpDk46bFCeZZ
-        b7cGNuKC3wG1bHtiQo5sXTSZi6yjj1Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-444-TxVd3RA4PPiZ1DhsYil0lA-1; Thu, 19 Oct 2023 12:37:24 -0400
-X-MC-Unique: TxVd3RA4PPiZ1DhsYil0lA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E3B828E6D01;
-        Thu, 19 Oct 2023 16:37:23 +0000 (UTC)
-Received: from p1.luc.com (unknown [10.45.226.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0379925C8;
-        Thu, 19 Oct 2023 16:37:21 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Simon Horman <horms@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net v2] i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
-Date:   Thu, 19 Oct 2023 18:37:20 +0200
-Message-ID: <20231019163721.1333370-1-ivecera@redhat.com>
+        Thu, 19 Oct 2023 12:37:47 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548B1126
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:37:44 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e16f076b3so2157624a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697733462; x=1698338262; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KVg72uPUJlCNP5ZghklHQ33G/OMrolR4hmAv20/o7n0=;
+        b=NdAuZKrrXymKctFN1ivCrJa0AVUdvVikwwSoA24LZqajnOpokfMjpkfcSLfDKTLPMd
+         4RMuv0r7da8unFutLJTc2aQ827eaqf/9FXsMLM9aoVgXWiLQynA3HPqv+ozy2Bl/sg7X
+         7wLnNMVkFNBORgN284Tykgde7I+QZK/658pgI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697733462; x=1698338262;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KVg72uPUJlCNP5ZghklHQ33G/OMrolR4hmAv20/o7n0=;
+        b=rprbrGL1FIxq/9njaEXU1YHKwsYu85IkFpwgYEDsnmmmLatY5tWXCppRq7JbPQBtVx
+         vM7ndSC9BTom4NKtlI9r5ogEC/CXldXynOgZGNd1dC9jgxIU7rcSbi+Buj6t5A09dhCB
+         HyV9vpqYfnOiJ5tVmMCbZJGPpFy/VaBzmPKadxIW6YWlZppBz3prM+u2lVOxOUDOZia8
+         fFOoOvy5/CVRW1WW4BO4NUe4r3CZToPPANje/jLT9pOoRKIROoXso9Pb+EY9abLOdq3E
+         kBRMjr85XrIZTmvV65Ahedhpfhz/gAts9NrlGPwVNkc4evHonjE5u4YXIvNOXnVpk6kn
+         pNWA==
+X-Gm-Message-State: AOJu0Yy8lKacPrWrr4kabGAeB+GiAbpOP1AhhSAr/nQVIQJoG8qAjMDK
+        RZBVYhC/KhF+dphxku0/AhdD9rKpm5RyqspL2cEbuZzw
+X-Google-Smtp-Source: AGHT+IHRzmR+jaUBdMzsSDoseCMFLUcbjip7jZUy5pN8tUv79gKUlDySMMS3jbNmFaet8LMazxhNrg==
+X-Received: by 2002:a17:907:d1b:b0:9a1:aaae:8207 with SMTP id gn27-20020a1709070d1b00b009a1aaae8207mr2520582ejc.20.1697733462579;
+        Thu, 19 Oct 2023 09:37:42 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id m16-20020a1709066d1000b0099bc80d5575sm3722033ejr.200.2023.10.19.09.37.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 09:37:41 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9adb9fa7200so218913066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:37:41 -0700 (PDT)
+X-Received: by 2002:a17:907:97d6:b0:9a9:405b:26d1 with SMTP id
+ js22-20020a17090797d600b009a9405b26d1mr2298936ejc.5.1697733461464; Thu, 19
+ Oct 2023 09:37:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231019-kampfsport-metapher-e5211d7be247@brauner>
+In-Reply-To: <20231019-kampfsport-metapher-e5211d7be247@brauner>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 09:37:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whBXdLJ=QDpYmDEH-Tn71dXasGJSX4Jz4qMo8V4-7vYkg@mail.gmail.com>
+Message-ID: <CAHk-=whBXdLJ=QDpYmDEH-Tn71dXasGJSX4Jz4qMo8V4-7vYkg@mail.gmail.com>
+Subject: Re: [GIT PULL] vfs fixes
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c87c938f62d8f1 ("i40e: Add VF VLAN pruning") added new
-PF flag I40E_FLAG_VF_VLAN_PRUNING but its value collides with
-existing I40E_FLAG_TOTAL_PORT_SHUTDOWN_ENABLED flag.
+On Thu, 19 Oct 2023 at 03:09, Christian Brauner <brauner@kernel.org> wrote:
+>
+> An openat() call from io_uring triggering an audit call can apparently
+> cause the refcount of struct filename to be incremented from multiple
+> threads concurrently during async execution, triggering a refcount
+> underflow and hitting a BUG_ON(). That bug has been lurking around since
+> at least v5.16 apparently.
 
-Move the affected flag at the end of the flags and fix its value.
+Ouch. That filename ref by audit was always supposed to be
+thread-local in a "for this system call" kind of sense.
 
-Reproducer:
-[root@cnb-03 ~]# ethtool --set-priv-flags enp2s0f0np0 link-down-on-close on
-[root@cnb-03 ~]# ethtool --set-priv-flags enp2s0f0np0 vf-vlan-pruning on
-[root@cnb-03 ~]# ethtool --set-priv-flags enp2s0f0np0 link-down-on-close off
-[ 6323.142585] i40e 0000:02:00.0: Setting link-down-on-close not supported on this port (because total-port-shutdown is enabled)
-netlink error: Operation not supported
-[root@cnb-03 ~]# ethtool --set-priv-flags enp2s0f0np0 vf-vlan-pruning off
-[root@cnb-03 ~]# ethtool --set-priv-flags enp2s0f0np0 link-down-on-close off
+But yes, looks like the io_uring stuff ended up making it no longer
+thread-local.
 
-The link-down-on-close flag cannot be modified after setting vf-vlan-pruning
-because vf-vlan-pruning shares the same bit with total-port-shutdown flag
-that prevents any modification of link-down-on-close flag.
+That said, using atomics for reference counting is our default
+behavior and should be normal, so the patch isn't wrong, it's just
+annoying since getname/putname is very much in the critical path of
+filename handling.
 
-Fixes: c87c938f62d8 ("i40e: Add VF VLAN pruning")
-Cc: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Cc: Simon Horman <horms@kernel.org>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That said, the extra atomics are hopefully not really noticeable.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 6e310a53946782..55bb0b5310d5b4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -580,7 +580,6 @@ struct i40e_pf {
- #define I40E_FLAG_DISABLE_FW_LLDP		BIT(24)
- #define I40E_FLAG_RS_FEC			BIT(25)
- #define I40E_FLAG_BASE_R_FEC			BIT(26)
--#define I40E_FLAG_VF_VLAN_PRUNING		BIT(27)
- /* TOTAL_PORT_SHUTDOWN
-  * Allows to physically disable the link on the NIC's port.
-  * If enabled, (after link down request from the OS)
-@@ -603,6 +602,7 @@ struct i40e_pf {
-  *   in abilities field of i40e_aq_set_phy_config structure
-  */
- #define I40E_FLAG_TOTAL_PORT_SHUTDOWN_ENABLED	BIT(27)
-+#define I40E_FLAG_VF_VLAN_PRUNING		BIT(28)
- 
- 	struct i40e_client_instance *cinst;
- 	bool stat_offsets_loaded;
--- 
-2.41.0
+Some people might want to use the non-refcounted version (ie we have
+getname/putname used by ksmbd too, for example), if they really care.
 
+It already exists, as __getname/__putname.
+
+But the normal open/stat/etc system call paths are obviously now going
+to hit those extra atomics. Not lovely, but I guess it's the best we
+can do.
+
+> Switch to an atomic counter to fix that. The underflow check is
+> downgraded from a BUG_ON() to a WARN_ON_ONCE() but we could easily
+> remove that check altogether tbh and not waste an additional atomic. So
+> if you feel that extra check isn't needed you could just remove in case
+> you're pulling.
+
+Well, the atomic *read* is cheap - the expensive part is the
+atomic_dec_and_test() (and the atomic_inc in the audit code.
+
+I'm not sure why you made it check just for zero in the WARN_ON_ONCE,
+rather than <= 0 as it used to, but that check is racy regardless, so
+it doesn't matter. It would miss two concurrent decrements coming in
+with a count of 1.
+
+We don't have the ternary test of atomic decrement results (positive,
+zero or negative), so it is what it is.
+
+                 Linus
