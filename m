@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656D97CF7A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118437CF7AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbjJSL4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        id S1345405AbjJSL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235234AbjJSL4M (ORCPT
+        with ESMTP id S235323AbjJSL4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:56:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E14BE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697716571; x=1729252571;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=l7hEz3Co2RbjxtGVRFK3LE/YUuFfRDC66PxtMo30kow=;
-  b=BllMSNJfnvGaLF25KH+A2Td84flMVMLd5QCYw7tWDyRdOF+Lf+Y517qs
-   6Adzd+98mn/aNZpi/RC5b/kRFe3bu+R0JrsLhWv0Z3DscQPEPiRVk0mXV
-   KhjjZGebdqrlUmx4yQ/Jr0Qs/xO1TP7xQOU138Xm/xlp0zyXec+NO0xyQ
-   Jle1ClAXfRFoeLJFrJF8gMcAh34ff5QwCJx6FLEUNbjDxAgt3v7iy6/Pj
-   nQbmxR9hxgFGW4fhJWJXUFgC06fDJMMfyTMVyo/d4+D7bxpSlxHuv1WhA
-   mJcr7SaUhgcJTAMvck8mu6AdDzavZPMgf0n2B5+6+nyIH3oL61PVO67A0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366471350"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="366471350"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 04:56:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1088340277"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="1088340277"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Oct 2023 04:56:09 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtRdG-00025K-3B;
-        Thu, 19 Oct 2023 11:56:06 +0000
-Date:   Thu, 19 Oct 2023 19:55:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, virtualization@lists.linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v3 4/5] x86/paravirt: switch mixed paravirt/alternative
- calls to alternative_2
-Message-ID: <202310191920.R0c39S5h-lkp@intel.com>
-References: <20231019091520.14540-5-jgross@suse.com>
+        Thu, 19 Oct 2023 07:56:43 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9E213A;
+        Thu, 19 Oct 2023 04:56:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VuTv4zZ_1697716594;
+Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuTv4zZ_1697716594)
+          by smtp.aliyun-inc.com;
+          Thu, 19 Oct 2023 19:56:36 +0800
+Message-ID: <2edced57-5b9b-43e7-81a2-d8bf522c2b74@linux.alibaba.com>
+Date:   Thu, 19 Oct 2023 19:56:33 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019091520.14540-5-jgross@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 1/4] docs: perf: Add description for Synopsys
+ DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+References: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
+ <20231017013235.27831-2-xueshuai@linux.alibaba.com>
+ <20231017101624.00003231@Huawei.com>
+ <af03c8cf-2254-46f6-9b7e-790b255c8a1b@linux.alibaba.com>
+ <20231019120647.00007589@Huawei.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20231019120647.00007589@Huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,33 +53,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on kvm/queue]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 2023/10/19 19:06, Jonathan Cameron wrote:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Juergen-Gross/x86-paravirt-move-some-functions-and-defines-to-alternative/20231019-171709
-base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
-patch link:    https://lore.kernel.org/r/20231019091520.14540-5-jgross%40suse.com
-patch subject: [PATCH v3 4/5] x86/paravirt: switch mixed paravirt/alternative calls to alternative_2
-reproduce: (https://download.01.org/0day-ci/archive/20231019/202310191920.R0c39S5h-lkp@intel.com/reproduce)
+...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310191920.R0c39S5h-lkp@intel.com/
+>>>> +
+>>>> +The DWC PCIe PMU driver registers a perf PMU driver, which provides
+>>>> +description of available events and configuration options in sysfs, see
+>>>> +/sys/bus/event_source/devices/dwc_rootport_{bdf}.
+>>>> +
+>>>> +The "format" directory describes format of the config fields of the
+>>>> +perf_event_attr structure. The "events" directory provides configuration
+>>>> +templates for all documented events.  For example,
+>>>> +"Rx_PCIe_TLP_Data_Payload" is an equivalent of "eventid=0x22,type=0x1".
+>>>> +
+>>>> +The "perf list" command shall list the available events from sysfs, e.g.::
+>>>> +
+>>>> +    $# perf list | grep dwc_rootport
+>>>> +    <...>
+>>>> +    dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/        [Kernel PMU event]
+>>>> +    <...>
+>>>> +    dwc_rootport_3018/rx_memory_read,lane=?/               [Kernel PMU event]
+>>>> +
+>>>> +Time Based Analysis Event Usage
+>>>> +-------------------------------
+>>>> +
+>>>> +Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+>>>> +
+>>>> +    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>>> +
+>>>> +The average RX/TX bandwidth can be calculated using the following formula:
+>>>> +
+>>>> +    PCIe RX Bandwidth = PCIE_RX_DATA * 16B / Measure_Time_Window
+>>>> +    PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window  
+>>>
+>>> Silly question (sorry I didn't raise it earlier) but can we make the interface
+>>> more intuitive by just multiplying the counter value at point of read by 16?  
+>>
+>> Really a good suggestion, and it is very convenient for end perf users.
+>> But the unit of 16 is only applied to group#1 as described in Time Based Analysis
+>> section.
+> 
+> How hard would it be to just apply it to those events?
+> Userspace doesn't care what the hardware does underneath - it just wants to get
+> moderately intuitive data back. Having the end user deal with this oddity + even
+> the need to document it seems to me to be unnecessary burden given how simple it
+> is (I assume) to remove the oddity.
 
-# many are suggestions rather than must-fix
+Ok. Talked me into it :)
+I will multiply the counter value at point of read by 16 for group#1 events.
 
-ERROR:BRACKET_SPACE: space prohibited before open square bracket '['
-#92: FILE: arch/x86/include/asm/paravirt_types.h:281:
-+#define paravirt_ptr(op)	[paravirt_opptr] "m" (pv_ops.op)
+Thank you.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best Regards,
+Shuai
