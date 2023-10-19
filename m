@@ -2,178 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AE67CF927
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF277CF82B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345475AbjJSMk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        id S1345674AbjJSMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbjJSMk0 (ORCPT
+        with ESMTP id S1345555AbjJSMEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:40:26 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2067.outbound.protection.outlook.com [40.107.220.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5AF91;
-        Thu, 19 Oct 2023 05:40:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A72gcsx0t3NWGh0j3bvPjNZ95v8q7fcXhGXVmC10l3WxeWGsznPyThGdXQ+3R22nw59L1WfZJvX62kxQgteNxEQ9PYH8KT6dHO1J07/IQLxZ+ycKKUgvI0PyeXVjtNoQ4jN329Bu68ZxiYqFwdEo2TBzNXE7mvTHmyWsSsHBlFCgtumkN2JnnU657ijoGMtlu1oGWEXJmuFcHL+yY+Vmf9TNToI83Wi/3jPIgWmi0IbdcOx4In0UKZPnhPzRQPA03/diRaFT+JwTAuTwQoRe2+wJIp1Rf4UcoaGU3MGH7KYt2WnqobJ4LRoG7ntZ8xvRL8sAuOYY2vBIyhwd1Nyp8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hxce8Me082Fy+S1RS6zGbpFo7sO0CbpDsy211RNoqSE=;
- b=UGBXSt6QCqpC3hAicjJfqACRPveuChjVrTeF8CpZymt8q1rSd5GmLP4RvRYOk79tzBmcmkYvwUNueG7miafBYe+rE2wU7F/thaaSNzwMwJWC8qW2qAUKI1qdVEACl8GQ/9DjdCu531/Cx/WXc5U7PF9aVUeF0bFPrC0qX8OZaz+SykrbLURAATL0gxntugHbpp66GVvEoqn23fsfvehNjF88oIXlYoUMEa0fL8gEjOrlsPeZprr68EvZKMTIHZpZ603t0tz+H7u/jGVg2NhIQjsW05V4xddHXMPOqCwM//sfEBhxOMlJBzfhbTm67uBHBM6YuIQ4JI/U4SNOjXuIMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=hisilicon.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hxce8Me082Fy+S1RS6zGbpFo7sO0CbpDsy211RNoqSE=;
- b=UMMn/ieWJcu0K4IKvs/oFsLPItVujS+36pLdSKOuo0sqCsCw0CssVgoxdgiy3WJWwNq3RXQT8L+PwKHzUB/1eSoUJkath2mY++5CTOoFByOkfGI+uojuc3BTni9pd5UznGnq+fwc1XveSoV9D0Xdf5Zs2T9eAjuPFDxX6WuMx5c2u/asvQsMC8kJsZxvId6Z91UGfDKpJqw1384x1vMJMKBO9VFOUbBunhfR7cgaW6IobXDRzrdOPlXmRGQ7DjEe2ImKQ7jzKGWnusFkFN87kC1NgYpCtt5+bohiy5TswPubxAe31Nvdn6ritvPKhst5q/oevqaPESlpuR/q6wIWXA==
-Received: from BL1PR13CA0367.namprd13.prod.outlook.com (2603:10b6:208:2c0::12)
- by SN7PR12MB7910.namprd12.prod.outlook.com (2603:10b6:806:34b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 19 Oct
- 2023 12:40:22 +0000
-Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
- (2603:10b6:208:2c0:cafe::c1) by BL1PR13CA0367.outlook.office365.com
- (2603:10b6:208:2c0::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21 via Frontend
- Transport; Thu, 19 Oct 2023 12:40:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Thu, 19 Oct 2023 12:40:20 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 19 Oct
- 2023 05:40:06 -0700
-Received: from yaviefel (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 19 Oct
- 2023 05:40:03 -0700
-References: <20231019082138.18889-1-phaddad@nvidia.com>
- <20231019082138.18889-3-phaddad@nvidia.com>
-User-agent: mu4e 1.8.11; emacs 28.3
-From:   Petr Machata <petrm@nvidia.com>
-To:     Patrisious Haddad <phaddad@nvidia.com>
-CC:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-        <michaelgur@nvidia.com>
-Subject: Re: [PATCH iproute2-next 2/3] rdma: Add an option to set privileged
- QKEY parameter
-Date:   Thu, 19 Oct 2023 12:38:10 +0200
-In-Reply-To: <20231019082138.18889-3-phaddad@nvidia.com>
-Message-ID: <87il72aiqm.fsf@nvidia.com>
+        Thu, 19 Oct 2023 08:04:54 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A4F10F9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:03:56 -0700 (PDT)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231019120353epoutp03dc152f292b06b12f8780d553572be3f1~PgKW_yrHB2845028450epoutp033
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:03:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231019120353epoutp03dc152f292b06b12f8780d553572be3f1~PgKW_yrHB2845028450epoutp033
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697717033;
+        bh=Pnjs48GpM2fNI5vQ32r+zx38m0Ym/uFN2UPMQUh9Xn4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hNMIyW0Oq3/gGpQGpRI0tjVbaNSM8+QLf+o4o1288jicIa1X8wQILVUQAJvaciOaD
+         aEKXBw4RwrQUWomhnd7uF8jLaUY/k+CW5yt0ej7pWd/73OnIYvYX3h2ASNGOkR3Nha
+         ySdBTyi0kSuTFBsaGUV8dC+oFdQnbxj9JK3DdXKM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20231019120353epcas5p2c3d376275f88aa749617249515d4aaba~PgKWSn9ME0651406514epcas5p2_;
+        Thu, 19 Oct 2023 12:03:53 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.182]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4SB5wR2W7jz4x9Ps; Thu, 19 Oct
+        2023 12:03:51 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        41.78.10009.72B11356; Thu, 19 Oct 2023 21:03:51 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231019110822epcas5p4e09aab7295e48ef885f82dbd0576a584~PfZ4p1gfs2520825208epcas5p4Q;
+        Thu, 19 Oct 2023 11:08:22 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231019110822epsmtrp23bd0179aca24fb5d4f8cc84fff709c52~PfZ4oxCrn1571815718epsmtrp27;
+        Thu, 19 Oct 2023 11:08:22 +0000 (GMT)
+X-AuditID: b6c32a4a-261fd70000002719-f5-65311b271e9e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FA.57.07368.62E01356; Thu, 19 Oct 2023 20:08:22 +0900 (KST)
+Received: from green245.sa.corp.samsungelectronics.net (unknown
+        [107.99.41.245]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231019110819epsmtip16145c708b1f5884719ace0f791f0c46c~PfZ1SRj0v0329303293epsmtip1W;
+        Thu, 19 Oct 2023 11:08:19 +0000 (GMT)
+From:   Nitesh Shetty <nj.shetty@samsung.com>
+To:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        nitheshshetty@gmail.com, anuj1072538@gmail.com,
+        gost.dev@samsung.com, mcgrof@kernel.org,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v17 01/12] block: Introduce queue limits and sysfs for
+ copy-offload support
+Date:   Thu, 19 Oct 2023 16:31:29 +0530
+Message-Id: <20231019110147.31672-2-nj.shetty@samsung.com>
+X-Mailer: git-send-email 2.35.1.500.gb896f729e2
+In-Reply-To: <20231019110147.31672-1-nj.shetty@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|SN7PR12MB7910:EE_
-X-MS-Office365-Filtering-Correlation-Id: d11392f9-e05e-4111-e6cc-08dbd0a08ec2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xB5Ih2z4xNXwT5KM0DD/eYKjldeyLxDafbzpAheed5UGHkbTdknPxJfgeYn2q/Vrx4qFUxarHl77PvYx9oEC3sSG4D0Y08PrnSSbjzqi0bTFEuy4GgkesMreT8dAPizGrZCbuMSpbvJaWTEUbrMW4YYQGh5cPRhtra0HT4WBzc7xw1Pxvns8oEn4L6qEn0CKutfScXEU4LRze9dZAhCJ5hps7prthxjMfPXhcqLLqglkjeovgKF3xXiaP+3It+C00Y2ahDmH71t+r7eUckzSlGGlsAodiRiDo/BTl47UB20UDkgedYMz5cDzSRZYThxMRQv6TKVHPLDXl55qPG0SKh/HGCFjTgEHNjkpGbNW3nMXQmIcyT7RLZxgeJxuaCPJZUqh/ZH1eZcVGL+U6kkb3svyiXoUIXq3Nr1bu64cn5kIsJeBzyMmpF3+P2JIKdwp3wyjJsvw0cCf2Rtf8weQTXyC+ZK2b+Tx2QY1moRVyhIXFh5aZR4mI+Zcvh6IoNzeFysSAuCClNl6IsdbQNOPqpCA8jYwLmOTyOz18dbOk3Zru1TBgdbewjQxumI+Kq48aTppQOgV1A+3fsMS05SUZXPkaP0UT4TGDdzp+fBjCTpGZ0jvGLlMYSCA/DFf2my1xMkaPwS9Om5Ng5RYHvrYTDG+fLY6cWNdEthz0PEbLGWvDSaUOMoIZgmeMaQXb3wUKA0F1jRbOEDCWe7hK+oK1VQ+QyEk2e7CzF/A2tTIzbQ1eU7dg2TBsuvsYIWKPl+7
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(82310400011)(36840700001)(40470700004)(46966006)(40460700003)(86362001)(47076005)(36756003)(6862004)(41300700001)(5660300002)(4326008)(2906002)(82740400003)(40480700001)(356005)(26005)(16526019)(7636003)(336012)(426003)(36860700001)(107886003)(2616005)(6666004)(478600001)(8936002)(8676002)(70206006)(70586007)(37006003)(316002)(6636002)(54906003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 12:40:20.9352
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d11392f9-e05e-4111-e6cc-08dbd0a08ec2
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7910
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHPfe2t4UMvKDEw2Mb6eIMGGgLLRxA3IZs3Lm5sJltkcRAR69A
+        oKX0wWNEBZGRoTzksYVO3qCzbMAAGQ87CKxDIQRN5TmtQ1uDMvGFLAjCWq5s/vf5fc/vffLj
+        4s4VHDduglxNK+WSJB5hz+oc9PL22eUupAV9xtdQy/AfOHr8bIWFThS/wFHTzSICzQ8+Acjc
+        nwdQTV0lC033d2PoUl0Jhi40GTBkWH9AoJKBCYAs41oM6Wd2o9pvGljokv4KCxl7zhKo+pyF
+        g05NdhHo/NAahqaKLQB1mbMB6lypxlHz/EMWujzjjsZeDLHfdaO6tTc51JjpFxZlHNVQbbpv
+        Caq94Tg1114BqN7pLIKqLyxlUwU5CwT12DLDoh7+Nk5QhR06QLWPZFJP296g2swPsMitUYl7
+        4mmJlFZ60vLYZGmCPC6U99HB6H3R4gCB0EcYhAJ5nnKJjA7lhX8c6fNBQpJ1JTzPVEmSxipF
+        SlQqHn/vHmWyRk17xier1KE8WiFNUogUviqJTKWRx/nKaXWwUCDwE1sdYxLjFwuPKvJC042l
+        XVgW6PDPB3ZcSIrgdfP3bBs7k70Arpjs84G9lZ8A2FBgZDPGEoBL8yfYmxHZc6dx5kEPYOl1
+        I4cxcjFYdOZnkA+4XILcDUfWuTZ9O5mLw74bfwObgZODODTU3iZsqbaRh+E1XS3LxixyJzy/
+        vr5RwoEMhrrFCY4tEST5sOiWk022I0Ng66k6nHFxglcqzBuhOPkmzLn4A85012sH524cYTgc
+        3mpaAAxvg/eHOjgMu8GnC3qC4TR4oexHwtYbJE8CqJ3Uvgx4B+YOF+G2HnDSC7b08Bn5dVg+
+        3IwxdR1hwYoZY3QH2FW1yW/Bn1pqXuZ3hRP/ZBPMKBS89quMWXUhgJ1lMcXAU/vKNNpXptH+
+        X7gG4DrgSitUsjhaJVb4yem0/744NlnWBjZuxHt/F5j965HvAMC4YABALs7b7rCTEtDODlJJ
+        xte0MjlaqUmiVQNAbN32GdzNJTbZemRydbRQFCQQBQQEiIL8A4S8HQ7zuZVSZzJOoqYTaVpB
+        KzfjMK6dWxb2SeJ7xzLGAqdNgdPL1fYHx5Pq6QgQM2gWHPuiLurstL7xHsfv7mBeS6X45LJv
+        rirlfZf8xv0iOHDo9NUD/Zfl37X0e/eIQ6bTymcMRepnLL7Hc3VV+fA5wYe3W8M8UiJ+t+Ol
+        uejxYFeZwvGuMGdf5dU7zWt7/1yV10RPugateFlmY3UGfmoZ5vXoXubUVxxhRv9ShiakJHNh
+        6lPp0P1JpUxbuMAbVWRUGcq2fnbEaa1wzDLL9rCw3zbZOzaOHz4eMdPa1jdSZxLVL0fJF1dz
+        /MJGy74U+aZWrzr5hx+6M7ZlKDh+hyw0rDhFpVz4fNfRuAPpfGV3uqn7+Zb8MveL+TyWKl4i
+        9MaVKsm/7stzqawEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCSnK4an2GqQcMHdYv1p44xW3z8+pvF
+        omnCX2aL1Xf72SxeH/7EaPHkQDujxYJFc1ksbh7YyWSxZ9EkJouVq48yWRz9/5bNYtKha4wW
+        T6/OYrLYe0vbYmHbEhaLPXtPslhc3jWHzWL+sqfsFt3Xd7BZLD/+j8nixoSnjBY7njQyWmz7
+        PZ/ZYt3r9ywWJ25JW5z/e5zVQcpj56y77B7n721k8bh8ttRj06pONo/NS+o9Xmyeyeix+2YD
+        m8fivsmsHr3N79g8Pj69xeLxft9VNo++LasYPTafrvb4vEnOY9OTt0wB/FFcNimpOZllqUX6
+        dglcGV/6agvabSsuT97B1MC4xbiLkZNDQsBEovFFD3MXIxeHkMBuRomlx36yQyQkJZb9PcIM
+        YQtLrPz3nB2iqJlJ4tnx30AJDg42AW2J0/85QOIiAv3MEu/+TmcCcZgFLjNLTFt4hBGkSFgg
+        WuL/WkOQQSwCqhLL//9nBbF5BawkVn25xg5SIiGgL9F/XxAkzClgLbGhexHYXiGgkgcLHrND
+        lAtKnJz5hAXEZhaQl2jeOpt5AqPALCSpWUhSCxiZVjFKphYU56bnJhsWGOallusVJ+YWl+al
+        6yXn525iBMe6lsYOxnvz/+kdYmTiYDzEKMHBrCTCq+phkCrEm5JYWZValB9fVJqTWnyIUZqD
+        RUmc13DG7BQhgfTEktTs1NSC1CKYLBMHp1QD08mbnuafNYTf982rcOHdHagd3H95gYJsesr3
+        hfq3hXc1/vU7HLX162/tysQNHyXmPTzPoXAzi2vx4urV/bJ+i3y6z/K7TVhq0v78pZpS+myW
+        pN/vlerfrln6JyepOuN3fKucenOhwtSb/w7//rxv6zWz+BOSLxJ7PnnZpO7Yd/9LfPbbJcoH
+        fs/x4Z+t2r88q1/J3XJPoFIvb3fhyY+TZx1e9WVTSndvl8K9WUvsP757ECC+mmFHkw9n/rRg
+        0Xv/LTzSD8acrPx2fJaToceJc0+dbXetkfO8WGMpuU6fdYGj8cXWdVsWBp2bKWlv7cqZ9zy2
+        58JqXzd1r8zVRbF5swPf8z+0Xy0bc//QTS0mbSWW4oxEQy3mouJEAF6pBXxkAwAA
+X-CMS-MailID: 20231019110822epcas5p4e09aab7295e48ef885f82dbd0576a584
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231019110822epcas5p4e09aab7295e48ef885f82dbd0576a584
+References: <20231019110147.31672-1-nj.shetty@samsung.com>
+        <CGME20231019110822epcas5p4e09aab7295e48ef885f82dbd0576a584@epcas5p4.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device limits as sysfs entries,
+	- copy_max_bytes (RW)
+	- copy_max_hw_bytes (RO)
 
-Patrisious Haddad <phaddad@nvidia.com> writes:
+Above limits help to split the copy payload in block layer.
+copy_max_bytes: maximum total length of copy in single payload.
+copy_max_hw_bytes: Reflects the device supported maximum limit.
 
-> @@ -40,6 +45,22 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
->  				   mode_str);
->  	}
->  
-> +	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
-> +		const char *pqkey_str;
-> +		uint8_t pqkey_mode;
-> +
-> +		pqkey_mode =
-> +			mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
-> +
-> +		if (pqkey_mode < ARRAY_SIZE(privileged_qkey_str))
-> +			pqkey_str = privileged_qkey_str[pqkey_mode];
-> +		else
-> +			pqkey_str = "unknown";
-> +
-> +		print_color_string(PRINT_ANY, COLOR_NONE, "privileged-qkey",
-> +				   "privileged-qkey %s ", pqkey_str);
-> +	}
-> +
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
+Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
+---
+ Documentation/ABI/stable/sysfs-block | 23 ++++++++++++++++++
+ block/blk-settings.c                 | 24 +++++++++++++++++++
+ block/blk-sysfs.c                    | 36 ++++++++++++++++++++++++++++
+ include/linux/blkdev.h               | 13 ++++++++++
+ 4 files changed, 96 insertions(+)
 
-Elsewhere in the file, you just use print_color_on_off(), why not here?
+diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+index 1fe9a553c37b..96ba701e57da 100644
+--- a/Documentation/ABI/stable/sysfs-block
++++ b/Documentation/ABI/stable/sysfs-block
+@@ -155,6 +155,29 @@ Description:
+ 		last zone of the device which may be smaller.
+ 
+ 
++What:		/sys/block/<disk>/queue/copy_max_bytes
++Date:		August 2023
++Contact:	linux-block@vger.kernel.org
++Description:
++		[RW] This is the maximum number of bytes that the block layer
++		will allow for a copy request. This is always smaller or
++		equal to the maximum size allowed by the hardware, indicated by
++		'copy_max_hw_bytes'. An attempt to set a value higher than
++		'copy_max_hw_bytes' will truncate this to 'copy_max_hw_bytes'.
++		Writing '0' to this file will disable offloading copies for this
++		device, instead copy is done via emulation.
++
++
++What:		/sys/block/<disk>/queue/copy_max_hw_bytes
++Date:		August 2023
++Contact:	linux-block@vger.kernel.org
++Description:
++		[RO] This is the maximum number of bytes that the hardware
++		will allow for single data copy request.
++		A value of 0 means that the device does not support
++		copy offload.
++
++
+ What:		/sys/block/<disk>/queue/crypto/
+ Date:		February 2022
+ Contact:	linux-block@vger.kernel.org
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 0046b447268f..4441711ac364 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -59,6 +59,8 @@ void blk_set_default_limits(struct queue_limits *lim)
+ 	lim->zoned = BLK_ZONED_NONE;
+ 	lim->zone_write_granularity = 0;
+ 	lim->dma_alignment = 511;
++	lim->max_copy_hw_sectors = 0;
++	lim->max_copy_sectors = 0;
+ }
+ 
+ /**
+@@ -82,6 +84,8 @@ void blk_set_stacking_limits(struct queue_limits *lim)
+ 	lim->max_dev_sectors = UINT_MAX;
+ 	lim->max_write_zeroes_sectors = UINT_MAX;
+ 	lim->max_zone_append_sectors = UINT_MAX;
++	lim->max_copy_hw_sectors = UINT_MAX;
++	lim->max_copy_sectors = UINT_MAX;
+ }
+ EXPORT_SYMBOL(blk_set_stacking_limits);
+ 
+@@ -183,6 +187,22 @@ void blk_queue_max_discard_sectors(struct request_queue *q,
+ }
+ EXPORT_SYMBOL(blk_queue_max_discard_sectors);
+ 
++/*
++ * blk_queue_max_copy_hw_sectors - set max sectors for a single copy payload
++ * @q:	the request queue for the device
++ * @max_copy_sectors: maximum number of sectors to copy
++ */
++void blk_queue_max_copy_hw_sectors(struct request_queue *q,
++				   unsigned int max_copy_sectors)
++{
++	if (max_copy_sectors > (BLK_COPY_MAX_BYTES >> SECTOR_SHIFT))
++		max_copy_sectors = BLK_COPY_MAX_BYTES >> SECTOR_SHIFT;
++
++	q->limits.max_copy_hw_sectors = max_copy_sectors;
++	q->limits.max_copy_sectors = max_copy_sectors;
++}
++EXPORT_SYMBOL_GPL(blk_queue_max_copy_hw_sectors);
++
+ /**
+  * blk_queue_max_secure_erase_sectors - set max sectors for a secure erase
+  * @q:  the request queue for the device
+@@ -578,6 +598,10 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
+ 	t->max_segment_size = min_not_zero(t->max_segment_size,
+ 					   b->max_segment_size);
+ 
++	t->max_copy_sectors = min(t->max_copy_sectors, b->max_copy_sectors);
++	t->max_copy_hw_sectors = min(t->max_copy_hw_sectors,
++				     b->max_copy_hw_sectors);
++
+ 	t->misaligned |= b->misaligned;
+ 
+ 	alignment = queue_limit_alignment_offset(b, start);
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 63e481262336..4840e21adefa 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -199,6 +199,37 @@ static ssize_t queue_discard_zeroes_data_show(struct request_queue *q, char *pag
+ 	return queue_var_show(0, page);
+ }
+ 
++static ssize_t queue_copy_hw_max_show(struct request_queue *q, char *page)
++{
++	return sprintf(page, "%llu\n", (unsigned long long)
++		       q->limits.max_copy_hw_sectors << SECTOR_SHIFT);
++}
++
++static ssize_t queue_copy_max_show(struct request_queue *q, char *page)
++{
++	return sprintf(page, "%llu\n", (unsigned long long)
++		       q->limits.max_copy_sectors << SECTOR_SHIFT);
++}
++
++static ssize_t queue_copy_max_store(struct request_queue *q, const char *page,
++				    size_t count)
++{
++	unsigned long max_copy;
++	ssize_t ret = queue_var_store(&max_copy, page, count);
++
++	if (ret < 0)
++		return ret;
++
++	if (max_copy & (queue_logical_block_size(q) - 1))
++		return -EINVAL;
++
++	max_copy >>= SECTOR_SHIFT;
++	q->limits.max_copy_sectors = min_t(unsigned int, max_copy,
++					   q->limits.max_copy_hw_sectors);
++
++	return count;
++}
++
+ static ssize_t queue_write_same_max_show(struct request_queue *q, char *page)
+ {
+ 	return queue_var_show(0, page);
+@@ -517,6 +548,9 @@ QUEUE_RO_ENTRY(queue_nr_zones, "nr_zones");
+ QUEUE_RO_ENTRY(queue_max_open_zones, "max_open_zones");
+ QUEUE_RO_ENTRY(queue_max_active_zones, "max_active_zones");
+ 
++QUEUE_RO_ENTRY(queue_copy_hw_max, "copy_max_hw_bytes");
++QUEUE_RW_ENTRY(queue_copy_max, "copy_max_bytes");
++
+ QUEUE_RW_ENTRY(queue_nomerges, "nomerges");
+ QUEUE_RW_ENTRY(queue_rq_affinity, "rq_affinity");
+ QUEUE_RW_ENTRY(queue_poll, "io_poll");
+@@ -633,6 +667,8 @@ static struct attribute *queue_attrs[] = {
+ 	&queue_discard_max_entry.attr,
+ 	&queue_discard_max_hw_entry.attr,
+ 	&queue_discard_zeroes_data_entry.attr,
++	&queue_copy_hw_max_entry.attr,
++	&queue_copy_max_entry.attr,
+ 	&queue_write_same_max_entry.attr,
+ 	&queue_write_zeroes_max_entry.attr,
+ 	&queue_zone_append_max_entry.attr,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index eef450f25982..7548f1685ee9 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -309,6 +309,9 @@ struct queue_limits {
+ 	unsigned int		discard_alignment;
+ 	unsigned int		zone_write_granularity;
+ 
++	unsigned int		max_copy_hw_sectors;
++	unsigned int		max_copy_sectors;
++
+ 	unsigned short		max_segments;
+ 	unsigned short		max_integrity_segments;
+ 	unsigned short		max_discard_segments;
+@@ -893,6 +896,8 @@ extern void blk_queue_chunk_sectors(struct request_queue *, unsigned int);
+ extern void blk_queue_max_segments(struct request_queue *, unsigned short);
+ extern void blk_queue_max_discard_segments(struct request_queue *,
+ 		unsigned short);
++extern void blk_queue_max_copy_hw_sectors(struct request_queue *q,
++					  unsigned int max_copy_sectors);
+ void blk_queue_max_secure_erase_sectors(struct request_queue *q,
+ 		unsigned int max_sectors);
+ extern void blk_queue_max_segment_size(struct request_queue *, unsigned int);
+@@ -1211,6 +1216,14 @@ static inline unsigned int bdev_discard_granularity(struct block_device *bdev)
+ 	return bdev_get_queue(bdev)->limits.discard_granularity;
+ }
+ 
++/* maximum copy offload length, this is set to 128MB based on current testing */
++#define BLK_COPY_MAX_BYTES		(1 << 27)
++
++static inline unsigned int bdev_max_copy_sectors(struct block_device *bdev)
++{
++	return bdev_get_queue(bdev)->limits.max_copy_sectors;
++}
++
+ static inline unsigned int
+ bdev_max_secure_erase_sectors(struct block_device *bdev)
+ {
+-- 
+2.35.1.500.gb896f729e2
 
->  	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
->  		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
->  
-
-> @@ -111,10 +155,25 @@ static int sys_set_netns_args(struct rd *rd)
->  	return sys_set_netns_cmd(rd, cmd);
->  }
->  
-> +static int sys_set_privileged_qkey_args(struct rd *rd)
-> +{
-> +	bool cmd;
-> +
-> +	if (rd_no_arg(rd) || !sys_valid_privileged_qkey_cmd(rd_argv(rd))) {
-> +		pr_err("valid options are: { on | off }\n");
-> +		return -EINVAL;
-> +	}
-
-This could use parse_on_off().
-
-> +
-> +	cmd = (strcmp(rd_argv(rd), "on") == 0) ? true : false;
-> +
-> +	return sys_set_privileged_qkey_cmd(rd, cmd);
-> +}
-> +
->  static int sys_set_help(struct rd *rd)
->  {
->  	pr_out("Usage: %s system set [PARAM] value\n", rd->filename);
->  	pr_out("            system set netns { shared | exclusive }\n");
-> +	pr_out("            system set privileged-qkey { on | off }\n");
->  	return 0;
->  }
->  
-> @@ -124,6 +183,7 @@ static int sys_set(struct rd *rd)
->  		{ NULL,			sys_set_help },
->  		{ "help",		sys_set_help },
->  		{ "netns",		sys_set_netns_args},
-> +		{ "privileged-qkey",	sys_set_privileged_qkey_args},
->  		{ 0 }
->  	};
-
-The rest of the code looks sane to me, but I'm not familiar with the
-feature.
