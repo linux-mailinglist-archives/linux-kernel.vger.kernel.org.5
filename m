@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9357CF86B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57D37CF873
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345629AbjJSMKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        id S235352AbjJSMLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235469AbjJSMKX (ORCPT
+        with ESMTP id S235385AbjJSMLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:10:23 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058CDD6D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:08:59 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7789aed0e46so60158185a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:08:59 -0700 (PDT)
+        Thu, 19 Oct 2023 08:11:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597C010D5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:10:58 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b201a93c9cso5373995b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697717339; x=1698322139; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n4tv7L3CKLORBtaOIWt8KkvkWsJtfoDrj0UfoXf86F8=;
-        b=BkAPGqUJblQAKDCwVFa825TZxHuBYXl9QIqdqq6jNhKkZ2CmHCAvfVGBKk+NHkzvQC
-         ggUoQYzDPB9XHNkL3fe/04kKY5Cv0b06Nzdho84PDR2qUyHllTxF/p6pVfMI2GjilJRq
-         92PsTqJBrUUnAfQBSbRX97fC26TOqbEkw4DK5kegiVixZyXVhky1S1k4EnKlfwA9i+KL
-         LDMMK6T0YMZtu0D1sKOea9JDozRyIcaOR04q7HWsdMvIUcnZzcV21ZPWS5Kr4Wkg7uD2
-         ggU9YB4jG+f892VFn8auTk+NEzGiAU5OKQcYzuozPA+6jiszvhTyGzynS+nrMotg+gmd
-         ZpPw==
+        d=tweaklogic.com; s=google; t=1697717457; x=1698322257; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b7TOTIKoWImuAkDVVYCBVqPy3Cdis5b4Vo38tYuQrdI=;
+        b=d8UyzsFmlR5wEaODr/yL3J9LGIQEMJWnmNN2KVJDKAwmTsS7vPJqW6T2Pb/TpU/4oN
+         eDm1JO7Ypv6w7iBPbWFmEXK7erhcKYeXH1vUvJGEBxxW/uqCdbSQmDNjifIhsRf4BmxH
+         fSJdkTYfCF1qN9E6Hmkj4aQ7k1BcjP0i/X4Q7U4Ia7IU1H5eZ/gFzrhZAeHDBIqJMHh6
+         ddqy4kEaDYHgInK1QKQwXA9NqlxJaNUH5rOKo6q8VdboUeWJn+p6QYW7FOA55ygVM6+Y
+         szzglpOeHpVauLc8I2+wDUZrbOQTkLmJd69MqsdoFQz01Q7WBSLJ9g3zvkxbeAYrbmzE
+         Ru3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697717339; x=1698322139;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n4tv7L3CKLORBtaOIWt8KkvkWsJtfoDrj0UfoXf86F8=;
-        b=ige0CE045SuvxmNd++3DG5ybNHynBKaWKBh7m9LL7s3nDKwbrHXYo0p6kSwedPD4lX
-         SEgio6XcMgPMwFV6dKnYd9FfBxJVqJoW+lzZBc7Q/IEOpj6oaKBf8z75fQIhlkw9iIxt
-         aklWoX8VTfg40y0FOUOIvpZhq5PpiXruY/i3TAzib50RM3WZAtzVk+Z8KNnKSmwpIkzS
-         ZBqVIhnINreEGXTB31MCcsi+KUz6oEP6tAJca67l4M6ZO1WJXNbsgb0jTn5jj6Owzd7P
-         n7W0u51XAwcxCQTKeRRtUIK5SUz1yRZ1oyda02LchcTaS/P5B+iQuSuqCpVY9KfvrdZa
-         a+kg==
-X-Gm-Message-State: AOJu0YxkAZEc8wZzWpxJGu3zoXMxcjdpMNspzzVfE+2Qz7gUU+SYAB/R
-        gcCziFrpOo0PHDQ0F3HlBbkNQpEUjrRtj/DV0U+bEw==
-X-Google-Smtp-Source: AGHT+IE6nPZ+FwMi91zTNGiipFcUGE5Guuu+1fDcHDRmGu2d1FMXCM6mJWAB9xtMkB7aVk4pZm/DegNqaMuCLAQX2lA=
-X-Received: by 2002:a05:6214:248e:b0:656:51b9:990e with SMTP id
- gi14-20020a056214248e00b0065651b9990emr2378325qvb.57.1697717338910; Thu, 19
- Oct 2023 05:08:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697717457; x=1698322257;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7TOTIKoWImuAkDVVYCBVqPy3Cdis5b4Vo38tYuQrdI=;
+        b=T398XVt84RKJo2CCK4h2EnxkocJVHppe1JEv6fa97HVSLPfv9XEsfZW9vZx+OThSFD
+         +hAFbagV/9P9ckxHEit2pDjI5Q8U0LCUzgEOINHHUK6YYNObDwgHCw+SonerdaJlwueC
+         tSR0VijHvQT3O7bHxjeJ5Nn76ZCr8/SJdlOAfR2WubKt0pt/K2uZtHctlzD1woj1v43u
+         cRHi3qwX5k9upp4HcBGZi0CROHPkV9ZVufc8Ha+0S6R9eN2bGYv0/EgY6TWqpbzZYKiW
+         cjpNMx+FSHkiiUwqRlvTk6g67Emb8UFzfVqmupatCm5mlAGjYtVhtEif597Vy6J0Mkdf
+         VQ8w==
+X-Gm-Message-State: AOJu0Yxcq2lcF4maj+08pfYX6EIx9lD8XGoQSYGpdncfxY3AYhZbF2pS
+        T9zQe7EasTVZd25UtVHUkhyNLw==
+X-Google-Smtp-Source: AGHT+IGyjJ5achfYpuzb0OcmwqIHdD90ognp6JgCUWc4UnEvDk50gbaB0ggnIRhz4omdqkMNYXqe2Q==
+X-Received: by 2002:a05:6a21:3e0d:b0:17a:dc55:4dc4 with SMTP id bk13-20020a056a213e0d00b0017adc554dc4mr1725217pzc.26.1697717457492;
+        Thu, 19 Oct 2023 05:10:57 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:43ac:2324:cc6e:9fa5? (2403-580d-82f4-0-43ac-2324-cc6e-9fa5.ip6.aussiebb.net. [2403:580d:82f4:0:43ac:2324:cc6e:9fa5])
+        by smtp.gmail.com with ESMTPSA id a186-20020a6390c3000000b005898a3619c7sm3262535pge.48.2023.10.19.05.10.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 05:10:56 -0700 (PDT)
+Message-ID: <5a7d1ff3-8ac4-cdd1-028a-84b9fc240201@tweaklogic.com>
+Date:   Thu, 19 Oct 2023 22:40:50 +1030
 MIME-Version: 1.0
-References: <20231019033323.54147-1-yangyicong@huawei.com> <20231019033323.54147-4-yangyicong@huawei.com>
-In-Reply-To: <20231019033323.54147-4-yangyicong@huawei.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 19 Oct 2023 14:08:47 +0200
-Message-ID: <CAKfTPtDji=JQPCTuQEn7RSe2ga4m4Am20nSh_Qyj4kVz+9UGNA@mail.gmail.com>
-Subject: Re: [PATCH v11 3/3] sched/fair: Use candidate prev/recent_used CPU if
- scanning failed for cluster wakeup
-To:     Yicong Yang <yangyicong@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, tim.c.chen@linux.intel.com,
-        yu.c.chen@intel.com, gautham.shenoy@amd.com, mgorman@suse.de,
-        vschneid@redhat.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
-        bsegall@google.com, bristot@redhat.com, prime.zeng@huawei.com,
-        yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
-        ego@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
-        linuxarm@huawei.com, 21cnbao@gmail.com, kprateek.nayak@amd.com,
-        wuyun.abel@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
+ schemas
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
+ <20231019-rematch-ethically-9d482ca4607e@spud>
+ <6b856b0d-4f69-70ac-59a7-237fd21d1a92@tweaklogic.com>
+ <20231019-hurry-eagle-0ffa95b1a026@spud>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20231019-hurry-eagle-0ffa95b1a026@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 05:36, Yicong Yang <yangyicong@huawei.com> wrote:
->
-> From: Yicong Yang <yangyicong@hisilicon.com>
->
-> Chen Yu reports a hackbench regression of cluster wakeup when
-> hackbench threads equal to the CPU number [1]. Analysis shows
-> it's because we wake up more on the target CPU even if the
-> prev_cpu is a good wakeup candidate and leads to the decrease
-> of the CPU utilization.
->
-> Generally if the task's prev_cpu is idle we'll wake up the task
-> on it without scanning. On cluster machines we'll try to wake up
-> the task in the same cluster of the target for better cache
-> affinity, so if the prev_cpu is idle but not sharing the same
-> cluster with the target we'll still try to find an idle CPU within
-> the cluster. This will improve the performance at low loads on
-> cluster machines. But in the issue above, if the prev_cpu is idle
-> but not in the cluster with the target CPU, we'll try to scan an
-> idle one in the cluster. But since the system is busy, we're
-> likely to fail the scanning and use target instead, even if
-> the prev_cpu is idle. Then leads to the regression.
->
-> This patch solves this in 2 steps:
-> o record the prev_cpu/recent_used_cpu if they're good wakeup
->   candidates but not sharing the cluster with the target.
-> o on scanning failure use the prev_cpu/recent_used_cpu if
->   they're recorded as idle
->
-> [1] https://lore.kernel.org/all/ZGzDLuVaHR1PAYDt@chenyu5-mobl1/
->
-> Reported-by: Chen Yu <yu.c.chen@intel.com>
-> Closes: https://lore.kernel.org/all/ZGsLy83wPIpamy6x@chenyu5-mobl1/
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> Sorry, I should have put a longer description and a longer commit message.
+>> That patch series adds a new driver - apds9306 which is separate to this
+>> patch. As per Krzysztof's comments, first operation is to merge the existing
+>> apds9300 and apds9960 schemas. This patch is the first operation.
+>>
+>> Second operation will be to add apds9306 support on top of that. I will
+>> explain more on Krzysztof's comments. Thank you for reviewing.
+> 
+> Ahh apologies then. The best course of action would likely be to include
+> the patch merging the two bindings in your series adding the third user.
+No worries. Sure. You can reject this patch then. I will add my changes in the
+main apds9306 patch series.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-
-> ---
->  kernel/sched/fair.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 02d842df5294..d508d1999ecc 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7346,7 +7346,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->         bool has_idle_core = false;
->         struct sched_domain *sd;
->         unsigned long task_util, util_min, util_max;
-> -       int i, recent_used_cpu;
-> +       int i, recent_used_cpu, prev_aff = -1;
->
->         /*
->          * On asymmetric system, update task utilization because we will check
-> @@ -7379,6 +7379,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->
->                 if (cpus_share_resources(prev, target))
->                         return prev;
-> +
-> +               prev_aff = prev;
->         }
->
->         /*
-> @@ -7411,6 +7413,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->
->                 if (cpus_share_resources(recent_used_cpu, target))
->                         return recent_used_cpu;
-> +       } else {
-> +               recent_used_cpu = -1;
->         }
->
->         /*
-> @@ -7451,6 +7455,17 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->         if ((unsigned)i < nr_cpumask_bits)
->                 return i;
->
-> +       /*
-> +        * For cluster machines which have lower sharing cache like L2 or
-> +        * LLC Tag, we tend to find an idle CPU in the target's cluster
-> +        * first. But prev_cpu or recent_used_cpu may also be a good candidate,
-> +        * use them if possible when no idle CPU found in select_idle_cpu().
-> +        */
-> +       if ((unsigned int)prev_aff < nr_cpumask_bits)
-> +               return prev_aff;
-> +       if ((unsigned int)recent_used_cpu < nr_cpumask_bits)
-> +               return recent_used_cpu;
-> +
->         return target;
->  }
->
-> --
-> 2.24.0
->
+Regards,
+Subhajit Ghosh
