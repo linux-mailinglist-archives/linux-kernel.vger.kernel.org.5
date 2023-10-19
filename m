@@ -2,63 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046C97CED1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126307CED3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbjJSBEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 21:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S231740AbjJSBLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 21:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbjJSBEq (ORCPT
+        with ESMTP id S229456AbjJSBLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 21:04:46 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AC0B8;
-        Wed, 18 Oct 2023 18:04:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9qHn2L6nz4f3lVL;
-        Thu, 19 Oct 2023 09:04:37 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgDHXd2mgDBlIodZDQ--.31071S3;
-        Thu, 19 Oct 2023 09:04:40 +0800 (CST)
-Subject: Re: [PATCH -next 0/6] md: remvoe rcu protection to access rdev from
- conf
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20231016092439.493646-1-yukuai1@huaweicloud.com>
- <CAPhsuW6vE7O1uPXnC3yrUT4maghKdx+E0odqF7UxP5esgBC=2A@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d330b1f1-fd72-554c-f25c-dd9c347d8dd1@huaweicloud.com>
-Date:   Thu, 19 Oct 2023 09:04:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 18 Oct 2023 21:11:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0261A113;
+        Wed, 18 Oct 2023 18:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697677868; x=1729213868;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=7/wWhp5WZzNZkPgaV7hrekuTzYgsc1/Vjk365oAFFsg=;
+  b=TUVz44Ezmc19Y9sE5sPre+im5bX4/7wLLZFdhkEV47gvSYxYoOKHkL+v
+   aUKo4jayGjAQwKJe5r8Rsgp61RlquEHFKPViNzsmi+CiVTupx/nKzUg9t
+   6yc5ccr5xFVc/xG3kzhzyLCI36TZdQJoQloDL7xFdiqRpzLh45AlsGcLh
+   Sc7ZxZGGlC4UDiPGvr4gDvaJC/LSWrVgw5BjF2mDVVPigu+udk1NPj5Ua
+   lP0Lhpuw8MRF8E4Of6ZGf1c+DXsyYxy/66hnMAfgxYXT2M1Ckde3+XOsA
+   aogMx+N3LaZz+TuSZIejCmFZV1r2sbULzTSLk16tjnECzvc+vnZvTPBPW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="385972853"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="385972853"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 18:11:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930414261"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="930414261"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2023 18:11:07 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 18 Oct 2023 18:11:06 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 18 Oct 2023 18:11:06 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 18 Oct 2023 18:11:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nAoqJ4rK/MpC7onMJK3QG0Ma2LsYddLskflHfj56lNTH/Mi9PorCHMvq77dKWVlb+zGMMHNQF+MTlBlq6xxLNChb2NqaKBs5RamtEyIFGk0IGJEn2nfwayjuNUjU+DAGNKY3wv4MREhMH0Pw47Z7Mn/B2PZzWGCYmyMYr49knEKH5uzeoRu/6FWnNKVgs8YS0098wwuqFkx6S7I3rY3qG2gC9hOQbsfdsTiFQe6zBKubYHi19MovxWCzs7Hon4AWt9nh4LnONYkPYHImE5roxlH8h7TV0mLQ+4iVX3GjVTA3CzYxxXeghWnkWw/s+VFhVudKPHzjbn41GOyTjY00tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jj6cD4W4BRp9U9iPcpiL6QM6Sy6uZ6e0do5bvHeVB4o=;
+ b=Gtn85rQC1imIlKb4ujXzIkVxvrJ/RfxbYHSlGBbAqyryuykfEul1XtTY/of4PKnhI9I1u6idxGsv5FNkXG1WyS3ZhzO4GcJ9eqYaILM9AGVeLYfagOour3SZsrzGtUWZTls1eLubICimXFXKS458NnNnbJWNntGBJn4dAX9FQuF7C+zBa2S0jvGiTZdoqiuGDfpM+29ffoa3rm7/mu33qzH7+CbmPlG1VRSlGCqlLSWo6HekQGrs9ibGKQHgisyVXdFYammhI2IETwKE6WaVLuc2siO5Zgh2uhDkTU+VNh9yyqdmKwtqucQTexS1SOJH4bkpFCpuaL2Btd/5xpoWEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by SA2PR11MB4923.namprd11.prod.outlook.com (2603:10b6:806:fa::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Thu, 19 Oct
+ 2023 01:11:03 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::21f8:775f:a94d:e1c0]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::21f8:775f:a94d:e1c0%4]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 01:11:03 +0000
+Date:   Thu, 19 Oct 2023 09:06:10 +0800
+From:   kernel test robot <yujie.liu@intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, <bhelgaas@google.com>
+CC:     <oe-kbuild-all@lists.linux.dev>, <linux-pm@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Ricky Wu <ricky_wu@realtek.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Lukas Wunner" <lukas@wunner.de>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on
+ PCIe Link Down
+Message-ID: <202310171955.hlish6FZ-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+X-ClientProxiedBy: KL1PR01CA0139.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:4::31) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW6vE7O1uPXnC3yrUT4maghKdx+E0odqF7UxP5esgBC=2A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHXd2mgDBlIodZDQ--.31071S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy7KFy7XFyfCF45Zr47Arb_yoW8Jw4kpw
-        nxJay3uw4rCr17Ja9rZ3yUKFy5GF1xJryUJr17Aw18Xa4jvFyUXF47try8ur98AFWftay7
-        KFy5Gas8GF1Fy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
-        UUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|SA2PR11MB4923:EE_
+X-MS-Office365-Filtering-Correlation-Id: 956edf23-e6cb-4789-1101-08dbd040435c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z+Sg8aILu9u/J9+OBib5/MF5mtCDYQJ5XnKTWFWonx0SJrIWzHdwLCdom5YL5mzkKqIpLhR9jFs+LGGKkohEuQXaIiYJM+uK26jIRuOoZ6P8fpnORuq6c1kqf53QjETHYL60AQ3npZEGNYTzmDWIu9drj2MpDmKrP181wzHqLcwnsqWBJpPG5Gf+kD+LGCM1pBhozBobsOmco8BKtQLlv77rBHrUFE1B7jfKksR8+JmowhF2SBfaBJLVneo+ZwGWzd3DTfqCX1521Fkp7iT6irPIZYZemRyHGJKD29XLdFQfRh48Ty1QWuTsexMhGlVpaZKR7NxicCoJ7kED6BZ5Zj52icEL4fUahfP1Ej6bv5kA/XFZ5NNSQ8oGMNhixYw4deLDQxBfsussVHzctf8+dKI3i4r9XuLQX0kAHrG7oP4b6JdlOq+nem1pvhNPFTrMjKWQR71j3HTPMLyeM+u9/2AemG7TiqU9wApPVfrQOhPWNA+rmA3RvAeZxBzAXvUg8fV/wFgbZhQ2/QY4UwycmRZum9xt5u5vt+SP2eesrGEWaooDr7BQT6v69eSq9lAFCbNYWf1OQvKCgS0MdR+P5Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(366004)(396003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(2616005)(26005)(6666004)(6512007)(6506007)(83380400001)(4001150100001)(5660300002)(8676002)(8936002)(4326008)(41300700001)(7416002)(2906002)(966005)(6486002)(316002)(478600001)(66476007)(66556008)(66946007)(54906003)(1076003)(86362001)(82960400001)(38100700002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?e3kWUdarVcUqybapBbJnlu1d3nIlTjyoBlhpXUP+lRqpGu/bivZNEnfdsKVd?=
+ =?us-ascii?Q?XK8mGmejbrG6CnSrJgGkyKcnCGoV0cChg5j8TOiNSUUxhZKZgcN0GsCzb8iu?=
+ =?us-ascii?Q?KWJMrHKQwdWM6pmsgSfJLqY/MOFhqasDNv0VxYJTlK7eSHyupEipftpYk0NB?=
+ =?us-ascii?Q?iwLr1mfRVH4QEICnou9CKPVRyo26hBdWLdcCBdTmgQ+sa/agc17rXuOTMZuZ?=
+ =?us-ascii?Q?oMSmtRjuvzRV4Pstyiqa29HVz8e8dbAxj18G3yf11w2qxk+paCUmC+DQo35+?=
+ =?us-ascii?Q?+OnKdpQNMHdlKeNJhprzfiA88/qM3IrABXqKPvyJ+NBKjlkKb59js17oLdM+?=
+ =?us-ascii?Q?kMg7d+aZlEwcqZSssZVHOXzc6micQE0xij8rYSOQMT4id5A6SQrPaRTE9CQL?=
+ =?us-ascii?Q?aLfllEsM4pqe/LIWoWTUovRipOaZP7S5c42iKbtP4paVghRNyocy7R0LkEFq?=
+ =?us-ascii?Q?uqTi0CFJaO3mTrXScYw4PQzCq5OuvNmIXOmyFgJfFwZow1AIMjNqVguGvKIb?=
+ =?us-ascii?Q?8E8yV2k3Fdxp2rZdj7Qv/zKc6v4ftUy27yaMtIWgl4Q3mCH8IxaMscKxKMZI?=
+ =?us-ascii?Q?SRLGjPgwjynKxSKfvSs3oIEOn0m9p7pzj61w8ZhRwZ8F6TzWQRTHmMNwhj8J?=
+ =?us-ascii?Q?9KxDCwu1OkZi8qm9xLbdSkxkdcnquftnH20W7F4aykW9WWDQBxfCBxGAPPL1?=
+ =?us-ascii?Q?aRDIAPvUg2QEP7snkU7zDT0ISLkoOnD/w1V1Uxmw0ks0JTQ8koQFSQBJHMzU?=
+ =?us-ascii?Q?WnHGr/w8Tsmr7qj0QEz/L90+GKycGP9RVsvW2xr7c42yAdqEujDEHGHf8tfI?=
+ =?us-ascii?Q?ln0WBQ9/qgz/MwscNr90884Wi6pgw/UmYwuwK2esH7gVeW6d9hLPZtlzjXK6?=
+ =?us-ascii?Q?Fbzz4TKlrL3a1Bh2OzDrQyyLF+Negi1ro0WLtMp9ET2WoRMUOepJDH4hPBLi?=
+ =?us-ascii?Q?sjIOOkehY1qyhjiE2DAJ7kfb9h3ERcj3kC5RkNUbBRUTDYFh7fjFpjwqCCZe?=
+ =?us-ascii?Q?fC/hTa2dry29JnHrl6LJnQaYZjH4opzKR1EstvST4+6PjNxPfLGBRS74dVeH?=
+ =?us-ascii?Q?FoUdDtGsCApdSMez4qD4SOweJNFoB/KB4TI8E10yauYcRZ8Z/a6J7xsCIFJ6?=
+ =?us-ascii?Q?0WAxoi/OuS62qNJznECW23Sa+jVRBxOf1FfJyzo1puiW96oaSIL8aw/exNb0?=
+ =?us-ascii?Q?BFWmjAXZOF7jBI7GR31MlI+tf5pJiz9tP4GPxyEJXxOx+MF1r3V/RE1HSbRj?=
+ =?us-ascii?Q?sEn88TDGmc/Jja3kJt5lzqVDZGFrB9zj9BqGpC3MOpjoB4s8WjA1BGcIz9bQ?=
+ =?us-ascii?Q?wME2epNA7zF7EtEZFYuMrnGwozJmA4/XwkGaoj5I4J6y7Gmjq270NO5x/QVx?=
+ =?us-ascii?Q?ipBqmXWBWxb1U4ZXZJHkGmwMXq1CLTZnDaVH8lEgoLms6+UpRV+lL6RrqfDN?=
+ =?us-ascii?Q?RR1JriEgk19bvICk+XXc/OQZ71bOM1pmO6jyOm3fx3RwzWlK4bvJVIFrFNTG?=
+ =?us-ascii?Q?vt86wtgAZyGVWhTTSPEg9BCFt81ghEvkuPsVvm9P413FemB4OduafN69bMmi?=
+ =?us-ascii?Q?mURfwyHq+28lPBkKMKXpHRQ/w1qFBhyeHLhnzW8I?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 956edf23-e6cb-4789-1101-08dbd040435c
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 01:11:03.1101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: okgbq8PFLaYwqWb6n4eq/o4z+hNRyzhqnY5rdj3UI3xslnVROdzo0roBb95rtCQMRPscEiUWYA8qTtA0UwGTpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4923
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,49 +152,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Kai-Heng,
 
-在 2023/10/19 1:58, Song Liu 写道:
-> On Sun, Oct 15, 2023 at 6:28 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Yu Kuai (6):
->>    md: remove useless debug code to print configuration
->>    md: remove flag RemoveSynchronized
->>    md/raid1: remove rcu protection to access rdev from conf
->>    md/raid10: remove rcu protection to access rdev from conf
->>    md/raid5: remove rcu protection to access rdev from conf
->>    md/md-multipath: remove rcu protection to access rdev from conf
-> 
-> While a cover letter is highly recommended for a patchset. An empty
-> cover letter like this doesn't really add value. If the description of each
-> patch is clear enough, it is OK to not have a cover-letter.
+kernel test robot noticed the following build warnings:
 
-Yes, I was hoping commit message in each patch is clear enough,I'll try
-to explain everything more detailed.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.6-rc6 next-20231017]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Kuai
+url:    https://github.com/intel-lab-lkp/linux/commits/Kai-Heng-Feng/PCI-pciehp-Prevent-child-devices-from-doing-RPM-on-PCIe-Link-Down/20231017-142208
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231016040132.23824-1-kai.heng.feng%40canonical.com
+patch subject: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe Link Down
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310171955.hlish6FZ-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171955.hlish6FZ-lkp@intel.com/reproduce)
 
-> 
-> Thanks,
-> Song
-> 
->>
->>   drivers/md/md-multipath.c |  29 ++---
->>   drivers/md/md.c           |  37 +-----
->>   drivers/md/raid1.c        |  94 ++++-----------
->>   drivers/md/raid10.c       | 248 +++++++++-----------------------------
->>   drivers/md/raid5-cache.c  |  11 +-
->>   drivers/md/raid5-ppl.c    |  16 +--
->>   drivers/md/raid5.c        | 225 ++++++++++------------------------
->>   drivers/md/raid5.h        |   4 +-
->>   8 files changed, 163 insertions(+), 501 deletions(-)
->>
->> --
->> 2.39.2
->>
-> .
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/r/202310171955.hlish6FZ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/pci/hotplug/pciehp_pci.c:25:5: warning: no previous prototype for 'pci_dev_disconnect' [-Wmissing-prototypes]
+      25 | int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
+         |     ^~~~~~~~~~~~~~~~~~
+
+
+vim +/pci_dev_disconnect +25 drivers/pci/hotplug/pciehp_pci.c
+
+^1da177e4c3f41 Linus Torvalds 2005-04-16  24  
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16 @25  int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  26  {
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  27  	pm_runtime_barrier(&pdev->dev);
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  28  	pci_dev_set_disconnected(pdev, NULL);
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  29  
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  30  	return 0;
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  31  }
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  32  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
