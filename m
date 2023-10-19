@@ -2,197 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3DF7CF3C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3BA7CF3BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345080AbjJSJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S1345016AbjJSJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344979AbjJSJPk (ORCPT
+        with ESMTP id S233002AbjJSJPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:15:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9241A2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:15:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EF86A210E6;
-        Thu, 19 Oct 2023 09:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697706934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Dn2km2xrB+B5vKWOSjXaC3oIb3VD9PnFa2PlRKN8Us=;
-        b=bMrbPdAq5QFPLLVUwk0ehE1puVd24oUWD69AAKQUtGGmdQM0kpPJb5KuaPft5Ouw1Qh7z3
-        plE1iIqSlYoJUxUGz4ORVP/kOzsN81IgvbfVz509SNA1/oFzHUh8/dQNbdjbkWWAM8Z0iV
-        Py6yu8dJVZCQFtKIdDUIA+EPjMAKwC4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADF7B139C2;
-        Thu, 19 Oct 2023 09:15:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tEBHKbbzMGXcVAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 19 Oct 2023 09:15:34 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v3 2/5] x86/alternative: add indirect call patching
+        Thu, 19 Oct 2023 05:15:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A91E136
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:15:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1780C433C9;
+        Thu, 19 Oct 2023 09:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697706921;
+        bh=2akR1+SpClZT3e4hW3GUBKo4hbbNfLPH+FJFcgjS+bQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NDw9mOxaxTwpIG2OLQXoJ0CTEuTsLDqvqLHgBr9mmasIrMuTajY6NHR2Lyp8kgko6
+         d4U8sANg22+MMNy2oqQ2OSdIgdmMJamlgzMkYRMyp1LiPWEsQFCCXrYG+KB9s9ROA6
+         xrGm9sIN/VYicmTIOc2PRrZHF0zprsL+JeaHthvLwlsKzaB7CqNBLgHapoVQ0xfmNS
+         fEpb0MVH2Rxi8hOXbP4pIFEwrbKXxQorzEod3798LFEhxycRFVGFPYJO2X/E3npYjx
+         /veSJeNpceDqBEWxRwbj3qneTmQEmzUOwpDBaggyRdFFT7LeLAZjB0uzOvwZ8xtJ3D
+         LHb3jjr7cIK7g==
 Date:   Thu, 19 Oct 2023 11:15:17 +0200
-Message-Id: <20231019091520.14540-3-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231019091520.14540-1-jgross@suse.com>
-References: <20231019091520.14540-1-jgross@suse.com>
+From:   Simon Horman <horms@kernel.org>
+To:     Ivan Vecera <ivecera@redhat.com>
+Cc:     netdev@vger.kernel.org,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
+Message-ID: <20231019091408.GA2100445@kernel.org>
+References: <20231018112621.463893-1-ivecera@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.10
-X-Spamd-Result: default: False [-6.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018112621.463893-1-ivecera@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to prepare replacing of paravirt patching with alternative
-patching, add the capability to replace an indirect call with a direct
-one to alternative patching.
+On Wed, Oct 18, 2023 at 01:26:20PM +0200, Ivan Vecera wrote:
+> Commit c87c938f62d8f1 ("i40e: Add VF VLAN pruning") added new
+> PF flag I40E_FLAG_VF_VLAN_PRUNING but its value collides with
+> existing I40E_FLAG_TOTAL_PORT_SHUTDOWN_ENABLED flag.
+> 
+> Move the affected flag at the end of the flags and fix its value.
+> 
+> Cc: Mateusz Palczewski <mateusz.palczewski@intel.com>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
-This is done via a new flag ALT_FLAG_CALL as the target of the call
-instruction needs to be evaluated using the value of the location
-addressed by the indirect call. For convenience add a macro for a
-default call instruction. In case it is being used without the new
-flag being set, it will result in a BUG() when being executed. As in
-most cases the feature used will be X86_FEATURE_ALWAYS add another
-macro ALT_CALL_ALWAYS usable for the flags parameter of the ALTERNATIVE
-macros.
+Hi Ivan,
 
-For a complete replacement handle the special cases of calling a nop
-function and an indirect call of NULL the same way as paravirt does.
+I agree with the correctness of this patch and that it was
+introduced by the cited commit.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/alternative.h |  5 ++++
- arch/x86/kernel/alternative.c      | 40 ++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+)
+However, I do wonder if, as a fix for 'net':
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 67e50bd40bb8..dd63b96577e9 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -10,6 +10,9 @@
- 
- #define ALT_FLAG_NOT		(1 << 0)
- #define ALT_NOT(feature)	((ALT_FLAG_NOT << ALT_FLAGS_SHIFT) | (feature))
-+#define ALT_FLAG_CALL		(1 << 1)
-+#define ALT_CALL(feature)	((ALT_FLAG_CALL << ALT_FLAGS_SHIFT) | (feature))
-+#define ALT_CALL_ALWAYS		ALT_CALL(X86_FEATURE_ALWAYS)
- 
- #ifndef __ASSEMBLY__
- 
-@@ -150,6 +153,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
- }
- #endif	/* CONFIG_SMP */
- 
-+#define ALT_CALL_INSTR		"call x86_BUG"
-+
- #define b_replacement(num)	"664"#num
- #define e_replacement(num)	"665"#num
- 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 1c8dd8e05f3f..01b89a10d219 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -395,6 +395,40 @@ noinstr void x86_BUG(void)
- }
- EXPORT_SYMBOL_GPL(x86_BUG);
- 
-+/*
-+ * Rewrite the "call x86_BUG" replacement to point to the target of the
-+ * indirect pv_ops call "call *disp(%ip)".
-+ */
-+static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a)
-+{
-+	void *target, *bug = &x86_BUG;
-+
-+	if (a->replacementlen != 5 || insn_buff[0] != CALL_INSN_OPCODE) {
-+		pr_err("Alternative: ALT_FLAG_CALL set for a non-call replacement instruction\n");
-+		pr_err("  Ignoring the flag for the instruction at %pS (%px)\n", instr, instr);
-+		return 5;
-+	}
-+
-+	if (a->instrlen != 6 || instr[0] != 0xff || instr[1] != 0x15) {
-+		pr_err("Alternative: ALT_FLAG_CALL set for unrecognized indirect call\n");
-+		pr_err("  Not replacing the instruction at %pS (%px)\n", instr, instr);
-+		return -1;
-+	}
-+
-+	/* ff 15 00 00 00 00   call   *0x0(%rip) */
-+	target = *(void **)(instr + a->instrlen + *(s32 *)(instr + 2));
-+	if (!target)
-+		target = bug;
-+
-+	/* (x86_BUG - .) + (target - x86_BUG) := target - . */
-+	*(s32 *)(insn_buff + 1) += target - bug;
-+
-+	if (target == &x86_nop)
-+		return 0;
-+
-+	return 5;
-+}
-+
- /*
-  * Replace instructions with better alternatives for this CPU type. This runs
-  * before SMP is initialized to avoid SMP problems with self modifying code.
-@@ -462,6 +496,12 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 		memcpy(insn_buff, replacement, a->replacementlen);
- 		insn_buff_sz = a->replacementlen;
- 
-+		if (a->flags & ALT_FLAG_CALL) {
-+			insn_buff_sz = alt_replace_call(instr, insn_buff, a);
-+			if (insn_buff_sz < 0)
-+				continue;
-+		}
-+
- 		for (; insn_buff_sz < a->instrlen; insn_buff_sz++)
- 			insn_buff[insn_buff_sz] = 0x90;
- 
--- 
-2.35.3
+1) The patch description could include some discussion of
+   what problem is resolved, and, ideally, how I user might
+   get into such a situation.
 
+2) The following fixes tag is appropriate.
+
+Fixes: c87c938f62d8 ("i40e: Add VF VLAN pruning")
+
+...
