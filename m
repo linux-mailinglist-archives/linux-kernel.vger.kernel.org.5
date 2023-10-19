@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C077D037B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ADA7D037D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346562AbjJSVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        id S1346561AbjJSVGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjJSVFW (ORCPT
+        with ESMTP id S230281AbjJSVGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:05:22 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F05E124;
-        Thu, 19 Oct 2023 14:05:18 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39JL58YC035873;
-        Thu, 19 Oct 2023 16:05:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697749508;
-        bh=bvZGh7LIGlVhObO1TE8H6Vk3xxmzzz72LiAF8VGrbXc=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=D1fRjulmTVvirrQfz7nFJ7kp/VFGDQkUsL233j2mLKWnclxo+oWa6QEvHvmbZAxUf
-         yvUU99cKiN1tsYvDAo4/OTp4tHdHm/n7u2xkMCW0fhzechX88TJJYm+sBBwhKb/rwT
-         O1yuFuHkcY0Hl14JN58YJecZ2epQCCFLf9hma420=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39JL583D017871
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Oct 2023 16:05:08 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
- Oct 2023 16:05:08 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 19 Oct 2023 16:05:08 -0500
-Received: from [128.247.81.1] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39JL58j4025106;
-        Thu, 19 Oct 2023 16:05:08 -0500
-Message-ID: <33e958fb-71b9-43b2-911c-a187651a0de4@ti.com>
-Date:   Thu, 19 Oct 2023 16:05:08 -0500
+        Thu, 19 Oct 2023 17:06:23 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300DC2;
+        Thu, 19 Oct 2023 14:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697749576;
+        bh=xdo63SOzzVchMGQgIKwnulHQABOQaumrm7jZgY2UPf4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QgOb9Je5hBuFKffqo/q/mqupySIWWd/JG7QQcAeNYh4wTFwCezD/Hp3Iv5yTP8CM5
+         hi0KhNdlGOFr7LbZ6/+wLEVAEcn5i6VQTGnJtGR3iyltcXSqDVfNPSCCCcAmCdCoNs
+         btuZRmuvQMpYVE1lZeOzZMsGswXM8NavZ4JS2/nhbuZ1+I5rep10FYjh5E9fuOfUdz
+         kTRYMboGdkxMEHMwbgbQfa48I40q4+KpuntWQACcR8Flpndv0/gEm9fHt/kNm9Zhix
+         liLy5Lo3eUWA3oxlA8PPH9IdmVJdHJuR95SK4Fwz7ftb7WqFRrdTTyYz1vFAu9jpdj
+         jBSrRnsfV/4pA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SBKyH6hqpz4xc1;
+        Fri, 20 Oct 2023 08:06:15 +1100 (AEDT)
+Date:   Fri, 20 Oct 2023 08:06:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the mips tree
+Message-ID: <20231020080613.0e257e5a@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] arm64: dts: ti: k3-j7200-mcu-wakeup: Switch
- mcu_syscon to ti,j721e-system-controller
-To:     Vaishnav Achath <vaishnav.a@ti.com>, <vigneshr@ti.com>,
-        <nm@ti.com>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <u-kumar1@ti.com>
-References: <20231009082452.30684-1-vaishnav.a@ti.com>
- <20231009082452.30684-2-vaishnav.a@ti.com>
-Content-Language: en-US
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20231009082452.30684-2-vaishnav.a@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/5CE+p+v4adeZT5ZKC7OuFDm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 3:24 AM, Vaishnav Achath wrote:
-> From: Nishanth Menon <nm@ti.com>
-> 
-> Use ti,j721e-system-controller to be explicit about the syscon node we
-> are using.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
-> ---
-> 
-> No changes since V1.
-> 
->   arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> index 6ffaf85fa63f..2ee6215e38a6 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> @@ -165,7 +165,7 @@
->   	};
->   
->   	mcu_conf: syscon@40f00000 {
-> -		compatible = "syscon", "simple-mfd";
-> +		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
+--Sig_/5CE+p+v4adeZT5ZKC7OuFDm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There is already a "ti,j721e-system-controller" in the main domain dtsi. And this
-is not one of those. You are hiding a valid DT warning by adding an incorrect
-compatible string that just so happens to not throw the warning.
+Hi all,
 
-This should be a "simple-bus" node.
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
 
-Andrew
+  83767a67e7b6 ("MIPS: KVM: Fix a build warning about variable set but not =
+used")
 
->   		reg = <0x00 0x40f00000 0x00 0x20000>;
->   		#address-cells = <1>;
->   		#size-cells = <1>;
+This is commit
+
+  e2145c99b53e ("KVM: MIPS: fix -Wunused-but-set-variable warning")
+
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5CE+p+v4adeZT5ZKC7OuFDm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUxmkUACgkQAVBC80lX
+0GzGgwgAjQbXzYimVR7+rtrV9aO5BvSEQxFD8GXrZiUwBm6MVE4qSX4YBiTEHeq7
+Y6Imdb+1+36N6uNnKR4ZkA4V+7phjoLbOeViF+k/MDkPQksmRb4LVGcvyKGMCbfa
+K8CRL4vugv0bDexi4UN/c2E/PSHvtt4SV7tvQCCW6yqFz3Yt7IFNzGMP1iBZ7Xj0
+pbLrug8/FrYVruOfjjWyqbf963S8Nege+8ekiylE9gOofrv4wytUMshMrEKwUfju
+IXMlpMjaivHmpttuilPo+YzZR5Zbri7QtqQbBsPQP6l+7PmzhJ3I0/qy8lZ/p2Ow
+HRwtSyfA3xf/PbIasMvwZpoqryarlw==
+=H0QQ
+-----END PGP SIGNATURE-----
+
+--Sig_/5CE+p+v4adeZT5ZKC7OuFDm--
