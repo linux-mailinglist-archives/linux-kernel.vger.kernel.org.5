@@ -2,122 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2517CF934
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04CE7CF935
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345616AbjJSMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
+        id S1345659AbjJSMla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235319AbjJSMlQ (ORCPT
+        with ESMTP id S1345661AbjJSMl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:41:16 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EE3A4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:41:14 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9b6559cbd74so1353745866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697719273; x=1698324073; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=vOtyl4QJoNrO7WydaEXmYKfB6hE2a/NTyD/frZ4jsPY=;
-        b=AAYAiBrpNHj/iJBO5bfnkLIDiJ1AGZVyH5ZxzxLI8VA3hQinIYw0Klk4ziuDkTw48x
-         IsJM4MrEqEQM7Sg1eKt7i4w6lgcOe6eHkv5kKVsCsqwDgBXRkSNnVSKW6DKVoQfFUQyN
-         izOBhtYroc+4ZG+efw+tXe5QW3x3iFb1QNbG/eWDX6bXo63LK/WUJ3yAxppET4li12Pr
-         9+pfLNNuWgOBY5HJgBRj+f3u/d197jIVxXlajelCIB5KwLFplelSTkZiSC0UpzgbPE/A
-         2jqRwcisoXYLiymaaBEioRAQlYBnTmzxmf7TrAz/Z1ghEGOEHkcakZiPVKVZHQgfEBlR
-         TTpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697719273; x=1698324073;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vOtyl4QJoNrO7WydaEXmYKfB6hE2a/NTyD/frZ4jsPY=;
-        b=CYkg3awjo3ODWUXdOWY5MqOQPZG/LaX3o1aiZkyLiQKZypILOm5boupxvqsMadQOfv
-         u8cW84JIWb2T5IAZ2i1xKE/U9YU82AyszDj2OJpr6K1/qxV40C8s396RhXLb5guOKt6b
-         KqX4Y37FIZ+ryc+znhyvUPy6CuA7g4fWUf9XRoP6ORNNpS1/IhipOiD8dipVTkv946fO
-         9LHyM0NCQsKorpqfEnr6RrEkh0CYH5kVjYWl8ZEgYopHqx5q/XnmKpfSaiEOw2hN0wDz
-         RGA+9PDf97tz/PZcXxIRKpF6CHJMCYlM/qMJrmnE1hfVkj/glw30fps0Q6AjqV7PwRJa
-         /uTw==
-X-Gm-Message-State: AOJu0YweXH+IA5yjs0XcoPVm5rqCNr1A0tgrC79Rw3icgRAAulyMUugj
-        aYDFAw0XySHrFwPb+B6RjW2DKg==
-X-Google-Smtp-Source: AGHT+IFpRTpF5IE5aoNMh4JyfNEHepUm2xsqyfu8HQfUAZPeCQTGo8cd6RakPS7ojT5UHRlUh2PhuA==
-X-Received: by 2002:a17:907:7254:b0:9be:ca44:87b6 with SMTP id ds20-20020a170907725400b009beca4487b6mr1642416ejc.3.1697719273190;
-        Thu, 19 Oct 2023 05:41:13 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id i22-20020a1709064ed600b00992f2befcbcsm3566491ejv.180.2023.10.19.05.41.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 05:41:12 -0700 (PDT)
-Message-ID: <1759a6c8-03a8-424e-b9ef-09d38eed108b@linaro.org>
-Date:   Thu, 19 Oct 2023 14:41:09 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] tty: serial: samsung: drop earlycon support for
- unsupported platforms
-To:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, alim.akhtar@samsung.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20231019100639.4026283-1-andre.draszik@linaro.org>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231019100639.4026283-1-andre.draszik@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        Thu, 19 Oct 2023 08:41:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0960611B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:41:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D140C433C8;
+        Thu, 19 Oct 2023 12:41:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697719285;
+        bh=aKRs5E3FftfpY1edtDAbgzWd1N+ksQI8GIisTJHvRUw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MEDZAeoomE8HgLdxN/nRHLsHINrWv9An0j1RAD59kW6F3ska5LHG+HZmjX2vs8Jjc
+         bX6RW49ofYDmQ2cLGn+yVG1b9Qt6DOFVUHMBqj0cnB7z9BOlpl1gULikXPp4h2q1by
+         S4KZRz/uzOh/0Xvxwc/VHP/PioxonAMfvxS1d/m2JPMlTwdGIhvxzb5lwA+ZPWL+Ps
+         2/jXg/ZtrPVBeOjPu0op++8B/U08+x1pKomAtWbC+MajZUf+WjHpZei+nSHUpXdRj9
+         S0612urF0re7uj2121YR2hO5SHlGxYgmv2+uY4QrHLtyzSLLF31WgBrHKiCZ/cUoQ7
+         hLo08zdbTmp5w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qtSL0-005koX-1H;
+        Thu, 19 Oct 2023 13:41:18 +0100
+Date:   Thu, 19 Oct 2023 13:41:17 +0100
+Message-ID: <86il72n5si.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Subject: Re: [PATCH v4 3/3] arm64/kvm: Fine grain _EL2 system registers list that affect nested virtualization
+In-Reply-To: <20231016111743.30331-4-miguel.luis@oracle.com>
+References: <20231016111743.30331-1-miguel.luis@oracle.com>
+        <20231016111743.30331-4-miguel.luis@oracle.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, eric.auger@redhat.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,20 +70,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 12:06, André Draszik wrote:
-> Commit 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks") removed
-> support here for several old platforms, but kept support for earlycon
-> for those same platforms.
+On Mon, 16 Oct 2023 12:17:42 +0100,
+Miguel Luis <miguel.luis@oracle.com> wrote:
 > 
-> As earlycon support for otherwise unsupported platforms doesn't seem to
-> be useful, just drop it as well.
+> Implement a fine grained approach in the _EL2 sysreg ranges.
 > 
-> Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> Fixes: d0fc0a2519a6 ("KVM: arm64: nv: Add trap forwarding for HCR_EL2")
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
 > ---
+>  arch/arm64/kvm/emulate-nested.c | 89 ++++++++++++++++++++++++++++++---
+>  1 file changed, 83 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
+> index 9ced1bf0c2b7..3a7d4003fc2b 100644
+> --- a/arch/arm64/kvm/emulate-nested.c
+> +++ b/arch/arm64/kvm/emulate-nested.c
+> @@ -648,15 +648,92 @@ static const struct encoding_to_trap_config encoding_to_cgt[] __initconst = {
+>  	SR_TRAP(SYS_APGAKEYLO_EL1,	CGT_HCR_APK),
+>  	SR_TRAP(SYS_APGAKEYHI_EL1,	CGT_HCR_APK),
+>  	/* All _EL2 registers */
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
+> -		      sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
+> +	SR_TRAP(SYS_BRBCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VPIDR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VMPIDR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCTLR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_ACTLR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCTLR2_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_HCR_EL2,
+> +		      SYS_HCRX_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_SMPRIMAP_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_SMCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SDER32_EL2,		CGT_HCR_NV),
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+No. This is a *secure* register. How could it be trapped?
 
-Best regards,
-Krzysztof
+> +	SR_RANGE_TRAP(SYS_TTBR0_EL2,
+> +		      SYS_TCR2_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_VTTBR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VTCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VNCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSTTBR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSTCR_EL2,		CGT_HCR_NV),
 
+Secure registers.
+
+> +	SR_TRAP(SYS_DACR32_EL2,		CGT_HCR_NV),
+
+This only exists if EL1 is AArch32 capable. Which contradicts the
+basic principle that we don't support AArch32 with NV. Why would you
+want to forward such a trap?
+
+> +	SR_RANGE_TRAP(SYS_HDFGRTR_EL2,
+> +		      SYS_HAFGRTR_EL2,	CGT_HCR_NV),
+>  	/* Skip the SP_EL1 encoding... */
+>  	SR_TRAP(SYS_SPSR_EL2,		CGT_HCR_NV),
+>  	SR_TRAP(SYS_ELR_EL2,		CGT_HCR_NV),
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 4, 1, 1),
+> -		      sys_reg(3, 4, 10, 15, 7), CGT_HCR_NV),
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 12, 0, 0),
+> -		      sys_reg(3, 4, 14, 15, 7), CGT_HCR_NV),
+> +	/* SPSR_irq, SPSR_abt, SPSR_und, SPSR_fiq */
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 4, 3, 0),
+> +		      sys_reg(3, 4, 4, 3, 3), CGT_HCR_NV),
+> +	SR_TRAP(SYS_IFSR32_EL2,		CGT_HCR_NV),
+
+Again: AArch32 related register. The spec is very clear that it UNDEFs
+when AArch32 doesn't exist. Even the SPSR_* registers should be
+removed and handled as RES0 without reinjection of the trap.
+
+> +	SR_TRAP(SYS_AFSR0_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_AFSR1_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_ESR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSESR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_FPEXC32_EL2,	CGT_HCR_NV),
+
+AArch32.
+
+> +	SR_TRAP(SYS_TFSR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_FAR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_HPFAR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_PMSCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_MAIR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_AMAIR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAMHCR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAMVPMV_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAM2_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_MPAMVPM0_EL2,
+> +		      SYS_MPAMVPM7_EL2,	CGT_HCR_NV),
+> +	/*
+> +	 * Note that the spec. describes a group of MEC registers
+> +	 * whose access should not trap, therefore skip the following:
+> +	 * MECID_A0_EL2, MECID_A1_EL2, MECID_P0_EL2,
+> +	 * MECID_P1_EL2, MECIDR_EL2, VMECID_A_EL2,
+> +	 * VMECID_P_EL2.
+> +	 */
+> +	SR_RANGE_TRAP(SYS_VBAR_EL2,
+> +		      SYS_RMR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_VDISR_EL2,		CGT_HCR_NV),
+> +	/* ICH_AP0R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP0R0_EL2,
+> +		      SYS_ICH_AP0R3_EL2, CGT_HCR_NV),
+> +	/* ICH_AP1R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP1R0_EL2,
+> +		      SYS_ICH_AP1R3_EL2, CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICC_SRE_EL2,	CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_ICH_HCR_EL2,
+> +		      SYS_ICH_EISR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_ELRSR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_VMCR_EL2,	CGT_HCR_NV),
+> +	/* ICH_LR<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_LR0_EL2,
+> +		      SYS_ICH_LR15_EL2, CGT_HCR_NV),
+> +	SR_TRAP(SYS_CONTEXTIDR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_TPIDR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCXTNUM_EL2,	CGT_HCR_NV),
+> +	/* AMEVCNTVOFF0<n>_EL2, AMEVCNTVOFF1<n>_EL2  */
+> +	SR_RANGE_TRAP(SYS_AMEVCNTVOFF0n_EL2(0),
+> +		      SYS_AMEVCNTVOFF1n_EL2(15), CGT_HCR_NV),
+> +	/* CNT*_EL2 */
+> +	SR_TRAP(SYS_CNTVOFF_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_CNTPOFF_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_CNTHCTL_EL2,	CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHP_TVAL_EL2,
+> +		      SYS_CNTHP_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHV_TVAL_EL2,
+> +		      SYS_CNTHV_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHVS_TVAL_EL2,
+> +		      SYS_CNTHVS_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHPS_TVAL_EL2,
+> +		      SYS_CNTHPS_CVAL_EL2, CGT_HCR_NV),
+
+None of these secure registers can be accessed, and they will UNDEF at
+EL1.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
