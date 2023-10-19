@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA5E7D02F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3A07D02FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346535AbjJSUC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        id S1346466AbjJSUEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjJSUCz (ORCPT
+        with ESMTP id S230321AbjJSUEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:02:55 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2822A115
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:02:54 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7eef0b931so382127b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:02:54 -0700 (PDT)
+        Thu, 19 Oct 2023 16:04:50 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB4F12D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2739c8862d2so24767a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697745773; x=1698350573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d4h8OXoW9StQ+YypbHzqEhLaogqFHJKP7focuWdzzM0=;
-        b=S1amRd0jkq46pRcJ2e/14i54hzTaQJleZciB+WPwdRgLuzop7cnogb5i04mcnGcZQQ
-         iqhw4RGsUIvrgJGfXws0LtfFt9v1cRijiYMRa9YTSZco17T6zpUhM3JsgybzN+ViQksp
-         X0eZYqibFFw+7YrIE7M2gQk2MSFxQjVeLrvPvlsf7bKseO3pptG8+9BzFOeASvgv6Uuf
-         fr5dvFYrAViQIjeV7heHu5zS6yocfx2ANHMVqSMsgqZ2Eww9b4a7hdXixHY1Cpvp/bxb
-         uoYJ+sXx6ZDSpwm43ysN8r5tLek8lD57aA+AbF2j+S+j7bDDswFYIpUARaGpOmAY92Rn
-         pVSQ==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697745886; x=1698350686; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VHSM7lgOK3HTJKxso8W1sPPHXik4YHTdjZ5i3zqRGx4=;
+        b=hVJSsOgikFx2v0hDLza9QGjIV8a6tJluJcV/pZEW9BAreZr3dBUcXEAy3rnQt/sGQi
+         0db2gX+WccmzYGJP+aj0NWsgRvZgSHh3hSjVXaxZ4z3j0vyCV6pKpauW4vI1WDQGPNjQ
+         lipLElDOc/SIyqkGCcFk/oO/tH/RRPL8/o7wGzlbdWg4wwH4m6yDS0ou6RP/wSULDDcw
+         XDMn+1NvPWDlI5XfEQQfNccI/IjYR0cqhSrw3m97oQcbeUcUDNIfkHrz8KQtFMnrG/7z
+         KYudnlhakY/Ikm8706uLWES7qUFJpX5tkeYrfj528xnocTyIrwTyb2tcOTTs9LuRMV45
+         H7dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697745773; x=1698350573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d4h8OXoW9StQ+YypbHzqEhLaogqFHJKP7focuWdzzM0=;
-        b=ljEAv/YtLiTGtUHT5JBLMRCuT1xKBWsUX3JdTlRGaiwjR7p7Ru5Lr24rluRdHSi0Mp
-         jFf/32sEclEibPSX0O5QNSlMTy5p4lnBpw/4B5iX2fzUgb85048k1cpYUASeZGhZYbBW
-         7SuQCtZ3Z2BQHnh5H/eQ+n8nvprRYklfRorCNphWTL9JgUuGmwJ/3zWYeP4hrRvLCfiH
-         vvx8eoEz0xmzbmhu+BcJNZBi5whRCN5jgBkR921uMftz5m5baEQeVjK6g4wba6r7YHPz
-         mo/AbLMrUaZtzVszxn6G5Okqg1qBSxHTe0mIq6/imWniQXSucGhyAvAUuJbM/G+4F6Gw
-         A+Ew==
-X-Gm-Message-State: AOJu0YzGyPBtQs0U7+J4/VUC4t9B7N7kk2JdgtebSbamYrD2JODy3i9e
-        gGy9h2O0WQOd506RhnK2wG7XBy3EoCax30KXD3pK1Q==
-X-Google-Smtp-Source: AGHT+IFpMZ2iRVo3MJ/6b0SYAOb/GvPEGfec2JTMINMBnMybc9wPakvZR4d3FtbutJYe9Xvp6xxVYZOi+t9uQ2RUYpQ=
-X-Received: by 2002:a0d:cbc1:0:b0:5a7:fbd5:8c1 with SMTP id
- n184-20020a0dcbc1000000b005a7fbd508c1mr3222768ywd.17.1697745773027; Thu, 19
- Oct 2023 13:02:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697745886; x=1698350686;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VHSM7lgOK3HTJKxso8W1sPPHXik4YHTdjZ5i3zqRGx4=;
+        b=QJVV+M10UZsP4RsCqbZUCvJ3OQQM/MAcy5dQF7VQrMQbVM2s4ILKxgIzZPGD1lRQCI
+         InucxXuYO4XRRyTzxo3Eu+0AxTsgeSPja73LmJyAWi7MVSLEUKS01DIHpNRhuWs5Ya1t
+         E9NbqCSENm4OuhONZR3xqrjmRBYoHD4beCoAmIPHgNatfTJZXGm3/jvoubSdZE7Y/V0X
+         9aN8iaytnPQyKgaPr5U6DZNUwYhUWUmGcm1sDw+jnJhZpA/+55cmJCQVx+y9RIESV7Eh
+         r+OGqJ9Lmn0WiDQbMFo5SFZMJbM8cwjZU+VAy1w9VPX+LaDGXUSznB8ikjaoeAAV0aNH
+         jhwA==
+X-Gm-Message-State: AOJu0Yxo3yeA1A60SzkYuVvZl5bamvrf5z01bZMw21QxuPLXxwTRNm89
+        GxV8npJocV907XZ3M6zr9myrKA==
+X-Google-Smtp-Source: AGHT+IGbCrBvmsRbosyDyHhFgwB9uD9EKZDkSeQTftL9H2qEaLZcX5FXO2SKmc7h7coRIOruRtobPQ==
+X-Received: by 2002:a17:90b:1d0e:b0:274:99ed:a80c with SMTP id on14-20020a17090b1d0e00b0027499eda80cmr3295469pjb.3.1697745886045;
+        Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id jb14-20020a17090b408e00b002774d7e2fefsm157717pjb.36.2023.10.19.13.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 13:04:45 -0700 (PDT)
+Message-ID: <e1920ac4-18ad-4b97-a3a3-9604724937d6@kernel.dk>
+Date:   Thu, 19 Oct 2023 14:04:43 -0600
 MIME-Version: 1.0
-References: <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
- <ZS7ZqztMbhrG52JQ@x1n> <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com> <ZTGJHesvkV84c+l6@x1n>
-In-Reply-To: <ZTGJHesvkV84c+l6@x1n>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 19 Oct 2023 13:02:39 -0700
-Message-ID: <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 04/11] net/socket: Break down __sys_getsockopt
+Content-Language: en-US
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Breno Leitao <leitao@debian.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>, sdf@google.com,
+        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
+        kuba@kernel.org, pabeni@redhat.com, krisman@suse.de,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>
+References: <20231016134750.1381153-1-leitao@debian.org>
+ <20231016134750.1381153-5-leitao@debian.org>
+ <1074c1f1-e676-fbe6-04bc-783821d746a1@linux.dev>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <1074c1f1-e676-fbe6-04bc-783821d746a1@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,54 +91,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 12:53=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote=
-:
->
-> On Thu, Oct 19, 2023 at 05:41:01PM +0200, David Hildenbrand wrote:
-> > That's not my main point. It can easily become a maintenance burden wit=
-hout
-> > any real use cases yet that we are willing to support.
->
-> That's why I requested a few times that we can discuss the complexity of
-> cross-mm support already here, and I'm all ears if I missed something on
-> the "maintenance burden" part..
->
-> I started by listing what I think might be different, and we can easily
-> speedup single-mm with things like "if (ctx->mm !=3D mm)" checks with
-> e.g. memcg, just like what this patch already did with pgtable deposition=
-s.
->
-> We keep saying "maintenance burden" but we refuse to discuss what is that=
-..
->
-> I'll leave that to Suren and Lokesh to decide.  For me the worst case is
-> one more flag which might be confusing, which is not the end of the world=
-..
-> Suren, you may need to work more thoroughly to remove cross-mm implicatio=
-ns
-> if so, just like when renaming REMAP to MOVE.
+On 10/19/23 1:12 PM, Martin KaFai Lau wrote:
+> On 10/16/23 6:47?AM, Breno Leitao wrote:
+>> diff --git a/net/socket.c b/net/socket.c
+>> index 0087f8c071e7..f4c156a1987e 100644
+>> --- a/net/socket.c
+>> +++ b/net/socket.c
+>> @@ -2350,6 +2350,42 @@ SYSCALL_DEFINE5(setsockopt, int, fd, int, level, int, optname,
+>>   INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
+>>                                int optname));
+>>   +int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+>> +               int optname, sockptr_t optval, sockptr_t optlen)
+>> +{
+>> +    int max_optlen __maybe_unused;
+>> +    const struct proto_ops *ops;
+>> +    int err;
+>> +
+>> +    err = security_socket_getsockopt(sock, level, optname);
+>> +    if (err)
+>> +        return err;
+>> +
+>> +    ops = READ_ONCE(sock->ops);
+>> +    if (level == SOL_SOCKET) {
+>> +        err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
+>> +    } else if (unlikely(!ops->getsockopt)) {
+>> +        err = -EOPNOTSUPP;
+>> +    } else {
+>> +        if (WARN_ONCE(optval.is_kernel || optlen.is_kernel,
+>> +                  "Invalid argument type"))
+>> +            return -EOPNOTSUPP;
+>> +
+>> +        err = ops->getsockopt(sock, level, optname, optval.user,
+>> +                      optlen.user);
+>> +    }
+>> +
+>> +    if (!compat) {
+>> +        max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+> 
+> The max_optlen was done before the above sk_getsockopt. The bpf CI cannot catch it because it cannot apply patch 5 cleanly. I ran the following out of the linux-block tree:
+> 
+> $> ./test_progs -t sockopt_sk
+> test_sockopt_sk:PASS:join_cgroup /sockopt_sk 0 nsec
+> run_test:PASS:skel_load 0 nsec
+> run_test:PASS:setsockopt_link 0 nsec
+> run_test:PASS:getsockopt_link 0 nsec
+> (/data/users/kafai/fb-kernel/linux/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c:111: errno: Operation not permitted) Failed to call getsockopt, ret=-1
+> run_test:FAIL:getsetsockopt unexpected error: -1 (errno 1)
+> #217     sockopt_sk:FAIL
 
-Hi Folks,
-Sorry, I'm just catching up on all the comments in this thread after a
-week-long absence. Will be addressing other questions separately but
-for cross-mm one, I think the best way forward would be for me to
-split this patch into two with the second one adding cross-mm support.
-That will clearly show how much additional code that requires and will
-make it easier for us to decide whether to support it or not.
-TBH, I don't see the need for an additional flag even if the initial
-version will be merged without cross-mm support. Once it's added the
-manpage can mention that starting with a specific Linux version
-cross-mm is supported, no?
-Also from my quick read, it sounds like we want to prevent movements
-of pinned pages regardless of cross-mm support. Is my understanding
-correct?
-Thanks,
-Suren.
+Does it work with this incremental? I can fold that in, will rebase
+anyway to collect acks.
 
 
->
-> Thanks,
->
-> --
-> Peter Xu
->
+diff --git a/net/socket.c b/net/socket.c
+index bccd257e13fe..eb6960958026 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2344,6 +2344,9 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+ 	if (err)
+ 		return err;
+ 
++	if (!compat)
++		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
++
+ 	ops = READ_ONCE(sock->ops);
+ 	if (level == SOL_SOCKET) {
+ 		err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
+@@ -2358,12 +2361,10 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+ 				      optlen.user);
+ 	}
+ 
+-	if (!compat) {
+-		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
++	if (!compat)
+ 		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
+ 						     optval, optlen, max_optlen,
+ 						     err);
+-	}
+ 
+ 	return err;
+ }
+
+-- 
+Jens Axboe
+
