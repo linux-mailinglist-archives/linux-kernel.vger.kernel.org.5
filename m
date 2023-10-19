@@ -2,106 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091CE7D0002
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACD77D0007
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235471AbjJSQyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S1345286AbjJSQ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjJSQyi (ORCPT
+        with ESMTP id S1345216AbjJSQzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:54:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E492F12F;
-        Thu, 19 Oct 2023 09:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697734476; x=1729270476;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LeVge4ZyAQ43SwbJRJwC0GXIoRIycv1Ay0F3olMiVIg=;
-  b=ShlOQ1mCcYP7C5WkreY4/GD3Ph9h0K1ffVPKGQwciIYpHOgIJBUjtdlv
-   RZBevccPCfdaVcM9g+YluWz/Q0HR1qZbplJ18xL9kcjrGjSpdhA9q9bYz
-   Wq5qfcsHjAknexm55k6sEvwMXeRW4Ozge+QVZshOUPcv26zgBjUf7jX0D
-   RxjP9hbJvWMpNdBPV51f6/2mVMmmnDAiwXe4jo7eMHJJ5uaQP6GeRs//H
-   wxTgNyPfpzKcNuEwhTBVFEg3P7UUf9AJlR71Ono/SrNLsl5H2k/DWnlJi
-   Fk+M0F5VsoAxyq7MJWv5QoIM5Om1x8hatGNdTeho0E3lgutUWeKLaM827
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="417423593"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="417423593"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:54:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="706903612"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="706903612"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:54:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qtWI1-00000006vyR-2m5y;
-        Thu, 19 Oct 2023 19:54:29 +0300
-Date:   Thu, 19 Oct 2023 19:54:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andreas Klinger <ak@it-klinger.de>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: bmp280: fix eoc interrupt usage
-Message-ID: <ZTFfRaShatWdxGB9@smile.fi.intel.com>
-References: <20231018152816.56589-1-ak@it-klinger.de>
- <20231019162209.18872-1-ak@it-klinger.de>
+        Thu, 19 Oct 2023 12:55:53 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B8A49E
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:55:51 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D542A2F4;
+        Thu, 19 Oct 2023 09:56:31 -0700 (PDT)
+Received: from e127643.arm.com (unknown [10.57.67.150])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D05B53F5A1;
+        Thu, 19 Oct 2023 09:55:47 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, maz@kernel.org, suzuki.poulose@arm.com
+Cc:     broonie@kernel.org, James Clark <james.clark@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Fuad Tabba <tabba@google.com>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] kvm/coresight: Support exclude guest and exclude host
+Date:   Thu, 19 Oct 2023 17:54:58 +0100
+Message-Id: <20231019165510.1966367-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019162209.18872-1-ak@it-klinger.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 06:22:09PM +0200, Andreas Klinger wrote:
-> Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
-> bmp085 and bmp180 share the same chip id. Therefore it's necessary to
-> distinguish the case in which the interrupt is set.
-> 
-> Fix the if statement so that only when the interrupt is set and the chip
-> id is recognized the interrupt is requested.
-> 
-> This bug exists since the support of EOC interrupt was introduced.
+This is a combination of the RFC for nVHE here [1] and v3 of VHE version
+here [2]. After a few of the review comments it seemed much simpler for
+both versions to use the same interface and be in the same patchset.
 
-> Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
+FEAT_TRF is a Coresight feature that allows trace capture to be
+completely filtered at different exception levels, unlike the existing
+TRCVICTLR controls which may still emit target addresses of branches,
+even if the following trace is filtered.
 
-As Jonathan already commented, this is part of a tag block below...
+Without FEAT_TRF, it was possible to start a trace session on a host and
+also collect trace from the guest as TRCVICTLR was never programmed to
+exclude guests (and it could still emit target addresses even if it
+was).
 
-> Also add a link to bmp085 datasheet for reference.
-> 
+With FEAT_TRF, the current behavior of trace in guests exists depends on
+whether nVHE or VHE are being used. Both of the examples below are from
+the host's point of view, as Coresight isn't accessible from guests.
+This patchset is only relevant to when FEAT_TRF exists, otherwise there
+is no change.
 
-...somewhere here.
+  nVHE:
 
-> Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-> ---
->  v1 -> v2: Remove extra space (seen by Andy)
+  Because the host and the guest are both using TRFCR_EL1, trace will be
+  generated in guests depending on the same filter rules the host is
+  using. For example if the host is tracing userspace only, then guest
+  userspace trace will also be collected.
 
+  (This is further limited by whether TRBE is used because an issue
+  with TRBE means that it's completely disabled in nVHE guests, but it's
+  possible to have other tracing components.)
 
-And seems Jonathan mentioned that this is already fixed in his tree.
-Did I understand that correctly?
+  VHE:
+
+  With VHE, the host filters will be in TRFCR_EL2, but the filters in
+  TRFCR_EL1 will be active when the guest is running. Because we don't
+  write to TRFCR_EL1, guest trace will be completely disabled.
+
+With this change, the guest filtering rules from the Perf session are
+honored for both nVHE and VHE modes. This is done by either writing to
+TRFCR_EL12 at the start of the Perf session and doing nothing else
+further, or caching the guest value and writing it at guest switch for
+nVHE.
+
+The first commit moves the register to sysreg because I add the EL12
+version.
+
+---
+Changes since V2:
+
+  * Add a new iflag to signify presence of FEAT_TRF and keep the
+    existing TRBE iflag. This fixes the issue where TRBLIMITR_EL1 was
+    being accessed even if TRBE didn't exist
+  * Reword a commit message
+
+Changes since V1:
+
+  * Squashed all the arm64/tools/sysreg changes into the first commit
+  * Add a new commit to move SPE and TRBE regs into the kvm sysreg array
+  * Add a comment above the TRFCR global that it's per host CPU rather
+    than vcpu
+
+Changes since nVHE RFC [1]:
+
+ * Re-write just in terms of the register value to be written for the
+   host and the guest. This removes some logic from the hyp code and
+   a value of kvm_vcpu_arch:trfcr_el1 = 0 no longer means "don't
+   restore".
+ * Remove all the conditional compilation and new files.
+ * Change the kvm_etm_update_vcpu_events macro to a function.
+ * Re-use DEBUG_STATE_SAVE_TRFCR so iflags don't need to be expanded
+   anymore.
+ * Expand the cover letter.
+
+Changes since VHE v3 [2]:
+
+ * Use the same interface as nVHE mode so TRFCR_EL12 is now written by
+   kvm.
+
+[1]: https://lore.kernel.org/kvmarm/20230804101317.460697-1-james.clark@arm.com/
+[2]: https://lore.kernel.org/kvmarm/20230905102117.2011094-1-james.clark@arm.com/
+
+James Clark (6):
+  arm64/sysreg: Move TRFCR definitions to sysreg
+  arm64: KVM: Move SPE and trace registers to the sysreg array
+  arm64: KVM: Add iflag for FEAT_TRF
+  arm64: KVM: Add interface to set guest value for TRFCR register
+  arm64: KVM: Write TRFCR value on guest switch with nVHE
+  coresight: Pass guest TRFCR value to KVM
+
+ arch/arm64/include/asm/kvm_host.h             | 13 +--
+ arch/arm64/include/asm/kvm_hyp.h              |  6 +-
+ arch/arm64/include/asm/sysreg.h               | 12 ---
+ arch/arm64/kvm/arm.c                          |  1 +
+ arch/arm64/kvm/debug.c                        | 48 +++++++++-
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c            | 88 +++++++++++--------
+ arch/arm64/kvm/hyp/nvhe/switch.c              |  4 +-
+ arch/arm64/tools/sysreg                       | 41 +++++++++
+ .../coresight/coresight-etm4x-core.c          | 42 +++++++--
+ drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |  3 +
+ 11 files changed, 192 insertions(+), 68 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
