@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEDA7D0118
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FD07D010A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235513AbjJSSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        id S1346329AbjJSR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjJSSB1 (ORCPT
+        with ESMTP id S235502AbjJSR5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:01:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEEA11D;
-        Thu, 19 Oct 2023 11:01:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA7D6C433C7;
-        Thu, 19 Oct 2023 18:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697738485;
-        bh=1Nzo1DkDeze8wKnS+Dv2NUZ4cNNCYVQmoIZRdnIYbLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xD2uc9x0nKongkA+Is7lawjr/sWbSTsJpQ3A4MYI8BheIQA96F7ZUBW14RUrHJNsK
-         NbT2dF4HRtDeBMIqvSJPmje18SdRzL2JtfOw1efQXV0GjCCKVwqGHOhuJ6DYMefSuN
-         mfmDOoJvtjY/cblWFXh3sAYiRWJDtfQ4rPcH+igM=
-Date:   Thu, 19 Oct 2023 20:01:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Peter Rosin <peda@axentia.se>,
-        Stephen Warren <swarren@nvidia.com>,
-        Rob Herring <robh@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 1/3] i2c: muxes: i2c-mux-pinctrl: Use
- of_get_i2c_adapter_by_node()
-Message-ID: <2023101912-managing-perfectly-69fd@gregkh>
-References: <20231019101017.425284-1-herve.codina@bootlin.com>
- <20231019101017.425284-2-herve.codina@bootlin.com>
+        Thu, 19 Oct 2023 13:57:25 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAD9136
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:57:23 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so14428116a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697738242; x=1698343042; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rD0auMna/G8UtkxOnP1VpkXXubqCDzIy0ubtyJSg/vM=;
+        b=H8B575Ba75TdEA7Ll5fW87YgPLRBGkc1ikCqxYIUeKZqmQvLd/Y5lvilg/hBAlVvSk
+         cR0WnkjqXULKDYbnRQdx8IBpKE9Ik9bBp36NwWWbgN4mOP2ek+UIj99I6eMXPvDrAdYF
+         isuxNCmpZGijRokW4mFYnIyr0vQOyyhRAh0kbG6KKdQvoMkBadLns564Lr8OeHI58SBC
+         YV7LAQUTRzc3eV9+lH6z92K6+kLFvHIHYqJR+xRBTHjyVR7YcVLCYr67/slH+Ofz/pZW
+         EMLzYDAl6MFRZ9xxD69h49PTROI56AJ7G2t1ayocTfGRrfetMsoj2nU+VorlsFLTRGsO
+         08tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697738242; x=1698343042;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rD0auMna/G8UtkxOnP1VpkXXubqCDzIy0ubtyJSg/vM=;
+        b=vr+R1RC1fj6HhB+/eBcXa03cCUGSFmohIGExR7IyJb5mF/Z5Qlul3a0To/I1/uV3Z2
+         dmexWcpopy8hHPiECx/GMkKVNshcnJN20x7VRbhi9094uDjVYLKXaGPuLhoMs7Ggjm8L
+         hn1J2S3hbQvLX6Rlk0bYVMJfcAfny+TFOybdVZSCjIm478EUj0snbTHAGLb+YzyGufk9
+         8wo42OXtkxW4SGzJ3Kni3RqJQIw4Keg81SD6RmfAmo30iZfHGc+KxEN2cL6z0J8HBnCt
+         pqyfi0pXuaZrB2IQnW5c/RVQPfz6sn2EhR1Ky5LF0wfpo+E2jHo1IC/PF5zO5KU+T2kX
+         6zww==
+X-Gm-Message-State: AOJu0YyciCOaRZG+YriV24E5//2g8/0zFQMIRFB+hO4NpO56No3t/DaI
+        Z80ByVoXrzGL53gyG0t1542ICTw3KGKR9N96MDE=
+X-Google-Smtp-Source: AGHT+IExQxo8T6PTUcrbYgciOHSYdKfFSAI7/IPwOx3zjfdkQm5nlBIQUtYa+IETYSXcTvrtKQcwD7oLrDniRgkRWpM=
+X-Received: by 2002:a17:907:930a:b0:9c5:64b5:45cc with SMTP id
+ bu10-20020a170907930a00b009c564b545ccmr2183910ejc.14.1697738241303; Thu, 19
+ Oct 2023 10:57:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019101017.425284-2-herve.codina@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAAMvbhG40h6pqSf91BurDHQqeoKfP30bwnpvSDRHBN4Hoygqew@mail.gmail.com>
+ <ZTCLLinnaqIILXsJ@debian.me> <cf6950bc-32c8-459c-a4b1-ca0a291fc2f8@infradead.org>
+In-Reply-To: <cf6950bc-32c8-459c-a4b1-ca0a291fc2f8@infradead.org>
+From:   James Dutton <james.dutton@gmail.com>
+Date:   Thu, 19 Oct 2023 19:13:38 +0100
+Message-ID: <CAAMvbhHvyiWKb9Pn9=JUuE_efWK2EMcy2SBP6p_BvLGCjwW_VA@mail.gmail.com>
+Subject: Re: Is strncpy really less secure than strscpy ?
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Calvince Otieno <calvncce@gmail.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 12:10:14PM +0200, Herve Codina wrote:
-> i2c-mux-pinctrl uses the pair of_find_i2c_adapter_by_node() /
-> i2c_put_adapter(). These pair alone is not correct to properly lock the
-> I2C parent adapter.
-> 
-> Indeed, i2c_put_adapter() decrements the module refcount while
-> of_find_i2c_adapter_by_node() does not increment it. This leads to an
-> underflow of the parent module refcount.
-> 
-> Use the dedicated function, of_get_i2c_adapter_by_node(), to handle
-> correctly the module refcount.
-> 
-> Fixes: c4aee3e1b0de ("i2c: mux: pinctrl: remove platform_data")
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> Acked-by: Peter Rosin <peda@axentia.se>
-> ---
->  drivers/i2c/muxes/i2c-mux-pinctrl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 19 Oct 2023 at 02:49, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>
+[snip]
+>
+> What if printf("a is  %.*s\n", a);?
+Um, it fails to compile.
+>
+> >
+> >
+> > So, why isn't the printk format specifier "%.*s" used more instead of
+> > "%s" in the kernel?
+>
+> Since basically strings are pointers.
+Um, I was trying to draw people's attention to the fact that "%.*s" is
+much safer than "%s".
+"%s" is like strcpy() but for print statements.
+"%.*s" is like strncpy() but for print statements.
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Why wasn't "%.*s" also included in the string discussions previously?
