@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D3B7D01B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7627D01D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346282AbjJSSfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        id S1346556AbjJSSg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235518AbjJSSfw (ORCPT
+        with ESMTP id S1346539AbjJSSgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:35:52 -0400
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7993EBE;
-        Thu, 19 Oct 2023 11:35:49 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so1535829a12.1;
-        Thu, 19 Oct 2023 11:35:49 -0700 (PDT)
+        Thu, 19 Oct 2023 14:36:46 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC20195;
+        Thu, 19 Oct 2023 11:36:41 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9b9faf05f51so1803466b.2;
+        Thu, 19 Oct 2023 11:36:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740548; x=1698345348;
+        d=1e100.net; s=20230601; t=1697740600; x=1698345400;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n/4B/+kv0vb26eeqprAtXm5NCQ0XsnOF3dGG9uSv4uU=;
-        b=v5UN0lkRJ3kYChxl4Jc8PihLLsJDSVpgpinXu0nHM1GzcPruhhE/QCcZQMpRTj37Oe
-         yFQ4sRcSYkyd7tUeyMkn6RKEVxzfOHcik5eNZ6jwbzds8xfoTl4SQWidInA3yq1OezFf
-         HfjlBvfkZlVOwSLUdfeDQd1AGfiS2agqQSHqFIu2z9VvLPauP3vSlh7ywrKhsa7oySxw
-         6pNv/NpAoEObVxwzhcjbsmIdE6Kk0TSbFJpML6czjATYRYeStN+P+nr3i6wOIbLlhzkU
-         owl37Wl/jBtTv8gA0/YioCRAL1B7J/g6ywiWO8O+hVUmPh6yYBAIkmFv2064044PIdiS
-         Ujtg==
-X-Gm-Message-State: AOJu0YxPwHMayoMSDLbCQuFu7iSj+d5gf29CwJ+RBBw5YVMqlep+9dYO
-        2s017loVCBKDVovG305vMHE=
-X-Google-Smtp-Source: AGHT+IGUQaZZRj6ynbHj7yw3LJJvGIgPZ+15nnijeakmv+ohFhTE7GzOct/+zNjElev1GXRqhX6vMg==
-X-Received: by 2002:a05:6402:3586:b0:53e:2af1:e966 with SMTP id y6-20020a056402358600b0053e2af1e966mr2638925edc.1.1697740547764;
-        Thu, 19 Oct 2023 11:35:47 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id n4-20020a05640205c400b0053f9578ec97sm61253edx.56.2023.10.19.11.35.47
+        bh=8o752NINmN2g+QDhuRXgBzSbFMO5pQfgUezKAbrJd8o=;
+        b=Jbf39nYX0Mp/cTCEJbnR6XKBe+ZHCT03sXPqaajITXiCBsInCmPcJHhUskCb7MEOPy
+         PmPoLBZ+wmKnazYnLFynG0ylxAbDsB+AuwaSMdYKGj52OclaYG2ROKfxtqirHcBe0pM8
+         4ZjfkHuAmWk/UbqEUCxtQowzr0opGvPPHZiAltrornMOyItFBZVqJBYALIxaVyFV3wpM
+         1Yjfsp64rWqkDAsv5VgyStJGXnckN6+r3SE/cXBwA/LE6yH4fUVBSquvZCgNMqWSeZmD
+         O8vD8RsWEuIZaTojySew/AbjVdPUocXYP4xN8qMOLjAj0Qh4YXOolmkecLrABry1Gie7
+         Z46w==
+X-Gm-Message-State: AOJu0YykiRVenSjLmIwgYtqxDeTuCPYaT09KoDDqKz94A7L/zw5ZStb6
+        jkLxt29HDv9RT+jYhIDho8Q=
+X-Google-Smtp-Source: AGHT+IHGsDLGdJSZk/OR0TmCTmGft9/ft+u45MXmgwoJFUFshJNc5Y3GphN4kbWOKzY02er81LRHOQ==
+X-Received: by 2002:a17:907:72c8:b0:9be:45b3:1c3d with SMTP id du8-20020a17090772c800b009be45b31c3dmr2614610ejc.48.1697740599468;
+        Thu, 19 Oct 2023 11:36:39 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id n13-20020a17090673cd00b009b65a834dd6sm10344ejl.215.2023.10.19.11.36.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:35:47 -0700 (PDT)
+        Thu, 19 Oct 2023 11:36:39 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        bp@alien8.de, Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     leit@meta.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Nikunj A Dadhania <nikunj@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Wang YanQing <udknight@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>
+Cc:     leit@meta.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Juergen Gross <jgross@suse.com>,
         Kim Phillips <kim.phillips@amd.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jinghao Jia <jinghao@linux.ibm.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Pavlu <petr.pavlu@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>, Guo Ren <guoren@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Helge Deller <deller@gmx.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alyssa Ross <hi@alyssa.is>,
         Alexander Potapenko <glider@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Hugh Dickins <hughd@google.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Marco Elver <elver@google.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), linux-doc@vger.kernel.org (open list:DOCUMENTATION)
-Subject: [PATCH v5 04/12] x86/bugs: Rename PAGE_TABLE_ISOLATION to MITIGATION_PAGE_TABLE_ISOLATION
-Date:   Thu, 19 Oct 2023 11:11:50 -0700
-Message-Id: <20231019181158.1982205-5-leitao@debian.org>
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-trace-kernel@vger.kernel.org (open list:FUNCTION HOOKS (FTRACE)),
+        kvm@vger.kernel.org (open list:KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)),
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)),
+        netdev@vger.kernel.org (open list:NETWORKING [IPv4/IPv6]),
+        linux-modules@vger.kernel.org (open list:MODULE SUPPORT),
+        netfilter-devel@vger.kernel.org (open list:NETFILTER),
+        coreteam@netfilter.org (open list:NETFILTER),
+        rust-for-linux@vger.kernel.org (open list:RUST)
+Subject: [PATCH v5 05/12] x86/bugs: Rename RETPOLINE to MITIGATION_RETPOLINE
+Date:   Thu, 19 Oct 2023 11:11:51 -0700
+Message-Id: <20231019181158.1982205-6-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
 References: <20231019181158.1982205-1-leitao@debian.org>
@@ -83,8 +130,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -99,505 +146,699 @@ namespace.
 The mitigation options should have consistency and start with
 MITIGATION.
 
-Rename the Kconfig entry from PAGE_TABLE_ISOLATION to
-MITIGATION_PAGE_TABLE_ISOLATION.
+Rename the Kconfig entry from RETPOLINE to MITIGATION_RETPOLINE.
 
 Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- Documentation/arch/x86/pti.rst                 |  6 +++---
- arch/x86/Kconfig                               |  2 +-
- arch/x86/boot/compressed/ident_map_64.c        |  4 ++--
- arch/x86/entry/calling.h                       |  4 ++--
- arch/x86/entry/entry_64.S                      |  2 +-
- arch/x86/include/asm/disabled-features.h       |  2 +-
- arch/x86/include/asm/pgalloc.h                 |  2 +-
- arch/x86/include/asm/pgtable-3level.h          |  2 +-
- arch/x86/include/asm/pgtable.h                 | 18 +++++++++---------
- arch/x86/include/asm/pgtable_64.h              |  3 ++-
- arch/x86/include/asm/processor-flags.h         |  2 +-
- arch/x86/include/asm/pti.h                     |  2 +-
- arch/x86/kernel/dumpstack.c                    |  2 +-
- arch/x86/kernel/head_32.S                      |  4 ++--
- arch/x86/kernel/head_64.S                      |  2 +-
- arch/x86/kernel/ldt.c                          |  8 ++++----
- arch/x86/mm/Makefile                           |  2 +-
- arch/x86/mm/debug_pagetables.c                 |  4 ++--
- arch/x86/mm/dump_pagetables.c                  |  4 ++--
- arch/x86/mm/pgtable.c                          |  4 ++--
- arch/x86/mm/tlb.c                              | 10 +++++-----
- include/linux/pti.h                            |  2 +-
- tools/arch/x86/include/asm/disabled-features.h |  2 +-
- 23 files changed, 47 insertions(+), 46 deletions(-)
+ Documentation/admin-guide/hw-vuln/spectre.rst   | 8 ++++----
+ Documentation/admin-guide/kernel-parameters.txt | 4 ++--
+ arch/x86/Kconfig                                | 6 +++---
+ arch/x86/Makefile                               | 4 ++--
+ arch/x86/entry/vdso/Makefile                    | 4 ++--
+ arch/x86/include/asm/disabled-features.h        | 2 +-
+ arch/x86/include/asm/linkage.h                  | 8 ++++----
+ arch/x86/include/asm/nospec-branch.h            | 8 ++++----
+ arch/x86/kernel/alternative.c                   | 6 +++---
+ arch/x86/kernel/cpu/bugs.c                      | 6 +++---
+ arch/x86/kernel/ftrace.c                        | 2 +-
+ arch/x86/kernel/kprobes/opt.c                   | 2 +-
+ arch/x86/kernel/vmlinux.lds.S                   | 2 +-
+ arch/x86/kvm/mmu/mmu.c                          | 2 +-
+ arch/x86/kvm/mmu/mmu_internal.h                 | 2 +-
+ arch/x86/kvm/svm/svm.c                          | 2 +-
+ arch/x86/kvm/svm/vmenter.S                      | 4 ++--
+ arch/x86/kvm/vmx/vmx.c                          | 2 +-
+ arch/x86/lib/Makefile                           | 2 +-
+ arch/x86/net/bpf_jit_comp.c                     | 2 +-
+ arch/x86/net/bpf_jit_comp32.c                   | 2 +-
+ arch/x86/purgatory/Makefile                     | 2 +-
+ include/linux/compiler-gcc.h                    | 2 +-
+ include/linux/indirect_call_wrapper.h           | 2 +-
+ include/linux/module.h                          | 2 +-
+ include/net/netfilter/nf_tables_core.h          | 2 +-
+ include/net/tc_wrapper.h                        | 2 +-
+ kernel/trace/ring_buffer.c                      | 2 +-
+ net/netfilter/Makefile                          | 2 +-
+ net/netfilter/nf_tables_core.c                  | 6 +++---
+ net/netfilter/nft_ct.c                          | 4 ++--
+ net/netfilter/nft_lookup.c                      | 2 +-
+ net/sched/sch_api.c                             | 2 +-
+ scripts/Makefile.lib                            | 2 +-
+ scripts/generate_rust_target.rs                 | 2 +-
+ scripts/mod/modpost.c                           | 2 +-
+ tools/arch/x86/include/asm/disabled-features.h  | 2 +-
+ 37 files changed, 59 insertions(+), 59 deletions(-)
 
-diff --git a/Documentation/arch/x86/pti.rst b/Documentation/arch/x86/pti.rst
-index 4b858a9bad8d..3241b081f1ad 100644
---- a/Documentation/arch/x86/pti.rst
-+++ b/Documentation/arch/x86/pti.rst
-@@ -26,9 +26,9 @@ comments in pti.c).
+diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
+index 32a8893e5617..cce768afec6b 100644
+--- a/Documentation/admin-guide/hw-vuln/spectre.rst
++++ b/Documentation/admin-guide/hw-vuln/spectre.rst
+@@ -473,8 +473,8 @@ Spectre variant 2
+    -mindirect-branch=thunk-extern -mindirect-branch-register options.
+    If the kernel is compiled with a Clang compiler, the compiler needs
+    to support -mretpoline-external-thunk option.  The kernel config
+-   CONFIG_RETPOLINE needs to be turned on, and the CPU needs to run with
+-   the latest updated microcode.
++   CONFIG_MITIGATION_RETPOLINE needs to be turned on, and the CPU needs
++   to run with the latest updated microcode.
  
- This approach helps to ensure that side-channel attacks leveraging
- the paging structures do not function when PTI is enabled.  It can be
--enabled by setting CONFIG_PAGE_TABLE_ISOLATION=y at compile time.
--Once enabled at compile-time, it can be disabled at boot with the
--'nopti' or 'pti=' kernel parameters (see kernel-parameters.txt).
-+enabled by setting CONFIG_MITIGATION_PAGE_TABLE_ISOLATION=y at compile
-+time.  Once enabled at compile-time, it can be disabled at boot with
-+the 'nopti' or 'pti=' kernel parameters (see kernel-parameters.txt).
+    On Intel Skylake-era systems the mitigation covers most, but not all,
+    cases. See :ref:`[3] <spec_ref3>` for more details.
+@@ -609,8 +609,8 @@ kernel command line.
+ 		Selecting 'on' will, and 'auto' may, choose a
+ 		mitigation method at run time according to the
+ 		CPU, the available microcode, the setting of the
+-		CONFIG_RETPOLINE configuration option, and the
+-		compiler with which the kernel was built.
++		CONFIG_MITIGATION_RETPOLINE configuration option,
++		and the compiler with which the kernel was built.
  
- Page Table Management
- =====================
+ 		Selecting 'on' will also enable the mitigation
+ 		against user space to user space task attacks.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index ba0f4fbbe57d..60faccd29a34 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5978,8 +5978,8 @@
+ 			Selecting 'on' will, and 'auto' may, choose a
+ 			mitigation method at run time according to the
+ 			CPU, the available microcode, the setting of the
+-			CONFIG_RETPOLINE configuration option, and the
+-			compiler with which the kernel was built.
++			CONFIG_MITIGATION_RETPOLINE configuration option,
++			and the compiler with which the kernel was built.
+ 
+ 			Selecting 'on' will also enable the mitigation
+ 			against user space to user space task attacks.
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4d64519311c4..46885150efd2 100644
+index 46885150efd2..f3593461ce35 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -2463,7 +2463,7 @@ menuconfig SPECULATION_MITIGATIONS
+@@ -2436,7 +2436,7 @@ config CALL_PADDING
  
- if SPECULATION_MITIGATIONS
+ config FINEIBT
+ 	def_bool y
+-	depends on X86_KERNEL_IBT && CFI_CLANG && RETPOLINE
++	depends on X86_KERNEL_IBT && CFI_CLANG && MITIGATION_RETPOLINE
+ 	select CALL_PADDING
  
--config PAGE_TABLE_ISOLATION
-+config MITIGATION_PAGE_TABLE_ISOLATION
- 	bool "Remove the kernel mapping in user mode"
+ config HAVE_CALL_THUNKS
+@@ -2474,7 +2474,7 @@ config MITIGATION_PAGE_TABLE_ISOLATION
+ 
+ 	  See Documentation/arch/x86/pti.rst for more details.
+ 
+-config RETPOLINE
++config MITIGATION_RETPOLINE
+ 	bool "Avoid speculative indirect branches in kernel"
+ 	select OBJTOOL if HAVE_OBJTOOL
  	default y
- 	depends on (X86_64 || X86_PAE)
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index 08f93b0401bb..2aa29ef490dc 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -8,8 +8,8 @@
-  * Copyright (C)      2016  Kees Cook
-  */
+@@ -2486,7 +2486,7 @@ config RETPOLINE
  
--/* No PAGE_TABLE_ISOLATION support needed either: */
--#undef CONFIG_PAGE_TABLE_ISOLATION
-+/* No MITIGATION_PAGE_TABLE_ISOLATION support needed either: */
-+#undef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+ config RETHUNK
+ 	bool "Enable return-thunks"
+-	depends on RETPOLINE && CC_HAS_RETURN_THUNK
++	depends on MITIGATION_RETPOLINE && CC_HAS_RETURN_THUNK
+ 	select OBJTOOL if HAVE_OBJTOOL
+ 	default y if X86_64
+ 	help
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 22e41d9dbc23..3053b60f017b 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -191,7 +191,7 @@ KBUILD_CFLAGS += -Wno-sign-compare
+ KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
  
- #include "error.h"
- #include "misc.h"
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index f6907627172b..ace89d5c1ddd 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -142,7 +142,7 @@ For 32-bit we have the following conventions - kernel is built with
- 	.endif
- .endm
+ # Avoid indirect branches in kernel to deal with Spectre
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+   KBUILD_CFLAGS += $(RETPOLINE_CFLAGS)
+   # Additionally, avoid generating expensive indirect jumps which
+   # are subject to retpolines for small number of switch cases.
+@@ -299,7 +299,7 @@ vdso_install:
  
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+ archprepare: checkbin
+ checkbin:
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+ ifeq ($(RETPOLINE_CFLAGS),)
+ 	@echo "You are building kernel with non-retpoline compiler." >&2
+ 	@echo "Please update your compiler." >&2
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 6a1821bd7d5e..7605f41a5454 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -86,7 +86,7 @@ CFL := $(PROFILING) -mcmodel=small -fPIC -O2 -fasynchronous-unwind-tables -m64 \
+        -fno-omit-frame-pointer -foptimize-sibling-calls \
+        -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO
  
- /*
-  * PAGE_TABLE_ISOLATION PGDs are 8k.  Flip bit 12 to switch between the two
-@@ -269,7 +269,7 @@ For 32-bit we have the following conventions - kernel is built with
- .Lend_\@:
- .endm
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+ ifneq ($(RETPOLINE_VDSO_CFLAGS),)
+   CFL += $(RETPOLINE_VDSO_CFLAGS)
+ endif
+@@ -163,7 +163,7 @@ KBUILD_CFLAGS_32 += $(call cc-option, -foptimize-sibling-calls)
+ KBUILD_CFLAGS_32 += -fno-omit-frame-pointer
+ KBUILD_CFLAGS_32 += -DDISABLE_BRANCH_PROFILING
  
--#else /* CONFIG_PAGE_TABLE_ISOLATION=n: */
-+#else /* CONFIG_MITIGATION_PAGE_TABLE_ISOLATION=n: */
- 
- .macro SWITCH_TO_KERNEL_CR3 scratch_reg:req
- .endm
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 3bdc22d7e78f..9cb225607413 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1134,7 +1134,7 @@ SYM_CODE_END(error_return)
-  *
-  * Registers:
-  *	%r14: Used to save/restore the CR3 of the interrupted context
-- *	      when PAGE_TABLE_ISOLATION is in use.  Do not clobber.
-+ *	      when MITIGATION_PAGE_TABLE_ISOLATION is in use.  Do not clobber.
-  */
- SYM_CODE_START(asm_exc_nmi)
- 	UNWIND_HINT_IRET_ENTRY
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+ ifneq ($(RETPOLINE_VDSO_CFLAGS),)
+   KBUILD_CFLAGS_32 += $(RETPOLINE_VDSO_CFLAGS)
+ endif
 diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index c1d3a5795618..fb604ec95a5f 100644
+index fb604ec95a5f..24e4010c33b6 100644
 --- a/arch/x86/include/asm/disabled-features.h
 +++ b/arch/x86/include/asm/disabled-features.h
-@@ -44,7 +44,7 @@
- # define DISABLE_LA57	(1<<(X86_FEATURE_LA57 & 31))
- #endif
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- # define DISABLE_PTI		0
- #else
+@@ -50,7 +50,7 @@
  # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
-diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
-index c7ec5bb88334..dcd836b59beb 100644
---- a/arch/x86/include/asm/pgalloc.h
-+++ b/arch/x86/include/asm/pgalloc.h
-@@ -34,7 +34,7 @@ static inline void paravirt_release_p4d(unsigned long pfn) {}
-  */
- extern gfp_t __userpte_alloc_gfp;
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- /*
-  * Instead of one PGD, we acquire two PGDs.  Being order-1, it is
-  * both 8k in size and 8k-aligned.  That lets us just flip bit 12
-diff --git a/arch/x86/include/asm/pgtable-3level.h b/arch/x86/include/asm/pgtable-3level.h
-index 9e7c0b719c3c..dabafba957ea 100644
---- a/arch/x86/include/asm/pgtable-3level.h
-+++ b/arch/x86/include/asm/pgtable-3level.h
-@@ -52,7 +52,7 @@ static inline void native_set_pmd(pmd_t *pmdp, pmd_t pmd)
- 
- static inline void native_set_pud(pud_t *pudp, pud_t pud)
- {
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	pud.p4d.pgd = pti_set_user_pgtbl(&pudp->p4d.pgd, pud.p4d.pgd);
- #endif
- 	pxx_xchg64(pud, pudp, native_pud_val(pud));
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 57bab91bbf50..b23d0c162573 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -908,7 +908,7 @@ static inline int is_new_memtype_allowed(u64 paddr, unsigned long size,
- pmd_t *populate_extra_pmd(unsigned long vaddr);
- pte_t *populate_extra_pte(unsigned long vaddr);
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- pgd_t __pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd);
- 
- /*
-@@ -922,12 +922,12 @@ static inline pgd_t pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
- 		return pgd;
- 	return __pti_set_user_pgtbl(pgdp, pgd);
- }
--#else   /* CONFIG_PAGE_TABLE_ISOLATION */
-+#else   /* CONFIG_MITIGATION_PAGE_TABLE_ISOLATION */
- static inline pgd_t pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
- {
- 	return pgd;
- }
--#endif  /* CONFIG_PAGE_TABLE_ISOLATION */
-+#endif  /* CONFIG_MITIGATION_PAGE_TABLE_ISOLATION */
- 
- #endif	/* __ASSEMBLY__ */
- 
-@@ -1130,7 +1130,7 @@ static inline int p4d_bad(p4d_t p4d)
- {
- 	unsigned long ignore_flags = _KERNPG_TABLE | _PAGE_USER;
- 
--	if (IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
-+	if (IS_ENABLED(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION))
- 		ignore_flags |= _PAGE_NX;
- 
- 	return (p4d_flags(p4d) & ~ignore_flags) != 0;
-@@ -1176,7 +1176,7 @@ static inline int pgd_bad(pgd_t pgd)
- 	if (!pgtable_l5_enabled())
- 		return 0;
- 
--	if (IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
-+	if (IS_ENABLED(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION))
- 		ignore_flags |= _PAGE_NX;
- 
- 	return (pgd_flags(pgd) & ~ignore_flags) != _KERNPG_TABLE;
-@@ -1421,9 +1421,9 @@ static inline bool pgdp_maps_userspace(void *__ptr)
- #define pgd_leaf	pgd_large
- static inline int pgd_large(pgd_t pgd) { return 0; }
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- /*
-- * All top-level PAGE_TABLE_ISOLATION page tables are order-1 pages
-+ * All top-level MITIGATION_PAGE_TABLE_ISOLATION page tables are order-1 pages
-  * (8k-aligned and 8k in size).  The kernel one is at the beginning 4k and
-  * the user one is in the last 4k.  To switch between them, you
-  * just need to flip the 12th bit in their addresses.
-@@ -1468,7 +1468,7 @@ static inline p4d_t *user_to_kernel_p4dp(p4d_t *p4dp)
- {
- 	return ptr_clear_bit(p4dp, PTI_PGTABLE_SWITCH_BIT);
- }
--#endif /* CONFIG_PAGE_TABLE_ISOLATION */
-+#endif /* CONFIG_MITIGATION_PAGE_TABLE_ISOLATION */
- 
- /*
-  * clone_pgd_range(pgd_t *dst, pgd_t *src, int count);
-@@ -1483,7 +1483,7 @@ static inline p4d_t *user_to_kernel_p4dp(p4d_t *p4dp)
- static inline void clone_pgd_range(pgd_t *dst, pgd_t *src, int count)
- {
- 	memcpy(dst, src, count * sizeof(pgd_t));
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	if (!static_cpu_has(X86_FEATURE_PTI))
- 		return;
- 	/* Clone the user space pgd as well */
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index a629b1b9f65a..8108d68d146c 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -143,7 +143,8 @@ static inline void native_set_p4d(p4d_t *p4dp, p4d_t p4d)
- {
- 	pgd_t pgd;
- 
--	if (pgtable_l5_enabled() || !IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION)) {
-+	if (pgtable_l5_enabled() ||
-+	    !IS_ENABLED(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION)) {
- 		WRITE_ONCE(*p4dp, p4d);
- 		return;
- 	}
-diff --git a/arch/x86/include/asm/processor-flags.h b/arch/x86/include/asm/processor-flags.h
-index d8cccadc83a6..e5f204b9b33d 100644
---- a/arch/x86/include/asm/processor-flags.h
-+++ b/arch/x86/include/asm/processor-flags.h
-@@ -51,7 +51,7 @@
- #define CR3_NOFLUSH	0
  #endif
  
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- # define X86_CR3_PTI_PCID_USER_BIT	11
- #endif
- 
-diff --git a/arch/x86/include/asm/pti.h b/arch/x86/include/asm/pti.h
-index 07375b476c4f..ab167c96b9ab 100644
---- a/arch/x86/include/asm/pti.h
-+++ b/arch/x86/include/asm/pti.h
-@@ -3,7 +3,7 @@
- #define _ASM_X86_PTI_H
- #ifndef __ASSEMBLY__
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- extern void pti_init(void);
- extern void pti_check_boottime_disable(void);
- extern void pti_finalize(void);
-diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-index f18ca44c904b..44a91ef5a23b 100644
---- a/arch/x86/kernel/dumpstack.c
-+++ b/arch/x86/kernel/dumpstack.c
-@@ -410,7 +410,7 @@ static void __die_header(const char *str, struct pt_regs *regs, long err)
- 	       IS_ENABLED(CONFIG_SMP)     ? " SMP"             : "",
- 	       debug_pagealloc_enabled()  ? " DEBUG_PAGEALLOC" : "",
- 	       IS_ENABLED(CONFIG_KASAN)   ? " KASAN"           : "",
--	       IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION) ?
-+	       IS_ENABLED(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION) ?
- 	       (boot_cpu_has(X86_FEATURE_PTI) ? " PTI" : " NOPTI") : "");
- }
- NOKPROBE_SYMBOL(__die_header);
-diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-index b6554212b7c7..1ba091d388f3 100644
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -424,7 +424,7 @@ __REFDATA
- 	.align 4
- SYM_DATA(initial_code,		.long i386_start_kernel)
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- #define	PGD_ALIGN	(2 * PAGE_SIZE)
- #define PTI_USER_PGD_FILL	1024
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ # define DISABLE_RETPOLINE	0
  #else
-@@ -484,7 +484,7 @@ SYM_DATA_START(initial_page_table)
- # endif
- 	.align PAGE_SIZE		/* needs to be page-sized too */
+ # define DISABLE_RETPOLINE	((1 << (X86_FEATURE_RETPOLINE & 31)) | \
+diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
+index 571fe4d2d232..c5165204c66f 100644
+--- a/arch/x86/include/asm/linkage.h
++++ b/arch/x86/include/asm/linkage.h
+@@ -42,25 +42,25 @@
  
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	/*
- 	 * PTI needs another page so sync_initial_pagetable() works correctly
- 	 * and does not scribble over the data which is placed behind the
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 086a2c3aaaa0..e23bc2a541cf 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -593,7 +593,7 @@ SYM_CODE_END(vc_no_ghcb)
- #define SYM_DATA_START_PAGE_ALIGNED(name)			\
- 	SYM_START(name, SYM_L_GLOBAL, .balign PAGE_SIZE)
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- /*
-  * Each PGD needs to be 8k long and 8k aligned.  We do not
-  * ever go out to userspace with these, so we do not
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index adc67f98819a..7e6de84b9358 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -184,7 +184,7 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
- 	return new_ldt;
- }
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 
- static void do_sanity_check(struct mm_struct *mm,
- 			    bool had_kernel_mapping,
-@@ -377,7 +377,7 @@ static void unmap_ldt_struct(struct mm_struct *mm, struct ldt_struct *ldt)
- 	flush_tlb_mm_range(mm, va, va + nr_pages * PAGE_SIZE, PAGE_SHIFT, false);
- }
- 
--#else /* !CONFIG_PAGE_TABLE_ISOLATION */
-+#else /* !CONFIG_MITIGATION_PAGE_TABLE_ISOLATION */
- 
- static int
- map_ldt_struct(struct mm_struct *mm, struct ldt_struct *ldt, int slot)
-@@ -388,11 +388,11 @@ map_ldt_struct(struct mm_struct *mm, struct ldt_struct *ldt, int slot)
- static void unmap_ldt_struct(struct mm_struct *mm, struct ldt_struct *ldt)
- {
- }
--#endif /* CONFIG_PAGE_TABLE_ISOLATION */
-+#endif /* CONFIG_MITIGATION_PAGE_TABLE_ISOLATION */
- 
- static void free_ldt_pgtables(struct mm_struct *mm)
- {
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	struct mmu_gather tlb;
- 	unsigned long start = LDT_BASE_ADDR;
- 	unsigned long end = LDT_END_ADDR;
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index c80febc44cd2..031cd10ed17f 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -60,7 +60,7 @@ obj-$(CONFIG_NUMA_EMU)		+= numa_emulation.o
- 
- obj-$(CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS)	+= pkeys.o
- obj-$(CONFIG_RANDOMIZE_MEMORY)			+= kaslr.o
--obj-$(CONFIG_PAGE_TABLE_ISOLATION)		+= pti.o
-+obj-$(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION)	+= pti.o
- 
- obj-$(CONFIG_X86_MEM_ENCRYPT)	+= mem_encrypt.o
- obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_amd.o
-diff --git a/arch/x86/mm/debug_pagetables.c b/arch/x86/mm/debug_pagetables.c
-index b43301cb2a80..ae5c213a1cb0 100644
---- a/arch/x86/mm/debug_pagetables.c
-+++ b/arch/x86/mm/debug_pagetables.c
-@@ -22,7 +22,7 @@ static int ptdump_curknl_show(struct seq_file *m, void *v)
- 
- DEFINE_SHOW_ATTRIBUTE(ptdump_curknl);
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- static int ptdump_curusr_show(struct seq_file *m, void *v)
- {
- 	if (current->mm->pgd)
-@@ -54,7 +54,7 @@ static int __init pt_dump_debug_init(void)
- 	debugfs_create_file("current_kernel", 0400, dir, NULL,
- 			    &ptdump_curknl_fops);
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	debugfs_create_file("current_user", 0400, dir, NULL,
- 			    &ptdump_curusr_fops);
- #endif
-diff --git a/arch/x86/mm/dump_pagetables.c b/arch/x86/mm/dump_pagetables.c
-index e1b599ecbbc2..b7b88c1d91ec 100644
---- a/arch/x86/mm/dump_pagetables.c
-+++ b/arch/x86/mm/dump_pagetables.c
-@@ -408,7 +408,7 @@ void ptdump_walk_pgd_level_debugfs(struct seq_file *m, struct mm_struct *mm,
- 				   bool user)
- {
- 	pgd_t *pgd = mm->pgd;
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	if (user && boot_cpu_has(X86_FEATURE_PTI))
- 		pgd = kernel_to_user_pgdp(pgd);
- #endif
-@@ -418,7 +418,7 @@ EXPORT_SYMBOL_GPL(ptdump_walk_pgd_level_debugfs);
- 
- void ptdump_walk_user_pgd_level_checkwx(void)
- {
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	pgd_t *pgd = INIT_PGD;
- 
- 	if (!(__supported_pte_mask & _PAGE_NX) ||
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index 0cbc1b8e8e3d..cceb779d882d 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -293,7 +293,7 @@ static void pgd_mop_up_pmds(struct mm_struct *mm, pgd_t *pgdp)
- 	for (i = 0; i < PREALLOCATED_PMDS; i++)
- 		mop_up_one_pmd(mm, &pgdp[i]);
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 
- 	if (!boot_cpu_has(X86_FEATURE_PTI))
- 		return;
-@@ -325,7 +325,7 @@ static void pgd_prepopulate_pmd(struct mm_struct *mm, pgd_t *pgd, pmd_t *pmds[])
- 	}
- }
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- static void pgd_prepopulate_user_pmd(struct mm_struct *mm,
- 				     pgd_t *k_pgd, pmd_t *pmds[])
- {
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 453ea95b667d..77f448e55bf8 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -89,10 +89,10 @@
- #define CR3_HW_ASID_BITS		12
- 
- /*
-- * When enabled, PAGE_TABLE_ISOLATION consumes a single bit for
-+ * When enabled, MITIGATION_PAGE_TABLE_ISOLATION consumes a single bit for
-  * user/kernel switches
-  */
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- # define PTI_CONSUMED_PCID_BITS	1
+ #if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+ #define RET	jmp __x86_return_thunk
+-#else /* CONFIG_RETPOLINE */
++#else /* CONFIG_MITIGATION_RETPOLINE */
+ #ifdef CONFIG_SLS
+ #define RET	ret; int3
  #else
- # define PTI_CONSUMED_PCID_BITS	0
-@@ -114,7 +114,7 @@ static inline u16 kern_pcid(u16 asid)
- {
- 	VM_WARN_ON_ONCE(asid > MAX_ASID_AVAILABLE);
- 
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	/*
- 	 * Make sure that the dynamic ASID space does not conflict with the
- 	 * bit we are using to switch between user and kernel ASIDs.
-@@ -149,7 +149,7 @@ static inline u16 kern_pcid(u16 asid)
- static inline u16 user_pcid(u16 asid)
- {
- 	u16 ret = kern_pcid(asid);
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 	ret |= 1 << X86_CR3_PTI_PCID_USER_BIT;
+ #define RET	ret
  #endif
- 	return ret;
-@@ -262,7 +262,7 @@ static void choose_new_asid(struct mm_struct *next, u64 next_tlb_gen,
- static inline void invalidate_user_asid(u16 asid)
- {
- 	/* There is no user ASID if address space separation is off */
--	if (!IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
-+	if (!IS_ENABLED(CONFIG_MITIGATION_PAGE_TABLE_ISOLATION))
- 		return;
+-#endif /* CONFIG_RETPOLINE */
++#endif /* CONFIG_MITIGATION_RETPOLINE */
  
+ #else /* __ASSEMBLY__ */
+ 
+ #if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+ #define ASM_RET	"jmp __x86_return_thunk\n\t"
+-#else /* CONFIG_RETPOLINE */
++#else /* CONFIG_MITIGATION_RETPOLINE */
+ #ifdef CONFIG_SLS
+ #define ASM_RET	"ret; int3\n\t"
+ #else
+ #define ASM_RET	"ret\n\t"
+ #endif
+-#endif /* CONFIG_RETPOLINE */
++#endif /* CONFIG_MITIGATION_RETPOLINE */
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 64d9f0e87419..cab7c937c71b 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -241,7 +241,7 @@
+  * instruction irrespective of kCFI.
+  */
+ .macro JMP_NOSPEC reg:req
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	__CS_PREFIX \reg
+ 	jmp	__x86_indirect_thunk_\reg
+ #else
+@@ -251,7 +251,7 @@
+ .endm
+ 
+ .macro CALL_NOSPEC reg:req
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	__CS_PREFIX \reg
+ 	call	__x86_indirect_thunk_\reg
+ #else
+@@ -378,7 +378,7 @@ static inline void call_depth_return_thunk(void) {}
+ 
+ #endif /* CONFIG_MITIGATION_CALL_DEPTH_TRACKING */
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 
+ #define GEN(reg) \
+ 	extern retpoline_thunk_t __x86_indirect_thunk_ ## reg;
+@@ -399,7 +399,7 @@ static inline void call_depth_return_thunk(void) {}
+ 
+ /*
+  * Inline asm uses the %V modifier which is only in newer GCC
+- * which is ensured when CONFIG_RETPOLINE is defined.
++ * which is ensured when CONFIG_MITIGATION_RETPOLINE is defined.
+  */
+ # define CALL_NOSPEC						\
+ 	ALTERNATIVE_2(						\
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 517ee01503be..8932f524c935 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -460,7 +460,7 @@ static inline bool is_jcc32(struct insn *insn)
+ 	return insn->opcode.bytes[0] == 0x0f && (insn->opcode.bytes[1] & 0xf0) == 0x80;
+ }
+ 
+-#if defined(CONFIG_RETPOLINE) && defined(CONFIG_OBJTOOL)
++#if defined(CONFIG_MITIGATION_RETPOLINE) && defined(CONFIG_OBJTOOL)
+ 
+ /*
+  * CALL/JMP *%\reg
+@@ -760,12 +760,12 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
+ void __init_or_module noinline apply_returns(s32 *start, s32 *end) { }
+ #endif /* CONFIG_RETHUNK */
+ 
+-#else /* !CONFIG_RETPOLINE || !CONFIG_OBJTOOL */
++#else /* !CONFIG_MITIGATION_RETPOLINE || !CONFIG_OBJTOOL */
+ 
+ void __init_or_module noinline apply_retpolines(s32 *start, s32 *end) { }
+ void __init_or_module noinline apply_returns(s32 *start, s32 *end) { }
+ 
+-#endif /* CONFIG_RETPOLINE && CONFIG_OBJTOOL */
++#endif /* CONFIG_MITIGATION_RETPOLINE && CONFIG_OBJTOOL */
+ 
+ #ifdef CONFIG_X86_KERNEL_IBT
+ 
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index b906ed4f3091..fc46fd6447f9 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1103,7 +1103,7 @@ static enum spectre_v2_user_mitigation spectre_v2_user_stibp __ro_after_init =
+ static enum spectre_v2_user_mitigation spectre_v2_user_ibpb __ro_after_init =
+ 	SPECTRE_V2_USER_NONE;
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ static bool spectre_v2_bad_module;
+ 
+ bool retpoline_module_ok(bool has_retpoline)
+@@ -1416,7 +1416,7 @@ static enum spectre_v2_mitigation_cmd __init spectre_v2_parse_cmdline(void)
+ 	     cmd == SPECTRE_V2_CMD_RETPOLINE_GENERIC ||
+ 	     cmd == SPECTRE_V2_CMD_EIBRS_LFENCE ||
+ 	     cmd == SPECTRE_V2_CMD_EIBRS_RETPOLINE) &&
+-	    !IS_ENABLED(CONFIG_RETPOLINE)) {
++	    !IS_ENABLED(CONFIG_MITIGATION_RETPOLINE)) {
+ 		pr_err("%s selected but not compiled in. Switching to AUTO select\n",
+ 		       mitigation_options[i].option);
+ 		return SPECTRE_V2_CMD_AUTO;
+@@ -1470,7 +1470,7 @@ static enum spectre_v2_mitigation_cmd __init spectre_v2_parse_cmdline(void)
+ 
+ static enum spectre_v2_mitigation __init spectre_v2_select_retpoline(void)
+ {
+-	if (!IS_ENABLED(CONFIG_RETPOLINE)) {
++	if (!IS_ENABLED(CONFIG_MITIGATION_RETPOLINE)) {
+ 		pr_err("Kernel not compiled with retpoline; no mitigation available!");
+ 		return SPECTRE_V2_NONE;
+ 	}
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 7ed7e8297ba3..0f26758c7a93 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -297,7 +297,7 @@ union ftrace_op_code_union {
+ 	} __attribute__((packed));
+ };
+ 
+-#define RET_SIZE		(IS_ENABLED(CONFIG_RETPOLINE) ? 5 : 1 + IS_ENABLED(CONFIG_SLS))
++#define RET_SIZE	(IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) ? 5 : 1 + IS_ENABLED(CONFIG_SLS))
+ 
+ static unsigned long
+ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 517821b48391..36d6809c6c9e 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -324,7 +324,7 @@ static int can_optimize(unsigned long paddr)
+ 		 * However, the kernel built with retpolines or IBT has jump
+ 		 * tables disabled so the check can be skipped altogether.
+ 		 */
+-		if (!IS_ENABLED(CONFIG_RETPOLINE) &&
++		if (!IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) &&
+ 		    !IS_ENABLED(CONFIG_X86_KERNEL_IBT) &&
+ 		    insn_is_indirect_jump(&insn))
+ 			return 0;
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 9cdb1a7332c4..68654303c98e 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -277,7 +277,7 @@ SECTIONS
+ 		__parainstructions_end = .;
+ 	}
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
  	/*
-diff --git a/include/linux/pti.h b/include/linux/pti.h
-index 1a941efcaa62..1fbf9d6c20ef 100644
---- a/include/linux/pti.h
-+++ b/include/linux/pti.h
+ 	 * List of instructions that call/jmp/jcc to retpoline thunks
+ 	 * __x86_indirect_thunk_*(). These instructions can be patched along
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 2dea9ec589ce..d4fba1cc3e91 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -263,7 +263,7 @@ static unsigned long get_guest_cr3(struct kvm_vcpu *vcpu)
+ static inline unsigned long kvm_mmu_get_guest_pgd(struct kvm_vcpu *vcpu,
+ 						  struct kvm_mmu *mmu)
+ {
+-	if (IS_ENABLED(CONFIG_RETPOLINE) && mmu->get_guest_pgd == get_guest_cr3)
++	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && mmu->get_guest_pgd == get_guest_cr3)
+ 		return kvm_read_cr3(vcpu);
+ 
+ 	return mmu->get_guest_pgd(vcpu);
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index decc1f153669..bf73a121c5ef 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -312,7 +312,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 	if (!prefetch)
+ 		vcpu->stat.pf_taken++;
+ 
+-	if (IS_ENABLED(CONFIG_RETPOLINE) && fault.is_tdp)
++	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
+ 		r = kvm_tdp_page_fault(vcpu, &fault);
+ 	else
+ 		r = vcpu->arch.mmu->page_fault(vcpu, &fault);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index c2dae8ff9dc4..37295f8badee 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3453,7 +3453,7 @@ int svm_invoke_exit_handler(struct kvm_vcpu *vcpu, u64 exit_code)
+ 	if (!svm_check_exit_valid(exit_code))
+ 		return svm_handle_invalid_exit(vcpu, exit_code);
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	if (exit_code == SVM_EXIT_MSR)
+ 		return msr_interception(vcpu);
+ 	else if (exit_code == SVM_EXIT_VINTR)
+diff --git a/arch/x86/kvm/svm/vmenter.S b/arch/x86/kvm/svm/vmenter.S
+index ef2ebabb059c..b9e08837ab96 100644
+--- a/arch/x86/kvm/svm/vmenter.S
++++ b/arch/x86/kvm/svm/vmenter.S
+@@ -207,7 +207,7 @@ SYM_FUNC_START(__svm_vcpu_run)
+ 7:	vmload %_ASM_AX
+ 8:
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	/* IMPORTANT: Stuff the RSB immediately after VM-Exit, before RET! */
+ 	FILL_RETURN_BUFFER %_ASM_AX, RSB_CLEAR_LOOPS, X86_FEATURE_RETPOLINE
+ #endif
+@@ -344,7 +344,7 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
+ 	/* Pop @svm to RDI, guest registers have been saved already. */
+ 	pop %_ASM_DI
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	/* IMPORTANT: Stuff the RSB immediately after VM-Exit, before RET! */
+ 	FILL_RETURN_BUFFER %_ASM_AX, RSB_CLEAR_LOOPS, X86_FEATURE_RETPOLINE
+ #endif
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 86ce9efe6c66..c782a4a46198 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6544,7 +6544,7 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 
+ 	if (exit_reason.basic >= kvm_vmx_max_exit_handlers)
+ 		goto unexpected_vmexit;
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	if (exit_reason.basic == EXIT_REASON_MSR_WRITE)
+ 		return kvm_emulate_wrmsr(vcpu);
+ 	else if (exit_reason.basic == EXIT_REASON_PREEMPTION_TIMER)
+diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+index ea3a28e7b613..72cc9c90e9f3 100644
+--- a/arch/x86/lib/Makefile
++++ b/arch/x86/lib/Makefile
+@@ -49,7 +49,7 @@ lib-$(CONFIG_ARCH_HAS_COPY_MC) += copy_mc.o copy_mc_64.o
+ lib-$(CONFIG_INSTRUCTION_DECODER) += insn.o inat.o insn-eval.o
+ lib-$(CONFIG_RANDOMIZE_BASE) += kaslr.o
+ lib-$(CONFIG_FUNCTION_ERROR_INJECTION)	+= error-inject.o
+-lib-$(CONFIG_RETPOLINE) += retpoline.o
++lib-$(CONFIG_MITIGATION_RETPOLINE) += retpoline.o
+ 
+ obj-y += msr.o msr-reg.o msr-reg-export.o hweight.o
+ obj-y += iomem.o
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 8c10d9abc239..ef732f323926 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -469,7 +469,7 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+ 			emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
+ 	} else {
+ 		EMIT2(0xFF, 0xE0 + reg);	/* jmp *%\reg */
+-		if (IS_ENABLED(CONFIG_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
++		if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
+ 			EMIT1(0xCC);		/* int3 */
+ 	}
+ 
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index 429a89c5468b..efca6bd818a3 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -1273,7 +1273,7 @@ static int emit_jmp_edx(u8 **pprog, u8 *ip)
+ 	u8 *prog = *pprog;
+ 	int cnt = 0;
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	EMIT1_off32(0xE9, (u8 *)__x86_indirect_thunk_edx - (ip + 5));
+ #else
+ 	EMIT2(0xFF, 0xE2);
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index 08aa0f25f12a..bc31863c5ee6 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -61,7 +61,7 @@ ifdef CONFIG_STACKPROTECTOR_STRONG
+ PURGATORY_CFLAGS_REMOVE		+= -fstack-protector-strong
+ endif
+ 
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+ PURGATORY_CFLAGS_REMOVE		+= $(RETPOLINE_CFLAGS)
+ endif
+ 
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 2ceba3fe4ec1..d24f29091f4b 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -35,7 +35,7 @@
+ 	(typeof(ptr)) (__ptr + (off));					\
+ })
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ #define __noretpoline __attribute__((__indirect_branch__("keep")))
+ #endif
+ 
+diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
+index c1c76a70a6ce..fe050dab55a3 100644
+--- a/include/linux/indirect_call_wrapper.h
++++ b/include/linux/indirect_call_wrapper.h
 @@ -2,7 +2,7 @@
- #ifndef _INCLUDE_PTI_H
- #define _INCLUDE_PTI_H
+ #ifndef _LINUX_INDIRECT_CALL_WRAPPER_H
+ #define _LINUX_INDIRECT_CALL_WRAPPER_H
  
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- #include <asm/pti.h>
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 
+ /*
+  * INDIRECT_CALL_$NR - wrapper for indirect calls with $NR known builtin
+diff --git a/include/linux/module.h b/include/linux/module.h
+index a98e188cf37b..d45e17fa7f98 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -883,7 +883,7 @@ static inline void module_bug_finalize(const Elf_Ehdr *hdr,
+ static inline void module_bug_cleanup(struct module *mod) {}
+ #endif	/* CONFIG_GENERIC_BUG */
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ extern bool retpoline_module_ok(bool has_retpoline);
  #else
- static inline void pti_init(void) { }
+ static inline bool retpoline_module_ok(bool has_retpoline)
+diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter/nf_tables_core.h
+index 780a5f6ad4a6..ff27cb2e1662 100644
+--- a/include/net/netfilter/nf_tables_core.h
++++ b/include/net/netfilter/nf_tables_core.h
+@@ -93,7 +93,7 @@ extern const struct nft_set_type nft_set_bitmap_type;
+ extern const struct nft_set_type nft_set_pipapo_type;
+ extern const struct nft_set_type nft_set_pipapo_avx2_type;
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ bool nft_rhash_lookup(const struct net *net, const struct nft_set *set,
+ 		      const u32 *key, const struct nft_set_ext **ext);
+ bool nft_rbtree_lookup(const struct net *net, const struct nft_set *set,
+diff --git a/include/net/tc_wrapper.h b/include/net/tc_wrapper.h
+index a6d481b5bcbc..a13ba0326d5e 100644
+--- a/include/net/tc_wrapper.h
++++ b/include/net/tc_wrapper.h
+@@ -4,7 +4,7 @@
+ 
+ #include <net/pkt_cls.h>
+ 
+-#if IS_ENABLED(CONFIG_RETPOLINE)
++#if IS_ENABLED(CONFIG_MITIGATION_RETPOLINE)
+ 
+ #include <linux/cpufeature.h>
+ #include <linux/static_key.h>
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 515cafdb18d9..b1098ec2e7d7 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -1193,7 +1193,7 @@ static inline u64 rb_time_stamp(struct trace_buffer *buffer)
+ 	u64 ts;
+ 
+ 	/* Skip retpolines :-( */
+-	if (IS_ENABLED(CONFIG_RETPOLINE) && likely(buffer->clock == trace_clock_local))
++	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && likely(buffer->clock == trace_clock_local))
+ 		ts = trace_clock_local();
+ 	else
+ 		ts = buffer->clock();
+diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+index d4958e7e7631..614815a3ed73 100644
+--- a/net/netfilter/Makefile
++++ b/net/netfilter/Makefile
+@@ -101,7 +101,7 @@ endif
+ endif
+ 
+ ifdef CONFIG_NFT_CT
+-ifdef CONFIG_RETPOLINE
++ifdef CONFIG_MITIGATION_RETPOLINE
+ nf_tables-objs += nft_ct_fast.o
+ endif
+ endif
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 4d0ce12221f6..54f7c96b7dd9 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -21,7 +21,7 @@
+ #include <net/netfilter/nf_log.h>
+ #include <net/netfilter/nft_meta.h>
+ 
+-#if defined(CONFIG_RETPOLINE) && defined(CONFIG_X86)
++#if defined(CONFIG_MITIGATION_RETPOLINE) && defined(CONFIG_X86)
+ 
+ static struct static_key_false nf_tables_skip_direct_calls;
+ 
+@@ -207,7 +207,7 @@ static void expr_call_ops_eval(const struct nft_expr *expr,
+ 			       struct nft_regs *regs,
+ 			       struct nft_pktinfo *pkt)
+ {
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 	unsigned long e;
+ 
+ 	if (nf_skip_indirect_calls())
+@@ -236,7 +236,7 @@ static void expr_call_ops_eval(const struct nft_expr *expr,
+ 	X(e, nft_objref_map_eval);
+ #undef  X
+ indirect_call:
+-#endif /* CONFIG_RETPOLINE */
++#endif /* CONFIG_MITIGATION_RETPOLINE */
+ 	expr->ops->eval(expr, regs, pkt);
+ }
+ 
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 86bb9d7797d9..d3e66bcb2a91 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -751,7 +751,7 @@ static bool nft_ct_set_reduce(struct nft_regs_track *track,
+ 	return false;
+ }
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ static const struct nft_expr_ops nft_ct_get_fast_ops = {
+ 	.type		= &nft_ct_type,
+ 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_ct)),
+@@ -796,7 +796,7 @@ nft_ct_select_ops(const struct nft_ctx *ctx,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	if (tb[NFTA_CT_DREG]) {
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ 		u32 k = ntohl(nla_get_be32(tb[NFTA_CT_KEY]));
+ 
+ 		switch (k) {
+diff --git a/net/netfilter/nft_lookup.c b/net/netfilter/nft_lookup.c
+index 870e5b113d13..a0055f510e31 100644
+--- a/net/netfilter/nft_lookup.c
++++ b/net/netfilter/nft_lookup.c
+@@ -24,7 +24,7 @@ struct nft_lookup {
+ 	struct nft_set_binding		binding;
+ };
+ 
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ bool nft_set_do_lookup(const struct net *net, const struct nft_set *set,
+ 		       const u32 *key, const struct nft_set_ext **ext)
+ {
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index e9eaf637220e..d577c9e1cb42 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -2353,7 +2353,7 @@ static struct pernet_operations psched_net_ops = {
+ 	.exit = psched_net_exit,
+ };
+ 
+-#if IS_ENABLED(CONFIG_RETPOLINE)
++#if IS_ENABLED(CONFIG_MITIGATION_RETPOLINE)
+ DEFINE_STATIC_KEY_FALSE(tc_skip_wrapper);
+ #endif
+ 
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index cc44c95c49cc..d6e157938b5f 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -262,7 +262,7 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_OBJTOOL
+ objtool-args-$(CONFIG_HAVE_OBJTOOL_NOP_MCOUNT)		+= --mnop
+ endif
+ objtool-args-$(CONFIG_UNWINDER_ORC)			+= --orc
+-objtool-args-$(CONFIG_RETPOLINE)			+= --retpoline
++objtool-args-$(CONFIG_MITIGATION_RETPOLINE)		+= --retpoline
+ objtool-args-$(CONFIG_RETHUNK)				+= --rethunk
+ objtool-args-$(CONFIG_SLS)				+= --sls
+ objtool-args-$(CONFIG_STACK_VALIDATION)			+= --stackval
+diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
+index 3c6cbe2b278d..eaf524603796 100644
+--- a/scripts/generate_rust_target.rs
++++ b/scripts/generate_rust_target.rs
+@@ -155,7 +155,7 @@ fn main() {
+             "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128",
+         );
+         let mut features = "-3dnow,-3dnowa,-mmx,+soft-float".to_string();
+-        if cfg.has("RETPOLINE") {
++        if cfg.has("MITIGATION_RETPOLINE") {
+             features += ",+retpoline-external-thunk";
+         }
+         ts.push("features", features);
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 2f3b0fe6f68d..55dde62c07c2 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -1886,7 +1886,7 @@ static void add_header(struct buffer *b, struct module *mod)
+ 
+ 	buf_printf(b,
+ 		   "\n"
+-		   "#ifdef CONFIG_RETPOLINE\n"
++		   "#ifdef CONFIG_MITIGATION_RETPOLINE\n"
+ 		   "MODULE_INFO(retpoline, \"Y\");\n"
+ 		   "#endif\n");
+ 
 diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
-index 3d61b2432991..aeb3fbbbce46 100644
+index aeb3fbbbce46..d05158d8fe5f 100644
 --- a/tools/arch/x86/include/asm/disabled-features.h
 +++ b/tools/arch/x86/include/asm/disabled-features.h
-@@ -44,7 +44,7 @@
- # define DISABLE_LA57	(1<<(X86_FEATURE_LA57 & 31))
+@@ -50,7 +50,7 @@
+ # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
  #endif
  
--#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+#ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- # define DISABLE_PTI		0
+-#ifdef CONFIG_RETPOLINE
++#ifdef CONFIG_MITIGATION_RETPOLINE
+ # define DISABLE_RETPOLINE	0
  #else
- # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
+ # define DISABLE_RETPOLINE	((1 << (X86_FEATURE_RETPOLINE & 31)) | \
 -- 
 2.34.1
 
