@@ -2,198 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F247CFF2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648C57CFF32
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbjJSQL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S1345102AbjJSQLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbjJSQLY (ORCPT
+        with ESMTP id S235455AbjJSQLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:11:24 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCE4134
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:11:22 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b7f3f470a9so2624251a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:11:22 -0700 (PDT)
+        Thu, 19 Oct 2023 12:11:40 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEF0131;
+        Thu, 19 Oct 2023 09:11:37 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso12994222a12.1;
+        Thu, 19 Oct 2023 09:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697731882; x=1698336682; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DOjYwgdk9z8wQA3VmtvZ1n8QsFFkfcCxM5197gEqm4U=;
-        b=Y91rB4GoPLy8/oGanHiNR+IxvV8EYZzPF+uDEv2Bv9n4MxM/juvmagYfdqIQrVE/oN
-         +ofocpCtV7zEyUZiPmmscPhN1IjDx9/dW779JwzHY8cttLXjHeRx8hNXjOz7bktQxSVZ
-         4nmvR0/rVzo87wfS/7pIf4SuFbtlBUXYR18tSCh3HyPDt8DTy/tB1IP4muY5eJbtTEPe
-         Y+/nU1TewPCk0X8UpQZiew6Vc+yjeIS7lpzTIwQ75K5Jv+GokFwyyJ0NtT4qb7onAwir
-         h+AwU2nrOOAtbuLx8Cn4T2kUt3kFmZHYLu2q8e/fRH3GULo1F0hvyHSxtFJmF47DHX5f
-         ALwg==
+        d=gmail.com; s=20230601; t=1697731896; x=1698336696; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X32GunGHAK2140SJxVQVQfNtK2QC/jeLmazDGROMOOY=;
+        b=BYg7Eka51OAb6+D7Re3L3yLEhZ91MDLhE5jFXxwpSfm7zm2VsUS0Se34BgBjdVqiBQ
+         ozxHZ5nTxWByR76u5iGJBJqb7ftF4a40tNJT9ltysqcbD5a2a8z+Q/mOQ/Ym5lOjCrQo
+         g3Qz0w07yUUgpyMg6IZut2OgstBxrw5bFp3pzW4SSStEAYGkoe7VfOXKJ6s0bJ20Y68G
+         L94o+JRfgwiFBLK0E4zMM0M3Otg1a9ndKtgCTznvjXyeDi/46G8ZzSeglN4gt14YEjE1
+         9hZrcTFOrq6HeQCCcbPOqIJmwtZn54Ol3rYpkyGW31LsVxFuaP4DSfkC6Rnw2OL/BJiv
+         lWPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697731882; x=1698336682;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DOjYwgdk9z8wQA3VmtvZ1n8QsFFkfcCxM5197gEqm4U=;
-        b=G+U28vkInwqraYgwT6RlU2kUu7XMjeTtoXAOB03WVGQMBSQS/pCn7I4ns4xAyDkfPy
-         rXx+Mdtp9an/jTkliNW4LpGAYZYspL+F3yOl7jvhK1Mb6I0NUqSi67B8eLmIjW04Vhrc
-         jJ0Gcr1RtMeJ0U2sgK18IQHr28jq1KsdWFfyfTzRVSeMQwijnnR2uaG4kVhstbB+t0PI
-         BDODSMWwcTVy79zxICA+eZvM2uDOamwPZ5Ld2lp8h15Ybv+ggkwbt6giTeIn1voqfP8A
-         4hRJgZK4D+X2Yjeq+a+UQT6MQBi3xWkFtksCpiPWGFxBeNDTrsVuaKAiRNf9lvKcCZg7
-         sJZw==
-X-Gm-Message-State: AOJu0YwRQF2gBjZZFNdM/ocADCI0Zdj3gGBfTWgwMjHpHJYzOM0atKLW
-        3H2PyWmMu0NBkrIpODlwAhDCeNOQYB8ZBrrH8uf/36yUC7SevQ86
-X-Google-Smtp-Source: AGHT+IHyxUQVRECrrku3aBHQKGFGKsHUbRup3XjNvl7h7Cf1LJLXNBlAxjNyNIPFpPpc531lLIcmfpp9YIzhp+ETcyI=
-X-Received: by 2002:a05:6a20:8e0e:b0:154:a1e3:f967 with SMTP id
- y14-20020a056a208e0e00b00154a1e3f967mr3115507pzj.47.1697731881787; Thu, 19
- Oct 2023 09:11:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231003044403.1974628-1-apatel@ventanamicro.com> <87o7gu7mo9.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87o7gu7mo9.fsf@all.your.base.are.belong.to.us>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Thu, 19 Oct 2023 21:41:10 +0530
-Message-ID: <CAK9=C2XMzzYri8TNBASKqc-VmJWjGdoOHy-fczksfkU0ahhgOQ@mail.gmail.com>
-Subject: Re: [PATCH v10 00/15] Linux RISC-V AIA Support
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
+        d=1e100.net; s=20230601; t=1697731896; x=1698336696;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X32GunGHAK2140SJxVQVQfNtK2QC/jeLmazDGROMOOY=;
+        b=MdP/X9RET7Olp0qPsZ7FMzv05qEyCPcBtTLE4r4rULXSsgPFZ9pL9EDma3d06WdIzq
+         Q0DZPTQj+hc6o5hi+Emfak5cpxcayHmbAlqN2AGo8PtLBn5+JPdEu95Fhm7e5fmwwZVD
+         7udZfwQZ1CVzf4mfk/fQJpFA0FA8bjJiQqiwJr7ZmOfq4S5c30nSLFOXqVUocHr3/3mD
+         YCgC/lyaFrQ4wNDYjH2QAN+AF7HMexO3QUGwtkYETVrbCo76cHrELDTZGHbKKp1d6EZA
+         baJLlrpcrfuSxFiMBB6wzOXUWrkq+ECML6ZKiYjxMNz3m/mjt0SNrnvAzrW7eOqifNw6
+         0a4A==
+X-Gm-Message-State: AOJu0Yzsm6F989ZVZR71ODQI6UnVkpeh7UsTrrPcEfdHlWSxq/ZUBmxh
+        5ArGkhL3xiHi4fNnXaeJR8c=
+X-Google-Smtp-Source: AGHT+IHY+o8DsaC0r/9+4lEIrMX/sedP3iT7Pw3eQ1iwcKm7sYN1yH+7U61MsQeH4xScEluX4QndhQ==
+X-Received: by 2002:a05:6402:5186:b0:53e:2a65:1d9c with SMTP id q6-20020a056402518600b0053e2a651d9cmr1927370edd.25.1697731895574;
+        Thu, 19 Oct 2023 09:11:35 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id t29-20020a50ab5d000000b0053ed70ebd7csm4740536edc.31.2023.10.19.09.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 09:11:35 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 19:11:32 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4 7/7] dt-bindings: marvell: Add Marvell
+ MV88E6060 DSA schema
+Message-ID: <20231019161132.24hcgqfufotg7w7e@skbuf>
+References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-7-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-7-3ee0c67383be@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018-marvell-88e6152-wan-led-v4-7-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-7-3ee0c67383be@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 7:13=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
-.org> wrote:
->
-> Hi Anup,
->
-> Anup Patel <apatel@ventanamicro.com> writes:
->
-> > The RISC-V AIA specification is ratified as-per the RISC-V internationa=
-l
-> > process. The latest ratified AIA specifcation can be found at:
-> > https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrup=
-ts-1.0.pdf
-> >
-> > At a high-level, the AIA specification adds three things:
-> > 1) AIA CSRs
-> >    - Improved local interrupt support
-> > 2) Incoming Message Signaled Interrupt Controller (IMSIC)
-> >    - Per-HART MSI controller
-> >    - Support MSI virtualization
-> >    - Support IPI along with virtualization
-> > 3) Advanced Platform-Level Interrupt Controller (APLIC)
-> >    - Wired interrupt controller
-> >    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generato=
-r)
-> >    - In Direct-mode, injects external interrupts directly into HARTs
->
-> Thanks for working on the AIA support! I had a look at the series, and
-> have some concerns about interrupt ID abstraction.
->
-> A bit of background, for readers not familiar with the AIA details.
->
-> IMSIC allows for 2047 unique MSI ("msi-irq") sources per hart, and
-> each MSI is dedicated to a certain hart. The series takes the approach
-> to say that there are, e.g., 2047 interrupts ("lnx-irq") globally.
-> Each lnx-irq consists of #harts * msi-irq -- a slice -- and in the
-> slice only *one* msi-irq is acutally used.
->
-> This scheme makes affinity changes more robust, because the interrupt
-> sources on "other" harts are pre-allocated. On the other hand it
-> requires to propagate irq masking to other harts via IPIs (this is
-> mostly done up setup/tear down). It's also wasteful, because msi-irqs
-> are hogged, and cannot be used.
->
-> Contemporary storage/networking drivers usually uses queues per core
-> (or a sub-set of cores). The current scheme wastes a lot of msi-irqs.
-> If we instead used a scheme where "msi-irq =3D=3D lnx-irq", instead of
-> "lnq-irq =3D {hart 0;msi-irq x , ... hart N;msi-irq x}", there would be
-> a lot MSIs for other users. 1-1 vs 1-N. E.g., if a storage device
-> would like to use 5 queues (5 cores) on a 128 core system, the current
-> scheme would consume 5 * 128 MSIs, instead of just 5.
->
-> On the plus side:
-> * Changing interrupts affinity will never fail, because the interrupts
->   on each hart is pre-allocated.
->
-> On the negative side:
-> * Wasteful interrupt usage, and a system can potientially "run out" of
->   interrupts. Especially for many core systems.
-> * Interrupt masking need to proagate to harts via IPIs (there's no
->   broadcast csr in IMSIC), and a more complex locking scheme IMSIC
->
-> Summary:
-> The current series caps the number of global interrupts to maximum
-> 2047 MSIs for all cores (whole system). A better scheme, IMO, would be
-> to expose 2047 * #harts unique MSIs.
->
-> I think this could simplify/remove(?) the locking as well.
+On Wed, Oct 18, 2023 at 11:03:46AM +0200, Linus Walleij wrote:
+> The Marvell MV88E6060 is one of the oldest DSA switches from
+> Marvell, and it has DT bindings used in the wild. Let's define
+> them properly.
+> 
+> It is different enough from the rest of the MV88E6xxx switches
+> that it deserves its own binding.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../bindings/net/dsa/marvell,mv88e6060.yaml        | 90 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 91 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6060.yaml b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6060.yaml
+> new file mode 100644
+> index 000000000000..787f328551f6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6060.yaml
+> @@ -0,0 +1,90 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6060.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell MV88E6060 DSA switch
+> +
+> +maintainers:
+> +  - Andrew Lunn <andrew@lunn.ch>
+> +
+> +description:
+> +  The Marvell MV88E6060 switch has been produced and sold by Marvell
+> +  since at least 2010. The switch has one pin ADDR4 that controls the
+> +  MDIO address of the switch to be 0x10 or 0x00, and on the MDIO bus
+> +  connected to the switch, the PHYs inside the switch appear as
+> +  independent devices on address 0x00-0x04 or 0x10-0x14, so in difference
+> +  from many other DSA switches this switch does not have an internal
+> +  MDIO bus for the PHY devices.
 
-Exposing 2047 * #harts unique MSIs has multiple issues:
-1) The irq_set_affinity() does not work for MSIs because each
-     IRQ is not tied to a particular HART. This means we can't
-     balance the IRQ processing load among HARTs.
-2) All wired IRQs for APLIC MSI-mode will also target a
-    fixed HART hence irq_set_affinity() won't work for wired
-    IRQs as well.
-3) Contemporary storage/networking drivers which use per-core
-     queues use irq_set_affinity() on queue IRQs to balance
-     across cores but this will fail.
-4) HART hotplug breaks because kernel irq-subsystem can't
-    migrate the IRQs (both MSIs and Wired) targeting HART X
-    to another HART Y when the HART X goes down.
+Where does 2010 come from (both here and in the other Marvell schema)?
+Lennert Buytenhek added Linux support for this switch family in 2008.
 
-The idea of treating per-HART MSIs as separate IRQs has
-been discussed in the past. The current approach works nicely
-with all kernel use-cases at the cost of additional work on the
-driver side.
+Anyway,
 
-Also, the current approach is very similar to the ARM GICv3
-driver where ITS LPIs across CPUs are treated as single IRQ.
-
->
-> I realize that the series in v10, and coming with a change like this
-> now might be a bit of a pain...
->
-> Finally, another question related to APLIC/IMSIC. AFAIU the memory map
-> of the IMSIC regions are constrained by the APLIC, which requires a
-> certain layout for MSI forwarding (group/hart/guest bits). Say that a
-> system doesn't have an APLIC, couldn't the layout requirement be
-> simplified?
-
-Yes, this is already taken care of in the current IMSIC driver based
-on feedback from Atish. We can certainly improve flexibility on the
-IMSIC driver side if some case is missed-out.
-
-The APLIC driver is certainly very strict about the arrangement of
-IMSIC files so we do additional sanity checks on the APLIC driver
-side at the time of probing.
-
->
->
-> Again, thanks for the hard work!
-> Bj=C3=B6rn
-
-Regards,
-Anup
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
