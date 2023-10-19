@@ -2,127 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CB37D0125
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35427D0128
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345214AbjJSSGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S1346361AbjJSSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235475AbjJSSG2 (ORCPT
+        with ESMTP id S235475AbjJSSJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:06:28 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C37411F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:06:25 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso85715891fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:06:25 -0700 (PDT)
+        Thu, 19 Oct 2023 14:09:27 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE8B124
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:09:25 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9b70b9671so19015ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:09:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697738783; x=1698343583; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ObcLfQJn4zqneCDgP2coGLrDSevfbDcAAB/oMzwqk4=;
-        b=St0fZwfI92twaUrtlECgO/98hIfpYIpbDhFWt0UvmAZF2GFx6eGGCDuQ4Di98/JYOp
-         RK9fBi1z9pEtxUdAEffOZbd1ZMENtCutUsDoRjTBeQZQunw4lCgnEKyFYanMCay8mh+y
-         0esUEnMeHq6vI9fZ5IoOjMowsfkdzQeOSkrEM=
+        d=google.com; s=20230601; t=1697738965; x=1698343765; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IK0HfDM/pytLY9c5KYZvIPmccvSU6yoBacjjcBqv8Jc=;
+        b=YeigNxkg0sY9ak4QlzbfyQvg1/Cuan+E2XlTvhmkbX9Od9q1dFywTPfgVLwkCa1Jjy
+         mp6vwgqsJ3Nk5R4tNF9JKoU/r0OoTLwznPt8xJlro/cWMYy8bfUiBmMPa87jHPbnblYP
+         z2Saz9296APinjTGVtdBwMJOOe78flvpWR97JM3JP/AEiG5z/LynUzRPGhSPSBJyY5TZ
+         4gt3yBgG1YBuS+fX4TFjHMc6RQUMNXFXXyLvXZT13hNhIjcPZO5zcZLOXqTFf0X7CBAA
+         jhj8ZXfj3v7t+f8r2ytmg6uog8/d9rnh4XFliFNMDpRMgg1hqDaiBMwPOaBGABlZC/4m
+         Km9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697738783; x=1698343583;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3ObcLfQJn4zqneCDgP2coGLrDSevfbDcAAB/oMzwqk4=;
-        b=MeEJOt5d5nvf4aSO04S+yxbHMNAatbf9q6qv1diIAMpnr7C9Z1g4anTv60qy4b2unW
-         zaKQsLyzgDNuK9TLCTXeZ4EPjqTN3n7poSGYz28+P5fpMRFDslnNQaUUKETER5xw0bFe
-         2LtYTaxzfS5dzPryeahRqyf1hH6DU4xqtj1Mdy9sSnSyUXA8TBPD56MefHZ2n2fEaDqL
-         HjYX8KRKRYoF/J0SG15NZurdIF3umrP1b1rbQ1m973GwdEb9p7ZBSM1Ke6pqBBYT7TCq
-         hNBrSL8xwhmYUCA44lf+jVKVb0pidYeF2oAKYN1of5hhmdPx4h+0J2F4x0XgYANjYwuS
-         Va0g==
-X-Gm-Message-State: AOJu0YzkXpcBONXkkYFOgRuo78b1Q1V53MTYcaDwN8iVF9OLm71zGVA3
-        TknzopMZqN9ZfSTj96Nc4nU3YlMjsRsFh1dH21QU5qwW
-X-Google-Smtp-Source: AGHT+IHXpRd3KIc7v5RjRNAezR05Oe0S8JzqZC1SW1F59lZj+UC1n42qTgJ9FSajfxVaEU2jzVeuRg==
-X-Received: by 2002:a2e:9c08:0:b0:2bf:f32a:1f68 with SMTP id s8-20020a2e9c08000000b002bff32a1f68mr1663389lji.19.1697738783443;
-        Thu, 19 Oct 2023 11:06:23 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id a14-20020a2eb54e000000b002bc3fbe9fd5sm3686ljn.55.2023.10.19.11.06.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 11:06:22 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-507ac66a969so6289270e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:06:22 -0700 (PDT)
-X-Received: by 2002:a05:6512:15a8:b0:507:9628:afb with SMTP id
- bp40-20020a05651215a800b0050796280afbmr2369118lfb.68.1697738782012; Thu, 19
- Oct 2023 11:06:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697738965; x=1698343765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IK0HfDM/pytLY9c5KYZvIPmccvSU6yoBacjjcBqv8Jc=;
+        b=Hsaa7ob2eoixmalfJr3f86FjUcCGpu0YuzXKIkS/IOK1JSSyFPpcvu5JmKcLPMmO1T
+         djNOA6hcymO1tZpntMdCmJq/VQJAogeuHkHd+IdKUvPIN6cLlL5abgfoV3X7lXCUbtXd
+         J3USIJOG5WeSpFKATeI8bDo2RE+AswgEOxvMWwi5bOwztgLZZoxKod5nvySo3H0YLkLx
+         prZHdyAFZhyJfCdecQaLs03NSj6IYVNui+xCwA8TCNh9sVRsAl9DtWiQ3h32L1zR17kD
+         DNqjpc+JeWLtMbxrSP19c0F0Nnfq8r9RcYnVY2kjzcsxz+l4LXpM2L8Bv3xlmpABirYy
+         qy1g==
+X-Gm-Message-State: AOJu0YzmEpne4Ej6l0intwNrwMCJVNOeSvB9Wj+/e/dsstaM6DoJDfWk
+        AZMMqtl+VBpEDQzDo1N+06O8jWKefAKzjz7cSh44SQ==
+X-Google-Smtp-Source: AGHT+IHngjZq2LQbGXMWIQOfbgX+FzpNSJGqCuZI0bAJP0wT2MkUfGozN/riDUdLmn/vtm3xKAw1HUFQ67bsFlpj0BM=
+X-Received: by 2002:a17:902:9047:b0:1ca:42a:1771 with SMTP id
+ w7-20020a170902904700b001ca042a1771mr5868plz.24.1697738964780; Thu, 19 Oct
+ 2023 11:09:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
- <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
- <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
- <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
- <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
- <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
- <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
- <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
- <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
- <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
- <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
- <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
- <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
- <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
- <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
- <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
- <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
- <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
- <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
- <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
- <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
- <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com>
- <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com> <CAFULd4b91Tr9Q2p4a20eusC+QO6O81gxY+nP-zpFiFKGTmLpYg@mail.gmail.com>
-In-Reply-To: <CAFULd4b91Tr9Q2p4a20eusC+QO6O81gxY+nP-zpFiFKGTmLpYg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Oct 2023 11:06:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi3LZ_4OGAMhvgO0JSTp-eEPOGp+siq1nJNLY1JAxdP5Q@mail.gmail.com>
-Message-ID: <CAHk-=wi3LZ_4OGAMhvgO0JSTp-eEPOGp+siq1nJNLY1JAxdP5Q@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     peterz@infradead.org, Nadav Amit <namit@vmware.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-13-rananta@google.com>
+ <3e6e6c25-7b20-46b4-ffce-d34841aca209@redhat.com>
+In-Reply-To: <3e6e6c25-7b20-46b4-ffce-d34841aca209@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 19 Oct 2023 11:09:13 -0700
+Message-ID: <CAJHc60xTVgx8L1MxFshnD455p=qjvH4_RP6hiQZDb7P4MUbvkw@mail.gmail.com>
+Subject: Re: [PATCH v7 12/12] KVM: selftests: aarch64: vPMU register test for
+ unimplemented counters
+To:     Eric Auger <eauger@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 10:21, Uros Bizjak <ubizjak@gmail.com> wrote:
+On Tue, Oct 17, 2023 at 11:54=E2=80=AFPM Eric Auger <eauger@redhat.com> wro=
+te:
 >
-> > A compiler that were to rematerializes an inline asm (instead of
-> > spilling) would be a bad joke. That's not an optimization, that's just
-> > a crazy bad compiler with a code generation bug.
+> Hi Raghavendra,
 >
-> But that is what the compiler does without volatile.
+> On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
+> > From: Reiji Watanabe <reijiw@google.com>
+> >
+> > Add a new test case to the vpmu_counter_access test to check
+> > if PMU registers or their bits for unimplemented counters are not
+> > accessible or are RAZ, as expected.
+> >
+> > Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  .../kvm/aarch64/vpmu_counter_access.c         | 95 +++++++++++++++++--
+> >  .../selftests/kvm/include/aarch64/processor.h |  1 +
+> >  2 files changed, 87 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c =
+b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> > index e92af3c0db03..788386ac0894 100644
+> > --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> > +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> > @@ -5,8 +5,8 @@
+> >   * Copyright (c) 2022 Google LLC.
+> >   *
+> >   * This test checks if the guest can see the same number of the PMU ev=
+ent
+> > - * counters (PMCR_EL0.N) that userspace sets, and if the guest can acc=
+ess
+> > - * those counters.
+> > + * counters (PMCR_EL0.N) that userspace sets, if the guest can access
+> > + * those counters, and if the guest cannot access any other counters.
+> I would suggest: if the guest is prevented from accessing any other count=
+ers
+> >   * This test runs only when KVM_CAP_ARM_PMU_V3 is supported on the hos=
+t.
+> >   */
+> >  #include <kvm_util.h>
+> > @@ -131,9 +131,9 @@ static void write_pmevtypern(int n, unsigned long v=
+al)
+> >  }
+> >
+> >  /*
+> > - * The pmc_accessor structure has pointers to PMEVT{CNTR,TYPER}<n>_EL0
+> > + * The pmc_accessor structure has pointers to PMEV{CNTR,TYPER}<n>_EL0
+> >   * accessors that test cases will use. Each of the accessors will
+> > - * either directly reads/writes PMEVT{CNTR,TYPER}<n>_EL0
+> > + * either directly reads/writes PMEV{CNTR,TYPER}<n>_EL0
+> I guess this should belong to the previous patch?
+> >   * (i.e. {read,write}_pmev{cnt,type}rn()), or reads/writes them throug=
+h
+> >   * PMXEV{CNTR,TYPER}_EL0 (i.e. {read,write}_sel_ev{cnt,type}r()).
+> >   *
+> > @@ -291,25 +291,85 @@ static void test_access_pmc_regs(struct pmc_acces=
+sor *acc, int pmc_idx)
+> >                      pmc_idx, PMC_ACC_TO_IDX(acc), read_data, write_dat=
+a);
+> >  }
+> >
+> > +#define INVALID_EC   (-1ul)
+> > +uint64_t expected_ec =3D INVALID_EC;
+> > +uint64_t op_end_addr;
+> > +
+> >  static void guest_sync_handler(struct ex_regs *regs)
+> >  {
+> >       uint64_t esr, ec;
+> >
+> >       esr =3D read_sysreg(esr_el1);
+> >       ec =3D (esr >> ESR_EC_SHIFT) & ESR_EC_MASK;
+> > -     __GUEST_ASSERT(0, "PC: 0x%lx; ESR: 0x%lx; EC: 0x%lx", regs->pc, e=
+sr, ec);
+> > +
+> > +     __GUEST_ASSERT(op_end_addr && (expected_ec =3D=3D ec),
+> > +                     "PC: 0x%lx; ESR: 0x%lx; EC: 0x%lx; EC expected: 0=
+x%lx",
+> > +                     regs->pc, esr, ec, expected_ec);
+> > +
+> > +     /* Will go back to op_end_addr after the handler exits */
+> > +     regs->pc =3D op_end_addr;
+> > +
+> > +     /*
+> > +      * Clear op_end_addr, and setting expected_ec to INVALID_EC
+> and set
+> > +      * as a sign that an exception has occurred.
+> > +      */
+> > +     op_end_addr =3D 0;
+> > +     expected_ec =3D INVALID_EC;
+> > +}
+> > +
+> > +/*
+> > + * Run the given operation that should trigger an exception with the
+> > + * given exception class. The exception handler (guest_sync_handler)
+> > + * will reset op_end_addr to 0, and expected_ec to INVALID_EC, and
+> > + * will come back to the instruction at the @done_label.
+> > + * The @done_label must be a unique label in this test program.
+> > + */
+> > +#define TEST_EXCEPTION(ec, ops, done_label)          \
+> > +{                                                    \
+> > +     extern int done_label;                          \
+> > +                                                     \
+> > +     WRITE_ONCE(op_end_addr, (uint64_t)&done_label); \
+> > +     GUEST_ASSERT(ec !=3D INVALID_EC);                 \
+> > +     WRITE_ONCE(expected_ec, ec);                    \
+> > +     dsb(ish);                                       \
+> > +     ops;                                            \
+> > +     asm volatile(#done_label":");                   \
+> > +     GUEST_ASSERT(!op_end_addr);                     \
+> > +     GUEST_ASSERT(expected_ec =3D=3D INVALID_EC);        \
+> > +}
+> > +
+> > +/*
+> > + * Tests for reading/writing registers for the unimplemented event cou=
+nter
+> > + * specified by @pmc_idx (>=3D PMCR_EL0.N).
+> > + */
+> > +static void test_access_invalid_pmc_regs(struct pmc_accessor *acc, int=
+ pmc_idx)
+> > +{
+> > +     /*
+> > +      * Reading/writing the event count/type registers should cause
+> > +      * an UNDEFINED exception.
+> > +      */
+> > +     TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->read_cntr(pmc_idx), inv_rd_cn=
+tr);
+> > +     TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->write_cntr(pmc_idx, 0), inv_w=
+r_cntr);
+> > +     TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->read_typer(pmc_idx), inv_rd_t=
+yper);
+> > +     TEST_EXCEPTION(ESR_EC_UNKNOWN, acc->write_typer(pmc_idx, 0), inv_=
+wr_typer);
+> > +     /*
+> > +      * The bit corresponding to the (unimplemented) counter in
+> > +      * {PMCNTEN,PMOVS}{SET,CLR}_EL1 registers should be RAZ.
+> {PMCNTEN,PMINTEN,PMOVS}{SET,CLR}
+> > +      */
+> > +     test_bitmap_pmu_regs(pmc_idx, 1);
+> > +     test_bitmap_pmu_regs(pmc_idx, 0);
+> >  }
+> >
+> >  /*
+> >   * The guest is configured with PMUv3 with @expected_pmcr_n number of
+> >   * event counters.
+> >   * Check if @expected_pmcr_n is consistent with PMCR_EL0.N, and
+> > - * if reading/writing PMU registers for implemented counters can work
+> > - * as expected.
+> > + * if reading/writing PMU registers for implemented or unimplemented
+> > + * counters can work as expected.
+> >   */
+> >  static void guest_code(uint64_t expected_pmcr_n)
+> >  {
+> > -     uint64_t pmcr, pmcr_n;
+> > +     uint64_t pmcr, pmcr_n, unimp_mask;
+> >       int i, pmc;
+> >
+> >       __GUEST_ASSERT(expected_pmcr_n <=3D ARMV8_PMU_MAX_GENERAL_COUNTER=
+S,
+> > @@ -324,15 +384,32 @@ static void guest_code(uint64_t expected_pmcr_n)
+> >                       "Expected PMCR.N: 0x%lx, PMCR.N: 0x%lx",
+> >                       pmcr_n, expected_pmcr_n);
+> >
+> > +     /*
+> > +      * Make sure that (RAZ) bits corresponding to unimplemented event
+> > +      * counters in {PMCNTEN,PMOVS}{SET,CLR}_EL1 registers are reset t=
+o zero.
+> > +      * (NOTE: bits for implemented event counters are reset to UNKNOW=
+N)
+> > +      */
+> > +     unimp_mask =3D GENMASK_ULL(ARMV8_PMU_MAX_GENERAL_COUNTERS - 1, pm=
+cr_n);
+> > +     check_bitmap_pmu_regs(unimp_mask, false);
+> wrt above comment, this also checks pmintenset|clr_el1.
+> > +
+> >       /*
+> >        * Tests for reading/writing PMU registers for implemented counte=
+rs.
+> > -      * Use each combination of PMEVT{CNTR,TYPER}<n>_EL0 accessor func=
+tions.
+> > +      * Use each combination of PMEV{CNTR,TYPER}<n>_EL0 accessor funct=
+ions.
+> >        */
+> >       for (i =3D 0; i < ARRAY_SIZE(pmc_accessors); i++) {
+> >               for (pmc =3D 0; pmc < pmcr_n; pmc++)
+> >                       test_access_pmc_regs(&pmc_accessors[i], pmc);
+> >       }
+> >
+> > +     /*
+> > +      * Tests for reading/writing PMU registers for unimplemented coun=
+ters.
+> > +      * Use each combination of PMEV{CNTR,TYPER}<n>_EL0 accessor funct=
+ions.
+> > +      */
+> > +     for (i =3D 0; i < ARRAY_SIZE(pmc_accessors); i++) {
+> > +             for (pmc =3D pmcr_n; pmc < ARMV8_PMU_MAX_GENERAL_COUNTERS=
+; pmc++)
+> > +                     test_access_invalid_pmc_regs(&pmc_accessors[i], p=
+mc);
+> > +     }
+> > +
+> >       GUEST_DONE();
+> >  }
+> >
+> > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/=
+tools/testing/selftests/kvm/include/aarch64/processor.h
+> > index cb537253a6b9..c42d683102c7 100644
+> > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> > @@ -104,6 +104,7 @@ enum {
+> >  #define ESR_EC_SHIFT         26
+> >  #define ESR_EC_MASK          (ESR_EC_NUM - 1)
+> >
+> > +#define ESR_EC_UNKNOWN               0x0
+> >  #define ESR_EC_SVC64         0x15
+> >  #define ESR_EC_IABT          0x21
+> >  #define ESR_EC_DABT          0x25
+>
+> Thanks
+>
+> Eric
+>
+Thanks for the comments, Eric. I'll fix these.
 
-Do you actually have a real case of that, or are basing it purely off
-insane documentation?
-
-Because remat of inline asm really _is_ insane.
-
-           Linus
+- Raghavendra
