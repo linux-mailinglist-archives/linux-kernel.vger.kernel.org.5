@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0127CED4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C569E7CED49
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjJSBNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 21:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S232267AbjJSBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 21:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbjJSBNJ (ORCPT
+        with ESMTP id S231204AbjJSBNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 21:13:09 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036AB118
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10BD133
         for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 18:13:04 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IIn39G027695;
-        Thu, 19 Oct 2023 01:12:58 GMT
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IIp6h9018131;
+        Thu, 19 Oct 2023 01:13:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2023-03-30;
- bh=/PCloSFrPiPsydf0JTwMrxT+NyKATOuPJq4OdDBeRMY=;
- b=SBbPFARm70GVdtnRruwwiEyo/BIXZt0nc6N8HEqd3iHY4kKUtpPTrSgypFiA2IbHdgmB
- FbDNOVYioxrsfnaDSjqSFSH9r0MmDt3V0vzqYh2gCwclUDcN5ZW/+fkBrrPvFXH7trs5
- aHBT+Z4v7tcZzonvWN2Cdqa4yweG9eiAKwERSQqre0D8wM+zJ4QTE7ekjOzgOne7NhRW
- 89exBsT77wL1jeu3dGTqz+BtqogZI8rMjfXE//j15BpPHLlPruyz1wCyB4X2V8XnV7W2
- aB+VyKIB6dXLO2tTBwhEqWM10+KdkOIIz6HiLY9qLip/CofoGRaFx67gI7Pg3rbdJqcT DA== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=EDhfB7JA2J6D7sXgXuclzb2hlADtZpOfMMez4ap+xqE=;
+ b=VlV9zGyJHTWGOwwYaSB8DBwctBW7zyZeKYccK6N6hsLSNERZWDUskXEEhzakeiuI17St
+ TVvMbzJT9WBlnmybPa1USj0Ytq0przeiMF5bVRkU3Xjbvn4uoeNEnwB3APaB9K0GSmvo
+ mhPQUi/UZQSLKG6MXU5lTnOHqmJTCbrZv3EZqL0LYFm+K/gYkRSOPtr9oSuCpY+GKNPW
+ FaKlzsy+MbojNwuINugPEkqKyuSimI/MM2AXvcljE2gUPBnNnTp927nrO96XNsHiHTOG
+ sERNLAh7I5y4LcRL52IdOiSvsRmSRfkozgXnXaRIpk4zmkW+2kras/phTECPr1FiVAfj ng== 
 Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqk1bs077-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqkhu95mw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 01:12:58 +0000
+        Thu, 19 Oct 2023 01:12:59 +0000
 Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39J0UpRx015251;
-        Thu, 19 Oct 2023 01:12:57 GMT
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39J0UpS0015251;
+        Thu, 19 Oct 2023 01:12:58 GMT
 Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3trg1h8w2d-1;
-        Thu, 19 Oct 2023 01:12:57 +0000
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3trg1h8w2d-2;
+        Thu, 19 Oct 2023 01:12:58 +0000
 From:   Si-Wei Liu <si-wei.liu@oracle.com>
 To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
         sgarzare@redhat.com, dtatulea@nvidia.com
 Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/4] vdpa: decouple reset of iotlb mapping from device reset
-Date:   Wed, 18 Oct 2023 18:10:13 -0700
-Message-Id: <1697677818-11371-1-git-send-email-si-wei.liu@oracle.com>
+Subject: [PATCH v3 1/5] vdpa: introduce .reset_map operation callback
+Date:   Wed, 18 Oct 2023 18:10:14 -0700
+Message-Id: <1697677818-11371-2-git-send-email-si-wei.liu@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1697677818-11371-1-git-send-email-si-wei.liu@oracle.com>
+References: <1697677818-11371-1-git-send-email-si-wei.liu@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -53,85 +55,83 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-19_01,2023-10-18_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 mlxlogscore=993 bulkscore=0 malwarescore=0 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
  definitions=main-2310190007
-X-Proofpoint-GUID: n2aFvESP-ekmGpSKgu-1r01yI1PXzw4b
-X-Proofpoint-ORIG-GUID: n2aFvESP-ekmGpSKgu-1r01yI1PXzw4b
+X-Proofpoint-GUID: Yq2AfOlhAYoIBciWxMaPxlaCO_aTQkPR
+X-Proofpoint-ORIG-GUID: Yq2AfOlhAYoIBciWxMaPxlaCO_aTQkPR
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to reduce needlessly high setup and teardown cost
-of iotlb mapping during live migration, it's crucial to
-decouple the vhost-vdpa iotlb abstraction from the virtio
-device life cycle, i.e. iotlb mappings should be left
-intact across virtio device reset [1]. For it to work, the
-on-chip IOMMU parent device could implement a separate
-.reset_map() operation callback to restore 1:1 DMA mapping
-without having to resort to the .reset() callback, the
-latter of which is mainly used to reset virtio device state.
-This new .reset_map() callback will be invoked only before
-the vhost-vdpa driver is to be removed and detached from
-the vdpa bus, such that other vdpa bus drivers, e.g. 
-virtio-vdpa, can start with 1:1 DMA mapping when they
-are attached. For the context, those on-chip IOMMU parent
-devices, create the 1:1 DMA mapping at vdpa device creation,
-and they would implicitly destroy the 1:1 mapping when
-the first .set_map or .dma_map callback is invoked.
+Device specific IOMMU parent driver who wishes to see mapping to be
+decoupled from virtio or vdpa device life cycle (device reset) can use
+it to restore memory mapping in the device IOMMU to the initial or
+default state. The reset of mapping is done per address space basis.
 
-This patchset is rebased on top of the latest vhost tree.
+The reason why a separate .reset_map op is introduced is because this
+allows a simple on-chip IOMMU model without exposing too much device
+implementation details to the upper vdpa layer. The .dma_map/unmap or
+.set_map driver API is meant to be used to manipulate the IOTLB mappings,
+and has been abstracted in a way similar to how a real IOMMU device maps
+or unmaps pages for certain memory ranges. However, apart from this there
+also exists other mapping needs, in which case 1:1 passthrough mapping
+has to be used by other users (read virtio-vdpa). To ease parent/vendor
+driver implementation and to avoid abusing DMA ops in an unexpacted way,
+these on-chip IOMMU devices can start with 1:1 passthrough mapping mode
+initially at the he time of creation. Then the .reset_map op can be used
+to switch iotlb back to this initial state without having to expose a
+complex two-dimensional IOMMU device model.
 
-[1] Reducing vdpa migration downtime because of memory pin / maps
-https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
+The .reset_map is not a MUST for every parent that implements the
+.dma_map or .set_map API, because there could be software vDPA devices
+(which has use_va=true) that don't have to pin kernel memory so they
+don't care much about high mapping cost during device reset. And those
+software devices may have also implemented their own DMA ops, so don't
+have to use .reset_map to achieve a simple IOMMU device model for 1:1
+passthrough mapping, either.
 
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+Acked-by: Eugenio Pérez <eperezma@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
-v3:
-- add .reset_map support to vdpa_sim
-- introduce module parameter to provide bug-for-bug compatiblity with older
-  userspace 
+ include/linux/vdpa.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-v2:
-- improved commit message to clarify the intended csope of .reset_map API
-- improved commit messages to clarify no breakage on older userspace
-
-v1:
-- rewrote commit messages to include more detailed description and background
-- reword to vendor specific IOMMU implementation from on-chip IOMMU
-- include parent device backend feautres to persistent iotlb precondition
-- reimplement mlx5_vdpa patch on top of descriptor group series
-
-RFC v3:
-- fix missing return due to merge error in patch #4
-
-RFC v2:
-- rebased on top of the "[PATCH RFC v2 0/3] vdpa: dedicated descriptor table group" series:
-  https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com/
-
----
-
-Si-Wei Liu (5):
-  vdpa: introduce .reset_map operation callback
-  vhost-vdpa: reset vendor specific mapping to initial state in .release
-  vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
-  vdpa/mlx5: implement .reset_map driver op
-  vdpa_sim: implement .reset_map support
-
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
- drivers/vdpa/mlx5/core/mr.c        | 17 +++++++++
- drivers/vdpa/mlx5/net/mlx5_vnet.c  | 26 ++++++++++++--
- drivers/vdpa/vdpa_sim/vdpa_sim.c   | 58 ++++++++++++++++++++++++------
- drivers/vhost/vdpa.c               | 31 ++++++++++++++++
- include/linux/vdpa.h               | 10 ++++++
- include/uapi/linux/vhost_types.h   |  2 ++
- 7 files changed, 132 insertions(+), 13 deletions(-)
-
+diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+index d376309b99cf..26ae6ae1eac3 100644
+--- a/include/linux/vdpa.h
++++ b/include/linux/vdpa.h
+@@ -327,6 +327,15 @@ struct vdpa_map_file {
+  *				@iova: iova to be unmapped
+  *				@size: size of the area
+  *				Returns integer: success (0) or error (< 0)
++ * @reset_map:			Reset device memory mapping to the default
++ *				state (optional)
++ *				Needed for devices that are using device
++ *				specific DMA translation and prefer mapping
++ *				to be decoupled from the virtio life cycle,
++ *				i.e. device .reset op does not reset mapping
++ *				@vdev: vdpa device
++ *				@asid: address space identifier
++ *				Returns integer: success (0) or error (< 0)
+  * @get_vq_dma_dev:		Get the dma device for a specific
+  *				virtqueue (optional)
+  *				@vdev: vdpa device
+@@ -405,6 +414,7 @@ struct vdpa_config_ops {
+ 		       u64 iova, u64 size, u64 pa, u32 perm, void *opaque);
+ 	int (*dma_unmap)(struct vdpa_device *vdev, unsigned int asid,
+ 			 u64 iova, u64 size);
++	int (*reset_map)(struct vdpa_device *vdev, unsigned int asid);
+ 	int (*set_group_asid)(struct vdpa_device *vdev, unsigned int group,
+ 			      unsigned int asid);
+ 	struct device *(*get_vq_dma_dev)(struct vdpa_device *vdev, u16 idx);
 -- 
 2.39.3
 
