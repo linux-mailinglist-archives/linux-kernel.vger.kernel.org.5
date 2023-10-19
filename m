@@ -2,198 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A587CEFFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647DD7CF00A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbjJSGRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        id S232732AbjJSGVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbjJSGRc (ORCPT
+        with ESMTP id S229894AbjJSGVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:17:32 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2055.outbound.protection.outlook.com [40.107.101.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1A0BE;
-        Wed, 18 Oct 2023 23:17:29 -0700 (PDT)
+        Thu, 19 Oct 2023 02:21:44 -0400
+Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021023.outbound.protection.outlook.com [52.101.62.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0400BE;
+        Wed, 18 Oct 2023 23:21:42 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lIiZTC8SUCZUuqu0tpLuReSNlmWb1y4B7u+5RAvtv1D2eVptQUEF0MWj3Z/g3kGy0/jttu5EsyTdayERkwgkH1yO/q5GcR91kUxrNPmJ8zSLOXhA3PXzETHfpEbJruMLMpUI0dY+z1e6jqM7mfwrZHpeLXO+/atoacbuTcTUxPrcEn9NLYwejfhqaai9hby6aY/S3E8dosoVoRKJ7nRm/Da8UXV1j4g1cBznzuFRJuPMaYgeuVPJihLDILmTUxVLLaqF3rq6qTwrMMBlCRoRTM+qq8y5E1E4mYYdmyruIcfWDBghLIFqRqb3E6nuecxzrCK42+8cnT5BmYXbjrPWDw==
+ b=nQRxoSVuoImzcCwcMByn/+lNnMYKmDFNImBotiCN4PNpYrXtjRmYrxG0pIW1qQt9e+rONjjWxbpWYfcqCcV//bUYzmxTjFBlefn2lmbsHyNYs+ysBJ/2A14su9UGeWYjaItQbdfDNBwyG1hcSbaAKzClEgfpl3rVgjVNSVoNMKz6752Gz2p6455nWEBa8udXP2Y/ifX3ajxBtcZZMQ36edLDt9wqWy6DU+GYff1TwC+CjBtH1zRiFGxU42PwuisBLxCLwlqfCqPq6qSjLVOyqL1BAiuEyWDyw9j0VJdsSeDU3Y9EVaoSa6iTfehzoFQz7oJsl7+sqWxGWDg/s1lUTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cBqT9M2T6hc5bLw1aqb0YQoiwrwBpKLwAnvUhAfWy8g=;
- b=W2KhIdmjCAn6cwbW3CFSzJkUeaOfsc+1LXp/MzLhNt+YI1zPpLY+HrvzeB8lwqHUPUlQBbdr/fotk3SEaGO7WG7c5kuDrHqxOZFFx5dpqhIBRCkHbws0jM6SMILyScleqLDR6HwZ+ussooq/OzXTS7tj7Pyix6PNfvKFiaeJYKuhNX+YwddVQdFP/kmopuYTYldCyFdVHkzKCBco3OPtdjzrUs2O1Gx21L6ZGmZDDzmmHzgpYX9B8xYpwVllOP/jmmq0RjpWLiUsbSTN+FbTjNef1JEL0YxAPCU1wjCQCwoB0+stj9Rwvewf0PPSEr80WyUYQR0Nq/vvSYEoM/qiRg==
+ bh=FpzY42v5Gx1+WSR8S0vCPRCDKHw2V2lwiJ+WjgqhPnw=;
+ b=iRSVH3LR8oQPTLUeStCX15QTNcstCoOC5fAQhNwEoN2d8CjWjpPPCdQIAS47975kNOPPMFd8C15nJjj7N7kf79RhtQA35YJMMnLOj9dEasZKQ0n+nb6PFD5443kds1+9B8BABOuDKU9j4y7/u9XNu529CkTi6j9551Lj3/Fbs6Hja/OF3aY9kq/Z7w+j4kab8OFHhdDPQNXdiJnVWz+QNji9kp+GFh/D12rSqH55R6kDqmXKJSeUPq15gJ1xy2ZupGKas4KrVWMGMJQF3DbMPL7S4eeMQYKGkXQkXvCprrrW1+vpv9QnEzI89OOC3P+25FFlCg5k9UTcPCmKhSMzzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cBqT9M2T6hc5bLw1aqb0YQoiwrwBpKLwAnvUhAfWy8g=;
- b=35iKzvkzgI9992OSfHS2FRca8buagfQy9pSWUtc8PUpG+Eru+fxSt/JWfNNWxOI7IAqo5DRYdmk5TuByaJ5OIuMgIwKgArTQJdebnSgq6XTU+Vk7aCje9XAJsREpc2mvz05Ea8f7UGRQjuMs1PYKO7N/wD9eLW14h5z1O57fHWs=
+ bh=FpzY42v5Gx1+WSR8S0vCPRCDKHw2V2lwiJ+WjgqhPnw=;
+ b=hMyh9KIs3mGi7Sd5fVKnYACob08HfWZifbt9UY8QFBDs/XoGvH+fcCjwwGwyiITjP/2WQroPkH5+bxjW8XHEIRFCoIZNqXgRkzf4xmvWg8dDxCDHhA/zXJ3QVj9jGd6C6hMWLpsW2T1yAxFVDGJ9oQE9TuAQdZ8Asy5A50fTO6g=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6) by
- CY5PR12MB6624.namprd12.prod.outlook.com (2603:10b6:930:40::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6907.21; Thu, 19 Oct 2023 06:17:27 +0000
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::4ead:d69:799a:281e]) by DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::4ead:d69:799a:281e%5]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
- 06:17:27 +0000
-Message-ID: <5f85eb72-3f34-4006-85ca-2a2181113008@amd.com>
-Date:   Thu, 19 Oct 2023 14:17:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Cc:     majun@amd.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v12 0/9] Enable Wifi RFI interference mitigation feature
- support
-To:     Ma Jun <Jun.Ma2@amd.com>, amd-gfx@lists.freedesktop.org,
-        lenb@kernel.org, johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com
-References: <20231017025358.1773598-1-Jun.Ma2@amd.com>
-Content-Language: en-US
-From:   "Ma, Jun" <majun@amd.com>
-In-Reply-To: <20231017025358.1773598-1-Jun.Ma2@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0030.apcprd02.prod.outlook.com
- (2603:1096:3:18::18) To DM4PR12MB6351.namprd12.prod.outlook.com
- (2603:10b6:8:a2::6)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from SA3PR21MB3915.namprd21.prod.outlook.com (2603:10b6:806:300::22)
+ by PH7PR21MB3118.namprd21.prod.outlook.com (2603:10b6:510:1d2::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.4; Thu, 19 Oct
+ 2023 06:21:39 +0000
+Received: from SA3PR21MB3915.namprd21.prod.outlook.com
+ ([fe80::f02:b965:d44e:40d]) by SA3PR21MB3915.namprd21.prod.outlook.com
+ ([fe80::f02:b965:d44e:40d%6]) with mapi id 15.20.6933.003; Thu, 19 Oct 2023
+ 06:21:39 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, peterz@infradead.org, stefan.bader@canonical.com,
+        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
+        cascardo@canonical.com, mikelley@microsoft.com, jgross@suse.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        kirill.shutemov@linux.intel.com, sashal@kernel.org,
+        matija.glavinic-pecotic.ext@nokia.com, linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH] x86/mm: Print the encryption features correctly when a paravisor is present
+Date:   Wed, 18 Oct 2023 23:20:30 -0700
+Message-Id: <20231019062030.3206-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0099.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::14) To SA3PR21MB3915.namprd21.prod.outlook.com
+ (2603:10b6:806:300::22)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6351:EE_|CY5PR12MB6624:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b615315-c40e-4d10-ff8b-08dbd06b10f7
+X-MS-TrafficTypeDiagnostic: SA3PR21MB3915:EE_|PH7PR21MB3118:EE_
+X-MS-Office365-Filtering-Correlation-Id: 09bfb691-0717-4ec6-22ec-08dbd06ba73b
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ii/tGh10VP9UnPb2VjGTclKf5AICZQUkYGgCjJiiGpBQc6BjUibPyx9Zq5Mx3HTdEi4gYZSD42H/0nP3D6ihNto6rTULo+aY4YvxepRdwz9cf3QfJFzuuxvDiOj/g6BIFpDyne+N8706DmGT2r/50JaPn6oxEyi5+E7YCxZFJ1EyuOKuXOy7mQjOzCSWQf4dOiJwSaGUezzahoIey9hqEZZQRZQFYXXrR9g1Kk8UgHwrx5CrOeDWO2Cloxb/knUuBqRlAEP+xIvwIhkiJF5QZbYfYGXBoweLpTuASgvNW04SKOW98kwnCpuQWKbN+hbrSuUrsG+Q1uc7hWxMy2/c+aLwOVWH3FK+2Q92W/jnSfH+B5X7At8RCDDPXRHo2RoPK66Uig1lthSKVSrSSoSwO5vNyC6yDu5rWLsfpVmBXMQ2OWySKhf56fkh+i/gd5sZFPiQdaAL0NSCF+WssRcVKEO2bSRsyEEaXYsrcJYZ6r210FdIYNBah+WhQcqYCW4q5MRcd6s8wIpuzjUX2yMICzmFFLwKp/oXTo2hjQ42SE+WjTJnL9vmnt2PgzeaYrXQ/Gk+c7f2Vth0I+8H/UYRKSDuWFe0AA2DFgaeAtkaI5r4EEqwknHMsyyWiWJMzKhF7OWWvWkXI9R8IDCpX1uPCOoOFQx6mh8+Em9novH0THA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6351.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(376002)(346002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(36756003)(31686004)(66476007)(6636002)(66556008)(31696002)(38100700002)(921005)(53546011)(316002)(6666004)(26005)(2616005)(83380400001)(6512007)(6506007)(66946007)(4326008)(8936002)(478600001)(8676002)(2906002)(7416002)(5660300002)(6486002)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: XoDJSNrIzBEFcDv9m8MoseEmr0xL067uj/l3pvLZWUfeniHUSQp2kxYtc60Yc5Uo/9AWP40WN/q19UJ9gFt1KOF8Z+TcBFjN/OaCbOfiOSQsD/7X9pt7LoxzhP1RY0qGqESjOHoI8ZbzJHq6Kt5DvZDfiqWYcsFHVtxwf4H/QeyLQJCbCG/7zZ4C7Gtm0O5/r9YVyE4IGpvoD87dkq/6b4zzNt3Q0Avttrzw8cPAyD1zFV3aUZ47894PmwbHCvppWKapFRg9uoO1CvrGufQREpRmWY9FBgQMXFU/lEGRrnAlNyc28359wTowUGade4Zd8Mt1EDg8+VKkhFgYLolLSpZOANHDVTHppIGCZ0qVHHFdA8Iq19l4cYL5IlKRBjN4NAmdtwFAMjjLriiAqO1zB4SsuXuzdM6Ed+GGtWT0RtS3JWhl7vV9CcbeMucw/VBnHl3UVc4BMvxPAQVSAaBtfkDCMs7vYob9nMQDYCfWXSEKZ0xVHREvp0ToiUHYGBcVn07IZxn3hMu2jYfFgiORqPfclFnAmEDp7DoAJBLvhFUocAZt0+7NOH6gD5quUcuu9ec6wIjSf40wu7Ik5YzRrZLdhy+l/Sk4UaAyP5HQ4Z1+uFhmmsDX9UMITQywkETMnZBhyTaTIxFr5xtLdjEHmw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3915.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(1700900044)(7416002)(6506007)(52116002)(2906002)(6666004)(10290500003)(6486002)(478600001)(4326008)(8676002)(5660300002)(8936002)(66556008)(316002)(66946007)(66476007)(41300700001)(36756003)(83380400001)(82950400001)(82960400001)(921005)(107886003)(2616005)(6512007)(86362001)(38100700002)(1076003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzErOVMrdFJib1FUTFZRR0xDMGRpTW16Tk1lUnEyL1FOSng3TTRmeGd4WFpj?=
- =?utf-8?B?eG1aTE0yL283aXJJZWVQNGdDUG5QUEE5Y1Q5OFU3amIzN0YwN0FHdXkvenpZ?=
- =?utf-8?B?MGxVQ3c3RXU2YnJHd1UyQWU5VnZYYUEza1Rkc25VbkJYMHZMakhYdXhwUXRy?=
- =?utf-8?B?dmhPSnNYMkNIWmhBMFBOL1RmU1N6Qk9aS3F5b3k5Um1yYmtrQXB2eGxNcU5a?=
- =?utf-8?B?Ukt0clJFYTZnZXFxL2RFWG9CRmxDQnRIMjlIU0hXQzY0SEZNaUpjT2xYMDZ4?=
- =?utf-8?B?aURDZWtJSENrMXZLYVlGakYrTURzYmRQYzU2WmRjSEJ6Q3gzV2d0ZkhjdFQ1?=
- =?utf-8?B?TmVyYkNsZ29BQ25LRnVidm9pZldMSWlGY1pFd29VN2pMVDNSdlFSUTErRCt0?=
- =?utf-8?B?WXZxY0toclFOZFVtbXJWaFJJNldJLzBUNDNqOFpKZS8xTjdITVFIRHBydlFH?=
- =?utf-8?B?MklpSVhQUHoxVTNpSXNWNU4rbHBWUmhDdEgzNjViYzFERDVFSEV1a3RQOXJF?=
- =?utf-8?B?cTlJOFdXM2NPa1FSVGpZWitialVrTENlRGsrclJvMnU2NW5qZnBWZEJpR25R?=
- =?utf-8?B?QXlDSEQreXA2YW56OFkwYTJkU2RxT25YNjBIUVVCM2UzVHVrU2RldXYyRmxv?=
- =?utf-8?B?RDU0d0c4d1pVWGNiRm5POXJ4a2xHZy9xTVpMeVNTZy9OK1AyalAxZ3VxUHNZ?=
- =?utf-8?B?M013VlRaNmlDN3YvKzZFYkZCcFJFMnFTMnB4cVFGeWRodCtKWnFQMWUydmhW?=
- =?utf-8?B?eS95Qzd4MDBXL2IrVkVlb2VKNXlzUlRkQnB6M1hDcVNackh1RVhxWTVhRGQ5?=
- =?utf-8?B?S0V3UHV2VHkzcHdYVW9ZcjBBazVncWJ3VEU1ZE9OdEROd2wzUU8zY05lbmxB?=
- =?utf-8?B?R1JyR2pLcGk4d2g1YWROcVVMcGE0ZVdheVB1NzNQNWE5TEhQT1F1NzlXQ1Bp?=
- =?utf-8?B?U0F1OXNWMUw5bW9tSkpZalFMSU1JTkdnQWIrVEJkQ2pDaXFzbUJwQ2gxcklM?=
- =?utf-8?B?MldMOVlIczl5QS9HeElWZmFUeWFsNEhUM1hDQXUzZGJBZW8xTU4zTnh1ekhN?=
- =?utf-8?B?TWNWNlptam96bnZtNnJoT09FRFpHQ09neThNYzIreHdOZStmbUoydnJoQjBh?=
- =?utf-8?B?K2h2RUYvdUo0dlZqdW0vZjFac3gzSE5HcG0yMjlYQnpnOUN5ZjU4V00yRjJV?=
- =?utf-8?B?NVVyTnNwZUJzZTYyczRISlJqNUE1MGcyZWVaV0RVQXFhMkgwUnY3cU16VThp?=
- =?utf-8?B?aWtUSFVxSEtEaWdlbFNiV3pFcVJaaGtocE9TUmwrNnBSOS8wdjd3MXhKU09r?=
- =?utf-8?B?MzVGeXFMSjNONDBPdUVpdXFRUFo5N0lab1lTQUhManMvSGZXVnJMa00xMHhQ?=
- =?utf-8?B?V3pSRkdIZ0JLZVpidGNUaVFoNHB2bHpkL0NoMXlEY1NQWWdZUThqVmtIMGly?=
- =?utf-8?B?T0tPTkhodG5NQk9yNDhac05uWVBXTktTSTdjbTlGQnUrSnZoKzRUZ1Rrd25V?=
- =?utf-8?B?bmtQclZESGpkOE5OQkYwNThMR0l4OXlCT2dmTHRFR3FjcGdnRStsNFlNQ3lM?=
- =?utf-8?B?ZEhUTDZ1ODQxeE1uNjkwMDhKVDQyQzd4ZjZIaDdFUjdPYThadjlicFRFZXdH?=
- =?utf-8?B?emhsTUVQeVpUdUtFeVFEMDhSTzdvZ0JYaytoWUhFRC9vUHNDTWdjOVYxcTBu?=
- =?utf-8?B?dGRhMjBTSDBZZFVFdFdGODZSbkJ2T0JjR0gwdjArdlowNFRPSlNpM2hGckx3?=
- =?utf-8?B?YkxoQmlDTkxxNmFiZ1Z1ZTFnTXlUeWcxM2dBVGh1aHpiZDBLb3YxeG8zL2ZE?=
- =?utf-8?B?SU00ak1CbmRuODFqSVNQL2VoVElDZmZLSjUvK3FySFlZQ2pTdUVyTkdNWFEv?=
- =?utf-8?B?R1ZwRWk4dC9nbTViUXIrSUVVamNMSi9Xd0s0NmsxWVFlUXMzVU9kdGFPSnUr?=
- =?utf-8?B?dFRpZk4yTzZVNFpBSGI5TG5OSHBaSzRVYm9BMGlTNENiY3lLM29WU3lkWDh1?=
- =?utf-8?B?cG94NmFOL2h1TkxLSW9helc0Q1ZEbzNIajBldGlIbngwc2NjSlNBWjYycmtY?=
- =?utf-8?B?ejdFTG4yek9CODBJS0pmZzZuVGo5dzVac0t2dHg1NFdEaUNuMTEyalcvRHNy?=
- =?utf-8?Q?W+ZWdbQWlmK9a/0CM6ApDJuBd?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b615315-c40e-4d10-ff8b-08dbd06b10f7
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6351.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?B9+DS0QLttk3OjBKgWMlO8gTh66WcYePKRq/H2lrslMRWI04zq4339IhbJsO?=
+ =?us-ascii?Q?Y12jmf86hTPXpC/GinCh/3l+UshOlfWgxWiN/OM7CneCfIivNlbYv7M2qXXC?=
+ =?us-ascii?Q?XuPXzjMN1rbiSp0mP58ofETRkNNeUzvyowaqGpQpRQM5XJa156R3DOTGGoAt?=
+ =?us-ascii?Q?6pMzQ9QsdXJ2x0DwZw9wPKMTWDrFTl3LVTge+VtFISXF9OvSIdTJObdrNDqT?=
+ =?us-ascii?Q?Va927bvjjZrt/91e2eJLLLWcbrH7N+P54qSW/Qo8S3EVVDkyavHj9FKtnrzS?=
+ =?us-ascii?Q?xGmTFt7Dhp0xaUAKiddi8KIWoMiULKxOHoWnmGK93dEYFJAF95DbMrWIL8rP?=
+ =?us-ascii?Q?unvppeKpW/Bm5NCaE26Xy3Hv9GZ5Ttsg/PoVWnQXVuFs8V4H9QOup8dhwKev?=
+ =?us-ascii?Q?R0HfXcmChB3PknxRiEnTgl5ld44CSib/VqBCO2UXR7TXmw0Eiiq30YxygeIa?=
+ =?us-ascii?Q?PZI1ukIxfKiYQUHGj0e5iX5R7nicJMqvP/zDsLCa8jzOChHkfPOs/8pfYpMc?=
+ =?us-ascii?Q?MGTxgY9TzZI2tFac2xu7V5uaP/n24zLnFufxPs+ZxofmeM00pNVafx1/pw0E?=
+ =?us-ascii?Q?YwqOoa2yFd7IxmjqiEsfM4XwJh/ROd5Q7i8y4t4G7+Ys6OX1BZmVCCaoX61X?=
+ =?us-ascii?Q?ua9IQ0GDWvVZF6ssxePhqB2UE3wOzNh0QT62aOmdS5bdrxxN05Guycx2bX6s?=
+ =?us-ascii?Q?PVFuRIUob6b//mXStY1YYCjY96DBSrjRg943olTVTpP/XOGI8eyfXMKKV5x6?=
+ =?us-ascii?Q?juqjFqphTGxGz7iyDVzy4hUZ75WbpAfAQaYOwdcSLJmrPznrEBLGGOoyFJuh?=
+ =?us-ascii?Q?AA/bnGHaoVOR4wt1pho/PhKPJ0pSRqRJZI2Zi1I4dL5LGXfnJDT+VO2pGX7l?=
+ =?us-ascii?Q?lD7BAMUsWI2bCOs0WXCMyOxIOJbpLpQjw5RH/aJ8vtQjrYl6foQv0JZBbW3O?=
+ =?us-ascii?Q?NLDzL+Z+b6tAdwCB2ynVBPmHkpn7OC2bRdvVfaCpFw2KGN9O7LFvQDe8/2zr?=
+ =?us-ascii?Q?IT6hYleFP2QUv/JfjVzYpM6eoyo5nIzoqVZEKZwVKIz3c1sDMscxnkQY8Uw2?=
+ =?us-ascii?Q?ktfhv61V3trByfyrRfQWNjKlzxbgfjuJIzY+UsNHGYpEWCO6qf+N2d3DS//a?=
+ =?us-ascii?Q?4FDbwAEf4sE33SOsCmjPuwRaftxrynyrP3IQhq+89VtGvYqe5Y+djXtZ4FuK?=
+ =?us-ascii?Q?7yntp223jw1WTHXogWgzYRkaIYoz/oHN+mgIMpCh+6x/Kvc/u7ZtWDLXQJcv?=
+ =?us-ascii?Q?dMmvkuqypXlgYL5H8NPvNVXym2NmKut8thh9/HkmTcecyJHLAzfGnflbT0nv?=
+ =?us-ascii?Q?Rue3+CbB9H0Lj0HPdwafsQId9lhvdqexMkuYdluZVVBOHIXW0wnSO1SwA9gp?=
+ =?us-ascii?Q?4zOvZah9vzXJFLikCg4Ln9CVttwyEmceeMdKG4pMM4aNxZfFBhUlCObmtntX?=
+ =?us-ascii?Q?oevXHsroa2XIqm8sITteuv6gux9jGlzunRxBaYHDXd40cYEmcZyGa6WCk1MD?=
+ =?us-ascii?Q?5dqeF41FttWwfHst78UgHXGeutdSMvVQZ8JcMqaUhcD9MichnDlnykunM0Ux?=
+ =?us-ascii?Q?8vyax/l7KjscxiKgmRl67ex103m9jJHHnhkkXEDdQu9ZJmipD5RJbn4TT2VB?=
+ =?us-ascii?Q?JOBmTuUo3MjsoDFkLv8zB8KR1wOIJ9d/5rpJZ+7tH6k6?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09bfb691-0717-4ec6-22ec-08dbd06ba73b
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3915.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 06:17:27.0476
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 06:21:39.3851
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4H7oxub/tPvGJovCWG0BtUXh6ypfXoyVox79Ye9oFsd9VBLguZySFA74kWpLkINC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6624
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: lPjYe38Wh8AhxCrjwA7VOUo5AWYf6J8qkH6ymGpYZO/yF4dN6u63kkfK+3Ij7TUQE1Lo5bhMohHq5ezZLFj5Ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR21MB3118
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping...
-Any other comments?
+Hyper-V provides two modes for running a TDX/SNP VM:
 
-Regards,
-Ma Jun
+1) In TD Partitioning mode (TDX) or vTOM mode (SNP) with a paravisor;
+2) In "fully enlightened" mode with the normal TDX shared bit or SNP C-bit
+   control over page encryption, and no paravisor.
 
-On 10/17/2023 10:53 AM, Ma Jun wrote:
-> Due to electrical and mechanical constraints in certain platform designs there
-> may be likely interference of relatively high-powered harmonics of the (G-)DDR
-> memory clocks with local radio module frequency bands used by Wifi 6/6e/7. To
-> mitigate possible RFI interference we introuduced WBRF(Wifi Band RFI mitigation Feature).
-> Producers can advertise the frequencies in use and consumers can use this information
-> to avoid using these frequencies for sensitive features.
-> 
-> The whole patch set is based on Linux 6.5.0. With some brief introductions
-> as below:
-> Patch1:      Document about WBRF
-> Patch2:      Core functionality setup for WBRF feature support
-> Patch3 - 4:  Bring WBRF support to wifi subsystem.
-> Patch5 - 9:  Bring WBRF support to AMD graphics driver.
-> 
-> Evan Quan (7):
->   cfg80211: expose nl80211_chan_width_to_mhz for wide sharing
->   wifi: mac80211: Add support for WBRF features
->   drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
->   drm/amd/pm: setup the framework to support Wifi RFI mitigation feature
->   drm/amd/pm: add flood detection for wbrf events
->   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.0
->   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-> 
-> Ma Jun (2):
->   Documentation/driver-api: Add document about WBRF mechanism
->   platform/x86/amd: Add support for AMD ACPI based Wifi band RFI
->     mitigation feature
-> 
->  Documentation/driver-api/wbrf.rst             |  71 +++
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  17 +
->  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c     | 214 +++++++++
->  drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  33 ++
->  .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  14 +-
->  .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  14 +-
->  .../pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |   3 +-
->  .../pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |   3 +-
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |   3 +-
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |   3 +
->  .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |   9 +
->  .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  60 +++
->  .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  |  59 +++
->  drivers/gpu/drm/amd/pm/swsmu/smu_internal.h   |   3 +
->  drivers/platform/x86/amd/Kconfig              |  15 +
->  drivers/platform/x86/amd/Makefile             |   1 +
->  drivers/platform/x86/amd/wbrf.c               | 422 ++++++++++++++++++
->  include/linux/acpi_amd_wbrf.h                 | 101 +++++
->  include/linux/ieee80211.h                     |   1 +
->  include/net/cfg80211.h                        |   8 +
->  net/mac80211/Makefile                         |   2 +
->  net/mac80211/chan.c                           |   9 +
->  net/mac80211/ieee80211_i.h                    |   9 +
->  net/mac80211/main.c                           |   2 +
->  net/mac80211/wbrf.c                           | 105 +++++
->  net/wireless/chan.c                           |   3 +-
->  27 files changed, 1180 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/driver-api/wbrf.rst
->  create mode 100644 drivers/platform/x86/amd/wbrf.c
->  create mode 100644 include/linux/acpi_amd_wbrf.h
->  create mode 100644 net/mac80211/wbrf.c
-> 
+In the first mode (i.e. paravisor mode), the native TDX/SNP CPUID
+capability is hidden from the VM, but cc_platform_has(CC_ATTR_MEM_ENCRYPT)
+and cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) are true; as a result,
+mem_encrypt_init() incorrectly prints the below message when an Intel TDX
+VM with a paravisor runs on Hyper-V:
+"Memory Encryption Features active: AMD SEV".
+
+Introduce x86_platform.print_mem_enc_feature_info and allow hv_vtom_init()
+to override the function pointer so that the correct message is printed.
+
+BTW, when a VBS (Virtualization-based Security) VM running on Hyper-V
+(the physical CPU can be an AMD CPU or an Intel CPU), the VM's memory is
+not encrypted, but mem_encrypt_init() also prints the same incorrect
+message. The introduction of x86_platform.print_mem_enc_feature_info can
+also fix the issue.
+
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+---
+
+Some open questions:
+
+1. Should we refactor the existing print_memory_encrypt_feature_info()
+into a TDX-specific function and an SEV-specific function?  The
+function pointer in x86_platform_ops would be initialized to a no-op
+function, and then early_tdx_init(), sme_enable() and hv_vtom_init()
+would fill it in accordingly.
+
+2. Should we rename "print_mem_enc_feature_info()" to
+"print_coco_feature_info()"?  CC_ATTR_GUEST_STATE_ENCRYPT (and
+CC_ATTR_GUEST_SEV_SNP?) may not look like *memory* encryption to me?
+
+ arch/x86/hyperv/ivm.c              | 11 +++++++++++
+ arch/x86/include/asm/mem_encrypt.h |  1 +
+ arch/x86/include/asm/x86_init.h    |  2 ++
+ arch/x86/kernel/x86_init.c         |  1 +
+ arch/x86/mm/mem_encrypt.c          |  4 ++--
+ 5 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+index e68051eba25a..fdc2fab0415e 100644
+--- a/arch/x86/hyperv/ivm.c
++++ b/arch/x86/hyperv/ivm.c
+@@ -450,6 +450,16 @@ static bool hv_is_private_mmio(u64 addr)
+ 	return false;
+ }
+ 
++static void hv_print_mem_enc_feature_info(void)
++{
++	enum hv_isolation_type type = hv_get_isolation_type();
++
++	if (type == HV_ISOLATION_TYPE_SNP)
++		pr_info("Memory Encryption Features active: AMD SEV\n");
++	else if (type == HV_ISOLATION_TYPE_TDX)
++		pr_info("Memory Encryption Features active: Intel TDX\n");
++}
++
+ void __init hv_vtom_init(void)
+ {
+ 	enum hv_isolation_type type = hv_get_isolation_type();
+@@ -479,6 +489,7 @@ void __init hv_vtom_init(void)
+ 	cc_set_mask(ms_hyperv.shared_gpa_boundary);
+ 	physical_mask &= ms_hyperv.shared_gpa_boundary - 1;
+ 
++	x86_platform.print_mem_enc_feature_info = hv_print_mem_enc_feature_info;
+ 	x86_platform.hyper.is_private_mmio = hv_is_private_mmio;
+ 	x86_platform.guest.enc_cache_flush_required = hv_vtom_cache_flush_required;
+ 	x86_platform.guest.enc_tlb_flush_required = hv_vtom_tlb_flush_required;
+diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+index 7f97a8a97e24..6e8050a9138e 100644
+--- a/arch/x86/include/asm/mem_encrypt.h
++++ b/arch/x86/include/asm/mem_encrypt.h
+@@ -19,6 +19,7 @@
+ 
+ #ifdef CONFIG_X86_MEM_ENCRYPT
+ void __init mem_encrypt_init(void);
++void print_mem_encrypt_feature_info(void);
+ #else
+ static inline void mem_encrypt_init(void) { }
+ #endif
+diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
+index 14b0562c1d8b..7798174d4b8d 100644
+--- a/arch/x86/include/asm/x86_init.h
++++ b/arch/x86/include/asm/x86_init.h
+@@ -291,6 +291,7 @@ struct x86_hyper_runtime {
+  * 				semantics.
+  * @realmode_reserve:		reserve memory for realmode trampoline
+  * @realmode_init:		initialize realmode trampoline
++ * @print_mem_enc_feature_info:	print the supported memory encryption features
+  * @hyper:			x86 hypervisor specific runtime callbacks
+  */
+ struct x86_platform_ops {
+@@ -309,6 +310,7 @@ struct x86_platform_ops {
+ 	void (*set_legacy_features)(void);
+ 	void (*realmode_reserve)(void);
+ 	void (*realmode_init)(void);
++	void (*print_mem_enc_feature_info)(void);
+ 	struct x86_hyper_runtime hyper;
+ 	struct x86_guest guest;
+ };
+diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
+index 6117662ae4e6..ccb53db1b51e 100644
+--- a/arch/x86/kernel/x86_init.c
++++ b/arch/x86/kernel/x86_init.c
+@@ -149,6 +149,7 @@ struct x86_platform_ops x86_platform __ro_after_init = {
+ 	.restore_sched_clock_state	= tsc_restore_sched_clock_state,
+ 	.realmode_reserve		= reserve_real_mode,
+ 	.realmode_init			= init_real_mode,
++	.print_mem_enc_feature_info	= print_mem_encrypt_feature_info,
+ 	.hyper.pin_vcpu			= x86_op_int_noop,
+ 	.hyper.is_private_mmio		= is_private_mmio_noop,
+ 
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 9f27e14e185f..8d37048bc1df 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -39,7 +39,7 @@ bool force_dma_unencrypted(struct device *dev)
+ 	return false;
+ }
+ 
+-static void print_mem_encrypt_feature_info(void)
++void print_mem_encrypt_feature_info(void)
+ {
+ 	pr_info("Memory Encryption Features active:");
+ 
+@@ -84,5 +84,5 @@ void __init mem_encrypt_init(void)
+ 	/* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+ 	swiotlb_update_mem_attributes();
+ 
+-	print_mem_encrypt_feature_info();
++	x86_platform.print_mem_enc_feature_info();
+ }
+-- 
+2.25.1
+
