@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243807CFD9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1D07CFDA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345848AbjJSPNT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 11:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S1345800AbjJSPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbjJSPNS (ORCPT
+        with ESMTP id S232841AbjJSPRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:13:18 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDDD11B;
-        Thu, 19 Oct 2023 08:13:16 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a82f176860so77674617b3.1;
-        Thu, 19 Oct 2023 08:13:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697728396; x=1698333196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RAUS/Zsfe7KDG2Vf3z9LFXu6s1gB7Lx5yORTguT/oaE=;
-        b=CkRj6mRKYpkaxSbVRaWNbGPCJI1zXt+xExD9xi6M6Ju4jfDKDtA8OFtkRLYkcziP3E
-         8zHctaE5wqoxLA0Iy/qAyaI9c9O9+AMybrLzpdMWgkbdW+X5l83gd3QwZJxKED328dsg
-         GVHzBLOd76/0+W9IMXwb0GMESFOwm6pdjOvehrvL9jzIDUiz6e6UQxSWPEIvqIUEtHBo
-         2E6l4b+gzYlGd4TS9e5NzoCkIfyKmB5XP6Lk33mPBVhoLy+NH/DzNLgqIQgvELMePoTM
-         XfiT4skyeKOFlcioYtOzt6oiLqHevbgkyokVEpY5nAiy1U0BVD7PCxo1ZwhW0udR7cVY
-         fKGQ==
-X-Gm-Message-State: AOJu0YwiKNTpcn9+0j3Wk+7s2+0IJTsMuB9IlA91pUgN5mN86hORqyQr
-        QoEq5SICdVkTwhUa68Ym4EsepMVVeY2+dQ==
-X-Google-Smtp-Source: AGHT+IGzNdbw1CC/Xk9MNJ9SNpIpBKJ2zSm8OuozagBHU3G8UeBUF7fmOPGSx8OOg4P8oOVKKJDR4w==
-X-Received: by 2002:a25:37c4:0:b0:d9a:d7a5:e445 with SMTP id e187-20020a2537c4000000b00d9ad7a5e445mr2489019yba.49.1697728395770;
-        Thu, 19 Oct 2023 08:13:15 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id z4-20020a25ad84000000b00d815cb9accbsm2114553ybi.32.2023.10.19.08.13.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 08:13:15 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a7e5dc8573so99518267b3.0;
-        Thu, 19 Oct 2023 08:13:15 -0700 (PDT)
-X-Received: by 2002:a0d:ea95:0:b0:59b:54b5:7d66 with SMTP id
- t143-20020a0dea95000000b0059b54b57d66mr2731653ywe.34.1697728395073; Thu, 19
- Oct 2023 08:13:15 -0700 (PDT)
+        Thu, 19 Oct 2023 11:17:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7088B11B;
+        Thu, 19 Oct 2023 08:17:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E51C433C7;
+        Thu, 19 Oct 2023 15:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697728659;
+        bh=WtVNBWC5iNjbnScpjiJDxp8GdsgsTgsH5bVGO2dnDFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ueOCtb8TLybx9AXSOcBSm2CkxjqD3rXqlLe1hBgQL4guFYt9A9ld77Tg2HjbC6I2O
+         6GlFAo/ZlGKnRsw3N3mRy0cvXRyzLjTlWP+VGrLngQMb3movYXiFNSxTSOzAU9U2mG
+         UoHaq0cADAyCel5zgFycAu8fqXLvYg0u/zeKKfgyF3JPWAGx7zN2CFhWPH1s2snv8M
+         X5cRVu/cCbZa5jN/INltP35xMFxOzRNYAFRbj0r1TWHKmkq6eHkRLkvRCg8ZVp7jCJ
+         2jTmgBsPOMXsx4+ot11p7+juPto3ClaY9SxL/ui8wZ8V0HQf3MO7wDKgU0q9AiQ//8
+         Fb/KK4JAtRLfg==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qtUmL-0005Sf-2m;
+        Thu, 19 Oct 2023 17:17:42 +0200
+Date:   Thu, 19 Oct 2023 17:17:41 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Pradeep Kumar Chitrapu <quic_pradeepc@quicinc.com>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] wifi: ath11k: fix temperature event locking
+Message-ID: <ZTFIlS79DclOOjrS@hovoldconsulting.com>
+References: <20231019104211.13769-1-johan+linaro@kernel.org>
+ <20231019104211.13769-2-johan+linaro@kernel.org>
+ <4233c8af-5911-40bf-b5ba-dd0a63863a45@quicinc.com>
 MIME-Version: 1.0
-References: <20230531111038.6302-1-francesco@dolcini.it> <CAMuHMdUkPiA=o_QLyuwsTYW7y1ksCjHAqyNSHFx2QZ-dP-HGsQ@mail.gmail.com>
- <ZTFFp8Yr7lq6HIab@francesco-nb.int.toradex.com>
-In-Reply-To: <ZTFFp8Yr7lq6HIab@francesco-nb.int.toradex.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 19 Oct 2023 17:13:01 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXtA3LNL6UkWyz6oytfNpSv77EShfF-uQvnPJktMUr40A@mail.gmail.com>
-Message-ID: <CAMuHMdXtA3LNL6UkWyz6oytfNpSv77EShfF-uQvnPJktMUr40A@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: serial: 8250_omap: add rs485-rts-active-high
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4233c8af-5911-40bf-b5ba-dd0a63863a45@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Franceso,
+On Thu, Oct 19, 2023 at 08:04:55AM -0700, Jeff Johnson wrote:
+> On 10/19/2023 3:42 AM, Johan Hovold wrote:
+> > The ath11k active pdevs are protected by RCU but the temperature event
+> > handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
+> > read-side critical section as reported by RCU lockdep:
+> 
+> How do I enable this? Just enable CONFIG_PROVE_RCU?
 
-On Thu, Oct 19, 2023 at 5:05 PM Francesco Dolcini <francesco@dolcini.it> wrote:
-> On Thu, Oct 19, 2023 at 12:09:06PM +0200, Geert Uytterhoeven wrote:
-> > On Wed, May 31, 2023 at 1:14 PM Francesco Dolcini <francesco@dolcini.it> wrote:
-> > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > >
-> > > Add rs485-rts-active-high property, this was removed by mistake.
-> > > In general we just use rs485-rts-active-low property, however the OMAP
-> > > UART for legacy reason uses the -high one.
-> > >
-> > > Fixes: 767d3467eb60 ("dt-bindings: serial: 8250_omap: drop rs485 properties")
-> > > Closes: https://lore.kernel.org/all/ZGefR4mTHHo1iQ7H@francesco-nb.int.toradex.com/
-> > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > ---
-> > > v2: removed reported-by
-> >
-> > Thanks for your patch, which is now commit 403e97d6ab2cb6fd
-> > ("dt-bindings: serial: 8250_omap: add rs485-rts-active-high")
-> > in v6.4-rc5.
-> >
-> > > --- a/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > +++ b/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > @@ -70,6 +70,7 @@ properties:
-> > >    dsr-gpios: true
-> > >    rng-gpios: true
-> > >    dcd-gpios: true
-> > > +  rs485-rts-active-high: true
-> >
-> > make dt_binding_check complains:
-> >
-> >     Documentation/devicetree/bindings/serial/8250_omap.yaml:
-> > rs485-rts-active-high: missing type definition
->
-> For some reasons it works for me (and worked when I did send the patch)
->
-> $ make dt_binding_check DT_SCHEMA_FILES=8250_omap.yaml
-> ...
->   HOSTCC  scripts/dtc/libfdt/fdt_overlay.o
->   HOSTCC  scripts/dtc/fdtoverlay.o
->   HOSTLD  scripts/dtc/fdtoverlay
->   LINT    Documentation/devicetree/bindings
-> invalid config: unknown option "required" for rule "quoted-strings"
-> xargs: /usr/bin/yamllint: exited with status 255; aborting
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml: ignoring, error in schema: properties: qcom,ls-fs-output-impedance-bp
-> /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/arm/vexpress-sysreg.yaml: ignoring, error in schema: properties: gpio-controller
-> /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/temperature/adi,ltc2983.yaml: ignoring, error in schema: patternProperties: ^thermistor@: properties: adi,excitation-current-nanoamp
-> /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml: ignoring, error in schema: patternProperties: ^channel@([0-9a-f])$: properties: adi,burnout-current-nanoamp
-> /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml: ignoring, error in schema: properties: adi,ext2-burnout-current-nanoamp
->   DTEX    Documentation/devicetree/bindings/serial/8250_omap.example.dts
->   DTC_CHK Documentation/devicetree/bindings/serial/8250_omap.example.dtb
->
->
-> any idea on what could be different between us?
+Yeah, via CONFIG_PROVE_LOCKING.
 
-Are you using the latest dt-schema?
+> Of course I'd also need to exercise the code path...
 
-Gr{oetje,eeting}s,
+Right, this one I hit when reading out the sensor temperature (e.g.
+using lm_sensors).
+ 
+> > +	rcu_read_lock();
+> > +
+> >   	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
+> >   	if (!ar) {
+> >   		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
+> 
+> aren't you missing an unlock() in this error path?
+> 
+> perhaps have a goto cleanup that does both the unlock() and the kfree()?
 
-                        Geert
+Bah, I am, thanks for catching that.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Spent too much time on scanning for further instances that I didn't
+check the first one properly. Sorry about that. Will send a v2.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Johan
