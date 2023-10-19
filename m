@@ -2,168 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA387CF734
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531227CF736
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbjJSLmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S1345372AbjJSLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbjJSLmY (ORCPT
+        with ESMTP id S235244AbjJSLma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:42:24 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290A69F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:42:22 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 9FFE53200976;
-        Thu, 19 Oct 2023 07:42:20 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 19 Oct 2023 07:42:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697715740; x=1697802140; bh=U2
-        gqYc9zqSX1Su7Bd7S3GZCjJ4GSS8Kq+u+LYXmTYRQ=; b=S9G5LX4fYsVuWGKoii
-        mBG0HcarkUtMhdoal9QD1/AfKxCwoltpxDFNrn7mrHuEmd0E0SWDeXFoVfdsogVP
-        p3MI1gej+pJ5un05zPJ3dXlBlpoVJrwjtJN37qpV3y/tnPmJeqlRjQueasGchLr1
-        1bTWz5ZWmHB8zPZA9YjvoSfS48PV8ypwbBonhHL/7Herfy/aocZSsJc3GatUrnNl
-        Qe2zP8m7t0eXIi4GLWrIP8NXsYV6ZuZedz0nPULxBt/37dgyYc7SP83B03p2wdU5
-        ifruX6vfR8V9iT5NRI3wrhWD8Aif5s0LZOD/mCqZnFKxlXem15RGA8MQPOJlp4V6
-        jUJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697715740; x=1697802140; bh=U2gqYc9zqSX1S
-        u7Bd7S3GZCjJ4GSS8Kq+u+LYXmTYRQ=; b=CDBLOJycnB+uz4LLx5DvS/P01SjEA
-        FAiRALNSsNQDpnRt39pgvZ/KlDtAo+caE+fOfTWTf2jSqU6tamHAK7VnWW0AUEMk
-        t+I730RNrpZSgf0jF938D09y8N1+Jzu9svYkIy56++pQBOOuRcuX87Ux0RJ0XgfJ
-        VURj3FjgIvhjTlZGaEgVVHslgkuz5auIgyIX50ABOi/j27abzxNp4ZmsYCVzW9KH
-        EazCH8TnDTWpOJGqe7ltZEZKGRUfGNvouguWCPzggbmPVAuiPUTkupGF3uAx0Ak9
-        Qb82rt0dSNlIuO99wX5X0vpVCoIKKaY3puq2XMGXslNrANLY/nZPaB+4g==
-X-ME-Sender: <xms:GxYxZdk3O7B3Mp2Kx5uyeqcnR4udpan9Lrc5J1PDNau1X7jAKV62vw>
-    <xme:GxYxZY3ZZS-iU5Y-5D-wootvjDVe_1P2Yaz_EHQVDrpDMXj65YC49Ugzz-nb11ITW
-    0IYfI1FRccV-5VG_tw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeigdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:GxYxZTqnLnsQLCOFL-NC2o3KudcqCegiDi8KDwijx6HvKE5SK13hRg>
-    <xmx:GxYxZdm7dhdz39mgXbdFmo7V5SKIGRFCPwNOE3MmKbJLr-cJBLBWZw>
-    <xmx:GxYxZb21okDJ3JyvcTu_MwTzX9Vz0vj-38U5eMBzIjsLKlI1UPj9qQ>
-    <xmx:HBYxZb-1aX_NFfG6Vu69nZIXBvGqZ3LdcpES1dpsgyeeQziDq28o0w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A6D0BB60089; Thu, 19 Oct 2023 07:42:19 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Thu, 19 Oct 2023 07:42:30 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1324D139;
+        Thu, 19 Oct 2023 04:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1697715748; x=1729251748;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=dGVV1XZ3kTX7Tv24pGahJ1gi4uw7pJN6njyEQsHMwIA=;
+  b=kcWq2VBJgij19qfb9OZuRvNUJgk/GztKJgxi+gCHZY4v1HOhsNHdLM0S
+   pbEB/ra030cEIBOMI6v2KH2XktCL7sGaIVnl/+TO4VuSXMRdsWq47yC0A
+   sPXxpdfQ9k+fcAwL57ahWPlh4JdOvxUGHUkKDpWvoySm1tISNHrfNmNfL
+   GvleN9SQJbAJI97kVM3JDqqmM0CZ9NaKbkg8anFXhFoYjt6Kw3rH7CMEu
+   dMRgjHQqjXmWkYNv+x/u1ImYPJUy5svz/P8xI7tlT7MqFIpnCWfDlQXjO
+   x9ZI05cwsU5FeQiDhPXiuCPLMKRgw/tfkaL8geu0Pj8aVZ4nJdiJsYBxX
+   g==;
+X-IronPort-AV: E=Sophos;i="6.03,237,1694728800"; 
+   d="scan'208";a="33551544"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 19 Oct 2023 13:42:25 +0200
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 8F44D280082;
+        Thu, 19 Oct 2023 13:42:25 +0200 (CEST)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Marek Vasut <marex@denx.de>, Robert Foss <rfoss@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-arm-msm@vger.kernel.org,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        freedreno@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over the DSI link power state
+Date:   Thu, 19 Oct 2023 13:42:27 +0200
+Message-ID: <1907377.IobQ9Gjlxr@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
+References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org> <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg> <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <6d3d4e4d-a2f6-493e-972c-a695efa37947@app.fastmail.com>
-In-Reply-To: <ZTEKabxNdegsbxyv@apocalypse>
-References: <cover.1697614386.git.andrea.porta@suse.com>
- <20231018122729.GA18556@willie-the-truck>
- <da4985cd-43db-4957-b841-7b8f6bf8f885@app.fastmail.com>
- <ZTEKabxNdegsbxyv@apocalypse>
-Date:   Thu, 19 Oct 2023 13:41:59 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Andrea della Porta" <aporta@suse.de>
-Cc:     "Will Deacon" <will@kernel.org>,
-        "Andrea della Porta" <andrea.porta@suse.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nik.borisov@suse.com, "Kees Cook" <keescook@chromium.org>
-Subject: Re: [PATCH 0/4] arm64: Make Aarch32 compatibility enablement optional at boot
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023, at 12:52, Andrea della Porta wrote:
-> On 14:44 Wed 18 Oct     , Arnd Bergmann wrote:
->> On Wed, Oct 18, 2023, at 14:27, Will Deacon wrote:
->> 
->> Right, I was going to reply along the same lines here: x86 is
->> a bit of a special case that needs this, but I believe all the
->> other architectures already guard the compat syscall execution
->> on test_thread_flag(TIF_32BIT) that is only set by the compat
->> binfmt loader.
->
-> Are you referring to the fact that x86 can switch at will between 32- and 64-
-> bit code?
+Hi,
 
-No.
+Am Donnerstag, 19. Oktober 2023, 13:19:51 CEST schrieb Dmitry Baryshkov:
+> On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrote:
+> > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
+> > > The MIPI DSI links do not fully fall into the DRM callbacks model.
+> >=20
+> > Explaining why would help
+>=20
+> A kind of explanation comes afterwards, but probably I should change
+> the order of the phrases and expand it:
+>=20
+> The atomic_pre_enable / atomic_enable and correspondingly
+> atomic_disable / atomic_post_disable expect that the bridge links
+> follow a simple paradigm: either it is off, or it is on and streaming
+> video. Thus, it is fine to just enable the link at the enable time,
+> doing some preparations during the pre_enable.
+>=20
+> But then it causes several issues with DSI. First, some of the DSI
+> bridges and most of the DSI panels would like to send commands over
+> the DSI link to setup the device. Next, some of the DSI hosts have
+> limitations on sending the commands. The proverbial sunxi DSI host can
+> not send DSI commands after the video stream has started. Thus most of
+> the panels have opted to send all DSI commands from pre_enable (or
+> prepare) callback (before the video stream has started).
+>=20
+> However this leaves no good place for the DSI host to power up the DSI
+> link. By default the host's pre_enable callback is called after the
+> DSI bridge's pre_enable. For quite some time we were powering up the
+> DSI link from mode_set. This doesn't look fully correct. And also we
+> got into the issue with ps8640 bridge, which requires for the DSI link
+> to be quiet / unpowered at the bridge's reset time.
 
-> Regarding the TIF_32BIT flag, thanks for the head-up. I still believe though
-> that this mechanism can somehow break down in the future, since prohibiting
-> 32 bit executable loading *and* blocking 32 bit compat syscall are two
-> separate path of execution, held together by the architecture prohibiting
-> to switch to A32 instructions by design. Breaking the first rule and embedding 
-> wisely crafted A32 instruction in an executable is easy, while the difficult
-> part is finding some 'reentrancy' to be able to do the execution state switch,
-> as pinted out in https://lore.kernel.org/lkml/ZTD0DAes-J-YQ2eu@apocalypse/.
-> I agree it's highly speculative and not something to be concerned right
-> now, it's just a head up, should the need arise in the future.
+There are also bridges (e.g. tc358767) which require DSI-LP11 upon bridge=20
+reset. And additionally this DSI-(e)DP bridge requires LP11 while accessing=
+=20
+DP-AUX channel, e.g. reading EDID. So bridges need at least some control ov=
+er=20
+DSI line state.
 
-There are (at least) five separate aspects to compat mode that are easy
-to mix up:
+> Dave has come with the idea of pre_enable_prev_first /
+> prepare_prev_first flags, which attempt to solve the issue by
+> reversing the order of pre_enable callbacks. This mostly solves the
+> issue. However during this cycle it became obvious that this approach
+> is not ideal too. There is no way for the DSI host to know whether the
+> DSI panel / bridge has been updated to use this flag or not, see the
+> discussion at [1].
+>=20
+> Thus comes this proposal. It allows for the panels to explicitly bring
+> the link up and down at the correct time, it supports automatic use
+> case, where no special handling is required. And last, but not least,
+> it allows the DSI host to note that the bridge / panel were not
+> updated to follow new protocol and thus the link should be powered on
+> at the mode_set time. This leaves us with the possibility of dropping
+> support for this workaround once all in-kernel drivers are updated.
 
-1. Instruction decoding -- switching between the modes supported by the
-   CPU (A64/A32/T32)
-2. Word size -- what happens to the upper 32 bits of a register in
-   an arithmetic operation
-3. Personality -- Which architecture string gets returned by the
-   uname syscall (aarch64 vs armv8) as well as the format of
-   /proc/cpuinfo
-4. system call entry points -- how a process calls into native or
-   compat syscalls, or possibly foreign OS emulation
-5. Binary format -- elf32 vs elf64 executables
+I want to use this series to support tc358767 properly, because=20
+pre_enable_prev_first is not enough, see AUX channel above. I hope I'll fin=
+d=20
+any time soon.
 
-On most architectures with compat mode, 4. and 5. are fundamentally
-tied together today: a compat task can only call compat syscalls
-and a native task can only call native syscalls. x86 is the exception
-here, as it uses different instructions (int80, syscall, sysenter)
-and picks the syscall table based on that instruction.
+Best regards,
+Alexander
 
-I think 1. and 2. are also always tied to 5 on arm, but this is
-not necessarily true for other architectures. 3. used to be tied
-to 5 on some architectures in the past, but should be independent
-now.
+>=20
+> > > The drm_bridge_funcs abstraction.
+> >=20
+> > Is there a typo or missing words?
+>=20
+> missing comma in front of The
+>=20
+> > > Instead of having just two states (off and on) the DSI hosts have
+> > > separate LP-11 state. In this state the host is on, but the video
+> > > stream is not yet enabled.
+> > >=20
+> > > Introduce API that allows DSI bridges / panels to control the DSI host
+> > > power up state.
+>=20
+> [1]
+> https://lore.kernel.org/dri-devel/6c0dd9fd-5d8e-537c-804f-7a03d5899a07@li=
+na
+> ro.org/
+> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > ---
+> > >=20
+> > >  drivers/gpu/drm/drm_mipi_dsi.c | 31 +++++++++++++++++++++++++++++++
+> > >  include/drm/drm_mipi_dsi.h     | 29 +++++++++++++++++++++++++----
+> > >  2 files changed, 56 insertions(+), 4 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/drm_mipi_dsi.c
+> > > b/drivers/gpu/drm/drm_mipi_dsi.c index 14201f73aab1..c467162cb7d8
+> > > 100644
+> > > --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> > > +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> > > @@ -428,6 +428,37 @@ int devm_mipi_dsi_attach(struct device *dev,
+> > >=20
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(devm_mipi_dsi_attach);
+> > >=20
+> > > +bool mipi_dsi_host_power_control_available(struct mipi_dsi_host *hos=
+t)
+> > > +{
+> > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > +
+> > > +     return ops && ops->power_up;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_control_available);
+> > > +
+> > > +int mipi_dsi_host_power_up(struct mipi_dsi_host *host)
+> > > +{
+> > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > +
+> > > +     if (!mipi_dsi_host_power_control_available(host))
+> > > +             return -EOPNOTSUPP;
+> > > +
+> > > +     return ops->power_up ? ops->power_up(host) : 0;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_up);
+> > > +
+> > > +void mipi_dsi_host_power_down(struct mipi_dsi_host *host)
+> > > +{
+> > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > +
+> > > +     if (!mipi_dsi_host_power_control_available(host))
+> > > +             return;
+> > > +
+> > > +     if (ops->power_down)
+> > > +             ops->power_down(host);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_down);
+> > > +
+> >=20
+> > If this API is supposed to be used by DSI devices, it should probably
+> > take a mipi_dsi_device pointer as a parameter?
+>=20
+> Ack.
+>=20
+> > We should probably make sure it hasn't been powered on already too?
+>=20
+> Ack, I can add an atomic count there and a WARN_ON. However I don't
+> think that it is a real problem.
+>=20
+> > Maxime
+>=20
+> --
+> With best wishes
+>=20
+> Dmitry
 
->> Doing the reverse is something that has however come up in the
->> past several times and that could be interesting: In order to
->> run userspace emulation (qemu-user, fex, ...) we may want to
->> allow calling syscalls and ioctls for foreign ABIs in a native
->> task, and at that point having a mechanism to control this
->> capability globally or per task would be useful as well.
->> 
->> The compat mode (arm32 on arm64) is the easiest case here, but the
->> same thing could be done for emulating the very subtle architecture
->> differences (x86-64 on arm64, arm64 on x86_64, arm32 on x86-compat,
->> or any of the above on riscv or  loongarch).
->
-> Really interesting, Since it's more related to emulation needs (my patch
-> has another focus due to the fact that A64 can execute A32 natively),
-> I'll take a look at this separately.
 
-A64 mode (unlike some other architectures, notably mips64) cannot
-execute A32 or T32 instructions without a mode switch, the three are
-entirely incompatible on the binary level.
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
-Many ARMv8-CPUs support both Aarch64 mode and Aarch32 (A32/T32),
-but a lot of the newer ones (e.g. Apple M1/M2, Cortex-R82 or
-Cortex-A715) only do Aarch64 and need user-space emulation to run
-32-bit binaries.
 
-    Arnd
