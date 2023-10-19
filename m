@@ -2,317 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 785F77CF14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153937CEFE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344856AbjJSHbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
+        id S232797AbjJSGLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbjJSHbs (ORCPT
+        with ESMTP id S232782AbjJSGK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:31:48 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2082.outbound.protection.outlook.com [40.107.100.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34319F;
-        Thu, 19 Oct 2023 00:31:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aEzKdbJ+HM6ewKS1jwuUmi86JaUmfgPoLvGhWVE0bRBRKbfAm3HLSgzQCU7hzwVhGjFCo9FYBn71jMe55F3hAzzcDBCYaFbO13Rm6uYVKO8Hkf0o9ocmfBs1xcUQ2pbw+EdTP2tApO2pj/QRVEueyNe7N2iiN4gAGam2CdIGqNXg6WPLdMwMdo9ZBDbkb3Ktp2VKqQuKBFFRW453TYoHuFZHZz8dU+HJlbCM/hSH3GH1dpUmV4UsyEgobvcHptbWDFnTxCWYMo3ra7z2+Cnv8z7R6NrBJWA3CO+lJ4h5qrGtdkYr4qpsi9+dtxe8NUeMNKmk/IBbSPRle1dQi8JqCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EduItXhT4mFITPfq8eYZO2pXMdqsElIyXRALgboTp1A=;
- b=LVaGZfuhG4oYuXp+qFhCCv6QzgJs5T2WqYV0ycvGDxxQ6R7hJ/mqWusEEWc58o1eZW/V6fMGkjEKsIEBVzCVdtGHUq68DwbwM/IL0etSVJ8SIayJh88eWtKDyHxthMaxedm5qkIeVlfnYDOHJW3pHJeYtH3h2mxKxtH/D95cL/fl9WpfXwHfxmDgyKyIE4iKLzVxI/vrBRpJfMgV4vcCeipB9TXZ6tT7IbhsX1NLiZUTbTnlzavARYu+sSsYTZwDGeA3Mme91C0B/1geJVTYW9mLp2bYQy8U1eAof0EhDDgH3JhKYsochxMimeP6OP1+7ICmqaCAMK1h9VMSus6W3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EduItXhT4mFITPfq8eYZO2pXMdqsElIyXRALgboTp1A=;
- b=LsHeqPqPQcpkvDKB3AE6rXdQcRE/n9JkHy5T94L9ypZ+fPVK/KyAkaYeo+BASw8f6XtdXyb/KUaRE5PzcxOJ7U50RS1aqP/1UahVksa3gAGkh8ocCKQivYDQMoqK/AFVCHundg59cifrAKlEzC9aCWhndiXzRbE9eAllghhZ4xQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by BY5PR17MB4002.namprd17.prod.outlook.com (2603:10b6:a03:23a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.40; Thu, 19 Oct
- 2023 07:31:41 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::3cf6:989a:f717:7c20]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::3cf6:989a:f717:7c20%4]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
- 07:31:41 +0000
-Date:   Tue, 17 Oct 2023 22:47:36 -0400
-From:   Gregory Price <gregory.price@memverge.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        akpm@linux-foundation.org, sthanneeru@micron.com,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>, Yang Shi <shy828301@gmail.com>
-Subject: Re: [RFC PATCH v2 0/3] mm: mempolicy: Multi-tier weighted
- interleaving
-Message-ID: <ZS9HSIrblel39qrt@memverge.com>
-References: <20231009204259.875232-1-gregory.price@memverge.com>
- <87o7gzm22n.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZS3jQRnX4VIdyTL5@memverge.com>
- <87pm1cwcz5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZS33ClT00KsHKsXQ@memverge.com>
- <87edhrunvp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87edhrunvp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: PH8PR07CA0015.namprd07.prod.outlook.com
- (2603:10b6:510:2cd::20) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+        Thu, 19 Oct 2023 02:10:58 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF79DD41;
+        Wed, 18 Oct 2023 23:00:52 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39J5us2D010270;
+        Thu, 19 Oct 2023 06:00:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yEs83CizwsCUUmwsNRS7K28ck8e0QTq0MmsowQn4Fmg=;
+ b=KS7OoGML0uLkmpEv6yY+K1kdqC7oeyzZbV7V0lHqYPH7/HG8iOGNbJENG6z7maWdZRNJ
+ GM26mQZdCkRNykFyU15udM1dTh08Kda6zNK7TptaBJejhFZ549/E5KOGVFI1k1p3NhPT
+ vjVb502zMUMq8gERyaUf7Fr5NY5WXW5nomYOoghloDm0J7qAt8IHm8z3GnKKLezSeBoL
+ beaXQbc8e77d1yfKIlY+c6cAsppLmY5Clg/opKa8GBnerdqHWkbgRRncHq6NCkH9L9su
+ 42CKzqWW0gow6f3cDI8GBRRUpCq/sjipdp/y6IWfIEttWglscrzY/hjGD1I7zxfdgP/Z CA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tth2f1r88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 06:00:46 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39J60jIs009583
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 06:00:45 GMT
+Received: from [10.253.33.40] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
+ 2023 23:00:43 -0700
+Message-ID: <c383d2b5-b2db-4f27-a737-422a126293e0@quicinc.com>
+Date:   Thu, 19 Oct 2023 14:00:41 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|BY5PR17MB4002:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ada4090-7b2e-4d56-4c10-08dbd0756faf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pHQ8a/ivJPn1+jscygJfgn722bLbfBlwUStcSO2gkwX0UVv294jSj6GrwsFcZmLeHHy6vvMEkH5m0pK/G5eEdhOFWdS15sWamxAbQSmCN5EgxSbvA9+4KEwRBakED/2APWkze/qom+CO6fT+lqYybBd14EdIaz+JB950J0fqWv665KZPvsIulR72woHu+vMWGwDh+KrpcTqmXeKm087VsspSe2Tm4W6/uZovc+rVi6h7wKW4k8p0hfKFXX0GphiJGTIJU1RNh6zVO5QccX4D2djDVOB65N3141bhLVcsumomwsu+3E7LsP1mpFN8fgyKyR5jtJEmIHN7v81eW4EbnN6wzYpnYeKc9+kxxRV952RvxBegsT+OnIkyApKtP+SqGWDdKCCbO9c59uK6NKQsFTJ1o11DImfCVjD6vwCKG9zH4J7YlkmLtiwXPE39F7Acn27zbdM1OfwmzXWtM9kKNqV0OXsbVNnB7yV/svQkYjzB3/bxnZVVONfBN5lX1sancKPv3SumQGFXORLXteJ5MVJVFTBDvpp15jqkjGihmQGvD3CddbOhT6G29nRZ3zk0CLdDDywA+tcyvUs9eLL3Q2Ij8xY0YljdrrVTBq1+PtEZtEPV5zny6benwOjdD6ll
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(136003)(39840400004)(366004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(83380400001)(54906003)(38100700002)(2616005)(6512007)(36756003)(41300700001)(316002)(2906002)(86362001)(44832011)(6916009)(66556008)(7416002)(66476007)(66946007)(5660300002)(8936002)(4326008)(8676002)(478600001)(6666004)(6506007)(6486002)(26005)(16393002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xfCzuQA5LxDtvlscESE9Q7AlvCi+Hrl0VIt8bTmfC2FDLn9Ed5u8vkHMCBlR?=
- =?us-ascii?Q?ewjrIMoYGQBD0JfJefsvkayGB3rwFKkCZHCi6VE/iF5OaOVKjfucmHD0uJEH?=
- =?us-ascii?Q?O5brRUILWDZ5AzdtmJn9cRjAEeHb8xhkmjA0ISLeSQvzrFSHPy2y6nnX6g4H?=
- =?us-ascii?Q?qZhbXhqVZlINyY2WQN5xtvSmjYQTZ3K9eIPYa7qgeomXRim1r5u2HVS2K0Eq?=
- =?us-ascii?Q?ZLyeHtSq3pxNBkoz1uLMFhh68GpG9ZDD/gIlnrvyKuF408sLBCnI82O/kafB?=
- =?us-ascii?Q?ZvqrTaylntJGVDYn1+Bcq4yT9lXqPqhsu9p046Gfi8VuUntUSLkBXvY/igR9?=
- =?us-ascii?Q?342uCprdNd317s86qX20kmhBVNg4ZrHfbh+I01CYobpfihyzrini34+CMjIL?=
- =?us-ascii?Q?JDyM5ItorB6gkU4vt2NEdoH2fGybyaPR9U+0S3Y8b7JJJAipF4LNbhkeAsDZ?=
- =?us-ascii?Q?h4vxscliKkNLeGukaIuj9Yq1yKGv9gi3AgTCo3zaLLIKLspvTenIlS3Hyd3p?=
- =?us-ascii?Q?34T5tbjxupQpx4ltRzgJ79jEUkGQ45vNh3Nkz3p23j25iBCJRazQ5mO5GRed?=
- =?us-ascii?Q?uiXpFizzjJ7LBxh4KHZNodDP+iEOgOtnRZnhu2da2E99917lwRwKlWanLPxs?=
- =?us-ascii?Q?Tvdnhpsk/Q8FUp25rF+ANPNh907GpY3g13auC4a6hSzekCV4tSJsm9HM3nVs?=
- =?us-ascii?Q?p10YSe+zdjIoX/pxtVXx9zc1NM+EZzIwfXXArgTIr9XAIAxOWr/tg4T73dHe?=
- =?us-ascii?Q?LsZsbwlYLDr8Yzxu57l4Z3E9kdXLLXYAvaVd2OPuIVqWh9Q2QQCADsXeM09k?=
- =?us-ascii?Q?0dVGrhLVlk4vgCVDSYD+Dh5RuwXO/d1odrJU7gMwxMSdp01xk5nyvFWo5pjW?=
- =?us-ascii?Q?oJwsfLEWZ4Y1tBPmFjFDeqL3PtaNoVU3vwZR315YhHa/99JKap9vyVVrXMs+?=
- =?us-ascii?Q?st9ubqQ+jCtHrcqwaJzevZSXURk8FqcqKg4xn5tkEaLcC4fGMKHi9NY79gKI?=
- =?us-ascii?Q?hUiueSx0BBsCLBxFP3h8a3qKgq9s5mnWtzHPY7fMvYDrd0HpQaiVebLjzHu7?=
- =?us-ascii?Q?03XNepippapVUIhMigNI7NI23M2O+ikMuy+LkjFe2SZGjK0uDXaWkjwsR2mR?=
- =?us-ascii?Q?+5qUwpkYuWobv/KBTkhPPp7pybd8rdY+cC4ss0zuzsIWXuhtPDxaeLMHaygh?=
- =?us-ascii?Q?9D8TfSL7eNP4ph0EZaQy40q7nMYM3MnuXefJ7MZNGPniNvRbtjwzndi9J/lz?=
- =?us-ascii?Q?rKWhTa3X0Ip3DBSI8/szsWUTuXdyHHyPBSbbz02KdFu2J/pRGNeqoPjS7Eru?=
- =?us-ascii?Q?K2/IHecRcZg56zYVEHJZ9AW/n49yXuEuDblulrQTtvm3T6E1w1KcVwCAZNkq?=
- =?us-ascii?Q?YBTCh9mpMMn/DlGvDwVFOEdLWglH4YcJeLwv6L/B0Hma95+UIVYDuqGoKHF9?=
- =?us-ascii?Q?Cb1DNmrSyv4tkHEn5OO/hLX8bNGlgDZaHHiiX57KD/UUG4xuQp1SPbvm+ik1?=
- =?us-ascii?Q?q/BBAU3eNMm88TmA+d1f+TXKJpj/BF5r7fHnQEkeXYB+E2qmsDlC4LQQ0+3f?=
- =?us-ascii?Q?jLXvuuUt71d7QcX7Relfb93dNG2Ukzop0GP44JG81anudiGQAGk6Nts5wnoF?=
- =?us-ascii?Q?Zg=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ada4090-7b2e-4d56-4c10-08dbd0756faf
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 07:31:41.3094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L9KMUyFp51zwM9+ldtCl9bYTTh4s5RwGOWL6OFK3hQgDHCfuKRpX+hhK5PKT2eqZKNj8BiZnbcs6Fo2EMfyJbIzE77nerAAgkObjl57k33w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR17MB4002
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem
+ support
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
+References: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
+ <20230808075103.GD4990@thinkpad>
+ <be205d43-b558-47eb-0250-b7415474b6e9@quicinc.com>
+ <20230808105928.GF4990@thinkpad>
+ <e3a206e7-f36b-d896-20f7-4e35b9743c1d@quicinc.com>
+ <20231017075035.GB5274@thinkpad>
+ <b7a35d1e-85e2-4c60-a049-e6234d6431df@quicinc.com>
+ <20231018130843.GB47321@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231018130843.GB47321@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6c9CV1FVgzx0EXk0-ObvtStiVePx08xj
+X-Proofpoint-GUID: 6c9CV1FVgzx0EXk0-ObvtStiVePx08xj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_04,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 clxscore=1015
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190052
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:28:42PM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
-> > Were you suggesting that weights should actually be part of
-> > drivers/base/node.c?
-> 
-> Yes.  drivers/base/node.c vs. memory tiers.
+
+On 10/18/2023 9:08 PM, Manivannan Sadhasivam wrote:
+> On Wed, Oct 18, 2023 at 09:52:55AM +0800, Qiang Yu wrote:
+>> On 10/17/2023 3:50 PM, Manivannan Sadhasivam wrote:
+>>> On Wed, Aug 09, 2023 at 11:42:39AM +0800, Qiang Yu wrote:
+>>>> On 8/8/2023 6:59 PM, Manivannan Sadhasivam wrote:
+>>>>> On Tue, Aug 08, 2023 at 04:53:32PM +0800, Qiang Yu wrote:
+>>>>>> On 8/8/2023 3:51 PM, Manivannan Sadhasivam wrote:
+>>>>>>> On Tue, Aug 08, 2023 at 10:03:35AM +0800, Qiang Yu wrote:
+>>>>>>>> Add generic info for SDX75 based modems. SDX75 takes longer than expected
+>>>>>>>> (default, 8 seconds) to set ready after reboot. Hence add optional ready
+>>>>>>>> timeout parameter to wait enough for device ready as part of power up
+>>>>>>>> sequence.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>>>>>>> ---
+>>>>>>>>      drivers/bus/mhi/host/init.c        |  1 +
+>>>>>>>>      drivers/bus/mhi/host/main.c        |  7 ++++++-
+>>>>>>>>      drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+>>>>>>>>      drivers/bus/mhi/host/pm.c          |  6 +++++-
+>>>>>>>>      include/linux/mhi.h                |  4 ++++
+>>>>>>>>      5 files changed, 38 insertions(+), 2 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+>>>>>>>> index f78aefd..65ceac1 100644
+>>>>>>>> --- a/drivers/bus/mhi/host/init.c
+>>>>>>>> +++ b/drivers/bus/mhi/host/init.c
+>>>>>>>> @@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
+>>>>>>>>      	if (!mhi_cntrl->timeout_ms)
+>>>>>>>>      		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
+>>>>>>>> +	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
+>>>>>>>>      	mhi_cntrl->bounce_buf = config->use_bounce_buf;
+>>>>>>>>      	mhi_cntrl->buffer_len = config->buf_len;
+>>>>>>>>      	if (!mhi_cntrl->buffer_len)
+>>>>>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>>>>>> index 74a7543..8590926 100644
+>>>>>>>> --- a/drivers/bus/mhi/host/main.c
+>>>>>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>>>>>> @@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+>>>>>>>>      				    u32 mask, u32 val, u32 delayus)
+>>>>>>>>      {
+>>>>>>>>      	int ret;
+>>>>>>>> -	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
+>>>>>>>> +	u32 out, retry;
+>>>>>>>> +	u32 timeout_ms = mhi_cntrl->timeout_ms;
+>>>>>>>> +	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
+>>>>>>>> +		timeout_ms = mhi_cntrl->ready_timeout_ms;
+>>>>>>> Instead of handling the timeout inside mhi_poll_reg_field(), you should pass the
+>>>>>>> appropriate timeout value to this function.
+>>>>>> OK, will do.
+>>>>>>>> +
+>>>>>>>> +	retry = (timeout_ms * 1000) / delayus;
+>>>>>>>>      	while (retry--) {
+>>>>>>>>      		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
+>>>>>>>>      		if (ret)
+>>>>>>>> diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+>>>>>>>> index fcd80bc..9c601f0 100644
+>>>>>>>> --- a/drivers/bus/mhi/host/pci_generic.c
+>>>>>>>> +++ b/drivers/bus/mhi/host/pci_generic.c
+>>>>>>>> @@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
+>>>>>>>>      	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
+>>>>>>>>      };
+>>>>>>>> +static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
+>>>>>>>> +	.max_channels = 128,
+>>>>>>>> +	.timeout_ms = 8000,
+>>>>>>>> +	.ready_timeout_ms = 50000,
+>>>>>>>> +	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
+>>>>>>>> +	.ch_cfg = modem_qcom_v1_mhi_channels,
+>>>>>>>> +	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
+>>>>>>>> +	.event_cfg = modem_qcom_v1_mhi_events,
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>>      static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+>>>>>>>>      	.max_channels = 128,
+>>>>>>>>      	.timeout_ms = 8000,
+>>>>>>>> @@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+>>>>>>>>      	.event_cfg = modem_qcom_v1_mhi_events,
+>>>>>>>>      };
+>>>>>>>> +static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
+>>>>>>>> +	.name = "qcom-sdx75m",
+>>>>>>>> +	.fw = "qcom/sdx75m/xbl.elf",
+>>>>>>>> +	.edl = "qcom/sdx75m/edl.mbn",
+>>>>>>>> +	.config = &modem_qcom_v2_mhiv_config,
+>>>>>>>> +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>>>>>>> +	.dma_data_width = 32,
+>>>>>>>> +	.sideband_wake = false,
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>>      static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+>>>>>>>>      	.name = "qcom-sdx65m",
+>>>>>>>>      	.fw = "qcom/sdx65m/xbl.elf",
+>>>>>>>> @@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>>>>>>>>      		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+>>>>>>>>      	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+>>>>>>>>      		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
+>>>>>>>> +	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
+>>>>>>>> +		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
+>>>>>>>>      	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
+>>>>>>>>      		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+>>>>>>>>      	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
+>>>>>>>> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+>>>>>>>> index 8a4362d..6f049e0 100644
+>>>>>>>> --- a/drivers/bus/mhi/host/pm.c
+>>>>>>>> +++ b/drivers/bus/mhi/host/pm.c
+>>>>>>>> @@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
+>>>>>>>>      int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
+>>>>>>>>      {
+>>>>>>>>      	int ret = mhi_async_power_up(mhi_cntrl);
+>>>>>>>> +	u32 timeout_ms;
+>>>>>>>>      	if (ret)
+>>>>>>>>      		return ret;
+>>>>>>>> +	/* Some devices need more time to set ready during power up */
+>>>>>>>> +	timeout_ms = mhi_cntrl->ready_timeout_ms ?
+>>>>>>>> +		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
+>>>>>>> Since you are using this extended timeout value in a couple of places (not just
+>>>>>>> for checking READY_STATE), it is better to use the existing "timeout_ms"
+>>>>>>> parameter.
+>>>>>>>
+>>>>>>> - Mani
+>>>>>> We use ready_timeout_ms here is because READY_STATE is polled in a
+>>>>>> workqueue,  in parallel with waiting valid EE.
+>>>>>>
+>>>>>> That means we start to wait valid EE and poll ready like at same time
+>>>>>> instead of starting to wait EE after ready state.
+>>>>>>
+>>>>>> Thus the total time it takes to wait valid EE is about the time for polling
+>>>>>> ready.
+>>>>>>
+>>>>> Yes, but why can't you still increase "timeout_ms" for SDX75 and use the same?
+>>>>>
+>>>>> Btw, please do not send another version while the discussion is going on for the
+>>>>> current one.
+>>>>>
+>>>>> - Mani
+>>>> SDX75 only needs 50 seconds when setting ready for the first time after
+>>>> power on. Other state transitions
+>>>>
+>>>> is expected to wait only 8 seconds. If we use 50s for every state
+>>>> transition, it's OK but not friendly in some cases.
+>>>>
+>>>>
+>>>> For example, host is resuming from suspend, but device has already crashed
+>>>> and tansferred to Sahara mode when
+>>>>
+>>>> in suspended state. Thus host must wait M0 event timeout, and then reinit
+>>>> mhi and tranfer to SBL state in recovery
+>>>>
+>>>> process. If we set mhi_cntrl->timeout_ms=50s, we have to wait 50s to collect
+>>>> crash dump after seeing resume fail log.
+>>>>
+>>> Hmm. Can't you fix the firmware? Taking 50s to bootup doesn't look good from
+>>> user perspective.
+>>>
+>>> - Mani
+>>   It is a firmware limitation and we can't fix it now.
+> Okay. Then I'm fine with this workaround.
 >
-
-Then yes I agree this can and probably should be placed there,
-especially since I see accessor details are now being exposed at that
-level, which can be used to auto-generate weights (assuming HMAT/CDAT
-data exposed by devices is actually accurate).
-
-> > Assuming this is your meaning, I agree and I will pivot to this.
-> 
-> Can you give a not-so-abstract example?  For example, on a system with
-> node 0, 1, 2, 3, memory tiers 4 (0, 1), 22 (2, 3), ....  A workload runs
-> on CPU of node 0, ...., interleaves memory on node 0, 1, ...  Then
-> compare the different behavior (including memory bandwidth) with node
-> and memory-tier based solution.
-
-ah, I see.
-
-Example 1: A single-socket system with multiple CXL memory devices
-===
-CPU Node: node0
-CXL Nodes: node1, node2
-
-Bandwidth attributes (in theory):
-node0 - 8 channels - ~307GB/s
-node1 - x16 link - 64GB/s
-node2 - x8 link - 32GB/s
-
-In a system like this, the optimal distribution of memory on an
-interleave for maximizing bandwidth is about 76%/16%/8%.
-
-for the sake of simplicity:  --weighted-interleave=0:76,1:16,0:8
-but realistically we could make the weights sysfs values in the node
-
-Regardless of the mechanism to engage this, the most effective way to
-capture this in the system is by applying weights to nodes, not tiers.
-If done in tiers, each node would be assigned to its own tier, making
-the mechanism equivalent. So you might as well simplify the whole thing
-and chop the memtier component out.
-
-Is this configuration realistic? *shrug* - technically possible. And in
-fact most hardware or driver based interleaving mechanisms would not
-really be able to manage an interleave region across these nodes, at
-least not without placing the x16 driver in x8 mode, or just having the
-wrong distribution %'s.
-
-
-
-Example 2: A dual-socket system with 1 CXL device per socket
-===
-CPU Nodes: node0, node1
-CXL Nodes: node2, node3 (on sockets 0 and 1 respective)
-
-Bandwidth Attributes (in theory):
-nodes 0 & 1 - 8 channels - ~307GB/s ea.
-nodes 2 & 3 - x16 link - 64GB/s ea.
-
-This is similar to example #1, but with one difference:  A task running
-on node 0 should not treat nodes 0 and 1 the same, nor nodes 2 and 3.
-This is because on access to nodes 1 and 3, the cross-socket link (UPI,
-or whatever AMD calls it) becomes a bandwidth chokepoint.
-
-So from the perspective of node 0, the "real total" available bandwidth
-is about 307GB+64GB+(41.6GB * UPI Links) in the case of intel.  so the
-best result you could get is around 307+64+164=535GB/s if you have the
-full 4 links.
-
-You'd want to distribute the cross-socket traffic proportional to UPI,
-not the total.
-
-This leaves us with weights of:
-
-node0 - 57%
-node1 - 26%
-node2 - 12%
-node3 - 5%
-
-Again, naturally nodes are the place to carry the weights here. In this
-scenario, placing it in memory-tiers would require that 1 tier per node
-existed.
-
-
-Example 3: A single-socket system with 2 CXL devices
-===
-Different than example 1: Both devices are the same.
-
-CPU Node: node0
-CXL Nodes: node1, node2
-
-Bandwidth attributes (in theory):
-node0 - 8 channels - ~307GB/s
-node1/2 - x16 link - 64GB/s
-
-In this case you want the weights to be: 70/15/15% respectively
-
-Caveat: A user may, in fact, use the CXL driver to implement a single
-node which naturally interleaves the 2 devices. In this case it's the
-same as a 1-socket, 1-device setup which is trivially 1-node-per-tier,
-and therefore weights should live with nodes.
-
-In the case of a single memory tier, you could simply make this 70/30.
-
-However, and this the the argument against placing it in the
-memory-tier: the user is free to hack-off any of the chosen numa nodes
-via mempolicy, which makes the aggregated weight meaningless.
-
-Example:  --weighted-interleave=0,1
-
-Under my current code, if I set the weights to 70/30 in the memory-tiers
-code, the result is that node1 inherits the full 30% defined in the
-tier, which leads to a suboptimal distribution.  What you actually want
-in this case is about 83/17% split.
-
-However, this also presents an issue for placing the weights in the
-nodes:  A node weight is meaningless outside the context of the active
-context.  If I have 2 nodes and i set their weights to 70/30, and I hack
-off node1, i can't have 70% of all memory go to node0, I have to send
-100% of the memory to node0 - making the weight functionally
-meaningless.
-
-So this would imply a single global weight set on the nodes is ALSO a
-bad solution, and instead it would be better to extend set_mempolicy
-to have a --weighted-interleave option that reads HMAT/CDAT provided
-bandwidth data and generates the weights for the selected nodes as
-part of the policy.
-
-The downside of this is that if the HMAT/CDAT data is garbage, the
-policy becomes garbage.  To mitigate this, we should consider allowing
-userland to override those values explicitly for the purpose of weighted
-interleave should the HMAT/CDAT information be garbage/lies.
-
-Another downside to this is that nodemask changes require recalculation
-of weights, which may introduce some racey conditions, but that can
-probably be managed.
-
-
-Should we carry weights in node, memtier, or mempolicy?
-===
-The current analysis suggest carrying it in memory-tier would simply
-require memory-tier to make 1 tier per node - which may or may not
-be consistent with other goals of the memtier subsystem.
-
-The pros of placing a weight in node is that the "effective" weight in
-the context of the entire system can be calculated at the time nodes are
-created.  If, at interleave time, the interface required a node+nodemask
-then it's probably preferable to forego manual weighting, and simply
-calculate based on HMAT/CDAT data.
-
-The downside of placing it in nodes is that mempolicy is free to set the
-interleave set to some combination of nodes, and this would prevent any
-nodes created after process launch from being used in the interleave set
-unless the software detected the hotplug event.  I don't know how much
-of a real concern this is, but it is a limitation.
-
-The other option is to add --weighted-interleave, but have mempolicy
-generate the weights based on node-provided CDAT/HMAT data (or
-overrides), which keep almost everything inside of mempolicy except for
-a couple of interfaces to drivers/base/node.c that allow querying of
-that data.
-
-
-
-Summarize:
-===
-The weights are actually a function of bandwidth, and can probably be
-calculated on the fly - rather than being manually set. However, we may
-want to consider allowing the bandwidth attributes being exposed by
-CDAT/HMAT to be overridden should the user discover they are functionally
-incorrect. (for reference: I have seen this myself, where a device
-published 5GB/s but actually achieves 22GB/s).
-
-for reference, they are presently RO:
-
-static DEVICE_ATTR_RO(property)
-ACCESS_ATTR(read_bandwidth);
-ACCESS_ATTR(read_latency);
-ACCESS_ATTR(write_bandwidth);
-ACCESS_ATTR(write_latency);
-
-
-~Gregory
+> Please post the next version incorporating other comments.
+>
+> - Mani
+Hi Mani, actually I have sent [patch v2] before we complete the discussion
+on current patch. The [patch v2] has incorporated the comments that need to
+add changes in the patch. If I send next version patch, I will just change
+the subject-prefix to v3, without any code or commit message change. Is this
+acceptable? Or Could you please review the [patch v2]?
+https://lore.kernel.org/mhi/1691488809-85310-1-git-send-email-quic_qianyu@quicinc.com/T/#u
+>>>>>>>>      	wait_event_timeout(mhi_cntrl->state_event,
+>>>>>>>>      			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
+>>>>>>>>      			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+>>>>>>>> -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>>>>>>>> +			   msecs_to_jiffies(timeout_ms));
+>>>>>>>>      	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
+>>>>>>>>      	if (ret)
+>>>>>>>> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+>>>>>>>> index f6de4b6..a43e5f8 100644
+>>>>>>>> --- a/include/linux/mhi.h
+>>>>>>>> +++ b/include/linux/mhi.h
+>>>>>>>> @@ -266,6 +266,7 @@ struct mhi_event_config {
+>>>>>>>>       * struct mhi_controller_config - Root MHI controller configuration
+>>>>>>>>       * @max_channels: Maximum number of channels supported
+>>>>>>>>       * @timeout_ms: Timeout value for operations. 0 means use default
+>>>>>>>> + * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
+>>>>>>>>       * @buf_len: Size of automatically allocated buffers. 0 means use default
+>>>>>>>>       * @num_channels: Number of channels defined in @ch_cfg
+>>>>>>>>       * @ch_cfg: Array of defined channels
+>>>>>>>> @@ -277,6 +278,7 @@ struct mhi_event_config {
+>>>>>>>>      struct mhi_controller_config {
+>>>>>>>>      	u32 max_channels;
+>>>>>>>>      	u32 timeout_ms;
+>>>>>>>> +	u32 ready_timeout_ms;
+>>>>>>>>      	u32 buf_len;
+>>>>>>>>      	u32 num_channels;
+>>>>>>>>      	const struct mhi_channel_config *ch_cfg;
+>>>>>>>> @@ -326,6 +328,7 @@ struct mhi_controller_config {
+>>>>>>>>       * @pm_mutex: Mutex for suspend/resume operation
+>>>>>>>>       * @pm_lock: Lock for protecting MHI power management state
+>>>>>>>>       * @timeout_ms: Timeout in ms for state transitions
+>>>>>>>> + * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
+>>>>>>>>       * @pm_state: MHI power management state
+>>>>>>>>       * @db_access: DB access states
+>>>>>>>>       * @ee: MHI device execution environment
+>>>>>>>> @@ -413,6 +416,7 @@ struct mhi_controller {
+>>>>>>>>      	struct mutex pm_mutex;
+>>>>>>>>      	rwlock_t pm_lock;
+>>>>>>>>      	u32 timeout_ms;
+>>>>>>>> +	u32 ready_timeout_ms;
+>>>>>>>>      	u32 pm_state;
+>>>>>>>>      	u32 db_access;
+>>>>>>>>      	enum mhi_ee_type ee;
+>>>>>>>> -- 
+>>>>>>>> 2.7.4
+>>>>>>>>
