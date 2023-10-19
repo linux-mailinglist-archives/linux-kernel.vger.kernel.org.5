@@ -2,121 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB7E7CFC29
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E137CFC37
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbjJSOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36564 "EHLO
+        id S1345961AbjJSONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345531AbjJSOLN (ORCPT
+        with ESMTP id S1345616AbjJSONf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:11:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91830B0;
-        Thu, 19 Oct 2023 07:11:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4400C433C8;
-        Thu, 19 Oct 2023 14:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697724671;
-        bh=Af47nTwfZd2bDGsJz4b/vMDbS1rOoweEYjo4Y5vxWM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oem3h5yIua/fbgYH7Sp2vg5+IJJx4NKUhYcSMY+peTOSA+UTBY1eNtE/X1KipSsWu
-         qGGms8b+3La4hOgxZnDUxdE7UNUfu8zdsfsVMx/oZm9oGGQK7Lh0JR0hKnY+olFqQH
-         avAg+0t76a7kiQ8EuX0RtuhkmRTG9SWy+D7i4GttBYLalv404XNtNCj8qHxDeGudcU
-         kLtRBiAHpamRqkzAubSpJUk+tH+Emz7cOsEBQX+i6pJD/1kVEzC46hJwjYeoWcOt6r
-         XtLwKOyCWSgTY5f3ugliQX7nSyEOfnWqqVmnxAJagnlV3IJTC7nQaqmZpeyql9unJB
-         DDZxnmN8wTtDw==
-Date:   Thu, 19 Oct 2023 15:11:06 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andy.shevchenko@gmail.com, kernel@sberdevices.ru,
-        rockosov@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [PATCH v2 03/11] dt-bindings: leds: aw200xx: introduce optional
- hwen-gpios property
-Message-ID: <20231019-affection-mountain-7bd5b7eb0ca2@spud>
-References: <20231018182943.18700-1-ddrokosov@salutedevices.com>
- <20231018182943.18700-4-ddrokosov@salutedevices.com>
+        Thu, 19 Oct 2023 10:13:35 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F244130
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:13:33 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9ac31cb051so8745456276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697724812; x=1698329612; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CZ1gUWflsYcH8PP7UpBaAv9qlHVSJ/Dr4WGMpYeMC38=;
+        b=aLkmPGz9sgBNn8lqUAvy1cZXgicYCPPiOzkvpvUraNZxE/kG8kWFT3NpqHCKTuTdKj
+         sq+96OOQbNp6bNtr8+r9H0lG8wU65fX251xfa5ZzHsP46oIr4U7v9us4WzSJPGqBGmNu
+         RE9U1VpuUt6iRUNIyXNmBbulq4hWfMryDeYBZBwW5Ipg116tRB9TiPuXC2EL+ecDZSg4
+         T3xIrAHAtmrZW0fOj/p04fJpV3WzMZWaMm68NsBHdgwL2WSyZhaspI3/hxcc9NeCoS38
+         Eqs+sh7dymslX9i9PSCuvJ9+mWS/S78/DunckO/cH5X1CcLdD+QqWancpx1/Q45o29lm
+         wObg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697724812; x=1698329612;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CZ1gUWflsYcH8PP7UpBaAv9qlHVSJ/Dr4WGMpYeMC38=;
+        b=hmO3yMdptRawgoPJJTwa8WcZrGJcOWQMJhnL2M7dWfLSZvmgKKwvtz5jgWyk6ghEyh
+         0vBa4FREe2+eIU6/0R3+jQNsA84t3V4jvA1CAk8Ha6QwrL+zdVmleIV+vzGHGsbG23m1
+         uGQHvccj3Idu8rB52M6ZlOBGNcywxFEn8aW3zmSeNnJFRuZ8I59AIOtcOo+Q39xv9MMS
+         UQS886gPwzDLR27oVnySTUOBi3svlFTDVrzd7ZFH1jPcoMEu23O9FP2mVK69+Kk1q3bG
+         5SQs5ddjCLzf9MoL5t0Bl20A2L3MvrpUtarV0Yhk1SzYUlmfUBvgROszpiElfWkVeni7
+         caSw==
+X-Gm-Message-State: AOJu0YwVaZ1bZWUsTS3HpxFRMDXnHPjn8R5cCo3jcQ5KQcHe5o/lIdJ/
+        oRxSwubsUsTPEneE7I3eHFyz5SSMPdKKWwThzHv0CQ==
+X-Google-Smtp-Source: AGHT+IFVaisEaUxifZNFQFOjPZkY0wGroDE2WXhfIoEzu0BM1WVOjIVDHR0lnPr069ziHZ4TgS1mlvhyHgpbYnanoEE=
+X-Received: by 2002:a5b:404:0:b0:d9c:7d7d:1ac9 with SMTP id
+ m4-20020a5b0404000000b00d9c7d7d1ac9mr2623857ybp.14.1697724812298; Thu, 19 Oct
+ 2023 07:13:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RTnMTg2ozgWALe2C"
-Content-Disposition: inline
-In-Reply-To: <20231018182943.18700-4-ddrokosov@salutedevices.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
+ <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+ <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
+ <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com> <ZTEph19CAvbgbN_E@gerhold.net>
+In-Reply-To: <ZTEph19CAvbgbN_E@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 19 Oct 2023 16:12:56 +0200
+Message-ID: <CAPDyKFo1PVZYsdW_=92EtMmTT9hmkm-mBR69N_WvPh4f-Hw=NA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 19 Oct 2023 at 15:05, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
+> > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
+> > > <stephan.gerhold@kernkonzept.com> wrote:
+> > > >
+> > > > The genpd core caches performance state votes from devices that are
+> > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
+> > > > runtime PM performance state handling"). They get applied once the
+> > > > device becomes active again.
+> > > >
+> > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
+> > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
+> > > > devices that use runtime PM only to control the enable and performance
+> > > > state for the attached power domain.
+> > > >
+> > > > However, at the moment nothing ever resumes the virtual devices created
+> > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
+> > > > means that performance state votes made during cpufreq scaling get
+> > > > always cached and never applied to the hardware.
+> > > >
+> > > > Fix this by enabling the devices after attaching them and use
+> > > > dev_pm_syscore_device() to ensure the power domains also stay on when
+> > > > going to suspend. Since it supplies the CPU we can never turn it off
+> > > > from Linux. There are other mechanisms to turn it off when needed,
+> > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
+> > >
+> > > I believe we discussed using dev_pm_syscore_device() for the previous
+> > > version. It's not intended to be used for things like the above.
+> > >
+>
+> Sorry, looks like we still had a misunderstanding in the conclusion of
+> the previous discussion. :')
+>
+> > > Moreover, I was under the impression that it wasn't really needed. In
+> > > fact, I would think that this actually breaks things for system
+> > > suspend/resume, as in this case the cpr driver's genpd
+> > > ->power_on|off() callbacks are no longer getting called due this,
+> > > which means that the cpr state machine isn't going to be restored
+> > > properly. Or did I get this wrong?
+> >
+>
+> We strictly need the RPMPDs to be always-on, also across system suspend
+> [1]. The RPM firmware will drop the votes internally as soon as the
+> CPU(s) have entered deep cpuidle. We can't do this from Linux, because
+> we need the CPU to continue running until it was shut down cleanly.
+>
+> For CPR, we strictly need the backing regulator to be always-on, also
+> across system suspend. Typically the hardware will turn off the
+> regulator as soon as the CPU(s) enter deep cpuidle. Similarly, we can't
+> do this from Linux, because we need the CPU to continue running until it
+> was shut down cleanly.
+>
+> My understanding was that we're going to pause the CPR state machine
+> using the system suspend/resume callbacks on the driver, instead of
+> using the genpd->power_on|off() callbacks [2]. I can submit a separate
+> patch for this.
 
---RTnMTg2ozgWALe2C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If we are going to do 1) as described below, this looks to me that
+it's going to be needed.
 
-On Wed, Oct 18, 2023 at 09:29:35PM +0300, Dmitry Rokosov wrote:
-> Property 'hwen-gpios' is optional, it can be used by the board
-> developer to connect AW200XX LED controller with appropriate poweron
-> GPIO pad.
+How will otherwise the cpr state machine be saved/restored during
+system suspend/resume? Note that, beyond 1), the genpd's
+->power_on|off() callbacks are no longer going to be called during
+system suspend/resume.
 
-If the pad is called "poweron", why is the property called "hwen"?
+In a way this also means that the cpr genpd provider might as well
+also have GENPD_FLAG_ALWAYS_ON set for it.
 
->=20
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> ---
->  Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b=
-/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> index feb5febaf361..255eb0563737 100644
-> --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> @@ -41,6 +41,9 @@ properties:
->      description:
->        Leds matrix size
-> =20
-> +  hwen-gpios:
-> +    maxItems: 1
-> +
->  patternProperties:
->    "^led@[0-9a-f]$":
->      type: object
-> @@ -90,6 +93,7 @@ additionalProperties: false
-> =20
->  examples:
->    - |
-> +    #include <dt-bindings/gpio/gpio.h>
->      #include <dt-bindings/leds/common.h>
-> =20
->      i2c {
-> @@ -102,6 +106,7 @@ examples:
->              #address-cells =3D <1>;
->              #size-cells =3D <0>;
->              awinic,display-rows =3D <3>;
-> +            hwen-gpios =3D <&gpio 3 GPIO_ACTIVE_HIGH>;
-> =20
->              led@0 {
->                  reg =3D <0x0>;
-> --=20
-> 2.36.0
->=20
+>
+> I didn't prioritize this because QCS404 (as the only current user of
+> CPR) doesn't have proper deep cpuidle/power management set up yet. It's
+> not entirely clear to me if there is any advantage (or perhaps even
+> disadvantage) if we pause the CPR state machine while the shared L2
+> cache is still being actively powered by the CPR power rail during
+> system suspend. I suspect this is a configuration that was never
+> considered in the hardware design.
 
---RTnMTg2ozgWALe2C
-Content-Type: application/pgp-signature; name="signature.asc"
+I see.
 
------BEGIN PGP SIGNATURE-----
+>
+> Given the strict requirement for the RPMPDs, I only see two options:
+>
+>  1. Have an always-on consumer that prevents the power domains to be
+>     powered off during system suspend. This is what this patch tries to
+>     achieve.
+>
+> Or:
+>
+>  2. Come up with a way to register the RPMPDs used by the CPU with
+>     GENPD_FLAG_ALWAYS_ON. This would also be doable, but isn't as
+>     straightfoward as "regulator-always-on" in the DT because the rpmpd
+>     DT node represents multiple genpds in a single DT node [3].
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTE4+gAKCRB4tDGHoIJi
-0pQTAP9Chq5x5fWNiAxRiksgdtEXDq4ttwPLAmWmpFXaAj/gGwD/VcSVwsKPd5di
-SS96SOBfT8Bg47Vpg0rlle9gWq59mQ0=
-=TpKR
------END PGP SIGNATURE-----
+Yes, it sounds like it may be easier to do 1).
 
---RTnMTg2ozgWALe2C--
+>
+> What do you think? Do you see some other solution perhaps? I hope we can
+> clear up the misunderstanding. :-)
+
+Yes, thanks!
+
+>
+> [1]: https://lore.kernel.org/linux-arm-msm/ZQGqfMigCFZP_HLA@gerhold.net/
+> [2]: https://lore.kernel.org/linux-arm-msm/CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com/
+> [3]: https://lore.kernel.org/linux-arm-msm/ZSg-XtwMxg3_fWxc@gerhold.net/
+>
+> > BTW, if you really need something like the above, the proper way to do
+> > it would instead be to call device_set_awake_path() for the device.
+> >
+> > This informs genpd that the device needs to stay powered-on during
+> > system suspend (assuming that GENPD_FLAG_ACTIVE_WAKEUP has been set
+> > for it), hence it will keep the corresponding PM domain powered-on
+> > too.
+> >
+>
+> Thanks, I can try if this works as alternative to the
+> dev_pm_syscore_device()!
+
+Yes, please. We don't want to abuse the dev_pm_syscore_device() thingy.
+
+>
+> I will wait for your thoughts on the above before accidentally going
+> into the wrong direction again. :-)
+
+No worries, we are moving forward. :-)
+
+Kind regards
+Uffe
