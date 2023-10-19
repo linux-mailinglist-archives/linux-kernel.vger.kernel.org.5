@@ -2,79 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4A57D0427
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013197D042E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346601AbjJSVpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        id S1346598AbjJSVt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbjJSVpi (ORCPT
+        with ESMTP id S233332AbjJSVtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:45:38 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE27119
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:45:35 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7dafb659cso1420877b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697751935; x=1698356735; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IP1bC7NbhmF2aawA3oJIPd9v1uWsSkcLhLCPtpX0r0A=;
-        b=JOVgIBJYgBOQnyqidcLbqZwRWEUPo2TSOdoujEUzNCfro7kNRLaxe9u8zLpWt9Ilbz
-         n7KhtSiw0keyt7PpNR1SZU4jJMhldEthl5lMPJNZyWFBEb5ylTNB2aeneuqySSfBLzY5
-         wFZi5HvwLK85vlNp1GFHpVGQ1zmEgcKl7PHndWxMnynJMY4RGP5OsVNw713qLh18s5p8
-         2rvThaFwgS/QyhPRXYU3F8Vg8hhPksBEvCRMU0vZKHbp5md8EQ9wpH6eVV7xvEIYsfqA
-         hUaNiRt0/GN2RG/65LhT5TYyI7O30lY5GhuMwd4HdM8D2xI1K/7DcUzDT5nz4slpT2v6
-         NOpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697751935; x=1698356735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IP1bC7NbhmF2aawA3oJIPd9v1uWsSkcLhLCPtpX0r0A=;
-        b=OpHc9//hyy0NBMAIOFdSrXXjqUj+RLm769Sr8gxAucHk/hmVwa4R5DUQEGqbJYTiyO
-         w8mGyJh3SWFSFml4W+J7BC46BXR0FovziJEFMUkw2tK7x0qogxGTwV5GYbUoo9ksQ56Q
-         IW4+JcPiEEm2EkCX/dXzuqC/K3GPaD5M2inEDMQFyQ4V4RH8ZDs7Cju+jTGQfeJ8lFP+
-         eLDoT/f0aoVflOzfVFLs7x/hEI5+nSLsP9rPMrCDhx0m+7Xq/mr7GnP97u3WEWP7Wrxu
-         sC9Iqs+96KC2PlKMzzorR3NDDqhwt5nEtDtZWAu2fPiGfaEM1paxCwegzsbHQz4GXbHP
-         PpZA==
-X-Gm-Message-State: AOJu0YxlcEPX96ThKWnF1A5S5TqsbVVxzfJdBHark+YmZm9x0RgYOtYY
-        lAS5eEJVx4yJmD4c4/6dJlfIGAqvhDV+tGQlswvrJg==
-X-Google-Smtp-Source: AGHT+IHQpr9/cMMwjS8gEZfULIlFEZn8lj2REtPfIGp2Kvw1E3AiUkFVt2rx8GUHTWRSFcl/VKr/jwON6+BOgeRudfE=
-X-Received: by 2002:a0d:ccc6:0:b0:5a7:af7d:cee7 with SMTP id
- o189-20020a0dccc6000000b005a7af7dcee7mr164618ywd.6.1697751934417; Thu, 19 Oct
- 2023 14:45:34 -0700 (PDT)
+        Thu, 19 Oct 2023 17:49:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2B0115;
+        Thu, 19 Oct 2023 14:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697752190; x=1729288190;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Sb7KbAIIFg8Q6dDtlP+Ls2HW3rpbFdLxbHlHTVWIwW8=;
+  b=W3eGJyEkopHNg6lMsJoQ6W+6Rh6hvS2kDA+2SX9hty4QTwxo8zZoJQNE
+   kXZ55wNFDB0meH5IjoR2zWN6S+BAkLtC2AIYv6A/U0EDj9pLDDrhOuEja
+   1T+eVkvfFof0xbLJO5MmRiJrEXrsjK2BPHc64Dctgivukv3TPlcSm1Xiu
+   AdR1CPyddQ5C49kRJiiLuLL3kdAMWxf0GTtmzNbS8LwQhPV09OlkoTn6V
+   Mth6It+Nhuk7i1jBLzn2VwQIzP8XoEqdXMnSWisetdWC3e5aDKD/5BJSQ
+   l+f+RTbiokbZSGMvMnaxOvTO3E6w/AzR+gK9Bq/7CL1sMElQHwzCPSD67
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365718136"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="365718136"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 14:49:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="873649270"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="873649270"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Oct 2023 14:49:49 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 19 Oct 2023 14:49:49 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 19 Oct 2023 14:49:49 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 19 Oct 2023 14:49:49 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 19 Oct 2023 14:49:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TYIJdXdJmyAltzWZ/Intyv+F1xSZBBbNrgaCmGzRe1HhUBQQzj0Ggk3EXhM3XALmJrWVpTKyXXbNSim8iRp4IVnFdVjtSNZHC5vbGG+WIyz8ptoF3xltlHU+YWBHMn8OM+CThlYS2lQfdhA9CiOVUMNr86CID/lpikpNCC25Lx7DhfKBfvCkNjeXVmsf5A17lOhjrujFfy0M8S9Jipm1JJpq08ISFfdGdD+OVzP1a99DEXT5sQ4bX6mWfOEh+vQKBVNG66qO3cQlqbTdeRNVwUZP9S6F1E0MaOCLICfyIb3wCtvX4w9yKWK2kBOPqLdW6s7uDVSAH3oqnPy4cFVP3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vOvf1e+qAXxZ8vZaqjhKMsBpxE7md9AmCNowsBiE/X0=;
+ b=P0R76xKJvKjXGqu91X76IjQe4WM4yAluvw3Y9ocia1X+Jh8T+b+IXqX+nTkvH0zmCAv07ngETKLxER4lu1Zg8+liqAY52MOhv7gQfdgg8QL83EbEaWRrAuJ5Rt48Rgtl5UopLzrjO9mFQ1IExdpcdlLK5y30QEjS1c/hDLB1UbKWXP6TtswMaHIkHrXjvZIMIMC2Cvrx8eDGArX/bhOwhDRGALxZ42KeMLH5h2WjM6abeNEI6YEmRizuP+d0oSk+UqRgx4VajAPEHvh8ArgRiSdgCeBbv9NDBvajdz7YVhRmbisLpiMdycp4cGoSnHqnYZw1knGDncUc8m1hdN+UGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by MN0PR11MB6058.namprd11.prod.outlook.com (2603:10b6:208:376::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Thu, 19 Oct
+ 2023 21:49:44 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6907.021; Thu, 19 Oct 2023
+ 21:49:44 +0000
+Message-ID: <78a9a07b-0a94-4b38-75c7-8bc240468430@intel.com>
+Date:   Thu, 19 Oct 2023 23:49:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH net-next v3 01/11] devlink: retain error in struct
+ devlink_fmsg
+Content-Language: en-US
+To:     Simon Horman <horms@kernel.org>
+CC:     Jiri Pirko <jiri@resnulli.us>, <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "Cai Huoqing" <cai.huoqing@linux.dev>,
+        George Cherian <george.cherian@marvell.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        "Moshe Shemesh" <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>
+References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
+ <20231018202647.44769-2-przemyslaw.kitszel@intel.com>
+ <20231019130037.GI2100445@kernel.org>
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <20231019130037.GI2100445@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0173.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a0::15) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 MIME-Version: 1.0
-References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com> <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com> <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com> <ZSlragGjFEw9QS1Y@x1n>
-In-Reply-To: <ZSlragGjFEw9QS1Y@x1n>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 19 Oct 2023 14:45:21 -0700
-Message-ID: <CAJuCfpF2hM9MmUdv4K8a1meKdwsdWb5Q0fFihUtsngidehTPnA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|MN0PR11MB6058:EE_
+X-MS-Office365-Filtering-Correlation-Id: ae12336e-44df-4910-5df3-08dbd0ed4e3d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BRLOn6NdjmFTmO0ZurZ6fWGJmC1lB5Q7Y8VteAAUj//iKuN7wDa05FZj4v5B5JN1ma5l+p3IUlfYG5oRbQ4vdeNGhEvdrJyH1MUw8JRiOuZjF7ZZyitttapCog8She9gP0K0bgfa8dtDqUgnK1ke3XOR2YPWDxmAxOfLDMVmG0dtBHPeSpzkwdopXcVD+zKNbE5MI91OytPOF6+abRYokjRpNnry57gzB8uxhEQakNNPUaDMX2Y6DHlUKeGShLj934mOKgV3Fglgm/R2YBc2SSkSXet4xQ0p0oU7qI57bq08/oySMxgrAxEhHcTDP/P/UHd7w5jRsTi1wQNC5TS2+iTQ9WJtXOwn1zIQHC0OGRoIkK5J+RgUD/mT9exmBGLfiMBRdH34xL6si15iL3cQ/UJVW0lOVbjfz3BO1DoK6q4IiXn8mehMgYUJoGRPEvGU7SdYOJFS+dkyAYPihGseQ4HxNEdkrEPJ02Ysuz99sdGfSGESH8tEkykFIrdVauiBwK4lv6O8DM0FlYTJljcqvrVGyoPysSXxnLAxpogCikFUcZumCAC6VzL89sTMUaaH4G+2Z8GB3LwW5OpyGCyy5feaeYKsBb7gCnRC6UPEbk9xev1LUpEBE8A/R/zr6vrM6k9x1cbLjlYOir/zCfYocw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(136003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(26005)(5660300002)(7406005)(7416002)(6506007)(6666004)(31686004)(2906002)(4326008)(8936002)(8676002)(6512007)(41300700001)(66476007)(54906003)(66946007)(66556008)(6916009)(316002)(6486002)(478600001)(53546011)(36756003)(83380400001)(38100700002)(2616005)(31696002)(86362001)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V3VOWWthSUlVdm9wZmRucjV3VS84U1Evc1EwaGdwamZJd09MMTBRSWgrQ0Nm?=
+ =?utf-8?B?SlFrNFhZVklVTzhGZUU5QUpwYmk1U2hENCtDZTVKS2VUemJFQmpUT0xsRkxK?=
+ =?utf-8?B?WFo4K2VTNVlXN2FDTEpwdWpGRmNLYldDKzNraG55UzVENGdrZDFaSW5PRGg5?=
+ =?utf-8?B?M2dOY1o1K1MyOXVGbjB3cFBuV2FSaEpoc0lPcjJuNldHTktpNVNmSGc2aTJt?=
+ =?utf-8?B?ZUtFOG5nUjRrSU5iSmczUW9WMlgwL1dXRGh5bHBjNWJSenJTZ1NhM0xzR3RD?=
+ =?utf-8?B?cVpuQ28zVzdmT0xqeWhXejJRZ2tkNk9mNGVFclREMHlHNFV6M1ZxaHJLM3BN?=
+ =?utf-8?B?eGFFQ2FzQTNKMmVhYVQwVDJyZ2E1TlFuNUhKa3ZLVmpsek9vNEJxTzE1QmJw?=
+ =?utf-8?B?YlNmZ2ZaeCs0Y2UrTU9Qek1sQUhYbjE2SkZKNWoyaENETVcwdTNGOXMxYUlz?=
+ =?utf-8?B?RHdYNzJVWktsWGMyVTlNVmxPRklTcDZjcHoxOHNqRDhOU0ZxQjVNMGh0YUZO?=
+ =?utf-8?B?V3VRNUZtaGRTSVE5aXhqMTZTckdmaDR4QWU0dlJOaWFqcEJ6bHVSR2VCS0FL?=
+ =?utf-8?B?dFRQSFpYbFJRY1ZaUnhQbk5rMUZvSDVGRnM2OVhJMEg5RFZuRzQ4c3ZtRHUz?=
+ =?utf-8?B?T0thN0Q2dmFWc3l3UVFlM1Rja1htSE9qbVRaYmlFMnNxMWNpenY4WEo3Nzc5?=
+ =?utf-8?B?QjBOWTNQUVpGZHdSZ044S2p6eGc0UW5MQ0gvV1Fhd3FucmhCOGgzSDVWUllI?=
+ =?utf-8?B?U2lXNmZUdndDd1FuVkZSTHAwczNZWG1McGN2UjBrNE54em4rUmFyTGNVbFBt?=
+ =?utf-8?B?dVJqRjA4TXNMSTVadDRVOGxwKzYzYjEycWRaUVFCZnRxY0hzc0NZVHNCODFV?=
+ =?utf-8?B?b1BVMjJLaU5sYXhBdjBmL3VmT3VxdXFqZWk2blc2Tm5ZYmtRSDYrTklZZjQ4?=
+ =?utf-8?B?anNVS1RLajNWTll6Tks3SkJ6TW5FVEI1dm93d1RTYmlrYlZaY2RMZGlxVUFJ?=
+ =?utf-8?B?KzdPanJQMkcrV2RRUDVqYlUzc3JpM2VicjNoR2ZFTEZyeWlQRFdJd2dLdGJZ?=
+ =?utf-8?B?UEFJK3Nsbjh6Zzc4d0ttellWd3FHdWJEaWtPVVRKQ3p4MHdmMlh5UzhOZGpJ?=
+ =?utf-8?B?akV4WEFlMDZITk9aWnIrTHkrMHl3TThOMEhGOEZjQmFtMThDL2FhQWo1cE5w?=
+ =?utf-8?B?UHJzQVloS1owRFJBdGkwZmRLc3psNy9YWWlyWE9aVWlPSjVqUXFuVEpzMDRu?=
+ =?utf-8?B?RXhjcHdRT1Qzbk9JeThmNUJxcXgwbWo2dWU2bGxIeloxbk5iNFpZQTJkbzJs?=
+ =?utf-8?B?dWJXUkZ5M1AvRkU0RjR6TDl3UUo4Wnd2OEF4bDRxaDVkdTQvc3h0TlNtcnVk?=
+ =?utf-8?B?RGE1bVA2VExUQSt3RVNtVFBpVldUSDluWk5seituQWVWQ2xmaWhmNlFYUmZw?=
+ =?utf-8?B?S2dSbTE2UVRlR0RXREIwQi9IVUdjYUNrQ1RONkM0MlpPa3NucnJ3OXhJRGRJ?=
+ =?utf-8?B?eVRPTExIQzhYeTVlb2phZDhTRDBIL3ZXSVE4Vk9vQVcwSzFGZy9sV2MzTWdj?=
+ =?utf-8?B?b2FGUXB0a3MvTWtYN21kN3dTaHFISDZONy9PUkFHUVF1SmVVZXgrcnpTMHcx?=
+ =?utf-8?B?RmMyRkcvTzJaVzFmWWdWclVMRjYzcERkQzNNRU0xV3I0bExYazFTdWlKQXlR?=
+ =?utf-8?B?OHplVXloUDNXaEo3MnhPSlNaVlIzZlFTSzZyV05Lbm8zOUN1TkRzVjRURXQ4?=
+ =?utf-8?B?WnR1S1AyVk0vdnNKcENaZ3p1ZHVaL25CNmdWTHpVSmljaFExbWNCOXozbzJX?=
+ =?utf-8?B?U0JTdEFVSlpmNVVGYVYxL3NXNGJ5TjNRS1NZZWJZMlRTakk2cVp0ZkR4N0x3?=
+ =?utf-8?B?MXIxTVRDRVZRTHZ1cUQwY3JaVTFDRDlia3J2OW9TSDhvUFRUQmFxSHlUYzVE?=
+ =?utf-8?B?TitONDZCY3hqUTExODRwNjlkMVhvT2RMSTF2QlJ0MFdRUG04aVg0NFUvaGR0?=
+ =?utf-8?B?VUNKcXNUaVk5enJsei9vOFBKVE5GZHprWVRUL3NZeFBlbFdUM05hRndGN2RD?=
+ =?utf-8?B?U0Y5ZXBDVFZUMnNZZzFRR0hXN3JmeFBHSm83MDFsTjJCOUhRUFh6MCtrTVFE?=
+ =?utf-8?B?WlE5bEg1aEZGeWhFWTVNVDd1UFNmU1M5aG5zOUtGSFpvWXRuNXdRSTRTakwx?=
+ =?utf-8?B?bVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae12336e-44df-4910-5df3-08dbd0ed4e3d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 21:49:44.4420
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nIMVVtu1BM5FSkRUU5FKx7RkuWk60peWkZym/nbUqQ0bL26BWj9R+FxJH/vz2Ym4WFbaX1VxT+NLTgRQoVBWWQ6cv+lLzOhguClcB+AYCk8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6058
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,208 +194,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 9:08=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote:
->
-> On Fri, Oct 13, 2023 at 11:56:31AM +0200, David Hildenbrand wrote:
-> > Hi Peter,
->
-> Hi, David,
->
-> >
-> > > I used to have the same thought with David on whether we can simplify=
- the
-> > > design to e.g. limit it to single mm.  Then I found that the trickies=
-t is
-> > > actually patch 1 together with the anon_vma manipulations, and the pr=
-oblem
-> > > is that's not avoidable even if we restrict the api to apply on singl=
-e mm.
-> > >
-> > > What else we can benefit from single mm?  One less mmap read lock, bu=
-t
-> > > probably that's all we can get; IIUC we need to keep most of the rest=
- of
-> > > the code, e.g. pgtable walks, double pgtable lockings, etc.
-> >
-> > No existing mechanisms move anon pages between unrelated processes, tha=
-t
-> > naturally makes me nervous if we're doing it "just because we can".
->
-> IMHO that's also the potential, when guarded with userfaultfd descriptor
-> being shared between two processes.
->
-> See below with more comment on the raised concerns.
->
-> >
-> > >
-> > > Actually, even though I have no solid clue, but I had a feeling that =
-there
-> > > can be some interesting way to leverage this across-mm movement, whil=
-e
-> > > keeping things all safe (by e.g. elaborately requiring other proc to =
-create
-> > > uffd and deliver to this proc).
-> >
-> > Okay, but no real use cases yet.
->
-> I can provide a "not solid" example.  I didn't mention it because it's
-> really something that just popped into my mind when thinking cross-mm, so=
- I
-> never discussed with anyone yet nor shared it anywhere.
->
-> Consider VM live upgrade in a generic form (e.g., no VFIO), we can do tha=
-t
-> very efficiently with shmem or hugetlbfs, but not yet anonymous.  We can =
-do
-> extremely efficient postcopy live upgrade now with anonymous if with REMA=
-P.
->
-> Basically I see it a potential way of moving memory efficiently especiall=
-y
-> with thp.
->
-> >
-> > >
-> > > Considering Andrea's original version already contains those bits and=
- all
-> > > above, I'd vote that we go ahead with supporting two MMs.
-> >
-> > You can do nasty things with that, as it stands, on the upstream codeba=
-se.
-> >
-> > If you pin the page in src_mm and move it to dst_mm, you successfully b=
-roke
-> > an invariant that "exclusive" means "no other references from other
-> > processes". That page is marked exclusive but it is, in fact, not exclu=
-sive.
->
-> It is still exclusive to the dst mm?  I see your point, but I think you'r=
-e
-> taking exclusiveness altogether with pinning, and IMHO that may not be
-> always necessary?
->
-> >
-> > Once you achieved that, you can easily have src_mm not have MMF_HAS_PIN=
-NED,
->
-> (I suppose you meant dst_mm here)
->
-> > so you can just COW-share that page. Now you successfully broke the
-> > invariant that COW-shared pages must not be pinned. And you can even tr=
-igger
-> > VM_BUG_ONs, like in sanity_check_pinned_pages().
->
-> Yeah, that's really unfortunate.  But frankly, I don't think it's the fau=
-lt
-> of this new feature, but the rest.
->
-> Let's imagine if the MMF_HAS_PINNED wasn't proposed as a per-mm flag, but
-> per-vma, which I don't see why we can't because it's simply a hint so far=
-.
-> Then if we apply the same rule here, UFFDIO_REMAP won't even work for
-> single-mm as long as cross-vma. Then UFFDIO_REMAP as a whole feature will
-> be NACKed simply because of this..
->
-> And I don't think anyone can guarantee a per-vma MMF_HAS_PINNED can never
-> happen, or any further change to pinning solution that may affect this.  =
-So
-> far it just looks unsafe to remap a pin page to me.
->
-> I don't have a good suggestion here if this is a risk.. I'd think it risk=
-y
-> then to do REMAP over pinned pages no matter cross-mm or single-mm.  It
-> means probably we just rule them out: folio_maybe_dma_pinned() may not ev=
-en
-> be enough to be safe with fast-gup.  We may need page_needs_cow_for_dma()
-> with proper write_protect_seq no matter cross-mm or single-mm?
->
-> >
-> > Can it all be fixed? Sure, with more complexity. For something without =
-clear
-> > motivation, I'll have to pass.
->
-> I think what you raised is a valid concern, but IMHO it's better fixed no
-> matter cross-mm or single-mm.  What do you think?
->
-> In general, pinning lose its whole point here to me for an userspace eith=
-er
-> if it DONTNEEDs it or REMAP it.  What would be great to do here is we unp=
-in
-> it upon DONTNEED/REMAP/whatever drops the page, because it loses its
-> coherency anyway, IMHO.
->
-> >
-> > Once there is real demand, we can revisit it and explore what else we w=
-ould
-> > have to take care of (I don't know how memcg behaves when moving betwee=
-n
-> > completely unrelated processes, maybe that works as expected, I don't k=
-now
-> > and I have no time to spare on reviewing features with no real use case=
-s)
-> > and announce it as a new feature.
->
-> Good point.  memcg is probably needed..
->
-> So you reminded me to do a more thorough review against zap/fault paths, =
-I
-> think what's missing are (besides page pinning):
->
->   - mem_cgroup_charge()/mem_cgroup_uncharge():
+On 10/19/23 15:00, Simon Horman wrote:
+> On Wed, Oct 18, 2023 at 10:26:37PM +0200, Przemek Kitszel wrote:
+>> Retain error value in struct devlink_fmsg, to relieve drivers from
+>> checking it after each call.
+>> Note that fmsg is an in-memory builder/buffer of formatted message,
+>> so it's not the case that half baked message was sent somewhere.
+>>
+>> We could find following scheme in multiple drivers:
+>>    err = devlink_fmsg_obj_nest_start(fmsg);
+>>    if (err)
+>>    	return err;
+>>    err = devlink_fmsg_string_pair_put(fmsg, "src", src);
+>>    if (err)
+>>    	return err;
+>>    err = devlink_fmsg_something(fmsg, foo, bar);
+>>    if (err)
+>> 	return err;
+>>    // and so on...
+>>    err = devlink_fmsg_obj_nest_end(fmsg);
+>>
+>> With retaining error API that translates to:
+>>    devlink_fmsg_obj_nest_start(fmsg);
+>>    devlink_fmsg_string_pair_put(fmsg, "src", src);
+>>    devlink_fmsg_something(fmsg, foo, bar);
+>>    // and so on...
+>>    devlink_fmsg_obj_nest_end(fmsg);
+>>
+>> What means we check error just when is time to send.
+>>
+>> Possible error scenarios are developer error (API misuse) and memory
+>> exhaustion, both cases are good candidates to choose readability
+>> over fastest possible exit.
+>>
+>> Note that this patch keeps returning errors, to allow per-driver conversion
+>> to the new API, but those are not needed at this point already.
+>>
+>> This commit itself is an illustration of benefits for the dev-user,
+>> more of it will be in separate commits of the series.
+>>
+>> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+>> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> 
+> ...
+> 
+>> @@ -1027,14 +934,12 @@ int devlink_fmsg_binary_pair_put(struct devlink_fmsg *fmsg, const char *name,
+> 
+> Hi Przemek,
+> 
+> The line before this hunk is:
+> 
+> 		err = devlink_fmsg_binary_put(fmsg, value + offset, data_size);
+> 
+> And, as of this patch, the implementation of
+> devlink_fmsg_binary_pair_nest_start() looks like this:
+> 
+> int devlink_fmsg_binary_put(struct devlink_fmsg *fmsg, const void *value,
+>                              u16 value_len)
+> {
+>          if (!fmsg->putting_binary)
+>                  return -EINVAL;
+> 
+>          return devlink_fmsg_put_value(fmsg, value, value_len, NLA_BINARY);
+> }
+> 
+> Which may return an error, if the if condition is met, without setting
+> fmsg->err.
+> 
+>>   		if (err)
+>>   			break;
+>>   		/* Exit from loop with a break (instead of
+>> -		 * return) to make sure putting_binary is turned off in
+>> -		 * devlink_fmsg_binary_pair_nest_end
+>> +		 * return) to make sure putting_binary is turned off
+>>   		 */
+>>   	}
+>>   
+>> -	end_err = devlink_fmsg_binary_pair_nest_end(fmsg);
+>> -	if (end_err)
+>> -		err = end_err;
+> 
+> Prior to this patch, the value of err from the loop above was preserved,
+> unless devlink_fmsg_binary_pair_nest_end generated an error.
+> 
+>> +	err = devlink_fmsg_binary_pair_nest_end(fmsg);
+> 
+> But now it looks like this is only the case if fmsg->err corresponds to err
+> when the loop was exited.
+> 
+> Or in other words, the err returned by devlink_fmsg_binary_put()
+> is not propagated to the caller if !fmsg->putting_binary.
+> 
+> If so, is this intentional?
 
-Good point. Will add in the next version.
+In scope of devlink_fmsg_binary_pair_put() all it's fine, and perhaps
+that lead me into thinking that it's fine in *general*, which is not,
+as devlink_fmsg_binary_put() is exported (so it's return value should
+be preserved).
 
->
->     (side note: I think folio_throttle_swaprate() is only for when
->      allocating new pages, so not needed here)
->
->   - check_stable_address_space() (under pgtable lock)
+On the other note, it's called in two places (one of which was just
+covered, and the second place is mlx5e_health_rsc_fmsg_binary(), which
+really just mimics what we have here. So this is also fine in practice.
 
-Ack.
+Last patch of the series fixes it for general case, so barring
+pathological cherry-picks or reverts we are safe.
+Do you want a v4 with that fixed?
 
->
->   - tlb flush
->
->     Hmm???????????????? I can't see anywhere we did tlb flush, batched or
->     not, either single-mm or cross-mm should need it.  Is this missing?
+Other thing is that this function could be changed into some internal 
+helper without export.
 
-As Lokesh pointed out we do that but we don't batch them. I'll try to
-add batching in the next version.
+> 
+>> +	fmsg->putting_binary = false;
+>>   
+>>   	return err;
+>>   }
+>> -- 
+>> 2.38.1
+>>
+> 
 
->
-> >
-> >
-> > Note: that (with only reading the documentation) it also kept me wonder=
-ing
-> > how the MMs are even implied from
-> >
-> >        struct uffdio_move {
-> >            __u64 dst;    /* Destination of move */
-> >            __u64 src;    /* Source of move */
-> >            __u64 len;    /* Number of bytes to move */
-> >            __u64 mode;   /* Flags controlling behavior of move */
-> >            __s64 move;   /* Number of bytes moved, or negated error */
-> >        };
-> >
-> > That probably has to be documented as well, in which address space dst =
-and
-> > src reside.
->
-> Agreed, some better documentation will never hurt.  Dst should be in the =
-mm
-> address space that was bound to the userfault descriptor.  Src should be =
-in
-> the current mm address space.
-
-Ack. Will add. Thanks!
-
->
-> Thanks,
->
-> --
-> Peter Xu
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
