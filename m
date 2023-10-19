@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0A27CFA1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295147CFA2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345802AbjJSM7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        id S1345767AbjJSNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346134AbjJSM67 (ORCPT
+        with ESMTP id S235373AbjJSNBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:58:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A982D52
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697720157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bedN9QfTANJGNML2vYFMLodX6ICVGSptHlSOlZaBF4c=;
-        b=PMRcU6AHSW7MOaaV6L8H5gZuGgFjy3MmZYEFma8cwbCX1R0f5/4V3Q70LrvWFNwg68Cg++
-        arxmnMVKNcs614fy4KR+9VJt1J6xupcVCDCjIxxHvqGUPHU8s0+wyYGxx1s9vgEILNvImk
-        nFgeeGjswHQ+GZZCojbWm0gwiaY9gzc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-9-2BE9P6GuMxSTIDTMyZSV4g-1; Thu, 19 Oct 2023 08:55:54 -0400
-X-MC-Unique: 2BE9P6GuMxSTIDTMyZSV4g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A4A782DFB8;
-        Thu, 19 Oct 2023 12:55:54 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76CA91C060AE;
-        Thu, 19 Oct 2023 12:55:53 +0000 (UTC)
-Date:   Thu, 19 Oct 2023 20:55:50 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Philip Li <philip.li@intel.com>, oe-kbuild@lists.linux.dev,
-        Lorenzo Stoakes <lstoakes@gmail.com>, lkp@intel.com,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
- could be null (see line 3667)
-Message-ID: <ZTEnVpCYjV0yyIgn@MiWiFi-R3L-srv>
-References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
- <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
- <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
- <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
- <ZS/TVMT9ed7OdyNy@rli9-mobl>
- <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
- <20231018085248.6f3f36101cbdfe0990c8b467@linux-foundation.org>
- <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
- <0eddb8b4-47a1-4d94-ae44-707addae77c8@kadam.mountain>
+        Thu, 19 Oct 2023 09:01:03 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A362846A8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:58:40 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JCtVle025392;
+        Thu, 19 Oct 2023 12:56:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=yf4IcXVcrNcuhRh2wRgb7cNGWg0uTSpEKYE3297IzlM=;
+ b=jE4TeDLQxqpGd4i1rqH3MLZm3XqC/+lGRE+v+kFuax/uaSr+wQS5frL/xxJ0PwqJLjIt
+ IIpoNmDvEYhLEXQ8ZYl9Xbil3+0cgSJscpenuPHwJ5cACap23EZ6gfUn4mR+8ciofkCx
+ XEHgKKWXCJp18pZDL7skszSHzFdmgWMMQ+LRHjd6P/Z9/Bf7GdPZDT5Xc31R6NINHyzk
+ ou3QZmGigqv9fH7wgqCynRg8wLiY/Hj4Exkg5IYQ7RWFf558QgMxwFacMk39ZYILetB3
+ BehSRBAU5EM0AKNJRadZgzy70eqKsP+beu46gS/KOBGQizX74U8k+RahsM3C6YS76TNN zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu4vwr1t2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 12:56:25 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JCtu0x027815;
+        Thu, 19 Oct 2023 12:56:24 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu4vwr1kh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 12:56:24 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JAF9BO019900;
+        Thu, 19 Oct 2023 12:56:21 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr8120chk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 12:56:21 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JCuJNv41615848
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Oct 2023 12:56:19 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6DAA320043;
+        Thu, 19 Oct 2023 12:56:19 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21FBF2004E;
+        Thu, 19 Oct 2023 12:56:17 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Thu, 19 Oct 2023 12:56:16 +0000 (GMT)
+Date:   Thu, 19 Oct 2023 18:26:16 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] powerpc/smp: Add read_mostly attribute
+Message-ID: <20231019125616.GH2194132@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
+ <20231018163751.2423181-6-srikar@linux.vnet.ibm.com>
+ <20231019075127.GO33217@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <0eddb8b4-47a1-4d94-ae44-707addae77c8@kadam.mountain>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231019075127.GO33217@noisy.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XrfQh50Grxml6pHTQR1_hgD7aagAvdk8
+X-Proofpoint-ORIG-GUID: Jvhyne0APab16AckP9vvIoOnPucDrYTM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_11,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 spamscore=0 mlxscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=536 lowpriorityscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310190110
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/23 at 08:40am, Dan Carpenter wrote:
-> On Thu, Oct 19, 2023 at 10:28:21AM +0800, Baoquan He wrote:
-> > On 10/18/23 at 08:52am, Andrew Morton wrote:
-> > > On Wed, 18 Oct 2023 23:15:31 +0800 Baoquan He <bhe@redhat.com> wrote:
-> > > 
-> > > > From: Baoquan He <bhe@redhat.com>
-> > > > Date: Wed, 18 Oct 2023 22:50:14 +0800
-> > > > Subject: [PATCH] mm/vmalloc: fix the unchecked dereference warning in vread_iter()
-> > > > Content-type: text/plain
-> > > > 
-> > > > LKP reported smatch warning as below:
-> > > > 
-> > > > ===================
-> > > > smatch warnings:
-> > > > mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
-> > > > ......
-> > > > 06c8994626d1b7  @3667 size = vm ? get_vm_area_size(vm) : va_size(va);
-> > > > ......
-> > > > 06c8994626d1b7  @3689 else if (!(vm->flags & VM_IOREMAP))
-> > > >                                  ^^^^^^^^^
-> > > > Unchecked dereference
-> > > > =====================
-> > > > 
-> > > > So add checking on whether 'vm' is not null when dereferencing it in
-> > > > vread_iter(). This mutes smatch complaint.
-> > > > 
-> > > > ...
-> > > >
-> > > > --- a/mm/vmalloc.c
-> > > > +++ b/mm/vmalloc.c
-> > > > @@ -3813,7 +3813,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
-> > > >  
-> > > >  		if (flags & VMAP_RAM)
-> > > >  			copied = vmap_ram_vread_iter(iter, addr, n, flags);
-> > > > -		else if (!(vm->flags & VM_IOREMAP))
-> > > > +		else if (!(vm && (vm->flags & VM_IOREMAP)))
-> > > >  			copied = aligned_vread_iter(iter, addr, n);
-> > > >  		else /* IOREMAP area is treated as memory hole */
-> > > >  			copied = zero_iter(iter, n);
-> > > 
-> > > So is this not a real runtime bug?  We're only doing this to suppress a
-> > > smatch warning?
-> > > 
-> > > If so, can we please include a description of *why* this wasn't a bug? 
-> > > What conditions ensure that vm!=NULL at this point?
-> > 
-> > I think this is not a real runtime bug. The only chance it can hapen is
-> > when (flags == VMAP_BLOCK) is true. That has been warned and could never
-> > happen. I updated patch log and paste v2 here. 
-> > 
-> >                 /*
-> >                  * VMAP_BLOCK indicates a sub-type of vm_map_ram area, need
-> >                  * be set together with VMAP_RAM.
-> >                  */
-> >                 WARN_ON(flags == VMAP_BLOCK);
-> >  
-> >                 if (!vm && !flags)
-> >                         continue;
-> > 
-> > 
-> 
-> Thanks.  If you want you could just ignore the warning.  It's a one time
-> warning so we won't send the mail again and if people have questions
-> about it, they can just look it up on lore.
-> 
-> The truth is when I was reviewing this code the first time I got mixed
-> up between flags and vm->flags so that's part of why I reported it.
-> 
-> Smatch ignores the WARN_ON().  Historically WARN_ON() has been useless
-> for indicating whether something can happen or not.  These days,
-> WARN_ON() is treated as a syzkaller bug so we prefer pr_warn() if
-> something can actually happen.  We still see a lot of WARN_ON()s
-> happening in real life so I'm not eager to make Smatch treat them like a
-> BUG_ON().
-> 
-> Also, sadly, even if we changed the WARN_ON() to a BUG_ON() it still
-> wouldn't silence the warning because Smatch is not quite clever enough
-> to parse that.
+* Peter Zijlstra <peterz@infradead.org> [2023-10-19 09:51:27]:
 
-Thanks for your sharing, Dan.
+> On Wed, Oct 18, 2023 at 10:07:45PM +0530, Srikar Dronamraju wrote:
+> > There are some variables that are only updated at boot time.
+> > So add read_mostly attribute to such variables
+> 
+> You don't have __ro_after_init ?
 
-My understanding was that our current code alwasys have va->flags with
-VMAP_RAM when it's set. So the case va->flags == VMAP_BLOCK won't
-happen. I now understand your worry that it possibly happens. People
-could change that in the futuer with buggy code or intented action while
-not noticing that. I may not get your suggestion clearly, wonder if you
-are suggesting this could be a realtime bug and need be stated in patch
-log clearly.
+Michael also responded with the same input, will change over to
+__ro_after_init in the next iteration.
 
-Thanks
-Baoquan
-
+-- 
+Thanks and Regards
+Srikar Dronamraju
