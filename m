@@ -2,327 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90CE7D01E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C51A7D0137
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346471AbjJSSiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S1345878AbjJSSOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235529AbjJSSiD (ORCPT
+        with ESMTP id S235475AbjJSSOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:38:03 -0400
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A6197
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:56 -0700 (PDT)
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9c603e2354fso6067466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:37:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740675; x=1698345475;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SGLP9w8wJBecyYnsI3hAUIRuyH/JjC2DNQCPItft/dI=;
-        b=EgUY4X5LsnbGcSy8fmR3t8JZRPh+Hu2/7SqZrifAKOmJN8drtw2f+Lkdy1bmmSkWhd
-         Uv1v+VEqKzF8ivaWREVbnv4fG34M2oy6JR5W6yePobdsBaJgH7gLDfsKYQxSrdCJ3ADb
-         M3UpApzuiDFmC62iOXZxEaqC931KtyNzGwBjwgyuPh+PLahYjl4jfXqGB2xmDnqrufew
-         IbrZGh9V7QNa3EBl7158TiDXqb1kT6a1QJdLOs/VQdVimMmldxicp0FsMj9z+9s5WTVF
-         Ax8bs7+pOYZbaHQTjURJzjVodyLCzFag9a4WGsvEjBB/SF6L6QZHxW8iISH4hcdNXX0d
-         Y3Eg==
-X-Gm-Message-State: AOJu0Yy8FFtxHJr8wqMEBPO935tHcsp9TybvhpHQLHsdcaWj/12lmSIc
-        7h9SSfmZQTsFwW3kIKQcdIw=
-X-Google-Smtp-Source: AGHT+IHSd9a76MligsQicMBnEDnUXBv1BUKVtfclXH2kMkj/ZNJFgWUSQMv3DTjNpCNqVV5W2zgddA==
-X-Received: by 2002:a17:907:7f16:b0:9ad:f60c:7287 with SMTP id qf22-20020a1709077f1600b009adf60c7287mr2268215ejc.28.1697740674787;
-        Thu, 19 Oct 2023 11:37:54 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-003.fbsv.net. [2a03:2880:31ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q21-20020a170906a09500b00997cce73cc7sm28657ejy.29.2023.10.19.11.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:37:54 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        bp@alien8.de, Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     leit@meta.com,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT))
-Subject: [PATCH v5 12/12] x86/bugs: Add a separate config for missing mitigation
-Date:   Thu, 19 Oct 2023 11:11:58 -0700
-Message-Id: <20231019181158.1982205-13-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
-References: <20231019181158.1982205-1-leitao@debian.org>
+        Thu, 19 Oct 2023 14:14:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FE2124
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TXsCKxfdxmoEXSGuHkDPpPh+eCleK5x9qBmZaUqjdHg=; b=je69cUvsmCeF22HS0i5OMiM/89
+        WdGt5UgdNtN2ipMqDbfE5DKyAj+gTCvEI9LIJTlKKL3Dov63iUFjr/jZhgpBBOA4Kfx40dQ0FaRND
+        EEKsENUSpijO1hAxSTlFBkreZGUQPeLVBdJbL7jIecFFo/CIFJLgJemgnCLtX1NwX1fjV+3lGWnnd
+        LyOCwuO7C9A/aLp0ENKvj841m27ST0zfZjkHH/QmEn07XKbCdYwaWRRSVmvkqHOnjLw2hNENfFwY+
+        vYzjrd9+JtQXvGNbq1+oNtdRoYnx5BBlT+GMus0/cjyPSUAhADDqtyo1KepcY82jY89+oanwMHaEF
+        ESyf9Ocw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qtXWy-008UjP-Ky; Thu, 19 Oct 2023 18:14:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 10AF5300392; Thu, 19 Oct 2023 20:14:00 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 20:13:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Nadav Amit <namit@vmware.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Message-ID: <20231019181359.GA35308@noisy.programming.kicks-ass.net>
+References: <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+ <20231019085432.GQ33217@noisy.programming.kicks-ass.net>
+ <CAHk-=wg98L2qaw1U-7NDFQi6dOK=CRO6H-1q1LXuEh348Dk=2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg98L2qaw1U-7NDFQi6dOK=CRO6H-1q1LXuEh348Dk=2Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
-where some mitigations have entries in Kconfig, and they could be
-modified, while others mitigations do not have Kconfig entries, and
-could not be controlled at build time.
+On Thu, Oct 19, 2023 at 10:04:56AM -0700, Linus Torvalds wrote:
 
-Create an entry for each CPU mitigation under
-CONFIG_SPECULATION_MITIGATIONS. This allow users to enable or disable
-them at compilation time.
+> So if you do
+> 
+>         seq = load_acquire(orig_seq);
+>         load-data
+> 
+> then that acquire actually makes that first 'rmb' pointless. Acquire
+> already guarantees that all subsequent memory operations are ordered
+> wrt that read.
+> 
+> And 'acquire' is likely faster than 'rmb' on sane modern architectures.
+> 
+> On x86 it doesn't matter (rmb is a no-op, and all loads are acquires).
+> 
+> But on arm64, for example, you can do a 'ld.acq' in one instruction
+> and you're done - while a rmb then ends up being a barrier (ok, the
+> asm mnemonics are horrible: it's not "ld.acq", it's "ldar", but
+> whatever - I like arm64 as an architecture, but I think they made the
+> standard assembly syntax pointlessly and actively hostile to humans).
+> 
+> Of course then microarchitectures may end up doing basically the same
+> thing, but at least technically the 'load acquire' is likely more
+> targeted and more optimized.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- arch/x86/Kconfig           | 93 ++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/bugs.c | 39 ++++++++++------
- 2 files changed, 117 insertions(+), 15 deletions(-)
+Sure, acquire should work fine here.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a5cada7443ea..ccdcb1dcdc0c 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2591,6 +2591,99 @@ config MITIGATION_GDS_FORCE
- 
- 	  If in doubt, say N.
- 
-+config MITIGATION_MDS
-+	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for Microarchitectural Data Sampling (MDS). MDS is
-+	  a hardware vulnerability which allows unprivileged speculative access
-+	  to data which is available in various CPU internal buffer. Deeper
-+	  technical information is available in the MDS specific x86 architecture
-+	  section: Documentation/arch/x86/mds.rst.
-+
-+config MITIGATION_TAA
-+	bool "Mitigate TSX Asynchronous Abort (TAA) hardware bug"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for TSX Asynchronous Abort (TAA). TAA is a hardware
-+	  vulnerability that allows unprivileged speculative access to data
-+	  which is available in various CPU internal buffers by using
-+	  asynchronous aborts within an Intel TSX transactional region.
-+
-+config MITIGATION_MMIO_STALE_DATA
-+	bool "Mitigate MMIO Stale Data hardware bug"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for MMIO Stale Data hardware bugs.  Processor MMIO
-+	  Stale Data Vulnerabilities are a class of memory-mapped I/O (MMIO)
-+	  vulnerabilities that can expose data. The vulnerabilities require the
-+	  attacker to have access to MMIO.
-+
-+config MITIGATION_L1TF
-+	bool "Mitigate L1 Terminal Fault (L1TF) hardware bug"
-+	default y
-+	help
-+	  Mitigate L1 Terminal Fault (L1TF) hardware bug. L1 Terminal Fault is a
-+	  hardware vulnerability which allows unprivileged speculative access to data
-+	  which is available in the Level 1 Data Cache when the page table
-+	  entry controlling the virtual address.
-+
-+config MITIGATION_RETBLEED
-+	bool "Mitigate RETBleed hardware bug"
-+	default y
-+	help
-+	  Enable mitigation for RETBleed (Arbitrary Speculative Code Execution
-+	  with Return Instructions) vulnerability.  RETBleed is a speculative
-+	  execution attack which takes advantage of microarchitectural behavior
-+	  in many modern microprocessors, similar to Spectre v2. An
-+	  unprivileged attacker can use these flaws to bypass conventional
-+	  memory security restrictions to gain read access to privileged memory
-+	  that would otherwise be inaccessible.
-+
-+config MITIGATION_SPECTRE_V1
-+	bool "Mitigate SPECTRE V1 hardware bug"
-+	default y
-+	help
-+	  Enable mitigation for Spectre V1 (Bounds Check Bypass). Spectre V1 is a
-+	  class of side channel attacks that takes advantage of speculative
-+	  execution that bypasses conditional branch instructions used for
-+	  memory access bounds check.
-+
-+config MITIGATION_SPECTRE_V2
-+	bool "Mitigate SPECTRE V2 hardware bug"
-+	default y
-+	help
-+	  Enable mitigation for Spectre V2 (Branch Target Injection). Spectre
-+	  V2 is a class of side channel attacks that takes advantage of
-+	  indirect branch predictors inside the processor. In Spectre variant 2
-+	  attacks, the attacker can steer speculative indirect branches in the
-+	  victim to gadget code by poisoning the branch target buffer of a CPU
-+	  used for predicting indirect branch addresses.
-+
-+config MITIGATION_SRBDS
-+	bool "Mitigate Special Register Buffer Data Sampling (SRBDS) hardware bug"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for Special Register Buffer Data Sampling (SRBDS).
-+	  SRBDS is a hardware vulnerability that allows Microarchitectural Data
-+	  Sampling (MDS) techniques to infer values returned from special
-+	  register accesses. An unprivileged user can extract values returned
-+	  from RDRAND and RDSEED executed on another core or sibling thread
-+	  using MDS techniques.
-+
-+config MITIGATION_SSB
-+	bool "Mitigate Speculative Store Bypass (SSB) hardware bug"
-+	default y
-+	help
-+	  Enable mitigation for Speculative Store Bypass (SSB). SSB is a
-+	  hardware security vulnerability and its exploitation takes advantage
-+	  of speculative execution in a similar way to the Meltdown and Spectre
-+	  security vulnerabilities.
-+
- endif
- 
- config ARCH_HAS_ADD_PAGES
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 0172bb0f61fe..11ccbadd8800 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -232,7 +232,8 @@ static void x86_amd_ssb_disable(void)
- #define pr_fmt(fmt)	"MDS: " fmt
- 
- /* Default mitigation for MDS-affected CPUs */
--static enum mds_mitigations mds_mitigation __ro_after_init = MDS_MITIGATION_FULL;
-+static enum mds_mitigations mds_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_MDS) ? MDS_MITIGATION_FULL : MDS_MITIGATION_OFF;
- static bool mds_nosmt __ro_after_init = false;
- 
- static const char * const mds_strings[] = {
-@@ -292,7 +293,8 @@ enum taa_mitigations {
- };
- 
- /* Default mitigation for TAA-affected CPUs */
--static enum taa_mitigations taa_mitigation __ro_after_init = TAA_MITIGATION_VERW;
-+static enum taa_mitigations taa_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_TAA) ? TAA_MITIGATION_VERW : TAA_MITIGATION_OFF;
- static bool taa_nosmt __ro_after_init;
- 
- static const char * const taa_strings[] = {
-@@ -393,7 +395,8 @@ enum mmio_mitigations {
- };
- 
- /* Default mitigation for Processor MMIO Stale Data vulnerabilities */
--static enum mmio_mitigations mmio_mitigation __ro_after_init = MMIO_MITIGATION_VERW;
-+static enum mmio_mitigations mmio_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_MMIO_STALE_DATA) ? MMIO_MITIGATION_VERW : MMIO_MITIGATION_OFF;
- static bool mmio_nosmt __ro_after_init = false;
- 
- static const char * const mmio_strings[] = {
-@@ -542,7 +545,8 @@ enum srbds_mitigations {
- 	SRBDS_MITIGATION_HYPERVISOR,
- };
- 
--static enum srbds_mitigations srbds_mitigation __ro_after_init = SRBDS_MITIGATION_FULL;
-+static enum srbds_mitigations srbds_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_SRBDS) ? SRBDS_MITIGATION_FULL : SRBDS_MITIGATION_OFF;
- 
- static const char * const srbds_strings[] = {
- 	[SRBDS_MITIGATION_OFF]		= "Vulnerable",
-@@ -812,7 +816,8 @@ enum spectre_v1_mitigation {
- };
- 
- static enum spectre_v1_mitigation spectre_v1_mitigation __ro_after_init =
--	SPECTRE_V1_MITIGATION_AUTO;
-+	IS_ENABLED(CONFIG_MITIGATION_SPECTRE_V1) ?
-+		SPECTRE_V1_MITIGATION_AUTO : SPECTRE_V1_MITIGATION_NONE;
- 
- static const char * const spectre_v1_strings[] = {
- 	[SPECTRE_V1_MITIGATION_NONE] = "Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers",
-@@ -927,7 +932,7 @@ static const char * const retbleed_strings[] = {
- static enum retbleed_mitigation retbleed_mitigation __ro_after_init =
- 	RETBLEED_MITIGATION_NONE;
- static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
--	RETBLEED_CMD_AUTO;
-+	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
- 
- static int __ro_after_init retbleed_nosmt = false;
- 
-@@ -1388,17 +1393,18 @@ static void __init spec_v2_print_cond(const char *reason, bool secure)
- 
- static enum spectre_v2_mitigation_cmd __init spectre_v2_parse_cmdline(void)
- {
--	enum spectre_v2_mitigation_cmd cmd = SPECTRE_V2_CMD_AUTO;
-+	enum spectre_v2_mitigation_cmd cmd;
- 	char arg[20];
- 	int ret, i;
- 
-+	cmd = IS_ENABLED(CONFIG_MITIGATION_SPECTRE_V2) ?  SPECTRE_V2_CMD_AUTO : SPECTRE_V2_CMD_NONE;
- 	if (cmdline_find_option_bool(boot_command_line, "nospectre_v2") ||
- 	    cpu_mitigations_off())
- 		return SPECTRE_V2_CMD_NONE;
- 
- 	ret = cmdline_find_option(boot_command_line, "spectre_v2", arg, sizeof(arg));
- 	if (ret < 0)
--		return SPECTRE_V2_CMD_AUTO;
-+		return cmd;
- 
- 	for (i = 0; i < ARRAY_SIZE(mitigation_options); i++) {
- 		if (!match_option(arg, ret, mitigation_options[i].option))
-@@ -1408,8 +1414,8 @@ static enum spectre_v2_mitigation_cmd __init spectre_v2_parse_cmdline(void)
- 	}
- 
- 	if (i >= ARRAY_SIZE(mitigation_options)) {
--		pr_err("unknown option (%s). Switching to AUTO select\n", arg);
--		return SPECTRE_V2_CMD_AUTO;
-+		pr_err("unknown option (%s). Switching to default mode\n", arg);
-+		return cmd;
- 	}
- 
- 	if ((cmd == SPECTRE_V2_CMD_RETPOLINE ||
-@@ -1882,10 +1888,12 @@ static const struct {
- 
- static enum ssb_mitigation_cmd __init ssb_parse_cmdline(void)
- {
--	enum ssb_mitigation_cmd cmd = SPEC_STORE_BYPASS_CMD_AUTO;
-+	enum ssb_mitigation_cmd cmd;
- 	char arg[20];
- 	int ret, i;
- 
-+	cmd = IS_ENABLED(CONFIG_MITIGATION_SSB) ?
-+		SPEC_STORE_BYPASS_CMD_AUTO : SPEC_STORE_BYPASS_CMD_NONE;
- 	if (cmdline_find_option_bool(boot_command_line, "nospec_store_bypass_disable") ||
- 	    cpu_mitigations_off()) {
- 		return SPEC_STORE_BYPASS_CMD_NONE;
-@@ -1893,7 +1901,7 @@ static enum ssb_mitigation_cmd __init ssb_parse_cmdline(void)
- 		ret = cmdline_find_option(boot_command_line, "spec_store_bypass_disable",
- 					  arg, sizeof(arg));
- 		if (ret < 0)
--			return SPEC_STORE_BYPASS_CMD_AUTO;
-+			return cmd;
- 
- 		for (i = 0; i < ARRAY_SIZE(ssb_mitigation_options); i++) {
- 			if (!match_option(arg, ret, ssb_mitigation_options[i].option))
-@@ -1904,8 +1912,8 @@ static enum ssb_mitigation_cmd __init ssb_parse_cmdline(void)
- 		}
- 
- 		if (i >= ARRAY_SIZE(ssb_mitigation_options)) {
--			pr_err("unknown option (%s). Switching to AUTO select\n", arg);
--			return SPEC_STORE_BYPASS_CMD_AUTO;
-+			pr_err("unknown option (%s). Switching to default mode\n", arg);
-+			return cmd;
- 		}
- 	}
- 
-@@ -2232,7 +2240,8 @@ EXPORT_SYMBOL_GPL(itlb_multihit_kvm_mitigation);
- #define pr_fmt(fmt)	"L1TF: " fmt
- 
- /* Default mitigation for L1TF-affected CPUs */
--enum l1tf_mitigations l1tf_mitigation __ro_after_init = L1TF_MITIGATION_FLUSH;
-+enum l1tf_mitigations l1tf_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_L1TF) ? L1TF_MITIGATION_FLUSH : L1TF_MITIGATION_OFF;
- #if IS_ENABLED(CONFIG_KVM_INTEL)
- EXPORT_SYMBOL_GPL(l1tf_mitigation);
- #endif
--- 
-2.34.1
+> The second rmb is then harder to change, and that is going to stay an
+> rmb ( you could say "do an acquire on the last data load, but that
+> doesn't fit the sane locking semantics of a sequence lock).
 
+Wouldn't even work, acquire allows an earlier load to pass it. It only
+constraints later loads to not happen before.
+
+> Of course, then the percpu case doesn't care about the SMP ordering,
+> but it should still use an UP barrier to make sure things don't get
+> re-ordered. Relying on our "percpu_read()" ordering other reads around
+> it is *wrong*.
+
+I'm happy to put barrier() in there if it makes you feel better.
+
+But are you really saying this_cpu_read() should not imply READ_ONCE()?
+
+If so, we should probably go audit a ton of code :/
