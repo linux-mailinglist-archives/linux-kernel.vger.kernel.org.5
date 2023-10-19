@@ -2,73 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9937CF467
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE637CF43F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345159AbjJSJtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        id S1345017AbjJSJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbjJSJs6 (ORCPT
+        with ESMTP id S229473AbjJSJqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:48:58 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A98130
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:48:33 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5aed4f0e90bso3840567a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697708912; x=1698313712; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JY2RHi8J0dknAQahRfvff3wFWP0EUTol6JY9TKNymCE=;
-        b=KLX4S2nd6Z00rYuszOyg9YZx0JsjZVa85f536dTdMaMbkmbNrQFvncKAk9LnH7kJt9
-         nwWq0vFI+WaD/TRAEIyAZxcy2R/5VNX8rtSDTIUVI15eswLUYQt2K2/VZdfDhRTIJCAu
-         m4gHupfIKXCQJzfwBgsorSGVJWgKAhVvELI0+6vIh0sfMI6Uh1lDsbtcnomEBcrtWNW4
-         x3NZz0SUcFDL3u/IHujBRB/dqo+Wtlwa3rJyrtBy8PxJbQPJs5+yxvApt3gvwv2861v7
-         pGYaPUmMFXBLTaKEMHBv4pXI8UZOkmpoOyeazqT6HKjRHH706E+FBqkQFqqcF5kKj9ZU
-         Okdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697708912; x=1698313712;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JY2RHi8J0dknAQahRfvff3wFWP0EUTol6JY9TKNymCE=;
-        b=AJ21BzZFQc6EoYShTQSAibqVZNOBXKgHA6ufiEKwz5i1iSDEtS5kq6iVNlASn9SD7a
-         dQPMz9AJBXzGr8SI3uN1gssfmIzSw/0pF7dtiRv/GrNKDTP/FoZhHqeitKFBgKqgQWAg
-         ZHvR84YI0SPC1dO/gPCNrGrFj0OUf3Qn5IuwZAvDsK+9cTSG7DA0XGmgYOMZhxY2bsk2
-         wcFFSl7eKLXoI1wlnEJXmHvO0KFq8/r3R2e0ZxfoBBowndVa/V9j78UBe/nt3tWG6uBI
-         2xKkZ6eu8KfgCJyLH7fTFfpXJwz3o+5YtHh+Mo7ujvpffkXp8i72Pi2PyjXY6ItYtiIk
-         Hhhw==
-X-Gm-Message-State: AOJu0YwQgFFJQA74LCsAcmqHaHnboPHQw6K+KFBDpel/kzbEngadh/zg
-        zyJa3IZc9xK2mpRUbhIhDa+KqA==
-X-Google-Smtp-Source: AGHT+IFM9A5zHwr54bBJYZlxUokLUP7giAPuLnQTdz9Hgfwz+qQW/yzUe6+uFHzohQT8sKMvSM6sEw==
-X-Received: by 2002:a17:902:ce81:b0:1ca:3d53:2867 with SMTP id f1-20020a170902ce8100b001ca3d532867mr2054272plg.15.1697708912629;
-        Thu, 19 Oct 2023 02:48:32 -0700 (PDT)
-Received: from [10.3.43.196] ([61.213.176.12])
-        by smtp.gmail.com with ESMTPSA id p6-20020a170902e74600b001bdd7579b5dsm1478111plf.240.2023.10.19.02.48.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 02:48:32 -0700 (PDT)
-Message-ID: <dedde8ee-6edb-4950-aa8b-e89e025440b7@bytedance.com>
-Date:   Thu, 19 Oct 2023 17:43:55 +0800
+        Thu, 19 Oct 2023 05:46:07 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D0610F;
+        Thu, 19 Oct 2023 02:46:02 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DCBBD1C000D;
+        Thu, 19 Oct 2023 09:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697708760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Je4zaOCqnvXWygZEknQfLrVGZdi68AOt0DsOWGgF264=;
+        b=g8RqOFVAjwPbgY2TUv2Zg57ruJQI/O/7LKkk6+LtxrMxUjawY2g30CTSkR/Evdz221nTpX
+        ru6K1pakZzx2yXAx/i2P4agDHUIjR/AcS67DJfuu7+tuE4Cbw13AN+oG0w2cW/9/b2Cxvz
+        01iIlmHywDwbtw5GVjrwk4xGDFhAAfdVguBEWt9arEu8qkdxfaKi1Lx7akbAtGmDtzXUwp
+        ZPAd0W7jFgtpeg6/bldN4Ky2UpgVaavEKfau8fBlvCOjGcM7ldkZ7XUWmVQl7EvDSo2iRb
+        viZmyqmbrC/2cXt292UYbyCo6jisWvSALbq4JxKFQIPbmnL68g+VUaOe8Smv1Q==
+Date:   Thu, 19 Oct 2023 11:45:59 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 1/3] i2c: muxes: i2c-mux-pinctrl: Use
+ of_get_i2c_adapter_by_node()
+Message-ID: <20231019114559.5a81741e@bootlin.com>
+In-Reply-To: <668b7c50-bcd7-b99e-3438-eceff6594dd7@axentia.se>
+References: <20231019073533.386563-1-herve.codina@bootlin.com>
+        <20231019073533.386563-2-herve.codina@bootlin.com>
+        <668b7c50-bcd7-b99e-3438-eceff6594dd7@axentia.se>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: PING: [PATCH] virtio-blk: fix implicit overflow on
- virtio_max_dma_size
-Content-Language: en-US
-To:     mst@redhat.com
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-References: <20230904061045.510460-1-pizhenwei@bytedance.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-In-Reply-To: <20230904061045.510460-1-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,47 +61,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi Peter,
 
-This seems to have been ignored as you suggested.
+On Thu, 19 Oct 2023 11:25:35 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
-LINK: https://www.spinics.net/lists/linux-virtualization/msg63015.html
-
-On 9/4/23 14:10, zhenwei pi wrote:
-> The following codes have an implicit conversion from size_t to u32:
-> (u32)max_size = (size_t)virtio_max_dma_size(vdev);
+> Hi!
 > 
-> This may lead overflow, Ex (size_t)4G -> (u32)0. Once
-> virtio_max_dma_size() has a larger size than U32_MAX, use U32_MAX
-> instead.
+> 2023-10-19 at 09:35, Herve Codina wrote:
+> > i2c-mux-pinctrl uses the pair of_find_i2c_adapter_by_node() /
+> > i2c_put_adapter(). These pair alone is not correct to properly lock the
+> > I2C parent adapter.
+> > 
+> > Indeed, i2c_put_adapter() decrements the module refcount while
+> > of_find_i2c_adapter_by_node() does not increment it. This leads to an
+> > overflow over zero of the parent adapter user counter.  
 > 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
->   drivers/block/virtio_blk.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index 1fe011676d07..4a4b9bad551e 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -1313,6 +1313,7 @@ static int virtblk_probe(struct virtio_device *vdev)
->   	u16 min_io_size;
->   	u8 physical_block_exp, alignment_offset;
->   	unsigned int queue_depth;
-> +	size_t max_dma_size;
->   
->   	if (!vdev->config->get) {
->   		dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> @@ -1411,7 +1412,8 @@ static int virtblk_probe(struct virtio_device *vdev)
->   	/* No real sector limit. */
->   	blk_queue_max_hw_sectors(q, UINT_MAX);
->   
-> -	max_size = virtio_max_dma_size(vdev);
-> +	max_dma_size = virtio_max_dma_size(vdev);
-> +	max_size = max_dma_size > U32_MAX ? U32_MAX : max_dma_size;
->   
->   	/* Host can optionally specify maximum segment size and number of
->   	 * segments. */
+> Perhaps "... underflow of the parent module refcount."?
 
--- 
-zhenwei pi
+Yes, will be changed in the next iteration.
+
+> 
+> > 
+> > Use the dedicated function, of_get_i2c_adapter_by_node(), to handle
+> > correctly the module refcount.
+> > 
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
+> 
+> Good find, and sorry about that!
+> 
+> Fixes: c4aee3e1b0de ("i2c: mux: pinctrl: remove platform_data")
+> Acked-by: Peter Rosin <peda@axentia.se>
+> 
+Will be added in the next iteration.
+
+Thanks for the review,
+Hervé
