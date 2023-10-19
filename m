@@ -2,51 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA2B7CF6C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605047CF6CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345372AbjJSL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
+        id S1345369AbjJSL3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345346AbjJSL20 (ORCPT
+        with ESMTP id S1345364AbjJSL3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:28:26 -0400
+        Thu, 19 Oct 2023 07:29:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602A8112;
-        Thu, 19 Oct 2023 04:28:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 250FDC433CA;
-        Thu, 19 Oct 2023 11:28:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449110C7;
+        Thu, 19 Oct 2023 04:28:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A89C433C7;
+        Thu, 19 Oct 2023 11:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697714905;
-        bh=CC0lIEjmBNKh9ZTUkXID9Xg/UYaPpvLP9VjlpzQIKKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8J0WDTwOMk8s35OVmB7NSTsfGjyRimJNi5chvuN1wISDixtWWtxec6I/Jgkl7RYb
-         wPdKLI3UMGcqllLhjGfvA1fPhw3Ss24uv9lOCpTq9KygR+eDdZ6yo6b5UMx0t5qV/A
-         HJ8wfdF9AqVuSyXYkrXMMHAg28W2/so1DapBzf2bVBRFXBG3ZFAfxnmdS+xBugvWxw
-         cZdMhkr1sXbWWExImGv/N12f5FQqe1aVRlVNDMW7wzQOh1AZx7lxv9T1kqtb5CAWIq
-         Sn+yf4mAwebUB9u8U3khpgl0/GAiQoqEOERGebNHxs/y25XgfQW5yXshmQg5YN4jdn
-         6B9mKC0kTpD2Q==
-Date:   Thu, 19 Oct 2023 12:28:20 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
- schemas
-Message-ID: <20231019-hurry-eagle-0ffa95b1a026@spud>
-References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
- <20231019-rematch-ethically-9d482ca4607e@spud>
- <6b856b0d-4f69-70ac-59a7-237fd21d1a92@tweaklogic.com>
+        s=k20201202; t=1697714932;
+        bh=frnWz1sFRBQuYonb5RmQwPk5jf/lF7GP4WLN8JSXa7M=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HBA7HSvGoIRn7e8pKkbEW9dLvkhR6UbP9YryXoyb0yOjeGBF3+t2/uXVAqhO8+5XZ
+         g0zjGzFjnXF/LfXiIIdiO8O+s2WH1DbOU5PxZHMy5BGmXDF1pxMFXw5belLfcYtN7H
+         99/gEqDLZv0OG5nrh2/sMZTcmW/PdfrhuOSXelnXPQnJC1BordF3CwVUQNbDT7FTNG
+         nn177O3fNCLQE2ooDHVnWEyFQh2gHAsFOuYPrlz1K/YrfOpU/ht9vUd3N/Bwu8Bm8m
+         10CRzoGlUcfNESgswU4BLKxSdAsGBM5bqEhUzQbS/iUBrFcZX0/oc11HUt7teGBqNa
+         7K8NLvWb7IZrw==
+Message-ID: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Thu, 19 Oct 2023 07:28:48 -0400
+In-Reply-To: <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iLG2NMHQSB/mbANT"
-Content-Disposition: inline
-In-Reply-To: <6b856b0d-4f69-70ac-59a7-237fd21d1a92@tweaklogic.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,53 +74,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---iLG2NMHQSB/mbANT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 19, 2023 at 09:20:12PM +1030, Subhajit Ghosh wrote:
-> On 19/10/23 19:21, Conor Dooley wrote:
-> > On Thu, Oct 19, 2023 at 06:34:37PM +1030, Subhajit Ghosh wrote:
-> > > Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
-> > > file and removing the other.
+On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > Back to your earlier point though:
 > >=20
-> > > Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dce=
-f@linaro.org/
-> >=20
-> > "Yes, they look similar. I will combine them all in a single yaml file =
-in
-> > the next revision. Thank you Krzysztof."
-> >=20
-> > Yet this is a follow-up patch, not a version 2. The original patches
-> > seem to not have been applied, so I am not sure why you didn't send a
-> > v2?
-> >=20
-> > Cheers,
-> > Conor.
+> > Is a global offset really a non-starter? I can see about doing somethin=
+g
+> > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
+> > as ktime_get_coarse_ts64. I don't see the downside there for the non-
+> > multigrain filesystems to call that.
 >=20
-> Sorry, I should have put a longer description and a longer commit message.
-> That patch series adds a new driver - apds9306 which is separate to this
-> patch. As per Krzysztof's comments, first operation is to merge the exist=
-ing
-> apds9300 and apds9960 schemas. This patch is the first operation.
+> I have to say that this doesn't excite me. This whole thing feels a bit
+> hackish. I think that a change version is the way more sane way to go.
 >=20
-> Second operation will be to add apds9306 support on top of that. I will
-> explain more on Krzysztof's comments. Thank you for reviewing.
 
-Ahh apologies then. The best course of action would likely be to include
-the patch merging the two bindings in your series adding the third user.
+What is it about this set that feels so much more hackish to you? Most
+of this set is pretty similar to what we had to revert. Is it just the
+timekeeper changes? Why do you feel those are a problem?
 
---iLG2NMHQSB/mbANT
-Content-Type: application/pgp-signature; name="signature.asc"
+> >=20
+> > On another note: maybe I need to put this behind a Kconfig option
+> > initially too?
+>=20
+> So can we for a second consider not introducing fine-grained timestamps
+> at all. We let NFSv3 live with the cache problem it's been living with
+> forever.
+>=20
+> And for NFSv4 we actually do introduce a proper i_version for all
+> filesystems that matter to it.
+>=20
+> What filesystems exactly don't expose a proper i_version and what does
+> prevent them from adding one or fixing it?
 
------BEGIN PGP SIGNATURE-----
+Certainly we can drop this series altogether if that's the consensus.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTES1AAKCRB4tDGHoIJi
-0hxoAP9jx8eindF1SaXOSWo2eyme0bm0nsGc8NhDwAugFtQf1QEA4S34dn1S2csN
-Xiyj0F1EY71U+VdxYt7jDZkgkwUtlgw=
-=tF1b
------END PGP SIGNATURE-----
+The main exportable filesystem that doesn't have a suitable change
+counter now is XFS. Fixing it will require an on-disk format change to
+accommodate a new version counter that doesn't increment on atime
+updates. This is something the XFS folks were specifically looking to
+avoid, but maybe that's the simpler option.
 
---iLG2NMHQSB/mbANT--
+There is also bcachefs which I don't think has a change attr yet. They'd
+also likely need a on-disk format change, but hopefully that's a easier
+thing to do there since it's a brand new filesystem.
+
+There are a smattering of lesser-used local filesystems (f2fs, nilfs2,
+etc.) that have no i_version support. Multigrain timestamps would make
+it simple to add better change attribute support there, but they can (in
+principle) all undergo an on-disk format change too if they decide to
+add one.
+
+Then there are filesystems like ntfs that are exportable, but where we
+can't extend the on-disk format. Those could probably benefit from
+multigrain timestamps, but those are much lower priority. Not many
+people sharing their NTFS filesystem via NFS anyway.
+--=20
+Jeff Layton <jlayton@kernel.org>
