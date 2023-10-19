@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98037CF656
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F027CF65C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345323AbjJSLMg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 07:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
+        id S1345321AbjJSLMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345324AbjJSLMc (ORCPT
+        with ESMTP id S1345325AbjJSLMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:12:32 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26089116;
-        Thu, 19 Oct 2023 04:12:30 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SB4kK4yCFz67M2K;
-        Thu, 19 Oct 2023 19:10:01 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 19 Oct
- 2023 12:12:27 +0100
-Date:   Thu, 19 Oct 2023 12:12:26 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Jagath Jog J <jagathjog1996@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Rokosov <DDRokosov@sberdevices.ru>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mehdi Djait <mehdi.djait.k@gmail.com>
-Subject: Re: [PATCH v5 2/3] iio: accel: Support Kionix/ROHM KX022A
- accelerometer
-Message-ID: <20231019121226.000078fe@Huawei.com>
-In-Reply-To: <ceaf7033-d86b-4d63-b8e0-bc7445cf0df0@gmail.com>
-References: <cover.1666614295.git.mazziesaccount@gmail.com>
-        <758b00d6aea0a6431a5a3a78d557d449c113b21e.1666614295.git.mazziesaccount@gmail.com>
-        <CAM+2Eu+Xp6j1ppLd+zHMTu6jfc6DQKBShfe-nAyokVi0MUmoSA@mail.gmail.com>
-        <20231018203423.06f20a6c@jic23-huawei>
-        <ceaf7033-d86b-4d63-b8e0-bc7445cf0df0@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 07:12:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2755D126
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:12:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B454CC433C8;
+        Thu, 19 Oct 2023 11:12:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697713969;
+        bh=XTqMeSpKqcuasX9eby3qHv7gedznY2jckAT9FxyMVsI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Vut8FnJjXNgyZ7kXP3YKB2xGB0cR5yJAnVCUOZ1fOr2tcljAAqeR43RMuY7nLjwi+
+         MEU+dZyNp4FrqVRRObTJYfDii7w3STJTWj0lDBENOtxgc5tUWFXKSw437RKBtdn+Db
+         dIc5sNGIKpHAL6eN/GCr58GIYa/qsxUVeSs1SzlJ8sKEOv9f428fFmyh2GeoSXoyq2
+         rj+bTcyst/9KgEgUY9+goPaDOOemGn9te77MCajxs9zJqp2HMnRjnSzsDY0BA79BlU
+         XnPidvZcWLNwbIbA2Njr0M7hdWon5TFyyW3hpxtCSTXgYFsmSoxT/hg2I+xL2VPAtq
+         jMdjhFk2XptxQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qtQxL-005ilA-7y;
+        Thu, 19 Oct 2023 12:12:47 +0100
+Date:   Thu, 19 Oct 2023 12:12:45 +0100
+Message-ID: <86lebyn9w2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>
+Subject: Re: [PATCH v3 5/5] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+In-Reply-To: <ZS+aZnRFkGkJ+vK9@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+        <20231006125929.48591-1-lpieralisi@kernel.org>
+        <20231006125929.48591-6-lpieralisi@kernel.org>
+        <ZS6YAvoz3JApFtOo@lpieralisi>
+        <86v8b5mc5v.wl-maz@kernel.org>
+        <ZS+aZnRFkGkJ+vK9@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, rafael@kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-acpi@vger.kernel.org, robh+dt@kernel.org, fangxiang3@xiaomi.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 08:53:31 +0300
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-
-> On 10/18/23 22:34, Jonathan Cameron wrote:
-> > On Wed, 18 Oct 2023 01:37:12 +0530
-> > Jagath Jog J <jagathjog1996@gmail.com> wrote:  
+On Wed, 18 Oct 2023 09:42:14 +0100,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
 > 
-> Hi Jagath - and thanks!
-> 
-> >> Hi Matti,
-> >>
-> >> On Mon, Oct 24, 2022 at 6:10 PM Matti Vaittinen
-> >> <mazziesaccount@gmail.com> wrote:  
-> >>>
-> >>> KX022A is a 3-axis accelerometer from ROHM/Kionix. The sensor features
-> >>> include variable ODRs, I2C and SPI control, FIFO/LIFO with watermark IRQ,
-> >>> tap/motion detection, wake-up & back-to-sleep events, four acceleration
-> >>> ranges (2, 4, 8 and 16g), and probably some other cool features.  
-> >>
-> >> This is a nice driver, and I found it very helpful as a reference.
-> >> One question regarding scale please see below.
-> >>  
-> >>> + * range is typically +-2G/4G/8G/16G, distributed over the amount of bits.
-> >>> + * The scale table can be calculated using
-> >>> + *     (range / 2^bits) * g = (range / 2^bits) * 9.80665 m/s^2
-> >>> + *     => KX022A uses 16 bit (HiRes mode - assume the low 8 bits are zeroed
-> >>> + *     in low-power mode(?) )
-> >>> + *     => +/-2G  => 4 / 2^16 * 9,80665 * 10^6 (to scale to micro)
-> >>> + *     => +/-2G  - 598.550415
-> >>> + *        +/-4G  - 1197.10083
-> >>> + *        +/-8G  - 2394.20166
-> >>> + *        +/-16G - 4788.40332
-> >>> + */
-> >>> +static const int kx022a_scale_table[][2] = {
-> >>> +       { 598, 550415 },
-> >>> +       { 1197, 100830 },
-> >>> +       { 2394, 201660 },
-> >>> +       { 4788, 403320 },
-> >>> +};  
-> >>
-> >> Given that the integer part is non-zero, and
-> >> IIO_VAL_INT_PLUS_MICRO is returned for read_scale,
-> >> As raw value will never be fractional how does this
-> >> correspond to a reading of 9.8 m/s² for the Z-axis?  
+> On Tue, Oct 17, 2023 at 05:44:28PM +0100, Marc Zyngier wrote:
+> > On Tue, 17 Oct 2023 15:19:46 +0100,
+> > Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+> > > 
+> > > On Fri, Oct 06, 2023 at 02:59:29PM +0200, Lorenzo Pieralisi wrote:
+> > > > The GIC architecture specification defines a set of registers
+> > > > for redistributors and ITSes that control the sharebility and
+> > > > cacheability attributes of redistributors/ITSes initiator ports
+> > > > on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
+> > > > GITS_BASER<n>).
+> > > > 
+> > > > Architecturally the GIC provides a means to drive shareability
+> > > > and cacheability attributes signals and related IWB/OWB/ISH barriers
+> > > > but it is not mandatory for designs to wire up the corresponding
+> > > > interconnect signals that control the cacheability/shareability
+> > > > of transactions.
+> > > > 
+> > > > Redistributors and ITSes interconnect ports can be connected to
+> > > > non-coherent interconnects that are not able to manage the
+> > > > shareability/cacheability attributes; this implicitly makes
+> > > > the redistributors and ITSes non-coherent observers.
+> > > > 
+> > > > So far, the GIC driver on probe executes a write to "probe" for
+> > > > the redistributors and ITSes registers shareability bitfields
+> > > > by writing a value (ie InnerShareable - the shareability domain the
+> > > > CPUs are in) and check it back to detect whether the value sticks or
+> > > > not; this hinges on a GIC programming model behaviour that predates the
+> > > > current specifications, that just define shareability bits as writeable
+> > > > but do not guarantee that writing certain shareability values
+> > > > enable the expected behaviour for the redistributors/ITSes
+> > > > memory interconnect ports.
+> > > > 
+> > > > To enable non-coherent GIC designs on ACPI based systems, parse the MADT
+> > > > GICC/GICR/ITS subtables non-coherent flags to determine whether the
+> > > > respective components are non-coherent observers and force the shareability
+> > > > attributes to be programmed into the redistributors and ITSes registers.
+> > > > 
+> > > > An ACPI global function (acpi_get_madt_revision()) is added to retrieve
+> > > > the MADT revision, in that it is essential to check the MADT revision
+> > > > before checking for flags that were added with MADT revision 7 so that
+> > > > if the kernel is booted with ACPI tables (MADT rev < 7) it skips parsing
+> > > > the newly added flags (that should be zeroed reserved values for MADT
+> > > > versions < 7 but they could turn out to be buggy and should be ignored).
+> > > > 
+> > > > Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > ---
+> > > >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
+> > > >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
+> > > >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
+> > > >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
+> > > >  include/linux/acpi.h             |  3 +++
+> > > >  5 files changed, 45 insertions(+)
+> > > 
+> > > Hi Marc,
+> > > 
+> > > just a quick note to ask if, from an ACPI binding POW
 > > 
-> > Definitely suspicious as should be in m/s^2 for an acceleration and
-> > it should be
+> > I guess you mean POV. POW has an entirely different meaning... :-/
 > > 
-> > 9.8*16/2^bits
+> > > this patch and related approach make sense to you.
+> > > 
+> > > If so, we can start the process to get the ACPI changes drafted
+> > > in:
+> > > 
+> > > https://bugzilla.tianocore.org/show_bug.cgi?id=4557
+> > > 
+> > > and deployed in this patch into the ACPI specs, I can log
+> > > an "ACK" in the tianocoreBZ entry above (we will be able to
+> > > rework the code as much as we want, this is just for the
+> > > bindings).
 > > 
-> > So I think these are out by a factor of 10^6  
-> I think you are right. Looks like I misinterpreted the meaning of 
-> IIO_VAL_INT_PLUS_MICRO when I took my first tour in the IIO with this 
-> driver. The comment above the scale table does support that assumption 
-> ... 10^6 would match such a brainfart. (This is my first thought. I will 
-> take better look at this later today and see if I can come up with a fix 
-> if no-one else has sent a patch already).
+> > I'm OK with the overall shape of it. However, I wonder what the
+> > rationale is for spreading the redistributor property all over the map
+> > (in both GICC and GICR structures), while it could be set once and for
+> > all in the core MADT flags (32 bits, of which only one is in use).
+> > 
+> > It is bad enough that there are two ways of getting the GICR regions.
+> > Why can't the properties that apply to all of the be common?
 > 
-> I CC'd Mehdi who has also been working on this driver.
-> 
-> Regarding the KX022A - I am not aware of upstream users of this IC 
-> (yet). May be you're the first lucky one :) Hence, I am tempted to just 
-> fixing the driver - but it's Jonathan who will take the splatters when 
-> **** hits the fan - so it's his call to decide whether we can still fix 
-> this. _If_ there are users who have adapted to this buggy scale (users I 
-> am not aware of) then fix will break their apps. Mehdi, do you know any 
-> users of this upstream driver?
+> I don't think we are allowed to add arch specific flags to the MADT
+> since those, supposedly, are cross-architecture (and the only one
+> defined is quite old, though x86 specific).
 
-It's an ABI usage bug so allowed fix even if it has impacts...
-Hopefully those aren't too painful for people to fix :(
+There is nothing that is truly cross-arch in this table. *everything*
+in MADT is arch-specific.
 
-So we fix and get it into stable asap.
+> The reason behind spreading the property is the nature of GICC/GICR
+> subtables themselves - we wanted to apply flags only in subtables
+> relevant to the components in question.
+>
+> We could try to add a global flag to the MADT but I would not be
+> surprised if the ECR would be rejected then for the reason I explained
+> above.
 
+I don't think that's much of a reason, but I really don't care enough
+about this to argue otherwise.
 
-> 
-> I will ping the HQ guy who has contacts to those who might be using the 
-> driver in a downstream repository and ask him to inform potential users.
-> 
-> It'd be very nice to get this fixed.
-> 
-> Sorry and thanks!
-> 
-> Yours,
-> 	-- Matti
-> 
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
