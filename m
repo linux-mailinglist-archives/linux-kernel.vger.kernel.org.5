@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9AD7D022A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720927D022B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346462AbjJSS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S1346010AbjJSTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345286AbjJSS5v (ORCPT
+        with ESMTP id S1345286AbjJSS77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:57:51 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DF1CA
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:57:49 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9c7bba32beso31476276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:57:49 -0700 (PDT)
+        Thu, 19 Oct 2023 14:59:59 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF47493
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:59:57 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1ca6809fb8aso36363425ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697741868; x=1698346668; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bQpW3IYG7FT0shNWIbuInaAuHh5ShVkggzRfQfKa5Lw=;
-        b=Ib+t9fDvwj37j1e6uWkN/Fn3wkQlizQCiViEnpyGUuwcnpJUTjkwG+oQ5LP7eqK2aX
-         VQnvAEV0riCdXAFLqm9FnGdUdRFKEC+TqHhVigLL3YEyt+RjLW+MN9NSBZhbzZCYEUEB
-         jGYRo3OhUBDq2xAjiJb9ObXypgjbSXn4a2njZbDQGdmOWWvuZtvFuMzacfnyOnseSW2A
-         qJ6dSOCuCKp19HitGctb/sUZALdvHoUvfgSISv6/iWXK08hvvNisfjNvUWNaxKHW7WoX
-         QIajwKtYXyKpMgQd4/VxRodcuKNR0TVxVMCgCxtCbcVHIaAsCB0tKEFOG4rC3EgyaAD5
-         +GpA==
+        d=google.com; s=20230601; t=1697741997; x=1698346797; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ekm37LH11q8T0WhtnGFVtk8KCWjLe8MaemYJ1INw3fM=;
+        b=lsyk+pk6867O5DE57576y5ohf6qQW7qClkgzBrdwsk26cmTJoqfDTymNbAMkqTpUNx
+         4Dmb/c2KIE9clk0coBa/eP9jB0fp4JjZBT5sTrxymny5EHI+t88v2wevgsYjmZLVAe5L
+         TLOLvdmGZBXAfxurz4+gaX+ndmCKEGiEobb02C3AOoFQ14fAafe1JQQoPLFFpDVz8a+f
+         w7Wq/jHFGK3ArrwVbJ4eEiAzsdcNgW00cJBqakTcy/KjyClGfFfktuxWLpb6JD8megx3
+         kbc+a08p/D8xRGEwaAvpnsTsXwDtEMW1YrCOO0nUGDhqTX4SMNk2lTGOjOnhdgAoUbsz
+         Xlsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697741868; x=1698346668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bQpW3IYG7FT0shNWIbuInaAuHh5ShVkggzRfQfKa5Lw=;
-        b=T9/QfF7fsjFpYPuMJnGyp20+d65biu84FIoxAbab74zGvolRrSi1v8S7tdaDKaTHla
-         jL8ktgoX4t6Z7FSArdfZGfJcYr145iFJkgIcx3YaozzShmZ4ploJzraHEcgNvHw/9z61
-         PbYaDQ6SIU4ZMsUMtNgyoiL2PhXlesftzK2k/l2Ygs+xctTT8HslGXH/RTwiuYYSVmgy
-         QfttkMUmaYNorIdoE8HBVei4qfLuLFLEUqWsIw2qgMfQt6x4y4k3LvKTDj8beZhqaOCl
-         nP0aaFk/GpmxDlNfICXo1ioTPGhZHhLwFR9dbF1vmbCmw79EPTv1XTF5F9EghD6zCLUn
-         59uw==
-X-Gm-Message-State: AOJu0YyXNrlHLDHk7qa094ij6ttQ3/rdOSO9X02ZemfiipcyxvWdLV2m
-        axsstr6ppfKWquL3YnbgYeaYjcGH/Hzdbs9w8HbC
-X-Google-Smtp-Source: AGHT+IFiuwFXJ1SAYYZzEK9grKXm+LlB4rNCML3NszsRc2iDlYP9o/HVoaM5pCZjhb4ZpGCkH+zUmHdBWthtMgJyzRk=
-X-Received: by 2002:a25:c70b:0:b0:d9a:ce05:37b with SMTP id
- w11-20020a25c70b000000b00d9ace05037bmr3406872ybe.56.1697741868370; Thu, 19
- Oct 2023 11:57:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697741997; x=1698346797;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekm37LH11q8T0WhtnGFVtk8KCWjLe8MaemYJ1INw3fM=;
+        b=jnw4kAVNLhj3WXFaldhjOspWiDjXenNVVwGRmSJPcLWB1c1X/g0P3+l3aL0RtsBw8j
+         Vxij4wJGCXrOzlGOQenqFDR8jPjBuzeQZZDL0rLS0CbDfmE9UyMGxkwPUCchNom8UwJF
+         g6mf96VBxiS6xHKKAI1SQs32ENV4/ZDLzvCBwHXMgQoR5EENimB/Rtvu3KQuXJkDJUmO
+         8+HpzaHG33ivgi0N3eZDDdXP5aJ/GhT0RzJHopb3ePINKuuaBiYlmCF2P4vekYB3qVdv
+         XwzOdMEyugHNN/KjBG1XLrLqFANbPNYbXwrktc1j1Flr10mzCh2e8JQ/X7K1IN1w83gM
+         y2PQ==
+X-Gm-Message-State: AOJu0YwpWm0WUJ/sLQxPQLiY+dNeA6tAihi2mTXfHjbqSdvhd7UwdIL6
+        lwGXcyyPgY4mYL7P1Db5EVxQ4g==
+X-Google-Smtp-Source: AGHT+IGyZiJwz5do3i+LGVcFutBEazlK6wjFdR4H29hIMFAlJGa2HHdn6Wp6zEuz+WWpzYL1d3pl3A==
+X-Received: by 2002:a17:902:c942:b0:1c0:9d6f:9d28 with SMTP id i2-20020a170902c94200b001c09d6f9d28mr3577291pla.11.1697741997228;
+        Thu, 19 Oct 2023 11:59:57 -0700 (PDT)
+Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
+        by smtp.gmail.com with ESMTPSA id je22-20020a170903265600b001c625acfed0sm52515plb.44.2023.10.19.11.59.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 11:59:56 -0700 (PDT)
+Message-ID: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+Date:   Thu, 19 Oct 2023 11:59:56 -0700
 MIME-Version: 1.0
-References: <20231018122006.24899-1-cuiyunhui@bytedance.com>
-In-Reply-To: <20231018122006.24899-1-cuiyunhui@bytedance.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 19 Oct 2023 14:57:37 -0400
-Message-ID: <CAHC9VhT0WtK_QnO14SGHL3ZQ+v1D57jX4OEfEqXcsWo=PtbcoA@mail.gmail.com>
-Subject: Re: [PATCH] capabilities: add a option PR_SET_CAPS for sys_prctl
-To:     Yunhui Cui <cuiyunhui@bytedance.com>
-Cc:     serge@hallyn.com, jmorris@namei.org, peterz@infradead.org,
-        chris.hyser@oracle.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/4] usb: gadget: uvc: stability fixes on STREAMOFF.
+Content-Language: en-US
+To:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, m.grzeschik@pengutronix.de
+References: <20230930184821.310143-1-arakesh@google.com>
+ <20231019185319.2714000-1-arakesh@google.com>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <20231019185319.2714000-1-arakesh@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 8:20=E2=80=AFAM Yunhui Cui <cuiyunhui@bytedance.com=
-> wrote:
->
-> By infecting the container process, the already running container is
-> cloned, which means that each process of the container forks
-> independently. But the process in the container lacks some permissions
-> that cannot be completed.
->
-> For a container that is already running, we cannot modify the
-> configuration and restart it to complete the permission elevation.
-> Since capset() can only complete the setting of a subset of the
-> capabilities of the process, it cannot meet the requirements for
-> raising permissions. So an option is added to prctl() to complete it.
 
-I'm having a difficult time understanding the description above, would
-it be possible for you to explain the problem differently?
 
-> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> index 82cb4210ba50..9a8dae2be801 100644
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -246,6 +246,7 @@ struct prctl_mm_map {
->  # define PR_SCHED_CORE_SHARE_FROM      3 /* pull core_sched cookie to pi=
-d */
->  # define PR_SCHED_CORE_MAX             4
->
-> +#define PR_SET_CAPS                    63
->  /* Clone and personalize thread */
->  #define PR_PERSONALIZED_CLONE          1000
->  /* Isolation eventfd & epollfd during fork */
-> diff --git a/kernel/capability.c b/kernel/capability.c
-> index 1444f3954d75..968edd8b3564 100644
-> --- a/kernel/capability.c
-> +++ b/kernel/capability.c
-> @@ -266,11 +270,17 @@ SYSCALL_DEFINE2(capset, cap_user_header_t, header, =
-const cap_user_data_t, data)
->         if (!new)
->                 return -ENOMEM;
->
-> -       ret =3D security_capset(new, current_cred(),
-> -                             &effective, &inheritable, &permitted);
-> -       if (ret < 0)
-> -               goto error;
-> -
-> +       if (!prctl) {
-> +               ret =3D security_capset(new, current_cred(),
-> +                               &effective, &inheritable, &permitted);
-> +               if (ret < 0)
-> +                       goto error;
-> +       } else {
-> +               ret =3D __capset(new, current_cred(),
-> +                                &effective, &inheritable, &permitted);
-> +               if (ret < 0)
-> +                       goto error;
-> +       }
+On 10/19/23 11:53, Avichal Rakesh wrote:
+> We have been seeing two main stability issues that uvc gadget driver
+> runs into when stopping streams:
+>  1. Attempting to queue usb_requests to a disabled usb_ep
+>  2. use-after-free issue for inflight usb_requests
+> 
+> The four patches below fix the two issues above. Patch 1/4 fixes the
+> first issue, and Patch 2/4 and 4/4 fix the second issue. Patch 3/4
+> is only there to make the diff in 4/4 cleaner.
+> 
+> Avichal Rakesh (4):
+>   usb: gadget: uvc: prevent use of disabled endpoint
+>   usb: gadget: uvc: Allocate uvc_requests one at a time
+>   usb: gadget: uvc: move video disable logic to its own function
+>   usb: gadget: uvc: Fix use-after-free for inflight usb_requests
+> 
+>  drivers/usb/gadget/function/f_uvc.c     |  11 +-
+>  drivers/usb/gadget/function/f_uvc.h     |   2 +-
+>  drivers/usb/gadget/function/uvc.h       |   6 +-
+>  drivers/usb/gadget/function/uvc_v4l2.c  |  12 +-
+>  drivers/usb/gadget/function/uvc_video.c | 231 +++++++++++++++++-------
+>  5 files changed, 189 insertions(+), 73 deletions(-)
+> 
+> --
+> 2.42.0.758.gaed0368e0e-goog
 
-It isn't clear to me why we would want to avoid the security_capset()
-hook in the prctl case; the change to the task's capabilities is the
-same, yes?  If the goal of prctl(PR_SET_CAPS, ...) is to bypass the
-security_capset() controls, you're going to need to do a much better
-job of explaining why this is necessary.
+Dan and Laurent, please go over the patches whenever you get a
+chance. I think they're ready to submit as neither Michael 
+nor I have seen any use-after-free issues after the patches.
 
->         audit_log_capset(new, current_cred());
->
->         return commit_creds(new);
+Thank you!
+- Avi.
 
---=20
-paul-moore.com
