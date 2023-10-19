@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847997CF49E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2227CF49F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345182AbjJSKFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        id S1345183AbjJSKGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345137AbjJSKFc (ORCPT
+        with ESMTP id S1345137AbjJSKGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:05:32 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B480119;
-        Thu, 19 Oct 2023 03:05:29 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-504a7f9204eso10398529e87.3;
-        Thu, 19 Oct 2023 03:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697709928; x=1698314728; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8+Nz2U9dZw4QlBllG5ui7VeAVBM9gkc5Pjs4wNHcHt4=;
-        b=bFIQH5otNrUGCjDv6hLKB9fX5maAwSpwqIjAxHJD2wyf7s5uKyH3jDdEY786ndQMZV
-         OvO4DKb6Bg7yey0UH03jBEgiMr0/nlQvJ6gEvguVM2lpsCeJveGS00WbRTcAIXlqqz0J
-         AuLicBmpsysqZUYkJufpRip2EYTNRZs5z0j+hMbIpNQCFW0E+Q4ueEJANLSFuzL+FB0p
-         e2bczhhqD5EsOxjSEFTelFi06rcfXxdEaMbJIRyzSio9W5nxHqksJ3rVNnLazMbAqUFr
-         5AoabSdvU/ygcq5LxALlCAHkLzszeTH+s5vsnnMFcWw+yzqXjuvCCLZfE+DgUw0lOnTf
-         k/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697709928; x=1698314728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8+Nz2U9dZw4QlBllG5ui7VeAVBM9gkc5Pjs4wNHcHt4=;
-        b=k3V59Fxp6+HzQKRBi+D0Z5KdzrqhGqwsziBO9xnHTAk9ENQ2AyhRWlXPUoMz3j+syc
-         1k6SgmZyhZfebrNFTf/9g6ob8QoOfvPMnYwMdgxQEVWicFbaTu/LJlkRFZlQP3/44q9g
-         G1NoONrQK05mKZBnwUnNJJNzsX3ShJU+Trhg+mvEb1Zumiey8ZR4n2LQHiSisxU+d4ad
-         Q8HR2Y/GXlAGYio0Rtx4SFStSrM2Hh9e41M3Jbt3prmFFUTiW2B1QCXJujYhiHeapGsb
-         c4BAPX4e8S9schyaWTAoD+0doQVhCQmj4332kQpsENlTYLSY1L5ZcEf2TutLXqcXqW3H
-         mr3A==
-X-Gm-Message-State: AOJu0YxIwK13nuFSkwLcuWcRjmNZBtrl2hQ/SsA+B+LulDk1u9fgLsK1
-        +s15q33HwvrUCTAVoV/ZolA=
-X-Google-Smtp-Source: AGHT+IE8BafWL8F2ISffR0hrxkJZhB6TRg8FvgZE86gudvsRpzZFjOBdBjLryMwMCqev7LNBes6dgg==
-X-Received: by 2002:a05:6512:3d0c:b0:506:87a3:c27c with SMTP id d12-20020a0565123d0c00b0050687a3c27cmr1290792lfv.53.1697709927362;
-        Thu, 19 Oct 2023 03:05:27 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id b4-20020a196704000000b005059c4517casm1048552lfc.99.2023.10.19.03.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 03:05:26 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 13:05:24 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>, bhelgaas@google.com
-Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, r-gunasekaran@ti.com,
-        srk@ti.com
-Subject: Re: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <nw5myorissautj3uzhe2h32imu5v7bycjo3studma7v7dt37g6@tffgtog7x3j5>
-References: <20231019081330.2975470-1-s-vadapalli@ti.com>
+        Thu, 19 Oct 2023 06:06:03 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2078.outbound.protection.outlook.com [40.107.6.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A20119;
+        Thu, 19 Oct 2023 03:05:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qw40he1CpcI5nHGsyVzTD2elQLxCZV9j3MjQ/IUUICJXKcvgrCmwrd9IbBuqIB45vwWsfbjCOfDYl0MEJFb8R/FlldLM564AtPevQ2vTvz/67U4auMy7R78yup+xUkZYTwUUV2yh39fEQHeCIOpVPeJGL7HM4jn+gDsZm60HKgA/xPMtFOz16NIve7CC+mmRIN93M1Z8NgG5GyH4tY5sPkIhHjNP5VjG5I+oApnkrLPji6xsWCo2L0Vd4idkTG8XErBTLjgWJdEQ0nS8TLv45/h5sFsqL2hOh6QrmZDBsRVUNgumaVoi4boCnGMHRQkA+wzqMRk9jHAtJV3Awb64KA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PKbmMsQfhdIheVhht/wGjCnHI/Nd5C250SxNmCrRmTc=;
+ b=fnDbfyBcGcuidSOK86zZ8zhmT1sYXkjgdA3NYCdvQOvK1mzASel/WKMA+os/m6S3x5vQIrZ906kOa2zkIEBnmz76ZpJKX4uLyCGtgDtsMKWD23+tHLO3e3E2ZE0rrGfF3XFiJ4Mh+gkQNcsWpqa/frh0Pvznp7nSreGZxPOnnLvmODnFomUjAqB0l58r8P1SBESzu3cToQAolLctTbRiP1weqWftIT+P//n89jJnQCi2xCfWgPItA+M/6rp0MZZ3pUeRbwxwKBpLFsggFUO/bpaDuF79CZeVC1txsJ1yl9jy19CJfLR25AcLZjpjvWlJpPzmAO47zHKOX15sBEgUNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PKbmMsQfhdIheVhht/wGjCnHI/Nd5C250SxNmCrRmTc=;
+ b=J//f3UoC99QCj+i7D8jtWayxLVrbWlWiX65nWPQUsqTCZ1NrxFniu0riBOtcnHvqElZRSxkp+91DNJkrPvC+u1Og2q7GQMc8AGFmVXcXAo3LuaHN2eucgKLA8lmcbA+Q0eLQk2cJOhXP5r5rK1SMcaI7YHkqACGXKWU0LkKlBF0=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB9PR04MB8281.eurprd04.prod.outlook.com (2603:10a6:10:25f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Thu, 19 Oct
+ 2023 10:05:54 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::b9ee:e067:5935:4965]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::b9ee:e067:5935:4965%4]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 10:05:54 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Conor Dooley <conor@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "abelvesa@kernel.org" <abelvesa@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "estevam@gmail.com" <estevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "inux-clk@vger.kernel.org" <inux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] dt-bindings: clock: support i.MX93 Anatop
+Thread-Topic: [PATCH 1/2] dt-bindings: clock: support i.MX93 Anatop
+Thread-Index: AQHaAZ6nqHDmTKb4+U2DfEJAUieaa7BPkiQAgAFRR4A=
+Date:   Thu, 19 Oct 2023 10:05:54 +0000
+Message-ID: <DU0PR04MB9417CD64DDD5238BCBC5B3E588D4A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20231018084414.1950241-1-peng.fan@oss.nxp.com>
+ <20231018-promenade-budding-3e228f241eb7@spud>
+In-Reply-To: <20231018-promenade-budding-3e228f241eb7@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB9PR04MB8281:EE_
+x-ms-office365-filtering-correlation-id: 033a3a41-868e-41ce-e2a0-08dbd08afb6f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sWFvr4qMi/615h2jYRaDqY1kVNacl62QZpfDijS3YvROx2zJttmL/BMuyIpC2oFNoKN9bPMxIAwq13HdEhwOw3Y6zcnXgnMTfeQ84QJ1oOi9cu9N+c67w9Ntj8mxs4wDfOJjYQ9ueMz8UdqH1X/sLm+jSEb097qnRH4XyC69n6E5ebV3rz3l+hiDEX16JVa7JjYHP9VrUvnWIU73mQSblRGEIf3qrfw44fB4tyfrXpQu+rABbS7BgqP5VL4tsoTu9ApKEyxid/sHv1jEyPCXO8UEG66q+baNgTPDKfmQZfsWvwFtx2hBehAF5gPeOfNgDPgL0LClRow03ao50Fd9hroen4u704YyiUVLSOKtnlaDXC2uIXCq1GgJgiIVMyM/jDQrNoIeNrLOnw25Cp9+rm48it3967/iTinreHsf9KMV5nRNazTp0iE3oRcma+ZvtPQVdCPQMg3Y5o/Rlb3SF9nPy7MKM2k39gTIOAXfZoIv95EY9h0wOnntud9jZcYSi2szf6Q5MEa2B7MpbZ5/7/mbFITK8bA9MuyA5PiduGnBtlB4sXywR9oHc5Y7dC5EyuPREvJBEYPGlOlocsmdWmvri+NTv1xlXOwerDQI8LY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(346002)(376002)(396003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(71200400001)(26005)(9686003)(83380400001)(6506007)(478600001)(7416002)(2906002)(4326008)(7696005)(76116006)(54906003)(66946007)(8676002)(64756008)(66476007)(66556008)(966005)(66446008)(44832011)(110136005)(41300700001)(316002)(5660300002)(52536014)(8936002)(86362001)(122000001)(38070700005)(38100700002)(55016003)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QJJIrA5vbxXTUhVsQw/UXbtqGR6kOwKJM0fClK3aPTLsUKu9NDr29ozdZ4un?=
+ =?us-ascii?Q?qOT+Q0WTi3KlezukWfB2b9ANuEJSEwdhgW1NmdFVE9gRdQa5BujiiQME679Y?=
+ =?us-ascii?Q?fpe0deoagG9rRlUHpB+PZiclgmGp3c0fcbWbsh5VMqDPwJoqjz0ABqQbN0gO?=
+ =?us-ascii?Q?gu4frXwhUQYFpe0SBwHC+fcLmhLBLOdpNILzo3j4B96HAwD8XX1w4RcZbU9L?=
+ =?us-ascii?Q?t3HV+2fcJt3JNsCRW8bGFoZUIQvuUxVoiM0Ksfz3ucx+NIaEeJ/z68ha5xsR?=
+ =?us-ascii?Q?IAm3Nh0haM2am4+wnmU7cl9N8AG7zI0Yj1AYM5Dxy+8ZCQE9B5l1YYh4rNI6?=
+ =?us-ascii?Q?EFJSxdpFDajWPSceaL3chqOrfLkjFuBFwk10zuHPwxE3/K+fmqqyxTBePrn0?=
+ =?us-ascii?Q?E6NU+N9KEXiCWsr6NMurDkNWSQRiNAkRmDbYjTiEBQ2DxsqGmzKn9YGQoyip?=
+ =?us-ascii?Q?KWcUkwM1oOjmPeIZfgbPjJZMjZ1mvIAt5gw+oacnXrq7Sr4urOmOYTprazXf?=
+ =?us-ascii?Q?VNRoiuaQfG/lsWuuhzhv1VCX2xnKQjIsXjH8dCGq62H/LuDsZJrVWaPsJfLV?=
+ =?us-ascii?Q?6Kd+9pJm7bpj0ofaRLpwztvgW8Pfw+I0hMbrBmAhabgHbLtx/CgeLMLf9wBr?=
+ =?us-ascii?Q?Y+34EUMNhppGdY6XgTiLmJTTEx8KHYNsO09BXG+0z5Em1ArWnaIotspWAMrM?=
+ =?us-ascii?Q?6t8wHTeMGWdLQ/pI3KJyzMsvY59FuvKsQ90YrqkHnP/oEUXUpqF675CwtyxU?=
+ =?us-ascii?Q?h+vx+sBhBYLp1q+PbPauBDDAg8CMjFqp6r4MAlYxM1Qmny082tonq+ClnFy2?=
+ =?us-ascii?Q?L5bhoQ3wxcwmt8sgiltYs1sSNW5txq/TnLGTOMuxZ2GCpX3Z0F7Lpvj4ZWcQ?=
+ =?us-ascii?Q?/rb088ZZ/85vWRiuxmxsEU4cJurzJPUi48CFykTD7O1fxiUh1UyGvyCTGxQB?=
+ =?us-ascii?Q?zDxWEBe4gVRxKuhD0gLxnRCDtecz6OykkaZ6Ot5+VcVcRdc+Q6LuvNshviT2?=
+ =?us-ascii?Q?9MPBow6ScC2w2YlOe8vwK5Jiaxw+uC1K4/X9iC3MEzHzHoDwHbhnD9RRcJul?=
+ =?us-ascii?Q?1oe7c4DorOEqLWaPw9oV4357uQcTHXiXuhP5bUa7/BGKueQ7YkqQSS0uYD30?=
+ =?us-ascii?Q?a29GQMC+LFEClodFVhiaTyNfr+qj1L/ciV7Rb3g0Snx2RLAdKZQbKykGKUV+?=
+ =?us-ascii?Q?di+7++ySZc/2q/JTXADmvAUoY7z1dJXi5sBWfEHFMmnCECQaJ/LB7aPbnEud?=
+ =?us-ascii?Q?1FxK5VlsuAEw2A1VrOfasOndX+zELDt/zu/3cJ3SxoWxlf/HiCausc5q2lRB?=
+ =?us-ascii?Q?ucJETOBqoDHqhnEwSiR3O0bLNf6PPDgafqdsNw0NZ7/8IeCF4BpDexb9CJp2?=
+ =?us-ascii?Q?phJTWMn9D4FZddZOR2dUpnSYQ3EQoRT+kXsIkpDM4s1zP+5aYmIYqAqPvVS7?=
+ =?us-ascii?Q?nfc6ftGybjxqesw0b8iBvHe50UhdnWz2CZK1khkXH8z1uXI5E6rECChwXPi3?=
+ =?us-ascii?Q?Ub7o+QJYxXTohrsWa9ty9GLBdzuOjSscGuAIhI5nDLHqGjhEhHpEUI72NrX/?=
+ =?us-ascii?Q?11MIdnG3SMKYLuDKaag=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019081330.2975470-1-s-vadapalli@ti.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 033a3a41-868e-41ce-e2a0-08dbd08afb6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2023 10:05:54.5197
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yy0h+RdfHTARlddVHTOE1qlLVwYjPkwrI1EruNBIoO2vgBLs6HGn5W+2+8Zc5fBVAKx4ts4GNRjr67UyeS/3eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8281
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,132 +131,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 01:43:30PM +0530, Siddharth Vadapalli wrote:
-> In the process of converting .scan_bus() callbacks to .add_bus(), the
-> ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-> The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-> to controller version 3.65a, while the .add_bus() method had been added
-> to ks_pcie_ops which is shared between the controller versions 3.65a and
-> 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-> ks_pcie_v3_65_add_bus() method are applicable to the controller version
-> 4.90a which is present in AM654x SoCs.
-> 
-> Thus, fix this by creating ks_pcie_am6_ops for the AM654x SoC which uses DW
-> PCIe IP-core version 4.90a controller and omitting the .add_bus() method
-> which is not applicable to the 4.90a controller. Update ks_pcie_host_init()
-> accordingly in order to set the pci_ops to ks_pcie_am6_ops if the platform
-> is AM654x SoC and to ks_pcie_ops otherwise, by making use of the "is_am6"
-> flag.
-> 
-> Fixes: 6ab15b5e7057 ("PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus")
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Subject: Re: [PATCH 1/2] dt-bindings: clock: support i.MX93 Anatop
+>=20
+> On Wed, Oct 18, 2023 at 04:44:13PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Support i.MX93 Anatop which generates PLL and feeds into CCM.
+>=20
+> What is "CCM". How do you "generate" a PLL?
 
-LGTM. Thanks!
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+=20
+CCM: Clock Controller Module.
 
-One more note is further just to draw attention to possible driver
-simplifications.
+I may use produces PLL
 
-> ---
-> Hello,
-> 
-> This patch is based on linux-next tagged next-20231018.
-> 
-> The v2 of this patch is at:
-> https://lore.kernel.org/r/20231018075038.2740534-1-s-vadapalli@ti.com/
-> 
-> Changes since v2:
-> - Implemented Serge's suggestion of adding a new pci_ops structure for
->   AM654x SoC using DWC PCIe IP-core version 4.90a controller.
-> - Created struct pci_ops ks_pcie_am6_ops for AM654x SoC without the
->   .add_bus method while retaining other ops from ks_pcie_ops.
-> - Updated ks_pcie_host_init() to set pci_ops to ks_pcie_am6_ops if the
->   platform is AM654x and to ks_pcie_ops otherwise by making use of the
->   already existing "is_am6" flag.
-> - Combined the section:
-> 	if (!ks_pcie->is_am6)
->  		pp->bridge->child_ops = &ks_child_pcie_ops;
->   into the newly added ELSE condition.
-> 
-> The v1 of this patch is at:
-> https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
-> 
-> While there are a lot of changes since v1 and this patch could have been
-> posted as a v1 patch itself, I decided to post it as the v2 of the patch
-> mentioned above since it aims to address the issue described by the v1
-> patch and is similar in that sense. However, the solution to the issue
-> described in the v1 patch appears to be completely different from what
-> was implemented in the v1 patch. Thus, the commit message and subject of
-> this patch have been modified accordingly.
-> 
-> Changes since v1:
-> - Updated patch subject and commit message.
-> - Determined that issue is not with the absence of Link as mentioned in
->   v1 patch. Even with Link up and endpoint device connected, if
->   ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
->   MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
->   AER and PME services. The all Fs return value indicates that the MSI-X
->   configuration is failing even if Endpoint device is connected. This is
->   because the ks_pcie_v3_65_add_bus() function is not applicable to the
->   AM654x SoC which uses DW PCIe IP-core version 4.90a.
-> 
-> Regards,
-> Siddharth.
-> 
->  drivers/pci/controller/dwc/pci-keystone.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> index 49aea6ce3e87..66341a0b6c6b 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -487,6 +487,12 @@ static struct pci_ops ks_pcie_ops = {
->  	.add_bus = ks_pcie_v3_65_add_bus,
->  };
->  
-> +static struct pci_ops ks_pcie_am6_ops = {
-> +	.map_bus = dw_pcie_own_conf_map_bus,
-> +	.read = pci_generic_config_read,
-> +	.write = pci_generic_config_write,
-> +};
-> +
->  /**
->   * ks_pcie_link_up() - Check if link up
->   * @pci: A pointer to the dw_pcie structure which holds the DesignWare PCIe host
-> @@ -804,9 +810,12 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
->  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
->  	int ret;
->  
-> -	pp->bridge->ops = &ks_pcie_ops;
-> -	if (!ks_pcie->is_am6)
-> +	if (ks_pcie->is_am6) {
-> +		pp->bridge->ops = &ks_pcie_am6_ops;
-> +	} else {
+>=20
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  .../bindings/clock/fsl,imx93-anatop.yaml      | 41 +++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
+> > b/Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
+> > new file mode 100644
+> > index 000000000000..9585c9e4ee40
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
+> > @@ -0,0 +1,41 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/fsl,imx93-anatop.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: NXP i.MX93 Anatop Module
+>=20
+> I see there are also "anatop regulators" on some imx SoCs, just calling t=
+his
+> "anatop module" does not seem sufficiently descriptive.
 
-> +		pp->bridge->ops = &ks_pcie_ops;
->  		pp->bridge->child_ops = &ks_child_pcie_ops;
+Analog Module? How do you think?
+=20
+>=20
+> > +
+> > +maintainers:
+> > +  - Peng Fan <peng.fan@nxp.com>
+> > +
+> > +description: |
+>=20
+> Drop the |, you don't need it.
 
-Bjorn, could you please clarify the next suggestion? I'm not that
-fluent in the PCIe core details, but based on the
-pci_host_bridge.child_ops and pci_host_bridge.ops names, the first ops
-will be utilized for the child (non-root) PCIe buses, meanwhile the
-later ones - for the root bus only (see pci_alloc_child_bus()). Right?
+Ok.
 
-If so then either the pci_is_root_bus() check can be dropped from the
-ks_pcie_v3_65_add_bus() method since the ops it belong to will be
-utilized for the root bus anyway, or the entire ks_child_pcie_ops
-instance can be dropped since the ks_pcie_v3_65_add_bus() method will
-be no-op for the child buses anyway meanwhile ks_child_pcie_ops
-matches to ks_pcie_ops in the rest of the ops. After doing that I
-would have also changed the ks_pcie_v3_65_add_bus name to
-ks_pcie_v3_65_add_root_bus() in anyway. Am I right?
+>=20
+> > +  NXP i.MX93 anatop PLL module which generates PLL to CCM root.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: fsl,imx93-anatop
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  '#clock-cells':
+> > +    const: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - '#clock-cells'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    anatop: clock-controller@44480000 {
+>=20
+> and the label is is not used, so should be dropped.
 
--Serge(y)
+Ok.
 
-> +	}
->  
->  	ret = ks_pcie_config_legacy_irq(ks_pcie);
->  	if (ret)
-> -- 
-> 2.34.1
-> 
+Thanks,
+Peng.
+
+>=20
+> Thanks,
+> Conor.
+>=20
+> > +        compatible =3D "fsl,imx93-anatop";
+> > +        reg =3D <0x44480000 0x2000>;
+> > +        #clock-cells =3D <1>;
+> > +    };
+> > +
+> > +...
+> > --
+> > 2.37.1
+> >
