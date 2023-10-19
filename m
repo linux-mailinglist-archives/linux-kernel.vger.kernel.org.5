@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E787CF266
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2AA7CF26D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344938AbjJSIWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        id S232813AbjJSIXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235272AbjJSIWQ (ORCPT
+        with ESMTP id S235346AbjJSIW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:22:16 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C5A11B
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9ba72f6a1so16325575ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697703712; x=1698308512; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rzWkTfJOR6mlT/tI7WZYHyubNo6hZu3yDARes/L4kiw=;
-        b=HYqDKoM2mP5sxb39zZEIDCQLxqTxoqogZqNliYz+2mQYbg/3T4jUBIyyB3KDRNbUCf
-         i0HICOkEfgaFo4E7GfzWC3pafHEEgEgZwf3suY5NJYstS7xL7H0QTdgFrf5mY2s1VkUL
-         /X357aRJ5nLaZXZXE7bXxVzkwRLvy+dDiVBsPXuwDUuxBRwJO6X4ZFD+fQDqTwaEagU2
-         zvl4U4idnpo/tfz8p3dELkM64Xyx9rhWJJFYWZIVAS3mhOOd2W57XEw8MYDYVud4ubJ5
-         hnJqg3mm6q/v+4P8Ymv7TkUNKVYRdSmHToBr6wulp53wJiftDuMlz40Sk5MP0c1Ihriz
-         XysA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697703712; x=1698308512;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rzWkTfJOR6mlT/tI7WZYHyubNo6hZu3yDARes/L4kiw=;
-        b=g96Fv1oJaoMwdeNohuY+ZbnAqg2cuyKPwEuUvx9F4Rp/v4CjgP/jRgmzMG0EmT/avH
-         gnsxQ4XD4JF+DC3HxzAWwfNl79n8IxucK4fhrlLrkna0tVRQ4LpVoq/Dat/vl9e//P5K
-         Sz0sRvZBODYjyuC/IL4XHqGwoIF8VHR6mFS4C7DHLFVV/+zK5tMkCCO5sBv0jSjaomzl
-         hdriuVzeaDchGkNFT80IzHSmYpS+cUItKQmIPymX5fRzhX1+0tk1OWc8i1AvZbJdzf9R
-         ne+zMMI4bQLJZ0dZZ8eHQhwsrR+uVhP1qWVNpxXMZhy6SsapD79mxI6AcQArANKxVl+w
-         t3cQ==
-X-Gm-Message-State: AOJu0Ywp4WZrLwqZIpuebLhSn7BrbvOAzBLqCi4WqvosLWNpn9NZSsPH
-        F87wxtilNPyKscikqTmf5LnGyPS5l860ovxKlT0=
-X-Google-Smtp-Source: AGHT+IFT1ytJFHX459IjWo92YzEa15urreygDmo5AXzXIax+NPRaECoXEqMaMKWSFBvbAOF0ITdkfw==
-X-Received: by 2002:a17:903:288f:b0:1b8:9fc4:2733 with SMTP id ku15-20020a170903288f00b001b89fc42733mr1604217plb.3.1697703712010;
-        Thu, 19 Oct 2023 01:21:52 -0700 (PDT)
-Received: from [10.84.155.153] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id a9-20020a1709027d8900b001bbc8d65de0sm1293994plm.67.2023.10.19.01.21.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 01:21:51 -0700 (PDT)
-Message-ID: <76c6f4af-959c-1d6f-7df8-a2c1f9cd3adc@bytedance.com>
-Date:   Thu, 19 Oct 2023 16:21:44 +0800
+        Thu, 19 Oct 2023 04:22:59 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7AA196;
+        Thu, 19 Oct 2023 01:22:53 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J8MWlQ103364;
+        Thu, 19 Oct 2023 03:22:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697703752;
+        bh=MCTqsq0Y67FnukRcKpRTfcfnyz+Nx3GotxxH4JuMZ5o=;
+        h=Date:CC:Subject:To:References:From:In-Reply-To;
+        b=WqMe0h+uqKXSh2kkLy+uFlJfj4GG7iRUGbMi3P8fHmRj7oOtoO1W+a+K0ltZbPvMJ
+         Ls4mgkKNdwXBxUslFY/7P92Q3FOQ5FWq571nW0Wrtifg61cIelPpQvQJKqDExI/8te
+         XAyov9dVCfIoHIpMgk0Y+w2xscU4POiyIgVPCFv0=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J8MWsx087196
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Oct 2023 03:22:32 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
+ Oct 2023 03:22:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 19 Oct 2023 03:22:32 -0500
+Received: from [172.24.227.9] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J8MS05025990;
+        Thu, 19 Oct 2023 03:22:28 -0500
+Message-ID: <bd9f3512-3db2-47a7-ba88-b8b935ae6af7@ti.com>
+Date:   Thu, 19 Oct 2023 13:52:27 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/2] mm: page_alloc: skip memoryless nodes entirely
+User-Agent: Mozilla Thunderbird
+CC:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
+        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, Serge Semin <fancer.lancer@gmail.com>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH v2] PCI: keystone: Fix ks_pcie_v3_65_add_bus() for AM654x
+ SoC
 Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, rppt@kernel.org, vbabka@suse.cz,
-        mhocko@suse.com, willy@infradead.org, mgorman@techsingularity.net,
-        mingo@kernel.org, aneesh.kumar@linux.ibm.com, ying.huang@intel.com,
-        hannes@cmpxchg.org, osalvador@suse.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1697687357.git.zhengqi.arch@bytedance.com>
- <7928768f2658cd563978f5e5bf8109be1d559320.1697687357.git.zhengqi.arch@bytedance.com>
- <cd210991-5038-4ad3-ac03-abb6761c67bd@redhat.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <cd210991-5038-4ad3-ac03-abb6761c67bd@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+To:     Bjorn Helgaas <helgaas@kernel.org>
+References: <20231018163632.GA1364574@bhelgaas>
+ <6842cdf9-d73b-4895-891f-993eaf5bee6e@ti.com>
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <6842cdf9-d73b-4895-891f-993eaf5bee6e@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,73 +71,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
 
-On 2023/10/19 16:07, David Hildenbrand wrote:
-> On 19.10.23 09:36, Qi Zheng wrote:
->> In find_next_best_node(), We skipped the memoryless nodes
->> when building the zonelists of other normal nodes (N_NORMAL),
->> but did not skip the memoryless node itself when building
->> the zonelist. This will cause it to be traversed at runtime.
->>
->> For example, say we have node0 and node1, node0 is memoryless
->> node, then the fallback order of node0 and node1 as follows:
->>
->> [    0.153005] Fallback order for Node 0: 0 1
->> [    0.153564] Fallback order for Node 1: 1
->>
->> After this patch, we skip memoryless node0 entirely, then
->> the fallback order of node0 and node1 as follows:
->>
->> [    0.155236] Fallback order for Node 0: 1
->> [    0.155806] Fallback order for Node 1: 1
->>
->> So it becomes completely invisible, which will reduce runtime
->> overhead.
->>
->> And in this way, we will not try to allocate pages from memoryless
->> node0, then the panic mentioned in [1] will also be fixed. Even though
->> this problem has been solved by dropping the NODE_MIN_SIZE constrain
->> in x86 [2], it would be better to fix it in core MM as well.
->>
->> [1]. 
->> https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
->> [2]. https://lore.kernel.org/all/20231017062215.171670-1-rppt@kernel.org/
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   mm/page_alloc.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index ee392a324802..e978272699d3 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -5052,8 +5052,11 @@ int find_next_best_node(int node, nodemask_t 
->> *used_node_mask)
->>       int min_val = INT_MAX;
->>       int best_node = NUMA_NO_NODE;
->> -    /* Use the local node if we haven't already */
->> -    if (!node_isset(node, *used_node_mask)) {
->> +    /*
->> +     * Use the local node if we haven't already. But for memoryless 
->> local
->> +     * node, we should skip it and fallback to other nodes.
->> +     */
->> +    if (!node_isset(node, *used_node_mask) && node_state(node, 
->> N_MEMORY)) {
->>           node_set(node, *used_node_mask);
->>           return node;
->>       }
+
+On 19/10/23 10:14, Siddharth Vadapalli wrote:
+> Hello Bjorn,
 > 
-> Makes sense to me; I suspect that online_pages() will just to the right 
-> thing and call build_all_zonelists() to fix it up.
+> On 18/10/23 22:06, Bjorn Helgaas wrote:
+>> [+cc Serge (please cc people who have commented on previous revisions)]
+> 
+> Sure, I will do so.
+> 
 
-Yes, the find_next_best_node() will be called by build_all_zonelists().
+...
 
 > 
-> Acked-by: David Hildenbrand <david@redhat.com>
+> Yes, I will follow Serge's suggestion of adding a new pci_ops structure for the
+> AM654x SoC which uses the new 4.90a controller. I have described it at:
+> https://lore.kernel.org/r/ba217723-1501-4e72-b143-e0047266ea9a@ti.com/
+> and am summarizing it below:
+> 
+> I will add the following:
+> static struct pci_ops ks_pcie_am6_ops = {
+> 	.map_bus = dw_pcie_own_conf_map_bus,
+> 	.read = pci_generic_config_read,
+> 	.write = pci_generic_config_write,
+> };
+> which shall be used for AM654x SoC
+> 
+> I will also modify the contents of ks_pcie_host_init() as follows:
+> if(ks_pcie->is_am6)
+> 	pp->bridge->ops = &ks_pcie_am6_ops;
+> else
+> 	pp->bridge->ops = &ks_pcie_ops;
+> 
+> which will ensure that the .add_bus() method is no longer applicable to the
+> AM654x SoC, which was the case prior to commit 6ab15b5e7057.
+> 
+> I shall post the v3 patch with the above changes and also Cc Serge.
 
-Thanks.
+I have posted the v3 patch at:
+https://lore.kernel.org/r/20231019081330.2975470-1-s-vadapalli@ti.com/
+and have copied Serge in the mail.
 
 > 
+
+-- 
+Regards,
+Siddharth.
