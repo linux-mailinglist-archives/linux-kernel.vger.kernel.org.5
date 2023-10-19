@@ -2,135 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CAC7CFEC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09477CFEC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346346AbjJSPzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S1346343AbjJSP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbjJSPze (ORCPT
+        with ESMTP id S233176AbjJSP4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:55:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C58212A;
-        Thu, 19 Oct 2023 08:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697730932; x=1729266932;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=P+poiCSIxAGsfdwHwCW+jxjICQUU/M1l3j+2mESJsTg=;
-  b=lZmbpEZ45vsuyC/4QZqoJYZzXzFTQmYUItfQP5Y4NqQZqgVGInBR3Xx4
-   qTcJqCwdPxwxZWZyisjUwTQ1UZ/DtF4bQkTllihWwOazBSLzfxVSMHDOs
-   abLhXeRmultll2YzgPSXGq/0I7PjFcdow6dLIQ9EuAP759ly7IE0XbPUm
-   dvEKCg9Hfg9Vcl2lvIZG2r6vBrJuRxRXV1CZCKjOUAUpcRl6oPqHQS2rp
-   kwP6PzHsEFAIPQxwnFLhe+s/NRAM4a51OBM0k5cCDRuXw2aghFXawSDef
-   NQ1kuANyxLSL5gtKOckrl/Z56pG1G/8pGghQ7pdoJHaY7xtByBh4dG6/H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="452764355"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="452764355"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 08:54:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="880719936"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="880719936"
-Received: from nsuwanda-mobl.amr.corp.intel.com (HELO [10.212.222.219]) ([10.212.222.219])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 08:54:25 -0700
-Message-ID: <00ff2f75-e780-4e2d-bcc9-f441f5ef879c@intel.com>
-Date:   Thu, 19 Oct 2023 08:54:23 -0700
+        Thu, 19 Oct 2023 11:56:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D857106
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:56:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67A34C433C7;
+        Thu, 19 Oct 2023 15:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697730961;
+        bh=haRCOkN73wLvU3HdzEVJZt/eh6HF70wED8hxlg8ZNA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DRxuOZvpSnyUST7JnSiju4ZRgp2YLiIAJvpQcdHFTbsAWctHD74BQGZWiRC0qY+a5
+         K7IgBpxU7IzMogz5eGkTTeu/EXsf3TIANvg0r65NaS3/HjvbBIfDX7EZsb/UIOF6n2
+         C1i5inQu59XewjcLdeZfT5oex/n2t4ajVdiIA1jKrTOZLffJHg56BK/dOieR39b8KI
+         T+0eMAvopRzVzGvCTYaTpFMqDPGBJdcvR+uoZy/wvIGLk/q4ifpAFY7AlJOX2EjeCD
+         UeZ5M3jT7/6w9Pv3vMPVze9jvuZ+y8y64yv/eY/lspRxiZriuNn9TLvTbh3CkiP1rN
+         3Yx8OeCdE9TSA==
+Date:   Thu, 19 Oct 2023 17:55:56 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kumaran.4353@gmail.com
+Subject: Re: [PATCH v2 1/2] staging: qlge: Fix coding style in qlge.h
+Message-ID: <20231019155556.GJ2100445@kernel.org>
+References: <cover.1697657604.git.nandhakumar.singaram@gmail.com>
+ <cec5ab120f3c110a4699757c8b364f4be1575ad7.1697657604.git.nandhakumar.singaram@gmail.com>
+ <20231019122740.GG2100445@kernel.org>
+ <20231019134755.GB3373@ubuntu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Print the encryption features correctly when a
- paravisor is present
-Content-Language: en-US
-To:     Dexuan Cui <decui@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, stefan.bader@canonical.com,
-        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
-        cascardo@canonical.com, mikelley@microsoft.com, jgross@suse.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        kirill.shutemov@linux.intel.com, sashal@kernel.org,
-        matija.glavinic-pecotic.ext@nokia.com, linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20231019062030.3206-1-decui@microsoft.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231019062030.3206-1-decui@microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019134755.GB3373@ubuntu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> --- a/arch/x86/hyperv/ivm.c
-> +++ b/arch/x86/hyperv/ivm.c
-> @@ -450,6 +450,16 @@ static bool hv_is_private_mmio(u64 addr)
->  	return false;
->  }
->  
-> +static void hv_print_mem_enc_feature_info(void)
-> +{
-> +	enum hv_isolation_type type = hv_get_isolation_type();
-> +
-> +	if (type == HV_ISOLATION_TYPE_SNP)
-> +		pr_info("Memory Encryption Features active: AMD SEV\n");
-> +	else if (type == HV_ISOLATION_TYPE_TDX)
-> +		pr_info("Memory Encryption Features active: Intel TDX\n");
-> +}
+On Thu, Oct 19, 2023 at 06:47:55AM -0700, Nandha Kumar Singaram wrote:
+> On Thu, Oct 19, 2023 at 02:27:40PM +0200, Simon Horman wrote:
+> > On Wed, Oct 18, 2023 at 12:46:00PM -0700, Nandha Kumar Singaram wrote:
+> > > Replace all occurrnces of (1<<x) by BIT(x) to get rid of checkpatch.pl
+> > > "CHECK" output "Prefer using the BIT macro"
+> > > 
+> > > Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+> > 
+> > Thanks Nandha,
+> > 
+> > these changes look good to me.
+> > But I would like to ask if not updating
+> > Q_LEN_V and LEN_V is intentional.
+> 
+> Thanks for the review Simon.
+> 
+> I have already sent a patch for Q_LEN_V and LEN_V and it is accepted
+> by greg k-h, so didn't updated here.
 
-If we draw this to its logical conclusion, every paravisor will need a
-pr_info() for every hardware CoCo implementation.  That M*N pr_info()s.
-That seems nuts.
+Understood, in that case this patch looks good to me.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
