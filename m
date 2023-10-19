@@ -2,226 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E747CEFC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B6A7CEFC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjJSGBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
+        id S235308AbjJSGA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbjJSGBD (ORCPT
+        with ESMTP id S235260AbjJSGAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:01:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3C6171A
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697695136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OYiNcQwLkcJ0JWlC42a8NTarycDAR71hXESfUG+RdkM=;
-        b=d6AoN4cVhnqIFFEq+1tRk5JUrvJURH4OO6VidfywN3QXMq1EK18r+pWxiryP85Ctsx6T4g
-        hzST9fdrNjqfDNqSTMMjSBAuCBX20AxV0jpe1cGN4z5qSxWSmPce6TmyuaIXUq5Yjb+OnK
-        xqU5IXqWiTnz5AZnVyc4Gl9mnfYgd7U=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-441-LyaN5KTYPnK05ieYZjio7Q-1; Thu, 19 Oct 2023 01:58:54 -0400
-X-MC-Unique: LyaN5KTYPnK05ieYZjio7Q-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7abacbb76fcso2487311241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:58:54 -0700 (PDT)
+        Thu, 19 Oct 2023 02:00:36 -0400
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D10D41;
+        Wed, 18 Oct 2023 22:59:20 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso72992911fa.3;
+        Wed, 18 Oct 2023 22:59:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697695133; x=1698299933;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697695158; x=1698299958;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OYiNcQwLkcJ0JWlC42a8NTarycDAR71hXESfUG+RdkM=;
-        b=BqHp+daYd5yFp+yVdK5iRQawWhhhhE2wciqZrSPkJ6hvnT5dnDEAx7MZYPMgKtB32Q
-         9Gzagc2CJUnO7FFsATVWxPZUoa+Rbx9w4CyHN25UNeD74oCdZE/hvTIB2e9L34bRHe5a
-         QUFYaQRfhoxeB+/mda+rRdJSl8RbasXO+nnE9WM/a85CuMvijDkmJMZ872NeRiEY2+Di
-         2GUq1x9xBOKg3aF/x58jFEvWE1dAUSNfqfaz3cJ13x/EZjFUHk0ysk9Qyjn/4C3gKObm
-         MIQTOoxuhRapzuYb7cXW65IqCQcH3FXxWbDASlnbeHKjFdXT/SaxkFUMkkCH2/qmgLoR
-         Q4gQ==
-X-Gm-Message-State: AOJu0YxGXmwJCrHqMzRcamO22cl3hH9K85PCkny9n80r6BCqOft1Y3xt
-        LKX4EfFd+P7m3E36AR7CI8NMkRCb0TpB20Wr6Lv3BppTyoE8dg2igoInFhvpUihvAYbvm3TLtGQ
-        1eybGWTjM1ARm1WWHooI0oUCI
-X-Received: by 2002:a67:ab4f:0:b0:457:adc8:b163 with SMTP id k15-20020a67ab4f000000b00457adc8b163mr1118431vsh.27.1697695133523;
-        Wed, 18 Oct 2023 22:58:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHiyLmygww0ENS5AhUS3kBqt+gwGtLmYIbLmwqlO+j4nePp4S7H35hIlNeSEhfWNn8yMh+KNg==
-X-Received: by 2002:a67:ab4f:0:b0:457:adc8:b163 with SMTP id k15-20020a67ab4f000000b00457adc8b163mr1118421vsh.27.1697695133222;
-        Wed, 18 Oct 2023 22:58:53 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id o9-20020a655209000000b005b46e691108sm2226270pgp.68.2023.10.18.22.58.49
+        bh=oMNlz6Cxdkl+zH/G54X2MxUz7Wqg3pA8w42qPZNqH/w=;
+        b=QHmz/pRBtZzJt9mvBsWyeABAcA7RDx1jss7u4cy/ynF1LwzRCkfQL5X1To70Ma3JsS
+         pUC2g9q8IVcLbwWjQL5CKhBpBlPl2yD831aX3ti2MHTfFE1ilI7zigZsDrnbd9uf/hz7
+         9JR1SUdqzTGSJtO2sarOufajw0IOI3st+KbZ4/RP7xu7K+hY1wjuyJPavuyIJsk/jheq
+         PBnSIqvYpunL1pHqQf50pzn41Rav428Qe5eg2lIHayn4ioIhfL9d7vjRApXDtPdNmZ4u
+         Xtl6KNcy8fQEGSqX6dwcFUbRxvf+emSOsg5FEOooABdYWD5CFEOBhT9cV6sW0rYb+b20
+         tqYw==
+X-Gm-Message-State: AOJu0YzgMc3PcPxazbtTu8VJRnGh2qP/C6qSgqSqrySjhIXEkVyjYVWG
+        +113XikJ9BLqONATEh7kAOz97EKEPTk=
+X-Google-Smtp-Source: AGHT+IEFUDv1bUvCKipr9WPFTcJbIQhZXjicY9dc0svILoD8+/81L/IWsGw6/+CJlDgk/ImukxxEfA==
+X-Received: by 2002:a2e:8783:0:b0:2c5:14f8:d5dc with SMTP id n3-20020a2e8783000000b002c514f8d5dcmr530994lji.14.1697695158038;
+        Wed, 18 Oct 2023 22:59:18 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id n15-20020a7bcbcf000000b004060f0a0fdbsm3445721wmi.41.2023.10.18.22.59.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 22:58:52 -0700 (PDT)
-Message-ID: <2ce4b984-b3d6-4c35-96f3-d71d0a7c8ef2@redhat.com>
-Date:   Thu, 19 Oct 2023 15:58:47 +1000
+        Wed, 18 Oct 2023 22:59:17 -0700 (PDT)
+Message-ID: <164c77f6-2f03-440a-aabe-dd0a1fd27592@kernel.org>
+Date:   Thu, 19 Oct 2023 07:59:16 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: mm: Validate CONFIG_PGTABLE_LEVELS conditionally
+Subject: Re: [PATCH v3 5/6] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe
+ boards not work by default
 Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, ryan.roberts@arm.com,
-        anshuman.khandual@arm.com, shan.gavin@gmail.com
-References: <20231017005300.334140-1-gshan@redhat.com>
- <ZS5qZtcJAjtaKP3X@FVFF77S0Q05N>
- <c383e11e-8067-4350-8a10-ae9c514b222f@redhat.com>
- <ZS-oSirRfxRko9ia@FVFF77S0Q05N>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <ZS-oSirRfxRko9ia@FVFF77S0Q05N>
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
+ <20231018091739.10125-6-crescentcy.hsieh@moxa.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231018091739.10125-6-crescentcy.hsieh@moxa.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/23 19:42, Mark Rutland wrote:
-> On Wed, Oct 18, 2023 at 04:33:09PM +1000, Gavin Shan wrote:
->> On 10/17/23 21:05, Mark Rutland wrote:
->>> On Tue, Oct 17, 2023 at 10:53:00AM +1000, Gavin Shan wrote:
->>>> It's allowed for the fixmap virtual address space to span multiple
->>>> PMD entries. Instead, the address space isn't allowed to span multiple
->>>> PUD entries. However, PMD entries are folded to PUD and PGD entries
->>>> in the following combination. In this particular case, the validation
->>>> on NR_BM_PMD_TABLES should be avoided.
->>>>
->>>>     CONFIG_ARM64_PAGE_SHIFT = 14
->>>>     CONFIG_ARM64_VA_BITS_36 = y
->>>>     CONFIG_PGTABLE_LEVELS   = 2
->>>
->>> Is this something you found by inspection, or are you hitting a real issue on a
->>> particular config?
->>>
->>> I built a kernel with:
->>>
->>>     defconfig + CONFIG_ARM64_16K_PAGES=y + CONFIG_ARM64_VA_BITS_36=y
->>>
->>> ... which gives the CONFIG_* configuration you list above, and that works just
->>> fine.
->>>
->>> For 2-level 16K pages we'd need to reserve more than 32M of fixmap slots for
->>> the assertion to fire, and we only reserve ~6M of slots in total today, so I
->>> can't see how this would be a problem unless you have 26M+ of local additions
->>> to the fixmap?
->>>
->>> Regardless of that, I don't think it's right to elide the check entirely.
->>>
->>
->> It's all about code inspection. When CONFIG_PGTABLE_LEVELS == 2, PGD/PUD/PMD
->> are equivalent. The following two macros are interchangeable. The forthcoming
->> static_assert() enforces that the fixmap virtual space can't span multiple
->> PMD entries, meaning the space is limited to 32MB with above configuration.
->>
->>    #define NR_BM_PMD_TABLES \
->>            SPAN_NR_ENTRIES(FIXADDR_TOT_START, FIXADDR_TOP, PUD_SHIFT)
->>    #define NR_BM_PMD_TABLES \
->>            SPAN_NR_ENTRIES(FIXADDR_TOT_START, FIXADDR_TOP, PMD_SHIFT)
->>
->>    static_assert(NR_BM_PMD_TABLES == 1);
->>
->> However, multiple PTE tables are allowed. It means the fixmap virtual space
->> can span multiple PMD entries, which is controversial to the above enforcement
->> from the code level. Hopefully, I understood everything correctly.
->>
->>    #define NR_BM_PTE_TABLES \
->>            SPAN_NR_ENTRIES(FIXADDR_TOT_START, FIXADDR_TOP, PMD_SHIFT)
->>    static pte_t bm_pte[NR_BM_PTE_TABLES][PTRS_PER_PTE] __page_aligned_bss;
->>
+On 18. 10. 23, 11:17, Crescent CY Hsieh wrote:
+> MOXA PCIe RS422/RS485 boards will not function by default because of the
+> initial default serial interface of all MOXA PCIe boards is set to RS232.
 > 
-> The intent is that the fixmap can span multiple PTE tables, but has to fall
-> within a single PMD table (and within a single PGD entry). See the next couple
-> of lines where we only allocate one PMD table and one PUD table:
+> This patch fixes the problem above by setting the initial default serial
+> interface to RS422 for those MOXA RS422/RS485 PCIe boards.
 > 
->      static pte_t bm_pte[NR_BM_PTE_TABLES][PTRS_PER_PTE] __page_aligned_bss;
->      static pmd_t bm_pmd[PTRS_PER_PMD] __page_aligned_bss __maybe_unused;
->      static pud_t bm_pud[PTRS_PER_PUD] __page_aligned_bss __maybe_unused;
-> 
-> The NR_BM_PMD_TABLES definition is only there for the static_assert().
-> 
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
-Ok, thanks for the hints.
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
->> You're correct that the following edition is needed to trigger the assert.
->> The point is to have the fixmap virtual space larger than 32MB.
-> 
-> It's not intended to be more than 32M.
-> 
-> If we want to support 32M and larger, we'd need to rework the rest of the code,
-> allocating more intermediate tables and manipulating multiple PGD entries. As
-> we have no need for that, it's simpler to leave it as-is, with the
-> static_assert() ther to catch if/when someone tries to expand it beyond what is supported.
-> 
 
-Yeah, it's a small space anyway.
-
->>
->>    enum fixed_addresses {
->>          FIX_HOLE,
->>           :
->>          FIX_PTE,
->>          FIX_PMD,
->>          FIX_PUD,
->>          FIX_PGD,
->>          FIX_DUMMY = FIX_PGD + 2048,
->>
->>          __end_of_fixed_addresses
->> };
->>
->>
->>> The point of the check is to make sure that the fixmap VA range doesn't span
->>> across multiple PMD/PUD/P4D/PGD entries, as the early_fixmap_init() and
->>> fixmap_copy() code don't handle that in general. When using 2-level 16K pages,
->>> we still want to ensure the fixmap is contained within a single PGD, and
->>> checking that it falls within a single folded PMD will check that.
->>>
->>> See the message for commit:
->>>
->>>     414c109bdf496195 ("arm64: mm: always map fixmap at page granularity")
->>>
->>> ... and the bits that deleted from early_fixmap_init().
->>>
->>> AFAICT this is fine as-is.
->>>
->>
->> As I can see, multiple PMD entries can be handled well in early_fixmap_init().
->> However, multiple PMD entries aren't handled in fixmap_copy(), as you said.
->>
->>    early_fixmap_init
->>      early_fixmap_init_pud
->>        early_fixmap_init_pmd       // multiple PMD entries handled in the loop
-> 
-> If you remove the restriction of a single PMD entry, you also permit multiple
-> PUD/P4D/PGD entries, and the early_fixmap_init() code cannot handle that.
-> Consider how early_fixmap_init_pud() and early_fixmap_init_pmd() use bm_pud and
-> bm_pmd respectively.
-> 
-> As above, this code doesn't need to change:
-> 
-> * It works today, there is no configuration where the statis_assert() fires
->    spuriously.
-> 
-> * If the static_assert() were to fire, we'd need to alter some portion of the
->    code to handle that case (e.g. expanding bm_pmd and/or bm_pud, altering
->    fixmap_copy()).
-> 
-> * It's simpler and better to have the assertion today rather than making the
->    code handle the currently-impossible cases. That avoids wasting memory on
->    unusable tables, and avoids having code which is never tested.
-> 
-
-Agree. Please ignore my patch and lets keep it as-is. Again, it's a small space
-and I don't see it needs to be enlarged to hit the limit. Thanks for explaining
-everything in a clear way.
-
-Thanks,
-Gavin
+-- 
+js
+suse labs
 
