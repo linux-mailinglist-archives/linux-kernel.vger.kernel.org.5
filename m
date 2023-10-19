@@ -2,157 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1461E7D03DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0D67D0396
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346682AbjJSVXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
+        id S232759AbjJSVRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbjJSVWp (ORCPT
+        with ESMTP id S231495AbjJSVRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:22:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FB6171A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697750525; x=1729286525;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Mga0hzehnFDhfflJAOvOwX5ea7rI+hOcN+1KatIr3pY=;
-  b=e8rS0EfvNBoJNw7q6DMquZZANvrziZXiM7TL1KuVJrD/tudpI0h0zlDc
-   u3juyULI6I6zei5FAxrytYyq5J2uAEmnfk8b0mT0R13+klgom3hUdWewi
-   fDb3q88ol5gB1Vz8q78549J/n1hDLXGC/lv3yyfX9dg4nZ6SqfYdCSyZP
-   pYwucKVlQFWF6S3iPbIYRYJQF++LU3mnVjF0iwZADNqbhMhrkJNHYH7kn
-   67ZlNl7RM5Xj5zpWRC5iszuOYYk0SfTzejXB83BDT4uZqq/BWc7HK0e+X
-   SY7GDaqm9ZzO3cvle5/S8ZzlsaU+5iUQyq4UEVpSja0WVWapn+VAX3Xij
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="389233977"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="389233977"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 14:16:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="880847200"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="880847200"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 19 Oct 2023 14:16:30 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtaNY-0002be-2D;
-        Thu, 19 Oct 2023 21:16:28 +0000
-Date:   Fri, 20 Oct 2023 05:16:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: kernel/sched/fair.c:939:34: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202310200515.2Iu6YmEe-lkp@intel.com>
+        Thu, 19 Oct 2023 17:17:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DB1114
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:17:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1613BC433C8;
+        Thu, 19 Oct 2023 21:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697750261;
+        bh=UbRSZc6crtgCeY0MRdsWT/KJ2XCs7EiHnMiSLAyYy50=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DQy4c/qS73NJUZKGInjpVlY45mpKWBWu/lp8LDxM6/JBOKM4vAt/1U6wu2d7ez6Z/
+         +9Bwgeju4qEt/0xwW4HpV2yAvEBSkzRXDB/88sj3lI+f3gF/KMq1qwI0rwzrA8oxBp
+         Aic3meb9N7VfTpGj4Fe3mMgttZLbbziRTBBDz/2VgWjadletAP0KNkgtk/sq3MIQub
+         k+IfR4NOoUAUvOdbZVfPYp2DxEDUpZ3j5WBOzwpPTdmz09UXQjtae2AQaRKvxSkKyQ
+         T6pilfQW4bPVhntuHZV1Kta/jSMEnoWNjOY0cb5QKFTF2TMTaW/rxu7epJXMbb3yEh
+         i5IgmlP5tz0Aw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 976C140016; Thu, 19 Oct 2023 18:17:37 -0300 (-03)
+Date:   Thu, 19 Oct 2023 18:17:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     linux-kernel@vger.kernel.org, Manu Bretelle <chantr4@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        He Kuang <hekuang@huawei.com>, Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 1/1] tools build: Fix llvm feature detection, still used by
+ bpftool
+Message-ID: <ZTGc8S293uaTqHja@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   74e9347ebc5be452935fe4f3eddb150aa5a6f4fe
-commit: 904cbab71dda1689d41a240541179f21ff433c40 sched: Make const-safe
-date:   10 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231020/202310200515.2Iu6YmEe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200515.2Iu6YmEe-lkp@intel.com/reproduce)
+When removing the BPF event for perf a feature test that checks if the
+llvm devel files are availabe was removed but that is also used by
+bpftool.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310200515.2Iu6YmEe-lkp@intel.com/
+bpftool uses it to decide what kind of disassembly it will use: llvm or
+binutils based.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/fair.c:939:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sched_entity const *se @@     got struct sched_entity [noderef] __rcu * @@
-   kernel/sched/fair.c:939:34: sparse:     expected struct sched_entity const *se
-   kernel/sched/fair.c:939:34: sparse:     got struct sched_entity [noderef] __rcu *
-   kernel/sched/fair.c:7698:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:7698:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:7698:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:7996:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:7996:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:7996:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:6039:35: sparse: sparse: marked inline, but without a definition
-   kernel/sched/fair.c: note: in included file:
-   kernel/sched/sched.h:2232:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2232:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2232:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
---
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/rt.c:961:70: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/rt.c:961:70: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/rt.c:961:70: sparse:    struct task_struct *
-   kernel/sched/rt.c:1047:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:1047:38: sparse:     expected struct task_struct *curr
-   kernel/sched/rt.c:1047:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/rt.c:1592:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:1592:31: sparse:     expected struct task_struct *p
-   kernel/sched/rt.c:1592:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/build_policy.c: note: in included file:
->> kernel/sched/deadline.c:1954:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct sched_dl_entity const *b @@     got struct sched_dl_entity [noderef] __rcu * @@
-   kernel/sched/deadline.c:1954:42: sparse:     expected struct sched_dl_entity const *b
-   kernel/sched/deadline.c:1954:42: sparse:     got struct sched_dl_entity [noderef] __rcu *
-   kernel/sched/deadline.c:1182:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1182:23: sparse:     expected struct task_struct *p
-   kernel/sched/deadline.c:1182:23: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:1309:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1309:38: sparse:     expected struct task_struct *curr
-   kernel/sched/deadline.c:1309:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:2645:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/deadline.c:2645:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/deadline.c:2645:22: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2074:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2074:25: sparse:    struct task_struct *
+Removing the tools/build/feature/test-llvm.cpp file made bpftool to
+always fallback to binutils disassembly, even with the llvm devel files
+installed, fix it by restoring just that small test-llvm.cpp test file.
 
-vim +939 kernel/sched/fair.c
+Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
+Reported-by: Manu Bretelle <chantr4@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Carsten Haitzler <carsten.haitzler@arm.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Fangrui Song <maskray@google.com>
+Cc: He Kuang <hekuang@huawei.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: llvm@lists.linux.dev
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Tom Rix <trix@redhat.com>
+Cc: Wang Nan <wangnan0@huawei.com>
+Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc: Yang Jihong <yangjihong1@huawei.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/lkml/ZTGa0Ukt7QyxWcVy@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/build/feature/test-llvm.cpp | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 tools/build/feature/test-llvm.cpp
 
-bf0f6f24a1ece8 kernel/sched_fair.c Ingo Molnar       2007-07-09  936  
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  937  static void update_curr_fair(struct rq *rq)
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  938  {
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12 @939  	update_curr(cfs_rq_of(&rq->curr->se));
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  940  }
-6e998916dfe327 kernel/sched/fair.c Stanislaw Gruszka 2014-11-12  941  
-
-:::::: The code at line 939 was first introduced by commit
-:::::: 6e998916dfe327e785e7c2447959b2c1a3ea4930 sched/cputime: Fix clock_nanosleep()/clock_gettime() inconsistency
-
-:::::: TO: Stanislaw Gruszka <sgruszka@redhat.com>
-:::::: CC: Ingo Molnar <mingo@kernel.org>
-
+diff --git a/tools/build/feature/test-llvm.cpp b/tools/build/feature/test-llvm.cpp
+new file mode 100644
+index 0000000000000000..88a3d1bdd9f6978e
+--- /dev/null
++++ b/tools/build/feature/test-llvm.cpp
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "llvm/Support/ManagedStatic.h"
++#include "llvm/Support/raw_ostream.h"
++#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
++
++#if NUM_VERSION < 0x030900
++# error "LLVM version too low"
++#endif
++int main()
++{
++	llvm::errs() << "Hello World!\n";
++	llvm::llvm_shutdown();
++	return 0;
++}
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
