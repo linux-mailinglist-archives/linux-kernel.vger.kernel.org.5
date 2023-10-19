@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963F27CF5E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DEB7CF5E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345280AbjJSKwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S1345298AbjJSKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233098AbjJSKwv (ORCPT
+        with ESMTP id S1345285AbjJSKxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:52:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340EA11F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vtw7iS5ybnuf3tWFyPSgek/0AivXJUZ6JlioE4W5z+w=; b=WLOUI8ATAS5Y2XvI4uA276nop/
-        Ax9s9EwnBoap3xsP1I+W7JRfwBw7Ps9UAoq480POOKRN/VRDi/jhzYkFkB9Di0VDBpx/psFcufCNk
-        5CKjK4UCpZN/SpkhPAoQSZHufhA+E7cJDJRh4NjTngfiVkftYW6N9AKSqFNzTZ55ylerBJoPJzBxR
-        nL/xDWb5V5xyA/cxBey1hPlbpkr5OLeuqtyrDjzubIrsxTJQpT821BMr02wpzmnxUbIT9pJmEkrB+
-        7v+j6hl1zXHRZTDPtJChJLRx7yPR3ta8IvCAcX3Sg3sKfGaF1LGVGSNxC7V3lGvF6j/Z75GlMjg7M
-        AdCD/gow==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtQdk-009n6n-0K;
-        Thu, 19 Oct 2023 10:52:32 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BE51C300338; Thu, 19 Oct 2023 12:52:31 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 12:52:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
-Subject: Re: [PATCH V4 4/7] perf/x86/intel: Support LBR event logging
-Message-ID: <20231019105231.GG36211@noisy.programming.kicks-ass.net>
-References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
- <20231004184044.3062788-4-kan.liang@linux.intel.com>
+        Thu, 19 Oct 2023 06:53:06 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506A2121;
+        Thu, 19 Oct 2023 03:53:04 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so95111741fa.3;
+        Thu, 19 Oct 2023 03:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697712782; x=1698317582; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2iJFIQZU3dMWJmF9fQqJT6sOJuhpG2IbdIzEIIeAV0=;
+        b=dMz2uwuSU7lYXT/hKRJL5HQ3W8Td6np6Idc0NASEawoS/cOZNPXZUZ70fPb0EkSMY3
+         /4nLqK4ym4DzImgE1lATwjbumLMqzZv1iTht9+HtDJb7XpNjQuX52HVsPvYLklOgo9/Y
+         VksStneetXYJSbyqPa1+ZPH1vyyHa6zXLZkKuAklvGvkmknT5YQHVTynKEK2eGQtES1z
+         62qNgWuJedYkJa2PlCPrkx8XQ6gzctVYIrpvxUdgb5eGOa0R2mD6CoSpta+ELwhVKj5J
+         OIkQZxU6ysIdJyAsuea+NBMKEcmcDTyVvYDPU169IfxvTzOvlrKiir/Nnr+1Q8uvscv2
+         f1DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697712782; x=1698317582;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a2iJFIQZU3dMWJmF9fQqJT6sOJuhpG2IbdIzEIIeAV0=;
+        b=iqxGzS8Ha1W2i0SREbYt6KLDaZ4lSOdSLwAuy7oSAsolVTqHFFsHNl0qVyqbdY+c8U
+         2VPNXT+bzrEBsDCxad2bq0Fy15838jwdsV+RU8BZ/N/Ox2SDrHB7fwjn59bZIXxMjCjK
+         bYhhNYgeKHeujj1p+2H+y/2CSMgvBe4BvGzVM7fS7Lc2z5JtOGkHQ62J00qU9rpsi1cs
+         G98lqH611mt7mArPM1KpPlMCs/gxUIInaXYfxh7QSCXyxJYmaJIJNFH1s1ulMZki1PcA
+         bi+d6ZQfjZt1WIc/uOP1fK7TkgGeZs/fV/eZ5881jcb8A0vIgGVz7Vgdurp/gp3aJpcr
+         1gKg==
+X-Gm-Message-State: AOJu0YxDpRQ91ZH6fmGQlZYimEUOBXUor4lHosqIWyEg3Sg4vTDxgSDb
+        AMzj61w2aGI/HNvZqoHSWl8=
+X-Google-Smtp-Source: AGHT+IGzZ6w/a2I2t2hj+OoCFUEN+jp/x1/0jBQjv+5/Krw0aEMmBE8FvF+3HQVEJYZ7RYhQGJX34g==
+X-Received: by 2002:ac2:5194:0:b0:503:9eb:47f0 with SMTP id u20-20020ac25194000000b0050309eb47f0mr1122559lfi.59.1697712782192;
+        Thu, 19 Oct 2023 03:53:02 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id fb21-20020a056512125500b005031641b40asm1043740lfb.159.2023.10.19.03.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 03:53:01 -0700 (PDT)
+Message-ID: <65310a8d.050a0220.28bdd.4114@mx.google.com>
+X-Google-Original-Message-ID: <ZTEKiUCiP/fMJUdl@Ansuel-xps.>
+Date:   Thu, 19 Oct 2023 12:52:57 +0200
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ilia Lin <ilia.lin@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] cpufreq: qcom-nvmem: add support for ipq806x
+References: <20231013173854.7399-1-ansuelsmth@gmail.com>
+ <20231019064653.feqpjdmblm7mmsug@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231004184044.3062788-4-kan.liang@linux.intel.com>
+In-Reply-To: <20231019064653.feqpjdmblm7mmsug@vireshk-i7>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 11:40:41AM -0700, kan.liang@linux.intel.com wrote:
+On Thu, Oct 19, 2023 at 12:16:53PM +0530, Viresh Kumar wrote:
+> On 13-10-23, 19:38, Christian Marangi wrote:
+> > The first patch of this series was split to a separate series as it
+> > doesn't depend on [1] and can be applied right away,
+> > [1] introduced some breaking change to function that ipq806x, ipq807x
+> > patch was dropped to permit an easier rebase and merge of both.
+> > 
+> > This small series adds support for ipq806x qcom-cpufreq-nvmem driver.
+> > Special function are required to make use of the opp-supported-hw
+> > binding by hardcoding custom bits based on the qcom SoC ID.
+> > 
+> > The qcom-cpufreq-nvmem driver had recent changes to also improve
+> > support for apq8064. Because of this, this series depends on a
+> > just merged series.
+> > 
+> > Depends on [1].
+> > 
+> > [1] https://lore.kernel.org/linux-pm/20231010063235.rj2ehxugtjr5x2xr@vireshk-i7/T/#t
+> > 
+> > Christian Marangi (4):
+> >   dt-bindings: cpufreq: qcom-cpufreq-nvmem: Document krait-cpu
+> >   dt-bindings: opp: opp-v2-kryo-cpu: Document named opp-microvolt
+> >     property
+> 
+> Applied above two. Thanks.
+> 
+> >   cpufreq: qcom-nvmem: add support for IPQ8064
+> 
+> This doesn't apply/build anymore.
+>
 
-> +#define ARCH_LBR_EVENT_LOG_WIDTH	2
-> +#define ARCH_LBR_EVENT_LOG_MASK		0x3
+Hi, I sent v7 that fix the conflict problem. I dropped from the series
+the 2 applied patch and added the 2 dependent patch since it seems
+fixing the problem in the series might take longer times.
 
-event log ?
+Can you check? Thanks a lot for the help in accepting this series.
 
+> >   ARM: dts: qcom: ipq8064: Add CPU OPP table
+> 
 
-> +static __always_inline void intel_pmu_update_lbr_event(u64 *lbr_events, int idx, int pos)
-> +{
-> +	u64 logs = *lbr_events >> (LBR_INFO_EVENTS_OFFSET +
-> +				   idx * ARCH_LBR_EVENT_LOG_WIDTH);
-> +
-> +	logs &= ARCH_LBR_EVENT_LOG_MASK;
-> +	*lbr_events |= logs << (pos * ARCH_LBR_EVENT_LOG_WIDTH);
-> +}
-> +
-> +/*
-> + * The enabled order may be different from the counter order.
-> + * Update the lbr_events with the enabled order.
-> + */
-> +static void intel_pmu_lbr_event_reorder(struct cpu_hw_events *cpuc,
-> +					struct perf_event *event)
-> +{
-> +	int i, j, pos = 0, enabled[X86_PMC_IDX_MAX];
-> +	struct perf_event *leader, *sibling;
-> +
-> +	leader = event->group_leader;
-> +	if (branch_sample_counters(leader))
-> +		enabled[pos++] = leader->hw.idx;
-> +
-> +	for_each_sibling_event(sibling, leader) {
-> +		if (!branch_sample_counters(sibling))
-> +			continue;
-> +		enabled[pos++] = sibling->hw.idx;
-> +	}
-
-Ok, so far so good: enabled[x] = y, is a mapping of hardware index (y)
-to group order (x).
-
-Although I would perhaps name that order[] instead of enabled[].
-
-> +
-> +	if (!pos)
-> +		return;
-
-How would we ever get here if this is the case?
-
-> +
-> +	for (i = 0; i < cpuc->lbr_stack.nr; i++) {
-> +		for (j = 0; j < pos; j++)
-> +			intel_pmu_update_lbr_event(&cpuc->lbr_events[i], enabled[j], j);
-
-But this confuses me... per that function it:
-
- - extracts counter value for enabled[j] and,
- - or's it into the same variable at j
-
-But what if j is already taken by something else?
-
-That is, suppose enabled[] = {3,2,1,0}, and lbr_events = 11 10 01 00
-
-Then: for (j) intel_pmu_update_lbt_event(&lbr_event, enabled[j], j);
-
-0: 3->0, 11 10 01 00 -> 11 10 01 11
-1: 2->1, 11 10 01 11 -> 11 10 11 11
-2: 1->2, 11 10 11 11 -> 11 11 11 11
-
-
-
-> +
-> +		/* Clear the original counter order */
-> +		cpuc->lbr_events[i] &= ~LBR_INFO_EVENTS;
-> +	}
-> +}
-
-Would not something like:
-
-	src = lbr_events[i];
-	dst = 0;
-	for (j = 0; j < pos; j++) {
-		cnt = (src >> enabled[j]*2) & 3;
-		dst |= cnt << j*2
-	}
-	lbr_events[i] = dst;
-
-be *FAR* clearer, and actually work?
+-- 
+	Ansuel
