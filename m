@@ -2,166 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8D7CF0D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E477CF0DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344846AbjJSHOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S1344754AbjJSHPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbjJSHOH (ORCPT
+        with ESMTP id S232788AbjJSHPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:14:07 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E927612D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:14:04 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c3aec5f326so98475666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697699643; x=1698304443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KE1QiGAJ7bITD/Cz3miBk0K7U5aD4ctLyvqdV7MzBAo=;
-        b=EEaAATciUU/R+h+390A2bNlJYb4d2Xd044yfUiCu5Yeaw84Os+FBBYzFNHsUKS1A/a
-         bBlSVx0j5DgtMH+23RDU0GwCuTiZdjRVBNCPbYGOw6T9/VgYP5b4ZEG2hL8IN+SUhsso
-         KrtOC+NKHu4OlfIOtoAMLICcrILzX+xNlMBPdHgMa+Y2AeDpyBmUlAJv3PyK/741NSQV
-         XUC5Jp8syqZziRWfFI+xzHNrSmcRh30UvVbkHnxu1xarT0uhbC5aBf4VjKKH0PQ6exSF
-         HmCz+Ag64EZvvSTqgE04LTNL9M/Bak01BQbWFYCIyHfuJkje7zOww5EYxPMD+ncPp7AW
-         43gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697699643; x=1698304443;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KE1QiGAJ7bITD/Cz3miBk0K7U5aD4ctLyvqdV7MzBAo=;
-        b=pDyyH6rKuzwCcyA12nt/pvT+BtKh6vAVJkIwxcX+C6gemnCUPqqDmfYbhH3tvDjRDt
-         xlO5Pn3AJPH9qDPxyjPimlvZUhFxfX89PVKol9d0onrMubO+KFNfHD3Neoz/s9gHzotf
-         N0fXg/5x9p39JrKJZ/NtdM9MuZnBUyC88tsfs2iQM+N5B9JFAxP/ZS8yqEOmxMOHjchQ
-         cNhS8eO3nc6u1OU7pSQH+aohSKGO+hedRs3ZrErWhXqo0hQ1XHSzy7olEFD3Hf69m+qX
-         4VknD95itLkQNfzllYhubfCHFXfrB8hVEce1j01iNfmK+eiMv6dwEAn38T+x5jr59upH
-         JQww==
-X-Gm-Message-State: AOJu0YzdmVn+63f5fnep8VbBgsGh73ZaAzuclqKJgPL6rat1qRuy3GPP
-        F48nZYAYNvE0QM8jD3kzvkK1Eg==
-X-Google-Smtp-Source: AGHT+IGoKPN8YdTHVyrcBa2S2vi3ub9KOfcI6fRijgZHl3zYUKEQ7a9vK2oXJfe1KJe+/86D2h/wTg==
-X-Received: by 2002:a17:907:d88:b0:9b2:b37d:17ff with SMTP id go8-20020a1709070d8800b009b2b37d17ffmr1065705ejc.19.1697699643351;
-        Thu, 19 Oct 2023 00:14:03 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.49])
-        by smtp.gmail.com with ESMTPSA id gr24-20020a170906e2d800b009c762d89c76sm122698ejb.0.2023.10.19.00.14.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 00:14:02 -0700 (PDT)
-Message-ID: <9b853b5f-b3e6-4aea-b99a-51a490a29f9d@linaro.org>
-Date:   Thu, 19 Oct 2023 09:14:01 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] media: imx-jpeg: Add vendor prefix in slot
- property
-Content-Language: en-US
-To:     "Ming Qian (OSS)" <ming.qian@oss.nxp.com>,
-        mirela.rabulea@oss.nxp.com, robh+dt@kernel.org, shawnguo@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        ming.qian@nxp.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1697597713.git.ming.qian@nxp.com>
- <be1f8907582ea344f8826f7888b277534859e0c4.1697597713.git.ming.qian@nxp.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <be1f8907582ea344f8826f7888b277534859e0c4.1697597713.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 03:15:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54707123
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:15:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFD80C433C8;
+        Thu, 19 Oct 2023 07:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697699710;
+        bh=PP+R+qu15Zi7YrcYi4QBuD0RQDJPomxczNjindxBJl0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WF2pwdCDgI3gvtTSRP8HuWN9guaMoGi7Izl/UdFp2Bee6hL+IlQ2qVl9J7cm7AgRP
+         SJlYSSQY0ArpznUWCxPEUXbTXpdls8pXdGAMIRHFgUwbDsPLndahZyNIYnVce1FuQa
+         CXkivjrwhYsqvp0a8A6bB0b4Xa/V4/dqq1aAX+XuN66bkic/0qgFx4mofa9HQv1acp
+         kByR6B84yzrWjrG+RwMLWUPBxRyMkdBGEYpSDK4Q9LbTYNW9TiodIQZvKBNqrMUcjL
+         FzIcPD4/5iV9MVB7DE4dRUds9oq8QpW+picabntLxigwYVmBKpJ8g2oBiKnUo7CnCU
+         6qWDFEfYhmq1A==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qtNFM-005eAG-1Y;
+        Thu, 19 Oct 2023 08:15:08 +0100
+Date:   Thu, 19 Oct 2023 08:15:03 +0100
+Message-ID: <8734y76q2w.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Independently update HDFGRTR_EL2 and HDFGWTR_EL2
+In-Reply-To: <d8db313d-1161-4a6e-9edc-7dc1e22d2018@arm.com>
+References: <20231018030007.1968317-1-anshuman.khandual@arm.com>
+        <86r0lsm7cq.wl-maz@kernel.org>
+        <d8db313d-1161-4a6e-9edc-7dc1e22d2018@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 04:48, Ming Qian (OSS) wrote:
-> From: Ming Qian <ming.qian@nxp.com>
+On Thu, 19 Oct 2023 04:36:15 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 > 
-> The slot property isn't generic property, add vendor prefix. Change the
-> property name to nxp,slot.
 > 
-> Fixes: 53ebeea50599 ("media: imx-jpeg: Support to assign slot for encoder/decoder")
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
-> v5
-> - add vender prefix, change property slot to nxp,slot
 > 
-> v4
-> - nothing changed here, just modify the bindings and dts
+> On 10/18/23 18:10, Marc Zyngier wrote:
+> > On Wed, 18 Oct 2023 04:00:07 +0100,
+> > Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> >>
+> >> Currently PMSNEVFR_EL1 system register read, and write access EL2 traps are
+> >> disabled, via setting the same bit (i.e 62) in HDFGRTR_EL2, and HDFGWTR_EL2
+> >> respectively. Although very similar, bit fields are not exact same in these
+> >> two EL2 trap configure registers particularly when it comes to read-only or
+> >> write-only accesses such as ready-only 'HDFGRTR_EL2.nBRBIDR' which needs to
+> >> be set while enabling BRBE on NVHE platforms. Using the exact same bit mask
+> >> fields for both these trap register risk writing into their RESERVED areas,
+> >> which is undesirable.
+> > 
+> > Sorry, I don't understand at all what you are describing. You seem to
+> > imply that the read and write effects of the FGT doesn't apply the
+> > same way. But my reading of the ARM ARM is that  behave completely
+> > symmetrically.
+> > 
+> > Also, what is nBRBIDR doing here? It is still set to 0. What
+> > 'RESERVED' state are you talking about?
 > 
-> v3
-> - nothing changed here, just modify the bindings and dts
+> Let's observe the following example which includes the nBRBIDR problem,
+> mentioned earlier.
 > 
-> v2
-> - nothing changed here, just modify the bindings and dts
+> Read access trap configure
 > 
->  drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> HDFGRTR_EL2[59]	   - nBRBIDR
+> HDFGRTR_EL2[58]	   - PMCEIDn_EL0
 > 
-> diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> index 64112b63298c..f8b99a292ad1 100644
-> --- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> +++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> @@ -2762,7 +2762,7 @@ static int mxc_jpeg_probe(struct platform_device *pdev)
->  	if (IS_ERR(jpeg->base_reg))
->  		return PTR_ERR(jpeg->base_reg);
->  
-> -	ret = of_property_read_u32_index(pdev->dev.of_node, "slot", 0, &jpeg->slot_data.slot);
+> Write access trap configure
+> 
+> HDFGWTR_EL2[59:58] - RES0
+> 
+> Because BRBIDR_EL1 and PMCEID<N>_EL0 are read only registers they don't
+> have corresponding entries in HDFGWTR_EL2 for write trap configuration.
+> 
+> Using the exact same value contained in 'x0' both for HDFGRTR_EL2, and
+> HDFGWTR_EL2 will be problematic in case it contains bit fields that are
+> available only in one of the registers but not in the other.
+> 
+> If 'x0' contains nBRBIDR being set, it will be okay for HDFGRTR_EL2 but
+> might not be okay for HDFGWTR_EL2 where it will get into RESERVED areas.
 
-How did it appear in the code and in the DTS without bindings...
+None of which matters for this patch. You keep arguing about something
+that does not exist in the change you're proposing.
 
-Best regards,
-Krzysztof
+[...]
 
+> I should have given more details in the commit message but hope
+> you have some context now, but please do let me know if there
+> is something still missing.
+
+What is missing is a useful patch. This one just obfuscates things for
+no particular purpose. If you have a useful change to contribute,
+please send that instead (your BRBE change). We don't need an extra,
+standalone and pointless patch such as this one.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
