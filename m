@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCB57CFBA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFDA7CFBA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345809AbjJSNu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        id S1345816AbjJSNum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345498AbjJSNu0 (ORCPT
+        with ESMTP id S1345827AbjJSNuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:50:26 -0400
+        Thu, 19 Oct 2023 09:50:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF43A124;
-        Thu, 19 Oct 2023 06:50:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49C7AC433CA;
-        Thu, 19 Oct 2023 13:50:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5396D187
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:50:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD39AC433C7;
+        Thu, 19 Oct 2023 13:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697723424;
-        bh=KGkjy3SWE/bKA0U7i+Yr3cNTc5UcUvO6Rcal+ZDSr/c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Fkn9QIdXC75u7o2BeSQnw8oriqaVsbkdmn8v7q3Y4UoyL+L4MJZ6h9ik/lLagxydE
-         DiwqkqGxNnBtwxyWLLVyiJQXVHd4QfSCRXI47MpLNXPHoB3UeMqiBqVYOCVgwVxpuz
-         WGVUQeHGqcB31bycdXPE+CMA2FBzGfJVQCcYtQy1Mw+XRXhVFzDmvemnA03138jiaX
-         QRTCN/gxN/c9idAg16/UIMcJsg98IMHOjg3hZ1pBKVuKkgMb6hcxP+4shcAWE0G4tv
-         WHlcF8N2+AfteiNJsG2Qabz7gH0V/Ge5Ytg+YR2AF6mqMRIBmoaNbdKTdVpPzoJveJ
-         8FBb2rjRTJuwA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C8F1C595CE;
-        Thu, 19 Oct 2023 13:50:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1697723437;
+        bh=oy5VzoMhN6wZ1Vzq3Eg71Tf23vyezgeMhkqlIYLuizA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KFF8kYkzoGiHfBO8gNfdHBGk9gOgif60Km8M2iB03XtUdc6uHtDmf5vch03FprWdc
+         yhVh/N+yb+Pm0KNYibkrM6iaSM2u+TrYGIz6KNUJxjhFptHdUebiyy/0Xhjos7K3D1
+         JMvrWlF+/h5bXX3zcZtPwYYqRJgUmCrMPlRkl6DWlRnFS30Dr6oFJbcLUTbPx7cwng
+         w4xcUZEnmyyJO9eZ2T/oJcLM2kRaFoK+q4hhiREhKHhMSmbVoMLYZHiR1TajPCh9Da
+         Z9FJmAwdAuQUbXoKMscFYa8eHOfishbBQxbev7NGteePpsFG7NgP+d3ioEEZ8Wi7wU
+         giqLMnCi0bZhw==
+Date:   Thu, 19 Oct 2023 14:50:32 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: mfd: rk8xx: Deprecate
+ rockchip,system-power-controller
+Message-ID: <20231019135032.GD2424087@google.com>
+References: <20231010174138.1888396-1-megi@xff.cz>
+ <20231010174138.1888396-2-megi@xff.cz>
+ <20231019102945.GA2424087@google.com>
+ <a7b6115e-9490-47cf-8054-ac616dea62fd@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v4 0/4] net: stmmac: improve tx timer logic
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169772342417.4360.7732259077441281905.git-patchwork-notify@kernel.org>
-Date:   Thu, 19 Oct 2023 13:50:24 +0000
-References: <20231018123550.27110-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231018123550.27110-1-ansuelsmth@gmail.com>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     rajur@chelsio.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        pkshih@realtek.com, kvalo@kernel.org, horms@kernel.org,
-        daniel@iogearbox.net, jiri@resnulli.us, liuhangbin@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-wireless@vger.kernel.org
+In-Reply-To: <a7b6115e-9490-47cf-8054-ac616dea62fd@linaro.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,34 +59,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 19 Oct 2023, Krzysztof Kozlowski wrote:
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Wed, 18 Oct 2023 14:35:46 +0200 you wrote:
-> This series comes with the intention of restoring original performance
-> of stmmac on some router/device that used the stmmac driver to handle
-> gigabit traffic.
+> On 19/10/2023 12:29, Lee Jones wrote:
+> > On Tue, 10 Oct 2023, Ondřej Jirman wrote:
+> > 
+> >> From: Ondrej Jirman <megi@xff.cz>
+> >>
+> >> Deprecate support for this property in favor of standard
+> >> system-power-controller one.
+> >>
+> >> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> >> ---
+> >>  Documentation/devicetree/bindings/mfd/rockchip,rk805.yaml | 3 +++
+> >>  Documentation/devicetree/bindings/mfd/rockchip,rk808.yaml | 3 +++
+> >>  Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml | 3 +++
+> >>  Documentation/devicetree/bindings/mfd/rockchip,rk817.yaml | 3 +++
+> >>  Documentation/devicetree/bindings/mfd/rockchip,rk818.yaml | 3 +++
+> >>  5 files changed, 15 insertions(+)
+> > 
+> > I don't see anything wrong with it.
+> > 
+> > It would be nice to have a DT Ack though.
 > 
-> More info are present in patch 3. This cover letter is to show results
-> and improvements of the following change.
-> 
-> [...]
+> Rob gave review on 12th Oct.
 
-Here is the summary with links:
-  - [net-next,v4,1/4] net: introduce napi_is_scheduled helper
-    https://git.kernel.org/netdev/net-next/c/7f3eb2174512
-  - [net-next,v4,2/4] net: stmmac: improve TX timer arm logic
-    https://git.kernel.org/netdev/net-next/c/2d1a42cf7f77
-  - [net-next,v4,3/4] net: stmmac: move TX timer arm after DMA enable
-    https://git.kernel.org/netdev/net-next/c/a594166387fe
-  - [net-next,v4,4/4] net: stmmac: increase TX coalesce timer to 5ms
-    https://git.kernel.org/netdev/net-next/c/039550960a22
+This new version was submitted on the 10th Oct.
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Lee Jones [李琼斯]
