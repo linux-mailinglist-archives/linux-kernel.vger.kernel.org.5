@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089AF7CF04E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12C67CF059
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344662AbjJSGqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        id S1344773AbjJSGrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjJSGqG (ORCPT
+        with ESMTP id S232822AbjJSGrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:46:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45F124;
-        Wed, 18 Oct 2023 23:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697697964; x=1729233964;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qNGiwG6sPEn5ubts1BrNP/8VMfC11VFMYM5s5vJIJZU=;
-  b=JOmox+3mKfj0lafGMacmqd+QL8A4VDLckj9TJsSdkWqzaaPSHwgZ8uWX
-   u4d8A4hkUl5fisXdN/8fkEOKC7fFTfrlu6mc59xfYe94JnegT8Aa43+Uk
-   4XxHT4l3waQhA20q1xWYsY5Kf6AlYg6g5V21/RCsa9pwWxdtpaJ32P+p5
-   E0qKTYPMMoSkgc9aMcszt5zFIAn5Xx9p8KNf+++aIpU7jyFWMYnxedjMt
-   QjsSigwpt5CRIfyxhWEMA8CraPb2mf+hXZCBKcGR5zLwc1Z48sbbbVje7
-   bTqwAa8qInuZvx1C/SYP/EXwsZgdEOt8eYhPT9lYyxjt41hzxtCG/G8C8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="376560061"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="376560061"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 23:46:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="1088259427"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="1088259427"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga005.fm.intel.com with SMTP; 18 Oct 2023 23:45:59 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Oct 2023 09:45:58 +0300
-Date:   Thu, 19 Oct 2023 09:45:58 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net, kyletso@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdbabiera@google.com, amitsd@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2] usb: typec: tcpm: Fix sink caps op current check
-Message-ID: <ZTDQpqVMx/QB1tTo@kuha.fi.intel.com>
-References: <20231015035838.2207567-1-badhri@google.com>
+        Thu, 19 Oct 2023 02:47:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF433129;
+        Wed, 18 Oct 2023 23:46:59 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39J6Ax0q021596;
+        Thu, 19 Oct 2023 06:46:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=br6+Z//OonCZjY0jaV7sAbQUXzyAjhH/ygBUQZbeG4U=;
+ b=TEAKw5U2QoeW3rF1haljhCE/8K7XIM25b7TkXQiezKC/wTWppp8+Szs30nZI/Wtyu/Fj
+ el+92SEAXVCCkYruqstH4p2sfQ+waRZMeK7cJE1jckFMwUQuX8dvrG1+Z8PZQmpKQcGq
+ RUh+cl8e0giuvcMxn6k6TYtRB/Pgzb1QXXMwqNyrcv5PTjcVXE5YfOlcWfDndBt+cBIS
+ mtNQ9D6Z9VhbH8aFdOPk8RDns3oBRHffVCEzrko873BLileKwnhEELNXzKm06fzwM87d
+ /nVskQ1zhskUX4QtIrCHqr64CfmHdlvJ7fkuztZ4zG96Dkc6DNQtmNvu17yxHPoFz/W3 Sw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tt5v839vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 06:46:51 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39J6koYE022328
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 06:46:50 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 18 Oct
+ 2023 23:46:47 -0700
+Message-ID: <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com>
+Date:   Thu, 19 Oct 2023 12:16:09 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231015035838.2207567-1-badhri@google.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Robert Marko <robimarko@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231015162114.976202-1-robimarko@gmail.com>
+ <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
+Content-Language: en-US
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j_RNWGCpKnB_l9CD9omjLei1tVFOzZbY
+X-Proofpoint-ORIG-GUID: j_RNWGCpKnB_l9CD9omjLei1tVFOzZbY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_05,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=911 lowpriorityscore=0 phishscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190057
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,63 +80,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 03:58:38AM +0000, Badhri Jagan Sridharan wrote:
-> TCPM checks for sink caps operational current even when PD is disabled.
-> This incorrectly sets tcpm_set_charge() when PD is disabled.
-> Check for sink caps only when PD is enabled.
-> 
-> [   97.572342] Start toggling
-> [   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-> [   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
-> [   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-> [   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-> [   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-> [   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
-> [   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-> [   99.903584] VBUS on
-> [   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
-> [   99.903600] polarity 1
-> [   99.910155] enable vbus discharge ret:0
-> [   99.910160] Requesting mux state 1, usb-role 2, orientation 2
-> [   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
-> [   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
-> [   99.946800] Setting voltage/current limit 5000 mV 500 mA
-> [   99.946803] vbus=0 charge:=1
-> [  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
-> [  100.027145] Setting voltage/current limit 5000 mV 3000 mA
-> [  100.466830] VBUS on
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 34fde9ec08a3 ("FROMGIT: usb: typec: tcpm: not sink vbus if operational current is 0mA")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
+>
+>
+> On 10/15/23 18:20, Robert Marko wrote:
+>> QUP6 I2C clock is listed in the dt bindings but it was never included in
+>> the GCC driver.
+>> So lets add support for it, its intentionally marked to never be 
+>> disabled
+>> as its somehow affecting DVFS and if disabled it sometimes crashes the
+>> board.
+>>
+>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>> ---
+> Bjorn, would you be able to get an idea of what could be sitting
+> on that bus?
+>
+> Or maybe the IPQ folks could know?
+>
 
-> ---
-> Changes since v1:
-> * Fix commit title and description to address comments from Guenter Roeck
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 6e843c511b85..994493481c24 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4268,7 +4268,8 @@ static void run_state_machine(struct tcpm_port *port)
->  				current_lim = PD_P_SNK_STDBY_MW / 5;
->  			tcpm_set_current_limit(port, current_lim, 5000);
->  			/* Not sink vbus if operational current is 0mA */
-> -			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
-> +			tcpm_set_charge(port, port->pd_supported ?
-> +					!!pdo_max_current(port->snk_pdo[0]) : true);
->  
->  			if (!port->pd_supported)
->  				tcpm_set_state(port, SNK_READY, 0);
-> 
-> base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
-> -- 
-> 2.42.0.655.g421f12c284-goog
+Konrad / Robert,
 
--- 
-heikki
+Similar to IPQ9574, RPM needs this clock to communicate with PMIC over 
+I2C interface. Discussion happened here[1] is pretty much applicable to 
+IPQ6018 as well. Based on previous experience, we may need to document 
+the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
+
+Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+
+[1] 
+https://lore.kernel.org/linux-arm-msm/2852fc37-284f-6534-f163-45b37b153db1@quicinc.com/
+
+
+> Konrad
