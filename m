@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1AD7CF3C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3DF7CF3C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345108AbjJSJPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        id S1345080AbjJSJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbjJSJPe (ORCPT
+        with ESMTP id S1344979AbjJSJPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:15:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADB212A;
-        Thu, 19 Oct 2023 02:15:31 -0700 (PDT)
+        Thu, 19 Oct 2023 05:15:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9241A2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:15:36 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4A9781FD92;
-        Thu, 19 Oct 2023 09:15:29 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EF86A210E6;
+        Thu, 19 Oct 2023 09:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697706929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1697706934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8SktsBRaT0WfP83H70+6Aqz0kX9lsT33YwrE6d/KceQ=;
-        b=FcVlmKJsbSHxticTnIdtzCbL2oQKZUcqvXe4WAEaEeCOkyevWwBkkNALq1+gE5AYLYmNC3
-        aCyKGz4j9u9FzkaHGOMXneWE2CNgrLOoOl3khGMNRzvlFPdFsN6kCroPou4nothpcyeGFl
-        y3UVWNUZekaHj/f7QFu+mE6S68dzyek=
+        bh=4Dn2km2xrB+B5vKWOSjXaC3oIb3VD9PnFa2PlRKN8Us=;
+        b=bMrbPdAq5QFPLLVUwk0ehE1puVd24oUWD69AAKQUtGGmdQM0kpPJb5KuaPft5Ouw1Qh7z3
+        plE1iIqSlYoJUxUGz4ORVP/kOzsN81IgvbfVz509SNA1/oFzHUh8/dQNbdjbkWWAM8Z0iV
+        Py6yu8dJVZCQFtKIdDUIA+EPjMAKwC4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C2494139C2;
-        Thu, 19 Oct 2023 09:15:28 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADF7B139C2;
+        Thu, 19 Oct 2023 09:15:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id n7wLLrDzMGXFVAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 19 Oct 2023 09:15:28 +0000
+        id tEBHKbbzMGXcVAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 19 Oct 2023 09:15:34 +0000
 From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v3 1/5] x86/paravirt: move some functions and defines to alternative
-Date:   Thu, 19 Oct 2023 11:15:16 +0200
-Message-Id: <20231019091520.14540-2-jgross@suse.com>
+Subject: [PATCH v3 2/5] x86/alternative: add indirect call patching
+Date:   Thu, 19 Oct 2023 11:15:17 +0200
+Message-Id: <20231019091520.14540-3-jgross@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20231019091520.14540-1-jgross@suse.com>
 References: <20231019091520.14540-1-jgross@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
         none
 X-Spam-Level: 
 X-Spam-Score: -6.10
@@ -81,7 +73,7 @@ X-Spamd-Result: default: False [-6.10 / 50.00];
          NEURAL_HAM_LONG(-3.00)[-1.000];
          DKIM_SIGNED(0.00)[suse.com:s=susede1];
          NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[19];
+         RCPT_COUNT_SEVEN(0.00)[9];
          MID_CONTAINS_FROM(1.00)[];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
@@ -97,222 +89,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a preparation for replacing paravirt patching completely by
-alternative patching, move some backend functions and #defines to
-alternative code and header.
+In order to prepare replacing of paravirt patching with alternative
+patching, add the capability to replace an indirect call with a direct
+one to alternative patching.
+
+This is done via a new flag ALT_FLAG_CALL as the target of the call
+instruction needs to be evaluated using the value of the location
+addressed by the indirect call. For convenience add a macro for a
+default call instruction. In case it is being used without the new
+flag being set, it will result in a BUG() when being executed. As in
+most cases the feature used will be X86_FEATURE_ALWAYS add another
+macro ALT_CALL_ALWAYS usable for the flags parameter of the ALTERNATIVE
+macros.
+
+For a complete replacement handle the special cases of calling a nop
+function and an indirect call of NULL the same way as paravirt does.
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/alternative.h        | 16 ++++++++++++
- arch/x86/include/asm/paravirt.h           | 12 ---------
- arch/x86/include/asm/paravirt_types.h     |  4 +--
- arch/x86/include/asm/qspinlock_paravirt.h |  4 +--
- arch/x86/kernel/alternative.c             | 10 ++++++++
- arch/x86/kernel/kvm.c                     |  4 +--
- arch/x86/kernel/paravirt.c                | 30 +++++++----------------
- arch/x86/xen/irq.c                        |  2 +-
- 8 files changed, 41 insertions(+), 41 deletions(-)
+ arch/x86/include/asm/alternative.h |  5 ++++
+ arch/x86/kernel/alternative.c      | 40 ++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
 
 diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 9c4da699e11a..67e50bd40bb8 100644
+index 67e50bd40bb8..dd63b96577e9 100644
 --- a/arch/x86/include/asm/alternative.h
 +++ b/arch/x86/include/asm/alternative.h
-@@ -330,6 +330,22 @@ static inline int alternatives_text_reserved(void *start, void *end)
-  */
- #define ASM_NO_INPUT_CLOBBER(clbr...) "i" (0) : clbr
+@@ -10,6 +10,9 @@
  
-+/* Macro for creating assembler functions avoiding any C magic. */
-+#define DEFINE_ASM_FUNC(func, instr, sec)		\
-+	asm (".pushsection " #sec ", \"ax\"\n"		\
-+	     ".global " #func "\n\t"			\
-+	     ".type " #func ", @function\n\t"		\
-+	     ASM_FUNC_ALIGN "\n"			\
-+	     #func ":\n\t"				\
-+	     ASM_ENDBR					\
-+	     instr "\n\t"				\
-+	     ASM_RET					\
-+	     ".size " #func ", . - " #func "\n\t"	\
-+	     ".popsection")
+ #define ALT_FLAG_NOT		(1 << 0)
+ #define ALT_NOT(feature)	((ALT_FLAG_NOT << ALT_FLAGS_SHIFT) | (feature))
++#define ALT_FLAG_CALL		(1 << 1)
++#define ALT_CALL(feature)	((ALT_FLAG_CALL << ALT_FLAGS_SHIFT) | (feature))
++#define ALT_CALL_ALWAYS		ALT_CALL(X86_FEATURE_ALWAYS)
+ 
+ #ifndef __ASSEMBLY__
+ 
+@@ -150,6 +153,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ }
+ #endif	/* CONFIG_SMP */
+ 
++#define ALT_CALL_INSTR		"call x86_BUG"
 +
-+void x86_BUG(void);
-+void x86_nop(void);
-+
- #else /* __ASSEMBLY__ */
- 
- #ifdef CONFIG_SMP
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 6c8ff12140ae..ed5c7342f2ef 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -726,18 +726,6 @@ static __always_inline unsigned long arch_local_irq_save(void)
- #undef PVOP_VCALL4
- #undef PVOP_CALL4
- 
--#define DEFINE_PARAVIRT_ASM(func, instr, sec)		\
--	asm (".pushsection " #sec ", \"ax\"\n"		\
--	     ".global " #func "\n\t"			\
--	     ".type " #func ", @function\n\t"		\
--	     ASM_FUNC_ALIGN "\n"			\
--	     #func ":\n\t"				\
--	     ASM_ENDBR					\
--	     instr "\n\t"				\
--	     ASM_RET					\
--	     ".size " #func ", . - " #func "\n\t"	\
--	     ".popsection")
--
- extern void default_banner(void);
- void native_pv_lock_init(void) __init;
- 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 772d03487520..9f84dc074f88 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -542,8 +542,6 @@ int paravirt_disable_iospace(void);
- 	__PVOP_VCALL(op, PVOP_CALL_ARG1(arg1), PVOP_CALL_ARG2(arg2),	\
- 		     PVOP_CALL_ARG3(arg3), PVOP_CALL_ARG4(arg4))
- 
--void _paravirt_nop(void);
--void paravirt_BUG(void);
- unsigned long paravirt_ret0(void);
- #ifdef CONFIG_PARAVIRT_XXL
- u64 _paravirt_ident_64(u64);
-@@ -553,7 +551,7 @@ void pv_native_irq_enable(void);
- unsigned long pv_native_read_cr2(void);
- #endif
- 
--#define paravirt_nop	((void *)_paravirt_nop)
-+#define paravirt_nop	((void *)x86_nop)
- 
- extern struct paravirt_patch_site __parainstructions[],
- 	__parainstructions_end[];
-diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
-index 85b6e3609cb9..ef9697f20129 100644
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -56,8 +56,8 @@ __PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath, ".spinlock.text");
- 	"pop    %rdx\n\t"						\
- 	FRAME_END
- 
--DEFINE_PARAVIRT_ASM(__raw_callee_save___pv_queued_spin_unlock,
--		    PV_UNLOCK_ASM, .spinlock.text);
-+DEFINE_ASM_FUNC(__raw_callee_save___pv_queued_spin_unlock,
-+		PV_UNLOCK_ASM, .spinlock.text);
- 
- #else /* CONFIG_64BIT */
+ #define b_replacement(num)	"664"#num
+ #define e_replacement(num)	"665"#num
  
 diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 73be3931e4f0..1c8dd8e05f3f 100644
+index 1c8dd8e05f3f..01b89a10d219 100644
 --- a/arch/x86/kernel/alternative.c
 +++ b/arch/x86/kernel/alternative.c
-@@ -385,6 +385,16 @@ apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
- 	}
+@@ -395,6 +395,40 @@ noinstr void x86_BUG(void)
  }
+ EXPORT_SYMBOL_GPL(x86_BUG);
  
-+/* Low-level backend functions usable from alternative code replacements. */
-+DEFINE_ASM_FUNC(x86_nop, "", .entry.text);
-+EXPORT_SYMBOL_GPL(x86_nop);
-+
-+noinstr void x86_BUG(void)
++/*
++ * Rewrite the "call x86_BUG" replacement to point to the target of the
++ * indirect pv_ops call "call *disp(%ip)".
++ */
++static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a)
 +{
-+	BUG();
++	void *target, *bug = &x86_BUG;
++
++	if (a->replacementlen != 5 || insn_buff[0] != CALL_INSN_OPCODE) {
++		pr_err("Alternative: ALT_FLAG_CALL set for a non-call replacement instruction\n");
++		pr_err("  Ignoring the flag for the instruction at %pS (%px)\n", instr, instr);
++		return 5;
++	}
++
++	if (a->instrlen != 6 || instr[0] != 0xff || instr[1] != 0x15) {
++		pr_err("Alternative: ALT_FLAG_CALL set for unrecognized indirect call\n");
++		pr_err("  Not replacing the instruction at %pS (%px)\n", instr, instr);
++		return -1;
++	}
++
++	/* ff 15 00 00 00 00   call   *0x0(%rip) */
++	target = *(void **)(instr + a->instrlen + *(s32 *)(instr + 2));
++	if (!target)
++		target = bug;
++
++	/* (x86_BUG - .) + (target - x86_BUG) := target - . */
++	*(s32 *)(insn_buff + 1) += target - bug;
++
++	if (target == &x86_nop)
++		return 0;
++
++	return 5;
 +}
-+EXPORT_SYMBOL_GPL(x86_BUG);
 +
  /*
   * Replace instructions with better alternatives for this CPU type. This runs
   * before SMP is initialized to avoid SMP problems with self modifying code.
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index b8ab9ee5896c..4ca59dccc15a 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -803,8 +803,8 @@ extern bool __raw_callee_save___kvm_vcpu_is_preempted(long);
-  "cmpb   $0, " __stringify(KVM_STEAL_TIME_preempted) "+steal_time(%rax)\n\t" \
-  "setne  %al\n\t"
+@@ -462,6 +496,12 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		memcpy(insn_buff, replacement, a->replacementlen);
+ 		insn_buff_sz = a->replacementlen;
  
--DEFINE_PARAVIRT_ASM(__raw_callee_save___kvm_vcpu_is_preempted,
--		    PV_VCPU_PREEMPTED_ASM, .text);
-+DEFINE_ASM_FUNC(__raw_callee_save___kvm_vcpu_is_preempted,
-+		PV_VCPU_PREEMPTED_ASM, .text);
- #endif
++		if (a->flags & ALT_FLAG_CALL) {
++			insn_buff_sz = alt_replace_call(instr, insn_buff, a);
++			if (insn_buff_sz < 0)
++				continue;
++		}
++
+ 		for (; insn_buff_sz < a->instrlen; insn_buff_sz++)
+ 			insn_buff[insn_buff_sz] = 0x90;
  
- static void __init kvm_guest_init(void)
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 97f1436c1a20..32792b033de2 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -34,14 +34,8 @@
- #include <asm/io_bitmap.h>
- #include <asm/gsseg.h>
- 
--/*
-- * nop stub, which must not clobber anything *including the stack* to
-- * avoid confusing the entry prologues.
-- */
--DEFINE_PARAVIRT_ASM(_paravirt_nop, "", .entry.text);
--
- /* stub always returning 0. */
--DEFINE_PARAVIRT_ASM(paravirt_ret0, "xor %eax,%eax", .entry.text);
-+DEFINE_ASM_FUNC(paravirt_ret0, "xor %eax,%eax", .entry.text);
- 
- void __init default_banner(void)
- {
-@@ -49,12 +43,6 @@ void __init default_banner(void)
- 	       pv_info.name);
- }
- 
--/* Undefined instruction for dealing with missing ops pointers. */
--noinstr void paravirt_BUG(void)
--{
--	BUG();
--}
--
- static unsigned paravirt_patch_call(void *insn_buff, const void *target,
- 				    unsigned long addr, unsigned len)
- {
-@@ -64,11 +52,11 @@ static unsigned paravirt_patch_call(void *insn_buff, const void *target,
- }
- 
- #ifdef CONFIG_PARAVIRT_XXL
--DEFINE_PARAVIRT_ASM(_paravirt_ident_64, "mov %rdi, %rax", .text);
--DEFINE_PARAVIRT_ASM(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_irq_disable, "cli", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_irq_enable, "sti", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
-+DEFINE_ASM_FUNC(_paravirt_ident_64, "mov %rdi, %rax", .text);
-+DEFINE_ASM_FUNC(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_irq_disable, "cli", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_irq_enable, "sti", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
- #endif
- 
- DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
-@@ -96,9 +84,9 @@ unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
- 	unsigned ret;
- 
- 	if (opfunc == NULL)
--		/* If there's no function, patch it with paravirt_BUG() */
--		ret = paravirt_patch_call(insn_buff, paravirt_BUG, addr, len);
--	else if (opfunc == _paravirt_nop)
-+		/* If there's no function, patch it with x86_BUG() */
-+		ret = paravirt_patch_call(insn_buff, x86_BUG, addr, len);
-+	else if (opfunc == x86_nop)
- 		ret = 0;
- 	else
- 		/* Otherwise call the function. */
-diff --git a/arch/x86/xen/irq.c b/arch/x86/xen/irq.c
-index 6092fea7d651..5d132f5a5d7d 100644
---- a/arch/x86/xen/irq.c
-+++ b/arch/x86/xen/irq.c
-@@ -45,7 +45,7 @@ static const typeof(pv_ops) xen_irq_ops __initconst = {
- 		/* Initial interrupt flag handling only called while interrupts off. */
- 		.save_fl = __PV_IS_CALLEE_SAVE(paravirt_ret0),
- 		.irq_disable = __PV_IS_CALLEE_SAVE(paravirt_nop),
--		.irq_enable = __PV_IS_CALLEE_SAVE(paravirt_BUG),
-+		.irq_enable = __PV_IS_CALLEE_SAVE(x86_BUG),
- 
- 		.safe_halt = xen_safe_halt,
- 		.halt = xen_halt,
 -- 
 2.35.3
 
