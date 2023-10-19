@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96177CEE85
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD807CEE8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjJSD4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 23:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S232463AbjJSEKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 00:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjJSD4g (ORCPT
+        with ESMTP id S230051AbjJSEKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 23:56:36 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26B3119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:56:34 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ca79b731f1so8594855ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:56:34 -0700 (PDT)
+        Thu, 19 Oct 2023 00:10:44 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00730119;
+        Wed, 18 Oct 2023 21:10:42 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1ea05b3f228so3047934fac.1;
+        Wed, 18 Oct 2023 21:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697687794; x=1698292594; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MXhYXE2GnBHkpiX1l+JOQUTo2U8OPcDThZ0EqZcnynw=;
-        b=ZAP6ZmjrLVDv/gNKQ/02B7O1G8G+Bd+0u2rfT+AkPliMi/pQs69+iyLrvllbqbNfBX
-         LO+pI/GBBZS/CqhDrzlQnGYlYdYqYZl0pCdczNHf9H+nyZAKh8JLrpyHfcqH1UBGgROu
-         jIo2VyADN1fA5xAbUiIoP2ANkjaaIF/BVHT20EGX046Rs52RhyNNprB+5dCxyfbGTroO
-         iNgjAPjAbPESp1WzB0FTra39BdPJ/VStmesyYiKknuQGZ0C9aGIWuGvLZQPQjqgwTPYz
-         bKoVkFH0AzvMzSqcQYBHpHuU7ebT43Pa1WNrmS6Ki0SH76oKIStR+CXy+JiqWEog4zH9
-         JoPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697687794; x=1698292594;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697688642; x=1698293442; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MXhYXE2GnBHkpiX1l+JOQUTo2U8OPcDThZ0EqZcnynw=;
-        b=UBTXV9CAqNRyjqAzfsISeKI4FrEYrt4/sIbh2T1IAxDc1+oVIPy1+L4Y1WzONDp+ZA
-         lLdVsIktj+9jKkzaptBnug43oyusnvNm4OB8SiC8qjDj8PkkpVk1CBz13EKtCjanKXbu
-         IDG4yncMeUBgVlhwLslOvOaQ3jTsyidnkp8erh5WCXRAWTmS1SYfDVGA/8Y3SUhGlhC/
-         VuJH7Se1ts/isqvu3HNlk26Ccp68OQp7x8cV1OunWvEsPyd23jJoDjMLOGCtNOk8XfEU
-         90/BfhwMMU3MIPkygmCBkbFl/UT05rpTcPdCkZVClhIgUa75H1IWf4+j6v5qNkQHC+O4
-         s5VQ==
-X-Gm-Message-State: AOJu0YwZzCFPUiIKWwqwNVWYFRwF/PTkCXSMHDddp3s+3G1Up6Q2FGqG
-        juAOVZ5R5Asut+RemrfsHIU=
-X-Google-Smtp-Source: AGHT+IEBy8e1urSzEd5AfViADWXyjBwI/6pe9jPu0HQ36J4SzxdnrvUXOAh14Qui0bJ5ZdOI/rI99Q==
-X-Received: by 2002:a17:903:288f:b0:1b8:9fc4:2733 with SMTP id ku15-20020a170903288f00b001b89fc42733mr1200146plb.3.1697687794149;
-        Wed, 18 Oct 2023 20:56:34 -0700 (PDT)
-Received: from sivslab-System-Product-Name ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170902e80700b001c9b29b9bd4sm713524plg.38.2023.10.18.20.56.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 20:56:33 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 11:56:30 +0800
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/perf: Optimize find_alternatives_list() using
- binary search
-Message-ID: <20231019035630.GC576715@sivslab-System-Product-Name>
-References: <20231013175714.2142775-1-visitorckw@gmail.com>
- <871qdr75ie.fsf@mail.lhotse>
+        bh=exlx/JOZFhxO7je5a84RZcfHQL1GXgStxtSXicAG0t8=;
+        b=Upf3vdHBJlJkC/QBNyAXGQPR/Out9kyx1WScJMSinCajOLR+S2OiX43j2g2RF+aVYY
+         FqEcGxSe/j99LMkkp7/SDJ4z8WW6TLcjIdPbdziO6CEzwMYfEyFIp876Ex4I9aotC93T
+         S1SWDf2+n51GVQPLjK8f6edc++8srOoerIEFBD4NJxBu71vt8i4+pZhV/yNlWZNRmgNs
+         DH6HoSNS2/3c/UqQWvDwOA03i6oMt5wL8AJnXQcHV0j1uLaRTheQmjGw/rm8bT2vrOCs
+         AO2/m2NKb1WTvzpqYUDv0ynLITp7Lma5PnlHvQG9IMgU9mFw2IE1AhjOq9zuMnvMAuMn
+         s2Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697688642; x=1698293442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=exlx/JOZFhxO7je5a84RZcfHQL1GXgStxtSXicAG0t8=;
+        b=YhFeNKGpZG0UeDnSTpkrbhH8x2IsHOs37FsqViK3GTZpuW2bp6EfCmRjcAUj4oRn0M
+         PEETqoqERwEQ81BlQvrfPEDzzS99UwL2D/uHGDuuto8FoQDjGYulBkWZt7h9usqEU9r/
+         X5lE/8YwQ53V+7GOFr+7AzIpmkcbyIX7zUUVcZgyf3w+ptrF8z+tfHnzLELLh0gG3tYZ
+         7CCfsWTm8x4eCB54CIUezG1WEKUSvwNQQOR+oKlrFhUrIYDQBHcyo9Y+O7++l0S5hcWW
+         zBby4HeVKJuCdAb0oU8XWBud3SVOIBSw/Xxc2LEWQDKIKbt0HF8D7qIsTIMBOydqf4/M
+         3HEw==
+X-Gm-Message-State: AOJu0YzIyTHjpc8Cd+XrmrTcK1sfPQYRrRMaAECI93h7SjMP1DKapTxV
+        PB8d1RAHjPQNs99/h76VO/LFu2IuRi16+afukur5Ky3J
+X-Google-Smtp-Source: AGHT+IFpttNbHnNs4OZvxDAywxepXeRJm16GxFMmxIIWBmhA+hzcWgp/FQNpot0HCKRlnpenGHI1MeRAOPKnF1J/on8=
+X-Received: by 2002:a05:6870:aa92:b0:1e9:64f1:9c30 with SMTP id
+ gr18-20020a056870aa9200b001e964f19c30mr1632950oab.18.1697688642232; Wed, 18
+ Oct 2023 21:10:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qdr75ie.fsf@mail.lhotse>
+References: <20230827023932.501102-1-sergio.paracuellos@gmail.com> <13d7cf46270082855174414b691fb3be.sboyd@kernel.org>
+In-Reply-To: <13d7cf46270082855174414b691fb3be.sboyd@kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 19 Oct 2023 06:10:30 +0200
+Message-ID: <CAMhs-H8ek=bGOQpeF7i7CnSnu-AYCUN+jTxTtOXW2EgLAmQXfg@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: ralink: mtmips: quiet unused variable warning
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, tsbogend@alpha.franken.de,
+        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, arnd@kernel.org, yangshiji66@outlook.com,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,107 +71,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 12:41:45PM +1100, Michael Ellerman wrote:
-> Kuan-Wei Chiu <visitorckw@gmail.com> writes:
-> > This patch improves the performance of event alternative lookup by
-> > replacing the previous linear search with a more efficient binary
-> > search. This change reduces the time complexity for the search process
-> > from O(n) to O(log(n)). A pre-sorted table of event values and their
-> > corresponding indices has been introduced to expedite the search
-> > process.
-> 
-> Thanks for the patch.
-> 
-> How did you test this? I assume you don't have a Power6 machine lying
-> around? :)
-> 
-> cheers
-> 
+On Thu, Oct 19, 2023 at 2:32=E2=80=AFAM Stephen Boyd <sboyd@kernel.org> wro=
+te:
+>
+> Quoting Sergio Paracuellos (2023-08-26 19:39:32)
+> > When CONFIG_OF is disabled then the matching table is not referenced an=
+d
+> > the following warning appears:
+> >
+> > drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmip=
+s_of_match' [-Wunused-const-variable]
+> > 821 |   static const struct of_device_id mtmips_of_match[] =3D {
+> >     |                          ^
+> >
+> > There are two match tables in the driver: one for the clock driver and =
+the
+> > other for the reset driver. The only difference between them is that th=
+e
+> > clock driver uses 'data' and does not have 'ralink,rt2880-reset' compat=
+ible.
+> > Both just can be merged into a single one just by adding the compatible
+> > 'ralink,rt2880-reset' entry to 'mtmips_of_match[]', which will allow it=
+ to
+> > be used for 'mtmips_clk_driver' (which doesn't use the data) as well as=
+ for
+> > 'mtmips_clk_init()' (which doesn't need get called for 'ralink,rt2880-r=
+eset').
+> >
+> > Doing in this way ensures that 'CONFIG_OF' is not disabled anymore so t=
+he
+> > above warning disapears.
+> >
+> > Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIP=
+S SoCs")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp=
+@intel.com/
+> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+>
+> Applied to clk-next
 
-I indeed do not have a Power6 machine for testing. Therefore, I designed
-a simple unit test [1] to verify the functionality of the patch. In this
-test, I ran a loop from 0 to UINT_MAX, using these values as inputs to
-compare the return values of the original function with the new function
-I implemented, which utilizes binary search. If you have any suggestions
-for a more suitable testing method, please let me know. I would greatly
-appreciate your feedback.
+Thanks Stephen!
 
-Thanks,
-Kuan-Wei Chiu
-
-[1]:
-/* return 0 on success and return non-zero on failure */
-int test()
-{
-    u64 event = 0;
-    for (u64 event = 0; event <= UINT_MAX; event++) {
-        /* result of the current function in the linux kernel */
-	int result_old = find_alternatives_list(event);
-	/* result of the new function using binary search */
-	int result_new = find_alternatives_list_new(event);
-
-	if (result_old != result_new)
-	    return 1;
-    }
-    return 0;
-}
-
-
-> > diff --git a/arch/powerpc/perf/power6-pmu.c b/arch/powerpc/perf/power6-pmu.c
-> > index 5729b6e059de..b6030ea130eb 100644
-> > --- a/arch/powerpc/perf/power6-pmu.c
-> > +++ b/arch/powerpc/perf/power6-pmu.c
-> > @@ -335,25 +335,34 @@ static const unsigned int event_alternatives[][MAX_ALT] = {
-> >  	{ 0x3000fe, 0x400056 },			/* PM_DATA_FROM_L3MISS */
-> >  };
-> >  
-> > -/*
-> > - * This could be made more efficient with a binary search on
-> > - * a presorted list, if necessary
-> > - */
-> >  static int find_alternatives_list(u64 event)
-> >  {
-> > -	int i, j;
-> > -	unsigned int alt;
-> > -
-> > -	for (i = 0; i < ARRAY_SIZE(event_alternatives); ++i) {
-> > -		if (event < event_alternatives[i][0])
-> > -			return -1;
-> > -		for (j = 0; j < MAX_ALT; ++j) {
-> > -			alt = event_alternatives[i][j];
-> > -			if (!alt || event < alt)
-> > -				break;
-> > -			if (event == alt)
-> > -				return i;
-> > -		}
-> > +	const unsigned int presort_event_table[] = {
-> > +		0x0130e8, 0x080080, 0x080088, 0x10000a, 0x10000b, 0x10000d, 0x10000e,
-> > +		0x100010, 0x10001a, 0x100026, 0x100054, 0x100056, 0x1000f0, 0x1000f8,
-> > +		0x1000fc, 0x200008, 0x20000e, 0x200010, 0x200012, 0x200054, 0x2000f0,
-> > +		0x2000f2, 0x2000f4, 0x2000f5, 0x2000f6, 0x2000f8, 0x2000fc, 0x2000fe,
-> > +		0x2d0030, 0x30000a, 0x30000c, 0x300010, 0x300012, 0x30001a, 0x300056,
-> > +		0x3000f0, 0x3000f2, 0x3000f6, 0x3000f8, 0x3000fc, 0x3000fe, 0x400006,
-> > +		0x400007, 0x40000a, 0x40000e, 0x400010, 0x400018, 0x400056, 0x4000f0,
-> > +		0x4000f8, 0x600005};
-> > +	const unsigned int event_index_table[] = {
-> > +		0,  1,  2,  3,  4,  1, 5,  6,  7,  8,  9,  10, 11, 12, 13, 12, 14,
-> > +		7,  15, 2,  9,  16, 3, 4,  0,  17, 10, 18, 19, 20, 1,  17, 15, 19,
-> > +		18, 2,  16, 21, 8,  0, 22, 13, 14, 11, 21, 5,  20, 22, 1,  6,  3};
-> > +	int lo = 0;
-> > +	int hi = ARRAY_SIZE(presort_event_table) - 1;
-> > +
-> > +	while (lo <= hi) {
-> > +		int mid = lo + (hi - lo) / 2;
-> > +		unsigned int alt = presort_event_table[mid];
-> > +
-> > +		if (alt < event)
-> > +			lo = mid + 1;
-> > +		else if (alt > event)
-> > +			hi = mid - 1;
-> > +		else
-> > +			return event_index_table[mid];
-> >  	}
-> >  	return -1;
-> >  }
-> > -- 
-> > 2.25.1
+Best regards,
+    Sergio Paracuellos
