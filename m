@@ -2,200 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0840A7CF691
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95067CF694
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345285AbjJSLVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S1345355AbjJSLVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233187AbjJSLVq (ORCPT
+        with ESMTP id S1345340AbjJSLVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:21:46 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8915713D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:21:44 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6cd09663b1cso881992a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697714504; x=1698319304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V3SPNfk0MBZSGH8SXgS5730xn3GrjsvVhbuXYaMzrM4=;
-        b=HjvL758hVOzEb9fbeoxNw4YK42CiKWUWwKffqOGcp44oR3MtzIof0tTdMZ+iE3lmVJ
-         K4qMg7m+rzB5Rl6/73Kit1XNqFxNR4GceVDd6smW2WgAkJMk70lPoaCU/3Mfofs2lDUi
-         kMb4As1Bu1p3o5xczUQlSuzS6uG+WDickPPIIhZ+mCC1DkQb1z8ppapbIqf3nPYSyhv9
-         +NtzE72SNAmHEAXQ5DK/MMZ3lkiwho9jobiiZ++u7VItY5iwI7dVN4hu1nOF/gI/AM/6
-         eCJoAryS39hAjGEXE+jQ3IeKmyAy6Tia/LJLGahPpGexaPt1Rq2FBMpGwk9bfNndWDu+
-         Mm6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697714504; x=1698319304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V3SPNfk0MBZSGH8SXgS5730xn3GrjsvVhbuXYaMzrM4=;
-        b=v0cghvL1n//pLtE8v/zBLfVORetQ9tp30qvcbXoeKdXX62Y8aZ5AX3E5oby11XGjI8
-         ilzwHHKYTRkOpEgQH1qMsFRiT+WhvrRwruN70pE4YButxL2uiOF58nqF5HDyi2otEggJ
-         zHaC2SZgCoW08U6/bSVD1I8kdkKtl4kQw2A6H4HzxN/e6yQyImx2EjOPUSr1Yq04z9jo
-         LbcWezZvPoPVOu6NDTy0j/TNSVTDi+NG1T0HcN5MY/mtNpYVtO/QKQ+OueNf7lv7EsWw
-         iFuFq3LhMvYKnXU/eh8Z5WAvSofBgVPJSob3A8EkcSKzf6pehiLHAbEcJidzkAwRwSWr
-         deSA==
-X-Gm-Message-State: AOJu0YzSmvY9S8HjODTekFhm/m9tKuu9W1QA0oB/Idkrti34wbmf9C7k
-        b2Wv7yAvJxCU3DNzCssZ8Cmlse75LDGPDNleJ9NtcgSOvdbeng==
-X-Google-Smtp-Source: AGHT+IEyh2R89gb0G7TKWAFgHpET4HBGbIDd81JD9Rp9+cxsWVvXkJ+wOTKm4GEag1lO1HJhacHcX1Q2yxVtniNWbH8=
-X-Received: by 2002:a05:6830:140a:b0:6cd:a9d:bc57 with SMTP id
- v10-20020a056830140a00b006cd0a9dbc57mr1939761otp.32.1697714503786; Thu, 19
- Oct 2023 04:21:43 -0700 (PDT)
+        Thu, 19 Oct 2023 07:21:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE94A13E;
+        Thu, 19 Oct 2023 04:21:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EE4161F88B;
+        Thu, 19 Oct 2023 11:21:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697714502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=anqeIkMaMdr1xsMDaKBggc57N5EfU/q3Lzp4OguOtUk=;
+        b=d+Cb9QMI2Z/5dRjQq5wj0SkrU8n32aJbZdqwYSsrIRfgKNGk1q0vB8w7xmjGDMAmmPfi7K
+        nSwWSpDXFliO3UzTVpF0kznOZ+XXKhM2DfiCQ9KVidmiVWcrWhDnjynNsmji/Wsubc5OLX
+        uHPbrz8la/0wY0bczCCPz4EwlwOftI0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697714502;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=anqeIkMaMdr1xsMDaKBggc57N5EfU/q3Lzp4OguOtUk=;
+        b=2/015+ZsjJjOYpcMOPSLGERB1S65E1vCbO1EcHGnNLio/MQF9yIGhQB0OZ+Dz2YDarzg9M
+        eAZTRZG2SGUJluBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDFA3139C2;
+        Thu, 19 Oct 2023 11:21:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id duQbNkYRMWWzGAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 11:21:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 519BDA06B0; Thu, 19 Oct 2023 13:21:42 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 13:21:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH 1/4] ext4: unify the type of flexbg_size to unsigned int
+Message-ID: <20231019112142.4s6jebebztqaunnt@quack3>
+References: <20231018114221.441526-1-libaokun1@huawei.com>
+ <20231018114221.441526-2-libaokun1@huawei.com>
 MIME-Version: 1.0
-References: <ZTD677iqMkRPxT27@lab-ubuntu> <93a6d8b0-140c-983e-1b78-6f5a4e03e62e@intel.com>
-In-Reply-To: <93a6d8b0-140c-983e-1b78-6f5a4e03e62e@intel.com>
-From:   Calvince Otieno <calvncce@gmail.com>
-Date:   Thu, 19 Oct 2023 14:21:32 +0300
-Message-ID: <CADFX3OTHX=5jNm8aaUyC_RzDPntiL4ZC=Jj+8bZPjHNmZwUs9A@mail.gmail.com>
-Subject: Re: [PATCH] staging: vc04_services: remove empty functions
-To:     Karolina Stolarek <karolina.stolarek@intel.com>
-Cc:     outreachy@lists.linux.dev, gustavo@embeddedor.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018114221.441526-2-libaokun1@huawei.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.00
+X-Spamd-Result: default: False [-1.00 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 1:55=E2=80=AFPM Karolina Stolarek
-<karolina.stolarek@intel.com> wrote:
->
-> On 19.10.2023 11:46, Calvince Otieno wrote:
-> > The functions vchiq_debugfs_init(), vchiq_debugfs_deinit(),
-> > vchiq_debugfs_add_instance(), and vchiq_debugfs_remove_instance()
-> > are declared and defined but contains no code or statements.
-> > They do nothing.
-> >
-> > Signed-off-by: Calvince Otieno <calvncce@gmail.com>
-> > ---
-> >   .../interface/vchiq_arm/vchiq_arm.c              |  3 ---
-> >   .../interface/vchiq_arm/vchiq_debugfs.c          | 16 ---------------=
--
-> >   .../interface/vchiq_arm/vchiq_debugfs.h          |  8 --------
-> >   .../interface/vchiq_arm/vchiq_dev.c              |  4 ----
-> >   4 files changed, 31 deletions(-)
-> >
-> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ar=
-m.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > index eef9c8c06e66..b802d1ecc8f6 100644
-> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > @@ -1806,8 +1806,6 @@ static int vchiq_probe(struct platform_device *pd=
-ev)
-> >       if (err)
-> >               goto failed_platform_init;
-> >
-> > -     vchiq_debugfs_init();
-> > -
-> >       vchiq_log_info(vchiq_arm_log_level,
-> >                      "vchiq: platform initialised - version %d (min %d)=
-",
-> >                      VCHIQ_VERSION, VCHIQ_VERSION_MIN);
-> > @@ -1838,7 +1836,6 @@ static void vchiq_remove(struct platform_device *=
-pdev)
-> >   {
-> >       vchiq_device_unregister(bcm2835_audio);
-> >       vchiq_device_unregister(bcm2835_camera);
-> > -     vchiq_debugfs_deinit();
-> >       vchiq_deregister_chrdev();
-> >   }
-> >
-> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_de=
-bugfs.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c
-> > index dc667afd1f8c..7e45076e5ebd 100644
-> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c
-> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c
-> > @@ -228,20 +228,4 @@ void vchiq_debugfs_deinit(void)
-> >
-> >   #else /* CONFIG_DEBUG_FS */
-> We need to have these definitions, so a kernel with no CONFIG_DEBUG_FS
-> selected builds. Have you experimented with this config with your
-> changes applied?
->
-> All the best,
-> Karolina
->
-> >
-> > -void vchiq_debugfs_init(void)
-> > -{
-> > -}
-> > -
-> > -void vchiq_debugfs_deinit(void)
-> > -{
-> > -}
-> > -
-> > -void vchiq_debugfs_add_instance(struct vchiq_instance *instance)
-> > -{
-> > -}
-> > -
-> > -void vchiq_debugfs_remove_instance(struct vchiq_instance *instance)
-> > -{
-> > -}
-> > -
-> >   #endif /* CONFIG_DEBUG_FS */
-> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_de=
-bugfs.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.h
-> > index e9bf055a4ca9..76424473c32b 100644
-> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.h
-> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.h
-> > @@ -10,12 +10,4 @@ struct vchiq_debugfs_node {
-> >       struct dentry *dentry;
-> >   };
-> >
-> > -void vchiq_debugfs_init(void);
-> > -
-> > -void vchiq_debugfs_deinit(void);
-> > -
-> > -void vchiq_debugfs_add_instance(struct vchiq_instance *instance);
-> > -
-> > -void vchiq_debugfs_remove_instance(struct vchiq_instance *instance);
-> > -
-> >   #endif /* VCHIQ_DEBUGFS_H */
-> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_de=
-v.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c
-> > index 841e1a535642..953f39f537a8 100644
-> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c
-> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_dev.c
-> > @@ -1185,8 +1185,6 @@ static int vchiq_open(struct inode *inode, struct=
- file *file)
-> >       instance->state =3D state;
-> >       instance->pid =3D current->tgid;
-> >
-> > -     vchiq_debugfs_add_instance(instance);
-> > -
-> >       init_completion(&instance->insert_event);
-> >       init_completion(&instance->remove_event);
-> >       mutex_init(&instance->completion_mutex);
-> > @@ -1297,8 +1295,6 @@ static int vchiq_release(struct inode *inode, str=
-uct file *file)
-> >
-> >       free_bulk_waiter(instance);
-> >
-> > -     vchiq_debugfs_remove_instance(instance);
-> > -
-> >       kfree(instance);
-> >       file->private_data =3D NULL;
-> >
+On Wed 18-10-23 19:42:18, Baokun Li wrote:
+> The maximum value of flexbg_size is 2^31, but the maximum value of int
+> is (2^31 - 1), so overflow may occur when the type of flexbg_size is
+> declared as int.
+> 
+> For example, when uninit_mask is initialized in ext4_alloc_group_tables(),
+> if flexbg_size == 2^31, the initialized uninit_mask is incorrect, and this
+> may causes set_flexbg_block_bitmap() to trigger a BUG_ON().
+> 
+> Therefore, the flexbg_size type is declared as unsigned int to avoid
+> overflow and memory waste.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Could you kindly clarify what these definitions are doing.
-At the moment they do absolutely nothing, I might be wrong
+Looks good. Feel free to add:
 
---=20
-Kind regards,
-Calvince Otieno
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/resize.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index 4fe061edefdd..c6d4539d4c1f 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -228,7 +228,7 @@ struct ext4_new_flex_group_data {
+>   *
+>   * Returns NULL on failure otherwise address of the allocated structure.
+>   */
+> -static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned long flexbg_size)
+> +static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
+>  {
+>  	struct ext4_new_flex_group_data *flex_gd;
+>  
+> @@ -283,7 +283,7 @@ static void free_flex_gd(struct ext4_new_flex_group_data *flex_gd)
+>   */
+>  static int ext4_alloc_group_tables(struct super_block *sb,
+>  				struct ext4_new_flex_group_data *flex_gd,
+> -				int flexbg_size)
+> +				unsigned int flexbg_size)
+>  {
+>  	struct ext4_new_group_data *group_data = flex_gd->groups;
+>  	ext4_fsblk_t start_blk;
+> @@ -384,12 +384,12 @@ static int ext4_alloc_group_tables(struct super_block *sb,
+>  		group = group_data[0].group;
+>  
+>  		printk(KERN_DEBUG "EXT4-fs: adding a flex group with "
+> -		       "%d groups, flexbg size is %d:\n", flex_gd->count,
+> +		       "%u groups, flexbg size is %u:\n", flex_gd->count,
+>  		       flexbg_size);
+>  
+>  		for (i = 0; i < flex_gd->count; i++) {
+>  			ext4_debug(
+> -			       "adding %s group %u: %u blocks (%d free, %d mdata blocks)\n",
+> +			       "adding %s group %u: %u blocks (%u free, %u mdata blocks)\n",
+>  			       ext4_bg_has_super(sb, group + i) ? "normal" :
+>  			       "no-super", group + i,
+>  			       group_data[i].blocks_count,
+> @@ -1606,7 +1606,7 @@ static int ext4_flex_group_add(struct super_block *sb,
+>  static int ext4_setup_next_flex_gd(struct super_block *sb,
+>  				    struct ext4_new_flex_group_data *flex_gd,
+>  				    ext4_fsblk_t n_blocks_count,
+> -				    unsigned long flexbg_size)
+> +				    unsigned int flexbg_size)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>  	struct ext4_super_block *es = sbi->s_es;
+> @@ -1990,8 +1990,9 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
+>  	ext4_fsblk_t o_blocks_count;
+>  	ext4_fsblk_t n_blocks_count_retry = 0;
+>  	unsigned long last_update_time = 0;
+> -	int err = 0, flexbg_size = 1 << sbi->s_log_groups_per_flex;
+> +	int err = 0;
+>  	int meta_bg;
+> +	unsigned int flexbg_size = ext4_flex_bg_size(sbi);
+>  
+>  	/* See if the device is actually as big as what was requested */
+>  	bh = ext4_sb_bread(sb, n_blocks_count - 1, 0);
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
