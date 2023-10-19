@@ -2,274 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7027CEE4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B817CEE4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 05:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjJSDFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 23:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        id S232537AbjJSDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 23:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjJSDFf (ORCPT
+        with ESMTP id S232492AbjJSDF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 23:05:35 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6AB106
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 20:05:32 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S9sw44KsFz15Nbn;
-        Thu, 19 Oct 2023 11:02:44 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 19 Oct 2023 11:05:27 +0800
-CC:     <suzuki.poulose@arm.com>, <james.clark@arm.com>,
-        <yangyicong@hisilicon.com>, <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>
-Subject: Re: [PATCH 1/3] coresight: ultrasoc-smb: fix sleep while close
- preempt in enable_smb
-To:     Junhao He <hejunhao3@huawei.com>
-References: <20231012094706.21565-1-hejunhao3@huawei.com>
- <20231012094706.21565-2-hejunhao3@huawei.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <f09e4d9f-c02c-7a2a-7b38-a23a72a03242@huawei.com>
-Date:   Thu, 19 Oct 2023 11:05:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 18 Oct 2023 23:05:58 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE349F;
+        Wed, 18 Oct 2023 20:05:55 -0700 (PDT)
+X-UUID: 58ad13f757eb40448adcceab124fda2c-20231019
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:5ab4bded-b106-4a26-a538-407c74f03a00,IP:15,
+        URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+        TION:release,TS:20
+X-CID-INFO: VERSION:1.1.32,REQID:5ab4bded-b106-4a26-a538-407c74f03a00,IP:15,UR
+        L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:20
+X-CID-META: VersionHash:5f78ec9,CLOUDID:b4a01ac0-14cc-44ca-b657-2d2783296e72,B
+        ulkID:231019110546LRCLYHZO,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
+        02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 58ad13f757eb40448adcceab124fda2c-20231019
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+        (envelope-from <aichao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 104807895; Thu, 19 Oct 2023 11:05:43 +0800
+From:   Ai Chao <aichao@kylinos.cn>
+To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v4] platform/x86: inspur-wmi: Add platform profile support
+Date:   Thu, 19 Oct 2023 11:05:34 +0800
+Message-Id: <20231019030534.157971-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20231012094706.21565-2-hejunhao3@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/12 17:47, Junhao He wrote:
-> When we to enable the SMB by perf, the perf sched will call perf_ctx_lock()
-> to close system preempt in event_function_call(). But SMB::enable_smb() use
-> mutex to lock the critical section, which may sleep.
-> 
->  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:580
->  in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 153023, name: perf
->  preempt_count: 2, expected: 0
->  RCU nest depth: 0, expected: 0
->  INFO: lockdep is turned off.
->  irq event stamp: 0
->  hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->  hardirqs last disabled at (0): [<ffffa2983f5c5f40>] copy_process+0xae8/0x2b48
->  softirqs last  enabled at (0): [<ffffa2983f5c5f40>] copy_process+0xae8/0x2b48
->  softirqs last disabled at (0): [<0000000000000000>] 0x0
->  CPU: 2 PID: 153023 Comm: perf Kdump: loaded Tainted: G   W  O   6.5.0-rc4+ #1
-> 
->  Call trace:
->  ...
->   __mutex_lock+0xbc/0xa70
->   mutex_lock_nested+0x34/0x48
->   smb_update_buffer+0x58/0x360 [ultrasoc_smb]
->   etm_event_stop+0x204/0x2d8 [coresight]
->   etm_event_del+0x1c/0x30 [coresight]
->   event_sched_out+0x17c/0x3b8
->   group_sched_out.part.0+0x5c/0x208
->   __perf_event_disable+0x15c/0x210
->   event_function+0xe0/0x230
->   remote_function+0xb4/0xe8
->   generic_exec_single+0x160/0x268
->   smp_call_function_single+0x20c/0x2a0
->   event_function_call+0x20c/0x220
->   _perf_event_disable+0x5c/0x90
->   perf_event_for_each_child+0x58/0xc0
->   _perf_ioctl+0x34c/0x1250
->   perf_ioctl+0x64/0x98
-> ...
-> 
-> Use spinlock replace mutex to control driver data access to one at a
-> time. But the function copy_to_user() may sleep so spinlock do not to
-> lock it.
-> 
-> Fixes: 06f5c2926aaa ("drivers/coresight: Add UltraSoc System Memory Buffer driver")
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
-> ---
->  drivers/hwtracing/coresight/ultrasoc-smb.c | 36 ++++++++++------------
->  drivers/hwtracing/coresight/ultrasoc-smb.h |  6 ++--
->  2 files changed, 19 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
-> index e9a32a97fbee..b08a619d1116 100644
-> --- a/drivers/hwtracing/coresight/ultrasoc-smb.c
-> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
-> @@ -99,7 +99,7 @@ static int smb_open(struct inode *inode, struct file *file)
->  					struct smb_drv_data, miscdev);
->  	int ret = 0;
->  
-> -	mutex_lock(&drvdata->mutex);
-> +	spin_lock(&drvdata->spinlock);
->  
->  	if (drvdata->reading) {
->  		ret = -EBUSY;
-> @@ -115,7 +115,7 @@ static int smb_open(struct inode *inode, struct file *file)
->  
->  	drvdata->reading = true;
->  out:
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
->  
->  	return ret;
->  }
-> @@ -132,10 +132,8 @@ static ssize_t smb_read(struct file *file, char __user *data, size_t len,
->  	if (!len)
->  		return 0;
->  
-> -	mutex_lock(&drvdata->mutex);
-> -
->  	if (!sdb->data_size)
-> -		goto out;
-> +		return 0;
->  
->  	to_copy = min(sdb->data_size, len);
->  
-> @@ -145,20 +143,18 @@ static ssize_t smb_read(struct file *file, char __user *data, size_t len,
->  
->  	if (copy_to_user(data, sdb->buf_base + sdb->buf_rdptr, to_copy)) {
->  		dev_dbg(dev, "Failed to copy data to user\n");
-> -		to_copy = -EFAULT;
-> -		goto out;
-> +		return -EFAULT;
->  	}
->  
-> +	spin_lock(&drvdata->spinlock);
->  	*ppos += to_copy;
-> -
->  	smb_update_read_ptr(drvdata, to_copy);
->  
-> -	dev_dbg(dev, "%zu bytes copied\n", to_copy);
-> -out:
->  	if (!sdb->data_size)
->  		smb_reset_buffer(drvdata);
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
+Add support for Inspur platforms to used the platform profile feature.
 
-Do we still need the lock here? If we get here, we should have the exclusive
-access to the file, which is protected in open(). Or any other cases?
+This will allow users to determine and control the platform modes
+between low-power, balanced and performance modes.
 
->  
-> +	dev_dbg(dev, "%zu bytes copied\n", to_copy);
->  	return to_copy;
->  }
->  
-> @@ -167,9 +163,9 @@ static int smb_release(struct inode *inode, struct file *file)
->  	struct smb_drv_data *drvdata = container_of(file->private_data,
->  					struct smb_drv_data, miscdev);
->  
-> -	mutex_lock(&drvdata->mutex);
-> +	spin_lock(&drvdata->spinlock);
->  	drvdata->reading = false;
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
->  
->  	return 0;
->  }
-> @@ -262,7 +258,7 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
->  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
->  	int ret = 0;
->  
-> -	mutex_lock(&drvdata->mutex);
-> +	spin_lock(&drvdata->spinlock);
->  
->  	/* Do nothing, the trace data is reading by other interface now */
->  	if (drvdata->reading) {
-> @@ -294,7 +290,7 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
->  
->  	dev_dbg(&csdev->dev, "Ultrasoc SMB enabled\n");
->  out:
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
->  
->  	return ret;
->  }
-> @@ -304,7 +300,7 @@ static int smb_disable(struct coresight_device *csdev)
->  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
->  	int ret = 0;
->  
-> -	mutex_lock(&drvdata->mutex);
-> +	spin_lock(&drvdata->spinlock);
->  
->  	if (drvdata->reading) {
->  		ret = -EBUSY;
-> @@ -327,7 +323,7 @@ static int smb_disable(struct coresight_device *csdev)
->  
->  	dev_dbg(&csdev->dev, "Ultrasoc SMB disabled\n");
->  out:
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
->  
->  	return ret;
->  }
-> @@ -408,7 +404,7 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
->  	if (!buf)
->  		return 0;
->  
-> -	mutex_lock(&drvdata->mutex);
-> +	spin_lock(&drvdata->spinlock);
->  
->  	/* Don't do anything if another tracer is using this sink. */
->  	if (atomic_read(&csdev->refcnt) != 1)
-> @@ -432,7 +428,7 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
->  	if (!buf->snapshot && lost)
->  		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
->  out:
-> -	mutex_unlock(&drvdata->mutex);
-> +	spin_unlock(&drvdata->spinlock);
->  
->  	return data_size;
->  }
-> @@ -590,7 +586,7 @@ static int smb_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	mutex_init(&drvdata->mutex);
-> +	spin_lock_init(&drvdata->spinlock);
->  	drvdata->pid = -1;
->  
->  	ret = smb_register_sink(pdev, drvdata);
-> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.h b/drivers/hwtracing/coresight/ultrasoc-smb.h
-> index d2e14e8d2c8a..82a44c14a882 100644
-> --- a/drivers/hwtracing/coresight/ultrasoc-smb.h
-> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.h
-> @@ -8,7 +8,7 @@
->  #define _ULTRASOC_SMB_H
->  
->  #include <linux/miscdevice.h>
-> -#include <linux/mutex.h>
-> +#include <linux/spinlock.h>
->  
->  /* Offset of SMB global registers */
->  #define SMB_GLB_CFG_REG		0x00
-> @@ -105,7 +105,7 @@ struct smb_data_buffer {
->   * @csdev:	Component vitals needed by the framework.
->   * @sdb:	Data buffer for SMB.
->   * @miscdev:	Specifics to handle "/dev/xyz.smb" entry.
-> - * @mutex:	Control data access to one at a time.
-> + * @spinlock:	Control data access to one at a time.
->   * @reading:	Synchronise user space access to SMB buffer.
->   * @pid:	Process ID of the process being monitored by the
->   *		session that is using this component.
-> @@ -116,7 +116,7 @@ struct smb_drv_data {
->  	struct coresight_device	*csdev;
->  	struct smb_data_buffer sdb;
->  	struct miscdevice miscdev;
-> -	struct mutex mutex;
-> +	spinlock_t spinlock;
->  	bool reading;
->  	pid_t pid;
->  	enum cs_mode mode;
-> 
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
+
+v4: Add select ACPI_PLATFORM_PROFILE
+v3: Remove input device, using the platform profile interface
+v2: Remove Event GUID, remove inspur_wmi_notify and inspur_wmi_notify.
+
+ drivers/platform/x86/Kconfig      |  11 ++
+ drivers/platform/x86/Makefile     |   3 +
+ drivers/platform/x86/inspur-wmi.c | 216 ++++++++++++++++++++++++++++++
+ 3 files changed, 230 insertions(+)
+ create mode 100644 drivers/platform/x86/inspur-wmi.c
+
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 2a1070543391..44f371876170 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -988,6 +988,17 @@ config TOUCHSCREEN_DMI
+ 	  the OS-image for the device. This option supplies the missing info.
+ 	  Enable this for x86 tablets with Silead or Chipone touchscreens.
+ 
++config INSPUR_WMI
++	tristate "Inspur WMI platform profile driver"
++	depends on ACPI_WMI
++	select ACPI_PLATFORM_PROFILE
++	help
++	This will allow users to determine and control the platform modes
++	between low-power, balanced and performance modes.
++
++	To compile this driver as a module, choose M here: the module
++	will be called inspur-wmi.
++
+ source "drivers/platform/x86/x86-android-tablets/Kconfig"
+ 
+ config FW_ATTR_CLASS
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index b457de5abf7d..9285c252757e 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -98,6 +98,9 @@ obj-$(CONFIG_TOSHIBA_WMI)	+= toshiba-wmi.o
+ # before toshiba_acpi initializes
+ obj-$(CONFIG_ACPI_TOSHIBA)	+= toshiba_acpi.o
+ 
++# Inspur
++obj-$(CONFIG_INSPUR_WMI)	+= inspur-wmi.o
++
+ # Laptop drivers
+ obj-$(CONFIG_ACPI_CMPC)		+= classmate-laptop.o
+ obj-$(CONFIG_COMPAL_LAPTOP)	+= compal-laptop.o
+diff --git a/drivers/platform/x86/inspur-wmi.c b/drivers/platform/x86/inspur-wmi.c
+new file mode 100644
+index 000000000000..243f31dd162c
+--- /dev/null
++++ b/drivers/platform/x86/inspur-wmi.c
+@@ -0,0 +1,216 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Inspur WMI power mode
++ *
++ *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/platform_profile.h>
++#include <linux/wmi.h>
++
++#define WMI_INSPUR_POWERMODE_BIOS_GUID "596C31E3-332D-43C9-AEE9-585493284F5D"
++
++enum inspur_wmi_method_ids {
++	INSPUR_WMI_GET_POWERMODE = 0x02,
++	INSPUR_WMI_SET_POWERMODE = 0x03,
++};
++
++/**
++ * Power Mode:
++ *           0x0: Balance Mode
++ *           0x1: Performance Mode
++ *           0x2: Power Saver Mode
++ */
++enum inspur_tmp_profile {
++	INSPUR_TMP_PROFILE_BALANCE	= 0,
++	INSPUR_TMP_PROFILE_PERFORMANCE	= 1,
++	INSPUR_TMP_PROFILE_POWERSAVE	= 2,
++};
++
++struct inspur_wmi_priv {
++	struct wmi_device *wdev;
++	struct platform_profile_handler handler;
++};
++
++static int inspur_wmi_perform_query(struct wmi_device *wdev,
++				    enum inspur_wmi_method_ids query_id,
++				    void *buffer, size_t insize,
++				    size_t outsize)
++{
++	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
++	struct acpi_buffer input = { insize, buffer};
++	union acpi_object *obj;
++	acpi_status status;
++	int ret = 0;
++
++	status = wmidev_evaluate_method(wdev, 0, query_id, &input, &output);
++	if (ACPI_FAILURE(status)) {
++		dev_err(&wdev->dev, "EC Powermode control failed: %s\n",
++			acpi_format_exception(status));
++		return -EIO;
++	}
++
++	obj = output.pointer;
++	if (!obj)
++		return -EINVAL;
++
++	if (obj->type != ACPI_TYPE_BUFFER ||
++	    obj->buffer.length != outsize) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++
++	memcpy(buffer, obj->buffer.pointer, obj->buffer.length);
++
++out_free:
++	kfree(obj);
++	return ret;
++}
++
++/**
++ * Set Power Mode to EC RAM. If Power Mode value greater than 0x3,
++ * return error
++ * Method ID: 0x3
++ * Arg: 4 Bytes
++ * Byte [0]: Power Mode:
++ *         0x0: Balance Mode
++ *         0x1: Performance Mode
++ *         0x2: Power Saver Mode
++ * Return Value: 4 Bytes
++ * Byte [0]: Return Code
++ *         0x0: No Error
++ *         0x1: Error
++ */
++static int inspur_platform_profile_set(struct platform_profile_handler *pprof,
++				       enum platform_profile_option profile)
++{
++	struct inspur_wmi_priv *priv = container_of(pprof, struct inspur_wmi_priv,
++						    handler);
++	u8 ret_code[4] = {0, 0, 0, 0};
++	int ret;
++
++	switch (profile) {
++	case PLATFORM_PROFILE_BALANCED:
++		ret_code[0] = INSPUR_TMP_PROFILE_BALANCE;
++		break;
++	case PLATFORM_PROFILE_PERFORMANCE:
++		ret_code[0] = INSPUR_TMP_PROFILE_PERFORMANCE;
++		break;
++	case PLATFORM_PROFILE_LOW_POWER:
++		ret_code[0] = INSPUR_TMP_PROFILE_POWERSAVE;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	ret = inspur_wmi_perform_query(priv->wdev, INSPUR_WMI_SET_POWERMODE,
++				       ret_code, sizeof(ret_code),
++				       sizeof(ret_code));
++
++	if (ret < 0)
++		return ret;
++
++	if (ret_code[0])
++		return -EBADRQC;
++
++	return 0;
++}
++
++/**
++ * Get Power Mode from EC RAM, If Power Mode value greater than 0x3,
++ * return error
++ * Method ID: 0x2
++ * Return Value: 4 Bytes
++ * Byte [0]: Return Code
++ *         0x0: No Error
++ *         0x1: Error
++ * Byte [1]: Power Mode
++ *         0x0: Balance Mode
++ *         0x1: Performance Mode
++ *         0x2: Power Saver Mode
++ */
++static int inspur_platform_profile_get(struct platform_profile_handler *pprof,
++				       enum platform_profile_option *profile)
++{
++	struct inspur_wmi_priv *priv = container_of(pprof, struct inspur_wmi_priv,
++						    handler);
++	u8 ret_code[4] = {0, 0, 0, 0};
++	int ret;
++
++	ret = inspur_wmi_perform_query(priv->wdev, INSPUR_WMI_GET_POWERMODE,
++				       &ret_code, sizeof(ret_code),
++				       sizeof(ret_code));
++	if (ret < 0)
++		return ret;
++
++	if (ret_code[0])
++		return -EBADRQC;
++
++	switch (ret_code[1]) {
++	case INSPUR_TMP_PROFILE_BALANCE:
++		*profile = PLATFORM_PROFILE_BALANCED;
++		break;
++	case INSPUR_TMP_PROFILE_PERFORMANCE:
++		*profile = PLATFORM_PROFILE_PERFORMANCE;
++		break;
++	case INSPUR_TMP_PROFILE_POWERSAVE:
++		*profile = PLATFORM_PROFILE_LOW_POWER;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int inspur_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct inspur_wmi_priv *priv;
++
++	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->wdev = wdev;
++	dev_set_drvdata(&wdev->dev, priv);
++
++	priv->handler.profile_get = inspur_platform_profile_get;
++	priv->handler.profile_set = inspur_platform_profile_set;
++
++	set_bit(PLATFORM_PROFILE_LOW_POWER, priv->handler.choices);
++	set_bit(PLATFORM_PROFILE_BALANCED, priv->handler.choices);
++	set_bit(PLATFORM_PROFILE_PERFORMANCE, priv->handler.choices);
++
++	return platform_profile_register(&priv->handler);
++}
++
++static void inspur_wmi_remove(struct wmi_device *wdev)
++{
++	platform_profile_remove();
++}
++
++static const struct wmi_device_id inspur_wmi_id_table[] = {
++	{ .guid_string = WMI_INSPUR_POWERMODE_BIOS_GUID },
++	{  }
++};
++
++MODULE_DEVICE_TABLE(wmi, inspur_wmi_id_table);
++
++static struct wmi_driver inspur_wmi_driver = {
++	.driver = {
++		.name = "inspur-wmi",
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++	},
++	.id_table = inspur_wmi_id_table,
++	.probe = inspur_wmi_probe,
++	.remove = inspur_wmi_remove,
++};
++
++module_wmi_driver(inspur_wmi_driver);
++
++MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
++MODULE_DESCRIPTION("Inspur WMI Platform Profile");
++MODULE_LICENSE("GPL");
+-- 
+2.25.1
+
