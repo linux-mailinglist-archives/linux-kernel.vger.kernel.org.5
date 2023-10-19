@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9B27D01C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3D07D01BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345173AbjJSSg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
+        id S1346457AbjJSSgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346451AbjJSSgT (ORCPT
+        with ESMTP id S1346271AbjJSSgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:36:19 -0400
+        Thu, 19 Oct 2023 14:36:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E74132
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126AB126
         for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:36:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DA8ABC433D9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 96B60C433C7;
         Thu, 19 Oct 2023 18:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697740576;
-        bh=M0IOD1bLhffOCN7lz+jWIRSmTB9VtAvHCtNSB4MsfIQ=;
+        bh=qe8WPKvIv1w7H0c3U2BcfeqDFbY8yaiEApkGvIT6LOs=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dJxKvPeEGS2do7WL0z4DQxHInZipw4qsKzQ6tADAwQWBWXJ6Y+LYFdKH9iWLR5Rni
-         +btMHhPbfGBKdIujcr8rdJJBWU5TwViwOM78EuTPG4zZ1EcL8nUrmcRRj7G96fMQgl
-         PEr5ZPJfVEpWwmuL0/1hn400xBZxr5o4lCKmZ/ggdFI6956CP6vfoHJ0D55rxNGAb2
-         6mNy4mvKQcdfiriqNBWMJ1cYe6qRVwIo7HIVqXsTMPVuDu6pf2Tiizjheh3s1IladR
-         BA5VJOIb3oYGdzRbqO7sADMyu29WrrVSum57WOVDxTC9KJ+Yyv7eHYK22HfasTC4JJ
-         vOuqpeqMcXz5A==
+        b=nnl/863KLj8TUcLC+MkQOcLCml0CFMeElQiK0A0zNn/xJmrnQcPx8GwJFXqTOsQHO
+         +jq88HKMDZX+3VZyuBq8gVC4rlbLFEdO7c1Js5IYGlW+SO30YLhmY8/OzOCvWXuGbT
+         9CCTc9epQU+H4Sz70SgT4IizQl1eITX4Cr42QsNPXlRO/6OW66Fuo8nxkgOMgavqfM
+         7XB4xMn4Lcl+o9m6Xsk61YY/PsqmOmUD3xe/N+gy3nVYmMRVE8gEK7JtAhRdgwLeBR
+         2k890OwFNaq+PDEHs2NT2ZEy+V4OVvb4U35BE8olTHLninIQR+KalBYr1swt3hZFtV
+         LsSg8o/sbx1HA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C384BC73FE1;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 82D79C04E27;
         Thu, 19 Oct 2023 18:36:16 +0000 (UTC)
-Subject: Re: [GIT PULL] slab fixes for 6.6-rc6
+Subject: Re: [GIT PULL] seccomp fix for v6.6-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <06eb77e9-a058-6b0d-d0f6-2f4733e6ca00@suse.cz>
-References: <06eb77e9-a058-6b0d-d0f6-2f4733e6ca00@suse.cz>
+In-Reply-To: <202310181752.D9A0B87E@keescook>
+References: <202310181752.D9A0B87E@keescook>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <06eb77e9-a058-6b0d-d0f6-2f4733e6ca00@suse.cz>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-fixes-for-6.6-rc6
-X-PR-Tracked-Commit-Id: c15cdea517414e0b29a11e0a0e2443d127c9109b
+X-PR-Tracked-Message-Id: <202310181752.D9A0B87E@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v6.6-rc7
+X-PR-Tracked-Commit-Id: 31c65705a8cfa5f80d3824c686ab74b0409ee76d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 54fb58aec47a49a80534d2ccabd319334d6b0ef8
-Message-Id: <169774057679.20290.12852615009577377755.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 189b756271e69bb6b9dfe4703b7f74855ab201b4
+Message-Id: <169774057652.20290.11934725522607877025.pr-tracker-bot@kernel.org>
 Date:   Thu, 19 Oct 2023 18:36:16 +0000
-To:     Vlastimil Babka <vbabka@suse.cz>
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>
+        linux-kernel@vger.kernel.org, Andrei Vagin <avagin@google.com>,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 19 Oct 2023 17:20:00 +0200:
+The pull request you sent on Wed, 18 Oct 2023 17:53:18 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-fixes-for-6.6-rc6
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v6.6-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/54fb58aec47a49a80534d2ccabd319334d6b0ef8
+https://git.kernel.org/torvalds/c/189b756271e69bb6b9dfe4703b7f74855ab201b4
 
 Thank you!
 
