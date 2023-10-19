@@ -2,119 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161007CFE65
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6877CFE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346356AbjJSPl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
+        id S1346087AbjJSPnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346435AbjJSPlu (ORCPT
+        with ESMTP id S1346364AbjJSPnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:41:50 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E7893
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:43 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7a680e6a921so21095839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697730102; x=1698334902; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5xxv/44z+YoCHFzTUvV/HWGf+cSx/epc2a2ex7I2Rd4=;
-        b=0FxvLccpnKQ4ZTnNW+3aF+4ZJhZvUSKTlgj1ozd9/icZi7jnXx9l7EKY6IHTaBKb1E
-         0d377NlbXqfYz3zIR7c/YZEbZucVBLRwsCFUxKWDRzHfWSUArN1hlFOJZt8aKzF/Lg5A
-         KzxcKTf6WQsrw0s9VAs1AQXgYY1HU5N5GReR6CwgB9s7Q8RxEIUg8D+x+4M3KKS0JbzW
-         veL1mJO0rJ/Mr+p+d1rtWYq7aFf6baNJuUZYCUNugBH6vlQLdWMZZzUiTd0wi3hqQRar
-         CNum2+4o3OD3wN1Iw73TZC+OXAFg687lXTCfy5vHqnqgzCFEoWMjkySQ11HCnNp3xJTK
-         PiYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697730102; x=1698334902;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5xxv/44z+YoCHFzTUvV/HWGf+cSx/epc2a2ex7I2Rd4=;
-        b=vUqe3Cgz8uDI98UYOZHFgLCMv26Ygj4EKyZCAcuNuJLIDDPmhhBmzGwBvF0LeL18I9
-         QgtAbEp8aTctLmtoiw8cWoDWOvD4PCgSSEdOpZs5nVfItqY2yVNKkgcwSQf+dC9y5zVt
-         T0zmMjRnk0iSFtGbj3pyz1YxR0gATuNjJli4YGeWHrEnh3fmmSN2RIkFR2F7iApXoToz
-         ith5CBKpoJyBEQxZpgHKOaWYEA0BU5qMWtNdRUNKy3DQefEbeGxTtuwxafi5bG+79jz/
-         jM7u2X0hDmzR/AMgJ9tP27A5RVvB+E1WofKzLJdB1zW1UqrlpvrF8Q44rWyUME02/rvD
-         SWwA==
-X-Gm-Message-State: AOJu0Yz3XNZL9tHB/k1ULlmkAihanIZUJx8/lqq++2Yc6XvpVtWC35AG
-        ZJh10+F9BAjgO45wHsYbB/1okg==
-X-Google-Smtp-Source: AGHT+IFA9Ko8BzzmJvF9/Ll+x8hNvuQTu1RIUoMhlZt65y7Pvfo1T3P3HE1EZUqk9PGPQtsvTZn2lA==
-X-Received: by 2002:a5e:db45:0:b0:79f:922b:3809 with SMTP id r5-20020a5edb45000000b0079f922b3809mr2532203iop.1.1697730102564;
-        Thu, 19 Oct 2023 08:41:42 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id da19-20020a0566384a5300b0039deb26853csm1992382jab.10.2023.10.19.08.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 08:41:42 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     sdf@google.com, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
-        pabeni@redhat.com, martin.lau@linux.dev, krisman@suse.de,
-        Breno Leitao <leitao@debian.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org
-In-Reply-To: <20231016134750.1381153-1-leitao@debian.org>
-References: <20231016134750.1381153-1-leitao@debian.org>
-Subject: Re: [PATCH v7 00/11] io_uring: Initial support for {s,g}etsockopt
- commands
-Message-Id: <169773010167.2728246.364592257409613748.b4-ty@kernel.dk>
-Date:   Thu, 19 Oct 2023 09:41:41 -0600
+        Thu, 19 Oct 2023 11:43:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3D71FC1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697730148; x=1729266148;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2oh5pmAgDCd2gtHRN+bxNVTY3NzlD1CeuvsiPYhNrM0=;
+  b=fPJP5QNdPwDubZXSpLdx5s+tYxfSx5W4oolQIBtuEdbV36fwHoKmF73n
+   H0nmizmYAeR5g7MHViIM36F18hhWMjIdqzXLJK6zMqUjY2r0nsQmq4bem
+   BYKg9E74FeTDtlV9nIa/5WBJgwqC4+DkxjUiC5llNQbr7hzVDy9M/vn3n
+   w+kswEQsJGgsLbeR0vdUeEktp1av2zY6Bq3XX2I9RwvpnPNHWmhECdUi8
+   ym/X/IbId2Iu4uYNeOZe6LhCgIN/3VmsYwJxm2j4Wvfy8jvr5AtQGCs5+
+   wCogPRXgozvoEjRygrFV8gP9SKCjzXAldzEXKoqzkQej+MJSn4Ya6fDio
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="386110789"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="386110789"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 08:42:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930648762"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="930648762"
+Received: from jiaminka-mobl1.gar.corp.intel.com (HELO intel.com) ([10.215.251.143])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 08:42:20 -0700
+Date:   Thu, 19 Oct 2023 17:42:09 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 1/2] staging: vme_user: Replace printk() with
+ pr_*(),dev_*()
+Message-ID: <ZTFOUdMrDUylwa6F@ashyti-mobl2.lan>
+References: <cover.1697696951.git.soumya.negi97@gmail.com>
+ <cad6da28b5f772957ced5b561b21b5d8c8204bc9.1697696951.git.soumya.negi97@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-26615
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cad6da28b5f772957ced5b561b21b5d8c8204bc9.1697696951.git.soumya.negi97@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On Mon, 16 Oct 2023 06:47:38 -0700, Breno Leitao wrote:
-> This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
-> and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
-> SOCKET_URING_OP_SETSOCKOPT implements generic case, covering all levels
-> and optnames. SOCKET_URING_OP_GETSOCKOPT is limited, for now, to
-> SOL_SOCKET level, which seems to be the most common level parameter for
-> get/setsockopt(2).
+On Thu, Oct 19, 2023 at 12:20:09AM -0700, Soumya Negi wrote:
+> vme.c uses printk() to log messages. To improve and standardize message
+> formatting, use logging mechanisms pr_err()/pr_warn() and
+> dev_err()/dev_warn() instead. Retain the printk log levels of the
+> messages during replacement.
 > 
-> [...]
+> Issue found by checkpatch.pl
+> 
+> Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
 
-Applied, thanks!
+Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
 
-[01/11] bpf: Add sockptr support for getsockopt
-        commit: 7cb15cc7e081730df3392f136a8789f3d2c3fd66
-[02/11] bpf: Add sockptr support for setsockopt
-        commit: c028f6e54aa180747e384796760eee3bd78e0891
-[03/11] net/socket: Break down __sys_setsockopt
-        commit: e70464dcdcddb5128fe7956bf809683824c64de5
-[04/11] net/socket: Break down __sys_getsockopt
-        commit: 25f82732c8352bd0bec33c5a9989fd46cac5789f
-[05/11] io_uring/cmd: Pass compat mode in issue_flags
-        commit: 66c87d5639f2f80421b3a01f12dcb7718f996093
-[06/11] tools headers: Grab copy of io_uring.h
-        commit: c36507ed1a2c2cb05c4a2aad9acb39ca5d7c12fe
-[07/11] selftests/net: Extract uring helpers to be reusable
-        commit: 11336afdd4141bbbd144b118a8a559b1993dc5d2
-[08/11] io_uring/cmd: return -EOPNOTSUPP if net is disabled
-        commit: d807234143872e460cdf851f1b2bbda2b427f95d
-[09/11] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-        commit: c3199f61b896cdef3664dc12729a2beadf322783
-[10/11] io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
-        commit: 43ad652250d24e9496f4cd6a0d670417807ac9a0
-[11/11] selftests/bpf/sockopt: Add io_uring support
-        commit: d9710f1d12a99738ff168e252ab8e9ffdeb90ed5
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+Andi
