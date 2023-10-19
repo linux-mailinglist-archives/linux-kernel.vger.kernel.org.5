@@ -2,50 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118437CF7AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1A77CF7AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345405AbjJSL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S1345409AbjJSL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbjJSL4n (ORCPT
+        with ESMTP id S235269AbjJSL5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:56:43 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9E213A;
-        Thu, 19 Oct 2023 04:56:39 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VuTv4zZ_1697716594;
-Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuTv4zZ_1697716594)
-          by smtp.aliyun-inc.com;
-          Thu, 19 Oct 2023 19:56:36 +0800
-Message-ID: <2edced57-5b9b-43e7-81a2-d8bf522c2b74@linux.alibaba.com>
-Date:   Thu, 19 Oct 2023 19:56:33 +0800
+        Thu, 19 Oct 2023 07:57:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25D9CF;
+        Thu, 19 Oct 2023 04:57:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0177221A59;
+        Thu, 19 Oct 2023 11:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697716640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gmRwmATguFntU5/41/ZcC5nz8p9WbJDCy+6CvfCvobM=;
+        b=K1z4yfdIyqTYCEXUMU9mYyLu+z9zQJd/VWIZ8BwfK0F9ibMbVxg01KvhINiREbGIYbOQgC
+        5gwXiqFvD8V3NqOJqktb0+3jEugbj2IY/I098ZKbxOlduiwnFvm1CUfHJ/fZ6iWVaXPZL7
+        7Zx+rEXzsgVj2zmWlpikrxzOQqG2olI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697716640;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gmRwmATguFntU5/41/ZcC5nz8p9WbJDCy+6CvfCvobM=;
+        b=47mH8V7JwKrxo+7f5zdtr52EQOMI9+ImvRFWAIggyQSHfsKPJY63PnDpUHoCuyVfmnDT97
+        Uu2vYCTlWANTaSAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4B42139C2;
+        Thu, 19 Oct 2023 11:57:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ohjQN58ZMWUOLgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 11:57:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4A695A06B0; Thu, 19 Oct 2023 13:57:19 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 13:57:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH 4/4] ext4: reduce unnecessary memory allocation in
+ alloc_flex_gd()
+Message-ID: <20231019115719.54wd6q6dxanaodid@quack3>
+References: <20231018114221.441526-1-libaokun1@huawei.com>
+ <20231018114221.441526-5-libaokun1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 1/4] docs: perf: Add description for Synopsys
- DesignWare PCIe PMU driver
-Content-Language: en-US
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
-        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com
-References: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
- <20231017013235.27831-2-xueshuai@linux.alibaba.com>
- <20231017101624.00003231@Huawei.com>
- <af03c8cf-2254-46f6-9b7e-790b255c8a1b@linux.alibaba.com>
- <20231019120647.00007589@Huawei.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231019120647.00007589@Huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018114221.441526-5-libaokun1@huawei.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.87
+X-Spamd-Result: default: False [-4.87 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-2.77)[98.99%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,59 +100,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/19 19:06, Jonathan Cameron wrote:
-
-...
-
->>>> +
->>>> +The DWC PCIe PMU driver registers a perf PMU driver, which provides
->>>> +description of available events and configuration options in sysfs, see
->>>> +/sys/bus/event_source/devices/dwc_rootport_{bdf}.
->>>> +
->>>> +The "format" directory describes format of the config fields of the
->>>> +perf_event_attr structure. The "events" directory provides configuration
->>>> +templates for all documented events.  For example,
->>>> +"Rx_PCIe_TLP_Data_Payload" is an equivalent of "eventid=0x22,type=0x1".
->>>> +
->>>> +The "perf list" command shall list the available events from sysfs, e.g.::
->>>> +
->>>> +    $# perf list | grep dwc_rootport
->>>> +    <...>
->>>> +    dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/        [Kernel PMU event]
->>>> +    <...>
->>>> +    dwc_rootport_3018/rx_memory_read,lane=?/               [Kernel PMU event]
->>>> +
->>>> +Time Based Analysis Event Usage
->>>> +-------------------------------
->>>> +
->>>> +Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
->>>> +
->>>> +    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>> +
->>>> +The average RX/TX bandwidth can be calculated using the following formula:
->>>> +
->>>> +    PCIe RX Bandwidth = PCIE_RX_DATA * 16B / Measure_Time_Window
->>>> +    PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window  
->>>
->>> Silly question (sorry I didn't raise it earlier) but can we make the interface
->>> more intuitive by just multiplying the counter value at point of read by 16?  
->>
->> Really a good suggestion, and it is very convenient for end perf users.
->> But the unit of 16 is only applied to group#1 as described in Time Based Analysis
->> section.
+On Wed 18-10-23 19:42:21, Baokun Li wrote:
+> When a large flex_bg file system is resized, the number of groups to be
+> added may be small, and a large amount of memory that will not be used will
+> be allocated. Therefore, resize_bg can be set to the size after the number
+> of new_group_data to be used is aligned upwards to the power of 2. This
+> does not affect the disk layout after online resize and saves some memory.
 > 
-> How hard would it be to just apply it to those events?
-> Userspace doesn't care what the hardware does underneath - it just wants to get
-> moderately intuitive data back. Having the end user deal with this oddity + even
-> the need to document it seems to me to be unnecessary burden given how simple it
-> is (I assume) to remove the oddity.
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Ok. Talked me into it :)
-I will multiply the counter value at point of read by 16 for group#1 events.
+Looks good, just one small comment below. Feel free to add:
 
-Thank you.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Best Regards,
-Shuai
+
+> @@ -248,6 +250,14 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
+>  	else
+>  		flex_gd->resize_bg = flexbg_size;
+>  
+> +	/* Avoid allocating new groups that will not be used. */
+
+Perhaps make the comment more understandable like:
+	/* Avoid allocating large 'groups' array if not needed */
+
+									Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
