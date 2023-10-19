@@ -2,114 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 678717CEE97
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4007CEE99
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjJSETd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 00:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S232076AbjJSEXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 00:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSETc (ORCPT
+        with ESMTP id S229894AbjJSEXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 00:19:32 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F85B121;
-        Wed, 18 Oct 2023 21:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697689168;
-        bh=y3lM9sVJ/5rYnLLJqPwGOLVQo3x0zH1aI0AdCt5lKvE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HolbH944Z1ffP79WWjoCrUJ2CLG2CKdtIwSX8nO83ZRu11ojSRssFEqqUp7blUHmo
-         z2s0goahOpwHspiWCOtfi/DNkcekJr/pR/Wcrqk2aQnmAm1pmyUV0pOK4TI0Z2twDN
-         pp9OzVCx2biirQ/XLxUy0YSaOQQ5ju+fEkPRdSQoS3tJgm0EIe+dWZ34QT0CtsdKkw
-         +jkDQn0PIdi4Tm7cyUTpuVWxRl8r1MkIulbEVutJIXYQazlehrjAa+mXGOOFUzfdkt
-         QfaIgtD6q69FVijmiHYouUzJhqVczF6rQhq8Siuz8BMGOS0km9ab8cPNdWnU4pPy0l
-         yJ+MVbK3XGfag==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9vcc04D4z4xWn;
-        Thu, 19 Oct 2023 15:19:27 +1100 (AEDT)
-Date:   Thu, 19 Oct 2023 15:19:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the tip tree with the efi-fixes
- tree
-Message-ID: <20231019151927.2a20d800@canb.auug.org.au>
-In-Reply-To: <20231019145404.63bd38ca@canb.auug.org.au>
-References: <20231019145404.63bd38ca@canb.auug.org.au>
+        Thu, 19 Oct 2023 00:23:32 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5411F121
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:23:30 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c434c33ec0so52086325ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697689410; x=1698294210; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XIOghrBmVZu6lgiOtXXOECZ8n+mlWZ7P1vW/PW8XFuE=;
+        b=ivUmsiuenE6awRzxVvACitJVgj8QcdmwpBC3igjuwRXI4YYsIoh8LC5DA5yP1JaHfv
+         8UbmVvP/QULegyvvSKxQ2hzu/F5ZyIHugc70rSNNcRhSTPsGNRl3IzHewmeQyPseErgN
+         AzicKAHxjQiO3ZJIyj9uyd5kKoh1qP++q9Zff7WPVhGpDv62xNSg4YepTrMfoLGMLirk
+         rym8NzRS/jRayHvp+UKBvg9tCeyVWJTeZZgGZwnM3A5akSUtpwrs1mE9uQUAQpZWnkrS
+         6PDchtsLUBOEgG+AV67VUfHqlOYODVIku2265JA6EXnx37S23nar9WlUCU/DyadJX/XS
+         8D4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697689410; x=1698294210;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XIOghrBmVZu6lgiOtXXOECZ8n+mlWZ7P1vW/PW8XFuE=;
+        b=OGhVX9HGMxosxD9qA/5CFT4JFhlONHqP7z+UxAs5NJT2BvmMLPgqest0Ye5TNNX9tp
+         pYsyuzPc6P3mDmyUwi/opP8qw5gQt41UH2h6M4lOIud7syZ5fZOTWMAp1+hHGXDzQqed
+         KDD0wJ6gFVgAjyeY6Q1MgywL7dBZck3L9gDN0BYqBt+K7RJodQxgNE7PRRpIEOWjwihU
+         7HNag9yXo2pJAPS5l0kfhIyWsZ/WkVMdsQVMFXuonW/RHsXkQW9i28o7HiMbfllCgPrP
+         8CqvM7Z9yfe8+uCtxQ+mz6lL9C+u40b9OLN6nTBj3KbYTOCwvn+VJV7XlXDg4CZEJ3jI
+         4ZJw==
+X-Gm-Message-State: AOJu0Yy0TMkqVDv8yz7lAPgblxM8HDQ/CuPnxh+4LONfmEaEkkMUxes1
+        QmNwVatrXO2ewI2TkmN240M82g==
+X-Google-Smtp-Source: AGHT+IEpwj8F0CwiHYwEL/qYEFayCGnPsZ0W41oVGG2vRz+p0X0xMd0PQySyypQbuglemxOUwBY+xg==
+X-Received: by 2002:a17:902:ef0e:b0:1ca:362b:1482 with SMTP id d14-20020a170902ef0e00b001ca362b1482mr1083218plx.67.1697689409640;
+        Wed, 18 Oct 2023 21:23:29 -0700 (PDT)
+Received: from [157.82.207.43] ([157.82.207.43])
+        by smtp.gmail.com with ESMTPSA id bj11-20020a170902850b00b001bf8779e051sm733646plb.289.2023.10.18.21.23.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 21:23:29 -0700 (PDT)
+Message-ID: <04b6caa4-32c2-40f9-a095-dbabfce6de9a@daynix.com>
+Date:   Thu, 19 Oct 2023 13:23:24 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nu1=GzIZq1fgE2iaHx6JLVK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] drm/virtio: add new virtio gpu capset definitions
+Content-Language: en-US
+To:     Gurchetan Singh <gurchetansingh@chromium.org>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Marc-Andr=C3=A9_Lureau?= <marcandre.lureau@gmail.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
+        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Chen, Jiqian" <Jiqian.Chen@amd.com>
+References: <20231010135722.1142265-1-ray.huang@amd.com>
+ <2f8bcce1-6551-6c2d-481c-67502c82bc68@collabora.com>
+ <2c162058-288c-9e9e-48d5-3b2ddb0cc1fa@collabora.com>
+ <ZSYnQbHUecuUlwvr@amd.com>
+ <CAAfnVB=Mki1zEyjByJ_7tRrib74E4KSbjezqQcb_Uia8EQEXHw@mail.gmail.com>
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAAfnVB=Mki1zEyjByJ_7tRrib74E4KSbjezqQcb_Uia8EQEXHw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nu1=GzIZq1fgE2iaHx6JLVK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2023/10/19 8:25, Gurchetan Singh wrote:
+> 
+> 
+> On Tue, Oct 10, 2023 at 9:41 PM Huang Rui <ray.huang@amd.com 
+> <mailto:ray.huang@amd.com>> wrote:
+> 
+>     On Tue, Oct 10, 2023 at 11:52:14PM +0800, Dmitry Osipenko wrote:
+>      > On 10/10/23 18:40, Dmitry Osipenko wrote:
+>      > > On 10/10/23 16:57, Huang Rui wrote:
+>      > >> These definitions are used fro qemu, and qemu imports this
+>     marco in the
+>      > >> headers to enable gfxstream, venus, cross domain, and drm (native
+>      > >> context) for virtio gpu. So it should add them even kernel
+>     doesn't use
+>      > >> this.
+>      > >>
+>      > >> Signed-off-by: Huang Rui <ray.huang@amd.com
+>     <mailto:ray.huang@amd.com>>
+>      > >> Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com
+>     <mailto:akihiko.odaki@daynix.com>>
+>      > >> ---
+>      > >>
+>      > >> Changes V1 -> V2:
+>      > >> - Add all capsets including gfxstream and venus in kernel
+>     header (Dmitry Osipenko)
+>      > >>
+>      > >> Changes V2 -> V3:
+>      > >> - Add missed capsets including cross domain and drm (native
+>     context)
+>      > >>   (Dmitry Osipenko)
+>      > >>
+>      > >> v1:
+>     https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/ <https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/>
+>      > >> v2:
+>     https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/ <https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/>
+>      > >>
+>      > >>  include/uapi/linux/virtio_gpu.h | 4 ++++
+>      > >>  1 file changed, 4 insertions(+)
+>      > >>
+>      > >> diff --git a/include/uapi/linux/virtio_gpu.h
+>     b/include/uapi/linux/virtio_gpu.h
+>      > >> index f556fde07b76..240911c8da31 100644
+>      > >> --- a/include/uapi/linux/virtio_gpu.h
+>      > >> +++ b/include/uapi/linux/virtio_gpu.h
+>      > >> @@ -309,6 +309,10 @@ struct virtio_gpu_cmd_submit {
+>      > >>
+>      > >>  #define VIRTIO_GPU_CAPSET_VIRGL 1
+>      > >>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
+>      > >> +#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
+>      > >
+>      > > The GFXSTREAM capset isn't correct, it should be
+>     GFXSTREAM_VULKAN in
+>      > > accordance to [1] and [2]. There are more capsets for GFXSTREAM.
+>      > >
+>      > > [1]
+>      > >
+>     https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172 <https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172>
+>      > >
+>      > > [2]
+>      > >
+>     https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/ <https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/>
+>      >
+>      > Though, maybe those are "rutabaga" capsets that not related to
+>      > virtio-gpu because crosvm has another defs for virtio-gpu capsets
+>     [3].
+>      > The DRM capset is oddly missing in [3] and code uses "rutabaga"
+>     capset
+>      > for DRM and virtio-gpu.
+>      >
+>      > [3]
+>      >
+>     https://github.com/google/crosvm/blob/main/devices/src/virtio/gpu/protocol.rs#L416 <https://github.com/google/crosvm/blob/main/devices/src/virtio/gpu/protocol.rs#L416>
+> 
+>     Yes, [3] is the file that I referred to add these capsets
+>     definitions. And
+>     it's defined as gfxstream not gfxstream_vulkan.
+> 
+>      >
+>      > Gurchetan, could you please clarify which capsets definitions are
+>      > related to virtio-gpu and gfxstream. The
+>      > GFXSTREAM_VULKAN/GLES/MAGMA/COMPOSER or just the single GFXSTREAM?
+> 
+> 
+> It should be GFXSTREAM_VULKAN.  The rest are more experimental and easy 
+> to modify in terms of the enum value, should the need arise.
+> 
+> I imagine the virtio-spec update to reflect the GFXSTREAM to 
+> GFXSTREAM_VULKAN change will happen eventually.
 
-Hi all,
+I think this is a matter what the committee should determine, but in 
+general I don't think it is OK to change the existing identifier.
 
-On Thu, 19 Oct 2023 14:54:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the tip tree got a conflict in:
->=20
->   drivers/firmware/efi/libstub/x86-stub.c
->=20
-> between commit:
->=20
->   db7724134c26 ("x86/boot: efistub: Assign global boot_params variable")
->=20
-> from the efi-fixes tree and commit:
->=20
->   50dcc2e0d62e ("x86/boot: efistub: Assign global boot_params variable")
->=20
-> from the tip tree.
->=20
-> I fixed it up (I just arbitrarily chose the former) and can carry the
-> fix as necessary. This is now fixed as far as linux-next is concerned,
-> but any non trivial conflicts should be mentioned to your upstream
-> maintainer when your tree is submitted for merging.  You may also want
-> to consider cooperating with the maintainer of the conflicting tree to
-> minimise any particularly complex conflicts.
-
-Well, that didn't work :-(
-
-I ave used the latter version (i.e. the tip tree one) this time.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nu1=GzIZq1fgE2iaHx6JLVK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwrk8ACgkQAVBC80lX
-0GxGUwf6Au6HrVYERwExXwObgn3HjPSeMtJnB5DI57PGkUUv07A6WAW3QZHY1Nuf
-F1WEMsKe3yNYkS0Y4h/48C7Y7Tfaz702+gF8YxOauZyMzLWZfZk8DiR7VisIQDa+
-9yqsrV7dNqFkUQ+7TAQXGrouxRfc20RZB2cmlLfqI7RtW5RRZ+IjarENzb59dFrM
-Otly3MmAo7J24smX+o1KgnRF6ijFLRPFKlsNbbe9Rt2nQqVdy3jmyaeKp1DJiNP3
-eTZVRg5eVleFQ5wTl7bmbGPBOqGovIILml5wWZlQFblh6kxLLp7fKGyo9rs1li5d
-x1ILa5BrrM/NQ/wHmCssV/84XJa+ag==
-=2arr
------END PGP SIGNATURE-----
-
---Sig_/Nu1=GzIZq1fgE2iaHx6JLVK--
+I also think even experimental values should be added to virtio spec at 
+an early stage unless such an "experiment" is done only on one laptop. 
+We can obsolete a capset anytime so it's more important to avoid 
+conflicts of capsets.
