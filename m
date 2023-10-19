@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E9D7CFB89
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998AA7CFB8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345672AbjJSNrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        id S1345703AbjJSNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235321AbjJSNrb (ORCPT
+        with ESMTP id S1345498AbjJSNsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:47:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B872124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:47:28 -0700 (PDT)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697723247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UlWilW+N2s/Qe+0A+LtqI/TQl6f/DnywsDkIWD40T2c=;
-        b=XnMrmE+m6l/LvGaoelOq7POTuAK+rnJAm+e3uEczi29ICMRPyibp5Yw5VLr2hA3NJCS+91
-        0ZSBu1J8m++atNA2yppaOF10uoVQeMVarO7+6km+aOJ+/8QELbdT49blZ8TKRqewBfHdQG
-        fqpk2YRFxB6SeDvC4cS+jK7i2SKfWH+dvD7GM3WKKuTBBQTfwLDsWGesrv0pdWgr37jffn
-        yOLeI0VtkMwdNstFrg4RMKeQFTv+zoVWqrIFE0j6lf0XrBu9h0vYk1hqEhrUh+chW/BFgh
-        SrZWiBZPylw2CfHBY6xUOIpwNKouOGt/zk9BtajqRLXSm5n9tWSYMi4Xclpixw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697723247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UlWilW+N2s/Qe+0A+LtqI/TQl6f/DnywsDkIWD40T2c=;
-        b=jXNauR8vhzgmoVgPT3xlyq/TfUpmwUQZI8cBfGxWsoPJDnui96tMPEYpmZ8FEqjxlWPJg8
-        S5pNaK9G2nL1iMBA==
-To:     "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "jstultz@google.com" <jstultz@google.com>,
-        "riel@surriel.com" <riel@surriel.com>,
-        "lukasz.luba@arm.com" <lukasz.luba@arm.com>,
-        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "arjan@infradead.org" <arjan@infradead.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-        "ggherdovich@suse.cz" <ggherdovich@suse.cz>,
-        "gautham.shenoy@amd.com" <gautham.shenoy@amd.com>
-Subject: Re: [PATCH v8 00/25] timer: Move from a push remote at enqueue to a
- pull at expiry model
-In-Reply-To: <151240c939d02df4979651b84bb99356a938c44d.camel@intel.com>
-References: <20231004123454.15691-1-anna-maria@linutronix.de>
- <151240c939d02df4979651b84bb99356a938c44d.camel@intel.com>
-Date:   Thu, 19 Oct 2023 15:47:26 +0200
-Message-ID: <87pm1a911t.fsf@somnus>
+        Thu, 19 Oct 2023 09:48:03 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E344D11F;
+        Thu, 19 Oct 2023 06:48:00 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b26a3163acso5365522b3a.2;
+        Thu, 19 Oct 2023 06:48:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697723280; x=1698328080; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BliccIy+de7xYxoFZodWYzkchyJ1PaiIyTfG2nYkRFE=;
+        b=gqqEwHzbG0McYFx8GMqTPSWdCip0PYCi1yNxGxhRtvzOOokj98T49P5qJBZPFOQNml
+         x8JL/lKST7uBxTGDXVCGymUPd1FQG1TEf4krgedZJVy/qouOOkGHZ4m+xZsgMzP1yK7b
+         iNFLFItN37OwrO/piP4Y6coMVmqLMmrtYnQsBhCIBSnkBePOOFmHM7gvgHjLgkilG2YL
+         oDJRJ13sRboFvJDFRv5C6XWWTi20HuAIVNPH3rwIlR2hS7RyIUY2DVAS5xLCeZlqYCP4
+         ZOhCpIGjSsUSEEslHEvawchRJLZFgiHY9v4RExNexEeV1LmZFsW97OxFzR6AXG5yG1fX
+         j1yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697723280; x=1698328080;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BliccIy+de7xYxoFZodWYzkchyJ1PaiIyTfG2nYkRFE=;
+        b=qYpd6UQ7Vx2IHBI1i94FtB/AtmrduxLZ5B7MOT7nbapyXMYckeI9PLnn7k1Woz+J3Y
+         gl/4fPBKHKMrgH675vNn0uIQmxhL1Ty8vWsSZT+OTuW5mgs3S0wOxICdJxYgqBkT3gx/
+         3avGrARrApw4ybPwUB/sxTYrzNMGD+VqgezKbkiXmp78zPrqRA5O+nOaz9u6wTXlkYMB
+         5ErjEtdnGxHW+35setK1dqXw6iYgzPFo9Sc/NMQ02W2owIzfpJwwMAPZZbJFd4BjBpgT
+         LkM8upLQMDvk+GyioK33243hSwH+nQhRbgqL9iTaGyXAFOw/BKRHB8Qym1w6Zsv6hmfx
+         AfgA==
+X-Gm-Message-State: AOJu0YxUGKrJ3lCa/xeqDNcF54sl1AG09Zryt+2qzUHLp6RnDQVX5k/l
+        dCtIJ3XipNFck0IM/tKSv9ZkJ9rYjZJkFQ==
+X-Google-Smtp-Source: AGHT+IFls3pZjV2ctOYZBjQmps7xxPwUMRdJUFsqmphuiHlQtlyJ71NSndQuEO/mqkcOewM5dQq+Fw==
+X-Received: by 2002:a05:6a00:1408:b0:68f:fa05:b77a with SMTP id l8-20020a056a00140800b0068ffa05b77amr2241339pfu.31.1697723280325;
+        Thu, 19 Oct 2023 06:48:00 -0700 (PDT)
+Received: from ubuntu ([122.167.60.51])
+        by smtp.gmail.com with ESMTPSA id w28-20020aa7955c000000b0068fe76cdc62sm5252528pfq.93.2023.10.19.06.47.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 06:48:00 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 06:47:55 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kumaran.4353@gmail.com
+Subject: Re: [PATCH v2 1/2] staging: qlge: Fix coding style in qlge.h
+Message-ID: <20231019134755.GB3373@ubuntu>
+References: <cover.1697657604.git.nandhakumar.singaram@gmail.com>
+ <cec5ab120f3c110a4699757c8b364f4be1575ad7.1697657604.git.nandhakumar.singaram@gmail.com>
+ <20231019122740.GG2100445@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019122740.GG2100445@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Pandruvada, Srinivas" <srinivas.pandruvada@intel.com> writes:
+On Thu, Oct 19, 2023 at 02:27:40PM +0200, Simon Horman wrote:
+> On Wed, Oct 18, 2023 at 12:46:00PM -0700, Nandha Kumar Singaram wrote:
+> > Replace all occurrnces of (1<<x) by BIT(x) to get rid of checkpatch.pl
+> > "CHECK" output "Prefer using the BIT macro"
+> > 
+> > Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+> 
+> Thanks Nandha,
+> 
+> these changes look good to me.
+> But I would like to ask if not updating
+> Q_LEN_V and LEN_V is intentional.
 
-> Hi Maria,
->
-> On Wed, 2023-10-04 at 14:34 +0200, Anna-Maria Behnsen wrote:
->> Hi,
->> 
->> 
->
-> [...]
->
->> 
->> The proper solution to this problem is to always queue the timers on
->> the
->> local CPU and allow the non pinned timers to be pulled onto a busy
->> CPU at
->> expiry time.
->
-> Thanks for these patches. I am looking for saving power during video
-> playback with our low power daemon. I use cgroup v2 isolation to keep
-> some CPUs idle (CPU 0-11) and video is played on a single module (CPU
-> 12-15).
->
-> I have some kernelshark pictures at below link. The traces are
-> collected with sched, timer and irq. With 6.6-rc5, you can see some
-> timers still expires on CPUs which I want to keep idle. With timer
-> patches added, they are mostly pulled to busy CPU. 
->
-> https://imgur.com/a/8nF5OoP
->
-> I can share the .dat files, but they are too big to attach here.
+Thanks for the review Simon.
 
-Thanks a lot for testing! The images are totally fine (at least for
-me). As there are still some issues in v8, I'll have to post a new
-version...
+I have already sent a patch for Q_LEN_V and LEN_V and it is accepted
+by greg k-h, so didn't updated here.
 
-Thanks,
-
-	Anna-Maria
-
+regards,
+Nandha Kumar Singaram
