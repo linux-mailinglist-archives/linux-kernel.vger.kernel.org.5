@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4007CEE99
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2527CEEA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbjJSEXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 00:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        id S231709AbjJSEaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 00:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSEXc (ORCPT
+        with ESMTP id S229894AbjJSEac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 00:23:32 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5411F121
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:23:30 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c434c33ec0so52086325ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:23:30 -0700 (PDT)
+        Thu, 19 Oct 2023 00:30:32 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F49122;
+        Wed, 18 Oct 2023 21:30:30 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6b390036045so1256908b3a.1;
+        Wed, 18 Oct 2023 21:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697689410; x=1698294210; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XIOghrBmVZu6lgiOtXXOECZ8n+mlWZ7P1vW/PW8XFuE=;
-        b=ivUmsiuenE6awRzxVvACitJVgj8QcdmwpBC3igjuwRXI4YYsIoh8LC5DA5yP1JaHfv
-         8UbmVvP/QULegyvvSKxQ2hzu/F5ZyIHugc70rSNNcRhSTPsGNRl3IzHewmeQyPseErgN
-         AzicKAHxjQiO3ZJIyj9uyd5kKoh1qP++q9Zff7WPVhGpDv62xNSg4YepTrMfoLGMLirk
-         rym8NzRS/jRayHvp+UKBvg9tCeyVWJTeZZgGZwnM3A5akSUtpwrs1mE9uQUAQpZWnkrS
-         6PDchtsLUBOEgG+AV67VUfHqlOYODVIku2265JA6EXnx37S23nar9WlUCU/DyadJX/XS
-         8D4g==
+        d=gmail.com; s=20230601; t=1697689830; x=1698294630; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=07TI5lUHbLHzCbfbAfFgFmfomhDjrV2r0S9w2heQhcw=;
+        b=DhSKf4s94RZLjGuU2CvlxfMReCZI3sFWBSgFB1y8mYYsKsg9gRhB0u1hUUsc6brxCQ
+         JvnWZ7c55B2obn5SebwvdoaJyzOOZbR1MUZorvwJ5qfP5cD02MuIUVg3wylmXu7WeKLf
+         gwz0NdWBsVqI7A9Mg2urmMqu/FGMH7mOO44ZHBU6as0Nv2IEkPjNrlX1khyoNHOMo3g8
+         lx79MC4998mX6+5AK2IA+gSaJ6C0NKKtE+Xg2hGSvrdQ+MFNVauXnXj1OsF6BN8VIy0f
+         RrPvY06GGzuRwo3xZ25Z66bd2jYSJ3cIRBL5tJDRVim3Gw3zyoIEAuvkhP7AoNrImcqD
+         knvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697689410; x=1698294210;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697689830; x=1698294630;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XIOghrBmVZu6lgiOtXXOECZ8n+mlWZ7P1vW/PW8XFuE=;
-        b=OGhVX9HGMxosxD9qA/5CFT4JFhlONHqP7z+UxAs5NJT2BvmMLPgqest0Ye5TNNX9tp
-         pYsyuzPc6P3mDmyUwi/opP8qw5gQt41UH2h6M4lOIud7syZ5fZOTWMAp1+hHGXDzQqed
-         KDD0wJ6gFVgAjyeY6Q1MgywL7dBZck3L9gDN0BYqBt+K7RJodQxgNE7PRRpIEOWjwihU
-         7HNag9yXo2pJAPS5l0kfhIyWsZ/WkVMdsQVMFXuonW/RHsXkQW9i28o7HiMbfllCgPrP
-         8CqvM7Z9yfe8+uCtxQ+mz6lL9C+u40b9OLN6nTBj3KbYTOCwvn+VJV7XlXDg4CZEJ3jI
-         4ZJw==
-X-Gm-Message-State: AOJu0Yy0TMkqVDv8yz7lAPgblxM8HDQ/CuPnxh+4LONfmEaEkkMUxes1
-        QmNwVatrXO2ewI2TkmN240M82g==
-X-Google-Smtp-Source: AGHT+IEpwj8F0CwiHYwEL/qYEFayCGnPsZ0W41oVGG2vRz+p0X0xMd0PQySyypQbuglemxOUwBY+xg==
-X-Received: by 2002:a17:902:ef0e:b0:1ca:362b:1482 with SMTP id d14-20020a170902ef0e00b001ca362b1482mr1083218plx.67.1697689409640;
-        Wed, 18 Oct 2023 21:23:29 -0700 (PDT)
-Received: from [157.82.207.43] ([157.82.207.43])
-        by smtp.gmail.com with ESMTPSA id bj11-20020a170902850b00b001bf8779e051sm733646plb.289.2023.10.18.21.23.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 21:23:29 -0700 (PDT)
-Message-ID: <04b6caa4-32c2-40f9-a095-dbabfce6de9a@daynix.com>
-Date:   Thu, 19 Oct 2023 13:23:24 +0900
+        bh=07TI5lUHbLHzCbfbAfFgFmfomhDjrV2r0S9w2heQhcw=;
+        b=TDaDBsZr1aeA8laRHX6x3vXdP4N/xKU2OXQZ8UEzT+FHfTcc4ysvn1hNVGVGozBx+y
+         lb39MFn2Fyvz0R/KV8KoQrG+lzHEm5HTZMWIxAB+Dkv6PO9CgUXSFMy5IZ4hjx8NvT6z
+         Faccxmbzc+kVeYgdph81CUJctPkvT4CDEE0yG2/pJtBothk7fQhu62pJCcD/rP9ZMWEe
+         +YtR7CzjhdDze2o/UInFL6tOFXUv+xBzNojEbR2ll00UXXGEUmm5scWxCp4aqbBIUH0o
+         hBfPnH8JcrLzwiH69pLtX5f4DWgPfU+socWu1yBIUQbP43hBg1c2ILrxgcJE2hXGCvIP
+         MK3Q==
+X-Gm-Message-State: AOJu0YwLy1tG2OGKGjx3C3ZmSN/F5CjEmM2zCFoiamviF9g+xiY0xyaP
+        itQCiD06SjDu0pmaP/DnolbQ6mjy9qnMOtl/
+X-Google-Smtp-Source: AGHT+IEkWJvFP6rwED1ZbZyuQSYjiy/JNyTa5i4es2xKS+eEA8tiLgNC+CD3rO0KS3qkrixbUcz6ZQ==
+X-Received: by 2002:a05:6a21:3286:b0:17a:e03f:38b7 with SMTP id yt6-20020a056a21328600b0017ae03f38b7mr1137611pzb.6.1697689830046;
+        Wed, 18 Oct 2023 21:30:30 -0700 (PDT)
+Received: from sivslab-System-Product-Name ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170902728d00b001c5eb37e92csm745514pll.305.2023.10.18.21.30.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 21:30:29 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 12:30:25 +0800
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, lenb@kernel.org,
+        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ACPI: NFIT: Optimize nfit_mem_cmp() for efficiency
+Message-ID: <20231019043025.GA577714@sivslab-System-Product-Name>
+References: <20231012215903.2104652-1-visitorckw@gmail.com>
+ <20231013122236.2127269-1-visitorckw@gmail.com>
+ <CAJZ5v0gSB_ACBpK1nKu3sbA0HQ1xsk2mn3oc9AjpoFtge9Opdw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] drm/virtio: add new virtio gpu capset definitions
-Content-Language: en-US
-To:     Gurchetan Singh <gurchetansingh@chromium.org>,
-        Huang Rui <ray.huang@amd.com>
-Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Marc-Andr=C3=A9_Lureau?= <marcandre.lureau@gmail.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
-        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
-        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
-        "Zhang, Julia" <Julia.Zhang@amd.com>,
-        "Chen, Jiqian" <Jiqian.Chen@amd.com>
-References: <20231010135722.1142265-1-ray.huang@amd.com>
- <2f8bcce1-6551-6c2d-481c-67502c82bc68@collabora.com>
- <2c162058-288c-9e9e-48d5-3b2ddb0cc1fa@collabora.com>
- <ZSYnQbHUecuUlwvr@amd.com>
- <CAAfnVB=Mki1zEyjByJ_7tRrib74E4KSbjezqQcb_Uia8EQEXHw@mail.gmail.com>
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <CAAfnVB=Mki1zEyjByJ_7tRrib74E4KSbjezqQcb_Uia8EQEXHw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <CAJZ5v0gSB_ACBpK1nKu3sbA0HQ1xsk2mn3oc9AjpoFtge9Opdw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,99 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/19 8:25, Gurchetan Singh wrote:
+On Wed, Oct 18, 2023 at 01:17:31PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Oct 13, 2023 at 2:22 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> >
+> > The original code used conditional branching in the nfit_mem_cmp
+> > function to compare two values and return -1, 1, or 0 based on the
+> > result. However, the list_sort comparison function only needs results
+> > <0, >0, or =0. This patch optimizes the code to make the comparison
+> > branchless, improving efficiency and reducing code size. This change
+> > reduces the number of comparison operations from 1-2 to a single
+> > subtraction operation, thereby saving the number of instructions.
+> >
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > ---
+> > v1 -> v2:
+> > - Add explicit type cast in case the sizes of u32 and int differ.
+> >
+> >  drivers/acpi/nfit/core.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+> > index f96bf32cd368..563a32eba888 100644
+> > --- a/drivers/acpi/nfit/core.c
+> > +++ b/drivers/acpi/nfit/core.c
+> > @@ -1138,11 +1138,7 @@ static int nfit_mem_cmp(void *priv, const struct list_head *_a,
+> >
+> >         handleA = __to_nfit_memdev(a)->device_handle;
+> >         handleB = __to_nfit_memdev(b)->device_handle;
+> > -       if (handleA < handleB)
+> > -               return -1;
+> > -       else if (handleA > handleB)
+> > -               return 1;
+> > -       return 0;
+> > +       return (int)handleA - (int)handleB;
 > 
-> 
-> On Tue, Oct 10, 2023 at 9:41 PM Huang Rui <ray.huang@amd.com 
-> <mailto:ray.huang@amd.com>> wrote:
-> 
->     On Tue, Oct 10, 2023 at 11:52:14PM +0800, Dmitry Osipenko wrote:
->      > On 10/10/23 18:40, Dmitry Osipenko wrote:
->      > > On 10/10/23 16:57, Huang Rui wrote:
->      > >> These definitions are used fro qemu, and qemu imports this
->     marco in the
->      > >> headers to enable gfxstream, venus, cross domain, and drm (native
->      > >> context) for virtio gpu. So it should add them even kernel
->     doesn't use
->      > >> this.
->      > >>
->      > >> Signed-off-by: Huang Rui <ray.huang@amd.com
->     <mailto:ray.huang@amd.com>>
->      > >> Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com
->     <mailto:akihiko.odaki@daynix.com>>
->      > >> ---
->      > >>
->      > >> Changes V1 -> V2:
->      > >> - Add all capsets including gfxstream and venus in kernel
->     header (Dmitry Osipenko)
->      > >>
->      > >> Changes V2 -> V3:
->      > >> - Add missed capsets including cross domain and drm (native
->     context)
->      > >>   (Dmitry Osipenko)
->      > >>
->      > >> v1:
->     https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/ <https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/>
->      > >> v2:
->     https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/ <https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/>
->      > >>
->      > >>  include/uapi/linux/virtio_gpu.h | 4 ++++
->      > >>  1 file changed, 4 insertions(+)
->      > >>
->      > >> diff --git a/include/uapi/linux/virtio_gpu.h
->     b/include/uapi/linux/virtio_gpu.h
->      > >> index f556fde07b76..240911c8da31 100644
->      > >> --- a/include/uapi/linux/virtio_gpu.h
->      > >> +++ b/include/uapi/linux/virtio_gpu.h
->      > >> @@ -309,6 +309,10 @@ struct virtio_gpu_cmd_submit {
->      > >>
->      > >>  #define VIRTIO_GPU_CAPSET_VIRGL 1
->      > >>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
->      > >> +#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
->      > >
->      > > The GFXSTREAM capset isn't correct, it should be
->     GFXSTREAM_VULKAN in
->      > > accordance to [1] and [2]. There are more capsets for GFXSTREAM.
->      > >
->      > > [1]
->      > >
->     https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172 <https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172>
->      > >
->      > > [2]
->      > >
->     https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/ <https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/>
->      >
->      > Though, maybe those are "rutabaga" capsets that not related to
->      > virtio-gpu because crosvm has another defs for virtio-gpu capsets
->     [3].
->      > The DRM capset is oddly missing in [3] and code uses "rutabaga"
->     capset
->      > for DRM and virtio-gpu.
->      >
->      > [3]
->      >
->     https://github.com/google/crosvm/blob/main/devices/src/virtio/gpu/protocol.rs#L416 <https://github.com/google/crosvm/blob/main/devices/src/virtio/gpu/protocol.rs#L416>
-> 
->     Yes, [3] is the file that I referred to add these capsets
->     definitions. And
->     it's defined as gfxstream not gfxstream_vulkan.
-> 
->      >
->      > Gurchetan, could you please clarify which capsets definitions are
->      > related to virtio-gpu and gfxstream. The
->      > GFXSTREAM_VULKAN/GLES/MAGMA/COMPOSER or just the single GFXSTREAM?
-> 
-> 
-> It should be GFXSTREAM_VULKAN.  The rest are more experimental and easy 
-> to modify in terms of the enum value, should the need arise.
-> 
-> I imagine the virtio-spec update to reflect the GFXSTREAM to 
-> GFXSTREAM_VULKAN change will happen eventually.
+> Are you sure that you are not losing bits in these conversions?
 
-I think this is a matter what the committee should determine, but in 
-general I don't think it is OK to change the existing identifier.
+I believe your concerns are valid. Perhaps this was a stupid mistake I
+made. Initially, I proposed this patch because I noticed that other
+parts of the Linux kernel, such as the sram_reserve_cmp() function in
+drivers/misc/sram.c, directly used subtraction for comparisons
+involving u32. However, this approach could potentially lead to issues
+when the size of int is 2 bytes instead of 4 bytes. I think maybe we
+should consider dropping this patch. I apologize for proposing an
+incorrect patch.
 
-I also think even experimental values should be added to virtio spec at 
-an early stage unless such an "experiment" is done only on one laptop. 
-We can obsolete a capset anytime so it's more important to avoid 
-conflicts of capsets.
+Thanks,
+Kuan-Wei Chiu
+> 
+> >  }
+> >
+> >  static int nfit_mem_init(struct acpi_nfit_desc *acpi_desc)
+> > --
