@@ -2,192 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C437D0595
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFC57D059D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346727AbjJSXzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 19:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S1346719AbjJSX4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 19:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235572AbjJSXze (ORCPT
+        with ESMTP id S1346733AbjJSXzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 19:55:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DF7113
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:28 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9cb3a59a19so238562276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697759728; x=1698364528; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VT3/dh9UAKVu/RjZAMlDFfIDIF9ioyj3Z5qJzNl9A0E=;
-        b=q7hX96F2Eba7a+r+lS2/QCVAGPaOaAVcCTFhOI6xzb0yRoO0Ci/pSATynAWpSZwqNZ
-         AKuDG8uVfKmLYGmJ+VEQvmzgPP7xyIYTkgNNh+n8NUoOv41uYUMAiFOtafnVfuUE4eXF
-         ro9h/4+6CpH1QER77q0j0eHmIHLhjjdOCeSDkwI7nV8CSA2qUPpXGcoIFk2tHRuq/Qyx
-         g+geVjWfU56adJ/JgM93G0bb1uBepUG4rk3qAi44nW9JSbSGh/M6ByGRSCNxfD+CwgYl
-         kNresMNT//hgv9Yg9PqLiSQ2YI7rUMS5mMzhtpz7q5IgomEToQw6DCvK0dv260kL/PL4
-         ihUg==
+        Thu, 19 Oct 2023 19:55:53 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EFE11D
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:51 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6ce270bc429so344232a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697759728; x=1698364528;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VT3/dh9UAKVu/RjZAMlDFfIDIF9ioyj3Z5qJzNl9A0E=;
-        b=xDumkuZrEZs9JZLZU2L2IO9QWQyA0dCcJJAHLfFeYDMIkU7ZQZ3miCzYP01g4me8Vy
-         xTVXAdtywUEQAw1jKOqn2tRXm2sRUj5pnCsZz6zpgJIvg6mnxicQ+J0JwcSr8FiVhr9Z
-         9bObWsvBpJNDaFyEIV/ER03AvB/q8OzwzcjfKlAZiCCnk9f3XX85cJRhXLf+/MAGsmaz
-         EVR/v0F0+L9oYhK6dZD8GlgyLt6FoOEwW/GqZIh1WU6zCpxlZSV+AAPxG1HJlAgHSaLT
-         tnVi4Z/5vVC4YX5k/+rZVFm/9hlxj/IqMLw5MHHoc0aZDzBMWWx2y7sJxMM9AfvYVHmE
-         BYyA==
-X-Gm-Message-State: AOJu0YyEtmXO7f56SqnWApyD5u2r+BGMVOzs/gbdC/7ygODK/KCxbTkp
-        39ncCc6mkv3keOkok3FXeTGEDMt9ky8=
-X-Google-Smtp-Source: AGHT+IHZrJQjP9f5UAqT8B8i5/S+Wo6M6T0lWykyNkZvtfWkECs63EluSCkUjO3uzi/5x+WjjG7L2HusUKQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:134a:b0:d9a:c588:38a with SMTP id
- g10-20020a056902134a00b00d9ac588038amr7876ybu.4.1697759728085; Thu, 19 Oct
- 2023 16:55:28 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:55:26 -0700
-In-Reply-To: <20230911114347.85882-6-cloudliang@tencent.com>
-Mime-Version: 1.0
-References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-6-cloudliang@tencent.com>
-Message-ID: <ZTHB7sMqV1WlWpzf@google.com>
-Subject: Re: [PATCH v4 5/9] KVM: selftests: Test Intel PMU architectural
- events on fixed counters
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697759750; x=1698364550;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uWSEJ9xYUbBy9cya3rocEpazxIwASpRVIWUfmU2j3cg=;
+        b=tYW3Db3Kuw563KIvzh8pDLHDTuvNunVDnv/H42IJHL+ibp9CDDyOyQ7FmxbSozoKJS
+         qgsU359w/jmS+GtnQHcIRm82wwFP376g64jGBuzEHNrV/CVxBnzo3OmOnJoX6w9yZTYw
+         5c9USluRhb2Ued+5eSz9Vd1E8FZ1Yls6njb/XG01N5BUQLYhb+7r73kZDBHm95FsgsiA
+         IYBbT/oA8rO9a8tej9oGOS6TBkJWv7iOyWBGvkVF6RU6CxH0Brz8R/rAUEpQS506Q93t
+         V8hYpliYYi9uxQ2jUBcUdjgm4v7ZyJDcdHKF+9e3TyU8WsVrr0RSdXDFIXIQl3pWcVJN
+         tkcQ==
+X-Gm-Message-State: AOJu0YwIEPjl77BP/S0muJdO4jcQRESeT6AYtG0JkPCNBehTpeZUrL9l
+        eOpIEhK784pblbkNkoDA9Bxef49hiAm7jvjE0OdZweKfYenl
+X-Google-Smtp-Source: AGHT+IHDp+QRpTSXHAcCvBFlVlpv+f4IueDYjCTJbN2MkjKh0HDR371FxFBBYf9bJ1/GU7TLewxDySYgN7G3P+ho725Ufj7j0low
+MIME-Version: 1.0
+X-Received: by 2002:a9d:7518:0:b0:6b9:5156:a493 with SMTP id
+ r24-20020a9d7518000000b006b95156a493mr57782otk.4.1697759750681; Thu, 19 Oct
+ 2023 16:55:50 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:55:50 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000da80e106081a7eed@google.com>
+Subject: [syzbot] [btrfs?] WARNING: refcount bug in btrfs_evict_inode (2)
+From:   syzbot <syzbot+3968e6b73153451563ef@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023, Jinrong Liang wrote:
-> From: Jinrong Liang <cloudliang@tencent.com>
-> 
-> Update test to cover Intel PMU architectural events on fixed counters.
-> Per Intel SDM, PMU users can also count architecture performance events
-> on fixed counters (specifically, FIXED_CTR0 for the retired instructions
-> and FIXED_CTR1 for cpu core cycles event). Therefore, if guest's CPUID
-> indicates that an architecture event is not available, the corresponding
-> fixed counter will also not count that event.
-> 
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> ---
->  .../selftests/kvm/x86_64/pmu_counters_test.c  | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index f47853f3ab84..fe9f38a3557e 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -106,6 +106,28 @@ static void guest_measure_loop(uint8_t idx)
->  		GUEST_ASSERT_EQ(expect, !!_rdpmc(i));
->  	}
->  
-> +	if (this_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS) < 1)
+Hello,
 
-The ENTIRE point of reworking this_pmu_has() to be able to query fixed counters
-was to avoid having to open code checks like this.  And this has no basis in
-reality, the fixed counters aren't all-or-nothing, e.g. if the number of fixed
-counters is '1', then the below will explode because the test will try to write
-a non-existent MSR.
+syzbot found the following issue on:
 
-> +		goto done;
-> +
-> +	if (idx == INTEL_ARCH_INSTRUCTIONS_RETIRED)
-> +		i = 0;
-> +	else if (idx == INTEL_ARCH_CPU_CYCLES)
-> +		i = 1;
-> +	else if (idx == PSEUDO_ARCH_REFERENCE_CYCLES)
-> +		i = 2;
-> +	else
-> +		goto done;
-> +
-> +	wrmsr(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
-> +	wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, BIT_ULL(4 * i));
-> +
-> +	wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, BIT_ULL(PMC_IDX_FIXED + i));
-> +	__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
-> +	wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, 0);
-> +
-> +	GUEST_ASSERT_EQ(expect, !!_rdpmc(PMC_FIXED_RDPMC_BASE | i));
+HEAD commit:    9a3dad63edbe Merge tag '6.6-rc5-ksmbd-server-fixes' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=126116e5680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
+dashboard link: https://syzkaller.appspot.com/bug?extid=3968e6b73153451563ef
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139d2f55680000
 
-Pulling in context from the previous patch, "expect" is set based on the existence
-of the architectural event in CPUID.0xA.EBX.  That is completely bogus, especially
-for TSC reference cycles which has been incorrectly aliased to Topdown Slots.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/33c965444183/disk-9a3dad63.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/337f5c485902/vmlinux-9a3dad63.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c5f5b84773a/bzImage-9a3dad63.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/263d3fb612d5/mount_0.gz
 
-	expect = this_pmu_has_arch_event(KVM_X86_PMU_FEATURE(UNUSED, idx));
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3968e6b73153451563ef@syzkaller.appspotmail.com
 
-Nothing in the SDM says that an event that's marked unavailable in CPUID.0xA.EBX
-magically makes the fixed counter not work.  It's a rather bogus CPUID, e.g. I
-can't imagine real hardware has any such setup, but silently not counting is most
-definitely not correct.
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 1 PID: 5068 at lib/refcount.c:28 refcount_warn_saturate+0x144/0x1b0 lib/refcount.c:28
+Modules linked in:
+CPU: 1 PID: 5068 Comm: syz-executor.4 Not tainted 6.6.0-rc5-syzkaller-00267-g9a3dad63edbe #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:refcount_warn_saturate+0x144/0x1b0 lib/refcount.c:28
+Code: 0a 01 48 c7 c7 a0 30 59 8b e8 98 97 15 fd 0f 0b eb a9 e8 cf 74 4f fd c6 05 64 cc 46 0a 01 48 c7 c7 00 31 59 8b e8 7c 97 15 fd <0f> 0b eb 8d e8 b3 74 4f fd c6 05 45 cc 46 0a 01 48 c7 c7 40 30 59
+RSP: 0018:ffffc9000410f9c8 EFLAGS: 00010246
+RAX: 87d3e0a2fce9e500 RBX: ffff8880283d7108 RCX: ffff88807b601dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000003 R08: ffffffff81543302 R09: 1ffff1101732516a
+R10: dffffc0000000000 R11: ffffed101732516b R12: ffff888027e3c000
+R13: 0000000000000000 R14: ffff8880793fa1fe R15: 1ffff1100d13240f
+FS:  0000555555d3f480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555555d48938 CR3: 000000002a44c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_evict_inode+0x724/0x1000 fs/btrfs/inode.c:5305
+ evict+0x2a4/0x620 fs/inode.c:664
+ dispose_list fs/inode.c:697 [inline]
+ evict_inodes+0x5f8/0x690 fs/inode.c:747
+ generic_shutdown_super+0x9d/0x2c0 fs/super.c:672
+ kill_anon_super+0x3b/0x70 fs/super.c:1292
+ btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2144
+ deactivate_locked_super+0xa4/0x110 fs/super.c:481
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
+ task_work_run+0x24a/0x300 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0xde/0x100 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fdf2aa7de17
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007fff45f80ce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fdf2aa7de17
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff45f80da0
+RBP: 00007fff45f80da0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff45f81e60
+R13: 00007fdf2aac73b9 R14: 000000000006a985 R15: 0000000000000003
+ </TASK>
 
-Digging around in KVM, I see that KVM _deliberately_ provides this behavior.  That
-is just bogus.  If the guest can enable a fixed counter, then it should count.
-*If* the interpretation of the SDM is that the fixed counter isn't available when
-the associated architectural event isn't available, then the most sane behavior
-is to not allow the fixed counter to be enabled in the first place.  Silently
-doing nothing is awful.  And again the whole Topdown Slots vs. TSC ref cycles
-confusion means this is completely broken regardless of how one interprets the
-SDM.
 
-And the above on-demand creation of each KVM_X86_PMU_FEATURE() kinda defeats the
-purpose of using well-known names.  Rather than smush everything into the general
-purpose architectural events, which is definitely broken and arguably a straight
-violation of the SDM, I think the best option is to loosely couple the GP vs.
-fixed events so that we can reason about the high-level event type, e.g. to
-determine which events are "stable" enough to assert on.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-It's not the prettiest due to not being able to directly compare structs, but it
-at least allows checking for architectural events vs. fixed counters independently,
-without completely losing the common bits.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-#define X86_PMU_FEATURE_NULL						\
-({									\
-	struct kvm_x86_pmu_feature feature = {};			\
-									\
-	feature;							\
-})
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-static bool pmu_is_null_feature(struct kvm_x86_pmu_feature event)
-{
-	return !(*(u64 *)&event);
-}
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-static void guest_measure_loop(uint8_t idx)
-{
-	const struct {
-		struct kvm_x86_pmu_feature gp_event;
-		struct kvm_x86_pmu_feature fixed_event;
-	} intel_event_to_feature[] = {
-		[INTEL_ARCH_CPU_CYCLES]		   = { X86_PMU_FEATURE_CPU_CYCLES, X86_PMU_FEATURE_CPU_CYCLES_FIXED },
-		[INTEL_ARCH_INSTRUCTIONS_RETIRED]  = { X86_PMU_FEATURE_INSNS_RETIRED, X86_PMU_FEATURE_INSNS_RETIRED_FIXED },
-		/*
-		 * Note, the fixed counter for reference cycles is NOT the same
-		 * as the general purpose architectural event (because the GP
-		 * event is garbage).  The fixed counter explicitly counts at
-		 * the same frequency as the TSC, whereas the GP event counts
-		 * at a fixed, but uarch specific, frequency.  Bundle them here
-		 * for simplicity.
-		 */
-		[INTEL_ARCH_REFERENCE_CYCLES]	   = { X86_PMU_FEATURE_REFERENCE_CYCLES, X86_PMU_FEATURE_REFERENCE_CYCLES_FIXED },
-		[INTEL_ARCH_LLC_REFERENCES]	   = { X86_PMU_FEATURE_LLC_REFERENCES, X86_PMU_FEATURE_NULL },
-		[INTEL_ARCH_LLC_MISSES]		   = { X86_PMU_FEATURE_LLC_MISSES, X86_PMU_FEATURE_NULL },
-		[INTEL_ARCH_BRANCHES_RETIRED]	   = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED, X86_PMU_FEATURE_NULL },
-		[INTEL_ARCH_BRANCHES_MISPREDICTED] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED, X86_PMU_FEATURE_NULL },
-	};
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
