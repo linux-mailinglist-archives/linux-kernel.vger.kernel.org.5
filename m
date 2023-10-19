@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3577CF505
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477B17CF507
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345275AbjJSKVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S1345270AbjJSKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345273AbjJSKVV (ORCPT
+        with ESMTP id S1345249AbjJSKWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:21:21 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8798F11F;
-        Thu, 19 Oct 2023 03:21:18 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 71BA56000B;
-        Thu, 19 Oct 2023 10:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697710877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z2ydsXXBaNBGMFpju1QSEdkFSa9tXDTzQRBfxsG6otY=;
-        b=i7n7Db79nY/VWXnDbI9SYtt/qtDyAdtROrcJASSglaQq0S4kA0BCkd9sH+O7h8PCbPWgRZ
-        BpXnW+ddcdjoh8XF0Jfvl+SSKd8up7VDJ33nVsqTqeyOPogF8KIE627ydCwtKPpHU+RoBv
-        KEi8ACvEKF0qNEIXM7RYM2UDSL5qcQIoLZ+yoDDivxUHAAF13DeItCECs0Og7eLXlxPt1M
-        nmzbaaPynO6UmIY5CrH86Swy4LVOalHZaHWCJQA6lAPi1ILMRTfJuBZTTIeedopl1nQIIL
-        7YZtXtrsK7P+/y0jfv43LjGtkmThadBK6WfQviqnJzZs4wLIqhnPfW5JF+Z6yQ==
-Date:   Thu, 19 Oct 2023 12:21:14 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net v1 1/1] ethtool: fix clearing of WoL flags
-Message-ID: <20231019122114.5b4a13a9@kmaincent-XPS-13-7390>
-In-Reply-To: <20231019095140.l6fffnszraeb6iiw@lion.mk-sys.cz>
-References: <20231019070904.521718-1-o.rempel@pengutronix.de>
-        <20231019090510.bbcmh7stzqqgchdd@lion.mk-sys.cz>
-        <20231019095140.l6fffnszraeb6iiw@lion.mk-sys.cz>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 19 Oct 2023 06:22:11 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7121121
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:22:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1ca82f015e4so30841305ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697710929; x=1698315729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnGyqdrVN/X7X7Pb/6Zeyan6nuK9AbTDVs6f1urVbyU=;
+        b=ZH7QqMN57vWH5mEk3jIt/msMPtb+PCytDyDZ7DdWqwNq5ELCjtbxyx+pReR01zLzGF
+         GLy6j9mSQfK1pDm6HVkf2HdzlewapYeIVkVF92bTpQZAoDL8Cw32EDXFzG0gdvH229gT
+         pEp/qNB8xWirNUM+YD5DFEhaO1boXI5VMjVjNJy5eFz5Z5I6lhUwiQ81StEyoIhijziM
+         OvcX4VXCpPieBtW22liXVlAR6kgSHntkhi+zb4dg4AqFZtTPyuceVHwaYVjSxafZjYH5
+         KLS7Oxk9w3nA+bShKvRFIykGybcmlgmzCgjVXlB98M140UEgH/pXWCLeD2YNFIghobPW
+         7FLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697710929; x=1698315729;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cnGyqdrVN/X7X7Pb/6Zeyan6nuK9AbTDVs6f1urVbyU=;
+        b=MTHBX+PY2x1XNhY2ucXU3jJ84/eVxmVFASB7tmRU0u8I5topZb1BtnJP8JqOEpEWs9
+         /YqDKZRYtqd+cafYxGSU3DqorUZrt3CH8C1m3oDG6sY/sX/DATqSqR0OIH1U4GiRYPUg
+         ch60d1qjs2/n+NupWU90s5dZYDwVo2Lz1TFre9P9sl6g2km4zs46/xVC+eAQSHkGCyGN
+         m0uswaREeyn7qQi/wPx3y8rky56HTUjQzA05mOmqcVnWp0bIMpChmuoUPYGn+omrGYOy
+         Fk1S3KN4vozIr8xOjW7DXY0O0q3+AGsGS2g0Os1TyzePHIopArjbCNrmBzsmOddFJ9qb
+         YPxw==
+X-Gm-Message-State: AOJu0Yx/zDXGfcThdw2oIJAsOIoAMRsuIVB+Hw16M+yZNpTLnSSR4ziz
+        2fwjN2NbgJDMEvkUeiV4YWjn+Q==
+X-Google-Smtp-Source: AGHT+IHBrXouQ0fgZD6c9LDfPsD3tYKvzOaUPanQACJvsOHkDWcRYF0xvx6KPYOOVG0X1q8snvYDkA==
+X-Received: by 2002:a17:902:ef0e:b0:1ca:362b:1482 with SMTP id d14-20020a170902ef0e00b001ca362b1482mr1617202plx.67.1697710929252;
+        Thu, 19 Oct 2023 03:22:09 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id y6-20020a170902864600b001c0c86a5415sm1551706plt.154.2023.10.19.03.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 03:22:08 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nishanth Menon <nm@ti.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFT PATCH 0/2] OPP: Simplify required-opp handling
+Date:   Thu, 19 Oct 2023 15:51:59 +0530
+Message-Id: <cover.1697710527.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 11:51:40 +0200
-Michal Kubecek <mkubecek@suse.cz> wrote:
+Hello,
 
-> On Thu, Oct 19, 2023 at 11:05:10AM +0200, Michal Kubecek wrote:
-> > On Thu, Oct 19, 2023 at 09:09:04AM +0200, Oleksij Rempel wrote:  
-> > > With current kernel it is possible to set flags, but not possible to
-> > > remove existing WoL flags. For example:
-> > > ~$ ethtool lan2
-> > > ...
-> > >         Supports Wake-on: pg
-> > >         Wake-on: d
-> > > ...
-> > > ~$ ethtool -s lan2 wol gp
-> > > ~$ ethtool lan2
-> > > ...
-> > >         Wake-on: pg
-> > > ...
-> > > ~$ ethtool -s lan2 wol d
-> > > ~$ ethtool lan2
-> > > ...
-> > >         Wake-on: pg
-> > > ...
-> > >   
-> > 
-> > How recent was the kernel where you encountered the issue? I suspect the
-> > issue might be related to recent 108a36d07c01 ("ethtool: Fix mod state
-> > of verbose no_mask bitset"), I'll look into it closer.  
-> 
-> The issue was indeed introduced by commit 108a36d07c01 ("ethtool: Fix
-> mod state of verbose no_mask bitset"). The problem is that a "no mask"
-> verbose bitset only contains bit attributes for bits to be set. This
-> worked correctly before this commit because we were always updating
-> a zero bitmap (since commit 6699170376ab ("ethtool: fix application of
-> verbose no_mask bitset"), that is) so that the rest was left zero
-> naturally. But now the 1->0 change (old_val is true, bit not present in
-> netlink nest) no longer works.
+I wasn't able to test this locally (despite trying to hack it around) and need
+help from someone who is `virt_devs` field of `struct dev_pm_opp_config`.
 
-Doh I had not seen this issue! Thanks you for reporting it.
-I will send the revert then and will update the fix for next merge-window.
+I asked Mani earlier to test this, which he did, but unfortunately he could only
+half test it as the platform didn't have `virt_devs` configured.
 
-> To fix the issue while keeping more precise modification tracking
-> introduced by commit 108a36d07c01 ("ethtool: Fix mod state of verbose
-> no_mask bitset"), we would have to either iterate through all possible
-> bits in "no mask" case or update a temporary zero bitmap and then set
-> mod by comparing it to the original (and rewrite the target if they
-> differ). This is exactly what I was trying to avoid from the start but
-> it wouldn't be more complicated than current code.
-> 
-> As we are rather late in the 6.6 cycle (rc6 out), the safest solution
-> seems to be reverting commit 108a36d07c01 ("ethtool: Fix mod state of
-> verbose no_mask bitset") in net tree as sending a notification even on
-> a request which turns out to be no-op is not a serious problem (after
-> all, this is what happens for ioctl requests most of the time and IIRC
-> there are more cases where it happens for netlink requests). Then we can
-> fix the change detection properly in net-next in the way proposed in
-> previous paragraph (I would prefer not risking more intrusive changes at
-> this stage).
+Pushed here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/required-opps
+
+-------------------------8<-------------------------
+
+Configuring the required OPP was never properly implemented, we just
+took an exception for genpds and configured them directly, while leaving
+out all other required OPP types.
+
+Now that a standard call to dev_pm_opp_set_opp() takes care of
+configuring the opp->level too, the special handling for genpds can be
+avoided by simply calling dev_pm_opp_set_opp() for the required OPPs,
+which shall eventually configure the corresponding level for genpds.
+
+This also makes it possible for us to configure other type of required
+OPPs (no concrete users yet though), via the same path. This is how
+other frameworks take care of parent nodes, like clock, regulators, etc,
+where we recursively call the same helper.
+
+--
+Viresh
+
+Viresh Kumar (2):
+  OPP: Use _set_opp_level() for single genpd case
+  OPP: Call dev_pm_opp_set_opp() for required OPPs
+
+ drivers/opp/core.c     | 144 ++++++++++++++++++-----------------------
+ drivers/opp/of.c       |  35 +++++++---
+ drivers/opp/opp.h      |   8 +--
+ include/linux/pm_opp.h |   7 +-
+ 4 files changed, 98 insertions(+), 96 deletions(-)
+
+-- 
+2.31.1.272.g89b43f80a514
+
