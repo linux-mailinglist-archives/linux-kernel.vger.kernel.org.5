@@ -2,437 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976957CFD16
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59357CFCFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346345AbjJSOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        id S1346150AbjJSOjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346228AbjJSOlK (ORCPT
+        with ESMTP id S1346125AbjJSOjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:41:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361DD112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697726420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t4u2h1HzTTABfYud16tqHR2RJ4RPLkgiL6UA8xD9u/Y=;
-        b=MCgWJFBharvddE2OOKiJrZ3Gc0+fr17L002KV0/lBsnl3wxn82TQJ5xAylqH3JK0u9ety4
-        bD3KT/w1Jx/hzFxCKeSMTG7QJhsbrZRGoARB2oOOkFLaYqES2pwCgapNtCbii1JyZWzvCv
-        zc7dtq8Y35yJdlhrH0g7NBAI3oYkQw8=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-b2I2h0h7PNStwNAX4H7uVQ-1; Thu, 19 Oct 2023 10:40:13 -0400
-X-MC-Unique: b2I2h0h7PNStwNAX4H7uVQ-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7e4745acdso125790857b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:40:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697726413; x=1698331213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t4u2h1HzTTABfYud16tqHR2RJ4RPLkgiL6UA8xD9u/Y=;
-        b=bERCl5JveU+hlpPFFQ6ykqPQOqxGJkRQR+prtu+82fOEJ3p9K8MREfOV+zvw629aV3
-         HtPO234PHBQ4E26o96Dvq1bTurrsl0/Ol01rOSLSB30iPazsSXn0rU2+1mZj3hDWvPFS
-         /slivxPU7gJFtlfwTUt/AQ29v3hYiZt3HEmXRE06V9+KylCYulSa7rZvBJ8WVXrnKFgp
-         R7E6hj6SQMdB8xx5BdUEOp62maKsxvaPzUARfiCrUtZnIOeZy6K0OZdLKiA+u9hkGmXx
-         endHtxd/rBtCUK8fAQAMRBaeS/CZh2K6Bf9v74lEEWtPkR+wetPAxZAtVNyosmLodu1N
-         mD1g==
-X-Gm-Message-State: AOJu0YyP6tV/46G6jJBZWObLIOUik9oO7YJw5y/o/qxkg/UJ4v1luBUc
-        1PuKJsdvdl9Cb+8A0MmWZz9auOd265xWL+3+rWaf7dVY9IBW5O6T8TclAjHgipovVZbyXrQSfFh
-        kbYLYP60JnYqrEpxLV18s1EEyzBSq/IiPz9ZNddtC
-X-Received: by 2002:a0d:d5d0:0:b0:5a7:e3f9:a1fb with SMTP id x199-20020a0dd5d0000000b005a7e3f9a1fbmr2704412ywd.42.1697726412993;
-        Thu, 19 Oct 2023 07:40:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE27M216kJSXFNt+uYHfOsuZep9tXyo5gAkiPaF3DMAF3OpBXuk+Q0yMxoc7EtSGgqI1/CqV4nqmO12quP6FA4=
-X-Received: by 2002:a0d:d5d0:0:b0:5a7:e3f9:a1fb with SMTP id
- x199-20020a0dd5d0000000b005a7e3f9a1fbmr2704388ywd.42.1697726412574; Thu, 19
- Oct 2023 07:40:12 -0700 (PDT)
+        Thu, 19 Oct 2023 10:39:46 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2058.outbound.protection.outlook.com [40.107.95.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B492119;
+        Thu, 19 Oct 2023 07:39:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MPrNMPC+M+k+G1rZ4ggEVy7i34z1W8vNV/vSK1qMf4D17FUE2kKh3cM9eHLPBh+Mxjl5E5w26FSTBfc08CxBtIR/rgQwGUKR1pW1JFbaIsqULehV2w7twpy1LucrvygzOXJaumH/I0cXDXyEIGl0OIIUsjCPocUoMrrmFVK3I6b3Y+75Odh07iLL3IlYeyiGgKXiBgf83c/W/V0h9MqjQu+pmDD3DZqAL9i+sfNWybZQtFaZu+JFsSU3wAV7F0mXnL5+T+Yw3vkKT0eQ/0rX2Q7t2NKyZ5liRqHu6iwJb2cpQosuYoWjC6EqDW/EBz8yi+jaZqXKh3aSHr4D8ED5oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j6MWxtWYUdrRiOFIXGBotUQVd0GUrxxxpNL30rwxyME=;
+ b=L4/BPmztulpXiZR9KYq8eqa142Z5/s6KI5/lJncC4vd4K5xJlp1hlLpf19vZukgqBOEczevN8Dt21ZGSjaa8hEIgZEM0bDGhAMZM0axAXhR58qxeKBB4q1ITXzwjF1TsuJVJyPazlVpmXs2kH87c6+pUDZrlSGeDAPEJHR2tRKXql7aYf6nczm0V3ENWb5Yq5js4g6RtLBW88pk67+3Q7f+G5/LxriOzwvytn2My7uPcmXUXEowe+onW+SLfPQXmS1EZtlwZx/GNQyJjO3dlw11deXOwacUAaYIvHWT14wbyh9fljYj6H9+kkgLC4OdtTj1sDrncRHdEc/fVLsVz3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j6MWxtWYUdrRiOFIXGBotUQVd0GUrxxxpNL30rwxyME=;
+ b=ORihGNplh70RdJ3owXhAq5XqCQbJ4Ip9V/W5EZLjlrTasPEgqU3kGK0xq8Fc8+gYQLi1P1ahWh9K+BAnx3FwtTp2BK7bxxVRRqlAxuQz6ZfMw+KDAQpJVfdfvw7jboPVhqyTd8EsRnSigq1dZRT3P8v2+iOGemHC7QVB5yx7n+M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com (2603:10b6:208:c5::18)
+ by CY8PR12MB7436.namprd12.prod.outlook.com (2603:10b6:930:50::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Thu, 19 Oct
+ 2023 14:39:41 +0000
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::3008:be4:e9a4:2a98]) by MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::3008:be4:e9a4:2a98%7]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 14:39:40 +0000
+Message-ID: <c6d8b03a-ebc3-46a8-9262-d95a278ecd03@amd.com>
+Date:   Thu, 19 Oct 2023 15:39:35 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: w1: Add YAML DT schema for AMD AXI w1
+ host and MAINTAINERS entry
+Content-Language: en-GB
+To:     Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor@kernel.org>
+Cc:     thomas.delev@amd.com, krzysztof.kozlowski@linaro.org,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20231013093109.37165-1-kris.chaplin@amd.com>
+ <20231019142526.10592-1-kris.chaplin@amd.com>
+ <20231019142526.10592-2-kris.chaplin@amd.com>
+ <20231019-expand-supreme-ba8c17d05eb4@spud>
+ <9f0be064-c857-4310-8ca0-27c16b8c5757@amd.com>
+From:   Kris Chaplin <kris.chaplin@amd.com>
+In-Reply-To: <9f0be064-c857-4310-8ca0-27c16b8c5757@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0146.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::7) To MN2PR12MB3407.namprd12.prod.outlook.com
+ (2603:10b6:208:c5::18)
 MIME-Version: 1.0
-References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
- <1696928580-7520-3-git-send-email-si-wei.liu@oracle.com> <CACGkMEtkcyC54M_8A63uBEYjJP+EinLzTk3gP8CQ_rWs0Omt-Q@mail.gmail.com>
- <1bd79050-8eb5-49f6-9e58-6c7eb3fcab3e@oracle.com> <CACGkMEt_zvBM=ysbXZJEC1sdbCk=BpcWvtjeuP_L2WH4ke1dWQ@mail.gmail.com>
- <CAJaqyWf0AhsS6kaGUMVCosDjuRoeCAqO3OTVC=veqjV3jCqUjQ@mail.gmail.com>
- <8f8c0c28-59a4-489b-9276-fc3b5cfa8faa@oracle.com> <CACGkMEs0W1joaNh0-a27Nekxn8V8CmGgr99p+r60dA6sQeys5g@mail.gmail.com>
- <c9c819b9-4a63-4bb4-a977-881f6e653ed8@oracle.com> <CACGkMEuX8-T6BhbiqkTfF3NBoxS35zQ=k6Th=h0G5sDz4DV93Q@mail.gmail.com>
- <CACGkMEtZ_oEydqsvJh0-eaDh4q_KHq9fLPg1uy-W1m7K_g+1-w@mail.gmail.com>
- <d2b52f01-3d00-46ad-b58e-e23fd8a49e87@oracle.com> <CACGkMEvebhMo5dfcyq2MFhBvFVNbwrqVofJXaBe9Vmn1O4qVjA@mail.gmail.com>
- <4ba8b63f-61e8-44cf-8e01-e467bd27ed5b@oracle.com> <CACGkMEuTchn+QU1QFh98E3YfUJaUM6Vnm0ECtRbqMsA-uCR2uQ@mail.gmail.com>
-In-Reply-To: <CACGkMEuTchn+QU1QFh98E3YfUJaUM6Vnm0ECtRbqMsA-uCR2uQ@mail.gmail.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Thu, 19 Oct 2023 16:39:35 +0200
-Message-ID: <CAJaqyWdMPVUd_zjd0nkQKvDmG2HPe5DBS-w5=mx4qSPCqtDJwg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] vhost-vdpa: reset vendor specific mapping to initial
- state in .release
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, mst@redhat.com,
-        xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3407:EE_|CY8PR12MB7436:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d510f20-ccba-4159-945f-08dbd0b13a2a
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6hLQcNhrK3mCxrs9dz0drevJwgtfMoRcx3GsOIOrQt4LyF423UqqLuNL2zMfYjmSjdyMBL4CTymWpOIwastwGu2qPbr6WJk9DPa10Ib0D6hGtLA/a6QtKlxd6pnVeTZhQFzODSC0kuU4gUigQQwPjvi8ld/7DVMDXSVXAbFuD8u0C9OnFBiMkgglSE1kbHy1QCCR7LL0xtDSd9tiB8v5cUXsS2PlOBAY4ZMjqNGdben9N4ojlAx2Y/sKdKp1Jta90hkq+W92ivj9DmcvlEAivPq4TG42Y6RY6EiU4aBVWTyJ/ib0EVA9kXfog6ct5AIP6uLSb4SJSB9c+S8ucck16i6zVoyvbOtbY8W3c8nXzIiJ5qkwoYHG2weyOrJfoJWAugtG+s6Ute/P4tVyYDtLa60Bs/Zndt/T1zyWJJIBwMpzekpWgY28xJGVd1h2zgujUx7wjdGkzC94psOZTd/z8inoC/7QicTPkYsw149XxGDG6x71d7CiqMGqCWoS67OIk5CyqPIGgqIGmRAtH98pDANSMtEI9/NuagJbzfnFidQs7LnlgxvHJJB5ddTIe0HVz4HulfjJUMDqO3TSgvFmJ5BJ7qDFZuSF67tN++HL82S03acc+uFsl9Om7QxPngf2Mw5KPrIYpgy8aGl0oRs1eg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3407.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(346002)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(4744005)(316002)(110136005)(31696002)(66556008)(2906002)(86362001)(5660300002)(44832011)(8936002)(4326008)(8676002)(66476007)(36756003)(41300700001)(66946007)(2616005)(31686004)(38100700002)(6486002)(478600001)(6506007)(6666004)(6512007)(83380400001)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnY5NVN0dUZXWDdnOWZ0OFNLZzE4b3dQZFFvOW1FdHREZklFZVd1NlVUSXdy?=
+ =?utf-8?B?TmtLQVRqeFZERU42WEpGYVZqMmJuckVZQ01Tblg4cnNzd2dHUGFYcmFSL3FP?=
+ =?utf-8?B?YjZ6OEs2dWM2YnVBeExPYUJmeGV5VXAwejlzMjVVdEliZzE5cUhnQ3Zqc2po?=
+ =?utf-8?B?Ymw1UEw3dDkzTzlyRVdPVzFXL3hLQVR3MENyNzlMZTVINUZPUVJOVjEzSFZN?=
+ =?utf-8?B?VzhLUWtYSm9iRGdWQUdLalNYSjRkeTUraGhQYWNCR1FWa2RqSFNIOXoyMzM4?=
+ =?utf-8?B?L1hFazYweFJQMWg0Z0o3ejRiQytIYUMvY2ZJeGdTNmJDc3VKc3c4SHM5aFFx?=
+ =?utf-8?B?ZUhlb1Z4UDBqeTFxTllqSm80OVJiaWlCV2kzV0hDaDZ3cFBmU2l0b3FzdzRl?=
+ =?utf-8?B?ck5NeFRNL29KaG5ZNHB5RmJlR3p4TW5ieER5SnRObGEwSk9QK1I3OElHWHJC?=
+ =?utf-8?B?UzVKK3lTWnBlTFlicUxtRjZkRFBsNzFhbHlObHdIbHF5bE5GY2liMmM5dUJJ?=
+ =?utf-8?B?MFVvSG14NnRhUS96dGhqSGl6RHMydldlR0I4cVdHZXBrV1VUYXh5eUNrQkZr?=
+ =?utf-8?B?QVBEWS81V01XWHdBQnJrRVYxZkdJTTZDWHFGN3RBcXJFOUJEelNKc2s4Wk1i?=
+ =?utf-8?B?VFZyaU5FNktXWVdtc2VVaDJWTHZneHpqWHY1RkF1eHJiQWxWR2wzMHIwcXZ5?=
+ =?utf-8?B?SEV2dSs0cWp4MEVFeXYrSTBpMUVJS25pMmt3SmlsQ0NESW1SV0gyaFVmT09H?=
+ =?utf-8?B?allhaFg4L296UWxnb2lEVjlpeis5ejBOd0g2WUwzWHNEOU1KaFVOeEhMb2VM?=
+ =?utf-8?B?RkxBRDhvMXkvZEticFhIcnJZS1RsYmNoR2ZjdlZ5SndmWnlSS3pnWGVBcy81?=
+ =?utf-8?B?dFlkWjFHK0djUnRBL0diWGtkUHY0UzgwZUcrUFhuS1dkYm1pa2Z4ZXJJVEFF?=
+ =?utf-8?B?SXRuU3kvU3RWRW5zRHAwejZZTmJZTllLekg4MGdVM0s1NVJ2UGk4Z0JrSFNk?=
+ =?utf-8?B?b2M2UHhtU2I4ajlYYjN1ZTRWWG51UHg2dE1CRFVIbG82V1FiSERUNDFQaDZo?=
+ =?utf-8?B?WUZDaWtBdnQrSmQwZWhSTTVLUVJ6YlRjanlnek9FNkVmZERReUs4aXpJOWdQ?=
+ =?utf-8?B?cGx4bXJaajBVVEtvTlJLVkVlYm0rcG90b0VEQUdPQlNYUk41OTBRTW1pcWMw?=
+ =?utf-8?B?RXNnRDVJOGJneUl5bWdBeDdjcEZwWG1VNit3Q2JzOG14Y2g2ZWZtUm1VQ0k2?=
+ =?utf-8?B?Y2lMaVJpa3NQcVBHZi91MmFPU2Y2RWxkb2Q2R2xmbHArQVRMamtOa0FUNjI3?=
+ =?utf-8?B?M1U3aU10Rktua1VOeTU3a0grL1RiQmdyWlRueWZZTXRta2dnd1E2bXN6cmsy?=
+ =?utf-8?B?Lyt5VEVvQ0ptYXl2NjliUSttRjNDMWFEV0RaTDFkTkdpNUxIRFBEU2ZIOEtt?=
+ =?utf-8?B?OEdKb0VIbVh2WHB5R0dvamdFMVlPeFNQekxZTDNJYklJRVZGSm51dzEvNnBV?=
+ =?utf-8?B?WFUxVFJ2ak1SZXArQVVLcitzQ1c1WmFFbExkbjlNQzdZdng1SmlBK3ZlREdu?=
+ =?utf-8?B?dVdwODZBTWhCT2lic2xEVFpESW0wVEtmckdyeUw5Uk0yc1lpQ1pmeDRCVXNJ?=
+ =?utf-8?B?Y0RSMTBJNkZWOFg3UVVEemZsNmJqbk9OalJZRU8ySkV0VTRBNXFCVTE5dml1?=
+ =?utf-8?B?VDlqK3lrcTBRUGZWOUx5cElpMDFSSG1PblNHaXZxNUNPaU5oZ0JjUlBGdlo5?=
+ =?utf-8?B?eWRiMnlVbVF1Y2dtM2ErbUVTaExvWkVqWWdrYUhXcTl0MFdMd29TSitjMFN2?=
+ =?utf-8?B?STRLVWh6Zm5IZnlKQTdONzJIdlhLQ0JCd00yZjJpOGo4Z3ZsNTcvUVo2RDhh?=
+ =?utf-8?B?bDNPY1U4UFdEbUw1ZUtWN0RwMS83cklBT2pqcWw4cHNjTURxa29WaEhJWHA1?=
+ =?utf-8?B?VS9wYS93cDdSbWNUendFYm1vWkZpaGtFYSt2K2gvcm1BSFFOcHZRaTBHcFdT?=
+ =?utf-8?B?UWRGNVNXOWh3Y2tTdk4zU3U5TWNiRjJUVnI4K25RT1d3MEpCOVFUdHhVTW1X?=
+ =?utf-8?B?NStUN0xCdSt2a2xTUWtsOFo5TTl0MzBkR0tuTGxBR1paci9YSHFOZmxRS3NN?=
+ =?utf-8?Q?7xrU=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d510f20-ccba-4159-945f-08dbd0b13a2a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3407.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 14:39:40.8634
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5D+ReSHYGOwqcfAkoaO1b848dvsp0Mualb5j/fKTwN/Gj7ky1nJsQY74YopuBaVt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7436
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 10:27=E2=80=AFAM Jason Wang <jasowang@redhat.com> w=
-rote:
+Thank you Connor and Michal,
+>> I was happy with it before, and still am I guess, given that there is an
+>> IP version register that can be used to determine which version of the
+>> IP is in use.
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 >
-> On Thu, Oct 19, 2023 at 2:47=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.com=
-> wrote:
-> >
-> >
-> >
-> > On 10/18/2023 7:53 PM, Jason Wang wrote:
-> > > On Wed, Oct 18, 2023 at 4:49=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle=
-.com> wrote:
-> > >>
-> > >>
-> > >> On 10/18/2023 12:00 AM, Jason Wang wrote:
-> > >>>> Unfortunately, it's a must to stick to ABI. I agree it's a mess bu=
-t we
-> > >>>> don't have a better choice. Or we can fail the probe if userspace
-> > >>>> doesn't ack this feature.
-> > >>> Antoher idea we can just do the following in vhost_vdpa reset?
-> > >>>
-> > >>> config->reset()
-> > >>> if (IOTLB_PERSIST is not set) {
-> > >>>       config->reset_map()
-> > >>> }
-> > >>>
-> > >>> Then we don't have the burden to maintain them in the parent?
-> > >>>
-> > >>> Thanks
-> > >> Please see my earlier response in the other email, thanks.
-> > >>
-> > >> ----------------%<----------------%<----------------
-> > >>
-> > >> First, the ideal fix would be to leave this reset_vendor_mappings()
-> > >> emulation code on the individual driver itself, which already has th=
-e
-> > >> broken behavior.
-> > > So the point is, not about whether the existing behavior is "broken"
-> > > or not.
-> > Hold on, I thought earlier we all agreed upon that the existing behavio=
-r
-> > of vendor driver self-clearing maps during .reset violates the vhost
-> > iotlb abstraction and also breaks the .set_map/.dma_map API. This is
-> > 100% buggy driver implementation itself that we should discourage or
-> > eliminate as much as possible (that's part of the goal for this series)=
-,
+> I think we discussed that already that identification register should 
+> be described as the part of commit message to make this clear.
 >
-> I'm not saying it's not an issue, what I'm saying is, if the fix
-> breaks another userspace, it's a new bug in the kernel. See what Linus
-> said in [1]
->
-> "If a change results in user programs breaking, it's a bug in the kernel.=
-"
->
-> > but here you seem to go existentialism and suggests the very opposite
-> > that every .set_map/.dma_map driver implementation, regardless being th=
-e
-> > current or the new/upcoming, should unconditionally try to emulate the
-> > broken reset behavior for the sake of not breaking older userspace.
->
-> Such "emulation" is not done at the parent level. New parents just
-> need to implement reset_map() or not. everything could be done inside
-> vhost-vDPA as pseudo code that is shown above.
->
-> > Set
-> > aside the criteria and definition for how userspace can be broken, can
-> > we step back to the original question why we think it's broken, and wha=
-t
-> > we can do to promote good driver implementation instead of discuss the
-> > implementation details?
->
-> I'm not sure I get the point of this question. I'm not saying we don't
-> need to fix, what I am saying is that such a fix must be done in a
-> negotiable way. And it's better if parents won't get any burden. It
-> can just decide to implement reset_map() or not.
->
-> > Reading the below response I found my major
-> > points are not heard even if written for quite a few times.
->
-> I try my best to not ignore any important things, but I can't promise
-> I will not miss any. I hope the above clarifies my points.
->
-> > It's not
-> > that I don't understand the importance of not breaking old userspace, I
-> > appreciate your questions and extra patience, however I do feel the
-> > "broken" part is very relevant to our discussion here.
-> > If it's broken (in the sense of vhost IOTLB API) that you agree, I thin=
-k
-> > we should at least allow good driver implementations; and when you thin=
-k
-> > about the possibility of those valid good driver cases
-> > (.set_map/.dma_map implementations that do not clear maps in .reset),
-> > you might be able to see why it's coded the way as it is now.
-> >
-> > >   It's about whether we could stick to the old behaviour without
-> > > too much cost. And I believe we could.
-> > >
-> > > And just to clarify here, reset_vendor_mappings() =3D config->reset_m=
-ap()
-> > >
-> > >> But today there's no backend feature negotiation
-> > >> between vhost-vdpa and the parent driver. Do we want to send down th=
-e
-> > >> acked_backend_features to parent drivers?
-> > > There's no need to do that with the above code, or anything I missed =
-here?
-> > >
-> > > config->reset()
-> > > if (IOTLB_PERSIST is not set) {
-> > >        config->reset_map()
-> > > }
-> > Implementation issue: this implies reset_map() has to be there for ever=
-y
-> > .set_map implementations, but vendor driver implementation for custom
-> > IOMMU could well implement DMA ops by itself instead of .reset_map. Thi=
-s
-> > won't work for every set_map driver (think about the vduse case).
->
-> Well let me do it once again, reset_map() is not mandated:
->
-> config->reset()
-> if (IOTLB_PERSIST is not set) {
->     if (config->reset_map)
->           config->reset_map()
+Yes we did - thanks for the reminder, and my bad for the omission.
 
-To avoid new parent drivers to have this behavior if they need to
-implement reset_map,
-
-What if we add a new callback like "config->buggy_virtio_reset_map",
-different from regular reset_map callback at cleanup? Only mlx5 and
-vdpa_sim need to implement it, with a big warning, and new parent
-drivers can trust they'll never have the old bad behavior.
-
-> }
->
-> Did you see any issue with VDUSE in this case?
->
-> >
-> > But this is not the the point I was making. I think if you agree this i=
-s
-> > purely buggy driver implementation of its own, we should try to isolate
-> > this buggy behavior to individual driver rather than overload vhost-vdp=
-a
-> > or vdpa core's role to help implement the emulation of broken driver
-> > behavior.
->
-> As I pointed out, if it is not noticeable in the userspace, that's
-> fine but it's not.
->
-> > I don't get why .reset is special here, the abuse of .reset to
-> > manipulate mapping could also happen in other IOMMU unrelated driver
-> > entries like in .suspend, or in queue_reset.
->
-> Who can abuse reset here? It is totally under the control of
-> vhost-vDPA and it's not visible to uAPI. And we can fully control the
-> behaviour of vhost-vDPA.
->
-> > If someday userspace is
-> > found coded around similar buggy driver implementation in other driver
-> > ops, do we want to follow and duplicate the same emulation in vdpa core
-> > as the precedent is already set here around .reset?
->
-> I think so, have you seen the links I give you? If you want to go
-> through the one from Linus thread[1], you can see the one that unbreak
-> virtio-IOMMU[2]:
->
-> 1) Someday, we spot invalidate with size 0 is a bug
-> 2) We fix this bug by not allowing this
-> 3) But virtio-IOMMU userspace find that size 0 actually clean all the
-> IOTLB so it depends on the behaviour
-> 4) So the virtio-IOMMU userspace find it can't work after 2)
-> 5) Then we recover the behaviour before 2) via [2]
->
-> Another example is the IOTLB_MSG_V2, V1 suffers from in-stable ABI in
-> 32bit archs, most of the userspace survives since it never runs on
-> 32bit archs. The fix is to introduce a V2 but we will stick to V1 by
-> default if V2 is not acknowledged by the userspace.
->
-> I think the above 2 examples are sufficient for us to understand the
-> case. If not, I can help to clarify more since I'm involved in those 2
-> fixes.
->
-> > The buggy driver can fail in a lot of other ways indefinitely during
-> > reset, if there's a buggy driver that's already broken the way as how i=
-t
-> > is and happens to survive with all userspace apps, we just don't care
-> > and let it be.
->
-> Without IOTLB_PRESIST it doesn't break. With IOTLB_PERSIST and if the
-> reset_map() is done unconditionally, it can break. That's my point.
->
-> > There's no way we can enumerate all those buggy behaviors
-> > in .reset_map itself, it's overloading that driver API too much.
->
-> If it is not noticeable by userspace, we can do any fix at will. But
-> it is not, we don't have another choice. Especially considering the
-> cost is rather low.
->
-> > >> Second, IOTLB_PERSIST is needed but not sufficient. Due to lack of
-> > >> backend feature negotiation in parent driver, if vhost-vdpa has to
-> > >> provide the old-behaviour emulation for compatibility on driver's
-> > >> behalf, it needs to be done per-driver basis. There could be good
-> > >> on-chip or vendor IOMMU implementation which doesn't clear the IOTLB=
- in
-> > >> .reset, and vendor specific IOMMU doesn't have to provide .reset_map=
-,
-> > > Then we just don't offer IOTLB_PRESIST, isn't this by design?
-> > Think about the vduse case, it can work with DMA ops directly so doesn'=
-t
-> > have to implement .reset_map, unless for some specific good reason.
-> > Because it's a conforming and valid/good driver implementation, we may
-> > still allow it to advertise IOTLB_PERSIST to userspace.
->
-> I would like to know why this can't work in this case:
->
-> config->reset()
-> if (IOTLB_PERSIST is not set) {
->     if (config->reset_map)
->           config->reset_map()
-> }
->
-> > Which belongs to
-> > the 3rd bullet below:
-> >
-> > https://lore.kernel.org/virtualization/1696928580-7520-4-git-send-email=
--si-wei.liu@oracle.com/
-> >
-> > There are 3 cases that backend may claim this feature bit on:
-> >
-> > - parent device that has to work with platform IOMMU
-> > - parent device with on-chip IOMMU that has the expected
-> >    .reset_map support in driver
-> > - parent device with vendor specific IOMMU implementation
-> >    that explicitly declares the specific backend feature
-> >
-> > >
-> > >> we
-> > >> should allow these good driver implementations rather than
-> > >> unconditionally stick to some specific problematic behavior for ever=
-y
-> > >> other good driver.
-> > > Then you can force reset_map() with set_map() that is what I suggest
-> > > in another thread, no?
-> > This is exactly what I was afraid of that broken behavior emulation may
-> > become a dangerous slippery slope - in principle we should encourage
-> > good driver implementation, as they can work totally fine with older
-> > userspace. Why do they have to bother emulating broken behavior just
-> > because some other driver's misbehaving?
->
-> Please read the link [1], Linus has explained it.
->
-> > And what's the boundary for
-> > this hack, do drivers backed by platform IOMMU even have to emulate (if
-> > not why not, and is there substantial difference in between)?
->
-> The boundary is whether the behaviour change could be noticed but
-> userspace. And I've shown you it's not a burden with the pseudo codes.
-> If not, please explain why.
->
-> > After
-> > getting through all of this, do you still believe everything is just as
-> > easy and simple as what thought to be?
->
-> The truth is that bugs exist everywhere. We can't promise there's no
-> bug when developing an uAPI or subsystem. For kernel code, the bug
-> that touches uAPI might be fixed in a way that doesn't break existing
-> userspace. If you look at how downstream to maintain kABI, you will be
-> supersized furtherly.
->
-> >
-> > Btw, I thought I was expecting but still haven't got the clear answers
-> > to what was the goal to do all this, we spent a lot of time trying to
-> > unbreak userspace,
->
-> The code is pretty simple. But yes, the time spent on justifying it
-> might take some time. That's the community. People need time to
-> understand each other's points.
->
-> > but looks to me as if we were trying every possible
-> > way to break userspace
->
-> How could my suggestions break a userspace?
->
-> > or try to approximate to the same brokenness
-> > mlx5_vdpa may have caused to the userspace. What we will get eventually
-> > from these lengthy discussions?
->
-> Siwei, I'd really suggest you read the link I gave you. You may get
-> the answer. What's more, It doesn't cost too much then we know for
-> sure there would not be any issue, why not choose the hard way?
->
-> > On the other hand, if you think it from
-> > vhost-vdpa user perspective, you'll clearly see there's just a couple o=
-f
-> > ways to unbreak userspace from the internal broken map which is out of
-> > sync with vhost-vdpa iotlb after device reset.
->
-> Patches are more than welcomed.
->
-> > If this brokenness was
-> > something universally done from the vhost-vdpa layer itself, I'd feel
-> > it's more of a shared problem, but this is not the case I see it here.
-> > While the long standing mlx5_vdpa/vdpa_sim issue is 100% misuse of
-> > .reset op in a wrong way per IOMMU API definition. Why leaving this
-> > discrepancy to the individual driver is not even an option, I'm still
-> > not sure?
->
-> Sorry? I start with a switch in the driver, and then I try to avoid
-> that. And it seems you don't want a burden on the driver as well.
-> Where did you see I say we can't do that in the driver? What I
-> disagree with is to use a module parameter.
->
-> Even if I fail, it doesn't mean we can't do that in the driver code.
-> If you read the link[1] you can see the offending commit is a change
-> in uvcvideo driver.
->
-> Thanks
->
-> >
-> >
-> > Thanks,
-> > -Siwei
-> >
-> > >
-> > >> Then we need a set of device flags (backend_features
-> > >> bit again?) to indicate the specific driver needs upper layer's help=
- on
-> > >> old-behaviour emulation.
-> > >>
-> > >> Last but not least, I'm not sure how to properly emulate
-> > >> reset_vendor_mappings() from vhost-vdpa layer. If a vendor driver ha=
-s no
-> > >> .reset_map op implemented, or if .reset_map has a slightly different
-> > >> implementation than what it used to reset the iotlb in the .reset op=
-,
-> > > See above, for reset_vendor_mappings() I meant config->reset_map() ex=
-actly.
-> > >
-> > > Thanks
-> > >
-> > >> then this either becomes effectively dead code if no one ends up usi=
-ng,
-> > >> or the vhost-vdpa emulation is helpless and limited in scope, unable=
- to
-> > >> cover all the cases.
-> > >>
-> > >> ----------------%<----------------%<----------------
-> > >>
-> >
->
 
