@@ -2,150 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EDD7CFAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53E67CFABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345838AbjJSNR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        id S1345828AbjJSNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233202AbjJSNRX (ORCPT
+        with ESMTP id S233202AbjJSNSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:17:23 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5159F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:17:22 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JDFKRw031740;
-        Thu, 19 Oct 2023 13:17:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=EOgzvUQafFoswcAE2D3pCuOjLCzcXDLuWGtEGqOfXfI=;
- b=gd0mdJLseoT1YebgyINWi1IHUnXeGIwDzvyfySu/O+vBAgiKIBZed5aeDI+Q3DB6zD3+
- bd3cWyqBHVMNV6JBYeE8gSLSe86GAT3O6evmwbeDaK9LsnQVv8j1tmu4L/NXA+6HrR8Y
- 3M4bePQwTxRiOeir7PPXiEB+EhisCdbhyfRRJDV/KfCqnJBeAITUQwYxgVkV+sgVPgti
- EbkNRHcYne68ahHehkeyomy8tZH7yv6RanVLsuukqC7WE4sp5tG41kUieyh/9kAGeHdR
- 5vJjcc8WyyXsAucxKFZQ6dBcKTNi8foSHz1mKlap2c5fCSZ2MBg+GzMtXu8cVHMmBF4V zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu56003af-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:17:04 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JDFlMx001441;
-        Thu, 19 Oct 2023 13:17:03 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu5600375-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:17:03 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JBDErr020105;
-        Thu, 19 Oct 2023 13:17:01 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6angxs8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:17:01 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JDGxcC15401710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 13:16:59 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B47820043;
-        Thu, 19 Oct 2023 13:16:59 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D60320040;
-        Thu, 19 Oct 2023 13:16:56 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Thu, 19 Oct 2023 13:16:56 +0000 (GMT)
-Date:   Thu, 19 Oct 2023 18:46:55 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] powerpc/smp: Disable MC domain for shared
- processor
-Message-ID: <20231019131655.GJ2194132@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
- <20231018163751.2423181-5-srikar@linux.vnet.ibm.com>
- <87pm1b5ia7.fsf@mail.lhotse>
+        Thu, 19 Oct 2023 09:18:13 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344EC9F;
+        Thu, 19 Oct 2023 06:18:12 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so13664191a12.3;
+        Thu, 19 Oct 2023 06:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697721490; x=1698326290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOMFQ4KhhgNN9uiVFnKX2Q/Idi24XPkIW6kBXq+OOHE=;
+        b=TlmrLvULlTB+gpOGgRWxIu72f6iPqOEm44A4k/wIZMeqBmvifechdif/eT3IPvwdVN
+         k2FENZI0u+CzJNFgBHf/ZMMIZ4BaG1hvJjim7kRzAssOV1lV+ELhoc+t4cnLpI8ppKFV
+         Dm1MDOlPT2po/Qm2pu4pToKCi9SNeDnWMMuA+Tp/Nc7l0C/rBuul2s0bt4b/MX1PLSRJ
+         PYKGKhrMuxb2nafmFdXjDGzHWTf9DsaUcYAEdvv4QQdnu/VmkNSuKO21IR+ItcMh0Sfy
+         GjFlHNjoDGtvjHN8oi9leUEBEirJ6Wrf4mMw7VpZWo8V7fKW2w5tgk8YDPaMblyQiiDN
+         bi1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697721490; x=1698326290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dOMFQ4KhhgNN9uiVFnKX2Q/Idi24XPkIW6kBXq+OOHE=;
+        b=Oyx5UoFfxKqQbSef7q0y7pQbRPBUqJ0o7KbOI5mdeQNDluNTJhs8iR9KqrvQMQ6g6A
+         RrXfeIwbskrkA9V0+s9199lycWSQOp+S3TiWqZU8kmT/rKca8jQG5YT8SIy4+VbpypNu
+         kLymyQbtTo6xcR4wL/Grfx6/s9+taY4HOkPA+uq2alntSCqn4jC3HwNFGJsnTSMsQJ5j
+         uZh4B/2fYIFzRIw14Kd8NeCV87fEU01ueNds0F6PabVlyRUhMH/Eum/IJCk5j9lN+cOI
+         FPneJ2XTMqfqxVYPVMzLDmE3ZNIGucVzH5VqwKftw60iI1CmpIYH5YHJzOjzGCknSoUU
+         l2jA==
+X-Gm-Message-State: AOJu0YxuiTgzCjWO7F+9xPG6s2nk+cbxTAbuzBtFU2AzfAxBDsVlkj4a
+        09vXnKtwMO5wpg+yApsdY+w=
+X-Google-Smtp-Source: AGHT+IGeV/PAyeS5ZcSZyKizUQ5u38iNo53UbAIyLr9nNzHgjNSBIjErmYPUXpk3hLMaNF1I+onEEQ==
+X-Received: by 2002:a17:907:97d0:b0:9aa:63d:9ede with SMTP id js16-20020a17090797d000b009aa063d9edemr2084080ejc.9.1697721490291;
+        Thu, 19 Oct 2023 06:18:10 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id qt16-20020a170906ecf000b0099c53c44083sm3596979ejb.79.2023.10.19.06.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 06:18:09 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:18:06 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        =?utf-8?B?bsOnIMOcTkFM?= <arinc.unal@arinc9.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        John Crispin <john@phrozen.org>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH net-next 1/8] dt-bindings: net: Add missing
+ (unevaluated|additional)Properties on child node schemas
+Message-ID: <20231019131806.lbzydoplodybvb62@skbuf>
+References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pm1b5ia7.fsf@mail.lhotse>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -dcD9fF8egfTbF7mBqOUvkJVRQPDE2J_
-X-Proofpoint-GUID: 3bJV3pVYuW0ZlhfUtqPrhT849ube8twE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_11,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- impostorscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190114
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Michael Ellerman <mpe@ellerman.id.au> [2023-10-19 15:48:48]:
+Hi Rob,
 
-> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> > Like L2-cache info, coregroup information which is used to determine MC
-> > sched domains is only present on dedicated LPARs. i.e PowerVM doesn't
-> > export coregroup information for shared processor LPARs. Hence disable
-> > creating MC domains on shared LPAR Systems.
-> >
-> > Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > ---
-> >  arch/powerpc/kernel/smp.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> > index 498c2d51fc20..29da9262cb17 100644
-> > --- a/arch/powerpc/kernel/smp.c
-> > +++ b/arch/powerpc/kernel/smp.c
-> > @@ -1046,6 +1046,10 @@ static struct cpumask *cpu_coregroup_mask(int cpu)
-> >  
-> >  static bool has_coregroup_support(void)
-> >  {
-> > +	/* Coregroup identification not available on shared systems */
-> > +	if (is_shared_processor())
-> > +		return 0;
+On Mon, Oct 16, 2023 at 04:44:20PM -0500, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
 > 
-> That will catch guests running under KVM too right? Do we want that?
+> Add unevaluatedProperties or additionalProperties as appropriate.
 > 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> diff --git a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> index 833d2f68daa1..ea285ef3e64f 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> +++ b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+> @@ -61,17 +61,11 @@ properties:
+>  
+>    ethernet-ports:
+>      type: object
+> -    properties:
+> -      '#address-cells':
+> -        const: 1
+> -      '#size-cells':
+> -        const: 0
+> -
+> +    additionalProperties: true
+>      patternProperties:
+>        "^(ethernet-)?port@[0-4]$":
+>          type: object
+> -        description: Ethernet switch ports
+> -
+> +        additionalProperties: true
+>          properties:
+>            pcs-handle:
+>              maxItems: 1
 
-Only dedicated LPARS on PowerVM expose coregroup or Hemisphere information.
-Currently other systems including KVMs don't expose this information to the
-OS.
-
-> >  	return coregroup_enabled;
-> 
-> What does coregroup_enabled mean now?
-> 
-> I'd rather this was actually checking the presence of something, rather
-> than just hard coding that shared processor means no coregroup support.
-> 
-
-On a shared LPAR, the Hypervisors would like to have the flexibility to
-schedule LPAR on any core within the DIE without having to further think
-about the Hemisphere locality of the core.
-
-> cheers
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+For my edification, this patch removes #address-cells and #size-cells
+at the same time, because "additionalProperties: true" (which was also
+implied before) doesn't care if they aren't defined in this sub-schema,
+and they are defined through $ref: dsa.yaml#/$defs/ethernet-ports,
+right?
