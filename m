@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2DB7D02C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FEC7D02CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346556AbjJSTtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
+        id S1346536AbjJSTvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346517AbjJSTte (ORCPT
+        with ESMTP id S1346514AbjJSTvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:49:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB5711F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:49:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BB7C433C9;
-        Thu, 19 Oct 2023 19:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697744973;
-        bh=A7qQGX2x61HuX9WngSjrxy/tMdxThwG7cO+vlCnt/oI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lNgSoOfsk3ij3VEBkFziLTTOeodtOyWouwKEqFx+/Vc1mq4dpwxhRKSnXoRwsoucb
-         xmeYm9yqQYBthSax96jDtI9ODtXEb7yTCOZCjdebg76CWIbn9yQVDy2jFkZj8rYXd7
-         oNq9xzrIQ25Tmf5XiVN2Aee+jPubzu3B3kxz7bjVCA4KdCtkt8pFLhJZjYzNyONzZQ
-         PkVOy9fqQoNU8ok3jV6I4nU555Th406ewtAd/tBdhmST6Bpzl33dF6VUag7JudpLqA
-         tc87Na/V54yov3Z36qOUQBq0gpwPA3O3j6ZH+zXwVdSxO1X3vjDD/8mnwLNYKGgs1n
-         qQNgxlmk5W1XA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] mm/damon/core: avoid divide-by-zero from pseudo-moving window length calculation
-Date:   Thu, 19 Oct 2023 19:49:24 +0000
-Message-Id: <20231019194924.100347-6-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231019194924.100347-1-sj@kernel.org>
-References: <20231019194924.100347-1-sj@kernel.org>
+        Thu, 19 Oct 2023 15:51:14 -0400
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [IPv6:2001:41d0:203:375::d2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD08114
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:51:11 -0700 (PDT)
+Message-ID: <16e8546f-9da6-8bac-ad9e-5d38918d0783@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697745069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2J4Oasusyhp2LFkadlAimpdKLPnFnJeRghNdrohws88=;
+        b=CqTNJDoo/g34rriKps/fD8ErECUtOj6Xrq/jQDMyhCrYa72Hpi8zKa3WL4MScM4/G9Y1Sj
+        HF4kGzlskoVdmhUkgBBWm2kfHDLtdouadrDyGZfB7GdQ0DH+GGDQpCkGlMCFtJnLUh38+I
+        onKyOcWJRp2MHnxp2VPK/5+082OseQo=
+Date:   Thu, 19 Oct 2023 12:51:02 -0700
 MIME-Version: 1.0
+Subject: Re: [PATCH v7 11/11] selftests/bpf/sockopt: Add io_uring support
+Content-Language: en-US
+To:     Breno Leitao <leitao@debian.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, sdf@google.com, axboe@kernel.dk,
+        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
+        kuba@kernel.org, pabeni@redhat.com, krisman@suse.de,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>
+References: <20231016134750.1381153-1-leitao@debian.org>
+ <20231016134750.1381153-12-leitao@debian.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231016134750.1381153-12-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calculating the pseudo-moving access rate, DAMON divides some
-values by the maximum nr_accesses.  However, due to the type of the
-related variables, simple division-based calculation of the divisor can
-return zero.  As a result, divide-by-zero is possible.  Fix it by using
-damon_max_nr_accesses(), which handles the case.
+On 10/16/23 6:47 AM, Breno Leitao wrote:
+> Expand the sockopt test to use also check for io_uring {g,s}etsockopt
+> commands operations.
+> 
+> This patch starts by marking each test if they support io_uring support
+> or not.
+> 
+> Right now, io_uring cmd getsockopt() has a limitation of only
+> accepting level == SOL_SOCKET, otherwise it returns -EOPNOTSUPP. Since
+> there aren't any test exercising getsockopt(level == SOL_SOCKET), this
+> patch changes two tests to use level == SOL_SOCKET, they are
+> "getsockopt: support smaller ctx->optlen" and "getsockopt: read
+> ctx->optlen".
+> There is no limitation for the setsockopt() part.
+> 
+> Later, each test runs using regular {g,s}etsockopt systemcalls, and, if
+> liburing is supported, execute the same test (again), but calling
+> liburing {g,s}setsockopt commands.
+> 
+> This patch also changes the level of two tests to use SOL_SOCKET for the
+> following two tests. This is going to help to exercise the io_uring
+> subsystem:
+>   * getsockopt: read ctx->optlen
+>   * getsockopt: support smaller ctx->optlen
 
-Note that this is a fix for a commit that not in the mainline but mm
-tree.
-
-Fixes: ace30fb21af5 ("mm/damon/core: use pseudo-moving sum for nr_accesses_bp")
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
-
-Note that this is for a patch in mm-stable that not yet merged into the
-mainline.
-
- mm/damon/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index e194c8075235..aa2dc7087cd9 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -1665,7 +1665,7 @@ void damon_update_region_access_rate(struct damon_region *r, bool accessed,
- 	 * aggr_interval, owing to validation of damon_set_attrs().
- 	 */
- 	if (attrs->sample_interval)
--		len_window = attrs->aggr_interval / attrs->sample_interval;
-+		len_window = damon_max_nr_accesses(attrs);
- 	r->nr_accesses_bp = damon_moving_sum(r->nr_accesses_bp,
- 			r->last_nr_accesses * 10000, len_window,
- 			accessed ? 10000 : 0);
--- 
-2.34.1
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
