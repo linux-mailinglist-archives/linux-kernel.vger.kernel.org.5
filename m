@@ -2,122 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99BC7D02EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3E57D02EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346514AbjJSUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
+        id S1346543AbjJSUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbjJSUBO (ORCPT
+        with ESMTP id S230079AbjJSUBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:01:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278AF114;
-        Thu, 19 Oct 2023 13:01:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F3FCC433C8;
-        Thu, 19 Oct 2023 20:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697745672;
-        bh=XskOtb4wMb4vHQ2dkKFABI8QaThcTeUIs3sr/sQXEts=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fRhbRS8Pq6bhMFHVAeN8LfFJ1wNqJlqEDWh0zxXDNhxZkhkJfbJJZcTFgGnct2pKx
-         v2VJ2U91+pjJO/ZfAMyUCp2FRVzQDFfZ3oHdcAeWMRiZP2mSWe+vHJsW54JrmjmwF6
-         COpEJCWqrC9tq7Ed0hdbILHLDlICUgX4dmlvA5m7q0TZLfhV26LEBuqv2kKnh2RLVj
-         /fs9XSdZNznOOQwWlKLVpstTlHiAeMVrg5OHuIZSOjTK1+Rnv3r47HsuPb8vN9u6Sd
-         dxTS1ExGIHgLyohCzcPFdPYFfzyyzrjNJoZe0dnK15CXe6Z9ppuXMCh6PXt3Z4pWc2
-         7fQnzYtuSkbsg==
-Date:   Thu, 19 Oct 2023 15:01:10 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Alistair Francis <alistair23@gmail.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, chaitanyak@nvidia.com,
-        rdunlap@infradead.org, Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v9 2/3] PCI/DOE: Expose the DOE features via sysfs
-Message-ID: <20231019200110.GA1410324@bhelgaas>
+        Thu, 19 Oct 2023 16:01:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AC411F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697745679; x=1729281679;
+  h=from:to:cc:subject:references:date:message-id:
+   mime-version;
+  bh=eTrNGgnGoiSbHPAIyEZREiSS1yun9wOTRVlg/YxilNE=;
+  b=QwpVSNB1ZleT+k0vxBpp9QwkFvN295nsAZPlnfA1+d8tRv6+5ypwV3dl
+   DdfTP3D0yLpWOdWZbNaRfTv3JjQUbae3hsTSBxjPxBdIZZvXbhBCSXuqQ
+   sFyiw6xtNFVyH739DCXUjjAucdKDTTMc8uKPoBvZe6koSBjBfjrye/VDH
+   Zb021Tn7+e8qG5OAW4M7NTjF2SSjMDk9dLM4c6HnNYEqKWIEVpsKF8RUP
+   ylf7GxGJVPBMgnfb513UCM0+6M67yhie/1vcfqL5hP77II8254/v55VfH
+   5SBfc04z1rLJvsUFUqJdsgmOPzhdp78Ru4SveRvES0jexXk+BxQmAgldu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="376734033"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="376734033"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 13:01:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="822963660"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="822963660"
+Received: from driley-mobl2.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.212.86.49])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 13:01:17 -0700
+From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
+To:     Adam Dunlap <acdunlap@google.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, <kirill.shutemov@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Felix Held <felix-coreboot@felixheld.de>
+Subject: Re: Reserved bits and commit x86/sev-es: Set x86_virt_bits to the
+ correct value straight away, instead of a two-phase approach
+References: <87r0lry3bs.fsf@jcompost-mobl.amr.corp.intel.com>
+        <CAMBK9=ZAzKyxuxdsDXNeA8xyPufwFoMxJaHwuh-z+eOmrGD1qQ@mail.gmail.com>
+        <87fs27xzxz.fsf@jcompost-mobl.amr.corp.intel.com>
+Date:   Thu, 19 Oct 2023 13:01:16 -0700
+Message-ID: <87jzribcvn.fsf@jcompost-mobl.amr.corp.intel.com>
+Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara,
+        CA 95052. USA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019193246.GA16112@wunner.de>
+Content-Type: multipart/mixed; boundary="=-=-="
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 09:32:46PM +0200, Lukas Wunner wrote:
-> On Thu, Oct 19, 2023 at 11:58:29AM -0500, Bjorn Helgaas wrote:
-> > On Fri, Oct 13, 2023 at 01:41:57PM +1000, Alistair Francis wrote:
-> > > +	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-> > > +		xa_for_each(&doe_mb->feats, j, entry)
-> > > +			return a->mode;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > 
-> > The nested loops that don't test anything look a little weird and
-> > maybe I'm missing something, but this looks like it returns a->mode if
-> > any mailbox with a feature exists, and 0 otherwise.
-> > 
-> > Is that the same as this:
-> > 
-> >   if (pdev->doe_mbs)
-> >     return a->mode;
-> > 
-> >   return 0;
-> > 
-> > since it sounds like a mailbox must support at least one feature?
-> 
-> In theory it's the same, in practice there *might* be non-compliant
-> devices which lack support for the discovery feature.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is there any point in setting ->doe_mbs if there's no feature?
+"Compostella, Jeremy" <jeremy.compostella@intel.com> writes:
 
-> > > +		attrs[i].attr.name = kasprintf(GFP_KERNEL,
-> > > +					       "0x%04lX:%02lX", vid, type);
-> > 
-> > What's the rationale for using "0x" on the vendor ID but not on the
-> > type?  "0x1234:10" hints that the "10" might be decimal since it lacks
-> > "0x".
+> Adam Dunlap <acdunlap@google.com> writes:
+>
+>> On Wed, Oct 18, 2023 at 3:27=E2=80=AFPM Compostella, Jeremy
+>> <jeremy.compostella@intel.com> wrote:
+>>> In the light of commit fbf6449f84bf I am wondering what is the right
+>>> approach to fix the regression for AMD and then fix the MTRR check for
+>>> Intel. Should we introduce a new cpu_dev callback to read the number
+>>> of reserved bits and take it into account in get_cpu_address_sizes() ?
+>>
+>> I think this approach makes sense. It seems better to have one
+>> function that simply sets it to the right thing rather than setting
+>> it to one value and then adjusting it (fbf6449f84bf did that for
+>> x86_virt_bits, although it caused some other problems). However, I'm
+>> not sure it would solve the problem your original patch tried to
+>> fix, since x86_phys_bits would still be set after intel_init, which
+>> apparently uses the value.
+>
+> Using cscope, I don't see any evidence of any vendor init code using
+> `x86_phys_bits'. To my knowledge, they seem to be only setting
+> x86_phys_bits or adjusting it.
+>
+>
+>> Would it work to move the call to get_cpu_address_sizes() to nearer
+>> the start of early_identify_cpu()?  We could also add a cpu_dev
+>> callback so it doesn't need the 2-phase approach, but this would at
+>> least bring it back into parity with v6.6-rc6.
+>
+> Such a change should resolve the issue I reported on this thread. I
+> can run a quick smoke test later tonight or tomorrow.
 
-This is my main question.  Seems like it should be both or neither.
+It turns out that your suggestion does not work because
+`get_cpu_address_sizes()' relies on `c->extended_cpuid_level' (set by
+`get_cpu_cap(c)') and the `X86_FEATURE_CPUID' cpu capability (set by
+`setup_force_cpu_cap(X86_FEATURE_CPUID)').
 
-> > I try hard to avoid calling *anything* from the
-> > pci_create_sysfs_dev_files() path because it has the nasty
-> > "sysfs_initialized" check and the associated pci_sysfs_init()
-> > initcall.
-> 
-> What's the purpose of sysfs_initialized anyway?
-> 
-> It was introduced by this historic commit:
-> https://git.kernel.org/tglx/history/c/f6d553444da2
-> 
-> Can PCI_ROM_RESOURCEs appear after device enumeration but before
-> the late_initcall stage?
-> 
-> If sysfs_initialized is only needed for PCI_ROM_RESOURCEs, can we
-> constrain pci_sysfs_init() to those and avoid creating all the
-> other runtime sysfs attributes in the initcall?
+The following change works perfectly well for me:
 
-I think pci_sysfs_init() is already constrained to only the BARs and
-ROM.  Constraining it to only the ROM would be an improvement, but I'd
-really like to get rid of it altogether.  Krzysztof W. moved a lot of
-stuff out of pci_sysfs_init() a while ago, but the BARs are harder
-because of some arch/alpha wrinkles, IIRC.
+,----
+| @@ -1589,6 +1591,7 @@ static void __init early_identify_cpu(struct cpuinf=
+o_x86 *c)
+| 		get_cpu_vendor(c);
+| 		get_cpu_cap(c);
+| 		setup_force_cpu_cap(X86_FEATURE_CPUID);
+| +		get_cpu_address_sizes(c);
+| 		cpu_parse_early_param();
+|=20
+| 		if (this_cpu->c_early_init)
+| @@ -1603,7 +1606,6 @@ static void __init early_identify_cpu(struct cpuinf=
+o_x86 *c)
+| 		setup_clear_cpu_cap(X86_FEATURE_CPUID);
+| 	}
+|=20
+| -	get_cpu_address_sizes(c);
+|=20
+| 	setup_force_cpu_cap(X86_FEATURE_ALWAYS);
+`----
 
-I think the reason for pci_sysfs_init() exists in the first place is
-because those resources may be assigned after pci_device_add(), and
-(my memory is hazy here) it seems like changing the size of binary
-attributes is hard, which might fit with the
-pci_remove_resource_files() and pci_create_resource_files() in the
-resource##n##_resize_store() macro:
+Looking at fbf6449f84bf I am under the impression it should not hurt
+it either but I'll let you verify.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci-sysfs.c?id=v6.5#n1440
+--=20
+*Jeremy*
+/One Emacs to rule them all/
 
-Bjorn
+--=-=-=--
