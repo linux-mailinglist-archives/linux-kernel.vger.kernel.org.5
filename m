@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1EA7CF066
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3947CF06A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344684AbjJSGtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S1344731AbjJSGt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbjJSGto (ORCPT
+        with ESMTP id S232854AbjJSGty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:49:44 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD2211D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:49:41 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0ecb9a075so53640575ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:49:41 -0700 (PDT)
+        Thu, 19 Oct 2023 02:49:54 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CAB129
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:49:52 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1ca82f015e4so29325485ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:49:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697698181; x=1698302981; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697698192; x=1698302992; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lalSj6IAXslW9mGJi1k5+HZnt4EEAFejpUpcXFOh2Dc=;
-        b=xhkeaboKH6I+NJ07NMjmj0K+6pyRvlsF+STl+Dd48YDfjm+E0lT/JAKaseydAzm8TT
-         Tr2O+pLilQUpC5puef9z5uaaui225Upo/TjWy7Lv8d8JMuHZa6SnbmJx9ljcn+mHww3Y
-         HsO1pBp2Nqr/o2xa4YDLch2EMDtVN4WZg4x2fc2F8hPjiquvNEvVnzSmF22RoG1bN6hM
-         7bo1X9XEaqEiTgiCt6TTNCVj4Y9Iod0xORRwq+OPzKPHRcBXCY47C4wvcfh5ra9VNN0A
-         aWw4bpm6ZvQv4ailxXlEoLBKHctjj97QV5jBRCQIWiZbH3lybOrqm7iuthlOrvJ3tVf8
-         NC9w==
+        bh=iypGtD7DPCwKUP/xzbPis5St8GeNHklM3nIt7ym+WcE=;
+        b=jqYhMhwqKtBqd6MLEsiwgDyQ1tlPZvFIDZJM+Lxk0PbkrrbvJZEWEwHrrNsK24cefg
+         fOXP1Ryl8JjREr7Y298KJ3YoBQkOcslHc8OqTgr3LzBQfychKLozzPX26K4A2mfSKFI1
+         nO4UaWQ1INbo3Vc9XdgJf8TAGW23SzA3wi/E7Mt187+n2j1WoTemvlFqtA8fjogEQ3Hf
+         Q0pkdqKTbTOMYaKtCc4vhw46QyFd3EXPOOagpjgwNROvrTL+a1rWfN/pVgmkVOr8mQn+
+         dn7C8l/hLSo6ccuxBtXBtcr00YJ9YqcYuuHk8UVvaEMOeRjuTqF2jEGuUQwkEvDH7b0h
+         xOQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697698181; x=1698302981;
+        d=1e100.net; s=20230601; t=1697698192; x=1698302992;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lalSj6IAXslW9mGJi1k5+HZnt4EEAFejpUpcXFOh2Dc=;
-        b=iG+6w2DLNFmejR04BwJ/6z3Lsb/CvXLmcQWDXFzhlOaAFKk5hVLmvbDguJu0sKdfYK
-         NhRDnF8DSZ1HMDvUPFBa/FbVDBygH7cB+FMgeKzbE9/ZlDJ3WqkAiAOsZFSwm+NuE2Sp
-         OkPWZjSwYGsqSs53KR06LTIsHwA5Tbr5RlH7vkRkgu7dEH8paSzLAo1vs1sR9rWKkqHM
-         GuqeRMTtK/PyuvzqUJy7vzxeRYkKV8J14B41b2YWTZ/MJhuUWjvpVzhYX48nqDWyHZ32
-         R1BbH3K36dE9gY9hK5HrNIcT9KPjfYzC4y0nMp39pbIQ2rimGuzVVMG4pd3Ybo4aujoc
-         /eSA==
-X-Gm-Message-State: AOJu0YwZ4tDv0BpiPhVoKZ/icjV66IZ2fpapK/skqtvT41axQcAAmJ4Y
-        gvswcqPaUHeZMI7KeMaxE7CoAA==
-X-Google-Smtp-Source: AGHT+IEzNBsYC3TcMAHNGkSkQmxLGmeqfkA2Sc5YzA38i9N4A9xIDm5+uzeBzi1nomRlUiFu+NaVrg==
-X-Received: by 2002:a17:90b:e13:b0:271:7cd6:165d with SMTP id ge19-20020a17090b0e1300b002717cd6165dmr1273479pjb.26.1697698181147;
-        Wed, 18 Oct 2023 23:49:41 -0700 (PDT)
+        bh=iypGtD7DPCwKUP/xzbPis5St8GeNHklM3nIt7ym+WcE=;
+        b=hmEU50gZ5wpaJtIIOLZibyplJ9w5jPSJmmPRmthQIejctQAOVap0g7IZD7a1a6e4Lx
+         X3tA6j0s4ZnhJDoRhfn91fvtr60lP0W+mb5xk9lg5P2rZoLaaDCcJCTHqdWjVx3yM3Jk
+         AztVhdyrUU3iKZawm/TFrDo2bNL+WQEvvQGl18eE46oQXgsm81hGvbOGFZ5xLSUYaXKs
+         Aiu23HyP+MYM67iDFrIYERFasbd+GQH33Cf2vErGaSP5NojQwoX7e9DNf1YJ/OLI2NtZ
+         Vbw6GlaxZIRQUwFQ0qLtZs7TnWJ9Nojp7CvUtdJC2KgPdeBBOyxfDBSYiR6/pzfR06Ye
+         QD5Q==
+X-Gm-Message-State: AOJu0YxcXpKZGddBXBPSV55Gm3Kcs9MXUEQFf4fDUbofsIMKETStCTQS
+        P6G2YRaNq1vokg1YDwOHUf6DTA==
+X-Google-Smtp-Source: AGHT+IH82EMATIWoNzRSDE2s4yk4Kx2MxpgdCm4diwfW3pESmg8Yb6n4T8gXs9GRjAhlBrLMIO5LWQ==
+X-Received: by 2002:a17:903:210d:b0:1c9:97b7:b3cc with SMTP id o13-20020a170903210d00b001c997b7b3ccmr1170380ple.47.1697698192143;
+        Wed, 18 Oct 2023 23:49:52 -0700 (PDT)
 Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id y24-20020a17090aa41800b00277371fd346sm921819pjp.30.2023.10.18.23.49.39
+        by smtp.gmail.com with ESMTPSA id b5-20020a170903228500b001c74876f018sm1077747plh.18.2023.10.18.23.49.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 23:49:40 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 12:19:38 +0530
+        Wed, 18 Oct 2023 23:49:51 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 12:19:49 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Robert Marko <robimarko@gmail.com>
 Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -57,18 +57,18 @@ Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: cpufreq: qcom-cpufreq-nvmem: document
- IPQ6018
-Message-ID: <20231019064938.am5qbaqsio7h7zal@vireshk-i7>
+Subject: Re: [PATCH 2/3] cpufreq: qcom-nvmem: add support for IPQ6018
+Message-ID: <20231019064949.ly6e6c5u4g7jobjm@vireshk-i7>
 References: <20231016175532.2081344-1-robimarko@gmail.com>
+ <20231016175532.2081344-2-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016175532.2081344-1-robimarko@gmail.com>
+In-Reply-To: <20231016175532.2081344-2-robimarko@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,25 +76,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16-10-23, 19:55, Robert Marko wrote:
-> Document IPQ6018 compatible for Qcom NVMEM CPUFreq driver.
+> IPQ6018 SoC series comes in multiple SKU-s, and not all of them support
+> high frequency OPP points.
+> 
+> SoC itself does however have a single bit in QFPROM to indicate the CPU
+> speed-bin.
+> That bit is used to indicate frequency limit of 1.5GHz, but that alone is
+> not enough as IPQ6000 only goes up to 1.2GHz, but SMEM ID can be used to
+> limit it further.
+> 
+> IPQ6018 compatible is blacklisted from DT platdev as the cpufreq device
+> will get created by NVMEM CPUFreq driver.
 > 
 > Signed-off-by: Robert Marko <robimarko@gmail.com>
 > ---
->  .../devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml          | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml b/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
-> index 7391660a25ac9..f929892d654ea 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
-> +++ b/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
-> @@ -28,6 +28,7 @@ select:
->            - qcom,apq8064
->            - qcom,apq8096
->            - qcom,ipq5332
-> +          - qcom,ipq6018
->            - qcom,ipq8064
->            - qcom,ipq8074
->            - qcom,ipq9574
+>  drivers/cpufreq/cpufreq-dt-platdev.c |  1 +
+>  drivers/cpufreq/qcom-cpufreq-nvmem.c | 58 ++++++++++++++++++++++++++++
+>  2 files changed, 59 insertions(+)
 
 Applied. Thanks.
 
