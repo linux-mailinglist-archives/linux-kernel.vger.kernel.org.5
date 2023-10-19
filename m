@@ -2,160 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BFE7CF8C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6245A7CF8C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345502AbjJSM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S233202AbjJSM3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbjJSM2e (ORCPT
+        with ESMTP id S233195AbjJSM3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:28:34 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB16EBE;
-        Thu, 19 Oct 2023 05:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KAdaUAiW/PLAxqjMWUUOBL8HfrZqlFhYhyfomShrMW8=; b=kCo5OFMFje7kyh0bUXC/x92Ir2
-        b1s87iw/epDqvYES790GOuPO0fku4ZA8VcFd/q5/2PjYxHXU1Ai0byK90naR/9nbinCMPs+rxjLLL
-        ohkIsXUyngQfbwQrdzHMeh1liHmWBCp2V8W4GeGrDBZJt2YqYqfQ1GtJwiZJD+OiUUqOGdXdUtwP5
-        mlhpCvrfF9QB3BxEoh+VyI+bbRtfnrMZ1u4mM/gGwkzmJDw3qcMl99vQWqFQ+IWLvCbwMwEa5RYhq
-        SYDSgu8Bszfm/TotWw2Qj9tlyeLsWXg6U5gaoF/LQrotd1OAervoSh54XryDf9JNrPpNGeT8+CLVp
-        S+oLYSog==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57908)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qtS8Y-00072G-24;
-        Thu, 19 Oct 2023 13:28:26 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qtS8Z-0000Rd-Tt; Thu, 19 Oct 2023 13:28:27 +0100
-Date:   Thu, 19 Oct 2023 13:28:27 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
+        Thu, 19 Oct 2023 08:29:13 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7DDBE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:29:10 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtS8y-0006Kr-D7; Thu, 19 Oct 2023 14:28:52 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtS8x-002mri-Ea; Thu, 19 Oct 2023 14:28:51 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtS8x-00528Y-1F;
+        Thu, 19 Oct 2023 14:28:51 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
         Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Gregory Clement <gregory.clement@bootlin.com>
-Subject: Re: [PATCH net-next v4 1/7] dt-bindings: net: dsa: Require ports or
- ethernet-ports
-Message-ID: <ZTEg62nZtYXW2Uid@shell.armlinux.org.uk>
-References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
- <20231018-marvell-88e6152-wan-led-v4-1-3ee0c67383be@linaro.org>
- <169762516670.391804.7528295251386913602.robh@kernel.org>
- <20231019-repacking-scrunch-f2435c2fd7e8@spud>
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v6 0/9] net: dsa: microchip: provide Wake on LAN support
+Date:   Thu, 19 Oct 2023 14:28:41 +0200
+Message-Id: <20231019122850.1199821-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019-repacking-scrunch-f2435c2fd7e8@spud>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 01:03:41PM +0100, Conor Dooley wrote:
-> On Wed, Oct 18, 2023 at 05:32:48AM -0500, Rob Herring wrote:
-> > 
-> > On Wed, 18 Oct 2023 11:03:40 +0200, Linus Walleij wrote:
-> > > Bindings using dsa.yaml#/$defs/ethernet-ports specify that
-> > > a DSA switch node need to have a ports or ethernet-ports
-> > > subnode, and that is actually required, so add requirements
-> > > using oneOf.
-> > > 
-> > > Suggested-by: Rob Herring <robh@kernel.org>
-> > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > 
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > 
-> > yamllint warnings/errors:
-> > ./Documentation/devicetree/bindings/net/dsa/dsa.yaml:60:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
-> > ./Documentation/devicetree/bindings/net/dsa/dsa.yaml:62:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
-> > 
-> > dtschema/dtc warnings/errors:
-> > Traceback (most recent call last):
-> >   File "/usr/local/bin/dt-doc-validate", line 64, in <module>
-> >     ret |= check_doc(f)
-> >            ^^^^^^^^^^^^
-> >   File "/usr/local/bin/dt-doc-validate", line 32, in check_doc
-> >     for error in sorted(dtsch.iter_errors(), key=lambda e: e.linecol):
-> >                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >   File "/usr/local/lib/python3.11/dist-packages/dtschema/schema.py", line 125, in iter_errors
-> >     self.annotate_error(scherr, meta_schema, scherr.schema_path)
-> >   File "/usr/local/lib/python3.11/dist-packages/dtschema/schema.py", line 104, in annotate_error
-> >     schema = schema[p]
-> >              ~~~~~~^^^
-> > KeyError: 'type'
-> 
-> Locally, on an older version of dt-schema, I see
-> /stuff/linux-dt/Documentation/devicetree/bindings/net/dsa/dsa.yaml: $defs: 'oneOf' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
-> 	hint: A json-schema keyword was found in $defs key.
-> 	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-> /stuff/linux-dt/Documentation/devicetree/bindings/net/dsa/dsa.yaml: $defs:oneOf: [{'required': ['ports']}, {'required': ['ethernet-ports']}] is not of type 'object'
-> 	hint: $defs entries must contain schemas
-> 	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> 
-> On the latest version I see the error from the bot.
-> 
-> Doing 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> index bd6948e4fd9e..25e5950d51ae 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> @@ -55,10 +55,10 @@ $defs:
->              $ref: dsa-port.yaml#
->              unevaluatedProperties: false
->  
-> -  oneOf:
-> -    - required:
-> -      - ports
-> -    - required:
-> -      - ethernet-ports
-> +oneOf:
-> +  - required:
-> +    - ports
-> +  - required:
-> +    - ethernet-ports
->  
->  ...
-> 
-> resolves both issues, but the older version of dt-schema definitely had
-> better error reporting in this case!
+This patch series introduces extensive Wake on LAN (WoL) support for the
+Microchip KSZ9477 family of switches, coupled with some code refactoring
+and error handling enhancements. The principal aim is to enable and
+manage Wake on Magic Packet and other PHY event triggers for waking up
+the system, whilst ensuring that the switch isn't reset during a
+shutdown if WoL is active.
 
-And now I'm even more confused... your example in your other reply had
-six spaces before "- ports" and "- ethernet-ports" but here you're
-using four spaces.
+The Wake on LAN functionality is optional and is particularly beneficial
+if the PME pins are connected to the SoC as a wake source or to a PMIC
+that can enable or wake the SoC.
+
+changes v6:
+- add variables magic_switched_off and magic_switched_on for readability
+- EXPORT_SYMBOL(ksz_switch_shutdown); to fix build as module 
+
+changes v5:
+- rework Wake on Magic Packet support.
+- Make sure we show more or less realistic information on get_wol by
+  comparing refcounted mac address against the ports address
+- fix mac address refcounting on set_wol()
+- rework shutdown sequence by to handle PMIC related issues. Make sure
+  PME pin is net frequently toggled.
+- use wakeup_source variable instead of reading PME pin register.
+
+changes v4:
+- add ksz_switch_shutdown() and do not skip dsa_switch_shutdown() and
+  etc.
+- try to configure MAC address on WAKE_MAGIC. If not possible, prevent
+  WAKE_MAGIC configuration
+- use ksz_switch_macaddr_get() for WAKE_MAGIC.
+- prevent ksz_port_set_mac_address if WAKE_MAGIC is active
+- do some more refactoring and patch reordering
+
+changes v3:
+- use ethernet address of DSA master instead from devicetree
+- use dev_ops->wol* instead of list of supported switch
+- don't shutdown the switch if WoL is enabled
+- rework on top of latest HSR changes
+
+changes v2:
+- rebase against latest next
+
+Oleksij Rempel (9):
+  net: dsa: microchip: Add missing MAC address register offset for
+    ksz8863
+  dt-bindings: net: dsa: microchip: add wakeup-source property
+  net: dsa: microchip: use wakeup-source DT property to enable PME
+    output
+  net: dsa: microchip: ksz9477: add Wake on LAN support
+  net: dsa: microchip: ksz9477: Add Wake on Magic Packet support
+  net: dsa: microchip: Refactor comment for ksz_switch_macaddr_get()
+    function
+  net: dsa: microchip: Add error handling for ksz_switch_macaddr_get()
+  net: dsa: microchip: Refactor switch shutdown routine for WoL
+    preparation
+  net: dsa: microchip: Ensure Stable PME Pin State for Wake-on-LAN
+
+ .../bindings/net/dsa/microchip,ksz.yaml       |   2 +
+ drivers/net/dsa/microchip/ksz9477.c           | 198 ++++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h           |   5 +
+ drivers/net/dsa/microchip/ksz9477_i2c.c       |   5 +-
+ drivers/net/dsa/microchip/ksz_common.c        |  97 +++++++--
+ drivers/net/dsa/microchip/ksz_common.h        |  10 +
+ drivers/net/dsa/microchip/ksz_spi.c           |   5 +-
+ 7 files changed, 302 insertions(+), 20 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.39.2
+
