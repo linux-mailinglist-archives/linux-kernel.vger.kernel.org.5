@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DBF7CFB95
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B0B7CFB9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345686AbjJSNs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        id S1345790AbjJSNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345816AbjJSNs4 (ORCPT
+        with ESMTP id S1345770AbjJSNtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:48:56 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F96131;
-        Thu, 19 Oct 2023 06:48:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1697723330; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Wdx2UZFfAlgZFCVP1a17S/qlvThF9NU+4Il6PUktzwwFl6LB+Ozyunu8ecsu9xLitE
-    VKNRL6jWZ7cftIc12eLTVN2cic68eqWlnemHiv+yZHMFnfgeE7HaKDSk0c6h5uNiFs8d
-    79AZmJrRQnsVCNBo1l5OCJeazoda56xxufE+Am3UM9xAdCStR7OOUGR/1lkwdyIQsXAp
-    83PGoNAYa9hUOAjH4feD+jjLVMnFaTBawoIk6l4fPre4OIN5Q22MYONXp6lJh3WTTS1x
-    TeAscj6fYioPFa+QcNeMjQ0X+gNyOyPfpNRWdIk5/zVrO2SJUpF2puD7btkKl9B/K3PF
-    kF0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1697723330;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=GObdimmw9pskjnof7wPSDzQDxLphrL/hHiKhEwm3O+I=;
-    b=WQY4IBf1YJwomaGLBQuZSRYaCJx75EHSfCAzTNH+KhkADaAJHGnugXKQNZq1San3S3
-    py+V5sAoPevNxYdeWimxjBfcg3u2fxWBXgE3ExS4HWq3OXTiaaek2dYIoW3fHwvDZWPv
-    7UXk48+H+TRiKiusEDzJHIjQmG03wHkqHQPRGWIrV2lvflwJYmK34iWsolIXnnfSezFg
-    Ovy2Fc1bqq62XewzDA+firZhWbYIeKj1YHL16BRL8B84l3U6SalDcsELS1kyFGhpZ7GA
-    I+fgyC5If+zCrUW9gIAen58oXP7Br8jYbjU8Dk7KPXQCnfbyouf/j9mBgq2SLZip9+Jf
-    CnoA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1697723330;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=GObdimmw9pskjnof7wPSDzQDxLphrL/hHiKhEwm3O+I=;
-    b=Q6o6ExnKKpvJAJOcQQjEXdjXP1Xj4dmGQW74FaaQJVqUq3roEHVpWf7qX8cWjCVP0D
-    kBrFI/Djp+grrGKKwkUKdBcBXmoRJfzX1o6qd5cwpKWErtggRSDY32y3aOPTXd+4A41X
-    pj9Uo9q4vpG/EhfAdp53x9bWNvofbKPALsf411MfgntUsLBk0RlVpJC7R3WQW1+zF4FE
-    NmDV3RMT2CqCUk5S5vXUTGBgyfPoOOicY06Y/ce7hU4dynCvZ01ZUygFQ/igP7T/3DMW
-    st6lgqQE0pqY9VTEDDwWsoWQgIGUOnrlmGKn05x6MBzC3/qbTfMfjY/PilMB8iq4VizB
-    I1jQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1697723330;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=GObdimmw9pskjnof7wPSDzQDxLphrL/hHiKhEwm3O+I=;
-    b=UV8LqNpI1mXnn7AO8BNXu5SCePcVw8yTRfKgNWVpdwZWG56Ag+77GLfHgWGlLIgLeY
-    wQcHrG165UYWviT1pgAw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA95vh"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
-    with ESMTPSA id j34a49z9JDmoDqV
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 19 Oct 2023 15:48:50 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 15:48:43 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Thu, 19 Oct 2023 09:49:07 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D75131;
+        Thu, 19 Oct 2023 06:49:06 -0700 (PDT)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ce322b62aeso36480a34.3;
+        Thu, 19 Oct 2023 06:49:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697723345; x=1698328145;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yIV3i/HNvLNPgakCfPrtUZcxVqXEXL+6MGsHZ5K0R4c=;
+        b=lbux8vF8nb38xutkF1CdRga1j26YSU09LD94x1AJGNs49rELLtYm4QN91+UM3u97Rs
+         ve/R+fmcV0Bsbg26rK/dSso04sq8bh3bu/rfNc4Dacuw3xhR6MwEjuJms7FtqiJy+DoW
+         3Wqq0AJIDCtNi/KBkJwLhLKHvtGE2P03VbnIcSTdndglx8qA9V/qRobxs+RizxDYl4iE
+         YzIn9CS00emL33C0hv1bIfmI3kPtPPECT3Ecwxd4WOqJbeafUjZtfXnv1qyZphnr9CJL
+         1vxgL8TsqPVz0OmIZJQ+Lfwp+8djOT82wFVAiFVHjzdYCn30vbtO0psEDwTou7TEI7dv
+         9Y+A==
+X-Gm-Message-State: AOJu0YxhL61fi4h8xo2AcG/k/irpK8LY1PRCSdkPFxgkPcTlsjl9a9y7
+        wSeBbnYUmSlQdoYhVZ6JBQ==
+X-Google-Smtp-Source: AGHT+IHaI9B2fdB9P1qbAVcNfrBoo52VF4jz72k0QyakB+AzmRV/J8sHTzlfshedfS+sXMw3Y6J4+g==
+X-Received: by 2002:a9d:6f19:0:b0:6b9:8357:61e6 with SMTP id n25-20020a9d6f19000000b006b9835761e6mr2027067otq.35.1697723345302;
+        Thu, 19 Oct 2023 06:49:05 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bt55-20020a05683039f700b006ce2dd80f3csm107382otb.17.2023.10.19.06.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 06:49:04 -0700 (PDT)
+Received: (nullmailer pid 203372 invoked by uid 1000);
+        Thu, 19 Oct 2023 13:49:02 -0000
+Date:   Thu, 19 Oct 2023 08:49:02 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] cpufreq: Add basic cpufreq scaling for Qualcomm
- MSM8909
-Message-ID: <ZTEzuz7VrDGIoR7H@gerhold.net>
-References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
- <20231019061608.wjlf4orkdlpnv3a5@vireshk-i7>
- <20231019102342.5f4oyxd6hmjcju6g@vireshk-i7>
+        Conor Dooley <conor+dt@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net-next v4 6/7] dt-bindings: marvell: Rewrite MV88E6xxx
+ in schema
+Message-ID: <20231019134902.GB193647-robh@kernel.org>
+References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
+ <20231018-marvell-88e6152-wan-led-v4-6-3ee0c67383be@linaro.org>
+ <169762516805.391872.4190043734592153628.robh@kernel.org>
+ <CACRpkdZz_+WAt7GG4Chm_xRiBNBP=pin2dx39z27Nx0PuyVN7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231019102342.5f4oyxd6hmjcju6g@vireshk-i7>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZz_+WAt7GG4Chm_xRiBNBP=pin2dx39z27Nx0PuyVN7w@mail.gmail.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 03:53:42PM +0530, Viresh Kumar wrote:
-> On 19-10-23, 11:46, Viresh Kumar wrote:
-> > On 18-10-23, 10:06, Stephan Gerhold wrote:
-> > > Add the necessary definitions to the qcom-cpufreq-nvmem driver to
-> > > support basic cpufreq scaling on the Qualcomm MSM8909 SoC. In practice
-> > > the necessary power domains vary depending on the actual PMIC the SoC
-> > > was combined with. With PM8909 the VDD_APC power domain is shared with
-> > > VDD_CX so the RPM firmware handles all voltage adjustments, while with
-> > > PM8916 and PM660 Linux is responsible to do adaptive voltage scaling
-> > > of a dedicated CPU regulator using CPR.
-> > > 
-> > > Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-> > 
-> > Applied patch 1 and 3. Thanks.
+On Wed, Oct 18, 2023 at 01:39:45PM +0200, Linus Walleij wrote:
+> On Wed, Oct 18, 2023 at 12:32 PM Rob Herring <robh@kernel.org> wrote:
 > 
-> Hi Stephan,
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
+> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
+> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
+> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
+> >         from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
 > 
-> I think your platform has exactly what I am looking for. Can you
-> please help me test this, before it lands into linux-next :)
-> 
-> https://lore.kernel.org/cover.1697710527.git.viresh.kumar@linaro.org
-> 
+> Fixed in patch 2/7?
 
-Sure, I will try to test it until end of next week, with both single and
-multiple power domains assigned to the CPU. Is there something
-particular you would like me to look for? Or just that the scaling still
-works correctly as before?
+Yes. If one patch has errors we drop it. I should probably just give up 
+on the rest of the series instead.
 
-Stephan
+Rob
