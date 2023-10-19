@@ -2,45 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF397D04A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514BB7D04AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346634AbjJSWJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S1346606AbjJSWOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbjJSWJL (ORCPT
+        with ESMTP id S231238AbjJSWOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:09:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AFC116
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:09:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E260AC433C8;
-        Thu, 19 Oct 2023 22:09:05 +0000 (UTC)
-Date:   Thu, 19 Oct 2023 18:09:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        oe-kbuild-all@lists.linux.dev, Kees Cook <keescook@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kent Overstreet <kmo@daterainc.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH 1/1] trace: Move readpos from seq_buf to trace_seq
-Message-ID: <20231019180904.70e623f1@gandalf.local.home>
-In-Reply-To: <202310200523.ggyHvT6w-lkp@intel.com>
-References: <20231019194514.2115506-2-willy@infradead.org>
-        <202310200523.ggyHvT6w-lkp@intel.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 19 Oct 2023 18:14:03 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35A7A4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:13:59 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b20a48522fso220812b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697753637; x=1698358437; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XxO9CeupjJm1VNV2qD42mx1Z0tO6w55cG3DvFE0akJU=;
+        b=S3v5fvXQgCE30407qy8DPQu4aOh/7tNf4+PnlUBy6ALJQ9BU0ziNS8aRSK44pUmujc
+         Ch3o0ku99uqSGsHIBgVjdPeAiSuXYMgqs3Qmg5SrJWSa0wugl1hfKYEe/V/NH9lT2d4q
+         O6GOoYjK6CP0Ic30aDm2/3Nv7844RREZbldODkjb0Fgwz2V6Yzw5XQHvsp8K7/c3Tv+F
+         TQZ34YhBwCyC5DfhMSZI65KunJCTfCLeC8dSbSffXXJztFoP8CZmaIH7a4AyL0qsUc5v
+         h70SNvuyOylXUwYSpZbpUf9Zs/Pj+R3RPOwPmdDv96tE4MGKqqgBxrGfiL9jh+e0Datn
+         sdKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697753637; x=1698358437;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XxO9CeupjJm1VNV2qD42mx1Z0tO6w55cG3DvFE0akJU=;
+        b=W22SwHP/W4RvYY7cZFUzjodMSRJN0ReH7alhnQtRIa6sU3bvDv3PuJl4EgCQxvcaYo
+         yUNiqFo5bbD5ZvA7nx2UcDtu4X2h1ne42W5INeDyGwBuK4mv47jkf/6NkEEtkgpP3o+8
+         R8wkTxM0d+Wml6PKEK2O8MeSyQCNyYowz4UJS0dultbZkT8kWqUa8bmEK5UT0qhbli6d
+         dfFzTzBGHOspOb41BvPQTKYjhcBLybknocsSoY2+r23v+bubyANhDJ0oGoYDRN2v+pR9
+         gb12ubwmlco1tdmbguDyjtw5VgxWb+ANDug/Z8Dma/5aUo3tmCT2h2oIHhGAu+o2qMRC
+         JdHQ==
+X-Gm-Message-State: AOJu0YxE2UmpBGGNrBbxB1xcMUR4ALyzpmrozxcNYr9tz1VNtD/e36SC
+        X++SIeQWbTjHiNdui+ho/Mc=
+X-Google-Smtp-Source: AGHT+IFwQRmhtvP0fKkwRfeNWZwTshKFTJ7DO2jhksHpulTKIEY5JBnAse72r6NqTA1XdtG76bRWuw==
+X-Received: by 2002:a05:6a00:138f:b0:68f:dd50:aef8 with SMTP id t15-20020a056a00138f00b0068fdd50aef8mr60518pfg.4.1697753636739;
+        Thu, 19 Oct 2023 15:13:56 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id n11-20020aa7984b000000b00690d4464b95sm276425pfq.16.2023.10.19.15.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 15:13:56 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 15:13:55 -0700
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Andi Shyti <andi.shyti@linux.intel.com>
+Cc:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] staging: vme_user: Use __func__ instead of
+ function name
+Message-ID: <20231019221355.GC3017@Negi>
+References: <cover.1697696951.git.soumya.negi97@gmail.com>
+ <996c9f92e7fd288f67c02dfb0ba524ab7c5fe421.1697696951.git.soumya.negi97@gmail.com>
+ <ZTFOGIu5U+ZUodXW@ashyti-mobl2.lan>
+ <20231019191428.GA32717@Negi>
+ <ZTGgVNBoxOtWOuE8@ashyti-mobl2.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTGgVNBoxOtWOuE8@ashyti-mobl2.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,36 +82,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 05:59:36 +0800
-kernel test robot <lkp@intel.com> wrote:
+On Thu, Oct 19, 2023 at 11:32:04PM +0200, Andi Shyti wrote:
+> Hi Soumya,
+> 
+> > > On Thu, Oct 19, 2023 at 12:20:10AM -0700, Soumya Negi wrote:
+> > > > Replace function names in message strings with __func__ to fix
+> > > > all checkpatch warnings like:
+> > > > 
+> > > >     WARNING: Prefer using '"%s...", __func__' to using 'vme_lm_get',
+> > > >              this function's name, in a string
+> > > > 
+> > > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> > > 
+> > > you forgot my ack here:
+> > > 
+> > > Acked-by: Andi Shyti <andi.shyti@linux.intel.com> 
+> > > 
+> > > Andi
+> > 
+> > Sorry I forgot the tag Andi. I'll add the tags in v3(Greg has suggested
+> > more changes). There will be some new patches, so I'll leave the tags out in 
+> > those as you may want to review them first.
+> 
+> no problem.
+> 
+> I don't see reviews from Greg in this v2 series. If you are
+> referring to the changelog, then you don't need to resend.
+> 
+> Andi
 
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  323) /**
-> 9dbbc3b9d09d6d lib/seq_buf.c          Zhen Lei                 2021-07-07  324   * seq_buf_to_user - copy the sequence buffer to user space
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  325)  * @s: seq_buf descriptor
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  326)  * @ubuf: The userspace memory location to copy to
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  327)  * @cnt: The amount to copy
+Hi Andi,
 
-When you resend, I guess you should add the @start as well.
+I had sent in v2 after suggestions from Julia and Greg. Got some more
+feedback from Greg in the v1 email thread though. Will have to send a v3 due 
+to that.
 
--- Steve
-
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  328)  *
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  329)  * Copies the sequence buffer into the userspace memory pointed to
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  330)  * by @ubuf. It starts from the last read position (@s->readpos)
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  331)  * and writes up to @cnt characters or till it reaches the end of
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  332)  * the content in the buffer (@s->len), which ever comes first.
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  333)  *
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  334)  * On success, it returns a positive number of the number of bytes
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  335)  * it copied.
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  336)  *
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  337)  * On failure it returns -EBUSY if all of the content in the
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  338)  * sequence has been already read, which includes nothing in the
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  339)  * sequence (@s->len == @s->readpos).
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  340)  *
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  341)  * Returns -EFAULT if the copy to userspace fails.
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  342)  */
-> 9377093a882be0 lib/seq_buf.c          Matthew Wilcox (Oracle   2023-10-19  343) int seq_buf_to_user(struct seq_buf *s, char __user *ubuf, size_t start, int cnt)
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25 @344) {
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  345) 	int len;
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  346) 	int ret;
-> 3a161d99c43ce7 kernel/trace/seq_buf.c Steven Rostedt (Red Hat  2014-06-25  347) 
+Regards,
+Soumya
