@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5E77CEECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6247CEED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 06:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbjJSEt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 00:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
+        id S232559AbjJSEuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 00:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSEtx (ORCPT
+        with ESMTP id S229894AbjJSEuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 00:49:53 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5750121
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:49:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1697690988;
-        bh=rlQZx9JJxSdr3/h/TbJIqIbao0AYCeJ36JQgRbnJMws=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Eks/UeYwUxWgNbjQ9pv/zgvRIDI5GwHJohg39vWxMdzp3sOO4ebFRh4gVy+Ous5y2
-         LRnucQQjKcAdZMedSuMJipgyKyux4AFVShCDjNakwujvQKMJm/lUgyaIxfaily6o+Q
-         OmdrZ0zm/U9bRind8TgK4gML5WA1sjKZYF908uz9KoaA+HyPeQlcavjZHu3j/nAV19
-         Vw6VQE/8Sb9L4Vn2qhQtjxq9Sp3vcruxlxE8w9HEawnF64di0dzoG2o7HjMD333FoN
-         QcvmexOkPKA1sysVmz1t4tn4k/FG/yVsrzPir6UF82iZlBmZcOKmJCJDrV/q4CFMgV
-         uSsFmtty8f9hQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9wHc3181z4x80;
-        Thu, 19 Oct 2023 15:49:48 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] powerpc/smp: Add read_mostly attribute
-In-Reply-To: <20231018163751.2423181-6-srikar@linux.vnet.ibm.com>
-References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
- <20231018163751.2423181-6-srikar@linux.vnet.ibm.com>
-Date:   Thu, 19 Oct 2023 15:49:48 +1100
-Message-ID: <87mswf5i8j.fsf@mail.lhotse>
+        Thu, 19 Oct 2023 00:50:35 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FE99F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 21:50:32 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtKz1-0006Fb-1L; Thu, 19 Oct 2023 06:50:07 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtKyz-002iBt-EU; Thu, 19 Oct 2023 06:50:05 +0200
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qtKyz-00FDKV-BM; Thu, 19 Oct 2023 06:50:05 +0200
+Date:   Thu, 19 Oct 2023 06:50:05 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v5 5/9] net: dsa: microchip: ksz9477: Add Wake
+ on Magic Packet support
+Message-ID: <20231019045005.GC3595737@pengutronix.de>
+References: <20231018113913.3629151-1-o.rempel@pengutronix.de>
+ <20231018113913.3629151-6-o.rempel@pengutronix.de>
+ <f4cfb974-42c6-492c-80fd-85bbeaada9d1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f4cfb974-42c6-492c-80fd-85bbeaada9d1@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> There are some variables that are only updated at boot time.
-> So add read_mostly attribute to such variables
+On Wed, Oct 18, 2023 at 11:20:50AM -0700, Florian Fainelli wrote:
+> On 10/18/23 04:39, Oleksij Rempel wrote:
+> > Introduce Wake on Magic Packet (WoL) functionality to the ksz9477
+> > driver.
+> > 
+> > Major changes include:
+> > 
+> > 1. Extending the `ksz9477_handle_wake_reason` function to identify Magic
+> >     Packet wake events alongside existing wake reasons.
+> > 
+> > 2. Updating the `ksz9477_get_wol` and `ksz9477_set_wol` functions to
+> >     handle WAKE_MAGIC alongside the existing WAKE_PHY option, and to
+> >     program the switch's MAC address register accordingly when Magic
+> >     Packet wake-up is enabled. This change will prevent WAKE_MAGIC
+> >     activation if the related port has a different MAC address compared
+> >     to a MAC address already used by HSR or an already active WAKE_MAGIC
+> >     on another port.
+> > 
+> > 3. Adding a restriction in `ksz_port_set_mac_address` to prevent MAC
+> >     address changes on ports with active Wake on Magic Packet, as the
+> >     switch's MAC address register is utilized for this feature.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> This looks good to me, just one suggestion below
+> 
+> [snip]
+> 
+> > +	if (pme_ctrl_old == pme_ctrl)
+> > +		return 0;
+> > +
+> > +	/* To keep reference count of MAC address, we should do this
+> > +	 * operation only on change of WOL settings.
+> > +	 */
+> > +	if (!(pme_ctrl_old & PME_WOL_MAGICPKT) &&
+> > +	    (pme_ctrl & PME_WOL_MAGICPKT)) {
+> 
+> Maybe use a temporary variable for that condition since you re-use it below
+> in case you failed to perform the write of the pme_ctrl value. It would be
+> more readable IMHO, something like:
+> 
+> 	bool magicpkt_was_disabled = !(pme_ctrl_old & PME_WOL_MAGICPKT) &&
+> (pme_ctrl & PME_WOL_MAGICPKT));
 
-If they're only updated at boot time then __ro_after_init would be the
-better annotation.
+Sounds good. I'll update it.
 
-cheers
-
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 29da9262cb17..b1eb11a66902 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -77,10 +77,10 @@ static DEFINE_PER_CPU(int, cpu_state) = { 0 };
->  #endif
->  
->  struct task_struct *secondary_current;
-> -bool has_big_cores;
-> -bool coregroup_enabled;
-> -bool thread_group_shares_l2;
-> -bool thread_group_shares_l3;
-> +bool has_big_cores __read_mostly;
-> +bool coregroup_enabled __read_mostly;
-> +bool thread_group_shares_l2 __read_mostly;
-> +bool thread_group_shares_l3 __read_mostly;
->  
->  DEFINE_PER_CPU(cpumask_var_t, cpu_sibling_map);
->  DEFINE_PER_CPU(cpumask_var_t, cpu_smallcore_map);
-> @@ -987,7 +987,7 @@ static int __init init_thread_group_cache_map(int cpu, int cache_property)
->  	return 0;
->  }
->  
-> -static bool shared_caches;
-> +static bool shared_caches __read_mostly;
->  DEFINE_STATIC_KEY_FALSE(powerpc_asym_packing);
->  
->  #ifdef CONFIG_SCHED_SMT
-> -- 
-> 2.31.1
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
