@@ -2,190 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0321B7CEF51
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D4C7CEF53
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbjJSFsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S231705AbjJSFs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbjJSFsA (ORCPT
+        with ESMTP id S232658AbjJSFs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:48:00 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2284911D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:47:58 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57ad95c555eso4270566eaf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697694477; x=1698299277; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LHnQ4ZKZoaOJV3l4XUHkBLyFFjTJvcv5ctVeQO+EOoI=;
-        b=BScxuSjU1tN8RG7REYbkpQsN/gjlJOIvo4nuTJngz/+YjIBlnxn1R+AShbC4MOlilt
-         xhmvHTUVCD4onrT7hCFTGQfAldFbudd28nfsIlwsO59nL3qi/RqrGvfT9E9+koJIEMbW
-         XBrcqxjTukOF0Azoty3rbORiNQ6OdbLVI9qnI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697694477; x=1698299277;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LHnQ4ZKZoaOJV3l4XUHkBLyFFjTJvcv5ctVeQO+EOoI=;
-        b=mtuv2PM8piA0hy1oY+Le1kAzRf6/WMuCoqbTUJIEDCM+9LgteA3/XepYHWW3IzucBu
-         C+Z8tH0U2RCTpq3Ah94liQg/042VscZ/Woyrq1weQBpMRlr1CglyqiCgcDw/8E1UmvwW
-         t30Fd7/HELjnPfqM4+jwkPdY/tpoBMRtedAHClAnW+Mld/583F1dkByx6DXJqn7VLagV
-         tpWtTtLxOf9Mw2ZPj/hjsyFvR/GSJNQ4yvQ5b+n08Cqgoh1XCtNKvfDYTrWFCBFN5rbO
-         +fEYiBzjUzxs+hK5U5mm84b1F1B+F0i3qRCZYeq3+gOUw8yO7XbF1WkPzyyko+/VMhmb
-         q/YQ==
-X-Gm-Message-State: AOJu0YxG7tF6JSCkOtrj0Y4WwPU3ZkKwYqQJ3CuMgwZCcZT2DCMILdyw
-        zZT+udVdgndqCU/XDlfHkDojwvEyM/YlmzX7fmI=
-X-Google-Smtp-Source: AGHT+IEu5PHDRWVUI0+QX9JrLp+wZUJ1GzmUN+Qx4C1JP4SsZPYFUoT1fuhYI5qBjJPg/eBSdZrWhg==
-X-Received: by 2002:a05:6358:7e16:b0:143:8c4e:283b with SMTP id o22-20020a0563587e1600b001438c4e283bmr1422228rwm.0.1697694477305;
-        Wed, 18 Oct 2023 22:47:57 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r2-20020aa79882000000b0069344caf840sm4422330pfl.18.2023.10.18.22.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 22:47:56 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 22:47:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] nvme-fabrics: replace deprecated strncpy with strscpy
-Message-ID: <202310182237.C256F5B54D@keescook>
-References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
+        Thu, 19 Oct 2023 01:48:56 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3E8B6;
+        Wed, 18 Oct 2023 22:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697694527;
+        bh=CR7dWSEwjH6imZHnVlXAbeQgnXp1ZZMTjjN1Ld5riCc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=W1EOf7KB8sRaSXlw9dVE0T0wXyu1Oyqnzkx0PJNcwP5Q2nbMp0apO4UJHlIciNHRk
+         3kMzxiWUH5Z2mV0xY95EP9WXEl3If65YbcBpSNzCvrE3J4Xn94sj67kQhNEjObHOTi
+         1Dbx4XTWm49rA+UA9tv98qjsngmFQ8VxvJptN6cTEKReQsdLK68fUf4Hs0QKUe8tC7
+         ArKUDEs2nKzd8JVTR8hHeBNyx2I8oS/3Z1LlzQc5yMg9ZpKUwwzwh2uWIxjUgtbNMS
+         zWmsBN6FGZf+sjrYpM0NaXgVljCVXIfYJWI/kH/KpFK3okTvGn8Qg67ECIg5vvRxVo
+         YhDorjcy8HzEw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9xbf4FkWz4xQQ;
+        Thu, 19 Oct 2023 16:48:46 +1100 (AEDT)
+Date:   Thu, 19 Oct 2023 16:48:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yury Norov <yury.norov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Paul Greenwalt <paul.greenwalt@intel.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>
+Subject: linux-next: manual merge of the bitmap tree with the net-next tree
+Message-ID: <20231019164844.4cc37f93@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/iYTkWDP_1_tS6QBLU_WRv4Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:48:49PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect both data->subsysnqn and data->hostnqn to be NUL-terminated
-> based on their usage with format specifier ("%s"):
-> fabrics.c:
-> 322: dev_err(ctrl->device,
-> 323:   "%s, subsysnqn \"%s\"\n",
-> 324:   inv_data, data->subsysnqn);
-> ...
-> 349: dev_err(ctrl->device,
-> 350: 	 "Connect for subsystem %s is not allowed, hostnqn: %s\n",
-> 351: 	 data->subsysnqn, data->hostnqn);
-> 
-> Moreover, there's no need to NUL-pad since `data` is zero-allocated
-> already in fabrics.c:
-> 383: data = kzalloc(sizeof(*data), GFP_KERNEL);
-> ... therefore any further NUL-padding is rendered useless.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> I opted not to switch NVMF_NQN_SIZE to sizeof(data->xyz) because the
-> size is defined as:
-> |       /* NQN names in commands fields specified one size */
-> |       #define NVMF_NQN_FIELD_LEN	256
-> 
-> ... while NVMF_NQN_SIZE is defined as:
-> |       /* However the max length of a qualified name is another size */
-> |       #define NVMF_NQN_SIZE		223
-> 
-> Since 223 seems pretty magic, I'm not going to touch it.
+--Sig_/iYTkWDP_1_tS6QBLU_WRv4Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-struct nvmf_connect_data {
-	...
-        char            subsysnqn[NVMF_NQN_FIELD_LEN];
-        char            hostnqn[NVMF_NQN_FIELD_LEN];
+Hi all,
 
-Honestly, the use of NVMF_NQN_SIZE as the length arg looks like a bug.
+Today's linux-next merge of the bitmap tree got a conflict in:
 
-struct nvmf_ctrl_options {
-	...
-        char                    *subsysnqn;
-	...
-        struct nvmf_host        *host;
+  include/linux/linkmode.h
 
-struct nvmf_host {
-	...
-        char                    nqn[NVMF_NQN_SIZE];
+between commit:
 
-ctrl->opts->host->nqn is sized as NVMF_NQN_SIZE, so this is like saying:
+  26c5334d344d ("ethtool: Add forced speed to supported link modes maps")
 
-	strscpy(dest, src, sizeof(src));
+from the net-next tree and commit:
 
-Which can go wrong when dest is smaller than src, but that's not the
-case here. It seems ctrl->opts->host->nqn is expected to be a C string:
+  f849608560af ("linkmode: convert linkmode_{test,set,clear,mod}_bit() to m=
+acros")
 
-drivers/nvme/host/fabrics.h:        strcmp(opts->host->nqn, ctrl->opts->host->nqn) ||
+from the bitmap tree.
 
-And subsysnqn seems to be the same size:
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-drivers/nvme/target/core.c:     subsys->subsysnqn = kstrndup(subsysnqn, NVMF_NQN_SIZE,
-drivers/nvme/target/core.c-                     GFP_KERNEL);
+--=20
+Cheers,
+Stephen Rothwell
 
-So these really look like bugs to me. Perhaps a follow-up patch to fix
-this, if nvme maintainers agree?
+diff --cc include/linux/linkmode.h
+index cd38f89553e6,f231e2edbfa5..000000000000
+--- a/include/linux/linkmode.h
++++ b/include/linux/linkmode.h
+@@@ -2,21 -2,6 +2,18 @@@
+  #define __LINKMODE_H
+ =20
+  #include <linux/bitmap.h>
+ +
+- static inline void linkmode_set_bit(int nr, volatile unsigned long *addr)
+- {
+- 	__set_bit(nr, addr);
+- }
+++#define linkmode_set_bit	__set_bit
+ +
+ +static inline void linkmode_set_bit_array(const int *array, int array_siz=
+e,
+ +					  unsigned long *addr)
+ +{
+ +	int i;
+ +
+ +	for (i =3D 0; i < array_size; i++)
+ +		linkmode_set_bit(array[i], addr);
+ +}
+ +
+  #include <linux/ethtool.h>
+  #include <uapi/linux/ethtool.h>
+ =20
+@@@ -53,25 -38,20 +50,10 @@@ static inline int linkmode_andnot(unsig
+  	return bitmap_andnot(dst, src1, src2,  __ETHTOOL_LINK_MODE_MASK_NBITS);
+  }
+ =20
+- static inline void linkmode_clear_bit(int nr, volatile unsigned long *add=
+r)
+- {
+- 	__clear_bit(nr, addr);
+- }
+-=20
+- static inline void linkmode_mod_bit(int nr, volatile unsigned long *addr,
+- 				    int set)
+- {
+- 	if (set)
+- 		linkmode_set_bit(nr, addr);
+- 	else
+- 		linkmode_clear_bit(nr, addr);
+- }
+-=20
+- static inline int linkmode_test_bit(int nr, const volatile unsigned long =
+*addr)
+- {
+- 	return test_bit(nr, addr);
+- }
++ #define linkmode_test_bit	test_bit
+ -#define linkmode_set_bit	__set_bit
++ #define linkmode_clear_bit	__clear_bit
++ #define linkmode_mod_bit	__assign_bit
+ =20
+ -static inline void linkmode_set_bit_array(const int *array, int array_siz=
+e,
+ -					  unsigned long *addr)
+ -{
+ -	int i;
+ -
+ -	for (i =3D 0; i < array_size; i++)
+ -		linkmode_set_bit(array[i], addr);
+ -}
+ -
+  static inline int linkmode_equal(const unsigned long *src1,
+  				 const unsigned long *src2)
+  {
 
-Either way, strscpy is an improvement:
+--Sig_/iYTkWDP_1_tS6QBLU_WRv4Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+-----BEGIN PGP SIGNATURE-----
 
--Kees
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUwwzwACgkQAVBC80lX
+0Gw8dQf/ckBlyqp0x9E8fPVAlHEGxWz7oIixRXFmyKVZtQX+FBMrvd+8ZgWRtjvk
+UjnR7VBJnwW5dPik7yaw+9dkdwZX7xFx8ALRAt24bMdf3idw2nD3/djdr+EjnEz7
+rlAajFjWOFfCuvbx3DAMwZT5yWJkdCzy5qxhhmNMHpku0oQv2E13W+bgb/rGFQbb
+kyXJwRITcfuoVkLZDv3dfcwueSFu29kty8hBP2dej037TgBSPaG2kej62HWyKH4s
+gZEATqGiQQgKvwRHLAmGk7B08TZBqrjieO/mwF+V7sGvaf+UF8R6BP/+UpmrLx8V
+mXGwoP4E023L9ekDlPpSK8Z2DeK+FQ==
+=C7Mx
+-----END PGP SIGNATURE-----
 
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/nvme/host/fabrics.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
-> index 8175d49f2909..57aad3ce311a 100644
-> --- a/drivers/nvme/host/fabrics.c
-> +++ b/drivers/nvme/host/fabrics.c
-> @@ -386,8 +386,8 @@ static struct nvmf_connect_data *nvmf_connect_data_prep(struct nvme_ctrl *ctrl,
->  
->  	uuid_copy(&data->hostid, &ctrl->opts->host->id);
->  	data->cntlid = cpu_to_le16(cntlid);
-> -	strncpy(data->subsysnqn, ctrl->opts->subsysnqn, NVMF_NQN_SIZE);
-> -	strncpy(data->hostnqn, ctrl->opts->host->nqn, NVMF_NQN_SIZE);
-> +	strscpy(data->subsysnqn, ctrl->opts->subsysnqn, NVMF_NQN_SIZE);
-> +	strscpy(data->hostnqn, ctrl->opts->host->nqn, NVMF_NQN_SIZE);
->  
->  	return data;
->  }
-> 
-> ---
-> base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-> change-id: 20231018-strncpy-drivers-nvme-host-fabrics-c-416258a22598
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
-
--- 
-Kees Cook
+--Sig_/iYTkWDP_1_tS6QBLU_WRv4Z--
