@@ -2,60 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64177D029A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A2B7D029C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345173AbjJSTeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
+        id S1346282AbjJSTfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346523AbjJSTeT (ORCPT
+        with ESMTP id S229684AbjJSTfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:34:19 -0400
+        Thu, 19 Oct 2023 15:35:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1DBCA;
-        Thu, 19 Oct 2023 12:34:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 528E7C433CB;
-        Thu, 19 Oct 2023 19:34:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7824DE8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 12:34:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FFCBC433C7;
+        Thu, 19 Oct 2023 19:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697744056;
-        bh=U4uvieOMjkf+PFUrgjolzRXzsKujYoPFvUARZuVi93g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XIOTf/856ZdqwalZjvSzQ8fSJO1n4KiWsacm/1Df7JYiUp4JB9+Te46XnHn37YMh6
-         DmDC6p3CZwBQ9TNRluPc5gDxlMifNmNfCynXNl7w77U8SU5X/2cl6Bh40IHYohVL9V
-         QFqX91wAJ6EwJv39lI18MJr4yik6jMcvOZmUaQNmIgh1WGbV3TXiF/9kar9VpiLyIa
-         8rg2ohTES4fShSu/LyTDgVEGa2jyonSjwsiuaeHhgbvOiABJuvPpBaanXnP9Gk/T4z
-         jtFPG6S8YHnhpTfXlxYvqQL+rrke88jZtd/WUlrGbCqkDIn1Nko5Hpb10PIKK2bvr4
-         R41si6gdULx6g==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507c8316abcso9210e87.1;
-        Thu, 19 Oct 2023 12:34:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywe5PT97BFNi+5/HuL7SCaAs2Vk4eOjxtYchmwPrkvZlHwJAkZG
-        iEwDLl0VYgCE1hAqXAXVykQFu1WPCTIo/FVGPQ==
-X-Google-Smtp-Source: AGHT+IGMT9Lrdbp7434FU0vSJTcnDLj9QZz+YqqqKURgtaUGGFvehHaTryvXAxTMKsvBGBRehz5HOHtRRNA6CFuynY8=
-X-Received: by 2002:a05:6512:20d2:b0:507:a701:3206 with SMTP id
- u18-20020a05651220d200b00507a7013206mr2071442lfr.49.1697744054489; Thu, 19
- Oct 2023 12:34:14 -0700 (PDT)
+        s=k20201202; t=1697744099;
+        bh=y0Oo/V8pFGO99f5tyMwTJJOuq+D/cyDMJbhKLfmUT9Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U71qwD41v+d3QbOh2thoWU9GVnnqqScVP7tb0JvXuxyyAiB1Tj28QiRqInINGE7ZE
+         VuoD0XKC/M0xwah3mmc5GL+1GlNDnd2R0kkQ0oOLMup7FfWt2zelNxbJhHZcYaa6Gj
+         t6tbK4k5sO5dwT31UPnO6HFxE61WWUWf85VDdDmlvATiw9FebVdigNkxtbWvL3LATh
+         10yoef3KI3XVagbl16XincJumt/pD0FaE7uq9tU6eFgvP7w1gskelQcrOgkutfKrCw
+         xspYi1Itb5mVe/FWXG0B+EvXz4ILcPwFwRLWaG1XNSZYtBe98NTCkfJVE0o8pC8XS5
+         puOidhPyt7hZw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B8A1440016; Thu, 19 Oct 2023 16:34:55 -0300 (-03)
+Date:   Thu, 19 Oct 2023 16:34:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        iii@linux.ibm.com, irogers@google.com, svens@linux.ibm.com,
+        gor@linux.ibm.com, sumanthk@linux.ibm.com, hca@linux.ibm.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH] perf trace: Use the right bpf_probe_read(_str) variant
+ for reading user data
+Message-ID: <ZTGE3zpd3yC2yqxo@kernel.org>
+References: <20231019082642.3286650-1-tmricht@linux.ibm.com>
 MIME-Version: 1.0
-References: <20230531111038.6302-1-francesco@dolcini.it> <CAMuHMdUkPiA=o_QLyuwsTYW7y1ksCjHAqyNSHFx2QZ-dP-HGsQ@mail.gmail.com>
- <ZTFFp8Yr7lq6HIab@francesco-nb.int.toradex.com> <CAMuHMdXtA3LNL6UkWyz6oytfNpSv77EShfF-uQvnPJktMUr40A@mail.gmail.com>
- <ZTFNNudzuvDtSn4J@francesco-nb.int.toradex.com>
-In-Reply-To: <ZTFNNudzuvDtSn4J@francesco-nb.int.toradex.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 19 Oct 2023 14:34:02 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKQrkeFmdtvdrscDMTTO6TfUZvJejCNGgC+osC3KjwE8Q@mail.gmail.com>
-Message-ID: <CAL_JsqKQrkeFmdtvdrscDMTTO6TfUZvJejCNGgC+osC3KjwE8Q@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: serial: 8250_omap: add rs485-rts-active-high
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019082642.3286650-1-tmricht@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,92 +54,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 10:37=E2=80=AFAM Francesco Dolcini <francesco@dolci=
-ni.it> wrote:
->
-> On Thu, Oct 19, 2023 at 05:13:01PM +0200, Geert Uytterhoeven wrote:
-> > Hi Franceso,
-> >
-> > On Thu, Oct 19, 2023 at 5:05=E2=80=AFPM Francesco Dolcini <francesco@do=
-lcini.it> wrote:
-> > > On Thu, Oct 19, 2023 at 12:09:06PM +0200, Geert Uytterhoeven wrote:
-> > > > On Wed, May 31, 2023 at 1:14=E2=80=AFPM Francesco Dolcini <francesc=
-o@dolcini.it> wrote:
-> > > > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > >
-> > > > > Add rs485-rts-active-high property, this was removed by mistake.
-> > > > > In general we just use rs485-rts-active-low property, however the=
- OMAP
-> > > > > UART for legacy reason uses the -high one.
-> > > > >
-> > > > > Fixes: 767d3467eb60 ("dt-bindings: serial: 8250_omap: drop rs485 =
-properties")
-> > > > > Closes: https://lore.kernel.org/all/ZGefR4mTHHo1iQ7H@francesco-nb=
-.int.toradex.com/
-> > > > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > > ---
-> > > > > v2: removed reported-by
-> > > >
-> > > > Thanks for your patch, which is now commit 403e97d6ab2cb6fd
-> > > > ("dt-bindings: serial: 8250_omap: add rs485-rts-active-high")
-> > > > in v6.4-rc5.
-> > > >
-> > > > > --- a/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/serial/8250_omap.yaml
-> > > > > @@ -70,6 +70,7 @@ properties:
-> > > > >    dsr-gpios: true
-> > > > >    rng-gpios: true
-> > > > >    dcd-gpios: true
-> > > > > +  rs485-rts-active-high: true
-> > > >
-> > > > make dt_binding_check complains:
-> > > >
-> > > >     Documentation/devicetree/bindings/serial/8250_omap.yaml:
-> > > > rs485-rts-active-high: missing type definition
-> > >
-> > > For some reasons it works for me (and worked when I did send the patc=
-h)
-> > >
-> > > $ make dt_binding_check DT_SCHEMA_FILES=3D8250_omap.yaml
-> > > ...
-> > >   HOSTCC  scripts/dtc/libfdt/fdt_overlay.o
-> > >   HOSTCC  scripts/dtc/fdtoverlay.o
-> > >   HOSTLD  scripts/dtc/fdtoverlay
-> > >   LINT    Documentation/devicetree/bindings
-> > > invalid config: unknown option "required" for rule "quoted-strings"
-> > > xargs: /usr/bin/yamllint: exited with status 255; aborting
-> > >   CHKDT   Documentation/devicetree/bindings/processed-schema.json
-> > >   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> > > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindin=
-gs/phy/qcom,usb-snps-femto-v2.yaml: ignoring, error in schema: properties: =
-qcom,ls-fs-output-impedance-bp
-> > > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindin=
-gs/arm/vexpress-sysreg.yaml: ignoring, error in schema: properties: gpio-co=
-ntroller
-> > > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindin=
-gs/iio/temperature/adi,ltc2983.yaml: ignoring, error in schema: patternProp=
-erties: ^thermistor@: properties: adi,excitation-current-nanoamp
-> > > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindin=
-gs/iio/adc/adi,ad4130.yaml: ignoring, error in schema: patternProperties: ^=
-channel@([0-9a-f])$: properties: adi,burnout-current-nanoamp
-> > > /home/francesco/Toradex/sources/linux/Documentation/devicetree/bindin=
-gs/iio/addac/adi,ad74115.yaml: ignoring, error in schema: properties: adi,e=
-xt2-burnout-current-nanoamp
-> > >   DTEX    Documentation/devicetree/bindings/serial/8250_omap.example.=
-dts
-> > >   DTC_CHK Documentation/devicetree/bindings/serial/8250_omap.example.=
-dtb
-> > >
-> > >
-> > > any idea on what could be different between us?
-> >
-> > Are you using the latest dt-schema?
+Em Thu, Oct 19, 2023 at 10:26:42AM +0200, Thomas Richter escreveu:
+> Perf test case 111 Check open filename arg using perf trace + vfs_getname
+> fails on s390. This is caused by a failing function
+> bpf_probe_read() in file util/bpf_skel/augmented_raw_syscalls.bpf.c.
+> 
+> The root cause is the lookup by address. Function bpf_probe_read()
+> is used. This function works only for architectures
+> with ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+> 
+> On s390 is not possible to determine from the address to which
+> address space the address belongs to (user or kernel space).
+> 
+> Replace bpf_probe_read() by bpf_probe_read_kernel()
+> and bpf_probe_read_str() by bpf_probe_read_user_str() to
+> explicity specify the address space the address refers to.
 
-Indeed, it is a new check.
+Thanks,
+ 
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-> Nope, and I tried to update it and now everything fails in a miserable
-> way.
+- Arnaldo
 
-Do you have more details?
+> Output before:
+>  # ./perf trace -eopen,openat -- touch /tmp/111
+>  libbpf: prog 'sys_enter': BPF program load failed: Invalid argument
+>  libbpf: prog 'sys_enter': -- BEGIN PROG LOAD LOG --
+>  reg type unsupported for arg#0 function sys_enter#75
+>  0: R1=ctx(off=0,imm=0) R10=fp0
+>  ; int sys_enter(struct syscall_enter_args *args)
+>  0: (bf) r6 = r1           ; R1=ctx(off=0,imm=0) R6_w=ctx(off=0,imm=0)
+>  ; return bpf_get_current_pid_tgid();
+>  1: (85) call bpf_get_current_pid_tgid#14      ; R0_w=scalar()
+>  2: (63) *(u32 *)(r10 -8) = r0 ; R0_w=scalar() R10=fp0 fp-8=????mmmm
+>  3: (bf) r2 = r10              ; R2_w=fp0 R10=fp0
+>  ;
+>  .....
+>  lines deleted here
+>  .....
+>  23: (bf) r3 = r6              ; R3_w=ctx(off=0,imm=0) R6=ctx(off=0,imm=0)
+>  24: (85) call bpf_probe_read#4
+>  unknown func bpf_probe_read#4
+>  processed 23 insns (limit 1000000) max_states_per_insn 0 \
+> 	 total_states 2 peak_states 2 mark_read 2
+>  -- END PROG LOAD LOG --
+>  libbpf: prog 'sys_enter': failed to load: -22
+>  libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+>  libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -22
+>  ....
+> 
+> Output after:
+>  # ./perf test -Fv 111
+>  111: Check open filename arg using perf trace + vfs_getname          :
+>  --- start ---
+>      1.085 ( 0.011 ms): touch/320753 openat(dfd: CWD, filename: \
+> 	"/tmp/temporary_file.SWH85", \
+> 	flags: CREAT|NOCTTY|NONBLOCK|WRONLY, mode: IRUGO|IWUGO) = 3
+>  ---- end ----
+>  Check open filename arg using perf trace + vfs_getname: Ok
+>  #
+> 
+> Test with the sleep command shows:
+> Output before:
+>  # ./perf trace -e *sleep sleep 1.234567890
+>      0.000 (1234.681 ms): sleep/63114 clock_nanosleep(rqtp: \
+>          { .tv_sec: 0, .tv_nsec: 0 }, rmtp: 0x3ffe0979720) = 0
+>  #
+> 
+> Output after:
+>  # ./perf trace -e *sleep sleep 1.234567890
+>      0.000 (1234.686 ms): sleep/64277 clock_nanosleep(rqtp: \
+>          { .tv_sec: 1, .tv_nsec: 234567890 }, rmtp: 0x3fff3df9ea0) = 0
+>  #
+> 
+> Fixes: 14e4b9f4289a ("perf trace: Raw augmented syscalls fix libbpf 1.0+ compatibility")
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Co-developed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Cc: Ian Rogers <irogers@google.com>
+> ---
+>  .../util/bpf_skel/augmented_raw_syscalls.bpf.c   | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> index 939ec769bf4a..52c270330ae0 100644
+> --- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> +++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> @@ -153,7 +153,7 @@ static inline
+>  unsigned int augmented_arg__read_str(struct augmented_arg *augmented_arg, const void *arg, unsigned int arg_len)
+>  {
+>  	unsigned int augmented_len = sizeof(*augmented_arg);
+> -	int string_len = bpf_probe_read_str(&augmented_arg->value, arg_len, arg);
+> +	int string_len = bpf_probe_read_user_str(&augmented_arg->value, arg_len, arg);
+>  
+>  	augmented_arg->size = augmented_arg->err = 0;
+>  	/*
+> @@ -203,7 +203,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
+>  	_Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
+>  	socklen &= sizeof(augmented_args->saddr) - 1;
+>  
+> -	bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+> +	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
+>  
+>  	return augmented__output(args, augmented_args, len + socklen);
+>  }
+> @@ -221,7 +221,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
+>  
+>  	socklen &= sizeof(augmented_args->saddr) - 1;
+>  
+> -	bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+> +	bpf_probe_read_user(&augmented_args->saddr, socklen, sockaddr_arg);
+>  
+>  	return augmented__output(args, augmented_args, len + socklen);
+>  }
+> @@ -311,7 +311,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
+>          if (augmented_args == NULL)
+>  		goto failure;
+>  
+> -	if (bpf_probe_read(&augmented_args->__data, sizeof(*attr), attr) < 0)
+> +	if (bpf_probe_read_user(&augmented_args->__data, sizeof(*attr), attr) < 0)
+>  		goto failure;
+>  
+>  	attr_read = (const struct perf_event_attr_size *)augmented_args->__data;
+> @@ -325,7 +325,7 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
+>                  goto failure;
+>  
+>  	// Now that we read attr->size and tested it against the size limits, read it completely
+> -	if (bpf_probe_read(&augmented_args->__data, size, attr) < 0)
+> +	if (bpf_probe_read_user(&augmented_args->__data, size, attr) < 0)
+>  		goto failure;
+>  
+>  	return augmented__output(args, augmented_args, len + size);
+> @@ -347,7 +347,7 @@ int sys_enter_clock_nanosleep(struct syscall_enter_args *args)
+>  	if (size > sizeof(augmented_args->__data))
+>                  goto failure;
+>  
+> -	bpf_probe_read(&augmented_args->__data, size, rqtp_arg);
+> +	bpf_probe_read_user(&augmented_args->__data, size, rqtp_arg);
+>  
+>  	return augmented__output(args, augmented_args, len + size);
+>  failure:
+> @@ -385,7 +385,7 @@ int sys_enter(struct syscall_enter_args *args)
+>  	if (augmented_args == NULL)
+>  		return 1;
+>  
+> -	bpf_probe_read(&augmented_args->args, sizeof(augmented_args->args), args);
+> +	bpf_probe_read_kernel(&augmented_args->args, sizeof(augmented_args->args), args);
+>  
+>  	/*
+>  	 * Jump to syscall specific augmenter, even if the default one,
+> @@ -406,7 +406,7 @@ int sys_exit(struct syscall_exit_args *args)
+>  	if (pid_filter__has(&pids_filtered, getpid()))
+>  		return 0;
+>  
+> -	bpf_probe_read(&exit_args, sizeof(exit_args), args);
+> +	bpf_probe_read_kernel(&exit_args, sizeof(exit_args), args);
+>  	/*
+>  	 * Jump to syscall specific return augmenter, even if the default one,
+>  	 * "!raw_syscalls:unaugmented" that will just return 1 to return the
+> -- 
+> 2.41.0
+> 
 
-Rob
+-- 
+
+- Arnaldo
