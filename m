@@ -2,190 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EB77CEDCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14097CEDD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjJSB50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 21:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S232156AbjJSB7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 21:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJSB5Z (ORCPT
+        with ESMTP id S229726AbjJSB7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 21:57:25 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E728EFE
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 18:57:22 -0700 (PDT)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S9rNL6LdzzRt4l;
-        Thu, 19 Oct 2023 09:53:38 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 19 Oct 2023 09:57:19 +0800
-Subject: Re: [PATCH v2] ubi: gluebi: Fix NULL pointer dereference caused by
- ftl notifier
-To:     ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-        <dpervushin@embeddedalley.com>, <Artem.Bityutskiy@nokia.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20231018121618.778385-1-wangzhaolong1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <e76fb64d-3a16-3cd5-c4a5-cb35bab15937@huawei.com>
-Date:   Thu, 19 Oct 2023 09:57:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 18 Oct 2023 21:59:46 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5233EA;
+        Wed, 18 Oct 2023 18:59:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9rWF5Fcgz4f3k5Y;
+        Thu, 19 Oct 2023 09:59:37 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgB3Dt6JjTBlWBVdDQ--.36072S3;
+        Thu, 19 Oct 2023 09:59:39 +0800 (CST)
+Subject: Re: [PATCH -next 0/6] md: remvoe rcu protection to access rdev from
+ conf
+To:     Yu Kuai <yukuai1@huaweicloud.com>, Song Liu <song@kernel.org>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231016092439.493646-1-yukuai1@huaweicloud.com>
+ <CAPhsuW6vE7O1uPXnC3yrUT4maghKdx+E0odqF7UxP5esgBC=2A@mail.gmail.com>
+ <d330b1f1-fd72-554c-f25c-dd9c347d8dd1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <ce5d1e69-6a9a-0492-a5b0-57ec860b77c3@huaweicloud.com>
+Date:   Thu, 19 Oct 2023 09:59:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20231018121618.778385-1-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <d330b1f1-fd72-554c-f25c-dd9c347d8dd1@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-CM-TRANSID: gCh0CgB3Dt6JjTBlWBVdDQ--.36072S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFy7JF4fAFyrZw1kAFykAFb_yoW5Kw17pF
+        Z3ta43WrWUXr1rWFyDX3yDCryrJw18X3yDAry3W3WxZ3yjvr92gr15XFyv9F98C393AFWj
+        qw1UJrZxZFyUAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
+        DUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/10/18 20:16, ZhaoLong Wang 写道:
-> If both flt.ko and gluebi.ko are loaded, the notiier of ftl
-> triggers NULL pointer dereference when trying to access
-> ‘gluebi->desc’ in gluebi_read().
-> 
-> ubi_gluebi_init
->    ubi_register_volume_notifier
->      ubi_enumerate_volumes
->        ubi_notify_all
->          gluebi_notify    nb->notifier_call()
->            gluebi_create
->              mtd_device_register
->                mtd_device_parse_register
->                  add_mtd_device
->                    blktrans_notify_add   not->add()
->                      ftl_add_mtd         tr->add_mtd()
->                        scan_header
->                          mtd_read
->                            mtd_read
->                              mtd_read_oob
->                                gluebi_read   mtd->read()
->                                  gluebi->desc - NULL
-> 
-> Detailed reproduction information available at the link[1],
-> 
-> In the normal case, obtain gluebi->desc in the gluebi_get_device(),
-> and accesses gluebi->desc in the gluebi_read(). However,
-> gluebi_get_device() is not executed in advance in the
-> ftl_add_mtd() process, which leads to NULL pointer dereference.
-> 
-> The value of gluebi->desc may also be a negative error code, which
-> triggers the page fault error.
-> 
-> This patch has the following modifications:
-> 
-> 1. Do not assign gluebi->desc to the error code. Use the NULL instead.
-> 
-> 2. Always check the validity of gluebi->desc in gluebi_read() If the
->     gluebi->desc is NULL, try to get MTD device.
-> 
-> Such a modification currently works because the mutex "mtd_table_mutex"
-> is held on all necessary paths, including the ftl_add_mtd() call path,
-> open and close paths. Therefore, many race condition can be avoided.
-> 
-> Fixes: 2ba3d76a1e29 ("UBI: make gluebi a separate module")
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-> ---
->   drivers/mtd/ubi/gluebi.c | 37 +++++++++++++++++++++++++++++++------
->   1 file changed, 31 insertions(+), 6 deletions(-)
-> 
+Hi,
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+在 2023/10/19 9:04, Yu Kuai 写道:
+> Hi,
+> 
+> 在 2023/10/19 1:58, Song Liu 写道:
+>> On Sun, Oct 15, 2023 at 6:28 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Yu Kuai (6):
+>>>    md: remove useless debug code to print configuration
+>>>    md: remove flag RemoveSynchronized
+>>>    md/raid1: remove rcu protection to access rdev from conf
+>>>    md/raid10: remove rcu protection to access rdev from conf
+>>>    md/raid5: remove rcu protection to access rdev from conf
+>>>    md/md-multipath: remove rcu protection to access rdev from conf
+>>
+>> While a cover letter is highly recommended for a patchset. An empty
+>> cover letter like this doesn't really add value. If the description of 
+>> each
+>> patch is clear enough, it is OK to not have a cover-letter.
+> 
+> Yes, I was hoping commit message in each patch is clear enough,I'll try
+> to explain everything more detailed.
 
-> diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
-> index 1b980d15d9fb..0ca7f104adbf 100644
-> --- a/drivers/mtd/ubi/gluebi.c
-> +++ b/drivers/mtd/ubi/gluebi.c
-> @@ -85,6 +85,7 @@ static int gluebi_get_device(struct mtd_info *mtd)
->   {
->   	struct gluebi_device *gluebi;
->   	int ubi_mode = UBI_READONLY;
-> +	struct ubi_volume_desc *vdesc;
->   
->   	if (mtd->flags & MTD_WRITEABLE)
->   		ubi_mode = UBI_READWRITE;
-> @@ -109,12 +110,14 @@ static int gluebi_get_device(struct mtd_info *mtd)
->   	 * This is the first reference to this UBI volume via the MTD device
->   	 * interface. Open the corresponding volume in read-write mode.
->   	 */
-> -	gluebi->desc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
-> +	vdesc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
->   				       ubi_mode);
-> -	if (IS_ERR(gluebi->desc)) {
-> +	if (IS_ERR(vdesc)) {
-> +		gluebi->desc = NULL;
->   		mutex_unlock(&devices_mutex);
-> -		return PTR_ERR(gluebi->desc);
-> +		return PTR_ERR(vdesc);
->   	}
-> +	gluebi->desc = vdesc;
->   	gluebi->refcnt += 1;
->   	mutex_unlock(&devices_mutex);
->   	return 0;
-> @@ -134,8 +137,10 @@ static void gluebi_put_device(struct mtd_info *mtd)
->   	gluebi = container_of(mtd, struct gluebi_device, mtd);
->   	mutex_lock(&devices_mutex);
->   	gluebi->refcnt -= 1;
-> -	if (gluebi->refcnt == 0)
-> +	if (gluebi->refcnt == 0) {
->   		ubi_close_volume(gluebi->desc);
-> +		gluebi->desc = NULL;
-> +	}
->   	mutex_unlock(&devices_mutex);
->   }
->   
-> @@ -154,9 +159,26 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
->   		       size_t *retlen, unsigned char *buf)
->   {
->   	int err = 0, lnum, offs, bytes_left;
-> -	struct gluebi_device *gluebi;
-> +	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
-> +						    mtd);
-> +	int no_desc = gluebi->desc == NULL ? 1 : 0;
-> +
-> +	/**
-> +	 * In normal case, the UBI volume desc has been initialized by
-> +	 * ->_get_device(). However, in the ftl notifier process, the
-> +	 * ->_get_device() is not executed in advance and the MTD device
-> +	 * is directly scanned which cause NULL pointer dereference.
-> +	 * Therefore, try to get the MTD device here.
-> +	 */
-> +	if (unlikely(no_desc)) {
-> +		err = __get_mtd_device(mtd);
-> +		if (err) {
-> +			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
-> +				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
-> +			return err;
-> +		}
-> +	}
->   
-> -	gluebi = container_of(mtd, struct gluebi_device, mtd);
->   	lnum = div_u64_rem(from, mtd->erasesize, &offs);
->   	bytes_left = len;
->   	while (bytes_left) {
-> @@ -176,6 +198,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
->   	}
->   
->   	*retlen = len - bytes_left;
-> +
-> +	if (unlikely(no_desc))
-> +		__put_mtd_device(mtd);
->   	return err;
->   }
->   
+I'll add following cover letter in the next version:
+
+The lifetime of rdev:
+
+1. md_import_device() generate a rdev based on underlying disk;
+
+    mddev_lock()
+    rdev = kzalloc();
+    rdev->bdev = blkdev_get_by_dev();
+    mddev_unlock()
+
+2. bind_rdev_to_array() add this rdev to mddev->disks;
+
+    mddev_lock()
+    kobject_add(&rdev->kobj, &mddev->kobj, ...);
+    list_add_rcu(&rdev->same_set, &mddev->disks);
+    mddev_unlock()
+
+3. remove_and_add_spares() add this rdev to conf;
+
+    mddev_lock()
+    rdev_addable();
+    pers->hot_add_disk();
+    rcu_assign_pointer(conf->rdev, rdev);
+    mddev_unlock()
+
+4. Use this array with rdev;
+
+5. remove_and_add_spares() remove rdev from conf;
+
+    // triggered by sysfs/ioctl
+    mddev_lock()
+    rdev_removeable();
+    pers->hot_remove_disk();
+     rcu_assign_pointer(conf->rdev, NULL);
+     synchronize_rcu();
+    mddev_unlock()
+
+    // triggered by deamon
+    mddev_lock()
+    rdev_removeable();
+    synchronize_rcu(); -> this can't protect accessing rdev from conf
+    pers->hot_remove_disk();
+     rcu_assign_pointer(conf->rdev, NULL);
+    mddev_unlock()
+
+6. md_kick_rdev_from_array() remove rdev from mddev->disks;
+
+    mddev_lock()
+    list_del_rcu(&rdev->same_set);
+    synchronize_rcu();
+    list_add(&rdev->same_set, &mddev->deleting)
+    mddev_unlock()
+     export_rdev
+
+There are two seperate rcu protection for rdev, and this pathset remove
+the protection of conf(step 3 and 5), because it's safe to access rdev
+from conf in following cases:
+
+  - If 'reconfig_mutex' is held, because rdev can't be added or rmoved to
+  conf;
+  - If there is normal IO inflight, because mddev_suspend() will prevent
+  rdev to be added or removed to conf;
+  - If sync thread is running, because remove_and_add_spares() can only
+  be called from daemon thread when sync thread is done, and
+  'MD_RECOVERY_RUNNING' is also checked for ioctl/sysfs;
+  - if rcu_read_lock() or any spinlock is held, because synchronize_rcu()
+  from step 6 prevent rdev to be freed until rcu_read_unlock() or
+  spinlock is released;
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Kuai
+> 
+>>
+>> Thanks,
+>> Song
+>>
+>>>
+>>>   drivers/md/md-multipath.c |  29 ++---
+>>>   drivers/md/md.c           |  37 +-----
+>>>   drivers/md/raid1.c        |  94 ++++-----------
+>>>   drivers/md/raid10.c       | 248 +++++++++-----------------------------
+>>>   drivers/md/raid5-cache.c  |  11 +-
+>>>   drivers/md/raid5-ppl.c    |  16 +--
+>>>   drivers/md/raid5.c        | 225 ++++++++++------------------------
+>>>   drivers/md/raid5.h        |   4 +-
+>>>   8 files changed, 163 insertions(+), 501 deletions(-)
+>>>
+>>> -- 
+>>> 2.39.2
+>>>
+>> .
+>>
+> 
+> .
 > 
 
