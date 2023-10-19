@@ -2,155 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555967CF277
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9E17CF274
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjJSIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        id S1344918AbjJSIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235109AbjJSIYI (ORCPT
+        with ESMTP id S235308AbjJSIYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:24:08 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E3B196
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:24:05 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a828bdcfbaso92333627b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697703845; x=1698308645; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Lu+FeCyL3oCgR0FP+gkAe4hCPFiLBzzy7yX8rQh0MDk=;
-        b=KWMlBGzAEsg46eyBH395XpMNOG4zWRjOgLuLv2f+O28E4bLZ7UeUtPK/gzSwWg4oy6
-         yekOL3vFaP68khniqFLgEVn19MaqMrIc9CR5RFxbHi/WcyDOsTCExochl43yhC97Lf2B
-         jKUXgbF5nXGjALb6dxL+rg9puRQcbpmGX0ZyacdShthgORcv+/tKGTHsoWmnNIxV8cB8
-         tjGbQk/9pfn1ZAyXMFW62AD+q4OEROoWQZhKBXr9N7PWNP7HrZtcD/37kJO+2U50ffmC
-         sJ+XA2OVF2RcEg6RikjCBIPrkhWY6F8SCuK7GVf8Ss5gyKdb0mkzYNMw5H/8AfchiV6k
-         4gFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697703845; x=1698308645;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lu+FeCyL3oCgR0FP+gkAe4hCPFiLBzzy7yX8rQh0MDk=;
-        b=PYwBmFm3LoQeHOA8gNTTWxx1jkutxmghclKhWzMHgnoG03Io9rtbvBpqUMFwsk73W2
-         omvIp1LhhC9JdwwoEwhJIjnn+21njiWxKvrt3h8qXlyC1i5nfshvQOGDPdB6xKbkRIoi
-         Y68P33TqN+u5xYYL/a3m/UkGHe57+phKqi090ppVYWoMD6xFHISx36g7MMkGQb56F3hb
-         5NQ2v4BACvRAwrdTjm+C0jpj3L8fjUej6JiDIfoE/r4zXoqrLB+gokzz1ekHgOcIv6qY
-         9UrfFokOt2ca98YnRc3JXajSdp4vfaKTe27EdF8/DjFPJtIWHItKkCU7IqvjSHPs4Iq6
-         ENow==
-X-Gm-Message-State: AOJu0Yzh8kp/mPkmyn2T7zQjm+6+wGFvz1nTBwu9fWcnOLWBp+gQyL6r
-        zEVdwtCHYYHmTHD38hwaP/k6pzV7ggnH
-X-Google-Smtp-Source: AGHT+IEirk34VW4JdGjVi2e1kKViuhhou/6R9Dp0JdkMnk46P/V54IcYs4vDzb7/EWCv6K5nHuC1EamwU9FI
-X-Received: from wnhuang-p920.tpe.corp.google.com ([2401:fa00:fc:200:8537:873c:b8ab:6b48])
- (user=wnhuang job=sendgmr) by 2002:a05:6902:134a:b0:d9a:58e0:c7c7 with SMTP
- id g10-20020a056902134a00b00d9a58e0c7c7mr34535ybu.1.1697703845044; Thu, 19
- Oct 2023 01:24:05 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:23:57 +0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231019082357.1505047-1-wnhuang@google.com>
-Subject: [PATCH] coresight: etm4x: Allow configuring cycle count threshold
-From:   Wei-Ning Huang <wnhuang@google.com>
-To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        suzuki.poulose@arm.com, james.clark@arm.com, leo.yan@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Wei-Ning Huang <wnhuang@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 04:24:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15014182;
+        Thu, 19 Oct 2023 01:24:03 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 08:23:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697703840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATmV+shENxojKtOgLX8bX5Ko5VODxesMS6F+xBHm3TA=;
+        b=IYCjluzwcIrVVHp6/It2Clz1236LclJy3xsuqgHEfrN1dWRCv/kqQFJAlLWQ9gXwQvogmG
+        c2l19LdpXDT4L4MtKJ9WlezYgKV9q3ocCG9dBQSuXV1/FOdO7v6NHiNO92pKhbEMQGi6c3
+        iCbDN9e3cGG0GiAt8ujYnljzVDx1LC07OtzTDy437bUmFwdurDVNxEymCBRY3K67/P6OYs
+        tNcoaGPaDg3hc0pO91sbayQ/cxgpgT25P14vyeBcFq0ak0g8KtS0MyAtzg7iI4bbxaL9vh
+        DXBPb6Vrjkpco3/ePc20HwVntP56rasFUlL0yVbFh5e2kJSvgOSNF9+q+8YCKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697703840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATmV+shENxojKtOgLX8bX5Ko5VODxesMS6F+xBHm3TA=;
+        b=HHMawuVsLa5nSxJr+aRXzbbpTudgOMa5mvW5AigGl424YCceLV00ZfI+FFax9oQ3uKup0m
+        vSFUQS/cgGfUweAQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf: Disallow mis-matched inherited group reads
+Cc:     Budimir Markovic <markovicbudimir@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231018115654.GK33217@noisy.programming.kicks-ass.net>
+References: <20231018115654.GK33217@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Message-ID: <169770383951.3135.17771457264387517954.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow userspace to configure cycle count threshold through
-perf_event_attr config. The last high 12-bit of config value is used to
-store the cycle count threshold.
+The following commit has been merged into the perf/urgent branch of tip:
 
-Signed-off-by: Wei-Ning Huang <wnhuang@google.com>
+Commit-ID:     32671e3799ca2e4590773fd0e63aaa4229e50c06
+Gitweb:        https://git.kernel.org/tip/32671e3799ca2e4590773fd0e63aaa4229e50c06
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 18 Oct 2023 13:56:54 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 19 Oct 2023 10:09:42 +02:00
+
+perf: Disallow mis-matched inherited group reads
+
+Because group consistency is non-atomic between parent (filedesc) and children
+(inherited) events, it is possible for PERF_FORMAT_GROUP read() to try and sum
+non-matching counter groups -- with non-sensical results.
+
+Add group_generation to distinguish the case where a parent group removes and
+adds an event and thus has the same number, but a different configuration of
+events as inherited groups.
+
+This became a problem when commit fa8c269353d5 ("perf/core: Invert
+perf_read_group() loops") flipped the order of child_list and sibling_list.
+Previously it would iterate the group (sibling_list) first, and for each
+sibling traverse the child_list. In this order, only the group composition of
+the parent is relevant. By flipping the order the group composition of the
+child (inherited) events becomes an issue and the mis-match in group
+composition becomes evident.
+
+That said; even prior to this commit, while reading of a group that is not
+equally inherited was not broken, it still made no sense.
+
+(Ab)use ECHILD as error return to indicate issues with child process group
+composition.
+
+Fixes: fa8c269353d5 ("perf/core: Invert perf_read_group() loops")
+Reported-by: Budimir Markovic <markovicbudimir@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20231018115654.GK33217@noisy.programming.kicks-ass.net
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c |  6 +++++-
- include/linux/coresight-pmu.h                      | 14 ++++++++------
- tools/include/linux/coresight-pmu.h                | 14 ++++++++------
- 3 files changed, 21 insertions(+), 13 deletions(-)
+ include/linux/perf_event.h |  1 +-
+ kernel/events/core.c       | 39 +++++++++++++++++++++++++++++++------
+ 2 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 77b0271ce6eb..155441668b4a 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -645,6 +645,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	struct perf_event_attr *attr = &event->attr;
- 	unsigned long cfg_hash;
- 	int preset;
-+	u64 cyc_threadhold;
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index e85cd1c..7b5406e 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -704,6 +704,7 @@ struct perf_event {
+ 	/* The cumulative AND of all event_caps for events in this group. */
+ 	int				group_caps;
  
- 	/* Clear configuration from previous run */
- 	memset(config, 0, sizeof(struct etmv4_config));
-@@ -667,7 +668,10 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	if (attr->config & BIT(ETM_OPT_CYCACC)) {
- 		config->cfg |= TRCCONFIGR_CCI;
- 		/* TRM: Must program this for cycacc to work */
--		config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
-+		cyc_threshold = ((attr->config >> ETM_OPT_CYC_THRESHOLD_SHIFT) &
-+				 ETM_OPT_CYC_THRESHOLD_MASK;
-+		config->ccctlr = cyc_threshold ? cyc_threshold :
-+				 ETM_CYC_THRESHOLD_DEFAULT;
++	unsigned int			group_generation;
+ 	struct perf_event		*group_leader;
+ 	/*
+ 	 * event->pmu will always point to pmu in which this event belongs.
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4c72a41..d0663b9 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1954,6 +1954,7 @@ static void perf_group_attach(struct perf_event *event)
+ 
+ 	list_add_tail(&event->sibling_list, &group_leader->sibling_list);
+ 	group_leader->nr_siblings++;
++	group_leader->group_generation++;
+ 
+ 	perf_event__header_size(group_leader);
+ 
+@@ -2144,6 +2145,7 @@ static void perf_group_detach(struct perf_event *event)
+ 	if (leader != event) {
+ 		list_del_init(&event->sibling_list);
+ 		event->group_leader->nr_siblings--;
++		event->group_leader->group_generation++;
+ 		goto out;
  	}
- 	if (attr->config & BIT(ETM_OPT_TS)) {
- 		/*
-diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-index 51ac441a37c3..14f48658ff1c 100644
---- a/include/linux/coresight-pmu.h
-+++ b/include/linux/coresight-pmu.h
-@@ -29,12 +29,14 @@
-  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
-  * directly use below macros as config bits.
-  */
--#define ETM_OPT_BRANCH_BROADCAST 8
--#define ETM_OPT_CYCACC		12
--#define ETM_OPT_CTXTID		14
--#define ETM_OPT_CTXTID2		15
--#define ETM_OPT_TS		28
--#define ETM_OPT_RETSTK		29
-+#define ETM_OPT_BRANCH_BROADCAST	8
-+#define ETM_OPT_CYCACC			12
-+#define ETM_OPT_CTXTID			14
-+#define ETM_OPT_CTXTID2			15
-+#define ETM_OPT_TS			28
-+#define ETM_OPT_RETSTK			29
-+#define ETM_OPT_CYC_THRESHOLD_SHIFT	52
-+#define ETM_OPT_CYC_THRESHOLD_MASK	0xfff
  
- /* ETMv4 CONFIGR programming bits for the ETM OPTs */
- #define ETM4_CFG_BIT_BB         3
-diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
-index 51ac441a37c3..14f48658ff1c 100644
---- a/tools/include/linux/coresight-pmu.h
-+++ b/tools/include/linux/coresight-pmu.h
-@@ -29,12 +29,14 @@
-  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
-  * directly use below macros as config bits.
-  */
--#define ETM_OPT_BRANCH_BROADCAST 8
--#define ETM_OPT_CYCACC		12
--#define ETM_OPT_CTXTID		14
--#define ETM_OPT_CTXTID2		15
--#define ETM_OPT_TS		28
--#define ETM_OPT_RETSTK		29
-+#define ETM_OPT_BRANCH_BROADCAST	8
-+#define ETM_OPT_CYCACC			12
-+#define ETM_OPT_CTXTID			14
-+#define ETM_OPT_CTXTID2			15
-+#define ETM_OPT_TS			28
-+#define ETM_OPT_RETSTK			29
-+#define ETM_OPT_CYC_THRESHOLD_SHIFT	52
-+#define ETM_OPT_CYC_THRESHOLD_MASK	0xfff
+@@ -5440,7 +5442,7 @@ static int __perf_read_group_add(struct perf_event *leader,
+ 					u64 read_format, u64 *values)
+ {
+ 	struct perf_event_context *ctx = leader->ctx;
+-	struct perf_event *sub;
++	struct perf_event *sub, *parent;
+ 	unsigned long flags;
+ 	int n = 1; /* skip @nr */
+ 	int ret;
+@@ -5450,6 +5452,33 @@ static int __perf_read_group_add(struct perf_event *leader,
+ 		return ret;
  
- /* ETMv4 CONFIGR programming bits for the ETM OPTs */
- #define ETM4_CFG_BIT_BB         3
--- 
-2.42.0.655.g421f12c284-goog
-
+ 	raw_spin_lock_irqsave(&ctx->lock, flags);
++	/*
++	 * Verify the grouping between the parent and child (inherited)
++	 * events is still in tact.
++	 *
++	 * Specifically:
++	 *  - leader->ctx->lock pins leader->sibling_list
++	 *  - parent->child_mutex pins parent->child_list
++	 *  - parent->ctx->mutex pins parent->sibling_list
++	 *
++	 * Because parent->ctx != leader->ctx (and child_list nests inside
++	 * ctx->mutex), group destruction is not atomic between children, also
++	 * see perf_event_release_kernel(). Additionally, parent can grow the
++	 * group.
++	 *
++	 * Therefore it is possible to have parent and child groups in a
++	 * different configuration and summing over such a beast makes no sense
++	 * what so ever.
++	 *
++	 * Reject this.
++	 */
++	parent = leader->parent;
++	if (parent &&
++	    (parent->group_generation != leader->group_generation ||
++	     parent->nr_siblings != leader->nr_siblings)) {
++		ret = -ECHILD;
++		goto unlock;
++	}
+ 
+ 	/*
+ 	 * Since we co-schedule groups, {enabled,running} times of siblings
+@@ -5483,8 +5512,9 @@ static int __perf_read_group_add(struct perf_event *leader,
+ 			values[n++] = atomic64_read(&sub->lost_samples);
+ 	}
+ 
++unlock:
+ 	raw_spin_unlock_irqrestore(&ctx->lock, flags);
+-	return 0;
++	return ret;
+ }
+ 
+ static int perf_read_group(struct perf_event *event,
+@@ -5503,10 +5533,6 @@ static int perf_read_group(struct perf_event *event,
+ 
+ 	values[0] = 1 + leader->nr_siblings;
+ 
+-	/*
+-	 * By locking the child_mutex of the leader we effectively
+-	 * lock the child list of all siblings.. XXX explain how.
+-	 */
+ 	mutex_lock(&leader->child_mutex);
+ 
+ 	ret = __perf_read_group_add(leader, read_format, values);
+@@ -13346,6 +13372,7 @@ static int inherit_group(struct perf_event *parent_event,
+ 		    !perf_get_aux_event(child_ctr, leader))
+ 			return -EINVAL;
+ 	}
++	leader->group_generation = parent_event->group_generation;
+ 	return 0;
+ }
+ 
