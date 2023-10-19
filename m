@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B2B7D0372
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91277D0374
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346553AbjJSUyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S235534AbjJSUzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjJSUye (ORCPT
+        with ESMTP id S232348AbjJSUzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 16:54:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2E5D7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697748873; x=1729284873;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=3NqRHsAR6XsnhK02RO1iSbeK91JgC8I9EUZ+LI6wcn8=;
-  b=esKlLJ9en2tPsE2Rhcc157cIuHVUnpRbnh+ODflPj/AsV50AqNDhdepH
-   lSROzCJXSiBeldChVPFIU6d/LtmPse7N8DRjvw5J6/VFp2yDDhEEdo2VQ
-   fKXW7x/EB60+vY3h08Rlyxl9b57VirDWcPnJEBG6ZfQ5BrvxZY7FujtI2
-   SJGrIJPp3m7DE531JURgqYPoEG15pq8rs6Puv6Hr/7Z8Okv2Ax7HeXKqd
-   NlSLADzBB/jSTRuiYbpdWqAW7ywHGUeZztcAHfTCNPDVyDnD1DJd5b/ZZ
-   j2fE5PM66O4NwPBdQWEp1FjW+4p5HKcdm5R/hddaD0DHMWyqIwa7fq7Ed
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="4974255"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="4974255"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 13:54:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="822978422"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="822978422"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Oct 2023 13:54:30 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qta2G-0002aY-0L;
-        Thu, 19 Oct 2023 20:54:28 +0000
-Date:   Fri, 20 Oct 2023 04:54:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be
- truncated writing likely 5 or more bytes into a region of size between 3 and
- 13
-Message-ID: <202310200443.iD3tUbbK-lkp@intel.com>
+        Thu, 19 Oct 2023 16:55:43 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0FAD7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:55:41 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b7f0170d7bso143383b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697748941; x=1698353741; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PbXLmjJs4tDfsTjbZlYEpWsUipeZmvWuN4h1mPUkDJ0=;
+        b=ZOi7CXqhJsiv9A5OCuhNTJmx79o2Q/ApOQXzoIsoAdbAVL3Qwu+lK0sOj0WOM8ZFgh
+         xV3GZt0qEQpZ0ZqDpG5zw7xhZbAdCgofF0MPS86WT/4G5M8CGXXDacJCu9KbX1oLRamJ
+         bx3Bs+DciM+voQwx6bCmI6nnxwT/NSt0a/jqGp4u+P12z9kDCjNLSep55qPbcPNe2uSL
+         c9I6mN2NhpR379wvjp2EgCwnSAi3Bk88sYqk0U3eCTMu+k90g2IZcVwBXyP29CcJsoc8
+         c1Q0MpJnxiSuxMmEyryIVEP26ipKhPZp0RNf6brAiOsbd0E502KPPcxlYg7Wp9ABnuDI
+         e4Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697748941; x=1698353741;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PbXLmjJs4tDfsTjbZlYEpWsUipeZmvWuN4h1mPUkDJ0=;
+        b=dhZkxQjvPWVTWpgn8iuwU5lF9K3oUB+X8OzAHdUmr7OFm+Vn0noZXVCvfevESZjwHS
+         cRnYDv8Q0maIXPzP3xpo4kFPSCFDyltFEiyxOVplF9hD4LEeBwpYfjqLJ2aDwoJOXjYc
+         kdSaJ7um/8FAekKP7TaewUiwYIdmhs+hjUFZEkHD/J0ngcWUVLNQQ/NMb0nPPaKLrI5c
+         6WagNyydIH8Vrtf+9F4UTLBEF7zEu47RuObK+FIeXBP0klaagOSpW8pWgt3iSgsRWm2R
+         UgIUt9yG7+P9oSuhvkklqPbDlHjzCw9uZK/r4ShMTQFdXwqoFYNMOa69IJyrOI3v8l7E
+         GWBQ==
+X-Gm-Message-State: AOJu0Yx1lCapGEixgn/5SRl5Im3SSDi02nbZCXAO3ugGLSzQqg/j/NzW
+        sYeXRzKv7hqwSffEo0FXW4I=
+X-Google-Smtp-Source: AGHT+IH7Gs2YuSv4uXr04F6lQ+npE/GpevyFYc7uZJwJ5aXaB5RN8oXxxiVdsBQ8DsgKo/v/cXQFWQ==
+X-Received: by 2002:a05:6a20:7486:b0:17a:fa76:805f with SMTP id p6-20020a056a20748600b0017afa76805fmr3692636pzd.23.1697748940668;
+        Thu, 19 Oct 2023 13:55:40 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id l18-20020a17090aec1200b0027dc2af3a17sm1974326pjy.27.2023.10.19.13.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 13:55:40 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 13:55:39 -0700
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 1/2] staging: vme_user: Replace printk() with
+ pr_*(),dev_*()
+Message-ID: <20231019205539.GA3017@Negi>
+References: <cover.1697601942.git.soumya.negi97@gmail.com>
+ <a0579eeda5ce70f69b6bfdcbe534b9d37138096c.1697601942.git.soumya.negi97@gmail.com>
+ <2023101823-unhidden-draw-d68c@gregkh>
+ <20231018193855.GA32553@Negi>
+ <2023101925-kudos-playful-7c5a@gregkh>
+ <20231019190618.GA29750@Negi>
+ <2023101941-poncho-disagree-8c77@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023101941-poncho-disagree-8c77@gregkh>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ce55c22ec8b223a90ff3e084d842f73cfba35588
-commit: 7108b80a542b9d65e44b36d64a700a83658c0b73 hwmon/coretemp: Handle large core ID value
-date:   1 year ago
-config: x86_64-sof-customedconfig-memory-debug-defconfig (https://download.01.org/0day-ci/archive/20231020/202310200443.iD3tUbbK-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200443.iD3tUbbK-lkp@intel.com/reproduce)
+On Thu, Oct 19, 2023 at 09:42:26PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Oct 19, 2023 at 12:06:18PM -0700, Soumya Negi wrote:
+> > On Thu, Oct 19, 2023 at 05:34:01PM +0200, Greg Kroah-Hartman wrote:
+> > > On Wed, Oct 18, 2023 at 12:38:56PM -0700, Soumya Negi wrote:
+> > > > Hi Greg,
+> > > > 
+> > > > On Wed, Oct 18, 2023 at 03:26:07PM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Tue, Oct 17, 2023 at 09:36:32PM -0700, Soumya Negi wrote:
+> > > > > > vme.c uses printk() to log messages. To improve and standardize message
+> > > > > > formatting, use logging mechanisms pr_err()/pr_warn() and
+> > > > > > dev_err()/dev_warn() instead. Retain the printk log levels of the
+> > > > > > messages during replacement.
+> > > > > > 
+> > > > > > Issue found by checkpatch.pl
+> > > > > > 
+> > > > > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> > > > > > ---
+> > > > > >  drivers/staging/vme_user/vme.c | 175 ++++++++++++++++++---------------
+> > > > > >  1 file changed, 94 insertions(+), 81 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+> > > > > > index 6519a7c994a0..e8c2c1e77b7d 100644
+> > > > > > --- a/drivers/staging/vme_user/vme.c
+> > > > > > +++ b/drivers/staging/vme_user/vme.c
+> > > > > > @@ -9,6 +9,8 @@
+> > > > > >   * Copyright 2004 Motorola Inc.
+> > > > > >   */
+> > > > > >  
+> > > > > > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > > > > 
+> > > > > No, this is a driver, as others have pointed out, always use dev_*()
+> > > > > calls instead.
+> > > > 
+> > > > Some of the pr_ fns can be dev_, but I don't think all can.
+> > > > e.g. device NULL-check error messages
+> > > 
+> > > I would argue that those are pointless and can be removed and also the
+> > > check is probably not needed either.
+> > 
+> > Got it. The pr_() in find_bridge() can't be converted to dev_ so I'll remove 
+> > the message entirely in another patch.
+> > 
+> > I understand that the device-NULL checks should be done on the caller's side. 
+> > Since empty devices would mean something went wrong, would it be better to
+> > put in an assertion(..WARN_ON) when removing the check? 
+> 
+> WARN_ON() means "I have no idea what can happen here so I give up",
+> which is not a good idea in kernel development.  If that every hits,
+> then your machine will reboot as the huge majority of all Linux systems
+> in the world run with panic-on-warn enabled.
+> 
+> If it is impossible for something to happen (i.e. you control all
+> callers) then just do not check for it.  If it happens, you will get a
+> NULL-dereference which is the same as a WARN_ON() in a way.
+> 
+> No new WARN_ON() should ever be added to the kernel, especially in a
+> driver.  Handle the condition if it is possible to be hit.  If it can
+> never be hit, don't even check it.
+> 
+> thanks,
+> 
+> greg k-h
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310200443.iD3tUbbK-lkp@intel.com/
+Hi Greg,
 
-All errors (new ones prefixed by >>):
+Thank you for explaining in detail. I'll remove the device NULL-checks
+completely.
 
-   drivers/hwmon/coretemp.c: In function 'create_core_data':
->> drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be truncated writing likely 5 or more bytes into a region of size between 3 and 13 [-Werror=format-truncation=]
-     393 |                          "temp%d_%s", attr_no, suffixes[i]);
-         |                                  ^~
-   drivers/hwmon/coretemp.c:393:26: note: assuming directive output of 5 bytes
-     393 |                          "temp%d_%s", attr_no, suffixes[i]);
-         |                          ^~~~~~~~~~~
-   drivers/hwmon/coretemp.c:392:17: note: 'snprintf' output 7 or more bytes (assuming 22) into a destination of size 19
-     392 |                 snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     393 |                          "temp%d_%s", attr_no, suffixes[i]);
-         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+Regards,
+Soumya
 
 
-vim +393 drivers/hwmon/coretemp.c
-
-a321cedb129041 Carsten Emde       2010-05-24  378  
-d23e2ae1aae52b Paul Gortmaker     2013-06-19  379  static int create_core_attrs(struct temp_data *tdata, struct device *dev,
-d23e2ae1aae52b Paul Gortmaker     2013-06-19  380  			     int attr_no)
-199e0de7f5df31 Durgadoss R        2011-05-20  381  {
-1075305de47d8e Guenter Roeck      2014-02-16  382  	int i;
-e3204ed3a4a78c Jan Beulich        2011-09-23  383  	static ssize_t (*const rd_ptr[TOTAL_ATTRS]) (struct device *dev,
-199e0de7f5df31 Durgadoss R        2011-05-20  384  			struct device_attribute *devattr, char *buf) = {
-c814a4c7c4aad7 Durgadoss R        2011-07-12  385  			show_label, show_crit_alarm, show_temp, show_tjmax,
-f4af6fd6e21792 Guenter Roeck      2011-09-19  386  			show_ttarget };
-1055b5f9042405 Rasmus Villemoes   2015-02-12  387  	static const char *const suffixes[TOTAL_ATTRS] = {
-1055b5f9042405 Rasmus Villemoes   2015-02-12  388  		"label", "crit_alarm", "input", "crit", "max"
-1055b5f9042405 Rasmus Villemoes   2015-02-12  389  	};
-199e0de7f5df31 Durgadoss R        2011-05-20  390  
-c814a4c7c4aad7 Durgadoss R        2011-07-12  391  	for (i = 0; i < tdata->attr_size; i++) {
-1055b5f9042405 Rasmus Villemoes   2015-02-12  392  		snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
-1055b5f9042405 Rasmus Villemoes   2015-02-12 @393  			 "temp%d_%s", attr_no, suffixes[i]);
-4258781ac720ff Sergey Senozhatsky 2011-05-24  394  		sysfs_attr_init(&tdata->sd_attrs[i].dev_attr.attr);
-199e0de7f5df31 Durgadoss R        2011-05-20  395  		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
-0cd709d0ddbfc2 Guenter Roeck      2018-12-10  396  		tdata->sd_attrs[i].dev_attr.attr.mode = 0444;
-199e0de7f5df31 Durgadoss R        2011-05-20  397  		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
-199e0de7f5df31 Durgadoss R        2011-05-20  398  		tdata->sd_attrs[i].index = attr_no;
-1075305de47d8e Guenter Roeck      2014-02-16  399  		tdata->attrs[i] = &tdata->sd_attrs[i].dev_attr.attr;
-bebe467823c0d8 Rudolf Marek       2007-05-08  400  	}
-1075305de47d8e Guenter Roeck      2014-02-16  401  	tdata->attr_group.attrs = tdata->attrs;
-1075305de47d8e Guenter Roeck      2014-02-16  402  	return sysfs_create_group(&dev->kobj, &tdata->attr_group);
-199e0de7f5df31 Durgadoss R        2011-05-20  403  }
-199e0de7f5df31 Durgadoss R        2011-05-20  404  
-
-:::::: The code at line 393 was first introduced by commit
-:::::: 1055b5f90424056432430fa06f94f1d12db07fba hwmon: (coretemp) Allow format checking
-
-:::::: TO: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-:::::: CC: Guenter Roeck <linux@roeck-us.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
