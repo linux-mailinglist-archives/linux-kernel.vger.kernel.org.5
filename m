@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6867CF21A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DBA7CF21E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbjJSILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S235174AbjJSIMZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 04:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbjJSILr (ORCPT
+        with ESMTP id S232813AbjJSIMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:11:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9645C132
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:11:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D7CC433C8;
-        Thu, 19 Oct 2023 08:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697703105;
-        bh=ISQsf0Hn5tal6+77OQ0DmTsebpQ1g3nMnle8JLPADPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oqO8lOm74cmnzq+OWrD9AMGREsPV+8MBVKSTfr1B2ccFnxaCmZ5wXZdC11EFXcvhO
-         DkEiQDADKHYXCi/xXYYwFiXsmTCnJT7kE+3iSwSk6hnelMY26G7SKDtvdnOPtsZr/M
-         fwVxJCkykP6Pt93qUvm6bbV5pd7IkeeCFYukdfnUmYyRghPrBdP9Oi5oiXBfyWQVEJ
-         Ey80Zi61usSxAAOq8PtCuS/o5Fr5D/AqYJd3JESRBB1PQzXW7l7e9lQSfrG5C9zueb
-         WrmgWyZqi2lc39IFelf4UwzIlGu5fzF+55HeCI1Sl4yL73AfiFAQ24Av32Ep9xvmIg
-         5+8K7yo3cYBUQ==
-Date:   Thu, 19 Oct 2023 10:11:40 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     Icenowy Zheng <uwu@icenowy.me>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/loongson: Add support for the DC in LS2K1000 SoC
-Message-ID: <76nxdwa6m7qyqvala4akc2rptuylhrqyoz2x5rjua4hppoxk7x@wwn37gwuvrms>
-References: <20231011162638.819080-1-suijingfeng@loongson.cn>
- <26565c5e13e72c64214a7f67ab6f2d9d876fa4bd.camel@icenowy.me>
- <037ec619-c170-4ca6-897e-04fccd58c62a@loongson.cn>
+        Thu, 19 Oct 2023 04:12:22 -0400
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA7FC0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:12:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 9939063DCAB8;
+        Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id I3-K0hwykdNu; Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0466E63DCAAB;
+        Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gzzgvJ53A6kM; Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id CF8A863DCAA7;
+        Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Martin Kurbanov <mmkurbanov@salutedevices.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Yu Zhe <yuzhe@nfschina.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, kernel@sberdevices.ru
+Message-ID: <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
+In-Reply-To: <20231019073838.17586-3-mmkurbanov@salutedevices.com>
+References: <20231019073838.17586-1-mmkurbanov@salutedevices.com> <20231019073838.17586-3-mmkurbanov@salutedevices.com>
+Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <037ec619-c170-4ca6-897e-04fccd58c62a@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: jffs2: make cleanmarker support option
+Thread-Index: aAf02iCoSu5LqB4Vzhuut+cQ9jdF6w==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 06:28:01PM +0800, Sui Jingfeng wrote:
-> Hi,
-> 
-> 
-> On 2023/10/13 16:22, Icenowy Zheng wrote:
-> > 在 2023-10-12星期四的 00:26 +0800，Sui Jingfeng写道：
-> > > LS2K1000 is a low end SoC (two core 1.0gHz), it don't has dedicated
-> > > VRAM.
-> > > It requires the framebuffer to be phisically continguous to scanout.
-> > > The
-> > > display controller in LS2K1000 don't has built-in GPIO hardware, the
-> > > structure (register bit field) of its pixel, DC, GPU, DDR PLL are
-> > > also
-> > > defferent from other model. But for the display controller itself,
-> > > Most of
-> > > hardware features of it are same with ls7a1000.
-> > > 
-> > > Below is a simple dts for it.
-> > Why don't you write a proper, YAML-formatted binding?
-> > 
-> This patch use only one DT property, that is the "memory-region = <&display_reserved>;".
-> But the memory-region property is a common property, I means that everyone know how to
-> use this property. I'm not sure the if YAML documentation is strictly required now.
+Martin,
 
-AFAIK it is, and even if it's not, please do it.
+----- Ursprüngliche Mail -----
+> Von: "Martin Kurbanov" <mmkurbanov@salutedevices.com>
+> This patch support for disable cleanmarker option. This is useful on
+> some NAND devices which entire OOB area is protected by ECC. Problem
+> fires when JFFS2 driver writes cleanmarker to some page and later it
+> tries to write to this page - write will be done successfully, but after
+> that such page becomes unreadable due to invalid ECC codes. This occurs
+> because the second write necessitates an update to ECC, but it is
+> impossible to do it correctly without block erase.
 
-Maxime
+Hmm, I miss an explanation why this change is correct and safe.
+You explain why the OOB area can't be used, okay. But you need to
+add more details on why you change is safe in terms of filesystem
+consistency.
+
+Beside of that, I don't think this should be kernel config option.
+Why not a mount option?
+
+Thanks,
+//richard
