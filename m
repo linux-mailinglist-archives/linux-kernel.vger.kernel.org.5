@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115417CF35D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B8C7CF360
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjJSIzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S1344919AbjJSI5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235292AbjJSIz1 (ORCPT
+        with ESMTP id S232788AbjJSI5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:55:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF217181;
-        Thu, 19 Oct 2023 01:55:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69789C433C8;
-        Thu, 19 Oct 2023 08:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697705724;
-        bh=gwlgcQ3ZqyeFuGLncdKSOGMnNI0cOD810MBreEhi+TA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uC7TqhGnUNd9QLr+ZDwKcbNn/09s1m/SZE5jgShNsWSpCzha/Mg2pmU2qn+iKBJvV
-         175spQuQlBcmKSeSTj6ATSrykDAcdidoADKNqB8Gu0oLbzefD9HCGg7To1a1XRiCIu
-         2Sy6Z8SYNnPtnhD4gmUDE+4zJsz82aJBJROKbMXTrs9xOcxsk+iVNfYkFSVm4xX3js
-         hZrGQ8e/OqgOFkP+8aeZPWg6c084t8/yDfvKPsDzmJeRwjJ+U6XDIEfZqVy+rImaHP
-         ksM19pQHmkDzO38FBOPFlmwQBmpaNPNCEV9wxxfnV6/QHZHq82H2QCo8v7qvOf0jQi
-         GMvDs+dkCTIdg==
-Date:   Thu, 19 Oct 2023 09:55:20 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
- schemas
-Message-ID: <20231019-theme-clunky-f4a2e1d122e7@spud>
-References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
- <20231019-rematch-ethically-9d482ca4607e@spud>
+        Thu, 19 Oct 2023 04:57:33 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0244C0;
+        Thu, 19 Oct 2023 01:57:31 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-66d0169cf43so49128196d6.3;
+        Thu, 19 Oct 2023 01:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697705851; x=1698310651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kfG7yXeQOrqyeFt+i2oHLTbkjrUziurPpvi/iRBx44E=;
+        b=bonkjiQ0JIVAwQnFa1DTsOOFp7qQrGqZwFu/RSHewtIvUoXSjyexpkj+U4FBz4jB0r
+         /0J3tEh9ilXMsIXC7lDpnc2FRM6oUAc2oyMOUoqcLYYLih8eegaTq5hdArjJmaBawoXX
+         sYLGeO2a4Vj64seNkrzdZRimrd8TTTh0H+gmIU8HHCARSLXm26GkWL9Cp1HAJXaTr6hd
+         SPilRfbCoWquaQ4mssgHPaI6B0OKraCqQY5vI509LjeWHoSer0jyFkTsfsqTV7HNXYxZ
+         5YqJgTgjahpmpzyIbrKgBpsdMTq9W0mufvci6ry60zTv7zL5j046CekqP5yCc/BltkUf
+         aqxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697705851; x=1698310651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kfG7yXeQOrqyeFt+i2oHLTbkjrUziurPpvi/iRBx44E=;
+        b=NcJgxugHYg1t7GxS6UzPpM6HwANXDQkjsed/ZKNm5LVLplfLCivjEops6PgQjO8Itx
+         CX6Yo/Iz/4arprmzVSGMKgZWdGEpJygRO9AY2rPy8EdZGenDIG1kbTAtqASeOe+1QkoS
+         JV/R3d8x6iKPYPjFh8Azm9Ckz2xiyQeduvR7cxArfINqMvwWkLDivkHOpAnWiT3TcPfM
+         Eue54CrWZUmawQVVnm3TgTH1Jtu685MvAZzP71wJXqrRlPREpPUmNzqyrVisV78Mqsxn
+         bLHlLYhDzaEhvPX5QX0tp8lYldlES6/kd8GVkZfKD+JIGp5Li/1bEfTYgoC6KlNc8DgY
+         FCLQ==
+X-Gm-Message-State: AOJu0Yw6Y6G5yfn5TGkhETsTht5H2Rf8f6PvXTQLGSNvrkoMpRlNQUV1
+        c5jmGuAxio6a5hbBB0nQ4GeXHm1/gia8F4CVCWGteEcYW6M=
+X-Google-Smtp-Source: AGHT+IF/qOCsq9MQ5J02hR8T3TDhwvoL+Ax3X/yGk6sp5gCqt9R0E1RPVbSXlxAqn6D2ptGaeHINIgGii8mACM+ispk=
+X-Received: by 2002:a05:6214:cca:b0:66d:20f5:23cb with SMTP id
+ 10-20020a0562140cca00b0066d20f523cbmr1830308qvx.5.1697705850902; Thu, 19 Oct
+ 2023 01:57:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="o+iwHg08XNFzcdm3"
-Content-Disposition: inline
-In-Reply-To: <20231019-rematch-ethically-9d482ca4607e@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231018182943.18700-1-ddrokosov@salutedevices.com> <20231018182943.18700-3-ddrokosov@salutedevices.com>
+In-Reply-To: <20231018182943.18700-3-ddrokosov@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Oct 2023 11:56:54 +0300
+Message-ID: <CAHp75VcyvEdkzx4emYwssdYuqAiPdx5iqc-tY74_ebZfLKKM3A@mail.gmail.com>
+Subject: Re: [PATCH v2 02/11] leds: aw200xx: support HWEN hardware control
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 9:29=E2=80=AFPM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
+>
+> HWEN is hardware control, which is used for enable/disable aw200xx chip.
+> It's high active, internally pulled down to GND.
+>
+> After HWEN pin set high the chip begins to load the OTP information,
+> which takes 200us to complete. About 200us wait time is needed for
+> internal oscillator startup and display SRAM initialization. After
+> display SRAM initialization, the registers in page 1 to page 5 can be
+> configured via i2c interface.
 
---o+iwHg08XNFzcdm3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is there any Documentation update for this new binding?
 
-On Thu, Oct 19, 2023 at 09:51:39AM +0100, Conor Dooley wrote:
-> On Thu, Oct 19, 2023 at 06:34:37PM +1030, Subhajit Ghosh wrote:
-> > Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
-> > file and removing the other.
->=20
-> > Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dcef@=
-linaro.org/
->=20
-> "Yes, they look similar. I will combine them all in a single yaml file in
-> the next revision. Thank you Krzysztof."
->=20
-> Yet this is a follow-up patch, not a version 2. The original patches
-> seem to not have been applied, so I am not sure why you didn't send a
-> v2?
+...
 
-> > ---
-> >  .../bindings/iio/light/avago,apds9300.yaml    | 35 ++++++++++++---
-> >  .../bindings/iio/light/avago,apds9960.yaml    | 44 -------------------
-> >  2 files changed, 29 insertions(+), 50 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,a=
-pds9960.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300=
-=2Eyaml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> > index 206af44f2c43..7826a1749fcd 100644
-> > --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> > @@ -4,17 +4,26 @@
-> >  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
-> >  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> > =20
-> > -title: Avago APDS9300 ambient light sensor
-> > +title: Avago Gesture, RGB, ALS and Proximity sensors
-> > =20
-> >  maintainers:
-> >    - Jonathan Cameron <jic23@kernel.org>
-> > +  - Matt Ranostay <matt.ranostay@konsulko.com>
+> +       chip->hwen =3D devm_gpiod_get_optional(&client->dev, "hwen", GPIO=
+D_OUT_HIGH);
 
-Also:
-<matt.ranostay@konsulko.com>: host aspmx.l.google.com said:
-    550-5.1.1 The email account that you tried to reach does not exist.
+With _optional APIs we distinguish 3 cases: found, not found, error.
+And error can be (among others) the deferred probe, meaning that GPIO
+_is coming_. Hence the rule of thumb for the _optional() APIs is to
+check for error and bail out on that condition (note, it's applicable
+to any _optional() APIs, not limited by GPIO library).
 
---o+iwHg08XNFzcdm3
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+>         aw200xx_chip_reset(chip);
+> +       aw200xx_disable(chip);
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTDu+AAKCRB4tDGHoIJi
-0tM1AP9J/187nzeXOZeMBjJXBvsCk/bdcxHKOI8Ee9RtLaDCCgEA+a8TvoojE6Un
-eEsrqDgO1U5PGqZlkiKhLw+x22TA+wo=
-=Hpaq
------END PGP SIGNATURE-----
+It seems it can be modeled as a (GPIO) regulator. At least many
+drivers do so, but I leave this to the maintainers to decide.
 
---o+iwHg08XNFzcdm3--
+--=20
+With Best Regards,
+Andy Shevchenko
