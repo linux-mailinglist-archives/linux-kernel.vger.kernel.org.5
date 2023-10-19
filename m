@@ -2,138 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2B37D0497
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A287D0499
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346628AbjJSWAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S1346621AbjJSWBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235556AbjJSWAt (ORCPT
+        with ESMTP id S1345256AbjJSWBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:00:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D683115;
-        Thu, 19 Oct 2023 15:00:46 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697752844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
-        b=OFtLhVmdGAGajfdsQU77o4un/tVAdYcM7cfwt20W9su0nN9zUiglcL5C4pDEb4q88MJzLO
-        x5HDKpnT1/1lsSU8vKySCq1RLS7VJye3ei4+VMtw0uCD0w7qgUgZRlBSUcaicBnbHq4OQM
-        mqC4nMnW3ootEGH3Z7j1ETk8ZUrXdgmgAMC4DzuoxhllzQY4nnoXxM5gbzdAXXNXSWD5Sa
-        lHnIfI/VC1YvapORPfXS8oxP8OeBmd70rwTvUJoTfYU3S+x3sfwVydywAwIgsgZgP0p9N5
-        3FVR3vXv1ON8t+fn6QllxjFsOKixj4rzsRVi/dN/W6MmEfKFJhO4iRcGMvCxFA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697752844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
-        b=WY4r1ywqpIX7pjSgKhtd/YMTG9q7nuDraudwOpgvLzXDgf0mNyLuwtbpuWmgdtYAMHYJV3
-        PfofEjkkaGKIMBCg==
-To:     Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-In-Reply-To: <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-Date:   Fri, 20 Oct 2023 00:00:43 +0200
-Message-ID: <87o7gu2rxw.ffs@tglx>
+        Thu, 19 Oct 2023 18:01:37 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69BC112
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:01:34 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507cee17b00so178601e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1697752893; x=1698357693; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RVH7g5Xn7KERhNbwCPYA3chPVbA58wuAlRpGYKpj+Ag=;
+        b=dM8DfLrQRsUlwILnQznK2dZd+bBw2FtHHDC/J5Pc/0SXxpdv2h0eg/Z0buMdSSyCz4
+         KxUSKjsXNFqOJ6JAAvwwIueelMMRmunjcM1WEUGyHOzWsotdopnCl45VXg8gPv9lsKts
+         DicbsMGt/obSa6o/vpKZ5du0KSqpzFY/1ruetv4sJX7Z1iiNAzbOhn5NWb7Kf85mZjpV
+         CTTFFBSBYgsoe691WM8H+0fKS+IHoiAZOg3KY6uoRCvCo5uQ6g4NNz9OOqGtZu0nUTaD
+         3iO6BsvlkQScJkbch9ec8sBvPdwM+xziFmDsX/1ZhYH9h7eCmIejZiJ7AeS03JbChj/v
+         VeKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697752893; x=1698357693;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVH7g5Xn7KERhNbwCPYA3chPVbA58wuAlRpGYKpj+Ag=;
+        b=QcKHPxEaacpvbiagQ3zsaraOUDpTgh75Md9yeis3OI5sVSAz1edkT384i9fVy9xSNc
+         tKbFhcu3TMZ/VHwcS36yOvI76g5nnCfGCO+wDhmtTEbg6eiAWLVWP5lWM3lfeoNomNpK
+         FvoszyaunofyCxFtNQNLGscW5zRMud8CsaS1gWXLRAU55e8G5WSLOINPwcbKlUupj3w9
+         qajLyXiuduHUw+AZ2ufyYfz10LxcXU2rd+I7Q2i+7ESoITncS89myJ6rEgLYK+AjIX6i
+         HIuVMBG+AebYQRCreExtoAgQZFAmc3DI6Usei9eXeavFNO2i9yUBFnSQ2FeoNqLjjVHP
+         LhKA==
+X-Gm-Message-State: AOJu0Yx5ZV0wDpOqzbKHzOJVNzp2XXck/455FI0aztqmDxbngmF8G/LD
+        Fnb1+HkUf7vZ4sNiPTaUpiUBgQ==
+X-Google-Smtp-Source: AGHT+IGr1MrtHZ96/nhgRMar71OOUSfXGMOyZYoXUPX+20SnusubhbiGhasbj3+M0aAya7InYsY03A==
+X-Received: by 2002:ac2:488e:0:b0:503:b65:5d95 with SMTP id x14-20020ac2488e000000b005030b655d95mr5431lfc.6.1697752892966;
+        Thu, 19 Oct 2023 15:01:32 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:a8cd:a90a:ba21:5ae1? ([2a02:8011:e80c:0:a8cd:a90a:ba21:5ae1])
+        by smtp.gmail.com with ESMTPSA id g11-20020adffc8b000000b0032dc24ae625sm289631wrr.12.2023.10.19.15.01.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 15:01:32 -0700 (PDT)
+Message-ID: <d1fa32d7-4b1a-4451-b717-e91f75f3c322@isovalent.com>
+Date:   Thu, 19 Oct 2023 23:01:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] tools build: Fix llvm feature detection, still used
+ by bpftool
+Content-Language: en-GB
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, Manu Bretelle <chantr4@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        He Kuang <hekuang@huawei.com>, Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <ZTGc8S293uaTqHja@kernel.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZTGc8S293uaTqHja@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff!
-
-On Wed, Oct 18 2023 at 13:41, Jeff Layton wrote:
-> +void ktime_get_mg_fine_ts64(struct timespec64 *ts)
+On 19/10/2023 22:17, Arnaldo Carvalho de Melo wrote:
+> When removing the BPF event for perf a feature test that checks if the
+> llvm devel files are availabe was removed but that is also used by
+> bpftool.
+> 
+> bpftool uses it to decide what kind of disassembly it will use: llvm or
+> binutils based.
+> 
+> Removing the tools/build/feature/test-llvm.cpp file made bpftool to
+> always fallback to binutils disassembly, even with the llvm devel files
+> installed, fix it by restoring just that small test-llvm.cpp test file.
+> 
+> Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
+> Reported-by: Manu Bretelle <chantr4@gmail.com>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Carsten Haitzler <carsten.haitzler@arm.com>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Fangrui Song <maskray@google.com>
+> Cc: He Kuang <hekuang@huawei.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: llvm@lists.linux.dev
+> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Cc: Tom Rix <trix@redhat.com>
+> Cc: Wang Nan <wangnan0@huawei.com>
+> Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> Cc: Yang Jihong <yangjihong1@huawei.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: YueHaibing <yuehaibing@huawei.com>
+> Link: https://lore.kernel.org/lkml/ZTGa0Ukt7QyxWcVy@kernel.org
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>  tools/build/feature/test-llvm.cpp | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>  create mode 100644 tools/build/feature/test-llvm.cpp
+> 
+> diff --git a/tools/build/feature/test-llvm.cpp b/tools/build/feature/test-llvm.cpp
+> new file mode 100644
+> index 0000000000000000..88a3d1bdd9f6978e
+> --- /dev/null
+> +++ b/tools/build/feature/test-llvm.cpp
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "llvm/Support/ManagedStatic.h"
+> +#include "llvm/Support/raw_ostream.h"
+> +#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
+> +
+> +#if NUM_VERSION < 0x030900
+> +# error "LLVM version too low"
+> +#endif
+> +int main()
 > +{
-> +	struct timekeeper *tk = &tk_core.timekeeper;
-> +	unsigned long flags;
-> +	u32 nsecs;
-> +
-> +	WARN_ON(timekeeping_suspended);
-> +
-> +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-> +	write_seqcount_begin(&tk_core.seq);
+> +	llvm::errs() << "Hello World!\n";
+> +	llvm::llvm_shutdown();
+> +	return 0;
+> +}
 
-Depending on the usage scenario, this will end up as a scalability issue
-which affects _all_ of timekeeping.
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
-The usage of timekeeper_lock and the sequence count has been carefully
-crafted to be as non-contended as possible. We went a great length to
-optimize that because the ktime_get*() functions are really hotpath all
-over the place.
-
-Exposing such an interface which wreckages that is a recipe for disaster
-down the road. It might be a non-issue today, but once we hit the
-bottleneck of that global lock, we are up the creek without a
-paddle. Well not really, but all we can do then is fall back to
-ktime_get_real(). So let me ask the obvious question:
-
-     Why don't we do that right away?
-
-Many moons ago when we added ktime_get_real_coarse() the main reason was
-that reading the time from the underlying hardware was insanely
-expensive.
-
-Many moons later this is not true anymore, except for the stupid case
-where the BIOS wreckaged the TSC, but that's a hopeless case for
-performance no matter what. Optimizing for that would be beyond stupid.
-
-I'm well aware that ktime_get_real_coarse() is still faster than
-ktime_get_real() in micro-benchmarks, i.e. 5ns vs. 15ns on the four
-years old laptop I'm writing this.
-
-Many moons ago it was in the ballpark of 40ns vs. 5us due to TSC being
-useless and even TSC read was way more expensive (factor 8-10x IIRC) in
-comparison. That really mattered for FS, but does todays overhead still
-make a difference in the real FS use case scenario?
-
-I'm not in the position of running meaningful FS benchmarks to analyze
-that, but I think the delta between ktime_get_real_coarse() and
-ktime_get_real() on contemporary hardware is small enough that it
-justifies this question.
-
-The point is that both functions have pretty much the same D-cache
-pattern because they access the same data in the very same
-cacheline. The only difference is the actual TSC read and the extra
-conversion, but that's it. The TSC read has been massively optimized by
-the CPU vendors. I know that the ARM64 counter has been optimized too,
-though I have no idea about PPC64 and S390, but I would be truly
-surprised if they didn't optimize the hell out of it because time read
-is really used heavily both in kernel and user space.
-
-Does anyone have numbers on contemporary hardware to shed some light on
-that in the context of FS and the problem at hand?
-
-Thanks,
-
-        tglx
+Thanks Arnaldo, Manu!
