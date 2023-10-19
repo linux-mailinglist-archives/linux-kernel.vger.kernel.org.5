@@ -2,145 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE7B7CF47A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594187CF47E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345142AbjJSJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S1345137AbjJSJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJSJyK (ORCPT
+        with ESMTP id S229473AbjJSJz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:54:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC2B106
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697709248; x=1729245248;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DpWoKFS1wco1iGTyAsYaK+amZcKbFRnsbYOwb1MRs9M=;
-  b=mbPDrQNyiXl9xRFkp55e2+YhiE0yNOWSmjgQyjoco+lB/SUr527d2WfP
-   c3azCLeuPLm0QdiuwlbPIYWZjXt0nja14KoDsBGbpVTuEICVfk+R7+kC6
-   n/eYvcnK9eQ1s2sRgfk9m0Zji51UBOVahMCJvJf7C0Te8ZC6ulV1pC17d
-   RpOyaKvtRkGNnYazImU1ZAbr6ko1/thwZ0SILU24VxmMl36Cv1qFt40yA
-   aDHoFjJoKpQSnruf9adclpzcf4kCtNCvODBToTiBU5aj0p6J01IWhknDT
-   EosBqGWQDYU2SlKLmGAgfflF81X2OqG6Ij996Kk2D2x//G1yv2FKTl4e8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="365565821"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="365565821"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 02:54:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900681484"
-X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
-   d="scan'208";a="900681484"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Oct 2023 02:51:57 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtPj7-0001wc-2L;
-        Thu, 19 Oct 2023 09:54:01 +0000
-Date:   Thu, 19 Oct 2023 17:53:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     KaiLong Wang <wangkailong@jari.cn>, mark@fasheh.com,
-        jlbec@evilplan.org, akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ocfs2/dlm: Clean up errors in dlmdomain.c
-Message-ID: <202310191736.myy5k3i6-lkp@intel.com>
-References: <62e91e34.969.18b27f9ec40.Coremail.wangkailong@jari.cn>
+        Thu, 19 Oct 2023 05:55:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AF5B8;
+        Thu, 19 Oct 2023 02:55:55 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0D69B6607322;
+        Thu, 19 Oct 2023 10:55:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697709354;
+        bh=yuKemI62+zc0hC6m7ajh4gUvLspeNsvwTUgJd0PrQ3o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=E+k7IAIeoa8vocqyyDDT6Qgjn08rqbP1ptYlde1udC3I9r3cjr+YmIzxYfs2e6I8d
+         v2xXGzIDV2iJAhtGZuvIs+vT1EWsK8VLcqw9t9CljyD47vIeES+qVZ+iWhyWgjhE0Q
+         eyYgJmxNqJVwzv3dHP/dy39xoJhtz7aLAM8B6FDBtuC25Q6Jk27X0MiFVljt9RE+IS
+         KwuoiIpl/g2z7ES3crb5rRImtMi+zYQLtEMjge2AqTCXNJBMmz2ORq4jLETdDGxx9w
+         FarTWHblGKqm0Q4bYpU/GJyzutFlVEQ/uLNNMp2zh/mYzE7LIdEmdoa+Z1zC1uKfGx
+         QQDaY5h5eq5kw==
+Message-ID: <fdeea37a-6683-44dd-b946-ee708a0b9000@collabora.com>
+Date:   Thu, 19 Oct 2023 11:55:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62e91e34.969.18b27f9ec40.Coremail.wangkailong@jari.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 20/24] drm/mediatek: Add Padding to OVL adaptor
+Content-Language: en-US
+To:     =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        =?UTF-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        =?UTF-8?B?TmF0aGFuIEx1ICjlkYLmnbHpnJYp?= <Nathan.Lu@mediatek.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "sean@poorly.run" <sean@poorly.run>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "fshao@chromium.org" <fshao@chromium.org>,
+        "johnson.wang@mediatek.corp-partner.google.com" 
+        <johnson.wang@mediatek.corp-partner.google.com>
+References: <20231019055619.19358-1-shawn.sung@mediatek.com>
+ <20231019055619.19358-21-shawn.sung@mediatek.com>
+ <0a3b0755-73e3-4698-9a3a-be38578ceb3f@collabora.com>
+ <9939f8f5fbc2fcc469db212cf53fd3be0231384f.camel@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <9939f8f5fbc2fcc469db212cf53fd3be0231384f.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi KaiLong,
+Il 19/10/23 11:20, Shawn Sung (宋孝謙) ha scritto:
+> Hi Angelo,
+> 
+> On Thu, 2023-10-19 at 11:10 +0200, AngeloGioacchino Del Regno wrote:
+>>>    static const struct of_device_id mtk_ovl_adaptor_comp_dt_ids[] =
+>>> {
+>>> +	{ .compatible = "mediatek,mt8188-padding", .data = (void
+>>> *)OVL_ADAPTOR_TYPE_PADDING },
+>>
+>> Uhm, for consistency I'd call this "mediatek,mt8188-disp-padding"
+>> (you don't have
+>> to drop Reviewed-by tags for such a change, not here and not in the
+>> yaml commit),
+>> but it's fine if you have reasons against that.
+>>
+>> So, regardless of this being changed or not
+>>
+>> Reviewed-by: AngeloGioacchino Del Regno <
+>> angelogioacchino.delregno@collabora.com>
+>>
+>>>    	{ .compatible = "mediatek,mt8195-disp-ethdr", .data = (void
+>>> *)OVL_ADAPTOR_TYPE_ETHDR },
+>>>    	{ .compatible = "mediatek,mt8195-disp-merge", .data = (void
+>>> *)OVL_ADAPTOR_TYPE_MERGE },
+>>>    	{ .compatible = "mediatek,mt8195-vdo1-rdma", .data = (void
+>>> *)OVL_ADAPTOR_TYPE_MDP_RDMA },
+>>
+> 
+> Thanks for pointing this out. Had changed Padding driver's name to
+> "mtk-disp-padding", but I just notice that Padding will also be used by
+> MDP and they will share the same driver with display. Should we change
+> the name again or is it just fine to use "mtk-disp-padding"?
+> 
 
-kernel test robot noticed the following build warnings:
+That's like many other components in MediaTek, so we can keep the mtk-disp-padding
+name.... in devicetree, we will anyway use "mediatek,mt8195-mdp3-padding" as one of
+the compatible string(s).
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.6-rc6 next-20231019]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This is the only way that we have to actually distinguish between components used
+for MDP3 and components used for the display subsystem, if we keep them "generic"
+we won't understand what's going on in case of issues.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/KaiLong-Wang/ocfs2-dlm-Clean-up-errors-in-dlmdomain-c/20231017-115916
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/62e91e34.969.18b27f9ec40.Coremail.wangkailong%40jari.cn
-patch subject: [PATCH] ocfs2/dlm: Clean up errors in dlmdomain.c
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231019/202310191736.myy5k3i6-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310191736.myy5k3i6-lkp@intel.com/reproduce)
+The driver name should contain "disp" for consistency with all of the component
+drivers in mediatek-drm; if this wasn't in this folder, we could've dropped the
+"disp" in the name, but that's not the case.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310191736.myy5k3i6-lkp@intel.com/
+Consistency is #1.
 
-All warnings (new ones prefixed by >>):
+Cheers,
+Angelo
 
-   fs/ocfs2/dlm/dlmdomain.c: In function 'dlm_alloc_pagevec':
-   fs/ocfs2/dlm/dlmdomain.c:78:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
-      78 |         for (i = 0; i < pages; i++)
-         |         ^~~
-   fs/ocfs2/dlm/dlmdomain.c:80:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
-      80 |                 if (!(vec[i]))
-         |                 ^~
-   fs/ocfs2/dlm/dlmdomain.c: In function 'dlm_alloc_pagevec.constprop':
->> fs/ocfs2/dlm/dlmdomain.c:80:26: warning: array subscript 32 is outside array bounds of 'void[128]' [-Warray-bounds=]
-      80 |                 if (!(vec[i]))
-         |                      ~~~~^~~~
-   In file included from fs/ocfs2/dlm/dlmdomain.c:12:
-   In function 'kmalloc',
-       inlined from 'kmalloc_array' at include/linux/slab.h:635:10,
-       inlined from 'dlm_alloc_pagevec.constprop' at fs/ocfs2/dlm/dlmdomain.c:72:15:
-   include/linux/slab.h:599:24: note: at offset 128 into object of size 128 allocated by 'kmalloc_trace'
-     599 |                 return kmalloc_trace(
-         |                        ^~~~~~~~~~~~~~
-     600 |                                 kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
-         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     601 |                                 flags, size);
-         |                                 ~~~~~~~~~~~~
+> Thanks,
+> Shawn
 
 
-vim +80 fs/ocfs2/dlm/dlmdomain.c
 
-    69	
-    70	static void **dlm_alloc_pagevec(int pages)
-    71	{
-    72		void **vec = kmalloc_array(pages, sizeof(void *), GFP_KERNEL);
-    73		int i;
-    74	
-    75		if (!vec)
-    76			return NULL;
-    77	
-    78		for (i = 0; i < pages; i++)
-    79			vec[i] = (void *)__get_free_page(GFP_KERNEL);
-  > 80			if (!(vec[i]))
-    81				goto out_free;
-    82	
-    83		mlog(0, "Allocated DLM hash pagevec; %d pages (%lu expected), %lu buckets per page\n",
-    84		     pages, (unsigned long)DLM_HASH_PAGES,
-    85		     (unsigned long)DLM_BUCKETS_PER_PAGE);
-    86		return vec;
-    87	out_free:
-    88		dlm_free_pagevec(vec, i);
-    89		return NULL;
-    90	}
-    91	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
