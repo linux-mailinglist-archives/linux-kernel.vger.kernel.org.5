@@ -2,155 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141027D0269
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B2F7D0278
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 21:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346491AbjJSTYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 15:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S1346498AbjJST0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 15:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345878AbjJSTYs (ORCPT
+        with ESMTP id S1346477AbjJST0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 15:24:48 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB86DFA;
-        Thu, 19 Oct 2023 12:24:43 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id BE787120010;
-        Thu, 19 Oct 2023 22:24:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BE787120010
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1697743480;
-        bh=Be562JGzGP+YllgBYA33JVdRpjxpxaXZ55LIwLAl360=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=irFZvzH6HXUa4cY+msgQFg/kkD1srYMLIg5ybWJT94PFOf7i7evlioUluKkGEurty
-         VGoVYyUXfYmG887hV9ijni6+PFHiSTOuMOuwJx31h0VWIuGlylS/YZiihvYQOGU8Sz
-         FCqY6cxKLNLjgkSgGCRwnMv/M1fm6vuD41Odf31tqVeh+bqI+u5TNdtMnS0R/Us4xe
-         OIhlrbGPS3E2ez26MpLozRmSENxB/nzWkPZ9hxqrpz34LB7XwehXcs17/mc1ZhI7il
-         +bkaJf/5BC+sef+J+J4TbI8upnoGxcXvL5T4qh6JKuRt13qXL/2c/XoO17E21A3X0H
-         tkPZ18Q4gTBTA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 19 Oct 2023 22:24:40 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 19 Oct 2023 22:24:40 +0300
-Message-ID: <24ab7656-4358-9cca-0c3e-8f47a3468ef5@salutedevices.com>
-Date:   Thu, 19 Oct 2023 22:25:01 +0300
+        Thu, 19 Oct 2023 15:26:00 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E016126;
+        Thu, 19 Oct 2023 12:25:57 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JHS4wG021989;
+        Thu, 19 Oct 2023 19:25:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7nZlr836Z1yRwKSJGkQXZps55FXeuMStkqXPcw7VZbM=;
+ b=md0+6fSVejV8AMgpKlPvnBLl4J3FgpVtckN9oWAateqmPfpdkPBiI86G6LuaSblLw6UL
+ r8DyTGz9RV+c/V2HTw5AesWtqrxjTxwXfgB8mxMm0UFqbmrO3fMq07cmq4yj7FdYmfyH
+ 8nrCTTZ6DL4nMFLP0NMMqU7pEI+ZZeXUzmql10dl+Nyz4OVUqdo4wNitnAFjlrtWIb8f
+ DHe3yjPLyUFi2UBC1FoDOQgopgqP4HP/AXmrN0ls7nkxL0c3vRNo+JYD30clGBtGHLoX
+ LOBd1TafidfkchfJfwD8eAUYCeuCD75TfJ/GkGhyP4gTfve0uhE2RsLSzyrE9EJcWk9l ew== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tu14csexk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 19:25:37 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JJPZKQ008993
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 19:25:35 GMT
+Received: from [10.110.99.208] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 12:25:35 -0700
+Message-ID: <2e300bef-3722-8b00-2bdf-e9386796f38f@quicinc.com>
+Date:   Thu, 19 Oct 2023 12:25:34 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 04/11] leds: aw200xx: calculate dts property
- display_rows in driver
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v9 30/34] ASoC: qcom: qdsp6: Add SND kcontrol for fetching
+ offload status
 Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Dmitry Rokosov <ddrokosov@salutedevices.com>
-CC:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>
-References: <20231018182943.18700-1-ddrokosov@salutedevices.com>
- <20231018182943.18700-5-ddrokosov@salutedevices.com>
- <CAHp75VeTVU-1mSzAX4j7s9bbDGxDR_FwgFL7dnC4_6OhsN8kpw@mail.gmail.com>
-From:   George Stark <gnstark@salutedevices.com>
-In-Reply-To: <CAHp75VeTVU-1mSzAX4j7s9bbDGxDR_FwgFL7dnC4_6OhsN8kpw@mail.gmail.com>
+        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-31-quic_wcheng@quicinc.com>
+ <92971bbf-b890-4e41-8ef1-9213e15d81b2@linux.intel.com>
+ <c9c5f13f-b3e7-6591-f277-cd86162152e4@quicinc.com>
+In-Reply-To: <c9c5f13f-b3e7-6591-f277-cd86162152e4@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180745 [Oct 19 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 542 542 3d23828e213bab96daa5e52f9cef518f74e40214, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/19 17:46:00 #22233982
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: szZLkW7qgmVniayGieMMDVKlAabQiICH
+X-Proofpoint-ORIG-GUID: szZLkW7qgmVniayGieMMDVKlAabQiICH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_18,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=459 clxscore=1015 suspectscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190164
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy
+Hi Pierre,
 
-On 10/19/23 12:01, Andy Shevchenko wrote:
-> On Wed, Oct 18, 2023 at 9:30 PM Dmitry Rokosov
-> <ddrokosov@salutedevices.com> wrote:
+On 10/18/2023 6:41 PM, Wesley Cheng wrote:
+> Hi Pierre,
+> 
+> On 10/17/2023 3:53 PM, Pierre-Louis Bossart wrote:
 >>
->> From: George Stark <gnstark@salutedevices.com>
 >>
->> Get rid of device tree property "awinic,display-rows" and calculate it
->> in driver using led definition nodes. display-row actually means number
->> of current switches and depends on how leds are connected to the device.
+>> On 10/17/23 15:01, Wesley Cheng wrote:
+>>> Add a kcontrol to the platform sound card to fetch the current offload
+>>> status.  This can allow for userspace to ensure/check which USB SND
+>>> resources are actually busy versus having to attempt opening the USB SND
+>>> devices, which will result in an error if offloading is active.
+>>
+>> I think I mentioned this a while back, but why not add the status in the
+>> USB card itself? That's a generic component that all userspace agent
+>> could query. Having a QCOM-specific control doesn't make the life of
+>> userspace easier IMHO.
+>>
+>>
 > 
-> Still the commit message does not answer the question why it's safe
-> for the users that have this property enabled in their DTBs (note B
-> letter).
-> 
-
-
-> ...
-> 
->> +       device_for_each_child_node(dev, child) {
->> +               u32 source;
->> +               int ret;
->> +
->> +               ret = fwnode_property_read_u32(child, "reg", &source);
->> +               if (ret || source >= chip->cdef->channels)
-> 
-> Perhaps a warning?
-> 
->      dev_warn(dev, "Unable to read from %pfw or apply a source channel
-> number\n", child);
-
-I skipped the warning intentionally because we have just the same loop 
-several steps below and with the same check. There we have all proper 
-warnings and aw200xx_probe_get_display_rows was intended to be short and 
-lightweight. I'll redesign it to be even more simple.
-
-> 
->> +                       continue;
->> +
->> +               max_source = max(max_source, source);
->> +       }
-> 
-> ...
-> 
->> +       chip->display_rows = max_source / chip->cdef->display_size_columns + 1;
->> +       if (!chip->display_rows) {
->> +               dev_err(dev, "No valid led definitions found\n");
->> +               return -EINVAL;
-> 
-> So, this part is in ->probe() flow only, correct? If so,
->    return dev_err_probe(...);
-> 
->> +       }
-> 
-> ...
-> 
->> +       if (aw200xx_probe_get_display_rows(dev, chip))
->> +               return -EINVAL;
-> 
-> Why is the error code shadowed?
+> Will take a look at this based on the comments you had in the other 
+> kcontrol patch.  Seeing if we can move it to a more generic layer.
 > 
 
--- 
-Best regards
-George
+I think it would make more sense to see if we can keep all the offload 
+kcontrols under the sound card exposed by the platform.  Especially, if 
+we are going to modify the components string of the card to signify that 
+it supports USB offload.
+
+Thanks
+Wesley Cheng
