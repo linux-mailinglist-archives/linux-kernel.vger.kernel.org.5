@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662697CFDAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB7A7CFDB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346142AbjJSPUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S1346243AbjJSPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345950AbjJSPUH (ORCPT
+        with ESMTP id S235435AbjJSPUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:20:07 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AF812A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:20:05 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a82c2eb50cso80621177b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:20:04 -0700 (PDT)
+        Thu, 19 Oct 2023 11:20:32 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCB212A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:20:30 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so824033276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:20:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697728804; x=1698333604; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FRnUGTvblTffidsZLvzhyxUVdZqdHJIWMYZoMmdQD9g=;
-        b=JojRJhIqePzP8nEwaV77iL43Ult2vaCz3uHYjIDX6kiEkCSEHAoqMy0hvLaBx36785
-         2Fh0ndEfXYxaewcCHSScTlctjy23Bn5YoM5OvZmL4wvfnwxZZVzskqcjZi4OGvNRQIF9
-         J9FxCjdeC7OQbaidiM+fXo0AvsAAGcmq1RYjHg+iheQ0cpXVloOJ2Z22LpgsxYP8z9hv
-         B3l/jGPFlms+o/1zucpV9BUmVOCXlkxrUECSd7P80NrIEj9gIWY73GJyoD/AoAJxhoLp
-         kLm2JqknSf+JI7uDXRfOPd4Bvq/OPi/tGGUuE66gpjIyFWkC32o9rvYGnP86gBvAqwyX
-         NNfA==
+        d=linaro.org; s=google; t=1697728829; x=1698333629; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UzuYGgMfB2IgWrd3JwAlKJRMS7S7gxXt4VNaKRPI+4c=;
+        b=Xo2wMcj8QD+bl4VrwjB91/Y2C0ZxMO3I8l4MCmCc0ZErUV7GovJg/LcsghTu56ZlDW
+         hU5OkzcYNXgXmu3HSyLp7hUrkEf9fPpEC5EP0n+k0/W9z77xSMLgMbPZV2xjOM1b3v95
+         qhA4xXntYA3wdrl57jkNo3i+rOEuHSqzBp6wj2TecnDLampUM9+ZwUXtCSj/M/xCUfzU
+         IoFfYH+4E9sbizTjT6y7OJmzbGWKYbiAKmaA+jg5QYvp+/cZgdttfitbyuNr3JztiSA+
+         yh80o4ZjsiBF5clgX+BbOo9HRmvPSKKapxInUjlnGPJxyZ/wdWA2chJTrcgPtLUthhGE
+         CWVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697728804; x=1698333604;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FRnUGTvblTffidsZLvzhyxUVdZqdHJIWMYZoMmdQD9g=;
-        b=fWVVrt3FunYeHHuBOhJ/TcqO38isYl+Q7oYAavCKvkkYl7wMrqUQCmg/H2HcizxKUn
-         gnNggufL19b4rRRJZiH7WLT/mAyiz5ZUndEowGCTagOOwDiJsVRYQuMcm96l1QkJEXcR
-         Y/g94anv1D9VwZKQefu9RzlPDahbVQwXFgYsi9ifx16wN4fcjPEyCe9fitHnAs0gcclS
-         feTMI2nwIMsGPbzmZa0pYRwJsU3BHl/b2B0wgpwuuk/6Feocpa3x/5FdSSxLAxXts6Af
-         kGe02dYG/YK3I2eTGe3askE9QoQnR6yiBtpOnlCvs1/2/Hsdpie9/MOU6XQ4z0xLg+G2
-         rYXg==
-X-Gm-Message-State: AOJu0YyS1Q5b1qIHSoyYKd9dHMnLDmkhQc/RhmPf11Q8qWBnD5LQhZSt
-        2hxKlWele94eVpjazvvfpnMci1s4eRnfsekWV6/WRw==
-X-Google-Smtp-Source: AGHT+IF0k6UMqpib1oXKFwqqUTgDYexYaE+vjZ9HjrI6meVqchr+93GJHlAwtx4opiMUXj0lZtYCc2bRPUEM94NV5SQ=
-X-Received: by 2002:a81:9255:0:b0:5a7:d9ce:363c with SMTP id
- j82-20020a819255000000b005a7d9ce363cmr2795218ywg.6.1697728803811; Thu, 19 Oct
- 2023 08:20:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697728829; x=1698333629;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UzuYGgMfB2IgWrd3JwAlKJRMS7S7gxXt4VNaKRPI+4c=;
+        b=DalopOdjW/fzM6ufMCh5ADau1gt8KX1PJCf+dgoQmPb/I6ugjJheUH9JBFQSAtL5sX
+         DiGAPyBchnMpE1m+8y+Rrb94fkwj7R/bIScqv6yUY3aiqn4K6L1jewElapyzcZrx4uet
+         tTFXEpIxZVWOcbi5WkD03Vxr9QaOry3hSLX0R6Sogzz7/8cJ8MYij4bAgp/ahC/8mXgs
+         ObqvUY1hWncdRzcsMzHO4ZsLO8IcvLnmsCxN5wJIfMbkjHEQ6lQ6eMKohU9Pq1zfutjM
+         5IuqIYN2fdzVje4P25uFadmdvMQicV1MSVUZHem5oqwmX0THNeVJlSURpP0b3XYI4vHQ
+         FPUw==
+X-Gm-Message-State: AOJu0YzKDfqzvT3nMR62KoIcaU7JGPHM8CWtR+YZdbI8/FJPOW/SozbV
+        7DCFQs2FAqy5V7dE1DQYHr5MUqAxXRGhOTkbTmW1tw==
+X-Google-Smtp-Source: AGHT+IGKbBoO/lWa/SG+c0KZzQWamY/96muNTJtMojdvtqQZPMShMcdRxDx8yzNIvpa501Ncxd01tIwIdamKiVS0ogc=
+X-Received: by 2002:a25:8e08:0:b0:d81:91b2:62ea with SMTP id
+ p8-20020a258e08000000b00d8191b262eamr1909318ybl.1.1697728829022; Thu, 19 Oct
+ 2023 08:20:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-2-surenb@google.com>
- <ZShswW2rkKTwnrV3@x1n> <7495754c-9267-74af-b943-9b0f86619b5d@redhat.com>
-In-Reply-To: <7495754c-9267-74af-b943-9b0f86619b5d@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 19 Oct 2023 08:19:50 -0700
-Message-ID: <CAJuCfpFEVq_OXESTUCmYYr9ZGbH6i_Vigh8_6FD0PJXXZFEi4Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] mm/rmap: support move to different root anon_vma
- in folio_move_anon_rmap()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
+ <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+ <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
+ <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com>
+ <ZTEph19CAvbgbN_E@gerhold.net> <CAPDyKFo1PVZYsdW_=92EtMmTT9hmkm-mBR69N_WvPh4f-Hw=NA@mail.gmail.com>
+ <ZTFBzjLAaaUHux4O@gerhold.net>
+In-Reply-To: <ZTFBzjLAaaUHux4O@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 19 Oct 2023 17:19:53 +0200
+Message-ID: <CAPDyKFruYqngQoW21Ra+hm4ybjS7LoD4casYbo8bP4J+hLUnaA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,93 +82,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 1:04=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
+On Thu, 19 Oct 2023 at 16:49, Stephan Gerhold <stephan@gerhold.net> wrote:
 >
-> On 13.10.23 00:01, Peter Xu wrote:
-> > On Sun, Oct 08, 2023 at 11:42:26PM -0700, Suren Baghdasaryan wrote:
-> >> From: Andrea Arcangeli <aarcange@redhat.com>
-> >>
-> >> For now, folio_move_anon_rmap() was only used to move a folio to a
-> >> different anon_vma after fork(), whereby the root anon_vma stayed
-> >> unchanged. For that, it was sufficient to hold the folio lock when
-> >> calling folio_move_anon_rmap().
-> >>
-> >> However, we want to make use of folio_move_anon_rmap() to move folios
-> >> between VMAs that have a different root anon_vma. As folio_referenced(=
-)
-> >> performs an RMAP walk without holding the folio lock but only holding =
-the
-> >> anon_vma in read mode, holding the folio lock is insufficient.
-> >>
-> >> When moving to an anon_vma with a different root anon_vma, we'll have =
-to
-> >> hold both, the folio lock and the anon_vma lock in write mode.
-> >> Consequently, whenever we succeeded in folio_lock_anon_vma_read() to
-> >> read-lock the anon_vma, we have to re-check if the mapping was changed
-> >> in the meantime. If that was the case, we have to retry.
-> >>
-> >> Note that folio_move_anon_rmap() must only be called if the anon page =
-is
-> >> exclusive to a process, and must not be called on KSM folios.
-> >>
-> >> This is a preparation for UFFDIO_MOVE, which will hold the folio lock,
-> >> the anon_vma lock in write mode, and the mmap_lock in read mode.
-> >>
-> >> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> >> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> >> ---
-> >>   mm/rmap.c | 24 ++++++++++++++++++++++++
-> >>   1 file changed, 24 insertions(+)
-> >>
-> >> diff --git a/mm/rmap.c b/mm/rmap.c
-> >> index c1f11c9dbe61..f9ddc50269d2 100644
-> >> --- a/mm/rmap.c
-> >> +++ b/mm/rmap.c
-> >> @@ -542,7 +542,9 @@ struct anon_vma *folio_lock_anon_vma_read(struct f=
-olio *folio,
-> >>      struct anon_vma *root_anon_vma;
-> >>      unsigned long anon_mapping;
-> >>
-> >> +retry:
-> >>      rcu_read_lock();
-> >> +retry_under_rcu:
-> >>      anon_mapping =3D (unsigned long)READ_ONCE(folio->mapping);
-> >>      if ((anon_mapping & PAGE_MAPPING_FLAGS) !=3D PAGE_MAPPING_ANON)
-> >>              goto out;
-> >> @@ -552,6 +554,16 @@ struct anon_vma *folio_lock_anon_vma_read(struct =
-folio *folio,
-> >>      anon_vma =3D (struct anon_vma *) (anon_mapping - PAGE_MAPPING_ANO=
-N);
-> >>      root_anon_vma =3D READ_ONCE(anon_vma->root);
-> >>      if (down_read_trylock(&root_anon_vma->rwsem)) {
-> >> +            /*
-> >> +             * folio_move_anon_rmap() might have changed the anon_vma=
- as we
-> >> +             * might not hold the folio lock here.
-> >> +             */
-> >> +            if (unlikely((unsigned long)READ_ONCE(folio->mapping) !=
-=3D
-> >> +                         anon_mapping)) {
-> >> +                    up_read(&root_anon_vma->rwsem);
-> >> +                    goto retry_under_rcu;
+> On Thu, Oct 19, 2023 at 04:12:56PM +0200, Ulf Hansson wrote:
+> > On Thu, 19 Oct 2023 at 15:05, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
+> > > > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
+> > > > > <stephan.gerhold@kernkonzept.com> wrote:
+> > > > > >
+> > > > > > The genpd core caches performance state votes from devices that are
+> > > > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
+> > > > > > runtime PM performance state handling"). They get applied once the
+> > > > > > device becomes active again.
+> > > > > >
+> > > > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
+> > > > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
+> > > > > > devices that use runtime PM only to control the enable and performance
+> > > > > > state for the attached power domain.
+> > > > > >
+> > > > > > However, at the moment nothing ever resumes the virtual devices created
+> > > > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
+> > > > > > means that performance state votes made during cpufreq scaling get
+> > > > > > always cached and never applied to the hardware.
+> > > > > >
+> > > > > > Fix this by enabling the devices after attaching them and use
+> > > > > > dev_pm_syscore_device() to ensure the power domains also stay on when
+> > > > > > going to suspend. Since it supplies the CPU we can never turn it off
+> > > > > > from Linux. There are other mechanisms to turn it off when needed,
+> > > > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
+> > > > >
+> > > > > I believe we discussed using dev_pm_syscore_device() for the previous
+> > > > > version. It's not intended to be used for things like the above.
+> > > > >
+> > >
+> > > Sorry, looks like we still had a misunderstanding in the conclusion of
+> > > the previous discussion. :')
+> > >
+> > > > > Moreover, I was under the impression that it wasn't really needed. In
+> > > > > fact, I would think that this actually breaks things for system
+> > > > > suspend/resume, as in this case the cpr driver's genpd
+> > > > > ->power_on|off() callbacks are no longer getting called due this,
+> > > > > which means that the cpr state machine isn't going to be restored
+> > > > > properly. Or did I get this wrong?
+> > > >
+> > >
+> > > We strictly need the RPMPDs to be always-on, also across system suspend
+> > > [1]. The RPM firmware will drop the votes internally as soon as the
+> > > CPU(s) have entered deep cpuidle. We can't do this from Linux, because
+> > > we need the CPU to continue running until it was shut down cleanly.
+> > >
+> > > For CPR, we strictly need the backing regulator to be always-on, also
+> > > across system suspend. Typically the hardware will turn off the
+> > > regulator as soon as the CPU(s) enter deep cpuidle. Similarly, we can't
+> > > do this from Linux, because we need the CPU to continue running until it
+> > > was shut down cleanly.
+> > >
+> > > My understanding was that we're going to pause the CPR state machine
+> > > using the system suspend/resume callbacks on the driver, instead of
+> > > using the genpd->power_on|off() callbacks [2]. I can submit a separate
+> > > patch for this.
 > >
-> > Is adding this specific label worthwhile?  How about rcu unlock and got=
-o
-> > retry (then it'll also be clear that we won't hold rcu read lock for
-> > unpredictable time)?
+> > If we are going to do 1) as described below, this looks to me that
+> > it's going to be needed.
+> >
 >
-> +1, sounds good to me
+> Yep.
+>
+> > How will otherwise the cpr state machine be saved/restored during
+> > system suspend/resume? Note that, beyond 1), the genpd's
+> > ->power_on|off() callbacks are no longer going to be called during
+> > system suspend/resume.
+> >
+>
+> (Side note: I think "save/restore" might be the wrong words for
+>  suspend/resume of CPR. Looking at the code most of the configuration
+>  appears to be preserved across suspend/resume. Nothing is saved, it
+>  literally just disables the state machine during suspend and re-enables
+>  it during resume.
+>
+>  I'm not entirely sure what's the reason for doing this. Perhaps the
+>  main goal is just to prevent the CPR state machine from getting stuck
+>  or sending pointless IRQs that won't be handled while Linux is
+>  suspended.)
 
-Sorry for the delay, I was travelling for a week.
-
-I was hesitant about RCU unlocking and then immediately re-locking but
-your point about holding it for unpredictable time makes sense. Will
-change. Thanks!
+If only the latter, that is a very good reason too. Drivers should
+take care of their devices to make sure they are not triggering
+spurious irqs during system suspend.
 
 >
-> --
-> Cheers,
+> > In a way this also means that the cpr genpd provider might as well
+> > also have GENPD_FLAG_ALWAYS_ON set for it.
 >
-> David / dhildenb
+> Conceptually I would consider CPR to be a generic power domain provider
+> that could supply any kind of device. I know at least of CPUs and GPUs.
+> We need "always-on" only for the CPU, but not necessarily for other
+> devices.
 >
+> For a GPU, the Linux driver (running on the CPU) can stop the GPU, wait
+> for completion and then invoke the ->power_off() callback of CPR. In
+> that case it is also safe to disable the backing regulator from Linux.
+> (I briefly mentioned this already in the previous discussion I think.)
+>
+> We could set GENPD_FLAG_ALWAYS_ON for the CPR compatibles where we know
+> that they are only used to supply CPUs, but if we're going to do (1)
+> anyway there might not be much of an advantage for the extra complexity.
+
+Okay, fair enough. Let's just stick with 1) and skip using
+GENPD_FLAG_ALWAYS_ON bit for the cpr genpd provider.
+
+>
+> >
+> > >
+> > > I didn't prioritize this because QCS404 (as the only current user of
+> > > CPR) doesn't have proper deep cpuidle/power management set up yet. It's
+> > > not entirely clear to me if there is any advantage (or perhaps even
+> > > disadvantage) if we pause the CPR state machine while the shared L2
+> > > cache is still being actively powered by the CPR power rail during
+> > > system suspend. I suspect this is a configuration that was never
+> > > considered in the hardware design.
+> >
+> > I see.
+> >
+> > >
+> > > Given the strict requirement for the RPMPDs, I only see two options:
+> > >
+> > >  1. Have an always-on consumer that prevents the power domains to be
+> > >     powered off during system suspend. This is what this patch tries to
+> > >     achieve.
+> > >
+> > > Or:
+> > >
+> > >  2. Come up with a way to register the RPMPDs used by the CPU with
+> > >     GENPD_FLAG_ALWAYS_ON. This would also be doable, but isn't as
+> > >     straightfoward as "regulator-always-on" in the DT because the rpmpd
+> > >     DT node represents multiple genpds in a single DT node [3].
+> >
+> > Yes, it sounds like it may be easier to do 1).
+> >
+> > >
+> > > What do you think? Do you see some other solution perhaps? I hope we can
+> > > clear up the misunderstanding. :-)
+> >
+> > Yes, thanks!
+> >
+> > >
+> > > [1]: https://lore.kernel.org/linux-arm-msm/ZQGqfMigCFZP_HLA@gerhold.net/
+> > > [2]: https://lore.kernel.org/linux-arm-msm/CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com/
+> > > [3]: https://lore.kernel.org/linux-arm-msm/ZSg-XtwMxg3_fWxc@gerhold.net/
+> > >
+> > > > BTW, if you really need something like the above, the proper way to do
+> > > > it would instead be to call device_set_awake_path() for the device.
+> > > >
+> > > > This informs genpd that the device needs to stay powered-on during
+> > > > system suspend (assuming that GENPD_FLAG_ACTIVE_WAKEUP has been set
+> > > > for it), hence it will keep the corresponding PM domain powered-on
+> > > > too.
+> > > >
+> > >
+> > > Thanks, I can try if this works as alternative to the
+> > > dev_pm_syscore_device()!
+> >
+> > Yes, please. We don't want to abuse the dev_pm_syscore_device() thingy.
+> >
+>
+> Could you clarify the idea behind GENPD_FLAG_ACTIVE_WAKEUP? Would I set
+> it conditionally for all RPMPDs or just the ones consumed by the CPU?
+> How does the genpd *provider* know if one of its *consumer* devices
+> needs to have its power domain kept on for wakeup?
+
+We are thinking of the GENPD_FLAG_ACTIVE_WAKEUP as a platform
+configuration type of flag for the genpd in question. The consumer
+driver shouldn't need to know about the details of what is happening
+on the PM domain level - only whether it needs its device to remain
+powered-on during system suspend or not.
+
+I suspect that the GENPD_FLAG_ACTIVE_WAKEUP is probably okay to set
+for most genpds, but there may be some exceptions.
+
+Kind regards
+Uffe
