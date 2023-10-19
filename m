@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4297CF955
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AAB7CF957
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345616AbjJSMt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
+        id S1345689AbjJSMuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345380AbjJSMtZ (ORCPT
+        with ESMTP id S1345380AbjJSMuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:49:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C199F7;
-        Thu, 19 Oct 2023 05:49:23 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DC10D660732D;
-        Thu, 19 Oct 2023 13:49:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697719761;
-        bh=cSZfxWoSCWS2x6FEp2VdlrLkR6g3cTGCjH9LiGJQjsc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Byw5jZaTstRkh8IuXf+2axodIjrnKzDkwHKOGhM9abUwqgSnmOTbPiSBR2ey/dFPM
-         zW+XgpaWlo/sxBhnpMQVLvG3hjxMF4bNMLnihyHhHawu2ey/jP665086EZcOy58Ezm
-         X2Ivc1hTg0VE1kdLlsmDjyuo95G5JdvOUMobxTDWJ74rkmE2CuqDPHwDCyUEFTGX0q
-         PgTR1pENCUmmdhhyr97KeN0bwOuaf/hUqt/LGuqP5WzY31esNqaIl+Ex0IuIsH6Gov
-         6Q5Tndd5Ur9TGDdZWhve2jISHTk2w4K2U6uWcOjZow9vgTv/SxcTQzRwZ6WhBNgxGO
-         I9p615dFIsnJw==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     sboyd@kernel.org
-Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, wenst@chromium.org,
-        u.kleine-koenig@pengutronix.de, chun-jie.chen@mediatek.com,
-        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] clk: mediatek: mt8186: Change I2C 4/5/6 ap clocks parent to infra
-Date:   Thu, 19 Oct 2023 14:49:14 +0200
-Message-ID: <20231019124914.13545-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 19 Oct 2023 08:50:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2A9F7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697719813; x=1729255813;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+wB86GoqdauFfotmqJEugQ98KtnM4Buboa+WlRVu+L4=;
+  b=jl609dh4hLrgX58WXqccASOFuTR4XuR//Sl5QedvgXJv7iC0uClhECik
+   y+w1DTQ0Oer4MkcR1lpTd7//fMx28qlUUcF/7xpfVW0bFXXKypXAmicqD
+   90RQNJGyySyXRaDnD6wIErGhx53Fv2ARm9cwImQW9sVhZVL5BdakH8Pkx
+   5tU67HAk6l2KYm+O/bwbPl/5YXY/3M5WMqsTJ/peYTecP+z/yAFPJqmdG
+   osQ2KS9uZKCTb+fiF5p2rNSqUu46t+9gVLd9XE8JybPcbHL5KW483CUhm
+   IkYffPNkGDEtbSTVZgvAew37ZaKJPPLzlwddFOFFIVlqLiUM2KmslVJQ+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="452709301"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="452709301"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 05:50:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="757010036"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="757010036"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 19 Oct 2023 05:50:10 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtSTY-00027G-0t;
+        Thu, 19 Oct 2023 12:50:08 +0000
+Date:   Thu, 19 Oct 2023 20:49:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Etienne Carriere <etienne.carriere@foss.st.com>,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Etienne Carriere <etienne.carriere@foss.st.com>
+Subject: Re: [PATCH v11 1/4] tee: optee: system call property
+Message-ID: <202310192021.fvb6JDOY-lkp@intel.com>
+References: <20231016090428.1369071-2-etienne.carriere@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016090428.1369071-2-etienne.carriere@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,74 +71,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the parenting of clocks imp_iic_wrap_ap_clock_i2c{4-6}, as those
-are effectively parented to infra_ao_i2c{4-6} and not to the I2C_AP.
-This permits the correct (and full) enablement and disablement of the
-I2C4, I2C5 and I2C6 bus clocks, satisfying the whole clock tree of
-those.
+Hi Etienne,
 
-As an example, when requesting to enable imp_iic_wrap_ap_clock_i2c4:
+kernel test robot noticed the following build warnings:
 
-Before: infra_ao_i2c_ap -> imp_iic_wrap_ap_clock_i2c4
-After:  infra_ao_i2c_ap -> infra_ao_i2c4 -> imp_iic_wrap_ap_clock_i2c4
+[auto build test WARNING on soc/for-next]
+[also build test WARNING on linus/master v6.6-rc6 next-20231019]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: 66cd0b4b0ce5 ("clk: mediatek: Add MT8186 imp i2c wrapper clock support")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c | 6 +++---
- drivers/clk/mediatek/clk-mt8186-infra_ao.c     | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Etienne-Carriere/tee-optee-system-call-property/20231017-135906
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20231016090428.1369071-2-etienne.carriere%40foss.st.com
+patch subject: [PATCH v11 1/4] tee: optee: system call property
+config: arm64-randconfig-001-20231019 (https://download.01.org/0day-ci/archive/20231019/202310192021.fvb6JDOY-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310192021.fvb6JDOY-lkp@intel.com/reproduce)
 
-diff --git a/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
-index 640ccb553274..871b8ff4c287 100644
---- a/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
-+++ b/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
-@@ -29,11 +29,11 @@ static const struct mtk_gate imp_iic_wrap_clks[] = {
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C3,
- 		"imp_iic_wrap_ap_clock_i2c3", "infra_ao_i2c_ap", 3),
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C4,
--		"imp_iic_wrap_ap_clock_i2c4", "infra_ao_i2c_ap", 4),
-+		"imp_iic_wrap_ap_clock_i2c4", "infra_ao_i2c4", 4),
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C5,
--		"imp_iic_wrap_ap_clock_i2c5", "infra_ao_i2c_ap", 5),
-+		"imp_iic_wrap_ap_clock_i2c5", "infra_ao_i2c5", 5),
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C6,
--		"imp_iic_wrap_ap_clock_i2c6", "infra_ao_i2c_ap", 6),
-+		"imp_iic_wrap_ap_clock_i2c6", "infra_ao_i2c6", 6),
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C7,
- 		"imp_iic_wrap_ap_clock_i2c7", "infra_ao_i2c_ap", 7),
- 	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C8,
-diff --git a/drivers/clk/mediatek/clk-mt8186-infra_ao.c b/drivers/clk/mediatek/clk-mt8186-infra_ao.c
-index 837304cd0ed7..c490f1a310f8 100644
---- a/drivers/clk/mediatek/clk-mt8186-infra_ao.c
-+++ b/drivers/clk/mediatek/clk-mt8186-infra_ao.c
-@@ -132,7 +132,7 @@ static const struct mtk_gate infra_ao_clks[] = {
- 	GATE_INFRA_AO2(CLK_INFRA_AO_AUDIO_26M_BCLK, "infra_ao_audio26m", "clk26m", 4),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_SSUSB_TOP_P1_HCLK, "infra_ao_ssusb_p1_hclk", "top_axi", 5),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_SPI1, "infra_ao_spi1", "top_spi", 6),
--	GATE_INFRA_AO2(CLK_INFRA_AO_I2C4, "infra_ao_i2c4", "top_i2c", 7),
-+	GATE_INFRA_AO2(CLK_INFRA_AO_I2C4, "infra_ao_i2c4", "infra_ao_i2c_ap", 7),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_MODEM_TEMP_SHARE, "infra_ao_mdtemp", "clk26m", 8),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_SPI2, "infra_ao_spi2", "top_spi", 9),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_SPI3, "infra_ao_spi3", "top_spi", 10),
-@@ -145,7 +145,7 @@ static const struct mtk_gate infra_ao_clks[] = {
- 	GATE_INFRA_AO2_FLAGS(CLK_INFRA_AO_SSPM, "infra_ao_sspm", "top_sspm", 15, CLK_IS_CRITICAL),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_SSUSB_TOP_P1_SYS,
- 		       "infra_ao_ssusb_p1_sys", "top_ssusb_1p", 16),
--	GATE_INFRA_AO2(CLK_INFRA_AO_I2C5, "infra_ao_i2c5", "top_i2c", 18),
-+	GATE_INFRA_AO2(CLK_INFRA_AO_I2C5, "infra_ao_i2c5", "infra_ao_i2c_ap", 18),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_I2C5_ARBITER, "infra_ao_i2c5a", "top_i2c", 19),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_I2C5_IMM, "infra_ao_i2c5_imm", "top_i2c", 20),
- 	GATE_INFRA_AO2(CLK_INFRA_AO_I2C1_ARBITER, "infra_ao_i2c1a", "top_i2c", 21),
-@@ -167,7 +167,7 @@ static const struct mtk_gate infra_ao_clks[] = {
- 			     CLK_IS_CRITICAL),
- 	GATE_INFRA_AO3_FLAGS(CLK_INFRA_AO_SSPM_32K_SELF, "infra_ao_sspm_32k", "clk32k", 4,
- 			     CLK_IS_CRITICAL),
--	GATE_INFRA_AO3(CLK_INFRA_AO_I2C6, "infra_ao_i2c6", "top_i2c", 6),
-+	GATE_INFRA_AO3(CLK_INFRA_AO_I2C6, "infra_ao_i2c6", "infra_ao_i2c_ap", 6),
- 	GATE_INFRA_AO3(CLK_INFRA_AO_AP_MSDC0, "infra_ao_ap_msdc0", "top_axi", 7),
- 	GATE_INFRA_AO3(CLK_INFRA_AO_MD_MSDC0, "infra_ao_md_msdc0", "top_axi", 8),
- 	GATE_INFRA_AO3(CLK_INFRA_AO_MSDC0_SRC, "infra_ao_msdc0_clk", "top_msdc50_0", 9),
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310192021.fvb6JDOY-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/tee/optee/ffa_abi.c:618: warning: Function parameter or member 'system_thread' not described in 'optee_ffa_do_call_with_arg'
+--
+   drivers/tee/optee/smc_abi.c:818: warning: Function parameter or member 'rpc_arg' not described in 'optee_handle_rpc'
+>> drivers/tee/optee/smc_abi.c:890: warning: Function parameter or member 'system_thread' not described in 'optee_smc_do_call_with_arg'
+
+
+vim +618 drivers/tee/optee/ffa_abi.c
+
+4615e5a34b95e0 Jens Wiklander   2021-07-21  602  
+4615e5a34b95e0 Jens Wiklander   2021-07-21  603  /**
+4615e5a34b95e0 Jens Wiklander   2021-07-21  604   * optee_ffa_do_call_with_arg() - Do a FF-A call to enter OP-TEE in secure world
+4615e5a34b95e0 Jens Wiklander   2021-07-21  605   * @ctx:	calling context
+4615e5a34b95e0 Jens Wiklander   2021-07-21  606   * @shm:	shared memory holding the message to pass to secure world
+5b4018b959149e Jens Wiklander   2022-01-25  607   * @offs:	offset of the message in @shm
+4615e5a34b95e0 Jens Wiklander   2021-07-21  608   *
+4615e5a34b95e0 Jens Wiklander   2021-07-21  609   * Does a FF-A call to OP-TEE in secure world and handles eventual resulting
+4615e5a34b95e0 Jens Wiklander   2021-07-21  610   * Remote Procedure Calls (RPC) from OP-TEE.
+4615e5a34b95e0 Jens Wiklander   2021-07-21  611   *
+4615e5a34b95e0 Jens Wiklander   2021-07-21  612   * Returns return code from FF-A, 0 is OK
+4615e5a34b95e0 Jens Wiklander   2021-07-21  613   */
+4615e5a34b95e0 Jens Wiklander   2021-07-21  614  
+4615e5a34b95e0 Jens Wiklander   2021-07-21  615  static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
+9f34a9d2a70d79 Etienne Carriere 2023-10-16  616  				      struct tee_shm *shm, u_int offs,
+9f34a9d2a70d79 Etienne Carriere 2023-10-16  617  				      bool system_thread)
+4615e5a34b95e0 Jens Wiklander   2021-07-21 @618  {
+4615e5a34b95e0 Jens Wiklander   2021-07-21  619  	struct ffa_send_direct_data data = {
+4615e5a34b95e0 Jens Wiklander   2021-07-21  620  		.data0 = OPTEE_FFA_YIELDING_CALL_WITH_ARG,
+4615e5a34b95e0 Jens Wiklander   2021-07-21  621  		.data1 = (u32)shm->sec_world_id,
+4615e5a34b95e0 Jens Wiklander   2021-07-21  622  		.data2 = (u32)(shm->sec_world_id >> 32),
+5b4018b959149e Jens Wiklander   2022-01-25  623  		.data3 = offs,
+4615e5a34b95e0 Jens Wiklander   2021-07-21  624  	};
+4064c461148ab1 Jens Wiklander   2021-12-28  625  	struct optee_msg_arg *arg;
+4064c461148ab1 Jens Wiklander   2021-12-28  626  	unsigned int rpc_arg_offs;
+4064c461148ab1 Jens Wiklander   2021-12-28  627  	struct optee_msg_arg *rpc_arg;
+4064c461148ab1 Jens Wiklander   2021-12-28  628  
+a639b2b18a240d Jens Wiklander   2022-01-12  629  	/*
+a639b2b18a240d Jens Wiklander   2022-01-12  630  	 * The shared memory object has to start on a page when passed as
+a639b2b18a240d Jens Wiklander   2022-01-12  631  	 * an argument struct. This is also what the shm pool allocator
+a639b2b18a240d Jens Wiklander   2022-01-12  632  	 * returns, but check this before calling secure world to catch
+a639b2b18a240d Jens Wiklander   2022-01-12  633  	 * eventual errors early in case something changes.
+a639b2b18a240d Jens Wiklander   2022-01-12  634  	 */
+a639b2b18a240d Jens Wiklander   2022-01-12  635  	if (shm->offset)
+a639b2b18a240d Jens Wiklander   2022-01-12  636  		return -EINVAL;
+a639b2b18a240d Jens Wiklander   2022-01-12  637  
+5b4018b959149e Jens Wiklander   2022-01-25  638  	arg = tee_shm_get_va(shm, offs);
+4064c461148ab1 Jens Wiklander   2021-12-28  639  	if (IS_ERR(arg))
+4064c461148ab1 Jens Wiklander   2021-12-28  640  		return PTR_ERR(arg);
+4064c461148ab1 Jens Wiklander   2021-12-28  641  
+4064c461148ab1 Jens Wiklander   2021-12-28  642  	rpc_arg_offs = OPTEE_MSG_GET_ARG_SIZE(arg->num_params);
+5b4018b959149e Jens Wiklander   2022-01-25  643  	rpc_arg = tee_shm_get_va(shm, offs + rpc_arg_offs);
+4064c461148ab1 Jens Wiklander   2021-12-28  644  	if (IS_ERR(rpc_arg))
+4064c461148ab1 Jens Wiklander   2021-12-28  645  		return PTR_ERR(rpc_arg);
+4615e5a34b95e0 Jens Wiklander   2021-07-21  646  
+9f34a9d2a70d79 Etienne Carriere 2023-10-16  647  	return optee_ffa_yielding_call(ctx, &data, rpc_arg, system_thread);
+4615e5a34b95e0 Jens Wiklander   2021-07-21  648  }
+4615e5a34b95e0 Jens Wiklander   2021-07-21  649  
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
