@@ -2,161 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FD67D0062
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8257D006B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345973AbjJSRWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
+        id S1346133AbjJSRYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345259AbjJSRWE (ORCPT
+        with ESMTP id S233238AbjJSRYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:22:04 -0400
+        Thu, 19 Oct 2023 13:24:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DDE130
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:22:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F4FBC433C7;
-        Thu, 19 Oct 2023 17:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697736121;
-        bh=NQCM45/+qFYeEhJWW6awZxCcotUOpb4e7SzBzM14FMQ=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5CA116;
+        Thu, 19 Oct 2023 10:23:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF349C433C7;
+        Thu, 19 Oct 2023 17:23:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697736238;
+        bh=N6rJotQAYKUbY3kdI/jN7i/D6rMJHj9xwtiC6QCP87s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GpW5LBKYizMf17HySVdzU+MTQzKYqPxEYX2f66hLoamBoENqO59RfiB21wNbJMEN3
-         nw3ubKaW/bfNi3NB+jGYlIh1k8HqejRDpMp6KUwAS9py/NEgUluiduZFvRCbNeLTCI
-         cQSZqXG/b9DpFV580uI0DNKuzfdDV5yUprSHF7RU=
-Date:   Thu, 19 Oct 2023 19:21:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <2023101913-owl-showman-5858@gregkh>
-References: <20231018081941.475277-1-saeed@kernel.org>
- <20231018081941.475277-3-saeed@kernel.org>
- <2023101835-trapdoor-unicycle-788a@gregkh>
- <20231018180128.GA719006@nvidia.com>
- <2023101808-quicksand-roman-0da7@gregkh>
- <20231018185629.GD3952@nvidia.com>
+        b=WMlwZQW0kKr46J/2uM/wWEtQmhWvqTGSyTYCDriesS8L59DTZ3yWSHrK+xkxVIH9Y
+         ax5f1V6Whi5BSEIov2GenCVaKuPp3PYSXqLYwUYZpYFkUUVtWeW+KXesj79wVBiAS+
+         D/tC/BjJoFCHhbkbjTYoTddz7xoXrjnUqmzbrVYDYmhWHmoq1hLWAL4s6PHDwSMaQ8
+         fp7g6t7dLIpu6Q33BobOQXW8BCJ+gFBrLdyWp5Z45Fio1subHcw3SQeQ78EKpIhEnI
+         tgP99YXSpyrt9B8ik03iMRo0R6KcSPW45tYbhyJExq7KPDmNi1148f9OLFgQqP22GP
+         hGm+Q6X3BfOwg==
+Date:   Thu, 19 Oct 2023 22:53:47 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 1/5] PCI: endpoint: Add RC-to-EP doorbell support
+ using platform MSI controller
+Message-ID: <20231019172347.GC7254@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <20230911220920.1817033-2-Frank.Li@nxp.com>
+ <20231017183722.GB137137@thinkpad>
+ <ZS7YvWSlkQluPtg3@lizhi-Precision-Tower-5810>
+ <20231019150441.GA7254@thinkpad>
+ <ZTFSlpnF41BDzyiX@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231018185629.GD3952@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTFSlpnF41BDzyiX@lizhi-Precision-Tower-5810>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:56:29PM -0300, Jason Gunthorpe wrote:
-> On Wed, Oct 18, 2023 at 08:22:39PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Oct 18, 2023 at 03:01:28PM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Oct 18, 2023 at 10:30:00AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Wed, Oct 18, 2023 at 01:19:38AM -0700, Saeed Mahameed wrote:
-> > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+On Thu, Oct 19, 2023 at 12:00:22PM -0400, Frank Li wrote:
+> On Thu, Oct 19, 2023 at 08:34:41PM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Oct 17, 2023 at 02:55:57PM -0400, Frank Li wrote:
+> > > On Wed, Oct 18, 2023 at 12:07:22AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Mon, Sep 11, 2023 at 06:09:16PM -0400, Frank Li wrote:
+> > > > > This commit introduces a common method for sending messages from the Root
+> > > > > Complex (RC) to the Endpoint (EP) by utilizing the platform MSI interrupt
+> > > > > controller, such as ARM GIC, as an EP doorbell. Maps the memory assigned
+> > > > > for the BAR region by the PCI host to the message address of the platform
+> > > > > MSI interrupt controller in the PCI EP. As a result, when the PCI RC writes
 > > > > 
-> > > > For dual-licensed code, I need a LOT of documentation as to why this
-> > > > must be dual-licensed, AND a signed-off-by from your corporate lawyer
-> > > > agreeing to it so they convey an understanding of just how complex and
-> > > > messy this will get over time and what you are agreeing to do here.
+> > > > "Doorbell feature is implemented by mapping the EP's MSI interrupt controller
+> > > > message address to a dedicated BAR in the EPC core. It is the responsibility
+> > > > of the EPF driver to pass the actual message data to be written by the host to
+> > > > the doorbell BAR region through its own logic."
+> > > > 
+> > > > > to the BAR region, it triggers an IRQ at the EP. This implementation serves
+> > > > > as a common method for all endpoint function drivers.
+> > > > > 
+> > > > > However, it currently supports only one EP physical function due to
+> > > > > limitations in ARM MSI/IMS readiness.
+> > > > > 
+> > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > ---
+> > > > >  drivers/pci/endpoint/pci-epc-core.c | 192 ++++++++++++++++++++++++++++
+> > > > >  drivers/pci/endpoint/pci-epf-core.c |  44 +++++++
+> > > > >  include/linux/pci-epc.h             |   6 +
+> > > > >  include/linux/pci-epf.h             |   7 +
+> > > > >  4 files changed, 249 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> > > > > index 5a4a8b0be6262..d336a99c6a94f 100644
+> > > > > --- a/drivers/pci/endpoint/pci-epc-core.c
+> > > > > +++ b/drivers/pci/endpoint/pci-epc-core.c
+> > > > > @@ -10,6 +10,7 @@
+> > > > >  #include <linux/slab.h>
+> > > > >  #include <linux/module.h>
+> > > > >  
+> > > > > +#include <linux/msi.h>
+> > > > >  #include <linux/pci-epc.h>
+> > > > >  #include <linux/pci-epf.h>
+> > > > >  #include <linux/pci-ep-cfs.h>
+> > > > > @@ -783,6 +784,197 @@ void pci_epc_bme_notify(struct pci_epc *epc)
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(pci_epc_bme_notify);
+> > > > >  
+> > > > > +/**
+> > > > > + * pci_epc_alloc_doorbell() - alloc an address space to let RC trigger EP side IRQ by write data to
+> > > > > + *			      the space.
+> > > > 
+> > > > "Allocate platform specific doorbell IRQs to be used by the host to trigger
+> > > > doorbells on EP."
+> > > > 
+> > > > > + *
+> > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > 
+> > > > EPC device for which the doorbell needs to be allocated
+> > > > 
+> > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > + * @num_msgs: the total number of doorbell messages
+> > > > 
+> > > > s/num_msgs/num_db
+> > > > 
+> > > > > + *
+> > > > > + * Return: 0 success, other is failure
+> > > > > + */
+> > > > > +int pci_epc_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
+> > > > > +{
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	if (!epc->ops->alloc_doorbell)
+> > > > > +		return 0;
+> > > > 
+> > > > You mentioned 0 is a success. So if there is no callback, you want to return
+> > > > success?
+> > > > 
+> > > > > +
+> > > > > +	mutex_lock(&epc->lock);
+> > > > > +	ret = epc->ops->alloc_doorbell(epc, func_no, vfunc_no, num_msgs);
+> > > > 
+> > > > Why can't you just call the generic function here and in other places instead of
+> > > > implementing callbacks? I do not see a necessity for EPC specific callbacks. If
+> > > > there is one, please specify.
 > > > 
-> > > Can you provide a brief or whitepaper discussing this complexity
-> > > please? This pushback is news to me, Mellanox and the RDMA ecosystem
-> > > has been doing this for over 15 years now. I would need something
-> > > substantive to have a conversation with our legal.
+> > > 1. Refer v1 your comments.
+> > > https://lore.kernel.org/imx/20230906145227.GC5930@thinkpad/
 > > 
-> > Have your legal talk to the LF legal working group, they are the ones
-> > that told me never to mess with this license again.  I'm sure that
-> > nvidia's lawyers are part of this group, so let's let them hash it
-> > out.
+> > I do not find where I suggested the callback approach.
 > 
-> Are you talking about OpenIB specifically or the concept of dual
-> license (eg GPL/MIT) in general?
+> 	> > > If that, Each EPF driver need do duplicate work. 
+> 	> > > 
+> 	> > 
+> 	> > Yes, and that's how it should be. EPF core has no job in supplying the of_node.
+> 	> > It is the responsibility of the EPF drivers as they depend on OF for platform
+> 	> > support.
+> 	> 
+> 	> EPF driver still not depend on OF. such pci-epf-test, which was probed by
+> 	> configfs.
+> 	> 
+> 
+> 	Hmm, yeah. Then it should be part of the EPC driver.
+> 
+> 	Sorry for the confusion.
+> 
+> Here, all "EPF" should be "EPC". The key problem is of_node. EPC core have
+> not of_node, EPC core's parent driver (like dwc-ep driver) have of_node. 
+> 
+> pci_epc_generic_alloc_doorbell(dev), dev is probed by platform driver, such
+> as dwc-ep, which have of_node,  EPC core will create child device.
+> 
+> dwc-ep device
+>  |- epc core device
+> 
+> we can direct call pci_epc_generic_alloc_doorbell(epc->parent) here.
+> 
+> I may miss understand what your means. I think you want to dwc-ep
+> (with of_node) handle these alloc functions. 
+> 
 
-I'm talking about OpenIB specifically.
+My comment was to have just one function definition. But looking at it again, I
+think it is better to move all the (alloc, free, write_msg) definitions to
+dwc-ep, since the contents of those functions are not EPC core specific.
 
-> > > However, I believe we can get an exception approval for single license
-> > > MIT or BSD-3-Clause for this code.
+In the EPC core, you can still have the callbacks specific to each EPC. This
+also solves your of_node problem.
+
+- Mani
+
 > > 
-> > GPLv2 please, otherwise again, I'm going to demand a really really good
-> > reason why Linux kernel code needs a non-GPL license and again, a sign
-> > off from your lawyers explaining why it must be so.
-> 
-> All of the Mellanox driver stack (over 400 files now!) is dual
-> licensed because we have a large team of people working the Mellanox
-> driver for many operating systems with many different licenses. We
-> want the certainty of a permissive license for the driver code we
-> supply to Linux as the team routinely references and/or re-uses
-> Mellanox authored Linux driver code into other scenarios under the
-> permissive side of the dual license.
-> 
-> For instance I could easily see the work Saeed has done here finding
-> its way into FreeBSD. We significantly support FreeBSD employing
-> maintainers and develop a sophisticated Mellanox driver over
-> there. This would not be possible without the Linux driver being dual
-> licensed.
+> > > 2. Maybe some ep controller have built-in doorbell support. Write to some
+> > > address to trigger doorbell irq.
+> > > 
+> > 
+> > We will handle it whenever such EP controllers arrive. Until then, let's keep it
+> > simple.
+> > 
+> > - Mani
+> > 
+> > > Frank
+> > > 
+> > > > 
+> > > > > +	mutex_unlock(&epc->lock);
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +EXPORT_SYMBOL_GPL(pci_epc_alloc_doorbell);
+> > > > > +
+> > > > > +/**
+> > > > > + * pci_epc_free_doorbell() - free resource allocated by pci_epc_alloc_doorbell()
+> > > > > + *
+> > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > 
+> > > > Same as above.
+> > > > 
+> > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > + *
+> > > > > + * Return: 0 success, other is failure
+> > > > > + */
+> > > > > +void pci_epc_free_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
+> > > > > +{
+> > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+> > > > > +		return;
+> > > > > +
+> > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
+> > > > > +		return;
+> > > > > +
+> > > > > +	if (!epc->ops->free_doorbell)
+> > > > > +		return;
+> > > > > +
+> > > > > +	mutex_lock(&epc->lock);
+> > > > > +	epc->ops->free_doorbell(epc, func_no, vfunc_no);
+> > > > 
+> > > > Same as suggested above.
+> > > > 
+> > > > > +	mutex_unlock(&epc->lock);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL_GPL(pci_epc_free_doorbell);
+> > > > > +
+> > > > > +static irqreturn_t pci_epf_generic_doorbell_handler(int irq, void *data)
+> > > > > +{
+> > > > > +	struct pci_epf *epf = data;
+> > > > > +
+> > > > > +	if (epf->event_ops && epf->event_ops->doorbell)
+> > > > > +		epf->event_ops->doorbell(epf, irq - epf->virq_base);
+> > > > 
+> > > > Same as suggested above.
+> > > > 
+> > > > > +
+> > > > > +	return IRQ_HANDLED;
+> > > > > +}
+> > > > > +
+> > > > > +static void pci_epc_generic_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
+> > > > > +{
+> > > > > +	struct pci_epc *epc = NULL;
+> > > > > +	struct class_dev_iter iter;
+> > > > > +	struct pci_epf *epf;
+> > > > > +	struct device *dev;
+> > > > > +
+> > > > > +	class_dev_iter_init(&iter, pci_epc_class, NULL, NULL);
+> > > > > +	while ((dev = class_dev_iter_next(&iter))) {
+> > > > > +		if (dev->parent != desc->dev)
+> > > > > +			continue;
+> > > > > +
+> > > > > +		epc = to_pci_epc(dev);
+> > > > > +
+> > > > > +		class_dev_iter_exit(&iter);
+> > > > > +		break;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (!epc)
+> > > > > +		return;
+> > > > > +
+> > > > > +	/* Only support one EPF for doorbell */
+> > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
+> > > > > +
+> > > > 
+> > > > No need of this newline
+> > > > 
+> > > > > +	if (!epf)
+> > > > > +		return;
+> > > > > +
+> > > > > +	if (epf->msg && desc->msi_index < epf->num_msgs)
+> > > > > +		epf->msg[desc->msi_index] = *msg;
+> > > > > +}
+> > > > > +
+> > > > > +
+> > > > 
+> > > > Remove extra newline
+> > > > 
+> > > > > +/**
+> > > > > + * pci_epc_generic_alloc_doorbell() - Common help function. Allocate address space from MSI
+> > > > > + *                                    controller
+> > > > > + *
+> > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > + * @num_msgs: the total number of doorbell messages
+> > > > > + *
+> > > > 
+> > > > Same comment as for pci_epc_alloc_doorbell()
+> > > > 
+> > > > > + * Remark: use this function only if EPC driver just register one EPC device.
+> > > > > + *
+> > > > > + * Return: 0 success, other is failure
+> > > > > + */
+> > > > > +int pci_epc_generic_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
+> > > > > +{
+> > > > > +	struct pci_epf *epf;
+> > > > > +	struct device *dev;
+> > > > > +	int virq, last;
+> > > > > +	int ret;
+> > > > > +	int i;
+> > > > > +
+> > > > > +	if (IS_ERR_OR_NULL(epc))
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	/* Currently only support one func and one vfunc for doorbell */
+> > > > > +	if (func_no || vfunc_no)
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
+> > > > > +	if (!epf)
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	dev = epc->dev.parent;
+> > > > > +	ret = platform_msi_domain_alloc_irqs(dev, num_msgs, pci_epc_generic_write_msi_msg);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "Failed to allocate MSI\n");
+> > > > > +		return -ENOMEM;
+> > > > > +	}
+> > > > > +
+> > > > > +	last = -1;
+> > > > > +	for (i = 0; i < num_msgs; i++) {
+> > > > 
+> > > > You should iterate over msi_desc as below:
+> > > > 
+> > > >         msi_lock_descs(dev);
+> > > >         msi_for_each_desc(desc, dev, MSI_DESC_ALL) {
+> > > > 		...
+> > > > 	}
+> > > > 	msi_unlock_descs(dev);
+> > > > 
+> > > > > +		virq = msi_get_virq(dev, i);
+> > > > > +		if (i == 0)
+> > > > > +			epf->virq_base = virq;
+> > > > > +
+> > > > > +		ret = request_irq(virq, pci_epf_generic_doorbell_handler, 0,
+> > > > 
+> > > > 	request_irq(desc->irq, ...)
+> > > > 
+> > > > > +				  kasprintf(GFP_KERNEL, "pci-epc-doorbell%d", i), epf);
+> > > > > +
+> > > > > +		if (ret) {
+> > > > > +			dev_err(dev, "Failed to request doorbell\n");
+> > > > > +			goto err_free_irq;
+> > > > > +		}
+> > > > > +		last = i;
+> > > > > +	}
+> > > > > +
+> > > > > +	return 0;
+> > > > > +
+> > > > > +err_free_irq:
+> > > > > +	for (i = 0; i < last; i++)
+> > > > > +		kfree(free_irq(epf->virq_base + i, epf));
+> > > > > +	platform_msi_domain_free_irqs(dev);
+> > > > > +
+> > > > > +	return -EINVAL;
+> > > > 
+> > > > 	return ret;
+> > > > 
+> > > > > +}
+> > > > > +EXPORT_SYMBOL_GPL(pci_epc_generic_alloc_doorbell);
+> > > > > +
+> > > > 
+> > > > [...]
+> > > > 
+> > > > > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> > > > > index 3f44b6aec4770..485c146a5efe2 100644
+> > > > > --- a/include/linux/pci-epf.h
+> > > > > +++ b/include/linux/pci-epf.h
+> > > > > @@ -79,6 +79,7 @@ struct pci_epc_event_ops {
+> > > > >  	int (*link_up)(struct pci_epf *epf);
+> > > > >  	int (*link_down)(struct pci_epf *epf);
+> > > > >  	int (*bme)(struct pci_epf *epf);
+> > > > > +	int (*doorbell)(struct pci_epf *epf, int index);
+> > > > 
+> > > > kdoc missing.
+> > > > 
+> > > > >  };
+> > > > >  
+> > > > >  /**
+> > > > > @@ -180,6 +181,9 @@ struct pci_epf {
+> > > > >  	unsigned long		vfunction_num_map;
+> > > > >  	struct list_head	pci_vepf;
+> > > > >  	const struct pci_epc_event_ops *event_ops;
+> > > > > +	struct msi_msg *msg;
+> > > > > +	u16 num_msgs;
+> > > > 
+> > > > num_db
+> > > > 
+> > > > You also need to add kdoc for each new member.
+> > > > 
+> > > > - Mani
+> > > > 
+> > > > -- 
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-Yes it would, you can take the work that you all do and license it under
-the BSD license and put it into FreeBSD just fine.  But you are saying
-you require Linux developers to help you with your FreeBSD drivers,
-which is not always fair or nice to take from others that way (in my
-opinion.)
-
-> This has been the direction from our legal for a long time.
-
-I know, but the OpenIB license is known to have issues, and so I thought
-they were going to stop using it for new code.
-
-> AFAIK this has also been a long time accepted Linux practice, there
-> are many examples in the driver tree. What has changed now that Saeed
-> tries to add 3 more files the giant driver? I need a bigger
-> explanation if we are going to revisit this practice with our legal.
-
-"the giant driver"?  I'm confused.
-
-> To be clear, we can surely get the approvals to remove the offensive
-> OpenIB from these files. eg mlxsw is already approved using
-> "BSD-3-Clause OR GPL-2.0".
-
-For your new files, please make them single license.  If you insist on
-dual licensing them, I will insist on have a lawyer sign off on them so
-that they understand the issues involved with dual licenses, and just
-how much I hate them in the kernel tree as they are a pain over time.
-
-Note, this isn't special to you, I do this to all new files sent to me
-with this type of non-GPL-only license, see the archives for details.
-
-> Further, as a maintainer myself, is this now the community consensus
-> expected review standard?  When was it discussed? I do not see
-> evidence of a ban on dual licensing in
-> https://docs.kernel.org/process/license-rules.html ?
-
-It's based on my experience with existing dual licensed kernel code AND
-discussing it with many many lawyers over the years.  It's a pain, they
-hate it, it's dubious if it actually helps anyone out in any other
-operating system (as again, you can take your work and send it to
-FreeBSD just fine), it is messy when dealing with gpl-only exports (like
-the driver model or the USB layer), and you are taking something from
-the community (free labor) to help other operating systems out when the
-Linux developers might not realize it.
-
-I think the only real place this works out is the ACPI core, for the
-obvious reasons that we all want a solid ACPI core that all operating
-systems can use.  And Intel goes through a lot of extra effort and time
-and energy to keep that going, so it is costing them real money to do
-this work for this, so that makes sense.  For just a hardware driver for
-a specific company, this feels very selfish in my opinion.
-
-I would be really interested in if you all actually have taken any
-not-from-your-company changes to your drivers and copied that into other
-operating systems for anything "real" that wasn't just tiny bugfixes.
-Have you?  If not, why go through this hassle?
-
-thanks,
-
-greg k-h
+-- 
+மணிவண்ணன் சதாசிவம்
