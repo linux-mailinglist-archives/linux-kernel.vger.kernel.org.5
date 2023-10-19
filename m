@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A147CF18B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA717CF191
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344893AbjJSHpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
+        id S232927AbjJSHp6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Oct 2023 03:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235109AbjJSHpF (ORCPT
+        with ESMTP id S232769AbjJSHpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:45:05 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B05213E
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:45:03 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083cd39188so11959095e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:45:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697701501; x=1698306301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5pmXZfNDgHWU97eVG0ao9ZDPxa8/NusQS8x4RuYWhWk=;
-        b=iZWOzNajhWf3yU3oCewYpD2OUdH0ARGWLZ4rj91MZvBr6MGURqHWgXt53Y/CbaD/H1
-         3En+jtm90Q6JThv8z87H1h6VnnICzay2rrVWCIL+TfEKFMxDv0DR0XxxhZncnE66OEnJ
-         oHxwLI5irsn44RwZjOXLsPVqkr9jNXYRpkCBvozGyI1+tCh2F6c2wOSxPRWr9NKiFRYV
-         DAFBA89sVAtvQwvzsH+5pwhNJVDW8krDzFjc4vOI1ya+ylqt3ep04naCqDfirKBJqxka
-         yW3bM2N+iG8EGM6zU6FL1K61xlHa1SXRQhBmhc64AV4sr0nFg6b+KuO8iCFqyodkdOtL
-         5hCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697701501; x=1698306301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5pmXZfNDgHWU97eVG0ao9ZDPxa8/NusQS8x4RuYWhWk=;
-        b=flM8sIJw0yD/zi5GLPZKXpedT1Bgxkn2Es44jE6zh8qsSdJbeQxF5kOvvroWCzu7fe
-         zLVLskBZ/3dRfXfwkS0k1A+t+gDOzjv50GKt/EN3iZC7YCb1HrCSPEUsKL1JjgBXb3yB
-         zaniZlm05QsNJVCE4PMIR29Kz1zHbP+nmrYHOmZU40IXMhzl2S7U7OkSCjgSJ+RtBV8U
-         g5NSm3snV8STaa3tg1HcMu23Pf+TQuN6i9PGO749T2VZqbbBZZbhs4z7T1pQNneICkvn
-         fl1ZL/ZD6QbMORHVOJ7wc/wvfxGF3RYhhNomrYN5ws7PSVY4qTJzuYPWZ/cPXKcT8zwP
-         5a8w==
-X-Gm-Message-State: AOJu0YwCp2eA1P3NAicLxn11IYKKp9SZA8eIYojF5sMFhQqVEoHi9Zpq
-        tII2wOmKDTTZ9dgB/XtV/XQoWA==
-X-Google-Smtp-Source: AGHT+IF7BQxJkgtIKhJz33b7TksgaeCJ/FKlTDLOVy2fY0p9glVw/wOjAaJE92kUJE4r9I59EYQnCA==
-X-Received: by 2002:a05:600c:3b95:b0:408:37aa:4766 with SMTP id n21-20020a05600c3b9500b0040837aa4766mr1021340wms.5.1697701501064;
-        Thu, 19 Oct 2023 00:45:01 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05600c028100b004077219aed5sm3630164wmk.6.2023.10.19.00.45.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 00:45:00 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:44:59 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/8] RISC-V: Add defines for SBI debug console
- extension
-Message-ID: <20231019-5e24c756f19e98cd9d3f89bb@orel>
-References: <20231012051509.738750-1-apatel@ventanamicro.com>
- <20231012051509.738750-2-apatel@ventanamicro.com>
+        Thu, 19 Oct 2023 03:45:54 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A0BF7;
+        Thu, 19 Oct 2023 00:45:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4S9zvl69lbz9v7Qx;
+        Thu, 19 Oct 2023 15:32:51 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDXLrqN3jBl0dl3Ag--.35623S2;
+        Thu, 19 Oct 2023 08:45:27 +0100 (CET)
+Message-ID: <e12f63037405f41a1be979b1424d1404d3139a4d.camel@huaweicloud.com>
+Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>, Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net,
+        linux-integrity@vger.kernel.org
+Date:   Thu, 19 Oct 2023 09:45:14 +0200
+In-Reply-To: <CAHC9VhSqgAD09QL2n0aoWLK7RGPkkjZHBrDCQmt1p3=ozpdt4A@mail.gmail.com>
+References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
+         <20230912205658.3432-1-casey@schaufler-ca.com>
+         <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
+         <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
+         <ae39864947debbc7c460db478b8abe1c147b7d5c.camel@huaweicloud.com>
+         <CAHC9VhRQ7xpeSX7b3VZfzQ15noJ8mgauNMuHWo_n3hMgsYMAfQ@mail.gmail.com>
+         <468436cf766732a3cfc55d07ad119a6ccdc815c1.camel@huaweicloud.com>
+         <CAHC9VhTjHT-DGKu0=cZPVb=+kMwmbPdr8HiVWJq-yzaDiYk_SA@mail.gmail.com>
+         <6f33144c850c40e9438a6de2cf3004e223508755.camel@huaweicloud.com>
+         <2637d5294d4a7ae871f1b758f5a30234836e2463.camel@huaweicloud.com>
+         <c896c8ed559d0075146070be232e449b6951eb99.camel@linux.ibm.com>
+         <283bf52d-af6e-4d20-a5ba-d98511c2e530@huaweicloud.com>
+         <CAHC9VhSiUgY1Dzy6LGOjPF6XQ3pVBiZ9LPdcQANNXZ9rj-WURw@mail.gmail.com>
+         <80f05011bf9fe19bde1f923e98c2db69ffc91065.camel@linux.ibm.com>
+         <CAHC9VhSqgAD09QL2n0aoWLK7RGPkkjZHBrDCQmt1p3=ozpdt4A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012051509.738750-2-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: GxC2BwDXLrqN3jBl0dl3Ag--.35623S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4fXFy7Xr17JF15Xw48Xrb_yoW8AFyDpF
+        W5ta1jkr4qvr4jyws2yF4rtw4jyFZ3XF97X345Jr1rA3s8JF9YqrWfuFW29ryUGrsYya40
+        yF42qa43ua4DZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAPBF1jj5E3+AAAsm
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:45:02AM +0530, Anup Patel wrote:
-> We add SBI debug console extension related defines/enum to the
-> asm/sbi.h header.
+On Wed, 2023-10-18 at 16:40 -0400, Paul Moore wrote:
+> On Wed, Oct 18, 2023 at 4:23 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > On Wed, 2023-10-18 at 12:35 -0400, Paul Moore wrote:
+> > > On Wed, Oct 18, 2023 at 10:15 AM Roberto Sassu
+> > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > On 10/18/2023 3:09 PM, Mimi Zohar wrote:
+> > > 
+> > > ...
+> > > 
+> > > > > I agree with Roberto.  All three should be defined: LSM_ID_INTEGRITY,
+> > > > > LSM_ID_IMA, LSM_ID_EVM.
+> > > > 
+> > > > I did not try yet, but the 'integrity' LSM does not need an LSM ID. With
+> > > > the last version adding hooks to 'ima' or 'evm', it should be sufficient
+> > > > to keep DEFINE_LSM(integrity) with the request to store a pointer in the
+> > > > security blob (even the init function can be a dummy function).
+> > > 
+> > > First off, this *really* should have been brought up way, way, *way*
+> > > before now.  This patchset has been discussed for months, and bringing
+> > > up concerns in the eleventh hour is borderline rude.
+> > 
+> > As everyone knows IMA and EVM are not LSMs at this point.
 > 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/sbi.h | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 5b4a1bf5f439..12dfda6bb924 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -30,6 +30,7 @@ enum sbi_ext_id {
->  	SBI_EXT_HSM = 0x48534D,
->  	SBI_EXT_SRST = 0x53525354,
->  	SBI_EXT_PMU = 0x504D55,
-> +	SBI_EXT_DBCN = 0x4442434E,
->  
->  	/* Experimentals extensions must lie within this range */
->  	SBI_EXT_EXPERIMENTAL_START = 0x08000000,
-> @@ -236,6 +237,12 @@ enum sbi_pmu_ctr_type {
->  /* Flags defined for counter stop function */
->  #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
->  
-> +enum sbi_ext_dbcn_fid {
-> +	SBI_EXT_DBCN_CONSOLE_WRITE = 0,
-> +	SBI_EXT_DBCN_CONSOLE_READ = 1,
-> +	SBI_EXT_DBCN_CONSOLE_WRITE_BYTE = 2,
-> +};
-> +
->  #define SBI_SPEC_VERSION_DEFAULT	0x1
->  #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
->  #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-> -- 
-> 2.34.1
->
+> Considering all the work Roberto has been doing to make that happen,
+> not to mention the discussions we've had on this topic, that's an
+> awfully small technicality to use as the basis of an argument.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Sorry Paul, but I've been working on this patch set for a long time and
+you were also involved in the prerequisites (like making the
+'integrity' LSM as the last).
+
+I thought it was clear at this point that we were going to add the
+hooks to the 'integrity' LSM.
+
+I really have no problem to rebase my work on top of other work, but I
+was very surprised to see LSM_ID_IMA instead of LSM_ID_INTEGRITY, and
+at minimum this should have been agreed with Mimi. And also, I was not
+convinced with the argument that LSM_ID_IMA should represent IMA+EVM.
+
+Roberto
+
