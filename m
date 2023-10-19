@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4414D7CFD8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DB57CFD8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346226AbjJSPFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1346237AbjJSPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346174AbjJSPFG (ORCPT
+        with ESMTP id S1346215AbjJSPFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:05:06 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D6B11D;
-        Thu, 19 Oct 2023 08:05:04 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JBTTpm015458;
-        Thu, 19 Oct 2023 15:04:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=qanLP9cmLj+5RCqf6a5RUipKVc/ue5qlpWjav39spJI=;
- b=N55h2sDaxlOTr5cqyrZiCojGMyOT9NR8bSHs2F/gOzJ89WNMIKTr60vipNiPCo/+3Sns
- s9GKmNGFGb/DYAaUt51KrBwTsRDOmqq9aI588puJePZ50WEq/k/OSQRhtSUQvdaVLgbU
- gKP4qqzDrkaKFm7yAimUjb6A24J3vn3W3VAd/2CV+0vahAV8+ThzHw2QjQos7XCyFtHe
- WoQsyi+0ix57YBvgsGD7uVVlOsc0OPZuI5GcFh50kThYUBmFCxPzQ4az5BbvH8dFKzTJ
- a6se8ExXuw+V/Rqktd42HFEhGYI7WQgpkaL078xfrcxGyPb+KWMq8Vp/rR2lRG2yGep0 qg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tu14crsrq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 15:04:57 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JF4ujJ005265
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 15:04:56 GMT
-Received: from [10.48.241.70] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
- 2023 08:04:56 -0700
-Message-ID: <4233c8af-5911-40bf-b5ba-dd0a63863a45@quicinc.com>
-Date:   Thu, 19 Oct 2023 08:04:55 -0700
+        Thu, 19 Oct 2023 11:05:10 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16CF12A;
+        Thu, 19 Oct 2023 08:05:08 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-357a354e616so2267715ab.1;
+        Thu, 19 Oct 2023 08:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697727908; x=1698332708; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9v0UnUfMjecgKqfEffISepiTr1uFTVrtWXV8o/iqOKA=;
+        b=FUWhfg5WwE0T6gYovj9FqQrtPky4GInnc+jP9nQQLXUINv6+0LFH1GVEyLs2YN3kEK
+         DcDtRlEKcHufFeSU6VJl3f/2CIdTUCxvn6VVipqlKl3hyngDpjOoR7DXAJuAamb6nVKJ
+         JfW6RsqmJ3oKrSnfn1iOYe2o+QFGg6J0/m4fLMYrKIHWXWfSYxjGNIsyevFyEc/0j77z
+         tZnLJN0He93brcL+dHwpTSLJlFUzM/pPFUqnqjX47gpnT2Ng1PWSr5aZ97EeNiEVQnxS
+         Ka1DoginE/Lh0nJ//7f29GwD6DfqbNXPKgPKn/15rXKcpOnNBLtQF6zVLdExrveRUAS0
+         46fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697727908; x=1698332708;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9v0UnUfMjecgKqfEffISepiTr1uFTVrtWXV8o/iqOKA=;
+        b=YGw4MdoyvAdoWFGz3p+gyQV+18Zo33VcEpZ1yPyb2v6cqAMxDimZyW5MxXF09JUT+o
+         AQFVCA0r7ZovYmVbs9PJPZY6JQfgbjIizjjLi91PpI0G5YKDzuUtyvNyWku5oRLI1F3b
+         oPScsDIdPPka4cEyIuBewCR2dcPlHTzeiYdnt45pcxwzbHqlJ4mVGmmYofHmDZ6KUMfh
+         6FWVHBB66fUCqION+DB+uusA+PUKf7eIg+Uw19tYFqFQwMDZkoJhHpNXzfp57+tV+Ur0
+         nVd+Z60bUHgmm90fipwCQMmwEM/2I7WLaStQ9Hja2cBmSl8/sEIUcVzZpeDF6o8G57t2
+         6Ryg==
+X-Gm-Message-State: AOJu0YxzAo3djm53uMUIJnG3VeErcNnZvYgEZxSc+SDGuRM1K5WlRhI2
+        c9OXcf466ph1n2P2r9mSG4g=
+X-Google-Smtp-Source: AGHT+IG3xGfvhbKEdThW5GsyWAR8d/qwaop96v+tDuccJSH94C54v63pLlcdcK+sqKq9nW4dxJgGbQ==
+X-Received: by 2002:a92:db01:0:b0:351:134d:ce3d with SMTP id b1-20020a92db01000000b00351134dce3dmr1469272iln.7.1697727908139;
+        Thu, 19 Oct 2023 08:05:08 -0700 (PDT)
+Received: from ?IPV6:2601:282:1e82:2350:80d6:b9fd:f23f:cfa9? ([2601:282:1e82:2350:80d6:b9fd:f23f:cfa9])
+        by smtp.googlemail.com with ESMTPSA id h9-20020a92d849000000b003574844cd71sm1851713ilq.25.2023.10.19.08.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 08:05:07 -0700 (PDT)
+Message-ID: <2c0e946d-eaaf-59f8-2c5a-c47890920c5a@gmail.com>
+Date:   Thu, 19 Oct 2023 09:05:06 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] wifi: ath11k: fix temperature event locking
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH iproute2-next 2/3] rdma: Add an option to set privileged
+ QKEY parameter
 Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>
-CC:     Pradeep Kumar Chitrapu <quic_pradeepc@quicinc.com>,
-        <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20231019104211.13769-1-johan+linaro@kernel.org>
- <20231019104211.13769-2-johan+linaro@kernel.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20231019104211.13769-2-johan+linaro@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Petr Machata <petrm@nvidia.com>,
+        Patrisious Haddad <phaddad@nvidia.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, stephen@networkplumber.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
+References: <20231019082138.18889-1-phaddad@nvidia.com>
+ <20231019082138.18889-3-phaddad@nvidia.com> <87il72aiqm.fsf@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <87il72aiqm.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LLFEGCv0SJ0xik2fPzfmGJ9UzfpCfQCs
-X-Proofpoint-ORIG-GUID: LLFEGCv0SJ0xik2fPzfmGJ9UzfpCfQCs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_14,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=703 clxscore=1011 suspectscore=0 impostorscore=0 adultscore=0
- bulkscore=0 mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190127
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2023 3:42 AM, Johan Hovold wrote:
-> The ath11k active pdevs are protected by RCU but the temperature event
-> handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
-> read-side critical section as reported by RCU lockdep:
+On 10/19/23 4:38 AM, Petr Machata wrote:
+> 
+> Patrisious Haddad <phaddad@nvidia.com> writes:
+> 
+>> @@ -40,6 +45,22 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
+>>  				   mode_str);
+>>  	}
+>>  
+>> +	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
+>> +		const char *pqkey_str;
+>> +		uint8_t pqkey_mode;
+>> +
+>> +		pqkey_mode =
+>> +			mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
+>> +
+>> +		if (pqkey_mode < ARRAY_SIZE(privileged_qkey_str))
+>> +			pqkey_str = privileged_qkey_str[pqkey_mode];
+>> +		else
+>> +			pqkey_str = "unknown";
+>> +
+>> +		print_color_string(PRINT_ANY, COLOR_NONE, "privileged-qkey",
+>> +				   "privileged-qkey %s ", pqkey_str);
+>> +	}
+>> +
+> 
+> Elsewhere in the file, you just use print_color_on_off(), why not here?
 
-How do I enable this? Just enable CONFIG_PROVE_RCU?
-Of course I'd also need to exercise the code path...
-
-> 
-> 	=============================
-> 	WARNING: suspicious RCU usage
-> 	6.6.0-rc6 #7 Not tainted
-> 	-----------------------------
-> 	drivers/net/wireless/ath/ath11k/mac.c:638 suspicious rcu_dereference_check() usage!
-> 
-> 	other info that might help us debug this:
-> 
-> 	rcu_scheduler_active = 2, debug_locks = 1
-> 	no locks held by swapper/0/0.
-> 	...
-> 	Call trace:
-> 	...
-> 	 lockdep_rcu_suspicious+0x16c/0x22c
-> 	 ath11k_mac_get_ar_by_pdev_id+0x194/0x1b0 [ath11k]
-> 	 ath11k_wmi_tlv_op_rx+0xa84/0x2c1c [ath11k]
-> 	 ath11k_htc_rx_completion_handler+0x388/0x510 [ath11k]
-> 
-> Mark the code in question as an RCU read-side critical section to avoid
-> any potential use-after-free issues.
-> 
-> Fixes: a41d10348b01 ("ath11k: add thermal sensor device support")
-> Cc: stable@vger.kernel.org      # 5.7
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->   drivers/net/wireless/ath/ath11k/wmi.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
-> index 23ad6825e5be..980ff588325d 100644
-> --- a/drivers/net/wireless/ath/ath11k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath11k/wmi.c
-> @@ -8383,6 +8383,8 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
->   	ath11k_dbg(ab, ATH11K_DBG_WMI, "event pdev temperature ev temp %d pdev_id %d\n",
->   		   ev->temp, ev->pdev_id);
->   
-> +	rcu_read_lock();
-> +
->   	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
->   	if (!ar) {
->   		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
-
-aren't you missing an unlock() in this error path?
-
-perhaps have a goto cleanup that does both the unlock() and the kfree()?
-
-> @@ -8392,6 +8394,8 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
->   
->   	ath11k_thermal_event_temperature(ar, ev->temp);
->   
-> +	rcu_read_unlock();
-> +
->   	kfree(tb);
->   }
->   
++1
 
