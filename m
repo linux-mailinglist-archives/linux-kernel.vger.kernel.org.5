@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B94A7CFF06
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDBC7CFF04
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346510AbjJSQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        id S1346488AbjJSQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346418AbjJSQFV (ORCPT
+        with ESMTP id S1346441AbjJSQFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 12:05:21 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17541B6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:05:18 -0700 (PDT)
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCC512F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697731516;
-        bh=/qm7GcGwm1ebkabq6qaUZBB+Rnlf8p16CqUhbmaGPMc=;
+        s=smtpout1; t=1697731517;
+        bh=7KjakoOURxZ/nx5qRaNnouSfOxFpDE60GWEDDF8aPR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XCozT0bBR8yiQPSUL4b3MjiN4PCSLMl6gR6wH2f2aS7EnSVrtqWDWkUA6SANwXP0i
-         /Q7DmTTPXjHeSSP5UHrZ/64piIqGFcOUinT5bJ+v+eGF8uiDpnOvhcy4pQLoCM+krV
-         LmrmVpJ1V9GIXL8UeQj7QaLhaxUkmoi08jWtxvAdpEbjw7681RTczW1IgI3Zx3+Wjq
-         YMZN5sSBHTmuehbLPE/g88uVb8TvVb+TjW3A1J/WtNc2h5QgR0OUQX51xurmbhvyTz
-         QZ3cxgk1J5a4B6fsyinMKjKfmBcPSVsrGHVS+4/HF9u3P90vo0bCyWCYArZxDocc35
-         WZHEFC2u4LTxQ==
+        b=E3ncLwrHo6ePWoeW8vT6xsQj3rEYaahoc+fCloRXoSnPqIR7kUE6m/IPavp/F9AmV
+         6jBdiWZoWefRoaoAn8R/i61pbwou8jNFdpXZs2mu7wuXwO3sgSggfEarS9+thXzO1X
+         nDEPH8IMO+JTFhoDA0kGQs2kY1x6XbSZdOCcwd5P2UNqAjZf4uI9JWenCOWcE55cI2
+         8o2u4KYm1HPH4V74D9krsG/S5anR5aQHl0FwYX0ULoFhvO3DxF480SATejrPvfm/oN
+         W21hL0LuEPnJDTARijYQEFqmm2/k8gSiWv4GoAZwUkO+46RrHA+R8Ga8qjCwyYeDmc
+         1F8RkJv1NP9Dw==
 Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SBCH03TyNz1YRj;
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SBCH05vxzz1Y9Q;
         Thu, 19 Oct 2023 12:05:16 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Peter Zijlstra <peterz@infradead.org>
@@ -44,56 +44,91 @@ Cc:     linux-kernel@vger.kernel.org,
         Tim Chen <tim.c.chen@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY feature (v2)
-Date:   Thu, 19 Oct 2023 12:05:22 -0400
-Message-Id: <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH v2 2/2] sched/fair: Introduce SELECT_BIAS_PREV to reduce migrations
+Date:   Thu, 19 Oct 2023 12:05:23 -0400
+Message-Id: <20231019160523.1582101-3-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
 References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the UTIL_FITS_CAPACITY scheduler feature. The runqueue
-selection picks the previous, target, or recent runqueues if they have
-enough remaining capacity to enqueue the task before scanning for an
-idle cpu.
+Introduce the SELECT_BIAS_PREV scheduler feature to reduce the task
+migration rate.
 
-This feature is introduced in preparation for the SELECT_BIAS_PREV
-scheduler feature.
+It needs to be used with the UTIL_FITS_CAPACITY scheduler feature to
+show benchmark improvements.
 
-The following benchmarks only cover the UTIL_FITS_CAPACITY feature.
-Those are performed on a v6.5.5 kernel with mitigations=off.
+For scenarios where the system is under-utilized (CPUs are partly idle),
+eliminate frequent task migrations from CPUs with sufficient remaining
+capacity left to completely idle CPUs by introducing a bias towards the
+previous CPU if it is idle or has enough capacity left.
 
-The following hackbench workload on a 192 cores AMD EPYC 9654 96-Core
-Processor (over 2 sockets) improves the wall time from 49s to 40s
-(18% speedup).
+For scenarios where the system is fully or over-utilized (CPUs are
+almost never idle), favor the previous CPU (rather than the target CPU)
+if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
+
+The following benchmarks are performed on a v6.5.5 kernel with
+mitigations=off.
+
+This speeds up the following hackbench workload on a 192 cores AMD EPYC
+9654 96-Core Processor (over 2 sockets):
 
 hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
 
+from 49s to 29s. (41% speedup)
+
+Elapsed time comparison:
+
+Baseline:                               48-49 s
+UTIL_FITS_CAPACITY:                     39-40 s
+SELECT_BIAS_PREV:                       48-50 s
+UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    29-30 s
+
 We can observe that the number of migrations is reduced significantly
-with this patch (improvement):
+(-80%) with this patch, which may explain the speedup:
 
-Baseline:      117M cpu-migrations  (9.355 K/sec)
-With patch:     47M cpu-migrations  (3.977 K/sec)
+Baseline:                               117M cpu-migrations  (9.355 K/sec)
+UTIL_FITS_CAPACITY:                      48M cpu-migrations  (3.977 K/sec)
+SELECT_BIAS_PREV:                        75M cpu-migrations  (5.674 K/sec)
+UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:     23M cpu-migrations  (2.316 K/sec)
 
-The task-clock utilization is increased (improvement):
+The CPU utilization is also improved:
 
-Baseline:      253.275 CPUs utilized
-With patch:    271.367 CPUs utilized
+Baseline:                            253.275 CPUs utilized
+UTIL_FITS_CAPACITY:                  271.367 CPUs utilized
+SELECT_BIAS_PREV:                    276.526 CPUs utilized
+UTIL_FITS_CAPACITY+SELECT_BIAS_PREV: 303.356 CPUs utilized
 
-The number of context-switches is increased (degradation):
+Interestingly, the rate of context switch increases with the patch, but
+it does not appear to be an issue performance-wise:
 
-Baseline:      445M context-switches (35.516 K/sec)
-With patch:    586M context-switches (48.823 K/sec)
+Baseline:                               445M context-switches (35.516 K/sec)
+UTIL_FITS_CAPACITY:                     586M context-switches (48.823 K/sec)
+SELECT_BIAS_PREV:                       655M context-switches (49.074 K/sec)
+UTIL_FITS_CAPACITY+SELECT_BIAS_PREV:    571M context-switches (57.714 K/sec)
+
+This was developed as part of the investigation into a weird regression
+reported by AMD where adding a raw spinlock in the scheduler context
+switch accelerated hackbench. It turned out that changing this raw
+spinlock for a loop of 10000x cpu_relax within do_idle() had similar
+benefits.
+
+This patch achieves a similar effect without the busy-waiting by
+allowing select_task_rq to favor the previously used CPUs based on the
+utilization of that CPU.
+
+Feedback is welcome. I am especially interested to learn whether this
+patch has positive or detrimental effects on performance of other
+workloads.
 
 Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
 Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
@@ -126,131 +161,80 @@ Cc: K Prateek Nayak <kprateek.nayak@amd.com>
 Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
 Cc: x86@kernel.org
 ---
-Changes since v1:
-- Use scale_rt_capacity(),
-- Use fits_capacity which leaves 20% unused capacity to account for
-  metrics inaccuracy.
----
- kernel/sched/fair.c     | 40 ++++++++++++++++++++++++++++++++++------
+ kernel/sched/fair.c     | 28 ++++++++++++++++++++++++++--
  kernel/sched/features.h |  6 ++++++
- kernel/sched/sched.h    |  5 +++++
- 3 files changed, 45 insertions(+), 6 deletions(-)
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1d9c2482c5a3..cc86d1ffeb27 100644
+index cc86d1ffeb27..0aae1f15cb0e 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -4497,6 +4497,28 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_se_tp(&p->se);
- }
- 
-+static unsigned long scale_rt_capacity(int cpu);
-+
-+/*
-+ * Returns true if adding the task utilization to the estimated
-+ * utilization of the runnable tasks on @cpu does not exceed the
-+ * capacity of @cpu.
-+ *
-+ * This considers only the utilization of _runnable_ tasks on the @cpu
-+ * runqueue, excluding blocked and sleeping tasks. This is achieved by
-+ * using the runqueue util_est.enqueued.
-+ */
-+static inline bool task_fits_remaining_cpu_capacity(unsigned long task_util,
-+						    int cpu)
-+{
-+	unsigned long total_util;
-+
-+	if (!sched_util_fits_capacity_active())
-+		return false;
-+	total_util = READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) + task_util;
-+	return fits_capacity(total_util, scale_rt_capacity(cpu));
-+}
-+
- static inline int util_fits_cpu(unsigned long util,
- 				unsigned long uclamp_min,
- 				unsigned long uclamp_max,
-@@ -7124,12 +7146,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	int i, recent_used_cpu;
- 
- 	/*
--	 * On asymmetric system, update task utilization because we will check
--	 * that the task fits with cpu's capacity.
-+	 * With the UTIL_FITS_CAPACITY feature and on asymmetric system,
-+	 * update task utilization because we will check that the task
-+	 * fits with cpu's capacity.
- 	 */
--	if (sched_asym_cpucap_active()) {
-+	if (sched_util_fits_capacity_active() || sched_asym_cpucap_active()) {
- 		sync_entity_load_avg(&p->se);
- 		task_util = task_util_est(p);
-+	}
-+	if (sched_asym_cpucap_active()) {
- 		util_min = uclamp_eff_value(p, UCLAMP_MIN);
- 		util_max = uclamp_eff_value(p, UCLAMP_MAX);
- 	}
-@@ -7139,7 +7164,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+@@ -7164,15 +7164,30 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
  	 */
  	lockdep_assert_irqs_disabled();
  
--	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-+	if ((available_idle_cpu(target) || sched_idle_cpu(target) ||
-+	    task_fits_remaining_cpu_capacity(task_util, target)) &&
++	/*
++	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
++	 * cache affine and the task fits within the prev cpu capacity,
++	 * prefer the previous CPU to the target CPU to inhibit costly
++	 * task migration.
++	 */
++	if (sched_feat(SELECT_BIAS_PREV) &&
++	    (prev == target || cpus_share_cache(prev, target)) &&
++	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
++	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
++	    asym_fits_cpu(task_util, util_min, util_max, prev))
++		return prev;
++
+ 	if ((available_idle_cpu(target) || sched_idle_cpu(target) ||
+ 	    task_fits_remaining_cpu_capacity(task_util, target)) &&
  	    asym_fits_cpu(task_util, util_min, util_max, target))
  		return target;
  
-@@ -7147,7 +7173,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 * If the previous CPU is cache affine and idle, don't be stupid:
+ 	/*
+-	 * If the previous CPU is cache affine and idle, don't be stupid:
++	 * Without the SELECT_BIAS_PREV feature, use the previous CPU if
++	 * it is cache affine and idle if the target cpu is not idle.
  	 */
- 	if (prev != target && cpus_share_cache(prev, target) &&
--	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
-+	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
+-	if (prev != target && cpus_share_cache(prev, target) &&
++	if (!sched_feat(SELECT_BIAS_PREV) &&
++	    prev != target && cpus_share_cache(prev, target) &&
+ 	    (available_idle_cpu(prev) || sched_idle_cpu(prev) ||
+ 	    task_fits_remaining_cpu_capacity(task_util, prev)) &&
  	    asym_fits_cpu(task_util, util_min, util_max, prev))
- 		return prev;
+@@ -7245,6 +7260,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
  
-@@ -7173,7 +7200,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (recent_used_cpu != prev &&
- 	    recent_used_cpu != target &&
- 	    cpus_share_cache(recent_used_cpu, target) &&
--	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
-+	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu) ||
-+	    task_fits_remaining_cpu_capacity(task_util, recent_used_cpu)) &&
- 	    cpumask_test_cpu(recent_used_cpu, p->cpus_ptr) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, recent_used_cpu)) {
- 		return recent_used_cpu;
++	/*
++	 * With the SELECT_BIAS_PREV feature, if the previous CPU is
++	 * cache affine, prefer the previous CPU when all CPUs are busy
++	 * to inhibit migration.
++	 */
++	if (sched_feat(SELECT_BIAS_PREV) &&
++	    prev != target && cpus_share_cache(prev, target))
++		return prev;
++
+ 	return target;
+ }
+ 
 diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index ee7f23c76bd3..9a84a1401123 100644
+index 9a84a1401123..a56d6861c553 100644
 --- a/kernel/sched/features.h
 +++ b/kernel/sched/features.h
-@@ -97,6 +97,12 @@ SCHED_FEAT(WA_BIAS, true)
- SCHED_FEAT(UTIL_EST, true)
- SCHED_FEAT(UTIL_EST_FASTUP, true)
+@@ -103,6 +103,12 @@ SCHED_FEAT(UTIL_EST_FASTUP, true)
+  */
+ SCHED_FEAT(UTIL_FITS_CAPACITY, true)
  
 +/*
-+ * Select the previous, target, or recent runqueue if they have enough
-+ * remaining capacity to enqueue the task. Requires UTIL_EST.
++ * Bias runqueue selection towards the previous runqueue over the target
++ * runqueue.
 + */
-+SCHED_FEAT(UTIL_FITS_CAPACITY, true)
++SCHED_FEAT(SELECT_BIAS_PREV, true)
 +
  SCHED_FEAT(LATENCY_WARN, false)
  
  SCHED_FEAT(ALT_PERIOD, true)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e93e006a942b..463e75084aed 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2090,6 +2090,11 @@ static const_debug __maybe_unused unsigned int sysctl_sched_features =
- 
- #endif /* SCHED_DEBUG */
- 
-+static __always_inline bool sched_util_fits_capacity_active(void)
-+{
-+	return sched_feat(UTIL_EST) && sched_feat(UTIL_FITS_CAPACITY);
-+}
-+
- extern struct static_key_false sched_numa_balancing;
- extern struct static_key_false sched_schedstats;
- 
 -- 
 2.39.2
 
