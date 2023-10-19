@@ -2,159 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EB27CF41F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1427CF426
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbjJSJgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S233034AbjJSJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjJSJgF (ORCPT
+        with ESMTP id S229726AbjJSJhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:36:05 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DB4106
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:36:02 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c51774da07so13433271fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697708160; x=1698312960; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZXtOjy9+9/ljOELmDfLKz1lWgHdhVIaF8pXBW5zYs/s=;
-        b=fGHHpUGCavFnoE3Sm4ehaIlkegTwdbsvhCalmbslRLok8hdjljMM9BE4ccgVZYhuXi
-         Rt25cofgf0XYhFLpsJIEeKfHKvg6kEs/oj24TIAPA8mfwA489gaiXo36Zvw/ReUwgCzQ
-         Fou0la4IOQJ+K5ikPIhuwTxFRsdLaAHODZKcxdhU47Hii4YWHgAgMgQq0AYCgjRJvHKP
-         bDO2cq9Zv/tdVlk1L0sml6fKa0q0kIAI226MsxGeLiP0V0pTpTsYRGAjF+/jHOh4reUs
-         nJ4zSEDc1mYCGDqSSIaNC9cN2FtvAP2U3X6AV7orjHOuowKcLTS5FWPiov2qGM/yyvom
-         c+6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697708160; x=1698312960;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZXtOjy9+9/ljOELmDfLKz1lWgHdhVIaF8pXBW5zYs/s=;
-        b=dhzGShI96/BwpVWQmnShyXkTlwTiKNFbG+4+9dWOa9JX1/i01VnzX5xaYOLJBtR/FG
-         F7VTooF+YsYTxlymc2FtAf+PpAJXju6NZ90btNpi153rcy2XqBrPUnmhoSgT5GRk/S3j
-         /Cu+kxppA8Gw1sC6ltypiTJcb0lWYlTlt0LvDCkdrH8tHEWuQgfONGfgUSHyYaS8bzjZ
-         MvlNCG5DDmRqBH+vdhvJfo3sZdbbkTAZ+a/VNfPmF9AlcMbRCsq0MDQNiCHvhW5H+PpW
-         6LGxCufWX+qLfe4u1tbhShTBm3tebgFEvT+/sZuwAl9u4gKRy0aDMKLNprontMssp/H4
-         Se+g==
-X-Gm-Message-State: AOJu0YwSsH8mDTmboEuNRX1NRWYqMSapChUJr9J9rLBZOG21veV9Izxh
-        VvOL8S9s3EZhzFl0LQ8LDU48Rw==
-X-Google-Smtp-Source: AGHT+IHnVJ8IiqADjeQ3LxKx1Ukua4jK0Ptqq3ZvF/WqcvhbLHTG8YG8di0DRwfklBmQFqYLZG0FEA==
-X-Received: by 2002:a2e:8909:0:b0:2c5:d49:ee9f with SMTP id d9-20020a2e8909000000b002c50d49ee9fmr1049022lji.1.1697708160439;
-        Thu, 19 Oct 2023 02:36:00 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:6933:1fe3:b858:3dde? ([2a01:e0a:999:a3a0:6933:1fe3:b858:3dde])
-        by smtp.gmail.com with ESMTPSA id g11-20020a05600c310b00b003fe1fe56202sm4024816wmo.33.2023.10.19.02.35.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 02:35:59 -0700 (PDT)
-Message-ID: <7626f978-e9ea-4f8f-b814-aeac02bd3712@rivosinc.com>
-Date:   Thu, 19 Oct 2023 11:35:59 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/19] riscv: add ISA extension parsing for vector
- crypto extensions
-Content-Language: en-US
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Jerry Shih <jerry.shih@sifive.com>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>
-References: <20231017131456.2053396-1-cleger@rivosinc.com>
- <20231017131456.2053396-6-cleger@rivosinc.com>
- <DA8B4610-D514-4733-B875-C247FFCCC7AA@sifive.com>
- <af785f0f-9de7-4548-9cdb-f392cde1cc2b@rivosinc.com>
- <CALs-HstEBt-ntCcETa9YwS6On3nGyoEc2p7R-gaBLG9+aFJL5w@mail.gmail.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <CALs-HstEBt-ntCcETa9YwS6On3nGyoEc2p7R-gaBLG9+aFJL5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 05:37:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A48B8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697708225; x=1729244225;
+  h=date:from:to:cc:subject:message-id;
+  bh=8VDUix8X7UcoAcd4P1XInTXuQ7BPJSM+eqHhzib9yg4=;
+  b=jyWszcKTjo0sdzLcDPry5UlRNYSLkrJGRw3IES0M9k5xFCUfp22gHruo
+   BmwbmEuMC16kl2Lnlpyn82+OYCSKW2G/mwt9wpgYqTHuW4BcZ3ocQkz0S
+   5F01n4t9kO6LmQOsCi+Dexw31MFVSPj46kv6SaRrVhxhhs6fw0W9uKeZd
+   6hK+zhvcOv3h50woA+TJO++xFnkA+i4Oo1FRQvBsFfx0rZrcODrb8l27l
+   lylV9NjVOaxpg9HlU16dxdC38RJQRoATsDSSBMfklskGbsMEyQPP1QvMX
+   zBmME9jHQhy++dOGk+TR/M3bklEbyhktqRoxYncYwj6sSPMGEry7FGbC4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="371275299"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="371275299"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 02:37:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="733508087"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="733508087"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 19 Oct 2023 02:37:03 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtPSf-0001vr-0q;
+        Thu, 19 Oct 2023 09:37:01 +0000
+Date:   Thu, 19 Oct 2023 17:36:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 41efa431244f6498833ff8ee8dde28c4924c5479
+Message-ID: <202310191715.YbHVEuT2-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 41efa431244f6498833ff8ee8dde28c4924c5479  PCI/MSI: Provide stubs for IMS functions
 
+elapsed time: 2250m
 
-On 18/10/2023 19:26, Evan Green wrote:
-> On Wed, Oct 18, 2023 at 5:53 AM Clément Léger <cleger@rivosinc.com> wrote:
->>
->>
->>
->> On 18/10/2023 03:45, Jerry Shih wrote:
->>> On Oct 17, 2023, at 21:14, Clément Léger <cleger@rivosinc.com> wrote:
->>>> @@ -221,6 +261,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>>>      __RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
->>>>      __RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
->>>>      __RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
->>>> +    __RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
->>>> +    __RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
->>>> +    __RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
->>>
->>> The `Zvkb` is the subset of `Zvbb`[1]. So, the `Zvkb` should be bundled with `Zvbb`.
->>
->> Hi Jerry,
->>
->> Thanks for catching this, I think some other extensions will fall in
->> this category as well then (Zvknha/Zvknhb). I will verify that.
-> 
-> The bundling mechanism works well when an extension is a pure lasso
-> around other extensions. We'd have to tweak that code if we wanted to
-> support cases like this, where the extension is a superset of others,
-> but also contains loose change not present anywhere else (and
-> therefore also needs to stand as a separate bit).
+configs tested: 183
+configs skipped: 2
 
-For Zvbb and Zvknhb, I used the following code:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-static const unsigned int riscv_zvbb_bundled_exts[] = {
-	RISCV_ISA_EXT_ZVKB,
-	RISCV_ISA_EXT_ZVBB
-};
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231018   gcc  
+arc                   randconfig-001-20231019   gcc  
+arc                        vdk_hs38_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          pxa3xx_defconfig   gcc  
+arm                   randconfig-001-20231019   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231019   gcc  
+i386         buildonly-randconfig-002-20231019   gcc  
+i386         buildonly-randconfig-003-20231019   gcc  
+i386         buildonly-randconfig-004-20231019   gcc  
+i386         buildonly-randconfig-005-20231019   gcc  
+i386         buildonly-randconfig-006-20231019   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231018   gcc  
+i386                  randconfig-001-20231019   gcc  
+i386                  randconfig-002-20231018   gcc  
+i386                  randconfig-002-20231019   gcc  
+i386                  randconfig-003-20231018   gcc  
+i386                  randconfig-003-20231019   gcc  
+i386                  randconfig-004-20231018   gcc  
+i386                  randconfig-004-20231019   gcc  
+i386                  randconfig-005-20231018   gcc  
+i386                  randconfig-005-20231019   gcc  
+i386                  randconfig-006-20231018   gcc  
+i386                  randconfig-006-20231019   gcc  
+i386                  randconfig-011-20231018   gcc  
+i386                  randconfig-011-20231019   gcc  
+i386                  randconfig-012-20231018   gcc  
+i386                  randconfig-012-20231019   gcc  
+i386                  randconfig-013-20231018   gcc  
+i386                  randconfig-013-20231019   gcc  
+i386                  randconfig-014-20231018   gcc  
+i386                  randconfig-014-20231019   gcc  
+i386                  randconfig-015-20231018   gcc  
+i386                  randconfig-015-20231019   gcc  
+i386                  randconfig-016-20231018   gcc  
+i386                  randconfig-016-20231019   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231018   gcc  
+loongarch             randconfig-001-20231019   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+m68k                          sun3x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           gcw0_defconfig   gcc  
+mips                           xway_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         alldefconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                       virt_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                   microwatt_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231018   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231018   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                           se7780_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231018   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231019   gcc  
+x86_64       buildonly-randconfig-002-20231019   gcc  
+x86_64       buildonly-randconfig-003-20231019   gcc  
+x86_64       buildonly-randconfig-004-20231019   gcc  
+x86_64       buildonly-randconfig-005-20231019   gcc  
+x86_64       buildonly-randconfig-006-20231019   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231018   gcc  
+x86_64                randconfig-001-20231019   gcc  
+x86_64                randconfig-002-20231018   gcc  
+x86_64                randconfig-002-20231019   gcc  
+x86_64                randconfig-003-20231018   gcc  
+x86_64                randconfig-003-20231019   gcc  
+x86_64                randconfig-004-20231018   gcc  
+x86_64                randconfig-004-20231019   gcc  
+x86_64                randconfig-005-20231018   gcc  
+x86_64                randconfig-005-20231019   gcc  
+x86_64                randconfig-006-20231018   gcc  
+x86_64                randconfig-006-20231019   gcc  
+x86_64                randconfig-011-20231018   gcc  
+x86_64                randconfig-011-20231019   gcc  
+x86_64                randconfig-012-20231018   gcc  
+x86_64                randconfig-012-20231019   gcc  
+x86_64                randconfig-013-20231018   gcc  
+x86_64                randconfig-013-20231019   gcc  
+x86_64                randconfig-014-20231018   gcc  
+x86_64                randconfig-014-20231019   gcc  
+x86_64                randconfig-015-20231018   gcc  
+x86_64                randconfig-015-20231019   gcc  
+x86_64                randconfig-016-20231018   gcc  
+x86_64                randconfig-016-20231019   gcc  
+x86_64                randconfig-071-20231019   gcc  
+x86_64                randconfig-072-20231019   gcc  
+x86_64                randconfig-073-20231019   gcc  
+x86_64                randconfig-074-20231019   gcc  
+x86_64                randconfig-075-20231019   gcc  
+x86_64                randconfig-076-20231019   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
+xtensa                       common_defconfig   gcc  
 
-static const unsigned int riscv_zvknhb_bundled_exts[] = {
-	RISCV_ISA_EXT_ZVKNHA,
-	RISCV_ISA_EXT_ZVKNHB
-};
-
-Which correctly results in both extension (superset + base set) being
-enabled when only one is set. Is there something that I'm missing ?
-
-> 
-> IMO, decomposing "pure" bundles makes sense since otherwise usermode
-> would have to query multiple distinct bitmaps that meant the same
-> thing (eg check the Zk bit, or maybe check the Zkn/Zkr/Zkt bits, or
-> maybe check the Zbkb/Zbkc... bits, and they're all equivalent). But
-> when an extension is a superset that also contains loose change, there
-> really aren't two equivalent bitmasks, each bit adds something new.
-
-Agreed but if a system only report ZVBB for instance and the user wants
-ZVKB, then it is clear that ZVKB should be reported as well I guess. So
-in the end, it works much like "bundle" extension, just that the bundle
-is actually a "real" ISA extension by itself.
-
-Clément
-
-> 
-> There's an argument to be made for still turning on the containing
-> extensions to cover for silly ISA strings (eg ISA strings that
-> advertise the superset but fail to advertise the containing
-> extensions). We can decide if we want to work that hard to cover
-> hypothetical broken ISA strings now, or wait until they show up.
-> Personally I would wait until something broken shows up. But others
-> may feel differently.
-> 
-> -Evan
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
