@@ -2,165 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDA17CFFCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F617CFFB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345074AbjJSQkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S233041AbjJSQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbjJSQkf (ORCPT
+        with ESMTP id S232935AbjJSQhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:40:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C84124;
-        Thu, 19 Oct 2023 09:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697733633; x=1729269633;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B68lb5bc3nlqxKW2HoQvNAzdwFIr+BMgv0ZP+rlvfxo=;
-  b=LhvilC3Qg9AxwrA9+1Yqeoirpjyhe/Fmc27Ug9GaQZ41neAjF517lXPf
-   opcViqgh/0TXAyb+qJc/+cgnZPEHphDBPkGlEyrMNnWSJdP5QZ9tmqGmu
-   M8c4IVDGmqGdWnDx2D+I8rkwyyDXw1XfP8r+DFI0kt75BxSfiX8CuXPek
-   l9ibuUaYm8nFJjwtg6o2fml6dWszX4jz38LsjqI+sSuRv+RvftfeMX5pX
-   8tFeaiqoc/B835QueXDypu/2VMD0gis0A73JfG1fpO1zFMPlJ0z16Uewg
-   2BqwtB2OsmO9oBEw4PKxyJne2Pm750TKfqj1F/OgCkiNYDokUXkPE7PAi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7864227"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="7864227"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:36:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="706900365"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="706900365"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 19 Oct 2023 09:36:16 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtW0L-0002GE-2M;
-        Thu, 19 Oct 2023 16:36:13 +0000
-Date:   Fri, 20 Oct 2023 00:35:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, nitheshshetty@gmail.com,
-        anuj1072538@gmail.com, gost.dev@samsung.com, mcgrof@kernel.org,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        Vincent Fu <vincent.fu@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v17 12/12] null_blk: add support for copy offload
-Message-ID: <202310200001.UU0bBx9w-lkp@intel.com>
-References: <20231019110147.31672-13-nj.shetty@samsung.com>
+        Thu, 19 Oct 2023 12:37:00 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1459124
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:36:56 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9c496c114so1245ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697733416; x=1698338216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GqqnclXhs4cCCpvokt/fb4m7AIKZQCSfSgxNcK5aM1A=;
+        b=LHu0fzukgKPo24/oc0yX2NCiExJAPYBy6/lFDfsEEsjpIStwwqa04pe05GWXwXx8/H
+         cWpGo3+DMI4uwG77/biwTDw/JujFNihdv3BRgE/NulE5fL/xfAL9UYCWQBdklCxWmliF
+         W2cqOp2Eu6kjZc5fG/VEsS5jk4ghZlScE1u+j+pE56eYR7bvpOWXUaDjRllmWUyTG4+r
+         jpBQXRINEN/uCSxN/qNmqZ71WHx1UcaWviHJbucof3TbmY7mnweXkpGQ+TcbMYF5H1tz
+         eslpulBHVDPL802dtaQgdXpmvqgBBbPct1484nNZyI3PdcUJZJqjWl99VzSqTinmzqFZ
+         Q10Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697733416; x=1698338216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GqqnclXhs4cCCpvokt/fb4m7AIKZQCSfSgxNcK5aM1A=;
+        b=BEhr6MQDGc3v9CygaUgyC96LL5wHMiXahENlUY9T/4SJW1bvooZaGfgCLFFRFJv8FM
+         Oky8jHd5RWM02BFK+ELe/RHdgnVIV5cfTaw5GobTuO/itIa0mFfHQ20Aj2ESXw26rtlQ
+         qGTw/NLBZb7GSH+zFHQCNn1JROWW0AJf6SN+6SaV3Eu77Of3kT6oah3x/Nes1RfJXNoc
+         RCm5IvGtNTrGnJAtIR+eCvvwaccljrZNZ5NMh0loUoSJveMYvjdjcpzkcRUnZBpjWI+2
+         aylqHR1t7gJn4vI2OgcEsW/RqMhDBBL4Hum3s+/0FtiOgLj59UMM2pLm/B2q5RDzqK8x
+         aQrQ==
+X-Gm-Message-State: AOJu0Yzn2eG04V+vRAcy4NoCj08s/3ivq7xk9VXYqgFZuLHyNY6IL5Ch
+        iRVFnHcf/KuhdLKQN6YVtpoDP0c/3noUaLIFMSFnmrTlolAQIuedka4=
+X-Google-Smtp-Source: AGHT+IF/FmgwwkFbueug0gQ/QNGZWgBxC0LpJY/aTW6J9U5PxSjbKAZRbNoGEm/tgIvlcnrLa8B3geAueo0mvnPzK2k=
+X-Received: by 2002:a17:903:2410:b0:1c1:efe5:cce5 with SMTP id
+ e16-20020a170903241000b001c1efe5cce5mr222146plo.3.1697733415932; Thu, 19 Oct
+ 2023 09:36:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019110147.31672-13-nj.shetty@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-3-roman.gushchin@linux.dev> <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
+ <ZTAUTWO2UfI0VoPL@P9FQF9L96D.corp.robot.car> <CALvZod6mb91o9pW57suovtW1UQ8G8j=2S3Tjoqzjh6L+jqz-EQ@mail.gmail.com>
+ <ZTBeRu3iDu7nnPV8@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <ZTBeRu3iDu7nnPV8@P9FQF9L96D.corp.robot.car>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 19 Oct 2023 09:36:44 -0700
+Message-ID: <CALvZod5kXRY0LV6VOnctTYVhdHu+=yqzsQzKYa2_6_Jg+cOWfQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitesh,
+On Wed, Oct 18, 2023 at 3:38=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
+> On Wed, Oct 18, 2023 at 11:26:59AM -0700, Shakeel Butt wrote:
+> > On Wed, Oct 18, 2023 at 10:22=E2=80=AFAM Roman Gushchin
+> > <roman.gushchin@linux.dev> wrote:
+> > >
+> > [...]
+> > > > >     struct mem_cgroup *memcg;
+> > > > > @@ -3008,19 +3054,26 @@ __always_inline struct obj_cgroup *get_ob=
+j_cgroup_from_current(void)
+> > > > >
+> > > > >     if (in_task()) {
+> > > > >             memcg =3D current->active_memcg;
+> > > > > +           if (unlikely(memcg))
+> > > > > +                   goto from_memcg;
+> > > > >
+> > > > > -           /* Memcg to charge can't be determined. */
+> > > > > -           if (likely(!memcg) && (!current->mm || (current->flag=
+s & PF_KTHREAD)))
+> > > >
+> > > > The checks for current->mm and PF_KTHREAD seem to be gone completel=
+y after
+> > > > the patch, was that intended and why?
+> > >
+> > > There is no need for those anymore because it's as cheap or cheaper
+> > > to check task->objcg for being NULL. Those were primarily used to rul=
+e out
+> > > kernel threads allocations early.
+> > >
+> >
+> > I have the same understanding but please correct my suspicions here.
+> > We can echo the kernel thread's pid to cgroup.procs which have
+> > PF_NO_SETAFFINITY and thus this will cause the lower bit of the kernel
+> > thread's task->objcg to be set. Please correct me if I am missing
+> > something.
+>
+> Yes, you seem to be right. It's a gray zone because moving kernel threads=
+ out of
+> the root cgroup doesn't sound like a good idea, but I agree it's better t=
+o keep
+> the old behavior in place.
+>
+> Does this fixlet look good to you?
+>
 
-kernel test robot noticed the following build warnings:
+This looks fine. Another option is not to set the bit for such
+task_structs in fork/attach.
 
-[auto build test WARNING on 213f891525c222e8ed145ce1ce7ae1f47921cb9c]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20231019-200658
-base:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-patch link:    https://lore.kernel.org/r/20231019110147.31672-13-nj.shetty%40samsung.com
-patch subject: [PATCH v17 12/12] null_blk: add support for copy offload
-config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20231020/202310200001.UU0bBx9w-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200001.UU0bBx9w-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310200001.UU0bBx9w-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:102,
-                    from drivers/block/null_blk/trace.h:104,
-                    from drivers/block/null_blk/main.c:15:
-   drivers/block/null_blk/./trace.h: In function 'trace_raw_output_nullb_copy_op':
->> drivers/block/null_blk/./trace.h:91:27: warning: format '%lu' expects argument of type 'long unsigned int', but argument 7 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_EVENT_CLASS'
-     203 |         trace_event_printf(iter, print);                                \
-         |                                  ^~~~~
-   include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-      45 |                              PARAMS(print));                   \
-         |                              ^~~~~~
-   drivers/block/null_blk/./trace.h:73:1: note: in expansion of macro 'TRACE_EVENT'
-      73 | TRACE_EVENT(nullb_copy_op,
-         | ^~~~~~~~~~~
-   drivers/block/null_blk/./trace.h:91:17: note: in expansion of macro 'TP_printk'
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                 ^~~~~~~~~
-   In file included from include/trace/trace_events.h:237:
-   drivers/block/null_blk/./trace.h:91:68: note: format string is defined here
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                                                                  ~~^
-         |                                                                    |
-         |                                                                    long unsigned int
-         |                                                                  %u
-
-
-vim +91 drivers/block/null_blk/./trace.h
-
-    72	
-    73	TRACE_EVENT(nullb_copy_op,
-    74			TP_PROTO(struct request *req,
-    75				 sector_t dst, sector_t src, size_t len),
-    76			TP_ARGS(req, dst, src, len),
-    77			TP_STRUCT__entry(
-    78					 __array(char, disk, DISK_NAME_LEN)
-    79					 __field(enum req_op, op)
-    80					 __field(sector_t, dst)
-    81					 __field(sector_t, src)
-    82					 __field(size_t, len)
-    83			),
-    84			TP_fast_assign(
-    85				       __entry->op = req_op(req);
-    86				       __assign_disk_name(__entry->disk, req->q->disk);
-    87				       __entry->dst = dst;
-    88				       __entry->src = src;
-    89				       __entry->len = len;
-    90			),
-  > 91			TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-    92				  __print_disk_name(__entry->disk),
-    93				  blk_op_str(__entry->op),
-    94				  __entry->dst, __entry->src, __entry->len)
-    95	);
-    96	#endif /* _TRACE_NULLB_H */
-    97	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Thanks!
+>
+> --
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 1a2835448028..0b0d2dc7a7d4 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3021,6 +3021,10 @@ static struct obj_cgroup *current_objcg_update(voi=
+d)
+>                         old =3D NULL;
+>                 }
+>
+> +               /* If new objcg is NULL, no reason for the second atomic =
+update. */
+> +               if (!current->mm || (current->flags & PF_KTHREAD))
+> +                       return NULL;
+> +
+>                 /*
+>                  * Release the objcg pointer from the previous iteration,
+>                  * if try_cmpxcg() below fails.
