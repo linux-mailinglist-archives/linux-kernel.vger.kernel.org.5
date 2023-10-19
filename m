@@ -2,272 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E937D057C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA7F7D057E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346743AbjJSXsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 19:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S1346711AbjJSXt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 19:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346677AbjJSXsF (ORCPT
+        with ESMTP id S233285AbjJSXtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 19:48:05 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB73112;
-        Thu, 19 Oct 2023 16:47:52 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JKxZhn004152;
-        Thu, 19 Oct 2023 23:47:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=rPTa6NQ+hX1KxQxsAE0aQUtGs+ax0iqaD1N/STbDUMw=;
- b=VLIWk6QS59GDtsKApYyJ8CtQnTc8taYnpXdmikxE8Y0vVNsGyelHBc+GmzoRw9MKmk7s
- AECXWWSoAq+wNw05ZlbPanqvRVCad9NX7AVOBjVtaV23Ba4F/1GteYCCaGpA0Spk/Qs4
- 7Q43IaPWMEqbXjxsydTO6ChTDDQTIMcnVRbWP8+IFQQPkbS3xgi9tL+cH2AqiK3haNlu
- zUc8yqqoQHf3z7ugdC2ECiR4xDWDsdLzwQibsvc4GtjcKo2XhyPx90a6AjZkGvFpF3wS
- MCF9mMmdDl1UtC5Ws5O7JHcYzt9x2XhYmrvqT0cTBAvpARsLb85fI69xIIML6ZzLWhT5 xA== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tubwdg6nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 23:47:42 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39JNVNe6014006;
-        Thu, 19 Oct 2023 23:47:41 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tubwemvn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 23:47:41 +0000
+        Thu, 19 Oct 2023 19:49:55 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2074.outbound.protection.outlook.com [40.107.101.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AEF114
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:49:53 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MVrTUq0ePmkzqWbbkG90wzaFjPP0hJi6otTtdw2iq31gMwJXXIUTftBJA0603uMOzBsO6FYoupGIqnKLXdjiTzDTKU5mgdfXVM9qOI55SKVQNYdZvT1iU6iomeNurLEX2EjbfNqEZ8IM5nK9w6Lt8is1uKmmYP9wj5bv5qD72JQ3v/wyaP+uP45STwVFHw0ENH6YaWbti5cIkg5Ya8a69b43icZshvGa07k6YyKh8gEq1kV723fGkTgkXma3dPEbw699iTVommnaQvjCCvL/rqvXMrVGLOwvq2ueXJk5EXWRZGLTXUBQ0b7oAV/IIVt1Tf1fi7wk4e1JvXpd+ibC2w==
+ b=Okdjm8Ty365qaYIEKMsX4NT8WbN4VM0C17tZcfA2gV7JQbtdKWCyGTmZiRigXHfIXe6Z2ETL9ffwLYJRuIoYE969Lz4M4L4ARSUckltBSAx6OBvwhg933dMCieanY6O1BwM2KtYHLTWUqu5Xi0LK8iDsGgmlCSNnRe5avEIJslaWYhNJdvjKiLv50v4H6zdypxlz1kP1RcykBJxgClV1dQsOzQFHAsCFsDVX/qetiOVCB1nTl8vCaoXBFeIKp7akZux4Z+vbe4AG2/YGaKwtwN7M4RAd8Gfw9bfkcyopLp7HXBq4NDkl/xyiLRtawl7gcRLlqZDI7LVprfKnMFsqYQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rPTa6NQ+hX1KxQxsAE0aQUtGs+ax0iqaD1N/STbDUMw=;
- b=c6gi5hMHH6H5zMk+mRqOYy3YGBivYkGPIf8dLrpd3TPyXHD5ZlevbxMKHleSALI2tXbxusuqnYj2UCAiU/E+Qs5cKTPT84lYydqHhXTLVqS1RFO6Ul646bRz2rOw+3DGezlg6L3eIH8AozHUyHSNcjDP4FoSYcCshkNnNdH3+9V0eBSUCKbizb9/5BakWbXBFcDWYYv0h2vVoQZGPkbtAoWz75iMCTyLqXX4ntNdiaXIyvNbWEjmE6FdHG9ZbutbIiuuGs3a07rrswm7iPrHbUfsYXkE6fX8I9YAlywUyn3AaHIxAk87XNUBTHO5mszqxSsMphuw8l/uxQuXHDBUGw==
+ bh=YCrETM31xkFKakZbRUdkCaKq8CEdJkQ6V2xmnCVNdpU=;
+ b=MwCwjU5xO6H9l0PK45FB7ma2V8qQsO8T43x+bkKk7wL+Axor3un5xQmsflB/z8IdTluBuc3U7L7XZhkh/xMvQWpRT0nL0yXDaFT8cJTb/i+JuF83pHWnqmtuoQ4A4QeDg0tQnayxBkB4proqsRCMKkYn1ChK5CBLGIYz4qzG008UKKV8N7yu+3wDt9bVq+0xNHy9rORlAPP6Uzf7cGXalvAnxvk3MkZDwlE17VS2k+sfq3FPqICIcTtHoCv1G80j4Ik5IQOUTV5YA1+Vk/ZFopWImbuBPi6+J3PZ9gdm0g2sSHiotDqfzK/B9baCfYTY2A1Q8IUqQ51CCG4zT3sx9A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rPTa6NQ+hX1KxQxsAE0aQUtGs+ax0iqaD1N/STbDUMw=;
- b=bw7RlDARVo8GFfnOumvYYlM9VTmj4J9ALvdndgOMgcnEgjtlly/dz+06rNAb+cFhPA9GmFnzAZ8PPc5LO9Rm1pYDl6ni+oxltHaXbzTH7JZ7zAC0fB3AirYSO67b2wmvyqzwUCnGkJ8Ijlna05LYIRO5wQUajpdqQ4kFVA1xL4I=
-Received: from MW4PR10MB6535.namprd10.prod.outlook.com (2603:10b6:303:225::12)
- by BN0PR10MB4871.namprd10.prod.outlook.com (2603:10b6:408:128::16) with
+ bh=YCrETM31xkFKakZbRUdkCaKq8CEdJkQ6V2xmnCVNdpU=;
+ b=dELQSq4t3+4cdQHRjAtXe91vDk+xtFNU73GU9DabKXG8pb4F2Xae8oxroJAWHxmvxXlkIwk8fiSyfhJu/UK5fGHgoKFACmR8UjD37c1MKUsXQy6k5A4FZTAsaFAnZac1/eQJoLLX/2VIW9u8fS8XwPb9voS1wj08xa/XGcBOiBSDQ2IStE8ziyvkeIc4L0mWG2LMCn3DY8ZWGfAWMhf+fay7vKZJBrOqN1rlDxpCVfZPhndow4ybBevusC655HWpZfBE/NsKoqvYlXvVDOubvUAhc2oaT0o6Nw/LgQkLYBtleVQiopiA2aghfuzHUUqqpTAbbvSGJdi2n9dMxiPDmg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN0PR12MB5978.namprd12.prod.outlook.com (2603:10b6:208:37d::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 19 Oct
- 2023 23:47:38 +0000
-Received: from MW4PR10MB6535.namprd10.prod.outlook.com
- ([fe80::5393:c70f:cefa:91c1]) by MW4PR10MB6535.namprd10.prod.outlook.com
- ([fe80::5393:c70f:cefa:91c1%3]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
- 23:47:38 +0000
-Message-ID: <94caea55-b399-40c2-98ef-d435c228808f@oracle.com>
-Date:   Thu, 19 Oct 2023 16:47:33 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH vhost v4 00/16] vdpa: Add support for vq descriptor
- mappings
-Content-Language: en-US
-To:     Dragos Tatulea <dtatulea@nvidia.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        virtualization@lists.linux-foundation.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20231018171456.1624030-2-dtatulea@nvidia.com>
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231018171456.1624030-2-dtatulea@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR02CA0165.namprd02.prod.outlook.com
- (2603:10b6:5:332::32) To MW4PR10MB6535.namprd10.prod.outlook.com
- (2603:10b6:303:225::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.25; Thu, 19 Oct
+ 2023 23:49:50 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
+ 23:49:50 +0000
+Date:   Thu, 19 Oct 2023 20:49:47 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <20231019234947.GX3952@nvidia.com>
+References: <20231018081941.475277-1-saeed@kernel.org>
+ <20231018081941.475277-3-saeed@kernel.org>
+ <2023101835-trapdoor-unicycle-788a@gregkh>
+ <20231018180128.GA719006@nvidia.com>
+ <2023101808-quicksand-roman-0da7@gregkh>
+ <20231018185629.GD3952@nvidia.com>
+ <2023101913-owl-showman-5858@gregkh>
+ <20231019190046.GV3952@nvidia.com>
+ <2023101902-upturned-pledge-3a35@gregkh>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023101902-upturned-pledge-3a35@gregkh>
+X-ClientProxiedBy: BYAPR11CA0101.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::42) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR10MB6535:EE_|BN0PR10MB4871:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8e51cf7a-d54f-42f7-5318-08dbd0fdc64c
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB5978:EE_
+X-MS-Office365-Filtering-Correlation-Id: dfc9e95f-e438-40e9-19c9-08dbd0fe153f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DzLTXdTLjtITG0d9/gNKCSH/354A+CaqVKdSdayUmBiKilkWmxhZltlO7nwNmPmyi6buwoNhHP5aKB+9AXYfgnHxLTuQD0OqP4DtEy+8fKbxabjVfpASLTfpxL8Ya+KpSCg7sd9I9NYK4iaRr56fQ+oyyj7xQIeMOYjBgoapj0233lK/1yYVrOLvw/RVbpBZv4P9Kd1LCGB4Z9IL6L6ntXNyXkK7gTDfPqA0aHibFnzVDw+DDDqA/fxDYRIg5Zh92aMpCm1JuGiFQPwiOuLp7IwL+e5FEDAVKyQM1Tym0amIkCKrk15AI1iDPpmZQFK4fF3bbb1UpdpzbnA7Z7JMT4mQG9fdToEI7Lg8ZVPrgJHNn0z1VE6cZoT+97DD05wG34Pgfp07LBtizyd3jzRCMfIBax+pzpDE2DxQfrNVZ/ME9PWkEDwiIuqsXubFrFmSnaBzgabLnAqH5kDcsKqIUzvBQNYS+ILhip6b7wztlJW0NvZIcDP9G/T/frfv0FFBEshjAWORZ3btuGI5obU4ibLOwrtIuRSENMtvlyuvhJBl1fC1dnudHg2k9O6qxh6cU0aMA0d/b6lNcHvrWSFjzzP/GfdrNQEJQWXFgIxl77QTj/TqT/GHLrerZ/xZ9ojbshvrXWyK+yLd5RuFUIYLwR9PKQ9RNfCfVGG9PntdvRib1+bHChWyIqGW8I+HeKYZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR10MB6535.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(2906002)(36916002)(6512007)(6666004)(53546011)(2616005)(6506007)(31696002)(110136005)(316002)(478600001)(66476007)(66556008)(86362001)(66946007)(966005)(6486002)(83380400001)(38100700002)(54906003)(5660300002)(26005)(7416002)(8936002)(4326008)(8676002)(36756003)(41300700001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: C0eVkNj5j3ucqynz3hVlD9MAz4gCCEBOxjM+s2/YLPZuLz9ETPrA+IqcIx31JkXhLtR2+lMq7xZmW+EM8UpAT2qtCBkluLHpI7MIRWa0+EuMu2MuLtwltSYe2x5WWmoRXV5ieEbvVkxOF3wqXFTLH7YhI5EZJvwJvB282pwXOKFaLrnK9E5Z+HOmb+32aDjEiDlOMayxeEGHTzeILRXXnLV4wGQrluB6za8StoR+zTNBDuBrhrPEsp/xOz7XfC71lGO6gLTWedf7x8uwiVyhX8YZIHcY2NY3JHw5XJbox90apNHtToJgfJtX28zGrexzEUd+ANE8ANnv2GhMfvuLvzmnHnp1DOInIIoMaMY+5Oe0yJGs/w7RerNY1AKayO9n5wFwpaEq8h6vBxvQXEA11vtHPloB7+3Db+lys8jII0ixZwuf0IHy/HEssGmDHwHaPV391kLTZ043fGTM6XjpoMUzFvDlsiTHjSSFazyb4jmIbgudBq+6OtPwHX0l58I1UAgr8GMVS9cvPtiOlKWDQxUaNdmEvreR303WbCwc97Q/3Qk/VmHrqoWlYz/UwsPpj/RJ0Ks6L+iKQQkXQLN1j09wxMkB4FV2C7feS7mP9TqdCRAYbTjo+34H99AV/JrHXtLE0V1k8kB8ZFTEhfUAtg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(396003)(376002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(478600001)(6486002)(6506007)(6666004)(6512007)(6916009)(316002)(5660300002)(66556008)(66946007)(54906003)(66476007)(36756003)(2616005)(1076003)(26005)(2906002)(33656002)(41300700001)(107886003)(38100700002)(4326008)(86362001)(8936002)(8676002)(42413004)(32563001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0tPVWJmZkZFRTJhZmF3b3ZQdC9zeExBcmxOYlBrM24yUjZQMi83U0pVbGQ5?=
- =?utf-8?B?cThaU1VjZGc1OW5ad3NSdXQ1SjRjZ2JpNS9KZkIwaUtIR29BNk42bDBhMmtL?=
- =?utf-8?B?eDZmOEVoSGZXOFJmLzhsQ3B2aGhoZXJ3UkRWRjBRY2swQ0dxK1RGdHIreEto?=
- =?utf-8?B?N0g2YVk3MlRuTnJtalpNV01neDBZS0QvTThWWDZkMExzb0RPWEd3YXhpTmlB?=
- =?utf-8?B?b0pCTE5Rd1ZSVC80MEp0ZWVKSzdHNVRDN2ZkSzlONDFyMXF6SmgzL3ZBMTFD?=
- =?utf-8?B?SzRXMWlTKzg4YjR4NjBka1MrckZZN2xuMVFUVEVoYlBlYkhaOUlhTUFIcFE4?=
- =?utf-8?B?YTh6anZLc0hxdUhEK05zdndqdEc1WEh2eElrdEJzSnhTYmtSVnRyeUhBQ2RU?=
- =?utf-8?B?S1hydWhKY1RYVXV6N0M2TEdqVlU1UEdZbWRpOUdrdTRwOXpTUlF2VjBTbzBx?=
- =?utf-8?B?cXJkUWMycVQ1RW5TYVlHVzBiMFVGdlVzZkRHdnQ2MmhSVDQyQk9XN2drbkMx?=
- =?utf-8?B?RnErM1dOS2EwVzJuVnh4Y29DSUtyMjVsZ2kwZXZVUjJibkRpcnZqV2JaNlhk?=
- =?utf-8?B?dTg5TTVsZ3N3UUp5dGVMeG5Qd3ZNZE9kRk52MktDK0hyMmdCZWhJQ1p2YjZo?=
- =?utf-8?B?WEo2VFc1bGJiRC9KVzc3Zlc5TEJmTVRlT0xOdmZVS2QxRzV2QjhNZ3ViMkVE?=
- =?utf-8?B?czFYOEpTMkZRYzdpeGpsZVd3dGVnbUp0RE5sTU9FaUJTdTdEUVZ2YWhTUFYy?=
- =?utf-8?B?akUxUGZidVJzU2k3Nk1SQ3NQWGNCSVV0Z2N4UkdvNUc1RXdyQi9VcVZweWlE?=
- =?utf-8?B?VGkrcjZTM0ZrKzdEcVNSV2dMcTFjOTFwUWxYNitXQzh1WXBFQWZ6NmRpM0JL?=
- =?utf-8?B?aVE0dE82alJYS3QwVEMxMmFvVXNBdVptQWpXZTYvaUJNcmgvMTZlMkxjcmN5?=
- =?utf-8?B?dVhscmVwMVZqb1ZHNGpad2NzcTE5ZzZDSzVHR2VpaFczUm1FWjdRUDA5UElX?=
- =?utf-8?B?L1R2cjBwSE5uRXRBdHRpM3ZHVERaM0tiZy9UN1JxMTN5UFlVQVdYam0vUWU5?=
- =?utf-8?B?OVpPa2F0cVUwaDJDc2dIaGlWdy95N0NQKysyR2E0NGdHSlF4Tm9pWmJMTEJC?=
- =?utf-8?B?M3ptajJCWS94ZlZzZ3ZJa0VPMTBXMnRMMmpsWEhyaytVZVdDWnl0eVlWR2No?=
- =?utf-8?B?YU5TaXlBa3dEMHpDSUJNNlNOQm5WaUlGSWdzbElBMlVKQ04rZjJDaSt1ZDd0?=
- =?utf-8?B?Z2ZzTE9ub2NjdWxzTTNVQnhnai9keU02T1NQZm12Wmw5anZKNzVZbnpNbWZx?=
- =?utf-8?B?YU5jelpKcXA4R3hiMUZmdWhtbFVqaHVUcGY4WVNzT3JCUjEvNW1USFg0NE1z?=
- =?utf-8?B?RmdZMWNGSDd2NlVXMFhYSUYveVFVVlNnR2JNcm1renVUcXBQbldUN092emsz?=
- =?utf-8?B?bG1VQTcvWkd0VW4rRDBYWVVETzhhdytnVStpdjR0T2xmZkMzSzZ6YWczOVFU?=
- =?utf-8?B?b0EraDNHR2hKMXlBb0k1dXJlQjZYZXFZL2c4ZnFsRW1uZFpDbDlYVitHVW5y?=
- =?utf-8?B?d0Z1a003L0k3V0FTM2J3dmNmNFpjV1dGSjlSaXE0NUdhWDBhdytYTHRLeTFN?=
- =?utf-8?B?cjBZVzB4cm1veDZrcG8vTjJObWdlMmlmVlozajJJWlNoSk5rV21CV28yYUdX?=
- =?utf-8?B?SVdORHVFM1lHd2toRE9uMzV3Rzd1V0V4d0FyRFc2VGpSVGkxVmpTZWJjVUxU?=
- =?utf-8?B?WnN0Ti9vdDQ0M1N6bWw4bHprVjhCN2czcFE1bllKbkgwa2NCVnpITzA2U2Va?=
- =?utf-8?B?TXFXSEZXbEZ0RW9yYjB2UTJNRzhPeTBqNEtTNjR1akVmUFpOZUtLUlVZMmt3?=
- =?utf-8?B?bkxRZGc1cDRLWFpPNFEvWStiVFBUdFYrb296TXp6R1Y1dzg0WVN4eTdCSFY0?=
- =?utf-8?B?VzVQUEQ2SlNQTGdlZlhCYkQwcVZKaGpzUGFsS012cnFIbTgyZHhubmVVSmc2?=
- =?utf-8?B?aGtLS045aXNROWgrNGxuZEt0RURCYkloSlVabitTODRpTVZpazI2NEZVWHdC?=
- =?utf-8?B?SVNiZmlzM3pvM3lyQTFDVG1Ha0g1SENBRFc5UlQ4OTJkemdlemRMZFlKbTVX?=
- =?utf-8?Q?oqF05fQ5N2J+ye2Lht0Egq53X?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?SDZweWh3QURCZHFaTUlDaHlwUTcwNVg1a3JwWXltSDBtdHJuVm1EUEhtZm5j?=
- =?utf-8?B?cVJiVmsvYTZlMDBiQllFTURaRDJydjQ4cWRSRUFlMDhYcG5TZ2lxd2NPRmpp?=
- =?utf-8?B?bzNNV0N0bTcwemtnSXZiWEk0ZnhNcUVCKzRGYWd5SUFPS3ZqYWpxcmUwMURD?=
- =?utf-8?B?cVdSQlNaTDdKLzR1WUxnLzBzbzI5UTBvSW5qRUl0cjFNU3JERXZpU3QwNVRE?=
- =?utf-8?B?TFQydktVbG4zYmpCclJPUHpZSUhQeE5MZkNUWGhXTTlhOU9hbWhqVU1ZR3o5?=
- =?utf-8?B?WEQwZThjWUNUSG9FQXRBeU15b2xqS2NxZjlYT0JHSTJMS0cwbU53TmJlR1dV?=
- =?utf-8?B?ZWQ1a0xKc2RBZjg2bm9DM1F5SVpYZ0FvT2FVUy9zU3Q4Sk9jclg2bDMrckhu?=
- =?utf-8?B?bjU1VldNc3lUNEZRQUJ4YkZRMTBpN1hLWm95V090TllpWnhQQUYvS09XUGVp?=
- =?utf-8?B?KzZPakxRN2JXRWFDaEFIdmNmNTVyaGRVMnovamtzcHpkZXRNVDB5U1g0OHkw?=
- =?utf-8?B?a3VLR0VxbkhCOWxuWGJHcHJhZmhqMUlraUt3S1NPb080L3hpRXlNaitRK1dp?=
- =?utf-8?B?cnFGWldCZEgxbG42aWoxd2pRSDV3Vmw1aWNxN1ZjQ3RZOXp3RHRpNHdXbUFU?=
- =?utf-8?B?ejQxYW8wRFVlVGZaTGFjSEc3SGNVTzBXekNPSjFxaFV6L08wTlQxVjg3ZXU4?=
- =?utf-8?B?aUt4Q1pURUtqNWpGdHgrVHVHQzMxbWtqKytncnhkRmNKNWlDWkdsM1pEV2kx?=
- =?utf-8?B?cU9hMlNrbVlONm4zS0c3a3F4aW0zODdIVituMkVUL1JnTUdON0tSMUdIUTNi?=
- =?utf-8?B?NnZSbmxoaVMvQm9WZ0RPUklXWURsZWZnOXZuVUhTOEVqZ2sxYXdydmRaaE5a?=
- =?utf-8?B?L1JFSHdlSlEzQnk2bldrbThFbUZKM1pxMTF2SVA5bFMybVFpN2hXZ2xqcldO?=
- =?utf-8?B?Y3BpK3RBQnlsejZPVkN2R2RHZXYwYzBQMWpJSzc1cDdwQXNZN0lPQmJsZ2Zz?=
- =?utf-8?B?VUlYWlVsY1BtOExIazB6ZG5neHgvaGVhRXdOZVlxY0dOeFNlS0dLVjVrZ2N6?=
- =?utf-8?B?K2NSeWJyVW00T0VUWDlIWWpBUllLYkZRb0VsZnlkU0JRYzNrVURiV2hKWFBH?=
- =?utf-8?B?MVROdk9nT2txbjVNSEJubm91K1NDeUFrU0NMY2d3U1ZBMXFueThGL0RZb0FI?=
- =?utf-8?B?UThydGxIT1ZBODdqTDZ5WnBLWiszSUNvV0tPaXUvbWVTQUNCeW80UU14UjhE?=
- =?utf-8?B?NEZBRlNWTFI4bjRjWlAwNlpnWnhBSHd5RDdGNHVhL3NxUGtudVpVbjd1R0VB?=
- =?utf-8?Q?lx2La/E3YzMN8=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e51cf7a-d54f-42f7-5318-08dbd0fdc64c
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR10MB6535.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NrEn6dG+oW1fbGQn2MCiodhWrizRfat+om57nRmMfR+AplHkcIz/Qb4zW1Ij?=
+ =?us-ascii?Q?CrNLYj0wdOU4SCCldcfpOP7cE18agg/GfHnoVbygPHoQ5KmA1f9XgxObZSI7?=
+ =?us-ascii?Q?vVoJr2OrsAGSvdUaFecD2wqtwJCiPsZnE/5HgQq3aQXJjKP7YHvYmPoa/BgJ?=
+ =?us-ascii?Q?gSzXH3qW4QqSeEfEn6926KdBbgueXh97NgtyM2O3iWKS/pi8YBcqxV0KxxJV?=
+ =?us-ascii?Q?rY9uWuczmYCVyM8oOJnECZFh9Bg1DtxZQztZ14fAGJdXeDv8q7mkVHsUseme?=
+ =?us-ascii?Q?ySNBUAAkgt9kmEqzF8p2r+5uEGO4YUOdl+TGKlSl2/3F5qhyDw8WTv3nVAib?=
+ =?us-ascii?Q?OmRj9LirbM/7goLAOM4XopqJCaaKltoMSiVMU/zkZmRmv74V0Rwa46Kjl6Ev?=
+ =?us-ascii?Q?LezmWCJjTChVmIze5cKxwNYK0yE/MahvbJkFCrHfV9JdS2CEiG91nvjNRYpD?=
+ =?us-ascii?Q?sgoJ+DlrcPvgjh+ZnnWpCRJNhMWvv00iUX+boyeuJ4JTTsc/bXyMnCY2ddgM?=
+ =?us-ascii?Q?jDf3mWOmKxeNYOabpbBaMM/SWKpjBe7SCp313Ahx3j4ZgLf4tnUH9JXAexOR?=
+ =?us-ascii?Q?kqE3l5NwAklzqWOG4xw8ncyBceFB/S7SAXI4Ls9bZaUZp0NSsNDHavhGkbO6?=
+ =?us-ascii?Q?nYq3ShVJFiIN2ZyGg24HLh8Zg5X2wte4pFMTcYPHI/hvPQsNaAFOLaEsCSvK?=
+ =?us-ascii?Q?q43tdGd9D1SBOuF0L98E3ooHcuQYNXEcQr9+IEf/6airmNwA34u77bgfGe+l?=
+ =?us-ascii?Q?uDwoS7ZhXqCE6OmIdHAW5zrrs3iZhJ6xjJAN7INkdBI2pzHIBSU1Q+cs3vDC?=
+ =?us-ascii?Q?vFGF+n5BUUVXORuQnnpKaLHePHiOlOxdIDeo7/PSeeSezn0mo+OnXl2Ahp9p?=
+ =?us-ascii?Q?ZX2L4G3L/7vL6chkXw1/lE+LrSqHwCQADr+BNtoZ6Xfp4YDGd1aGqBqb4YLL?=
+ =?us-ascii?Q?B94Iyuru2lTMpbtNqqQ5P9g2ifanNsyA1Km2zc8wL9DL0nUKKpzIj/fBp5s3?=
+ =?us-ascii?Q?YDLN0ROdpMgpx5/M2DEqH8Uhhs2V93c2bCVIqWllM0pcPoYUA8tASsEjkN+w?=
+ =?us-ascii?Q?Xb+fRe90T/DGhB1f1SqiO3FIYKyRYxFqAeaAkjK2gEEM1ttTEgZVMRulsaZM?=
+ =?us-ascii?Q?8W1ZbugxC2ncYGuAweXV8EH7LTMv7IuA1/EnfFAhAGnSGLwXMgDu0DQQA6DQ?=
+ =?us-ascii?Q?0vcaIkuTRr9HSoDFbOwlAEduZv1nxNfSHKCOknDAIFpDDgcN0thk7DHJ8dEw?=
+ =?us-ascii?Q?7YOYk39aT6Xd4jLOfHowKQJsGqZ3feBQD3l+44Bmj5IGsjIiRC6Qbgi/gZvp?=
+ =?us-ascii?Q?ysxHli0Vx1yJurkVpYgAYafM5gXaDYJwPPQvCsd5mNCli9F3GeCvW3o45z6i?=
+ =?us-ascii?Q?xWUH3ejEAB2Lv4GJth4K2BgvKtgm9qLiGIzD3Hm5XRjcjptQ+bzGgCMAX1nz?=
+ =?us-ascii?Q?TfvV0OFBaytKKppNJxopwaTvtSxNLx7cxQQuuyD3eTG1z69SG6nxjP5O9Hlh?=
+ =?us-ascii?Q?pnBUfAikZ/jaRSNGPwBBov6UjLxERX1yftIQdTGD5zdD5qXXgTNq77KoE8ZU?=
+ =?us-ascii?Q?m8pA6gVbpeh1BMEuAih8B0YI7qIy7hvSBJKQNvXb?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfc9e95f-e438-40e9-19c9-08dbd0fe153f
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 23:47:37.7098
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 23:49:50.5498
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c8/xoR/+alNm+WUCF2fQ39+UxdaMPWY4pdGFXjMuJ0h4dUrR9z+yh/m7UbeWjjilQI6wuOs07QJEkMcdeL3lhA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4871
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_21,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310190200
-X-Proofpoint-ORIG-GUID: qB_jafMqs5WewIJV9KSF9m0YOcB0NS5n
-X-Proofpoint-GUID: qB_jafMqs5WewIJV9KSF9m0YOcB0NS5n
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: A1kJWs2tkC6yKXnizj5CFvCXe3DWvmO0BfnJJZK7uxznwxg4li+LgDhukfF+Pl2s
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5978
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For patches 05-16:
+On Thu, Oct 19, 2023 at 09:46:29PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Oct 19, 2023 at 04:00:46PM -0300, Jason Gunthorpe wrote:
+> > On Thu, Oct 19, 2023 at 07:21:57PM +0200, Greg Kroah-Hartman wrote:
+> > > > All of the Mellanox driver stack (over 400 files now!) is dual
+> > > > licensed because we have a large team of people working the Mellanox
+> > > > driver for many operating systems with many different licenses. We
+> > > > want the certainty of a permissive license for the driver code we
+> > > > supply to Linux as the team routinely references and/or re-uses
+> > > > Mellanox authored Linux driver code into other scenarios under the
+> > > > permissive side of the dual license.
+> > > > 
+> > > > For instance I could easily see the work Saeed has done here finding
+> > > > its way into FreeBSD. We significantly support FreeBSD employing
+> > > > maintainers and develop a sophisticated Mellanox driver over
+> > > > there. This would not be possible without the Linux driver being dual
+> > > > licensed.
+> > > 
+> > > Yes it would, you can take the work that you all do and license it under
+> > > the BSD license and put it into FreeBSD just fine.
+> > 
+> > Sure, you can do that at day 0, but mlx5 is now about 10 years old and
+> > has tens of thousands of commits. Many non-Mellanox commits. (mostly
+> > non-significant, IMHO, IANAL)
+> 
+> That's not the case for this specific chunk of code, so it's not a valid
+> point at all, sorry.
 
-Reviewed-by: Si-Wei Liu <si-wei.liu@oracle.com>
-Tested-by: Si-Wei Liu <si-wei.liu@oracle.com>
+In 10 years it will be in the same situation as the rest of the
+driver. You are saying we can't plan ahead now? Why?
 
-Thanks for the fixes!
+> Let's stick to just this new file, please keep it one-license, not dual,
+> it makes everything simpler overall.
 
-On 10/18/2023 10:14 AM, Dragos Tatulea wrote:
-> This patch series adds support for vq descriptor table mappings which
-> are used to improve vdpa live migration downtime. The improvement comes
-> from using smaller mappings which take less time to create and destroy
-> in hw.
->
-> The first part adds the vdpa core changes from Si-Wei [0].
->
-> The second part adds support in mlx5_vdpa:
-> - Refactor the mr code to be able to cleanly add descriptor mappings.
-> - Add hardware descriptor mr support.
-> - Properly update iotlb for cvq during ASID switch.
->
-> Changes in v4:
->
-> - Improved the handling of empty iotlbs. See mlx5_vdpa_change_map
->    section in patch "12/16 vdpa/mlx5: Improve mr upate flow".
-> - Fixed a invalid usage of desc_group_mkey hw vq field when the
->    capability is not there. See patch
->    "15/16 vdpa/mlx5: Enable hw support for vq descriptor map".
->
-> Changes in v3:
->
-> - dup_iotlb now checks for src == dst case and returns an error.
-> - Renamed iotlb parameter in dup_iotlb to dst.
-> - Removed a redundant check of the asid value.
-> - Fixed a commit message.
-> - mx5_ifc.h patch has been applied to mlx5-vhost tree. When applying
->    this series please pull from that tree first.
->
-> Changes in v2:
->
-> - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
->    was split off into two patches to avoid merge conflicts into the tree
->    of Linus.
->
->    The first patch contains only changes for mlx5_ifc.h. This must be
->    applied into the mlx5-vdpa tree [1] first. Once this patch is applied
->    on mlx5-vdpa, the change has to be pulled fom mlx5-vdpa into the vhost
->    tree and only then the remaining patches can be applied.
->
-> [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
->
-> Dragos Tatulea (13):
->    vdpa/mlx5: Expose descriptor group mkey hw capability
->    vdpa/mlx5: Create helper function for dma mappings
->    vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
->    vdpa/mlx5: Take cvq iotlb lock during refresh
->    vdpa/mlx5: Collapse "dvq" mr add/delete functions
->    vdpa/mlx5: Rename mr destroy functions
->    vdpa/mlx5: Allow creation/deletion of any given mr struct
->    vdpa/mlx5: Move mr mutex out of mr struct
->    vdpa/mlx5: Improve mr update flow
->    vdpa/mlx5: Introduce mr for vq descriptor
->    vdpa/mlx5: Enable hw support for vq descriptor mapping
->    vdpa/mlx5: Make iotlb helper functions more generic
->    vdpa/mlx5: Update cvq iotlb mapping on ASID change
->
-> Si-Wei Liu (3):
->    vdpa: introduce dedicated descriptor group for virtqueue
->    vhost-vdpa: introduce descriptor group backend feature
->    vhost-vdpa: uAPI to get dedicated descriptor group id
->
->   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
->   drivers/vdpa/mlx5/core/mr.c        | 194 ++++++++++++++++-------------
->   drivers/vdpa/mlx5/core/resources.c |   6 +-
->   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 105 +++++++++++-----
->   drivers/vhost/vdpa.c               |  27 ++++
->   include/linux/mlx5/mlx5_ifc.h      |   8 +-
->   include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
->   include/linux/vdpa.h               |  11 ++
->   include/uapi/linux/vhost.h         |   8 ++
->   include/uapi/linux/vhost_types.h   |   5 +
->   10 files changed, 272 insertions(+), 130 deletions(-)
->
+Simpler for who? It seems to complicate Mellanox's situation.
 
+More importantly it seems to represent an important philosophical
+shift for Linux that touches on something we have a significant
+investment in.
+
+I would like clarity here, on a going forward basis. You do set the
+tone for the whole project. I've made my case for why we are doing and
+why it brings value. You are saying dual license is now effectively
+banned.
+
+Previously you said you would agree with a sign off from our legal,
+please tell me what statement you want and I will go get it.
+
+> > Remember that Leon created auxiliary bus so these complex multi-system
+> > HWs could be split up cleanly into their respective subsystems? This
+> > is an aux device driver for the misc subsystem as part of the giant
+> > cross-subsystem mlx5 driver. Ie Saeed is adding 3 more files to that
+> > existing monster.
+> 
+> Yes, and as the auxiliary bus code is EXPORT_SYMBOL_GPL() attempting to
+> license code that is a driver for that bus (i.e. this new contribution)
+> under anything other than just GPL is crazy.  Go talk to your lawyers
+> about that please, it's obviously not ok.
+
+The entire mlx5 driver makes free use of EXPORT_SYMBOL_GPL(). Our
+legal has looked at this in the past and they continue to give
+instruction to use a dual license.
+
+You keep saying go talk to our lawyers like this hasn't been a legally
+vetted approach at Mellanox for the last 15 years :( Mellanox has
+300,000 lines of code in Linux with a dual license. We have a good
+in-house legal and they take license obligations seriously. I don't
+see any new information in this thread that makes me think they will
+change their long standing position.
+
+Tell me what you want and I will go get it from them.
+
+Regards,
+Jason
