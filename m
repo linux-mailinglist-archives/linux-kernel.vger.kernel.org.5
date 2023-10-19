@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503E27CEF2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8F37CEF32
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235173AbjJSFlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
+        id S232782AbjJSFmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbjJSFlR (ORCPT
+        with ESMTP id S232777AbjJSFmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:41:17 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC1D130
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:41:05 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c5249d55so2912150e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697694063; x=1698298863; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j7kAytioghDE6xyX4BghBa8cMFVr3L8tOR2ZoNefZ9k=;
-        b=ShZvUG+1JR3qVMpEfH65avvEMaqfjUGfzA7Tw9k+nhDlNjbBKWUx6EnqXuTBj1qhy0
-         R5HuGQjlfC0H4abtWZnLN2l2WJZ/HuN55vDAEk/aWIqhefiod4fMjj1hF6IdKpc25vgV
-         sJs7+ISghdHMCTaT/uXZ4sKngFAiU8tW5gBYZ1NYubbFx8HREk/3vO+F3/xapT3B2iIt
-         XaqOVN5FlLb4B6nxnQewwuTK17AS+5w0W3hoIiBKYETzLEyLpwcFYYIcXcrTI7CJZuKE
-         Xp3Ip6H6WVe2u8sudTjgJ3JQlHRXZFGi6SIYOKW8uSyYq6jry77XgHJiPqxx8pZ++0Rx
-         nTew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697694063; x=1698298863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7kAytioghDE6xyX4BghBa8cMFVr3L8tOR2ZoNefZ9k=;
-        b=O8mL/372UcAgtdHyDaCdOw0XDOmt912ffdx7cWrwKD1TQvbKxfZG08aHtmzwgOLqRw
-         RGXgMtC+Qgsl+tSSv+qkJPpMPCgP9v50rBFDdiuEVdTb//XliFUsIGAdB2r1ZjXcE6G6
-         qYrSF804b1TaJ/qLJZaRFU9DICzrlBPfDXSHKvEY8OFzFb0CBwYjjkHwoipgdbs/L+B4
-         EuGqZzm+sIE0sFSF6oV76x4WlMyZx4kC6Try7lJpstHS/HnruVPj5ovOHhkqH6m+W/yg
-         GZhLXRqmOCIhAgCaUFPP/4aE6u0JX3ore50columbEZtgAU9mj/0IblIq/ZWGxz9kv8V
-         mWnA==
-X-Gm-Message-State: AOJu0YzJhNIWTgncN38QHwju7rQryA8A/cnccIQZLmnDceNku3kjSbpB
-        U6B9wMyg9UER/1RCYqbZdO3JZw==
-X-Google-Smtp-Source: AGHT+IG5EtVlCxnFhKx6/IWeIkVIlcJyQiopIMW7380LSHeSu/QzSQA6+QwuSQOi3ZAsfzcZcIDbKg==
-X-Received: by 2002:a19:5011:0:b0:503:388f:30a3 with SMTP id e17-20020a195011000000b00503388f30a3mr677846lfb.26.1697694063124;
-        Wed, 18 Oct 2023 22:41:03 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id i6-20020adfe486000000b0032415213a6fsm3580699wrm.87.2023.10.18.22.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 22:41:02 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 08:40:59 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Philip Li <philip.li@intel.com>, oe-kbuild@lists.linux.dev,
-        Lorenzo Stoakes <lstoakes@gmail.com>, lkp@intel.com,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
- could be null (see line 3667)
-Message-ID: <0eddb8b4-47a1-4d94-ae44-707addae77c8@kadam.mountain>
-References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
- <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
- <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
- <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
- <ZS/TVMT9ed7OdyNy@rli9-mobl>
- <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
- <20231018085248.6f3f36101cbdfe0990c8b467@linux-foundation.org>
- <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
+        Thu, 19 Oct 2023 01:42:08 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410931B5;
+        Wed, 18 Oct 2023 22:41:31 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J5fFtu048503;
+        Thu, 19 Oct 2023 00:41:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697694075;
+        bh=Vk+cRnHo6muGejtbpUC0xCLLcp+NHau3bYlkm4WogkI=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=KAbuq3aOYa6iy4bTY7mQUxuZHSz5sctfiTPXo2F0dmB7KbJBpObOyMtun+QrF4Dt2
+         DGLLoFkUgpv5LpNq1OLumrQe6giytJs6ApGxNwz7zUQjBEsYOPMywqNxjB/jbpaXUD
+         AZa8iSrncuOoZun8+6RlhWEneCmMJPGPgrHhuFI8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J5fFne118705
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Oct 2023 00:41:15 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
+ Oct 2023 00:41:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 19 Oct 2023 00:41:15 -0500
+Received: from [172.24.227.83] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J5f6SO041333;
+        Thu, 19 Oct 2023 00:41:07 -0500
+Message-ID: <4131fd06-0e46-5454-fbdb-85ccabc0e8b0@ti.com>
+Date:   Thu, 19 Oct 2023 11:11:06 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH net-next] net: ethernet: ti: davinci_mdio: Fix the
+ revision string for J721E
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>, <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <rogerq@ti.com>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <horms@kernel.org>, <linux-omap@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <srk@ti.com>, Thejasvi Konduru <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>,
+        Neha Malcom Francis <n-francis@ti.com>
+References: <20231018140009.1725-1-r-gunasekaran@ti.com>
+ <20231018154448.vlunpwbw67xeh4rj@unfasten>
+From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20231018154448.vlunpwbw67xeh4rj@unfasten>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 10:28:21AM +0800, Baoquan He wrote:
-> On 10/18/23 at 08:52am, Andrew Morton wrote:
-> > On Wed, 18 Oct 2023 23:15:31 +0800 Baoquan He <bhe@redhat.com> wrote:
-> > 
-> > > From: Baoquan He <bhe@redhat.com>
-> > > Date: Wed, 18 Oct 2023 22:50:14 +0800
-> > > Subject: [PATCH] mm/vmalloc: fix the unchecked dereference warning in vread_iter()
-> > > Content-type: text/plain
-> > > 
-> > > LKP reported smatch warning as below:
-> > > 
-> > > ===================
-> > > smatch warnings:
-> > > mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm' could be null (see line 3667)
-> > > ......
-> > > 06c8994626d1b7  @3667 size = vm ? get_vm_area_size(vm) : va_size(va);
-> > > ......
-> > > 06c8994626d1b7  @3689 else if (!(vm->flags & VM_IOREMAP))
-> > >                                  ^^^^^^^^^
-> > > Unchecked dereference
-> > > =====================
-> > > 
-> > > So add checking on whether 'vm' is not null when dereferencing it in
-> > > vread_iter(). This mutes smatch complaint.
-> > > 
-> > > ...
-> > >
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -3813,7 +3813,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
-> > >  
-> > >  		if (flags & VMAP_RAM)
-> > >  			copied = vmap_ram_vread_iter(iter, addr, n, flags);
-> > > -		else if (!(vm->flags & VM_IOREMAP))
-> > > +		else if (!(vm && (vm->flags & VM_IOREMAP)))
-> > >  			copied = aligned_vread_iter(iter, addr, n);
-> > >  		else /* IOREMAP area is treated as memory hole */
-> > >  			copied = zero_iter(iter, n);
-> > 
-> > So is this not a real runtime bug?  We're only doing this to suppress a
-> > smatch warning?
-> > 
-> > If so, can we please include a description of *why* this wasn't a bug? 
-> > What conditions ensure that vm!=NULL at this point?
+Nishanth, Jakub,
+
+On 10/18/23 9:14 PM, Nishanth Menon wrote:
 > 
-> I think this is not a real runtime bug. The only chance it can hapen is
-> when (flags == VMAP_BLOCK) is true. That has been warned and could never
-> happen. I updated patch log and paste v2 here. 
+> We then have the following steps potentially
 > 
->                 /*
->                  * VMAP_BLOCK indicates a sub-type of vm_map_ram area, need
->                  * be set together with VMAP_RAM.
->                  */
->                 WARN_ON(flags == VMAP_BLOCK);
->  
->                 if (!vm && !flags)
->                         continue;
+> Drop the fixes and Maintain both SR2.0 and SR1.0 (add SR1.1) so that
+> we can merge the socinfo fixes without breaking bisectability.
+
+I will drop the fixes tag then and maintain SR1.0, SR1.1, SR2.0 for J721E
+and mention in the commit msg that this is a preparatory patch to fix the
+incorrect revision string generation. And in the next cycle, I will
+send out a patch removing the invalid revision IDs.
+
+Ideally I would prefer to do this for all the SoCs, but I would need some
+time to compile the list. So for now, I will send a v2 targeting only J721E.
+
+Please let me know your thoughts on this.
+
 > 
+> Also in the future, please CC me as the reporter and for Soc-fixes
+> dependency issues (I am listed in the MAINTAINERS file).
 > 
+Sure.
 
-Thanks.  If you want you could just ignore the warning.  It's a one time
-warning so we won't send the mail again and if people have questions
-about it, they can just look it up on lore.
-
-The truth is when I was reviewing this code the first time I got mixed
-up between flags and vm->flags so that's part of why I reported it.
-
-Smatch ignores the WARN_ON().  Historically WARN_ON() has been useless
-for indicating whether something can happen or not.  These days,
-WARN_ON() is treated as a syzkaller bug so we prefer pr_warn() if
-something can actually happen.  We still see a lot of WARN_ON()s
-happening in real life so I'm not eager to make Smatch treat them like a
-BUG_ON().
-
-Also, sadly, even if we changed the WARN_ON() to a BUG_ON() it still
-wouldn't silence the warning because Smatch is not quite clever enough
-to parse that.
-
-regards,
-dan carpenter
-
-
+-- 
+Regards,
+Ravi
