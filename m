@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B587D02F2
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA5E7D02F1
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 22:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346506AbjJSUC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 16:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        id S1346535AbjJSUC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 16:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjJSUCz (ORCPT
+        with ESMTP id S230321AbjJSUCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Oct 2023 16:02:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BBB9F
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2822A115
         for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:02:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C358C433C8;
-        Thu, 19 Oct 2023 20:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697745773;
-        bh=2MggdwhgnildvMk7NTDjOnoS6Jg5jQXkqNkqB0aYHMA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RiedKH/Y9dbYa6ubDlG7uoC+WUOghwhKS6eWHt3VkrGMdKiVpXgjr3wa1Syt8GXzb
-         aSB+8hDbY/HNr9zWPmh72fzVc8GWH6W+XurEWZqjj3vVuJBbCPtrrW/G/J1v2DaTpA
-         ZsbVxpeds1O29uH8kEZLDd9zKF+bkYcUw34+b2WjZNQHf/KTADVgYG04uGSniuLo33
-         Fo+oLOfnmd9qbPJ5MdS3C5zbsyiNyTJq3NAGDbqj4j6DslvZ/IYJqV+KYeiy76VqQJ
-         Hlyp8sUZp8E3iRaOCKosL3bacUhMlLBYdcV78uPcq/PwPb+8a0xG4neCLulkJzM5pO
-         /nbDUji07J9oQ==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5079eed8bfbso50783e87.1;
-        Thu, 19 Oct 2023 13:02:53 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwKZGhiaRU7dSDQiRJDADsL8AtWjbqaob/EHCWVsn3mZYf5LWrz
-        vbQm1kQbyWln1yZe/YIcnH/72IjY+1aclfxTJA==
-X-Google-Smtp-Source: AGHT+IHnua5COj4QgtXUHQNJd1cUfAW0WlEMmymFNUywVpcrDbobt71n9JgwhpVYyWQmFIz6kp8EPizyDSqyxeaxEtQ=
-X-Received: by 2002:ac2:54af:0:b0:502:9fce:b6cc with SMTP id
- w15-20020ac254af000000b005029fceb6ccmr2235339lfk.11.1697745771855; Thu, 19
- Oct 2023 13:02:51 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7eef0b931so382127b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 13:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697745773; x=1698350573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d4h8OXoW9StQ+YypbHzqEhLaogqFHJKP7focuWdzzM0=;
+        b=S1amRd0jkq46pRcJ2e/14i54hzTaQJleZciB+WPwdRgLuzop7cnogb5i04mcnGcZQQ
+         iqhw4RGsUIvrgJGfXws0LtfFt9v1cRijiYMRa9YTSZco17T6zpUhM3JsgybzN+ViQksp
+         X0eZYqibFFw+7YrIE7M2gQk2MSFxQjVeLrvPvlsf7bKseO3pptG8+9BzFOeASvgv6Uuf
+         fr5dvFYrAViQIjeV7heHu5zS6yocfx2ANHMVqSMsgqZ2Eww9b4a7hdXixHY1Cpvp/bxb
+         uoYJ+sXx6ZDSpwm43ysN8r5tLek8lD57aA+AbF2j+S+j7bDDswFYIpUARaGpOmAY92Rn
+         pVSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697745773; x=1698350573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d4h8OXoW9StQ+YypbHzqEhLaogqFHJKP7focuWdzzM0=;
+        b=ljEAv/YtLiTGtUHT5JBLMRCuT1xKBWsUX3JdTlRGaiwjR7p7Ru5Lr24rluRdHSi0Mp
+         jFf/32sEclEibPSX0O5QNSlMTy5p4lnBpw/4B5iX2fzUgb85048k1cpYUASeZGhZYbBW
+         7SuQCtZ3Z2BQHnh5H/eQ+n8nvprRYklfRorCNphWTL9JgUuGmwJ/3zWYeP4hrRvLCfiH
+         vvx8eoEz0xmzbmhu+BcJNZBi5whRCN5jgBkR921uMftz5m5baEQeVjK6g4wba6r7YHPz
+         mo/AbLMrUaZtzVszxn6G5Okqg1qBSxHTe0mIq6/imWniQXSucGhyAvAUuJbM/G+4F6Gw
+         A+Ew==
+X-Gm-Message-State: AOJu0YzGyPBtQs0U7+J4/VUC4t9B7N7kk2JdgtebSbamYrD2JODy3i9e
+        gGy9h2O0WQOd506RhnK2wG7XBy3EoCax30KXD3pK1Q==
+X-Google-Smtp-Source: AGHT+IFpMZ2iRVo3MJ/6b0SYAOb/GvPEGfec2JTMINMBnMybc9wPakvZR4d3FtbutJYe9Xvp6xxVYZOi+t9uQ2RUYpQ=
+X-Received: by 2002:a0d:cbc1:0:b0:5a7:fbd5:8c1 with SMTP id
+ n184-20020a0dcbc1000000b005a7fbd508c1mr3222768ywd.17.1697745773027; Thu, 19
+ Oct 2023 13:02:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org>
- <20231018-marvell-88e6152-wan-led-v4-6-3ee0c67383be@linaro.org>
- <169762516805.391872.4190043734592153628.robh@kernel.org> <CACRpkdZz_+WAt7GG4Chm_xRiBNBP=pin2dx39z27Nx0PuyVN7w@mail.gmail.com>
- <20231019134902.GB193647-robh@kernel.org>
-In-Reply-To: <20231019134902.GB193647-robh@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 19 Oct 2023 15:02:39 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKSex0o_jPV=MNsF7oUnaLx97FpiqJXPhUZH=kv7JZM0w@mail.gmail.com>
-Message-ID: <CAL_JsqKSex0o_jPV=MNsF7oUnaLx97FpiqJXPhUZH=kv7JZM0w@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 6/7] dt-bindings: marvell: Rewrite MV88E6xxx
- in schema
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Eric Dumazet <edumazet@google.com>
+References: <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
+ <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
+ <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
+ <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
+ <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
+ <ZS7ZqztMbhrG52JQ@x1n> <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com> <ZTGJHesvkV84c+l6@x1n>
+In-Reply-To: <ZTGJHesvkV84c+l6@x1n>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 19 Oct 2023 13:02:39 -0700
+Message-ID: <CAJuCfpEVgLtc3iS_huxbr86bNwEix+M4iEqWeQYUbsP6KcxfQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 8:49=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
+On Thu, Oct 19, 2023 at 12:53=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote=
 :
 >
-> On Wed, Oct 18, 2023 at 01:39:45PM +0200, Linus Walleij wrote:
-> > On Wed, Oct 18, 2023 at 12:32=E2=80=AFPM Rob Herring <robh@kernel.org> =
-wrote:
-> >
-> > > yamllint warnings/errors:
-> > >
-> > > dtschema/dtc warnings/errors:
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a re=
-quired property
-> > >         from schema $id: http://devicetree.org/schemas/net/dsa/marvel=
-l,mv88e6xxx.yaml#
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a requi=
-red property
-> > >         from schema $id: http://devicetree.org/schemas/net/dsa/marvel=
-l,mv88e6xxx.yaml#
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a re=
-quired property
-> > >         from schema $id: http://devicetree.org/schemas/net/dsa/marvel=
-l,mv88e6xxx.yaml#
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a requi=
-red property
-> > >         from schema $id: http://devicetree.org/schemas/net/dsa/marvel=
-l,mv88e6xxx.yaml#
-> >
-> > Fixed in patch 2/7?
+> On Thu, Oct 19, 2023 at 05:41:01PM +0200, David Hildenbrand wrote:
+> > That's not my main point. It can easily become a maintenance burden wit=
+hout
+> > any real use cases yet that we are willing to support.
 >
-> Yes. If one patch has errors we drop it. I should probably just give up
-> on the rest of the series instead.
+> That's why I requested a few times that we can discuss the complexity of
+> cross-mm support already here, and I'm all ears if I missed something on
+> the "maintenance burden" part..
+>
+> I started by listing what I think might be different, and we can easily
+> speedup single-mm with things like "if (ctx->mm !=3D mm)" checks with
+> e.g. memcg, just like what this patch already did with pgtable deposition=
+s.
+>
+> We keep saying "maintenance burden" but we refuse to discuss what is that=
+..
+>
+> I'll leave that to Suren and Lokesh to decide.  For me the worst case is
+> one more flag which might be confusing, which is not the end of the world=
+..
+> Suren, you may need to work more thoroughly to remove cross-mm implicatio=
+ns
+> if so, just like when renaming REMAP to MOVE.
 
-The bot should work better now not dropping patches when there are
-warnings. It will give incremental new warnings with each patch.
+Hi Folks,
+Sorry, I'm just catching up on all the comments in this thread after a
+week-long absence. Will be addressing other questions separately but
+for cross-mm one, I think the best way forward would be for me to
+split this patch into two with the second one adding cross-mm support.
+That will clearly show how much additional code that requires and will
+make it easier for us to decide whether to support it or not.
+TBH, I don't see the need for an additional flag even if the initial
+version will be merged without cross-mm support. Once it's added the
+manpage can mention that starting with a specific Linux version
+cross-mm is supported, no?
+Also from my quick read, it sounds like we want to prevent movements
+of pinned pages regardless of cross-mm support. Is my understanding
+correct?
+Thanks,
+Suren.
 
-Rob
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
