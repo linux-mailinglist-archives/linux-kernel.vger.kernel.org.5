@@ -2,216 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB347D049F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C7C7D04A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346639AbjJSWCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S1346616AbjJSWIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345256AbjJSWCb (ORCPT
+        with ESMTP id S230120AbjJSWIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:02:31 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91C811D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9e95aa02dso1738845ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1697752948; x=1698357748; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tePTsAOLSKNkXxpi1DoTK7cPVwy/xFqcvNRJj1WQpQs=;
-        b=I0FNLpiU18se5kvNpe4QsjdhDDpne6tx46CXgQ76T5B2wlf12GH1YZMjxpUMtfLWYX
-         qgSirZkSkj10KFyCfsXs1vXvds4xh1Ucxeqh2H19RwtzVczGaDnC6T3Vc33wvmhNlZ27
-         UY4sHSnzATCZEPcg1FjxOGBGtVEk5r62s9LirQA5Y2Zd5kwRGT4akBIC42ekdXJyMQyu
-         sqINhf09Ih4aWfm/GvKWf6S1vxX/phB/2Kp69/+BtDtrpg9KhMsoMg6zyjgLnRVpN6CW
-         iMqsv0fgud+703tXf+ZlRfVmSKYmsCqautcJvdHtaqYO6n7wXPGzrS6tTMpM7LAMtNkH
-         ADVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697752948; x=1698357748;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tePTsAOLSKNkXxpi1DoTK7cPVwy/xFqcvNRJj1WQpQs=;
-        b=IT4OJyZ4LNC90z+x3kLjBq+49mWEsKYGlwCWMK570PgeEBHRWifUrdv3MH+4dNrJN2
-         y0c2eyjUel/yIgRkuO2QsYmLTCjdoF395zlWFp6sFF1eZRhuwFeB9J8W5X+DGwH/O519
-         eVAfvUpD6na706aE6AWHvsrQoa9gntzUgKs6fC0vEawSlVW+rRPnwn847HpoLeZEW2W+
-         HQyYEPJZ3b5qXM38b6unyX+cniHhWjudEe3R++Np9LtBXzoOFATiJ8lrS7pdRKepgBIs
-         9q8hZQh877lwCr4IQC3eCwE/eIQR0gY3t0TyZnjqDkcvQ/UHZs1tIevSr3RkE+/6/4MG
-         YEWA==
-X-Gm-Message-State: AOJu0YzlgZoXWYAVIIXf1FHfkRtI9L0euGtiSK/i/FG3Zs1X23/sWRmE
-        tcXkNttazNFeImvt+YKaR99o8w==
-X-Google-Smtp-Source: AGHT+IGofu+MJKzCHfasjwiDGYCbXyVv9CGGJQIOinf95G43x5bHvvDHOMSsorB5TbxulBM699MT1g==
-X-Received: by 2002:a17:903:2447:b0:1c5:ecfc:2650 with SMTP id l7-20020a170903244700b001c5ecfc2650mr4379861pls.14.1697752948177;
-        Thu, 19 Oct 2023 15:02:28 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm190994plb.180.2023.10.19.15.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 15:02:27 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qtb60-001JiA-2E;
-        Fri, 20 Oct 2023 09:02:24 +1100
-Date:   Fri, 20 Oct 2023 09:02:24 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <ZTGncMVw19QVJzI6@dread.disaster.area>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
- <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
- <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
- <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+        Thu, 19 Oct 2023 18:08:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF29A4;
+        Thu, 19 Oct 2023 15:08:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7149C433C7;
+        Thu, 19 Oct 2023 22:08:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697753323;
+        bh=0xUExZaCnpOZe09w1IymOILE+jJMJDYlYAh9fZjofMw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=qCC/P6Z7UE87jxBHLuDwBwT+KgZtuqPAHBmCFVYxig53subGe5m/UnXrOlQ1Kttxa
+         jHQ9vw1yma/irMtt9GBQsWafuxPEoxiRWnA0GU7VmuaxbveT4JBxu/b3ck3oQljMbu
+         J+rIs5mj40Ud/DefXs1Jzmu6Frp/rEI/BujGJIChvpy4PcE4+izgmrkMSHyUtVIG3Z
+         Xka4WoIrLTURuZrBfnFMC1SN/ijke3yG0jWrNymZ1tbywZ4jprIOCnnS5Wg6KUOxLr
+         J5f9qRyKtnqNXVlVSsS6DJ0jQxSBipUNP1vQCFrMYW5/mLuoBOOAi2Twt2xDZT9wuH
+         9WvO+5K4DSVMg==
+Message-ID: <4f4803d538c6727990cda8f2e4fd7397.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <76b652c8-041c-49d6-9804-2781fe2ccfe3@linaro.org>
+References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com> <20230913-gpll_cleanup-v2-1-c8ceb1a37680@quicinc.com> <76f3bc23-8677-42bd-a3a5-43b17cbe552e@linaro.org> <c3dfeecf5cde513cf675b2f1a382f7a4.sboyd@kernel.org> <76b652c8-041c-49d6-9804-2781fe2ccfe3@linaro.org>
+Subject: Re: [PATCH v2 01/11] clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+Date:   Thu, 19 Oct 2023 15:08:41 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
-> On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > > Back to your earlier point though:
-> > > 
-> > > Is a global offset really a non-starter? I can see about doing something
-> > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-> > > as ktime_get_coarse_ts64. I don't see the downside there for the non-
-> > > multigrain filesystems to call that.
-> > 
-> > I have to say that this doesn't excite me. This whole thing feels a bit
-> > hackish. I think that a change version is the way more sane way to go.
-> > 
-> 
-> What is it about this set that feels so much more hackish to you? Most
-> of this set is pretty similar to what we had to revert. Is it just the
-> timekeeper changes? Why do you feel those are a problem?
-> 
-> > > 
-> > > On another note: maybe I need to put this behind a Kconfig option
-> > > initially too?
-> > 
-> > So can we for a second consider not introducing fine-grained timestamps
-> > at all. We let NFSv3 live with the cache problem it's been living with
-> > forever.
-> > 
-> > And for NFSv4 we actually do introduce a proper i_version for all
-> > filesystems that matter to it.
-> > 
-> > What filesystems exactly don't expose a proper i_version and what does
-> > prevent them from adding one or fixing it?
-> 
-> Certainly we can drop this series altogether if that's the consensus.
-> 
-> The main exportable filesystem that doesn't have a suitable change
-> counter now is XFS. Fixing it will require an on-disk format change to
-> accommodate a new version counter that doesn't increment on atime
-> updates. This is something the XFS folks were specifically looking to
-> avoid, but maybe that's the simpler option.
+Quoting Konrad Dybcio (2023-10-19 04:22:33)
+>=20
+>=20
+> On 10/19/23 02:16, Stephen Boyd wrote:
+> > Quoting Konrad Dybcio (2023-09-15 05:19:56)
+> >> On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
+> >>> GPLL, NSS crypto PLL clock rates are fixed and shouldn't be scaled ba=
+sed
+> >>> on the request from dependent clocks. Doing so will result in the
+> >>> unexpected behaviour. So drop the CLK_SET_RATE_PARENT flag from the P=
+LL
+> >>> clocks.
+> >>>
+> >>> Cc: stable@vger.kernel.org
+> >>> Fixes: b8e7e519625f ("clk: qcom: ipq8074: add remaining PLL=E2=80=99s=
+")
+> >>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> >>> ---
+> >> Stephen, do you think there should be some sort of error
+> >> or at least warning thrown when SET_RATE_PARENT is used with
+> >> RO ops?
+> >>
+> >=20
+> > Sure? How would that be implemented?
+> drivers/clk/clk.c : static void clk_change_rate()
+>=20
+> if (!skip_set_rate && core->ops->set_rate)
+>         core->ops->set_rate(core->hw, core->new_rate, best_parent_rate);
+>=20
+> ->
+>=20
+> if (!skip_set_rate) {
+>         if (core->ops->set_rate)
+>                 core->ops->set_rate(core->hw, core->new_rate,
+>                                     best_parent_rate);
+>         else
+>                 pr_err("bad idea");
+> }
+>=20
 
-And now we have travelled the full circle.
+CLK_SET_RATE_PARENT means that "calling clk_set_rate() on this clk will
+propagate up to the parent". Changing the rate of the parent could
+change the rate of this clk to be the same frequency as the parent if
+this clk doesn't have a set_rate clk op, or it could be that this clk
+has a fixed divider so during the determine_rate() callback it
+calculated what rate the parent should be to achieve the requested rate
+in clk_set_rate().
 
-The problem NFS has with atime updates on XFS is a result of
-the default behaviour of relatime - it *always* forces a persistent
-atime update after mtime has changed. Hence a read-after-write
-operation will trigger an atime update because atime is older than
-mtime. This is what causes XFS to run a transaction (i.e. a
-persistent atime update) and that bumps iversion.
+It really matters what determine_rate() returns for a clk and if after
+changing rates that rate is actually achieved. I suppose if the
+determine_rate() callback returns some rate, and then we recalc rates
+and notice that the rate determined earlier doesn't match we're
+concerned. So far in the last decade we've never cared about this though
+and I'm hesitant to start adding that check. I believe some qcom clk
+drivers take a shortcut and round the rate in frequency tables so
+whatever is returned in determine_rate() doesn't match what
+recalc_rate() calculates.
 
-lazytime does not behave this way - it delays all persistent
-timestamp updates until the next persistent change or until the
-lazytime aggregation period expires (24 hours). Hence with lazytime,
-read-after-write operations do not trigger a persistent atime
-update, and so XFS does not run a transaction to update atime. Hence
-i_version does not get bumped, and NFS behaves as expected.
+It would be interesting to get rid of the CLK_SET_RATE_PARENT check in
+clk_calc_new_rates() and simply always call clk_calc_new_rates() on the
+parent if the parent->rate doesn't match what determine_rate thought it
+should be. The framework currently calls the rounding clk op for a clk
+and gets back the parent rate that the clk requires to achieve that rate
+and then it blindly trusts that the parent rate is going to be achieved.
+If the CLK_SET_RATE_PARENT flag is set it calls clk_calc_new_rates()
+recursively on the parent, but then it doesn't check that the parent
+rate is what was requested. That's mostly there to figure out if the
+parent also needs to change rate, i.e. calculating the 'top' clk in a
+rate change. Note that this also calls determine_rate again on the
+parent, once from the child clk's determine_rate clk op and once from
+the framework.
 
-IOWs, what the NFS server actually wants from the filesytsems is for
-lazy timestamp updates to always be used on read operations. It does
-not want persistent timestamp updates that change on-disk state. The
-recent "redefinition" of when i_version should change effectively
-encodes this - i_version should only change when a persistent
-metadata or data change is made that also changes [cm]time.
-
-Hence the simple, in-memory solution to this problem is for NFS to
-tell the filesysetms that it needs to using lazy (in-memory) atime
-updates for the given operation rather than persistent atime updates.
-
-We already need to modify how atime updates work for io_uring -
-io_uring needs atime updates to be guaranteed non-blocking similar
-to updating mtime in the write IO path. If a persistent timestamp
-change needs to be run, then the timestamp update needs to return
--EAGAIN rather than (potentially) blocking so the entire operation
-can be punted to a context that can block.
-
-This requires control flags to be passed to the core atime handling
-functions.  If a filesystem doesn't understand/support the flags, it
-can just ignore it and do the update however it was going to do it.
-It won't make anything work incorrectly, just might do something
-that is not ideal.
-
-With this new "non-blocking update only" flag for io_uring and a
-new "non-persistent update only" flag for NFS, we have a very
-similar conditional atime update requirements from two completely
-independent in-kernel applications.
-
-IOWs, this can be solved quite simply by having the -application-
-define the persistence semantics of the operation being performed.
-Add a RWF_LAZYTIME/IOCB_LAZYTIME flag for read IO that is being
-issued from the nfs daemon (i.e. passed to vfs_iter_read()) and then
-the vfs/filesystem can do exactly the right thing for the IO being
-issued.
-
-This is what io_uring does with IOCB_NOWAIT to tell the filesystems
-that the IO must be non-blocking, and it's the key we already use
-for non-blocking mtime updates and will use to trigger non-blocking
-atime updates....
-
-I also know of cases where a per-IO RWF_LAZYTIME flag would be
-beneficial - large databases are already using lazytime mount
-options so that their data IO doesn't take persistent mtime update
-overhead hits on every write IO.....
-
-> There is also bcachefs which I don't think has a change attr yet. They'd
-> also likely need a on-disk format change, but hopefully that's a easier
-> thing to do there since it's a brand new filesystem.
-
-It's not a "brand new filesystem". It's been out there for quite a
-long while, and it has many users that would be impacted by on-disk
-format changes at this point in it's life. on-disk format changes
-are a fairly major deal for filesystems, and if there is any way we
-can avoid them we should.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+I wouldn't be surprised if some driver is relying on this behavior where
+the rate isn't checked after being set. Maybe when we extend struct
+clk_rate_request to have a linked list that allows a clk to build up a
+chain of rate requests we can also enforce more things like matching
+rates on recalc. Then any drivers that are relying on this behavior will
+have to opt in to a different method of changing rates and notice that
+things aren't working.
