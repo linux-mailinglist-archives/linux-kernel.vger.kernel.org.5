@@ -2,156 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DB67CFF3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ACB7CFF42
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345159AbjJSQPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        id S233086AbjJSQRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjJSQPS (ORCPT
+        with ESMTP id S229894AbjJSQRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:15:18 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18B1115
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:15:16 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9d4e38f79so67497895ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697732116; x=1698336916; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=09L4XxQdyFI0hEokOUGHOhWPvvo7gUvMowYIXj3Yqn0=;
-        b=w5DgHbW4BV2XMuk+506usaqSIlaq5tfnD1RHUPoce+t1ruQMQXdrTqgPgMyM4XqGH1
-         5WAr0uYGq9I5ho0V0XHISO9j6W5qiMtWJDnNizCdwGnt5vWHiOQERqE21/nL1b9dIxlA
-         bZ0i5KkAUrCNUDctTRV2j1KUdoEQUd1llRWP2E20ZA8iLrfcL4IAwGc1QGPr00qWT92J
-         Efz9Hb7qYWzBtyenbslXCy2/dCL6Yk9SmsnT9JkP4sXZRqZdHFPfvs1fsrGKLRcj1zQJ
-         sU3HDqldLYz+RhphEBNonBewq5mIEFXncVOUaAlNFvxG+zsN0pN/whZOuCcriLzkl8rU
-         ohWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697732116; x=1698336916;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=09L4XxQdyFI0hEokOUGHOhWPvvo7gUvMowYIXj3Yqn0=;
-        b=gC7x+tTg6M6IuTyQRTGynAj2NErc8+JfrRZinxuH5Gxn2VDI9+lz3mGpvB4O34aEqT
-         hgEFK5VdbpcvWuWZmCsUCbB0cG+fHl21j6SmBFq2a0LYAxq25DsBdD2aZ5ttXRlLtd57
-         mgPL3ituALusOqq1yJ5ObEko593idCSvt0mSgoOIdVLIG5n9I3PSuRXFdnnqgbRBDInw
-         eep2a3XSvFXmbb91dOO1ku1JbBoJk8kP8GcgbLe1b9WDtj2ePxm/mjgZmcPhcr34zJIO
-         X/6oJAePlQIrOeYUI86kMfHVAg6C7EWi2KhUrx4N12eYPNU2ab4ATliUa8FVTil6+Szc
-         jdXQ==
-X-Gm-Message-State: AOJu0YwTurQArSKGvIPmNCntib49MDV9aRtTPtWHzrhKnDm9vJmGnq07
-        1SBy5DZyE6X0ZyE7Zm3Vp3Cg0qom+28=
-X-Google-Smtp-Source: AGHT+IEnsvd3v8uxBsfzqaexvqDFYl1EsxRVbNDS1zwKUH7J7roLNA9uBA7okXynBiub+pqW/ajv/NFZ4DA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:6505:b0:1c9:c95e:6b2d with SMTP id
- b5-20020a170902650500b001c9c95e6b2dmr50322plk.4.1697732116131; Thu, 19 Oct
- 2023 09:15:16 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:15:14 -0700
-In-Reply-To: <20bb3005-bf6c-4fe1-bf0d-6d37e0ce1a77@zytor.com>
-Mime-Version: 1.0
-References: <20230927230811.2997443-1-xin@zytor.com> <ZTBJO75Zu1JBsqvw@google.com>
- <20bb3005-bf6c-4fe1-bf0d-6d37e0ce1a77@zytor.com>
-Message-ID: <ZTFWEte375FF-5RA@google.com>
-Subject: Re: [PATCH 1/1] KVM: VMX: Cleanup VMX basic information defines and usages
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xin Li <xin@zytor.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, weijiang.yang@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Thu, 19 Oct 2023 12:17:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9879B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:17:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3897C433C8;
+        Thu, 19 Oct 2023 16:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697732248;
+        bh=wwtqeVi8T90A9eG78e3y+UAer9+rhT+4XKm5eCrsfu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qU8+NRhCGj0wLiyKMJejDFBHY6PyTE12U0baIO6jDJBN9PY79b+2NYYh8cjCY4QBW
+         2OyhriUXBhcz6Boz/gmmhlb5nFahk6hNpabaYoz3/ON2tnCyQZQVocpOFoRRirrRoS
+         eohAeVEnuu/jmJkBtGbMROoWtQS8BHkV8HJD9iAgyjSMOtlThdZVFgVWbpa6yzwYtn
+         +M2S2aGcbUc9d/bTlY1xxJw4F0CV0CENipv0WVZbJRpbWn6eWCYdBtpEN0lw7228b0
+         g+cP/w3Pv5qi8qi0jdmzFLggdETfmRwVIvoYI/QZr+J5MFlF4QJ7KHWXNWAJuu97B1
+         EFkkqdzzXGDZw==
+Date:   Thu, 19 Oct 2023 17:17:22 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Yu Chien Peter Lin <peterlin@andestech.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, dminus@andestech.com,
+        conor.dooley@microchip.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, ajones@ventanamicro.com,
+        heiko@sntech.de, guoren@kernel.org, jszhang@kernel.org,
+        samuel@sholland.org, uwu@icenowy.me, ycliang@andestech.com,
+        evan@rivosinc.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tim609@andestech.com,
+        dylan@andestech.com, locus84@andestech.com
+Subject: Re: [PATCH v2 01/10] riscv: errata: Rename defines for Andes
+Message-ID: <20231019-shrimp-configure-0eb42294d459@spud>
+References: <20231019135329.3654793-1-peterlin@andestech.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="j/9DDxIzSK4GeIB/"
+Content-Disposition: inline
+In-Reply-To: <20231019135329.3654793-1-peterlin@andestech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023, Xin Li wrote:
-> On 10/18/2023 2:08 PM, Sean Christopherson wrote:
-> 
-> > > Add IA32_VMX_BASIC MSR bitfield shift macros and use them to define VMX
-> > > basic information bitfields.
-> > 
-> > Why?  Unless something actually uses the shift independently, just define the
-> > BIT_ULL(...) straightaway.
-> 
-> Well, reading "BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |" is hard.
 
-I wasn't suggesting that, I was suggesting:
+--j/9DDxIzSK4GeIB/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- #define VMX_BASIC_INOUT                          BIT_ULL(54)
+On Thu, Oct 19, 2023 at 09:53:29PM +0800, Yu Chien Peter Lin wrote:
+> Using "ANDES" rather than "ANDESTECH" to unify the naming
+> convention with OpenSBI and U-Boot, and reduce the number
+> of characters per line.
 
-instead of
+NGL, I think this is just churn and the 4-characters-per-line
+saving is a weak argument & u-boot/opensbi alignment is not really
+relevant. A better argument for it is probably unification with the
+directory/file names, Kconfig options and with the
+ANDES_SBI_EXT_OPCP_SW_WORKAROUND definitions.
 
- #define VMX_BASIC_INOUT                          BIT_ULL(VMX_BASIC_INOUT_SHIFT)
+/shrug,
+Conor.
 
-Defining a shift adds a pointless layer of indirection (if the shift isn't used
-directly).  It's especially problematic when there are a series of definitions.
-E.g. if I want to know which bit a flag corresponds to, this:
+>=20
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> ---
+> Changes v1 -> v2:
+>   - No change
+> ---
+>  arch/riscv/errata/andes/errata.c       | 10 +++++-----
+>  arch/riscv/include/asm/errata_list.h   |  4 ++--
+>  arch/riscv/include/asm/vendorid_list.h |  2 +-
+>  arch/riscv/kernel/alternative.c        |  2 +-
+>  4 files changed, 9 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/e=
+rrata.c
+> index 197db68cc8da..d2e1abcac967 100644
+> --- a/arch/riscv/errata/andes/errata.c
+> +++ b/arch/riscv/errata/andes/errata.c
+> @@ -18,9 +18,9 @@
+>  #include <asm/sbi.h>
+>  #include <asm/vendorid_list.h>
+> =20
+> -#define ANDESTECH_AX45MP_MARCHID	0x8000000000008a45UL
+> -#define ANDESTECH_AX45MP_MIMPID		0x500UL
+> -#define ANDESTECH_SBI_EXT_ANDES		0x0900031E
+> +#define ANDES_AX45MP_MARCHID		0x8000000000008a45UL
+> +#define ANDES_AX45MP_MIMPID		0x500UL
+> +#define ANDES_SBI_EXT_ANDES		0x0900031E
+> =20
+>  #define ANDES_SBI_EXT_IOCP_SW_WORKAROUND	1
+> =20
+> @@ -32,7 +32,7 @@ static long ax45mp_iocp_sw_workaround(void)
+>  	 * ANDES_SBI_EXT_IOCP_SW_WORKAROUND SBI EXT checks if the IOCP is missi=
+ng and
+>  	 * cache is controllable only then CMO will be applied to the platform.
+>  	 */
+> -	ret =3D sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAR=
+OUND,
+> +	ret =3D sbi_ecall(ANDES_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
+>  			0, 0, 0, 0, 0, 0);
+> =20
+>  	return ret.error ? 0 : ret.value;
+> @@ -43,7 +43,7 @@ static bool errata_probe_iocp(unsigned int stage, unsig=
+ned long arch_id, unsigne
+>  	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
+>  		return false;
+> =20
+> -	if (arch_id !=3D ANDESTECH_AX45MP_MARCHID || impid !=3D ANDESTECH_AX45M=
+P_MIMPID)
+> +	if (arch_id !=3D ANDES_AX45MP_MARCHID || impid !=3D ANDES_AX45MP_MIMPID)
+>  		return false;
+> =20
+>  	if (!ax45mp_iocp_sw_workaround())
+> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/as=
+m/errata_list.h
+> index b55b434f0059..c190393aa9db 100644
+> --- a/arch/riscv/include/asm/errata_list.h
+> +++ b/arch/riscv/include/asm/errata_list.h
+> @@ -12,8 +12,8 @@
+>  #include <asm/vendorid_list.h>
+> =20
+>  #ifdef CONFIG_ERRATA_ANDES
+> -#define ERRATA_ANDESTECH_NO_IOCP	0
+> -#define ERRATA_ANDESTECH_NUMBER		1
+> +#define ERRATA_ANDES_NO_IOCP 0
+> +#define ERRATA_ANDES_NUMBER 1
+>  #endif
+> =20
+>  #ifdef CONFIG_ERRATA_SIFIVE
+> diff --git a/arch/riscv/include/asm/vendorid_list.h b/arch/riscv/include/=
+asm/vendorid_list.h
+> index e55407ace0c3..2f2bb0c84f9a 100644
+> --- a/arch/riscv/include/asm/vendorid_list.h
+> +++ b/arch/riscv/include/asm/vendorid_list.h
+> @@ -5,7 +5,7 @@
+>  #ifndef ASM_VENDOR_LIST_H
+>  #define ASM_VENDOR_LIST_H
+> =20
+> -#define ANDESTECH_VENDOR_ID	0x31e
+> +#define ANDES_VENDOR_ID		0x31e
+>  #define SIFIVE_VENDOR_ID	0x489
+>  #define THEAD_VENDOR_ID		0x5b7
+> =20
+> diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternat=
+ive.c
+> index 319a1da0358b..0128b161bfda 100644
+> --- a/arch/riscv/kernel/alternative.c
+> +++ b/arch/riscv/kernel/alternative.c
+> @@ -43,7 +43,7 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufact=
+urer_info_t *cpu_mfr_info
+> =20
+>  	switch (cpu_mfr_info->vendor_id) {
+>  #ifdef CONFIG_ERRATA_ANDES
+> -	case ANDESTECH_VENDOR_ID:
+> +	case ANDES_VENDOR_ID:
+>  		cpu_mfr_info->patch_func =3D andes_errata_patch_func;
+>  		break;
+>  #endif
+> --=20
+> 2.34.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-  #define VMX_BASIC_32BIT_PHYS_ADDR_ONLY          BIT_ULL(48)
-  #define VMX_BASIC_DUAL_MONITOR_TREATMENT        BIT_ULL(49)
-  #define VMX_BASIC_MEM_TYPE(x)                   (((x) & GENMASK_ULL(53, 50)) >> 50)
-  #define VMX_BASIC_INOUT                         BIT_ULL(54)
-  #define VMX_BASIC_TRUE_CTLS                     BIT_ULL(55)
+--j/9DDxIzSK4GeIB/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-is much easier for me to process than this
+-----BEGIN PGP SIGNATURE-----
 
-  #define VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT    48
-  #define VMX_BASIC_32BIT_PHYS_ADDR_ONLY          BIT_ULL(VMX_BASIC_32BIT_PHYS_ADDR_ONLY_SHIFT)
-  #define VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT  49
-  #define VMX_BASIC_DUAL_MONITOR_TREATMENT        BIT_ULL(VMX_BASIC_DUAL_MONITOR_TREATMENT_SHIFT)
-  #define VMX_BASIC_MEM_TYPE_SHIFT                50
-  #define VMX_BASIC_INOUT_SHIFT                   54
-  #define VMX_BASIC_INOUT                         BIT_ULL(VMX_BASIC_INOUT_SHIFT)
-  #define VMX_BASIC_TRUE_CTLS_SHIFT               55
-  #define VMX_BASIC_TRUE_CTLS                     BIT_ULL(VMX_BASIC_TRUE_CTLS_SHIFT)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTFWkgAKCRB4tDGHoIJi
+0vKcAQD7/5ed28QgqwN8OzDUvTDRZVQYxWaeLacNvyAa8AY6KQEA8Hf8qaNx+/BH
+SIyVv6jWcKM5owcNlut0TDNs15Sc3g0=
+=BfbK
+-----END PGP SIGNATURE-----
 
-and the former also tends to work better for IDEs that support peeking at macro
-definitions.
-
-> > > ---
-> > >   arch/x86/include/asm/msr-index.h       | 31 ++++++++++++++++++++------
-> > >   arch/x86/kvm/vmx/nested.c              | 10 +++------
-> > >   arch/x86/kvm/vmx/vmx.c                 |  2 +-
-> > >   tools/arch/x86/include/asm/msr-index.h | 31 ++++++++++++++++++++------
-> > 
-> > Please drop the tools/ update, copying kernel headers into tools is a perf tools
-> > thing that I want no part of.
-> > 
-> > https://lore.kernel.org/all/Y8bZ%2FJ98V5i3wG%2Fv@google.com
-> 
-> why can't we simply remove tools/arch/x86/include/asm/msr-index.h?
-
-That's a question for the tools/perf folks, though I believe the answer is partly
-that the perf tooling relies on *exactly* matching kernel-internal structures, and
-so tools/perf doesn't want to rely on installed headers.
-
-> > > +#define VMX_BASIC_RESERVED_BITS			\
-> > > +	(VMX_BASIC_ALWAYS_0 |			\
-> > > +	 VMX_BASIC_RESERVED_RANGE_1 |		\
-> > > +	 VMX_BASIC_RESERVED_RANGE_2)
-> > 
-> > I don't see any value in defining VMX_BASIC_RESERVED_RANGE_1 and
-> > VMX_BASIC_RESERVED_RANGE_2 separately.   Or VMX_BASIC_ALWAYS_0 for the matter.
-> > And I don't think these macros need to go in msr-index.h, e.g. just define them
-> > above vmx_restore_vmx_basic() as that's likely going to be the only user, ever.
-> 
-> hmm, I'm overusing macros, better do:
-> #define VMX_BASIC_RESERVED_BITS			\
-> 	(BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56))
-
-Please define from high=>low, x86 is little-endian.  I.e.
-
-	 (GENMASK_ULL(63, 56) | GENMASK_ULL(47, 45) | BIT_ULL(31))
-
-> Probably should also move VMX MSR field defs from msr-index.h to
-> a vmx header file.
-
-Why bother putting them in a header?  As above, it's extremely unlikely anything
-besides vmx_restore_vmx_basic() will ever care about exactly which bits are
-reserved.
+--j/9DDxIzSK4GeIB/--
