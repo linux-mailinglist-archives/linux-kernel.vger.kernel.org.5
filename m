@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F08E7CF082
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAE87CF08C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 08:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344808AbjJSGz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 02:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        id S232782AbjJSG7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 02:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbjJSGz1 (ORCPT
+        with ESMTP id S232583AbjJSG7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 02:55:27 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF55119
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:55:25 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40839807e82so2328955e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 23:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697698523; x=1698303323; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sxkw9J6vbuDa33oyWmJKA2N6BRhlaSDTP/vmMSE0zJw=;
-        b=YBdZTDFc8JZrs4MTwC7L+pWc6TYQb0PbC0s4K4WuPV3eSNVml7pQA3ZxK5Y+WEG0qp
-         vEwQ1HvTDd2AATlXiNTkMkcgQSOe5REqiNA6CJhUABgBhbDvntvv/BkqKrWakrslDUfj
-         ZsyxLl+fzXqeYbudrnN/TqmZbATsR0wLl3Gp9e7lZW0Dr8CVXmvEtq0hd7G+2YN6id3y
-         IFG4MHWO3Mngdg6yKuQqzEWIaw7yKk9Uxg5AHxdBrHO3JPpbUKeMgVB18F2fzTmk1DVm
-         2YAmGMXVrgL1OfdoUjykxm6jKlU1WcAwM42pTNB73drI66CFviFjPgjBJfaBUnzXwXrL
-         yY7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697698523; x=1698303323;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sxkw9J6vbuDa33oyWmJKA2N6BRhlaSDTP/vmMSE0zJw=;
-        b=Vmvf92JxB92lJfRdR0w6lmtFb4JUh6XfmpLgoxcGixEwaswlq5f3J8RWkjj8Q1lK5m
-         TOEOL8yplolKitRD+DkVkyMbUEcrVt58I5lAO4dTMWfLdQTys9WG5C5/F7r3JfwrTmi2
-         9zLZxUKU9O/CIwk9e6ttLZmid9yHW9otVVoB3KJo1z0EMogu7AFfnRHYY8C8Oev5oYVo
-         1bBV/6/M1PPsLQN3X7JVEUk2V4mWOPAfwaLRT8rgPSrABWON968dZ5Rfl8O2d0msMM0I
-         x9+q/767GUa9EvBVvnJq4xpK3/0qbrJfu6gGcOg/WMcsWrFuceNoKgAYxiH4FHsfEDWs
-         +uAQ==
-X-Gm-Message-State: AOJu0YyUs7MISHLUMozSB36E2zKwhYnV0JluJSjHJMRzp1zo8sgT2QBP
-        H2a98uehMigR/bBs+5Qe+AvdLKKJcBipEg==
-X-Google-Smtp-Source: AGHT+IGtUrfvTZXm57cB6L9weG+na/8FnIH2RYJGQDTaTpfTbY8L4FAKYCDw9+cTc2AXH/zOWgGATw==
-X-Received: by 2002:a05:600c:1ca8:b0:405:784a:d53e with SMTP id k40-20020a05600c1ca800b00405784ad53emr740376wms.20.1697698523166;
-        Wed, 18 Oct 2023 23:55:23 -0700 (PDT)
-Received: from lab-ubuntu ([41.90.66.104])
-        by smtp.gmail.com with ESMTPSA id x3-20020adff0c3000000b0032dc74c093dsm3713492wro.103.2023.10.18.23.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 23:55:22 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 09:55:20 +0300
-From:   Calvince Otieno <calvncce@gmail.com>
-To:     gustavo@embeddedor.com, outreachy@lists.linux.dev
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH v4] staging: vme_user: replace strcpy with strscpy
-Message-ID: <ZTDS2H48JBUTiwZi@lab-ubuntu>
+        Thu, 19 Oct 2023 02:59:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084BC11D;
+        Wed, 18 Oct 2023 23:59:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E466C433C7;
+        Thu, 19 Oct 2023 06:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697698770;
+        bh=jgNes3/dT6qKmEnlevXgPZqbntb+vPAwbcCbjHyY8U4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kwygLwJO3XbLTgcbM9Qz1EB1Wt/1qOltdOvDGM5b2r1Gf0HaD4XTjQk6RhIvrcbCO
+         eK7dvRvk/XI7cSTt7+poHJAClNnlXwJsedpE5dBc6pNADJ0s8YugOl+08Sku5cfRCX
+         OWX0LwKsJLIUipsDV4ji9lpDrSTC10JfdCoFhl8CqmJ4YdppbxSdhPhM1aqEf8BUDF
+         kkuWwSmFT8oYCII8p8pLYENo6KY/803ZadNY09ofr8vZfdK9ux1au6Zm/Zynt0SMzg
+         ZzcuzJ7ffBAzU+SUNb5ADzavmldv25vtEqkkXW1YYpG3lMLJ7iuXz2/jFStOTbvE+H
+         0BmiU7GhRwY5g==
+Date:   Wed, 18 Oct 2023 23:59:28 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org,
+        David Kaplan <david.kaplan@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20231019065928.mrvhtfaya22p2uzw@treble>
+References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+ <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
+ <20231018132352.GBZS/caGJ8Wk9kmTbg@fat_crate.local>
+ <ZS/f8DeEIWhBtBeb@gmail.com>
+ <20231018151245.GCZS/17QhDGe7q6K+w@fat_crate.local>
+ <20231018155433.z4auwckr5s27wnig@treble>
+ <20231018175531.GEZTAcE2p92U1AuVp1@fat_crate.local>
+ <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
+ <20231019063527.iwgyioxi2gznnshp@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231019063527.iwgyioxi2gznnshp@treble>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch suggests using strscpy() instead of strcpy().
+On Wed, Oct 18, 2023 at 11:35:30PM -0700, Josh Poimboeuf wrote:
+> On Wed, Oct 18, 2023 at 10:37:47PM +0200, Borislav Petkov wrote:
+> > +++ b/arch/x86/kernel/alternative.c
+> > @@ -748,14 +748,20 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
+> >                         continue;
+> >  
+> >                 op = insn.opcode.bytes[0];
+> > -               if (op == JMP32_INSN_OPCODE)
+> > +               if (op == JMP32_INSN_OPCODE || op == JMP8_INSN_OPCODE)
+> >                         dest = addr + insn.length + insn.immediate.value;
+> 
+> I can recreate (with my GCC 12) by disabling CONFIG_CALL_DEPTH_TRACKING
+> and CONFIG_CPU_SRSO, which puts __x86_return_thunk() close enough to the
+> retpolines to enable the two-byte JMP in the last retpoline.  And then
+> booting with spectre_v2=retpoline.
+> 
+> (Then to force two-byte JMPs for more retpolines, I cheated and just
+> moved __x86_return_thunk() to right after the retpolines.)
+> 
+> Your WARN patch didn't seem to fix the no-output hang for me, maybe due
+> to recursive warnings?
+> 
+> I was able to get more output by changing the WARN to (ahem) WARN_ONCE,
+> but it's still getting into some kind of stack corruption.  Full output
+> below.  I haven't had a chance to look further, but it's worrisome that
+> even the WARN_ONCE isn't being recovered from.
+> 
+> Regardless of if we revert e92626af3234 ("x86/retpoline: Remove
+> .text..__x86.return_thunk section"), or do the above patch, we still
+> need to figure out why even WARN_ONCE() would be borking things.
+> 
+> Off to bed...
 
-The advantages of strscpy() are that it always adds a NUL terminator
-and prevents read/write overflows if the source string is not properly
-terminated.
+One last idea, since the return thunk is used everywhere (even non-ABI
+compliant functions) it might be possible the "call check_thunks" (and
+its call to warn_printk) is clobbering some registers which some code
+(exception handling entry code?) doesn't appreciate.
 
-strcpy() lacks built-in bounds checking for the destination buffer,
-making it susceptible to buffer overflows. These overflows can lead
-to various unpredictable behaviors.
+FWIW, I changed to a WARN_ON_ONCE and it booted fine.
 
-In this specific context, both strscpy and strcpy performs the same
-operation without any functional difference.
-
-The reason for this equivalence is that the driver_name string "vme_fake"
-is shorter than the size of the fake_bridge->name array which is defined
-as 16 characters (struct vme_bridge {char name[VMENAMSIZ];...}). Thus,
-there is no risk of buffer overflow in either case. VMENAMSIZ variable
-holds a constant value of 16 (#define VMENAMSIZ 16)
-
-The null-terminated "vme_fake" string
-(static const char driver_name[] = "vme_fake";) can be safely copied into
-fake_bridge->name using either strscpy or strcpy.
-
-While using strscpy() does not address any bugs, it is considered a better
-practice and aligns with checkpatch recommendations.
-
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Calvince Otieno <calvncce@gmail.com>
----
-Changes in v4:
- - Added a semicolon to mark the end of the strscpy() implementation.
- The semicolon got deleted accidentally while mailing the previous patch
- versions.
- - Added the patch reviewer.
----
-Changes in v3:
- - Rewrote the commit message
----
-Changes in v2:
- - Make the commit message more clearer.
- - Remove the incident extra line change.
-
----
- drivers/staging/vme_user/vme_fake.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
-index 0e02c194298d..8ab5b43c70a6 100644
---- a/drivers/staging/vme_user/vme_fake.c
-+++ b/drivers/staging/vme_user/vme_fake.c
-@@ -1091,7 +1091,7 @@ static int __init fake_init(void)
- 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
- 		     (unsigned long)fake_bridge);
- 
--	strcpy(fake_bridge->name, driver_name);
-+	strscpy(fake_bridge->name, driver_name, sizeof(fake_bridge->name));
- 
- 	/* Add master windows to list */
- 	INIT_LIST_HEAD(&fake_bridge->master_resources);
 -- 
-2.34.1
-
+Josh
