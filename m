@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2837D03CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C3A7D03D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbjJSVWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        id S1346653AbjJSVXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346598AbjJSVWh (ORCPT
+        with ESMTP id S235605AbjJSVWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:22:37 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D6E10F0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:21:55 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1caa7597af9so890865ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:21:55 -0700 (PDT)
+        Thu, 19 Oct 2023 17:22:41 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B40210FD
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:21:58 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9bca1d96cso831285ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:21:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697750515; x=1698355315; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1697750517; x=1698355317; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=99XDTyUCvOUhQUp0MWN4ekbCgPLwBk+829H/gHSUoe4=;
-        b=MPcZ51HNc62moeK+/HePn0XOKEHJX/127aI6KsxoMr0BIV9AkaT9ImsCYxCC0jAXUV
-         3ZznDtvUVFzDoSdxlMhQvO8fXUCOK2ccN762TnO8JMzZajWOF0IWh6JPZ1NuY1mqOEMo
-         WobmXd56f4+WENYmSJfy7D/y8DA3xgWDEL21c=
+        bh=Eh9gNdfF4X/gCkqak/1kHTLkL80QPwsWChwAwIX/vCk=;
+        b=EXZ6pO8Ls3k9/TPQuHkGd8uiw8tNdHMdRF2ncSLiUqL69wK1K9f/p/HGPNUBwacQg+
+         UhqCe50ZNV8+/MqwSEO46rfgmT9teuutVTEfLgHax96H/Oo6V23IfQAj5cFNB/1qJuEf
+         GDQUEWdg6wWsrGU/kHwOvI2NpMy41vABaizzM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697750515; x=1698355315;
+        d=1e100.net; s=20230601; t=1697750517; x=1698355317;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=99XDTyUCvOUhQUp0MWN4ekbCgPLwBk+829H/gHSUoe4=;
-        b=KpVCDMR18oJSMzqRZkWI2em0MKCTi7bSCGF/uTByBhqil5IXMomhdF49MTKbUn7LgO
-         MWBWPozxCuA7uzC3BAzOrcWmOYGXyayeEvwAQ37imdRdGybqIm8JbPz9ODA7q5kGqfPg
-         0nDjcspOtzMSF3betMAiZVCMrVnIe/j3Cp7u653BhpQt+/IO7vDJUAzJeyXjkBzEoR1F
-         1GZ0eJbgDSOwvCKpxeRkxFpVcmGdgUON3U/pIuFEdC8tzhfLELT3jNMqzjfxGqGr0T6R
-         NuGZOoJmmnIrXa6vSZWYGd46gdycIFJkdNBi6gc8nKSN0MPgoJQG7Yjn6wOn9otvVOKf
-         Xc8A==
-X-Gm-Message-State: AOJu0Yy2zYbYRjZjwLaOG791nArbfPHw6BcDyELUdHBAva3Cg5CQUq54
-        WQwmiRLt0mVSrSas8IJdaBkqTg==
-X-Google-Smtp-Source: AGHT+IGHsyaazfKztgV6shIemQ+jlC7THOn7sKDO8SWa/SgIufIDIoOEAm3zf/DhGhEpv0iSNhqHcw==
-X-Received: by 2002:a17:902:e204:b0:1c9:ccbc:4c98 with SMTP id u4-20020a170902e20400b001c9ccbc4c98mr75405plb.37.1697750515162;
-        Thu, 19 Oct 2023 14:21:55 -0700 (PDT)
+        bh=Eh9gNdfF4X/gCkqak/1kHTLkL80QPwsWChwAwIX/vCk=;
+        b=hvDKF/oAM7M6MtV/G4ZcoZOF5f+R6ErNiKmLLlr01fceAOmIK7rKgSRbPUER9J8DJm
+         xjJVCJ8SW25HFkb/W3s+Jw0b/EhzI4GEeFXDcphZ4MC8ERlfb+Zf70BfEYA3goruuWVK
+         gK6Bd6oPEgej+9bnoPROzcUomD3dxI5EQHGnoLeW/UUUtQ5b2ookzwEnEpYD5n0hPJuT
+         vpAF8tY+YrMmPzT0GR9RbES7Ip0yk9hkUyg9CNkhvfyBtoWM9M11X1W+DLI4ln0Hkq/H
+         4cGNU9DHc3GZITfRyQQxYu4KqoM6Rpnkktm9BgK/avEYuAJBMCLgkxTDLdp8+ijvirrL
+         P3rg==
+X-Gm-Message-State: AOJu0YwrHC821vewx0ZTsiijlNxSVznKuuq47Rmr5b1/zHguzvQASai9
+        53PO7pmV6zbTDx67VUVm0k2Jdg==
+X-Google-Smtp-Source: AGHT+IFhaCrYRptQT2G1Mdon7Ns/UVfgU3ItPHb4YZENLzX8Rgdh+/NrkPOTBSofuDTZaHCwWkG/Vg==
+X-Received: by 2002:a17:903:23c2:b0:1ca:6abe:cb37 with SMTP id o2-20020a17090323c200b001ca6abecb37mr126905plh.9.1697750517343;
+        Thu, 19 Oct 2023 14:21:57 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:a6da:6f08:412:e04b])
-        by smtp.gmail.com with ESMTPSA id l2-20020a170902d34200b001bbdd44bbb6sm154100plk.136.2023.10.19.14.21.53
+        by smtp.gmail.com with ESMTPSA id l2-20020a170902d34200b001bbdd44bbb6sm154100plk.136.2023.10.19.14.21.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 14:21:54 -0700 (PDT)
+        Thu, 19 Oct 2023 14:21:56 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Jakub Kicinski <kuba@kernel.org>,
         Hayes Wang <hayeswang@realtek.com>,
@@ -61,9 +61,9 @@ Cc:     Grant Grundler <grundler@chromium.org>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH v4 1/5] r8152: Increase USB control msg timeout to 5000ms as per spec
-Date:   Thu, 19 Oct 2023 14:20:20 -0700
-Message-ID: <20231019142019.v4.1.I6e4fb5ae61b4c6ab32058cb12228fd5bd32da676@changeid>
+Subject: [PATCH v4 2/5] r8152: Check for unplug in rtl_phy_patch_request()
+Date:   Thu, 19 Oct 2023 14:20:21 -0700
+Message-ID: <20231019142019.v4.2.I300ed6c3269c77756bdd10dd0d6f97db85470186@changeid>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
 In-Reply-To: <20231019212130.3146151-1-dianders@chromium.org>
 References: <20231019212130.3146151-1-dianders@chromium.org>
@@ -71,79 +71,44 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the comment next to USB_CTRL_GET_TIMEOUT and
-USB_CTRL_SET_TIMEOUT, although sending/receiving control messages is
-usually quite fast, the spec allows them to take up to 5 seconds.
-Let's increase the timeout in the Realtek driver from 500ms to 5000ms
-(using the #defines) to account for this.
+If the adapter is unplugged while we're looping in
+rtl_phy_patch_request() we could end up looping for 10 seconds (2 ms *
+5000 loops). Add code similar to what's done in other places in the
+driver to check for unplug and bail.
 
-This is not just a theoretical change. The need for the longer timeout
-was seen in testing. Specifically, if you drop a sc7180-trogdor based
-Chromebook into the kdb debugger and then "go" again after sitting in
-the debugger for a while, the next USB control message takes a long
-time. Out of ~40 tests the slowest USB control message was 4.5
-seconds.
-
-While dropping into kdb is not exactly an end-user scenario, the above
-is similar to what could happen due to an temporary interrupt storm,
-what could happen if there was a host controller (HW or SW) issue, or
-what could happen if the Realtek device got into a confused state and
-needed time to recover.
-
-This change is fairly critical since the r8152 driver in Linux doesn't
-expect register reads/writes (which are backed by USB control
-messages) to fail.
-
-Fixes: ac718b69301c ("net/usb: new driver for RTL8152")
-Suggested-by: Hayes Wang <hayeswang@realtek.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
-(no changes since v1)
+(no changes since v2)
 
- drivers/net/usb/r8152.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Changes in v2:
+- ("Check for unplug in rtl_phy_patch_request()") new for v2.
+
+ drivers/net/usb/r8152.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 0c13d9950cd8..482957beae66 100644
+index 482957beae66..fff2f9e67b5f 100644
 --- a/drivers/net/usb/r8152.c
 +++ b/drivers/net/usb/r8152.c
-@@ -1212,7 +1212,7 @@ int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+@@ -4046,6 +4046,9 @@ static int rtl_phy_patch_request(struct r8152 *tp, bool request, bool wait)
+ 	for (i = 0; wait && i < 5000; i++) {
+ 		u32 ocp_data;
  
- 	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_in,
- 			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
--			      value, index, tmp, size, 500);
-+			      value, index, tmp, size, USB_CTRL_GET_TIMEOUT);
- 	if (ret < 0)
- 		memset(data, 0xff, size);
- 	else
-@@ -1235,7 +1235,7 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
- 
- 	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_out,
- 			      RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
--			      value, index, tmp, size, 500);
-+			      value, index, tmp, size, USB_CTRL_SET_TIMEOUT);
- 
- 	kfree(tmp);
- 
-@@ -9494,7 +9494,8 @@ static u8 __rtl_get_hw_ver(struct usb_device *udev)
- 
- 	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
--			      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp), 500);
-+			      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp),
-+			      USB_CTRL_GET_TIMEOUT);
- 	if (ret > 0)
- 		ocp_data = (__le32_to_cpu(*tmp) >> 16) & VERSION_MASK;
- 
++		if (test_bit(RTL8152_UNPLUG, &tp->flags))
++			break;
++
+ 		usleep_range(1000, 2000);
+ 		ocp_data = ocp_reg_read(tp, OCP_PHY_PATCH_STAT);
+ 		if ((ocp_data & PATCH_READY) ^ check)
 -- 
 2.42.0.758.gaed0368e0e-goog
 
