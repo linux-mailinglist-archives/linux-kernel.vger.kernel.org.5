@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB41C7CFBC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016CF7CFBD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345827AbjJSN4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        id S1345867AbjJSN6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345616AbjJSN4C (ORCPT
+        with ESMTP id S1345616AbjJSN61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:56:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BD6B0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:56:00 -0700 (PDT)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697723758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JAyla9zbEzBqXnPEaM8zZpPa8/CLifnjpeuStw/HUJ0=;
-        b=KPs/2QWrzTSaIlJjHYJ725VeUa+bJujeYRBqScppyHfMYv0181T/uWLbWWRUmV5xD+Xa++
-        nhUusnNSM5mDpAMm0bSR5gxtLMKRiagG1fbpaqrKfCaBpJpvkViNNLHAfJ12dlF4jV+yjX
-        SNYw8P9bOjErnLLlAXqt9hViPSRwTfD3Sf81OAtaZt9qCGFWqTw+tgLbqaoxUTvLNycMgc
-        IfwTz1RJGTqrQ3raaIk53VQlnyYrwrJCSD7d+63rzdfosQkihCG09kkNS2VTxMUImnk+Ym
-        GwWhXPRrl3lC1Cd7bN2ruVXLoz1duDSQ9pugk8I3irHP/8gronRPBvHzg7Rh9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697723758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JAyla9zbEzBqXnPEaM8zZpPa8/CLifnjpeuStw/HUJ0=;
-        b=09pKiW5wUEXoEAJO0AcQ89lDst+MQj0V1KgrkapQy9PUHG8+PeisKwTlfwwWeb77ut8XWh
-        1/uR3rLryX+VnjAg==
-To:     K Prateek Nayak <kprateek.nayak@amd.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-Subject: Re: [PATCH v8 00/25] timer: Move from a push remote at enqueue to a
- pull at expiry model
-In-Reply-To: <28563e2d-6746-e2c4-7d21-4ca39a82edc1@amd.com>
-References: <20231004123454.15691-1-anna-maria@linutronix.de>
- <28563e2d-6746-e2c4-7d21-4ca39a82edc1@amd.com>
-Date:   Thu, 19 Oct 2023 15:55:57 +0200
-Message-ID: <87jzri90nm.fsf@somnus>
+        Thu, 19 Oct 2023 09:58:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0E2B0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697723906; x=1729259906;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HttYoGHdwVXHwuQOv7yk6b2XhuP1nklhkcCtI6dN/8A=;
+  b=k08N7j849oaUJDwo4hGk4eTC6uFk+d93itV0kq/YnngpUkdGGu+cP1cv
+   Cvd6nlQ5ag+w0yJuHnCUit739vHNEAUHCEzbU1i/v7FJyiNQ+DC7HG2ck
+   ZBc/On00kqob5Wl6DUWq78rKQYyynFH0iqyRN+iE/j3SQFE2hn0QevXxz
+   XaSivR/rTUTUL5Kvg4bQcv79Y1iEo1PqoFUDMVO5Dweg6i/7QPobB5x0m
+   +upIrUsLuvwWklxSigFpBcTR8WpCqyTU1C5NNn/324VqW4f1VFytYahiP
+   MouZxI6Qqp0V30nQWvLVC/jh/+2RWD0ihOXTKJHBYiMWB7qtQcyXc/IM7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7818628"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="7818628"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 06:56:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="733574790"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="733574790"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 06:56:05 -0700
+Received: from [10.212.5.13] (kliang2-mobl1.ccr.corp.intel.com [10.212.5.13])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 0D986580D4F;
+        Thu, 19 Oct 2023 06:56:03 -0700 (PDT)
+Message-ID: <86df1293-c20b-4292-abde-852861dcedf1@linux.intel.com>
+Date:   Thu, 19 Oct 2023 09:56:02 -0400
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 4/7] perf/x86/intel: Support LBR event logging
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
+References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
+ <20231004184044.3062788-4-kan.liang@linux.intel.com>
+ <20231019092341.GE36211@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231019092341.GE36211@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Prateek,
 
-K Prateek Nayak <kprateek.nayak@amd.com> writes:
 
-> Hello Anna-Maria,
+On 2023-10-19 5:23 a.m., Peter Zijlstra wrote:
+> On Wed, Oct 04, 2023 at 11:40:41AM -0700, kan.liang@linux.intel.com wrote:
+> 
+>> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+>> index c3b0d15a9841..1e80a551a4c2 100644
+>> --- a/arch/x86/events/intel/lbr.c
+>> +++ b/arch/x86/events/intel/lbr.c
+>> @@ -676,6 +676,21 @@ void intel_pmu_lbr_del(struct perf_event *event)
+>>  	WARN_ON_ONCE(cpuc->lbr_users < 0);
+>>  	WARN_ON_ONCE(cpuc->lbr_pebs_users < 0);
+>>  	perf_sched_cb_dec(event->pmu);
+>> +
+>> +	/*
+>> +	 * The logged occurrences information is only valid for the
+>> +	 * current LBR group. If another LBR group is scheduled in
+>> +	 * later, the information from the stale LBRs will be wrongly
+>> +	 * interpreted. Reset the LBRs here.
+>> +	 * For the context switch, the LBR will be unconditionally
+>> +	 * flushed when a new task is scheduled in. If both the new task
+>> +	 * and the old task are monitored by a LBR event group. The
+>> +	 * reset here is redundant. But the extra reset doesn't impact
+>> +	 * the functionality. It's hard to distinguish the above case.
+>> +	 * Keep the unconditionally reset for a LBR event group for now.
+>> +	 */
+> 
+> I found this really hard to read, also should this not rely on
+> !cpuc->lbr_users ?
 >
-> Happy to report I don't see any regression with this version of series.
-> I'll leave the detailed report below.
 
-[...]
+It's possible that the last LBR user is not in the branch_counters
+group, e.g., a branch_counters group + several normal LBR events.
+For this case, the is_branch_counters_group(event) return false for the
+last LBR user. The LBR will not be reset.
 
-> Thank you for debugging and helping fix the tbench regression.
-> If the series does not change drastically, feel free to add:
->
-> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
->
+> As is, you'll reset the lbr for every event in the group.
+> 
+>> +	if (is_branch_counters_group(event))
+>> +		intel_pmu_lbr_reset();
+>>  }
 
-Thanks a lot for all the testing you did! When posting v9, I'll
-summarize the changes and if required, I'll ask for testing support, if
-it is ok?
+Right, I forgot to change it after I modified flag. :(
 
->> 
->> Possible Next Steps
->> ~~~~~~~~~~~~~~~~~~~
->> 
->> Simple deferrable timers are no longer required as they can be converted to
->> global timers. If a CPU goes idle, a formerly deferrable timer will not
->> prevent the CPU to sleep as long as possible. Only the last migrator CPU
->> has to take care of them. Deferrable timers with timer pinned flags needs
->> to be expired on the specified CPU but must not prevent CPU from going
->> idle. They require their own timer base which is never taken into account
->> when calculating the next expiry time. This conversation and required
->> cleanup will be done in a follow up series.
->> 
->
-> I'll keep an eye out for future versions for testing.
+Here I think we should only clear the LBRs once for a branch_counters
+group, e.g., in the leader event.
 
-I'll keep you in the loop.
++	if (is_branch_counters_group(event) && event == event->group_leader)+	
+intel_pmu_lbr_reset();
+
+The only problem is that the leader event may not be an LBR event. But I
+guess it should be OK to limit that the leader event of a
+branch_counters group must be an LBR event in hw_config().
 
 Thanks,
-
-	Anna-Maria
-
+Kan
