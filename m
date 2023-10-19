@@ -2,225 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FAE7D0220
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B67D7D0224
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346451AbjJSSxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S1346442AbjJSSzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346405AbjJSSxc (ORCPT
+        with ESMTP id S1346286AbjJSSzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:53:32 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEE0126
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:53:30 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-66d134a019cso347166d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:53:30 -0700 (PDT)
+        Thu, 19 Oct 2023 14:55:01 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5282C9B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:54:59 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9d407bb15so70869875ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1697741609; x=1698346409; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vAZ05ZW0shfRkic4Xphq7vXHsX0F288y2z8bICVKSv0=;
-        b=Pbs0e5LY5RpKoatfoRYNaE7z6IrAf8ZPXbMIEBAe+bgHlDxaLflWObLdFRMr4yCsL+
-         AujU1+YcCRuLaUXb74kAcXZ2ILbLsXLSO7etZ2hL2rHwowIWmxC+Dfzc6pDSVZ84WqIa
-         tTngyms3ACZgEoR+OGFSk7g5zi0jRNcJkpQz4=
+        d=google.com; s=20230601; t=1697741699; x=1698346499; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wo9uGJpjh2Gn+mJVCJbkCRN0kIqxy+6x2C8i+d+cFTA=;
+        b=JHKuoYIgnPa/rYnHILJheM+3fXTtYP2tsN8+tQuXKNe+1K2x7L2OStIA4WmKI0h67n
+         n4kiNFncyJ5h43a+bVmrRP67DBAUgqtSVolWGv3+VkZ2NRvH3hJDAutmZAXJQRFq0TOd
+         oA6T0+kS8twG+b5fKl3ic1Q6OtS/GVTmGc4sbYE748pbiNAkr+8ol27d1p26hbZSB0IP
+         Vx/j9Wniuujv1LVgMWBsivIxS4gIh21aQdONtp6gv7xDMXyPoFNg33AFO8n//gUaot+b
+         YJCvIj4RhGpwKlJ+1ao1dIa3A+/szRb8/66qJ4eX9KZ4VdJOUarOH5Dd/hGahbNkVL5v
+         FbNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697741609; x=1698346409;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vAZ05ZW0shfRkic4Xphq7vXHsX0F288y2z8bICVKSv0=;
-        b=JSLM6m8MDlvmKVCtv+6EUTNyMe1XmLjevfVH84nBvEJdeGhiFWm9Kf+fUlj5SuE8iD
-         Q1epkPrTVyULyT1pVeCCyJjs5k/onMzy83yGuC0LdFouM56y+b2fX7nekdujcrqQ3vtm
-         qV9qFUZExKBR/UV09q4hqn1yv7v1RU9U+ZRk6WlWZgTANiabGwDQZbO8LFHlJhERHksA
-         E9I4yWw6IlnnuLe8P9zd4wjNJbCHvsCuPWpeiSjpkPWigwsVsuZM9GGiLHNA8CbJHKCt
-         s1Mk+LQKk6/L0ELhpebnWBtCXuMydcD+KqpaKnV7j7ODUsCWT65PjKI7fWOAygq2ZTp1
-         4qPg==
-X-Gm-Message-State: AOJu0YxfpOxTuraOAR3ufq7ah9I4sbfTeZ0gGeEC84Q/GYrmDA2Qgfub
-        /YdAj69NuM2cf4AEvHk5QBw2bA==
-X-Google-Smtp-Source: AGHT+IEUIodrBgLlcDiSMs6WrrTGyJdWjnMs4k2fRYKjhHr0jibKeof1Cq//0hKN+bWK/VWsbe76rA==
-X-Received: by 2002:a05:6214:20ea:b0:66d:3723:294b with SMTP id 10-20020a05621420ea00b0066d3723294bmr2798523qvk.64.1697741609651;
-        Thu, 19 Oct 2023 11:53:29 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id dz16-20020ad45890000000b006263a9e7c63sm63368qvb.104.2023.10.19.11.53.21
+        d=1e100.net; s=20230601; t=1697741699; x=1698346499;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wo9uGJpjh2Gn+mJVCJbkCRN0kIqxy+6x2C8i+d+cFTA=;
+        b=PskA3LpRnSbwvTAlPXSgHn8AVLurVN7HtiF15Am13bSChMfbPyrX4Eo0Ow/fdsnNh5
+         IgCTczWfITZLMlzrRXLMjUD2P8NLoozNWfvCqU4kprDJq6JM0JMGDg8cUcpHwYH9bK7v
+         bP2meAvtyxeA9+vHy044y8b/gK+vofPPvUtuX3yu+SJZh8qpywJqmhPKj22Ed5qCCQZW
+         I5IijYOrDwZ3iw4/f9jQSctOfjzI5+hS0M4GXX1AaMwRLYvuFvFaBVQKq0IEtNpCj1rA
+         V43dOBOYigA4U7Yn2C+z5zwY0FL4vQu0wu0xCUru/kp+Xs4rrQq3fEWV6blp3tZokDMz
+         Q+Qg==
+X-Gm-Message-State: AOJu0Yyrr13smPwSgRSGcs9ATVNBWITVvdJOKbIZmQPVtLd6229w6mVq
+        HnEaatC9yHF5TSz+HkxzEy0IBvQXlVmbkoQbZpWxGUBq
+X-Google-Smtp-Source: AGHT+IEzyqCtgdLtzwmBRgFcb+6oPfoQpOwXgFW30TXNqnO6CdJf71N9yrijz8/j9QHP3Do8OHkZ/w==
+X-Received: by 2002:a17:903:1212:b0:1c6:3228:c2ca with SMTP id l18-20020a170903121200b001c63228c2camr3644840plh.29.1697741698578;
+        Thu, 19 Oct 2023 11:54:58 -0700 (PDT)
+Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
+        by smtp.gmail.com with ESMTPSA id n17-20020a170902e55100b001bb1f0605b2sm35661plf.214.2023.10.19.11.54.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 11:53:28 -0700 (PDT)
-Message-ID: <eb976fa1-f0e2-4158-bacd-c55655bbf025@broadcom.com>
-Date:   Thu, 19 Oct 2023 11:53:19 -0700
+        Thu, 19 Oct 2023 11:54:57 -0700 (PDT)
+Message-ID: <b9f9ff09-efad-4c1a-9d27-6dde5c89852f@google.com>
+Date:   Thu, 19 Oct 2023 11:54:56 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 05/16] net: Make dev_set_hwtstamp_phylib
- accessible
-To:     Kory Maincent <kory.maincent@bootlin.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
- <20231019-feature_ptp_netnext-v6-5-71affc27b0e5@bootlin.com>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <20231019-feature_ptp_netnext-v6-5-71affc27b0e5@bootlin.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000947f620608164557"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH v4 3/3] usb: gadget: uvc: Fix use-after-free for inflight
+ usb_requests
+Content-Language: en-US
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <20230930184821.310143-1-arakesh@google.com>
+ <20231012002451.254737-1-arakesh@google.com>
+ <20231012002451.254737-3-arakesh@google.com>
+ <ZS/ZL8RMix7zppcP@pengutronix.de>
+ <f45e7eab-4d49-41bb-b515-dd036f40a8d8@google.com>
+ <ZTBW/o3tT/ukdbbi@pengutronix.de>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <ZTBW/o3tT/ukdbbi@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000947f620608164557
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 10/19/23 07:29, Kory Maincent wrote:
-> Make the dev_set_hwtstamp_phylib function accessible in prevision to use
-> it from ethtool to reset the tstamp current configuration.
+
+On 10/18/23 15:06, Michael Grzeschik wrote:
+> On Wed, Oct 18, 2023 at 02:50:08PM -0700, Avichal Rakesh wrote:
+>>
+>>
+>> On 10/18/23 06:10, Michael Grzeschik wrote:
+>>> On Wed, Oct 11, 2023 at 05:24:51PM -0700, Avichal Rakesh wrote:
+>>>> Currently, the uvc gadget driver allocates all uvc_requests as one array
+>>>> and deallocates them all when the video stream stops. This includes
+>>>> de-allocating all the usb_requests associated with those uvc_requests.
+>>>> This can lead to use-after-free issues if any of those de-allocated
+>>>> usb_requests were still owned by the usb controller.
+>>>>
+>>>> This is patch 2 of 2 in fixing the use-after-free issue. It adds a new
+>>>> flag to uvc_video to track when frames and requests should be flowing.
+>>>> When disabling the video stream, the flag is tripped and, instead
+>>>> of de-allocating all uvc_requests and usb_requests, the gadget
+>>>> driver only de-allocates those usb_requests that are currently
+>>>> owned by it (as present in req_free). Other usb_requests are left
+>>>> untouched until their completion handler is called which takes care
+>>>> of freeing the usb_request and its corresponding uvc_request.
+>>>>
+>>>> Now that uvc_video does not depends on uvc->state, this patch removes
+>>>> unnecessary upates to uvc->state that were made to accomodate uvc_video
+>>>> logic. This should ensure that uvc gadget driver never accidentally
+>>>> de-allocates a usb_request that it doesn't own.
+>>>>
+>>>> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+>>>> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>>>> Signed-off-by: Avichal Rakesh <arakesh@google.com>
+>>>> ---
+>>>> v1 -> v2: Rebased to ToT, and fixed deadlock reported in
+>>>>          https://lore.kernel.org/all/ZRv2UnKztgyqk2pt@pengutronix.de/
+>>>> v2 -> v3: Fix email threading goof-up
+>>>> v3 -> v4: re-rebase to ToT & moved to a uvc_video level lock
+>>>>          as discussed in
+>>>>          https://lore.kernel.org/b14b296f-2e08-4edf-aeea-1c5b621e2d0c@google.com/
+>>>
+>>> I tested this and I no longer saw any use after free
+>>> errors anymore! :)
+>>
+>> Yay! Glad to hear!
+>>
+>>>
+>>> Here comes some more review:
+>>>
+>>>> drivers/usb/gadget/function/uvc.h       |   1 +
+>>>> drivers/usb/gadget/function/uvc_v4l2.c  |  12 +-
+>>>> drivers/usb/gadget/function/uvc_video.c | 156 +++++++++++++++++++-----
+>>>> 3 files changed, 128 insertions(+), 41 deletions(-)
+>>>>
+>>
+>>>> +
+>>>> +/*
+>>>> + * Disable video stream
+>>>> + */
+>>>> +static int
+>>>> +uvcg_video_disable(struct uvc_video *video) {
+>>>> +    unsigned long flags;
+>>>> +    struct list_head inflight_bufs;
+>>>> +    struct usb_request *req, *temp;
+>>>> +    struct uvc_buffer *buf, *btemp;
+>>>> +    struct uvc_request *ureq, *utemp;
+>>>> +
+>>>> +    INIT_LIST_HEAD(&inflight_bufs);
+>>>> +    spin_lock_irqsave(&video->req_lock, flags);
+>>>> +    video->is_enabled = false;
+>>>> +
+>>>> +    /*
+>>>> +     * Remove any in-flight buffers from the uvc_requests
+>>>> +     * because we want to return them before cancelling the
+>>>> +     * queue. This ensures that we aren't stuck waiting for
+>>>> +     * all complete callbacks to come through before disabling
+>>>> +     * vb2 queue.
+>>>> +     */
+>>>> +    list_for_each_entry(ureq, &video->ureqs, list) {
+>>>> +        if (ureq->last_buf) {
+>>>> +            list_add_tail(&ureq->last_buf->queue, &inflight_bufs);
+>>>> +            ureq->last_buf = NULL;
+>>>> +        }
+>>>> +    }
+>>>>     spin_unlock_irqrestore(&video->req_lock, flags);
+>>>> -    return;
+>>>> +
+>>>> +    cancel_work_sync(&video->pump);
+>>>> +    uvcg_queue_cancel(&video->queue, 0);
+>>>> +
+>>>> +    spin_lock_irqsave(&video->req_lock, flags);
+>>>> +    /*
+>>>> +     * Remove all uvc_reqeusts from from ureqs with list_del_init
+>>>> +     * This lets uvc_video_free_request correctly identify
+>>>> +     * if the uvc_request is attached to a list or not when freeing
+>>>> +     * memory.
+>>>> +     */
+>>>> +    list_for_each_entry_safe(ureq, utemp, &video->ureqs, list)
+>>>> +        list_del_init(&ureq->list);
+>>>> +
+>>>> +    list_for_each_entry_safe(req, temp, &video->req_free, list) {
+>>>> +        list_del(&req->list);
+>>>> +        uvc_video_free_request(req->context, video->ep);
+>>>> +    }
+>>>> +
+>>>> +    INIT_LIST_HEAD(&video->ureqs);
+>>>> +    INIT_LIST_HEAD(&video->req_free);
+>>>> +    video->req_size = 0;
+>>>> +    spin_unlock_irqrestore(&video->req_lock, flags);
+>>>> +
+>>>> +    /*
+>>>> +     * Return all the video buffers before disabling the queue.
+>>>> +     */
+>>>> +    spin_lock_irqsave(&video->queue.irqlock, flags);
+>>>> +    list_for_each_entry_safe(buf, btemp, &inflight_bufs, queue) {
+>>>> +        list_del(&buf->queue);
+>>>> +        uvcg_complete_buffer(&video->queue, buf);
+>>>> +    }
+>>>> +    spin_unlock_irqrestore(&video->queue.irqlock, flags);
+>>>> +
+>>>> +    uvcg_queue_enable(&video->queue, 0);
+>>>> +    return 0;
+>>>> }
+>>>>
+>>>> /*
+>>>> @@ -497,28 +596,22 @@ static void uvcg_video_pump(struct work_struct *work)
+>>>> int uvcg_video_enable(struct uvc_video *video, int enable)
+>>>> {
+>>>>     int ret;
+>>>> -    struct uvc_request *ureq;
+>>>>
+>>>>     if (video->ep == NULL) {
+>>>>         uvcg_info(&video->uvc->func,
+>>>>               "Video enable failed, device is uninitialized.\n");
+>>>>         return -ENODEV;
+>>>>     }
+>>>> -
+>>>> -    if (!enable) {
+>>>> -        cancel_work_sync(&video->pump);
+>>>> -        uvcg_queue_cancel(&video->queue, 0);
+>>>> -
+>>>> -        list_for_each_entry(ureq, &video->ureqs, list) {
+>>>> -            if (ureq->req)
+>>>> -                usb_ep_dequeue(video->ep, ureq->req);
+>>>> -        }
+>>>> -
+>>>> -        uvc_video_free_requests(video);
+>>>> -        uvcg_queue_enable(&video->queue, 0);
+>>>> -        return 0;
+>>>> -    }
+>>>> -
+>>>> +    if (!enable)
+>>>> +        return uvcg_video_disable(video);
+>>>
+>>> Could you refactor this code as it is to an separate
+>>> function and prepand this change as an extra patch
+>>> to this one? It would make the changes in the functions
+>>> more obvious and better to review.
+>>
+>> Sure I can send a follow up patch, but I am curious why you think this
+>> needs to be a separate function? Refactoring into a function would
+>> have the functions structured something like:
+>>
+>> uvcg_video_disable(video) {
+>>    // ...
+>>    // disable impl
+>>    // ...
+>> }
+>>
+>> uvcg_video_enable(video) {
+>>    // ...
+>>    // enable impl
+>>    // ...
+>> }
+>>
+>> uvcg_video_enable(video, enable) {
+>>    // ep test
+>>
+>>    if (!enable)
+>>        return uvcg_video_disable(video);
+>>
+>>    return uvc_video_enable(video);
+>> }
+>>
+>> instead of the current structure:
+>>
+>> uvcg_video_disable(video) {
+>>    // ...
+>>    // disable impl
+>>    // ...
+>> }
+>>
+>> uvcg_video_enable(video, enable) {
+>>    // ep test
+>>
+>>    if (!enable)
+>>        return uvcg_video_disable(video);
+>>
+>>    // ...
+>>    // enable impl
+>>    // ...
+>> }
+>>
+>> I am not sure if one is more readable than the other.
 > 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> I think you misunderstood. The second structure is all right.
+> 
+> What I did want you to do is as follows.
+> 
+> Lets look at your series:
+> 
+> patch 0/3
+> patch 1/3
+> patch 2/3
+> 
+> <--- add a patch here that does the refactoring of the separate
+>      function uvcg_video_disable without changing the functional
+>      content of it:
+> 
+> uvcg_video_disable(video) {
+>     // ...
+>     // disable impl
+>     // ...
+> }
+> 
+> uvcg_video_enable(video, enable) {
+>     // ep test
+> 
+>     if (!enable)
+>         return uvcg_video_disable(video);
+> 
+>     // ...
+>     // enable impl
+>     // ...
+> }
+> 
+> patch 3/3
+> 
+> This way in the patch 3/3 the functional changes you introduce to the
+> uvcg_video_diable will get better to review.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+I see! I did indeed misunderstand. Sent out v6 with 4 patches!
 
-
---000000000000947f620608164557
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJzFuztY0gVdZZVR
-xFXH/JSvvNCqJe8yqqm09xzcAge5MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAxOTE4NTMyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQD3UIHc1HTHIKt7Yq5plkqZqLjBHyuK7DWg
-vN+ksTs6SZG33Zq7RixarKEvpoxOWFPMt/8Opz14OqEZHbrW3v3MGmzX+X6EicP22xwvSeGY36aq
-8LaiM8r0pUlXoU0B5LXfkka5+kWZx1Gr+UCaL5NROXDKALq1fxVMNoXaA8AUgqUjSQOg9k8PWveF
-yrd9kQfEWF1gOsGJo9kqXLzTE++gqjt3vl6vyyfSNc7wGuCnQOvlQqCRikRwIbBuD0E1ou/B8yu/
-x5/qBqMbK1C6r+6FmHaClruk/K/UzLD3BWMH9QxL238lEjt1pIq+zHBq6cCpxVn1Is2FCLcB1rKD
-UAle
---000000000000947f620608164557--
+Thank you!
+- Avi.
