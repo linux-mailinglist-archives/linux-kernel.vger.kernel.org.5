@@ -2,175 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6810C7D04FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344DF7D050B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346689AbjJSWlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S1346689AbjJSWxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjJSWlP (ORCPT
+        with ESMTP id S235553AbjJSWxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:41:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88482FA;
-        Thu, 19 Oct 2023 15:41:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA01C433C7;
-        Thu, 19 Oct 2023 22:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697755273;
-        bh=QrXcJSvkmaQhGlxDlCzTaTqOEgDsZKKUGEg6yjmzxzg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=tr1q75UNywUIX/G6rnqagELNuFJwsL6pDbS6FlXWZlik9RgUeQusLFYc5diqKK9ql
-         mPjhMDQEuo8T1/QLme8z+3R0ZkNkPifdGSSwtsihpkHyjk8zrZ4bs4nfZMqb+RYomH
-         XCkUotEhvIKc70pvPqo7Hn7c9pK+iaGc8QakV7aEv9AkvvYxFRdoJPJC08VvICsx7O
-         wI8hLrYDRlOYjC4B7ldOO0oIL1GWcH7h16/zWoqPqjyZPVhwwvj37JF480Bx7XLNLq
-         eMckjH8mw2HavbZ1wfJqhXhq/euFpxU2lvg6uyIVp1VQNmfOE2UgS+b6AWTZyRGyjS
-         FrUgtEfZHaF+w==
-Message-ID: <69b627f565d6ca92182b7100cd1178a28646eef0.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 19 Oct 2023 18:41:09 -0400
-In-Reply-To: <87o7gu2rxw.ffs@tglx>
-References: <87o7gu2rxw.ffs@tglx>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 19 Oct 2023 18:53:44 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8294134;
+        Thu, 19 Oct 2023 15:45:59 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JMWR8n012269;
+        Thu, 19 Oct 2023 22:45:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=HGh5RIhqjkjYPosV8+pUioVK+MKtfbrBwhNPit3GNXU=;
+ b=jrdiF//huxYBB5lmGOtZFKARb45SdOBUHpTj9WVdwB+mn9ME3fauwEzXRyIB0YYjtseD
+ DGh0gWk55tK1UVWUorn+qgWVD35DtC5dkiT3gebnLrq5qr/DlvbfI341kaq8qWDsoK8n
+ m2ndDPySi3igjsSVwI3ampRwEQR/z7mSOdKeNSo0ISTJlxr63mhl8rqQYXhpF7sVdDR3
+ zkK9cvkaYSdmMa6hiPQEEkh3XSEFU9V0VaVC20KyDH2n3SjFFxI3L4U41xr37lpvueGr
+ GFRNuxMGZPFuKPm3jhpvLdSbcZoikk3O53X8Zg7mkdhwVEz6AT1EvvVe0qEUuTnsFBbv bg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubwr068f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 22:45:48 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39JMjmdr015028
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 22:45:48 GMT
+Received: from [10.71.110.214] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 15:45:45 -0700
+Message-ID: <7e6ddffc-81a5-4183-9e59-7060776c936a@quicinc.com>
+Date:   Thu, 19 Oct 2023 15:45:37 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/3] of: reserved_mem: Change the order that
+ reserved_mem regions are stored
+Content-Language: en-US
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <frowand.list@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231019184825.9712-1-quic_obabatun@quicinc.com>
+ <20231019184825.9712-2-quic_obabatun@quicinc.com>
+ <CAL_Jsq+pUv29277spzXB7QJ=OZTwGy_FmW55CzQPWYLPktA0EA@mail.gmail.com>
+From:   Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+In-Reply-To: <CAL_Jsq+pUv29277spzXB7QJ=OZTwGy_FmW55CzQPWYLPktA0EA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: C-h5FgffPKD3GbcCCAXzGuMC5Jn6tkiM
+X-Proofpoint-ORIG-GUID: C-h5FgffPKD3GbcCCAXzGuMC5Jn6tkiM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_21,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 impostorscore=0
+ adultscore=0 mlxscore=0 clxscore=1015 phishscore=0 spamscore=0
+ malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310190193
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-20 at 00:00 +0200, Thomas Gleixner wrote:
-> Jeff!
->=20
-> On Wed, Oct 18 2023 at 13:41, Jeff Layton wrote:
-> > +void ktime_get_mg_fine_ts64(struct timespec64 *ts)
-> > +{
-> > +	struct timekeeper *tk =3D &tk_core.timekeeper;
-> > +	unsigned long flags;
-> > +	u32 nsecs;
-> > +
-> > +	WARN_ON(timekeeping_suspended);
-> > +
-> > +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-> > +	write_seqcount_begin(&tk_core.seq);
->=20
-> Depending on the usage scenario, this will end up as a scalability issue
-> which affects _all_ of timekeeping.
->=20
-> The usage of timekeeper_lock and the sequence count has been carefully
-> crafted to be as non-contended as possible. We went a great length to
-> optimize that because the ktime_get*() functions are really hotpath all
-> over the place.
->=20
 
-> Exposing such an interface which wreckages that is a recipe for disaster
-> down the road. It might be a non-issue today, but once we hit the
-> bottleneck of that global lock, we are up the creek without a
-> paddle.
->=20
+On 10/19/2023 12:46 PM, Rob Herring wrote:
+> On Thu, Oct 19, 2023 at 1:49 PM Oreoluwa Babatunde
+> <quic_obabatun@quicinc.com> wrote:
+>> The dynamic allocation of the reserved_mem array needs to be done after
+>> paging_init() is called because memory allocated using memblock_alloc()
+>> is not writeable before that.
+>>
+>> Nodes that already have their starting address specified in the DT
+>> (i.e. nodes that are defined using the "reg" property) can wait until
+>> after paging_init() to be stored in the array.
+>> But nodes that are dynamically placed need to be reserved and saved in
+>> the array before paging_init() so that page table entries are not
+>> created for these regions.
+>>
+>> Hence, change the code to:
+>> 1. Before paging_init(), allocate and store information for the
+>>    dynamically placed reserved memory regions.
+>> 2. After paging_init(), store the rest of the reserved memory regions
+>>    which are defined with the "reg" property.
+>>
+>> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+>> ---
+>>  arch/arm64/kernel/setup.c       |  4 +++
+>>  drivers/of/fdt.c                | 56 ++++++++++++++++++++++++++-------
+>>  drivers/of/of_private.h         |  1 -
+>>  drivers/of/of_reserved_mem.c    | 54 ++++++++++++++-----------------
+>>  include/linux/of_fdt.h          |  1 +
+>>  include/linux/of_reserved_mem.h |  9 ++++++
+>>  6 files changed, 83 insertions(+), 42 deletions(-)
+>>
+>> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+>> index 417a8a86b2db..6002d3ad0b19 100644
+>> --- a/arch/arm64/kernel/setup.c
+>> +++ b/arch/arm64/kernel/setup.c
+>> @@ -27,6 +27,8 @@
+>>  #include <linux/proc_fs.h>
+>>  #include <linux/memblock.h>
+>>  #include <linux/of_fdt.h>
+>> +#include <linux/of_reserved_mem.h>
+>> +
+>>  #include <linux/efi.h>
+>>  #include <linux/psci.h>
+>>  #include <linux/sched/task.h>
+>> @@ -346,6 +348,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+>>
+>>         paging_init();
+>>
+>> +       fdt_init_reserved_mem();
+>> +
+> You removed this call from the common code and add it to arm64 arch
+> code, doesn't that break every other arch?
+Yes, the same changes will be needed for every other arch. I was hoping to
+get some feedback on the RFC before implementing this on other archs which
+is why the change is currently only in arm64.
+> The very next thing done here is unflattening the DT. So another call
+> from the arch code to the DT code isn't needed either.
+Yes, I see that unflatten_device_tree() is being called right after here.
+Just to clarify, are you suggesting to move fdt_init_reserved_mem() into the
+unflatten_device_tree() call?
 
-Thanks for taking the explanation, Thomas. That's understandable, and
-that was my main worry with this set. I'll look at doing this another
-way given your feedback. I just started by plumbing this into the
-timekeeping code since that seemed like the most obvious place to do it.
 
-I think it's probably still possible to do this by caching the values
-returned by the timekeeper at the vfs layer, but there seems to be some
-reticence to the basic idea that I don't quite understand yet.
-
-> Well not really, but all we can do then is fall back to
-> ktime_get_real(). So let me ask the obvious question:
->=20
->      Why don't we do that right away?
->=20
-> Many moons ago when we added ktime_get_real_coarse() the main reason was
-> that reading the time from the underlying hardware was insanely
-> expensive.
->=20
-> Many moons later this is not true anymore, except for the stupid case
-> where the BIOS wreckaged the TSC, but that's a hopeless case for
-> performance no matter what. Optimizing for that would be beyond stupid.
->=20
-> I'm well aware that ktime_get_real_coarse() is still faster than
-> ktime_get_real() in micro-benchmarks, i.e. 5ns vs. 15ns on the four
-> years old laptop I'm writing this.
->=20
-> Many moons ago it was in the ballpark of 40ns vs. 5us due to TSC being
-> useless and even TSC read was way more expensive (factor 8-10x IIRC) in
-> comparison. That really mattered for FS, but does todays overhead still
-> make a difference in the real FS use case scenario?
->=20
-> I'm not in the position of running meaningful FS benchmarks to analyze
-> that, but I think the delta between ktime_get_real_coarse() and
-> ktime_get_real() on contemporary hardware is small enough that it
-> justifies this question.
->=20
-> The point is that both functions have pretty much the same D-cache
-> pattern because they access the same data in the very same
-> cacheline. The only difference is the actual TSC read and the extra
-> conversion, but that's it. The TSC read has been massively optimized by
-> the CPU vendors. I know that the ARM64 counter has been optimized too,
-> though I have no idea about PPC64 and S390, but I would be truly
-> surprised if they didn't optimize the hell out of it because time read
-> is really used heavily both in kernel and user space.
->=20
-> Does anyone have numbers on contemporary hardware to shed some light on
-> that in the context of FS and the problem at hand?
-
-That was sort of my suspicion and it's good to have confirmation that
-fetching a fine-grained timespec64 from the timekeeper is cheap. It
-looked that way when I was poking around in there, but I wasn't sure
-whether it was always the case.
-
-It turns out however that the main benefit of using a coarse-grained
-timestamp is that it allows the file system to skip a lot of inode
-metadata updates.
-
-The way it works today is that when we go to update the timestamp on an
-inode, we check whether they have made any visible change, and we dirty
-the inode metadata if so. This means that we only really update the
-inode on disk once per jiffy or so when an inode is under heavy writes.
-
-The idea with this set is to only use fine-grained timestamps when
-someone is actively fetching them via getattr. When the mtime or ctime
-is viewed via getattr, we mark the inode and then the following
-timestamp update will get a fine-grained timestamp (unless the coarse-
-grained clock has already ticked).
-
-That allows us to keep the number of inode updates down to a bare
-minimum, but still allows an observer to always see a change in the
-timestamp when there have been changes to the inode.
-
-Thanks again for the review! For the next iteration I (probably) won't
-need to touch the timekeeper.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks, Oreoluwa
