@@ -2,219 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3C07CF3B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF497CF3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345003AbjJSJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S233004AbjJSJPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJSJPP (ORCPT
+        with ESMTP id S1345039AbjJSJP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:15:15 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EB8FE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:15:13 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39J97Jo7032585;
-        Thu, 19 Oct 2023 09:15:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=ABt7ADKK8tsXYCvzjlIR2O1T/6z1I1a3pW7ZzNN+dV0=;
- b=gELg/ZYVZOCDvUy6GAi62Bo7pOSF4DHB1lFZ9CCMvQ9PREVD2/Q7TwQ0gaXKSaeIaERf
- 0sfaMx/uXIARfGo2B7IWOzNZ5ZpETwmEXt5Ci86WmnaxT+LQho6GrFKL7XtrblITqvXb
- tFu9m+pptuKN4dLFtV0cUOHZes52AatZ2A0BbHJ0sXrcoaxwFujRpE6VhExwsgl3S4SZ
- RQxV2Odr7VofoiTEbsq73Bsx19feTLStLByHw+2w6y4EC4wwshVamyCCoSwFmK3vzgo8
- Gmxpmy7OTFbFq7zCL/FDcVGajTg4JJPQRVTnANYuc+Xffjeukk23AMwd0z4eUG0HUJc0 4w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu1hx08um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 09:15:01 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39J97gcK002996;
-        Thu, 19 Oct 2023 09:15:01 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu1hx08tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 09:15:00 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39J88Pch020150;
-        Thu, 19 Oct 2023 09:14:59 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6anfr3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 09:14:59 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39J9Ev9927460236
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 09:14:57 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19EF020040;
-        Thu, 19 Oct 2023 09:14:57 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6F7420043;
-        Thu, 19 Oct 2023 09:14:54 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.109.198.63])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Oct 2023 09:14:54 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        Ajay Kaher <akaher@vmware.com>,
+        Thu, 19 Oct 2023 05:15:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA78AFE;
+        Thu, 19 Oct 2023 02:15:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 613971FD8C;
+        Thu, 19 Oct 2023 09:15:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697706923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=E3yro6bOZUqvaCMDNWEbvLZF+xxJcY0szaQQ5wMVbyY=;
+        b=uzf8nm/kDJ+Ijp17n13oFoIE7j/nvomj+PI1AhcOSTPUbSVZB89yeloWUG9gW0czwezlEX
+        Rmd8qHGjSKbfyJKkmfywo27aazWr0Ly2hKZGaUp6TKwLU8xPn/2nSVgclz2877RCOeXbFE
+        RcaJPPTgbJXdypAZiks/+uDe5klZpeo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D2359139C2;
+        Thu, 19 Oct 2023 09:15:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fnsqMarzMGWwVAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 19 Oct 2023 09:15:22 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
         Alexey Makhalov <amakhalov@vmware.com>,
         VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] powerpc/paravirt: Improve vcpu_is_preempted
-Date:   Thu, 19 Oct 2023 14:44:52 +0530
-Message-ID: <20231019091452.95260-1-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zIHbyWlsj8PSg93w1BZId6u8pJalyHr6
-X-Proofpoint-ORIG-GUID: PTeXcGKCHRu49IjQ_8I_63TZW_iZncgV
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v3 0/5] x86/paravirt: Get rid of paravirt patching
+Date:   Thu, 19 Oct 2023 11:15:15 +0200
+Message-Id: <20231019091520.14540-1-jgross@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_06,2023-10-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190077
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.10
+X-Spamd-Result: default: False [-2.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[18];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PowerVM Hypervisor dispatches on a whole core basis. In a shared LPAR, a
-CPU from a core that is CEDED or preempted may have a larger latency. In
-such a scenario, its preferable to choose a different CPU to run.
+This is a small series getting rid of paravirt patching by switching
+completely to alternative patching for the same functionality.
 
-If one of the CPUs in the core is active, i.e neither CEDED nor
-preempted, then consider this CPU as not preempted.
+The basic idea is to add the capability to switch from indirect to
+direct calls via a special alternative patching option.
 
-Also if any of the CPUs in the core has yielded but OS has not requested
-CEDE or CONFER, then consider this CPU to be preempted.
+This removes _some_ of the paravirt macro maze, but most of it needs
+to stay due to the need of hiding the call instructions from the
+compiler in order to avoid needless register save/restore.
 
-Correct detection of preempted CPUs is important for detecting idle
-CPUs/cores in task scheduler.
+What is going away is the nasty stacking of alternative and paravirt
+patching and (of course) the special .parainstructions linker section.
 
-Tested-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
-Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog:
-v2 (http://lkml.kernel.org/r/20231018155838.2332822-1-srikar@linux.vnet.ibm.com) -> v4:
-Resolved comments from Michael Ellerman
+I have tested the series on bare metal and as Xen PV domain to still
+work.
 
-v1 (http://lkml.kernel.org/r/20231009051740.17683-1-srikar@linux.vnet.ibm.com) -> v2:
-Handle lppaca_of(cpu) in !PPC_SPLPAR case.
-1. Fixed some compilation issues reported by kernelbot
-	a. https://lore.kernel.org/oe-kbuild-all/202310102341.K0sgoqQL-lkp@intel.com/
-	b.  https://lore.kernel.org/oe-kbuild-all/202310091636.lElmJkYV-lkp@intel.com/
-2. Resolved comments from Shrikanth
+Note that objtool might need some changes to cope with the new
+indirect call patching mechanism. Additionally some paravirt handling
+can probably be removed from it.
 
----
- arch/powerpc/include/asm/paravirt.h | 47 +++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 3 deletions(-)
+Changes in V3:
+- split v2 patch 3 into 2 patches as requested by Peter and Ingo
 
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index e08513d73119..ac4279208d63 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -71,6 +71,11 @@ static inline void yield_to_any(void)
- {
- 	plpar_hcall_norets_notrace(H_CONFER, -1, 0);
- }
-+
-+static inline bool is_vcpu_idle(int vcpu)
-+{
-+	return lppaca_of(vcpu).idle;
-+}
- #else
- static inline bool is_shared_processor(void)
- {
-@@ -100,6 +105,10 @@ static inline void prod_cpu(int cpu)
- 	___bad_prod_cpu(); /* This would be a bug */
- }
- 
-+static inline bool is_vcpu_idle(int vcpu)
-+{
-+	return false;
-+}
- #endif
- 
- #define vcpu_is_preempted vcpu_is_preempted
-@@ -121,9 +130,23 @@ static inline bool vcpu_is_preempted(int cpu)
- 	if (!is_shared_processor())
- 		return false;
- 
-+	/*
-+	 * If the hypervisor has dispatched the target CPU on a physical
-+	 * processor, then the target CPU is definitely not preempted.
-+	 */
-+	if (!(yield_count_of(cpu) & 1))
-+		return false;
-+
-+	/*
-+	 * If the target CPU has yielded to Hypervisor but OS has not
-+	 * requested idle then the target CPU is definitely preempted.
-+	 */
-+	if (!is_vcpu_idle(cpu))
-+		return true;
-+
- #ifdef CONFIG_PPC_SPLPAR
- 	if (!is_kvm_guest()) {
--		int first_cpu;
-+		int first_cpu, i;
- 
- 		/*
- 		 * The result of vcpu_is_preempted() is used in a
-@@ -149,11 +172,29 @@ static inline bool vcpu_is_preempted(int cpu)
- 		 */
- 		if (cpu_first_thread_sibling(cpu) == first_cpu)
- 			return false;
-+
-+		/*
-+		 * If any of the threads of the target CPU's core are not
-+		 * preempted or ceded, then consider target CPU to be
-+		 * non-preempted.
-+		 */
-+		first_cpu = cpu_first_thread_sibling(cpu);
-+		for (i = first_cpu; i < first_cpu + threads_per_core; i++) {
-+			if (i == cpu)
-+				continue;
-+			if (!(yield_count_of(i) & 1))
-+				return false;
-+			if (!is_vcpu_idle(i))
-+				return true;
-+		}
- 	}
- #endif
- 
--	if (yield_count_of(cpu) & 1)
--		return true;
-+	/*
-+	 * None of the threads in target CPU's core are running but none of
-+	 * them were preempted too. Hence assume the target CPU to be
-+	 * non-preempted.
-+	 */
- 	return false;
- }
- 
+Changes in V2:
+- split last patch into 2
+- rebase of patch 2 as suggested by Peter
+- addressed Peter's comments for patch 3
 
-base-commit: eddc90ea2af5933249ea1a78119f2c8ef8d07156
+Juergen Gross (5):
+  x86/paravirt: move some functions and defines to alternative
+  x86/alternative: add indirect call patching
+  x86/paravirt: introduce ALT_NOT_XEN
+  x86/paravirt: switch mixed paravirt/alternative calls to alternative_2
+  x86/paravirt: remove no longer needed paravirt patching code
+
+ arch/x86/include/asm/alternative.h        |  26 ++++-
+ arch/x86/include/asm/paravirt.h           |  79 +++++----------
+ arch/x86/include/asm/paravirt_types.h     |  73 +++-----------
+ arch/x86/include/asm/qspinlock_paravirt.h |   4 +-
+ arch/x86/include/asm/text-patching.h      |  12 ---
+ arch/x86/kernel/alternative.c             | 116 ++++++++++------------
+ arch/x86/kernel/callthunks.c              |  17 ++--
+ arch/x86/kernel/kvm.c                     |   4 +-
+ arch/x86/kernel/module.c                  |  20 +---
+ arch/x86/kernel/paravirt.c                |  54 ++--------
+ arch/x86/kernel/vmlinux.lds.S             |  13 ---
+ arch/x86/tools/relocs.c                   |   2 +-
+ arch/x86/xen/irq.c                        |   2 +-
+ 13 files changed, 137 insertions(+), 285 deletions(-)
+
 -- 
-2.31.1
+2.35.3
 
