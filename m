@@ -2,282 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA467D001F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0867D0021
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345222AbjJSQ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S1345312AbjJSRAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235474AbjJSQ7I (ORCPT
+        with ESMTP id S235462AbjJSRAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:59:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A93612A
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:59:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C4942F4;
-        Thu, 19 Oct 2023 09:59:46 -0700 (PDT)
-Received: from [10.57.67.150] (unknown [10.57.67.150])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBEFB3F5A1;
-        Thu, 19 Oct 2023 09:59:02 -0700 (PDT)
-Message-ID: <ec50ef51-e0f7-90f5-2c4a-01754e3b70ad@arm.com>
-Date:   Thu, 19 Oct 2023 17:59:01 +0100
+        Thu, 19 Oct 2023 13:00:04 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B58F9E
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:00:02 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9becde9ea7bso224771066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697734800; x=1698339600; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pp7DjBy4yEdH9XhZTLmenXL9Ia/EidVAE+FzX9SfFGw=;
+        b=DgWkQhdmOTdcEy/Yv3wGRBig5iTeL8dva4ZMKQZsyEQX1iUx6Mk7cMGt/Bsj1So5u3
+         RaQU38deeAVY3msVX0thsgCN8oiEVP9ZFt5ALYzR6xf532j4dmXxQ6EhLPuOwSUA1k8V
+         dxOXVZEn+7187txCn/+C+oH/UegywENf+g/wU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697734800; x=1698339600;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pp7DjBy4yEdH9XhZTLmenXL9Ia/EidVAE+FzX9SfFGw=;
+        b=XnDR6HJ6F7ADLNF9tvieRkwNaohkhmii/a2yBQu36mq/QClYF8ABYBKLuW1cLWN441
+         7g3hNrXHKzNGUe8rXNlT5TQaoD5z0QpfPV3e13IlfAHmDBEFTbCet8WMd+/e0gQtMKdV
+         5e0vwatpBmAaOv0lwiOqO5Fh6JLhHme9ccJw8Dzp6Q/Sa0f4f5LP1GWLzqCTr5OXQ6ql
+         fm3/iE35aLWaQy48GknG4hz3qRRRSg78d0x5qv85iCLGQkQbTx1QGTa0mrAlgCx8v18G
+         4eqSp9SejmYNJs4b3zEfSxPY//vi4Z7mNzLRDu/x5A/VnlqxSbMu9302DU3W6Q1W/hVv
+         sGcA==
+X-Gm-Message-State: AOJu0Yxt0qv37PeBl+5lklxqN/XyjIDISbVu6ZZpOFaGPsqlQJAfmW9b
+        Gq9EeVyuAc8x4hmaO4FAReSPrs3XrClsis3SujTyU//+
+X-Google-Smtp-Source: AGHT+IEyZazFBejfEDsIkCyyaGIg9k3bWrsdThli0851kyKHIquGL+W1zZJWunOU0K85C7YgBcFP2w==
+X-Received: by 2002:a17:906:c149:b0:9b2:cee1:1f82 with SMTP id dp9-20020a170906c14900b009b2cee11f82mr2093558ejc.7.1697734800647;
+        Thu, 19 Oct 2023 10:00:00 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id a15-20020a170906684f00b00997d7aa59fasm3930534ejs.14.2023.10.19.09.59.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 09:59:59 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9adb9fa7200so224310866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:59:59 -0700 (PDT)
+X-Received: by 2002:a17:907:7295:b0:9a9:f0e6:904e with SMTP id
+ dt21-20020a170907729500b009a9f0e6904emr2171331ejc.16.1697734799075; Thu, 19
+ Oct 2023 09:59:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 5/6] arm64: KVM: Write TRFCR value on guest switch with
- nVHE
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        broonie@kernel.org, maz@kernel.org
-References: <20231005125757.649345-1-james.clark@arm.com>
- <20231005125757.649345-6-james.clark@arm.com>
- <3b41286f-d2b0-5fdf-88ef-1e63f302f9c8@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <3b41286f-d2b0-5fdf-88ef-1e63f302f9c8@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com> <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com>
+In-Reply-To: <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 09:59:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+Message-ID: <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     peterz@infradead.org, Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 19 Oct 2023 at 00:04, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> Let me explain how the compiler handles volatile.
 
+We're talking past each other.
 
-On 05/10/2023 19:05, Suzuki K Poulose wrote:
-> On 05/10/2023 13:57, James Clark wrote:
->> The guest value for TRFCR requested by the Coresight driver is saved
->> in sysregs[TRFCR_EL1]. On guest switch this value needs to be written to
->> the register. Currently TRFCR is only modified when we want to disable
->> trace completely in guests due to an issue with TRBE. Expand the
->> __debug_save_trace() function to always write to the register if a
->> different value for guests is required, but also keep the existing TRBE
->> disable behavior if that's required.
->>
->> The TRFCR restore function remains functionally the same, except a value
->> of 0 doesn't mean "don't restore" anymore. Now that we save both guest
->> and host values the register is restored any time the guest and host
->> values differ.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   arch/arm64/include/asm/kvm_hyp.h   |  6 ++-
->>   arch/arm64/kvm/debug.c             | 13 +++++-
->>   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 63 ++++++++++++++++++------------
->>   arch/arm64/kvm/hyp/nvhe/switch.c   |  4 +-
->>   4 files changed, 57 insertions(+), 29 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_hyp.h
->> b/arch/arm64/include/asm/kvm_hyp.h
->> index 37e238f526d7..0383fd3d60b5 100644
->> --- a/arch/arm64/include/asm/kvm_hyp.h
->> +++ b/arch/arm64/include/asm/kvm_hyp.h
->> @@ -103,8 +103,10 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
->>   void __debug_switch_to_host(struct kvm_vcpu *vcpu);
->>     #ifdef __KVM_NVHE_HYPERVISOR__
->> -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
->> -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context
->> *host_ctxt);
->> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
->> +                    struct kvm_cpu_context *guest_ctxt);
->> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context
->> *host_ctxt,
->> +                       struct kvm_cpu_context *guest_ctxt);
->>   #endif
->>     void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index 19e722359154..d949dd354464 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -337,10 +337,21 @@ void kvm_arch_vcpu_load_debug_state_flags(struct
->> kvm_vcpu *vcpu)
->>           !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
->>           vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->>   -    /* Check if we have TRBE implemented and available at the host */
->> +    /*
->> +     * Check if we have TRBE implemented and available at the host.
->> If it's
->> +     * in use at the time of guest switch it will need to be disabled
->> and
->> +     * then restored.
->> +     */
->>       if (cpuid_feature_extract_unsigned_field(dfr0,
->> ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
->>           !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
->>           vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-> 
-> As per A3.1 Armv9-A architecture extensions (DDI 0487J.a), FEAT_TRBE
-> mandates FEAT_TRF. So, we could check FEAT_TRF and if we have a hit,
-> skip the TRBE checks. But, having read the code below, it looks like
-> we need separate flags for TRFCR and TRBE.
->     
->> +    /*
->> +     * Also save TRFCR on nVHE if FEAT_TRF (TraceFilt) exists. This
->> will be
->> +     * done in cases where use of TRBE doesn't completely disable
->> trace and
->> +     * handles the exclude_host/exclude_guest rules of the trace
->> session.
->> +     */
->> +    if (cpuid_feature_extract_unsigned_field(dfr0,
->> ID_AA64DFR0_EL1_TraceFilt_SHIFT))
->> +        vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->     
->>   }
->>     void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> index 128a57dddabf..c6252029c277 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> @@ -51,42 +51,56 @@ static void __debug_restore_spe(struct
->> kvm_cpu_context *host_ctxt)
->>       write_sysreg_s(ctxt_sys_reg(host_ctxt, PMSCR_EL1), SYS_PMSCR_EL1);
->>   }
->>   -static void __debug_save_trace(struct kvm_cpu_context *host_ctxt)
->> +/*
->> + * Save TRFCR and disable trace completely if TRBE is being used,
->> otherwise
->> + * apply required guest TRFCR value.
->> + */
->> +static void __debug_save_trace(struct kvm_cpu_context *host_ctxt,
->> +                   struct kvm_cpu_context *guest_ctxt)
->>   {
->> -    ctxt_sys_reg(host_ctxt, TRFCR_EL1) = 0;
->> +    ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
->>         /* Check if the TRBE is enabled */
->> -    if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
->> -        return;
->> -    /*
->> -     * Prohibit trace generation while we are in guest.
->> -     * Since access to TRFCR_EL1 is trapped, the guest can't
->> -     * modify the filtering set by the host.
->> -     */
->> -    ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
->> -    write_sysreg_s(0, SYS_TRFCR_EL1);
->> -    isb();
->> -    /* Drain the trace buffer to memory */
->> -    tsb_csync();
->> +    if (read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E) {
-> 
-> This is problematic. At this point, we are not sure if TRBE is available
-> or not (e.g. we could be on a v8.4 CPU or a v9.0 with TRBE disabled by
-> higher EL). May be we need to add a separate flag to indicate the
-> presence of TRBE.
-> 
-> Suzuki
-> 
+You are talking about the volatile *memory* ops, and the the
+difference that "raw" vs "this" would cause with and without the
+"volatile".
 
-Fixed in V3
+While *I* am now convinced that the memory ops aren't even an option,
+because they will generate worse code, because pretty much all users
+use the "this" version (which would have to use volatile),
 
->> +        /*
->> +         * Prohibit trace generation while we are in guest. Since access
->> +         * to TRFCR_EL1 is trapped, the guest can't modify the filtering
->> +         * set by the host.
->> +         */
->> +        ctxt_sys_reg(guest_ctxt, TRFCR_EL1) = 0;
->> +        write_sysreg_s(0, SYS_TRFCR_EL1);
->> +        isb();
->> +        /* Drain the trace buffer to memory */
->> +        tsb_csync();
->> +    } else {
->> +        /*
->> +         * Not using TRBE, so guest trace works. Apply the guest filters
->> +         * provided by the Coresight driver, if different.
->> +         */
->> +        if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) !=
->> +            ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
->> +            write_sysreg_s(ctxt_sys_reg(guest_ctxt, TRFCR_EL1),
->> +                       SYS_TRFCR_EL1);
->> +    }
->>   }
->>   -static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt)
->> +static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
->> +                  struct kvm_cpu_context *guest_ctxt)
->>   {
->> -    if (!ctxt_sys_reg(host_ctxt, TRFCR_EL1))
->> -        return;
->> -
->>       /* Restore trace filter controls */
->> -    write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
->> +    if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) !=
->> ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
->> +        write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1),
->> SYS_TRFCR_EL1);
->>   }
->>   -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
->> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
->> +                    struct kvm_cpu_context *guest_ctxt)
->>   {
->>       /* Disable and flush SPE data generation */
->>       if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu,
->> DEBUG_STATE_SAVE_SPE))
->>           __debug_save_spe(host_ctxt);
->> -    /* Disable and flush Self-Hosted Trace generation */
->> +
->>       if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu,
->> DEBUG_STATE_SAVE_TRFCR))
->> -        __debug_save_trace(host_ctxt);
->> +        __debug_save_trace(host_ctxt, guest_ctxt);
->>   }
->>     void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->> @@ -94,12 +108,13 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->>       __debug_switch_to_guest_common(vcpu);
->>   }
->>   -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context
->> *host_ctxt)
->> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context
->> *host_ctxt,
->> +                       struct kvm_cpu_context *guest_ctxt)
->>   {
->>       if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu,
->> DEBUG_STATE_SAVE_SPE))
->>           __debug_restore_spe(host_ctxt);
->>       if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu,
->> DEBUG_STATE_SAVE_TRFCR))
->> -        __debug_restore_trace(host_ctxt);
->> +        __debug_restore_trace(host_ctxt, guest_ctxt);
->>   }
->>     void __debug_switch_to_host(struct kvm_vcpu *vcpu)
->> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c
->> b/arch/arm64/kvm/hyp/nvhe/switch.c
->> index c8f15e4dab19..55207ec31bd3 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
->> @@ -276,7 +276,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->>        * translation regime to EL2 (via MDCR_EL2_E2PB == 0) and
->>        * before we load guest Stage1.
->>        */
->> -    __debug_save_host_buffers_nvhe(host_ctxt);
->> +    __debug_save_host_buffers_nvhe(host_ctxt, guest_ctxt);
->>         /*
->>        * We're about to restore some new MMU state. Make sure
->> @@ -343,7 +343,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->>        * This must come after restoring the host sysregs, since a non-VHE
->>        * system may enable SPE here and make use of the TTBRs.
->>        */
->> -    __debug_restore_host_buffers_nvhe(host_ctxt);
->> +    __debug_restore_host_buffers_nvhe(host_ctxt, guest_ctxt);
->>         if (pmu_switch_needed)
->>           __pmu_switch_to_host(vcpu);
-> 
+Because if we just stick with inline asms, the need for "volatile"
+simply goes away.
+
+The existing volatile on those percpu inline asms is *wrong*. It's a
+historical mistake.
+
+And with just a plain non-volatile inline asm, the inline asm wins.
+
+It doesn't have the (bad) read-once behavior of a volatile memory op.
+
+And it also doesn't have the (horrible correctness issue)
+rematerialization behavior of a non-volatile memory op.
+
+A compiler that were to rematerializes an inline asm (instead of
+spilling) would be a bad joke. That's not an optimization, that's just
+a crazy bad compiler with a code generation bug.
+
+                      Linus
