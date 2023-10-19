@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE6F7CFC91
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC8D7CFC97
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346144AbjJSOaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S1346122AbjJSOaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346123AbjJSO3u (ORCPT
+        with ESMTP id S1346085AbjJSO3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:29:50 -0400
+        Thu, 19 Oct 2023 10:29:52 -0400
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3C9132;
-        Thu, 19 Oct 2023 07:29:48 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8E27D6000D;
-        Thu, 19 Oct 2023 14:29:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5F1B0;
+        Thu, 19 Oct 2023 07:29:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E52E960013;
+        Thu, 19 Oct 2023 14:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697725786;
+        t=1697725788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xcMHe82tB7onpVbG/YH4HQ63t03Vfz3gc/mKWRc+CAI=;
-        b=Mj1rEvY+y6c97LeiJ2aCQ/W/aC/HeGclbsg4EspJoHEgpIAACq3Mpda53p7I5wxKZlAs9w
-        bsxUvzzRDGtF6oHQizZbLhJMLOfoDYPIzJvoK8CPGaxp8BHpFP5EdBOBLbwH65wifScv4I
-        /KxcRpt6WZyZz4nNjVsaEMIO1YrokxrqCJDrzwYbOBICJ+oQ7CQxFFxjjJ1iQUls7SlZrD
-        X0RDIZGlZRrExdzSNQVCKTVkKu7KEax37JM9Y1b05/Fb8Y2h68Tg85d+rkEYUC2frb+bjz
-        eXobGMMLRBucwNfweVvuBMOn+OrtWrUHvX8mSdtHxFW7unEKJrRqWE4ga4MS+g==
+        bh=xURoacXcM4pBrKyqRvjgBEjVThCkCkRaNKdoTaIAdxk=;
+        b=k8QZBFky9wJnXKs1a2UpjYNtGxE+b27BFWRhmJB6qytTIOPL6okxgbCC+t7jhHBfkeQqI2
+        E5ZpHOyAUPA5X9PqgxMQNwIaEAg1PVS8pvY44gMuJE2REY9NG1uud0powJF6bB1qqoqdVp
+        dCqiziXMSwlg4/9C1AoqKmE2vtCn05wZAV0whey8Z0epn+xNvXTqOoMmIrNhR6G1dFyP0r
+        3E9TtgokJECVnk0+6Hl8nl31ljpWW4OzqYTaMYdJtxILIoh4dUBoCnfe8XDrJ9m896qSqb
+        p5fhAT/bnUDxIToikyLTX9Y7nBbpbkZ1QmMoT1wUBCvuQqcW30TkvCVB7Pavcw==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 19 Oct 2023 16:29:20 +0200
-Subject: [PATCH net-next v6 05/16] net: Make dev_set_hwtstamp_phylib
- accessible
+Date:   Thu, 19 Oct 2023 16:29:21 +0200
+Subject: [PATCH net-next v6 06/16] net: phy: micrel: fix ts_info value in
+ case of no phc
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231019-feature_ptp_netnext-v6-5-71affc27b0e5@bootlin.com>
+Message-Id: <20231019-feature_ptp_netnext-v6-6-71affc27b0e5@bootlin.com>
 References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
 In-Reply-To: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
 To:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -76,58 +76,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the dev_set_hwtstamp_phylib function accessible in prevision to use
-it from ethtool to reset the tstamp current configuration.
+In case of no phc we should not return SOFTWARE TIMESTAMPING flags as we do
+not know whether the netdev supports of timestamping.
+Remove it from the lan8841_ts_info and simply return 0.
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
 
-Change in v6:
-- Add missing EXPORT_SYMBOL_GPL call.
----
- include/linux/netdevice.h | 3 +++
- net/core/dev_ioctl.c      | 7 ++++---
- 2 files changed, 7 insertions(+), 3 deletions(-)
+This patch is not tested but it seems consistent to me.
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index e070a4540fba..b9d0411836db 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3922,6 +3922,9 @@ int generic_hwtstamp_get_lower(struct net_device *dev,
- int generic_hwtstamp_set_lower(struct net_device *dev,
- 			       struct kernel_hwtstamp_config *kernel_cfg,
- 			       struct netlink_ext_ack *extack);
-+int dev_set_hwtstamp_phylib(struct net_device *dev,
-+			    struct kernel_hwtstamp_config *cfg,
-+			    struct netlink_ext_ack *extack);
- int dev_ethtool(struct net *net, struct ifreq *ifr, void __user *userdata);
- unsigned int dev_get_flags(const struct net_device *);
- int __dev_change_flags(struct net_device *dev, unsigned int flags,
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index b46aedc36939..cb60b0b9c31d 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -322,9 +322,9 @@ static int dev_get_hwtstamp(struct net_device *dev, struct ifreq *ifr)
-  * frames and not forward them), it must set IFF_SEE_ALL_HWTSTAMP_REQUESTS in
-  * dev->priv_flags.
-  */
--static int dev_set_hwtstamp_phylib(struct net_device *dev,
--				   struct kernel_hwtstamp_config *cfg,
--				   struct netlink_ext_ack *extack)
-+int dev_set_hwtstamp_phylib(struct net_device *dev,
-+			    struct kernel_hwtstamp_config *cfg,
-+			    struct netlink_ext_ack *extack)
- {
- 	const struct net_device_ops *ops = dev->netdev_ops;
- 	bool phy_ts = phy_has_hwtstamp(dev->phydev);
-@@ -363,6 +363,7 @@ static int dev_set_hwtstamp_phylib(struct net_device *dev,
+Changes in v6:
+- Update the commit message.
+---
+ drivers/net/phy/micrel.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 43d072b53839..4c115e55ffc0 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -3607,12 +3607,8 @@ static int lan8841_ts_info(struct mii_timestamper *mii_ts,
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(dev_set_hwtstamp_phylib);
+ 	info->phc_index = ptp_priv->ptp_clock ?
+ 				ptp_clock_index(ptp_priv->ptp_clock) : -1;
+-	if (info->phc_index == -1) {
+-		info->so_timestamping |= SOF_TIMESTAMPING_TX_SOFTWARE |
+-					 SOF_TIMESTAMPING_RX_SOFTWARE |
+-					 SOF_TIMESTAMPING_SOFTWARE;
++	if (info->phc_index == -1)
+ 		return 0;
+-	}
  
- static int dev_set_hwtstamp(struct net_device *dev, struct ifreq *ifr)
- {
+ 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
+ 				SOF_TIMESTAMPING_RX_HARDWARE |
 
 -- 
 2.25.1
