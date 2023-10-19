@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D267CFD55
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF1A7CFD5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346189AbjJSOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
+        id S1346194AbjJSOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjJSOvc (ORCPT
+        with ESMTP id S1346150AbjJSOxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:51:32 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD00138
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:51:30 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1dc9c2b2b79so3972344fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697727088; x=1698331888; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tQdIc8b8rLwyEGA7aYkkgb3aiLBGi2Off4qaN8J15KY=;
-        b=ZTxhDBjAtX+5kJhEDdpqeru5eZI8nysDBUP6DlZaFz0Y0kFnia8zam77Axgs6en1LB
-         zvLsqAEXBfrUuc52azb7eqvqb75jvlIwat3557ky/vQbi80BlssBumdgVcUiOpRzRDuR
-         0XOnq8esxkuh2ObH/G8yqeOvFQfcKw9Pk+oGbB+m5hol8p+heQO/NbQ3y19g0Y9Xen9t
-         mRbveExeqQw+/dW1YFYbnmrWY27/Ii5b/1IJU030oJ+q3kpwq15eh0x/yHMqap8W/lgd
-         Sc2OFdWEge1VGQDwTRuky2oASQTTV7RDYEvBXFXg/Fd0S4SQtul6bZ0oq3h7wyP2xuq9
-         1jaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697727088; x=1698331888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tQdIc8b8rLwyEGA7aYkkgb3aiLBGi2Off4qaN8J15KY=;
-        b=omx+U5BN1En/N9QvzKu2mlNig2BjFVoKJJoH8c6Gi5fZqSbpetjnODJesOQ/Ude5MM
-         GE16xCbqrfm2B1xn9MjFb98DtCRxMZOINPq4Q03oA3NaBcazkO2VlYg+x7b6HTCkPdxw
-         7ZcNRtbICirKrxrU2917ai9mn/Ehf76lwbvHrci7FNtatS/zKahLQcYRpfzht5XyW1B3
-         4iJNJ1dVY0K4/b4FKzYQAxRZIjgGcB2DLah0YxHj+t8dYRuSY/Qa9WoIAKDNLhQAJarY
-         uhcz6rzNXGrhaP3FPIJ6ubzRRj0Cmr03w6T63sJnj51M3wTV843sZ5ycg1LSQrQGN5Ig
-         AvXQ==
-X-Gm-Message-State: AOJu0Yw3GUgumfvP2PXffiksMzQ0GWXFLruWr75QKE11i5wkd1PfvV61
-        DWsRjwu7pZygu3jl57KJThCbt5sVRgkL+6HVnLKrKLKc
-X-Google-Smtp-Source: AGHT+IHty6N7HTJwpNZ/GBo+XwmpY21HacXzaSadWjnIqIdv5tFUJe93vf7vOV7YvaUrmXuFxsys+iKlKN6c5XNdTMY=
-X-Received: by 2002:a05:6870:1205:b0:1ea:8645:6352 with SMTP id
- 5-20020a056870120500b001ea86456352mr2048322oan.11.1697727088053; Thu, 19 Oct
- 2023 07:51:28 -0700 (PDT)
+        Thu, 19 Oct 2023 10:53:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641FA115
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:53:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F034BC433C7;
+        Thu, 19 Oct 2023 14:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697727187;
+        bh=kBw5yTeJarKCISF0Rqzgf+ypJyJ4QRiNA8nAAPFGzCQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OK//eEapTh5eNeFHxQbmJgNee9YgTFHgf422G1w0ZnjUZSSVsVSriOS95OuBnHG7W
+         knLX2GtD6ult2ptxUfDKQ2CeM2h9UWpep4GTRtz7Sz8mitiooEqVe0fGlLgfu71LsH
+         6+58xZz1vardBoIRMz3gi6MCr03xwSDFq3T1ezlRJNgSSgAG8dWkfF8l2dlqt+cgMW
+         MFIJz3ag/7aG2zRwZa2JbQ+ZUDNHIKFM2BS+pcisHiyai2dEMvgpuQ3+FiCVcJiAFA
+         mN6Y6LmG7jg//SaM9mMbl4p/8x9iPalEdnoNGCNgzhbo7tmoRxOiI4eo0ZgvOaT3H/
+         0BlEAv4fNKJ4g==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qtUOc-0004RH-1r;
+        Thu, 19 Oct 2023 16:53:10 +0200
+Date:   Thu, 19 Oct 2023 16:53:10 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] USB-serial device ids for 6.6-rc7
+Message-ID: <ZTFC1jhZ0m5PIMRE@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <20231019033826.127396-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20231019033826.127396-1-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 19 Oct 2023 10:51:16 -0400
-Message-ID: <CADnq5_OjCTV=-EAZ3coKVKBkpWZTBg+sH1zJBM8e9Ng3Kmh47A@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: clean up some inconsistent indenting
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Abaci Robot <abaci@linux.alibaba.com>, Xinhui.Pan@amd.com,
-        Rodrigo.Siqueira@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
 
-Alex
+  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
 
-On Wed, Oct 18, 2023 at 11:38=E2=80=AFPM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> No functional modification involved.
->
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:2902 dm_resum=
-e() warn: inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6940
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
-gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 801f87a12ccf..0e1f8c5d7f9b 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -2899,7 +2899,7 @@ static int dm_resume(void *handle)
->         }
->
->         /* power on hardware */
-> -        dc_set_power_state(dm->dc, DC_ACPI_CM_POWER_STATE_D0);
-> +       dc_set_power_state(dm->dc, DC_ACPI_CM_POWER_STATE_D0);
->
->         /* program HPD filter */
->         dc_resume(dm->dc);
-> --
-> 2.20.1.7.g153144c
->
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-6.6-rc7
+
+for you to fetch changes up to 52480e1f1a259c93d749ba3961af0bffedfe7a7a:
+
+  USB: serial: option: add Fibocom to DELL custom modem FM101R-GL (2023-10-16 10:40:30 +0200)
+
+----------------------------------------------------------------
+USB-serial device ids for 6.6-rc7
+
+Here are some new modem device ids, including an entry needed for Sierra
+EM9191 which stopped working with recent firmware.
+
+All have been in linux-next with no reported issues.
+
+----------------------------------------------------------------
+Benoît Monin (1):
+      USB: serial: option: add entry for Sierra EM9191 with new firmware
+
+Fabio Porcedda (1):
+      USB: serial: option: add Telit LE910C4-WWX 0x1035 composition
+
+Puliang Lu (1):
+      USB: serial: option: add Fibocom to DELL custom modem FM101R-GL
+
+ drivers/usb/serial/option.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
