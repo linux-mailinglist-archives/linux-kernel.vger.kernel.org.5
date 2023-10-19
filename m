@@ -2,272 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605517CF56A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF467CF568
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjJSKcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57076 "EHLO
+        id S231837AbjJSKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjJSKcu (ORCPT
+        with ESMTP id S229998AbjJSKcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:32:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E807B124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697711568; x=1729247568;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=WUYVtfhpHcqOb/ROewefpYGYuHxMLA4P77VPHllnjlU=;
-  b=MjJ15nkdEOJw1PO3PX3vTPnnuKmpytD54NyQb9CRkXGy6caTsWtuC5+Q
-   8SCEEFjliBGzSPYTjwMeglwFkOh+Rl678I1TpKXHHaJ/BK+9PlP8wovNG
-   jaGAURK183/tRzRSY0zxj32v2+4PL149uwEo1e0gs6pSG52Z0mAgX4mNe
-   QJ+42ptChJQGYAbcrXk46EvL1zpoP71kXwTEXbtA5guHGahISSOPu9nsS
-   wnAnqXwnudVfBC+bzKBgHpv45cp7b424xfzZdh8p3YEaza/ylrNYZUKSZ
-   JVikGH7ggOUZNo7Jcih40f5CKyl8iNB/ZygpjJu+ds5MhQyAk5oPI7z4Z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="365571815"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="365571815"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 03:32:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="791954514"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="791954514"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 19 Oct 2023 03:32:07 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtQJw-00021G-2Q;
-        Thu, 19 Oct 2023 10:32:04 +0000
-Date:   Thu, 19 Oct 2023 18:31:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Valentin Caron <valentin.caron@foss.st.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: drivers/spi/spi-stm32.c:1808:17: warning: array subscript 0 is
- outside array bounds of 'const bool[0]' {aka 'const _Bool[]'}
-Message-ID: <202310191831.MLwx1c6x-lkp@intel.com>
+        Thu, 19 Oct 2023 06:32:47 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B3C129;
+        Thu, 19 Oct 2023 03:32:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P+Vz1kjV0C1OSfoQKkzRZqm5WtgKIe7jN5KQaHs2aywYH6pp2/NOXYdMHVLlhZKkMAvDChcGr+luNoSeNtbDs8y5PCoozPkDOzRs0eYnKrnezsdgRsSd9JvCaMEjBBVLCxWkG/TPIJnLUh13VsY35vtZU6IjEhpAHywxmEUnyK1gDZAU4w5yAUrPjRcwxuV/es0AErKpIvdksmM1P1qsFfnf1B05sxXCKjH93QCGXsrBnNLpYkKyQOLCaPTW8BZeFHL5ex/KvGBG+n0Kf2HK2y35RgsMxQPOjb65VOfn3p4WKlS/xXGXvb2ySg9wYGJIjBE+YRAwUeapYe86ZCgD+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3sSJjwkKQUbzNEYzEehEjeGxrYgYC7zzGe7NwWvvaEc=;
+ b=ni7LPQMxXQl6VFm6Lrm0XBbhuBirEirfrr8K6iNb0ZgflCzDz2Av2wOstMjfzaJScyeGH1oOXiSZHVJPCnTjZVJXRJlRumRsBRCIuS/vxcc6QgH/J4BULvjuZuhGvSIsnlGc7cIE+Xw7pa1aTzClZLxp28VMvY7P4ivd8QeayBLXii7WPjWbAdIY8O6B7WKIwQDl/4v3ZWh7tt9eoh+tZTuLw/9xueK7tKZVMLbxIsDzeBFyuABoUw0rgs0FdugXbR6YT1Slgzz+cjjKjXJDMumpQaoXo2szsCkBwQFoKAVndPUHRmlqElUTt08lAz4x3HAYB3qxCw0y5qQXXgb+5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3sSJjwkKQUbzNEYzEehEjeGxrYgYC7zzGe7NwWvvaEc=;
+ b=hgADqg9EcRIg1N8VG5vnfyA7cvOvjYELdNRbbVIHIHXFg5ItSwGykPTFv817VFPUqC8KlcdrJag8I7q4rg6NrhV/JsHNlr38ltWZvEYVbgl2IY8Pvf+H64jzOVdmzW9q5on45/U1J7iNl9bZ+/X6BEr+zbyggLewp+dQbiMSv/I=
+Received: from BYAPR12MB3207.namprd12.prod.outlook.com (2603:10b6:a03:135::10)
+ by DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 19 Oct
+ 2023 10:32:43 +0000
+Received: from BYAPR12MB3207.namprd12.prod.outlook.com
+ ([fe80::7898:321:2239:77b9]) by BYAPR12MB3207.namprd12.prod.outlook.com
+ ([fe80::7898:321:2239:77b9%2]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
+ 10:32:42 +0000
+From:   "Kundanala, Praveen Teja" <praveen.teja.kundanala@amd.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2 3/5] arm64: zynqmp: Add ZynqnMP nvmem nodes
+Thread-Topic: [PATCH V2 3/5] arm64: zynqmp: Add ZynqnMP nvmem nodes
+Thread-Index: AQHaAlKW/s3Ct/HanU28MF9iZBMnOLBQ2F6AgAAEKaA=
+Date:   Thu, 19 Oct 2023 10:32:42 +0000
+Message-ID: <BYAPR12MB3207FC23425007B129ED4D3ECBD4A@BYAPR12MB3207.namprd12.prod.outlook.com>
+References: <20231019060651.23341-1-praveen.teja.kundanala@amd.com>
+ <20231019060651.23341-4-praveen.teja.kundanala@amd.com>
+ <1fa867b2-3930-4ff3-90cd-022d855036c7@linaro.org>
+In-Reply-To: <1fa867b2-3930-4ff3-90cd-022d855036c7@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=2c9e0f18-85e1-440c-b916-cfffde98a817;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-10-19T09:42:34Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR12MB3207:EE_|DM4PR12MB5278:EE_
+x-ms-office365-filtering-correlation-id: 1be64a47-5f97-4a0b-899b-08dbd08eb9aa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bCr8W7sZj9sEhV616U7QPBZ3oPB00cT9LD8UU1OwZZOFpuPJFytLVlzNkVqhjhv226MkpgDj3qflaMLkTsCcV26aip6Zg445D40lWe+vAAHEYwD8UzFcNXUW0EuLGmxzh2K9tXB3nn48tY9AE2ongd3xsrRMOqEsdMsMhHKSAigsREWOTFviSZGXTXWZuKToFD04KmL9qmHjXHtyCURx9BFMSSzUMuwYZkVJHAjsS3KlXG69rZh/E9gPlRa5F9VBz0Bly39lQU30Gl7KPu3LMzRIL/Y4kWPLXyZvKXU8xoFyJeso6lQAZAHBM4kgjgIZl9xBcm05a6g3WbIbV40iOwKZ8G0JMx9RSlY8+mwZarjLpUslswjm6n4RH0XAXKcAVsy/qZVrGZdYXc9X9i9EhpbvHk4rC/Y7f7t2+c5SqhSXKYzPchi0baJwMyDIO/Kapu8QGuPpmP+H8p8B8DgJduSK9LSNmRMyi2vL9Tpi64UWZMvYdIZPCUU0E7xYtj8SFxB2B0h4FGjyGo1z7YokmUnXYiY7YYv+LXk4A714tQnGhhik3QUajuKxubGZ6C4wt3D9q1FnOxRJSTvqjUFKHSWSU3voguuHQgphgaZNaAM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3207.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(346002)(366004)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(86362001)(55016003)(66476007)(66946007)(66446008)(110136005)(76116006)(66556008)(64756008)(316002)(71200400001)(966005)(478600001)(8936002)(8676002)(33656002)(5660300002)(41300700001)(52536014)(4326008)(7696005)(2906002)(6506007)(38100700002)(38070700005)(53546011)(83380400001)(26005)(122000001)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S2FST20rMW5sem1FSjRncE5HV2ZQdVpJYTZTcFErU3QyRnE0c3JwK0tabGl4?=
+ =?utf-8?B?ckp6Z2lFdGZzSkY5Q3NKbENtbUZPNC9wYXd0YUhqeVlHcTE4UnNndTNET1kr?=
+ =?utf-8?B?aWN3UnBkNWtZQnRjK0Yra2x0VzIrZGp6ejVmclF6Y1I3WTF2S2NtWEpUeXpw?=
+ =?utf-8?B?MVFJQ3NUY2J1Nk9DOUxKZkFJczB4SFAvNG5WZDRubEMzVllqYzk3ZEI0eVpL?=
+ =?utf-8?B?UVVIL0hDcHl5S2hCKy9KSHFNSzVUV0VySGdEaG1mYWp0S3BFL2NxcFdKdERP?=
+ =?utf-8?B?cVNUdGFXVVFIZFByTFdEL1Q1TTNMeFFVZXprM0ZGMlBHWWpSNlMwWkVvSm1C?=
+ =?utf-8?B?M0VaZHowNFdFdFJTb2JINmswdnhLK0diTjdzL28wVWlpTmdlRndzZGVTSHdV?=
+ =?utf-8?B?Rno0UmhtMk1naDJORDNzalU0Y0xyTmhDTWowTGd0UUtSWDdhV3RlcVAyRVNn?=
+ =?utf-8?B?dS9zRVdTVFVQOGY4Nm1RK1ExQUxJQzk5dlEwVWxFZVU4ekVWZjVSdWZlRzZ3?=
+ =?utf-8?B?anMzZ2pCL2lTM20xZ09qZDhPL1BwbHE0cGQxU3VoRHZqQzIyQk1zK2hzS0xJ?=
+ =?utf-8?B?MHM4bmN0V0JycEM4QXc0anNKSEJnZlhwKytYcFBPWnREVmtOdG1jRUNRekZQ?=
+ =?utf-8?B?Q0FFSFFOT2sySVR5OTVCbWU0N3A4bDA5dENzcExYaHcrVDZvR25FRC9FdG04?=
+ =?utf-8?B?aERlbTJsZ2ZMWWc1eUJTSlRXbFNSSU42THMrNkdaQkU1R3BKREwxdEVuZXVF?=
+ =?utf-8?B?cHhQaUYrVW1NZ2VZa0l5ZTRQK01iUjI4YmtSa08zV1RjWG03cWxDckYzQXNh?=
+ =?utf-8?B?aXI5cm15Ri9DSVA2RFBobERtRy9kZFB3NHdFWnF1a0JRRzlnWFJENXIrM3dh?=
+ =?utf-8?B?bFIwdmswNTN0ZnQ2cExRdVUxMUJvVUIxeCszUW5LK0VuQjVYRWRpKzdYZmlm?=
+ =?utf-8?B?eVhFMTY5VHNuRTJ0ODV4c3JLR1BTTXhpQUdkZDJCMEp4d1BGaFpObStmaTR4?=
+ =?utf-8?B?Rk1CUjVDeFZ2QUpOSlJsZ3hxZkZvQlJERG4vMGhZaG16WVgyYTlpaVdwY2V2?=
+ =?utf-8?B?R09FUkRJZkF4ekxmOWNJLzJzTnA4Yjg2TjJUTnlzdmQ3THkyOFlPU2dOY2xP?=
+ =?utf-8?B?TFArZ1BZTlVXNjVWTkZEdFJ6UEpRSUlOeUZ0dHQ5aU92UlgwS3Q5dXZ1N3FE?=
+ =?utf-8?B?R1lTUVNzekV2T1Z6ZDVzc2hrRlFTemhEbEVaTW1iNzBaUjZLMDNpazRSQ3pB?=
+ =?utf-8?B?TEkwdWdoMHJ4WWtKOTloVldzV3V3dEZkUXk4SjJmQTBTTDJkREQzV1ZleHBK?=
+ =?utf-8?B?Q05CRU9SNW9wLzBRSE1BUkc3clF3Z0tBdG1zOHg2UU4yREh0WldSTzZvMlFz?=
+ =?utf-8?B?NksybG83MXdZNGxPOHJLY1F5Vjh0aEZPWjRCWXpHK1oxSjJKTWVhdTRIT3Bm?=
+ =?utf-8?B?aEV6eFQwSUR3QzNvUXlZSlNGUjZFamIwUkMwVEpjRWVGbXNZZTRlb0VlRDFR?=
+ =?utf-8?B?VTZJQ1JyTmtDRUYxZndwLzhrY1ByMUIrVklKZ3EyZ2NQK1FJUDZNZzhvZ3k0?=
+ =?utf-8?B?Y0tEZmh4UWNuNXV3eTVYT3VxOHVNOFlrV3hZQ2xFeGoxRnRiU3V6Tys5elc2?=
+ =?utf-8?B?UHhZTnVXVUpiTk9oWTQwZDVMdnR4azZUYUl4d1Y0YVh2RTVxcXltM0Q4c1Jz?=
+ =?utf-8?B?LzZpRkt2bzhwdzJCWWlHZElmU1ZNdmZUaUUwT1p0L2I4M0owVE5qWXcvMm53?=
+ =?utf-8?B?RERsRkVGYytPZXF0eVhicFBzSzZoK1NzRWRuSmlhM1VUcnlWcVI0ejdiQ0dO?=
+ =?utf-8?B?UmhVQ05XelFQNkVwUWFRbVZ4aWQ3NWJJTmpxZVl5cU9aVXRkRTMvL2cvSkln?=
+ =?utf-8?B?VTlXS1RkYXlCdjBmQ1QzVmlXOFdTUTEzb2hJamcvSEhzRm15V2kvbisyK0JX?=
+ =?utf-8?B?YTgwRFhjaFZ6V2JtUXdqN2t4ajJiQWE0RjU4ZE84em9yQU1sdjZXVWpMMHRN?=
+ =?utf-8?B?Q2pyM2ZvNkhsVm1GaytSamQrb3V4bC9sY3NrTUxXTkkyOEJjS1BwRW15Z0hx?=
+ =?utf-8?B?cFp3MU9RNStpTVBueXRMSkNUSlVFNDVXRTgrc0NUSFdnSitMVllrU2lPcHpt?=
+ =?utf-8?Q?mR/k=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3207.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1be64a47-5f97-4a0b-899b-08dbd08eb9aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2023 10:32:42.1638
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eXc0U0wNECkKOEntTd+fbLYMa2QlYX91eWR3kBMmz6K+XDu1jfcda4h0aWe9H8aEMwe2jyCjxV7me3E6cpg49g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5278
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   dd72f9c7e512da377074d47d990564959b772643
-commit: fee681646fc831b154619ac0261afedcc7e671e7 spi: stm32: disable device mode with st,stm32f4-spi compatible
-date:   3 months ago
-config: parisc-randconfig-r013-20220830 (https://download.01.org/0day-ci/archive/20231019/202310191831.MLwx1c6x-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310191831.MLwx1c6x-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310191831.MLwx1c6x-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/spi/spi-stm32.c: In function 'stm32_spi_probe':
->> drivers/spi/spi-stm32.c:1808:17: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds=]
-    1808 |         if (!cfg->has_device_mode && device_mode) {
-         |              ~~~^~~~~~~~~~~~~~~~~
-   cc1: note: source object is likely at address zero
-
-
-vim +1808 drivers/spi/spi-stm32.c
-
-  1795	
-  1796	static int stm32_spi_probe(struct platform_device *pdev)
-  1797	{
-  1798		struct spi_controller *ctrl;
-  1799		struct stm32_spi *spi;
-  1800		struct resource *res;
-  1801		struct reset_control *rst;
-  1802		struct device_node *np = pdev->dev.of_node;
-  1803		bool device_mode;
-  1804		int ret;
-  1805		const struct stm32_spi_cfg *cfg = of_device_get_match_data(&pdev->dev);
-  1806	
-  1807		device_mode = of_property_read_bool(np, "spi-slave");
-> 1808		if (!cfg->has_device_mode && device_mode) {
-  1809			dev_err(&pdev->dev, "spi-slave not supported\n");
-  1810			return -EPERM;
-  1811		}
-  1812	
-  1813		if (device_mode)
-  1814			ctrl = devm_spi_alloc_slave(&pdev->dev, sizeof(struct stm32_spi));
-  1815		else
-  1816			ctrl = devm_spi_alloc_master(&pdev->dev, sizeof(struct stm32_spi));
-  1817		if (!ctrl) {
-  1818			dev_err(&pdev->dev, "spi controller allocation failed\n");
-  1819			return -ENOMEM;
-  1820		}
-  1821		platform_set_drvdata(pdev, ctrl);
-  1822	
-  1823		spi = spi_controller_get_devdata(ctrl);
-  1824		spi->dev = &pdev->dev;
-  1825		spi->ctrl = ctrl;
-  1826		spi->device_mode = device_mode;
-  1827		spin_lock_init(&spi->lock);
-  1828	
-  1829		spi->cfg = cfg;
-  1830	
-  1831		spi->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-  1832		if (IS_ERR(spi->base))
-  1833			return PTR_ERR(spi->base);
-  1834	
-  1835		spi->phys_addr = (dma_addr_t)res->start;
-  1836	
-  1837		spi->irq = platform_get_irq(pdev, 0);
-  1838		if (spi->irq <= 0)
-  1839			return dev_err_probe(&pdev->dev, spi->irq,
-  1840					     "failed to get irq\n");
-  1841	
-  1842		ret = devm_request_threaded_irq(&pdev->dev, spi->irq,
-  1843						spi->cfg->irq_handler_event,
-  1844						spi->cfg->irq_handler_thread,
-  1845						IRQF_ONESHOT, pdev->name, ctrl);
-  1846		if (ret) {
-  1847			dev_err(&pdev->dev, "irq%d request failed: %d\n", spi->irq,
-  1848				ret);
-  1849			return ret;
-  1850		}
-  1851	
-  1852		spi->clk = devm_clk_get(&pdev->dev, NULL);
-  1853		if (IS_ERR(spi->clk)) {
-  1854			ret = PTR_ERR(spi->clk);
-  1855			dev_err(&pdev->dev, "clk get failed: %d\n", ret);
-  1856			return ret;
-  1857		}
-  1858	
-  1859		ret = clk_prepare_enable(spi->clk);
-  1860		if (ret) {
-  1861			dev_err(&pdev->dev, "clk enable failed: %d\n", ret);
-  1862			return ret;
-  1863		}
-  1864		spi->clk_rate = clk_get_rate(spi->clk);
-  1865		if (!spi->clk_rate) {
-  1866			dev_err(&pdev->dev, "clk rate = 0\n");
-  1867			ret = -EINVAL;
-  1868			goto err_clk_disable;
-  1869		}
-  1870	
-  1871		rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-  1872		if (rst) {
-  1873			if (IS_ERR(rst)) {
-  1874				ret = dev_err_probe(&pdev->dev, PTR_ERR(rst),
-  1875						    "failed to get reset\n");
-  1876				goto err_clk_disable;
-  1877			}
-  1878	
-  1879			reset_control_assert(rst);
-  1880			udelay(2);
-  1881			reset_control_deassert(rst);
-  1882		}
-  1883	
-  1884		if (spi->cfg->has_fifo)
-  1885			spi->fifo_size = spi->cfg->get_fifo_size(spi);
-  1886	
-  1887		ret = spi->cfg->config(spi);
-  1888		if (ret) {
-  1889			dev_err(&pdev->dev, "controller configuration failed: %d\n",
-  1890				ret);
-  1891			goto err_clk_disable;
-  1892		}
-  1893	
-  1894		ctrl->dev.of_node = pdev->dev.of_node;
-  1895		ctrl->auto_runtime_pm = true;
-  1896		ctrl->bus_num = pdev->id;
-  1897		ctrl->mode_bits = SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST |
-  1898				  SPI_3WIRE;
-  1899		ctrl->bits_per_word_mask = spi->cfg->get_bpw_mask(spi);
-  1900		ctrl->max_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_min;
-  1901		ctrl->min_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_max;
-  1902		ctrl->use_gpio_descriptors = true;
-  1903		ctrl->prepare_message = stm32_spi_prepare_msg;
-  1904		ctrl->transfer_one = stm32_spi_transfer_one;
-  1905		ctrl->unprepare_message = stm32_spi_unprepare_msg;
-  1906		ctrl->flags = spi->cfg->flags;
-  1907		if (STM32_SPI_DEVICE_MODE(spi))
-  1908			ctrl->slave_abort = stm32h7_spi_device_abort;
-  1909	
-  1910		spi->dma_tx = dma_request_chan(spi->dev, "tx");
-  1911		if (IS_ERR(spi->dma_tx)) {
-  1912			ret = PTR_ERR(spi->dma_tx);
-  1913			spi->dma_tx = NULL;
-  1914			if (ret == -EPROBE_DEFER)
-  1915				goto err_clk_disable;
-  1916	
-  1917			dev_warn(&pdev->dev, "failed to request tx dma channel\n");
-  1918		} else {
-  1919			ctrl->dma_tx = spi->dma_tx;
-  1920		}
-  1921	
-  1922		spi->dma_rx = dma_request_chan(spi->dev, "rx");
-  1923		if (IS_ERR(spi->dma_rx)) {
-  1924			ret = PTR_ERR(spi->dma_rx);
-  1925			spi->dma_rx = NULL;
-  1926			if (ret == -EPROBE_DEFER)
-  1927				goto err_dma_release;
-  1928	
-  1929			dev_warn(&pdev->dev, "failed to request rx dma channel\n");
-  1930		} else {
-  1931			ctrl->dma_rx = spi->dma_rx;
-  1932		}
-  1933	
-  1934		if (spi->dma_tx || spi->dma_rx)
-  1935			ctrl->can_dma = stm32_spi_can_dma;
-  1936	
-  1937		pm_runtime_set_autosuspend_delay(&pdev->dev,
-  1938						 STM32_SPI_AUTOSUSPEND_DELAY);
-  1939		pm_runtime_use_autosuspend(&pdev->dev);
-  1940		pm_runtime_set_active(&pdev->dev);
-  1941		pm_runtime_get_noresume(&pdev->dev);
-  1942		pm_runtime_enable(&pdev->dev);
-  1943	
-  1944		ret = spi_register_controller(ctrl);
-  1945		if (ret) {
-  1946			dev_err(&pdev->dev, "spi controller registration failed: %d\n",
-  1947				ret);
-  1948			goto err_pm_disable;
-  1949		}
-  1950	
-  1951		pm_runtime_mark_last_busy(&pdev->dev);
-  1952		pm_runtime_put_autosuspend(&pdev->dev);
-  1953	
-  1954		dev_info(&pdev->dev, "driver initialized (%s mode)\n",
-  1955			 STM32_SPI_MASTER_MODE(spi) ? "master" : "device");
-  1956	
-  1957		return 0;
-  1958	
-  1959	err_pm_disable:
-  1960		pm_runtime_disable(&pdev->dev);
-  1961		pm_runtime_put_noidle(&pdev->dev);
-  1962		pm_runtime_set_suspended(&pdev->dev);
-  1963		pm_runtime_dont_use_autosuspend(&pdev->dev);
-  1964	err_dma_release:
-  1965		if (spi->dma_tx)
-  1966			dma_release_channel(spi->dma_tx);
-  1967		if (spi->dma_rx)
-  1968			dma_release_channel(spi->dma_rx);
-  1969	err_clk_disable:
-  1970		clk_disable_unprepare(spi->clk);
-  1971	
-  1972		return ret;
-  1973	}
-  1974	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhpIEtvemxvd3NraSwNCg0KPiAt
+LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBLcnp5c3p0b2YgS296bG93c2tpIDxr
+cnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+DQo+IFNlbnQ6IFRodXJzZGF5LCBPY3RvYmVy
+IDE5LCAyMDIzIDI6NTggUE0NCj4gVG86IEt1bmRhbmFsYSwgUHJhdmVlbiBUZWphIDxwcmF2ZWVu
+LnRlamEua3VuZGFuYWxhQGFtZC5jb20+Ow0KPiBzcmluaXZhcy5rYW5kYWdhdGxhQGxpbmFyby5v
+cmc7IHJvYmgrZHRAa2VybmVsLm9yZzsNCj4ga3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8u
+b3JnOyBjb25vcitkdEBrZXJuZWwub3JnOyBTaW1laywgTWljaGFsDQo+IDxtaWNoYWwuc2ltZWtA
+YW1kLmNvbT47IEt1bmRhbmFsYSwgUHJhdmVlbiBUZWphDQo+IDxwcmF2ZWVuLnRlamEua3VuZGFu
+YWxhQGFtZC5jb20+OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLQ0KPiBr
+ZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFYyIDMvNV0gYXJtNjQ6IHp5bnFtcDogQWRkIFp5
+bnFuTVAgbnZtZW0gbm9kZXMNCj4NCj4gQ2F1dGlvbjogVGhpcyBtZXNzYWdlIG9yaWdpbmF0ZWQg
+ZnJvbSBhbiBFeHRlcm5hbCBTb3VyY2UuIFVzZSBwcm9wZXIgY2F1dGlvbg0KPiB3aGVuIG9wZW5p
+bmcgYXR0YWNobWVudHMsIGNsaWNraW5nIGxpbmtzLCBvciByZXNwb25kaW5nLg0KPg0KPg0KPiBP
+biAxOS8xMC8yMDIzIDA4OjA2LCBQcmF2ZWVuIFRlamEgS3VuZGFuYWxhIHdyb3RlOg0KPiA+IEFk
+ZCBudm1lbSBEVCBub2RlcyBmb3IgWnlucU1QIFNPQw0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
+UHJhdmVlbiBUZWphIEt1bmRhbmFsYSA8cHJhdmVlbi50ZWphLmt1bmRhbmFsYUBhbWQuY29tPg0K
+PiA+IC0tLQ0KPiA+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL3hpbGlueC96eW5xbXAuZHRzaSB8IDU5
+DQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDU3
+IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvYXJj
+aC9hcm02NC9ib290L2R0cy94aWxpbngvenlucW1wLmR0c2kNCj4gPiBiL2FyY2gvYXJtNjQvYm9v
+dC9kdHMveGlsaW54L3p5bnFtcC5kdHNpDQo+ID4gaW5kZXggYjYxZmM5OWNkOTExLi5iNzQzM2U2
+YjlkNmMgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy94aWxpbngvenlucW1w
+LmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL3hpbGlueC96eW5xbXAuZHRzaQ0K
+PiA+IEBAIC0xOTQsMTQgKzE5NCw2OSBAQCB6eW5xbXBfcG93ZXI6IHp5bnFtcC1wb3dlciB7DQo+
+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWJveC1uYW1lcyA9ICJ0eCIsICJyeCI7
+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgIH07DQo+ID4NCj4gPiAtICAgICAgICAgICAgICAg
+ICAgICAgbnZtZW1fZmlybXdhcmUgew0KPiA+ICsgICAgICAgICAgICAgICAgICAgICBudm1lbS1m
+aXJtd2FyZSB7DQo+DQo+IE5vZGUgbmFtZXMgc2hvdWxkIGJlIGdlbmVyaWMuIFNlZSBhbHNvIGFu
+IGV4cGxhbmF0aW9uIGFuZCBsaXN0IG9mIGV4YW1wbGVzDQo+IChub3QgZXhoYXVzdGl2ZSkgaW4g
+RFQgc3BlY2lmaWNhdGlvbjoNCj4gaHR0cHM6Ly9kZXZpY2V0cmVlLXNwZWNpZmljYXRpb24ucmVh
+ZHRoZWRvY3MuaW8vZW4vbGF0ZXN0L2NoYXB0ZXIyLWRldmljZXRyZWUtDQo+IGJhc2ljcy5odG1s
+I2dlbmVyaWMtbmFtZXMtcmVjb21tZW5kYXRpb24NCltLdW5kYW5hbGEsIFByYXZlZW4gVGVqYV0g
+T2theQ0KPg0KPg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUg
+PSAieGxueCx6eW5xbXAtbnZtZW0tZnciOw0KPg0KPiBJdCBkb2VzIG5vdCBsb29rIGxpa2UgeW91
+IHRlc3RlZCB0aGUgRFRTIGFnYWluc3QgYmluZGluZ3MuIFBsZWFzZSBydW4gYG1ha2UNCj4gZHRi
+c19jaGVjayBXPTFgIChzZWUgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3dyaXRp
+bmctc2NoZW1hLnJzdA0KPiBvciBodHRwczovL3d3dy5saW5hcm8ub3JnL2Jsb2cvdGlwcy1hbmQt
+dHJpY2tzLWZvci12YWxpZGF0aW5nLWRldmljZXRyZWUtDQo+IHNvdXJjZXMtd2l0aC10aGUtZGV2
+aWNldHJlZS1zY2hlbWEvDQo+IGZvciBpbnN0cnVjdGlvbnMpLg0KW0t1bmRhbmFsYSwgUHJhdmVl
+biBUZWphXSBNaXNzZWQgaXQsIFdpbGwgcnVuIGFuZCBzZW5kIFYzLg0KPg0KPiA+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+DQo+ID4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgc29jX3JldmlzaW9uOiBzb2NfcmV2aXNpb25AMCB7DQo+
+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc29jX3JldmlzaW9uOiBzb2MtcmV2aXNp
+b25AMCB7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8
+MHgwIDB4ND47DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfTsNCj4NCj4gV2Fz
+bid0IHRoaXMgZml4ZWQgYWxyZWFkeSBieSBNaWNoYWw/DQpbS3VuZGFuYWxhLCBQcmF2ZWVuIFRl
+amFdIFRvb2sgYmFzZSBvbiBTcmluaXZhcyBmb3ItbmV4dCByZXBvIGFuZCBNaWNoYWwncyBjaGFu
+Z2VzIHdlcmUgbm90IHJlZmxlY3RlZCBpbiB0aGF0IHJlcG8uDQo+DQo+DQo+IEJlc3QgcmVnYXJk
+cywNCj4gS3J6eXN6dG9mDQoNCg==
