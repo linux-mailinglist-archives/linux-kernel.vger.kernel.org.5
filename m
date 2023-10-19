@@ -2,571 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8844B7D041F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4A57D0427
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346632AbjJSVlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        id S1346601AbjJSVpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346618AbjJSVlf (ORCPT
+        with ESMTP id S235338AbjJSVpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:41:35 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A39BE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:41:32 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3af64a4c97eso136696b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:41:32 -0700 (PDT)
+        Thu, 19 Oct 2023 17:45:38 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE27119
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:45:35 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7dafb659cso1420877b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697751692; x=1698356492; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ozAkGUmu/g2vPdjYsuI5geKJqXaONTU37MWQT8rh8Io=;
-        b=OPGtHXUb8Ixjv/Vv/Fes8/oObHpEDrLyW2gDVNW/xtHrt7yMEs43CCtdk08qV4MPZF
-         aLgTY4DzgCgWbrh9cW5kWDJEoJZn34dBHuRAkvXi1+jLAa64pgVdnvcI8zs0Uv6Zzm4H
-         MfzBGSacIG+MpPhht7Nuj2H7xOkhGpNu+IWg82sm47ifXWONK/Wo0bMSRR9Ok0hRB2Pr
-         /X8pt8DI+jJI0r302ssFHFYyYPz719q74r0TRnGRtWppIVryPapXfZZyNFRfpFh6efy4
-         cGzc4NhWzMGxZMSIO6twXOwORGABKg0gZbnnBoWNMHSI5nwlfx911w5yBUBZ1CwStupv
-         3kHQ==
+        d=google.com; s=20230601; t=1697751935; x=1698356735; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IP1bC7NbhmF2aawA3oJIPd9v1uWsSkcLhLCPtpX0r0A=;
+        b=JOVgIBJYgBOQnyqidcLbqZwRWEUPo2TSOdoujEUzNCfro7kNRLaxe9u8zLpWt9Ilbz
+         n7KhtSiw0keyt7PpNR1SZU4jJMhldEthl5lMPJNZyWFBEb5ylTNB2aeneuqySSfBLzY5
+         wFZi5HvwLK85vlNp1GFHpVGQ1zmEgcKl7PHndWxMnynJMY4RGP5OsVNw713qLh18s5p8
+         2rvThaFwgS/QyhPRXYU3F8Vg8hhPksBEvCRMU0vZKHbp5md8EQ9wpH6eVV7xvEIYsfqA
+         hUaNiRt0/GN2RG/65LhT5TYyI7O30lY5GhuMwd4HdM8D2xI1K/7DcUzDT5nz4slpT2v6
+         NOpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697751692; x=1698356492;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697751935; x=1698356735;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ozAkGUmu/g2vPdjYsuI5geKJqXaONTU37MWQT8rh8Io=;
-        b=NOG9xGuDaz4MOk7c/UEPvC5k+74ghFLoSliVcMyPqUYNdCnpPZP5TikRrXNakLwh2G
-         xPHmFb9fez1w4Sy6OMpREhYh3m1HLGlgaYOBH9SrclkM6H/DoG7rlK/hTG7C+/wLwKiD
-         rqTE9seZzX3xL+67O1RzAHTabfac4UfZq45cm3DiyIr1xhhmmw9IuOv99CymHErLKWLj
-         ctbFmr6NdBcCzJKo2jqhfA9Q7knZW734Vp5OXE+Zukzbs6MHcODREaaT7JCqk4NkyTYN
-         Ez4jTPcCDuLtiWqoVOYZScSpq5hjzxqjqCTpclpzrqcUY/HLtalgSZupqK9E1j60MKOk
-         rxQw==
-X-Gm-Message-State: AOJu0YzWXwQcu7TPzZfrjpWTALdmpUy5TbO8y19mMomrauDGVAcXiB05
-        Ehh8WscSkqv37jPHwImYQslT3A==
-X-Google-Smtp-Source: AGHT+IEljrofNoN94x7na4QLki2sG4viIyrDKY/ruvd88QfcKlJJu1SSapq9pzvq0HL+u6r60tnkjQ==
-X-Received: by 2002:a05:6808:1983:b0:3b2:f5be:4fd5 with SMTP id bj3-20020a056808198300b003b2f5be4fd5mr76801oib.14.1697751691691;
-        Thu, 19 Oct 2023 14:41:31 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id x19-20020a9d6293000000b006ce2c785ac7sm81812otk.8.2023.10.19.14.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 14:41:31 -0700 (PDT)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Thu, 19 Oct 2023 14:41:26 -0700
-Subject: [PATCH v6 3/3] riscv: Add tests for riscv module loading
+        bh=IP1bC7NbhmF2aawA3oJIPd9v1uWsSkcLhLCPtpX0r0A=;
+        b=OpHc9//hyy0NBMAIOFdSrXXjqUj+RLm769Sr8gxAucHk/hmVwa4R5DUQEGqbJYTiyO
+         w8mGyJh3SWFSFml4W+J7BC46BXR0FovziJEFMUkw2tK7x0qogxGTwV5GYbUoo9ksQ56Q
+         IW4+JcPiEEm2EkCX/dXzuqC/K3GPaD5M2inEDMQFyQ4V4RH8ZDs7Cju+jTGQfeJ8lFP+
+         eLDoT/f0aoVflOzfVFLs7x/hEI5+nSLsP9rPMrCDhx0m+7Xq/mr7GnP97u3WEWP7Wrxu
+         sC9Iqs+96KC2PlKMzzorR3NDDqhwt5nEtDtZWAu2fPiGfaEM1paxCwegzsbHQz4GXbHP
+         PpZA==
+X-Gm-Message-State: AOJu0YxlcEPX96ThKWnF1A5S5TqsbVVxzfJdBHark+YmZm9x0RgYOtYY
+        lAS5eEJVx4yJmD4c4/6dJlfIGAqvhDV+tGQlswvrJg==
+X-Google-Smtp-Source: AGHT+IHQpr9/cMMwjS8gEZfULIlFEZn8lj2REtPfIGp2Kvw1E3AiUkFVt2rx8GUHTWRSFcl/VKr/jwON6+BOgeRudfE=
+X-Received: by 2002:a0d:ccc6:0:b0:5a7:af7d:cee7 with SMTP id
+ o189-20020a0dccc6000000b005a7af7dcee7mr164618ywd.6.1697751934417; Thu, 19 Oct
+ 2023 14:45:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231019-module_relocations-v6-3-94726e644321@rivosinc.com>
-References: <20231019-module_relocations-v6-0-94726e644321@rivosinc.com>
-In-Reply-To: <20231019-module_relocations-v6-0-94726e644321@rivosinc.com>
-To:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
+ <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com> <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
+ <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com> <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
+ <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com> <ZSlragGjFEw9QS1Y@x1n>
+In-Reply-To: <ZSlragGjFEw9QS1Y@x1n>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 19 Oct 2023 14:45:21 -0700
+Message-ID: <CAJuCfpF2hM9MmUdv4K8a1meKdwsdWb5Q0fFihUtsngidehTPnA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test cases for the two main groups of relocations added: SUB and
-SET, along with uleb128 which is a bit different because SUB and SET are
-required to happen together.
+On Fri, Oct 13, 2023 at 9:08=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Fri, Oct 13, 2023 at 11:56:31AM +0200, David Hildenbrand wrote:
+> > Hi Peter,
+>
+> Hi, David,
+>
+> >
+> > > I used to have the same thought with David on whether we can simplify=
+ the
+> > > design to e.g. limit it to single mm.  Then I found that the trickies=
+t is
+> > > actually patch 1 together with the anon_vma manipulations, and the pr=
+oblem
+> > > is that's not avoidable even if we restrict the api to apply on singl=
+e mm.
+> > >
+> > > What else we can benefit from single mm?  One less mmap read lock, bu=
+t
+> > > probably that's all we can get; IIUC we need to keep most of the rest=
+ of
+> > > the code, e.g. pgtable walks, double pgtable lockings, etc.
+> >
+> > No existing mechanisms move anon pages between unrelated processes, tha=
+t
+> > naturally makes me nervous if we're doing it "just because we can".
+>
+> IMHO that's also the potential, when guarded with userfaultfd descriptor
+> being shared between two processes.
+>
+> See below with more comment on the raised concerns.
+>
+> >
+> > >
+> > > Actually, even though I have no solid clue, but I had a feeling that =
+there
+> > > can be some interesting way to leverage this across-mm movement, whil=
+e
+> > > keeping things all safe (by e.g. elaborately requiring other proc to =
+create
+> > > uffd and deliver to this proc).
+> >
+> > Okay, but no real use cases yet.
+>
+> I can provide a "not solid" example.  I didn't mention it because it's
+> really something that just popped into my mind when thinking cross-mm, so=
+ I
+> never discussed with anyone yet nor shared it anywhere.
+>
+> Consider VM live upgrade in a generic form (e.g., no VFIO), we can do tha=
+t
+> very efficiently with shmem or hugetlbfs, but not yet anonymous.  We can =
+do
+> extremely efficient postcopy live upgrade now with anonymous if with REMA=
+P.
+>
+> Basically I see it a potential way of moving memory efficiently especiall=
+y
+> with thp.
+>
+> >
+> > >
+> > > Considering Andrea's original version already contains those bits and=
+ all
+> > > above, I'd vote that we go ahead with supporting two MMs.
+> >
+> > You can do nasty things with that, as it stands, on the upstream codeba=
+se.
+> >
+> > If you pin the page in src_mm and move it to dst_mm, you successfully b=
+roke
+> > an invariant that "exclusive" means "no other references from other
+> > processes". That page is marked exclusive but it is, in fact, not exclu=
+sive.
+>
+> It is still exclusive to the dst mm?  I see your point, but I think you'r=
+e
+> taking exclusiveness altogether with pinning, and IMHO that may not be
+> always necessary?
+>
+> >
+> > Once you achieved that, you can easily have src_mm not have MMF_HAS_PIN=
+NED,
+>
+> (I suppose you meant dst_mm here)
+>
+> > so you can just COW-share that page. Now you successfully broke the
+> > invariant that COW-shared pages must not be pinned. And you can even tr=
+igger
+> > VM_BUG_ONs, like in sanity_check_pinned_pages().
+>
+> Yeah, that's really unfortunate.  But frankly, I don't think it's the fau=
+lt
+> of this new feature, but the rest.
+>
+> Let's imagine if the MMF_HAS_PINNED wasn't proposed as a per-mm flag, but
+> per-vma, which I don't see why we can't because it's simply a hint so far=
+.
+> Then if we apply the same rule here, UFFDIO_REMAP won't even work for
+> single-mm as long as cross-vma. Then UFFDIO_REMAP as a whole feature will
+> be NACKed simply because of this..
+>
+> And I don't think anyone can guarantee a per-vma MMF_HAS_PINNED can never
+> happen, or any further change to pinning solution that may affect this.  =
+So
+> far it just looks unsafe to remap a pin page to me.
+>
+> I don't have a good suggestion here if this is a risk.. I'd think it risk=
+y
+> then to do REMAP over pinned pages no matter cross-mm or single-mm.  It
+> means probably we just rule them out: folio_maybe_dma_pinned() may not ev=
+en
+> be enough to be safe with fast-gup.  We may need page_needs_cow_for_dma()
+> with proper write_protect_seq no matter cross-mm or single-mm?
+>
+> >
+> > Can it all be fixed? Sure, with more complexity. For something without =
+clear
+> > motivation, I'll have to pass.
+>
+> I think what you raised is a valid concern, but IMHO it's better fixed no
+> matter cross-mm or single-mm.  What do you think?
+>
+> In general, pinning lose its whole point here to me for an userspace eith=
+er
+> if it DONTNEEDs it or REMAP it.  What would be great to do here is we unp=
+in
+> it upon DONTNEED/REMAP/whatever drops the page, because it loses its
+> coherency anyway, IMHO.
+>
+> >
+> > Once there is real demand, we can revisit it and explore what else we w=
+ould
+> > have to take care of (I don't know how memcg behaves when moving betwee=
+n
+> > completely unrelated processes, maybe that works as expected, I don't k=
+now
+> > and I have no time to spare on reviewing features with no real use case=
+s)
+> > and announce it as a new feature.
+>
+> Good point.  memcg is probably needed..
+>
+> So you reminded me to do a more thorough review against zap/fault paths, =
+I
+> think what's missing are (besides page pinning):
+>
+>   - mem_cgroup_charge()/mem_cgroup_uncharge():
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/Kconfig.debug                           |  1 +
- arch/riscv/kernel/Makefile                         |  1 +
- arch/riscv/kernel/tests/Kconfig.debug              | 35 +++++++++
- arch/riscv/kernel/tests/Makefile                   |  1 +
- arch/riscv/kernel/tests/module_test/Makefile       | 15 ++++
- .../tests/module_test/test_module_linking_main.c   | 85 ++++++++++++++++++++++
- arch/riscv/kernel/tests/module_test/test_set16.S   | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_set32.S   | 20 +++++
- arch/riscv/kernel/tests/module_test/test_set6.S    | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_set8.S    | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_sub16.S   | 22 ++++++
- arch/riscv/kernel/tests/module_test/test_sub32.S   | 22 ++++++
- arch/riscv/kernel/tests/module_test/test_sub6.S    | 22 ++++++
- arch/riscv/kernel/tests/module_test/test_sub64.S   | 27 +++++++
- arch/riscv/kernel/tests/module_test/test_sub8.S    | 22 ++++++
- arch/riscv/kernel/tests/module_test/test_uleb128.S | 20 +++++
- 16 files changed, 362 insertions(+)
+Good point. Will add in the next version.
 
-diff --git a/arch/riscv/Kconfig.debug b/arch/riscv/Kconfig.debug
-index e69de29bb2d1..eafe17ebf710 100644
---- a/arch/riscv/Kconfig.debug
-+++ b/arch/riscv/Kconfig.debug
-@@ -0,0 +1 @@
-+source "arch/riscv/kernel/tests/Kconfig.debug"
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 95cf25d48405..bb99657252f4 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -57,6 +57,7 @@ obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
- obj-y	+= patch.o
- obj-y	+= probes/
-+obj-y	+= tests/
- obj-$(CONFIG_MMU) += vdso.o vdso/
- 
- obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
-diff --git a/arch/riscv/kernel/tests/Kconfig.debug b/arch/riscv/kernel/tests/Kconfig.debug
-new file mode 100644
-index 000000000000..5dba64e8e977
---- /dev/null
-+++ b/arch/riscv/kernel/tests/Kconfig.debug
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menu "arch/riscv/kernel Testing and Coverage"
-+
-+config AS_HAS_ULEB128
-+	def_bool $(as-instr,.reloc label$(comma) R_RISCV_SET_ULEB128$(comma) 127\n.reloc label$(comma) R_RISCV_SUB_ULEB128$(comma) 127\nlabel:\n.word 0)
-+
-+menuconfig RUNTIME_KERNEL_TESTING_MENU
-+       bool "arch/riscv/kernel runtime Testing"
-+       def_bool y
-+       help
-+         Enable riscv kernel runtime testing.
-+
-+if RUNTIME_KERNEL_TESTING_MENU
-+
-+config RISCV_MODULE_LINKING_KUNIT
-+       bool "KUnit test riscv module linking at runtime" if !KUNIT_ALL_TESTS
-+       depends on KUNIT
-+       default KUNIT_ALL_TESTS
-+       help
-+         Enable this option to test riscv module linking at boot. This will
-+	 enable a module called "test_module_linking".
-+
-+         KUnit tests run during boot and output the results to the debug log
-+         in TAP format (http://testanything.org/). Only useful for kernel devs
-+         running the KUnit test harness, and not intended for inclusion into a
-+         production build.
-+
-+         For more information on KUnit and unit tests in general please refer
-+         to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+         If unsure, say N.
-+
-+endif # RUNTIME_TESTING_MENU
-+
-+endmenu # "arch/riscv/kernel runtime Testing"
-diff --git a/arch/riscv/kernel/tests/Makefile b/arch/riscv/kernel/tests/Makefile
-new file mode 100644
-index 000000000000..7d6c76cffe20
---- /dev/null
-+++ b/arch/riscv/kernel/tests/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_RISCV_MODULE_LINKING_KUNIT)	+= module_test/
-diff --git a/arch/riscv/kernel/tests/module_test/Makefile b/arch/riscv/kernel/tests/module_test/Makefile
-new file mode 100644
-index 000000000000..d7a6fd8943de
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/Makefile
-@@ -0,0 +1,15 @@
-+obj-m += test_module_linking.o
-+
-+test_sub := test_sub6.o test_sub8.o test_sub16.o test_sub32.o test_sub64.o
-+
-+test_set := test_set6.o test_set8.o test_set16.o test_set32.o
-+
-+test_module_linking-objs += $(test_sub)
-+
-+test_module_linking-objs += $(test_set)
-+
-+ifeq ($(CONFIG_AS_HAS_ULEB128),y)
-+test_module_linking-objs += test_uleb128.o
-+endif
-+
-+test_module_linking-objs += test_module_linking_main.o
-diff --git a/arch/riscv/kernel/tests/module_test/test_module_linking_main.c b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
-new file mode 100644
-index 000000000000..49820352f1df
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <kunit/test.h>
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Test module linking");
-+
-+extern int test_set32(void);
-+extern int test_set16(void);
-+extern int test_set8(void);
-+extern int test_set6(void);
-+extern long test_sub64(void);
-+extern int test_sub32(void);
-+extern int test_sub16(void);
-+extern int test_sub8(void);
-+extern int test_sub6(void);
-+
-+#ifdef CONFIG_AS_HAS_ULEB128
-+extern int test_uleb(void);
-+#endif
-+
-+#define CHECK_EQ(lhs, rhs) KUNIT_ASSERT_EQ(test, lhs, rhs)
-+
-+void run_test_set(struct kunit *test);
-+void run_test_sub(struct kunit *test);
-+void run_test_uleb(struct kunit *test);
-+
-+void run_test_set(struct kunit *test)
-+{
-+	int val32 = test_set32();
-+	int val16 = test_set16();
-+	int val8 = test_set8();
-+	int val6 = test_set6();
-+
-+	CHECK_EQ(val32, 0);
-+	CHECK_EQ(val16, 0);
-+	CHECK_EQ(val8, 0);
-+	CHECK_EQ(val6, 0);
-+}
-+
-+void run_test_sub(struct kunit *test)
-+{
-+	int val64 = test_sub64();
-+	int val32 = test_sub32();
-+	int val16 = test_sub16();
-+	int val8 = test_sub8();
-+	int val6 = test_sub6();
-+
-+	CHECK_EQ(val64, 0);
-+	CHECK_EQ(val32, 0);
-+	CHECK_EQ(val16, 0);
-+	CHECK_EQ(val8, 0);
-+	CHECK_EQ(val6, 0);
-+}
-+
-+#ifdef CONFIG_AS_HAS_ULEB128
-+void run_test_uleb(struct kunit *test)
-+{
-+	int valuleb = test_uleb();
-+
-+	CHECK_EQ(valuleb, 0);
-+}
-+#endif
-+
-+static struct kunit_case __refdata riscv_module_linking_test_cases[] = {
-+	KUNIT_CASE(run_test_set),
-+	KUNIT_CASE(run_test_sub),
-+#ifdef CONFIG_AS_HAS_ULEB128
-+	KUNIT_CASE(run_test_uleb),
-+#endif
-+	{}
-+};
-+
-+static struct kunit_suite riscv_module_linking_test_suite = {
-+	.name = "riscv_checksum",
-+	.test_cases = riscv_module_linking_test_cases,
-+};
-+
-+kunit_test_suites(&riscv_module_linking_test_suite);
-diff --git a/arch/riscv/kernel/tests/module_test/test_set16.S b/arch/riscv/kernel/tests/module_test/test_set16.S
-new file mode 100644
-index 000000000000..2be0e441a12e
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set16.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set16
-+test_set16:
-+	lw	a0, set16
-+	la	t0, set16
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 16
-+	srli	t0, t0, 16
-+#else
-+	slli	t0, t0, 48
-+	srli	t0, t0, 48
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set16:
-+	.reloc set16, R_RISCV_SET16, set16
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set32.S b/arch/riscv/kernel/tests/module_test/test_set32.S
-new file mode 100644
-index 000000000000..de0444537e67
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set32.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set32
-+test_set32:
-+	lw	a0, set32
-+	la	t0, set32
-+#ifndef CONFIG_32BIT
-+	slli	t0, t0, 32
-+	srli	t0, t0, 32
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set32:
-+	.reloc set32, R_RISCV_SET32, set32
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set6.S b/arch/riscv/kernel/tests/module_test/test_set6.S
-new file mode 100644
-index 000000000000..c39ce4c219eb
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set6.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set6
-+test_set6:
-+	lw	a0, set6
-+	la	t0, set6
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 26
-+	srli	t0, t0, 26
-+#else
-+	slli	t0, t0, 58
-+	srli	t0, t0, 58
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set6:
-+	.reloc set6, R_RISCV_SET6, set6
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set8.S b/arch/riscv/kernel/tests/module_test/test_set8.S
-new file mode 100644
-index 000000000000..a656173f6f99
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set8.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set8
-+test_set8:
-+	lw	a0, set8
-+	la	t0, set8
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 24
-+	srli	t0, t0, 24
-+#else
-+	slli	t0, t0, 56
-+	srli	t0, t0, 56
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set8:
-+	.reloc set8, R_RISCV_SET8, set8
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub16.S b/arch/riscv/kernel/tests/module_test/test_sub16.S
-new file mode 100644
-index 000000000000..c561e155d1db
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub16.S
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub16
-+test_sub16:
-+	lh	a0, sub16
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.rept 8
-+	.word 0
-+	.endr
-+second:
-+
-+.data
-+sub16:
-+	.reloc		sub16, R_RISCV_ADD16, second
-+	.reloc		sub16, R_RISCV_SUB16, first
-+	.half		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub32.S b/arch/riscv/kernel/tests/module_test/test_sub32.S
-new file mode 100644
-index 000000000000..93232c70cae6
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub32.S
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub32
-+test_sub32:
-+	lw	a0, sub32
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.rept 8
-+	.word 0
-+	.endr
-+second:
-+
-+.data
-+sub32:
-+	.reloc		sub32, R_RISCV_ADD32, second
-+	.reloc		sub32, R_RISCV_SUB32, first
-+	.word		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub6.S b/arch/riscv/kernel/tests/module_test/test_sub6.S
-new file mode 100644
-index 000000000000..d9c9526ceb62
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub6.S
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub6
-+test_sub6:
-+	lb	a0, sub6
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.rept 8
-+	.word 0
-+	.endr
-+second:
-+
-+.data
-+sub6:
-+	.reloc		sub6, R_RISCV_SET6, second
-+	.reloc		sub6, R_RISCV_SUB6, first
-+	.byte		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub64.S b/arch/riscv/kernel/tests/module_test/test_sub64.S
-new file mode 100644
-index 000000000000..6d260e2a5d98
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub64.S
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub64
-+test_sub64:
-+#ifdef CONFIG_32BIT
-+	lw	a0, sub64
-+#else
-+	ld	a0, sub64
-+#endif
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.rept 8
-+	.word 0
-+	.endr
-+second:
-+
-+.data
-+sub64:
-+	.reloc		sub64, R_RISCV_ADD64, second
-+	.reloc		sub64, R_RISCV_SUB64, first
-+	.word		0
-+	.word		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub8.S b/arch/riscv/kernel/tests/module_test/test_sub8.S
-new file mode 100644
-index 000000000000..af7849115d4d
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub8.S
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub8
-+test_sub8:
-+	lb	a0, sub8
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.rept 8
-+	.word 0
-+	.endr
-+second:
-+
-+.data
-+sub8:
-+	.reloc		sub8, R_RISCV_ADD8, second
-+	.reloc		sub8, R_RISCV_SUB8, first
-+	.byte		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_uleb128.S b/arch/riscv/kernel/tests/module_test/test_uleb128.S
-new file mode 100644
-index 000000000000..db9f301092d0
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_uleb128.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_uleb
-+test_uleb:
-+	ld	a0, second
-+	addi	a0, a0, -127
-+	ret
-+.data
-+first:
-+	.rept 127
-+	.byte 0
-+	.endr
-+second:
-+	.reloc second, R_RISCV_SET_ULEB128, second
-+	.reloc second, R_RISCV_SUB_ULEB128, first
-+	.dword 0
+>
+>     (side note: I think folio_throttle_swaprate() is only for when
+>      allocating new pages, so not needed here)
+>
+>   - check_stable_address_space() (under pgtable lock)
 
--- 
-2.42.0
+Ack.
 
+>
+>   - tlb flush
+>
+>     Hmm???????????????? I can't see anywhere we did tlb flush, batched or
+>     not, either single-mm or cross-mm should need it.  Is this missing?
+
+As Lokesh pointed out we do that but we don't batch them. I'll try to
+add batching in the next version.
+
+>
+> >
+> >
+> > Note: that (with only reading the documentation) it also kept me wonder=
+ing
+> > how the MMs are even implied from
+> >
+> >        struct uffdio_move {
+> >            __u64 dst;    /* Destination of move */
+> >            __u64 src;    /* Source of move */
+> >            __u64 len;    /* Number of bytes to move */
+> >            __u64 mode;   /* Flags controlling behavior of move */
+> >            __s64 move;   /* Number of bytes moved, or negated error */
+> >        };
+> >
+> > That probably has to be documented as well, in which address space dst =
+and
+> > src reside.
+>
+> Agreed, some better documentation will never hurt.  Dst should be in the =
+mm
+> address space that was bound to the userfault descriptor.  Src should be =
+in
+> the current mm address space.
+
+Ack. Will add. Thanks!
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
