@@ -2,184 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069A67D00FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323557D0102
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345646AbjJSRxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S1345940AbjJSRyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235491AbjJSRxW (ORCPT
+        with ESMTP id S235491AbjJSRyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:53:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EF4114
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697737999; x=1729273999;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Pd3CCZYG52QHzkhUwhnJbP7Vv0V+e80kLYjzZuF/o94=;
-  b=Sfi57EtgXu8f8bu7zTP90ynp3GJcy+929rBnucMHhX/5S2hqqm2e1Nub
-   zNFQ2RwRx7mdjUx6ajgZ7bO/zP6cIPVzJ1eY+L8UQmnC8rL2a7YHApDbc
-   SQZ4MQuXv+6G9kd9HVfKzMm3iBXlsqpD7DJXCu8S5D3IjvQb8uFy4P4DD
-   XqiVkqp6Jiknz5Mdo4q9DJMUICHjhLRk+WkpUhbbbKBvnC8+EVE55vAVe
-   +y58hlEw6q6dnkBFNVuAtRS7EZ0Uqvi/gmi8B2ZfaTrqtc7hc0pwD/48a
-   JYigZg0pqHh4FYUxIozHweW23bRqnEepwIyjD4rktemWwpzEZLl+KtT1W
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="452801080"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="452801080"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:53:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="733667206"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="733667206"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 19 Oct 2023 10:53:17 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtXCt-0002JE-1V;
-        Thu, 19 Oct 2023 17:53:15 +0000
-Date:   Fri, 20 Oct 2023 01:52:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer
- (different address spaces)
-Message-ID: <202310200108.9GtKy1TF-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 19 Oct 2023 13:54:21 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69E3E8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:54:19 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9b9aeb4962so7688780276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697738059; x=1698342859; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wCaHYSvOMmjyjjo+2DaJHIApqUGU3SdaqxSKwGR/sus=;
+        b=NZc9I8HD5Mbv3+kaOY8h3qn1a4tHq979zp/1L+q+oUGb3mnBXZ02OyWWp3sDxfvsML
+         XAZMTnzqH7+0O1qxB6Vdx4coiXRgIrlBV5mAOTxPSz91jgkS5VMBTvrJktrxnFZt//Hf
+         T/Fg6AkKFql4BkxAHme12JIbu4I48cEOnpAyqhKaAqjkzCt1zHiqlmmOamjCvklzrvV8
+         1msXByhXEi+640ucGLwqAYgyaXwYVIa/DW8YxYYMLutHNsZ9lkkfrUbUbV/94Fo63JGm
+         72BLnEUys5MchCBh07/IoHPHd8Ydjjeas1breSM6dK09KXmHShAmZVeJcw0o7DNMIZYa
+         TdrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697738059; x=1698342859;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wCaHYSvOMmjyjjo+2DaJHIApqUGU3SdaqxSKwGR/sus=;
+        b=kmoIY9PUn+XyLdqiCNXXZ3+F48QSrzzmrBqy0fR6vs8Pe5mtm0u7xGWeIjcgCM28EX
+         S93S14+8ksP/1g3ztfecb9yCjIm1Zvq97uJd8833bZnIafZOIaiZ8BZ/+Y8+kNBT2/9E
+         csZhI5cBKdkbAQS27XP0dHBKAVCzbAFmd+c4ZSxLUvUCtjUsXYKZaPYHeqnbIYb6kZyp
+         7YCVNPD1KoHIPNtm2nxYymCSN2N51eteIHkfL4t8OdNskXopbwhzCsQUgoNerolvF6yh
+         4jpBOXEe3hZ4jN66+0r2bmW/VyWk0FjmhMSV4AxsGxuOgl1QL/YvNnJ/qzlOX1ohVlZz
+         yfEA==
+X-Gm-Message-State: AOJu0YwkEnbRcPw4VoEeydiSuJfuhQRdM4DS9dhFlUC82pwQzt5QShrI
+        OydC6axjXk8rX4xm9i2n1s3/lkaPTCcFsOKjiA==
+X-Google-Smtp-Source: AGHT+IFW/KpAD1OE2SUfMXnmaGMOttDNK0DgS3TLSfp4LYGTFI6KheySPCzP33IWgQ3o4jh68J7qlmtIbH4Cu9rxSg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:738b:0:b0:d9c:c9a8:8c27 with SMTP
+ id o133-20020a25738b000000b00d9cc9a88c27mr31838ybc.13.1697738058988; Thu, 19
+ Oct 2023 10:54:18 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:54:15 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAEZtMWUC/43NQQ6DIBCF4asY1p0GMEboqvdoXLQw6iQVzEBIj
+ fHupZ6gy+8t/reLhEyYxK3ZBWOhRDFU6Esj3PwMEwL5aqGlbpVUBlLm4NYNPFNBThCKp2WBV87
+ gQHWjbU1vrbEoamJlHOlz5h9D9UwpR97Ot6J+65/hokBBZ2Qvx967ztn7FOP0xquLixiO4/gCb mF4u8kAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697738058; l=2904;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=rw760A6im3UPDmPb1PvvzFcADO0t8QLqJon9lALd7qU=; b=NYE7eTw9PMvTw2M5a8Bn23YgudGYR1Uir+9aU2nJN/yFHTP0niBKIS6Z6tV2vKAW3CaEGvUBt
+ 56mAEMPR1qFCvf/IQUE+DNmLbFA7xeXjbNcSzdE6VeR+EPpGWLVtRMF
+X-Mailer: b4 0.12.3
+Message-ID: <20231019-strncpy-drivers-nvdimm-btt-c-v2-1-366993878cf0@google.com>
+Subject: [PATCH v2] nvdimm/btt: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   dd72f9c7e512da377074d47d990564959b772643
-commit: d80f7d7b2c75c5954d335dffbccca62a5002c3e0 signal: Guarantee that SIGNAL_GROUP_EXIT is set on process exit
-date:   1 year, 3 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231020/202310200108.9GtKy1TF-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200108.9GtKy1TF-lkp@intel.com/reproduce)
+Found with grep.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310200108.9GtKy1TF-lkp@intel.com/
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/exit.c:281:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:281:37: sparse:     expected struct task_struct *tsk
-   kernel/exit.c:281:37: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/exit.c:284:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:284:32: sparse:     expected struct task_struct *task
-   kernel/exit.c:284:32: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/exit.c:285:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:285:35: sparse:     expected struct task_struct *task
-   kernel/exit.c:285:35: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/exit.c:330:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:330:24: sparse:     expected struct task_struct *parent
-   kernel/exit.c:330:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/exit.c:357:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:357:27: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:357:27: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:360:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:360:29: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:360:29: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:583:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:583:29: sparse:     expected struct task_struct *reaper
-   kernel/exit.c:583:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/exit.c:585:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/exit.c:585:29: sparse:     expected struct task_struct *reaper
-   kernel/exit.c:585:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
->> kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   kernel/exit.c:738:45: sparse:     expected struct sighand_struct *sighand
-   kernel/exit.c:738:45: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   kernel/exit.c:927:63: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *const sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   kernel/exit.c:927:63: sparse:     expected struct sighand_struct *const sighand
-   kernel/exit.c:927:63: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   kernel/exit.c:1082:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1082:39: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1082:39: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1107:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1107:41: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1107:41: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1196:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1196:25: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1196:25: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1211:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1211:27: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1211:27: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1262:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1262:25: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1262:25: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1265:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1265:35: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1265:35: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1271:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/exit.c:1271:27: sparse:     expected struct spinlock [usertype] *lock
-   kernel/exit.c:1271:27: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/exit.c:1452:59: sparse: sparse: incompatible types in comparison expression (different base types):
-   kernel/exit.c:1452:59: sparse:    void *
-   kernel/exit.c:1452:59: sparse:    struct task_struct [noderef] __rcu *
-   kernel/exit.c:1468:25: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu * @@
-   kernel/exit.c:1468:25: sparse:     expected struct task_struct *parent
-   kernel/exit.c:1468:25: sparse:     got struct task_struct [noderef] __rcu *
-   kernel/exit.c: note: in included file:
-   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
-   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
-   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
-   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
-   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
-   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
-   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
-   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
-   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
-   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
-   kernel/exit.c: note: in included file (through include/linux/sched/signal.h, include/linux/rcuwait.h, include/linux/percpu-rwsem.h, ...):
-   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_zombie' - unexpected unlock
-   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_stopped' - unexpected unlock
-   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_continued' - unexpected unlock
-   kernel/exit.c: note: in included file:
-   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
-   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
-   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
-   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
-   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
-   kernel/exit.c: note: in included file (through include/linux/thread_info.h, arch/x86/include/asm/preempt.h, include/linux/preempt.h, ...):
-   arch/x86/include/asm/current.h:15:16: sparse: sparse: context imbalance in 'do_wait' - wrong count at exit
+We expect super->signature to be NUL-terminated based on its usage with
+memcmp against a NUL-term'd buffer:
+btt_devs.c:
+253 | if (memcmp(super->signature, BTT_SIG, BTT_SIG_LEN) != 0)
+btt.h:
+13  | #define BTT_SIG "BTT_ARENA_INFO\0"
 
-vim +738 kernel/exit.c
+NUL-padding is not required as `super` is already zero-allocated:
+btt.c:
+985 | super = kzalloc(sizeof(struct btt_sb), GFP_NOIO);
+... rendering any additional NUL-padding superfluous.
 
-   735	
-   736	static void synchronize_group_exit(struct task_struct *tsk, long code)
-   737	{
- > 738		struct sighand_struct *sighand = tsk->sighand;
-   739		struct signal_struct *signal = tsk->signal;
-   740	
-   741		spin_lock_irq(&sighand->siglock);
-   742		signal->quick_threads--;
-   743		if ((signal->quick_threads == 0) &&
-   744		    !(signal->flags & SIGNAL_GROUP_EXIT)) {
-   745			signal->flags = SIGNAL_GROUP_EXIT;
-   746			signal->group_exit_code = code;
-   747			signal->group_stop_count = 0;
-   748		}
-   749		spin_unlock_irq(&sighand->siglock);
-   750	}
-   751	
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Let's also use the more idiomatic strscpy usage of (dest, src,
+sizeof(dest)) instead of (dest, src, XYZ_LEN) for buffers that the
+compiler can determine the size of. This more tightly correlates the
+destination buffer to the amount of bytes copied.
+
+Side note, this pattern of memcmp() on two NUL-terminated strings should
+really be changed to just a strncmp(), if i'm not mistaken? I see
+multiple instances of this pattern in this system:
+
+|       if (memcmp(super->signature, BTT_SIG, BTT_SIG_LEN) != 0)
+|               return false;
+
+where BIT_SIG is defined (weirdly) as a double NUL-terminated string:
+
+|       #define BTT_SIG "BTT_ARENA_INFO\0"
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+Changes in v2:
+- provide more details about memcmp()
+- fix typos in commit msg (thanks Kees)
+- fix subject line (thanks Alison)
+- Link to v1: https://lore.kernel.org/r/20231018-strncpy-drivers-nvdimm-btt-c-v1-1-58070f7dc5c9@google.com
+---
+Note: build-tested only.
+---
+ drivers/nvdimm/btt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index d5593b0dc700..9372c36e8f76 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -986,7 +986,7 @@ static int btt_arena_write_layout(struct arena_info *arena)
+ 	if (!super)
+ 		return -ENOMEM;
+ 
+-	strncpy(super->signature, BTT_SIG, BTT_SIG_LEN);
++	strscpy(super->signature, BTT_SIG, sizeof(super->signature));
+ 	export_uuid(super->uuid, nd_btt->uuid);
+ 	export_uuid(super->parent_uuid, parent_uuid);
+ 	super->flags = cpu_to_le32(arena->flags);
+
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231018-strncpy-drivers-nvdimm-btt-c-15f93879989e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
