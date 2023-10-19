@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE97CFA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD25E7CFA0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346039AbjJSM4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        id S1346008AbjJSM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346077AbjJSMyB (ORCPT
+        with ESMTP id S1346069AbjJSMyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:54:01 -0400
+        Thu, 19 Oct 2023 08:54:00 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D1E10E0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E2710E2;
         Thu, 19 Oct 2023 05:52:57 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:ccea:1fb5:34eb:239b])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0B6B56607340;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 86370660738D;
         Thu, 19 Oct 2023 13:52:54 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1697719974;
-        bh=E3AWNXfqW3zClMdST89v07/d3n0L7Gb4S89ZZv8t3hk=;
+        bh=/rw+5kiG9NH9F1WJEwdp/d4z1jjMgH/1J5yw8ccESj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YWd8Ieh/PoU2vj6Z21u8Z7NJkcVvlaN2gp5mBFW8vjdxGMCgdCuOPIPGEQ9tE1mTn
-         CdRLX9dLap0lDcUnK9ShLK/FXHgNS0PGPwAk+632eH+/SEKFWwg+57CZHEDzQy8UiE
-         qW/swYZdnLcWsRjJIcNqv38iHmMqBXdt9xlSy88T7qBQzaqTuaKCd+5HCxixLTiBBR
-         iHIGZmQrFya6v2O8IDZHALPB6nul06U01Q7UblqHw7LGKApteMbKtyQPDuCuoorUO+
-         3h0il+Owp3W//jrwBbIIIAgm2SplrjDjrLH4oIFXK5wDqui+j1xEyMLnlxgnkIekrS
-         /jcTzbfkIZpFQ==
+        b=mIR2tZXl8DmrL/2bk+DGVUYWluO9TTzxDFzzsmbrHtctGCWmNklellAYVGoQCkOnK
+         yAknNJCWhuZZxH1YViOjD8NMqB01ZMzBZz/Qm/xZzCluovUY3iQN240dL/ETnH1XbY
+         I41PIJ0t2gX1EbdTsIr3KAjIx1DA6226/8w7shEAc19BkWo5JRQ/bWCYQ6hL+iZog6
+         hMDvE1L7x5LhfPFMy3QL3KbhRxQOJ0az1tv2FG4zYaO9d1wCGJH1D7HnyX5sH8Cqtu
+         dkIguE2D/ilQXuZ+DqjAjkpldgVzw9zHM9VN1ofmdsugr9Y72RJxZI5XhQKUzFXCu8
+         j2yocHxQSBY2w==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v13 45/56] media: test-drivers: vivid: Increase max supported buffers for capture queues
-Date:   Thu, 19 Oct 2023 14:52:11 +0200
-Message-Id: <20231019125222.21370-46-benjamin.gaignard@collabora.com>
+Subject: [PATCH v13 46/56] media: test-drivers: vicodec: Increase max supported capture queue buffers
+Date:   Thu, 19 Oct 2023 14:52:12 +0200
+Message-Id: <20231019125222.21370-47-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231019125222.21370-1-benjamin.gaignard@collabora.com>
 References: <20231019125222.21370-1-benjamin.gaignard@collabora.com>
@@ -60,44 +60,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the maximum number of buffers of some capture queues in order
-to test max_num_buffers field.
-
-Allow to allocate up to:
-- 64 buffers for video capture queue.
-- 1024 buffers for sdr capture queue.
-- 32768 buffers for vbi capture queue.
+Allow to allocated up to 64 buffers on capture queue.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/test-drivers/vivid/vivid-core.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/media/test-drivers/vicodec/vicodec-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index 394c9f81ea72..353f035fcd19 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -876,6 +876,20 @@ static int vivid_create_queue(struct vivid_dev *dev,
- 	q->type = buf_type;
- 	q->io_modes = VB2_MMAP | VB2_DMABUF;
- 	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
-+
-+	/*
-+	 * The maximum number of buffers is 32768 if PAGE_SHIFT == 12,
-+	 * see also MAX_BUFFER_INDEX in videobuf2-core.c. It will be less if
-+	 * PAGE_SHIFT > 12, but then max_num_buffers will be clamped by
-+	 * videobuf2-core.c to MAX_BUFFER_INDEX.
-+	 */
-+	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+		q->max_num_buffers = 64;
-+	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
-+		q->max_num_buffers = 1024;
-+	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
-+		q->max_num_buffers = 32768;
-+
- 	if (allocators[dev->inst] != 1)
- 		q->io_modes |= VB2_USERPTR;
- 	q->drv_priv = dev;
+diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
+index 6f0e20df74e9..69cbe2c094e1 100644
+--- a/drivers/media/test-drivers/vicodec/vicodec-core.c
++++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
+@@ -1718,6 +1718,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
+ 			V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE :
+ 			V4L2_BUF_TYPE_VIDEO_CAPTURE);
+ 	dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
++	dst_vq->max_num_buffers = 64;
+ 	dst_vq->drv_priv = ctx;
+ 	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+ 	dst_vq->ops = &vicodec_qops;
 -- 
 2.39.2
 
