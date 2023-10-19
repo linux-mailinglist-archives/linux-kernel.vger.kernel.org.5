@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA397D00C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078737D00D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 19:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346319AbjJSRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 13:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S1346286AbjJSRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 13:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjJSRio (ORCPT
+        with ESMTP id S235491AbjJSRpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 13:38:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BEDCF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697737080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gi6qQG6+k6miM/ETdb6eGWM+MaqC/fZ3UHWAFSbxhBA=;
-        b=fuFc2XEsYLL6HE4zp5Dp5d/yoGupm5lnT0X1zJCECUsbsgr13cHgtT8Q2WF0WLpVxA80Rj
-        GfsH8r6r/BhFnvnXGhKNjzu3fPlsOgLe2rp+KMC7BKT8jdbMdHNWcDK1+h+vn/VWjjgA+1
-        c5LrjOSnmPBCXHFSAjED8/LQcyALIB8=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-455-Aart1ZJVMxeq0T7Nc_9Zsw-1; Thu, 19 Oct 2023 13:37:58 -0400
-X-MC-Unique: Aart1ZJVMxeq0T7Nc_9Zsw-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7af53ed577fso3179361241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:37:58 -0700 (PDT)
+        Thu, 19 Oct 2023 13:45:05 -0400
+Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34F0112
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:45:02 -0700 (PDT)
+Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-581ead8a0deso3347877eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 10:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697737502; x=1698342302; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qg+otgUOPQR+8G/4uV/TUAnZUyW51Jn+plgzCktzBuA=;
+        b=XDrru/ApZi0UXweUD7gr35ntg23Lt6QbrC+gaMYzlj6SB+gYOAjz3t7R5ockw+MHY5
+         nAI8oYvVYUrtmsr7HZwamZqKxvQqafGaVIb0TBm9XjC5nGmARMH2nIyJL/D9g1OERy2K
+         2qlHmwyJ01x9qs5JsEZlpmr7+T05U7DMFoySaqPshFPCbwRuKld6h/hDhCGLtYHvuafi
+         To94gucsbTQwVuDc6Q3VzoDuh92fNEzpiGUAFO3ti0fBGfIA/d+ECCCbs2vGNZXXiNvM
+         j9q9D5SlqVSP2b3IJJYv4SNXHZGOgdTOnAXFMwmbZcFIHf7guo/8duT4QwWtp6qXC0GJ
+         xZ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697737078; x=1698341878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gi6qQG6+k6miM/ETdb6eGWM+MaqC/fZ3UHWAFSbxhBA=;
-        b=dKS8AXkC2PDOvni4y8SyuOHEu6l2BblTggvoI6IBFB4O9NVSRb54MMa3RL/xfx92XD
-         woaWdMydv9b2YJEjIwDkB/eTH7+klw6e3g6qeEy1tcH1DO9cE0bsCWdfKuu7Ons4/f0q
-         RiL04pNezh3N7oSNHiub/b4mku/ca5klvw2jsBzUm6jrDaGjQoNIhgfyO3JxU/LES1vC
-         b+JrF6sLQRE2TqK5JLS37DxTj/dp4KIh5QgRBrk8mdtpsG2K4aCHRNRRGfhfrHn8cXY8
-         ADMLHDQ9+5+QcDO2zlBd4JcYlno49tfDk2ZrZjLFKbGnEqXdpjVhZESwGDHEan6HAyut
-         SFpQ==
-X-Gm-Message-State: AOJu0YyZtncPAW/X3NlXWqtR5KTz+qBKzfsz3YAg95W7fZZ7wIb0Cl+G
-        m4eHxfls5KjeQGLuQWKNmtHarYn97Zli6N2balCxI2t62swqofrRR+mOGmBYsSwbvacPJntpYQf
-        UCzuifHvJApkqp00751u0d7Y8e1yjgAaqagITfEd7
-X-Received: by 2002:a67:c31d:0:b0:452:69e9:a4c with SMTP id r29-20020a67c31d000000b0045269e90a4cmr3488181vsj.3.1697737078093;
-        Thu, 19 Oct 2023 10:37:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFd/ItZJ9H2rOQBekrGX0IeKLlt0n8weZBmS7X601ob/SrMx/YHAiz7R1mAEjR03dYJuXg3Y/8jodzoIMJv+7U=
-X-Received: by 2002:a67:c31d:0:b0:452:69e9:a4c with SMTP id
- r29-20020a67c31d000000b0045269e90a4cmr3488170vsj.3.1697737077800; Thu, 19 Oct
- 2023 10:37:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
- <ZRHRsgjhOmIrxo0W@google.com> <8c6a1fc8-2ac5-4767-8b02-9ef56434724e@maciej.szmigiero.name>
- <ZRHckCMwOv3jfSs7@google.com> <ac402dd4-8bf3-87a8-7ade-50d62997ce97@amd.com>
- <e8993457-9e28-434a-b4e8-25ffcbee6517@maciej.szmigiero.name>
- <ZR3-90IQqb3mSV-b@google.com> <04cae79f-cd04-4cfe-b6ca-8b02d96350f9@maciej.szmigiero.name>
- <ZR9Yb25A5zOhzDol@google.com>
-In-Reply-To: <ZR9Yb25A5zOhzDol@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Thu, 19 Oct 2023 19:37:46 +0200
-Message-ID: <CABgObfYW1TpkUkuQrnZdwJPJSUtxZqUAYVeyneo7+rvXHS+Tsw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Ignore MSR_AMD64_BU_CFG access
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        d=1e100.net; s=20230601; t=1697737502; x=1698342302;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qg+otgUOPQR+8G/4uV/TUAnZUyW51Jn+plgzCktzBuA=;
+        b=rbpEoqDwwkTXWEb4NYD2Rhk+a6Hzl21h052RLbKQKgJIzc8MdiD+o58rbPz+rPf5qp
+         tJlX8tzf870Mugki22AqwJv3OBGtTRX56SPUqlVsh4GheT9cV8hW6Z59rcC0FerAistC
+         P2N6EsdHGQZ7pes+DJL43Cvo0RS+8mgIX9m9DkuQUXxdNiDYAPaDzCNQI+dLUGt6Jm2Q
+         BmJIQI4auZSJFchrUO02THTZUP3fFqFXOn2UddSjkgB8JxmOGD3vvBoqBLM/7MR2DPhA
+         pVrlyDAt45cwv5x9mvk/c3x3s+kbiQ+9aWPjk82zyKCk/msLeGH1qXUmpO0ZWZJCUjwZ
+         0yTA==
+X-Gm-Message-State: AOJu0YxKQa2cSdfxgIm8oqE7hdzpAvSAc5TrmQmjKgIhQP8MU09vGJJU
+        xqcWlVoFCP6uzWFYCFyWCHBCP9BeOBwl9nHg7g==
+X-Google-Smtp-Source: AGHT+IF/1XWODGKQ3tILQKxRsLwEu1ZDsY+BIBDOaGIwchVda0e1YeB9gM+pNN+BK6LJjMlqq0ITrFJ7PPV61+TGJA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a4a:6c15:0:b0:581:f8d7:e4af with SMTP
+ id q21-20020a4a6c15000000b00581f8d7e4afmr1090598ooc.0.1697737502309; Thu, 19
+ Oct 2023 10:45:02 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:44:59 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIABtrMWUC/6WOQQ6CMBBFr0K6dgytRsSV9zAsoExhktqSadNKC
+ He3cgWX7y3++5sIyIRBPKpNMCYK5F0BdaqEnns3IdBYWKhaXWQtGwiRnV5WGJkScgCHETIxWgw
+ ByEW0QNlmMgQmwzhMoEGaa2vqerj3CkVZXhgNfY7qqys8U4ie1+NEkj/7Xy9JkDCYW4u6GeXQN s/J+8niWfu36PZ9/wL0GBhH9wAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697737501; l=2408;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=+j1ZR4eOwaN2eWhtI6Or7popX8JK/RP2CN1CNyJtMuM=; b=BJyGQKERL2LGGUnreMt73sxdVT2rdOk9iwAulRF+/ouCnd05D/W3ZTM6a5zobWDvA04d1pUyB
+ RMDmJtVuIm/DdGrXlkpaGZ8jYNcg5qsjcAjsQrDmYemRAMmAxa9iYGi
+X-Mailer: b4 0.12.3
+Message-ID: <20231019-strncpy-drivers-net-wireless-intel-iwlwifi-fw-dbg-c-v2-1-179b211a374b@google.com>
+Subject: [PATCH v2] wifi: iwlwifi: fw: replace deprecated strncpy with strscpy_pad
+From:   Justin Stitt <justinstitt@google.com>
+To:     Gregory Greenman <gregory.greenman@intel.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,52 +76,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 2:44=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
-> > We already do similar ignoring in KVM for MSR_AMD64_BU_CFG2, MSR_AMD64_=
-DC_CFG
-> > and MSR_F15H_EX_CFG, so doing this {BU_CFG2,TW_CFG} MSR filtering in QE=
-MU would
-> > be inconsistent with these.
->
-> Not if QEMU filters those too. :-)
->
-> The MSR filter mechanism wasn't a thing back when KVM added "support" for=
- those
-> MSR, so I don't feel that punting to userspace would be inconsistent.  It=
-'s more
-> along the lines of asking/requiring userspace to utilize a new tool to so=
-lve a
-> problem that is best solved in userspace, with a few outliers that got
-> grandfathered in.
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-As long as it is enough to ignore the value and read as zero, IMO there
-is an advantage in doing so in KVM, because it centralizes the update to
-one place instead of requiring changes to all userspace implementations
-(those that can run Windows can be counted on one hand, granted, but
-still).
+Based on the deliberate `sizeof(dest) ... - 1` pattern we can see that
+both dump_info->dev_human_readable and dump_info->bus_human_readable are
+intended to be NUL-terminated.
 
-If we get into giving semantics to really-model-specific registers, the
-disadvantages would be way more pronounced, however. I don't think we
-should get any of those MSRs into KVM_GET_MSR_INDEX_LIST ever, and
-we shouldn't implement them in KVM if KVM_SET_MSR has to do anything.
-Also, we probably shouldn't implement them in KVM if KVM_GET_MSR
-has to ever return anything but zero.
+Moreover, since this seems to cross the file boundary let's NUL-pad to
+ensure no behavior change.
 
-We almost have one of those, a "feature MSR" bit that is used to pass
-down information on whether LFENCE serializes execution; but it's not
-supported by KVM_GET_MSR/KVM_SET_MSR. I'd retcon this happily as
-"we don't want any stateful chicken bit MSRs in the kernel", and I'm
-in favor of removing it if there are no complaints, now that AMD has
-defined a bit in 0x80000021 for this purpose.
+strscpy_pad() covers both the NUL-termination and NUL-padding, let's use
+it.
 
-We have the microcode revision, which we had to add because
-of the side-channel mess of a few years ago.
-And we also have MSR_AMD64_OSVW_ID_LENGTH and
-MSR_AMD64_OSVW_STATUS, but those technically are vendor-
-specific but not model-specific and have an associated CPUID bit. I
-think those are as close as we get to being a mistake, but still (barely
-so) on the acceptable side.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- prefer strscpy_pad (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20231017-strncpy-drivers-net-wireless-intel-iwlwifi-fw-dbg-c-v1-1-bf69ec7d1b97@google.com
+---
+Note: build-tested only.
 
-Paolo
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+index 3ab6a68f1e9f..7aa282592cdc 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+@@ -880,10 +880,10 @@ iwl_fw_error_dump_file(struct iwl_fw_runtime *fwrt,
+ 			cpu_to_le32(fwrt->trans->hw_rev_step);
+ 		memcpy(dump_info->fw_human_readable, fwrt->fw->human_readable,
+ 		       sizeof(dump_info->fw_human_readable));
+-		strncpy(dump_info->dev_human_readable, fwrt->trans->name,
+-			sizeof(dump_info->dev_human_readable) - 1);
+-		strncpy(dump_info->bus_human_readable, fwrt->dev->bus->name,
+-			sizeof(dump_info->bus_human_readable) - 1);
++		strscpy_pad(dump_info->dev_human_readable, fwrt->trans->name,
++			sizeof(dump_info->dev_human_readable));
++		strscpy_pad(dump_info->bus_human_readable, fwrt->dev->bus->name,
++			sizeof(dump_info->bus_human_readable));
+ 		dump_info->num_of_lmacs = fwrt->smem_cfg.num_lmacs;
+ 		dump_info->lmac_err_id[0] =
+ 			cpu_to_le32(fwrt->dump.lmac_err_id[0]);
+
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231017-strncpy-drivers-net-wireless-intel-iwlwifi-fw-dbg-c-1f49f00b8a2e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
