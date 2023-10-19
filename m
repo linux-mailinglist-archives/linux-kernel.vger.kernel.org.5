@@ -2,300 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5567CF6EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFBC7CF6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345357AbjJSLeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
+        id S1345355AbjJSLgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345251AbjJSLeH (ORCPT
+        with ESMTP id S233155AbjJSLgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:34:07 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E829F115
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:34:04 -0700 (PDT)
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231019113403epoutp04dcd54be426496c973f71b6606f22eb99~PfwTban3u2080620806epoutp04d
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:34:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231019113403epoutp04dcd54be426496c973f71b6606f22eb99~PfwTban3u2080620806epoutp04d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697715243;
-        bh=GO7U/Y3gJ2W4NmmzLGqtUQGK4N0wvIPDqGmyBGqW7d0=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=CQslOgaFNtl7KbZw7g5yhiyk7GaDpDKf/zUWtoCjuvX7sGaHgnVUmn37ST27mo2GH
-         RbmEszvUQuj1uATSoyWkhvsaJUrJtOgsCh/S0n/R2bgKm1vX3VkjYrqG4wXc9JezYS
-         ff/n/nGBqhORFS0BsGTInGmDVKxWSZ2QqxVSk79c=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20231019113402epcas1p300516b190a7722f6b1cb755dca9664a1~PfwSU1eCl2725027250epcas1p3F;
-        Thu, 19 Oct 2023 11:34:02 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.36.144]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SB5G12004z4x9Q1; Thu, 19 Oct
-        2023 11:34:01 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.AC.09739.92411356; Thu, 19 Oct 2023 20:34:01 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231019113400epcas1p2456ee4741edeab34bcb66f810bc05df4~PfwQ5zkOD1223512235epcas1p2S;
-        Thu, 19 Oct 2023 11:34:00 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231019113400epsmtrp23cc208bc6d9fccaabb993a83ab2bded9~PfwQ36vpm3052330523epsmtrp2J;
-        Thu, 19 Oct 2023 11:34:00 +0000 (GMT)
-X-AuditID: b6c32a37-c0bff7000000260b-4f-6531142998d2
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.59.08817.82411356; Thu, 19 Oct 2023 20:34:00 +0900 (KST)
-Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231019113400epsmtip1c95d8d40bd97ae902ececc6ebbadae12~PfwQhMBCi1544415444epsmtip10;
-        Thu, 19 Oct 2023 11:34:00 +0000 (GMT)
-From:   =?ks_c_5601-1987?B?w9bC+b/sL1RpemVuIFBsYXRmb3JtIExhYihTUikvu++8usD8wNo=?= 
-        <cw00.choi@samsung.com>
-To:     "'Sascha Hauer'" <s.hauer@pengutronix.de>,
-        <linux-rockchip@lists.infradead.org>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        "'Heiko Stuebner'" <heiko@sntech.de>,
-        "'Chanwoo Choi'" <chanwoo@kernel.org>,
-        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
-        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Will Deacon'" <will@kernel.org>,
-        "'Mark Rutland'" <mark.rutland@arm.com>, <kernel@pengutronix.de>,
-        "'Michael Riesch'" <michael.riesch@wolfvision.net>,
-        "'Robin Murphy'" <robin.murphy@arm.com>,
-        "'Vincent Legoll'" <vincent.legoll@gmail.com>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "'Sebastian Reichel'" <sebastian.reichel@collabora.com>
-In-Reply-To: <20231018061714.3553817-7-s.hauer@pengutronix.de>
-Subject: RE: [PATCH v8 06/26] PM / devfreq: rockchip-dfi: Use free running
- counter
-Date:   Thu, 19 Oct 2023 20:34:00 +0900
-Message-ID: <000801da0280$279d4a60$76d7df20$@samsung.com>
+        Thu, 19 Oct 2023 07:36:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1978FBE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697715359; x=1729251359;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=jMNbdPAYWba9g9lDstVW0zr4zQk6UafGPqsjNizH3WE=;
+  b=gSqMS4ywM+5wVHT4k7szJOcG+7i9asWVpg+qYfvXxMMtxaVup0fv+fE6
+   8dEh3Cb5QyPXRGzU0ZhEAa7ibeTogI/+GL6XKerXzK/Jvik96dfBlVIvw
+   /M8hWCwU0RYdmZFS8d8GMOf9xM0KTadjldfkAZOUSd1piiX4c2kgGew2S
+   K8OmhkoWN3V8MYPm514BmdyYSNe9X0K/pErtvi180ECVb1FPo228l1sKx
+   Q9DJ9+KQY5RIubotIrUpnurzeqfqBxgZ2edcJ8TaxNMhgF+Wlicp+SLCM
+   ZauAaLOO3UI5Gq7nJuJGbCE2xObn72hKyky5DYQuLE/pr4nJOiW94HwQ1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="417341823"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="417341823"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 04:35:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900709278"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="900709278"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Oct 2023 04:33:51 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 19 Oct 2023 04:35:57 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 19 Oct 2023 04:35:57 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 19 Oct 2023 04:35:57 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 19 Oct 2023 04:35:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FLdvMjbCWcWEZD47j0DbmRrtj4KfiuAxESRPZrK3iW5yrx6690PmjyDfCrnCMNdLvV9OGhvuOkRYTurnv68rL/nyr6IT0pNtgXofVbBi6H9lxVm819q14Sct9cqPkrd6HbwPoBkAx+OPbYHNMxBd0MrfRWhXmdwRn2NX79miWAsEYegl5gJYUZYJC2/7I2HuahnVsRnWI7LpCB8tXW6vPXKExNKgO+pPnmm7b48c5qGr8rIE29KLHYgP+qtRsZq/iffz3QVVniUR6/SLO2GWBXPJiaGMHca+7SdnKbpxLp/qoKZyJeRHFkXs2m/c6ABbASjPM7ReIk02+9KrVgnO9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J5gAS4/GOiuQQ7DWX2NuGrzOX9vTF/OH1PjQMYyyESY=;
+ b=SXUmE7zUsH5u7D9410v0bMX9I+F081teL4Lvu14w/BodRj3LohkRmmYspbVZvVVvX9MU6lV1FD/MZQbVTcq+U5B/ERmxv3V8OTw9s+k29fBxgU5C80tfvelmdRwBgeZlSqNXUawQdJ+ZgrT9odN7sl1ShGVcxhNJz5GwrTunu5xa7jPTB/I6873SCBkkcVaiCsFAr8efPvTymmD8hGedSLKCet5rlwreRpGLAs1o5caEnk/fjSG7820WO2rWo9TZ04H0iYWCmByKvT9AoTY7Sg37UMz0sfIRfgKLkt1ei1WrkEBiL5jlxMEV5M5R18+SPj3AAtOc4i3hF/GKaa/bMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+ by CY8PR11MB7267.namprd11.prod.outlook.com (2603:10b6:930:9a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Thu, 19 Oct
+ 2023 11:35:54 +0000
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9]) by MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9%5]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
+ 11:35:54 +0000
+Date:   Thu, 19 Oct 2023 19:35:40 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY feature
+Message-ID: <ZTEUjBgthYhz7NXm@chenyu5-mobl2.ccr.corp.intel.com>
+References: <20231018204511.1563390-1-mathieu.desnoyers@efficios.com>
+ <20231018204511.1563390-2-mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231018204511.1563390-2-mathieu.desnoyers@efficios.com>
+X-ClientProxiedBy: SI2PR02CA0010.apcprd02.prod.outlook.com
+ (2603:1096:4:194::15) To MN0PR11MB6206.namprd11.prod.outlook.com
+ (2603:10b6:208:3c6::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: ko
-Thread-Index: AQFYMiMsP3soeW2GlDsie1R9CxInBwFQnOhhAVY8IF6xP2UUwA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf1CTdRzH+e559rDhTR/GyC9w5VxyhQFu/PwCImSYTyfhSsgr7HDBcwwZ
-        29pGSVcBgQw4ET1+iJP4DcGiqwbywyBigkB3UYQRJpTGjxNJHJB2HYe08cyO/16fz/fz/n4+
-        7+8PDsZfJdw5KUodrVHKFCLCCe+45rXPx0sgocU5D53QhckbOGrtHWWh6oFRNtr4c5GNjGXd
-        ODp39w6GfvjkL0dkmplgo/GrlQRaLRoAaOX2BoYafx1jof7aPehWdjOBzvQOOKJ+yywbrXea
-        cDS9GIOGvpgnUO5UYKSAaq1qBVTXdAOgug3TjpTJWEBQUxM9BNXWkEkVr4upc+1GQHVOVGHU
-        qukZqnptBki3vZW6X07LkmiNkFYmqpJSlMnhoiPHEl5KCAwSS3wkIShYJFTK0uhwUVS01Ofl
-        FIXVoEj4nkyRbk1JZVqtaN+B/RpVuo4WylVaXbiIVicp1IFqX60sTZuuTPZV0rpQiVjsF2gt
-        PJkq199pItSD3qen8oawLFCzpxBwOZAMgKP148DGfLILwLmxEwyvAHjzl4hC4GTlRwBm/2Qh
-        nghy1gcwZqEXwNr6acAECwBWZhswWxVBpsBmfeEmC8g4WDzcxbIxRj5iQ8vGKzbmkgdgW91Z
-        vBBwOC5kLLx4PcaWxklP+F3VxGYzHhkCf1814gw7w5FLszizjR9s+LzavuUu2Hm/EmOGE8J/
-        55rYTF4ALxfk2Uc4CHN+XCNsc0LyMhd+M9+OM4IoeGkmn8WwC7w31O7IsDtcXeq1C0oAHFtc
-        xJjgSwC/bsm1t/OHfY0ldvVu2L32KWBab4dLD8+ybc4gyYP5eXym5Fk4fnvaXu4G6/UFxHkg
-        MmwxZ9hizrDFnGGLoRqAG8FTtFqblkxrJWr//687UZVmApuvf29wFyi/b/E1AxYHmAHkYCIB
-        z5MS03xekizjA1qjStCkK2itGQRaz/sC5u6aqLJ+H6UuQRIQIg4I8vMPQJIgiWgn77f5oiQ+
-        mSzT0ak0raY1T3QsDtc9izUckV/+1VCmoG8EjEXoxa+6eD/9UU/j85xQbl0VcTQmPJ4rjxrJ
-        8L4Za/g7uunxROn2bc75VLHi9XePm4NRLX46S8r6p3x56ehCghmYK5ZhWuiDtv7ijV2o/GBU
-        nce4rmy4vazb4uEZfebQYMUhh8GS3X+UHtuRx2maPF8o9Klx23kidCTKtaPG+bjbx1e8Wktv
-        hJUYIu9V8C6+9mHYlVtv5n7fYnzh1Ny3n4HoWn3z24K7akvZHGp68KJH5kml3mCqeYf/fszh
-        MMXy4581ousZJuHhssirDu1xrqeEC0fye97wnYyf5a/pVjgrHZGxDvHxnB1x10al9S1988/J
-        FzAvaZEI18plkr2YRiv7D6KXnUqGBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsWy7bCSnK6GiGGqwaR7shYTb1xhsViz9xyT
-        xfwj51gt/j96zWqxaupOFou+Fw+ZLc42vWG32PT4GqvF5V1z2Cw+9x5htPj04D+zxdLrF5ks
-        Di5UsbjduILNonXvEXaLgx+esFr83b6JxeLuaz+L42ufsVm03DF1EPFYM28No8eOu0sYPXbO
-        usvusWlVJ5vHnWt72Dw2L6n36P9r4NG3ZRWjx/Zr85g9Pm+S85j/+zFjAHcUl01Kak5mWWqR
-        vl0CV0b7w2VsBUd1Ku60HWduYFyg0sXIySEhYCLR/PcIcxcjF4eQwG5GiU3/VzFDJCQlpl08
-        CmRzANnCEocPF0PUPGeU+LdmEVgNm0C6xPTd85lAbBGBUIn+EzuYQIqYBVrYJHYt+8wG0XGQ
-        UWLCo0usIFWcAnYSmxf1sIDYwgJBEieufgGLswioShyYd40NxOYVsJS493kVC4QtKHFy5hMw
-        mxno1MbD3VC2vMT2t3OgLlWQ+Pl0GStEXERidmcbM8RFThLN53+zTWAUnoVk1Cwko2YhGTUL
-        SfsCRpZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBSUBLawfjnlUf9A4xMnEwHmKU
-        4GBWEuFV9TBIFeJNSaysSi3Kjy8qzUktPsQozcGiJM777XVvipBAemJJanZqakFqEUyWiYNT
-        qoHJ14KxR2PZ94K5Zk/8Gzaa+UZqzr6xLn72592nd6zMMboxT1SxqvUfT8NsP3Yf5x0y95+L
-        cguls7FlCV1y0bz/+vkT//+Zqj/UTE/qPLlwwEP85K538swfWXryRVqXXfrhzWhU8fDSc0Xb
-        BR0LI1YEzdw78bBuyaG7RtlNRbHaJyccmuEWvmfdcuVz0untO3coBbH6vkmoX6sqUXssxb+q
-        QVnhG8ezK32bShuyPfeKaT19dIxD5ETV3tuLzyaeu64sf6bcz7q7bLPysnt7nZ+nbvqW8MDy
-        hI6j+YQXW9laZZ55TJ23eX3GvCerSw9eF3ASMspNFItddepPVxz/hlgp0wvlHt4xHIHNpqbV
-        M34osRRnJBpqMRcVJwIAMarVcnEDAAA=
-X-CMS-MailID: 20231019113400epcas1p2456ee4741edeab34bcb66f810bc05df4
-X-Msg-Generator: CA
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231018063801epcas1p28653f8f54cf8d722eaba951eaf4de850
-References: <20231018061714.3553817-1-s.hauer@pengutronix.de>
-        <CGME20231018063801epcas1p28653f8f54cf8d722eaba951eaf4de850@epcas1p2.samsung.com>
-        <20231018061714.3553817-7-s.hauer@pengutronix.de>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|CY8PR11MB7267:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd0b1e08-f748-4cc8-087d-08dbd0978e04
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J+dYNycLl2j2kzESQCrm+VdcyMReboIzYtPwkCz5zEEWXrolNuLP2k2C29mGnuMh+DVq75IhJSMonqm9elFoeShnaFEiVWTh9nCPLToYf7tgD/noy2GER6LJnvFtjVvzZYsXI4AH6EhmR/vq9UTIXGAq2eIuGax3Zt33pRZ19jR2WiI371FhZAXyELFc8s5UvhRcQNhJj2HPfCPlbVVvac8wBajxupo41rhBwa4MLGlI5me3I5f2aT78nd0X93sN/T9c29g6yQ/YdFPsf3D2Ez6cMLrcfhfkla3KxlDutdcMIzIUkVSHmHpMnWyxUEkmloITtSxC+Mac7VSroXNbuontHAe7RgWY+WrWKq38PqZJtUvYCur93o+Mhxz0bmdt1etcBBdfm29b1ZyQJFnOvi1zx6lR2cVlJFhm9htOHMyb58PcJYTiH7MlQ8yyRcBhM2SBoJmpN0+2rU9QP2zGNEQmrtdm+5VGi1cL3og/VNIN6ZyGcJrILd+xizcL6yZBs/1c0SiZntu3ZDSegOdsTw8fk9zATZjOx4b/NAqEBxVswONWQregPUzgeKomHNggAdQat2Z7qn5n79Y936tczA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(376002)(346002)(366004)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6512007)(66556008)(54906003)(38100700002)(66476007)(6916009)(86362001)(6506007)(82960400001)(66946007)(316002)(53546011)(478600001)(966005)(83380400001)(8936002)(26005)(4001150100001)(6666004)(6486002)(7416002)(41300700001)(2906002)(8676002)(4326008)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TunmnI9HTj8mt5sIQKZSa2H/JivygLhzq3neSe4rj6F5rG15RZMvrjYx2WL2?=
+ =?us-ascii?Q?QmVp4Utpenmp/s0Ju7NrA5oFvZLZP+IwhFnIUgOi2oyCj3/J/WFBB1CE2+9J?=
+ =?us-ascii?Q?DlbTKNzZqHMqXDTNvtxUxj20KY2zn/7oNzbtjF5QwVLKpmnjm4+hOBSjLDRN?=
+ =?us-ascii?Q?HHQ4h63sHJZE6EB5KFdQcZYGtzDzokiBegX81nXQqlqtE0AoNavbOprwjK0a?=
+ =?us-ascii?Q?WwU4wnPWbP8/gMsP3xCvrzdDFrmLL/crei0zVnyK57BQYVxIIRG4PjdCGaa4?=
+ =?us-ascii?Q?AIgnS7u4pSLog19AUwJsQWa7yEjcBFnm88n3MKdai3mGIj8GrUSXVHfLTHEg?=
+ =?us-ascii?Q?lqbGnMyATsIZGhcrUhG45s64wg4p6qzpXxLrJAN0GHnW6KSZRS9Zqq1hAqN2?=
+ =?us-ascii?Q?oACNdGwRR6LLUvtvb2LGAU4brUm48vfvuwb94+13c//4RDXS/BX3rzAj1hZ9?=
+ =?us-ascii?Q?fKCQVv9irjYJR1W+VZA1RZPtUeVqm9sEjweQgfy6NRf+hnf005rj72nUa4VJ?=
+ =?us-ascii?Q?xY6sQ0XeK7r929oNTNpvCn1Geiq3eR3hPhRqa8Z4Wfstu9Q/3xHEtSvXOV5G?=
+ =?us-ascii?Q?YjQMei45sSDUu0Q8s1ZRtmvdMDSrDPTNQFAn+PzMZmx79j0Z/Mfd0sO+52SC?=
+ =?us-ascii?Q?SqJQgjc6YpdhkeV4hQeLV5J4atILB7sDMciSps2W4gVWUXtZcINcNihdaS9q?=
+ =?us-ascii?Q?zRAFlBhX3DHnvBABfuJLszMmeMMpbj6+jyq4txu6nB7MvfgGPRz9OnPpXLlf?=
+ =?us-ascii?Q?P0dZpsSDeT/PZhG9QIyW28sfWiNcZcKNy0hgYzsnnsfe04xJaTR9yPgl8gy0?=
+ =?us-ascii?Q?o4LraqJnw8EoYJbU/lw6BuEiwFUmArr8+3LOlqFr27JvSRVr4h/c6n+cj68H?=
+ =?us-ascii?Q?QVimCkgHeavWkRqOaZ+nORk4hrrArMVTXCY9dgwxsaxfGVhB7++914vJy4jc?=
+ =?us-ascii?Q?XyvKyFSYVISpWrurxqrBQEaU8kZo8MJECm9ESxDbL8yr8+twAZ7nls5q1pPo?=
+ =?us-ascii?Q?BEUNM+YNUSpXxkXHlxRZ3yGr/GUsY6b6usx8EAgCuQDsyySisxs29VAf8CRI?=
+ =?us-ascii?Q?ZmPwQTtsT8oQdRYWFaOg/KoHc9Et5w1ayKcOhmHsyNOMFsQDtdeVLia8s1U4?=
+ =?us-ascii?Q?ckBxCMTKKOvJJCcrSIlcltbyCESe6SuVhC9Rgl7fz/pTv0t0wuUgu6AGl1xZ?=
+ =?us-ascii?Q?K4YDa1k/hftSyfadIjk/h59IfteCPLYmt7p0UgJSo0hsrIdio/jgG+rq6eGg?=
+ =?us-ascii?Q?uIks/5Fal7UKqi7Wc0obpNIfCczAYZqrPyHz4z1Tcg57CdmZMXFFU0vh/UJz?=
+ =?us-ascii?Q?tOw7po2k94T+++tG1xYbw5hg8s0DZqvQnltf8tXHfICFBqBhUXeUbXoRN6Ff?=
+ =?us-ascii?Q?zTNdoKxOJRH+MGhBg9F8eXwaneojLuCO3RK5M5ZlxTzAQ+w4Wnk9rorvwRCF?=
+ =?us-ascii?Q?JI0KRc/o1xxMnN+38KEWTNNcT6rXyjw7Ojgg8QEig200HkeY9NzKGclRZoI1?=
+ =?us-ascii?Q?tgIi7j42pPxZJstsB2qWAVBX9iXOyS8aCj/pbxGXED6SoBUkxpbmpFo2J8Ok?=
+ =?us-ascii?Q?SqT5OlVaju1byIFlb0vlS4xDab7BX+sICOyjX819?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd0b1e08-f748-4cc8-087d-08dbd0978e04
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 11:35:54.5808
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oLu231/pybgc79CVuXEEo+A2+p3vmpQe/vV3hyLb/50119j+qEr1iFCG/yRi5m4utcxWMDFnDPvbWkQSqnr2lQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7267
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Sascha Hauer <s.hauer@pengutronix.de>
-> Sent: Wednesday, October 18, 2023 3:17 PM
-> To: linux-rockchip@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> linux-pm@vger.kernel.org; Heiko Stuebner <heiko@sntech.de>; Chanwoo Choi
-> <chanwoo@kernel.org>; Kyungmin Park <kyungmin.park@samsung.com>; MyungJoo
-> Ham <myungjoo.ham@samsung.com>; Will Deacon <will@kernel.org>; Mark
-> Rutland <mark.rutland@arm.com>; kernel@pengutronix.de; Michael Riesch
-> <michael.riesch@wolfvision.net>; Robin Murphy <robin.murphy@arm.com>;
-> Vincent Legoll <vincent.legoll@gmail.com>; Rob Herring
-> <robh+dt@kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> devicetree@vger.kernel.org; Sebastian Reichel
-> <sebastian.reichel@collabora.com>; Sascha Hauer <s.hauer@pengutronix.de>;
-> Chanwoo Choi <cw00.choi@samsung.com>
-> Subject: [PATCH v8 06/26] PM / devfreq: rockchip-dfi: Use free running
-> counter
+On 2023-10-18 at 16:45:10 -0400, Mathieu Desnoyers wrote:
+> Introduce the UTIL_FITS_CAPACITY scheduler feature. The runqueue
+> selection picks the previous, target, or recent runqueues if they have
+> enough remaining capacity to enqueue the task before scanning for an
+> idle cpu.
 > 
-> The DDR_MON counters are free running counters. These are resetted to 0
-> when starting them over like currently done when reading the current
-> counter values.
+> This feature is introduced in preparation for the SELECT_BIAS_PREV
+> scheduler feature. Its performance benefits are noticeable when combined
+> with the SELECT_BIAS_PREV feature.
 > 
-> Resetting the counters becomes a problem with perf support we want to add
-> later, because perf needs counters that are not modified elsewhere.
+> The following benchmarks only cover the UTIL_FITS_CAPACITY feature.
+> Those are performed on a v6.5.5 kernel with mitigations=off.
 > 
-> This patch removes resetting the counters and keeps them running instead.
-> That means we no longer use the absolute counter values but instead
-> compare them with the counter values we read last time. Not stopping the
-> counters also has the impact that they are running while we are reading
-> them. We cannot read multiple timers atomically, so the values do not
-> exactly fit together. The effect should be negligible though as the time
-> between two measurements is some orders of magnitude bigger than the time
-> we need to read multiple registers.
+> The following hackbench workload on a 192 cores AMD EPYC 9654 96-Core
+> Processor (over 2 sockets) keeps relatively the same wall time (49s).
 > 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+> 
+> We can observe that the number of migrations is reduced significantly
+> with this patch (improvement):
+> 
+> Baseline:      117M cpu-migrations  (9.355 K/sec)
+> With patch:     67M cpu-migrations  (5.470 K/sec)
+> 
+> The task-clock utilization is reduced (degradation):
+> 
+> Baseline:      253.275 CPUs utilized
+> With patch:    223.130 CPUs utilized
+> 
+> The number of context-switches is increased (degradation):
+> 
+> Baseline:      445M context-switches (35.516 K/sec)
+> With patch:    581M context-switches (47.548 K/sec)
+> 
+> So the improvement due to reduction of migrations is countered by the
+> degradation in CPU utilization and context-switches. The following
+> SELECT_BIAS_PREV feature will address this.
+> 
+> Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+> Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
+> Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
+> Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
+> Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20231017221204.1535774-1-mathieu.desnoyers@efficios.com/
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+> Cc: Aaron Lu <aaron.lu@intel.com>
+> Cc: Chen Yu <yu.c.chen@intel.com>
+> Cc: Tim Chen <tim.c.chen@intel.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
+> Cc: x86@kernel.org
 > ---
+>  kernel/sched/fair.c     | 49 ++++++++++++++++++++++++++++++++++++-----
+>  kernel/sched/features.h |  6 +++++
+>  kernel/sched/sched.h    |  5 +++++
+>  3 files changed, 54 insertions(+), 6 deletions(-)
 > 
-> Notes:
->     Changes since v4:
->      - rephrase commit message
->      - Drop unused variable
-> 
->  drivers/devfreq/event/rockchip-dfi.c | 52 ++++++++++++++++------------
->  1 file changed, 30 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c
-> b/drivers/devfreq/event/rockchip-dfi.c
-> index 680f629da64fc..126bb744645b6 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -38,11 +38,15 @@
->  #define DDRMON_CH1_COUNT_NUM		0x3c
->  #define DDRMON_CH1_DFI_ACCESS_NUM	0x40
-> 
-> -struct dmc_usage {
-> +struct dmc_count_channel {
->  	u32 access;
->  	u32 total;
->  };
-> 
-> +struct dmc_count {
-> +	struct dmc_count_channel c[RK3399_DMC_NUM_CH]; };
-> +
->  /*
->   * The dfi controller can monitor DDR load. It has an upper and lower
-> threshold
->   * for the operating points. Whenever the usage leaves these bounds an
-> event is @@ -51,7 +55,7 @@ struct dmc_usage {  struct rockchip_dfi {
->  	struct devfreq_event_dev *edev;
->  	struct devfreq_event_desc desc;
-> -	struct dmc_usage ch_usage[RK3399_DMC_NUM_CH];
-> +	struct dmc_count last_event_count;
->  	struct device *dev;
->  	void __iomem *regs;
->  	struct regmap *regmap_pmu;
-> @@ -85,30 +89,18 @@ static void rockchip_dfi_stop_hardware_counter(struct
-> devfreq_event_dev *edev)
->  	writel_relaxed(SOFTWARE_DIS, dfi_regs + DDRMON_CTRL);  }
-> 
-> -static int rockchip_dfi_get_busier_ch(struct devfreq_event_dev *edev)
-> +static void rockchip_dfi_read_counters(struct devfreq_event_dev *edev,
-> +struct dmc_count *count)
->  {
->  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
-> -	u32 tmp, max = 0;
-> -	u32 i, busier_ch = 0;
-> +	u32 i;
->  	void __iomem *dfi_regs = dfi->regs;
-> 
-> -	rockchip_dfi_stop_hardware_counter(edev);
-> -
-> -	/* Find out which channel is busier */
->  	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> -		dfi->ch_usage[i].access = readl_relaxed(dfi_regs +
-> +		count->c[i].access = readl_relaxed(dfi_regs +
->  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> -		dfi->ch_usage[i].total = readl_relaxed(dfi_regs +
-> +		count->c[i].total = readl_relaxed(dfi_regs +
->  				DDRMON_CH0_COUNT_NUM + i * 20);
-> -		tmp = dfi->ch_usage[i].access;
-> -		if (tmp > max) {
-> -			busier_ch = i;
-> -			max = tmp;
-> -		}
->  	}
-> -	rockchip_dfi_start_hardware_counter(edev);
-> -
-> -	return busier_ch;
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1d9c2482c5a3..8058058afb11 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4497,6 +4497,37 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+>  	trace_sched_util_est_se_tp(&p->se);
 >  }
-> 
->  static int rockchip_dfi_disable(struct devfreq_event_dev *edev) @@ -
-> 145,12 +137,28 @@ static int rockchip_dfi_get_event(struct
-> devfreq_event_dev *edev,
->  				  struct devfreq_event_data *edata)  {
->  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
-> -	int busier_ch;
-> +	struct dmc_count count;
-> +	struct dmc_count *last = &dfi->last_event_count;
-> +	u32 access = 0, total = 0;
-> +	int i;
+>  
+> +/*
+> + * Returns true if adding the task utilization to the estimated
+> + * utilization of the runnable tasks on @cpu does not exceed the
+> + * capacity of @cpu.
+> + *
+> + * This considers only the utilization of _runnable_ tasks on the @cpu
+> + * runqueue, excluding blocked and sleeping tasks. This is achieved by
+> + * using the runqueue util_est.enqueued, and by estimating the capacity
+> + * of @cpu based on arch_scale_cpu_capacity and arch_scale_thermal_pressure
+> + * rather than capacity_of() because capacity_of() considers
+> + * blocked/sleeping tasks in other scheduler classes.
+> + *
+> + * The utilization vs capacity comparison is done without the margin
+> + * provided by fits_capacity(), because fits_capacity() is used to
+> + * validate whether the utilization of a task fits within the overall
+> + * capacity of a cpu, whereas this function validates whether the task
+> + * utilization fits within the _remaining_ capacity of the cpu, which is
+> + * more precise.
+> + */
+> +static inline bool task_fits_remaining_cpu_capacity(unsigned long task_util,
+> +						    int cpu)
+> +{
+> +	unsigned long total_util, capacity;
 > +
-> +	rockchip_dfi_read_counters(edev, &count);
+> +	if (!sched_util_fits_capacity_active())
+> +		return false;
+> +	total_util = READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) + task_util;
+> +	capacity = arch_scale_cpu_capacity(cpu) - arch_scale_thermal_pressure(cpu);
+
+scale_rt_capacity(cpu) could provide the remaining cpu capacity after substracted by
+the side activity(rt tasks/thermal pressure/irq time), maybe it would be more accurate?
+
+> +	return total_util <= capacity;
+> +}
 > +
-> +	/* We can only report one channel, so find the busiest one */
-> +	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> +		u32 a = count.c[i].access - last->c[i].access;
-> +		u32 t = count.c[i].total - last->c[i].total;
-> +
-> +		if (a > access) {
-> +			access = a;
-> +			total = t;
-> +		}
+>  static inline int util_fits_cpu(unsigned long util,
+>  				unsigned long uclamp_min,
+>  				unsigned long uclamp_max,
+> @@ -7124,12 +7155,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  	int i, recent_used_cpu;
+>  
+>  	/*
+> -	 * On asymmetric system, update task utilization because we will check
+> -	 * that the task fits with cpu's capacity.
+> +	 * With the UTIL_FITS_CAPACITY feature and on asymmetric system,
+> +	 * update task utilization because we will check that the task
+> +	 * fits with cpu's capacity.
+>  	 */
+> -	if (sched_asym_cpucap_active()) {
+> +	if (sched_util_fits_capacity_active() || sched_asym_cpucap_active()) {
+>  		sync_entity_load_avg(&p->se);
+>  		task_util = task_util_est(p);
 > +	}
-> 
-> -	busier_ch = rockchip_dfi_get_busier_ch(edev);
-> +	edata->load_count = access * 4;
-> +	edata->total_count = total;
-> 
-> -	edata->load_count = dfi->ch_usage[busier_ch].access * 4;
-> -	edata->total_count = dfi->ch_usage[busier_ch].total;
-> +	dfi->last_event_count = count;
-> 
->  	return 0;
->  }
-> --
-> 2.39.2
+> +	if (sched_asym_cpucap_active()) {
+>  		util_min = uclamp_eff_value(p, UCLAMP_MIN);
+>  		util_max = uclamp_eff_value(p, UCLAMP_MAX);
+>  	}
+> @@ -7139,7 +7173,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  	 */
+>  	lockdep_assert_irqs_disabled();
+>  
+> -	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> +	if ((available_idle_cpu(target) || sched_idle_cpu(target) ||
+> +	    task_fits_remaining_cpu_capacity(task_util, target)) &&
 
+Compared to the previous version posted here[1], when the cpu's util_est is lower than 25% of CPU
+capacity we choose the previous CPU, current version seems to be more aggressive.
+it is possible that a short running task is queued on the near 100% busy cpu while there
+is still an idle cpu in the system.
 
-Applied it. Thanks.
+https://lore.kernel.org/lkml/20231017221204.1535774-1-mathieu.desnoyers@efficios.com/
 
-Best Regards,
-Chanwoo Choi
-
-
+thanks,
+Chenyu
