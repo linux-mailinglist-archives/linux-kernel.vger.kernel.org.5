@@ -2,160 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A79AE7CF3DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3C07CF3B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345112AbjJSJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        id S1345003AbjJSJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjJSJRl (ORCPT
+        with ESMTP id S229830AbjJSJPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:17:41 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0872132
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:17:37 -0700 (PDT)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SB27z4sCBzNnqW;
-        Thu, 19 Oct 2023 17:13:35 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 19 Oct 2023 17:17:35 +0800
-From:   Jijie Shao <shaojijie@huawei.com>
-To:     <will@kernel.org>, <jonathan.cameron@huawei.com>,
-        <mark.rutland@arm.com>, <yangyicong@hisilicon.com>
-CC:     <shaojijie@huawei.com>, <chenhao418@huawei.com>,
-        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH V3 drivers/perf: hisi:] drivers/perf: hisi: use cpuhp_state_remove_instance_nocalls() for hisi_hns3_pmu uninit process
-Date:   Thu, 19 Oct 2023 17:13:52 +0800
-Message-ID: <20231019091352.998964-1-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 19 Oct 2023 05:15:15 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EB8FE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:15:13 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39J97Jo7032585;
+        Thu, 19 Oct 2023 09:15:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=ABt7ADKK8tsXYCvzjlIR2O1T/6z1I1a3pW7ZzNN+dV0=;
+ b=gELg/ZYVZOCDvUy6GAi62Bo7pOSF4DHB1lFZ9CCMvQ9PREVD2/Q7TwQ0gaXKSaeIaERf
+ 0sfaMx/uXIARfGo2B7IWOzNZ5ZpETwmEXt5Ci86WmnaxT+LQho6GrFKL7XtrblITqvXb
+ tFu9m+pptuKN4dLFtV0cUOHZes52AatZ2A0BbHJ0sXrcoaxwFujRpE6VhExwsgl3S4SZ
+ RQxV2Odr7VofoiTEbsq73Bsx19feTLStLByHw+2w6y4EC4wwshVamyCCoSwFmK3vzgo8
+ Gmxpmy7OTFbFq7zCL/FDcVGajTg4JJPQRVTnANYuc+Xffjeukk23AMwd0z4eUG0HUJc0 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu1hx08um-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 09:15:01 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39J97gcK002996;
+        Thu, 19 Oct 2023 09:15:01 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu1hx08tb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 09:15:00 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39J88Pch020150;
+        Thu, 19 Oct 2023 09:14:59 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6anfr3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 09:14:59 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39J9Ev9927460236
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Oct 2023 09:14:57 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 19EF020040;
+        Thu, 19 Oct 2023 09:14:57 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6F7420043;
+        Thu, 19 Oct 2023 09:14:54 +0000 (GMT)
+Received: from sapthagiri.in.ibm.com (unknown [9.109.198.63])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Oct 2023 09:14:54 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] powerpc/paravirt: Improve vcpu_is_preempted
+Date:   Thu, 19 Oct 2023 14:44:52 +0530
+Message-ID: <20231019091452.95260-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zIHbyWlsj8PSg93w1BZId6u8pJalyHr6
+X-Proofpoint-ORIG-GUID: PTeXcGKCHRu49IjQ_8I_63TZW_iZncgV
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_06,2023-10-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310190077
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Chen <chenhao418@huawei.com>
+PowerVM Hypervisor dispatches on a whole core basis. In a shared LPAR, a
+CPU from a core that is CEDED or preempted may have a larger latency. In
+such a scenario, its preferable to choose a different CPU to run.
 
-For pmu uninit process, we unregister pmu and then call cpuhp_state_remove_instance()
-to call callback function to migrate pmu context. the logic is unreasonable and
-may result in NULL pointer call trace.
+If one of the CPUs in the core is active, i.e neither CEDED nor
+preempted, then consider this CPU as not preempted.
 
-Found NULL pointer call trace for kernel-5.12 at the first time, log shows as below:
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[27169.471153] Mem abort info:
-[27169.478859]   ESR = 0x96000006
-[27169.485117]   EC = 0x25: DABT (current EL), IL = 32 bits
-[27169.501386]   SET = 0, FnV = 0
-[27169.508038]   EA = 0, S1PTW = 0
-[27169.559839] Data abort info:
-[27169.567296]   ISV = 0, ISS = 0x00000006
-[27169.585332]   CM = 0, WnR = 0
-[27169.592627] user pgtable: 4k pages, 48-bit VAs, pgdp=00000820ac0c2000
-[27169.615618] [0000000000000000] pgd=00000820af2bf003, p4d=00000820af2bf003, pud=00000820af2bd003, pmd=0000000000000000
-[27169.641348] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[27169.649879] Modules linked in: hisi_hns3_pmu(-) hns3 hclge hclgevf hnae3 hns3_cae(O) vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O) [last unloaded: hisi_hns3_pmu]
-[27169.675150] CPU: 0 PID: 15 Comm: cpuhp/0 Tainted: G        W  O      5.12.0-rc4+ #1
-[27169.686538] Hardware name:  , BIOS KpxxxFPGA 1P B600 V143 04/22/2021
-[27169.694884] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[27169.704199] pc : perf_pmu_migrate_context+0x98/0x38c
-[27169.713848] lr : perf_pmu_migrate_context+0x94/0x38c
-[27169.723069] sp : ffff80001020bc80
-[27169.727938] x29: ffff80001020bc80 x28: 0000000000000000
-[27169.737236] x27: 0000000000000001 x26: fffffbffeff951d8
-[27169.745245] x25: ffffb7ae1ce36fd0 x24: fffffbffeff95178
-[27169.753116] x23: ffff0821f6f82668 x22: 0000000000000001
-[27169.760949] x21: ffff80001020bd08 x20: fffffbffeffb5188
-[27169.768467] x19: fffffbffeffb5178 x18: 0000000000000020
-[27169.776699] x17: 0000000000000000 x16: 0000000000000000
-[27169.785042] x15: 0000000000000004 x14: ffff08208093d290
-[27169.793254] x13: 0000000000000000 x12: 0000497f0149bafe
-[27169.801390] x11: 01262d2f8bbfdccc x10: 3dc70ddec1e5f4f9
-[27169.808896] x9 : ffffb7ae1a7eb108 x8 : 0000000000000002
-[27169.817000] x7 : 0000000000000000 x6 : 000000000000000e
-[27169.824726] x5 : 0000000000000001 x4 : 0000000000000000
-[27169.832924] x3 : 0000000000000000 x2 : ffff082080a30e80
-[27169.841135] x1 : 0000000000000000 x0 : fffffbffeffb5188
-[27169.849059] Call trace:
-[27169.853177]  perf_pmu_migrate_context+0x98/0x38c
-[27169.862256]  hisi_hns3_pmu_offline_cpu+0x104/0x12c [hisi_hns3_pmu]
-[27169.873943]  cpuhp_invoke_callback+0x118/0x634
-[27169.882775]  cpuhp_thread_fun+0xe8/0x190
-[27169.890345]  smpboot_thread_fn+0x25c/0x290
-[27169.898241]  kthread+0x168/0x16c
-[27169.904178]  ret_from_fork+0x10/0x18
-[27169.911943] Code: 944beda1 aa1403e0 944bed9f f8460f5c (f9400394)
+Also if any of the CPUs in the core has yielded but OS has not requested
+CEDE or CONFER, then consider this CPU to be preempted.
 
-And tested some other uncore pmu driver such as hisi_pcie_pmu and hisi_uncore_l3c_pmu,
-hisi_pcie_pmu driver can reproduce it also, and change hisi_uncore_l3c_pmu hotplug
-function from cpuhp_state_remove_instance_nocalls() to cpuhp_state_remove_instance(),
-it has the same call trace.
+Correct detection of preempted CPUs is important for detecting idle
+CPUs/cores in task scheduler.
 
-This patch change cpuhp_state_remove_instance() to cpuhp_state_remove_instance_nocalls()
-after pmu unregistered to fix the problem.
-
-This problem is fixed by commit bd2756811766 ("perf: Rewrite core context handling")
-for kernel-6.2.
-
-Hisi_hns3_pmu driver is supported for kernel-5.19, so, use this patch as bugfix for
-stable 6.0 and 6.1 tag, and use this patch as cleanup for newest kernel version.
-
-Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
-Signed-off-by: Hao Chen <chenhao418@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+Tested-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
-ChangeLog:
-V2->V3:
-	1. Format the name of pmu driver suggested by Yicong
-	V2: https://lore.kernel.org/all/20231016105139.1436425-1-shaojijie@huawei.com/
-V1->V2:
-	1. Add more details for NULL pointer call trace suggested by Yicong
-	V1: https://lore.kernel.org/all/20231009105038.126040-1-shaojijie@huawei.com/
----
- drivers/perf/hisilicon/hns3_pmu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changelog:
+v2 (http://lkml.kernel.org/r/20231018155838.2332822-1-srikar@linux.vnet.ibm.com) -> v4:
+Resolved comments from Michael Ellerman
 
-diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-index e0457d84af6b..16869bf5bf4c 100644
---- a/drivers/perf/hisilicon/hns3_pmu.c
-+++ b/drivers/perf/hisilicon/hns3_pmu.c
-@@ -1556,8 +1556,8 @@ static int hns3_pmu_init_pmu(struct pci_dev *pdev, struct hns3_pmu *hns3_pmu)
- 	ret = perf_pmu_register(&hns3_pmu->pmu, hns3_pmu->pmu.name, -1);
- 	if (ret) {
- 		pci_err(pdev, "failed to register perf PMU, ret = %d.\n", ret);
--		cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
--					    &hns3_pmu->node);
-+		cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-+						    &hns3_pmu->node);
- 	}
- 
- 	return ret;
-@@ -1568,8 +1568,8 @@ static void hns3_pmu_uninit_pmu(struct pci_dev *pdev)
- 	struct hns3_pmu *hns3_pmu = pci_get_drvdata(pdev);
- 
- 	perf_pmu_unregister(&hns3_pmu->pmu);
--	cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
--				    &hns3_pmu->node);
-+	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-+					    &hns3_pmu->node);
+v1 (http://lkml.kernel.org/r/20231009051740.17683-1-srikar@linux.vnet.ibm.com) -> v2:
+Handle lppaca_of(cpu) in !PPC_SPLPAR case.
+1. Fixed some compilation issues reported by kernelbot
+	a. https://lore.kernel.org/oe-kbuild-all/202310102341.K0sgoqQL-lkp@intel.com/
+	b.  https://lore.kernel.org/oe-kbuild-all/202310091636.lElmJkYV-lkp@intel.com/
+2. Resolved comments from Shrikanth
+
+---
+ arch/powerpc/include/asm/paravirt.h | 47 +++++++++++++++++++++++++++--
+ 1 file changed, 44 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
+index e08513d73119..ac4279208d63 100644
+--- a/arch/powerpc/include/asm/paravirt.h
++++ b/arch/powerpc/include/asm/paravirt.h
+@@ -71,6 +71,11 @@ static inline void yield_to_any(void)
+ {
+ 	plpar_hcall_norets_notrace(H_CONFER, -1, 0);
+ }
++
++static inline bool is_vcpu_idle(int vcpu)
++{
++	return lppaca_of(vcpu).idle;
++}
+ #else
+ static inline bool is_shared_processor(void)
+ {
+@@ -100,6 +105,10 @@ static inline void prod_cpu(int cpu)
+ 	___bad_prod_cpu(); /* This would be a bug */
  }
  
- static int hns3_pmu_init_dev(struct pci_dev *pdev)
++static inline bool is_vcpu_idle(int vcpu)
++{
++	return false;
++}
+ #endif
+ 
+ #define vcpu_is_preempted vcpu_is_preempted
+@@ -121,9 +130,23 @@ static inline bool vcpu_is_preempted(int cpu)
+ 	if (!is_shared_processor())
+ 		return false;
+ 
++	/*
++	 * If the hypervisor has dispatched the target CPU on a physical
++	 * processor, then the target CPU is definitely not preempted.
++	 */
++	if (!(yield_count_of(cpu) & 1))
++		return false;
++
++	/*
++	 * If the target CPU has yielded to Hypervisor but OS has not
++	 * requested idle then the target CPU is definitely preempted.
++	 */
++	if (!is_vcpu_idle(cpu))
++		return true;
++
+ #ifdef CONFIG_PPC_SPLPAR
+ 	if (!is_kvm_guest()) {
+-		int first_cpu;
++		int first_cpu, i;
+ 
+ 		/*
+ 		 * The result of vcpu_is_preempted() is used in a
+@@ -149,11 +172,29 @@ static inline bool vcpu_is_preempted(int cpu)
+ 		 */
+ 		if (cpu_first_thread_sibling(cpu) == first_cpu)
+ 			return false;
++
++		/*
++		 * If any of the threads of the target CPU's core are not
++		 * preempted or ceded, then consider target CPU to be
++		 * non-preempted.
++		 */
++		first_cpu = cpu_first_thread_sibling(cpu);
++		for (i = first_cpu; i < first_cpu + threads_per_core; i++) {
++			if (i == cpu)
++				continue;
++			if (!(yield_count_of(i) & 1))
++				return false;
++			if (!is_vcpu_idle(i))
++				return true;
++		}
+ 	}
+ #endif
+ 
+-	if (yield_count_of(cpu) & 1)
+-		return true;
++	/*
++	 * None of the threads in target CPU's core are running but none of
++	 * them were preempted too. Hence assume the target CPU to be
++	 * non-preempted.
++	 */
+ 	return false;
+ }
+ 
+
+base-commit: eddc90ea2af5933249ea1a78119f2c8ef8d07156
 -- 
-2.30.0
+2.31.1
 
