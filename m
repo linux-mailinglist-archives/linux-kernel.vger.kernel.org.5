@@ -2,142 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CD97CF562
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E15B7CF566
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 12:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345290AbjJSKb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 06:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S232761AbjJSKcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 06:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345286AbjJSKb0 (ORCPT
+        with ESMTP id S229894AbjJSKc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:31:26 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2604CFA;
-        Thu, 19 Oct 2023 03:31:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 567752F4;
-        Thu, 19 Oct 2023 03:32:04 -0700 (PDT)
-Received: from [10.57.67.150] (unknown [10.57.67.150])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25EDC3F5A1;
-        Thu, 19 Oct 2023 03:31:18 -0700 (PDT)
-Message-ID: <1bef7744-78ef-f673-a33b-6f8fb00e033b@arm.com>
-Date:   Thu, 19 Oct 2023 11:31:16 +0100
+        Thu, 19 Oct 2023 06:32:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB95A119
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 03:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697711547; x=1729247547;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qRBkCTJbRJlP/rxYmWi5U4pxhGfUHsPS+Zw8MPdhUoY=;
+  b=FE80kuSka7esHXId06HpbNaaBM4HALpX7niniGhVFlSCS7cheF3FzhhI
+   EI6hneTg17cvfd7DN6FM+w/vGktMA+3GSUkqwzV3BhDLLUi8cRsWzJXro
+   UhxNCGRma0psx7ulOs/FxMKoTkevaQQtwsTVNCIVA1NcrQb0ddv9f4t1i
+   FAIzQwB7WkXAKU2Yhc4dbUlFeLBdapFpq+7I1fZrLVNfPnG4LP5E3XkAj
+   yptobj/zU31pbTzOyDEM//A6pySaCdEGcfHSAMYdllPuXdweahVKaflfF
+   lXp8pEIbK17QAVr9yF4q9YujYS0kqN9NZWFn8IDde8afMXWhrmlLBeoeO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="376596455"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="376596455"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 03:31:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="706807168"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="706807168"
+Received: from ahajda-mobl.ger.corp.intel.com (HELO [10.213.3.232]) ([10.213.3.232])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 03:31:40 -0700
+Message-ID: <62e16250-63f4-4fbb-b00e-db808b600664@intel.com>
+Date:   Thu, 19 Oct 2023 12:31:38 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Add 'T' itrace option for timestamp
- trace
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-gfx] [PATCH v2] debugobjects: stop accessing objects after
+ releasing spinlock
 Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-References: <20231014074513.1668000-1-leo.yan@linaro.org>
- <20231014074513.1668000-2-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231014074513.1668000-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org
+Cc:     Nirmoy Das <nirmoy.das@intel.com>
+References: <20230925131359.2948827-1-andrzej.hajda@intel.com>
+ <87v8bak6iy.ffs@tglx>
+From:   Andrzej Hajda <andrzej.hajda@intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
+ Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <87v8bak6iy.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/10/2023 08:45, Leo Yan wrote:
-> An AUX trace can contain timestamp, but in some situations, the hardware
-> trace module (e.g. Arm CoreSight) cannot decide the traced timestamp is
-> the same source with CPU's time, thus the decoder can not use the
-> timestamp trace for samples.
+On 13.10.2023 15:15, Thomas Gleixner wrote:
+> On Mon, Sep 25 2023 at 15:13, Andrzej Hajda wrote:
+>> After spinlock release object can be modified/freed by concurrent thread.
+>> Using it in such case is error prone, even for printing object state.
 > 
-> This patch introduces 'T' itrace option. If users know the platforms
-> they are working on have the same time counter with CPUs, users can
-> use this new option to tell a decoder for using timestamp trace as
-> kernel time.
+> It cannot be freed. If that happens then the calling code will have an
+> UAF problem on the tracked item too.
+
+Yes, and I have assumed that debugobjects are created also for detecting 
+UAFs. They should be able to handle/detect 'issues due to incorrectly 
+serialized concurrent accesses' scenarios as well, at least some of 
+them. And even if it cannot recover it should at least provide reliable 
+reporting.
+
+Now we can have scenario:
+1. Thread tries to deactivate destroyed object, debugobjects detects it, 
+spin lock is released, thread is preempted.
+2. Other thread frees debugobject, then allocates new one on the same 
+memory location, ie 'obj' variable from 1st thread point to it - it is 
+possible because there is no locking.
+3. Then preemption occurs, and 1st thread reports error for wrong object.
+
+This seems the most drastic for me, but also with lowest chances to 
+happen due to delayed freeing, but there are also other more probable 
+scenarios when we print the same object but in state different from the 
+one when debugobject detected issue, due to modification by concurrent 
+thread.
+
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/Documentation/itrace.txt | 1 +
->  tools/perf/util/auxtrace.c          | 3 +++
->  tools/perf/util/auxtrace.h          | 3 +++
->  3 files changed, 7 insertions(+)
+> If there is a concurrent modification then again, the calling code is
+> lacking serialization on the tracked object.
 > 
-> diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
-> index a97f95825b14..19cc179be9a7 100644
-> --- a/tools/perf/Documentation/itrace.txt
-> +++ b/tools/perf/Documentation/itrace.txt
-> @@ -25,6 +25,7 @@
->  		q	quicker (less detailed) decoding
->  		A	approximate IPC
->  		Z	prefer to ignore timestamps (so-called "timeless" decoding)
-> +		T	use the timestamp trace as kernel time
->  
+> debugobject fundamentally relies on the call site being consistent
+> simply because it _cannot_ invoke the fixup callbacks with the hash
+> bucket lock held.
 
-Maybe "Treat hardware timestamps as kernel time (trace and CPU time use
-same clock source)" would be clearer.
+Hmm, if call site is consistent then 'fixup' seems unnecessary, together 
+with debugobjects.
+I guess 'fixup' users should take care of locking on they own in such 
+case, as it is currently, nothing changed.
 
-And another point, although this isn't really related to this patch, but
-why do we have the single letter arguments for itrace? It seems like it
-massively restricts the available options and makes the command lines
-hard to read because they don't have long forms. Why not just have them
-as normal arguments?
+> 
+> What's the actualy problem you are trying to solve here. The changelog
+> does not explain anything except of handwaving about modified/freed.
 
-If it's a backwards compatibility thing, would there be any objection to
-adding this new option as a normal one rather than an itrace one?
+Presented above.
 
->  	The default is all events i.e. the same as --itrace=iybxwpe,
->  	except for perf script where it is --itrace=ce
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index a0368202a746..f528c4364d23 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -1638,6 +1638,9 @@ int itrace_do_parse_synth_opts(struct itrace_synth_opts *synth_opts,
->  		case 'Z':
->  			synth_opts->timeless_decoding = true;
->  			break;
-> +		case 'T':
-> +			synth_opts->use_timestamp = true;
-> +			break;
->  		case ' ':
->  		case ',':
->  			break;
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index 29eb82dff574..55702215a82d 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -99,6 +99,7 @@ enum itrace_period_type {
->   * @remote_access: whether to synthesize remote access events
->   * @mem: whether to synthesize memory events
->   * @timeless_decoding: prefer "timeless" decoding i.e. ignore timestamps
-> + * @use_timestamp: use the timestamp trace as kernel time
->   * @vm_time_correlation: perform VM Time Correlation
->   * @vm_tm_corr_dry_run: VM Time Correlation dry-run
->   * @vm_tm_corr_args:  VM Time Correlation implementation-specific arguments
-> @@ -146,6 +147,7 @@ struct itrace_synth_opts {
->  	bool			remote_access;
->  	bool			mem;
->  	bool			timeless_decoding;
-> +	bool			use_timestamp;
+Regards
+Andrzej
 
-And then this one could be like "hw_time_is_kernel_time", but I'm
-stuggling to think of something shorter. Maybe your one is fine along
-with the comment.
+
+> 
+> Thanks,
+> 
+>          tglx
 
