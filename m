@@ -2,108 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA8B7CEF18
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D300E7CEF1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 07:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbjJSFg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 01:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
+        id S232537AbjJSFj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 01:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbjJSFgy (ORCPT
+        with ESMTP id S229894AbjJSFj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 01:36:54 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A235AB;
-        Wed, 18 Oct 2023 22:36:53 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4a4021adbc7so3095861e0c.2;
-        Wed, 18 Oct 2023 22:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697693812; x=1698298612; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qeTuEgeZAR5PeG9CXkJkOeBEKLRDO8E7qwHgbzSQfH8=;
-        b=YMlHd7IfbmNLvomSUIivTWflUydN6tw8byEB73YDSORleq9Fc8eAupxNDdskW+zLJk
-         Je6hsgfjFG6YCGmomogpqTRrdSz/g7X3myZhc42QhpSibnWOv6966Clr5vk+edJ6EmM+
-         B+QqLHO3cxxrZ3nuEJHdhKoHgmmEkvyXsz2cZ46fSUqVuhsgCOZjdQr4EvfKMYgixFGf
-         o7Oz3uFXnuUEPyKwa1YKHj+43nwRbBDEEIFha7ZNkljvuWM904kTZKv0DPJdtTNZO2ek
-         eZKNAp3A3uoCw0g6TWeHwUBwqWi8Cncy8V6Kowv8CuQb9Lkb8qyiSpmAFY5nZZh9kLXQ
-         K1sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697693812; x=1698298612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qeTuEgeZAR5PeG9CXkJkOeBEKLRDO8E7qwHgbzSQfH8=;
-        b=fKsQ+QLrCg3F5FPA+q2pASwVKidyReK5FxXMVULsjScGLHKxPkQHxOzmiUvSWV4aBB
-         APuCcIs7aS/am5Oj7fYYxIA3WGXSiY0uI441KizxKtErKco+r8bVZ/FbQ4Gum/66I1/C
-         HdooW0ksNmOKqyBAa/Aj0/3I5cGf2rjCfYXcbA8tYi3/VyqhATSg/Up+t8TcGH2csvd0
-         1b5ED1vS7LQvhQUol2m92PvSgg085edhF25+TreN2lYvUoQb8xt1c7DoLJgUxtTi8sLv
-         FVxf/ZKiiWgjKYArSNQmoek33GoGIVFpDSCrnykaklu+Aakzyb6xu67ZRLm2n181H0mF
-         XxdQ==
-X-Gm-Message-State: AOJu0YyF3QkJUv5HNAXLyVdesyap8sAMK2Tgww4Pnl9Pvg7b7OKHo5ZV
-        /o/oAv7QdipDXivQhsuMrU9/S9X3BQvBziHfkgQ=
-X-Google-Smtp-Source: AGHT+IGETPIhZCNHO7HAFXrvQgfr2sRQ2CBBFh6/pPtyxTLfNkn+hlq04xKnP/BvoC4hgaUr4c3lfX7ajnDULQGbj8U=
-X-Received: by 2002:a05:6122:1da6:b0:495:c10c:ec39 with SMTP id
- gg38-20020a0561221da600b00495c10cec39mr1279598vkb.2.1697693812195; Wed, 18
- Oct 2023 22:36:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231019101231.174f1124@canb.auug.org.au>
-In-Reply-To: <20231019101231.174f1124@canb.auug.org.au>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 19 Oct 2023 08:36:40 +0300
-Message-ID: <CAOQ4uxh8ydr+YdyKtD9yR1_kpkqkt+MdjvAzkA48F2UNSxz40w@mail.gmail.com>
-Subject: Re: linux-next: duplicate patches in the vfs-brauner tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 01:39:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B27AB
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 22:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697693995; x=1729229995;
+  h=date:from:to:cc:subject:message-id;
+  bh=oWTo27PXiZy0CK2BP6pbMQbsbRFe10dicFJE8pDyD/M=;
+  b=Kx7kVvWkkk6yWQ92rMZNG9Xxzyj1goN3tk1Rl0Mk96wH+EaQqkpP2xLm
+   vHnZnyY9Y6iks+5HvVVtPjFsbyXR3gEYSc8eLjaOl3LWD8hKdVUUqkaD4
+   qaM225usxIFDGEA10PvWAXn/abLi1NHmWs5kMInXmDR0kO3Sa43xAKUJu
+   JfzLaC3b1De0rZqUA+lnIGiwW3do/bmZ39EMR8L1AkTch/lV9nXt7pkMB
+   utMZCWZFeSi08ty7WWbFB015Uh/ozvretYG43WWtOI9wSdR5dl6Z6iODt
+   NFHCFN1XbGt1pomFYCP/tT2v5y1FGI6eDeR0z6UEXVy6ZSa3Y2hpjYkEw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="4770034"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="4770034"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 22:39:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="873325090"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="873325090"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Oct 2023 22:39:52 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtLl8-0001hK-2M;
+        Thu, 19 Oct 2023 05:39:50 +0000
+Date:   Thu, 19 Oct 2023 13:39:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 5df10099418f139bbf2f4e0d7b9a8727e76274ec
+Message-ID: <202310191341.Ttq70OJ6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 2:12=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> The following commits are also in the overlayfs tree as different
-> commits (but the same patches):
->
->   b8a42d441199 ("fs: export mnt_{get,put}_write_access() to modules")
->   5363f9742437 ("fs: rename __mnt_{want,drop}_write*() helpers")
->
-> These are commits
->
->   ddf9e2ff67a9 ("fs: export mnt_{get,put}_write_access() to modules")
->   3e15dcf77b23 ("fs: rename __mnt_{want,drop}_write*() helpers")
->
-> in the overlayfs tree.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 5df10099418f139bbf2f4e0d7b9a8727e76274ec  srcu: Explain why callbacks invocations can't run concurrently
 
-Christian,
+elapsed time: 2311m
 
-Did you apply those commits by mistake when you rebased vfs.misc
-instead of merging vfs.mount.write into vfs.misc as it was prior to rebase?
+configs tested: 159
+configs skipped: 2
 
-Maybe it would be easier to rebase vfs.misc over vfs.mount.write?
-with the intention of including these two patches inside a larger PR?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-ATM, overlayfs-next relies on two vfs branches as being stable:
-vfs.mount.write and vfs.xattr.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231018   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231018   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231018   gcc  
+i386         buildonly-randconfig-001-20231019   gcc  
+i386         buildonly-randconfig-002-20231018   gcc  
+i386         buildonly-randconfig-002-20231019   gcc  
+i386         buildonly-randconfig-003-20231018   gcc  
+i386         buildonly-randconfig-003-20231019   gcc  
+i386         buildonly-randconfig-004-20231018   gcc  
+i386         buildonly-randconfig-004-20231019   gcc  
+i386         buildonly-randconfig-005-20231018   gcc  
+i386         buildonly-randconfig-005-20231019   gcc  
+i386         buildonly-randconfig-006-20231018   gcc  
+i386         buildonly-randconfig-006-20231019   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231018   gcc  
+i386                  randconfig-002-20231018   gcc  
+i386                  randconfig-003-20231018   gcc  
+i386                  randconfig-004-20231018   gcc  
+i386                  randconfig-005-20231018   gcc  
+i386                  randconfig-006-20231018   gcc  
+i386                  randconfig-011-20231018   gcc  
+i386                  randconfig-011-20231019   gcc  
+i386                  randconfig-012-20231018   gcc  
+i386                  randconfig-012-20231019   gcc  
+i386                  randconfig-013-20231018   gcc  
+i386                  randconfig-013-20231019   gcc  
+i386                  randconfig-014-20231018   gcc  
+i386                  randconfig-014-20231019   gcc  
+i386                  randconfig-015-20231018   gcc  
+i386                  randconfig-015-20231019   gcc  
+i386                  randconfig-016-20231018   gcc  
+i386                  randconfig-016-20231019   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231018   gcc  
+loongarch             randconfig-001-20231019   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231018   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231018   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231018   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231018   gcc  
+x86_64       buildonly-randconfig-001-20231019   gcc  
+x86_64       buildonly-randconfig-002-20231018   gcc  
+x86_64       buildonly-randconfig-002-20231019   gcc  
+x86_64       buildonly-randconfig-003-20231018   gcc  
+x86_64       buildonly-randconfig-003-20231019   gcc  
+x86_64       buildonly-randconfig-004-20231018   gcc  
+x86_64       buildonly-randconfig-004-20231019   gcc  
+x86_64       buildonly-randconfig-005-20231018   gcc  
+x86_64       buildonly-randconfig-005-20231019   gcc  
+x86_64       buildonly-randconfig-006-20231018   gcc  
+x86_64       buildonly-randconfig-006-20231019   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231018   gcc  
+x86_64                randconfig-002-20231018   gcc  
+x86_64                randconfig-003-20231018   gcc  
+x86_64                randconfig-004-20231018   gcc  
+x86_64                randconfig-005-20231018   gcc  
+x86_64                randconfig-006-20231018   gcc  
+x86_64                randconfig-011-20231018   gcc  
+x86_64                randconfig-012-20231018   gcc  
+x86_64                randconfig-013-20231018   gcc  
+x86_64                randconfig-014-20231018   gcc  
+x86_64                randconfig-015-20231018   gcc  
+x86_64                randconfig-016-20231018   gcc  
+x86_64                randconfig-071-20231018   gcc  
+x86_64                randconfig-071-20231019   gcc  
+x86_64                randconfig-072-20231018   gcc  
+x86_64                randconfig-072-20231019   gcc  
+x86_64                randconfig-073-20231018   gcc  
+x86_64                randconfig-073-20231019   gcc  
+x86_64                randconfig-074-20231018   gcc  
+x86_64                randconfig-074-20231019   gcc  
+x86_64                randconfig-075-20231018   gcc  
+x86_64                randconfig-075-20231019   gcc  
+x86_64                randconfig-076-20231018   gcc  
+x86_64                randconfig-076-20231019   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-It's not a problem for me to rebase on any other stable branches
-that include those changes if you wish to reorganize the vfs topic
-branches differently.
-
-Thanks,
-Amir.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
