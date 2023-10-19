@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 660F57CF179
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA877CF17E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbjJSHkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        id S1344865AbjJSHlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235187AbjJSHkE (ORCPT
+        with ESMTP id S232829AbjJSHlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:40:04 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B92F12D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:40:02 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53f98cbcd76so3379a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697701200; x=1698306000; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FWavqM6arQNElYvYw/XKPSNP8Oucxbnt8dSEavyv3es=;
-        b=KVEpErImyt7v6HgglO4ZZFG9UHehT5R0w9q7lWlzpaO63zsl0DqilCTIUhIDp3yOqi
-         PAVxnbuIEb8soCb7/7/GzvgGudKAk2yf8p+UrzmaZ5t7cT4MdBFlQGcJ94q5AraOUmFa
-         +TgdUAQxKZ9hmkDah6jKegvZiL82SrnOzZXFT/9hDuBpa3+Zt8RKdBJ8d1AyfaIaQc8O
-         vbyTBDO2KoEKqVszx30yvWr8HprmcNpz8iw5jak9pio+/HZk6PjQGzhjg3WCBDZCRPRG
-         1YUB+GNsWCPOA9DcZ6qP2/YBuqIbuALb8XUTYWvhdSoq+2Qz5c6ok/EEqmsae/o2BYc5
-         ox9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697701200; x=1698306000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FWavqM6arQNElYvYw/XKPSNP8Oucxbnt8dSEavyv3es=;
-        b=LMP0xrTmzOgEV5CACVZ4nlqjREENQTUR+LuYKcayyFQQHgfiyiLEhYYTy2yc9cWUjy
-         LEa1Kzjd5RastUTDY7fyDrhhS5RfG5uBmzXcF1eVJnSB5Y04dCSOwRSdESR9KvVXv2zh
-         nO0GOBczseImAJSHeFXNoXS1dcb7F5KYgob4+uqv666hsOw7Z2lZFeumQE8xUTcwV4O0
-         3736pOd6ynRlnVV8KyttNS0CV+EcdOLoGdtLl7T++y7bm1Sy/yMzRhA7aaNyJnVNkba0
-         5/bG8yR3EOHaSaMNgL5/7yid0rTzyjvjKDABh3fvAw9HwpI+ngFGrtfK+bPm3ea9Wpy/
-         ylHg==
-X-Gm-Message-State: AOJu0YzL4M02R4Gqs7HDvAZC+AFRmDcn9MgSTnF+dUMb0LhXCsWLKSca
-        nufLa55Zj+ziQfg2aSGAQC2AiiMa4XYiMGTwfI0Mag==
-X-Google-Smtp-Source: AGHT+IE3bnRKjOzno0YQxKvX1Er/AEQw13u10fDJO85JVeZ4aPBDjI3kp+r5eJM2IrlQet7VWcR2ijoFP+iNgufJQZg=
-X-Received: by 2002:aa7:da53:0:b0:53f:9265:bd0d with SMTP id
- w19-20020aa7da53000000b0053f9265bd0dmr53704eds.5.1697701200143; Thu, 19 Oct
- 2023 00:40:00 -0700 (PDT)
+        Thu, 19 Oct 2023 03:41:13 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE0B6;
+        Thu, 19 Oct 2023 00:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697701266;
+        bh=Nfv6UJyDAKKCrkkKrL3f0AKIlrVzlfpOWkPNqFh/Qdw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fEaMkejOmaHvYo0GhP13LTyx3EXWZY9LTIsrSmWmLJQwd+FLeDIwvNLwdBKCAIobn
+         Xb6shwSdEQc9qWHoY+GgvF4H4H4O25EWS1ZpbRyeRM6/fUud8CS8/7MHO3Dm3KHilJ
+         ACzwPFo6cP1wlAQbJK1pUnhzt3INUBzEqD2radZd3RsQkLRg61z/aEUCS3CyLWoA7u
+         X0pmUDNEPtoB3vELvwoJpw5pQDg0st3+v4HqHOTUY/OOnagEN5UjHoqIXZuAPOZIS0
+         XKkez6VTM8NANiVGTqH4gGdMoNS4JssbGlGRwD+HJG25DDiGBZ8jpXbGTPBStgrfau
+         j2+eeSAUzAy7w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SB05G2T3Kz4xdV;
+        Thu, 19 Oct 2023 18:41:06 +1100 (AEDT)
+Date:   Thu, 19 Oct 2023 18:41:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the bcachefs tree
+Message-ID: <20231019184105.57fe31c3@canb.auug.org.au>
 MIME-Version: 1.0
-References: <VI1PR0702MB3840EB26EF2A1A35BFEA53BFD9D5A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231018154205.GT800259@ZenIV> <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231019050250.GV800259@ZenIV> <20231019061427.GW800259@ZenIV> <20231019063925.GX800259@ZenIV>
-In-Reply-To: <20231019063925.GX800259@ZenIV>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 19 Oct 2023 09:39:45 +0200
-Message-ID: <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
-Subject: Re: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     gus Gusenleitner Klaus <gus@keba.com>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/5kHvYzuhCrYrnxASXPTlQx4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 8:39=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
->
-> On Thu, Oct 19, 2023 at 07:14:27AM +0100, Al Viro wrote:
-> > On Thu, Oct 19, 2023 at 06:02:50AM +0100, Al Viro wrote:
-> > > On Thu, Oct 19, 2023 at 04:44:04AM +0000, gus Gusenleitner Klaus wrot=
-e:
-> > > > > On Wed, Oct 18, 2023 at 06:18:05AM +0000, gus Gusenleitner Klaus =
-wrote:
-> > > > > > The checksum calculation is wrong in case of an source buffer
-> > > > > > containing zero bytes only. The expected return value is 0, the
-> > > > > > actual return value is 0xfffffff.
-> > > > >
-> > > > > Expected where?  The actual checksum is defined modulo 0xffff, so
-> > > > > 0 and 0xffffffff represent the same final value.
-> > > > >
-> > > > > The only twist is that in some situations we internally use 0 for
-> > > > > "not calculated yet".
-> > > > >
-> > > > > > This problem occurs when a ICMP echo reply is sent that has set
-> > > > > > zero identifier, sequence number and data.
-> > > > >
-> > > > > What problem?  Could you please either point to specific RFC or
-> > > > > show that packets are rejected by some existing system, or...?
-> > > >
-> > > > Here's our situation:
-> > > > Our device gets pinged by a third party manufacturer robot controll=
-er.
-> > > > We have updated the kernel in our device to 5.15 from 4.9, the robo=
-t
-> > > > controller is kept unchanged. At 4.9, our device's ping reply is ac=
-cepted
-> > > > by the robot controller, at 5.15 it's not.
-> > > >
-> > > > Wireshark shows a bad checksum warning:
-> > > >  'Checksum: 0x0000 incorrect, should be 0xffff'
-> > > >
-> > >
-> > > Lovely.  I think I see what's going on, give me a few to think about =
-it...
-> >
-> > The real source of trouble was switching csum_and_copy_{to,from}_user()
-> > to reporting faults as 0.  And yes, it's broken.  Bugger...
->
-> I really hate the idea of bringing back the old horrors and splitting
-> _nocheck and _user variants ;-/  Especially since we don't care (and
-> never had, really) where in the EFAULT case had the damn thing faulted
-> and what csum had it managed to accumulate prior to that point.
->
-> The only callers are csum_and_copy_..._iter() and they discard
-> the entire iovec segment if fault happens; all users of
-> csum_and_copy_from_iter() are actually discarding everything in
-> that case (reverting iterator to the point where it had been
-> prior to the call).
->
-> And they are all thread-synchronous.  Hell, it's tempting to steal
-> a thread flag, clear it before the call of those suckers, set it in
-> exception handlers in those and check in csum_and_copy_..._iter()
-> after the call...  Let me see how ugly something of that sort would
-> be...
+--Sig_/5kHvYzuhCrYrnxASXPTlQx4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I wonder if the csum_and_copy_...() helpers are really needed in modern day=
-s,
-with much bigger cpu caches.
+Hi all,
 
-Maybe we could remove them and use more standard copy + standard
-checksum over kernel buffers.
+In commit
+
+  2b31fa6b0a68 ("bcachefs: Make sure to initialize equiv when creating new =
+snapshots")
+
+Fixes tag
+
+  Fixes: https://github.com/koverstreet/bcachefs/issues/593
+
+has these problem(s):
+
+  - No SHA1 recognised
+
+Fixes tags are expected to reference the commit that this current
+commit fixes.  Maybe you could use a Closes tag for
+the above.  See Documentation/process/5.Posting.rst and
+Documentation/process/submitting-patches.rst.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5kHvYzuhCrYrnxASXPTlQx4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUw3ZEACgkQAVBC80lX
+0GyLCAf9HI2O5C9TuRldxAwN48RBFm0z3YWBWFis30+2FGWzs5UldHzQro5ruR13
+rM1Eowey3Fx7CNTqHt/iVk+1jBTT0FErTxOlrl8mdiqaRh78oBGFtVkGf7TixaxJ
+uFzjJTl79rFDAO4iidz6RVYUQlio75Ibmv/ME7cDB38W4ZVPdRMX52dzhZfp7aK8
+elZc38hGS00GNwHtIlvyCpzTzNO7k3tuhVIV96COiv0Zv7Trz9yfQ2GoIgaablnQ
+jnlWDz5f2iyXkxfmcVioa47hUKqa9cvI0nF0nz2J+Ve/R6j58rn+5FtDHzcYkJOs
+XeGl9kMB/iFuVtM1BeZMiKB/esi82Q==
+=vj5d
+-----END PGP SIGNATURE-----
+
+--Sig_/5kHvYzuhCrYrnxASXPTlQx4--
