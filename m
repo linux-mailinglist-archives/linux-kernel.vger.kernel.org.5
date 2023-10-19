@@ -2,316 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553607CF621
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B9E7CF625
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345292AbjJSLGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S1345224AbjJSLG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345224AbjJSLGE (ORCPT
+        with ESMTP id S230297AbjJSLGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:06:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95F94112
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:06:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D074D2F4;
-        Thu, 19 Oct 2023 04:06:40 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 542DD3F762;
-        Thu, 19 Oct 2023 04:05:57 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1] mm: zswap: Store large folios without splitting
-Date:   Thu, 19 Oct 2023 12:05:43 +0100
-Message-Id: <20231019110543.3284654-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Oct 2023 07:06:54 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E639112;
+        Thu, 19 Oct 2023 04:06:52 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SB4Zh3HjVz6HJLt;
+        Thu, 19 Oct 2023 19:03:24 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 19 Oct
+ 2023 12:06:48 +0100
+Date:   Thu, 19 Oct 2023 12:06:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+CC:     <chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
+        <helgaas@kernel.org>, <yangyicong@huawei.com>, <will@kernel.org>,
+        <baolin.wang@linux.alibaba.com>, <robin.murphy@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
+        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>,
+        <renyu.zj@linux.alibaba.com>
+Subject: Re: [PATCH v8 1/4] docs: perf: Add description for Synopsys
+ DesignWare PCIe PMU driver
+Message-ID: <20231019120647.00007589@Huawei.com>
+In-Reply-To: <af03c8cf-2254-46f6-9b7e-790b255c8a1b@linux.alibaba.com>
+References: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
+        <20231017013235.27831-2-xueshuai@linux.alibaba.com>
+        <20231017101624.00003231@Huawei.com>
+        <af03c8cf-2254-46f6-9b7e-790b255c8a1b@linux.alibaba.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously zswap would refuse to store any folio bigger than order-0,
-and therefore all of those folios would be sent directly to the swap
-file. This is a minor inconvenience since swap can currently only
-support order-0 and PMD-sized THP, but with the pending introduction of
-"small-sized THP", and corresponding changes to swapfile to support any
-order of folio, these large folios will become more prevalent and
-without this zswap change, zswap will become unusable. Independently of
-the "small-sized THP" feature, this change makes it possible to store
-existing PMD-sized THPs in zswap.
+On Wed, 18 Oct 2023 09:19:51 +0800
+Shuai Xue <xueshuai@linux.alibaba.com> wrote:
 
-Modify zswap_store() to allow storing large folios. The function is
-split into 2 parts; zswap_store() does all the per-folio operations
-(i.e. checking there is enough space, etc). Then it calls a new helper,
-zswap_store_page(), for each page in the folio, which are stored as
-their own entries in the zswap pool. (These entries continue to be
-loaded back individually as single pages). If a store fails for any
-single page, then all previously successfully stored folio pages are
-invalidated.
+> On 2023/10/17 17:16, Jonathan Cameron wrote:
+> > On Tue, 17 Oct 2023 09:32:32 +0800
+> > Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+> >   
+> >> Alibaba's T-Head Yitan 710 SoC includes Synopsys' DesignWare Core PCIe
+> >> controller which implements which implements PMU for performance and
+> >> functional debugging to facilitate system maintenance.
+> >>
+> >> Document it to provide guidance on how to use it.
+> >>
+> >> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> >> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>  
+> > 
+> > A few minor things inline and one question that I'd like a comment on
+> > for my understanding at least! (why not multiply the counter by 16 and
+> > make the maths simpler?)
+> > 
+> > With those tidied up,
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >   
+> 
+> Thank you for providing prompt feedback and valuable comments to me.
+> (please also see my replies inline)
+> 
+> Best Regards,
+> Shuai
+> 
+> > 
+> >   
+> >> ---
+> >>  .../admin-guide/perf/dwc_pcie_pmu.rst         | 94 +++++++++++++++++++
+> >>  Documentation/admin-guide/perf/index.rst      |  1 +
+> >>  2 files changed, 95 insertions(+)
+> >>  create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> >>
+> >> diff --git a/Documentation/admin-guide/perf/dwc_pcie_pmu.rst b/Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> >> new file mode 100644
+> >> index 000000000000..eac1b6f36450
+> >> --- /dev/null
+> >> +++ b/Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+> >> @@ -0,0 +1,94 @@
+> >> +======================================================================
+> >> +Synopsys DesignWare Cores (DWC) PCIe Performance Monitoring Unit (PMU)
+> >> +======================================================================
+> >> +
+> >> +DesignWare Cores (DWC) PCIe PMU
+> >> +===============================
+> >> +
+> >> +The PMU is a PCIe configuration space register block provided by each PCIe Root
+> >> +Port in a Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+> >> +injection, and Statistics).
+> >> +
+> >> +As the name indicates, the RAS DES capability supports system level
+> >> +debugging, AER error injection, and collection of statistics. To facilitate
+> >> +collection of statistics, Synopsys DesignWare Cores PCIe controller
+> >> +provides the following two features:
+> >> +
+> >> +- one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+> >> +  time spent in each low-power LTSSM state) and
+> >> +- one 32-bit counter for Event Counting (error and non-error events for
+> >> +  a specified lane)
+> >> +
+> >> +Note: There is no interrupt for counter overflow.
+> >> +
+> >> +Time Based Analysis
+> >> +-------------------
+> >> +
+> >> +Using this feature you can obtain information regarding RX/TX data
+> >> +throughput and time spent in each low-power LTSSM state by the controller.
+> >> +The PMU measures data in two categories:
+> >> +
+> >> +- Group#0: Percentage of time the controller stays in LTSSM states.
+> >> +- Group#1: Amount of data processed (Units of 16 bytes).
+> >> +
+> >> +Lane Event counters
+> >> +-------------------
+> >> +
+> >> +Using this feature you can obtain Error and Non-Error information in
+> >> +specific lane by the controller. The PMU event is select by:
+> >> +
+> >> +- Group i
+> >> +- Event j within the Group i
+> >> +- and Lane k  
+> > The and here is a little confusing. I'd rework as
+> > The PMU event is selected by all of:
+> > - Group i
+> > - Event j within the Group i
+> > - Lane k  
+> 
+> Will rework it in next version.
+> 
+> >   
+> >> +
+> >> +Some of the event only exist for specific configurations.  
+> > 
+> > events  
+> 
+> Sorry for typo, will fix it.
+> 
+> >   
+> >> +
+> >> +DesignWare Cores (DWC) PCIe PMU Driver
+> >> +=======================================
+> >> +
+> >> +This driver adds PMU devices for each PCIe Root Port named based on the BDF of
+> >> +the Root Port. For example,
+> >> +
+> >> +    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+> >> +
+> >> +the PMU device name for this Root Port is dwc_rootport_3018.
+> >> +
+> >> +The DWC PCIe PMU driver registers a perf PMU driver, which provides
+> >> +description of available events and configuration options in sysfs, see
+> >> +/sys/bus/event_source/devices/dwc_rootport_{bdf}.
+> >> +
+> >> +The "format" directory describes format of the config fields of the
+> >> +perf_event_attr structure. The "events" directory provides configuration
+> >> +templates for all documented events.  For example,
+> >> +"Rx_PCIe_TLP_Data_Payload" is an equivalent of "eventid=0x22,type=0x1".
+> >> +
+> >> +The "perf list" command shall list the available events from sysfs, e.g.::
+> >> +
+> >> +    $# perf list | grep dwc_rootport
+> >> +    <...>
+> >> +    dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/        [Kernel PMU event]
+> >> +    <...>
+> >> +    dwc_rootport_3018/rx_memory_read,lane=?/               [Kernel PMU event]
+> >> +
+> >> +Time Based Analysis Event Usage
+> >> +-------------------------------
+> >> +
+> >> +Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+> >> +
+> >> +    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+> >> +
+> >> +The average RX/TX bandwidth can be calculated using the following formula:
+> >> +
+> >> +    PCIe RX Bandwidth = PCIE_RX_DATA * 16B / Measure_Time_Window
+> >> +    PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window  
+> > 
+> > Silly question (sorry I didn't raise it earlier) but can we make the interface
+> > more intuitive by just multiplying the counter value at point of read by 16?  
+> 
+> Really a good suggestion, and it is very convenient for end perf users.
+> But the unit of 16 is only applied to group#1 as described in Time Based Analysis
+> section.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
-I've tested this on arm64 (m2) with zswap enabled, and running
-vm-scalability's `usemem` across multiple cores from within a
-memory-constrained memcg to force high volumes of swap. I've also run mm
-selftests and observe no regressions (although there is nothing [z]swap
-specific there) - does zswap have any specific tests I should run?
+How hard would it be to just apply it to those events?
+Userspace doesn't care what the hardware does underneath - it just wants to get
+moderately intuitive data back. Having the end user deal with this oddity + even
+the need to document it seems to me to be unnecessary burden given how simple it
+is (I assume) to remove the oddity.
 
-This is based on mm-stable, since mm-unstable contains a zswap patch
-known to be buggy [1]. I thought it would be best to get comments on the
-shape, then do the rebase after that patch has been fixed.
-
-For context, small-sized THP is being discussed here [2], and I'm
-working on changes to swapfile to support non-PMD-sized large folios
-here [3].
-
-[1] https://lore.kernel.org/linux-mm/21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com/
-[2] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.roberts@arm.com/
-[3] https://lore.kernel.org/linux-mm/20231017161302.2518826-1-ryan.roberts@arm.com/
-
-Thanks,
-Ryan
-
-
- mm/zswap.c | 155 +++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 98 insertions(+), 57 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 37d2b1cb2ecb..51cbfc4e1ef8 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1188,18 +1188,17 @@ static void zswap_fill_page(void *ptr, unsigned long value)
- 	memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
- }
-
--bool zswap_store(struct folio *folio)
-+static bool zswap_store_page(struct folio *folio, long index,
-+			     struct obj_cgroup *objcg, struct zswap_pool *pool)
- {
- 	swp_entry_t swp = folio->swap;
- 	int type = swp_type(swp);
--	pgoff_t offset = swp_offset(swp);
--	struct page *page = &folio->page;
-+	pgoff_t offset = swp_offset(swp) + index;
-+	struct page *page = folio_page(folio, index);
- 	struct zswap_tree *tree = zswap_trees[type];
- 	struct zswap_entry *entry, *dupentry;
- 	struct scatterlist input, output;
- 	struct crypto_acomp_ctx *acomp_ctx;
--	struct obj_cgroup *objcg = NULL;
--	struct zswap_pool *pool;
- 	struct zpool *zpool;
- 	unsigned int dlen = PAGE_SIZE;
- 	unsigned long handle, value;
-@@ -1208,51 +1207,11 @@ bool zswap_store(struct folio *folio)
- 	gfp_t gfp;
- 	int ret;
-
--	VM_WARN_ON_ONCE(!folio_test_locked(folio));
--	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
--
--	/* Large folios aren't supported */
--	if (folio_test_large(folio))
--		return false;
--
--	if (!zswap_enabled || !tree)
-+	/* entry keeps the references if successfully stored. */
-+	if (!zswap_pool_get(pool))
- 		return false;
--
--	/*
--	 * If this is a duplicate, it must be removed before attempting to store
--	 * it, otherwise, if the store fails the old page won't be removed from
--	 * the tree, and it might be written back overriding the new data.
--	 */
--	spin_lock(&tree->lock);
--	dupentry = zswap_rb_search(&tree->rbroot, offset);
--	if (dupentry) {
--		zswap_duplicate_entry++;
--		zswap_invalidate_entry(tree, dupentry);
--	}
--	spin_unlock(&tree->lock);
--
--	/*
--	 * XXX: zswap reclaim does not work with cgroups yet. Without a
--	 * cgroup-aware entry LRU, we will push out entries system-wide based on
--	 * local cgroup limits.
--	 */
--	objcg = get_obj_cgroup_from_folio(folio);
--	if (objcg && !obj_cgroup_may_zswap(objcg))
--		goto reject;
--
--	/* reclaim space if needed */
--	if (zswap_is_full()) {
--		zswap_pool_limit_hit++;
--		zswap_pool_reached_full = true;
--		goto shrink;
--	}
--
--	if (zswap_pool_reached_full) {
--	       if (!zswap_can_accept())
--			goto shrink;
--		else
--			zswap_pool_reached_full = false;
--	}
-+	if (objcg)
-+		obj_cgroup_get(objcg);
-
- 	/* allocate entry */
- 	entry = zswap_entry_cache_alloc(GFP_KERNEL);
-@@ -1260,6 +1219,8 @@ bool zswap_store(struct folio *folio)
- 		zswap_reject_kmemcache_fail++;
- 		goto reject;
- 	}
-+	entry->objcg = objcg;
-+	entry->pool = pool;
-
- 	if (zswap_same_filled_pages_enabled) {
- 		src = kmap_atomic(page);
-@@ -1277,11 +1238,6 @@ bool zswap_store(struct folio *folio)
- 	if (!zswap_non_same_filled_pages_enabled)
- 		goto freepage;
-
--	/* if entry is successfully added, it keeps the reference */
--	entry->pool = zswap_pool_current_get();
--	if (!entry->pool)
--		goto freepage;
--
- 	/* compress */
- 	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
-
-@@ -1337,7 +1293,6 @@ bool zswap_store(struct folio *folio)
- 	entry->length = dlen;
-
- insert_entry:
--	entry->objcg = objcg;
- 	if (objcg) {
- 		obj_cgroup_charge_zswap(objcg, entry->length);
- 		/* Account before objcg ref is moved to tree */
-@@ -1373,19 +1328,105 @@ bool zswap_store(struct folio *folio)
-
- put_dstmem:
- 	mutex_unlock(acomp_ctx->mutex);
--	zswap_pool_put(entry->pool);
- freepage:
- 	zswap_entry_cache_free(entry);
- reject:
- 	if (objcg)
- 		obj_cgroup_put(objcg);
-+	zswap_pool_put(pool);
- 	return false;
-+}
-
-+bool zswap_store(struct folio *folio)
-+{
-+	long nr_pages = folio_nr_pages(folio);
-+	swp_entry_t swp = folio->swap;
-+	int type = swp_type(swp);
-+	pgoff_t offset = swp_offset(swp);
-+	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_entry *entry;
-+	struct obj_cgroup *objcg = NULL;
-+	struct zswap_pool *pool;
-+	bool ret = false;
-+	long i;
-+
-+	VM_WARN_ON_ONCE(!folio_test_locked(folio));
-+	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
-+
-+	if (!zswap_enabled || !tree)
-+		return false;
-+
-+	/*
-+	 * If this is a duplicate, it must be removed before attempting to store
-+	 * it, otherwise, if the store fails the old page won't be removed from
-+	 * the tree, and it might be written back overriding the new data.
-+	 */
-+	spin_lock(&tree->lock);
-+	for (i = 0; i < nr_pages; i++) {
-+		entry = zswap_rb_search(&tree->rbroot, offset + i);
-+		if (entry) {
-+			zswap_duplicate_entry++;
-+			zswap_invalidate_entry(tree, entry);
-+		}
-+	}
-+	spin_unlock(&tree->lock);
-+
-+	/*
-+	 * XXX: zswap reclaim does not work with cgroups yet. Without a
-+	 * cgroup-aware entry LRU, we will push out entries system-wide based on
-+	 * local cgroup limits.
-+	 */
-+	objcg = get_obj_cgroup_from_folio(folio);
-+	if (objcg && !obj_cgroup_may_zswap(objcg))
-+		goto put_objcg;
-+
-+	/* reclaim space if needed */
-+	if (zswap_is_full()) {
-+		zswap_pool_limit_hit++;
-+		zswap_pool_reached_full = true;
-+		goto shrink;
-+	}
-+
-+	if (zswap_pool_reached_full) {
-+		if (!zswap_can_accept())
-+			goto shrink;
-+		else
-+			zswap_pool_reached_full = false;
-+	}
-+
-+	pool = zswap_pool_current_get();
-+	if (!pool)
-+		goto put_objcg;
-+
-+	/*
-+	 * Store each page of the folio as a separate entry. If we fail to store
-+	 * a page, unwind by removing all the previous pages we stored.
-+	 */
-+	for (i = 0; i < nr_pages; i++) {
-+		if (!zswap_store_page(folio, i, objcg, pool)) {
-+			spin_lock(&tree->lock);
-+			for (i--; i >= 0; i--) {
-+				entry = zswap_rb_search(&tree->rbroot, offset + i);
-+				if (entry)
-+					zswap_invalidate_entry(tree, entry);
-+			}
-+			spin_unlock(&tree->lock);
-+			goto put_pool;
-+		}
-+	}
-+
-+	ret = true;
-+put_pool:
-+	zswap_pool_put(pool);
-+put_objcg:
-+	if (objcg)
-+		obj_cgroup_put(objcg);
-+	return ret;
- shrink:
- 	pool = zswap_pool_last_get();
- 	if (pool && !queue_work(shrink_wq, &pool->shrink_work))
- 		zswap_pool_put(pool);
--	goto reject;
-+	goto put_objcg;
- }
-
- bool zswap_load(struct folio *folio)
-
-base-commit: 158978945f3173b8c1a88f8c5684a629736a57ac
---
-2.25.1
+> 
+> So I prefer to left the unit part to end users.
+> 
 
