@@ -2,104 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90CF7CF226
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF9C7CF229
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbjJSINk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S235260AbjJSIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjJSINj (ORCPT
+        with ESMTP id S232383AbjJSIN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:13:39 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AADC121
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:13:37 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7b3d33663so103093027b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697703216; x=1698308016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i9fhwJmlR888T70x9Uiw048WLxhTWy/cYSAVt4Gvh1A=;
-        b=TA8w8XQhS0CYGJ8/hoZ94FUOBWfWMuiFzgh+tI/t3kc/ryQ8MAqa3BGTkKUSXvzB3a
-         OMSASFciFqA/c/MEbWOGIlbMkfQqODORyu7ZxHG4y86yb0hNHCPEMT4lI0G3H1vk/d0u
-         7iwG8krNXWCp5W2h+qwM0gqJuOz9LbVwIpf+mN6uM8geS+h0xQWIWCsW9YK4uq5C+EiT
-         GXb/1HC8FcZ03pDui9yveZokgp+R1MMqE10mdpr31GAhI8Zp9HA2OgkGooNDK8+i6pMC
-         vQA0asLhfpXjdaWZyWDvQ0thPVUyd+b0kKj1Rg/U+4HfuY8Fx2lFxmY4Ram8iRB4dS+D
-         BuXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697703216; x=1698308016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i9fhwJmlR888T70x9Uiw048WLxhTWy/cYSAVt4Gvh1A=;
-        b=ChVgLorZpbvIfOR/tAtxwBkaqEsDD53veWM4xWmYBQEMDRLWlcpA30xt0SZwSEWfb+
-         C9xvM+640/6ROh8+31yMyh2oPSXBz33dbtalPYy8fQ2XbhqYk6fqCV5xECa6i0WGRNDU
-         d2k32ftvxFKv30O6aoYtvimf8/6ZnqwGwG8r6npFRy1Pd3cpEEgdgY50AkojtP5w8Za+
-         PgcQiZIPCRJsEMiTry9RjouveHQdgcK27c6FbeX+92rMhZyLHoPPl164FQfBIuuP34NY
-         /VpDARgQrlH577bFLbUKGDtYk4HxuSCnLeUJOjIY97AAJ6xPrlua9E+kWcDbL6u9xUQ/
-         jAxw==
-X-Gm-Message-State: AOJu0YwRktCNKojlyk7bWy9rriLaeGegeq4/BR+6yC8b62/WyQwKVn0Q
-        IdsZyX+1XScgPWTb2S91RoKGeze4gqUJ21ViCyJ/PJqhI3/MYhwZ
-X-Google-Smtp-Source: AGHT+IHBd1+CaBIqmM2Ccl54AyWx1wdFGrKQjzy3cvBUKP57YP7Xo7lRZQp/InkGvDJiozj5p0zCtls8KQ/5oXL7mi0=
-X-Received: by 2002:a0d:d303:0:b0:5a7:d9e6:8fd4 with SMTP id
- v3-20020a0dd303000000b005a7d9e68fd4mr1691317ywd.12.1697703216544; Thu, 19 Oct
- 2023 01:13:36 -0700 (PDT)
+        Thu, 19 Oct 2023 04:13:58 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EBE12F;
+        Thu, 19 Oct 2023 01:13:54 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39J8DYM2129962;
+        Thu, 19 Oct 2023 03:13:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697703214;
+        bh=0qE8V70UAtb0s2FCvY0TJ7HyrnlN4XuaTojCP/DiH5k=;
+        h=From:To:CC:Subject:Date;
+        b=VKH0H5pJ6IaUlMQbBm5IwFvd1NuE8jebHXM+jrmUvnZCIUvkuOtWbt8WRHkzyVJ3J
+         SOoYcMBbqN8Xj9nGswAzjgYJ4kcd3b/b9pPYnzj8ZImsPmmuHn2fLf84FxPCkEhnvi
+         52Z+Hakd7vUqBnnVWVYcGP/sZq0xxYUl/X2SOEAg=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39J8DYMY080854
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Oct 2023 03:13:34 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
+ Oct 2023 03:13:34 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 19 Oct 2023 03:13:34 -0500
+Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39J8DUhM103191;
+        Thu, 19 Oct 2023 03:13:31 -0500
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
+        <bhelgaas@google.com>
+CC:     <fancer.lancer@gmail.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
+Date:   Thu, 19 Oct 2023 13:43:30 +0530
+Message-ID: <20231019081330.2975470-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 19 Oct 2023 10:13:25 +0200
-Message-ID: <CACRpkdYZonHWTtArvYLGBWJz6rae-aDHS5J5QHtzAb7qCkxTKQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ferry Toth <ftoth@exalondelft.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 4:18=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+In the process of converting .scan_bus() callbacks to .add_bus(), the
+ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
+The .scan_bus() method belonged to ks_pcie_host_ops which was specific
+to controller version 3.65a, while the .add_bus() method had been added
+to ks_pcie_ops which is shared between the controller versions 3.65a and
+4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
+ks_pcie_v3_65_add_bus() method are applicable to the controller version
+4.90a which is present in AM654x SoCs.
 
+Thus, fix this by creating ks_pcie_am6_ops for the AM654x SoC which uses DW
+PCIe IP-core version 4.90a controller and omitting the .add_bus() method
+which is not applicable to the 4.90a controller. Update ks_pcie_host_init()
+accordingly in order to set the pci_ops to ks_pcie_am6_ops if the platform
+is AM654x SoC and to ks_pcie_ops otherwise, by making use of the "is_am6"
+flag.
 
-> The commit breaks MMC enumeration on the Intel Merrifield
-> plaform.
->
-> Before:
-> [   36.439057] mmc0: SDHCI controller on PCI [0000:00:01.0] using ADMA
-> [   36.450924] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-> [   36.459355] mmc1: SDHCI controller on PCI [0000:00:01.2] using ADMA
-> [   36.706399] mmc0: new DDR MMC card at address 0001
-> [   37.058972] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-> [   37.278977] mmcblk0: mmc0:0001 H4G1d 3.64 GiB
-> [   37.297300]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
->
-> After:
-> [   36.436704] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-> [   36.436720] mmc1: SDHCI controller on PCI [0000:00:01.0] using ADMA
-> [   36.463685] mmc0: SDHCI controller on PCI [0000:00:01.2] using ADMA
-> [   36.720627] mmc1: new DDR MMC card at address 0001
-> [   37.068181] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-> [   37.279998] mmcblk1: mmc1:0001 H4G1d 3.64 GiB
-> [   37.302670]  mmcblk1: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
->
-> This reverts commit c153a4edff6ab01370fcac8e46f9c89cca1060c2.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: 6ab15b5e7057 ("PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus")
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+---
+Hello,
 
-Patch applied for pronto fixes!
+This patch is based on linux-next tagged next-20231018.
 
-Yours,
-Linus Walleij
+The v2 of this patch is at:
+https://lore.kernel.org/r/20231018075038.2740534-1-s-vadapalli@ti.com/
+
+Changes since v2:
+- Implemented Serge's suggestion of adding a new pci_ops structure for
+  AM654x SoC using DWC PCIe IP-core version 4.90a controller.
+- Created struct pci_ops ks_pcie_am6_ops for AM654x SoC without the
+  .add_bus method while retaining other ops from ks_pcie_ops.
+- Updated ks_pcie_host_init() to set pci_ops to ks_pcie_am6_ops if the
+  platform is AM654x and to ks_pcie_ops otherwise by making use of the
+  already existing "is_am6" flag.
+- Combined the section:
+	if (!ks_pcie->is_am6)
+ 		pp->bridge->child_ops = &ks_child_pcie_ops;
+  into the newly added ELSE condition.
+
+The v1 of this patch is at:
+https://lore.kernel.org/r/20231011123451.34827-1-s-vadapalli@ti.com/
+
+While there are a lot of changes since v1 and this patch could have been
+posted as a v1 patch itself, I decided to post it as the v2 of the patch
+mentioned above since it aims to address the issue described by the v1
+patch and is similar in that sense. However, the solution to the issue
+described in the v1 patch appears to be completely different from what
+was implemented in the v1 patch. Thus, the commit message and subject of
+this patch have been modified accordingly.
+
+Changes since v1:
+- Updated patch subject and commit message.
+- Determined that issue is not with the absence of Link as mentioned in
+  v1 patch. Even with Link up and endpoint device connected, if
+  ks_pcie_v3_65_add_bus() is invoked and executed, all reads to the
+  MSI-X offsets return 0xffffffff when pcieport driver attempts to setup
+  AER and PME services. The all Fs return value indicates that the MSI-X
+  configuration is failing even if Endpoint device is connected. This is
+  because the ks_pcie_v3_65_add_bus() function is not applicable to the
+  AM654x SoC which uses DW PCIe IP-core version 4.90a.
+
+Regards,
+Siddharth.
+
+ drivers/pci/controller/dwc/pci-keystone.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index 49aea6ce3e87..66341a0b6c6b 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -487,6 +487,12 @@ static struct pci_ops ks_pcie_ops = {
+ 	.add_bus = ks_pcie_v3_65_add_bus,
+ };
+ 
++static struct pci_ops ks_pcie_am6_ops = {
++	.map_bus = dw_pcie_own_conf_map_bus,
++	.read = pci_generic_config_read,
++	.write = pci_generic_config_write,
++};
++
+ /**
+  * ks_pcie_link_up() - Check if link up
+  * @pci: A pointer to the dw_pcie structure which holds the DesignWare PCIe host
+@@ -804,9 +810,12 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
+ 	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+ 	int ret;
+ 
+-	pp->bridge->ops = &ks_pcie_ops;
+-	if (!ks_pcie->is_am6)
++	if (ks_pcie->is_am6) {
++		pp->bridge->ops = &ks_pcie_am6_ops;
++	} else {
++		pp->bridge->ops = &ks_pcie_ops;
+ 		pp->bridge->child_ops = &ks_child_pcie_ops;
++	}
+ 
+ 	ret = ks_pcie_config_legacy_irq(ks_pcie);
+ 	if (ret)
+-- 
+2.34.1
+
