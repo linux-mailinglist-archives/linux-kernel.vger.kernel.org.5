@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 009BD7CFF55
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B57CFF62
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbjJSQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        id S235455AbjJSQWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbjJSQUl (ORCPT
+        with ESMTP id S231712AbjJSQWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:20:41 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304B712F;
-        Thu, 19 Oct 2023 09:20:38 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-352a3a95271so30464425ab.0;
-        Thu, 19 Oct 2023 09:20:38 -0700 (PDT)
+        Thu, 19 Oct 2023 12:22:04 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3F49B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:22:02 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1e5bc692721so4613061fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:22:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697732437; x=1698337237; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1697732522; x=1698337322; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=B9Bop2WmUVBXPTMnv1oP6kyprFa3JCCsq3aX8cDNu2o=;
-        b=AmgWcJ9ZdCwyqQxwGZpMgziCA6TTN8MYKyRFmP6FlF9DErrtQq9BkDgaFWu5by7UI+
-         m6qf+tS1OdX30Yxz9fueZykhu98RN4F/NmuX4zhbKy8UNlqrv5Tbbv/QLBYt4mDKbw3H
-         DCOViumuJkOScpXIZXPcZOT+EQej12neJLjdIlo8Tl5PdjS/RNU3pOrhwpr9N619AVBY
-         GfwZ0rLrF3mZkfEy4BXD81UoSM8YU35HmxONMmZ1JCUlrLuDKqOG+yr+sAG+GkXvy4Pk
-         rXxKzq4doEXE6IajmnvPBoaNId1Cd1zTExO+vn+EDM/CAZXbmHfyNwE5jJgZOgDAtNf0
-         yTiQ==
+        bh=D8Z8b47IL35J0M8IzMmQ/m6Z3gKcDDxbyFomY62RCb8=;
+        b=XMAjsQzuSGKR8YV/BIezT2T4eTGLjCNLgSu2JslXkiEK8jShRawfb/V21xVMG8jOxG
+         MBFFUl7kUhneuo3Go9k/mqrRo/6nKt9x27tt34kERixidPWOtTZtjZ9sbaLgwaQRT8H5
+         hdoSXjXuV/dPFT8BlOJpL8vEcZJoQoaR9RYH0MQCTFmnJuSJK+bNrBiYBvrRNGKpiVB0
+         DJUzhg3IV0GxlwhQf3iL0AadY4hoN0WZkmeD2oHfS+ZJp7vAmYWXb31zUAtVm1MknaIQ
+         C/Yer6C4gS8zLB4h1dX5ZRS87IqwM1EhBXY+Cd/TQHtetm9jIpDVgcFwIkaqE8uEfgLy
+         SDHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697732437; x=1698337237;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697732522; x=1698337322;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B9Bop2WmUVBXPTMnv1oP6kyprFa3JCCsq3aX8cDNu2o=;
-        b=aSP2WPowSTLlbxDJW3tCAYSclugQLpXbmv3ABpfipW88shwbGaumAHIush8gVzMwEI
-         JRWaBm6SIduKebO4UMGDQHNRw1iyI3FDQxejQ6OVEfyZez8ajLfVhMmawfBUfXDM7+tR
-         FiXg6YgwF5FU5Ftz9B2zbSD+j78vikVazotkcS/vRAY6kBmsnR4akMM54KE/3WHPxGb3
-         dlkVwk46pc6TKSnDKw1RfKo3pwF0ktlXNTY/tjxN0fnnDVjmjW5ekhoUpn26Ryvj/WW+
-         ezF4l8SZ2pFUdHgBBpi+dGzy3sO5sOFywFU01OfLSi96QfKESt1AXTTDH5srImY/WYmY
-         KOiQ==
-X-Gm-Message-State: AOJu0Yw5jJtsmgjyi6YpAEq2gG2c7nCD+aJaD0gWGpFGLBFi8wCbbg97
-        7U5lEezDN3IbPpGzly5ueX90dc5sKbE=
-X-Google-Smtp-Source: AGHT+IF+uY1jl61TSt/2mynTkep7aI6pwUAy/4eE/x2mbe30Gmf0uXFpheHiInxcfWsruQovG+m8sg==
-X-Received: by 2002:a05:6e02:1be2:b0:34f:525d:198 with SMTP id y2-20020a056e021be200b0034f525d0198mr3467718ilv.13.1697732437418;
-        Thu, 19 Oct 2023 09:20:37 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i7-20020a056a00004700b006862b2a6b0dsm5502748pfk.15.2023.10.19.09.20.33
+        bh=D8Z8b47IL35J0M8IzMmQ/m6Z3gKcDDxbyFomY62RCb8=;
+        b=Ugbb5+ocwf1xvsZdxMFaaxTHcpUyaOj1qWHxWyduSEpPDgvQscuV9apkbtwqJElXpl
+         u6+8VlBhR3Xc/F5qpPTyFMx9fEs2pxR8BrJMkFN9Ac+HGhm+min+Yu7lXgE5TQIwPSiz
+         msVmQgGbDh0Sdk96SwsIzuazoiw2bggFmlLxYeapvCC7GprfzS28UUr7LqN02fBFtLsy
+         RnnCpurfkTvorIsFJXZnYdGxGEWRNh/pJ6YYg9kNsQBvT88jb033tCiofJ+HAHGZxea4
+         axQGT0kcjxT0bPQF6Q4ZBMXpMM5eLxr//kWJxDgfXoddCuc8dthmfApnU8KZKztQQToJ
+         h5ZQ==
+X-Gm-Message-State: AOJu0YzkgnyOb58bICS4iqsYbph1FbAdfyi1KzbG+C67yO5IVAS5Yh3S
+        jCf/3Vo4kMaYRsMARJlrfcw=
+X-Google-Smtp-Source: AGHT+IEl8pPGIlMQIftnWiLzIBTyF12kFWseLWTw3rt22qly96DW3/+9l09R2o/4R3ur2kg0rrhXaw==
+X-Received: by 2002:a05:6871:600c:b0:1d6:567c:deb4 with SMTP id qx12-20020a056871600c00b001d6567cdeb4mr3451672oab.42.1697732521863;
+        Thu, 19 Oct 2023 09:22:01 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:1569:5535:218a:c00c? (2603-8081-1405-679b-1569-5535-218a-c00c.res6.spectrum.com. [2603:8081:1405:679b:1569:5535:218a:c00c])
+        by smtp.gmail.com with ESMTPSA id ec44-20020a0568708c2c00b001e9dc5c73e4sm1214937oab.31.2023.10.19.09.22.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 09:20:36 -0700 (PDT)
-Message-ID: <c0f98227-459f-43c6-9c0e-db0a7ea07c9e@gmail.com>
-Date:   Thu, 19 Oct 2023 09:20:31 -0700
+        Thu, 19 Oct 2023 09:22:01 -0700 (PDT)
+Message-ID: <57edd968-91d7-41f9-8a29-e86d8f583efa@gmail.com>
+Date:   Thu, 19 Oct 2023 11:22:00 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v1 1/1] ethtool: fix clearing of WoL flags
+Subject: Re: drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array
+ subscript 0 is outside array bounds of 'struct sg_table[0]'
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <202310192300.lurP44yG-lkp@intel.com>
 Content-Language: en-US
-To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
-        Michal Kubecek <mkubecek@suse.cz>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20231019070904.521718-1-o.rempel@pengutronix.de>
- <20231019090510.bbcmh7stzqqgchdd@lion.mk-sys.cz>
- <20231019095140.l6fffnszraeb6iiw@lion.mk-sys.cz>
- <20231019122114.5b4a13a9@kmaincent-XPS-13-7390>
- <20231019105048.l64jp2nd46fxjewt@lion.mk-sys.cz>
- <20231019152743.09b28ef4@kmaincent-XPS-13-7390>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231019152743.09b28ef4@kmaincent-XPS-13-7390>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <202310192300.lurP44yG-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/23 06:27, Köry Maincent wrote:
-> On Thu, 19 Oct 2023 12:50:48 +0200
-> Michal Kubecek <mkubecek@suse.cz> wrote:
+On 10/19/23 10:33, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   dd72f9c7e512da377074d47d990564959b772643
+> commit: 592627ccbdff0ec6fff00fc761142a76db750dd4 RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
+> date:   9 months ago
+> config: sparc-randconfig-c023-20211015 (https://download.01.org/0day-ci/archive/20231019/202310192300.lurP44yG-lkp@intel.com/config)
+> compiler: sparc64-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310192300.lurP44yG-lkp@intel.com/reproduce)
 > 
->> On Thu, Oct 19, 2023 at 12:21:14PM +0200, Köry Maincent wrote:
->>> On Thu, 19 Oct 2023 11:51:40 +0200 > Michal Kubecek <mkubecek@suse.cz>
->>> wrote:
->>>>
->>>> The issue was indeed introduced by commit 108a36d07c01 ("ethtool: Fix
->>>> mod state of verbose no_mask bitset"). The problem is that a "no mask"
->>>> verbose bitset only contains bit attributes for bits to be set. This
->>>> worked correctly before this commit because we were always updating
->>>> a zero bitmap (since commit 6699170376ab ("ethtool: fix application of
->>>> verbose no_mask bitset"), that is) so that the rest was left zero
->>>> naturally. But now the 1->0 change (old_val is true, bit not present in
->>>> netlink nest) no longer works.
->>>
->>> Doh I had not seen this issue! Thanks you for reporting it.
->>> I will send the revert then and will update the fix for next merge-window.
->>
->> Something like the diff below (against current mainline) might do the
->> trick but it's just an idea, not even build tested.
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310192300.lurP44yG-lkp@intel.com/
 > 
-> Seems a good idea without adding too much complexity to the code.
-> Will try that and send it in next merge window.
+> All warnings (new ones prefixed by >>):
+> 
+>    drivers/infiniband/sw/rxe/rxe_mr.c: In function 'rxe_mr_fill_pages_from_sgt.constprop':
+>>> drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array subscript 0 is outside array bounds of 'struct sg_table[0]' [-Warray-bounds=]
+>      106 |         __sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    cc1: note: source object is likely at address zero
+>>> drivers/infiniband/sw/rxe/rxe_mr.c:106:9: warning: array subscript 0 is outside array bounds of 'struct sg_table[0]' [-Warray-bounds=]
+>    cc1: note: source object is likely at address zero
+> 
+> 
+> vim +106 drivers/infiniband/sw/rxe/rxe_mr.c
+> 
+>     98	
+>     99	static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
+>    100	{
+>    101		XA_STATE(xas, &mr->page_list, 0);
+>    102		struct sg_page_iter sg_iter;
+>    103		struct page *page;
+>    104		bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
+>    105	
+>  > 106		__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
+>    107		if (!__sg_page_iter_next(&sg_iter))
+>    108			return 0;
+>    109	
+>    110		do {
+>    111			xas_lock(&xas);
+>    112			while (true) {
+>    113				page = sg_page_iter_page(&sg_iter);
+>    114	
+>    115				if (persistent && !is_pmem_page(page)) {
+>    116					rxe_dbg_mr(mr, "Page can't be persistent\n");
+>    117					xas_set_err(&xas, -EINVAL);
+>    118					break;
+>    119				}
+>    120	
+>    121				xas_store(&xas, page);
+>    122				if (xas_error(&xas))
+>    123					break;
+>    124				xas_next(&xas);
+>    125				if (!__sg_page_iter_next(&sg_iter))
+>    126					break;
+>    127			}
+>    128			xas_unlock(&xas);
+>    129		} while (xas_nomem(&xas, GFP_KERNEL));
+>    130	
+>    131		return xas_error(&xas);
+>    132	}
+>    133	
+> 
 
-Not sure what you mean by next merge window, we need a fix for right 
-now, or we need to revert 6699170376ab ("ethtool: fix application of 
-verbose no_mask bitset").
--- 
-Florian
+Jason,
 
+Can you make sense out of this? The marked line (was 106, now 101) seems completely innocuous.
+
+Bob
