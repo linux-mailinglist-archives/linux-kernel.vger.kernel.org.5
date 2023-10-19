@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDBA7D014C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504407D0154
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346397AbjJSSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
+        id S1346401AbjJSSXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjJSSW4 (ORCPT
+        with ESMTP id S1346010AbjJSSXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:22:56 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FF311D;
-        Thu, 19 Oct 2023 11:22:54 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so13938764a12.1;
-        Thu, 19 Oct 2023 11:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697739773; x=1698344573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VjcaQ2SsohbH6V1ewmIrwtpHM+xAbZ0UEUlXxqdKqQA=;
-        b=EF8Lv/M2gcM0WmQSITAxy3fWv2cKghGl1/VZ/Vbsi1/zyokBHwcxbRZUNKVNU7UcoI
-         OOYc225gvn5W0dZO1OyNwo1wZwte7dtcMj5eBhVWUrl9seOSRjz/cpRxbNoawTKoWUg5
-         udfa79oZQc99D3O7BElY6/AB4CVXHIDaOSyXQU6vE+QwdjGq6U5sD2it+FkVcuDOqgb+
-         5dAbuWe6nVuiv5yR5f70hY19rk0bThvNkGbTRhugWNG4QJkmO6z/REfvmnPVvRdopvy7
-         SYgiBy5Hko2sO3u+Qp50tO/SgWIqyGRkr/nF9pHZeGICrViyDiauHJKYNhoi2Z7fPx0g
-         hmHg==
+        Thu, 19 Oct 2023 14:23:47 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CED2AB;
+        Thu, 19 Oct 2023 11:23:45 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-581de3e691dso1786739eaf.3;
+        Thu, 19 Oct 2023 11:23:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697739773; x=1698344573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VjcaQ2SsohbH6V1ewmIrwtpHM+xAbZ0UEUlXxqdKqQA=;
-        b=QynUSNwqQnDheiWhpnlRw6/46a3ff6rhg7xoTerqQCegeD3nEBSUglLGRQ1WXHGCFm
-         5yUERNnKSWkLplGvCZOcVua3HquDCFWq8rW8Z853d7doQTxS28ymYBuNo35E16x4EWr+
-         cf3LvsecvGEml8ZJFlzkO4adzAw7aC1MBz2Wegy6b0drW3X3Erq6YQRxT/dvX9tD7crp
-         cyFVfLbyaxLm511ApXldkSqk0qpZeCzii66sutBF1T+Umvkq0cw8jSKTZE0RAwIu/yOs
-         8P1TErJJ6lrzSPYWdq+VkJW+Wg32sl9pBVulrWVfezumyKfaUncCoGU3zD3erCiKgIPI
-         t7Zw==
-X-Gm-Message-State: AOJu0YyqCPNPJlRFWZxr5GbDloy3BkibDrLbemqe8MSLkFs32w3SBYM4
-        QGsWU5/DBbDFC5e6KULoNmnZmuHb52/x3h5BYLM=
-X-Google-Smtp-Source: AGHT+IHqwHhLyjNZC5loIIeF2K2AmHXAH26/6ZSfSJlnR7rkooZocPBQIQn6wo6Xz9BGC42AR48uO4R1Lgk2BoNj1Ik=
-X-Received: by 2002:a50:d494:0:b0:53f:ba1a:800d with SMTP id
- s20-20020a50d494000000b0053fba1a800dmr513561edi.14.1697739772781; Thu, 19 Oct
- 2023 11:22:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231013034808.8948-1-jagathjog1996@gmail.com>
- <20231013034808.8948-3-jagathjog1996@gmail.com> <20231014174626.3c203096@jic23-huawei>
- <CAM+2EuJnrJn5QLm+yqJ_4_3NiZDXS6p9P5AhwZBjFUYm+2PMGQ@mail.gmail.com> <20231018201309.2cf36489@jic23-huawei>
-In-Reply-To: <20231018201309.2cf36489@jic23-huawei>
-From:   Jagath Jog J <jagathjog1996@gmail.com>
-Date:   Thu, 19 Oct 2023 23:52:40 +0530
-Message-ID: <CAM+2EuJLiHfqP3sY_c79ziJCkNvBhcKZ4B4=V6coUhJc5W6U3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: imu: Add driver for BMI323 IMU
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     andriy.shevchenko@linux.intel.com, u.kleine-koenig@pengutronix.de,
-        lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1697739824; x=1698344624;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fFkZbO4vMx0fKP71/OzTPXf/Ja62nWjUdlsbvXHUr7w=;
+        b=O5CI4X4eNiBBFgN32tJtQ+8i+LztCvXUGJ87N2IQnzQmTT2mpI1WUhVZCXJfaPGcI2
+         k/OTvMewjOoz6eHEvKhzIpIJWi2DRLGxpeBy686JZM1tVmABZnCeQ+PSAKFRClV4JYKR
+         5hR5anbkI0ywGpB6Cwy4TkcMy34WatGwOyI9+frxTOiC49j/ZmygPLuCxGCB8ze6ZzIx
+         hHIk/KjG5gndvkMbRhitlWgLqbWHZMt4WQqAEV1CMZbaAkKL0nFwrpxFWEgNjr/cb9bn
+         XtGY/eLWKjbUCfyNIuAPX/is4+2MDsku5AAvtj9iv6e97XPgTvj9H+hDjS/1fOTLqanY
+         Elgg==
+X-Gm-Message-State: AOJu0Ywr0WyaXu+hNsMJzalyNEygXV2DeoMMFxBvX+qzs7SJeH0y0YyX
+        DoRbOaM+jnfGDJwSezCyMQ==
+X-Google-Smtp-Source: AGHT+IGb/FnylUDVtQcmpg/Pk0kEV1gtN5J3K1Nd2RU9hzJq1AKrVYC0cPmLqUzbCsi7QV4MqMtg/w==
+X-Received: by 2002:a4a:b441:0:b0:581:ed9a:4fde with SMTP id h1-20020a4ab441000000b00581ed9a4fdemr3537198ooo.1.1697739824538;
+        Thu, 19 Oct 2023 11:23:44 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id z127-20020a4a4985000000b0057e88d4f8aesm39553ooa.27.2023.10.19.11.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 11:23:43 -0700 (PDT)
+Received: (nullmailer pid 833096 invoked by uid 1000);
+        Thu, 19 Oct 2023 18:23:42 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     kernel test robot <lkp@intel.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH] net: xgene: Fix unused xgene_enet_of_match warning for !CONFIG_OF
+Date:   Thu, 19 Oct 2023 13:23:37 -0500
+Message-ID: <20231019182338.832913-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan, Andy and Krzysztof
+Commit b0377116decd ("net: ethernet: Use device_get_match_data()") dropped
+the unconditional use of xgene_enet_of_match resulting in this warning:
 
-On Thu, Oct 19, 2023 at 12:42=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
-> wrote:
->
-> On Sun, 15 Oct 2023 16:00:34 +0530
-> Jagath Jog J <jagathjog1996@gmail.com> wrote:
->
-> > On Sat, Oct 14, 2023 at 10:16=E2=80=AFPM Jonathan Cameron <jic23@kernel=
-.org> wrote:
-> > >
-> > > On Fri, 13 Oct 2023 09:18:08 +0530
-> > > Jagath Jog J <jagathjog1996@gmail.com> wrote:
-> > >
-> > > > The Bosch BMI323 is a 6-axis low-power IMU that provide measurement=
-s for
-> > > > acceleration, angular rate, and temperature. This sensor includes
-> > > > motion-triggered interrupt features, such as a step counter, tap de=
-tection,
-> > > > and activity/inactivity interrupt capabilities.
-> > > >
-...
-> Given they were so minor I've fixed them up whilst applying.
-> I doubt this will make 6.7, but you never know if things happen to align.
-> If not it can have a bit more build test exposure which will do no harm.
->
-> Applied to the togreg branch of iio.git and pushed out initially as
-> testing for all the normal reasons.
->
+drivers/net/ethernet/apm/xgene/xgene_enet_main.c:2004:34: warning: unused variable 'xgene_enet_of_match' [-Wunused-const-variable]
 
-I greatly appreciate all the reviews and suggestions.
-Thank you for accepting the series.
+The fix is to drop of_match_ptr() which is not necessary because DT is
+always used for this driver (well, it could in theory support ACPI only,
+but CONFIG_OF is always enabled for arm64).
 
-Regards
+Fixes: b0377116decd ("net: ethernet: Use device_get_match_data()")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310170627.2Kvf6ZHY-lkp@intel.com/
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ drivers/net/ethernet/apm/xgene/xgene_enet_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jagath
+diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
+index 56f2b3c229af..44900026d11b 100644
+--- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
++++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
+@@ -2155,7 +2155,7 @@ static void xgene_enet_shutdown(struct platform_device *pdev)
+ static struct platform_driver xgene_enet_driver = {
+ 	.driver = {
+ 		   .name = "xgene-enet",
+-		   .of_match_table = of_match_ptr(xgene_enet_of_match),
++		   .of_match_table = xgene_enet_of_match,
+ 		   .acpi_match_table = ACPI_PTR(xgene_enet_acpi_match),
+ 	},
+ 	.probe = xgene_enet_probe,
+-- 
+2.42.0
+
