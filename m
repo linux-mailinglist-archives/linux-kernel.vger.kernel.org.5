@@ -2,136 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28337D0197
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E29F7D01AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 20:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346010AbjJSScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 14:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        id S1345973AbjJSSes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 14:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233250AbjJSScX (ORCPT
+        with ESMTP id S233250AbjJSSer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:32:23 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0FFAB;
-        Thu, 19 Oct 2023 11:32:21 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d17fd450aso9626326d6.1;
-        Thu, 19 Oct 2023 11:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697740341; x=1698345141; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ft90dWBJApXtAhUm1RnQBdoBvUODZdeb3PjPbGGFMdA=;
-        b=bkYHGvJzR1w2LlYExksZm51GPo79n9Xaqv6nXr1PU57UiDO5SdBHEF+DpNo5tGDo62
-         /a3cV5Pu1zzyBvOPOPN93INOZPn7MOwDAhNasgMV7tcmujqS5FoHTpvO3mwXw30Oy4fN
-         dQm7WuGLXttz0fMhQWOf2YoyfZ742E0JHXCFt4MPNsFKDqxh+ce6Y5InVLB757M/rzrv
-         I3zagniwTpjXYOBd3/Fkfs2S0xKYGpUwNkiE3zSCS3DzbXNyfEwuWhsA+by8EhB8Mz/q
-         FCoPDVf370EHq9q3PwovU0e19yxcCa3HV7dmD9vZmmB7F9KvlC3t96ygbV/gK/GIH/ZG
-         Zn2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697740341; x=1698345141;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ft90dWBJApXtAhUm1RnQBdoBvUODZdeb3PjPbGGFMdA=;
-        b=EvgMH3ZRth/uoma0gEG4BqImbYemuJI8DR4hKe8AeswUiVkRBhMbRKxbkXhHF4recr
-         7Try61/1E7/7gOeSgGSedHlhOd9gVqeUaqiCzaco3GP10udLhqI/y0+QAdDqFmAochE0
-         MRrU9aPAOCXk0Ys17VyROpsLoKvxrgGt1+B/yMrWLR5gjf8yQvkaii8JUVB5URwu6QvK
-         Xack9PYZZXr8H361DCRWj5ADwLuvD0PlH+QPQRQaflk6AAjweRl+0hK0uiBmqaBzVTqO
-         jkH2lpYfVnp8o5/Rwc04d4gh/jY/q71g7vAKx21Ht3i6cd3a3qdfmrtIyAqsB+DDARmw
-         mjSA==
-X-Gm-Message-State: AOJu0YwTnSQ19VaTAEHAmCGpDmkldTFbF2c6sw8zET8c4tyd/gfdUhQE
-        MlkToM2YhtXvwWpKuN4nrFTo6rEOV1KBLQ==
-X-Google-Smtp-Source: AGHT+IFH+dVil1kyt0ldQCREh4X2dQJyQQcMik3vx+6aczWqZln1swi2uCDzNG0jVxSPxltwj1oVOA==
-X-Received: by 2002:a05:6214:b68:b0:66d:5a3a:c5e6 with SMTP id ey8-20020a0562140b6800b0066d5a3ac5e6mr4934754qvb.18.1697740340752;
-        Thu, 19 Oct 2023 11:32:20 -0700 (PDT)
-Received: from localhost (modemcable065.128-200-24.mc.videotron.ca. [24.200.128.65])
-        by smtp.gmail.com with ESMTPSA id dr9-20020a05621408e900b0066d1e20455bsm52069qvb.96.2023.10.19.11.32.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 11:32:20 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 14:32:19 -0400
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Coiby Xu <coiby.xu@gmail.com>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 10/11] staging: qlge: devlink health: use
- retained error fmsg API
-Message-ID: <ZTF2M7VeNtisGBm7@d3>
-References: <20231017105341.415466-1-przemyslaw.kitszel@intel.com>
- <20231017105341.415466-11-przemyslaw.kitszel@intel.com>
- <20231017181543.70a75b82@kernel.org>
- <ZTE884nkvAxKy2G3@d3>
- <20231019074237.7ef255d7@kernel.org>
+        Thu, 19 Oct 2023 14:34:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7117CA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 11:34:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BE12C433C7;
+        Thu, 19 Oct 2023 18:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697740485;
+        bh=TKx6dkVqJNWINz/u+c4Dwx5bP37eMI5QshzqdkWaob0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NNLrX2w8Af8RLacMF4aHM8lfEw6I6mMCGNgrF5xpUFD9s5W1SKIhxknAbl+KmbMoS
+         kn8sGiSwq+FRXfOuPZWFN/mz51WX/PBQwN5KT2w2gPb4Qm3nOfhfSn+gXdpPkBpeoJ
+         YGIuS8X0oH+/022HGDuWhu9W03XaWK4GBhbZFypo=
+Date:   Thu, 19 Oct 2023 20:34:41 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?B?U2FuanXhbiBHYXJj7WEs?= Jorge 
+        <Jorge.SanjuanGarcia@duagon.com>
+Cc:     "morbidrsa@gmail.com" <morbidrsa@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jth@kernel.org" <jth@kernel.org>,
+        =?iso-8859-1?Q?Rodr=EDguez_Barbarin=2C_Jos=E9?= Javier 
+        <josejavier.rodriguez@duagon.com>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>
+Subject: Re: [RESEND PATCH 1/1] mcb: fix error handling for different
+ scenarios when parsing
+Message-ID: <2023101912-unloaded-escalate-1060@gregkh>
+References: <20231019141434.57971-1-jorge.sanjuangarcia@duagon.com>
+ <20231019141434.57971-2-jorge.sanjuangarcia@duagon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231019074237.7ef255d7@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231019141434.57971-2-jorge.sanjuangarcia@duagon.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-19 07:42 -0700, Jakub Kicinski wrote:
-> On Thu, 19 Oct 2023 10:28:03 -0400 Benjamin Poirier wrote:
-> > > Humpf. Unrelated to the set, when did qlge grow devlink support?!
-> > > 
-> > > Coiby, do you still use this HW?
-> > > 
-> > > It looks like the driver was moved to staging on account of being
-> > > old and unused, and expecting that we'll delete it. Clearly that's
-> > > not the case if people are adding devlink support, so should we
-> > > move it back?  
-> > 
-> > AFAIK this was done by Coiby as an exercise in kernel programming.
-> > Improving the debugging dump facilities was one of the tasks in the TODO
-> > file.
-> > 
-> > I moved the driver to staging because it had many problems and it had
-> > been abandoned by the vendor. There might be some qlge users left but is
-> > that reason enough to move the driver back to drivers/net/
-> > if there is no one who is interested in doing more than checkpatch
-> > fixes on the driver?
+On Thu, Oct 19, 2023 at 02:15:34PM +0000, Sanjuán García, Jorge wrote:
+> chameleon_parse_gdd() may fail for different reasons and end up
+> in the err tag. Make sure we at least always free the mcb_device
+> allocated with mcb_alloc_dev().
 > 
-> Staging is usually an area for code entering the kernel, not leaving.
-> We should either suffer with it under drivers/net/ or delete it,
-> as you say, nobody is working on significant improvements so having 
-> the driver in staging is serving no purpose.
+> If mcb_device_register() fails, make sure to give up the reference
+> in the same place the device was added.
 > 
-> How about we delete it completely, and if someone complains bring 
-> it back under drivers/net ?
+> Fixes: 728ac3389296 ("mcb: mcb-parse: fix error handing in chameleon_parse_gdd()")
+> Reviewed-by: Jose Javier Rodriguez Barbarin <JoseJavier.Rodriguez@duagon.com>
+> Signed-off-by: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
+> ---
+>  drivers/mcb/mcb-core.c  | 1 +
+>  drivers/mcb/mcb-parse.c | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
+> index 2f23b9c3b751..f797d078978f 100644
+> --- a/drivers/mcb/mcb-core.c
+> +++ b/drivers/mcb/mcb-core.c
+> @@ -247,6 +247,7 @@ int mcb_device_register(struct mcb_bus *bus, struct mcb_device *dev)
+>  	return 0;
+>  
+>  out:
+> +	put_device(&dev->dev);
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/mcb/mcb-parse.c b/drivers/mcb/mcb-parse.c
+> index 656b6b71c768..1ae37e693de0 100644
+> --- a/drivers/mcb/mcb-parse.c
+> +++ b/drivers/mcb/mcb-parse.c
+> @@ -106,7 +106,7 @@ static int chameleon_parse_gdd(struct mcb_bus *bus,
+>  	return 0;
+>  
+>  err:
+> -	put_device(&mdev->dev);
+> +	mcb_free_dev(mdev);
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.34.1
 
-That sounds like a reasonable way forward, thank you. I'll send a patch
-to do the removal.
+
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
