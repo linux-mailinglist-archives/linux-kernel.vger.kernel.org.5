@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6C57CFF09
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6C67CFF03
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346181AbjJSQGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        id S1346471AbjJSQFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345210AbjJSQGK (ORCPT
+        with ESMTP id S1345104AbjJSQFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:06:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E15B3;
-        Thu, 19 Oct 2023 09:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697731570; x=1729267570;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=SlREd5rAEUIr1hUoGq+4u2bMdbm4gp8hOc98GrHIKzc=;
-  b=Wp/gCMcvxeR10KjXSZY4XOGCPz9mab5GtZ/iH6uc4gIx9bTwAAqybh3o
-   CTcObgWhQtIfLifNBOp1nvsYyZk95FqKW2RyQ9eVppN5jBvi8d9WCiB5Y
-   Gxe9fdoiFMbXhMIyIQwqUcIcu8hm7FRBY5trEAf1pTkRxylAjEVhKRlD1
-   Mg8583Hj/mw0RbLIZ7MGf1azOMiGe6MVaKS6Xh2Y5/JrLhw37crssFVic
-   Rf/R4dhb0gN1SAmMYYC8SUQ+b5hnv7MRdtZvyVbL3g2I9A/rAi6219DQB
-   iCqat+Nw7noxezcMqjEudXyHiQQRVgzSL+Vki4a50pXkKqIblA612AWzv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="4898559"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="4898559"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:05:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930664073"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="930664073"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 19 Oct 2023 09:05:22 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
-Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sohil.mehta@intel.com, zhiquan1.li@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
-        yangjie@microsoft.com
-Subject: Re: [PATCH v5 16/18] x86/sgx: Limit process EPC usage with misc
- cgroup controller
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-17-haitao.huang@linux.intel.com>
- <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
-Date:   Thu, 19 Oct 2023 11:05:18 -0500
+        Thu, 19 Oct 2023 12:05:20 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687F312A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:05:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1697731516;
+        bh=HmwG14J3AlJoFMkkIkRSsNIqRZMe3libr4mFaqc0lWQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sOQBiwTuhHyiox3zgOd1KHiJH4E0m1+/QHJ135qcyd3qkrjfs25NHK7KSwkEsNHtY
+         OBYe1p6yydyvA98wddrcu0R8YLVH04MRPcIcdx19zbQ20sl77vg8vNUzUN69M/4I7Y
+         tl1YKxIRvBiHH4pVjUAmuDcf2ZsucjVMIJjGyIPICljcpQs6nWemi9F+RTHvzD3tq2
+         InVT2Q9wOAqugVbn1iwThq0WKU/zdUt5TOTHjXSJ++MUrbhuXf1ThOuc1SzTZB1EKJ
+         OS+fdfrdzZqlGvXLKYohEC92SJFi+UDAmQM8Tn6ER1mBbHhVcKNq5HDAyeJ8u2SCYE
+         eI1sCihlLbQDw==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SBCH00lhcz1YPd;
+        Thu, 19 Oct 2023 12:05:16 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+Subject: [RFC PATCH v2 0/2] sched/fair migration reduction features
+Date:   Thu, 19 Oct 2023 12:05:21 -0400
+Message-Id: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2c2ka4kwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 13:54:54 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
-rote:
+Hi,
 
-> On Fri, Sep 22, 2023 at 08:06:55PM -0700, Haitao Huang  =
+This series introduces two new scheduler features: UTIL_FITS_CAPACITY
+and SELECT_BIAS_PREV. When used together, they achieve a 41% speedup of
+a hackbench workload which leaves some idle CPU time on a 192-core AMD
+EPYC.
 
-> <haitao.huang@linux.intel.com> wrote:
->> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
->> +{
->> +	struct sgx_epc_cgroup *epc_cg;
->> +
->> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
->
-> It should check for !epc_cg since the misc controller implementation
-> in misc_cg_alloc() would roll back even on non-allocated resources.
+The main metrics which are significantly improved are:
 
-Good catch. Will fix.
+- cpu-migrations are reduced by 80%,
+- CPU utilization is increased by 17%.
 
->
->> +	cancel_work_sync(&epc_cg->reclaim_work);
->> +	kfree(epc_cg);
->> +}
->> +
->> +static void sgx_epc_cgroup_max_write(struct misc_cg *cg)
->> +{
->> +	struct sgx_epc_reclaim_control rc;
->> +	struct sgx_epc_cgroup *epc_cg;
->> +
->> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
->> +
->> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
->> +	/* Let the reclaimer to do the work so user is not blocked */
->> +	queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
->
-> This is weird. The writer will never learn about the result of the
-> operation.
->
-Right. With the new plan, this callback will be removed.
+Feedback is welcome. I am especially interested to learn whether this
+series has positive or detrimental effects on performance of other
+workloads.
 
-Thanks
-Haitao
+The main changes since v1 are to take into account feedback from Chen Yu
+and keep a 20% margin of unused utilization in the capacity fit, and use
+scale_rt_capacity() which is more precise.
+
+Thanks,
+
+Mathieu
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: Chen Yu <yu.c.chen@intel.com>
+Cc: Tim Chen <tim.c.chen@intel.com>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
+Cc: x86@kernel.org
+
+Mathieu Desnoyers (2):
+  sched/fair: Introduce UTIL_FITS_CAPACITY feature (v2)
+  sched/fair: Introduce SELECT_BIAS_PREV to reduce migrations
+
+ kernel/sched/fair.c     | 68 ++++++++++++++++++++++++++++++++++++-----
+ kernel/sched/features.h | 12 ++++++++
+ kernel/sched/sched.h    |  5 +++
+ 3 files changed, 77 insertions(+), 8 deletions(-)
+
+-- 
+2.39.2
+
