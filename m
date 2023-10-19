@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B947CF321
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44647CF325
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344894AbjJSIqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S1344941AbjJSIrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbjJSIqq (ORCPT
+        with ESMTP id S232859AbjJSIrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:46:46 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA6126
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:46:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32db188e254so3160385f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:46:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697705202; x=1698310002; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FirHlCGgMz/FvpzIKQkoBCDO6SGDDg5U9N5KzhQ/LwY=;
-        b=M+bRJ0N64mXHeowvT6EHhoGdfEzMFYyLN/bla2lLRUx+GkKhxDDcejVsvqFHHoBT9v
-         PWRFXzSQQvog2wP9JmZziHGIlImoAQxfz4JzZPiR3qWCoE5HGoxmU7qIyeEodz7CA33u
-         TDfLa2e53MSsoYbcf7smyVho7qVQn2jidrErCGBYwRvfOaSjrp+PWf+BRdgWGrBa88Ev
-         j5I9im9yJiLAGJW1u4hvGyoAdIm2DxD2gO4pEhMz4dtGl504zpao8MUmp5EwH6E3c3lW
-         mL0bKidCGXzs+PXy6FXC/9q/FjbgmuSrankUynWGWSHLvgarjbIn9ods9/P/w3J8eMt8
-         DzUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697705202; x=1698310002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FirHlCGgMz/FvpzIKQkoBCDO6SGDDg5U9N5KzhQ/LwY=;
-        b=aMqueRKUp484Qba8SGt5hXcoSLfoOMoDu8qdRin4w4cvhma6ZJAgdbe5qXx9x8sFkz
-         dKaz6cLEEIXDrV46Tk7PRvastDVSiT5mRdQHM23rbD+EO8O3soeUgO3CAbLbTZGXuQJm
-         iaCAvrcOXPlXhrlQ7AXA2MWHANDs1sBsHZOFX1zCqTiRravruwO+HMZg0g6tC8zhZsFw
-         TDZ6bN73FBijc4p+6AYolYNihO+YJlWe+sPpZP25Ijd7z3WGYnTSe8qEqVJXdYNnpS0z
-         /O6xjMR1IkSqvyf/QX8XhbQELvEaKwGppKk3ljlpceX7r+1Mj5z4vvpO5MGtPVix4ZYl
-         pQoQ==
-X-Gm-Message-State: AOJu0Yy5cBA60LGKlOMjB8BrquRG3pM/q9ohaCcRf4cxArUZJLyXQDnK
-        QxUlmq9sy+TI4rFv8S56TT1ucQ==
-X-Google-Smtp-Source: AGHT+IHIrPhAgCqHiVC0M3rtirooHgesr0AO+GlYhKykcNrHjz1YNAMNd8HgQcR133zWbZZBLn3Q5w==
-X-Received: by 2002:adf:cd83:0:b0:329:6be4:e199 with SMTP id q3-20020adfcd83000000b003296be4e199mr1046765wrj.13.1697705202536;
-        Thu, 19 Oct 2023 01:46:42 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id l16-20020a5d6750000000b0032dc1fc84f2sm3960900wrw.46.2023.10.19.01.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 01:46:42 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 10:46:40 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] RISC-V: Enable SBI based earlycon support
-Message-ID: <20231019-08c33e28cf77beab61519f49@orel>
-References: <20231012051509.738750-1-apatel@ventanamicro.com>
- <20231012051509.738750-9-apatel@ventanamicro.com>
+        Thu, 19 Oct 2023 04:47:18 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01777AB
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:47:15 -0700 (PDT)
+Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SB1VP0tpmz15Nh1;
+        Thu, 19 Oct 2023 16:44:29 +0800 (CST)
+Received: from [192.168.98.209] (10.67.165.2) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 19 Oct 2023 16:47:12 +0800
+Message-ID: <aa593e44-2075-2261-6593-bd120d68be92@huawei.com>
+Date:   Thu, 19 Oct 2023 16:47:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012051509.738750-9-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+CC:     <shaojijie@huawei.com>, <chenhao418@huawei.com>,
+        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: use
+ cpuhp_state_remove_instance_nocalls() for hns3 pmu uninit process
+To:     Yicong Yang <yangyicong@huawei.com>, <will@kernel.org>,
+        <jonathan.cameron@huawei.com>, <mark.rutland@arm.com>,
+        <yangyicong@hisilicon.com>
+References: <20231016105139.1436425-1-shaojijie@huawei.com>
+ <46461fdf-575d-fa32-28b8-420bf0e54210@huawei.com>
+From:   Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <46461fdf-575d-fa32-28b8-420bf0e54210@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:45:09AM +0530, Anup Patel wrote:
-> Let us enable SBI based earlycon support in defconfigs for both RV32
-> and RV64 so that "earlycon=sbi" can be used again.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/configs/defconfig      | 1 +
->  arch/riscv/configs/rv32_defconfig | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index ab86ec3b9eab..f82700da0056 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -132,6 +132,7 @@ CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_8250_DW=y
->  CONFIG_SERIAL_OF_PLATFORM=y
->  CONFIG_SERIAL_SH_SCI=y
-> +CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
->  CONFIG_VIRTIO_CONSOLE=y
->  CONFIG_HW_RANDOM=y
->  CONFIG_HW_RANDOM_VIRTIO=y
-> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-> index 89b601e253a6..5721af39afd1 100644
-> --- a/arch/riscv/configs/rv32_defconfig
-> +++ b/arch/riscv/configs/rv32_defconfig
-> @@ -66,6 +66,7 @@ CONFIG_INPUT_MOUSEDEV=y
->  CONFIG_SERIAL_8250=y
->  CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_OF_PLATFORM=y
-> +CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
->  CONFIG_VIRTIO_CONSOLE=y
->  CONFIG_HW_RANDOM=y
->  CONFIG_HW_RANDOM_VIRTIO=y
-> -- 
-> 2.34.1
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+on 2023/10/19 9:52, Yicong Yang wrote:
+> On 2023/10/16 18:51, Jijie Shao wrote:
+>> [27169.898241]  kthread+0x168/0x16c
+>> [27169.904178]  ret_from_fork+0x10/0x18
+>> [27169.911943] Code: 944beda1 aa1403e0 944bed9f f8460f5c (f9400394)
+>>
+>> And tested some other uncore pmu driver such as hisi pcie pmu and hisi uncore i3c pmu,
+> It's l3c pmu, not i3c pmu. Please just use the driver name like hisi_pcie_pmu or
+> hisi_uncore_l3c_pmu in the commit. So is below.
+>
+> Others looks good to me. With this fixed,
+>
+> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+>
+Thanks, I'll replace them in v3. Jijie
+
