@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F807CF697
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ACB7CF69E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 13:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345346AbjJSLWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 07:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
+        id S1345359AbjJSLWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 07:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345316AbjJSLWV (ORCPT
+        with ESMTP id S1345357AbjJSLWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:22:21 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F070811B
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:21:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c77449a6daso64073095ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:21:57 -0700 (PDT)
+        Thu, 19 Oct 2023 07:22:41 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3158411B
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:22:39 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507b9408c61so4534828e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 04:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697714517; x=1698319317; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1697714557; x=1698319357; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+pZUkJVQsJVYjHJbhfYRUL1BGoXYIgN45kZzTiGXTQQ=;
-        b=ALrZW5e+yyjg56xjvaR0sJ3nlXARIc9t4B44KPzrtq2Gn954xVVw8D4QbvSX2mqqXw
-         Gf1v9zk0LHlPpN/yI9NyIGGt13ArQO6it9Er11JZKB7peHF2XQOq+13mfhum3z7vt0OV
-         uW8K+7GPkSTmQVeiPE28ZQut6fdfHrWq5zjkxRfgx+SxZkLBjWeUHIIyZiuLbTIstZGA
-         MIAepzUh766Re4ClvvvHFTPsobvW7jkpCEmi6y59L4Z9ZPTFbg3raizKprP0OmOs8oL3
-         y/XFJj6iOfuR+K29ErJuguE6iQDB9wcN7HwQcfuyicFIJ8ibrl5s6ebizv4x7R2yCnxO
-         q0OQ==
+        bh=JF3I+wTLcoIXHkUlqgyCgajBza1SKWve0FuhZ7R74mQ=;
+        b=MjJyjHIm/7nbx/A2nNmykGOUKOAM+oZp1ydNLgCHWpflNhu+wm/MgHbvzqkQ6l+pid
+         Ml7bMm44FXr1S/1d9qUt0vZySzGXh8FmAJ/AQIWWkG0EEbbsXtRaMJcvxT+5d/MKAvwB
+         jTliervsvC3JsO+LKSyNgVasagxdoEuyd4EIfjRnnO3BBF90B41TMoUdUtGd0em3YZZD
+         M6CYdzCoiG7DogP7TB8VAcGn92GpY+t3kKyt4QLQ1tEnA7Jna7xYZASI3fEeyD7DDVJf
+         UI0b3qrGWHKt1rKZKVWsplxO7NJzReVlCrQHNSC4Ppk9ov3WiG3SsKUkPYuKwjU9M6AS
+         iwYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697714517; x=1698319317;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697714557; x=1698319357;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pZUkJVQsJVYjHJbhfYRUL1BGoXYIgN45kZzTiGXTQQ=;
-        b=lJqs7nGUqZkVewkqwNJRJvet5TcRfCsnJ6yuDQlOeiBgh6UgIWDFCOEahAdFtJOHVN
-         /hNcfHGygPEQSTTnivRD01Xo6IRg4ki+3etg7cx2zWGD9xNRpq1pdu4Z6Y75YTHWCe31
-         q+feS6nmOyebZHOLwliQquZtX4B6wx0K+VkvpQjeH85NO9a7jJyeNGts/n8L9y/q70JJ
-         jh2NqnuOPDzgs8qgeU3uAGPANLqorNZfOMC+p3BAPGwlSUwUUqQfCnd2K6sDDgZSOq7U
-         uFJABTZKUdeUP0Vq6VFSZNmdUbEJPgTmzYPCw+csBL8QmdB/SCOhxIbsgZkK9kEBAgvu
-         NKYw==
-X-Gm-Message-State: AOJu0Yyf9zPk+JwQtoTlRpjKygEhtltCWZzZRP2ZMZSdtPNU3MLVE9FB
-        CBjuir9Qhfws2zMDecne0MSFrA==
-X-Google-Smtp-Source: AGHT+IEQcz6xBFwuBkQxgnbo3UVJhoruTv5UOA95CIsVn1e3IC4x0Scxa9t7KIKwkdhiTCtOuiCwPw==
-X-Received: by 2002:a17:902:ec88:b0:1c7:733b:27c7 with SMTP id x8-20020a170902ec8800b001c7733b27c7mr2029569plg.56.1697714516999;
-        Thu, 19 Oct 2023 04:21:56 -0700 (PDT)
-Received: from [10.84.154.4] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id jb11-20020a170903258b00b001c9c6a78a56sm1708399plb.97.2023.10.19.04.21.52
+        bh=JF3I+wTLcoIXHkUlqgyCgajBza1SKWve0FuhZ7R74mQ=;
+        b=seUG5XnviVR7Gb9Oz6XAclJwtne4KrNohZGAqOS45sxWkFtbzM9d75Kei3y/uFQMhW
+         eEMLqbltfVkm8T2zmu6OyiU8OsrfIVuV5izOr4/DT45IPs01BBRTBrptSnFJkeZJKZ3s
+         O+ACdixNp5xp9I2yI2UToi4if0R/HCCsqomf5PDsaOb/zg6U+yXyBVLY5+w47dZ7bCXl
+         H2JN8OvdrOr82c1KPZ8E2ZVoDXVbcWneOQQnnQFgBuiTAF+mJ4+2uBhj3ulOZ7plcj6n
+         ktrkm6XbXvC3ElrSFUvP4dXauxiq9i03+z93I1XH+TQtpNYlTLXEiaSqKAXg3VKU5m7V
+         yREA==
+X-Gm-Message-State: AOJu0Yy46pFaXUKm6Un9YZwBIuPEaJh9bxL55raLIEWrhxJf6F/+quVc
+        Xn6hqGPFUkFQImnZDcxt9SID2Q==
+X-Google-Smtp-Source: AGHT+IGHu1SthsKQxFVZ5zrdpJuE4LvCEAyyAzSdVgld40OewvREW+BFTjg7BmlIMUrvGbJa0COjEA==
+X-Received: by 2002:a05:6512:2038:b0:507:9693:12aa with SMTP id s24-20020a056512203800b00507969312aamr1286536lfs.15.1697714557365;
+        Thu, 19 Oct 2023 04:22:37 -0700 (PDT)
+Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id e7-20020a195007000000b0050574829e48sm1075529lfb.298.2023.10.19.04.22.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 04:21:56 -0700 (PDT)
-Message-ID: <5283655b-b8c6-43da-939e-5a0d088caad6@bytedance.com>
-Date:   Thu, 19 Oct 2023 19:21:48 +0800
+        Thu, 19 Oct 2023 04:22:36 -0700 (PDT)
+Message-ID: <76b652c8-041c-49d6-9804-2781fe2ccfe3@linaro.org>
+Date:   Thu, 19 Oct 2023 13:22:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH net-next v2 3/3] sock: Fix improper heuristic on
- raising memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231016132812.63703-1-wuyun.abel@bytedance.com>
- <20231016132812.63703-3-wuyun.abel@bytedance.com>
- <CALvZod6FRH2cp2D2uECeAesGY575+mE_iyFwaXVJMbfk1jvcgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/11] clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT
+ flag from PLL clocks
 Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <CALvZod6FRH2cp2D2uECeAesGY575+mE_iyFwaXVJMbfk1jvcgQ@mail.gmail.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
+ <20230913-gpll_cleanup-v2-1-c8ceb1a37680@quicinc.com>
+ <76f3bc23-8677-42bd-a3a5-43b17cbe552e@linaro.org>
+ <c3dfeecf5cde513cf675b2f1a382f7a4.sboyd@kernel.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <c3dfeecf5cde513cf675b2f1a382f7a4.sboyd@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 11:52 PM, Shakeel Butt Wrote:
-> On Mon, Oct 16, 2023 at 6:28 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
->>
->> Before sockets became aware of net-memcg's memory pressure since
->> commit e1aab161e013 ("socket: initial cgroup code."), the memory
->> usage would be granted to raise if below average even when under
->> protocol's pressure. This provides fairness among the sockets of
->> same protocol.
->>
->> That commit changes this because the heuristic will also be
->> effective when only memcg is under pressure which makes no sense.
->> Fix this by reverting to the behavior before that commit.
->>
->> After this fix, __sk_mem_raise_allocated() no longer considers
->> memcg's pressure. As memcgs are isolated from each other w.r.t.
->> memory accounting, consuming one's budget won't affect others.
->> So except the places where buffer sizes are needed to be tuned,
->> allow workloads to use the memory they are provisioned.
->>
->> Fixes: e1aab161e013 ("socket: initial cgroup code.")
->> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> 
-> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-Thanks!
+
+On 10/19/23 02:16, Stephen Boyd wrote:
+> Quoting Konrad Dybcio (2023-09-15 05:19:56)
+>> On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
+>>> GPLL, NSS crypto PLL clock rates are fixed and shouldn't be scaled based
+>>> on the request from dependent clocks. Doing so will result in the
+>>> unexpected behaviour. So drop the CLK_SET_RATE_PARENT flag from the PLL
+>>> clocks.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Fixes: b8e7e519625f ("clk: qcom: ipq8074: add remaining PLL’s")
+>>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>>> ---
+>> Stephen, do you think there should be some sort of error
+>> or at least warning thrown when SET_RATE_PARENT is used with
+>> RO ops?
+>>
+> 
+> Sure? How would that be implemented?
+drivers/clk/clk.c : static void clk_change_rate()
+
+if (!skip_set_rate && core->ops->set_rate)
+	core->ops->set_rate(core->hw, core->new_rate, best_parent_rate);
+
+->
+
+if (!skip_set_rate) {
+	if (core->ops->set_rate)
+		core->ops->set_rate(core->hw, core->new_rate,
+				    best_parent_rate);
+	else
+		pr_err("bad idea");
+}
+
+Konrad
