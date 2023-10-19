@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426357CF7DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056397CF7DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 14:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345508AbjJSMBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 08:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S1345515AbjJSMBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 08:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235309AbjJSMBL (ORCPT
+        with ESMTP id S235359AbjJSMBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:01:11 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F274312D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:00:46 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5c91bec75so55633935ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:00:46 -0700 (PDT)
+        Thu, 19 Oct 2023 08:01:14 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146A2134
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:00:51 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9de3f66e5so51849505ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 05:00:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697716846; x=1698321646; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j1m9BRSdkNRQ5Yt+ICOw8D17wxDsW5CRYVDGGwLbORQ=;
-        b=bbQ5RrbxNDWIPvEhnImaGP7g1m1qLa4QiJU8cEt5/7mEvKzmiHZbKbZkh1haueDNRj
-         XDjxfHZZbNZkoZhT1RBlP63eexVbqlzYMXkcI86yiNtovwx1uNgDZ34eL9fJWTv00YK1
-         vJwuBiXoYA2a4AUz9LrvAWHfZRe81cu9ZLdud7Cfl0P+QhT6eDAcsUT6rdXAuU9IRd6i
-         o95s5mLYVidS0A67ITr1VM9tHxI601kzx5uRDwHKoyh+zLpbIl2WDaNjtTmJ0XKQ2GgN
-         Pj+0XPZkuprOq7Lwx6IDLTkOjnji48C2qHkyXWkPgbsx13SZOMy9rhVSM9QoWlvvO6D7
-         U9oQ==
+        d=bytedance.com; s=google; t=1697716850; x=1698321650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b7MqzCn5z9sc3xLiS0TjD71DTwTzVkWYSBF1gVBH140=;
+        b=OMaf916yBVqlHFe0BwPb3MC3EBkvSDewja2C/2ZXQNEF0wmlvSv/KeErnJavykFCDP
+         2sxcAYzKW1ate2jGChJBTYzDbYtLqIjXorzW7U5c85Yx+426aPMniBETArpCRgJvSCH/
+         oXKJAMEbcnvdWjChgddrlUFCxeNk3EguD3y+VrLg1TiJl0ERsAiHcIUHNhHHKZUvbvRQ
+         jUs0sDCaIQe3k7qaSB3hYlppFFB9d+pUFrrkXv0jPvHMggNY94olZmjOWUvXpEcrc6ND
+         NGhhYNVhU1I9azvqi/T2xOS0qX0B87iA+KGW8syXkUHeBJsfk9QoXRX8d04LRIzn/TNV
+         1msg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697716846; x=1698321646;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j1m9BRSdkNRQ5Yt+ICOw8D17wxDsW5CRYVDGGwLbORQ=;
-        b=gryLgI89q2+XmMXQPf6YLQnMQOmEmnoMYpeqFMfWbTbQ5rJsaG52yOo9DOsmQPU6kZ
-         loCD/1rxsh+YwRlVQ+5aQJ2256VBXzBCNha+FwGNAgE4hPrLo/UQ7+EmxQQyZYShkSJl
-         OwP2QlJNRmw14auYUOkczbEoHOEpRpcy8fE9oQjjCF8hAx51QT5CqwGDge4KQrEaemlQ
-         tDmChN0J2e2P+gowNoBUFdnxDMYw58JbTolxyKBuCPQomiXMasCADNvy35FYliy6Q3bG
-         YzE2arqz13eLgXpca9TxRusTeQjjPHi7bHepc0VBG6UQ/jnM2crIdXfPf0u4Rq6viM68
-         1D1Q==
-X-Gm-Message-State: AOJu0Yw+Dguw2QDi+7JPQzg1u4f4+tJ1wy5HXw5L0G+UF6jp1bUtMETB
-        2flusH1XTsMdl/fTt6mOK2zyWg==
-X-Google-Smtp-Source: AGHT+IFCZDxTxqQcz7j1OJ6WLgnP+lN3GXgA5ClkO+DuonBeR+up4aYygLHSL+ZPHEE08hN4lR/9Dw==
-X-Received: by 2002:a17:902:fa45:b0:1ca:3c63:d5cc with SMTP id lb5-20020a170902fa4500b001ca3c63d5ccmr1833983plb.49.1697716846435;
-        Thu, 19 Oct 2023 05:00:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697716850; x=1698321650;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b7MqzCn5z9sc3xLiS0TjD71DTwTzVkWYSBF1gVBH140=;
+        b=i912we5N82fl+PYOHJ6QYLWDyo7ZlS8Ypp+yrYtaNMEkE6Tv3qXYTHSYl5w0TsERDx
+         sOA5sJRn03izYTo6AtjwZSgmTcWcV4KdqSgFmXS5jY+/PsvXCX1017O2ze6lZ+MzWUJD
+         D7IKVTwHhcYw+VyTYgDUvssblgluySnBMS31qIj9sAwRDcrQ+1dzVPJCSZRCNtrA10tG
+         0aYn8+ma9jBxN8Oh27MrSuN05/0/SW9DfnyZjigPdq9M1a9DWdXlBeraqmJh0cvFibYe
+         QvAVuvDywwgSwowNS1TCUu9IOpTgpxeNqr315B+npxnR90slUMDCJNePhlacbpi1LJEe
+         Yp0g==
+X-Gm-Message-State: AOJu0YxaGJeb6QoYyjagbIELhlCRqdzXjfLmCzmvsMtyQmpMOjc78s1M
+        jQ4E00XRyj5TZO0MH4KxpB0yUQ==
+X-Google-Smtp-Source: AGHT+IGN09o1Q9j44/zIeUHNFtWEncrYubO/c9yLNO4WlC9wEokKEtFxxYCUPqROzYola5FoTREwrA==
+X-Received: by 2002:a17:902:dac5:b0:1ca:4ad7:682f with SMTP id q5-20020a170902dac500b001ca4ad7682fmr2419059plx.26.1697716850434;
+        Thu, 19 Oct 2023 05:00:50 -0700 (PDT)
 Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id jg9-20020a17090326c900b001c727d3ea6bsm1785646plb.74.2023.10.19.05.00.42
+        by smtp.gmail.com with ESMTPSA id jg9-20020a17090326c900b001c727d3ea6bsm1785646plb.74.2023.10.19.05.00.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 05:00:46 -0700 (PDT)
+        Thu, 19 Oct 2023 05:00:50 -0700 (PDT)
 From:   Abel Wu <wuyun.abel@bytedance.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -57,10 +58,12 @@ To:     "David S . Miller" <davem@davemloft.net>,
         Shakeel Butt <shakeelb@google.com>
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Abel Wu <wuyun.abel@bytedance.com>
-Subject: [PATCH net v3 1/3] sock: Code cleanup on __sk_mem_raise_allocated()
-Date:   Thu, 19 Oct 2023 20:00:24 +0800
-Message-Id: <20231019120026.42215-1-wuyun.abel@bytedance.com>
+Subject: [PATCH net v3 2/3] sock: Doc behaviors for pressure heurisitics
+Date:   Thu, 19 Oct 2023 20:00:25 +0800
+Message-Id: <20231019120026.42215-2-wuyun.abel@bytedance.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20231019120026.42215-1-wuyun.abel@bytedance.com>
+References: <20231019120026.42215-1-wuyun.abel@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,67 +76,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Code cleanup for both better simplicity and readability.
-No functional change intended.
+There are now two accounting infrastructures for skmem, while the
+heuristics in __sk_mem_raise_allocated() were actually introduced
+before memcg was born.
 
+Add some comments to clarify whether they can be applied to both
+infrastructures or not.
+
+Suggested-by: Shakeel Butt <shakeelb@google.com>
 Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
 Acked-by: Shakeel Butt <shakeelb@google.com>
 ---
- net/core/sock.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ net/core/sock.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/net/core/sock.c b/net/core/sock.c
-index 16584e2dd648..4412c47466a7 100644
+index 4412c47466a7..45841a5689b6 100644
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -3041,17 +3041,19 @@ EXPORT_SYMBOL(sk_wait_data);
-  */
- int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- {
--	bool memcg_charge = mem_cgroup_sockets_enabled && sk->sk_memcg;
-+	struct mem_cgroup *memcg = mem_cgroup_sockets_enabled ? sk->sk_memcg : NULL;
- 	struct proto *prot = sk->sk_prot;
--	bool charged = true;
-+	bool charged = false;
- 	long allocated;
+@@ -3069,7 +3069,14 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ 	if (allocated > sk_prot_mem_limits(sk, 2))
+ 		goto suppress_allocation;
  
- 	sk_memory_allocated_add(sk, amt);
- 	allocated = sk_memory_allocated(sk);
--	if (memcg_charge &&
--	    !(charged = mem_cgroup_charge_skmem(sk->sk_memcg, amt,
--						gfp_memcg_charge())))
--		goto suppress_allocation;
-+
-+	if (memcg) {
-+		if (!mem_cgroup_charge_skmem(memcg, amt, gfp_memcg_charge()))
-+			goto suppress_allocation;
-+		charged = true;
-+	}
- 
- 	/* Under limit. */
- 	if (allocated <= sk_prot_mem_limits(sk, 0)) {
-@@ -3106,8 +3108,8 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- 		 */
- 		if (sk->sk_wmem_queued + size >= sk->sk_sndbuf) {
- 			/* Force charge with __GFP_NOFAIL */
--			if (memcg_charge && !charged) {
--				mem_cgroup_charge_skmem(sk->sk_memcg, amt,
-+			if (memcg && !charged) {
-+				mem_cgroup_charge_skmem(memcg, amt,
- 					gfp_memcg_charge() | __GFP_NOFAIL);
- 			}
+-	/* guarantee minimum buffer size under pressure */
++	/* Guarantee minimum buffer size under pressure (either global
++	 * or memcg) to make sure features described in RFC 7323 (TCP
++	 * Extensions for High Performance) work properly.
++	 *
++	 * This rule does NOT stand when exceeds global or memcg's hard
++	 * limit, or else a DoS attack can be taken place by spawning
++	 * lots of sockets whose usage are under minimum buffer size.
++	 */
+ 	if (kind == SK_MEM_RECV) {
+ 		if (atomic_read(&sk->sk_rmem_alloc) < sk_get_rmem0(sk, prot))
  			return 1;
-@@ -3119,8 +3121,8 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+@@ -3090,6 +3097,11 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
  
- 	sk_memory_allocated_sub(sk, amt);
- 
--	if (memcg_charge && charged)
--		mem_cgroup_uncharge_skmem(sk->sk_memcg, amt);
-+	if (charged)
-+		mem_cgroup_uncharge_skmem(memcg, amt);
- 
- 	return 0;
- }
+ 		if (!sk_under_memory_pressure(sk))
+ 			return 1;
++
++		/* Try to be fair among all the sockets under global
++		 * pressure by allowing the ones that below average
++		 * usage to raise.
++		 */
+ 		alloc = sk_sockets_allocated_read_positive(sk);
+ 		if (sk_prot_mem_limits(sk, 2) > alloc *
+ 		    sk_mem_pages(sk->sk_wmem_queued +
 -- 
 2.37.3
 
