@@ -2,119 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C13617CF3B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79AE7CF3DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbjJSJNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S1345112AbjJSJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345016AbjJSJNG (ORCPT
+        with ESMTP id S235216AbjJSJRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:13:06 -0400
-Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0976218C;
-        Thu, 19 Oct 2023 02:12:57 -0700 (PDT)
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-        (authenticated user m.brock@vanmierlo.com)
-        by connect.vanmierlo.com (Kerio Connect 9.4.2) with ESMTPA;
-        Thu, 19 Oct 2023 11:12:53 +0200
+        Thu, 19 Oct 2023 05:17:41 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0872132
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:17:37 -0700 (PDT)
+Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SB27z4sCBzNnqW;
+        Thu, 19 Oct 2023 17:13:35 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 19 Oct 2023 17:17:35 +0800
+From:   Jijie Shao <shaojijie@huawei.com>
+To:     <will@kernel.org>, <jonathan.cameron@huawei.com>,
+        <mark.rutland@arm.com>, <yangyicong@hisilicon.com>
+CC:     <shaojijie@huawei.com>, <chenhao418@huawei.com>,
+        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH V3 drivers/perf: hisi:] drivers/perf: hisi: use cpuhp_state_remove_instance_nocalls() for hisi_hns3_pmu uninit process
+Date:   Thu, 19 Oct 2023 17:13:52 +0800
+Message-ID: <20231019091352.998964-1-shaojijie@huawei.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Date:   Thu, 19 Oct 2023 11:12:53 +0200
-From:   m.brock@vanmierlo.com
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 3/4] trigger: ledtrig-tty: move variable definition to
- the top
-In-Reply-To: <34e8fcd94b4a959fe2336485e4722c3b@dev.tdt.de>
-References: <20231016071332.597654-1-fe@dev.tdt.de>
- <20231016071332.597654-4-fe@dev.tdt.de>
- <93dcb9f6f218593084f834ba6b450999@vanmierlo.com>
- <34e8fcd94b4a959fe2336485e4722c3b@dev.tdt.de>
-Message-ID: <9cecf21f8691d474441f8ff30a9dcb23@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Eckert wrote on 2023-10-16 11:12:
-> On 2023-10-16 10:46, m.brock@vanmierlo.com wrote:
->> Florian Eckert wrote on 2023-10-16 09:13:
->>> Has complained about the following construct:
->> 
->> Who is "Has" or who/what has complained?
-> 
-> The test robot who does not agree with my change in the v1 patchset.
+From: Hao Chen <chenhao418@huawei.com>
 
-You don't have to explain to me, just fix the comment.
+For pmu uninit process, we unregister pmu and then call cpuhp_state_remove_instance()
+to call callback function to migrate pmu context. the logic is unreasonable and
+may result in NULL pointer call trace.
 
->>> drivers/leds/trigger/ledtrig-tty.c:362:3: error: a label can only be
->>> part of a statement and a declaration is not a statement
->>> 
->>> Hence move the variable definition to the beginning of the function.
->>> 
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Closes:
->>> https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
->>> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
->>> ---
->>> @@ -124,8 +125,6 @@ static void ledtrig_tty_work(struct work_struct 
->>> *work)
->>> 
->>>  	if (icount.rx != trigger_data->rx ||
->>>  	    icount.tx != trigger_data->tx) {
->>> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
->>> -
->> 
->> Is this kernel test robot broken?
-> 
-> The test robot does nothing wrong.
-> 
->> I see no label definition here.
->> And this variable declaration is at the start of a new block which 
->> does
->> not even require C99 support.
-> 
-> I made change in patch set v1, that moves the definition of the 
-> variable
-> `interval` into the switch case statement.
-> https://lore.kernel.org/linux-leds/20230926093607.59536-3-fe@dev.tdt.de/
-> The robot complained about this.
-> 
-> So I decided to move the definition of the variable 'interval' to 
-> function
-> head to make the test robot happy in the commit. So this commit 
-> prepares
-> the code for my change.
-> 
-> If it is more common, I can merge this patch [1] into the next patch 
-> [2]
-> of this set.
+Found NULL pointer call trace for kernel-5.12 at the first time, log shows as below:
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+[27169.471153] Mem abort info:
+[27169.478859]   ESR = 0x96000006
+[27169.485117]   EC = 0x25: DABT (current EL), IL = 32 bits
+[27169.501386]   SET = 0, FnV = 0
+[27169.508038]   EA = 0, S1PTW = 0
+[27169.559839] Data abort info:
+[27169.567296]   ISV = 0, ISS = 0x00000006
+[27169.585332]   CM = 0, WnR = 0
+[27169.592627] user pgtable: 4k pages, 48-bit VAs, pgdp=00000820ac0c2000
+[27169.615618] [0000000000000000] pgd=00000820af2bf003, p4d=00000820af2bf003, pud=00000820af2bd003, pmd=0000000000000000
+[27169.641348] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[27169.649879] Modules linked in: hisi_hns3_pmu(-) hns3 hclge hclgevf hnae3 hns3_cae(O) vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O) [last unloaded: hisi_hns3_pmu]
+[27169.675150] CPU: 0 PID: 15 Comm: cpuhp/0 Tainted: G        W  O      5.12.0-rc4+ #1
+[27169.686538] Hardware name:  , BIOS KpxxxFPGA 1P B600 V143 04/22/2021
+[27169.694884] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+[27169.704199] pc : perf_pmu_migrate_context+0x98/0x38c
+[27169.713848] lr : perf_pmu_migrate_context+0x94/0x38c
+[27169.723069] sp : ffff80001020bc80
+[27169.727938] x29: ffff80001020bc80 x28: 0000000000000000
+[27169.737236] x27: 0000000000000001 x26: fffffbffeff951d8
+[27169.745245] x25: ffffb7ae1ce36fd0 x24: fffffbffeff95178
+[27169.753116] x23: ffff0821f6f82668 x22: 0000000000000001
+[27169.760949] x21: ffff80001020bd08 x20: fffffbffeffb5188
+[27169.768467] x19: fffffbffeffb5178 x18: 0000000000000020
+[27169.776699] x17: 0000000000000000 x16: 0000000000000000
+[27169.785042] x15: 0000000000000004 x14: ffff08208093d290
+[27169.793254] x13: 0000000000000000 x12: 0000497f0149bafe
+[27169.801390] x11: 01262d2f8bbfdccc x10: 3dc70ddec1e5f4f9
+[27169.808896] x9 : ffffb7ae1a7eb108 x8 : 0000000000000002
+[27169.817000] x7 : 0000000000000000 x6 : 000000000000000e
+[27169.824726] x5 : 0000000000000001 x4 : 0000000000000000
+[27169.832924] x3 : 0000000000000000 x2 : ffff082080a30e80
+[27169.841135] x1 : 0000000000000000 x0 : fffffbffeffb5188
+[27169.849059] Call trace:
+[27169.853177]  perf_pmu_migrate_context+0x98/0x38c
+[27169.862256]  hisi_hns3_pmu_offline_cpu+0x104/0x12c [hisi_hns3_pmu]
+[27169.873943]  cpuhp_invoke_callback+0x118/0x634
+[27169.882775]  cpuhp_thread_fun+0xe8/0x190
+[27169.890345]  smpboot_thread_fn+0x25c/0x290
+[27169.898241]  kthread+0x168/0x16c
+[27169.904178]  ret_from_fork+0x10/0x18
+[27169.911943] Code: 944beda1 aa1403e0 944bed9f f8460f5c (f9400394)
 
-Yes, please. You're fixing a problem that does not exist yet (and never
-will), because the patch that introduces it is not yet applied. So fix
-the proposed patch instead of patching the patch.
+And tested some other uncore pmu driver such as hisi_pcie_pmu and hisi_uncore_l3c_pmu,
+hisi_pcie_pmu driver can reproduce it also, and change hisi_uncore_l3c_pmu hotplug
+function from cpuhp_state_remove_instance_nocalls() to cpuhp_state_remove_instance(),
+it has the same call trace.
 
-> [1] 
-> https://lore.kernel.org/linux-leds/20231016071332.597654-4-fe@dev.tdt.de/
-> [2] 
-> https://lore.kernel.org/linux-leds/20231016071332.597654-5-fe@dev.tdt.de/
-> 
-> 
-> Florian
+This patch change cpuhp_state_remove_instance() to cpuhp_state_remove_instance_nocalls()
+after pmu unregistered to fix the problem.
 
-Maarten
+This problem is fixed by commit bd2756811766 ("perf: Rewrite core context handling")
+for kernel-6.2.
+
+Hisi_hns3_pmu driver is supported for kernel-5.19, so, use this patch as bugfix for
+stable 6.0 and 6.1 tag, and use this patch as cleanup for newest kernel version.
+
+Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
+Signed-off-by: Hao Chen <chenhao418@huawei.com>
+Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ChangeLog:
+V2->V3:
+	1. Format the name of pmu driver suggested by Yicong
+	V2: https://lore.kernel.org/all/20231016105139.1436425-1-shaojijie@huawei.com/
+V1->V2:
+	1. Add more details for NULL pointer call trace suggested by Yicong
+	V1: https://lore.kernel.org/all/20231009105038.126040-1-shaojijie@huawei.com/
+---
+ drivers/perf/hisilicon/hns3_pmu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+index e0457d84af6b..16869bf5bf4c 100644
+--- a/drivers/perf/hisilicon/hns3_pmu.c
++++ b/drivers/perf/hisilicon/hns3_pmu.c
+@@ -1556,8 +1556,8 @@ static int hns3_pmu_init_pmu(struct pci_dev *pdev, struct hns3_pmu *hns3_pmu)
+ 	ret = perf_pmu_register(&hns3_pmu->pmu, hns3_pmu->pmu.name, -1);
+ 	if (ret) {
+ 		pci_err(pdev, "failed to register perf PMU, ret = %d.\n", ret);
+-		cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+-					    &hns3_pmu->node);
++		cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
++						    &hns3_pmu->node);
+ 	}
+ 
+ 	return ret;
+@@ -1568,8 +1568,8 @@ static void hns3_pmu_uninit_pmu(struct pci_dev *pdev)
+ 	struct hns3_pmu *hns3_pmu = pci_get_drvdata(pdev);
+ 
+ 	perf_pmu_unregister(&hns3_pmu->pmu);
+-	cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+-				    &hns3_pmu->node);
++	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
++					    &hns3_pmu->node);
+ }
+ 
+ static int hns3_pmu_init_dev(struct pci_dev *pdev)
+-- 
+2.30.0
 
