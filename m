@@ -2,198 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ACB7CFF42
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C198B7CFF47
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbjJSQRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S1345167AbjJSQSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjJSQRa (ORCPT
+        with ESMTP id S232123AbjJSQSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:17:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9879B
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:17:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3897C433C8;
-        Thu, 19 Oct 2023 16:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697732248;
-        bh=wwtqeVi8T90A9eG78e3y+UAer9+rhT+4XKm5eCrsfu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qU8+NRhCGj0wLiyKMJejDFBHY6PyTE12U0baIO6jDJBN9PY79b+2NYYh8cjCY4QBW
-         2OyhriUXBhcz6Boz/gmmhlb5nFahk6hNpabaYoz3/ON2tnCyQZQVocpOFoRRirrRoS
-         eohAeVEnuu/jmJkBtGbMROoWtQS8BHkV8HJD9iAgyjSMOtlThdZVFgVWbpa6yzwYtn
-         +M2S2aGcbUc9d/bTlY1xxJw4F0CV0CENipv0WVZbJRpbWn6eWCYdBtpEN0lw7228b0
-         g+cP/w3Pv5qi8qi0jdmzFLggdETfmRwVIvoYI/QZr+J5MFlF4QJ7KHWXNWAJuu97B1
-         EFkkqdzzXGDZw==
-Date:   Thu, 19 Oct 2023 17:17:22 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, dminus@andestech.com,
-        conor.dooley@microchip.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, ajones@ventanamicro.com,
-        heiko@sntech.de, guoren@kernel.org, jszhang@kernel.org,
-        samuel@sholland.org, uwu@icenowy.me, ycliang@andestech.com,
-        evan@rivosinc.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tim609@andestech.com,
-        dylan@andestech.com, locus84@andestech.com
-Subject: Re: [PATCH v2 01/10] riscv: errata: Rename defines for Andes
-Message-ID: <20231019-shrimp-configure-0eb42294d459@spud>
-References: <20231019135329.3654793-1-peterlin@andestech.com>
+        Thu, 19 Oct 2023 12:18:23 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E421126;
+        Thu, 19 Oct 2023 09:18:22 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41cc776ccb4so6170311cf.1;
+        Thu, 19 Oct 2023 09:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697732301; x=1698337101; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uapV51mLN8WMmYGSnBZfefCdK6ozT3UVGFGF24qIeuY=;
+        b=Ok/ZlHJIr8NEYHVFvYHSOv7Lj6afaG8jpmG/NJVlBivlUtviGn2jX6HMptrogT+3s+
+         ACG+194lnIICGjRvbdDsXqilN1PEu6JmH8q59H30GrT7rxekReU1huejLWO+G4mxHRPM
+         ZqG+XjqB11x0pq0dTmq9wzB1MIBUiR62dtrSh3ioLG6hzeKTDB5N6ESQL7oJE5tZG0b6
+         1A8NDDO3RtrfE3DVWNrLuax0ONKyg8TFOJb2T+JoSyfdxWMZx/9u98VJFTjRYadA1VI2
+         qlkmm1RbC5tiklcgA8DW1Jd6/PHXZwfuD65p7s5zlEWkwkHFXvL5SKOS0yRg44NKgd25
+         z/EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697732301; x=1698337101;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uapV51mLN8WMmYGSnBZfefCdK6ozT3UVGFGF24qIeuY=;
+        b=KtLyPZRqsOtZRFMGndeYNFGLw1KLntOWPapRZ0YPIdxbBiQ6IihHOEcVURSo5Sy1Ng
+         pSl4xI70mCpqVmshat3cxXTk1kHg7AwdQfdaW853qwNZitMK1NH7adtC7ui1fxSeJYUv
+         mEc59M2y+Gf6x50hUmDfi5TVBxj/6n7hi00FMX4UqN7Q+AzaneHsOAH6XALTwbhm4McA
+         2IyjwS3U5dg3HN+3c4XPOZvqOXZ/0AAb52LCO242E4ItvPGop/wkFwPYxc/JFpBgOYYk
+         S/89JA9Yo+AOhmYg086uTj0OkHFlOgpXcUo+sgp/f+CVJ3YFissBwt0ofMMgVxHzzd9Z
+         NAlg==
+X-Gm-Message-State: AOJu0YwS0GaIOqMeNNFmeKw73n9tabx6DB3YsKwAFuSyLSA3uzCJmnPb
+        iuHe+nFsIpUM/jnJL6eLAMo=
+X-Google-Smtp-Source: AGHT+IGjvhJfLKuDs5DfvJnYwes/BIJO6xmXm1HYK7qwm3adZqHNq/BSUWQbhp/V1oYQa1lhQTLq8w==
+X-Received: by 2002:ac8:5b86:0:b0:41c:b617:8529 with SMTP id a6-20020ac85b86000000b0041cb6178529mr2752525qta.21.1697732300989;
+        Thu, 19 Oct 2023 09:18:20 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id fp7-20020a05622a508700b00405502aaf76sm836120qtb.57.2023.10.19.09.18.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 09:18:20 -0700 (PDT)
+Message-ID: <8ba336f9-b2e3-43e1-a3b7-06022ea9ac00@gmail.com>
+Date:   Thu, 19 Oct 2023 09:18:14 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j/9DDxIzSK4GeIB/"
-Content-Disposition: inline
-In-Reply-To: <20231019135329.3654793-1-peterlin@andestech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: ksz9477: Add Wake on
+ Magic Packet support
+Content-Language: en-US
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
+ <20231019122850.1199821-6-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231019122850.1199821-6-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/19/23 05:28, Oleksij Rempel wrote:
+> Introduce Wake on Magic Packet (WoL) functionality to the ksz9477
+> driver.
+> 
+> Major changes include:
+> 
+> 1. Extending the `ksz9477_handle_wake_reason` function to identify Magic
+>     Packet wake events alongside existing wake reasons.
+> 
+> 2. Updating the `ksz9477_get_wol` and `ksz9477_set_wol` functions to
+>     handle WAKE_MAGIC alongside the existing WAKE_PHY option, and to
+>     program the switch's MAC address register accordingly when Magic
+>     Packet wake-up is enabled. This change will prevent WAKE_MAGIC
+>     activation if the related port has a different MAC address compared
+>     to a MAC address already used by HSR or an already active WAKE_MAGIC
+>     on another port.
+> 
+> 3. Adding a restriction in `ksz_port_set_mac_address` to prevent MAC
+>     address changes on ports with active Wake on Magic Packet, as the
+>     switch's MAC address register is utilized for this feature.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
---j/9DDxIzSK4GeIB/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-On Thu, Oct 19, 2023 at 09:53:29PM +0800, Yu Chien Peter Lin wrote:
-> Using "ANDES" rather than "ANDESTECH" to unify the naming
-> convention with OpenSBI and U-Boot, and reduce the number
-> of characters per line.
-
-NGL, I think this is just churn and the 4-characters-per-line
-saving is a weak argument & u-boot/opensbi alignment is not really
-relevant. A better argument for it is probably unification with the
-directory/file names, Kconfig options and with the
-ANDES_SBI_EXT_OPCP_SW_WORKAROUND definitions.
-
-/shrug,
-Conor.
-
->=20
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
-> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> ---
-> Changes v1 -> v2:
->   - No change
-> ---
->  arch/riscv/errata/andes/errata.c       | 10 +++++-----
->  arch/riscv/include/asm/errata_list.h   |  4 ++--
->  arch/riscv/include/asm/vendorid_list.h |  2 +-
->  arch/riscv/kernel/alternative.c        |  2 +-
->  4 files changed, 9 insertions(+), 9 deletions(-)
->=20
-> diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/e=
-rrata.c
-> index 197db68cc8da..d2e1abcac967 100644
-> --- a/arch/riscv/errata/andes/errata.c
-> +++ b/arch/riscv/errata/andes/errata.c
-> @@ -18,9 +18,9 @@
->  #include <asm/sbi.h>
->  #include <asm/vendorid_list.h>
-> =20
-> -#define ANDESTECH_AX45MP_MARCHID	0x8000000000008a45UL
-> -#define ANDESTECH_AX45MP_MIMPID		0x500UL
-> -#define ANDESTECH_SBI_EXT_ANDES		0x0900031E
-> +#define ANDES_AX45MP_MARCHID		0x8000000000008a45UL
-> +#define ANDES_AX45MP_MIMPID		0x500UL
-> +#define ANDES_SBI_EXT_ANDES		0x0900031E
-> =20
->  #define ANDES_SBI_EXT_IOCP_SW_WORKAROUND	1
-> =20
-> @@ -32,7 +32,7 @@ static long ax45mp_iocp_sw_workaround(void)
->  	 * ANDES_SBI_EXT_IOCP_SW_WORKAROUND SBI EXT checks if the IOCP is missi=
-ng and
->  	 * cache is controllable only then CMO will be applied to the platform.
->  	 */
-> -	ret =3D sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAR=
-OUND,
-> +	ret =3D sbi_ecall(ANDES_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
->  			0, 0, 0, 0, 0, 0);
-> =20
->  	return ret.error ? 0 : ret.value;
-> @@ -43,7 +43,7 @@ static bool errata_probe_iocp(unsigned int stage, unsig=
-ned long arch_id, unsigne
->  	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
->  		return false;
-> =20
-> -	if (arch_id !=3D ANDESTECH_AX45MP_MARCHID || impid !=3D ANDESTECH_AX45M=
-P_MIMPID)
-> +	if (arch_id !=3D ANDES_AX45MP_MARCHID || impid !=3D ANDES_AX45MP_MIMPID)
->  		return false;
-> =20
->  	if (!ax45mp_iocp_sw_workaround())
-> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/as=
-m/errata_list.h
-> index b55b434f0059..c190393aa9db 100644
-> --- a/arch/riscv/include/asm/errata_list.h
-> +++ b/arch/riscv/include/asm/errata_list.h
-> @@ -12,8 +12,8 @@
->  #include <asm/vendorid_list.h>
-> =20
->  #ifdef CONFIG_ERRATA_ANDES
-> -#define ERRATA_ANDESTECH_NO_IOCP	0
-> -#define ERRATA_ANDESTECH_NUMBER		1
-> +#define ERRATA_ANDES_NO_IOCP 0
-> +#define ERRATA_ANDES_NUMBER 1
->  #endif
-> =20
->  #ifdef CONFIG_ERRATA_SIFIVE
-> diff --git a/arch/riscv/include/asm/vendorid_list.h b/arch/riscv/include/=
-asm/vendorid_list.h
-> index e55407ace0c3..2f2bb0c84f9a 100644
-> --- a/arch/riscv/include/asm/vendorid_list.h
-> +++ b/arch/riscv/include/asm/vendorid_list.h
-> @@ -5,7 +5,7 @@
->  #ifndef ASM_VENDOR_LIST_H
->  #define ASM_VENDOR_LIST_H
-> =20
-> -#define ANDESTECH_VENDOR_ID	0x31e
-> +#define ANDES_VENDOR_ID		0x31e
->  #define SIFIVE_VENDOR_ID	0x489
->  #define THEAD_VENDOR_ID		0x5b7
-> =20
-> diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternat=
-ive.c
-> index 319a1da0358b..0128b161bfda 100644
-> --- a/arch/riscv/kernel/alternative.c
-> +++ b/arch/riscv/kernel/alternative.c
-> @@ -43,7 +43,7 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufact=
-urer_info_t *cpu_mfr_info
-> =20
->  	switch (cpu_mfr_info->vendor_id) {
->  #ifdef CONFIG_ERRATA_ANDES
-> -	case ANDESTECH_VENDOR_ID:
-> +	case ANDES_VENDOR_ID:
->  		cpu_mfr_info->patch_func =3D andes_errata_patch_func;
->  		break;
->  #endif
-> --=20
-> 2.34.1
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
---j/9DDxIzSK4GeIB/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTFWkgAKCRB4tDGHoIJi
-0vKcAQD7/5ed28QgqwN8OzDUvTDRZVQYxWaeLacNvyAa8AY6KQEA8Hf8qaNx+/BH
-SIyVv6jWcKM5owcNlut0TDNs15Sc3g0=
-=BfbK
------END PGP SIGNATURE-----
-
---j/9DDxIzSK4GeIB/--
