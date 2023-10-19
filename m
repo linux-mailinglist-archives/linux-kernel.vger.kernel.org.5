@@ -2,135 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D329B7CF478
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE7B7CF47A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345139AbjJSJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        id S1345142AbjJSJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345043AbjJSJxJ (ORCPT
+        with ESMTP id S229473AbjJSJyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:53:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248A2119
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697709143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s07yKdQmQaOSMtiWdOLGzN3oWEKTIekP+ixiSoBemg8=;
-        b=PRpc+AQeGMLWr4Dlh+3PG5MTlRV6FC4GTfCQYW+W2tyeS6gMzf9JJoU9izh2lhTMmFHvw5
-        oRnbvy91Gy9hTgzcR3N563vOSIHUKGXD2W5D8wfVppUeUw4qooDyT9wFfQCDmQpvLvekWI
-        xmvCSQDl8vIy546SON14pgzfFugPfoU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-483-5OlR3hiQNl2RL4jgbM3Siw-1; Thu, 19 Oct 2023 05:52:21 -0400
-X-MC-Unique: 5OlR3hiQNl2RL4jgbM3Siw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d9cd6eb0bso3389903f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:52:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697709140; x=1698313940;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s07yKdQmQaOSMtiWdOLGzN3oWEKTIekP+ixiSoBemg8=;
-        b=GJABrn9ouWClqJZJPQALm+eWstdBx0WKJxDKk6RLauM+JM49tG05MDaP4opkKAFD1I
-         issW2GfPt8MDEKN75DEH/4XjkqCefy2Qwwkzp9SSaEfYNgNt8e7lwKYIkTqrrbPHQQmG
-         oX21lBh2y3elEPDlM/0UJkweW21nnvCEjyo7q5sahdT8GKbvic/mSgoBp88UzamR+iuy
-         0w+1LCKxa8dkWoEgxQ4hwi7dgm8F5xSrTTZkmik+GmZCSA6YPO6ioWpNfSOC3Svzl1wY
-         OrgQYa4iFZ3khggY2DVMdTY/fUFOQtftlZjfDyul4DWUrQkqIZtyn7kEJsl1EH0QqI+O
-         no6A==
-X-Gm-Message-State: AOJu0YxghyIUy7tbFoc3c82K4fmXWYflmpchXHxOvBtWj+32EwfXhiM/
-        7JNeSqbHjK8iXmCP0J2zXJXbjiAszRP4pyCTglSu5DkldZzMK2glHg4/eZR3NzBvogAI9wQaj4S
-        r3gzxrZKpmas6PjEf0O3bSST1
-X-Received: by 2002:a5d:534a:0:b0:32d:9572:6469 with SMTP id t10-20020a5d534a000000b0032d95726469mr1411100wrv.46.1697709140701;
-        Thu, 19 Oct 2023 02:52:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGbrIg21JiUOlDeiQ+N0/lCafmoyCQ7Q6G+JcToUR3WGNATzgv3QP9FSlCqPRWoYhSWovXwVw==
-X-Received: by 2002:a5d:534a:0:b0:32d:9572:6469 with SMTP id t10-20020a5d534a000000b0032d95726469mr1411083wrv.46.1697709140369;
-        Thu, 19 Oct 2023 02:52:20 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f2:2037:f34:d61b:7da0:a7be])
-        by smtp.gmail.com with ESMTPSA id k8-20020adfe3c8000000b0032710f5584fsm4074029wrm.25.2023.10.19.02.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 02:52:19 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 05:52:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     zhenwei pi <pizhenwei@bytedance.com>
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
+        Thu, 19 Oct 2023 05:54:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC2B106
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:54:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697709248; x=1729245248;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DpWoKFS1wco1iGTyAsYaK+amZcKbFRnsbYOwb1MRs9M=;
+  b=mbPDrQNyiXl9xRFkp55e2+YhiE0yNOWSmjgQyjoco+lB/SUr527d2WfP
+   c3azCLeuPLm0QdiuwlbPIYWZjXt0nja14KoDsBGbpVTuEICVfk+R7+kC6
+   n/eYvcnK9eQ1s2sRgfk9m0Zji51UBOVahMCJvJf7C0Te8ZC6ulV1pC17d
+   RpOyaKvtRkGNnYazImU1ZAbr6ko1/thwZ0SILU24VxmMl36Cv1qFt40yA
+   aDHoFjJoKpQSnruf9adclpzcf4kCtNCvODBToTiBU5aj0p6J01IWhknDT
+   EosBqGWQDYU2SlKLmGAgfflF81X2OqG6Ij996Kk2D2x//G1yv2FKTl4e8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="365565821"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="365565821"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 02:54:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="900681484"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="900681484"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Oct 2023 02:51:57 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtPj7-0001wc-2L;
+        Thu, 19 Oct 2023 09:54:01 +0000
+Date:   Thu, 19 Oct 2023 17:53:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     KaiLong Wang <wangkailong@jari.cn>, mark@fasheh.com,
+        jlbec@evilplan.org, akpm@linux-foundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, ocfs2-devel@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: PING: [PATCH] virtio-blk: fix implicit overflow on
- virtio_max_dma_size
-Message-ID: <20231019055134-mutt-send-email-mst@kernel.org>
-References: <20230904061045.510460-1-pizhenwei@bytedance.com>
- <dedde8ee-6edb-4950-aa8b-e89e025440b7@bytedance.com>
+Subject: Re: [PATCH] ocfs2/dlm: Clean up errors in dlmdomain.c
+Message-ID: <202310191736.myy5k3i6-lkp@intel.com>
+References: <62e91e34.969.18b27f9ec40.Coremail.wangkailong@jari.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dedde8ee-6edb-4950-aa8b-e89e025440b7@bytedance.com>
+In-Reply-To: <62e91e34.969.18b27f9ec40.Coremail.wangkailong@jari.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:43:55PM +0800, zhenwei pi wrote:
-> Hi Michael,
-> 
-> This seems to have been ignored as you suggested.
-> 
-> LINK: https://www.spinics.net/lists/linux-virtualization/msg63015.html
+Hi KaiLong,
 
-Pls Cc more widely then:
+kernel test robot noticed the following build warnings:
 
-Paolo Bonzini <pbonzini@redhat.com> (reviewer:VIRTIO BLOCK AND SCSI DRIVERS)
-Stefan Hajnoczi <stefanha@redhat.com> (reviewer:VIRTIO BLOCK AND SCSI DRIVERS)
-Xuan Zhuo <xuanzhuo@linux.alibaba.com> (reviewer:VIRTIO CORE AND NET DRIVERS)
-Jens Axboe <axboe@kernel.dk> (maintainer:BLOCK LAYER)
-linux-block@vger.kernel.org (open list:BLOCK LAYER)
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.6-rc6 next-20231019]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-would all be good people to ask to review this.
+url:    https://github.com/intel-lab-lkp/linux/commits/KaiLong-Wang/ocfs2-dlm-Clean-up-errors-in-dlmdomain-c/20231017-115916
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/62e91e34.969.18b27f9ec40.Coremail.wangkailong%40jari.cn
+patch subject: [PATCH] ocfs2/dlm: Clean up errors in dlmdomain.c
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231019/202310191736.myy5k3i6-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231019/202310191736.myy5k3i6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310191736.myy5k3i6-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   fs/ocfs2/dlm/dlmdomain.c: In function 'dlm_alloc_pagevec':
+   fs/ocfs2/dlm/dlmdomain.c:78:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+      78 |         for (i = 0; i < pages; i++)
+         |         ^~~
+   fs/ocfs2/dlm/dlmdomain.c:80:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+      80 |                 if (!(vec[i]))
+         |                 ^~
+   fs/ocfs2/dlm/dlmdomain.c: In function 'dlm_alloc_pagevec.constprop':
+>> fs/ocfs2/dlm/dlmdomain.c:80:26: warning: array subscript 32 is outside array bounds of 'void[128]' [-Warray-bounds=]
+      80 |                 if (!(vec[i]))
+         |                      ~~~~^~~~
+   In file included from fs/ocfs2/dlm/dlmdomain.c:12:
+   In function 'kmalloc',
+       inlined from 'kmalloc_array' at include/linux/slab.h:635:10,
+       inlined from 'dlm_alloc_pagevec.constprop' at fs/ocfs2/dlm/dlmdomain.c:72:15:
+   include/linux/slab.h:599:24: note: at offset 128 into object of size 128 allocated by 'kmalloc_trace'
+     599 |                 return kmalloc_trace(
+         |                        ^~~~~~~~~~~~~~
+     600 |                                 kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
+         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     601 |                                 flags, size);
+         |                                 ~~~~~~~~~~~~
 
 
-> On 9/4/23 14:10, zhenwei pi wrote:
-> > The following codes have an implicit conversion from size_t to u32:
-> > (u32)max_size = (size_t)virtio_max_dma_size(vdev);
-> > 
-> > This may lead overflow, Ex (size_t)4G -> (u32)0. Once
-> > virtio_max_dma_size() has a larger size than U32_MAX, use U32_MAX
-> > instead.
-> > 
-> > Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> > ---
-> >   drivers/block/virtio_blk.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > index 1fe011676d07..4a4b9bad551e 100644
-> > --- a/drivers/block/virtio_blk.c
-> > +++ b/drivers/block/virtio_blk.c
-> > @@ -1313,6 +1313,7 @@ static int virtblk_probe(struct virtio_device *vdev)
-> >   	u16 min_io_size;
-> >   	u8 physical_block_exp, alignment_offset;
-> >   	unsigned int queue_depth;
-> > +	size_t max_dma_size;
-> >   	if (!vdev->config->get) {
-> >   		dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> > @@ -1411,7 +1412,8 @@ static int virtblk_probe(struct virtio_device *vdev)
-> >   	/* No real sector limit. */
-> >   	blk_queue_max_hw_sectors(q, UINT_MAX);
-> > -	max_size = virtio_max_dma_size(vdev);
-> > +	max_dma_size = virtio_max_dma_size(vdev);
-> > +	max_size = max_dma_size > U32_MAX ? U32_MAX : max_dma_size;
-> >   	/* Host can optionally specify maximum segment size and number of
-> >   	 * segments. */
-> 
-> -- 
-> zhenwei pi
+vim +80 fs/ocfs2/dlm/dlmdomain.c
 
+    69	
+    70	static void **dlm_alloc_pagevec(int pages)
+    71	{
+    72		void **vec = kmalloc_array(pages, sizeof(void *), GFP_KERNEL);
+    73		int i;
+    74	
+    75		if (!vec)
+    76			return NULL;
+    77	
+    78		for (i = 0; i < pages; i++)
+    79			vec[i] = (void *)__get_free_page(GFP_KERNEL);
+  > 80			if (!(vec[i]))
+    81				goto out_free;
+    82	
+    83		mlog(0, "Allocated DLM hash pagevec; %d pages (%lu expected), %lu buckets per page\n",
+    84		     pages, (unsigned long)DLM_HASH_PAGES,
+    85		     (unsigned long)DLM_BUCKETS_PER_PAGE);
+    86		return vec;
+    87	out_free:
+    88		dlm_free_pagevec(vec, i);
+    89		return NULL;
+    90	}
+    91	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
