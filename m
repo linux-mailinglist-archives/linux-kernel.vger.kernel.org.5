@@ -2,185 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 971297CFA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724377CFA6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 15:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345737AbjJSNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 09:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S1345837AbjJSNK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 09:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345837AbjJSNKD (ORCPT
+        with ESMTP id S235435AbjJSNKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 09:10:03 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6222189
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:09:06 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JD5pnw022703;
-        Thu, 19 Oct 2023 13:08:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=wefq5l/NfyiUOh2/K3hLXsYdyjlw2nsfgUdvc6uHmaQ=;
- b=VU0RxPDgFnJIB9glY0+FpWzyhm0tw+o/UmuH//TM0WfFCSGo+/s3Juz4nuiNlEkkjF4c
- Y1vrRtrUJQPgEWoXjIZkCi7w+ig5iCN5FDk2YeQNH/jxosmlWn6qO5D7mTovlbu27D/U
- MEe/RFU8N+ylgffyGx2mIpZycrlsWSm1as9y/CPr7Le/0AOmeE/jz26zDqBgcmn2ZVrp
- zBGfopV7+3kAxvQEo0oQy1Z9GGWCFNMKiPZHS912RaIzL9Qj6b0jo+8AN1ggDuWj+zeQ
- vXT5nGaSvM8uzcHbn59Rfk5h9Fj+z8DfyFlZ7qEYp6GqpUJmveawHutekVAUqfdW4VX4 qA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu51nr7f7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:08:51 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JD6NIw026640;
-        Thu, 19 Oct 2023 13:08:50 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu51nr7dy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:08:50 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JAF9GS019900;
-        Thu, 19 Oct 2023 13:08:49 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr8120evx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Oct 2023 13:08:49 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JD8ll344302644
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Oct 2023 13:08:47 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88C6320043;
-        Thu, 19 Oct 2023 13:08:47 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DFB420040;
-        Thu, 19 Oct 2023 13:08:44 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Thu, 19 Oct 2023 13:08:44 +0000 (GMT)
-Date:   Thu, 19 Oct 2023 18:38:43 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] powerpc/smp: Move shared_processor static key to
- smp.h
-Message-ID: <20231019130843.GI2194132@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
- <20231018163751.2423181-4-srikar@linux.vnet.ibm.com>
- <87sf675im3.fsf@mail.lhotse>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <87sf675im3.fsf@mail.lhotse>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aU8TME1IjwVF9r22d_NEiqeu4_u4_b1W
-X-Proofpoint-GUID: 27h_Y8VBQgPyYVsbJj6D0z1NkvNofouQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-19_11,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
- mlxlogscore=793 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310190112
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 09:10:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE17918F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 06:09:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C627B1F45B;
+        Thu, 19 Oct 2023 13:09:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697720997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMdo80ym8skLmYskCwbWaL7qF0X1OubV5NErMqY/lFI=;
+        b=w0KjVboNPlybkb1hlVjv6Q1IlhAg9QatVSIens5bxbW3z+DsESJkbSoTg3jiba8IhpGx8W
+        w3H/24Je2YCW9xGftMUo8KVaXSBe4pS9id62LgjLRaaasIRoeFPgWUadtnjQYCts7W0R5n
+        VqoMRSdCJyMwAZHi6Uxy/i1TxwarY0Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697720997;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMdo80ym8skLmYskCwbWaL7qF0X1OubV5NErMqY/lFI=;
+        b=7TocIZptmJBazDG/K+m299/bFxbYkpplpqitD24NOxsjK8ba5etLOKD8NiFDh2wwoOJRIY
+        ZawAqS+BbpTyx9Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 700031357F;
+        Thu, 19 Oct 2023 13:09:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LPNiGqUqMWUOVgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 19 Oct 2023 13:09:57 +0000
+Date:   Thu, 19 Oct 2023 15:09:56 +0200
+Message-ID: <87pm1alpwb.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v7 01/13] ASoC: SOF: core: Ensure sof_ops_free() is still called when probe never ran.
+In-Reply-To: <a581dd50-b3c0-4774-ad3e-0db5e4c47338@linux.intel.com>
+References: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
+        <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+        <87il7aopcy.wl-tiwai@suse.de>
+        <a581dd50-b3c0-4774-ad3e-0db5e4c47338@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -9.98
+X-Spamd-Result: default: False [-9.98 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[15];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-2.88)[99.50%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Michael Ellerman <mpe@ellerman.id.au> [2023-10-19 15:41:40]:
-
-> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> > The ability to detect if the system is running in a shared processor
-> > mode is helpful in few more generic cases not just in
-> > paravirtualization.
-> > For example: At boot time, different scheduler/ topology flags may be
-> > set based on the processor mode. Hence move it to a more generic file.
+On Thu, 19 Oct 2023 12:02:55 +0200,
+Maarten Lankhorst wrote:
 > 
-> I'd rather you just included paravirt.h in the few files where you need it.
-
-
-I thought, detecting if a Processor was shared or not was more a
-smp/processor related than a paravirt related.
-
-Will drop as suggested.
-
+> Hey,
 > 
-> cheers
+> Den 2023-10-13 kl. 11:15, skrev Takashi Iwai:
+> > On Mon, 09 Oct 2023 13:54:25 +0200,
+> > Maarten Lankhorst wrote:
+> >> In an effort to not call sof_ops_free twice, we stopped running it when
+> >> probe was aborted.
+> >> 
+> >> Check the result of cancel_work_sync to see if this was the case.
+> >> 
+> >> Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
+> >> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> >> Acked-by: Mark Brown <broonie@kernel.org>
+> > Your Signed-off-by tag is missing.
+> > 
+> > Could you resubmit?
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
 > 
-> > diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-> > index 0372b0093f72..cf83e837a571 100644
-> > --- a/arch/powerpc/include/asm/paravirt.h
-> > +++ b/arch/powerpc/include/asm/paravirt.h
-> > @@ -15,13 +15,6 @@
-> >  #include <asm/kvm_guest.h>
-> >  #include <asm/cputhreads.h>
-> >  
-> > -DECLARE_STATIC_KEY_FALSE(shared_processor);
-> > -
-> > -static inline bool is_shared_processor(void)
-> > -{
-> > -	return static_branch_unlikely(&shared_processor);
-> > -}
-> > -
-> >  #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
-> >  extern struct static_key paravirt_steal_enabled;
-> >  extern struct static_key paravirt_steal_rq_enabled;
-> > @@ -77,11 +70,6 @@ static inline bool is_vcpu_idle(int vcpu)
-> >  	return lppaca_of(vcpu).idle;
-> >  }
-> >  #else
-> > -static inline bool is_shared_processor(void)
-> > -{
-> > -	return false;
-> > -}
-> > -
-> >  static inline u32 yield_count_of(int cpu)
-> >  {
-> >  	return 0;
-> > diff --git a/arch/powerpc/include/asm/smp.h b/arch/powerpc/include/asm/smp.h
-> > index aaaa576d0e15..08631b2a4528 100644
-> > --- a/arch/powerpc/include/asm/smp.h
-> > +++ b/arch/powerpc/include/asm/smp.h
-> > @@ -34,6 +34,20 @@ extern bool coregroup_enabled;
-> >  extern int cpu_to_chip_id(int cpu);
-> >  extern int *chip_id_lookup_table;
-> >  
-> > +#ifdef CONFIG_PPC_SPLPAR
-> > +DECLARE_STATIC_KEY_FALSE(shared_processor);
-> > +
-> > +static inline bool is_shared_processor(void)
-> > +{
-> > +	return static_branch_unlikely(&shared_processor);
-> > +}
-> > +#else
-> > +static inline bool is_shared_processor(void)
-> > +{
-> > +	return false;
-> > +}
-> > +#endif
-> > +
-> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l1_cache_map);
-> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l2_cache_map);
-> >  DECLARE_PER_CPU(cpumask_var_t, thread_group_l3_cache_map);
-> > -- 
-> > 2.31.1
+> I missed this email apparently.
+> 
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> 
+> Is this enough for the tooling, or do you need an actual resubmit?
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+That's enough, and I applied the series to for-next branch now.
+
+
+thanks,
+
+Takashi
