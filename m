@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1407CF16A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4EE7CF172
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 09:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbjJSHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 03:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
+        id S1344889AbjJSHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 03:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbjJSHgu (ORCPT
+        with ESMTP id S1344874AbjJSHix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 03:36:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35EAB6;
-        Thu, 19 Oct 2023 00:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697701001;
-        bh=jXv0UIVoUP2h526W9yTnCr9WSMkBvRxHPsVCrjDu82E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EJLuxtDwALc+/Ag7/j6jfCXOJToQYGzZQDySu41yN8xAWGM+darxHEUY5foqi2aOK
-         AIkT8k0eSwPE6zH5KD+KaLlRZcxdXCjSX5QAKLRN0qnag4XFkmXvjhCVkCyRUzHHid
-         7aKWbULjveI5UoUNA/+RKtfc9L7rAN8GhzJQNffGqTMqjKHSjmaF+XrNUZW5NCrUW6
-         du8Xc77z9vUmYTtMrYsojJ/WMPR6VixPzJ/Aw1IvHbgl4RmX/UsbWjlxgTaeLUCOfL
-         okKyjKIt/3Xys9Y+mlTeGZDMwMyVEgCUl1AsUzrI6oUgRk9+JHdIXVdj0zBkROOFkZ
-         UTAL/mdsHoZ5w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 19 Oct 2023 03:38:53 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36418A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 00:38:50 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 90779120009;
+        Thu, 19 Oct 2023 10:38:47 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 90779120009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1697701127;
+        bh=qHjagzBNZKS0ba9ZInkR/Ivhhk92bbpsh29/iG18+hQ=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=XxpYGcDJc+HSvMqApotEG9nODqofEAVEDU0s/+s+2xDHnTt+0yuAUJAb9NvbGZJAo
+         YNteXy8I1h3cJNE5/V1CkhHivhC7nXjYD/lf52rreWoLhlCGCtBUS26E+oGRBfDE2m
+         azqe5fa68YAQri5RVa//rVlaEJSlSQi9SMKmbKVeOig1QsX+uCxkRdqj8z0M3rZBp9
+         SW7CE12j1DwfXxiUi02zUKZR9xAHzlB8kwmmTT66k3vXfHh3+hvwz3FDZ48KKrkd7s
+         l5hrIgd+sISkBUCnjetWHDWZVU90jPKfN3qWtLMf+UrkENNiUScXinrHswanMsNvOb
+         tkkx2MYkdZ0qQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SB009379Gz4xcf;
-        Thu, 19 Oct 2023 18:36:40 +1100 (AEDT)
-Date:   Thu, 19 Oct 2023 18:36:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
-Message-ID: <20231019183640.61e8d5cc@canb.auug.org.au>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 19 Oct 2023 10:38:47 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 19 Oct 2023 10:38:47 +0300
+From:   Martin Kurbanov <mmkurbanov@salutedevices.com>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, Yu Zhe <yuzhe@nfschina.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>,
+        Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 0/2] jffs2: make cleanmarker support option
+Date:   Thu, 19 Oct 2023 10:38:36 +0300
+Message-ID: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/20fnVh5601iz=GE/pO.bna4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180720 [Oct 19 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 541 541 6f62a06a82e8ec968d29b8e7c7bba6aeceb34f57, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/19 05:18:00 #22229383
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/20fnVh5601iz=GE/pO.bna4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patchset support for disable cleanmarker option. This is useful on
+some NAND devices which entire OOB area is protected by ECC. Problem
+fires when JFFS2 driver writes cleanmarker to some page and later it
+tries to write to this page - write will be done successfully, but after
+that such page becomes unreadable due to invalid ECC codes. This occurs
+because the second write necessitates an update to ECC, but it is
+impossible to do it correctly without block erase.
 
-Hi all,
+Martin Kurbanov (2):
+  jffs2: introduce jffs2_nandflash()
+  jffs2: make cleanmarker support option
 
-Commit
+ fs/jffs2/Kconfig    | 10 ++++++++++
+ fs/jffs2/erase.c    |  2 +-
+ fs/jffs2/fs.c       |  4 ++--
+ fs/jffs2/os-linux.h |  7 ++++++-
+ fs/jffs2/scan.c     |  2 +-
+ 5 files changed, 20 insertions(+), 5 deletions(-)
 
-  9baece83a913 ("parisc: Add nop instructions after TLB inserts")
+-- 
+2.40.0
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/20fnVh5601iz=GE/pO.bna4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUw3IgACgkQAVBC80lX
-0GyqiQgAnoGS6l+yxNTkp78C6USAijEfRYpAJPqOAjargMvD7yByL7GitErPvnMo
-QgFKmnWqSu9aF14EBBGoDUNXlQQyFmCU8tqFHX959k7IrU0wi68KzlfazTRkq8p0
-Ox9UldGLQJ8CaLfngtebgDO5sCjYo/883e5WpM+ISYYzgk9+zlv7jxKxHUeaxbj6
-za03z3uKNdPpXHAWebhZfcd4LcjT88Ww9kOd3WlzrjyFQGDm/4C/uI+eOWb9xteB
-WjipntufylYZuFB5AaJ1dOTkdHgxgvBpcA9gZ6NdZr1oXoYJs+88kC50EJ/46Qq5
-5lC8g/sbMsePG3UjDsjo5ffO4z301Q==
-=66lN
------END PGP SIGNATURE-----
-
---Sig_/20fnVh5601iz=GE/pO.bna4--
