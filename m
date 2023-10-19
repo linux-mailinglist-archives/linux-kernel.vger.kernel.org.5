@@ -2,540 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783F87D04ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D047B7D04EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 00:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346670AbjJSWjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 18:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        id S1346666AbjJSWjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 18:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235549AbjJSWjO (ORCPT
+        with ESMTP id S235549AbjJSWjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:39:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F4BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697755101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sBfQj5Ox1TU1TEGTY2Cw21mMpXWHp3OgPrDutmPfcHw=;
-        b=IQBC9XmvFrR9RiAdEl49LmNNn3f5jPF1E/8gFxibOfIrefpUMIOXHiY/g0soD2KUeJcQYr
-        J0C28HYOIMZOKvnv0dQAJ2F0665BWDbDt1A411JEdfQcs2pY9wLeAS0wM4vOuZro8Zzvxz
-        +p8gmBi6NdUKjsrvSAqrefMFz0yrb9E=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-g9o0-85jOpmV0SJI2zB2cQ-1; Thu, 19 Oct 2023 18:38:03 -0400
-X-MC-Unique: g9o0-85jOpmV0SJI2zB2cQ-1
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7a25e4045c2so22538639f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:38:02 -0700 (PDT)
+        Thu, 19 Oct 2023 18:39:36 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2ADB115
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:39:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so196633e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697755172; x=1698359972; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bf4UVfm9ejOuj/+1if2blVbFZkZx0qYyb9UZRpdYTtM=;
+        b=eGyoMnQJ+ZzjkezGDNdPHNuXnOo6/ZO6a/BEKlN1j8fEaE5sx8Fi9oRP7ViDovgY+W
+         iVIZumuj/ZSoa2gdaYBEjKpmTEBnZsUZsVONXYlWvvudyly9BrQKC9gWIIF3oHndUJVM
+         o9Z8N6l0GtkFEScaTwmbVc2MNNEUQBf74fHMg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697755082; x=1698359882;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sBfQj5Ox1TU1TEGTY2Cw21mMpXWHp3OgPrDutmPfcHw=;
-        b=mr8BpfLHmqnXPCTu9CMLs2U5teVacFkY7tf0Kv7O3Jb8incXtMoseTEa1mdTU885fg
-         pQp6CJFGPu1w26wr5E7NQM483LprsxEOy0Zr27esd5poWEXKD2/hFhHvQNTPHHsQD3IC
-         XUsUgbBToq/OMPnKXjWdMLV2b1Rkow5au0Gfv9alPGDMtobuP+ZY3tfFBTaJES7j1qYi
-         0fw7nMukQTjH2rlrofw5W5ea8yGldsDLOkH2Nhr9ByhnnqfCNBPlv1PZI3rrHjOxn4e4
-         txRxt2YH1g38NIJ5wSyvnY1FkUkvPsubkmA8LDGGgJTb2k21V+MQn/D/oYhYnlgFntM2
-         j2LQ==
-X-Gm-Message-State: AOJu0Yx+dDz0t1vU22yy2SR23LETxqfu4HGu5gn1KqMXljF81s9gz4V4
-        HOyepaG60/kMeNDPoZBDg0+LIRlXMMXhNh1Xa4U7zLHylFLHYBITqy/3LxvSTLEw6X4yOED+fHd
-        Sbud+/vA4a+AvIwq1eR1b0rvm
-X-Received: by 2002:a05:6602:3f90:b0:7a6:966b:35a6 with SMTP id fb16-20020a0566023f9000b007a6966b35a6mr417428iob.11.1697755082107;
-        Thu, 19 Oct 2023 15:38:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcTl15nc4rngAzvccONm+kXeFRpU639DoHKSalcQ/LRwlxFUsMmy9vCK/OiIYJ7DF1iTqH6w==
-X-Received: by 2002:a05:6602:3f90:b0:7a6:966b:35a6 with SMTP id fb16-20020a0566023f9000b007a6966b35a6mr417408iob.11.1697755081756;
-        Thu, 19 Oct 2023 15:38:01 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id b12-20020a6b670c000000b0079f7734a77esm163266ioc.35.2023.10.19.15.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 15:38:01 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:37:59 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clegoate@redhat.com>
-Cc:     liulongfang <liulongfang@huawei.com>, jgg@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com,
-        bcreeley@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-Subject: Re: [PATCH v17 1/2] vfio/migration: Add debugfs to live migration
- driver
-Message-ID: <20231019163759.1d567fc5.alex.williamson@redhat.com>
-In-Reply-To: <4915e45f-2256-42b5-838c-be2e5eda69ac@redhat.com>
-References: <20231013090441.36417-1-liulongfang@huawei.com>
-        <20231013090441.36417-2-liulongfang@huawei.com>
-        <dee481c3-f6bd-4ba9-a2d4-528dfb668159@redhat.com>
-        <d4a2f596-13c9-f3d3-3bbd-ee773f026341@huawei.com>
-        <4915e45f-2256-42b5-838c-be2e5eda69ac@redhat.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1697755172; x=1698359972;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bf4UVfm9ejOuj/+1if2blVbFZkZx0qYyb9UZRpdYTtM=;
+        b=bJ29A1Z1BuJ12fJZJ4q1e8Ri+f5WaMxoMJgZet9ZwIIfyv/ZiCztrECmdwBegjsz6Z
+         F/tLFBAW43hHgzMFy/xs6rNP7DONcFrkvPz+b6So3lNXG6XFrPPUpwOYZJ1sTWLFfQTQ
+         xiJxKKaciNQOIPON9h40/ILxCjDqVWCOLxRu66QOOzdYZsgoHjudUnDN6JrPTyMnpxYi
+         pdJOay459tSpa7VOycmurs1UEEpbdnCn+GJdftFcaGsLaXn0KY2LA5oKc1OB7RZphSIO
+         a/hJaG8YyFbHfrXRpX/qs1sAFqyQCgFIvzpf5SteSIMrJgmxUzOMizyPRVLgbmmDDFsA
+         m+Cw==
+X-Gm-Message-State: AOJu0YztH4nV6SoPBeA75DnfSunVqjNA0P8fl1KzThWs5lbp9mkwnGKj
+        Y6AXnc2adFwByUKyZzsuO3eLe89dqJgGy5hmHqHx9kOG
+X-Google-Smtp-Source: AGHT+IH2tb9dwXv1nIP5phJVsdXHEiisOeTipote9Qcxo7AN7vY4c8J0GIyhk593rJfNyzUcA9l7Iw==
+X-Received: by 2002:a19:e05e:0:b0:507:b15b:8b99 with SMTP id g30-20020a19e05e000000b00507b15b8b99mr45225lfj.60.1697755171740;
+        Thu, 19 Oct 2023 15:39:31 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id t14-20020aa7d70e000000b0053e4783afbasm312747edq.63.2023.10.19.15.39.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 15:39:30 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so212413a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 15:39:30 -0700 (PDT)
+X-Received: by 2002:a17:907:3d9f:b0:9b2:b152:b0f2 with SMTP id
+ he31-20020a1709073d9f00b009b2b152b0f2mr38956ejc.10.1697755170439; Thu, 19 Oct
+ 2023 15:39:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+ <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
+ <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com> <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
+ <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
+ <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
+ <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
+ <CAFULd4bLEU-tBC8dO1wf66UAxQ2d1HxQ=D6wvtHZfdQCKhnpkw@mail.gmail.com>
+ <CAFULd4YAFTFqon3ojv7N6h=G_1pAjSH3T6YvX0G=g7Fwh7j1jQ@mail.gmail.com>
+ <A2E458DE-8B84-4FB2-BF6D-3EAB2B355078@vmware.com> <CAFULd4b_PdKb=8U5+Zz-XNoYdULtcQJnmf-yCrpCv7RRogSXyQ@mail.gmail.com>
+ <CAFULd4Y8_MOMGcatcMuUaC89zX5F-VYr0niiJ9Yd8hQ16neHjw@mail.gmail.com>
+ <3F9D776E-AD7E-4814-9E3C-508550AD9287@vmware.com> <CAFULd4Zruoq4b5imt3NfN4D+0RY2-i==KGAwUHR8JD0T8=HJBw@mail.gmail.com>
+ <28B9471C-4FB0-4AB0-81DD-4885C3645E95@vmware.com> <CAHk-=whS8-Lk_=mFp=mr-JrbRYtScgz-4s_GLAOQGafa_3zP9g@mail.gmail.com>
+ <CAFULd4Yy-v40tK94rexSOL99FGMke2Jk42wgcjoEBxV=2hXoCw@mail.gmail.com>
+ <CAHk-=wjrLoy6xEDXB=piEUagDLMmV5Up7UK75W1D0E0UFVO-iA@mail.gmail.com>
+ <CAFULd4autFT=96EckL9vUDgO5t0ESp27+NDVXQHGi7N=PAo-HQ@mail.gmail.com>
+ <CAFULd4Zhw=zoDtir03FdPxJD15GZ5N=SV9=4Z45_Q_P9BL1rvQ@mail.gmail.com>
+ <CAHk-=wgoWOcToLYbuL2GccbNXwj_MH-LxmB_7MMjw6uu50k57Q@mail.gmail.com>
+ <CAHk-=wgCPbkf0Kdi=4T3LAVvNEH0jxJBWcTiBkrFDBsxkC9mKQ@mail.gmail.com>
+ <CAFULd4aTY002A7NHRCX21aTpYOE=tnpouBk6hkoeWND=LnT4ww@mail.gmail.com>
+ <CAHk-=wia9vFmyCJPkYg0vvegF8eojLy+DxVtpfoDv-UHoWKfqQ@mail.gmail.com>
+ <CAFULd4Zj5hTvATZUVYhUGrxH3fiAUWjO9C27UV_USf2H164thQ@mail.gmail.com>
+ <CAHk-=whEc2HR3En32uyAufPM3tEh8J4+dot6JyGW=Eg5SEhx7A@mail.gmail.com>
+ <CAFULd4avm_TaEoRauohRc90SUrx-D+wBJvg+htQDQ1_N=zNemw@mail.gmail.com>
+ <CAHk-=wijmmRB7-ZeT-sdxCSUoB83Lb5dnN7a7mCcH3cRw_aghQ@mail.gmail.com>
+ <CAFULd4b91Tr9Q2p4a20eusC+QO6O81gxY+nP-zpFiFKGTmLpYg@mail.gmail.com>
+ <CAHk-=wi3LZ_4OGAMhvgO0JSTp-eEPOGp+siq1nJNLY1JAxdP5Q@mail.gmail.com>
+ <CAFULd4YxvMtTEfQL-RiLisTxDwoJZZxXXB+3CWqCpzZkUf85JA@mail.gmail.com> <CAHk-=wj8qEwR1eGeJdup2q90WK7ZWBjpcXJEBi-TBp29p0n8oQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wj8qEwR1eGeJdup2q90WK7ZWBjpcXJEBi-TBp29p0n8oQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 15:39:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjvHDp+oiC4UZxivF6fCjKWFAAzgBYZdng6qe+ED6rLTg@mail.gmail.com>
+Message-ID: <CAHk-=wjvHDp+oiC4UZxivF6fCjKWFAAzgBYZdng6qe+ED6rLTg@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     peterz@infradead.org, Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 10:30:53 +0200
-C=C3=A9dric Le Goater <clegoate@redhat.com> wrote:
+Unrelated question to the gcc people (well, related in the way that
+this discussion made me *test* this).
 
-> On 10/19/23 10:03, liulongfang wrote:
-> > On 2023/10/16 23:17, C=C3=A9dric Le Goater wrote: =20
-> >> Hello Longfang,
-> >>
-> >> On 10/13/23 11:04, Longfang Liu wrote: =20
-> >>> There are multiple devices, software and operational steps involved
-> >>> in the process of live migration. An error occurred on any node may
-> >>> cause the live migration operation to fail.
-> >>> This complex process makes it very difficult to locate and analyze
-> >>> the cause when the function fails.
-> >>>
-> >>> In order to quickly locate the cause of the problem when the
-> >>> live migration fails, I added a set of debugfs to the vfio
-> >>> live migration driver.
-> >>>
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 +------------------------------------------=
--+
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QEMU=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 +---+----------------------------+---------=
--+
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ^
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 v=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 v=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +---------+--+=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +---------+=
---+
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |src vfio_dev|=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |dst vfio_d=
-ev|
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +--+---------+=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +--+-------=
---+
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ^
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 v=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0 +-----------+----+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +-----------+----+
-> >>>  =C2=A0=C2=A0=C2=A0 |src dev debugfs |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |dst dev debugfs |
-> >>>  =C2=A0=C2=A0=C2=A0 +----------------+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +----------------+
-> >>>
-> >>> The entire debugfs directory will be based on the definition of
-> >>> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
-> >>> interfaces in vfio.h will be empty definitions, and the creation
-> >>> and initialization of the debugfs directory will not be executed.
-> >>>
-> >>>  =C2=A0=C2=A0=C2=A0 vfio
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 +---<dev_name1>
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 +---migration
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- +--state
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 |
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0 +---<dev_name2>
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +---migration
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 +--state
-> >>>
-> >>> debugfs will create a public root directory "vfio" file.
-> >>> then create a dev_name() file for each live migration device.
-> >>> First, create a unified state acquisition file of "migration"
-> >>> in this device directory.
-> >>> Then, create a public live migration state lookup file "state".
-> >>>
-> >>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> >>> ---
-> >>>  =C2=A0 drivers/vfio/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 +++++
-> >>>  =C2=A0 drivers/vfio/Makefile=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
-> >>>  =C2=A0 drivers/vfio/debugfs.c=C2=A0=C2=A0=C2=A0 | 90 +++++++++++++++=
-++++++++++++++++++++++++
-> >>>  =C2=A0 drivers/vfio/vfio.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 14 =
-++++++
-> >>>  =C2=A0 drivers/vfio/vfio_main.c=C2=A0 | 14 +++++-
-> >>>  =C2=A0 include/linux/vfio.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 =
-+++
-> >>>  =C2=A0 include/uapi/linux/vfio.h |=C2=A0 1 +
-> >>>  =C2=A0 7 files changed, 135 insertions(+), 2 deletions(-)
-> >>>  =C2=A0 create mode 100644 drivers/vfio/debugfs.c
-> >>>
-> >>> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
-> >>> index 6bda6dbb4878..ceae52fd7586 100644
-> >>> --- a/drivers/vfio/Kconfig
-> >>> +++ b/drivers/vfio/Kconfig
-> >>> @@ -80,6 +80,16 @@ config VFIO_VIRQFD
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select EVENTFD
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 default n
-> >>>  =C2=A0 +config VFIO_DEBUGFS
-> >>> +=C2=A0=C2=A0=C2=A0 bool "Export VFIO internals in DebugFS"
-> >>> +=C2=A0=C2=A0=C2=A0 depends on DEBUG_FS
-> >>> +=C2=A0=C2=A0=C2=A0 help
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Allows exposure of VFIO device intern=
-als. This option enables
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the use of debugfs by VFIO drivers as=
- required. The device can
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cause the VFIO code create a top-leve=
-l debug/vfio directory
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 during initialization, and then popul=
-ate a subdirectory with
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 entries as required.
-> >>> +
-> >>>  =C2=A0 source "drivers/vfio/pci/Kconfig"
-> >>>  =C2=A0 source "drivers/vfio/platform/Kconfig"
-> >>>  =C2=A0 source "drivers/vfio/mdev/Kconfig"
-> >>> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
-> >>> index c82ea032d352..d43a699d55b1 100644
-> >>> --- a/drivers/vfio/Makefile
-> >>> +++ b/drivers/vfio/Makefile
-> >>> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) +=3D group.o
-> >>>  =C2=A0 vfio-$(CONFIG_IOMMUFD) +=3D iommufd.o
-> >>>  =C2=A0 vfio-$(CONFIG_VFIO_CONTAINER) +=3D container.o
-> >>>  =C2=A0 vfio-$(CONFIG_VFIO_VIRQFD) +=3D virqfd.o
-> >>> +vfio-$(CONFIG_VFIO_DEBUGFS) +=3D debugfs.o
-> >>>  =C2=A0 =C2=A0 obj-$(CONFIG_VFIO_IOMMU_TYPE1) +=3D vfio_iommu_type1.o
-> >>>  =C2=A0 obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) +=3D vfio_iommu_spapr_tce.o
-> >>> diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
-> >>> new file mode 100644
-> >>> index 000000000000..ae53d6110f47
-> >>> --- /dev/null
-> >>> +++ b/drivers/vfio/debugfs.c
-> >>> @@ -0,0 +1,90 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>> +/*
-> >>> + * Copyright (c) 2023, HiSilicon Ltd.
-> >>> + */
-> >>> +
-> >>> +#include <linux/device.h>
-> >>> +#include <linux/debugfs.h>
-> >>> +#include <linux/seq_file.h>
-> >>> +#include <linux/vfio.h>
-> >>> +#include "vfio.h"
-> >>> +
-> >>> +static struct dentry *vfio_debugfs_root;
-> >>> +
-> >>> +static int vfio_device_state_read(struct seq_file *seq, void *data)
-> >>> +{
-> >>> +=C2=A0=C2=A0=C2=A0 struct device *vf_dev =3D seq->private;
-> >>> +=C2=A0=C2=A0=C2=A0 struct vfio_device *vdev =3D container_of(vf_dev,=
- struct vfio_device, device);
-> >>> +=C2=A0=C2=A0=C2=A0 enum vfio_device_mig_state state;
-> >>> +=C2=A0=C2=A0=C2=A0 int ret;
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=3D
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VFIO_DEVICE_STATE_PRE_COP=
-Y_P2P + 1);
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 ret =3D vdev->mig_ops->migration_get_state(vdev, =
-&state);
-> >>> +=C2=A0=C2=A0=C2=A0 if (ret)
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 switch (state) {
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_ERROR:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-ERROR");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_STOP:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-STOP");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_RUNNING:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-RUNNING");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_STOP_COPY:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-STOP_COPY");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_RESUMING:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-RESUMING");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_RUNNING_P2P:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-RUNNING_P2P");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_PRE_COPY:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-PRE_COPY");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 case VFIO_DEVICE_STATE_PRE_COPY_P2P:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-PRE_COPY_P2P");
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> >>> +=C2=A0=C2=A0=C2=A0 default:
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seq_printf(seq, "%s\n", "=
-Invalid"); =20
-> >>
-> >> seq_puts() is more appropriate than seq_printf() above.
-> >> =20
-> >=20
-> > There is no difference between seq_puts() and seq_printf() here,
-> > no need to modify it. =20
->=20
-> seq_puts is simply preferred for unformatted output.
+Lookie here:
 
-Agreed, thanks for pointing this out.  I think
-Documentation/filesystems/seq_file.rst suggests this as well and it's
-also a bit silly anyway to use %s for a fixed string.
+    int test(void)
+    {
+        unsigned int sum = 0;
+        for (int i = 0; i < 4; i++) {
+                unsigned int val;
+    #if ONE
+                asm("magic1 %0":"=r" (val): :"memory");
+    #else
+                asm volatile("magic2 %0":"=r" (val));
+    #endif
+                sum += val;
+        }
+        return sum;
+    }
 
-> >> I would suggest to add an array or some helper, that the VFIO drivers
-> >> could use to debug the migration flow with pr_* primitives. It can be
-> >> done later.
-> >> =20
-> >=20
-> > If you want to debug this migration process in the VFIO driver,
-> > you can refer to vdev->mig_ops->migration_get_state() to read the statu=
-s.
-> >  =20
-> >> =20
-> >>> +=C2=A0=C2=A0=C2=A0 }
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 return 0;
-> >>> +}
-> >>> +
-> >>> +void vfio_device_debugfs_init(struct vfio_device *vdev)
-> >>> +{
-> >>> +=C2=A0=C2=A0=C2=A0 struct device *dev =3D &vdev->device;
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 vdev->debug_root =3D debugfs_create_dir(dev_name(=
-vdev->dev), vfio_debugfs_root);
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 if (vdev->mig_ops) {
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dentry *vfio_dev_m=
-igration =3D NULL; =20
-> >>
-> >> mig_dir maybe ?
-> >> =20
-> >=20
-> > "vfio_dev_migration " will not affect the readability of the code.
-> >  =20
-> >> It would be easier to understand the nature of the variable IMHO.
+and now build this with
 
-I don't know that we need to impose a specific style here, but the
-variable has a very limited scope, so it doesn't really need a super
-descriptive name.
+    gcc -O2 -S -DONE -funroll-all-loops t.c
 
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio_dev_migration =3D de=
-bugfs_create_dir("migration", vdev->debug_root);
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 debugfs_create_devm_seqfi=
-le(dev, "state", vfio_dev_migration,
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio_device_st=
-ate_read);
-> >>> +=C2=A0=C2=A0=C2=A0 }
-> >>> +}
-> >>> +
-> >>> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
-> >>> +{
-> >>> +=C2=A0=C2=A0=C2=A0 debugfs_remove_recursive(vdev->debug_root);
-> >>> +}
-> >>> +
-> >>> +void vfio_debugfs_create_root(void)
-> >>> +{
-> >>> +=C2=A0=C2=A0=C2=A0 vfio_debugfs_root =3D debugfs_create_dir("vfio", =
-NULL);
-> >>> +}
-> >>> +
-> >>> +void vfio_debugfs_remove_root(void)
-> >>> +{
-> >>> +=C2=A0=C2=A0=C2=A0 debugfs_remove_recursive(vfio_debugfs_root);
-> >>> +=C2=A0=C2=A0=C2=A0 vfio_debugfs_root =3D NULL;
-> >>> +}
-> >>> +
-> >>> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
-> >>> index 307e3f29b527..bde84ad344e5 100644
-> >>> --- a/drivers/vfio/vfio.h
-> >>> +++ b/drivers/vfio/vfio.h
-> >>> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vf=
-io_device *device)
-> >>>  =C2=A0 }
-> >>>  =C2=A0 #endif
-> >>>  =C2=A0 +#ifdef CONFIG_VFIO_DEBUGFS
-> >>> +void vfio_debugfs_create_root(void);
-> >>> +void vfio_debugfs_remove_root(void);
-> >>> +
-> >>> +void vfio_device_debugfs_init(struct vfio_device *vdev);
-> >>> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
-> >>> +#else
-> >>> +static inline void vfio_debugfs_create_root(void) { }
-> >>> +static inline void vfio_debugfs_remove_root(void) { }
-> >>> +
-> >>> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev=
-) { }
-> >>> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev=
-) { }
-> >>> +#endif /* CONFIG_VFIO_DEBUGFS */
-> >>> +
-> >>>  =C2=A0 #endif
-> >>> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> >>> index e31e1952d7b8..9aec4c22f051 100644
-> >>> --- a/drivers/vfio/vfio_main.c
-> >>> +++ b/drivers/vfio/vfio_main.c
-> >>> @@ -309,7 +309,6 @@ static int __vfio_register_dev(struct vfio_device=
- *device,
-> >>>  =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Refcounting can't start unt=
-il the driver calls register */
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 refcount_set(&device->refcount, 1);
-> >>> - =20
-> >>
-> >> superfluous change.
-> >> =20
-> >=20
-> > A blank line here is to separate it from the comment above.
-> > Makes it easier to be read.
+and I get a *completely* nonsensical end result. What gcc generates is
+literally insane.
 
-This sounds more like a justification for keeping the blank line than
-for removing it.  The original intent was to provide some logical
-separation.  Regardless, introducing unrelated formatting changes while
-implementing something else is generally considered poor form.
-=20
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio_device_group_register(device);
-> >>>  =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> >>> @@ -320,7 +319,15 @@ static int __vfio_register_dev(struct vfio_devic=
-e *device,
-> >>>  =C2=A0 =C2=A0 int vfio_register_group_dev(struct vfio_device *device)
-> >>>  =C2=A0 {
-> >>> -=C2=A0=C2=A0=C2=A0 return __vfio_register_dev(device, VFIO_IOMMU);
-> >>> +=C2=A0=C2=A0=C2=A0 int ret;
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 ret =3D __vfio_register_dev(device, VFIO_IOMMU);
-> >>> +=C2=A0=C2=A0=C2=A0 if (ret)
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 vfio_device_debugfs_init(device); =20
-> >>
-> >> Can it be called from __vfio_register_dev() instead ? and mdev devices
-> >> would get debugfs support also.
-> >> =20
-> >=20
-> > This is for symmetry in function calls.
-> > The need for symmetry was mentioned in the previous review. =20
->=20
-> yes. But this is also exluding the mdev devices which is a large VFIO fam=
-ily.
+What I *expected* to happen was that the two cases (with "-DONE" and
+without) would generate the same code, since one has a "asm volatile",
+and the other has a memory clobber.
 
-+1 It needs to support mdev as well.  In fact the previous comments
-related to symmetry suggested it be placed at the end of
-__vfio_register_dev(), moving it to only cover the VFIO_IOMMU path is a
-bug.  Thanks,
+IOW, neither really should be something that can be combined.
 
-Alex
+But no. The '-DONE" version is completely crazy with my gcc-13.2.1 setup.
 
+First off, it does actually CSE all the asm's despite the memory
+clobber. Which I find quite debatable, but whatever.
 
-> >>> +
-> >>> +=C2=A0=C2=A0=C2=A0 return 0;
-> >>>  =C2=A0 }
-> >>>  =C2=A0 EXPORT_SYMBOL_GPL(vfio_register_group_dev);
-> >>>  =C2=A0 @@ -378,6 +385,7 @@ void vfio_unregister_group_dev(struct vfi=
-o_device *device)
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 vfio_device_debugfs_exit(device);
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Balances vfio_device_set_group in =
-register path */
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio_device_remove_group(device);
-> >>>  =C2=A0 }
-> >>> @@ -1676,6 +1684,7 @@ static int __init vfio_init(void)
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_allo=
-c_dev_chrdev;
-> >>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 vfio_debugfs_create_root();
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_info(DRIVER_DESC " version: " DRIV=
-ER_VERSION "\n");
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> >>>  =C2=A0 @@ -1691,6 +1700,7 @@ static int __init vfio_init(void)
-> >>>  =C2=A0 =C2=A0 static void __exit vfio_cleanup(void)
-> >>>  =C2=A0 {
-> >>> +=C2=A0=C2=A0=C2=A0 vfio_debugfs_remove_root();
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ida_destroy(&vfio.device_ida);
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio_cdev_cleanup();
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 class_destroy(vfio.device_class);
-> >>> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> >>> index 454e9295970c..769d7af86225 100644
-> >>> --- a/include/linux/vfio.h
-> >>> +++ b/include/linux/vfio.h
-> >>> @@ -69,6 +69,13 @@ struct vfio_device {
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 iommufd_attached:1;
-> >>>  =C2=A0 #endif
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 cdev_opened:1;
-> >>> +#ifdef CONFIG_DEBUG_FS
-> >>> +=C2=A0=C2=A0=C2=A0 /*
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0 * debug_root is a static property of the vf=
-io_device
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0 * which must be set prior to registering th=
-e vfio_device.
-> >>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> >>> +=C2=A0=C2=A0=C2=A0 struct dentry *debug_root;
-> >>> +#endif
-> >>>  =C2=A0 };
-> >>>  =C2=A0 =C2=A0 /**
-> >>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> >>> index 7f5fb010226d..2b68e6cdf190 100644
-> >>> --- a/include/uapi/linux/vfio.h
-> >>> +++ b/include/uapi/linux/vfio.h
-> >>> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VFIO_DEVICE_STATE_RUNNING_P2P =3D 5,
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VFIO_DEVICE_STATE_PRE_COPY =3D 6,
-> >>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VFIO_DEVICE_STATE_PRE_COPY_P2P =3D 7,
-> >>> +=C2=A0=C2=A0=C2=A0 VFIO_DEVICE_STATE_NR,
-> >>>  =C2=A0 };
-> >>>  =C2=A0 =C2=A0 /** =20
-> >>
-> >> .
-> >> =20
-> >  =20
->=20
+But not only does it CSE them, it then does *not* just multiply the
+result by four. No. It generates this insanity:
 
+        magic1 %eax
+        movl    %eax, %edx
+        addl    %eax, %eax
+        addl    %edx, %eax
+        addl    %edx, %eax
+        ret
+
+so it has apparently done the CSE _after_ the other optimizations.
+
+Very strange.
+
+Honestly, the CSE part looks like an obvious bug to me. The gcc
+documentation states:
+
+     The "memory" clobber tells the compiler that the assembly code
+     performs memory reads or writes to items other than those listed in
+     the input and output operands (for example, accessing the memory
+     pointed to by one of the input parameters).
+
+so CSE'ing any inline asm with a memory clobber sounds *very* dubious.
+The asm literally told the compiler that it has side effects in
+unrelated memory locations!
+
+I don't think we actually care in the kernel (and yes, I think it
+would always be safer to use "asm volatile" if there's some unrelated
+memory locations that change), but since I was testing this and was
+surprised, and since the obvious reading of the documented behavior of
+a memory clobber really does scream "you can't combine those asms", I
+thought I'd mention this.
+
+Also, *without* the memory clobber, gcc obviously still does CSE the
+asm, but also, gcc ends up doing just
+
+        magic1 %eax
+        sall    $2, %eax
+        ret
+
+so the memory clobber clearly does actually make a difference. Just
+not a _sane_ one.
+
+In testing, clang does *not* have this apparently buggy behavior (but
+clang annoyingly actually checks the instruction mnemonics, so I had
+to change "magic" into "strl" instead to make clang happy).
+
+Hmm?
+
+                  Linus
