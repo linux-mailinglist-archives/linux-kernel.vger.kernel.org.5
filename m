@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AFD7CFD17
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9465B7CFD18
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346353AbjJSOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 10:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
+        id S1346204AbjJSOls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 10:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346287AbjJSOlQ (ORCPT
+        with ESMTP id S1346243AbjJSOlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:41:16 -0400
+        Thu, 19 Oct 2023 10:41:18 -0400
 Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C664A189
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:04 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4084001846eso10849185e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACE0D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:07 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-402cd372b8bso61292325e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 07:41:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697726463; x=1698331263; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697726465; x=1698331265; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElJlMelae52OVNRK43EtmIQAIoa6GhddKrR2iq/azSI=;
-        b=asgdwzoj6F8aCVnehYiJONbUZcey9CWQSdwYN22UB3GvoKR7giqGJuq2b/fLZyKLfU
-         TcL+yUN3hrSq2ZrR0VzDwaZLlHaXJ+XGuXQ4fKQHehQoXTtU/ci6CXmBrBY/78JNOhvJ
-         QB5Dtpu46gXJRLi2Sbt5lsUUs3zDTyZGtn000xirVylu5hxrIfQeQdX+rqcNkZ7NkAmo
-         AztzYPfHADfNu1lpJpKksaBj7lkP/cc39WX9Qeqt9uA1gp4wz+zpGN+TBFvn61YO2hNu
-         f+VwrvttLpq8DYgp7XNNbZlfNVDnb7eezeOtJqhhziF8TlfDALi9E84nfKNsnappMyPD
-         7ILg==
+        bh=CvJdm3IKmCA+/1ICly/hVREi8jIoDHSAqzssbPm75pQ=;
+        b=dDAIq8h/+/3ho6ZC27ZoaLy0jU9a/H5HL5xtg5uQd3lRos/+61yuivhjWSBkH3TN4o
+         pVOSkfITXJ0OD9aZZVhew2L77Y3kDWySsFTPPg2A9QLJP9l1UYQGfZPyHlDSOazuOhfl
+         8a6qk/jvsCWfSkOHCTOnqDhiRCc3qGqRZ7TbMtSoITeq2ziYcdtQ7UXjMSvGJEqzOwSJ
+         B4FKWdjzHx3ldcQKxG0EBlTGx9J/tN5W2NUt5Olo0q7jqTHdZUYRzp8anOoq4G5GXdcI
+         D7V+Ztn660SDAMB2CKrRmPhCAvvrtMdWjDSbpThrDRUFAf+sa7OuSBReUTRgMZ89g1pX
+         4TZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697726463; x=1698331263;
+        d=1e100.net; s=20230601; t=1697726465; x=1698331265;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElJlMelae52OVNRK43EtmIQAIoa6GhddKrR2iq/azSI=;
-        b=SdbPv04nbMaoLE/Irzi+IbICwp1U5RoU5xB/AyCK20jOqYREbi4E7HzewdyyelP+Li
-         cBHJH4JUL9eW5Txw8p+TsSMl2s4WtjdjP8yQdzdrTAZYYaTSYqlhEOksvVVOoxxMMwrC
-         Mx2i3iq4oc91/cbtqskL/bVqVymeLSovsbKe5SRo+NfszwZxvxmS0ZaGzIq14V4JfNsn
-         oOsZBYzQdlySXLkiHf6spafTgOu3cpoWFtGspeIcKi1c+l/WoMpqFKZE6lTejPlC3sLt
-         Db+hPq0lgZ82IsGPFRESSvu053xZGzlt+tSK2O124PxESK95MbQbZYWDU2oyXo/Hd6DI
-         Cozw==
-X-Gm-Message-State: AOJu0YxrHEbUztRTgVVfuHfGjG3bsJzIHPiNYw04BDZM1/leJsa4DP73
-        El5VUXFcvSOOGio+CxfTe3j8cPVudsfrRbCSN5o=
-X-Google-Smtp-Source: AGHT+IFElnKsIi5dp2Ye8EDvnioIdKetK6LFJeeZwO4G65IWaMiQONCNVsOjqqbZrwPzyvGEqMqVtHvUbDt0zDruZF8=
+        bh=CvJdm3IKmCA+/1ICly/hVREi8jIoDHSAqzssbPm75pQ=;
+        b=uHdchPccjsYF54WE+jbIxL+30iVZIK+J7pQAsLETL9hT8s5UdlqFhSpOAvrDetF134
+         xctEwY3tXnHJPugr3C+nUZ704ViADWENUeL31LHTfqnriOJuPCOPzSFhnPahRQuSrSPP
+         33ri/WIab0hy5BGeSNE0s2nR8am8vMHsEASmBVVWnmS1B2DvUDtwYc/RBkZviKiPl9+n
+         5berMbk0X/pKijWEuADdV23nOgpl3hVyGdi/PbzvN3sMJxN6rn26bzWq2Y242nsnuvcI
+         s0WoTKlsLE6+yLyYi7dArRtCxPIPUwkur8ljI0Ry79QDNOF8sjXiiS8qVo4spXrYth2e
+         nwZg==
+X-Gm-Message-State: AOJu0YyWuAbGtdNVANpBwh5OA6amvlXHnPKceTjTmIQ9CIL0aX4CtYjN
+        oDMguEkxKeDz3cczvRCTSI7ZDGsNeSgEJ48NQWU=
+X-Google-Smtp-Source: AGHT+IHd3XOdzZVQWrUJjDNXs2PGDHCNNjcdi3ZWTk5PP9acOL/8DnwH2AUd6D9476w0yP3WM6aezjeueor84uThLIA=
 X-Received: from seb.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:31bd])
- (user=sebastianene job=sendgmr) by 2002:a5d:444f:0:b0:32d:83b1:338e with SMTP
- id x15-20020a5d444f000000b0032d83b1338emr19447wrr.4.1697726463195; Thu, 19
- Oct 2023 07:41:03 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 14:40:30 +0000
+ (user=sebastianene job=sendgmr) by 2002:a5d:69c8:0:b0:32d:8188:6221 with SMTP
+ id s8-20020a5d69c8000000b0032d81886221mr22460wrw.0.1697726465577; Thu, 19 Oct
+ 2023 07:41:05 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 14:40:31 +0000
 In-Reply-To: <20231019144032.2943044-1-sebastianene@google.com>
 Mime-Version: 1.0
 References: <20231019144032.2943044-1-sebastianene@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231019144032.2943044-10-sebastianene@google.com>
-Subject: [PATCH v2 08/11] arm64: ptdump: Parse the host stage-2 page-tables
- from the snapshot
+Message-ID: <20231019144032.2943044-11-sebastianene@google.com>
+Subject: [PATCH v2 09/11] arm64: ptdump: Interpret memory attributes based on
+ runtime configuration
 From:   Sebastian Ene <sebastianene@google.com>
 To:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
         akpm@linux-foundation.org, maz@kernel.org
@@ -71,104 +71,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a walker function which configures ptdump to parse the page-tables
-from the snapshot. Convert the physical address of the pagetable's start
-address to a host virtual address and use the ptdump walker to parse the
-page-table descriptors.
+When FWB is used the memory attributes stored in the descriptors have a
+different bitfield layout. Introduce two callbacks that verify the current
+runtime configuration before parsing the attribute fields.
+Add support for parsing the memory attribute fields from the page table
+descriptors.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/mm/ptdump.c | 63 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ arch/arm64/mm/ptdump.c | 66 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index 7c78b8994ca1..3ba4848272df 100644
+index 3ba4848272df..5f9a334b0f0c 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
-@@ -479,6 +479,11 @@ static void *ptdump_host_va(phys_addr_t phys)
- 	return __va(phys);
- }
+@@ -85,13 +85,22 @@ struct pg_state {
+ 	bool check_wx;
+ 	unsigned long wx_pages;
+ 	unsigned long uxn_pages;
++	struct ptdump_info *info;
+ };
  
-+static struct kvm_pgtable_mm_ops host_mmops = {
-+	.phys_to_virt	=	ptdump_host_va,
-+	.virt_to_phys	=	ptdump_host_pa,
-+};
++/*
++ * This callback checks the runtime configuration before interpreting the
++ * attributes defined in the prot_bits.
++ */
++typedef bool (*is_feature_cb)(const void *ctx);
 +
- static size_t stage2_get_pgd_len(void)
- {
- 	u64 mmfr0, mmfr1, vtcr;
-@@ -604,6 +609,63 @@ static void stage2_ptdump_end_walk(struct ptdump_info *info)
- 	free_pages_exact(snapshot, PAGE_SIZE);
- 	info->priv = NULL;
- }
-+
-+static int stage2_ptdump_visitor(const struct kvm_pgtable_visit_ctx *ctx,
-+				 enum kvm_pgtable_walk_flags visit)
+ struct prot_bits {
+ 	u64		mask;
+ 	u64		val;
+ 	const char	*set;
+ 	const char	*clear;
++	is_feature_cb   feature_on;  /* bit ignored if the callback returns false */
++	is_feature_cb   feature_off; /* bit ignored if the callback returns true */
+ };
+ 
+ static const struct prot_bits pte_bits[] = {
+@@ -173,6 +182,34 @@ static const struct prot_bits pte_bits[] = {
+ 	}
+ };
+ 
++static bool is_fwb_enabled(const void *ctx)
 +{
-+	struct pg_state *st = ctx->arg;
-+	struct ptdump_state *pt_st = &st->ptdump;
-+
-+	if (st->pg_level[ctx->level].mask & ctx->old)
-+		pt_st->note_page(pt_st, ctx->addr, ctx->level, ctx->old);
-+
-+	return 0;
-+}
-+
-+static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
-+{
++	const struct pg_state *st = ctx;
++	const struct ptdump_info *info = st->info;
 +	struct kvm_pgtable_snapshot *snapshot = info->priv;
-+	struct pg_state st;
-+	struct kvm_pgtable *pgtable;
-+	u64 start_ipa = 0, end_ipa;
-+	struct addr_marker ipa_address_markers[3];
-+	struct kvm_pgtable_walker walker = (struct kvm_pgtable_walker) {
-+		.cb	= stage2_ptdump_visitor,
-+		.arg	= &st,
-+		.flags	= KVM_PGTABLE_WALK_LEAF,
-+	};
++	struct kvm_pgtable *pgtable = &snapshot->pgtable;
 +
-+	if (snapshot == NULL || !snapshot->pgtable.pgd)
-+		return;
++	bool fwb_enabled = false;
 +
-+	pgtable = &snapshot->pgtable;
-+	pgtable->mm_ops = &host_mmops;
-+	end_ipa = BIT(pgtable->ia_bits) - 1;
++	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
++		fwb_enabled = !(pgtable->flags & KVM_PGTABLE_S2_NOFWB);
 +
-+	memset(&ipa_address_markers[0], 0, sizeof(ipa_address_markers));
-+
-+	ipa_address_markers[0].start_address = start_ipa;
-+	ipa_address_markers[0].name = "IPA start";
-+
-+	ipa_address_markers[1].start_address = end_ipa;
-+	ipa_address_markers[1].name = "IPA end";
-+
-+	st = (struct pg_state) {
-+		.seq		= s,
-+		.marker		= &ipa_address_markers[0],
-+		.level		= pgtable->start_level - 1,
-+		.pg_level	= &stage2_pg_level[0],
-+		.ptdump		= {
-+			.note_page	= note_page,
-+			.range		= (struct ptdump_range[]) {
-+				{start_ipa,	end_ipa},
-+				{0,		0},
-+			},
-+		},
-+	};
-+
-+	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
++	return fwb_enabled;
 +}
- #endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
++
++static bool is_table_bit_ignored(const void *ctx)
++{
++	const struct pg_state *st = ctx;
++
++	if (!(st->current_prot & PTE_VALID))
++		return true;
++
++	if (st->level == CONFIG_PGTABLE_LEVELS)
++		return true;
++
++	return false;
++}
++
+ static const struct prot_bits stage2_pte_bits[] = {
+ 	{
+ 		.mask	= PTE_VALID,
+@@ -214,6 +251,27 @@ static const struct prot_bits stage2_pte_bits[] = {
+ 		.val	= PTE_TABLE_BIT,
+ 		.set	= "   ",
+ 		.clear	= "BLK",
++		.feature_off	= is_table_bit_ignored,
++	}, {
++		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | PTE_VALID,
++		.val	= PTE_S2_MEMATTR(MT_S2_DEVICE_nGnRE) | PTE_VALID,
++		.set	= "DEVICE/nGnRE",
++		.feature_off	= is_fwb_enabled,
++	}, {
++		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | PTE_VALID,
++		.val	= PTE_S2_MEMATTR(MT_S2_FWB_DEVICE_nGnRE) | PTE_VALID,
++		.set	= "DEVICE/nGnRE FWB",
++		.feature_on	= is_fwb_enabled,
++	}, {
++		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | PTE_VALID,
++		.val	= PTE_S2_MEMATTR(MT_S2_NORMAL) | PTE_VALID,
++		.set	= "MEM/NORMAL",
++		.feature_off	= is_fwb_enabled,
++	}, {
++		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | PTE_VALID,
++		.val	= PTE_S2_MEMATTR(MT_S2_FWB_NORMAL) | PTE_VALID,
++		.set	= "MEM/NORMAL FWB",
++		.feature_on	= is_fwb_enabled,
+ 	}, {
+ 		.mask	= KVM_PGTABLE_PROT_SW0,
+ 		.val	= KVM_PGTABLE_PROT_SW0,
+@@ -285,13 +343,19 @@ static struct pg_level stage2_pg_level[] = {
+ };
  
- static void __init ptdump_register_host_stage2(void)
-@@ -616,6 +678,7 @@ static void __init ptdump_register_host_stage2(void)
- 		.mc_len			= host_s2_pgtable_pages(),
- 		.ptdump_prepare_walk	= stage2_ptdump_prepare_walk,
- 		.ptdump_end_walk	= stage2_ptdump_end_walk,
-+		.ptdump_walk		= stage2_ptdump_walk,
- 	};
+ static void dump_prot(struct pg_state *st, const struct prot_bits *bits,
+-			size_t num)
++		      size_t num)
+ {
+ 	unsigned i;
  
- 	mutex_init(&stage2_kernel_ptdump_info.file_lock);
+ 	for (i = 0; i < num; i++, bits++) {
+ 		const char *s;
+ 
++		if (bits->feature_on && !bits->feature_on(st))
++			continue;
++
++		if (bits->feature_off && bits->feature_off(st))
++			continue;
++
+ 		if ((st->current_prot & bits->mask) == bits->val)
+ 			s = bits->set;
+ 		else
 -- 
 2.42.0.655.g421f12c284-goog
 
