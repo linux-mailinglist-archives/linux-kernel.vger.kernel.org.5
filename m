@@ -2,91 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2548C7D0540
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4567D0541
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346675AbjJSXGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 19:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S1346638AbjJSXGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 19:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbjJSXGf (ORCPT
+        with ESMTP id S233357AbjJSXGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 19:06:35 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91884FA
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:06:33 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c509d5ab43so3189231fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:06:33 -0700 (PDT)
+        Thu, 19 Oct 2023 19:06:49 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042E1136
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:06:46 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b68556d6dso133123eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:06:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697756792; x=1698361592; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vyephYMGi9WkrF+MMy/aTcTtLZAvJsqtW+X3GM9oKyI=;
-        b=XLScS6SxFxKUAqTUem7TJ54dAnmfCURESHowXgmWQ1vxH0MjIQLMv4NiccWfdNQ81o
-         5ZcLccrDnSzYHjqc64UjvxOpSvRJNgjkHzArwGJMtQn3Yqxrc6SAQlHDxcgmA7MXLcPa
-         jhxI7YiRmCnbCgVqS0vpsurLG8UspeVIvZumA=
+        d=chromium.org; s=google; t=1697756806; x=1698361606; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1n3bce8Qxuu7Ba2jFaCFgRD9TCUV2s+7y/RFVwamEpU=;
+        b=DwCEvpeVXUfGsrXy6P4VMnQCCoM292F1h7bdgP+n7MoI+9Ue8H61cfhk1B55UBGPHo
+         DvpAImZ7KWlgAecQHVASQ3q3ow+k5QBeOk90BwbGJJfr8QA0mD86ww7w0jqG0OC++nzM
+         s/yQEVEi9sYbgJQ53lvOwMT7tpvA2QvCIe5FI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697756792; x=1698361592;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vyephYMGi9WkrF+MMy/aTcTtLZAvJsqtW+X3GM9oKyI=;
-        b=nEeSVuT5xwojlce3hDXuVzCZcGc6NBVPG9SUxBcEt8Hz3bCnqbUyiAQYz/Z8RollKP
-         jZTmdGmMJH6W1lPpgQRrPqZFZ+4DLi71v9rL0L56oDyViZ7f6MW61gEkJPsGNHQygxqh
-         JJkrq+3J2RWW6I+TzONKgYPThd7HNEYvtaSzDppez8iabvneahjZlrRTPilkCRO7Rlw3
-         Ha1nQrZysoAfiFmSdND1PDbYZadFwHpI75tPRXrldS4wvMDSMYkp00/z8OmqXgHCSGJb
-         1MR0LVCHmE8ee9NWRfEo3SZL+bKM5vp9g3hG+ShP39R/XQ8wdR/QaJrI7noX7kt6WDK4
-         Su6g==
-X-Gm-Message-State: AOJu0Yzewb4lPLj1KmG6Xi3p59UOtfsdr5O07PQRE0mPURIg189o38Nt
-        7zu6NibCG0YCOypY0INzBL3Uk8wftx/KA1GI3nDq4JG2
-X-Google-Smtp-Source: AGHT+IHiJ78IkW0RR4V5AyLHVGhaap50OWtU5RSVVfQRS1lyydZzIDTtJiYygjwib3ewnKax/IA5vA==
-X-Received: by 2002:a2e:81cc:0:b0:2c0:2ef8:9716 with SMTP id s12-20020a2e81cc000000b002c02ef89716mr258938ljg.1.1697756791842;
-        Thu, 19 Oct 2023 16:06:31 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id b12-20020a2e894c000000b002c00d4eb5ddsm107519ljk.99.2023.10.19.16.06.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 16:06:31 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-507a98517f3so246729e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:06:31 -0700 (PDT)
-X-Received: by 2002:ac2:533c:0:b0:503:3453:ea7a with SMTP id
- f28-20020ac2533c000000b005033453ea7amr52431lfh.66.1697756791018; Thu, 19 Oct
- 2023 16:06:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697756806; x=1698361606;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1n3bce8Qxuu7Ba2jFaCFgRD9TCUV2s+7y/RFVwamEpU=;
+        b=vWoWKBJPIEmRgTDb/sHIrXIJbwn1dntChge6D+GYVi8wm1Y0d/vlrPQknsgPPjFSU2
+         9zusVlC7NjkaDI4ok3fzT3xgCm2r81qtwmgBB8bi2eDkn8uOxCFKYBLxMkSHvxs8S9dB
+         w10RbP5zyTJ4SSKU6bF48HzN8JvFDkb4UXujZV7cWjxajDt/ICWVhMBCaUVEvsvRLH6f
+         SO9rAWBKVs0sYpZgL/6GvFSH+J8aCB/h94xLab9aXjJkeeMDilNmaziUH3q3KrIPb7Iw
+         jAMNdRp63XVcgTk0iUoaZnd/K/WDygoXvINUFCVjHIpjBdhFlQbK+iIDW/kLowVcJOKr
+         cR4A==
+X-Gm-Message-State: AOJu0YwWYo438WFmKkin4oqpTfoanrP66xM5qRHdDNCliiMlT9jkXLs9
+        XaMWbdWQWqe2DjrHbXEP0iqnMA==
+X-Google-Smtp-Source: AGHT+IEhvEBOypzhBvUEC/LxnmQewUkvilNgMww7+1gCzs5lO9zQ2TaPhZ4dkppEJNjjFdom5AnCAg==
+X-Received: by 2002:a05:6358:e4a0:b0:166:f18e:e60 with SMTP id by32-20020a056358e4a000b00166f18e0e60mr98593rwb.7.1697756805783;
+        Thu, 19 Oct 2023 16:06:45 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b13-20020aa7950d000000b0068ffd4eb66dsm301234pfp.35.2023.10.19.16.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 16:06:45 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 16:06:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ACPI: replace deprecated strncpy with strscpy
+Message-ID: <202310191606.93920741B@keescook>
+References: <20231019-strncpy-drivers-pnp-pnpacpi-core-c-v1-1-4c634a73bcf3@google.com>
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <ZS1URCBgwGGj9JtM@casper.infradead.org>
- <CAKbZUD2A+=bp_sd+Q0Yif7NJqMu8p__eb4yguq0agEcmLH8SDQ@mail.gmail.com>
- <CALmYWFtOgMAQDGNoM6k2Ev4kMHD396wwH+rVDODaSjsyVMDogg@mail.gmail.com>
- <CAKbZUD2j1jbomCAVxUX_JmG1rfa8udc=5SqVOpDgc-3GnSTbAQ@mail.gmail.com>
- <CALmYWFv7jzOj5HPcYct=UzYKPrwwvtN1EQeHioQHDPwGFvL5Ug@mail.gmail.com>
- <CALmYWFt71Vi6ySiZhW+tmE-LZL7Tnu-dQ1uMO10DUkASUTxzKA@mail.gmail.com> <CAKbZUD12pEaDCLysOpT3yL3064=P28Pm3c=UBqhOZYeBP026WA@mail.gmail.com>
-In-Reply-To: <CAKbZUD12pEaDCLysOpT3yL3064=P28Pm3c=UBqhOZYeBP026WA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Oct 2023 16:06:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgDv5vPx2xoxNQh+kbvLsskWubGGGK69cqF_i4FkM-GCw@mail.gmail.com>
-Message-ID: <CAHk-=wgDv5vPx2xoxNQh+kbvLsskWubGGGK69cqF_i4FkM-GCw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     Jeff Xu <jeffxu@google.com>, Matthew Wilcox <willy@infradead.org>,
-        jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, sroettger@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019-strncpy-drivers-pnp-pnpacpi-core-c-v1-1-4c634a73bcf3@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,48 +69,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 15:47, Pedro Falcato <pedro.falcato@gmail.com> wrote:
-> >
-> > For mprotect()/mmap(), is Linux implementation limited by POSIX ?
->
-> No. POSIX works merely as a baseline that UNIX systems aim towards.
-> You can (and very frequently do) extend POSIX interfaces (in fact,
-> it's how most of POSIX was written, through sheer
-> "design-by-committee" on a bunch of UNIX systems' extensions).
+On Thu, Oct 19, 2023 at 10:47:58PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We know dev->name should be NUL-terminated based on the presence of a
+> manual NUL-byte assignment.
+> 
+> NUL-padding is not required as dev is already zero-allocated which
+> renders any further NUL-byte assignments redundant:
+> dev = pnp_alloc_dev(&pnpacpi_protocol, num, pnpid); --->
+>   dev = kzalloc(sizeof(struct pnp_dev), GFP_KERNEL);
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding. This simplifies the code and makes
+> the intent/behavior more obvious.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-We can in extreme circumstances actually go further than that, and not
-only extend on POSIX requirements, but actively even violate them.
+Looks clean to me!
 
-It does need a very good reason, though, but it has happened when
-POSIX requirements were simply actively wrong.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-For example, at one point POSIX required
-
-     int accept(int s, struct sockaddr *addr, size_t *addrlen);
-
-which was simply completely wrong. It's utter shite, and didn't
-actually match any reality.
-
-The 'addrlen' parameter is 'int *', and POSIX suddenly trying to make
-it "size_t" was completely unacceptable.
-
-So we ignored it, told POSIX people that they were full of sh*t, and
-they eventually fixed it in the next version (by introducing a
-"socklen_t" that had better be the same as "int").
-
-So POSIX can simply be wrong.
-
-Also, if it turns out that we had some ABI that wasn't
-POSIX-compatible, the whole "don't break user space" will take
-precedence over any POSIX concerns, and we will not "fix" our system
-call if people already use our old semantics.
-
-So in that case, we generally end up with a new system call (or new
-flags) instead.
-
-Or sometimes it just is such a small detail that nobody cares - POSIX
-also has a notion of documenting areas of non-conformance, and people
-who really care end up having notions like "conformance vs _strict_
-conformance".
-
-                 Linus
+-- 
+Kees Cook
