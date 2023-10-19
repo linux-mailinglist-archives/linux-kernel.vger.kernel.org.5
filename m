@@ -2,82 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBF77D0381
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500457D0382
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 23:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346557AbjJSVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 17:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S1346572AbjJSVIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 17:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235529AbjJSVGn (ORCPT
+        with ESMTP id S232131AbjJSVIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 17:06:43 -0400
+        Thu, 19 Oct 2023 17:08:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A54136;
-        Thu, 19 Oct 2023 14:06:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82639C433CA;
-        Thu, 19 Oct 2023 21:06:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E94C2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 14:08:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7034BC433C8;
+        Thu, 19 Oct 2023 21:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697749601;
-        bh=VY5heIBy9yftU7sYBNfoeKWqOwP4esxHzVS+2WzNFSc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CEmtcQ4IqPvbJWnxJuekiXHzD9SNs3kIEH+DgJzWzEXC5Q9YETxOU8YLkGXLGKUZD
-         LnmoApJt7vYJgs5O6OxnIm6mCL+WZifbVTrMqDFyj3j8n9WK/u6a9JGGVw0FrIB4e/
-         5Ec87wTgg1DWo6q0vAky2XeorzhdFNdrkoUOS4P4rw4/UPgQSM3wprhoratuzDCwjB
-         dpQ00Eth8jNgLt60yQ1zOZOn/zmFE6+XPNVVZMV4Pm/yvRQKlzTdZ+j12nTp2epE08
-         GyWZqkZRb5O9qqcNfO4bl/jOeKK02zywE9o1qXRgg2cMd9Y5eLwNO91bQAmpyZ/uK/
-         stJt683nTgvqw==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-507bd19eac8so145444e87.0;
-        Thu, 19 Oct 2023 14:06:41 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwhovISxy2sJd/SVg0h9ENC8NbYVn3plQw43ETPCgGXMeSnYVka
-        Q5pmUT2rtWgSMUDowAY8tGJCY2/AukgH8qPzLA==
-X-Google-Smtp-Source: AGHT+IFNNqLHq7e9rbvmn7g8Kf+819v49MVg4TY+Jdh4Fqqqe3ifpRBgvC9663PPxlQqPustO9R2FgtjwWcYakFNqKY=
-X-Received: by 2002:ac2:5464:0:b0:504:3c1f:cbd9 with SMTP id
- e4-20020ac25464000000b005043c1fcbd9mr2295837lfn.16.1697749599708; Thu, 19 Oct
- 2023 14:06:39 -0700 (PDT)
+        s=k20201202; t=1697749716;
+        bh=H0JSXdQwr27GBoH0/fMX6fSYgLkqdrKVJuYB9tG8i1E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cX+nY9t/ak6xNjlOvV4hpYu77dyqggBi89tcXakzQrYV72t18gsnOwENnXitGzCkw
+         qpCpVU/7P6x5FbQMa+C9FU+xcsps4cwI0R+EtLsdfTnOoatS9j9tClJUl7WOeQEns5
+         f5DeHRyLdl8oyH+hGtrJlsDLOC3z+tvpoevyjswTuQQgeEd/sUiINrSKYIahsobPqe
+         V7qX8dw6jnwjgwkwtEM2gl+B6wYkrcpCfhRKUdDNbUtex8jOB1NFkz7t6tCgDCbnrD
+         nFVjeNdN0iYFRcTQ7vwtukdTDtRhd9ebZw969VY2lVlA0/rmuJ/rOm4YmcsIwjzO7S
+         OLFyN1urnAVUQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C43D740016; Thu, 19 Oct 2023 18:08:33 -0300 (-03)
+Date:   Thu, 19 Oct 2023 18:08:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Manu Bretelle <chantr4@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH v1 1/4] perf parse-events: Remove BPF event support
+Message-ID: <ZTGa0Ukt7QyxWcVy@kernel.org>
+References: <20230810184853.2860737-1-irogers@google.com>
+ <20230810184853.2860737-2-irogers@google.com>
+ <ZNZJCWi9MT/HZdQ/@kernel.org>
+ <ZNZWsAXg2px1sm2h@kernel.org>
+ <ZTGHRAlQtF7Fq8vn@surya>
 MIME-Version: 1.0
-References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
- <20231005160550.2423075-4-quic_devipriy@quicinc.com> <169710517252.1166696.13811645504228005200.b4-ty@kernel.org>
-In-Reply-To: <169710517252.1166696.13811645504228005200.b4-ty@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 19 Oct 2023 16:06:27 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKdvnb7c_oMaMsQiJQzm1YF5uV+Tb9nQSgX0_+tP1KD8g@mail.gmail.com>
-Message-ID: <CAL_JsqKdvnb7c_oMaMsQiJQzm1YF5uV+Tb9nQSgX0_+tP1KD8g@mail.gmail.com>
-Subject: Re: (subset) [PATCH V15 3/4] dt-bindings: mfd: qcom,tcsr: Add
- simple-mfd support for IPQ6018
-To:     Lee Jones <lee@kernel.org>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        thierry.reding@gmail.com, ndesaulniers@google.com, trix@redhat.com,
-        baruch@tkos.co.il, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Devi Priya <quic_devipriy@quicinc.com>,
-        linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTGHRAlQtF7Fq8vn@surya>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 5:06=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
->
-> On Thu, 05 Oct 2023 21:35:49 +0530, Devi Priya wrote:
-> > Update the binding to include pwm as the child node to TCSR block and
-> > add simple-mfd support for IPQ6018.
-> >
-> >
->
-> Applied, thanks!
->
-> [3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
->       commit: b4a32d218d424b81a58fbd419e1114b1c1f76168
+Em Thu, Oct 19, 2023 at 12:45:08PM -0700, Manu Bretelle escreveu:
+> cc @quentin
+> 
+> On Fri, Aug 11, 2023 at 12:41:36PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Aug 11, 2023 at 11:43:22AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Right now it is not applying due to some clash with other changes and
+> > > when I tried to apply it manually there were some formatting issues:
+> > > 
+> > > ⬢[acme@toolbox perf-tools-next]$ head ~/wb/1.patch
+> > > From SRS0=EALy=D3=flex--irogers.bounces.google.com=3IDHVZAcKBAUnwtljwxlttlqj.htrfhrjpjwsjq.twl@kernel.org Thu Aug 10 17:53:46 2023
+> > > Delivered-To: arnaldo.melo@gmail.com
+> > > Received: from imap.gmail.com [64.233.186.109]
+> > > 	by quaco with IMAP (fetchmail-6.4.37)
+> > > 	for <acme@localhost> (single-drop); Thu, 10 Aug 2023 17:53:46 -0300 (-03)
+> > > Received: by 2002:a0c:ab03:0:b0:63d:780e:9480 with SMTP id h3csp908198qvb;
+> > >  Thu, 10 Aug 2023 11:49:52 -0700 (PDT)
+> > > X-Google-Smtp-Source: AGHT+IH9N/knUCyQ0tQ2Q0XBH0gqf8A8DB8/37YHWAJDKBmz7AGSV9CvCKYDuE3EwxriZFBwtZMs
+> > > X-Received: by 2002:a4a:6b4f:0:b0:56c:b2ab:9820 with SMTP id
+> > >  h15-20020a4a6b4f000000b0056cb2ab9820mr2695332oof.8.1691693392493; Thu, 10 Aug
+> > > ⬢[acme@toolbox perf-tools-next]$ patch -p1 < ~/wb/1.patch
+> > > patching file tools/perf/Documentation/perf-config.txt
+> > > patch: **** malformed patch at line 234: ith
+> > > 
+> > > ⬢[acme@toolbox perf-tools-next]$
+> > > 
+> > > I'm trying to apply it manually.
+> > 
+> > I have this extracted from this patch as the first patch in the series:
+> > 
+> > >From adc61b5774a9de62f34d593f164ca02daa6fb44c Mon Sep 17 00:00:00 2001
+> > From: Ian Rogers <irogers@google.com>
+> > Date: Fri, 11 Aug 2023 12:19:48 -0300
+> > Subject: [PATCH 1/1] perf bpf: Remove support for embedding clang for
+> >  compiling BPF events (-e foo.c)
+> > 
+> > This never was in the default build for perf, is difficult to maintain
+> > as it uses clang/llvm internals so ditch it, keeping, for now, the
+> > external compilation of .c BPF into .o bytecode and its subsequent
+> > loading, that is also going to be removed, do it separately to help
+> > bisection and to properly document what is being removed and why.
+> > 
+> > Committer notes:
+> > 
+> > Extracted from a larger patch and removed some leftovers, namely
+> > deleting these now unused feature tests:
+> > 
+> >     tools/build/feature/test-clang.cpp
+> >     tools/build/feature/test-cxx.cpp
+> >     tools/build/feature/test-llvm-version.cpp
+> >     tools/build/feature/test-llvm.cpp
+> > 
+> 
+> This seem to have broken `llvm` feature detection for `bpftool`.
+> 
+> The feature detections are still available in `tools/build/Makefile.feature` [0]
+> but the .cpp files are gone.
+> 
+> `bpftool` still rely on the `llvm` feature:
+> 
+>     $ git --no-pager grep 'feature-llvm'
+>     tools/bpf/bpftool/Makefile:ifeq ($(feature-llvm),1)
+> 
+> The result of testing llvm feature is:
+> 
+>     $ cat tools/build/feature/test-llvm.make.output
+>     cc1plus: fatal error: test-llvm.cpp: No such file or directory
+>     compilation terminated.
+> 
+> With current head:
+> 
+>     make -j $((4*$(nproc))) -C tools/bpf/bpftool && ./tools/bpf/bpftool/bpftool --version
+>     ...
+>     Auto-detecting system features:
+>     ...                         clang-bpf-co-re: [ on  ]
+>     ...                                    llvm: [ OFF ]
+>     ...                                  libcap: [ on  ]
+>     ...                                  libbfd: [ on  ]
+>     ...
+>     ...
+>     ...
+>     bpftool v7.3.0
+>     using libbpf v1.3
+>     features: libbfd, skeletons
+> 
+> After applying
+> 
+>     git show 56b11a2126bf2f422831ecf6112b87a4485b221b  tools/build/feature | \
+>         patch -p1 -R
 
-This is dependent on patch 2 being applied.
 
-Rob
+Ouch, so probably we need just to reintroduce that one
+tools/build/feature/test-llvm.cpp file.
+
+Building perf these days ends up using bpftool, and the end result as
+noticed with me testing perf, perf trace with bpf, etc didn't change, so
+I didn't notice :-\
+
+And:
+
+ifeq ($(feature-llvm),1)
+  # If LLVM is available, use it for JIT disassembly
+  CFLAGS  += -DHAVE_LLVM_SUPPORT
+  LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+  LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+  ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
+    LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+    LIBS += -lstdc++
+  endif
+  LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
+else
+  # Fall back on libbfd
+  ifeq ($(feature-libbfd),1)
+    LIBS += -lbfd -ldl -lopcodes
+  else ifeq ($(feature-libbfd-liberty),1)
+    LIBS += -lbfd -ldl -lopcodes -liberty
+  else ifeq ($(feature-libbfd-liberty-z),1)
+    LIBS += -lbfd -ldl -lopcodes -liberty -lz
+  endif
+
+  # If one of the above feature combinations is set, we support libbfd
+  ifneq ($(filter -lbfd,$(LIBS)),)
+    CFLAGS += -DHAVE_LIBBFD_SUPPORT
+
+    # Libbfd interface changed over time, figure out what we need
+    ifeq ($(feature-disassembler-four-args), 1)
+      CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+    endif
+    ifeq ($(feature-disassembler-init-styled), 1)
+      CFLAGS += -DDISASM_INIT_STYLED
+    endif
+  endif
+endif
+
+And there is a fallback to using binutils, so most people ended up not
+noticing.
+
+I wonder how to improve the current situation to detect these kinds of
+problems in the future, i.e. how to notice that some file needed by some
+Makefile, etc got removed or that some feature test fails because some
+change in the test .c files makes them fail and thus activates fallbacks
+like the one above :-\
+
+
+So if I just get this back:
+
+⬢[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llvm.cpp
+// SPDX-License-Identifier: GPL-2.0
+#include "llvm/Support/ManagedStatic.h"
+#include "llvm/Support/raw_ostream.h"
+#define NUM_VERSION (((LLVM_VERSION_MAJOR) << 16) + (LLVM_VERSION_MINOR << 8) + LLVM_VERSION_PATCH)
+
+#if NUM_VERSION < 0x030900
+# error "LLVM version too low"
+#endif
+int main()
+{
+	llvm::errs() << "Hello World!\n";
+	llvm::llvm_shutdown();
+	return 0;
+}
+⬢[acme@toolbox perf-tools-next]$
+
+And install the llvm-devel package then it back working:
+
+⬢[acme@toolbox perf-tools-next]$ make -C tools/bpf/bpftool
+make: Entering directory '/home/acme/git/perf-tools-next/tools/bpf/bpftool'
+
+Auto-detecting system features:
+...                         clang-bpf-co-re: [ on  ]
+...                                    llvm: [ on  ]
+...                                  libcap: [ on  ]
+...                                  libbfd: [ on  ]
+<SNIP>
+⬢[acme@toolbox perf-tools-next]$ cat tools/build/feature/test-llvm.make.output
+⬢[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-llvm.
+test-llvm.bin          test-llvm.cpp          test-llvm.d            test-llvm.make.output
+⬢[acme@toolbox perf-tools-next]$ ls -la tools/build/feature/test-llvm.bin
+-rwxr-xr-x. 1 acme acme 17712 Oct 19 18:04 tools/build/feature/test-llvm.bin
+⬢[acme@toolbox perf-tools-next]$ ldd tools/build/feature/test-llvm.bin
+	linux-vdso.so.1 (0x00007ffcaf5d9000)
+	libLLVM-16.so => /lib64/libLLVM-16.so (0x00007fc4faefa000)
+	libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007fc4faca6000)
+	libm.so.6 => /lib64/libm.so.6 (0x00007fc4fabc5000)
+	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fc4faba1000)
+	libc.so.6 => /lib64/libc.so.6 (0x00007fc4fa9c3000)
+	libffi.so.8 => /lib64/libffi.so.8 (0x00007fc4fa9b7000)
+	libedit.so.0 => /lib64/libedit.so.0 (0x00007fc4fa978000)
+	libz.so.1 => /lib64/libz.so.1 (0x00007fc4fa95e000)
+	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fc4fa92b000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fc502404000)
+⬢[acme@toolbox perf-tools-next]$ sudo dnf install llvm-devel
+
+I'll get this merged in my perf-tools-fixes-for-v6.6 that I'll submit
+tomorrow to Linus, thanks for reporting!
+
+I'll add your:
+
+Reported-by: Manu Bretelle <chantr4@gmail.com>
+
+And:
+
+Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
+
+Ok?
+
+- Arnaldo
