@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A077CF408
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8624C7CF40B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 11:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345077AbjJSJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 05:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
+        id S1345061AbjJSJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 05:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235231AbjJSJ1F (ORCPT
+        with ESMTP id S232846AbjJSJ1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 05:27:05 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AB6187
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:27:02 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso13549151a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:27:02 -0700 (PDT)
+        Thu, 19 Oct 2023 05:27:47 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D7EA3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:27:45 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9be02fcf268so913585166b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 02:27:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697707621; x=1698312421; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697707664; x=1698312464; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oz0CrCWpEFv7X1wnxM+8TRRbLdRXVk3t64umKMM+ndM=;
-        b=cY6eHllk3Kk4BezELCIWLGgexZ8/H95MPiF3Y37/q0KVtdy83voykW/fBEwYJNE1N/
-         xYiF1pIKOo2RXf1UJzKAvs59luCz18ygIM6wqXewnFxU29wS8ZDF+rvQ/yt8DbaI7Afa
-         u6gjawdipG9r75iiFMfpKfYqq5xGa7nPpRp+JIyEYCA/NWuPbzqdmbDuJ34u2tNfSsVs
-         /SfpUHH5Q3e46mn6c3n4dcItODSgF5q29+n1AFqPIjcU9+GuxuCFhiXMaKcUrImd3ex4
-         /XTYkJ+sGps+MVRwTBBZeJQCCt4EtoLqq+ILK1ec09iChKZ9ppYhUUe9TFGUUXgEd34/
-         9FjA==
+        bh=GDIPDxRfymMUryd6JQm5BlwZrAikeNXoTsdv1H/0wTQ=;
+        b=gID3zvNbLnm9XvEM52UoMnuEWbNF7L2yPdkqQ5VrKx0CTs2fgXaNfGoqMfxNBazBYU
+         HFRcCiDwCQyuo//s0xh71pWeYbbGsU7tzRaKeTY9l7caDeV97bAag2ERFi5tTrYU+gq4
+         Ya9YQhHTWzzih6BbQyQ1eaPcr+vvYcj/RDB8PT3TLAttTMtdPPommUrdkpwz1LaBirvK
+         VSA5odIxf2ps4GuUdTkJYUvslHh0LoE15Uf7lNlROADpJHADhM9G4VBrzksDQHVBxpqJ
+         8Ty54KtDkvBnj0ORmISln2caMJeVUw4tob1V+3GGaXnFG7EQtpF8sbNqMiIgxicLMohL
+         70bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697707621; x=1698312421;
+        d=1e100.net; s=20230601; t=1697707664; x=1698312464;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oz0CrCWpEFv7X1wnxM+8TRRbLdRXVk3t64umKMM+ndM=;
-        b=wK2m6w6qNzO7wHzOgbzo3n+r8dBcjeP8BVKNHkIwdneucxXuy2u9BFViyLKmrXyI6/
-         WvJEs2k85tnEzFJEZWomQS8mqh0wPVUTafFpZIIdAkYloExz+Lpsxz4dBtpQmguGADzT
-         xr2jhhVofLmlSzqdHRZ95+/QQAPr7is38lhYNPaWlxucSDHFskoAasX2M+Zsn5X2dXr1
-         ux211fm5PKj6Y5c54TpChEJWwLni8PCWh0MXSGbDuCrgrCJ8iT8RGq2EADNDvLvmm3//
-         lbyxDj/A1fVjBVY9Cq9IyMUq5DUyjDpy9itsALGbaQ5PnKG4Hrjx6p9Q/2DKt045tv+U
-         +mmQ==
-X-Gm-Message-State: AOJu0YxIi2sw9mlwQOXkhnTKOO0WMjWqZmY7t3cmSL31yLyMHUFT9Vvp
-        LyKPun8TNxduMOKbg8zZzU8clSZgWpc6uTgMIb0=
-X-Google-Smtp-Source: AGHT+IERlZM9uDgTZNxcnj+tHgxqq19iz4dKwsnDpGSHoSiTQHWkXEBrAssm9zXxNxuiU3mRIBw8Ig==
-X-Received: by 2002:a17:907:96a2:b0:9b2:c583:cd71 with SMTP id hd34-20020a17090796a200b009b2c583cd71mr1593721ejc.50.1697707621440;
-        Thu, 19 Oct 2023 02:27:01 -0700 (PDT)
+        bh=GDIPDxRfymMUryd6JQm5BlwZrAikeNXoTsdv1H/0wTQ=;
+        b=Uot6mGQ24VKEcwaXBVscl4PywVRAmgusIVPPO+4Z45QIPJkO1zObttbxCtXNtrO0X2
+         Qn3eUy3C7LyNIwO8b0yWf3Wqw4JqpQQtp9yOjsBlV3jJ+mWnKRKYPZVq3pZLXYaTeufL
+         p/5XE3AbicUO4IQcnRdP+qNkv2mU+01O0FOMR4FBis5TkX8jbHwU5EwqL7O06pmQ6owJ
+         isc1ZCRr97JxF89ff+fv6MatGzo2BlZy5i2V+n6B+SfJcy84rXn9YS8RcXyZQ8mxP5BH
+         u8u2bzumQqoO2mkoOVEzdseKgh0llrLCCqqHBUpKTgPJHrpmEImuN5K9/1a6xk/j/8Dx
+         AH5w==
+X-Gm-Message-State: AOJu0Yw1Td1R77TnCgp0Cr/EDXmHDJp3xd30msFZO8iV/PFNH8XOXavQ
+        oGH/LNfhhrSyxW+FFXY1zOv5EA==
+X-Google-Smtp-Source: AGHT+IGckBf6eYw0LmFo5R2wnv7V9VgbA7jJ7GGaKWGc9ciQq6IGYZe9/DUFEuWfZ1I8HhIZuPe68A==
+X-Received: by 2002:a17:907:31c6:b0:9bf:f20:8772 with SMTP id xf6-20020a17090731c600b009bf0f208772mr1431351ejb.26.1697707664281;
+        Thu, 19 Oct 2023 02:27:44 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id l24-20020a170906231800b009c764341f74sm94223eja.71.2023.10.19.02.27.00
+        by smtp.gmail.com with ESMTPSA id l24-20020a170906231800b009c764341f74sm94223eja.71.2023.10.19.02.27.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 02:27:01 -0700 (PDT)
-Message-ID: <aac1b716-c4f6-46e8-88f6-e5aad5bca870@linaro.org>
-Date:   Thu, 19 Oct 2023 11:26:59 +0200
+        Thu, 19 Oct 2023 02:27:42 -0700 (PDT)
+Message-ID: <1fa867b2-3930-4ff3-90cd-022d855036c7@linaro.org>
+Date:   Thu, 19 Oct 2023 11:27:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/5] dt-bindings: nvmem: Convert xlnx,zynqmp-nvmem.txt
- to yaml
+Subject: Re: [PATCH V2 3/5] arm64: zynqmp: Add ZynqnMP nvmem nodes
 Content-Language: en-US
 To:     Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>,
         srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
@@ -64,7 +63,7 @@ To:     Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>,
         linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org
 References: <20231019060651.23341-1-praveen.teja.kundanala@amd.com>
- <20231019060651.23341-3-praveen.teja.kundanala@amd.com>
+ <20231019060651.23341-4-praveen.teja.kundanala@amd.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,13 +109,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231019060651.23341-3-praveen.teja.kundanala@amd.com>
+In-Reply-To: <20231019060651.23341-4-praveen.teja.kundanala@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -124,115 +123,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 19/10/2023 08:06, Praveen Teja Kundanala wrote:
-> Convert the xlnx,zynqmp-nvmem.txt to yaml.
+> Add nvmem DT nodes for ZynqMP SOC
 > 
 > Signed-off-by: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
 > ---
->  .../bindings/nvmem/xlnx,zynqmp-nvmem.txt      | 46 -------------------
->  .../bindings/nvmem/xlnx,zynqmp-nvmem.yaml     | 40 ++++++++++++++++
->  2 files changed, 40 insertions(+), 46 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
->  create mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml
+>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 59 +++++++++++++++++++++++++-
+>  1 file changed, 57 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt b/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
-> deleted file mode 100644
-> index 4881561b3a02..000000000000
-> --- a/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
-> +++ /dev/null
-> @@ -1,46 +0,0 @@
-> ---------------------------------------------------------------------------
-> -=  Zynq UltraScale+ MPSoC nvmem firmware driver binding =
-> ---------------------------------------------------------------------------
-> -The nvmem_firmware node provides access to the hardware related data
-> -like soc revision, IDCODE... etc, By using the firmware interface.
-> -
-> -Required properties:
-> -- compatible: should be "xlnx,zynqmp-nvmem-fw"
-> -
-> -= Data cells =
-> -Are child nodes of silicon id, bindings of which as described in
-> -bindings/nvmem/nvmem.txt
-> -
-> --------
-> - Example
-> --------
-> -firmware {
-> -	zynqmp_firmware: zynqmp-firmware {
-> -		compatible = "xlnx,zynqmp-firmware";
-> -		method = "smc";
-> -
-> -		nvmem_firmware {
-> -			compatible = "xlnx,zynqmp-nvmem-fw";
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			/* Data cells */
-> -			soc_revision: soc_revision {
-> -				reg = <0x0 0x4>;
-> -			};
-> -		};
-> -	};
-> -};
-> -
-> -= Data consumers =
-> -Are device nodes which consume nvmem data cells.
-> -
-> -For example:
-> -	pcap {
-> -		...
-> -
-> -		nvmem-cells = <&soc_revision>;
-> -		nvmem-cell-names = "soc_revision";
-> -
-> -		...
-> -	};
-> diff --git a/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml b/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml
-> new file mode 100644
-> index 000000000000..5d20362a0615
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml
-> @@ -0,0 +1,40 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/xlnx,zynqmp-nvmem.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Zynq UltraScale+ MPSoC Non Volatile Memory interface
-> +
-> +description: |
-> +    The ZynqMP MPSoC provides access to the hardware related data
-> +    like SOC revision, IDCODE and specific purpose efuses.
-> +
-> +maintainers:
-> +  - Kalyani Akula <kalyani.akula@amd.com>
-> +  - Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
-> +
-> +allOf:
-> +  - $ref: nvmem.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: xlnx,zynqmp-nvmem-fw
-> +
-> +required:
-> +  - compatible
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> index b61fc99cd911..b7433e6b9d6c 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> @@ -194,14 +194,69 @@ zynqmp_power: zynqmp-power {
+>  				mbox-names = "tx", "rx";
+>  			};
+>  
+> -			nvmem_firmware {
+> +			nvmem-firmware {
 
-Test your bindings before sending. I am not a free tester of your
-code... It's your duty.
-
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nvmem-firmware {
-
-Node names should be generic, so "nvmem". See also an explanation and
-list of examples (not exhaustive) in DT specification:
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
 https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-I already asked for this.
+
+>  				compatible = "xlnx,zynqmp-nvmem-fw";
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+>  
+> -				soc_revision: soc_revision@0 {
+> +				soc_revision: soc-revision@0 {
+>  					reg = <0x0 0x4>;
+>  				};
+
+Wasn't this fixed already by Michal?
+
 
 Best regards,
 Krzysztof
