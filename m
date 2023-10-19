@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D015F7CFE91
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5913A7CFE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346349AbjJSPqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S1346376AbjJSPqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345977AbjJSPqJ (ORCPT
+        with ESMTP id S1345938AbjJSPqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:46:09 -0400
+        Thu, 19 Oct 2023 11:46:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C91CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:46:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC51C433CA;
-        Thu, 19 Oct 2023 15:46:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697730368;
-        bh=uZrzAXC9wdYwjcMPlXwv/0QqbQrPq59DeA2BiUMwKU0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EOiTi+a4vHVdsctj3eTf4roAB5ppZH82lmIe2eRm0FlA1xhPU7oavTbDuF+JNjPMN
-         TTkeLLelVquOhbhW3WUvCRKVAKIymzbXPsQ9aLF72BND3AtxFs/5XrDWaS3MkX1KOo
-         LwqrM6gYG1Ppxu/VwZHtveE2/unjbNserpWTLjBwbxVpQkCAx75UvrLxnkD4+MPKxR
-         TzPeROpifbAmDzYjmAhDLBSmGGN+4sVfR1/mqLtUFBFckzm54dSG8ZsCOsqDafKdTp
-         dOL6FdWJspJrccQfEyJ+BVEtqOoCQeLQ3NLgVbUhzorEiY3XITtDSusBijPK+DevJO
-         K+WHtOB6JDEYQ==
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Clark <james.clark@arm.com>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH V3] drivers: perf: arm_pmuv3: Drop some unused arguments from armv8_pmu_init()
-Date:   Thu, 19 Oct 2023 16:45:59 +0100
-Message-Id: <169772976856.4092328.7100225925505842373.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231016025436.1368945-1-anshuman.khandual@arm.com>
-References: <20231016025436.1368945-1-anshuman.khandual@arm.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D1CCF;
+        Thu, 19 Oct 2023 08:46:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E061C433C8;
+        Thu, 19 Oct 2023 15:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697730405;
+        bh=dlXwrAmr23RZBJTQ4tZB3ILSltevA7NR468NS5iSreI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qd9oN9q3CDls1FHxrQ/fEHIzbFe3gGdXb9PwNIyIMVNdcHKeYaukZaB+ZRvCEElLa
+         IN5LRY41J2F9SBZ6c/hCI9wkG2d/He9mO/VpTf4aiVbz8OUqOpL6ZMkc7mc//znpQM
+         TuUnrJkSUHMZ4Zz2Q0AY/tlRHyf71pcP6uT6/L6w=
+Date:   Thu, 19 Oct 2023 17:46:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        miquel.raynal@bootlin.com, conor.culhane@silvaco.com,
+        alexandre.belloni@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net, joe@perches.com, linux-i3c@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, imx@lists.linux.dev,
+        jirislaby@kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 1/5] i3c: add slave mode support
+Message-ID: <2023101935-papaya-legible-5849@gregkh>
+References: <20231018215809.3477437-1-Frank.Li@nxp.com>
+ <20231018215809.3477437-2-Frank.Li@nxp.com>
+ <dd06c2d3-e273-4356-835b-42619543dfab@linaro.org>
+ <ZTFE8hrRgPBrb7e3@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTFE8hrRgPBrb7e3@lizhi-Precision-Tower-5810>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
@@ -54,26 +55,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 08:24:36 +0530, Anshuman Khandual wrote:
-> All the PMU init functions want the default sysfs attribute groups, and so
-> these all call armv8_pmu_init_nogroups() helper, with none of them calling
-> armv8_pmu_init() directly. When we introduced armv8_pmu_init_nogroups() in
-> the commit e424b1798526 ("arm64: perf: Refactor PMU init callbacks")
+On Thu, Oct 19, 2023 at 11:02:10AM -0400, Frank Li wrote:
+> On Thu, Oct 19, 2023 at 09:00:05AM +0200, Krzysztof Kozlowski wrote:
+> > On 18/10/2023 23:58, Frank Li wrote:
+> > > Introduce a new slave core layer in order to support slave functions in
+> > > linux kernel. This comprises the controller library and function library.
+> > > Controller library implements functions specific to an slave controller
+> > > and function library implements functions specific to an slave function.
+> > > 
+> > > Introduce a new configfs entry to configure the slave function configuring
+> > > and bind the slave function with slave controller.
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  drivers/i3c/Kconfig       |  26 ++
+> > >  drivers/i3c/Makefile      |   2 +
+> > >  drivers/i3c/i3c-cfs.c     | 389 +++++++++++++++++++++++++++++
+> > >  drivers/i3c/slave.c       | 453 ++++++++++++++++++++++++++++++++++
+> > >  include/linux/i3c/slave.h | 503 ++++++++++++++++++++++++++++++++++++++
+> > >  5 files changed, 1373 insertions(+)
+> > >  create mode 100644 drivers/i3c/i3c-cfs.c
+> > >  create mode 100644 drivers/i3c/slave.c
+> > >  create mode 100644 include/linux/i3c/slave.h
+> > > 
+> > > diff --git a/drivers/i3c/Kconfig b/drivers/i3c/Kconfig
+> > > index 30a441506f61c..d5f5ca7cd6a56 100644
+> > > --- a/drivers/i3c/Kconfig
+> > > +++ b/drivers/i3c/Kconfig
+> > > @@ -22,3 +22,29 @@ menuconfig I3C
+> > >  if I3C
+> > >  source "drivers/i3c/master/Kconfig"
+> > >  endif # I3C
+> > > +
+> > > +config I3C_SLAVE
+> > 
+> > It doesn't look like you follow Kernel naming convention (see coding style).
 > 
->  ... we thought that we might need custom attribute groups in future, but
-> as we evidently haven't, we can remove the option.
-> 
-> [...]
+> I checked I3C spec. It use words 'target'.
+> Is it okay using I3C_TARGET?
 
-Applied to will (for-next/perf), thanks!
-
-[1/1] drivers: perf: arm_pmuv3: Drop some unused arguments from armv8_pmu_init()
-      https://git.kernel.org/will/c/3b9a22d345ff
-
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Why wouldn't it be?
