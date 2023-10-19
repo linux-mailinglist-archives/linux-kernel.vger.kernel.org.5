@@ -2,230 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F9D7CF339
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D737CF355
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 10:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232966AbjJSIvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 04:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        id S1344977AbjJSIym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 04:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJSIvq (ORCPT
+        with ESMTP id S231792AbjJSIyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 04:51:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671019F;
-        Thu, 19 Oct 2023 01:51:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1437C433C8;
-        Thu, 19 Oct 2023 08:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697705504;
-        bh=u+m3NN1Guv7J5JwAM18DK03sPbj3O3Xgocab5WPj9c8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uNTjurAsrIcUqdKGKKf2Z6YGJEyDj0xxj47pE8S+DaQ3InYjXUb4B8LeuxgJ4L1z5
-         WpyTfSm8NGLAa5fWPB9SS/NhLygYCORPaz8p0s5CoIl1Y9JCIC1TdZbYG7jULIUIBn
-         AhmG9cZXDtsj8WHFvL+aunGHXA+2eJDeX/dfQ7ZIHhsUdfKeqkLT5I7OMUjt4yv/cS
-         Tf6zPESWns+V5lFGWu9EAjlXzbmemUCYOix51ufNji1ZxmKJMfy4jKYMYU+mjDufr5
-         zqealchXVKCNiH8fxrbZEIsAbPDQdC6BvZjhnAuIx2je/nu2tY89UYWX8avKs+opKU
-         Itr7t8xC+Vu7Q==
-Date:   Thu, 19 Oct 2023 09:51:39 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
- schemas
-Message-ID: <20231019-rematch-ethically-9d482ca4607e@spud>
-References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
+        Thu, 19 Oct 2023 04:54:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EDA121
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697705630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lKYvltGDTZPHmBBUWHHWQGHBOyryxG9yuCEoL9SPiSs=;
+        b=T67CeVGOuvDddeHsoncqbuoFEV5DibgB1GtLWXvjvwQeKRZvco5L/gE8AcLo6SvXA4rXgZ
+        kKZuzHJjGTmfPK/3d4urqfQOb6CzmEfdoto78BMr9a/FJQtjh3Jugw+b3a4cJTdCjV+1UK
+        cIzDhQ/lFQNJSYTciVzA5w0PorOsPII=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-jLKJdEikMl2mQ0J917H-nw-1; Thu, 19 Oct 2023 04:53:46 -0400
+X-MC-Unique: jLKJdEikMl2mQ0J917H-nw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53faa428157so9181a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 01:53:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697705626; x=1698310426;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lKYvltGDTZPHmBBUWHHWQGHBOyryxG9yuCEoL9SPiSs=;
+        b=YfVImIs4oRefKlyGv83aU2hH4bjVBvpCqUDE+Kh8drEtrRJOqmm570ceet0f/lT7DR
+         /QkZxowNNJPcaaCLt89kWQZnNYkcy51sCrCSw8m8CnUeUgZqCTIVLV1c6aA7xCbbJM4+
+         BlN/oRDukd7CJerlPhBXDQbrxEhEepTpDnGB1l0xff1T8KtgzyR8d/RRsemmrnXJM9qo
+         wDn6zmwOrDh5qKQ4SZPC5UDCetNNBXHqui/Bl+Co2cT5iX9iOeYCMc3gSKw78ULMfz3W
+         EI8boAzSsq/Yc+JsE/H452yBo1wwuyAgoFRqiP1MbIyKmKfLiAs/FHvVeETbunOqRV8Q
+         yRAw==
+X-Gm-Message-State: AOJu0YyvNubapm2atMJEnL7/N0pkRYf12QnLA2xvGCFnMTsrJ5emupVQ
+        PWmO3tzWSxfmW2mqrui391fcUB3fTwJ9oa42N/Q7PT8mGlcsHZHE/SoKg392uT+CvFXs3pKWisq
+        rh0P8gbxSctB7lx+OyoK6jK5Q
+X-Received: by 2002:a50:9f82:0:b0:53f:1a04:e4e4 with SMTP id c2-20020a509f82000000b0053f1a04e4e4mr1054313edf.2.1697705625849;
+        Thu, 19 Oct 2023 01:53:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEAUZUJc0kzm+7kKUWEc28P8pZT8ZjRc38n6nk/Neu6/YYJzX8nberMRXNYx7or9BO1aWDr3A==
+X-Received: by 2002:a50:9f82:0:b0:53f:1a04:e4e4 with SMTP id c2-20020a509f82000000b0053f1a04e4e4mr1054298edf.2.1697705625468;
+        Thu, 19 Oct 2023 01:53:45 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-237-142.dyn.eolo.it. [146.241.237.142])
+        by smtp.gmail.com with ESMTPSA id a6-20020aa7cf06000000b0053e625da9absm4050443edy.41.2023.10.19.01.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 01:53:44 -0700 (PDT)
+Message-ID: <d1271d557adb68b5f77649861faf470f265e9f6b.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 3/3] sock: Fix improper heuristic on raising
+ memory
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 19 Oct 2023 10:53:43 +0200
+In-Reply-To: <20231016132812.63703-3-wuyun.abel@bytedance.com>
+References: <20231016132812.63703-1-wuyun.abel@bytedance.com>
+         <20231016132812.63703-3-wuyun.abel@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="l/TF/AHtsvcqOc97"
-Content-Disposition: inline
-In-Reply-To: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---l/TF/AHtsvcqOc97
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 19, 2023 at 06:34:37PM +1030, Subhajit Ghosh wrote:
-> Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
-> file and removing the other.
-
-> Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dcef@li=
-naro.org/
-
-"Yes, they look similar. I will combine them all in a single yaml file in
-the next revision. Thank you Krzysztof."
-
-Yet this is a follow-up patch, not a version 2. The original patches
-seem to not have been applied, so I am not sure why you didn't send a
-v2?
-
-Cheers,
-Conor.
-
-> ---
->  .../bindings/iio/light/avago,apds9300.yaml    | 35 ++++++++++++---
->  .../bindings/iio/light/avago,apds9960.yaml    | 44 -------------------
->  2 files changed, 29 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,apd=
-s9960.yaml
+On Mon, 2023-10-16 at 21:28 +0800, Abel Wu wrote:
+> Before sockets became aware of net-memcg's memory pressure since
+> commit e1aab161e013 ("socket: initial cgroup code."), the memory
+> usage would be granted to raise if below average even when under
+> protocol's pressure. This provides fairness among the sockets of
+> same protocol.
 >=20
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300.y=
-aml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> index 206af44f2c43..7826a1749fcd 100644
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> @@ -4,17 +4,26 @@
->  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> =20
-> -title: Avago APDS9300 ambient light sensor
-> +title: Avago Gesture, RGB, ALS and Proximity sensors
-> =20
->  maintainers:
->    - Jonathan Cameron <jic23@kernel.org>
-> +  - Matt Ranostay <matt.ranostay@konsulko.com>
-> =20
->  description: |
-> -  Datasheet at https://www.avagotech.com/docs/AV02-1077EN
-> +  Avago (Broadcom) optical and proximity sensors with I2C interfaces.
-> +  Datasheet at https://docs.broadcom.com/doc/AV02-1077EN
-> +  Datasheet at https://docs.broadcom.com/doc/AV02-4191EN
-> =20
->  properties:
->    compatible:
-> -    const: avago,apds9300
-> +    oneOf:
-> +      - items:
-> +          - const: avago,apds9300
-> +          - const: avago,apds9960
-> +      - enum:
-> +          - avago,apds9300
-> +          - avago,apds9960
-> =20
->    reg:
->      maxItems: 1
-> @@ -22,14 +31,28 @@ properties:
->    interrupts:
->      maxItems: 1
-> =20
-> -additionalProperties: false
-> -
->  required:
->    - compatible
->    - reg
-> =20
-> +allOf:
-> +  - $ref: ../common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - avago,apds9960
-> +    then:
-> +      required:
-> +        - interrupts
-> +
-> +additionalProperties: false
-> +
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
->      i2c {
->          #address-cells =3D <1>;
->          #size-cells =3D <0>;
-> @@ -38,7 +61,7 @@ examples:
->              compatible =3D "avago,apds9300";
->              reg =3D <0x39>;
->              interrupt-parent =3D <&gpio2>;
-> -            interrupts =3D <29 8>;
-> +            interrupts =3D <29 IRQ_TYPE_LEVEL_LOW>;
->          };
->      };
->  ...
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9960.y=
-aml b/Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
-> deleted file mode 100644
-> index f06e0fda5629..000000000000
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> -%YAML 1.2
-> ----
-> -$id: http://devicetree.org/schemas/iio/light/avago,apds9960.yaml#
-> -$schema: http://devicetree.org/meta-schemas/core.yaml#
-> -
-> -title: Avago APDS9960 gesture/RGB/ALS/proximity sensor
-> -
-> -maintainers:
-> -  - Matt Ranostay <matt.ranostay@konsulko.com>
-> -
-> -description: |
-> -  Datasheet at https://www.avagotech.com/docs/AV02-4191EN
-> -
-> -properties:
-> -  compatible:
-> -    const: avago,apds9960
-> -
-> -  reg:
-> -    maxItems: 1
-> -
-> -  interrupts:
-> -    maxItems: 1
-> -
-> -additionalProperties: false
-> -
-> -required:
-> -  - compatible
-> -  - reg
-> -
-> -examples:
-> -  - |
-> -    i2c {
-> -        #address-cells =3D <1>;
-> -        #size-cells =3D <0>;
-> -
-> -        light-sensor@39 {
-> -            compatible =3D "avago,apds9960";
-> -            reg =3D <0x39>;
-> -            interrupt-parent =3D <&gpio1>;
-> -            interrupts =3D <16 1>;
-> -        };
-> -    };
-> -...
-> --=20
-> 2.34.1
+> That commit changes this because the heuristic will also be
+> effective when only memcg is under pressure which makes no sense.
+> Fix this by reverting to the behavior before that commit.
 >=20
+> After this fix, __sk_mem_raise_allocated() no longer considers
+> memcg's pressure. As memcgs are isolated from each other w.r.t.
+> memory accounting, consuming one's budget won't affect others.
+> So except the places where buffer sizes are needed to be tuned,
+> allow workloads to use the memory they are provisioned.
+>=20
+> Fixes: e1aab161e013 ("socket: initial cgroup code.")
 
---l/TF/AHtsvcqOc97
-Content-Type: application/pgp-signature; name="signature.asc"
+I think it's better to drop this fixes tag. This is a functional change
+and with such tag on at this point of the cycle, will land soon into
+every stable tree. That feels not appropriate.
 
------BEGIN PGP SIGNATURE-----
+Please repost without such tag, thanks!
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTDuGwAKCRB4tDGHoIJi
-0sY0AP46/QdAKAw3UmzI5yu2BejYkHZi//fE27QyY54i1SPzyQEA08OIHWW+rQ3b
-NwLNwXSqISxUYbVQOmVFGuN3/BYsNgg=
-=Z4/s
------END PGP SIGNATURE-----
+You can send the change to stables trees later, if needed.
 
---l/TF/AHtsvcqOc97--
+Paolo
+
