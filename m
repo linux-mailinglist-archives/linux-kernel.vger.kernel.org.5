@@ -2,74 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36AF7CED40
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047E47CED42
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 03:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjJSBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 21:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S232153AbjJSBMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 21:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJSBMZ (ORCPT
+        with ESMTP id S232021AbjJSBMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 21:12:25 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F19122
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 18:12:22 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so1165766566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 18:12:22 -0700 (PDT)
+        Wed, 18 Oct 2023 21:12:50 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557FD122;
+        Wed, 18 Oct 2023 18:12:48 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39IIiB5Z014987;
+        Wed, 18 Oct 2023 18:12:25 -0700
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3tstb4032r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Oct 2023 18:12:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hV4MWVrOKKZfF5W0jYg65+bzpanYn2mo8xgOEhYmH2Xq2QX0ToLCj+QmvTOy7U7dEDdJpNk/kbaLwun91KSdIBlc+1SZxQWliWK6n2N+3jIiEA6KiBaQMi16iQZy6AIMNdLoxYgY4dXVXUd73TLsH0vI8ra3EshfkhbhCvDsoLnOqwBAzdg6fopFrpGCu5mRkDe4sZtrIcJFGmOw65wqoELj40qQOI/drRuLNuWvz6YLwYoZwVUefwPtTSssf7e5jUKsiiy7lOy6ugI+TeKkTOQGNaAgOiiuEUoa1Hn5rnCe3vhanwRdr2pOvEHbd+gxv3mMLdOY9nOy4HHYQSv3FQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mxcKtARJTWx/qrc+gX2xc4StJDPqu9lGrXBNapdaHiU=;
+ b=hxCHo01A6wcX5EkJ+8RXH+0UCZBPuEkcZ374rAxgPbcpqCD62EviOFRTW4KRqgywBz8xai86U7EleKQNJll0mKVE+3HhFInVjcXxMa4Ewln3i3adfeYT7UIeQyNfwETerQNhUXiH5P/M3XfxAEBcmetm42AnfvndmAM8sX/dib8S84lZ1owKiiBTLjsDGBcoo6elceE2sWvvvCPs4rKh/cefmNY9F7qY7VJsCi7MfI2/RgUK9Om3tuf/Qc4h5vCkmoCoXBAeMYuT/gKQvWn2Em7PLkhePnxjIQ5E0TJi8vpUXLjy6JpCc5D39P3LEIr3B9oRwQT01zpmMLtQI4FgXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697677941; x=1698282741; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dhz7SA9P+XJBcY68CPcxHuRXH5ke/B4swdMIdIEkvG8=;
-        b=MBmhErMYbMgj5TySQ41JVNBhYlVHOZBtnFLqJwR4aNq9e8AxEcLejpVsD0Dhkt+11N
-         py9EvvUyiAJolKhQvj7tZwusHxXsF79EidRSdjVSERJNAtAAlRgLY8YmF0SUmrhoYa04
-         7FgaqORJU4Fq82sl+qmpO8cqALV6Hd88K4aCh0La2GkZKtnspLJqCuEPbKl3iV6nQ4bu
-         wBaes+lpzyL1yglbbN+kWYWerRkodNAO71ArcZ0S6m7/CzODeuZvyZhkgPUauSb7v4VB
-         8xDmfvYGTCkw/TDXToUUXjXpDt1KHOdhHNIeHbsfiq84qXqgZ5Gb8EWJxtG2j9FQlUB1
-         soag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697677941; x=1698282741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dhz7SA9P+XJBcY68CPcxHuRXH5ke/B4swdMIdIEkvG8=;
-        b=rxoRRAyLUWUahj3mKodw6ZWnbA4M9GExUZ+sNczdt/NlHswrhe6yMdn+R8CfnMahaS
-         5dDKdPV7UdNaLZt1uFnH/J+yZoRT5dQDCllh0zAIrESItoV6jD1mruUtumDfEzzs7mfn
-         EiloYOhoN46gxRmnfJ51SkpE9twqyvu85EFZUVySRx34jq95r/MAgAXDe1/2TvHHqskF
-         Ud8SVU1ycCmceWHhYkg3dTpdb0q1b7u+smKByqxB5hPF9Ncq43SWWxPg6VjRTBJvRW+t
-         tv6AWBfZOPDJbJp9UjeThO/ZxynKXKxnyzuTBtRXfUSStbf6MzeiohHOnYKlNgs68qvB
-         3hbA==
-X-Gm-Message-State: AOJu0YwHFKvzpFoRXfwaV47c8lEjM+AG04VYWtyNEvJqAIRMyPCmaOpy
-        liC7DQsuUUu8SEI37rzktnSAxM7i2ch5ScAoOnRUgg==
-X-Google-Smtp-Source: AGHT+IGHwNm3FxuIImSmxPAbFGp0c1yIKTSGLdrYiFc3epvSZQVMDEXR/8eKkuYyYFUstTct/Rdwn0qkA6qA1qwCpuE=
-X-Received: by 2002:a17:907:c16:b0:9ae:59c9:b831 with SMTP id
- ga22-20020a1709070c1600b009ae59c9b831mr625646ejc.49.1697677940697; Wed, 18
- Oct 2023 18:12:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-3-nphamcs@gmail.com>
- <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com> <CAKEwX=N3CnKE+gu-EP98Wr3goQV0Z8fXn_nBPW_H_rupjkBwhA@mail.gmail.com>
-In-Reply-To: <CAKEwX=N3CnKE+gu-EP98Wr3goQV0Z8fXn_nBPW_H_rupjkBwhA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 18 Oct 2023 18:11:41 -0700
-Message-ID: <CAJD7tkbBBTatK7LUHw__0K_8hykoepygfYLJuZx01CD8V+CZvg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] zswap: make shrinking memcg-aware
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mxcKtARJTWx/qrc+gX2xc4StJDPqu9lGrXBNapdaHiU=;
+ b=ruZqX1ENI7a1yYup6KW9b9fHQh3U3YkhCisinjoJjAPxVIM37Ee8FAzZkwO4SIjxIvPqhnzJw+cC/sX8FFF+1pbrIM2H3C/7YSZDqPRDxv1lEjEKJR49K5Cz/x/0WU9kUb8EkUFfk57dDZXr9eY/26vMmDkAIv0R8cXwX9wwEVI=
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com (2603:10b6:510:11d::12)
+ by SN7PR18MB5387.namprd18.prod.outlook.com (2603:10b6:806:2ea::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Thu, 19 Oct
+ 2023 01:12:22 +0000
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::2ace:2e4c:29ae:e924]) by PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::2ace:2e4c:29ae:e924%7]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
+ 01:12:22 +0000
+From:   Linu Cherian <lcherian@marvell.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Mike Leach <mike.leach@linaro.org>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "james.clark@arm.com" <james.clark@arm.com>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        George Cherian <gcherian@marvell.com>
+Subject: RE: [EXT] Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add
+ "memory-region" property
+Thread-Topic: [EXT] Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add
+ "memory-region" property
+Thread-Index: AQHZ8to0uuH+gntbaUWsA3manUggY7A8o7aAgAZwxCCABkm3AIAHDoqg
+Date:   Thu, 19 Oct 2023 01:12:22 +0000
+Message-ID: <PH0PR18MB5002D6EE41A5C285A2CC4E38CED4A@PH0PR18MB5002.namprd18.prod.outlook.com>
+References: <20230929133754.857678-1-lcherian@marvell.com>
+ <20230929133754.857678-2-lcherian@marvell.com>
+ <CAJ9a7VhzARGmywQFPNCZ27D5UKEEPSR9_hmL5fo3daFWpB26Vg@mail.gmail.com>
+ <PH0PR18MB500266F8C82877450DC9DDD2CED1A@PH0PR18MB5002.namprd18.prod.outlook.com>
+ <20231014-carbon-slept-9464499a4156@spud>
+In-Reply-To: <20231014-carbon-slept-9464499a4156@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-rorf: true
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbGNoZXJpYW5c?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy04YmYwZmQ5NC02ZTFjLTExZWUtYjZmMy0wMDkx?=
+ =?us-ascii?Q?OWUzMWI0MmRcYW1lLXRlc3RcOGJmMGZkOTYtNmUxYy0xMWVlLWI2ZjMtMDA5?=
+ =?us-ascii?Q?MTllMzFiNDJkYm9keS50eHQiIHN6PSIzODc2IiB0PSIxMzM0MjE1MTUzOTEx?=
+ =?us-ascii?Q?OTc0MDkiIGg9IkFESHFwcTdCR21pWm1nT0R4d01IMStDQzNHYz0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUdJV0FB?=
+ =?us-ascii?Q?RGhZRWxPS1FMYUFTd1VzT01PaldyRkxCU3c0dzZOYXNVWkFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQTNnOEFBSVFHQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRRUJBQUFBOVJlbkx3Q0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFa?=
+ =?us-ascii?Q?QUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNB?=
+ =?us-ascii?Q?QmxBSElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQWdBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdC?=
+ =?us-ascii?Q?MUFHMEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhV?=
+ =?us-ascii?Q?QWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?TUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dC?=
+ =?us-ascii?Q?a0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcw?=
+ =?us-ascii?Q?QVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0Jm?=
+ =?us-ascii?Q?QUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFB?=
+ =?us-ascii?Q?QUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhB?=
+ =?us-ascii?Q?Y3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
+ =?us-ascii?Q?QUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFa?=
+ =?us-ascii?Q?UUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpB?=
+ =?us-ascii?Q?R3dBWVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpR?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJm?=
+ =?us-ascii?Q?QUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFh?=
+ =?us-ascii?Q?UUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtB?=
+ =?us-ascii?Q?SElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBRHdBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
+ =?us-ascii?Q?OEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFC?=
+ =?us-ascii?Q?aEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUNB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNn?=
+ =?us-ascii?Q?QjJBR1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhN?=
+ =?us-ascii?Q?QVh3QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0Js?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FC?=
+ =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFB?=
+ =?us-ascii?Q?Y2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
+ =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBREFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndC?=
+ =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
+ =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2?=
+ =?us-ascii?Q?QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
+ =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtB?=
+ =?us-ascii?Q?R2tBWXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
+ =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFh?=
+ =?us-ascii?Q?Z0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FH?=
+ =?us-ascii?Q?VUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
+ =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJn?=
+ =?us-ascii?Q?QmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3?=
+ =?us-ascii?Q?QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
+ =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFY?=
+ =?us-ascii?Q?d0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFH?=
+ =?us-ascii?Q?RUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndC?=
+ =?us-ascii?Q?bkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3?=
+ =?us-ascii?Q?QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdV?=
+ =?us-ascii?Q?QWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FI?=
+ =?us-ascii?Q?SUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFC?=
+ =?us-ascii?Q?eUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElB?=
+ =?us-ascii?Q?WHdCaEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
+ =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhV?=
+ =?us-ascii?Q?QWN3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
+ =?us-ascii?Q?MkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFoQVlBQUFBQUFBQWNBQUFBQVFBQUFBQUFBQUQ4?=
+ =?us-ascii?Q?WE55QW5SUW1Rb0w2eUN6clhFWUlIQUFBQUFF?=
+x-dg-reffive: =?us-ascii?Q?QUFBQUFBQUFBSmdyUlFrMmVURUtPd0JBY0FheTFwaW9BQUFBQkFBQUFJZ0FB?=
+ =?us-ascii?Q?QUFBQUFBQmpBRzhBYmdCbUFHa0FaQUJsQUc0QWRBQnBBR0VBYkFBQUFCb0dB?=
+ =?us-ascii?Q?QUFaQUFBQUdBQUFBQUFBQUFCaEFHUUFaQUJ5QUdVQWN3QnpBQUFBSkFBQUFB?=
+ =?us-ascii?Q?SUFBQUJqQUhVQWN3QjBBRzhBYlFCZkFIQUFaUUJ5QUhNQWJ3QnVBQUFBTGdB?=
+ =?us-ascii?Q?QUFBQUFBQUJqQUhVQWN3QjBBRzhBYlFCZkFIQUFhQUJ2QUc0QVpRQnVBSFVB?=
+ =?us-ascii?Q?YlFCaUFHVUFjZ0FBQURBQUFBQUFBQUFBWXdCMUFITUFkQUJ2QUcwQVh3QnpB?=
+ =?us-ascii?Q?SE1BYmdCZkFHUUFZUUJ6QUdnQVh3QjJBREFBTWdBQUFEQUFBQUFBQUFBQVl3?=
+ =?us-ascii?Q?QjFBSE1BZEFCdkFHMEFYd0J6QUhNQWJnQmZBR3NBWlFCNUFIY0Fid0J5QUdR?=
+ =?us-ascii?Q?QWN3QUFBRDRBQUFBQUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCekFITUFiZ0Jm?=
+ =?us-ascii?Q?QUc0QWJ3QmtBR1VBYkFCcEFHMEFhUUIwQUdVQWNnQmZBSFlBTUFBeUFBQUFN?=
+ =?us-ascii?Q?Z0FBQUFBQUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhBY3dCd0FH?=
+ =?us-ascii?Q?RUFZd0JsQUY4QWRnQXdBRElBQUFBK0FBQUFBQUFBQUdRQWJBQndBRjhBY3dC?=
+ =?us-ascii?Q?ckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFaUUJ6QUhNQVlRQm5BR1VB?=
+ =?us-ascii?Q?WHdCMkFEQUFNZ0FBQURZQUFBQUFBQUFBWkFCc0FIQUFYd0J6QUd3QVlRQmpB?=
+ =?us-ascii?Q?R3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFBQURnQUFB?=
+ =?us-ascii?Q?QUFBQUFBWkFCc0FIQUFYd0IwQUdVQVlRQnRBSE1BWHdCdkFHNEFaUUJrQUhJ?=
+ =?us-ascii?Q?QWFRQjJBR1VBWHdCbUFHa0FiQUJsQUFBQUpBQUFBQThBQUFCbEFHMEFZUUJw?=
+ =?us-ascii?Q?QUd3QVh3QmhBR1FBWkFCeUFHVUFjd0J6QUFBQVdBQUFBQUlBQUFCdEFHRUFj?=
+ =?us-ascii?Q?Z0IyQUdVQWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFI?=
+ =?us-ascii?Q?TUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFHNEFkQUJwQUdFQWJBQmZBR0VBYkFC?=
+ =?us-ascii?Q?dkFHNEFaUUFBQUZRQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QVh3QndBSElB?=
+ =?us-ascii?Q?YndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFjZ0JsQUhNQWRBQnlB?=
+ =?us-ascii?Q?R2tBWXdCMEFHVUFaQUJmQUdFQWJBQnZBRzRBWlFBQUFGb0FBQUFBQUFBQWJR?=
+ =?us-ascii?Q?QmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcw?=
+ =?us-ascii?Q?QVpRQnpBRjhBY2dCbEFITUFkQUJ5QUdrQVl3QjBBR1VBWkFCZkFHZ0FaUUI0?=
+ =?us-ascii?Q?QUdNQWJ3QmtBR1VBY3dBQUFDQUFBQUFEQUFB?=
+x-dg-tag-bcast: {BB38C8B4-BBDA-40C5-8168-0013E523D1A2}
+x-dg-refsix: =?us-ascii?Q?QWJRQmhBSElBZGdCbEFHd0FiQUJmQUdFQWNnQnRBQUFBSmdBQUFBQUFBQUJ0?=
+ =?us-ascii?Q?QUdFQWNnQjJBR1VBYkFCc0FGOEFad0J2QUc4QVp3QnNBR1VBQUFBMEFBQUFB?=
+ =?us-ascii?Q?QUFBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
+ =?us-ascii?Q?OEFZd0J2QUdRQVpRQnpBQUFBUGdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFC?=
+ =?us-ascii?Q?c0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHTUFid0JrQUdVQWN3QmZBR1FB?=
+ =?us-ascii?Q?YVFCakFIUUFBQUJlQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QndB?=
+ =?us-ascii?Q?SElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2QUc0QVpn?=
+ =?us-ascii?Q?QnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUFB?=
+ =?us-ascii?Q?QWJBQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0Js?=
+ =?us-ascii?Q?QUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FHVUFi?=
+ =?us-ascii?Q?Z0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQmZBRzhBY2dCZkFH?=
+ =?us-ascii?Q?RUFjZ0J0QUFBQWNnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FC?=
+ =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lB?=
+ =?us-ascii?Q?YVFCa0FHVUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQmZB?=
+ =?us-ascii?Q?RzhBY2dCZkFHY0Fid0J2QUdjQWJBQmxBQUFBV2dBQUFBQUFBQUJ0QUdFQWNn?=
+ =?us-ascii?Q?QjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdV?=
+ =?us-ascii?Q?QWN3QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0Iy?=
+ =?us-ascii?Q?QUdVQWJBQnNBQUFBYUFBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFj?=
+ =?us-ascii?Q?QUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFI?=
+ =?us-ascii?Q?UUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBYndC?=
+ =?us-ascii?Q?eUFGOEFZUUJ5QUcwQUFBQXFBQUFBQUFBQUFHMEFZUUJ5QUhZQVpRQnNBR3dB?=
+ =?us-ascii?Q?WHdCMEFHVUFjZ0J0QUdrQWJnQjFBSE1BQUFBaUFBQUFBQUFBQUcwQVlRQnlB?=
+ =?us-ascii?Q?SFlBWlFCc0FHd0FYd0IzQUc4QWNnQmtBQUFBIi8+PC9tZXRhPg=3D=3D?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB5002:EE_|SN7PR18MB5387:EE_
+x-ms-office365-filtering-correlation-id: 75233eef-4e88-4abc-ca3c-08dbd04072c1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: drikwQK0tpvrj6dcJvjwSP98DMYP0hkcIVvkUwQo2ZpMs6SaidtogPaVYDErfyznlUAEy8YY6B6UFOCyW8k2UESWZ9xb5sXOZgjA62/wjSKobQkZtkdIN3cEVrL+vMi0Co9cxkkN6oE1fmYBG1P+2xDg8r6Zu+Jl6RDQ1c/3Ussux4EbuZ04Fz2L8Vs5m5YlWiR5op+PptT1RvptcYnB3W323lFIHd4TsjX8qTloUezV1RQuWRIuWvYFlgAB+ftAE6k0r2ohsyxZ+YXUQ9voTJifzDHYNODzetvlT4CoOZL8pYquF4yl1IkKx5vOED8vTdv/RK01raVDQ0dz6PR9NAJclUIHAWS80LzCzqFwqO8wGJ1UKaL2enthBDxg5tCqn1TeSe1Dqg7Fb8fn2Ughl8UUwFdiLUDkP6d7Tu+xGuRhPX0ixLzxHBPVf0THOoMeRwOUj3usmJ9DaBKjbwFGR6EhMHSfecj0Svu+1N9rQCrE5lEkzWv6O1oOt8cKL/ZNebYLp5IfJEtIsXDQVWGVTbCWlwSDKgHNyH10dk/mfsZ+gMZJdAyF7jkuhmmKL/m6sgQ2s5etZlDyHQ5uN4/gU531jAZbryWb1+2DVCq1HmRp9+O/D0U0oaPntGdOleBz
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB5002.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(376002)(346002)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(26005)(107886003)(122000001)(38100700002)(38070700005)(83380400001)(71200400001)(66946007)(66556008)(76116006)(66476007)(66446008)(53546011)(9686003)(7696005)(6506007)(478600001)(6916009)(4326008)(316002)(8936002)(52536014)(41300700001)(5660300002)(8676002)(86362001)(55016003)(64756008)(2906002)(7416002)(33656002)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?L6dX0RpdE+aWDnUoMwRQ7tVxNLu7H4cajdWXka50HkT/ieVcHzUKvPMrU+Q1?=
+ =?us-ascii?Q?lum5ePldq0zfUG91al1Ap1IHxGZyeCY585oIZVwivBJ3GAEbH5wKpE8bvsJZ?=
+ =?us-ascii?Q?bej0/FhuwFYZJkVt2UEJW4wseBSO161xiK/37T9g8VzJFXPwzCL3mGnQp+U4?=
+ =?us-ascii?Q?1+UZaGVjx4kWuWpQlFeJw3UiaSJDRDfD0yatxEGN7x+poBcQKDCrOIRUl4R3?=
+ =?us-ascii?Q?Khn+ZqkQ2z7HDgFBwSlPrt3dQ0+b2+DQ1Ub3MV5IA/JPqSQq4Azbt+ejDY+M?=
+ =?us-ascii?Q?Pw8reerfuRv+XxDzP6kZKDFQMoBZm+9cd+1bDE2ApHjpC7+VBTTXMVgRcYCR?=
+ =?us-ascii?Q?kts4gBB9o6LmwyfoZSbHXp6uOVUsQ221ghaZLJLcSipD8r1wwNueIFQCrLiY?=
+ =?us-ascii?Q?0qFU5z6vN/vtkS+G3HS5aS8XWDIzSK7E7DQH35tRjemK4D0iMFp6wkrIM1k7?=
+ =?us-ascii?Q?2Y5CLTfeJWNK2d3pUH266nU9+8ZFAvjBR+dp8oR7a4AEbEk+cfXh5+LES3Sk?=
+ =?us-ascii?Q?8sSwrnwhZnApm9OQNn+/NjbYfbW6QtS60qZ/QfO4w6rQqA0K6RIi7ZtA2C0g?=
+ =?us-ascii?Q?f6tzOQrgmOP9VZY5fF3xmakuvPQI6HybXdrEkIBgd45JXrNQOz3s8+1zLUQz?=
+ =?us-ascii?Q?cHJc9LPqPWk0HhgqwcVhLzxf+QVU+voIz6Ic8eH8chys2VeOoXLyDICPZTUx?=
+ =?us-ascii?Q?0vT3vMnWdlSesIiBJmUSAenzF00PT5v8A3ceLueNnIqoFXmKWJMtaf3OeIi/?=
+ =?us-ascii?Q?oDkCkCR6FdsG82XUYZx8B3BdRYD3mUy5pZyPQ7yh2A8p19OhCzmj0ZdWFxd2?=
+ =?us-ascii?Q?MtAKsAdcoNy5M/YBMH3dD5NmlVJtyTQtdFdeSdkRNSg54tmMlaaz7m0O0ko3?=
+ =?us-ascii?Q?KpmeeUB83tqmd3LoHc8Qk3G70i4fEbkEZOZlEY9+Wf8NhDfAsNmTuPgkbSyq?=
+ =?us-ascii?Q?ObSiytNqfpdqbd/KDewQYETVs0qoxJAwdfmBFZrwAAvRp0oY5psivCXFmnEF?=
+ =?us-ascii?Q?glAW2fz4rFviNrVAi3tcUmLspLSV+LiLEBQ62vgwTTrkO6qTGKLoc5f9S+rc?=
+ =?us-ascii?Q?a7hs1eIF9k37yg22MbUjAHdahw8bU2verog+/f0ixZ5yAh2mYjXBMqrzBY5Q?=
+ =?us-ascii?Q?Spc96VlBsJMU6E5TPjvXkLtTZjj269bu4dN9u0eZlfO/BIMCEKFhK9Lx8oBP?=
+ =?us-ascii?Q?mQIn3pIp+R1bQPAyV5d7Cbj6v90BOWk05CVZ/XHnkIoTw798fxHsMsJjUxoT?=
+ =?us-ascii?Q?v8DZzM3hxoFpuzil2yEbmfspid/4MQX7jj9nkjQemmiZS0j5ncvYv6s8C0eY?=
+ =?us-ascii?Q?ReknWCjMaPVSXZcaVXI6H0K6tdnjXJJ4ZMi1rEM/1othte5pLlyjjcYzEPCz?=
+ =?us-ascii?Q?wEAKXnHSqFkdgnL1rTScH6gdvkO6wvTh8rQgfafh989RCkaVYsrBzFCUwq9R?=
+ =?us-ascii?Q?jwdPPw6eB4lacJ5AUVVeV6tNLrEke/yvV+GBj5whqRluD8++CmIT6s2eNUqN?=
+ =?us-ascii?Q?9eleuX8OoR8iXvy+QqcOYrtlZrZ1L30x/XkYXtb/23BWMPfYvaqQ5YTKvpqm?=
+ =?us-ascii?Q?zBuz0+GZercWSkTw3Cu6oCaGJ9Pg85H5OjCmSCPa?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB5002.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75233eef-4e88-4abc-ca3c-08dbd04072c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2023 01:12:22.4507
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XNPsryIr3pyVuvqdx0vGb3yy87mFo1v3XYNAbKljrXSAKzBsGbH2Vm7ERugSrFgtVczEIMWnWXKLnIvT9EVEgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR18MB5387
+X-Proofpoint-ORIG-GUID: ojJoZ2KrEqXL4udZuOeWQIDSWbyBQksf
+X-Proofpoint-GUID: ojJoZ2KrEqXL4udZuOeWQIDSWbyBQksf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_01,2023-10-18_01,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,117 +325,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 4:47=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> On Wed, Oct 18, 2023 at 4:20=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> w=
-rote:
-> > >
-> > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> > >
-> > > Currently, we only have a single global LRU for zswap. This makes it
-> > > impossible to perform worload-specific shrinking - an memcg cannot
-> > > determine which pages in the pool it owns, and often ends up writing
-> > > pages from other memcgs. This issue has been previously observed in
-> > > practice and mitigated by simply disabling memcg-initiated shrinking:
-> > >
-> > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.co=
-m/T/#u
-> > >
-> > > This patch fully resolves the issue by replacing the global zswap LRU
-> > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> > >
-> > > a) When a store attempt hits an memcg limit, it now triggers a
-> > >    synchronous reclaim attempt that, if successful, allows the new
-> > >    hotter page to be accepted by zswap.
-> > > b) If the store attempt instead hits the global zswap limit, it will
-> > >    trigger an asynchronous reclaim attempt, in which an memcg is
-> > >    selected for reclaim in a round-robin-like fashion.
-> >
-> > Could you explain the rationale behind the difference in behavior here
-> > between the global limit and the memcg limit?
->
-> The global limit hit reclaim behavior was previously asynchronous too.
-> We just added the round-robin part because now the zswap LRU is
-> cgroup-aware :)
->
-> For the cgroup limit hit, however, we cannot make it asynchronous,
-> as it is a bit hairy to add a per-cgroup shrink_work. So, we just
-> perform the reclaim synchronously.
->
-> The question is whether it makes sense to make the global limit
-> reclaim synchronous too. That is a task of its own IMO.
+Hi Conor,
 
-Let's add such context to the commit log, and perhaps an XXX comment
-in the code asking whether we should consider doing the reclaim
-synchronously for the global limit too.
-
->
-> (FWIW, this somewhat mirrors the direct reclaimer v.s kswapd
-> story to me, but don't quote me too hard on this).
->
-[..]
->
-> >
-> > >         /* Hold a reference to prevent a free during writeback */
-> > >         zswap_entry_get(entry);
-> > >         spin_unlock(&tree->lock);
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Saturday, October 14, 2023 6:56 PM
+> To: Linu Cherian <lcherian@marvell.com>
+> Cc: Mike Leach <mike.leach@linaro.org>; suzuki.poulose@arm.com;
+> james.clark@arm.com; leo.yan@linaro.org; linux-arm-
+> kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
+> kernel@vger.kernel.org; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>
+> Subject: Re: [EXT] Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add
+> "memory-region" property
+>=20
+> On Sat, Oct 14, 2023 at 11:36:37AM +0000, Linu Cherian wrote:
+> > > > +      - description: Reserved meta data memory. Used for ETR and E=
+TF
+> sinks.
+> > > > +
+> > > > +  memory-region-names:
+> > > > +    items:
+> > > > +      - const: trace-mem
+> > > > +      - const: metadata-mem
+> > > > +
 > > >
-> > > -       ret =3D zswap_writeback_entry(entry, tree);
-> > > +       writeback_result =3D zswap_writeback_entry(entry, tree);
+> > > Is there a constraint required here? If we are using the memory area
+> > > for trace in a panic situation, then we must have the meta data
+> > > memory area defined?
+> > > Perhaps a set of names such as "etr-trace-mem", "panic-trace-mem" ,
+> > > "panic-metadata-mem", were the first is for general ETR trace in
+> > > non-panic situation and then constrain the "panic-" areas to appear
+> together.
+> > > The "etr-trace-mem", "panic-trace-mem" could easily point to the
+> > > same area.
 > > >
-> > >         spin_lock(&tree->lock);
-> > > -       if (ret) {
-> > > -               /* Writeback failed, put entry back on LRU */
-> > > -               spin_lock(&pool->lru_lock);
-> > > -               list_move(&entry->lru, &pool->lru);
-> > > -               spin_unlock(&pool->lru_lock);
-> > > +       if (writeback_result) {
-> > > +               zswap_reject_reclaim_fail++;
-> > > +               memcg =3D get_mem_cgroup_from_entry(entry);
-> > > +               spin_lock(lock);
-> > > +               /* we cannot use zswap_lru_add here, because it incre=
-ments node's lru count */
-> > > +               list_lru_putback(&entry->pool->list_lru, item, entry_=
-to_nid(entry), memcg);
-> > > +               spin_unlock(lock);
-> > > +               mem_cgroup_put(memcg);
-> > > +               ret =3D LRU_RETRY;
-> > >                 goto put_unlock;
-> > >         }
-> > > +       zswap_written_back_pages++;
-> >
-> > Why is this moved here from zswap_writeback_entry()? Also why is
-> > zswap_reject_reclaim_fail incremented here instead of inside
-> > zswap_writeback_entry()?
->
-> Domenico should know this better than me, but my understanding
-> is that moving it here protects concurrent modifications of
-> zswap_written_back_pages with the tree lock.
->
-> Is writeback single-threaded in the past? This counter is non-atomic,
-> and doesn't seem to be protected by any locks...
->
-> There definitely can be concurrent stores now though - with
-> a synchronous reclaim from cgroup-limit hit and another
-> from the old shrink worker.
->
-> (and with the new zswap shrinker, concurrent reclaim is
-> the expectation!)
+> > As noted above, we do not have other generic use case for these reserve=
+d
+> regions now.
+> > Hence two regions/names, panic-trace-mem and panic-metadata-mem
+> with
+> > constraints kept as
+> >  minItems: 2 and maxItems: 2 would suffice ?
+>=20
+> Whatever you do, please delete the -mem suffix.
 
-The comment above the stats definition stats that they are left
-unprotected purposefully. If we want to fix that let's do it
-separately. If this patch makes it significantly worse such that it
-would cause a regression, let's at least do it in a separate patch.
-The diff here is too large already.
+Ack.
 
->
-> zswap_reject_reclaim_fail was previously incremented in
-> shrink_worker I think. We need it to be incremented
-> for the shrinker as well, so might as well move it here.
-
-Wouldn't moving it inside zswap_writeback_entry() near incrementing
-zswap_written_back_pages make it easier to follow?
