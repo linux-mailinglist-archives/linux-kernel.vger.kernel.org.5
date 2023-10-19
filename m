@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F977CFEDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7087CFEE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 17:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346466AbjJSP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 11:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S1346505AbjJSP7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 11:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346427AbjJSP61 (ORCPT
+        with ESMTP id S1346478AbjJSP7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 11:58:27 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B7993;
-        Thu, 19 Oct 2023 08:58:25 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7c011e113so108724797b3.1;
-        Thu, 19 Oct 2023 08:58:25 -0700 (PDT)
+        Thu, 19 Oct 2023 11:59:10 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BA1199
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:59:07 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507973f3b65so10570467e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 08:59:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697731105; x=1698335905; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7jb7cVwz7xelM4+sJnE1FJPyDzq0ARx8q1t+hCEl6P4=;
-        b=fxdoIhCVxOmqlycuBzp05lAt82uD8dvNtqOLLX1u2d9kAj+YXeIGgc4o4fXZ0nHMPW
-         3fvloCoDl5u8VDFEK9xesdYmEtZntxEzL3xVtPA0RiMXngf6UjUEXPIZfSVOzFy5kV8y
-         5jh7elFwN8TAXnO/+fUzWv9hyTU4SmM4L+mEdnvt5ZByyCvGKQH1/FvuvoxmHFkyULrY
-         VBrDxTH9d4bY2NsLli7EMJ+CKDRzsWoE2mIuvtZkfm/ugbrlEOB7ffNjeKPTFZkvmz4H
-         5Q1ycfPRWCr4wdpQxMhN+omLAGCjZ4BeBucOD0HM0Q+dzDikrQ9GyZ2897jxpfwJoU77
-         QmFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697731105; x=1698335905;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697731145; x=1698335945; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7jb7cVwz7xelM4+sJnE1FJPyDzq0ARx8q1t+hCEl6P4=;
-        b=HM2+8RUCgn/Tvck+DajDkhWsS8DQ19trHD9iX38epSYNymt4CiCz8tluQYc1IgmPjr
-         V7MNw6PhvwbLixZHm2txEk2GrqdMjV679HrfYtS05rxlifau6+UjKxxdW3lhMb1ALXil
-         U+aBjH0jm2Br+jHG23OBRT5pYJXs4Xo1ADE1hGeg+eof9w/z9Idvn63hjfT3Rcg8jMdN
-         9HFEq7faRudJ1AdYCW2y2bMCF0pzOakfCDdrGtbdkP7EUn3TqVuXxvm/7OozZLlkDEic
-         N1uqA/f6XS7Ou7XWfUjuC9EuB8i+Sy7WT2txNzTN7u2q0HCYXBGGxASEkcuRu+eatgMs
-         IW2g==
-X-Gm-Message-State: AOJu0YwEU7uxbZuY3v29ABtFP4WBTE39lrQiALntu7SVtrqJl6vVowAm
-        sw0OKwlmmRpT824dMuawlnyVas9Rdp+d6A==
-X-Google-Smtp-Source: AGHT+IGDu+aE+ue7JW/hGbmDvvQMifgSbMmwHbCyYnoCWuWdSEcUw2tVUhh4HjszQKCnItYcP2tmPQ==
-X-Received: by 2002:a0d:e60a:0:b0:5a8:1d44:256 with SMTP id p10-20020a0de60a000000b005a81d440256mr2810943ywe.7.1697731104773;
-        Thu, 19 Oct 2023 08:58:24 -0700 (PDT)
-Received: from localhost ([2607:fb90:3e1a:8bc6:3ebc:e0b2:cf57:8294])
-        by smtp.gmail.com with ESMTPSA id t70-20020a818349000000b0059b4e981fe6sm2494749ywf.102.2023.10.19.08.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 08:58:24 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 08:58:22 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bitmap tree
-Message-ID: <ZTFSHqjkHLM5iAqH@yury-ThinkPad>
-References: <20231019170106.4159eac5@canb.auug.org.au>
+        bh=Sm/Wii6+7o3UXX8C55yUutEJQSIovh8VXkokjTN3YvQ=;
+        b=K/NEFcZo6LXuop6dYkg2EkVZANrGbVlnANb4YU8w8XgxJqVRS59Lnuvjws9l34VXbd
+         lcUQjtOplHylYKpkyF5OrwwTxiuRkxiQwEsEpEax461jOQ51LcqsfT+qFDwmIk1ES4d3
+         cIsn+fudxCYIRGepGUyertcblfwmK/j9BM1HDUj61bma7N8tw00v98KrWoCLQaUSBu4R
+         /yfaabDlKxaO07FDVqv9BGOoMahmZhbw2zp6jVo6qN7vuyJrf9zMbjWWAKglq72d3hzI
+         TfoHMZ+WFZOy2crAux3luNzVQ5hiRH4GImUoz9zS0VwRPc11bx/BnIbXnJAT/YPP6i/n
+         f5GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697731145; x=1698335945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sm/Wii6+7o3UXX8C55yUutEJQSIovh8VXkokjTN3YvQ=;
+        b=TjYANJ6EZPYZbV2RHYB73nOL9o/yMcqadRTzZbCB+p3RAiblKu7wV2YGq0QmP0kSOy
+         giGdUzPGt+7vrnVULFTgqGSZqvsP0uY1l0R+XAZq1bHj7E5bRDhaGqUXS2pykFnpbtU2
+         igNA8RQSkRGnxay6mS2i7CXhMDZu2t4Yrf8bu0TZlqcRtJIvhXwszznPJVbME4tGKRqr
+         8/S8utzkM1FZP1frtYnJMYkzj8fMszSv2D8EuoFJ4xjwuB6SfgkGMdgk96Uo7msfZgJx
+         +ZwR6FeAhi5L8GgARv/uFKLfMastxZXj6pThGkMGbQ+uFj33/Sx4nuDpDpGDIxJ8iyIg
+         s/mg==
+X-Gm-Message-State: AOJu0YzgRwI46yV2XhplOi5l2/OHVhqYpquPGydFan8WdbK+AZPo+Mmw
+        3SAtrVB2L43djA1+LYzFgmaMuayAghfUHvDG0ys1ZA==
+X-Google-Smtp-Source: AGHT+IFhWqGbbE8JI0y4QRuxzilbQXa+K0fS3Bh2vLrdcR1Ry3XED7EDIlt4FyQSCadgcN054zLlg6tJMnlCOQmsWWg=
+X-Received: by 2002:a05:651c:555:b0:2bc:c28c:a2b8 with SMTP id
+ q21-20020a05651c055500b002bcc28ca2b8mr2127428ljp.27.1697731145578; Thu, 19
+ Oct 2023 08:59:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019170106.4159eac5@canb.auug.org.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-2-cleger@rivosinc.com>
+ <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
+ <20231018-scrap-bankable-a0f321d97a46@spud> <20231018-flagpole-footpad-07a6228485f3@spud>
+ <CALs-HsteDO0PvAKKQje7wU0f4z8w2V3f7WiHh5+LvQeVaSua1w@mail.gmail.com>
+ <0b2cbc89-7892-4c43-898c-03757eaaf3b7@rivosinc.com> <20231019-smith-purging-627c50cfa3de@spud>
+In-Reply-To: <20231019-smith-purging-627c50cfa3de@spud>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Thu, 19 Oct 2023 08:58:29 -0700
+Message-ID: <CALs-Hsv2HK7dtZRi9R4GH0vZnf2oU9xVhKfK153S7Y_txUceqA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension reporting
+To:     Conor Dooley <conor@kernel.org>
+Cc:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,22 +81,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:01:06PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the bitmap tree, today's linux-next build (native perf)
-> failed like this:
-> 
-> In file included from /home/sfr/next/next/tools/perf/util/header.h:10,
->                  from /home/sfr/next/perf/pmu-events/pmu-events.c:3:
-> /home/sfr/next/next/tools/include/linux/bitmap.h:5:10: fatal error: linux/align.h: No such file or directory
->     5 | #include <linux/align.h>
->       |          ^~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   ed46ac8199f0 ("bitmap: introduce generic optimized bitmap_size()")
-> 
-> I have used the bitmap tree from next-20231018 for today.
+On Thu, Oct 19, 2023 at 3:24=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Thu, Oct 19, 2023 at 11:46:51AM +0200, Cl=C3=A9ment L=C3=A9ger wrote:
+> > Indeed the comment was a bit misleading, is this more clear ?
+> >
+> > /*
+> >  * Only use CHECK_ISA_EXT() for extensions which are usable by
+> >  * userspace with respect to the kernel current configuration.
+> >  * For instance, ISA extensions that uses float operations
+>
+> s/that uses/that use/
+>
+> >  * should not be exposed when CONFIG_FPU is not set.
+>
+> s/is not set/is not enabled/
+>
+> But yeah, definitely more clear, thanks.
 
-Thanks, Stephen. I'll take a look and let you know when it's resolved.
+Looks good to me too. Thanks, Cl=C3=A9ment!
+-Evan
