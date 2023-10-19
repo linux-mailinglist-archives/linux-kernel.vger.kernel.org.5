@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA7C7CFF0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F5E7CFF0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 18:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346328AbjJSQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 12:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
+        id S1346359AbjJSQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 12:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345210AbjJSQGq (ORCPT
+        with ESMTP id S230297AbjJSQHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 12:06:46 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A4DB6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9c41e95efcbso715632866b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697731603; x=1698336403; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8GAxqLkLulnMymSLsUeXBip1R0X962Uf1zax2/IweI4=;
-        b=Cb/LAcA6Tj05FCBJ9PcxVmA815gWHITa/38TzDz/ehHiaecDtnFWjI/goAffLCvAwA
-         cJkCmAMSEpwxYLTk7HlgsDQFnYLrSVNHl8co/JugZbj8PFMaNaHFQCHykYpX4hFXRm12
-         XeICnwyb+pjB0ajHskYKn342JRfEnK/EUIQRM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697731603; x=1698336403;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GAxqLkLulnMymSLsUeXBip1R0X962Uf1zax2/IweI4=;
-        b=apcRCP+5d+KBdXuznOqYhUMVO8L2ZwxZDUwDZTeQHF0BK5CHAVut6q11Rqserhp6VD
-         vbffRiqcoptQiyWYGAx23XeCC+ED/iBNA4UnykKNtgrg5v/NqRg2AKKiat0rmyJLp3Qi
-         eQ0n+MxgdN7zIspcu0oc0QJeD/nSj3TquFK+D+MGfbnval+CSO6uuA2hHlKnrMPfxHPK
-         /p2/Rt46EV2yyUpAykPNocKmO2dUCwRWm04HslmiROzvuJsq2ZYbsP8hY/T13MdUsbAv
-         uAQ13CB/XZP5tCdroou7sdNdiS09NiXhjkDkSIxxyyKbLlbNHdd8DhvoRyUjkx8ypAfZ
-         p7oA==
-X-Gm-Message-State: AOJu0YzYPj1roKuY8so1foO5JlXayscP+z0QfMgeg+TOGUP5wkAJp4Pc
-        MDd2RHnycy4MT8NoLrkPDk8hklw3OjYmifzJz6DzqPA6
-X-Google-Smtp-Source: AGHT+IHT8D+AVJA6sDqAtutnxb6EkjcOW5YU2z5XXYDFlsu5q7tuqBG6YHGAO9nGCfs+6yBpbJCwsw==
-X-Received: by 2002:a17:907:5cd:b0:9bf:77ae:3aa9 with SMTP id wg13-20020a17090705cd00b009bf77ae3aa9mr2265799ejb.24.1697731603033;
-        Thu, 19 Oct 2023 09:06:43 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id os20-20020a170906af7400b0099cc36c4681sm3792025ejb.157.2023.10.19.09.06.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 09:06:41 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9b9faf05f51so1255520766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 09:06:41 -0700 (PDT)
-X-Received: by 2002:a17:907:3603:b0:9c3:bb0e:d4c7 with SMTP id
- bk3-20020a170907360300b009c3bb0ed4c7mr1914249ejc.28.1697731601256; Thu, 19
- Oct 2023 09:06:41 -0700 (PDT)
+        Thu, 19 Oct 2023 12:07:31 -0400
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2C6112;
+        Thu, 19 Oct 2023 09:07:28 -0700 (PDT)
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1qtVY7-0001kb-9C; Thu, 19 Oct 2023 18:07:03 +0200
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: x86: Ignore MSR_AMD64_TW_CFG access
+Date:   Thu, 19 Oct 2023 18:06:57 +0200
+Message-ID: <1ce85d9c7c9e9632393816cf19c902e0a3f411f1.1697731406.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <cover.1697555249.git.dsterba@suse.com> <20231019151204.GA13867@twin.jikos.cz>
-In-Reply-To: <20231019151204.GA13867@twin.jikos.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Oct 2023 09:06:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whiXFXaVrvN2pYUuzDX+xsuU6ogpU69v9yiPS7F+dFbOQ@mail.gmail.com>
-Message-ID: <CAHk-=whiXFXaVrvN2pYUuzDX+xsuU6ogpU69v9yiPS7F+dFbOQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs fix for 6.6-rc7
-To:     dave@jikos.cz, torvalds@linux-foundation.org,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 08:12, David Sterba <dave@jikos.cz> wrote:
->
-> I don't see this pull request merged after 2 days and I don't see any
-> reply from you that there would be any problem.
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Indeed, I don't see the original in my mailbox, so re-sending it was
-most definitely the right thing to do.
+Hyper-V enabled Windows Server 2022 KVM VM cannot be started on Zen1 Ryzen
+since it crashes at boot with SYSTEM_THREAD_EXCEPTION_NOT_HANDLED +
+STATUS_PRIVILEGED_INSTRUCTION (in other words, because of an unexpected #GP
+in the guest kernel).
 
-> The mail is in lore archives
-> https://lore.kernel.org/all/cover.1697555249.git.dsterba@suse.com/
-> https://lore.kernel.org/linux-btrfs/cover.1697555249.git.dsterba@suse.com/
+This is because Windows tries to set bit 8 in MSR_AMD64_TW_CFG and can't
+handle receiving a #GP when doing so.
 
-Usually it goes the other way, where I see emails in my mailbox, but
-not in lore.
+Give this MSR the same treatment that commit 2e32b7190641
+("x86, kvm: Add MSR_AMD64_BU_CFG2 to the list of ignored MSRs") gave
+MSR_AMD64_BU_CFG2 under justification that this MSR is baremetal-relevant
+only.
+Although apparently it was then needed for Linux guests, not Windows as in
+this case.
 
-I do check my spambox daily too, but honestly, it's a "quick scan" not
-some deeper thing. So might have gotten deleted if it didn't stand out
-to me clearly enough.
+With this change, the aforementioned guest setup is able to finish booting
+successfully.
 
-> what's a bit suspicious is the "X-Spamd-Bar: +++++++++++++++" header in
-> the raw message, this could explain it. Please let me know how to
-> proceed, thanks.
+This issue can be reproduced either on a Summit Ridge Ryzen (with
+just "-cpu host") or on a Naples EPYC (with "-cpu host,stepping=1" since
+EPYC is ordinarily stepping 2).
 
-This was the right way - re-send in a couple of days if you feel like
-things aren't moving along as they should and normally do.
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
 
-Obviously the first merge window week is different - at that point it
-can take me a few days just to get to it - so then "two days" might be
-more like "four or five days".
+Changes from v1:
+    Rename MSR_AMD64_BU_CFG to MSR_AMD64_TW_CFG since Tom says that's the
+    proper name of that MSR for Zen.
 
-              Linus
+ arch/x86/include/asm/msr-index.h | 1 +
+ arch/x86/kvm/x86.c               | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 1d111350197f..8bcbebb56b8f 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -553,6 +553,7 @@
+ #define MSR_AMD64_CPUID_FN_1		0xc0011004
+ #define MSR_AMD64_LS_CFG		0xc0011020
+ #define MSR_AMD64_DC_CFG		0xc0011022
++#define MSR_AMD64_TW_CFG		0xc0011023
+ 
+ #define MSR_AMD64_DE_CFG		0xc0011029
+ #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT	 1
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9f18b06bbda6..fd1b099b0964 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3641,6 +3641,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_AMD64_PATCH_LOADER:
+ 	case MSR_AMD64_BU_CFG2:
+ 	case MSR_AMD64_DC_CFG:
++	case MSR_AMD64_TW_CFG:
+ 	case MSR_F15H_EX_CFG:
+ 		break;
+ 
+@@ -4065,6 +4066,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_AMD64_BU_CFG2:
+ 	case MSR_IA32_PERF_CTL:
+ 	case MSR_AMD64_DC_CFG:
++	case MSR_AMD64_TW_CFG:
+ 	case MSR_F15H_EX_CFG:
+ 	/*
+ 	 * Intel Sandy Bridge CPUs must support the RAPL (running average power
