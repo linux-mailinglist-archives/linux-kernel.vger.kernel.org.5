@@ -2,288 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6387D0B72
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA107D0B7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376719AbjJTJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S1376800AbjJTJWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376581AbjJTJUT (ORCPT
+        with ESMTP id S1376678AbjJTJV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:20:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4966410CC;
-        Fri, 20 Oct 2023 02:20:07 -0700 (PDT)
+        Fri, 20 Oct 2023 05:21:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8F71728
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697793607; x=1729329607;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=shTI2KMyyslAvE3tCPkiK5CdJon8vMT9e7Gflk4kpKk=;
-  b=llrQ4tFwmRnv2BGeQNHztNWH71wHDSbyju48FL927vdjHx5YWHI6zyUk
-   92aQ5VHXdkeC0gH2M2OKjcszeq9l8rdMFymtOXzzTYUFgMdajkqDL59lj
-   4o+JyHN+fg4ISGpTH/9LKWcK0EGGoUEzZhvmxzTXonyb44koB5/Xy64h+
-   7l+wagTtP0KTSZ9cc8xSYE98kIEmrscXabveRJSQ9YVgDAzkn8rpFbUhi
-   FE5bV0JMX6H2zN78ofWXNhA8XZ26+jELFnzDvLPH0GNXqbR+Af+Wt+ti9
-   BBIaXBKu9DVxOMwe41imymkAQbWjklizw1v/t8apmKMORptSlIGnI77RB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="366693448"
+  t=1697793679; x=1729329679;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a++LVpgYV0t0DpSZeHCFw0R4XO+/PCphuhcdSRisZ/4=;
+  b=nCLyKBFKlPQhiWGIUpI0FoBljO9qjq6VEjzfQsU9ygEW4A36QyuI1Qh9
+   TKobgB1g8xd2vGoQcffqZw/TPapxS2ny+fiZt9Q2L5iWQFypCKfXATvv1
+   jjMdylG8qywOLlXgn3EDHYEf9t59rN8JPplIylKbl2hYw7G6bcyUmVYjV
+   4qBeRwz/TH34A5Eo1ZDKQ8BuVZpY8WFfxVqC4WQE/BZUPnaUwQ2pKE2B7
+   j44cU0LzSQoIPt4CCg1oz15TMPRkYHYevNnHvFW9FX/lQc/pJDoi43fdW
+   mfeVbGc0Kg3g1K8O/CjOj3TpLEjn+EAXEv9HEkFpf2Wao9ikIcsQQlEgg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365802084"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="366693448"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:20:04 -0700
+   d="scan'208";a="365802084"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:21:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="707179481"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760990089"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="707179481"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orsmga003.jf.intel.com with ESMTP; 20 Oct 2023 02:20:04 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com
-Subject: [PATCH v5 10/10] iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
-Date:   Fri, 20 Oct 2023 02:19:46 -0700
-Message-Id: <20231020091946.12173-11-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020091946.12173-1-yi.l.liu@intel.com>
-References: <20231020091946.12173-1-yi.l.liu@intel.com>
+   d="scan'208";a="760990089"
+Received: from blavena-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.39.237])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:21:13 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 2344E109D0A; Fri, 20 Oct 2023 12:21:11 +0300 (+03)
+Date:   Fri, 20 Oct 2023 12:21:11 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
+ kexec
+Message-ID: <20231020092111.ho2rmhve23kgcxbr@box>
+References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
+ <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
+ <8d0e4e71-0614-618a-0f84-55eeb6d27a6d@amd.com>
+ <20231005212828.veeekxqc7rwvrbig@box>
+ <e0459b50-7e21-7548-8151-9010ee88b0a6@amd.com>
+ <20231005222839.jt2du72xogg3c5ny@box>
+ <f4228262-02f9-3af5-8ef5-be109b5d3d13@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4228262-02f9-3af5-8ef5-be109b5d3d13@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolin Chen <nicolinc@nvidia.com>
+On Fri, Oct 06, 2023 at 02:24:11PM -0500, Kalra, Ashish wrote:
+> 
+> On 10/5/2023 5:28 PM, Kirill A. Shutemov wrote:
+> > On Thu, Oct 05, 2023 at 05:01:23PM -0500, Kalra, Ashish wrote:
+> > > On 10/5/2023 4:28 PM, Kirill A. Shutemov wrote:
+> > > > On Thu, Oct 05, 2023 at 01:41:38PM -0500, Kalra, Ashish wrote:
+> > > > > > +static void unshare_all_memory(bool unmap)
+> > > > > > +{
+> > > > > > +	unsigned long addr, end;
+> > > > > > +	long found = 0, shared;
+> > > > > > +
+> > > > > > +	/*
+> > > > > > +	 * Walk direct mapping and convert all shared memory back to private,
+> > > > > > +	 */
+> > > > > > +
+> > > > > > +	addr = PAGE_OFFSET;
+> > > > > > +	end  = PAGE_OFFSET + get_max_mapped();
+> > > > > > +
+> > > > > > +	while (addr < end) {
+> > > > > > +		unsigned long size;
+> > > > > > +		unsigned int level;
+> > > > > > +		pte_t *pte;
+> > > > > > +
+> > > > > > +		pte = lookup_address(addr, &level);
+> > > > > 
+> > > > > IIRC, you were earlier walking the direct mapping using
+> > > > > walk_page_range_novma(), any particular reason to use lookup_address()
+> > > > > instead ?
+> > > > 
+> > > > walk_page_range_novma() wants mmap lock to be taken, but it is tricky as
+> > > > we run here from atomic context in case of crash.
+> > > > 
+> > > > I considered using trylock to bypass the limitation, but it is a hack.
+> > > > 
+> > > > > 
+> > > > > > +		size = page_level_size(level);
+> > > > > > +
+> > > > > > +		if (pte && pte_decrypted(*pte)) {
+> > > > > 
+> > > > > Additionally need to add check for pte_none() here to handle physical memory
+> > > > > holes in direct mapping.
+> > > > 
+> > > > lookup_address() returns NULL for none entries.
+> > > > 
+> > > 
+> > > Looking at lookup_address_in_pgd(), at pte level it is simply returning
+> > > pte_offset_kernel() and there does not seem to be a check for returning NULL
+> > > if pte_none() ?
+> > 
+> > Hm. You are right.
+> > 
+> > I think it yet another quirk in how lookup_address() implemented. We need
+> > to make it straight too.
+> > 
+> > There's two options: either make lookup_address() return pointer for entry
+> > even if it is NULL, or add check for pte_none() after pte_offset_kernel()
+> > and return NULL if it is true.
+> > 
+> > I like the first option more as it allows caller to populate the entry if
+> > it wants.
+> 
+> Yes, i like the first option.
 
-The IOMMU_HWPT_ALLOC ioctl now supports passing user_data to allocate a
-user-managed domain for nested HWPTs. Add its coverage for that. Also,
-update _test_cmd_hwpt_alloc() and add test_cmd/err_hwpt_alloc_nested().
+I tried to this, but lookup_address() has to many callers. It gets beyond
+the scope of the patchset. I will add pte_none() check on unshare side for
+now.
 
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- tools/testing/selftests/iommu/iommufd.c       | 120 ++++++++++++++++++
- .../selftests/iommu/iommufd_fail_nth.c        |   3 +-
- tools/testing/selftests/iommu/iommufd_utils.h |  31 ++++-
- 3 files changed, 146 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-index 6323153d277b..7ab9ca06460d 100644
---- a/tools/testing/selftests/iommu/iommufd.c
-+++ b/tools/testing/selftests/iommu/iommufd.c
-@@ -264,6 +264,126 @@ TEST_F(iommufd_ioas, ioas_destroy)
- 	}
- }
- 
-+TEST_F(iommufd_ioas, alloc_hwpt_nested)
-+{
-+	const uint32_t min_data_len =
-+		offsetofend(struct iommu_hwpt_selftest, iotlb);
-+	struct iommu_hwpt_selftest data = {
-+		.iotlb =  IOMMU_TEST_IOTLB_DEFAULT,
-+	};
-+	uint32_t nested_hwpt_id[2] = {};
-+	uint32_t parent_hwpt_id = 0;
-+	uint32_t parent_hwpt_id_not_work = 0;
-+	uint32_t test_hwpt_id = 0;
-+
-+	if (self->device_id) {
-+		/* Negative tests */
-+		test_err_hwpt_alloc(ENOENT, self->ioas_id, self->device_id,
-+				    0, &test_hwpt_id);
-+		test_err_hwpt_alloc(EINVAL, self->device_id,
-+				    self->device_id, 0, &test_hwpt_id);
-+
-+		test_cmd_hwpt_alloc(self->device_id, self->ioas_id,
-+				    IOMMU_HWPT_ALLOC_NEST_PARENT,
-+				    &parent_hwpt_id);
-+
-+		test_cmd_hwpt_alloc(self->device_id, self->ioas_id,
-+				    0, &parent_hwpt_id_not_work);
-+
-+		/* Negative nested tests */
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_NONE,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EOPNOTSUPP,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST + 1,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, min_data_len - 1);
-+		test_err_hwpt_alloc_nested(EFAULT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   NULL, sizeof(data));
-+		test_err_hwpt_alloc_nested(EOPNOTSUPP,
-+					   self->device_id, parent_hwpt_id,
-+					   IOMMU_HWPT_ALLOC_NEST_PARENT,
-+					   &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EINVAL, self->device_id,
-+					   parent_hwpt_id_not_work,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+
-+		/* Allocate two nested hwpts sharing one common parent hwpt */
-+		test_cmd_hwpt_alloc_nested(self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_cmd_hwpt_alloc_nested(self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[1],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+
-+		/* Negative test: a nested hwpt on top of a nested hwpt */
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, nested_hwpt_id[0],
-+					   0, &test_hwpt_id,
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		/* Negative test: parent hwpt now cannot be freed */
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, parent_hwpt_id));
-+
-+		/* Attach device to nested_hwpt_id[0] that then will be busy */
-+		test_cmd_mock_domain_replace(self->stdev_id,
-+					     nested_hwpt_id[0]);
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, nested_hwpt_id[0]));
-+
-+		/* Switch from nested_hwpt_id[0] to nested_hwpt_id[1] */
-+		test_cmd_mock_domain_replace(self->stdev_id,
-+					     nested_hwpt_id[1]);
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, nested_hwpt_id[1]));
-+		test_ioctl_destroy(nested_hwpt_id[0]);
-+
-+		/* Detach from nested_hwpt_id[1] and destroy it */
-+		test_cmd_mock_domain_replace(self->stdev_id, parent_hwpt_id);
-+		test_ioctl_destroy(nested_hwpt_id[1]);
-+
-+		/* Detach from the parent hw_pagetable and destroy it */
-+		test_cmd_mock_domain_replace(self->stdev_id, self->ioas_id);
-+		test_ioctl_destroy(parent_hwpt_id);
-+		test_ioctl_destroy(parent_hwpt_id_not_work);
-+	} else {
-+		test_err_hwpt_alloc(ENOENT, self->device_id, self->ioas_id,
-+				    0, &parent_hwpt_id);
-+		test_err_hwpt_alloc_nested(ENOENT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(ENOENT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[1],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_mock_domain_replace(ENOENT,
-+					     self->stdev_id, nested_hwpt_id[0]);
-+		test_err_mock_domain_replace(ENOENT,
-+					     self->stdev_id, nested_hwpt_id[1]);
-+	}
-+}
-+
- TEST_F(iommufd_ioas, hwpt_attach)
- {
- 	/* Create a device attached directly to a hwpt */
-diff --git a/tools/testing/selftests/iommu/iommufd_fail_nth.c b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-index 31386be42439..2a3b45d49700 100644
---- a/tools/testing/selftests/iommu/iommufd_fail_nth.c
-+++ b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-@@ -615,7 +615,8 @@ TEST_FAIL_NTH(basic_fail_nth, device)
- 	if (_test_cmd_get_hw_info(self->fd, idev_id, &info, sizeof(info)))
- 		return -1;
- 
--	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, &hwpt_id))
-+	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, &hwpt_id,
-+				 IOMMU_HWPT_DATA_NONE, 0, 0))
- 		return -1;
- 
- 	if (_test_cmd_mock_domain_replace(self->fd, stdev_id, ioas_id2, NULL))
-diff --git a/tools/testing/selftests/iommu/iommufd_utils.h b/tools/testing/selftests/iommu/iommufd_utils.h
-index be4970a84977..1a5fa44b1627 100644
---- a/tools/testing/selftests/iommu/iommufd_utils.h
-+++ b/tools/testing/selftests/iommu/iommufd_utils.h
-@@ -103,13 +103,17 @@ static int _test_cmd_mock_domain_replace(int fd, __u32 stdev_id, __u32 pt_id,
- 							   pt_id, NULL))
- 
- static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
--				__u32 flags, __u32 *hwpt_id)
-+				__u32 flags, __u32 *hwpt_id, __u32 data_type,
-+				void *data, size_t data_len)
- {
- 	struct iommu_hwpt_alloc cmd = {
- 		.size = sizeof(cmd),
- 		.flags = flags,
- 		.dev_id = device_id,
- 		.pt_id = pt_id,
-+		.data_type = data_type,
-+		.data_len = data_len,
-+		.data_uptr = (uint64_t)data,
- 	};
- 	int ret;
- 
-@@ -121,12 +125,25 @@ static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
- 	return 0;
- }
- 
--#define test_cmd_hwpt_alloc(device_id, pt_id, flags, hwpt_id) \
--	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, \
--					  pt_id, flags, hwpt_id))
--#define test_err_hwpt_alloc(_errno, device_id, pt_id, flags, hwpt_id) \
--	EXPECT_ERRNO(_errno, _test_cmd_hwpt_alloc(self->fd, device_id, \
--						  pt_id, flags, hwpt_id))
-+#define test_cmd_hwpt_alloc(device_id, pt_id, flags, hwpt_id)                \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags, \
-+					  hwpt_id, IOMMU_HWPT_DATA_NONE,     \
-+					  NULL, 0))
-+#define test_err_hwpt_alloc(_errno, device_id, pt_id, flags, hwpt_id)         \
-+	EXPECT_ERRNO(_errno, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, \
-+						  flags, hwpt_id,             \
-+						  IOMMU_HWPT_DATA_NONE,       \
-+						  NULL, 0))
-+
-+#define test_cmd_hwpt_alloc_nested(device_id, pt_id, flags, hwpt_id,          \
-+				   data_type, data, data_len)                 \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags,  \
-+					  hwpt_id, data_type, data, data_len))
-+#define test_err_hwpt_alloc_nested(_errno, device_id, pt_id, flags, hwpt_id,  \
-+				   data_type, data, data_len)                 \
-+	EXPECT_ERRNO(_errno,                                                  \
-+		     _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags,  \
-+					  hwpt_id, data_type, data, data_len))
- 
- static int _test_cmd_access_replace_ioas(int fd, __u32 access_id,
- 					 unsigned int ioas_id)
 -- 
-2.34.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
