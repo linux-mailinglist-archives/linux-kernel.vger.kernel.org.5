@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64BF7D0A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6997A7D0A6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbjJTITL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 04:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
+        id S235687AbjJTIS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235697AbjJTITH (ORCPT
+        with ESMTP id S230217AbjJTIS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 04:19:07 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA7D53;
-        Fri, 20 Oct 2023 01:19:03 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39K8I4Fm83987424, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39K8I4Fm83987424
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 16:18:04 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 20 Oct 2023 16:18:05 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 20 Oct 2023 16:18:04 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Fri, 20 Oct 2023 16:18:04 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        Ricky WU <ricky_wu@realtek.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: [PATCH v3 2/2] mmc: rtsx: add rts5264 to support sd express card
-Thread-Topic: [PATCH v3 2/2] mmc: rtsx: add rts5264 to support sd express card
-Thread-Index: AQHaAy2Sz1PoZNa0d0OUxZHUVX7Sfg==
-Date:   Fri, 20 Oct 2023 08:18:04 +0000
-Message-ID: <00a3624d0a0a482c80babc5dd7fc5d1e@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.81.102]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Fri, 20 Oct 2023 04:18:57 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A1D1A8;
+        Fri, 20 Oct 2023 01:18:52 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32dd70c5401so391764f8f.0;
+        Fri, 20 Oct 2023 01:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697789931; x=1698394731; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rrKgnqGNwj+/qxrUkjrulP5wLbH/xyHD5bMTIeNaIw0=;
+        b=bSsQLGhCDhxxA68JFxsZGtEqE7UJdFwW92HwNxuegJPgIf+kl8I9lB5Rlj1bGRUbbJ
+         aQzu/GJ9tQ+GKYF+qefGKhOgoi0PC2zu9HbuqIOKTk/9NKe+hjidH+2d9ECjvAQLhHJv
+         RLAAhcVPAcAAAfy3pPMs3NzBg/u4i2WpWTWoJ25xhHPlgGpEF+jF/vyVw0IDRq7YUglZ
+         suW6JlDu883UC7Y9cOUPNtZuUW5vnc2HBAtOn80qsTt+CwI6HY7QF9oAxAJ93wILhG8W
+         6H4FRMQqy5GDa1DAPkN1P8lkj+f3sCYOtEscy2kKgx4rSLDejmgNuPwgbZF8lUuByNsh
+         Yc4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697789931; x=1698394731;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rrKgnqGNwj+/qxrUkjrulP5wLbH/xyHD5bMTIeNaIw0=;
+        b=KDhTJqSFxXFFxPJKJolcVQxPnLzSuitccsix87Z04WzFUCufX/gK3wnLYpYaVGEKKX
+         PFJAayrHi5DJ5Z0ibygkNw77+MIzcmdA8kw6LEMfbV9+Hvan0gKLiwT1d42WUocjmROy
+         u4eydO1uBAbYztkXbcR1vGuY+JMGoQbhNEiqQDzIp7pQjN7ej/gxrPLGZHHwGctdHaLP
+         52be32/EsdQDF6rCGon/mcxL2uCdbzawd/wJG8MfArz9UD9HDUquAekZy1drVDw8adjF
+         POnYMdonB/36zlU5BCnHTOCFdbKu5FCHowLRz0IiROKjy45isSyjN++ZZAJP23cpSiV4
+         N1sQ==
+X-Gm-Message-State: AOJu0YyJcJoBwTSuvLcFMr1riHMsLKvz+6TTm9VxGjyX3/GzG6Yf9zHR
+        cI2PBEUQ0rM5GCu0E0XZ/5xvHZzSkS4AAg==
+X-Google-Smtp-Source: AGHT+IHKE022uP5a8lmmI2AX68/8E672f6bDfCiBbCME8ylDeDmgCERyfffyWw/eUNmfld4uuwQB2g==
+X-Received: by 2002:a5d:6e06:0:b0:32d:a2bb:c996 with SMTP id h6-20020a5d6e06000000b0032da2bbc996mr795933wrz.69.1697789930390;
+        Fri, 20 Oct 2023 01:18:50 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id x12-20020a5d650c000000b0032d9a1f2ec3sm1147613wru.27.2023.10.20.01.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 01:18:50 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:18:47 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: ksz9477: Add Wake
+ on Magic Packet support
+Message-ID: <20231020081847.zgpez76utrexix24@skbuf>
+References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
+ <20231019122850.1199821-1-o.rempel@pengutronix.de>
+ <20231019122850.1199821-6-o.rempel@pengutronix.de>
+ <20231019122850.1199821-6-o.rempel@pengutronix.de>
+ <20231019172953.ajqtmnnthohnlek7@skbuf>
+ <ZTFyvDLgmaTy2Csx@shell.armlinux.org.uk>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTFyvDLgmaTy2Csx@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,43 +89,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIHJ0czUyNjQgcmVnaXN0ZXIgc2V0dGluZyB3aGVuIHNkIGV4cHJlc3MgY2FyZCBpbnNlcnQN
-Cg0KU2lnbmVkLW9mZi1ieTogUmlja3kgV3UgPHJpY2t5X3d1QHJlYWx0ZWsuY29tPg0KLS0tDQp2
-Mzogc3BsaXQgdXAgbW1jIHBhcnQgZnJvbSB2MiBwYXRjaA0KLS0tDQogZHJpdmVycy9tbWMvaG9z
-dC9ydHN4X3BjaV9zZG1tYy5jIHwgMTcgKysrKysrKysrKysrKysrKy0NCiAxIGZpbGUgY2hhbmdl
-ZCwgMTYgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1tYy5jIGIvZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9z
-ZG1tYy5jDQppbmRleCA4N2Q3ODQzMmExZTAuLjdkZmU3YzRlMDA3NyAxMDA2NDQNCi0tLSBhL2Ry
-aXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYw0KKysrIGIvZHJpdmVycy9tbWMvaG9zdC9y
-dHN4X3BjaV9zZG1tYy5jDQpAQCAtNyw2ICs3LDcgQEANCiAgKiAgIFdlaSBXQU5HIDx3ZWlfd2Fu
-Z0ByZWFsc2lsLmNvbS5jbj4NCiAgKi8NCiANCisjaW5jbHVkZSA8bGludXgvcGNpLmg+DQogI2lu
-Y2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQogI2luY2x1
-ZGUgPGxpbnV4L2hpZ2htZW0uaD4NCkBAIC05NDcsNyArOTQ4LDcgQEAgc3RhdGljIGludCBzZF9w
-b3dlcl9vbihzdHJ1Y3QgcmVhbHRla19wY2lfc2RtbWMgKmhvc3QsIHVuc2lnbmVkIGNoYXIgcG93
-ZXJfbW9kZSkNCiAJLyogc2VuZCBhdCBsZWFzdCA3NCBjbG9ja3MgKi8NCiAJcnRzeF9wY2lfd3Jp
-dGVfcmVnaXN0ZXIocGNyLCBTRF9CVVNfU1RBVCwgU0RfQ0xLX1RPR0dMRV9FTiwgU0RfQ0xLX1RP
-R0dMRV9FTik7DQogDQotCWlmIChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHsNCisJaWYgKChQ
-Q0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHx8IChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjQpKSB7
-DQogCQkvKg0KIAkJICogSWYgdGVzdCBtb2RlIGlzIHNldCBzd2l0Y2ggdG8gU0QgRXhwcmVzcyBt
-YW5kYXRvcmlseSwNCiAJCSAqIHRoaXMgaXMgb25seSBmb3IgZmFjdG9yeSB0ZXN0aW5nLg0KQEAg
-LTEzNjQsNiArMTM2NSwxNCBAQCBzdGF0aWMgaW50IHNkbW1jX2luaXRfc2RfZXhwcmVzcyhzdHJ1
-Y3QgbW1jX2hvc3QgKm1tYywgc3RydWN0IG1tY19pb3MgKmlvcykNCiAJc3RydWN0IHJlYWx0ZWtf
-cGNpX3NkbW1jICpob3N0ID0gbW1jX3ByaXYobW1jKTsNCiAJc3RydWN0IHJ0c3hfcGNyICpwY3Ig
-PSBob3N0LT5wY3I7DQogDQorCWlmIChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjQpIHsNCisJCXBj
-aWVfY2FwYWJpbGl0eV9jbGVhcl9hbmRfc2V0X3dvcmQocGNyLT5wY2ksIFBDSV9FWFBfTE5LQ1RM
-MiwNCisJCQkJUENJX0VYUF9MTktDVEwyX1RMUywgUENJX0VYUF9MTktDVEwyX1RMU18yXzVHVCk7
-DQorCQlwY2lfd3JpdGVfY29uZmlnX2J5dGUocGNyLT5wY2ksIDB4ODBlLCAweDAyKTsNCisJCXBj
-aWVfY2FwYWJpbGl0eV9jbGVhcl9hbmRfc2V0X3dvcmQocGNyLT5wY2ksIFBDSV9FWFBfTE5LQ1RM
-MiwNCisJCQkJUENJX0VYUF9MTktDVEwyX1RMUywgUENJX0VYUF9MTktDVEwyX1RMU181XzBHVCk7
-DQorCX0NCisNCiAJLyogU2V0IHJlbGlua190aW1lIGZvciBjaGFuZ2luZyB0byBQQ0llIGNhcmQg
-Ki8NCiAJcmVsaW5rX3RpbWUgPSAweDhGRkY7DQogDQpAQCAtMTM3OSw2ICsxMzg4LDEyIEBAIHN0
-YXRpYyBpbnQgc2RtbWNfaW5pdF9zZF9leHByZXNzKHN0cnVjdCBtbWNfaG9zdCAqbW1jLCBzdHJ1
-Y3QgbW1jX2lvcyAqaW9zKQ0KIAlpZiAocGNyLT5vcHMtPmRpc2FibGVfYXV0b19ibGluaykNCiAJ
-CXBjci0+b3BzLT5kaXNhYmxlX2F1dG9fYmxpbmsocGNyKTsNCiANCisJaWYgKFBDSV9QSUQocGNy
-KSA9PSBQSURfNTI2NCkgew0KKwkJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBSVFM1MjY0
-X0FVVE9MT0FEX0NGRzIsDQorCQkJUlRTNTI2NF9DSElQX1JTVF9OX1NFTCwgUlRTNTI2NF9DSElQ
-X1JTVF9OX1NFTCk7DQorCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEdQSU9fQ1RMLCAw
-eDAyLCAweDAwKTsNCisJfQ0KKw0KIAkvKiBGb3IgUENJZS9OVk1lIG1vZGUgY2FuJ3QgZW50ZXIg
-ZGVsaW5rIGlzc3VlICovDQogCXBjci0+aHdfcGFyYW0uaW50ZXJydXB0X2VuICY9IH4oU0RfSU5U
-X0VOKTsNCiAJcnRzeF9wY2lfd3JpdGVsKHBjciwgUlRTWF9CSUVSLCBwY3ItPmh3X3BhcmFtLmlu
-dGVycnVwdF9lbik7DQotLSANCjIuMjUuMQ==
+On Thu, Oct 19, 2023 at 07:17:32PM +0100, Russell King (Oracle) wrote:
+> On Thu, Oct 19, 2023 at 08:29:53PM +0300, Vladimir Oltean wrote:
+> > > -	dev_dbg(dev->dev, "Wake event on port %d due to: %s %s\n", port,
+> > > +	dev_dbg(dev->dev, "Wake event on port %d due to: %s %s %s\n", port,
+> > > +		pme_status & PME_WOL_MAGICPKT ? "\"Magic Packet\"" : "",
+> > >  		pme_status & PME_WOL_LINKUP ? "\"Link Up\"" : "",
+> > >  		pme_status & PME_WOL_ENERGY ? "\"Enery detect\"" : "");
+> > 
+> > Trivial: if you format the printf string as %s%s%s and the arguments as
+> > "\"Magic Packet\" " : "", then the printed line won't have a trailing
+> > space at the end.
+> 
+> Sadly, it still will. The best solution is to prepend the space
+> character to each entry in the "list" and remove the space characters
+> after the : in the format string thusly:
+> 
+> 	dev_dbg(dev->dev, "Wake event on port %d due to:%s%s%s\n", port,
+> 		pme_status & PME_WOL_MAGICPKT ? " \"Magic Packet\"" : "",
+> 		pme_status & PME_WOL_LINKUP ? " \"Link Up\"" : "",
+> 		pme_status & PME_WOL_ENERGY ? " \"Enery detect\"" : "");
+
+Thanks for correcting me.
