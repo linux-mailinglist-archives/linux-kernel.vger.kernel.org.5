@@ -2,119 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155A47D0904
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4521F7D0927
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376400AbjJTHAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
+        id S1376384AbjJTHDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376396AbjJTHAL (ORCPT
+        with ESMTP id S1376326AbjJTHDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:00:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0E41A8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:00:08 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c1c66876aso72234366b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697785207; x=1698390007; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mfzc4g4zpz1yB50AYWx8YASQ5286qFySoxi1isAPweU=;
-        b=OlkxWS0sGR4Bp1SIhhL8WFRZPr5ryyF8qrEqv3NJJJ/vbGBQzUnZaKO+6w6cxaLyRU
-         kHTiOVrti/lDTH9Fpx4KoCyhhFRJrwfqy56NbvQJ0cvjKaglX9TQSfb9S5R1/I9RxKeA
-         7hA27e7MzyEghixh1I3GvfOJV8VkJnsCNCBFPvyzpjyfoOYuVpsWaWnnqHM1/W94jebh
-         95iVT/liLgn5siO3rGa3kliQLQK1hb1pH7NL6q7mGVR3varydLxoqwwx9n5VtsG+Ki/J
-         hfGg4R3pwKlhzQShlwzBXHKUcmti0GyGOUFldBOOY4/d3QpJnDIoM26oe13C2tqa68d3
-         dDCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697785207; x=1698390007;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mfzc4g4zpz1yB50AYWx8YASQ5286qFySoxi1isAPweU=;
-        b=jqZ9WxcIDCQsgZ8bwzJWMUwMKC6e10ELqzspkzApXrSdja5K8fRzhYGJxu8OGMaELL
-         UediLHDRi4vUsUoWN43JZ76t08sfdwtPn8YiZ+z+4L0yUtZFuuDi7hngMpMqyhdX34sz
-         YzHB03nIQuejaEJFb1Ub5g/mo4e6eVguxSxevwZ/eklwTWycIqsSxfcMSxunQShxXMC5
-         FiPLRRb0+ZS04bXBmMI6GzgrJAycso2OgqnUDqAvRVXc98wpUWdp6MQlHS4s1KB4DqyZ
-         C2YQ/RVOCImVi/M3ymHPa59uXIdozVR4OL232fD759NsT5stEAV04StLZDJtqk18KDoV
-         68VQ==
-X-Gm-Message-State: AOJu0YylWNq7fK3OMd8HHMs16XmJss29aUf0xCWB8XGpyNnvI411P529
-        dTHqlXzdKdHcCm7U1xw698ZlSA==
-X-Google-Smtp-Source: AGHT+IEZqAyMu8v1hoVkDa8FfYgxlppDc03tZC3u+R6BXwEKi6FVD1uBaavEM53OTZbjc063+/cESw==
-X-Received: by 2002:a17:907:9495:b0:9a5:b878:7336 with SMTP id dm21-20020a170907949500b009a5b8787336mr566170ejc.7.1697785206642;
-        Fri, 20 Oct 2023 00:00:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id o14-20020a17090611ce00b009b29553b648sm862496eja.206.2023.10.20.00.00.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 00:00:05 -0700 (PDT)
-Message-ID: <ba3ac1b2-d924-44cb-97dd-6af65a1db7a8@linaro.org>
-Date:   Fri, 20 Oct 2023 09:00:03 +0200
+        Fri, 20 Oct 2023 03:03:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C0998;
+        Fri, 20 Oct 2023 00:03:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D80C433C9;
+        Fri, 20 Oct 2023 07:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697785424;
+        bh=OkduzFsQrql4vaQN1hI4ttHMuV3cQxeu0vcbumIU/YQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hqR6eY9HqplSVmgpVrsg/pSkDw62/zAbF0f+qFRka5bz/yojBeZdRWyUTVzOs9/Cx
+         ooV+wCVycPSJmQEvXzBpgpcKSM5nv9yCblY2VcpvPJc6PEFM7I2t+foqkoH7rpj3eK
+         MTKS3soeVyjSuaVoWwJLIimsfdDfSbnxo0o0AXCYz3vhDF5xoCLBBmY5qT+7tOPT+Z
+         q41KNTB6Mn9vHd398z4IHhs26g23y4qzEBYeSaaCIDe0JgZ6PxT9soxjm/iKrSjosn
+         mJHcec+v1gxQsfQRNHDEGwikEXJIaq0YKk8Bm5Y8v5kJoTEPnsvDTnoGBRV2B9620y
+         NlsfWtmG1Yqjg==
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so149799a34.0;
+        Fri, 20 Oct 2023 00:03:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyXcrvL6cALJiHZe3ciRnu52hc1kyE1nmArRdOe316vtCj5NwDk
+        PI/f+jBWYlg9BE2jI7APRF+lWwwMDT+pJVrGO98=
+X-Google-Smtp-Source: AGHT+IHN0w7kBf0+HBio2x3W554zUTb5zy2/0fI+q2GVGnmytcQr57G3zxy8R7UNLJtf2+dwNbxg8mC6Ev0mJcXlEh8=
+X-Received: by 2002:a05:6870:5d8d:b0:1e9:fc32:9887 with SMTP id
+ fu13-20020a0568705d8d00b001e9fc329887mr1459108oab.13.1697785423969; Fri, 20
+ Oct 2023 00:03:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/10] dt-bindings: riscv: Add andestech,cpu-intc to
- interrupt-controller
-Content-Language: en-US
-To:     Yu Chien Peter Lin <peterlin@andestech.com>, conor@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     prabhakar.mahadev-lad.rj@bp.renesas.com, tim609@andestech.com,
-        dylan@andestech.com, locus84@andestech.com, dminus@andestech.com
-References: <20231019135905.3658215-1-peterlin@andestech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231019135905.3658215-1-peterlin@andestech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 20 Oct 2023 16:03:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,34 +61,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 15:59, Yu Chien Peter Lin wrote:
-> Add "andestech,cpu-intc" compatible string for Andes INTC which
-> provides Andes-specific IRQ chip functions.
-> 
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> ---
-> Changes v1 -> v2:
->   - New patch
-> ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> index 97e8441eda1c..5b216e11c69f 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -99,7 +99,9 @@ properties:
->          const: 1
->  
->        compatible:
-> -        const: riscv,cpu-intc
-> +        enum:
-> +          - riscv,cpu-intc
-> +          - andestech,cpu-intc
+On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
+ote:
+> >
+> > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
+> > > newer_prereqs_except and if_changed_except are ugly hacks of the
+> > > newer-prereqs and if_changed in scripts/Kbuild.include.
+> > >
+> > > Remove.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > ---
+> > >
+> > > Changes in v2:
+> > >   - Fix if_changed_except to if_changed
+> > >
+> > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > >
+> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > --- a/scripts/Makefile.modfinal
+> > > +++ b/scripts/Makefile.modfinal
+> > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > >  ifneq ($(wildcard vmlinux),)
+> > >  vmlinux :=3D vmlinux
+> > > +cmd_btf =3D ; \
+> > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_=
+base vmlinux $@; \
+> > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > >  else
+> > >  $(warning Skipping BTF generation due to unavailability of vmlinux)
+> > >  endif
+> > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > >        cmd_ld_ko_o +=3D                                              =
+   \
+> > >       $(LD) -r $(KBUILD_LDFLAGS)                                     =
+ \
+> > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)             =
+ \
+> > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)          =
+ \
+> > > +     $(cmd_btf)
+> > >
+> > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> >
+> > nit not sure it's intentional but we no longer display 'BTF [M] ...ko' =
+lines,
+> > I don't mind not displaying that, but we should mention that in changel=
+og
+> >
+>
+> Thanks for spotting this! I think those messages are useful and
+> important to keep. Masahiro, is it possible to preserve them?
 
-Keep alphabetical order. Do not add stuff to the end of the lists. This
-is a generic rule. Everywhere.
 
-Best regards,
-Krzysztof
 
+No, I do not think so.
+
+Your code is wrong.
+
+
+To clarify this is a fix,
+I will replace the commit as follows:
+
+
+
+
+------------------->8----------------------
+kbuild: detect btf command change for modules
+
+Currently, the command change in cmd_btf_ko does not cause to rebuild
+the modules because it is not passed to if_changed.
+
+Pass everything to if_change so that the btf command is also recorded
+in the .*.cmd files. This removes the hacky newer_prereqs_except and
+if_changed_except macros too.
+------------------->8----------------------
+
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
