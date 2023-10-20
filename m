@@ -2,150 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFC57D059D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 01:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A96F7D05A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346719AbjJSX4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 19:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S1346734AbjJTAEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346733AbjJSXzx (ORCPT
+        with ESMTP id S233285AbjJTAEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 19:55:53 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EFE11D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:51 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6ce270bc429so344232a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 16:55:51 -0700 (PDT)
+        Thu, 19 Oct 2023 20:04:08 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D243ECF;
+        Thu, 19 Oct 2023 17:04:06 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40806e40fccso1733635e9.2;
+        Thu, 19 Oct 2023 17:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697760245; x=1698365045; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k8rgHM7FZqxCqzn7vvq1TlUzERIDuJUAdkWJ8iiKEaQ=;
+        b=clB+zGYHs/NktN3rp/F7A0O9ExdzxDeTRaNPZYA8jV6ipbr7wp26A/ErQXo5dubWNv
+         bHv/L5/9szBRlfM1h32TLKkcDjRCHs4TdOqVFVykOfrnccpv1/FDTDicxNlk3oqxTWOy
+         /uhyMqcVjYCDdKGLks1Ii5phG/9NNzMGq4fysaIDzjjHsNfGKubFycYDH8EKANBmUB1c
+         U39m4VmKB/+fkh/4Nr84/sgyEAZ/6uuEQg58YBX6P112eCV4234++DdbzLaSs6BP6zuZ
+         6focYJ9u+TshGLDXIOswUGLaaFSssoqndWRKGEykJgP0r35TOM0T5j1ohoMna3jgCKZW
+         Ykvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697759750; x=1698364550;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uWSEJ9xYUbBy9cya3rocEpazxIwASpRVIWUfmU2j3cg=;
-        b=tYW3Db3Kuw563KIvzh8pDLHDTuvNunVDnv/H42IJHL+ibp9CDDyOyQ7FmxbSozoKJS
-         qgsU359w/jmS+GtnQHcIRm82wwFP376g64jGBuzEHNrV/CVxBnzo3OmOnJoX6w9yZTYw
-         5c9USluRhb2Ued+5eSz9Vd1E8FZ1Yls6njb/XG01N5BUQLYhb+7r73kZDBHm95FsgsiA
-         IYBbT/oA8rO9a8tej9oGOS6TBkJWv7iOyWBGvkVF6RU6CxH0Brz8R/rAUEpQS506Q93t
-         V8hYpliYYi9uxQ2jUBcUdjgm4v7ZyJDcdHKF+9e3TyU8WsVrr0RSdXDFIXIQl3pWcVJN
-         tkcQ==
-X-Gm-Message-State: AOJu0YwIEPjl77BP/S0muJdO4jcQRESeT6AYtG0JkPCNBehTpeZUrL9l
-        eOpIEhK784pblbkNkoDA9Bxef49hiAm7jvjE0OdZweKfYenl
-X-Google-Smtp-Source: AGHT+IHDp+QRpTSXHAcCvBFlVlpv+f4IueDYjCTJbN2MkjKh0HDR371FxFBBYf9bJ1/GU7TLewxDySYgN7G3P+ho725Ufj7j0low
+        d=1e100.net; s=20230601; t=1697760245; x=1698365045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k8rgHM7FZqxCqzn7vvq1TlUzERIDuJUAdkWJ8iiKEaQ=;
+        b=P48ELnTxvJS/ex7uafSMfR4J2NTtnG8XzMrE8HxS0jny9aiA62wAxaEJ2UrBiMRT+8
+         tkEwcrtEXcqTWq6tR0XVvCZO1VuF+IQmpk24Uv6EbZt8Wb2PVqvKOca1bPIXVZPo0N4j
+         f6HRKj+VMW+GusAlRk5wztB9al4q/KBq7MzNQ2xWYuH9GUk2f/Gis7j/TByAueCJOfMU
+         s3yF4T4cZAcJWDWu7aQLIT4/m719fvp8HaM6rPJPnX+crriqLMu/nQGn/4k7PVENaEJP
+         6zeWlNlh+3+jK7P4f7Ws7yINTR9I2evtu6VOR4rFosO3cZZwxIxf4Da+aZ6NExqYV+mB
+         ltJA==
+X-Gm-Message-State: AOJu0Yy2b2PT9FBp+lDWLZ/hacm1Y7Jp4CR6iLLfpcFumy7pgfafpSC1
+        H+zIrTlsyrFJ3Hm89C0/wYYOwq4PksAOcPonESo=
+X-Google-Smtp-Source: AGHT+IHdv7lkZrt8UJ//L/e8bVOjECVyYtNV+uypimXs+1Cig9E/s9CPakUtlbdc2PIqiauWw253HPN30C5Hif1WiXQ=
+X-Received: by 2002:a5d:5b1c:0:b0:323:2f54:b6cb with SMTP id
+ bx28-20020a5d5b1c000000b003232f54b6cbmr342241wrb.8.1697760245097; Thu, 19 Oct
+ 2023 17:04:05 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7518:0:b0:6b9:5156:a493 with SMTP id
- r24-20020a9d7518000000b006b95156a493mr57782otk.4.1697759750681; Thu, 19 Oct
- 2023 16:55:50 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 16:55:50 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000da80e106081a7eed@google.com>
-Subject: [syzbot] [btrfs?] WARNING: refcount bug in btrfs_evict_inode (2)
-From:   syzbot <syzbot+3968e6b73153451563ef@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20231018061746.111364-1-zhouchuyi@bytedance.com> <20231018061746.111364-9-zhouchuyi@bytedance.com>
+In-Reply-To: <20231018061746.111364-9-zhouchuyi@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 19 Oct 2023 17:03:53 -0700
+Message-ID: <CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com>
+Subject: Re: [RESEND PATCH bpf-next v6 8/8] selftests/bpf: Add tests for
+ open-coded task and css iter
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 17, 2023 at 11:18=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.co=
+m> wrote:
+>
+> +
+> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> +__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s=
+")
+> +int BPF_PROG(iter_css_task_for_each)
+> +{
+> +       u64 cg_id =3D bpf_get_current_cgroup_id();
+> +       struct cgroup *cgrp =3D bpf_cgroup_from_id(cg_id);
+> +       struct cgroup_subsys_state *css;
+> +       struct task_struct *task;
+> +
+> +       if (cgrp =3D=3D NULL)
+> +               return 0;
+> +       css =3D &cgrp->self;
+> +
+> +       bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
+> +
+> +       }
+> +       bpf_cgroup_release(cgrp);
+> +       return 0;
+> +}
 
-syzbot found the following issue on:
+I think we should relax allowlist in patch 2 further.
+Any sleepable is safe.
+Allowlist is needed to avoid dead locking on css_set_lock.
+Any lsm and any iter (even non-sleepable) and any sleepable
+seems to be safe.
 
-HEAD commit:    9a3dad63edbe Merge tag '6.6-rc5-ksmbd-server-fixes' of git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126116e5680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
-dashboard link: https://syzkaller.appspot.com/bug?extid=3968e6b73153451563ef
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139d2f55680000
+Then the above test would need s/fentry.s/fentry/ to stay relevant.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/33c965444183/disk-9a3dad63.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/337f5c485902/vmlinux-9a3dad63.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4c5f5b84773a/bzImage-9a3dad63.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/263d3fb612d5/mount_0.gz
+I would also add:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3968e6b73153451563ef@syzkaller.appspotmail.com
+SEC("iter/cgroup")
+int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
+{
+        struct seq_file *seq =3D ctx->meta->seq;
+        struct cgroup *cgrp =3D ctx->cgroup;
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 1 PID: 5068 at lib/refcount.c:28 refcount_warn_saturate+0x144/0x1b0 lib/refcount.c:28
-Modules linked in:
-CPU: 1 PID: 5068 Comm: syz-executor.4 Not tainted 6.6.0-rc5-syzkaller-00267-g9a3dad63edbe #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:refcount_warn_saturate+0x144/0x1b0 lib/refcount.c:28
-Code: 0a 01 48 c7 c7 a0 30 59 8b e8 98 97 15 fd 0f 0b eb a9 e8 cf 74 4f fd c6 05 64 cc 46 0a 01 48 c7 c7 00 31 59 8b e8 7c 97 15 fd <0f> 0b eb 8d e8 b3 74 4f fd c6 05 45 cc 46 0a 01 48 c7 c7 40 30 59
-RSP: 0018:ffffc9000410f9c8 EFLAGS: 00010246
-RAX: 87d3e0a2fce9e500 RBX: ffff8880283d7108 RCX: ffff88807b601dc0
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000003 R08: ffffffff81543302 R09: 1ffff1101732516a
-R10: dffffc0000000000 R11: ffffed101732516b R12: ffff888027e3c000
-R13: 0000000000000000 R14: ffff8880793fa1fe R15: 1ffff1100d13240f
-FS:  0000555555d3f480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555555d48938 CR3: 000000002a44c000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_evict_inode+0x724/0x1000 fs/btrfs/inode.c:5305
- evict+0x2a4/0x620 fs/inode.c:664
- dispose_list fs/inode.c:697 [inline]
- evict_inodes+0x5f8/0x690 fs/inode.c:747
- generic_shutdown_super+0x9d/0x2c0 fs/super.c:672
- kill_anon_super+0x3b/0x70 fs/super.c:1292
- btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2144
- deactivate_locked_super+0xa4/0x110 fs/super.c:481
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
- task_work_run+0x24a/0x300 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop+0xde/0x100 kernel/entry/common.c:171
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fdf2aa7de17
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fff45f80ce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fdf2aa7de17
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff45f80da0
-RBP: 00007fff45f80da0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff45f81e60
-R13: 00007fdf2aac73b9 R14: 000000000006a985 R15: 0000000000000003
- </TASK>
+        /* epilogue */
+        if (cgrp =3D=3D NULL) ..
 
+        bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
+           BPF_SEQ_PRINTF(); // something about task
+        }
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+To demonstrate how new kfunc iter can be combined with cgroup iter and
+it won't deadlock, though cgroup iter is not sleepable.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I've applied the current set. Pls send a follow up. Thanks
