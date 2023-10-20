@@ -2,158 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0007D0F6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0D47D0F72
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377099AbjJTMLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        id S1377155AbjJTMMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376937AbjJTMLF (ORCPT
+        with ESMTP id S1376941AbjJTML7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:11:05 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6639F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 05:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1697803857;
-        bh=/HckR+M1mxBNYCIWuwimSUGXw7EZ5xADrWwBDlURdXI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=e9TqWrBeU32SOvCoYR7IxqdQN/zg7cZc7Yz4gTolFOM7fIUw/D8/zdhaZCzpVEZg4
-         aNMXl97h8zHBltivT9j0huh6jW7pz1zSD3NO3Q3wr3hDwgItWhJyEMBwWB8RAZ9uI2
-         DhmM+HLmTMaBLcDV8PkvN5zrniWtLSdQI9mAtvxRhEUGUo9TO1op/Izln6pziPF7rr
-         Ed0Mehc99/BuVGephN1hR4YTZNR7blq+xHRqbPjrArhVc7XXyN+uvEam9gO384z5Vh
-         mb1RemZ3xLv4Wa6hvI/P/ODLK0+eQ63yNg/S8FMkSdOayYgfCzW/QFLmc7Wk7llV9j
-         gyEn1TkwOZ+gA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SBk273JJ4z4xM1;
-        Fri, 20 Oct 2023 23:10:55 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Peter Zijlstra <peterz@infradead.org>, ndesaulniers@google.com,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/smp: Dynamically build powerpc topology
-In-Reply-To: <20230830122614.73067-1-srikar@linux.vnet.ibm.com>
-References: <20230830122614.73067-1-srikar@linux.vnet.ibm.com>
-Date:   Fri, 20 Oct 2023 23:10:55 +1100
-Message-ID: <874jil5wa8.fsf@mail.lhotse>
+        Fri, 20 Oct 2023 08:11:59 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CA9F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 05:11:58 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtoM1-0007gt-ST; Fri, 20 Oct 2023 14:11:49 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtoM0-0031Pm-WD; Fri, 20 Oct 2023 14:11:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qtoM0-002VMF-Mo; Fri, 20 Oct 2023 14:11:48 +0200
+Date:   Fri, 20 Oct 2023 14:11:48 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, linux-pwm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] backlight: pwm_bl: Avoid backlight flicker applying
+ initial PWM state
+Message-ID: <20231020121148.3g6t3v5uuyubifpb@pengutronix.de>
+References: <20230608-backlight-pwm-avoid-flicker-v1-1-afd380d50174@pengutronix.de>
+ <20231018210741.6t3yfj6qgmpwhhlo@pengutronix.de>
+ <20231020112727.GF23755@aspen.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4ujggu4vg72aghiu"
+Content-Disposition: inline
+In-Reply-To: <20231020112727.GF23755@aspen.lan>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> Currently there are four powerpc specific sched topologies.  These are
-> all statically defined.  However not all these topologies are used by
-> all powerpc systems.
->
-> To avoid unnecessary degenerations by the scheduler , masks and flags
-> are compared. However if the sched topologies are build dynamically then
-> the code is simpler and there are greater chances of avoiding
-> degenerations.
->
-> Even x86 builds its sched topologies dynamically and new changes are
-> very similar to the way x86 is building its topologies.
->
-> System Configuration
-> type=Shared mode=Uncapped smt=8 lcpu=128 mem=1063126592 kB cpus=96 ent=40.00
->
-> $ lscpu
-> Architecture:                    ppc64le
-> Byte Order:                      Little Endian
-> CPU(s):                          1024
-> On-line CPU(s) list:             0-1023
-> Model name:                      POWER10 (architected), altivec supported
-> Model:                           2.0 (pvr 0080 0200)
-> Thread(s) per core:              8
-> Core(s) per socket:              32
-> Socket(s):                       4
-> Hypervisor vendor:               pHyp
-> Virtualization type:             para
-> L1d cache:                       8 MiB (256 instances)
-> L1i cache:                       12 MiB (256 instances)
-> NUMA node(s):                    4
->
-> From dmesg of v6.5
-> [    0.174444] smp: Bringing up secondary CPUs ...
-> [    3.918535] smp: Brought up 4 nodes, 1024 CPUs
-> [   38.001402] sysrq: Changing Loglevel
-> [   38.001446] sysrq: Loglevel set to 9
->
-> From dmesg of v6.5 + patch
-> [    0.174462] smp: Bringing up secondary CPUs ...
-> [    3.421462] smp: Brought up 4 nodes, 1024 CPUs
-> [   35.417917] sysrq: Changing Loglevel
-> [   35.417959] sysrq: Loglevel set to 9
->
-> 5 runs of ppc64_cpu --smt=1 (time measured: lesser is better)
-> Kernel  N  Min     Max     Median  Avg      Stddev     %Change
-> v6.5    5  518.08  574.27  528.61  535.388  22.341542
-> +patch  5  481.73  495.47  484.21  486.402  5.7997     -9.14963
->
-> 5 runs of ppc64_cpu --smt=8 (time measured: lesser is better)
-> Kernel  N  Min      Max      Median   Avg       Stddev     %Change
-> v6.5    5  1094.12  1117.1   1108.97  1106.3    8.606361
-> +patch  5  1067.5   1090.03  1073.89  1076.574  9.4189347  -2.68697
->
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
->  arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
->  1 file changed, 28 insertions(+), 50 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 48b8161179a8..c16443a04c26 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -92,15 +92,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
->  EXPORT_PER_CPU_SYMBOL(cpu_core_map);
->  EXPORT_SYMBOL_GPL(has_big_cores);
->  
-> -enum {
-> -#ifdef CONFIG_SCHED_SMT
-> -	smt_idx,
-> -#endif
-> -	cache_idx,
-> -	mc_idx,
-> -	die_idx,
-> -};
-> -
->  #define MAX_THREAD_LIST_SIZE	8
->  #define THREAD_GROUP_SHARE_L1   1
->  #define THREAD_GROUP_SHARE_L2_L3 2
-> @@ -1048,16 +1039,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
->  	return cpu_coregroup_mask(cpu);
->  }
->  
-> -static struct sched_domain_topology_level powerpc_topology[] = {
-> -#ifdef CONFIG_SCHED_SMT
-> -	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
-> -#endif
-> -	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
-> -	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
-> -	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE) },
-> -	{ NULL, },
-> -};
 
-This doesn't apply on my next or upstream.
+--4ujggu4vg72aghiu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It looks like it depends on your other 6-patch series. Please append
-this patch to that series.
+Hello Daniel,
 
-cheers
+On Fri, Oct 20, 2023 at 12:27:27PM +0100, Daniel Thompson wrote:
+> On Wed, Oct 18, 2023 at 11:07:41PM +0200, Uwe Kleine-K=F6nig wrote:
+> > Hello Philipp,
+> >
+> > On Thu, Jun 08, 2023 at 04:11:14PM +0200, Philipp Zabel wrote:
+> > > The initial PWM state returned by pwm_init_state() has a duty cycle
+> > > of 0 ns.
+> >
+> > This is only true for drivers without a .get_state() callback, isn't it?
+>=20
+> pwm_init_state() explicitly zeros the duty-cycle in order to avoid
+> problems when the default args have a different period to the currently
+> applied config:
+> https://elixir.bootlin.com/linux/latest/source/include/linux/pwm.h#L174
+
+Ah right, pwm_init_state() is strange in a different way than I
+remembered :-) pwm_get_state() is only called to get .enabled set
+appropriately.
+
+Looking at the callers:
+
+ - drivers/gpu/drm/solomon/ssd130x.c
+   It does:
+ 	pwm_init_state(ssd130x->pwm, &pwmstate);
+	pwm_set_relative_duty_cycle(&pwmstate, 50, 100);
+	pwm_apply_state(ssd130x->pwm, &pwmstate);
+	pwm_enable(ssd130x->pwm);
+
+   A probably better result can be reached quicker using:
+ 	pwm_init_state(ssd130x->pwm, &pwmstate);
+	pwm_set_relative_duty_cycle(&pwmstate, 50, 100);
+	pwmstate.enabled =3D true;
+	pwm_apply_state(ssd130x->pwm, &pwmstate);
+ - drivers/hwmon/pwm-fan.c
+   __set_pwm should probably explicitly set .enabled.
+   All other calls to pwm_apply_state set .enabled explicitly.
+
+ - drivers/input/misc/da7280.c
+   explicitly sets .enabled after calling pwm_init_state()
+
+ - drivers/input/misc/pwm-beeper.c
+   explicitly sets .enabled after calling pwm_init_state()
+
+ - drivers/input/misc/pwm-vibra.c
+   explicitly sets .enabled after calling pwm_init_state()
+
+ - drivers/leds/leds-pwm.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/leds/rgb/leds-pwm-multicolor.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/media/rc/ir-rx51.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/media/rc/pwm-ir-tx.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/regulator/pwm-regulator.c
+   never sets .enabled, probably a bug
+
+ - drivers/video/backlight/lm3630a_bl.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/video/backlight/lp855x_bl.c
+   explictily sets .enabled before calling pwm_apply_state()
+
+ - drivers/video/backlight/pwm_bl.c
+   This is the one we currently discuss. I think even with the patch
+   applied it uses the .enabled value returned by pwm_init_state() but
+   it shouldn't.
+
+ - drivers/video/fbdev/ssd1307fb.c
+   Similar to drivers/gpu/drm/solomon/ssd130x.c. Probably the one was
+   copied to the other given that it seems to handle the same hardware.
+
+So all consumers using pwm_init_state() either don't use the .enabled
+value returned by pwm_init_state() or at least shouldn't do that.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4ujggu4vg72aghiu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUyboMACgkQj4D7WH0S
+/k6z8QgAk0g406vvpJ815Hdz5BSVMclVmbygCKOIROSOKowNrW6WOgrFvaXeUqyi
+qBw06fdMe3EB3Ak9xeZ0EwZ2TWFvol0KsTcHC/B0NPv3naRvXdcnhQylYtlxNFSN
+Ra677iflQiqyYV/UcOf7bvDm0d6cj8W7PpatbZ+NJLh+qXepNDlZgl7cUgtVWw5u
+N04OLkaAtWtfb3lWyT0fnOTTATCkm8x9qrqxHrSilR4+Xf43PAHSbi/427a9mNv6
+vzIWS7HNi9xdirUsXfQbyP8pJhfhEbJjvwhAubqMlS0xPHujsYJcZ7dquVTmu6tb
+Suaayp81cFoCFdHmtCsA6bTorRVi4Q==
+=yuK5
+-----END PGP SIGNATURE-----
+
+--4ujggu4vg72aghiu--
