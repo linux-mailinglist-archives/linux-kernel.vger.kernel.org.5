@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C689D7D1125
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E5F7D112B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377516AbjJTOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S1377482AbjJTOCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377376AbjJTOAT (ORCPT
+        with ESMTP id S1377376AbjJTOCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:00:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD772CA;
-        Fri, 20 Oct 2023 07:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697810417; x=1729346417;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mpqyGKvHVXV0RlwNW1oDdHVE8qJd2jWt5MyNnvZCE9A=;
-  b=EK1q3cEbUpn2OV5OCuHvaSKsXPh3GaAQ9smybGebLyz1g2MHeVqQDh7V
-   HyYbmAaaiq5NtGOCA6jPTwo9JWMiPvIUZE9Z8JqXhep/fEcUiejcv7hkN
-   OK2RAEzr1CrOsKxGr/83xKd6X7awfWp5AbjEE0Ez2k5Q9AQZRmhPUumFg
-   /YYfn9D3vcNh4fLpRWkdtl5MQ/2OYO3o4rPT3s6dfg+iTJ2ARPhchU3UR
-   TNorJAxTcM75q0V5E7KzqqfeQiW9iKeJOA3NiBvKmEGI+cLyfpSdph7f1
-   IzCc0axNKzPHsm++GzmOU1g/CLRM+f6z9A9BSNJRKmQxn/opjbm5sstAE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="371573326"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="371573326"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 07:00:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="823260129"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="823260129"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 07:00:12 -0700
-Date:   Fri, 20 Oct 2023 17:00:09 +0300
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
-        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
-        will@kernel.org, linux@roeck-us.net, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1 4/8] ACPI: utils: use acpi_dev_uid_match() for
- matching _UID
-Message-ID: <ZTKH6bNPiy1fZKEG@black.fi.intel.com>
-References: <20231020084732.17130-1-raag.jadav@intel.com>
- <20231020084732.17130-5-raag.jadav@intel.com>
- <ZTJYK02w8HZg26eI@smile.fi.intel.com>
- <ZTJmnv6CsZUt0pIS@black.fi.intel.com>
- <ZTKDsBPraERaautV@smile.fi.intel.com>
+        Fri, 20 Oct 2023 10:02:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57D619E;
+        Fri, 20 Oct 2023 07:02:18 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 14:02:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697810536;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M3BFQLwd1nsCoUjwgSyCrkcS+5Ut7oCrmQxF+w8tufw=;
+        b=LRNVNlcL7feP1sW8Gbdq+hEqwnQZG/XZ+U70lsG2R21lfA4jmN/8Q7DZTdZMUzIezD6tz/
+        vlH6NmB/+vr7NnVnUzbyqnvlFfsfv2xR8SMfTa7VxOt995YEbIYxZVk0imYLHrkc2D0QVI
+        n2Ig7MqI9gbt8XyQo07w93hZ21+4Z0jQ9ZMzYiHjE6FopzNdWiiaDiXhhxqLBNH+z3bj3X
+        TnxdbmqFXs/kCnK8zVi0NqkEuE1P8Aexi5tiJBu7XOcP8RA8zXDooMZSsZwoseKqyJPdBJ
+        CCkkuai2PZHF3tfOpzBF/lXLg/Ue+a96Vm5F5iJFWJKLQp5EEH3X8O1a3CyuXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697810536;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M3BFQLwd1nsCoUjwgSyCrkcS+5Ut7oCrmQxF+w8tufw=;
+        b=wle3S+SINXJJebnd8xGIJmTzxtVszF52tLR1lrwgw9w2NcD2taEzmE3u1KpvFVoQjJgt8x
+        03e5ikYpmILdE/Dw==
+From:   "tip-bot2 for Yiwei Lin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Remove unused 'curr' argument from
+ pick_next_entity()
+Cc:     Yiwei Lin <s921975628@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231020055617.42064-1-s921975628@gmail.com>
+References: <20231020055617.42064-1-s921975628@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTKDsBPraERaautV@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169781053589.3135.7556580446990782690.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 04:42:08PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 20, 2023 at 02:38:06PM +0300, Raag Jadav wrote:
-> > On Fri, Oct 20, 2023 at 01:36:27PM +0300, Andy Shevchenko wrote:
-> > > On Fri, Oct 20, 2023 at 02:17:28PM +0530, Raag Jadav wrote:
-> > > > Convert manual _UID references to use standard ACPI helpers.
-> > > 
-> > > Yes, while not so obvious this is the correct replacement.
-> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > I think this is the only case which would suffer from the more obvious
-> > behaviour, i.e.
-> 
-> No, that's not true. The same with override CPU in the other patch, where the
-> check is simply absent, but the result will be the same. So, all with negation
-> will suffer from the "obvious" implementation.
+The following commit has been merged into the sched/core branch of tip:
 
-Forgot to add, we don't need to change the original acpi_dev_hid_uid_match()
-behaviour, i.e.
+Commit-ID:     4c456c9ad334a940e354da1002184bc19f4493ef
+Gitweb:        https://git.kernel.org/tip/4c456c9ad334a940e354da1002184bc19f4493ef
+Author:        Yiwei Lin <s921975628@gmail.com>
+AuthorDate:    Fri, 20 Oct 2023 13:56:17 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 20 Oct 2023 15:55:04 +02:00
 
-bool acpi_dev_hid_uid_match(struct acpi_device *adev,
-                            const char *hid2, const char *uid2)
-{
-        const char *hid1 = acpi_device_hid(adev);
+sched/fair: Remove unused 'curr' argument from pick_next_entity()
 
-        if (strcmp(hid1, hid2))
-                return false;
+The 'curr' argument of pick_next_entity() has become unused after
+the EEVDF changes.
 
-        if (!uid2)
-                return true;
+[ mingo: Updated the changelog. ]
 
-        return acpi_dev_uid_match(adev, uid2);
-}
+Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20231020055617.42064-1-s921975628@gmail.com
+---
+ kernel/sched/fair.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I'm fine with both, this just makes more sense to me.
-
-Raag
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8c486ff..4b70b0d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5256,7 +5256,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+  * 4) do not run the "skip" process, if something else is available
+  */
+ static struct sched_entity *
+-pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
++pick_next_entity(struct cfs_rq *cfs_rq)
+ {
+ 	/*
+ 	 * Enabling NEXT_BUDDY will affect latency but not fairness.
+@@ -8160,7 +8160,7 @@ again:
+ 				goto again;
+ 		}
+ 
+-		se = pick_next_entity(cfs_rq, curr);
++		se = pick_next_entity(cfs_rq);
+ 		cfs_rq = group_cfs_rq(se);
+ 	} while (cfs_rq);
+ 
+@@ -8223,7 +8223,7 @@ again:
+ 			}
+ 		}
+ 
+-		se = pick_next_entity(cfs_rq, curr);
++		se = pick_next_entity(cfs_rq);
+ 		cfs_rq = group_cfs_rq(se);
+ 	} while (cfs_rq);
+ 
+@@ -8262,7 +8262,7 @@ simple:
+ 		put_prev_task(rq, prev);
+ 
+ 	do {
+-		se = pick_next_entity(cfs_rq, NULL);
++		se = pick_next_entity(cfs_rq);
+ 		set_next_entity(cfs_rq, se);
+ 		cfs_rq = group_cfs_rq(se);
+ 	} while (cfs_rq);
