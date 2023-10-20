@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F9C7D0CD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA597D0CAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376884AbjJTKKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
+        id S1376845AbjJTKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376859AbjJTJds (ORCPT
+        with ESMTP id S1376764AbjJTKGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:33:48 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637C719B9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:33:28 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so836505a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:33:28 -0700 (PDT)
+        Fri, 20 Oct 2023 06:06:41 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C067FCC
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:06:38 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6bd73395bceso523024b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1697794404; x=1698399204; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wBM6ErArjaeuBbIlwBAlMfcfi+6e43gtVVtakkQbEgY=;
-        b=aBYf6lF9OSoYYDPCHhRiksf2aJVMbKAK+E69a1WdAN9bnaaEF2vOud7VRVAQScOcna
-         6CoYbcm+aCLtPOhj0aqPuc+yTpwpjrjFDptuxwPcrECww+bGFiirr1ua/4SVesOU4mnl
-         tQvt7tLPg5AuVLyLc2JYLDwZvlo5RIblVG4YDfy/6sI/8Scq6htvmmyXwqsinRnCy3Ys
-         IHGXUDg31gx65gHdLLqHO2Is1MaOSkrp5ZfMRSPk8yfrY84AHVZBROpoKScHxJylCUMj
-         Bz0ywNAd7vmBE0S44ERwaS+akUeITa8Q+02bzzlIeNppdyArdQSG75KpP6V0E3hYutsX
-         fJ1A==
+        d=ventanamicro.com; s=google; t=1697796398; x=1698401198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0YOpu7rT/QqTy8iuI5dRazXgRC1Ukab7cBL+9gy4Ic=;
+        b=ImJjqWalZTdFJyq64kMO14sl/dgEnzPMZKp5uGDNN+9PTP6Anq9ZWBgaHx7SjWYGha
+         WA8KnpPcNll+IfehlPjLJS0uaUM55L98C++z0229LoBE2/UJHXPkk93/zBh032PwUi5u
+         rf/ApTnFIhPBevS+MTTlqb7dvvHR/hXw3+7q4hb3mWSvMjU9DEQolFbcsJ4N0NddMSbG
+         NHZhvoi8Q+8AfCfp5qHGVP1Rty5RK99XJr+51LE3Ts7J5pHPVc/i77BR6faxO1ud2ESq
+         3DpZQeMm8ekfwyQEYquQTrVPKamTRLtcWNPKio9+DhAYy/CmiXZY2fu7c2j9TELYYSlm
+         FK9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697794404; x=1698399204;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697796398; x=1698401198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wBM6ErArjaeuBbIlwBAlMfcfi+6e43gtVVtakkQbEgY=;
-        b=B/VvDyjWgcDnB/EkTjQ3Rnaj4Sg3AQAEawp/iEd1hcfE7Yyw3ZiNuHwqolzCzXuo2P
-         l3YO97sGnCAoY2pFlVh8cfnrah79CBaONhObIyZYVZpXe8Xq40SvYJDZRQOwh3X0wjjp
-         N5f8SD7QW9+sAu5C3f8a9LromuKickLSlAlzlr/SxGr6ncYrll+nXzkX7+O9iwYpLsaV
-         DBunYWm2iXGk5VcNtkP5x8QyaZheBrRh59kmUTObjX09x0DdF/jVZXFaT5r+2Vn1n4vh
-         4WEKLdb1VenP5XhPTblAgJHI2s/PnwarwUOoqD9fVODNU0wF/eqx9bmw9rz3KW1xhMfd
-         xPdw==
-X-Gm-Message-State: AOJu0YxuTvKY6Rai4adFxzdXx36CD5whBvzfT6HRrPF/nmfXzwSZjCm5
-        WxaNYBFTLHFrOsdASj8Mb3x7EQ==
-X-Google-Smtp-Source: AGHT+IEmwTBub4TTdlz1jMLWOrqXIJ66kAQDBOiG76tfqbcR00lkfhKrg/qt9xMsw3VGkkS/X7RPHA==
-X-Received: by 2002:a17:907:786:b0:9c4:41c9:6ac6 with SMTP id xd6-20020a170907078600b009c441c96ac6mr1006182ejb.33.1697794404139;
-        Fri, 20 Oct 2023 02:33:24 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (k10064.upc-k.chello.nl. [62.108.10.64])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1709066bcf00b009a13fdc139fsm1102535ejs.183.2023.10.20.02.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 02:33:23 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 20 Oct 2023 11:33:20 +0200
-Subject: [PATCH v2 3/3] dt-bindings: usb: fsa4480: Add compatible for
- OCP96011
+        bh=R0YOpu7rT/QqTy8iuI5dRazXgRC1Ukab7cBL+9gy4Ic=;
+        b=IGcZlNYpGr5znm4t1SzXz9u2ahL2cdj4AMqnf7yPjonkK9r1Bt/hugfbpHXQAyd2+2
+         E5w2SQecMmClg2/trk2iRuLPDNFTJY+R1164e6HdbnhBaI92iUHNJiuPKdPglWRPx0RT
+         fJasoZ0Qf7WUsjN8P8Dtgo8RRpfQSDnaU8xJY7E1b2bnCBW9a/vetDU2j3evZdYaeqiI
+         wDrGCek/zwao6EHVaGtmsBeMlI6JFMZluibkXznSKXGhC2SXTnfX19fe6AXFXDeBRrJe
+         MyTFEI4YSwvB+s8i/W10NbbxqkCZw4qDDlrTwxd/a7uYYwmIYcZhhnsKXYZDmvJI/ZVU
+         rCvQ==
+X-Gm-Message-State: AOJu0YxcNOQb6t2qgWwtGIK3n+XKMq90TbydFbEZ5orN9kKN4EhRnD1u
+        /5KZrZ0bcSgzEEVoi5OeyIhJw3nRFFu3J4wVLHak9Q==
+X-Google-Smtp-Source: AGHT+IEBzXt8JfC9x1TW5x5JgWjODdGFRcged+43rxtT/zbYgt03X8xn6eJrhjX3Tc0jf12JuE1HThvuDkHZ4TvXIUs=
+X-Received: by 2002:a05:6a21:1a5:b0:17a:e981:817e with SMTP id
+ le37-20020a056a2101a500b0017ae981817emr1962557pzb.3.1697796398116; Fri, 20
+ Oct 2023 03:06:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231020-fsa4480-swap-v2-3-9a7f9bb59873@fairphone.com>
-References: <20231020-fsa4480-swap-v2-0-9a7f9bb59873@fairphone.com>
-In-Reply-To: <20231020-fsa4480-swap-v2-0-9a7f9bb59873@fairphone.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+References: <20231020072140.900967-1-apatel@ventanamicro.com>
+ <20231020072140.900967-9-apatel@ventanamicro.com> <87mswdbot2.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87mswdbot2.fsf@all.your.base.are.belong.to.us>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 20 Oct 2023 15:36:25 +0530
+Message-ID: <CAK9=C2XrDCpq6cGCJu2CVowiksxunGwfF4JxwEZ_k85+3bU1+Q@mail.gmail.com>
+Subject: Re: [PATCH v3 8/9] tty: Add SBI debug console support to HVC SBI driver
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.3
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,62 +79,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Orient-Chip OCP96011 is generally compatible with the FSA4480, add a
-compatible for it with the fallback on fsa4480.
+On Fri, Oct 20, 2023 at 3:25=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+.org> wrote:
+>
+> Anup Patel <apatel@ventanamicro.com> writes:
+>
+> > From: Atish Patra <atishp@rivosinc.com>
+> >
+> > RISC-V SBI specification supports advanced debug console
+> > support via SBI DBCN extension.
+> >
+> > Extend the HVC SBI driver to support it.
+> >
+> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/tty/hvc/Kconfig         |  2 +-
+> >  drivers/tty/hvc/hvc_riscv_sbi.c | 82 ++++++++++++++++++++++++++++++---
+> >  2 files changed, 76 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+> > index 4f9264d005c0..6e05c5c7bca1 100644
+> > --- a/drivers/tty/hvc/Kconfig
+> > +++ b/drivers/tty/hvc/Kconfig
+> > @@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
+> >
+> >  config HVC_RISCV_SBI
+> >       bool "RISC-V SBI console support"
+> > -     depends on RISCV_SBI_V01
+> > +     depends on RISCV_SBI
+> >       select HVC_DRIVER
+> >       help
+> >         This enables support for console output via RISC-V SBI calls, w=
+hich
+> > diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_risc=
+v_sbi.c
+> > index 31f53fa77e4a..56da1a4b5aca 100644
+> > --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> > +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> > @@ -39,21 +39,89 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *=
+buf, int count)
+> >       return i;
+> >  }
+> >
+> > -static const struct hv_ops hvc_sbi_ops =3D {
+> > +static const struct hv_ops hvc_sbi_v01_ops =3D {
+> >       .get_chars =3D hvc_sbi_tty_get,
+> >       .put_chars =3D hvc_sbi_tty_put,
+> >  };
+> >
+> > -static int __init hvc_sbi_init(void)
+> > +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int=
+ count)
+> >  {
+> > -     return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf)) {
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+> > +             if (PAGE_SIZE < (offset_in_page(buf) + count))
+> > +                     count =3D PAGE_SIZE - offset_in_page(buf);
+>
+> Thanks for fixing the cross-page issue. Now you're cutting the buffer
+> off. What about doing two SBI calls instead? (Dito on the get side)
 
-However the AUX/SBU connections are expected to be swapped compared to
-FSA4480, so document this in the data-lanes description.
+We don't need to handle that because the hvc_console framework
+will ensure remaining characters are sent-out. Same applies to
+get side as well.
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml b/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
-index 86f6d633c2fb..f9410eb76a62 100644
---- a/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
-+++ b/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
-@@ -11,8 +11,12 @@ maintainers:
- 
- properties:
-   compatible:
--    enum:
--      - fcs,fsa4480
-+    oneOf:
-+      - const: fcs,fsa4480
-+      - items:
-+          - enum:
-+              - ocs,ocp96011
-+          - const: fcs,fsa4480
- 
-   reg:
-     maxItems: 1
-@@ -53,16 +57,22 @@ properties:
-                   - const: 0
-                   - const: 1
-                 description: |
--                  Default AUX/SBU layout
-+                  Default AUX/SBU layout (FSA4480)
-                   - AUX+ connected to SBU2
-                   - AUX- connected to SBU1
-+                  Default AUX/SBU layout (OCP96011)
-+                  - AUX+ connected to SBU1
-+                  - AUX- connected to SBU2
-               - items:
-                   - const: 1
-                   - const: 0
-                 description: |
--                  Swapped AUX/SBU layout
-+                  Swapped AUX/SBU layout (FSA4480)
-                   - AUX+ connected to SBU1
-                   - AUX- connected to SBU2
-+                  Swapped AUX/SBU layout (OCP96011)
-+                  - AUX+ connected to SBU2
-+                  - AUX- connected to SBU1
- 
- required:
-   - compatible
-
--- 
-2.42.0
-
+Regards,
+Anup
