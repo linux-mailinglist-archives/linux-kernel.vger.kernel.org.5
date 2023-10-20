@@ -2,181 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF4B7D183F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1987D1844
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344861AbjJTVfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
+        id S1345256AbjJTVlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjJTVfh (ORCPT
+        with ESMTP id S1345261AbjJTVlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:35:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A752D76;
-        Fri, 20 Oct 2023 14:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697837731; x=1729373731;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=4uBaV5gWt5hQ1EvlNqhy9jBWznYItgwFoDKFI3Rf8gc=;
-  b=JEY78/eRfCEG5ip34YRN7X1akaEqyat6VghCLgQ+vdPznYiQ7yhJwaWZ
-   izavM9SDkdrsSo1JzYdJamewqSsIGLZFSDp/NjZDdrJv/8F0KSlUGj/0x
-   DY5DaKH5Q6aM5qurElaG35jB0bP0BDLXofQmDZKJkOZy98Ft7qOsf7Dhb
-   vZIQY3Jmc5IwbHdORRSdJhThNlFaWMxe9u8ZWghMp2DOfsJoRL7QZwHp3
-   CKeiYdP3VUmK6piPxF9K0dTQ1pq4uv+Q1EgwsEdvY6MUqGhHw1JXyCaix
-   sJpihTIsXa+MInXISl5o+2UrAqXO9xOgmlDFyadaGIomDtPMqd+pviulf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="366807779"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="366807779"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 14:35:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="827856057"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="827856057"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Oct 2023 14:35:29 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:35:29 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:35:28 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 20 Oct 2023 14:35:28 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:35:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DbFGAaYygsUXZyrTjwEEFK5nRcWa8m4pO+P1ug8YZnVGoJUsq0xxo4rO37pfShurAY+lSZIvp4WowweIwIXnXFZFs9XNTnJ8Q/MP9/oYnxLRXY8U/jQYUfzKc7xd8HuHWaIZPGko8mSaPre4nwB0GJNGmJNSq5120ilgHdA8GYonvkY5vsKzzs7JXQmNihNCMs06RiwMp2vBgqG7s30QcxDW0KfuXZ2vBhLhidzWaruG9WoFK0iMQUKvpok5iiAFCszFQOiqgOtytsSEVeZF8VUqlmoFk8gtlVysSlMeS5jGHLU+aAgKDw/ZAHvQIwo6/JetX5Kl8u65OaLu2kVaRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/Tamb4h2TNOBNYYnWWw+iZOdQs7+6Z6llxpodW2HoJs=;
- b=S1Y6bNUAX72UPDqyjvj+iDWzKPqibZkAm9TtoZ6kWOhLcuO/gJoebSvEJvyzAOkerDIpQ1dyW11rFhXTCwzxbaYSjWpMb8H1uwTeZAuxAuWKcLTmOACdKZkJTueKltfF9l0j03UtZ/h/YzonWCiN/A8x1zh3zVdeiw7ihu2oEVMuRf+qdF4QKXrfbBKWuK1xqHyTwDzkJH5XSGPTyf/MaQSjhxY/FZjJ4zJQH1KGiP3c0hF23LtqYmzxxEEIOAQIBjwYM0lfUaZQ9Q0yO06uSBew7wm7Sw3gWIH9FeIJrwT77ghvQFfAnWZcl7lxPW+1V9y6Nu7JPIop3XiW6Vo1ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by SA0PR11MB4543.namprd11.prod.outlook.com (2603:10b6:806:99::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Fri, 20 Oct
- 2023 21:35:26 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::34a7:52c3:3b8b:75f4]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::34a7:52c3:3b8b:75f4%4]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
- 21:35:25 +0000
-Message-ID: <876a9c0a-527d-4719-a933-6c0b1aa9c4d4@intel.com>
-Date:   Fri, 20 Oct 2023 14:35:25 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 6/6] i40e: Initialize hardware capabilities at
- single place
-Content-Language: en-US
-To:     Ivan Vecera <ivecera@redhat.com>, <netdev@vger.kernel.org>
-CC:     <mschmidt@redhat.com>, <dacampbe@redhat.com>, <poros@redhat.com>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231020193746.2274379-1-ivecera@redhat.com>
- <20231020193746.2274379-6-ivecera@redhat.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20231020193746.2274379-6-ivecera@redhat.com>
+        Fri, 20 Oct 2023 17:41:04 -0400
+Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A012BD76
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:40:57 -0700 (PDT)
+Received: by mail-oi1-x24a.google.com with SMTP id 5614622812f47-3b2e6189e6aso2081397b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697838057; x=1698442857; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9uyJIMwTKYCyWOffk6DDwTmldfLUB0YlKCSR4JSJIpA=;
+        b=pxFTSKGnh0CYrGc22yftWW+2jtL1LdociyDjM6W5a0bkcgRxB3Qz90L/0DeasiAMBC
+         85VdZ/scrmwGfFgyxg53KnXtj2Z6O/QXkwzkKepGZNbG8QZ0WaZrHMgokIgMB+0vI1YK
+         wLOXWHXDTwojFhZpDkshPwM5npCdBiU0VTtzueMH3QG0ZSFgeJ+ybM3wwvOXAByWLneQ
+         1QUFqzJkN3Krk8xsFXcQ4my47TjVPY4mZk7PylB3fBkiyGI1+hTe81lKnK+Z3K4E+/sv
+         IZ+xdJXf6pQJaGLafdMwZLUSkJo2gKdLB3DVkc/73Eg2c9hD6qUgjZ2jWYHiiJSSU9tj
+         Z5+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697838057; x=1698442857;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9uyJIMwTKYCyWOffk6DDwTmldfLUB0YlKCSR4JSJIpA=;
+        b=i/SztBy7A/EpzNUAS2NvZDwwbLwLmBb4iLCNQh8yvOKq9LOnHalPd7ZilUeWrApuSB
+         xgSuSevNUyltO6w/vpwPrCfKblofaTf35tcZcrKxy+yYzSKTag+srLM4FnxRdofgxqpx
+         MtIrKaW4QNCVWb6joKO6pGWfiSlXp3dexFXU3jKjGSUHkqKfHtsVSQwX6snaQHTvtR8C
+         EXzarU6ufduimIINnFtzeXpPjqltS0RLxBrihR5gCKbIEAmVL2CUH7zMmsFNjZp0wDxI
+         gj4BhGsZJhIH7gsUe3rdcsCFwPjPxaa7H12NyNKnAjy1yqwltr2GsTSNZF3Re6nZJc7C
+         942Q==
+X-Gm-Message-State: AOJu0YwppWkuqrDq437/g+xpk7oOS7Qga16nGoOjEY3QIZsXz2BBnQTD
+        ZILjKO+SHYmKRLkOdNjyrpwCwDssXAtp
+X-Google-Smtp-Source: AGHT+IEVJCO6jjS10yQjQNjSGC21aaOcD4Beut4oHBDK6jrEqw40q2pxVUdIyGgKdLHvaRO+kKxVcl4Nm5I0
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:20a1])
+ (user=rananta job=sendgmr) by 2002:a05:6808:308f:b0:3ae:2710:cf87 with SMTP
+ id bl15-20020a056808308f00b003ae2710cf87mr1055498oib.7.1697838056993; Fri, 20
+ Oct 2023 14:40:56 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 21:40:40 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231020214053.2144305-1-rananta@google.com>
+Subject: [PATCH v8 00/13] KVM: arm64: PMU: Allow userspace to limit the number
+ of PMCs on vCPU
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0227.namprd03.prod.outlook.com
- (2603:10b6:303:b9::22) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SA0PR11MB4543:EE_
-X-MS-Office365-Filtering-Correlation-Id: 209b6100-1bcb-456a-bc9e-08dbd1b4790c
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4Nw446A/jDYYXPyXewwHr9XLLBxMhJwDzNfHwckxq/PUkNyATIs6ajeO0A6UyQ9NKJa6rbJAS1KLFnTnwligkSGBoO8f8JQBgig2kEXUyvZqfgaJeozrRhekKIi6DIW64iqHER4j7FFJooeIHSgC81dr1godkuSjg967yN0oSTnVlLJlRPVH4Q+vLi9cmVm5TktrXXqo1oRNWpFJbcqNQqtE9ZuZt9wzyLQ/4rYETq8mf01hVNXOLUIjXH/3fgY6MG0WurIcWYB+rtq7Gt80RwE9OAfaJi+QdgnxXoLDqrOg6G8BeARUdlz+xD/IbPqS4ZDhGIYqYhZk08lt/iWp2dth6WvFKtslGvGeJuUPGN/vG9A1NrmeXvOzjAFjx4hMHdgNxoO38k19t/o/KcCStJK9hT7x9Jj0KANj2uTTXs4ZLOQuaEKKaSesB2xmMPAtQ0cv0EOfAvK+4lxuvFtHnuInjvBxKnHK3PQ7B8YbZsP/LG7r8IBN4jcgpzSyPK5s4A3jmE5Hrl0gYyiYeAVDDQbv620VZIf4REcPVVrO27fl97L2vrfRQmaQ3RD2ue2SCot/HIyslL8jl7p+VSW4eEuqnEdOsgfuKh7UztFrOy8E2Wn335X5PpSrB84gO5xEvNtewEV+tyjeHtlh0QquZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(66476007)(66556008)(31696002)(4744005)(2906002)(316002)(53546011)(26005)(6506007)(2616005)(82960400001)(86362001)(478600001)(38100700002)(54906003)(6486002)(66946007)(83380400001)(7416002)(8936002)(41300700001)(5660300002)(6512007)(4326008)(8676002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akRqVm0wNDBOUnFka2pVUXc3a2JVY1U0QXIxVzlKRDBaYUZRVW5RS0ZFa3hM?=
- =?utf-8?B?TVVSRDg4OEhoVU1FS1FJb2QyRWp2VkoyMVRnOVllS2RhUDBybGZPRVR6a3Qw?=
- =?utf-8?B?YURia2tpclN1UXliVFNtMEEwa0FEVkpFRmplT1IzaFQ3VE1WYjNRN0JSYy9H?=
- =?utf-8?B?TkROclVVa3JkZUhhTVZsbUxQdzFhOHU4RHg5OStRYWhTWmp6WDdxWU8vUm9V?=
- =?utf-8?B?OXQzd1BDMTFjbkZYaWRuVkMrbFR2V2RvNHYrMGVabmduYjdlWmNZREg1WDA0?=
- =?utf-8?B?UlBJZWhLTlJwRVd2SERRQ29wMlBOenFlU3ZxL0M5MGticFJEcW1PbTdiTE9l?=
- =?utf-8?B?Ni9EdFF6VjN0RDFBWjdUQjdkOWxkZVFyVjB3QkxFQkxVVUFPUGI5VHVYNkkz?=
- =?utf-8?B?dW5HY2dvNVJYWER3QWlQZWhidllrc2NHbDkwV3N5ZWZlS1FPRmZZTFhGMm1u?=
- =?utf-8?B?Q0xRdCt6ZWlMZlhoQldXRUY4RFUweFF5dStyVGVUbzEvSlpqc05VSTVDTUtY?=
- =?utf-8?B?Wjl0cTJjSFVtZG1RSm1pTjZ0S2tHWDNmcVo2R01sdE9rdC81Y01BZ1Bwc3M1?=
- =?utf-8?B?RHdSTDduZVN4d0ozUHg0T2lmVWVGNCtIbHgyQktDNWtDbEsxaDJneGNYQzA1?=
- =?utf-8?B?RUd0VUltdXFSQUswLzh0UzJsNzFhTG4yRGhSY1hrakhVQVA3cGN1RnBqM1lH?=
- =?utf-8?B?K01iZ0JuZVcxNVlzdHgxdHdMSUdnY3hmVFowbXVJZUIwR0YwcG14MTRsVTlN?=
- =?utf-8?B?YkliNW1vR1R3cmJSd1l1cHFWQWd1ci9MZlIwUUVCUmYzQ3JONkFuWkJwQXc5?=
- =?utf-8?B?ajIvSjBLcFhPTzRWVnF4N013V3hsM1U5dURQMjlOUVJWUElHdldLZkhEZzh6?=
- =?utf-8?B?SGh1STd5NTJwbTd6cnVESTkwK2wrUHVIVWwzS2EyR1lSWFFCa29zTVdPZ3R4?=
- =?utf-8?B?emJ4RnFNaisvOHZXeWZDU1M1bUIzVER3a2dzSnVGU3AxNW95TUxRWENyc1Zy?=
- =?utf-8?B?VlRkK2NLbnhHTmVHRFhIZnM1NzVHRmpwTXFhSHdsL2ZwYk5uUkVkS1hlcmZ5?=
- =?utf-8?B?UUs3aHFlRytTeXlHZ2lBbnhRZUNxTFF0dVNRcGZ4SWJ3WVJzSEd6a1Vxd1Y1?=
- =?utf-8?B?eXFCQlRkSnJyWHM4dG5UOG5ubnZTeG1wcWJoNDhTdGRpdTVUcytvWi9XTkpt?=
- =?utf-8?B?eWZHVDNTQ3JVb2xBWWJXTnUweHRoT1dJMEJGcEgyYlRvNTJxSkRmMmdGT0Np?=
- =?utf-8?B?bmJraityaGI2bmlFbitIdi9ZOGtGSG91amM2S0dVR2t5T21sSXVEK1JXRDBk?=
- =?utf-8?B?dmVZbXZrbEJCT09kWlpOODVnd3AxZStmb2xtN0x4RWl1TWpuRUpYeXpRRGUr?=
- =?utf-8?B?SVBIWnpqRUJsZFZLWjR0NUxzclZxbjRxOWxScHZ1RG42QjljRHFhODdPU2Zl?=
- =?utf-8?B?UHpxampFN1pRdzNOSmFaUlpsSWs0ZTk2d2tHWXE5Qjh0QjY3dDVtbElKSWQz?=
- =?utf-8?B?cE1taGhrSHFwY3BhWm9VVkdDZnpwdko2UWlJR1licWJ4Z3Z5dXdCUExNVUFJ?=
- =?utf-8?B?K3d0VVJ6bGVhMmVrRzBxdEFJN1I1SUx5Y2FiSUF1NXcyZmJ6ZjMrdlJXL2FE?=
- =?utf-8?B?VDhlanJSM0NQQmdMdm9pYUZ4NzFoMkFuYml4ZktCRTBCRlpBYUdSZTJUN2pa?=
- =?utf-8?B?U1V1TjdBcWR6bWk4MEVzOU10ZE4vd0ZQbmp0SDJ0SWNnZzN4cVlndHNZc3pT?=
- =?utf-8?B?L3labUkzQVpuTnJveWxTNDU5aHkwRmJwbU8zY0dndmtCSWZRMVlWRmhydENs?=
- =?utf-8?B?aHRIaXJxNnBPMThQSUxPQWxzT1Z0SUhJeW1Ib09MWXQ5ZmRoZmNadm05UVNu?=
- =?utf-8?B?NTVkNjhPT3RTNVFDaG1kS0pzK0liaENZQ040ZW55ZUlpVTBXK0JQbFJmejYy?=
- =?utf-8?B?bEU2RG1SVWw0YjQwR29RWWFZT0EvQThqd3RXVDJrSjBHV0paWFBGZWRnRzJT?=
- =?utf-8?B?cmJqR2NlVTRyeW11b28yWnRGTG1yampKMWpWVDRpbVdPOGwvNnZqa0xMRmli?=
- =?utf-8?B?MmkzcWRFRWU4RlNNbEVaQU9iOUFSdFNlVG9pSnhid0tmamFSd09ZY0xwcUJ6?=
- =?utf-8?B?a0RQcnVjVEVmZUtEOEp5ZCtXWGJkMzd0NTgzYTlFV1pKZUdyM2JPZk92TGpo?=
- =?utf-8?B?cHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 209b6100-1bcb-456a-bc9e-08dbd1b4790c
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 21:35:25.9556
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v3rJfuLXAjaUIUYptkh1T/2gZ1WsRh7F/AQiq1dUmzRGXjDzUPJm6VDM7koAlkebRv8A71TbyLh7pUNlcqai1YyWbB2yb+wccYkpxaRh+Zw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4543
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+The goal of this series is to allow userspace to limit the number
+of PMU event counters on the vCPU.  We need this to support migration
+across systems that implement different numbers of counters.
+
+The number of PMU event counters is indicated in PMCR_EL0.N.
+For a vCPU with PMUv3 configured, its value will be the same as
+the current PE by default.  Userspace can set PMCR_EL0.N for the
+vCPU to any value even with the current KVM using KVM_SET_ONE_REG.
+However, it is practically unsupported, as KVM resets PMCR_EL0.N
+to the host value on vCPU reset and some KVM code uses the host
+value to identify (un)implemented event counters on the vCPU.
+
+This series will ensure that the PMCR_EL0.N value is preserved
+on vCPU reset and that KVM doesn't use the host value
+to identify (un)implemented event counters on the vCPU.
+This allows userspace to limit the number of the PMU event
+counters on the vCPU.
+
+The series is based on kvmarm/next @0a3a1665cbc59 to include the
+vCPU reset and feature flags cleanup/fixes series [1] and the
+new sysreg definitions [2] that the selftests in this series utilizes.
+
+Patch 1 adds helper functions to set a PMU for the guest. This
+helper will make it easier for the following patches to add
+modify codes for that process.
+
+Patch 2 makes the default PMU for the guest set before the first
+vCPU reset.
+
+Patch 3 adds a helper to read vCPU's PMCR_EL0.
+
+Patch 4 changes the code to use the guest's PMCR_EL0.N, instead
+of the PE's PMCR_EL0.N.
+
+Patch 5 adds userspace handlers for PM{C,I}NTEN{SET,CLR} and
+PMOVS{SET,CLR} to consider the guest's PMCR.N.
+
+Patch 6 sanitizes the PM{C,I}NTEN{SET,CLR} and PMOVS{SET,CLR} registers
+before the first run of the guest based on the number of counters
+configured.
+
+Patch 7 adds support userspace modifying PMCR_EL0.N.
+
+Patch 8-13 adds a selftest to verify reading and writing PMU registers
+for implemented or unimplemented PMU event counters on the vCPU.
+
+v8: Thanks, Oliver, Sebastian, and Eric for suggestions
+- Drop v7 patches 3 and 4, and bring back initializing the
+  PM{C,I}NTEN{SET,CLR} and PMOVS{SET,CLR} registers with unknown
+  values. (Eric)
+- Implement {get,set}_user callbacks for PM{C,I}NTEN{SET,CLR} and
+  PMOVS{SET,CLR} registers. (Oliver)
+- Sanitize PM{C,I}NTEN{SET,CLR} and PMOVS{SET,CLR} registers
+  before starting the first vCPU run. (Oliver)
+- Rename kvm_vcpu_set_pmu() to kvm_setup_vcpu(). (Oliver)
+- Rename kvm_arm_get_num_counters() to kvm_arm_pmu_get_max_counters()
+  and squash it into the caller's patch. (Oliver)
+- In set_pmcr() implementation, do not initialize the pmcr register
+  with kvm_vcpu_read_pmcr(). (Oliver) 
+- Introduce test_create_vpmu_vm_with_pmcr_n() in the selftest to
+  carry the commonly used code of creating a VM and configuring
+  its PMCR.N field. (Eric)
+- Add a selftest scenario to check the immutable behavior of
+  the registers. (Sebastian)
+- Add a selftest scenario to check the valid behavior of
+  PM{C,I}NTEN{SET,CLR} and PMOVS{SET,CLR} registers when accessed
+  from userspace.
+- Address other nits.
+
+v7: Thanks, Oliver for the suggestions
+- Rebase the series onto kvmarm/next.
+- Move the logic to set the default PMU for the guest from
+  kvm_reset_vcpu() to __kvm_vcpu_set_target() to deal with the
+  error returned.
+- Add a helper, kvm_arm_get_num_counters(), to read the number
+  of general-purpose counters.
+- Use this helper to fix the error reported by kernel test robot [3].
+
+v6: Thanks, Oliver and Shaoqin for the suggestions
+- Split the previously defined kvm_arm_set_vm_pmu() into separate
+  functions: default arm_pmu and a caller requested arm_pmu.
+- Send -EINVAL from kvm_reset_vcpu(), instead of -ENODEV for the
+  case where KVM fails to set a default arm_pmu, to remain consistent
+  with the existing behavior.
+- Drop the v5 patch-5/12 that removes ARMV8_PMU_PMCR_N_MASK and adds
+  ARMV8_PMU_PMCR_N. Make corresponding changes to v5 patch-6/12.
+- Disregard introducing 'pmcr_n_limit' in kvm->arch as a member to
+  be accessed later in 'set_pmcr()'. Instead, directly obtain the
+  value by accessing the saved 'arm_pmu'.
+- 'set_pmcr()' ignores the error when userspace tries to set PMCR.N
+  greater than the hardware limit to keep the existing API behavior.
+- 'set_pmcr()' ignores modifications to the register after the VM has
+  started and returns a success to userspace.
+- Introduce [get|set]_pmcr_n() helpers in the selftest to make
+  modifications to the field easier.
+- Define the 'vpmu_vm' globally in the selftest, instead of allocating
+  it every time a VM is created.
+- Use the new printf style __GUEST_ASSERT()s in the selftest. 
+
+v5:
+https://lore.kernel.org/all/20230817003029.3073210-1-rananta@google.com/
+ - Drop the patches (v4 3,4) related to PMU version fixes as it's
+   now being handled in a separate series [4].
+ - Switch to config_lock, instead of kvm->lock, while configuring
+   the guest PMU.
+ - Instead of continuing after a WARN_ON() for the return value of
+   kvm_arm_set_vm_pmu() in kvm_arm_pmu_v3_set_pmu(), patch-1 now
+   returns from the function immediately with the error code.
+ - Fix WARN_ON() logic in kvm_host_pmu_init() (patch v4 9/14).
+ - Instead of returning 0, return -ENODEV from the
+   kvm_arm_set_vm_pmu() stub function.
+ - Do not define the PMEVN_CASE() and PMEVN_SWITCH() macros in
+   the selftest code as they are now included in the imported
+   arm_pmuv3.h header.
+ - Since the (initial) purpose of the selftest is to test the
+   accessibility of the counter registers, remove the functional
+   test at the end of test_access_pmc_regs(). It'll be added
+   later in a separate series.
+ - Introduce additional helper functions (destroy_vpmu_vm(),
+   PMC_ACC_TO_IDX()) in the selftest for ease of maintenance
+   and debugging.
+   
+v4:
+https://lore.kernel.org/all/20230211031506.4159098-1-reijiw@google.com/
+ - Fix the selftest bug in patch 13 (Have test_access_pmc_regs() to
+   specify pmc index for test_bitmap_pmu_regs() instead of bit-shifted
+   value (Thank you Raghavendra for the reporting the issue!).
+
+v3:
+https://lore.kernel.org/all/20230203040242.1792453-1-reijiw@google.com/
+ - Remove reset_pmu_reg(), and use reset_val() instead. [Marc]
+ - Fixed the initial value of PMCR_EL0.N on heterogeneous
+   PMU systems. [Oliver]
+ - Fixed PMUVer issues on heterogeneous PMU systems.
+ - Fixed typos [Shaoqin]
+
+v2:
+https://lore.kernel.org/all/20230117013542.371944-1-reijiw@google.com/
+ - Added the sys_reg's set_user() handler for the PMCR_EL0 to
+   disallow userspace to set PMCR_EL0.N for the vCPU to a value
+   that is greater than the host value (and added a new test
+   case for this behavior). [Oliver]
+ - Added to the commit log of the patch 2 that PMUSERENR_EL0 and
+   PMCCFILTR_EL0 have UNKNOWN reset values.
+
+v1:
+https://lore.kernel.org/all/20221230035928.3423990-1-reijiw@google.com/
+
+Thank you.
+Raghavendra
+
+[1]: https://lore.kernel.org/all/20230920195036.1169791-1-oliver.upton@linux.dev/
+[2]: https://lore.kernel.org/all/20231011195740.3349631-5-oliver.upton@linux.dev/
+[3]: https://lore.kernel.org/all/202309290607.Qgg05wKw-lkp@intel.com/
+[4]: https://lore.kernel.org/all/20230728181907.1759513-1-reijiw@google.com/
+
+Raghavendra Rao Ananta (6):
+  KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based on the associated PMU
+  KVM: arm64: Add {get,set}_user for PM{C,I}NTEN{SET,CLR},
+    PMOVS{SET,CLR}
+  KVM: arm64: Sanitize PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR} before first
+    run
+  tools: Import arm_pmuv3.h
+  KVM: selftests: aarch64: vPMU test for validating user accesses
+  KVM: selftests: aarch64: vPMU test for immutability
+
+Reiji Watanabe (7):
+  KVM: arm64: PMU: Introduce helpers to set the guest's PMU
+  KVM: arm64: PMU: Set the default PMU for the guest before vCPU reset
+  KVM: arm64: PMU: Add a helper to read a vCPU's PMCR_EL0
+  KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
+  KVM: selftests: aarch64: Introduce vpmu_counter_access test
+  KVM: selftests: aarch64: vPMU register test for implemented counters
+  KVM: selftests: aarch64: vPMU register test for unimplemented counters
+
+ arch/arm64/include/asm/kvm_host.h             |   3 +
+ arch/arm64/kvm/arm.c                          |  22 +-
+ arch/arm64/kvm/pmu-emul.c                     | 112 ++-
+ arch/arm64/kvm/sys_regs.c                     | 180 ++++-
+ include/kvm/arm_pmu.h                         |  20 +
+ tools/include/perf/arm_pmuv3.h                | 308 ++++++++
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../kvm/aarch64/vpmu_counter_access.c         | 726 ++++++++++++++++++
+ .../selftests/kvm/include/aarch64/processor.h |   1 +
+ 9 files changed, 1319 insertions(+), 54 deletions(-)
+ create mode 100644 tools/include/perf/arm_pmuv3.h
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
 
 
-On 10/20/2023 12:37 PM, Ivan Vecera wrote:
-> Some i40e_hw.caps bits are set in i40e_set_hw_caps(), some of them
-> in i40e_init_adminq() and the rest of them in i40e_sw_init().
-> Consolidate the initialization to single proper place i40e_set_hw_caps().
-> 
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+base-commit: 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3
+-- 
+2.42.0.655.g421f12c284-goog
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
