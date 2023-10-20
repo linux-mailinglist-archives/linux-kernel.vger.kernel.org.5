@@ -2,115 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 043C27D0DF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426507D0DF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376953AbjJTKzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S1376990AbjJTK4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376745AbjJTKzG (ORCPT
+        with ESMTP id S1376974AbjJTK4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:55:06 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9037112
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:55:02 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Dxl+iEXDJlKHQzAA--.64009S3;
-        Fri, 20 Oct 2023 18:55:00 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_y+BXDJlqEIsAA--.28192S3;
-        Fri, 20 Oct 2023 18:54:58 +0800 (CST)
-Subject: Re: [PATCH v3 0/8] Add objtool and orc support for LoongArch
-To:     Xi Ruoyao <xry111@xry111.site>, Huacai Chen <chenhuacai@kernel.org>
-References: <1697768821-22931-1-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4wqO0=+EOhyH+t=0bpiX2DayddVArB=x_yzVvmX9OW1g@mail.gmail.com>
- <a967ebeb-f19d-4e36-3547-80e838ad2fa0@loongson.cn>
- <23a3ebe302f77db630edc52b23afb812f31f103e.camel@xry111.site>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <caa9c73c-4779-a88e-4577-4d7b0ed2b76a@loongson.cn>
-Date:   Fri, 20 Oct 2023 18:54:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Fri, 20 Oct 2023 06:56:08 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57828114
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:03 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c5629fdbf8so3300101fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697799361; x=1698404161; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5XGWCJzM/g94fBfiFjQE9ovQs61u2T9WwU8kHFzzAHc=;
+        b=wz60kAjupRd51/JXl/J1mE+AWT2q1Ep73VTJj7DyTeBlBzoWR7tqIx0fSdv8atBfeG
+         lTTJE21BFJfsDmOgCg7w/VagJIIAd9GgusC8huzZWZFh/dILQB6LImxLKKt0tnQkrZag
+         IYgYrLe6/O08RQ5Fw6RPDDvR4hfr8Gr+wnUA6zao8ccoGeFmuuF1o1qtI0Nz+4d0MRb9
+         NJP0gUd+M62k9zs7qpv6cDUhaWsKeERU7sOOengjGb3hKAXdzaiDmOt1Xlo9u7WyfzQR
+         4Nkexn6/Q3PYbz/Oz9XlHE+nBd2q/h8zq306Fn/8ZG9wLyViCNk/LmwZ4CdsVss/uL37
+         tuMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697799361; x=1698404161;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5XGWCJzM/g94fBfiFjQE9ovQs61u2T9WwU8kHFzzAHc=;
+        b=lNbA6kPddhUVM5GZUim/9VwXgqd8hADr1Eizgxrx7plBwAcHIRU8NF9rzgOd4CV586
+         aKhzG/8xG3vsamhrDF5YdqIV52CTKrDC4kBL3wqiZemGbcxC7b2EpNDqdzKC1TR21nWB
+         T1Lue3j3NW5Qm1xWNx5CNlfTl+pEOlcxtAVE2vpSR/59ebrLwQEb8xi07cQasHg/tD9e
+         bjB8eqPrwf2Nd/Kagnr7+kWNAEsdObKu1csh/tE35MwgDzS48++kArK2mUt/ol4AJ/2v
+         WCL8ckdsA3MYJLXZG4Rm64yqhYjq770cvI53IelXaD+x2AcNMhBDPyv34cFgzAi/Rvja
+         h6Rg==
+X-Gm-Message-State: AOJu0YxuKIyGIzFWX1JVUcRJHgDFEb3XknHhUBB5Qr8C0VUT6u7xrWjg
+        +4QHZzb26EeSVGW/A0gwcw7BwOrjU+Q6wTGzdxk=
+X-Google-Smtp-Source: AGHT+IF/zBmQ81Mh1rYtDuRkhhieFQOEpu3V5wGsAJl2hBmMEcLLeFYjRSUIlN8ifBW+DEk1OXMjww==
+X-Received: by 2002:a05:651c:30c:b0:2c0:300a:82ed with SMTP id a12-20020a05651c030c00b002c0300a82edmr910428ljp.7.1697799361095;
+        Fri, 20 Oct 2023 03:56:01 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id x9-20020a05600c420900b004065e235417sm6578937wmh.21.2023.10.20.03.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 03:56:00 -0700 (PDT)
+From:   srinivas.kandagatla@linaro.org
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/6] nvmem: patches for v6.7
+Date:   Fri, 20 Oct 2023 11:55:39 +0100
+Message-Id: <20231020105545.216052-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <23a3ebe302f77db630edc52b23afb812f31f103e.camel@xry111.site>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Dx_y+BXDJlqEIsAA--.28192S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Kw4DKryDWry3tF4kCrWDKFX_yoW8Wr17pr
-        4DJayj9rsruayFyayvkw1xKa4DZF1Ivrn0qrWkGry5A345Aryftrs7JF1kuF9rXrn09F4a
-        9392gryUWF1xAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
-        xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r4a6rW5MI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_
-        Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j0pB
-        -UUUUU=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+Hi Greg,
+
+Here are some nvmem patches
+- mostly around deprecating old style bindings.
+- make qfprom clks optional.
+- making use of device_get_match_data()
+
+Can you please queue them up for 6.7
+
+thanks,
+Srini
 
 
-On 10/20/2023 06:45 PM, Xi Ruoyao wrote:
-> On Fri, 2023-10-20 at 18:28 +0800, Tiezhu Yang wrote:
->> On 10/20/2023 04:51 PM, Huacai Chen wrote:
->>> Cross compiling on X86 for LoongArch fails:
->>>
->>>    CALL    scripts/checksyscalls.sh
->>>    DESCEND objtool
->>> make[5]: *** No rule to make target
->>> '/usr/lib/gcc/x86_64-redhat-linux/8/include/stdbool.h', needed by
->>> '/home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/exec-cmd.o'.
->>> Stop.
->>> make[4]: *** [Makefile:80:
->>> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd-in.o]
->>> Error 2
->>> make[3]: *** [Makefile:82:
->>> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd.a]
->>> Error 2
->>> make[2]: *** [Makefile:73: objtool] Error 2
->>> make[1]: *** [/home/chenhuacai/linux-official.git/Makefile:1355:
->>> tools/objtool] Error 2
->>> make: *** [Makefile:234: __sub-make] Error 2
->>
->> It seems that there is no stdbool.h in your cross compile environment.
->>
->> It works well with the following steps, you can try it.
->
-> /* snip */
->
->> find /opt -name stdbool.h
->> /opt/cross-tools/lib/gcc/loongarch64-unknown-linux-gnu/14.0.0/include/stdbool.h
->> /opt/cross-tools/loongarch64-unknown-linux-gnu/include/c++/14.0.0/tr1/stdbool.h
->
-> The problem is HOSTCC cannot find stdbool.h, not (target) CC.  So these
-> two files are not relevant.
->
+Luca Weiss (1):
+  nvmem: qfprom: Mark core clk as optional
 
-Oh, thank you for pointing out the real reason of this issue.
+Rafał Miłecki (3):
+  nvmem: add explicit config option to read old syntax fixed OF cells
+  dt-bindings: nvmem: move deprecated cells binding to its own file
+  Revert "nvmem: add new config option"
 
-By the way, my test system is Fedora 38 x86_64, it works well.
+Rob Herring (2):
+  dt-bindings: nvmem: u-boot,env: Add missing additionalProperties on
+    child node schemas
+  nvmem: Use device_get_match_data()
 
-Thanks,
-Tiezhu
+ .../devicetree/bindings/mtd/mtd.yaml          |  7 ++++-
+ .../bindings/mtd/partitions/nvmem-cells.yaml  |  1 +
+ .../nvmem/amlogic,meson-gxbb-efuse.yaml       |  1 +
+ .../bindings/nvmem/amlogic,meson6-efuse.yaml  |  1 +
+ .../bindings/nvmem/apple,efuses.yaml          |  1 +
+ .../devicetree/bindings/nvmem/imx-ocotp.yaml  |  1 +
+ .../bindings/nvmem/mediatek,efuse.yaml        |  1 +
+ .../nvmem/microchip,sama7g5-otpc.yaml         |  1 +
+ .../devicetree/bindings/nvmem/mxs-ocotp.yaml  |  1 +
+ .../nvmem/nvmem-deprecated-cells.yaml         | 28 +++++++++++++++++++
+ .../devicetree/bindings/nvmem/nvmem.yaml      |  9 ------
+ .../bindings/nvmem/qcom,qfprom.yaml           |  1 +
+ .../bindings/nvmem/qcom,sec-qfprom.yaml       |  1 +
+ .../bindings/nvmem/qcom,spmi-sdam.yaml        |  1 +
+ .../bindings/nvmem/rockchip,otp.yaml          |  1 +
+ .../bindings/nvmem/rockchip-efuse.yaml        |  1 +
+ .../nvmem/socionext,uniphier-efuse.yaml       |  1 +
+ .../bindings/nvmem/sunplus,sp7021-ocotp.yaml  |  1 +
+ .../devicetree/bindings/nvmem/u-boot,env.yaml |  2 ++
+ .../bindings/rtc/amlogic,meson6-rtc.yaml      |  1 +
+ drivers/mtd/mtdcore.c                         |  3 +-
+ drivers/nvmem/apple-efuses.c                  |  1 +
+ drivers/nvmem/core.c                          | 10 ++++---
+ drivers/nvmem/imx-ocotp-scu.c                 |  1 +
+ drivers/nvmem/imx-ocotp.c                     |  1 +
+ drivers/nvmem/meson-efuse.c                   |  1 +
+ drivers/nvmem/meson-mx-efuse.c                |  1 +
+ drivers/nvmem/microchip-otpc.c                |  1 +
+ drivers/nvmem/mtk-efuse.c                     |  1 +
+ drivers/nvmem/mxs-ocotp.c                     | 10 +++----
+ drivers/nvmem/qcom-spmi-sdam.c                |  1 +
+ drivers/nvmem/qfprom.c                        |  7 +++--
+ drivers/nvmem/rave-sp-eeprom.c                |  1 +
+ drivers/nvmem/rockchip-efuse.c                |  1 +
+ drivers/nvmem/sc27xx-efuse.c                  |  1 +
+ drivers/nvmem/sec-qfprom.c                    |  1 +
+ drivers/nvmem/sprd-efuse.c                    |  1 +
+ drivers/nvmem/stm32-romem.c                   |  8 ++++--
+ drivers/nvmem/sunplus-ocotp.c                 |  1 +
+ drivers/nvmem/sunxi_sid.c                     |  1 +
+ drivers/nvmem/uniphier-efuse.c                |  1 +
+ drivers/nvmem/zynqmp_nvmem.c                  |  1 +
+ drivers/rtc/nvmem.c                           |  1 +
+ drivers/w1/slaves/w1_ds250x.c                 |  1 +
+ include/linux/nvmem-provider.h                |  4 +--
+ 45 files changed, 94 insertions(+), 29 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
+
+-- 
+2.25.1
 
