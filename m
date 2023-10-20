@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0537D1385
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802FD7D1386
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377862AbjJTQEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        id S1377895AbjJTQEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377814AbjJTQEu (ORCPT
+        with ESMTP id S1377860AbjJTQEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 12:04:50 -0400
 Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2089.outbound.protection.outlook.com [40.92.58.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2472CD7;
-        Fri, 20 Oct 2023 09:04:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FC3D8;
+        Fri, 20 Oct 2023 09:04:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BpsltV757FGrqEJ4sw2IzRx4ky4j/V8YMcE/7W3EJRJHQPo0uvwizA/ZgePZUE+sszZ+Peg0b5hfRcK7Q1irT6sttY0m+fiAv4P8xfzXyqazlsS7okWUEIn3/dPZ711qObgHhb7JEnKlVB/HruXdVEr+cAZWOljGIu7I1X1aMQ9pZenXnEOslh7TJkg8KVIOga9bSe775PK/ZrWyY3CotYY9kd6Mpd9TRhv9pQW9U+xZfZoRryzjG+/3RK3qnkMEzdqIq43CwgqA2xtWYMp494A7wn4ExBiakes8K4Rqqxcn2Y1SZv/bqAs+2ATrIS08s9wV51SuRVH4YJFgrfBHZQ==
+ b=dNpdL38jqfsQLIHWcR7D5U4X63bb4alYR1DtaYjrkEw+c+JBPCC44ryXSsaNQ44PcVlNL8yDhaICKj3vkzTJr/Ch6EatSig2Se4WLux4xUx0nDZI8q16ZrRNJpB5me+y2ckV1tBN0eqBzP7iIVth+8esQ+SJrZcodaVIslgifvktEcRLG81nZTZDjNHrQL2UYWSaWYiVyfF6VhgH9tCVobJLMn3o9ARuFLPye4G8OENGmfZ+15diXhkuh2VgwNVgJ5XlP5JeA3hIrwlRL0D0/xiFRPw2pLVUho3ozFeIT0wrzbENI4Arry63YuQEh30poaXiKjH4W1u29hNwDTVc7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3KamqX0Q6NPXurZO/K0GqLjTTWdEMYnTddIw8LLYZnI=;
- b=H2k9tGwZ14V9AkvSMdF5vJIzUrG6/GTBmgCfjX8VayFENyjku4vuvhcZAZMx3H2At8X+zDtwyXUwud1OQllH16wGyK//8m/lIAmQwQOHVqXDyr76ErvF+HtnG1/5aHGlRhWN5YhiTcn7alPBKRmM6vdmSoik6sd/tvaP+DvZYaOzIJotLhN8ud72nGNCE1ifIm5fcexsWeBJE6Ov8K6c+sS+aoPKHGq4tPCbNWCFzXtqBh0cXoS6czfXwR7c+fP33GJlndS1iBGzThhq+qhF/7OFH1esp78flL1ipQGqlOyjxRpasUdO8KlRHULA8mSeh6d6+9zqOF5OQfzO1pZDag==
+ bh=AuS9cjJzEGfcLKVQ2Gi0b8BQ6oIDdeyzIN4dWzPwyzE=;
+ b=hzMfu7DqkVw4dyCu/E2SKoKHTxvV3UwgTI5M8gfDeROyxAnQrRFY8MqLFJak/VOXq9ApqfiTJzf20jQyMdCcYlzwX1K6OKwcwbycrPv25WGDoDW+r6Ut+45GsuwT1joYje8tL8eGoKELwVmfgQOOAG3QtEP/ZWZCu/m0v6GXnQuaqkrBtTTHqZGS+m5QsSZvIx9fE0KCwNsL6tHuSkdGG1VlMGF3+1X86W/SdZKY6ajJ4hruBqoW4n6OuBPGpVak+zVUjitlsN+Z8FAQX5zYp74y65HlCf1ATFPTHTcz/1fS3U0b8KxzCZmEp/PtcAvoemeH0UqWp0vxawJvDsLeGg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
  by AM9PR02MB6930.eurprd02.prod.outlook.com (2603:10a6:20b:26d::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
- 2023 16:04:44 +0000
+ 2023 16:04:48 +0000
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6886.034; Fri, 20 Oct 2023
- 16:04:43 +0000
+ 16:04:48 +0000
 From:   Cameron Williams <cang1@live.co.uk>
 To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Cc:     Cameron Williams <cang1@live.co.uk>, stable@vger.kernel.org
-Subject: [PATCH v4 00/11] tty: 8250: Brainboxes card additions/fixes
-Date:   Fri, 20 Oct 2023 17:03:06 +0100
-Message-ID: <DU0PR02MB7899F384ACF9A7FFA643E123C4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
+Subject: [PATCH v4 01/11] tty: 8250: Fix IS-200 PCI ID comment
+Date:   Fri, 20 Oct 2023 17:03:07 +0100
+Message-ID: <DU0PR02MB78993B6AD85F6550AF6590FBC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <BBPatchesV4>
+In-Reply-To: <20231020160412.118550-1-cang1@live.co.uk>
 References: <BBPatchesV4>
+ <20231020160412.118550-1-cang1@live.co.uk>
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-TMN:  [DbHNQE++dcEdnb+4WoVPKKEa6MIniq8d]
+X-TMN:  [XygCAdmQTIUEXFPJKL1XxRN+MmcjhJ44]
 X-ClientProxiedBy: LO0P265CA0011.GBRP265.PROD.OUTLOOK.COM
  (2603:10a6:600:355::19) To DU0PR02MB7899.eurprd02.prod.outlook.com
  (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <20231020160412.118550-1-cang1@live.co.uk>
+X-Microsoft-Original-Message-ID: <20231020160412.118550-2-cang1@live.co.uk>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|AM9PR02MB6930:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7bfe9efa-b2dc-4868-343b-08dbd18645d1
+X-MS-Office365-Filtering-Correlation-Id: 959ee49d-7e30-4c9d-d962-08dbd18648bd
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dJoYwgJoyrcFNS8E9L4f6xyk5VSAQ92vQrN9iRWxSmPKKvH0nb9CK+TxkzaYuvEO+AKWmwewHR8USWxQ7zO9FkUdtfJYYku7qJBPwVO0MvknYrv2gOOMl84vkpT5KMgX041fccmH47waxwESmJcv+EtA9EQdOz73YjomzA2VKVUTcXa08mWHrN8jQy9T/UczEFNDh9GSO6IS5XytUCdp/fdM02+rntBZuurbodkCUM8D23R1fzFQ/dLx9I1XG3P5HxCcTCWn0va1H2TsYW+mzMd/Uh0zGvH0dJb9gzNCCPbor1TZyWcX3EkSD6j8HBQaRaAAfa52OQgguF88HDIIB5cPsGGtCRnAp6F89ErnatbTUMD+sp3CzxLkJpfdS2xYeZla6BgPTLXOLSizZCtCov0qAEE5GlbnXfG8VlQ4cXogJ0ODCgKlGeqB4yu3SQCamCX9tJmHaSueeM1QZ0nu29AsMv67EvuwRsCOuuEMQTsb5SfSz6JkUqRmaeLMseusjADPXEIbOBYXS/DFRxt5OL+H7n6MQkthJ8vV/ICpaWQp76tX9bPYk1bYGjM7EtHuectUoIMO3h6fpZjR6vv0by+m9/8OEJiBredy6uz7bQSz/Y5QSlAKBOSjweDILqaB4NMErtmZVXSSri9dmW740w==
+X-Microsoft-Antispam-Message-Info: TJXNSqVvM/DsLVX5rBGsnwOFlfweliXoPgnB2U2kbl2V1M3VSsbQPh+TMf6UMlEH7ye26oJABpC/drxwQ+m5w16dGqMh3dzsNKSMUO8eLljvyVO+hPhRpqsfM/XPz0XzC787LCp+yydPxZldbcG0Gcnwi03pYWS3xeSOKZ1mXIoYyseYecjhpO0bjs10Lt1jOvDqCDDkEsjrABviJ1aT1xyz1fljPDa+I+fa/M7IoaVxgUQ+9uvWDqE6X+li9Gko9bGj+qeH4zB/2ONuXKZbTeuyh8Ar6rkxylP/vGyLQLQJIQakedEPlLkYeT4Im9tdlQCAYi/pcAdfKembXEeAG/Bi9sxquF9v3TqPdL8pQhir2jNaShLK4RVqMWoC0YnYgmNIMMtrVyNEqst8TqKCK6wRBaM6leF0Q+w1DrqkTNDd9RBbLaKmbDDOQHjzI30emOSd5FBmLcFs6Ygy1rV/rDu41/WNP0CFkNeiENlyIxzDgNTnx6VZLU/tDoZXVkIZu28QaK+t8JIm34iwus7VY5GZKy0fLkA0tPQWanIXcljaOnXqgoKxBKcFIP1AtCBvUPeHw1VMRqPOTD2g/NkMUzDKbNQzyWRLE9JzfVqe8aRSvsw+4odvmUDhd0BWIPql9e0eQ52Z0a38CO0kWlLNjA==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Bl6g3ruv6lr1YSn4cRZipizPmAwLK8NgIam06PDT+Ud9cQ6obL2GnUQ10iso?=
- =?us-ascii?Q?eC+A9hfmR/7smIJdKXkbPdcimHVTceEn/Ry8hm9I2MAwHo1gD/nbNnI+yOl1?=
- =?us-ascii?Q?V4vSa+u+kkn8ng3O9O4EKcjrbhnJ2ANCOSit388PNxc95Bfj0l6VLiFdcaf9?=
- =?us-ascii?Q?6iEZycWAJJ0F2R4Qvf9hhKSgVbKo6StP5fKzsRDo/6do4SCurcCmGA+0Hj1F?=
- =?us-ascii?Q?nbmGglo7eQfMh/P7OZY5Ui8XuaNFKmkdfbkqzUS2QtCm0C4OGSNKj+9xYGSV?=
- =?us-ascii?Q?AGotw0INGDTtG960mVhfUxnpiFsIChO80jcvMnUZa12kutzqUY5LpRJ4ndnF?=
- =?us-ascii?Q?bWtHQyqDlLNqlH7ly3LO4B28PDFajzvTo5+H5Uhx8+LJrJ/fHlWFnqwoUy2r?=
- =?us-ascii?Q?r8b/XwZzZ5SWsU3iuf5f5eSFAXAWwVp1Bq3v5FVvE72wvmT9sdqxDJVjggzV?=
- =?us-ascii?Q?UBt7HVU3W1HlCVqoKKysxKLJRj+6xLFnu7Wr58a+rSngMIU6ojek/uKYGyCH?=
- =?us-ascii?Q?Y8U8rozFR0TkFgmiXbz/bhZcWzRqO36oxOk1PmJrZhafuqDzFPJnSGopWsGR?=
- =?us-ascii?Q?zAQgGoAX6npipCJOSrRMmfji2w7ZP700ikNgjiCzwdO+uIrb3ofIHBAugigk?=
- =?us-ascii?Q?ycnUKh9qyumcCOt+jBMlRIgVHQqX61qFCA6pj23Z1+OkeAHY7SlMnfzFGxzm?=
- =?us-ascii?Q?R541Ua7TNqkAcdevNpxUSHvnXb0R6FB1UYKDC5AHQgoHnJHjXK1EuaWkKYFl?=
- =?us-ascii?Q?FXS2dMn39fQLF8iR2mmPq6X09uUZFlrVt+Mk0yWgja5O4yAY5GMfLy13zjNN?=
- =?us-ascii?Q?4YZPoEztosJX5bAeAkwTAiDVHlAS7TDJgVSCWkHPyVgFWEcBzJ6q345vF4VK?=
- =?us-ascii?Q?noMW4gnWH1mD81EaqHE2nqfNVchdHk33M8EAHV3T2C2y7W+W6uUq2V9C4KgW?=
- =?us-ascii?Q?UIJ0mBRteglnC5SypX6Id90Wslb9UTeVmEo68aH5N+DSYfjass0TND8XhyhW?=
- =?us-ascii?Q?000lYTeIBaeUMa99cS4vkFz4pFErRo5j9R5sTk/2vqacrapACxyXHYofX2/2?=
- =?us-ascii?Q?96JW3dinX+GPzKvOfQexkWFTgiEunLiHcKN2P/vSp44a1wMgH9KYe0KOliPC?=
- =?us-ascii?Q?5xmMw5/0qpmcRrEZLCsOAPS5c03+yJQ4z+r/irl8DszF+6WoOaRNWJFPWWOt?=
- =?us-ascii?Q?LROEPWwFaRI7ttpkiXbE6IbvJXkoGzJn6HlYTA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E2Xq7cFxMH+4fP4JbV54TdsoFYVSyZzGCVqxbvNNueIfDOgoxB6lc9XQbwew?=
+ =?us-ascii?Q?VA8XYPAUgqTYtiWLJC/ohh5doZk1sYpqPJGpkZ9MKU58gmsbeMr2n+HJlcIc?=
+ =?us-ascii?Q?HrMEyelzvpvJkLpHdokoqLyVdHrdJiI5soicx8WN7TcxIBhL1fgSyvDrZM9T?=
+ =?us-ascii?Q?2cw6w2tF4zGojqKksIlPFk4gq1/aCvrJfDokwfI6aHs5DX2isfmFDnVNdGHL?=
+ =?us-ascii?Q?J+Rt9gaDtAlq7fHnWvXVppWPC1yRsHf7FUw/SptVKClvC9GrEQzezY/kVm5w?=
+ =?us-ascii?Q?siACm6kXkxRq3+qlTk2QJdWtuQV8S948R7NXbahKFlz22CCUTMeom9TlHI8y?=
+ =?us-ascii?Q?ax/29zeHGCgi3HqxJQWE/ZvSmWq4z8hTZWoBny6M+bIFryd5AFO6zVN/h7Dg?=
+ =?us-ascii?Q?vFOwsCggoj5ed3hoXzv6od4sYf3SogvXlNobW+BjeLPJ29r14AZEIYrrB0sV?=
+ =?us-ascii?Q?cmYvQfmkKAvQ2mYtQTwrkVz7mC5ZoEKGhEExfI3gnmiMeXVf6pZzkL54G19v?=
+ =?us-ascii?Q?qJ0VeBFf1Kf/8++MxTn7uSdWB7istP+Y0/Z51ujdLAfOrpZXr+S1NLA198rX?=
+ =?us-ascii?Q?jKOgys6CqAkxpxoij93Vgl/QgNdH0LKPYxXNkgFKfjfXtJOrXD8mi6YmR2z3?=
+ =?us-ascii?Q?EFw6lkF/XA/BuX9n/2ggdleXOcGuCEQUk+HgImGd4FPz94FbD3Ys1efp5Dxw?=
+ =?us-ascii?Q?x2R4Jnc3oR/e4y0jpePEFgYVtboFajk97Q9yjtJundOSUhdSxC2MnoVx3ZJi?=
+ =?us-ascii?Q?o4YJG+7Jo9wxr1HFXs2EWJB+i6gJ6D8kmgJoiOCn6UychemL1VwP1OQCoumJ?=
+ =?us-ascii?Q?L00zg8jfO9aKSpHdUbKMkus+EnonAuckpKVzd5dk3ZyZr5T8ENeh1+omZKhu?=
+ =?us-ascii?Q?EYLkMWaAQx0YvWIl2LcIBX1AzVzdKcmYocJe8D4PMr3pYg45ys3Mb/PfZ/e+?=
+ =?us-ascii?Q?3RUaJ4T1PcslY5aY6hvmZtFsBEelwgTY7avu5KaLU2dE3gv1c+91EmcOOI/Y?=
+ =?us-ascii?Q?+/EJzldqwMJUk/sE3m11Rr+g5ip1ImWeFZh95i3UdOxmBngUhcnYO68du0Ia?=
+ =?us-ascii?Q?LUi+DKafy/H3wIPVv2cCjuh+5g3cYkkHEDWWXj5JMyY8vYa4Xr4GhyPluylp?=
+ =?us-ascii?Q?J5ChQq+evdwCj4ccCsU74F4ciBZkUbOscBBJ2cQqbEjAqPh+Vac1Rq4Ff8TD?=
+ =?us-ascii?Q?r5rJFt8gNLhQK/dVCmv1yWrTUGRhLd43brKzkQ=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bfe9efa-b2dc-4868-343b-08dbd18645d1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 959ee49d-7e30-4c9d-d962-08dbd18648bd
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 16:04:43.3580
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 16:04:48.2294
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -98,68 +99,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series fixes up various issues and adds additional support for
-cards from the Brainboxes PCI/e serial range.
+Fix the PCI comment for the IS-200 card. The PCI ID for the IS-200
+is 0x0d80, and the definition used (PCI_DEVICE_ID_INTASHIELD_IS200)
+is indeed 0x0d80, clarify that by fixing the comment as its
+neighbouring cards are all at 0x0020 offsets.
 
-This series should be suitable for the stable kernels too, though some of
-the patches are only applicable for 5.15 LTS and above. The patches where
-this is the case have a note explaining why.
+Fixes: 737c17561fb2 ("[SERIAL] Support for Intashield 2 port PCI serial card")
+Cc: stable@vger.kernel.org
+Signed-off-by: Cameron Williams <cang1@live.co.uk>
+---
+I argue for fixing this rather than removing due to this patch series (and
+the code already in the kernel) referring to the rest of the cards in
+the manufacturer's product line by hex ID, makes sense to me to
+have the hex IDs all displayed correctly one way or another in the
+one driver as the IS-200 and 400 are the only cards to use a definition instead.
 
-Thanks to the reviewers for the feedback thus far.
+v3 - v4:
+Added Fixes: and Cc: tag
+Added above note for reviewer.
 
-Change from v3 [1][2][3][4][5][6][7][8]:
-- Split up patches to have Fixes and Additions separate
-- Add Fixes: tags where neccesary
-- Add Cc: for stable
-[1] https://lore.kernel.org/all/DU0PR02MB789901A0FD8D0A16614B7B01C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[2] https://lore.kernel.org/all/DU0PR02MB78991BB41F77731BF0BDD777C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[3] https://lore.kernel.org/all/DU0PR02MB7899EF5899BB15DAF3DB580DC4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[4] https://lore.kernel.org/all/DU0PR02MB7899E6443241E95DCF2D6535C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[5] https://lore.kernel.org/all/DU0PR02MB7899A8E98A24B0748FA74D59C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[6] https://lore.kernel.org/all/DU0PR02MB78996091ADEB6B3C952386D2C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[7] https://lore.kernel.org/all/DU0PR02MB789917A8AB71BE91225DB3F0C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[8] https://lore.kernel.org/all/DU0PR02MB78998961117757F4750A3AFFC4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+v2 - v3:
+Clarify commit message with better explanation of the change.
+Re-submit patch series using git send-email to make threading work.
 
-Change from v2 [1][2][3][4][5][6][7]:
-- No code changes
-- Amend patch 1 and 5 commit comment to better clarify what has been
-changed and why
-- Send using git send-email instead of Mutt so (hopefully) the
-threading works OK
-[1] https://lore.kernel.org/all/DU0PR02MB7899233A57F6E714C0DD8FF2C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[2] https://lore.kernel.org/all/DU0PR02MB7899CE749DADBEEE38564F9DC4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[3] https://lore.kernel.org/all/DU0PR02MB789934AD01F657CD108E0999C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[4] https://lore.kernel.org/all/DU0PR02MB789954113A4F513D4CD65140C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[5] https://lore.kernel.org/all/DU0PR02MB78993B38B6D95DE0A84DA5E8C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[6] https://lore.kernel.org/all/DU0PR02MB789945AC3746E79AF2390C73C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[7] https://lore.kernel.org/all/DU0PR02MB789927949F9C84AACD694F48C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+v1 - v2:
+This is a resubmission series for the patch series below. That series
+was lots of changes sent to lots of maintainers, this series is just for
+the tty/serial/8250 subsystem.
 
-Change from v1 [1][2][3][4]:
-- Split the patch into multiple commits for one subsystem/maintainer
-rather than a large series for multiple subsystems.
 [1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 [2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 [3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 [4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 
-Cameron Williams (11):
-  tty: 8250: Fix IS-200 PCI ID comment
-  tty: 8250: Remove UC-257 and UC-431
-  tty: 8250: Add support for additional Brainboxes UC cards
-  tty: 8250: Add support for Brainboxes UP cards
-  tty: 8250: Add support for Intashield IS-100
-  tty: 8250: Fix port count of PX-257
-  tty: 8250: Fix up PX-803/PX-857
-  tty: 8250: Add note for PX-835
-  tty: 8250: Add support for additional Brainboxes PX cards
-  tty: 8250: Add support for Intashield IX cards
-  tty: 8250: Add Brainboxes Oxford Semiconductor-based quirks
+ drivers/tty/serial/8250/8250_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cc: stable@vger.kernel.org
-
- drivers/tty/serial/8250/8250_pci.c | 331 ++++++++++++++++++++++++++++-
- 1 file changed, 322 insertions(+), 9 deletions(-)
-
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 62a9bd30b4db..ecb4e9acc70d 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -4917,7 +4917,7 @@ static const struct pci_device_id serial_pci_tbl[] = {
+ 	 * IntaShield IS-200
+ 	 */
+ 	{	PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_IS200,
+-		PCI_ANY_ID, PCI_ANY_ID, 0, 0,	/* 135a.0811 */
++		PCI_ANY_ID, PCI_ANY_ID, 0, 0,	/* 135a.0d80 */
+ 		pbn_b2_2_115200 },
+ 	/*
+ 	 * IntaShield IS-400
 -- 
 2.42.0
 
