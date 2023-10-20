@@ -2,130 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A87D16CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD647D16D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbjJTUNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 16:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
+        id S229704AbjJTUSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 16:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjJTUNj (ORCPT
+        with ESMTP id S229554AbjJTUSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 16:13:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A80D63;
-        Fri, 20 Oct 2023 13:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697832818; x=1729368818;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9CB2wYx/rPUsdYJx9Nbw1wMWo3NzTgIKgYD90C9UG5s=;
-  b=WyY9y+9rCdMsiz0GkoBv2Aj5P0Mcu1m6qlz/wJotCriFrL8hMM7AI1oT
-   OgakaQBUjiL7fTNUGFy5dhqTxk3p21fRe/T5ksixY1rKGlcc3suof+6nA
-   Fiqm3Q4SCMckEkCkfNxla6h2ep+r6B560/beUw14LpsU/zjKRIZHbi0IL
-   XiQQ9ELzQW3cDqpJU57RjmP9nR1CWcwNXlsUGEpbzXAfnqwReEbPmyUkI
-   BYdfHh1TYGncBOGyAHmlclkygu+cwWmsbXxxnEygOmWkiuP+M2rl1zTDG
-   99udBtPqemc6OFiVF3SFGIFKkgvlfBC6vEIP/9GWE72SfiLoxtkxjxFk2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="450796495"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="450796495"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 13:13:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="751037712"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="751037712"
-Received: from shortjox-mobl.amr.corp.intel.com (HELO [10.209.49.114]) ([10.209.49.114])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 13:13:36 -0700
-Message-ID: <5263c580-ccfb-4382-936a-e767eeae5af2@intel.com>
-Date:   Fri, 20 Oct 2023 13:13:30 -0700
+        Fri, 20 Oct 2023 16:18:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559DD63
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 13:18:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA37C433C8;
+        Fri, 20 Oct 2023 20:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697833082;
+        bh=4RvsTOvcAaF1XJbU+fiHqQbsOhDrJFFpbd4oU2xE7G4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wK68GtcN4lxt0UPFDLVQEwrrTej+GUPPXc2IhIHSkIyxaJKGbqzWasdmWFcMXp37n
+         1C0fAKcPzyo33EgpvHf9bPeiZ9nZ2ZkB43KNEP6M0O/zF4R4H5cDdK4cjIkVuJ8K3w
+         7iI8j7+OtUpOqJWaKqWE78f/kjcBxnB7GkAIVZno=
+Date:   Fri, 20 Oct 2023 22:17:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <2023102055-italicize-slideshow-0fe2@gregkh>
+References: <20231018081941.475277-1-saeed@kernel.org>
+ <20231018081941.475277-3-saeed@kernel.org>
+ <2023101835-trapdoor-unicycle-788a@gregkh>
+ <20231018180128.GA719006@nvidia.com>
+ <2023101808-quicksand-roman-0da7@gregkh>
+ <20231018185629.GD3952@nvidia.com>
+ <2023101913-owl-showman-5858@gregkh>
+ <20231019190046.GV3952@nvidia.com>
+ <2023101902-upturned-pledge-3a35@gregkh>
+ <20231019234947.GX3952@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Print the encryption features correctly when a
- paravisor is present
-Content-Language: en-US
-To:     Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        Tim Gardner <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "matija.glavinic-pecotic.ext@nokia.com" 
-        <matija.glavinic-pecotic.ext@nokia.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231019062030.3206-1-decui@microsoft.com>
- <00ff2f75-e780-4e2d-bcc9-f441f5ef879c@intel.com>
- <SA1PR21MB13352433C4D72AE19F1FF56EBFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
- <5245c0df-130c-443d-896b-01887875382b@intel.com>
- <SA1PR21MB1335B68B21B1F37ECC6D77F0BFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <SA1PR21MB1335B68B21B1F37ECC6D77F0BFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019234947.GX3952@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,20 +57,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/23 13:00, Dexuan Cui wrote:
->> OK, then what good is this patch in the first place?  If you are right,
->> then this would give equivalent information:
->>
->> cat /proc/cpuinfo | grep -q Intel && echo 'TDX'
->> cat /proc/cpuinfo | grep -q AMD   && echo 'SEV'
->>
->> No kernel patching needed, right?
-> Currently arch/x86/mm/mem_encrypt.c: print_mem_encrypt_feature_info()
-> prints an incorrect and confusing message 
-> "Memory Encryption Features active: AMD SEV".
-> when an Intel TDX VM with a paravisor runs on Hyper-V.
+On Thu, Oct 19, 2023 at 08:49:47PM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 19, 2023 at 09:46:29PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Oct 19, 2023 at 04:00:46PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Oct 19, 2023 at 07:21:57PM +0200, Greg Kroah-Hartman wrote:
+> > > > > All of the Mellanox driver stack (over 400 files now!) is dual
+> > > > > licensed because we have a large team of people working the Mellanox
+> > > > > driver for many operating systems with many different licenses. We
+> > > > > want the certainty of a permissive license for the driver code we
+> > > > > supply to Linux as the team routinely references and/or re-uses
+> > > > > Mellanox authored Linux driver code into other scenarios under the
+> > > > > permissive side of the dual license.
+> > > > > 
+> > > > > For instance I could easily see the work Saeed has done here finding
+> > > > > its way into FreeBSD. We significantly support FreeBSD employing
+> > > > > maintainers and develop a sophisticated Mellanox driver over
+> > > > > there. This would not be possible without the Linux driver being dual
+> > > > > licensed.
+> > > > 
+> > > > Yes it would, you can take the work that you all do and license it under
+> > > > the BSD license and put it into FreeBSD just fine.
+> > > 
+> > > Sure, you can do that at day 0, but mlx5 is now about 10 years old and
+> > > has tens of thousands of commits. Many non-Mellanox commits. (mostly
+> > > non-significant, IMHO, IANAL)
+> > 
+> > That's not the case for this specific chunk of code, so it's not a valid
+> > point at all, sorry.
 > 
-> So I think a kernel patch is needed.
+> In 10 years it will be in the same situation as the rest of the
+> driver. You are saying we can't plan ahead now? Why?
 
-How about either removing the message entirely or removing the ": AMD
-SEV" part?
+I really am confused as to what exactly the scope of this driver is
+then.  For some reason I thought it was just a "here's a debug driver
+that we use to query the hardware and get some performance stats out of
+it at times which we used to do previously by just doing raw PCI-memory
+reads".  Is this really going to blow up into a giant infrastructure
+that you are going to use for real functionality over the next decades?
+If so, it needs a lot better description of what exactly this driver is
+supposed to be doing, and how it ties into existing userspace tools.
+
+> > Let's stick to just this new file, please keep it one-license, not dual,
+> > it makes everything simpler overall.
+> 
+> Simpler for who? It seems to complicate Mellanox's situation.
+
+How in the world is Mellanox going to take the code in a aux driver for
+Linux and us that in any other operating systems WITHOUT it just being
+an original contribution from a Mellanox developer themself?
+
+> More importantly it seems to represent an important philosophical
+> shift for Linux that touches on something we have a significant
+> investment in.
+
+Again, this is something that I ask of any new file that is sent to me
+for my approval for many many years.  There are some subsystems in Linux
+(drm, IB) that have lived with dual-license code for a very long time,
+but that's about it.
+
+> I would like clarity here, on a going forward basis. You do set the
+> tone for the whole project. I've made my case for why we are doing and
+> why it brings value. You are saying dual license is now effectively
+> banned.
+
+I'm saying that it needs to be explicitly chosen for very good reasons.
+
+In the past, when I have pushed back on "why are you doing this?" I have
+gotten "oops, we didn't mean that or understand it at all, we'll fix it"
+the majority of the times.  If your company really does understand it
+and knows it, great, that's what I need to confirm here.  I don't keep a
+list of what companies do/do-not know this type of thing as that would
+be pointless (hint, companies buy other companies and change legal
+policies...)
+
+> Previously you said you would agree with a sign off from our legal,
+> please tell me what statement you want and I will go get it.
+
+A simple note in the changelog that says something like:
+	This file is dual licensed under XXX and YYY because of the
+	following reasons.... and we will be handling all contributions
+	to it in the following way...
+
+and a signed-off-by in the chain by your group's lawyer so that we know
+they understand the issues.
+
+Or some other text like this, they can figure it out as they obviously
+know the issues involved, and they know what they want to express to us.
+
+> > > Remember that Leon created auxiliary bus so these complex multi-system
+> > > HWs could be split up cleanly into their respective subsystems? This
+> > > is an aux device driver for the misc subsystem as part of the giant
+> > > cross-subsystem mlx5 driver. Ie Saeed is adding 3 more files to that
+> > > existing monster.
+> > 
+> > Yes, and as the auxiliary bus code is EXPORT_SYMBOL_GPL() attempting to
+> > license code that is a driver for that bus (i.e. this new contribution)
+> > under anything other than just GPL is crazy.  Go talk to your lawyers
+> > about that please, it's obviously not ok.
+> 
+> The entire mlx5 driver makes free use of EXPORT_SYMBOL_GPL(). Our
+> legal has looked at this in the past and they continue to give
+> instruction to use a dual license.
+
+That's odd, I wonder how you take those contributions into other
+operating systems...
+
+> You keep saying go talk to our lawyers like this hasn't been a legally
+> vetted approach at Mellanox for the last 15 years :(
+
+I keep saying this as I have no idea what company is behind this, nor
+what their lawyers want, nor what has been vetted by them at all.
+
+And this email is going to a nvidia.com address, not Mellanox, so you
+can understand my "you all better get the license issues right!" wish
+for me to do here, based on the past experience with "issues" from that
+domain.
+
+thanks,
+
+greg k-h
