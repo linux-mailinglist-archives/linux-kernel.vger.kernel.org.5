@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16847D0BBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504907D0BC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376636AbjJTJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        id S1376666AbjJTJau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376593AbjJTJ3j (ORCPT
+        with ESMTP id S1376627AbjJTJas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:29:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB390D49
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697794176; x=1729330176;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4jcyR0AHrPRoptorbJ7sUPfnYiRZ/f0uNOPZCGqeL0M=;
-  b=Gq54QSBHKnLde/XUHaMNgHMzsVgEPKRnFQAgIGUyGJwbMD3bGpePTZzB
-   uqFhOf64kqprt34jmZr01vwjW9dYaftR/69OSejzv8/y3OmkErDYOAcnh
-   hFRrTkwH3cTb+UKlF9vvPR1KokfkSSLRj6GnWbxWzvZflb72uELuSsSoZ
-   AIcjfhs5mCdToguNTCF48em3QbqXeqOW9iFwlzCYo/sIIgfK+FiSkc/5j
-   8slOxtLXFWJJJFVNujy0PmpU+0U8mQc5wUyYPQaF+58S+YtNIgKbmTCQr
-   2FRaX9mqa/NApRlYG6OYzTYxN8whBjrtjPRFJDS5CeqX6BT+tYBaQVn16
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="452943109"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="452943109"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:29:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="873848717"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="873848717"
-Received: from dgutows1-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.39.237])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:29:32 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 9E13B109D0A; Fri, 20 Oct 2023 12:29:29 +0300 (+03)
-Date:   Fri, 20 Oct 2023 12:29:29 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-Subject: Re: [PATCH 12/13] x86/acpi: Do not attempt to bring up secondary
- CPUs in kexec case
-Message-ID: <20231020092929.ieig5xbhtwgrkqrl@box>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-13-kirill.shutemov@linux.intel.com>
- <100c567d4ba2e6f25dd6c51ceaf2995049d12c78.camel@intel.com>
+        Fri, 20 Oct 2023 05:30:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B737D49
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nkRbIeka6D9hktLXrz9eFYF7RLBS9b1Mb7EA0LnaqAs=; b=jzRRY2jAbC2JrZLmV54U9W9qOw
+        bkMbHIH76swqn1SPX8cjp9ieDsdG2VK6K5DGZuYnZjvJwoX6gM9emZhNGBDcOslLMFqNIgQhHL4eW
+        zHxsLLoqRn3jd7SjLKt34XEe1QTuZD/305FtFLOOsM64rr87VAvsHuyil1OzbJlufo/YZZ4gHmrfD
+        9EffeYn9BIPaN7eGWsSM9u7g8RTy9dzl0Ke04YI1jK22TwqkIxW22vaHDPweLfbIAlw6ow08Z7Xxy
+        1WRFjclpnnili5RaGOobS1A7n9X7VRROHtbRfJ7eUiEWiUeamao+//QCRCjzWntSuk4+LUL+QZgsi
+        RjUAbdGQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qtlpw-00CKzN-D5; Fri, 20 Oct 2023 09:30:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16BAB300392; Fri, 20 Oct 2023 11:30:32 +0200 (CEST)
+Date:   Fri, 20 Oct 2023 11:30:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 5/8] objtool: Check local label about sibling call
+Message-ID: <20231020093031.GB31411@noisy.programming.kicks-ass.net>
+References: <1697768821-22931-1-git-send-email-yangtiezhu@loongson.cn>
+ <1697768821-22931-6-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <100c567d4ba2e6f25dd6c51ceaf2995049d12c78.camel@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <1697768821-22931-6-git-send-email-yangtiezhu@loongson.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,66 +53,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 03:29:24AM +0000, Huang, Kai wrote:
-> On Thu, 2023-10-05 at 16:14 +0300, Kirill A. Shutemov wrote:
-> > ACPI MADT doesn't allow to offline CPU after it got woke up. It limits
-> > kexec: target kernel won't be able to use more than one CPU.
-> > 
-> > Zero out mailbox address in the ACPI MADT wakeup structure to indicate
-> > that the mailbox is not usable.
-> > 
-> > This is Linux-specific protocol and not reflected in ACPI spec.
-> > 
-> > Booting the target kernel with signle CPU is enough to cover the most
-> > common case for kexec -- kdump.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/kernel/acpi/madt_wakeup.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-> > index 15bdf10b1393..4e92d1d4a5fa 100644
-> > --- a/arch/x86/kernel/acpi/madt_wakeup.c
-> > +++ b/arch/x86/kernel/acpi/madt_wakeup.c
-> > @@ -9,6 +9,11 @@ static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-> >  
-> >  static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> >  {
-> > +	if (!acpi_mp_wake_mailbox_paddr) {
-> > +		pr_warn_once("No MADT mailbox: cannot bringup secondary CPUs. Booting with kexec?\n");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> >  	/*
-> >  	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
-> >  	 *
-> > @@ -78,6 +83,18 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> >  	/* Disable CPU onlining/offlining */
-> >  	cpu_hotplug_not_supported();
-> >  
-> > +	/*
-> > +	 * ACPI MADT doesn't allow to offline CPU after it got woke up.
-> > +	 * It limits kexec: target kernel won't be able to use more than
-> > +	 * one CPU.
-> > +	 *
-> > +	 * Zero out mailbox address in the ACPI MADT wakeup structure to
-> > +	 * indicate that the mailbox is not usable.
-> 
-> Nit:
-> 
-> It is better to explicitly say that this will only impact the second kernel
-> because the current kernel has already detected the  mailbox address?
-> 
-> 	Now acpi_mp_wake_mailbox_paddr already has the mailbox address.
-> 	The acpi_wakeup_cpu() will use it to bring up secondary cpus.
-> 
-> 	Zero out mailbox address in the ACPI MADT wakeup structure to
-> 	indicate that the mailbox is not usable.  This prevents the
-> 	kexec()-ed kernel from reading a vaild mailbox, which in turn
-> 	makes the kexec()-ed kernel only be able to use the boot CPU. 
+On Fri, Oct 20, 2023 at 10:26:58AM +0800, Tiezhu Yang wrote:
 
-Okay. Looks good.
+> +		if (reloc && reloc->sym->type == STT_NOTYPE &&
+> +		    strncmp(reloc->sym->name, ".L", 2) == 0)
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> +			if (reloc->sym->type == STT_NOTYPE &&
+> +			    strncmp(reloc->sym->name, ".L", 2) == 0) {
+
+Would not something like the below be better?
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e308d1ba664e..a57d293c834d 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2506,6 +2506,9 @@ static int classify_symbols(struct objtool_file *file)
+ 	struct symbol *func;
+ 
+ 	for_each_sym(file, func) {
++		if (func->type == STT_NOTYPE && strstarts(func->name, ".L"))
++			func->local_label = true;
++
+ 		if (func->bind != STB_GLOBAL)
+ 			continue;
+ 
+diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+index 9f71e988eca4..2b8a69de4db8 100644
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -67,6 +67,7 @@ struct symbol {
+ 	u8 profiling_func    : 1;
+ 	u8 warned	     : 1;
+ 	u8 embedded_insn     : 1;
++	u8 local_label       : 1;
+ 	struct list_head pv_target;
+ 	struct reloc *relocs;
+ };
