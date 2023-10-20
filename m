@@ -2,132 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B8F7D153F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C6B7D1546
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377984AbjJTRzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        id S1377977AbjJTR4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377976AbjJTRzk (ORCPT
+        with ESMTP id S230049AbjJTR43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:55:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD6ED55;
-        Fri, 20 Oct 2023 10:55:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954CFC433C7;
-        Fri, 20 Oct 2023 17:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697824538;
-        bh=6utHZ9+NrAIuuZw1d4OnIC9m1KlbuOC3s+8qq8dWbjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GE8f/aJBsQX15JtYK3XWsfMDwaNMwSWbr31ddKKB7XFNEHWDL17LaNbqM8JZipEYW
-         9b1WxxIQYYKRQ9lfVKjL7GNKZnbkoAsgud9JeMXsCGdDVTHLNuY93njZCxoa/yJ9Pp
-         S+lD+S2qBZXYmqfpIw933Rl+xBbEssCvOjrwqvTZW1QPGwoU3fP/Z/x8wQYu6wslMK
-         Sez14bJzduxCCrvAKCwnbM0L8aBh6MsE6+fSlUcrtATvqwocGi9sdoyJ6EiMsnXDTh
-         +if3gxc3gonSFzffq4Fj9lfHzRBlCgMZiHjA1UTRPR8yeS0E17uB4YCrjzTdTA4xFO
-         HzmX2VJZLmJTw==
-Date:   Fri, 20 Oct 2023 23:25:27 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
-        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 5/5] tools: PCI: Add 'B' option for test doorbell
-Message-ID: <20231020175527.GD46191@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-6-Frank.Li@nxp.com>
+        Fri, 20 Oct 2023 13:56:29 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF12D5D
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:56:26 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-778940531dbso63101085a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1697824586; x=1698429386; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hbkkUKQ9rVszrJk3+DYjUAAjOhmB5UW1peE3XGvWZbw=;
+        b=xwKCNyp097moqUXYegtMUiyYDgkyioHFs+NeuTuGCTHpteVlhwhmbaqTJLgW230r8u
+         bot0rT1uhokkkS8+99aynJ6FXpPHGZsiZXYu44z20w+afgLW+X5UqT0MmnmPuKpg5WTu
+         3HKYxiWqDYTLxxCineIRKCu4wVNuetsmaEfCDPkehmyciWgq0cwmMoU4/9cGcMSjXC/3
+         /nFFz2SyMABUHU1r/6J/MNP1AXU0IN5trSs8/OZjCZffO/+W9N98I+hlyqnJUm4kdoQZ
+         IKg6tJF5VaPVtpDkfJSPmDWGy+lo8wLmQrcKakBNaQeouro1VRCYSelCV9kU1rK3SHaq
+         Nrpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697824586; x=1698429386;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hbkkUKQ9rVszrJk3+DYjUAAjOhmB5UW1peE3XGvWZbw=;
+        b=J2+QqdkPYnpTg0yUaxOmlS4+8P1gtoGqg/9lcAsKAQsyLVV4y5KGtI3ATN0Vrsm0OQ
+         S2AUa68dGOKxWBKccajhXpgNvjfMPdBT21mgWKafYwSz9ZiuhKPvUhbSKpqtn7NsgQnm
+         FZ4ZcTK3rZPnNxlPUlOfSaLdl9/Ra4pvrx2qzhH+Cfti/JmAI6yVn9J1WYad3mZCWu9w
+         I6hRpXz6gdf9YjuYZwN0KxFOdyV7+AwAfN5yIhub6Yx/S+mj30BoKV+Gr1o92V9eJwJ9
+         H3Cio0m8G9dvBT7hYKwf6/nZnBivELYHqpEhXr7SXhB0nTCziOPreThRbll0moXa8MT9
+         FKBA==
+X-Gm-Message-State: AOJu0YzwHXI1SiUoxx2KggWIGB0FjvRedKLw0LFNRL7xL5R34pO82niD
+        7eKx/XX2p/cZez5cHGhNfpY1BaPv2CRVFeIS6e4=
+X-Google-Smtp-Source: AGHT+IH5Tt4h+q22iOzKEQi1leENzRlNyYmJoxaEV8glb2XUtndT8bKzXZppV16rc1iDSjFYl98nnw==
+X-Received: by 2002:a05:6214:2129:b0:66d:6705:5c50 with SMTP id r9-20020a056214212900b0066d67055c50mr2972282qvc.44.1697824585741;
+        Fri, 20 Oct 2023 10:56:25 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6dc0::580])
+        by smtp.gmail.com with ESMTPSA id w9-20020a0cfc49000000b0066d11c1f578sm854225qvp.97.2023.10.20.10.56.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 10:56:25 -0700 (PDT)
+Message-ID: <437e4ea0c2c2681c1b333ad109f8f02fc229537f.camel@ndufresne.ca>
+Subject: Re: V4L2 Encoders Pre-Processing Support Questions
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 20 Oct 2023 13:56:23 -0400
+In-Reply-To: <ZTD5TXND4R7JqvCD@aptenodytes>
+References: <ZTD5TXND4R7JqvCD@aptenodytes>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230911220920.1817033-6-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 06:09:20PM -0400, Frank Li wrote:
-> Add doorbell test support.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  tools/pci/pcitest.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
-> index 441b542346354..215d0aa8a09fe 100644
-> --- a/tools/pci/pcitest.c
-> +++ b/tools/pci/pcitest.c
-> @@ -36,6 +36,7 @@ struct pci_test {
->  	bool		copy;
->  	unsigned long	size;
->  	bool		use_dma;
-> +	bool		doorbell;
->  };
->  
->  static int run_test(struct pci_test *test)
-> @@ -149,6 +150,15 @@ static int run_test(struct pci_test *test)
->  			fprintf(stdout, "%s\n", result[ret]);
->  	}
->  
-> +	if (test->doorbell) {
-> +		ret = ioctl(fd, PCITEST_DOORBELL, 0);
-> +		fprintf(stdout, "Push doorbell\t\t");
+Hi Paul,
 
-"Ringing doorbell on the EP".
+Le jeudi 19 octobre 2023 =C3=A0 11:39 +0200, Paul Kocialkowski a =C3=A9crit=
+=C2=A0:
+> Hello,
+>=20
+> While working on the Allwinner Video Engine H.264 encoder, I found that i=
+t has
+> some pre-processing capabilities. This includes things like chroma
+> down-sampling, colorspace conversion and scaling.
 
-- Mani
+Similar with Hantro H1.
 
-> +		if (ret < 0)
-> +			fprintf(stdout, "TEST FAILED\n");
-> +		else
-> +			fprintf(stdout, "%s\n", result[ret]);
-> +	}
-> +
->  	fflush(stdout);
->  	close(fd);
->  	return (ret < 0) ? ret : 1 - ret; /* return 0 if test succeeded */
-> @@ -174,7 +184,7 @@ int main(int argc, char **argv)
->  	/* set default endpoint device */
->  	test->device = "/dev/pci-endpoint-test.0";
->  
-> -	while ((c = getopt(argc, argv, "D:b:m:x:i:deIlhrwcs:")) != EOF)
-> +	while ((c = getopt(argc, argv, "D:b:m:x:i:BdeIlhrwcs:")) != EOF)
->  	switch (c) {
->  	case 'D':
->  		test->device = optarg;
-> @@ -224,6 +234,9 @@ int main(int argc, char **argv)
->  	case 'd':
->  		test->use_dma = true;
->  		continue;
-> +	case 'B':
-> +		test->doorbell = true;
-> +		continue;
->  	case 'h':
->  	default:
->  usage:
-> @@ -243,6 +256,7 @@ int main(int argc, char **argv)
->  			"\t-w			Write buffer test\n"
->  			"\t-c			Copy buffer test\n"
->  			"\t-s <size>		Size of buffer {default: 100KB}\n"
-> +			"\t-B			Doorbell test\n"
->  			"\t-h			Print this help message\n",
->  			argv[0]);
->  		return -EINVAL;
-> -- 
-> 2.34.1
-> 
+>=20
+> For example this means that you can feed the encoder with YUV 4:2:2 data =
+and
+> it will downsample it to 4:2:0 since that's the only thing the hardware c=
+an do.
+> It can also happen when e.g. providing RGB source pictures which will be
+> converted to YUV 4:2:0 internally.
+>=20
+> I was wondering how all of this is dealt with currently and whether this =
+should
+> be a topic of attention. As far as I can see there is currently no practi=
+cal way
+> for userspace to know that such downsampling will take place, although th=
+is is
+> useful to know.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Userspace already know that the driver will be downsample through the selec=
+ted
+profile. The only issue would be if a users want to force a profile with 42=
+2
+support, but have its  422 data downsampled anyway. This is legal in the sp=
+ec,
+but I'd question myself if its worth supporting.
+
+>=20
+> Would it make sense to have an additional media entity between the source=
+ video
+> node and the encoder proc and have the actual pixel format configured in =
+that
+> link (this would still be a video-centric device so userspace would not b=
+e
+> expected to configure that link). But then what if the hardware can eithe=
+r
+> down-sample or keep the provided sub-sampling? How would userspace indica=
+te
+> which behavior to select? It is maybe not great to let userspace configur=
+e the
+> pads when this is a video-node-centric driver.
+>=20
+> Perhaps this could be a control or the driver could decide to pick the le=
+ast
+> destructive sub-sampling available based on the selected codec profile
+> (but this is still a guess that may not match the use case). With a contr=
+ol
+> we probably don't need an extra media entity.
+
+Yes, for the cases not covered by the profile, I'd consider a control to fo=
+rce
+downsampling. A menu, so we can use the available menu items to get enumera=
+te
+what is supported.
+
+>=20
+> Another topic is scaling. We can generally support scaling by allowing a
+> different size for the coded queue after configuring the picture queue.
+> However there would be some interaction with the selection rectangle, whi=
+ch is
+> used to set the cropping rectangle from the *source*. So the driver will =
+need
+> to take this rectangle and scale it to match with the coded size.
+>=20
+> The main inconsistency here is that the rectangle would no longer corresp=
+ond to
+> what will be set in the bitstream, nor would the destination size since i=
+t does
+> not count the cropping rectangle by definition. It might be more sensible=
+ to
+> have the selection rectangle operate on the coded/destination queue inste=
+ad,
+> but things are already specified to be the other way round.
+>=20
+> Maybe a selection rectangle could be introduced for the coded queue too, =
+which
+> would generally be propagated from the picture-side one, except in the ca=
+se of
+> scaling where it would be used to clarify the actual final size (coded si=
+ze
+> taking the cropping in account). It this case the source selection rectan=
+gle
+> would be understood as an actual source crop (may not be supported by har=
+dware)
+> instead of an indication for the codec metadata crop fields. And the code=
+d
+> queue dimensions would need to take in account this source cropping, whic=
+h is
+> kinda contradictory with the current semantics. Perhaps we could define t=
+hat
+> the source crop rectangle should be entirely ignored when scaling is used=
+,
+> which would simplify things (although we lose the ability to support sour=
+ce
+> cropping if the hardware can do it).
+
+Yes, we should use selection on both queue (fortunately there is a v4l2_buf=
+_type
+in that API). Otherwise we cannot model all the scaling and cropping option=
+s.
+What the spec must do is define the configuration sequence, so that a
+negotiation is possible. We need a convention regarding the order, so that =
+there
+is a way to converge with the driver, and also to conclude if the driver ca=
+nnot
+handle it.
+
+>=20
+> If operating on the source selection rectangle only (no second rectangle =
+on the
+> coded queue) some cases would be impossible to reach, for instance going =
+from
+> some aligned dimensions to unaligned ones (e.g. 1280x720 source scaled to
+> 1920x1088 and we want the codec cropping fields to indicate 1920x1080).
+>=20
+> Anyway just wanted to check if people have already thought about these to=
+pics,
+> but I'm mostly thinking out loud and I'm of course not saying we need to =
+solve
+> these problems now.
+
+We might find extra corner case by implementing the spec, but I think the A=
+PI we
+have makes most of this possible already. Remember that we have fwht sw cod=
+ec in
+kernel for the purpose of developing this kind of feature. A simple bob sca=
+ler
+can be added for testing scaling.
+
+>=20
+> Sorry again for the long email, I hope the points I'm making are somewhat
+> understandable.
+>=20
+> Cheers,
+>=20
+> Paul
+>=20
+
+regards,
+Nicolas
+
