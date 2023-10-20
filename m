@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457417D1855
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FD87D184E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345484AbjJTVld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
+        id S1345464AbjJTVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233213AbjJTVlP (ORCPT
+        with ESMTP id S233208AbjJTVlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 17:41:15 -0400
 Received: from mail-ot1-x349.google.com (mail-ot1-x349.google.com [IPv6:2607:f8b0:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFBA10CB
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:41:02 -0700 (PDT)
-Received: by mail-ot1-x349.google.com with SMTP id 46e09a7af769-6ce26047c6eso1855455a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:41:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC49E10CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:41:03 -0700 (PDT)
+Received: by mail-ot1-x349.google.com with SMTP id 46e09a7af769-6ccedabb330so1722827a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:41:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697838062; x=1698442862; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697838063; x=1698442863; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSrXoi5TDQ0wnG/0Nd2sUM6CDNcuaYRq6rz2yKTajHM=;
-        b=sXu9GamCOhjtWDSwBnYnlfqLcolLOBBJnob5QhwiklcOWKBmWh9JMTbDkCUqF2yjn/
-         gOWtdu3X1tsX1WagQI8/xCrw6qat+Sg06fSf0i+rZSvgEIlnHCvU7Xqh7YLy7Etxy1Qx
-         AWaXPEY5RR9hGathH6MFDconeu6f9ilGGTWKNelVRgCasufNUjsGiYWrvikx7CZo7hEY
-         SseQ3f1mtT89ZDU9W8oveO6ihRIFBDjB8XDr5nnCfs9BRIZWSbxg5hhvCVk6Unn/n+as
-         ff+fgj/IJGG+GYmb5X/pHHKw1S4trOTKQEXBWmHuTwlwGoBa7Q5Uti5YriMFBcfMsTaY
-         nvRg==
+        bh=UZTHdI73LjJ+tdCxtrSBfoEJbDPL8Ytb4Ns2eCXo9P0=;
+        b=y4zAW0/8BWDmc5grsWpujLKF33jqLDUDBjqO2j8ZOTZ9c/5vdN2eihPbiSEjbqbb1H
+         Ui8QCxbwM9KPrucINuKUGmXUDtDd+XhTZA/v/iXhN61NVOujbwq2jLLCPtEcEz0ExEif
+         0VXARZ/p81STmhb+F3YlypqKStCVotnefWOGcFrb/UZqVIe4ZAQHqca5q1cf851+LNFn
+         j0ge9azxGnkfe89wFvCZYXld2uGCG49KxAT0aS6B1k2k9B+6mSarlrUJ5PuY1shrlySf
+         u2ucrS8uxGYAJPtSebpaBzFCI7P9Mq1O9Qp96Pd8KllgBMNncyb0R/DkPVOlwgvT5Nmk
+         eaQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697838062; x=1698442862;
+        d=1e100.net; s=20230601; t=1697838063; x=1698442863;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSrXoi5TDQ0wnG/0Nd2sUM6CDNcuaYRq6rz2yKTajHM=;
-        b=dxs41kiEsU9HLtCDrEiFeup1Z64aagLXAAK3m371rx3tR+CsT3TR/bBzdPRVCznM0F
-         DtOUqeR8PTEyUv2uKlU+gLO+Oic0tO4OVt6Fy4a4PzsePqoouMy4Fru3Wfr0iAWPRSen
-         SVcOabWHBIYGP54dQsUAIsbjMU7mXzIHAAVM9VMFcM7K74RGeIyaHw83phLB94M9brQV
-         vZ8cHGpL1AoMdA5DpsebNi5ZI1BQeQh4CAixg533bAqj81/sPvYD/Q37XJU5UYCxVSbc
-         Mh4CFNSILZntPwWuP2gpB57DBWpA0GWIjF5/d8wrNNWolQ+i6AuePGGb1kJ5gzzYmoe9
-         sTzQ==
-X-Gm-Message-State: AOJu0Yzu6/870O9nCUPZhv62Fllc5uDL0RQjIs1E+ZKx6n0u5uoFkECX
-        DPZj7OGZ9r/2O7/jEoWcZe7JrE7W2ne+
-X-Google-Smtp-Source: AGHT+IFJqyHvsAhBFGWa8RbM0GaRa8vnaP3vXD/CJFEq612x9pQyV0ppNsns19cnmmWbeODxydr05GC904O7
+        bh=UZTHdI73LjJ+tdCxtrSBfoEJbDPL8Ytb4Ns2eCXo9P0=;
+        b=MBrgJDCgacNgmWBhZeDRxKOKh3R7Kr6Dq6JeU3vkBKBV8y2u0cAJM83z21hYvXTZIR
+         SJCFknIvpw0Zr39yc5HhzWspqdhQpj4dyEQBeRw2bSd+pjVGTavWvtuqDnaBRrRtcgIn
+         y2GAaIHEeZWuA7bMuZE+QeqzWkTCRx9DBqkhjXLvGcYnpb2VLF/BY5CFYb2zq/FsqDNU
+         EmITyF2mnUT7aSz+YhYSBjnCyqIAhKdg8ZOdXcUcnkd6fhAXTuz4saO1bfrUl3Lj5fNe
+         iBUp3OWD4MHcw45C0ypUuV2vwITpHceXZ1Da2/M0qc2d1LRPb7Be82tyQZBCIjIDb0Ec
+         6diQ==
+X-Gm-Message-State: AOJu0YzZhX+T6Cp2ukcHa9yV6y3CHqpeSUXOgYk7VS3sEYLHqe9njcLb
+        8b/LjN+iWp4bZZRxniQp0UHpxfpXZ0rt
+X-Google-Smtp-Source: AGHT+IGmQUtWN2yXPx1W8N9ywV18/lF8tjnlx7PJ7Cm9muwl3a03ohwjxnNV0mAYCF4av1euZ/wFeeKf4Clv
 X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:20a1])
- (user=rananta job=sendgmr) by 2002:a9d:7f90:0:b0:6c4:a036:cc11 with SMTP id
- t16-20020a9d7f90000000b006c4a036cc11mr838958otp.2.1697838061951; Fri, 20 Oct
- 2023 14:41:01 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 21:40:45 +0000
+ (user=rananta job=sendgmr) by 2002:a05:6830:33c2:b0:6b9:182b:cebc with SMTP
+ id q2-20020a05683033c200b006b9182bcebcmr795333ott.7.1697838063058; Fri, 20
+ Oct 2023 14:41:03 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 21:40:46 +0000
 In-Reply-To: <20231020214053.2144305-1-rananta@google.com>
 Mime-Version: 1.0
 References: <20231020214053.2144305-1-rananta@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231020214053.2144305-6-rananta@google.com>
-Subject: [PATCH v8 05/13] KVM: arm64: Add {get,set}_user for
- PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR}
+Message-ID: <20231020214053.2144305-7-rananta@google.com>
+Subject: [PATCH v8 06/13] KVM: arm64: Sanitize PM{C,I}NTEN{SET,CLR},
+ PMOVS{SET,CLR} before first run
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>
@@ -80,157 +80,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For unimplemented counters, the bits in PM{C,I}NTEN{SET,CLR} and
-PMOVS{SET,CLR} registers are expected to RAZ. To honor this,
-explicitly implement the {get,set}_user functions for these
-registers to mask out unimplemented counters for userspace reads
-and writes.
+For unimplemented counters, the registers PM{C,I}NTEN{SET,CLR}
+and PMOVS{SET,CLR} are expected to have the corresponding bits RAZ.
+Hence to ensure correct KVM's PMU emulation, mask out the bits in
+these registers for these unimplemented counters before the first
+vCPU run.
 
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 ---
- arch/arm64/kvm/sys_regs.c | 91 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 85 insertions(+), 6 deletions(-)
+ arch/arm64/kvm/arm.c      |  2 +-
+ arch/arm64/kvm/pmu-emul.c | 11 +++++++++++
+ include/kvm/arm_pmu.h     |  2 ++
+ 3 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index faf97878dfbbb..2e5d497596ef8 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -987,6 +987,45 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 	return true;
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e3074a9e23a8b..3c0bb80483fb1 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -857,7 +857,7 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
+ 		}
+ 
+ 		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
+-			kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
++			kvm_vcpu_handle_request_reload_pmu(vcpu);
+ 
+ 		if (kvm_check_request(KVM_REQ_RESYNC_PMU_EL0, vcpu))
+ 			kvm_vcpu_pmu_restore_guest(vcpu);
+diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+index 9e24581206c24..31e4933293b76 100644
+--- a/arch/arm64/kvm/pmu-emul.c
++++ b/arch/arm64/kvm/pmu-emul.c
+@@ -788,6 +788,17 @@ u64 kvm_pmu_get_pmceid(struct kvm_vcpu *vcpu, bool pmceid1)
+ 	return val & mask;
  }
  
-+static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
-+					  u64 reg, u64 val, bool set)
-+{
-+	struct kvm *kvm = vcpu->kvm;
-+
-+	mutex_lock(&kvm->arch.config_lock);
-+
-+	/* Make the register immutable once the VM has started running */
-+	if (kvm_vm_has_ran_once(kvm)) {
-+		mutex_unlock(&kvm->arch.config_lock);
-+		return;
-+	}
-+
-+	val &= kvm_pmu_valid_counter_mask(vcpu);
-+	mutex_unlock(&kvm->arch.config_lock);
-+
-+	if (set)
-+		__vcpu_sys_reg(vcpu, reg) |= val;
-+	else
-+		__vcpu_sys_reg(vcpu, reg) &= ~val;
-+}
-+
-+static int get_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+			u64 *val)
++void kvm_vcpu_handle_request_reload_pmu(struct kvm_vcpu *vcpu)
 +{
 +	u64 mask = kvm_pmu_valid_counter_mask(vcpu);
 +
-+	*val = __vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & mask;
-+	return 0;
++	kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
++
++	__vcpu_sys_reg(vcpu, PMOVSSET_EL0) &= mask;
++	__vcpu_sys_reg(vcpu, PMINTENSET_EL1) &= mask;
++	__vcpu_sys_reg(vcpu, PMCNTENSET_EL0) &= mask;
 +}
 +
-+static int set_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+			u64 val)
-+{
-+	/* r->Op2 & 0x1: true for PMCNTENSET_EL0, else PMCNTENCLR_EL0 */
-+	set_pmreg_for_valid_counters(vcpu, PMCNTENSET_EL0, val, r->Op2 & 0x1);
-+	return 0;
-+}
-+
- static bool access_pmcnten(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 			   const struct sys_reg_desc *r)
+ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu)
  {
-@@ -1015,6 +1054,23 @@ static bool access_pmcnten(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 	return true;
- }
- 
-+static int get_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+			u64 *val)
-+{
-+	u64 mask = kvm_pmu_valid_counter_mask(vcpu);
-+
-+	*val = __vcpu_sys_reg(vcpu, PMINTENSET_EL1) & mask;
-+	return 0;
-+}
-+
-+static int set_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+			u64 val)
-+{
-+	/* r->Op2 & 0x1: true for PMINTENSET_EL1, else PMINTENCLR_EL1 */
-+	set_pmreg_for_valid_counters(vcpu, PMINTENSET_EL1, val, r->Op2 & 0x1);
-+	return 0;
-+}
-+
- static bool access_pminten(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 			   const struct sys_reg_desc *r)
+ 	if (!kvm_vcpu_has_pmu(vcpu))
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 2e90f38090e6d..567dc288a5ddb 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -63,6 +63,7 @@ void kvm_pmu_software_increment(struct kvm_vcpu *vcpu, u64 val);
+ void kvm_pmu_handle_pmcr(struct kvm_vcpu *vcpu, u64 val);
+ void kvm_pmu_set_counter_event_type(struct kvm_vcpu *vcpu, u64 data,
+ 				    u64 select_idx);
++void kvm_vcpu_handle_request_reload_pmu(struct kvm_vcpu *vcpu);
+ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu,
+ 			    struct kvm_device_attr *attr);
+ int kvm_arm_pmu_v3_get_attr(struct kvm_vcpu *vcpu,
+@@ -142,6 +143,7 @@ static inline void kvm_pmu_software_increment(struct kvm_vcpu *vcpu, u64 val) {}
+ static inline void kvm_pmu_handle_pmcr(struct kvm_vcpu *vcpu, u64 val) {}
+ static inline void kvm_pmu_set_counter_event_type(struct kvm_vcpu *vcpu,
+ 						  u64 data, u64 select_idx) {}
++static inline void vm_vcpu_handle_request_reload_pmu(struct kvm_vcpu *vcpu) {}
+ static inline int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu,
+ 					  struct kvm_device_attr *attr)
  {
-@@ -1039,6 +1095,23 @@ static bool access_pminten(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 	return true;
- }
- 
-+static int set_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+		      u64 val)
-+{
-+	/* r->CRm & 0x2: true for PMOVSSET_EL0, else PMOVSCLR_EL0 */
-+	set_pmreg_for_valid_counters(vcpu, PMOVSSET_EL0, val, r->CRm & 0x2);
-+	return 0;
-+}
-+
-+static int get_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-+		      u64 *val)
-+{
-+	u64 mask = kvm_pmu_valid_counter_mask(vcpu);
-+
-+	*val = __vcpu_sys_reg(vcpu, PMOVSSET_EL0) & mask;
-+	return 0;
-+}
-+
- static bool access_pmovs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 			 const struct sys_reg_desc *r)
- {
-@@ -2184,9 +2257,11 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	/* PMBIDR_EL1 is not trapped */
- 
- 	{ PMU_SYS_REG(PMINTENSET_EL1),
--	  .access = access_pminten, .reg = PMINTENSET_EL1 },
-+	  .access = access_pminten, .reg = PMINTENSET_EL1,
-+	  .get_user = get_pminten, .set_user = set_pminten },
- 	{ PMU_SYS_REG(PMINTENCLR_EL1),
--	  .access = access_pminten, .reg = PMINTENSET_EL1 },
-+	  .access = access_pminten, .reg = PMINTENSET_EL1,
-+	  .get_user = get_pminten, .set_user = set_pminten },
- 	{ SYS_DESC(SYS_PMMIR_EL1), trap_raz_wi },
- 
- 	{ SYS_DESC(SYS_MAIR_EL1), access_vm_reg, reset_unknown, MAIR_EL1 },
-@@ -2237,11 +2312,14 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
- 	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
- 	{ PMU_SYS_REG(PMCNTENSET_EL0),
--	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
-+	  .access = access_pmcnten, .reg = PMCNTENSET_EL0,
-+	  .get_user = get_pmcnten, .set_user = set_pmcnten },
- 	{ PMU_SYS_REG(PMCNTENCLR_EL0),
--	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
-+	  .access = access_pmcnten, .reg = PMCNTENSET_EL0,
-+	  .get_user = get_pmcnten, .set_user = set_pmcnten },
- 	{ PMU_SYS_REG(PMOVSCLR_EL0),
--	  .access = access_pmovs, .reg = PMOVSSET_EL0 },
-+	  .access = access_pmovs, .reg = PMOVSSET_EL0,
-+	  .get_user = get_pmovs, .set_user = set_pmovs },
- 	/*
- 	 * PM_SWINC_EL0 is exposed to userspace as RAZ/WI, as it was
- 	 * previously (and pointlessly) advertised in the past...
-@@ -2269,7 +2347,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	{ PMU_SYS_REG(PMUSERENR_EL0), .access = access_pmuserenr,
- 	  .reset = reset_val, .reg = PMUSERENR_EL0, .val = 0 },
- 	{ PMU_SYS_REG(PMOVSSET_EL0),
--	  .access = access_pmovs, .reg = PMOVSSET_EL0 },
-+	  .access = access_pmovs, .reg = PMOVSSET_EL0,
-+	  .get_user = get_pmovs, .set_user = set_pmovs },
- 
- 	{ SYS_DESC(SYS_TPIDR_EL0), NULL, reset_unknown, TPIDR_EL0 },
- 	{ SYS_DESC(SYS_TPIDRRO_EL0), NULL, reset_unknown, TPIDRRO_EL0 },
 -- 
 2.42.0.655.g421f12c284-goog
 
