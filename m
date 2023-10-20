@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3107D05AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAFD7D05AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346758AbjJTAGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        id S1346721AbjJTAK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346711AbjJTAGD (ORCPT
+        with ESMTP id S233033AbjJTAK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:06:03 -0400
+        Thu, 19 Oct 2023 20:10:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F94B114;
-        Thu, 19 Oct 2023 17:06:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9A55C433C7;
-        Fri, 20 Oct 2023 00:05:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADC2CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:10:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EBB7CC433C8;
+        Fri, 20 Oct 2023 00:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697760360;
-        bh=O9MAEXEEnD8PbgYOZLMCqbHxoOdKvoMUqekx/eQ6PMI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pJwZeiQP69B+aICkseQkPHLtJPGyN5w/39KHR0BR27H2ziCIQUqpjn79bzLmU1SYN
-         bqW6A9FRXDxcq+DWB7nhe89zQWF+bypTT8DYgav8dMfI5FDzbqicJoNEjP1TsQqtHM
-         7hhXvIFVY6t5pnkBTbb9Rd0PdthTZO5ORJV0lrxMXk4HOuiF0zPLKsAELBQ/jF19ux
-         8pbZGaXlrXE/iQqqCJID4rm6qUKQWN0sa5T6rBntLuJzIsJMXE8LvvB8ECM67YOQex
-         kreSlww85XPYiugjq4gXim/H/X5nVAHBYMpk6Bg7wQ6Btc8atl7QiVAMcxPh6DRxeN
-         N2HFzrOmAw72g==
-Message-ID: <ac00b49505e926ac4f3d0d0ba315b366.sboyd@kernel.org>
+        s=k20201202; t=1697760625;
+        bh=UxsE/uWtbys8JcAUQ7gPTjZn3MW++33Gud8ZJFs3A8s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=B/jN+iqNKfTy4JNL3E1ttftNoMFriRRmTUfq+GWaka4Is8gxzok1yc/LvUun9Csej
+         T/Rpp+hisgGZa+7SUBcpiVbxoj5T7kVSgKaqy3n5H8bJs6TZMyhw/MGDl15QZGwQQJ
+         8arL1X4aMwfFvAyF82TonVtQQoePdAzzd/mcvV7gw/Yce4cOsIeewqUF2ZLhNBzAQ6
+         WxCICBcgOdQpRd0jYg2JFNYdgZxPcOYNIaa2UlOQk/9kLEmWfx6z+cfMM8Rtz0rPpE
+         +j+2madHpTc/rQLidawxbmnjZLb0ebA7HbNukWct4G9LEMdQrkkptqrl+p/LG690aT
+         3ugx3zAi42ITg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D273BC595CE;
+        Fri, 20 Oct 2023 00:10:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <b8fa17a7-296e-4e17-9438-a8be04dbd476@quicinc.com>
-References: <20231017131944.8356-1-quic_kriskura@quicinc.com> <e38ae24c09ef321c224a6b6aeb97e73b.sboyd@kernel.org> <b8fa17a7-296e-4e17-9438-a8be04dbd476@quicinc.com>
-Subject: Re: [RFC 4/8] clk: qcom: gcc-sm8450: Keep usb30 prim gdsc on during runtime suspend
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, Udipto Goswami <quic_ugoswami@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Michael Turquette <mturquette@baylibre.com>
-Date:   Thu, 19 Oct 2023 17:05:54 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH bpf-next v6 0/8] Add Open-coded task,
+ css_task and css iters
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169776062485.5217.16191150488708968895.git-patchwork-notify@kernel.org>
+Date:   Fri, 20 Oct 2023 00:10:24 +0000
+References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
+In-Reply-To: <20231018061746.111364-1-zhouchuyi@bytedance.com>
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,31 +53,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Krishna Kurapati PSSNV (2023-10-19 01:37:20)
->=20
->=20
-> On 10/19/2023 6:28 AM, Stephen Boyd wrote:
-> > Quoting Krishna Kurapati (2023-10-17 06:19:44)
-> >> When runtime suspend happens in host mode, if cable is removed at this
-> >> instant, it triggers a resume where a xhci register access is done when
-> >> gdsc is not on leading to a crash. Keep usb30 prim gdsc as on during
-> >> runtime suspend to avoid this crash.
-> >>
-> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> >> ---
-> >> Note: I am not sure if this is the right way or setting GDSC flags to
-> >> PWRSTS_RET_ON is the right approach. So for now made this change to
-> >=20
-> > Does using PWRSTS_RET_ON work? Does the GDSC support being turned off or
-> > is the lowest power state retention?
->=20
-> I didn't see any issue when I put it as PWRSTS_RET_ON. If the GDSC is=20
-> off, when we remove cable in host mode, we see a crash because of xhci=20
-> register access. But when I try putting PWRSTS_RET_ON /=20
-> CLK_RPM_ALWAYS_ON it doesn't crash.
->=20
+Hello:
 
-You need to find out if the GDSC only supports retention mode. Otherwise
-it sounds like the xhci register access is happening when the genpd is
-off, and thus the driver needs to power on the device before accessing
-it.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 18 Oct 2023 14:17:38 +0800 you wrote:
+> This is version 6 of task, css_task and css iters support.
+> 
+> --- Changelog ---
+> 
+> v5 -> v6:
+> 
+> Patch #3:
+>  * In bpf_iter_task_next, return pos rather than goto out. (Andrii)
+> Patch #2, #3, #4:
+>  * Add the missing __diag_ignore_all to avoid kernel build warning
+> Patch #5, #6, #7:
+>  * Add Andrii's ack
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND,bpf-next,v6,1/8] cgroup: Prepare for using css_task_iter_*() in BPF
+    https://git.kernel.org/bpf/bpf-next/c/6da88306811b
+  - [RESEND,bpf-next,v6,2/8] bpf: Introduce css_task open-coded iterator kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/9c66dc94b62a
+  - [RESEND,bpf-next,v6,3/8] bpf: Introduce task open coded iterator kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/c68a78ffe2cb
+  - [RESEND,bpf-next,v6,4/8] bpf: Introduce css open-coded iterator kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/7251d0905e75
+  - [RESEND,bpf-next,v6,5/8] bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
+    https://git.kernel.org/bpf/bpf-next/c/dfab99df147b
+  - [RESEND,bpf-next,v6,6/8] bpf: Let bpf_iter_task_new accept null task ptr
+    https://git.kernel.org/bpf/bpf-next/c/cb3ecf7915a1
+  - [RESEND,bpf-next,v6,7/8] selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
+    https://git.kernel.org/bpf/bpf-next/c/ddab78cbb52f
+  - [RESEND,bpf-next,v6,8/8] selftests/bpf: Add tests for open-coded task and css iter
+    https://git.kernel.org/bpf/bpf-next/c/130e0f7af9fc
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
