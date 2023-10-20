@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BF07D0D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93027D0D77
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376978AbjJTKh4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 06:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
+        id S1376952AbjJTKiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376795AbjJTKhu (ORCPT
+        with ESMTP id S1376881AbjJTKiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:37:50 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A78D5F;
-        Fri, 20 Oct 2023 03:37:48 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 39C4A24E14F;
-        Fri, 20 Oct 2023 18:37:47 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 20 Oct
- 2023 18:37:47 +0800
-Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
- by EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 20 Oct 2023 18:37:46 +0800
-From:   William Qiu <william.qiu@starfivetech.com>
-To:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>
-CC:     Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Hal Feng" <hal.feng@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v6 4/4] riscv: dts: starfive: jh7100: Add PWM node and pins configuration
-Date:   Fri, 20 Oct 2023 18:37:41 +0800
-Message-ID: <20231020103741.557735-5-william.qiu@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020103741.557735-1-william.qiu@starfivetech.com>
-References: <20231020103741.557735-1-william.qiu@starfivetech.com>
+        Fri, 20 Oct 2023 06:38:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA2F114;
+        Fri, 20 Oct 2023 03:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697798300; x=1729334300;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n2cOUeXLOnt7d3XcD9ICk5Zxiu/d4trpmElUizd98rw=;
+  b=STaAb8g5ilcT8fvVlFWc4iTwGzvZh/dPiITmbiXzh7xCiRq+08FNpXdF
+   YzaXrGD79YaWDI/UJgZOst7iMXm5sEqvDe5V53haSoRu9MPGiBa2lRG/J
+   xQgaHW/I6SIsixV8MbLkP9BUBqLTwGM+XBSo4HG/Yfuvnqr6rj6DjzamI
+   yLxgFyopfDXSuuZG+14/3YEj+FrDoGPICwkF1Wdb3ZVpJ+/4v4yliA8Fx
+   ReNolGSuZS9t12gcX/5LYaVo306JDl4OdY7bAdGgTqNIcdz3uPYWTos6I
+   uOjOR8VIdZSprje0X8TRwaNGpYTcb4cBK0uNPMXRT8KApe1Q1IwDA2rDU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365811457"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="365811457"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 03:38:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="750877602"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="750877602"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 03:37:57 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qtmt8-000000077fK-2AQo;
+        Fri, 20 Oct 2023 13:37:54 +0300
+Date:   Fri, 20 Oct 2023 13:37:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
+        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, linux@roeck-us.net, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1 5/8] ACPI: x86: use acpi_dev_uid_match() for matching
+ _UID
+Message-ID: <ZTJYgnugWHwBhtxv@smile.fi.intel.com>
+References: <20231020084732.17130-1-raag.jadav@intel.com>
+ <20231020084732.17130-6-raag.jadav@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020084732.17130-6-raag.jadav@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OpenCores PWM controller node and add PWM pins configuration
-on VisionFive 1 board.
+On Fri, Oct 20, 2023 at 02:17:29PM +0530, Raag Jadav wrote:
+> Convert manual _UID references to use standard ACPI helpers.
 
-Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
----
- .../boot/dts/starfive/jh7100-common.dtsi      | 24 +++++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7100.dtsi      |  9 +++++++
- 2 files changed, 33 insertions(+)
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-index b93ce351a90f..11876906cc05 100644
---- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-@@ -84,6 +84,24 @@ GPO_I2C2_PAD_SDA_OEN,
- 		};
- 	};
- 
-+	pwm_pins: pwm-0 {
-+		pwm-pins {
-+			pinmux = <GPIOMUX(7,
-+				  GPO_PWM_PAD_OUT_BIT0,
-+				  GPO_PWM_PAD_OE_N_BIT0,
-+				  GPI_NONE)>,
-+				 <GPIOMUX(5,
-+				  GPO_PWM_PAD_OUT_BIT1,
-+				  GPO_PWM_PAD_OE_N_BIT1,
-+				  GPI_NONE)>;
-+			bias-disable;
-+			drive-strength = <35>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+
- 	uart3_pins: uart3-0 {
- 		rx-pins {
- 			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-@@ -154,6 +172,12 @@ &osc_aud {
- 	clock-frequency = <27000000>;
- };
- 
-+&pwm {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_pins>;
-+	status = "okay";
-+};
-+
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart3_pins>;
-diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-index 35ab54fb235f..0bb9e2e5ae68 100644
---- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-@@ -274,6 +274,15 @@ watchdog@12480000 {
- 				 <&rstgen JH7100_RSTN_WDT>;
- 		};
- 
-+		pwm: pwm@12490000 {
-+			compatible = "starfive,jh71x0-pwm";
-+			reg = <0x0 0x12490000 0x0 0x10000>;
-+			clocks = <&clkgen JH7100_CLK_PWM_APB>;
-+			resets = <&rstgen JH7100_RSTN_PWM_APB>;
-+			#pwm-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		sfctemp: temperature-sensor@124a0000 {
- 			compatible = "starfive,jh7100-temp";
- 			reg = <0x0 0x124a0000 0x0 0x10000>;
+...
+
+> -			if (!adev->pnp.unique_id ||
+> -			    strcmp(adev->pnp.unique_id, override_status_ids[i].uid))
+> +			if (!acpi_dev_uid_match(adev, override_status_ids[i].uid))
+
+The check for NULL argument inside that API does not affect the behaviour as
+otherwise it will be a crash with the current implementation.
+
+>  				continue;
+
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
