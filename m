@@ -2,219 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2058E7D1137
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7311F7D113D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377527AbjJTOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S1377531AbjJTOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377518AbjJTOJp (ORCPT
+        with ESMTP id S1377495AbjJTOK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:09:45 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DA9D45
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:09:42 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7fb84f6ceso9624997b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697810982; x=1698415782; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M6YP/teVQRQ13BPszkwW5RTXBLcu7j1b8Aesjq/guSY=;
-        b=VksO8oT2J6sqKmYO9ne8VNu1X3q/nzWgCwF2+8PpQHbG2xynv1eTWtT3cgmq096SLK
-         MGO0j9hYw9CbXxYcZyOkKSMicDHOrnQurf3F5exb3snrWYS1ZFiV+rBPHlkESusU52w3
-         ANRap+US0bCpY/e1SeO/kzdzrUSyGsqkALJ+/cnmrdUmZOXDwji3pYBNAbSMja7HxXTc
-         xsriOrkz5gf5oJO717Y5yHprZUcapccj3+ghGImfIrwnAO9q9NcSfW3AxHR2eq3RRPPw
-         8XXRRrmeqfl9hIB2euWO4TIoLTU183Z29W8u1qSOHmp3kMgjx/mBoCuYwf/M7C2ExlnC
-         va7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697810982; x=1698415782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M6YP/teVQRQ13BPszkwW5RTXBLcu7j1b8Aesjq/guSY=;
-        b=A/g4NTTnog11C5dCBQ9XmVmKsAfL0xlaDZ1eo32GRwXcOEaQVu4/5dcYOmX4IcnOv5
-         +cS3Mf2kKHZRf/hWjvtwa9aVHx5KfdlGfgpvGx+lahws2yOfsqXFEOyUT9Pz650YRKy/
-         c6LHHK7/kk3YNt+m2GG4p/RjKQDvLyUDAmq7hPr6suJj2mbnBQoXR5645yRkhAWznmqn
-         bNEF3DNe0iRodf7o7tNiKszHfOh4wAXINMtVL8673GW6N9CcB9NwbVCNykbjmm3iJdjU
-         00n0cw3lJ/DZu9NFSxHdFuLwUzCbuqOv933TYVZVxTa2SKr4fu7g0JlysWZijy5DPo0f
-         YSXA==
-X-Gm-Message-State: AOJu0Yz+90KEGqtRoYn/saJ6fuI+01UZW181CtJzoqUA5aIa5cZGPFXk
-        Ni2Xdfos0s7413C5ami83cwI82kge8c5KJ+8IBtJVQ==
-X-Google-Smtp-Source: AGHT+IEMDIp10DzXlnGt6SASQtJ1tuQPgPeVTO1Ezg9HTj83cfJu2cTxYgtGWx3/7WTfDMYL6h6fGRi+BmSj1Io1CoY=
-X-Received: by 2002:a0d:dd97:0:b0:5a8:2d2b:ca9c with SMTP id
- g145-20020a0ddd97000000b005a82d2bca9cmr2372237ywe.32.1697810981824; Fri, 20
- Oct 2023 07:09:41 -0700 (PDT)
+        Fri, 20 Oct 2023 10:10:59 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7306193;
+        Fri, 20 Oct 2023 07:10:56 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D7E31240009;
+        Fri, 20 Oct 2023 14:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697811055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=52lH+GkBwc41ljxBF1Kw4WZBdBsZqH5YByG4eJJ9tVk=;
+        b=VGyxoBcacZ+ZUyB68YjKdlo3eeT+/vshs1EhL1OmNxtrAVdkR+8mNSbmJ+DeV8N0Cycf34
+        3pKohd7EgfyKwdyB04xBx+kJwaCEVRurOWCyBq4lSHc2XE0DT1w5A5pRW5rnnpMaQKlAxs
+        h8OFGJ7MHBtNQhcTO4UU9/jspVnRn+GORYZQ5JTT4PDm8U9bwFnbnn+E9inXg/2WlB96ZN
+        Hn25HWYlilZZHkHW3rZUpYFPnsftBj2wY7fyUfxRXaNx/zR2GDiVrwBz5SGOk/auRYdeQJ
+        8Zhd4KsSjs4mOB7DHB68hm+4qy6/NkhonywrIIZ2YzM9QEwpvA5SFsRDdqco3Q==
+Date:   Fri, 20 Oct 2023 16:10:53 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Mehdi Djait <mehdi.djait@bootlin.com>
+Cc:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, ezequiel@vanguardiasur.com.ar,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com
+Subject: Re: [PATCH v8 3/3] arm64: dts: rockchip: Add the camera interface
+Message-ID: <ZTKKbckxeQda07rP@aptenodytes>
+References: <cover.1697446303.git.mehdi.djait@bootlin.com>
+ <936393d5f2d4b583efbb1ac81f21e8d41fb452cb.1697446303.git.mehdi.djait@bootlin.com>
 MIME-Version: 1.0
-References: <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
- <ZS7ZqztMbhrG52JQ@x1n> <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
- <ZTGJHesvkV84c+l6@x1n> <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
-In-Reply-To: <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 20 Oct 2023 07:09:28 -0700
-Message-ID: <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cEW6dqGFLbs7lmqa"
+Content-Disposition: inline
+In-Reply-To: <936393d5f2d4b583efbb1ac81f21e8d41fb452cb.1697446303.git.mehdi.djait@bootlin.com>
+X-GND-Sasl: paul.kocialkowski@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 3:02=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 19.10.23 21:53, Peter Xu wrote:
-> > On Thu, Oct 19, 2023 at 05:41:01PM +0200, David Hildenbrand wrote:
-> >> That's not my main point. It can easily become a maintenance burden wi=
-thout
-> >> any real use cases yet that we are willing to support.
-> >
-> > That's why I requested a few times that we can discuss the complexity o=
-f
-> > cross-mm support already here, and I'm all ears if I missed something o=
-n
-> > the "maintenance burden" part..
-> >
-> > I started by listing what I think might be different, and we can easily
-> > speedup single-mm with things like "if (ctx->mm !=3D mm)" checks with
-> > e.g. memcg, just like what this patch already did with pgtable depositi=
-ons.
-> >
-> > We keep saying "maintenance burden" but we refuse to discuss what is th=
-at..
->
-> Let's recap
->
-> (1) We have person A up-streaming code written by person B, whereby B is
-> not involved in the discussions nor seems to be active to maintain that
-> code.
->
-> Worse, the code that is getting up-streamed was originally based on a
-> different kernel version that has significant differences in some key
-> areas -- for example, page pinning, exclusive vs. shared.
->
-> I claim that nobody here fully understands the code at hand (just look
-> at the previous discussions), and reviewers have to sort out the mess
-> that was created by the very way this stuff is getting upstreamed here.
->
-> We're already struggling to get the single-mm case working correctly.
->
->
-> (2) Cross-mm was not even announced anywhere nor mentioned which use it
-> would have; I had to stumble over this while digging through the code.
-> Further, is it even *tested*? AFAIKS in patch #3 no. Why do we have to
-> make the life of reviewers harder by forcing them to review code that
-> currently *nobody* on this earth needs?
->
->
-> (3) You said "What else we can benefit from single mm?  One less mmap
-> read lock, but probably that's all we can get;" and I presented two
-> non-obvious issues. I did not even look any further because I really
-> have better things to do than review complicated code without real use
-> cases at hand. As I said "maybe that works as expected, I
-> don't know and I have no time to spare on reviewing features with no
-> real use cases)"; apparently I was right by just guessing that memcg
-> handling is missing.
->
->
-> The sub-feature in question (cross-mm) has no solid use cases; at this
-> point I am not even convinced the use case you raised requires
-> *userfaultfd*; for the purpose of moving a whole VMA worth of pages
-> between two processes; I don't see the immediate need to get userfaultfd
-> involved and move individual pages under page lock etc.
 
-You make a compelling case against cross-mm support.
-While I can't force Andrea to participate in upstreaming nor do I have
-his background, keeping it simple, as you requested, is doable. That's
-what I plan on doing by splitting the patch and I think we all agreed
-to that. I'll also see if I can easily add a separate patch to test
-cross-mm support.
-I do apologize for the extra effort required from reviewers to cover
-for the gaps in my patches. I'm doing my best to minimize that and I
-really appreciate your time.
+--cEW6dqGFLbs7lmqa
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> >
-> > I'll leave that to Suren and Lokesh to decide.  For me the worst case i=
-s
-> > one more flag which might be confusing, which is not the end of the wor=
-ld..
-> > Suren, you may need to work more thoroughly to remove cross-mm implicat=
-ions
-> > if so, just like when renaming REMAP to MOVE.
->
-> I'm asking myself why you are pushing so hard to include complexity
-> "just because we can"; doesn't make any sense to me, honestly.
->
-> Maybe you have some other real use cases that ultimately require
-> userfaultfd for cross-mm that you cannot share?
->
-> Will the world end when we have to use a separate flag so we can open
-> this pandora's box when really required?
->
->
-> Again, moving anon pages within a process is a known thing; we do that
-> already via mremap; the only difference here really is, that we have to
-> get the rmap right because we don't adjust VMAs. It's a shame we don't
-> try to combine both code paths, maybe it's not easily possible like we
-> did with mprotect vs. uffd-wp.
+Hi Mehdi,
 
-That's a good point. With cross-mm support baked in, the overlap was
-not obvious to me. I'll see how much we can reuse from the mremap
-path.
+On Mon 16 Oct 23, 11:00, Mehdi Djait wrote:
+> The PX30 has a camera interface, supporting CSI2 and BT656
+> modes. Add a DT description for this interface.
 
->
-> Moving anon pages between process is currently only done via COW, where
-> all things (page pinning, memcg, ...) have been figured out and are
-> simply working as expected. Making uffd special by coding-up their own
-> thing does not sound compelling to me.
->
->
-> I am clearly against any unwarranted features+complexity. Again, I will
-> stop arguing further, the whole thing of "include it just because we
-> can" to avoid a flag (that we might never even see) doesn't make any
-> sense to me and likely never will.
->
-> The whole way this feature is getting upstreamed is just messed up IMHO
-> and I the reasoning used in this thread to stick
-> as-close-as-possible to some code person B wrote some years ago (e.g.,
-> naming, sub-features) is far out of my comprehension.
+The "vip" node name is not very standard but the generic names recommendati=
+on
+doesn't have anything that really fits video capture:
+https://devicetree-specification.readthedocs.io/en/v0.3/devicetree-basics.h=
+tml#generic-names-recommendation
 
-I don't think staying as-close-as-possible to the original version was
-the way I was driving this so far. At least that was not my conscious
-intention. I'm open to further suggestions whenever it makes sense to
-deviate from it.
-Thanks,
-Suren.
+You might want to call it "video-capture" or "camera-controller" which seems
+like a good middle-ground that could be included in the list.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Please keep the name (vip/cif) as label though.
+
+Other than that, please rename vip to cif and this will be:
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+
+Cheers,
+
+Paul
+
+> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts=
+/rockchip/px30.dtsi
+> index 42ce78beb413..7aaa88a15d07 100644
+> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+> @@ -1281,6 +1281,18 @@ isp_mmu: iommu@ff4a8000 {
+>  		#iommu-cells =3D <0>;
+>  	};
+> =20
+> +	vip: vip@ff490000 {
+> +		compatible =3D "rockchip,px30-vip";
+> +		reg =3D <0x0 0xff490000 0x0 0x200>;
+> +		interrupts =3D <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks =3D <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
+> +		clock-names =3D "aclk", "hclk", "pclk";
+> +		power-domains =3D <&power PX30_PD_VI>;
+> +		resets =3D <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN=
+>;
+> +		reset-names =3D "axi", "ahb", "pclkin";
+> +		status =3D "disabled";
+> +	};
+> +
+>  	qos_gmac: qos@ff518000 {
+>  		compatible =3D "rockchip,px30-qos", "syscon";
+>  		reg =3D <0x0 0xff518000 0x0 0x20>;
+> --=20
+> 2.41.0
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--cEW6dqGFLbs7lmqa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmUyim0ACgkQ3cLmz3+f
+v9G2twf/SeumhpY637dwLFwp9ThP8+5B/p+8/pUDkYTjoRWYc9+f2h4x+Q+DxV5A
+XroPIep0qSAaEcSElIY+xmQrGxT6aOvG75J+RvzL4NZEqmNIGshYjkijsZ/xIn0Q
+4CggUE46UhTw1rkHkW8rMl9eHFEQYd2Fpv2rz5D6pUBpHPhVZ1Tfx7e4sNdgl7kQ
+T7fLi0ldX6Q4AppmqAeIsi3M6V5BbZSDGYb9eVAv2kvEWEUwLHC3l71VBz2LnNCJ
+sHbSSfIa5Yk/9GZgiVPjvM3cUzc4neV2V/vx4a83NJ0yf/lgE74qDpUG5ZLkvyk5
+A7rBvnl9zGXA1SZulOQyJK1A7Fm/Aw==
+=+ix9
+-----END PGP SIGNATURE-----
+
+--cEW6dqGFLbs7lmqa--
