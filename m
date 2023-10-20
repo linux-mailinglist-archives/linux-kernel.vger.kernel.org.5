@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268B87D14D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402F37D14DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377713AbjJTR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        id S1377945AbjJTR2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjJTR0a (ORCPT
+        with ESMTP id S1377936AbjJTR2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:26:30 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D2911B;
-        Fri, 20 Oct 2023 10:26:28 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d834ec222so758671f8f.0;
-        Fri, 20 Oct 2023 10:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697822787; x=1698427587; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QJSpYiCN3QN/TY7u+xw31FjEI9RUYvZalJzVd9jzlj8=;
-        b=M0SB6J5NjitIOCpYq96zx8rLm/tpqEEm8vvNI3Pd5UlcNtCek3EcODBlwf0XELWVYV
-         IeHIrq+7RMojG29t37UYz8mlfBabVF+iAEriaX9GQdk3t3AnmqoHPj7TCjtdP9qmtl0S
-         LNxxMXPyIurle1mAoZdMhCOZIKFrShrMO6s54SWBIFaLFW/qvJlXsgRMpCe3IQJQYw0A
-         oQlEgzh4BkIl4UPoOlLKWWNTHVcKcUIIZ7CWGctt0EecypKRt/jV1XE9r3QF7sa3vX9M
-         Q5vqSSsMcMuUaNBDebWCsSdcvO1sYXJkABDNCPznQSR1BfhLcFx8+j2G25gqbGsdP+Qs
-         JY9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697822787; x=1698427587;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QJSpYiCN3QN/TY7u+xw31FjEI9RUYvZalJzVd9jzlj8=;
-        b=NO//8jiyYDoLYXeMZBncLd9XKO0LeuvmUpMc4JXFDdJutf3SiOa+MubLX2oxKHHXiZ
-         JkJqJ7Dmm8d7lnDl2cz/lMFm9upsUS6Ks1tkoi3CsmtzURNOzy9KH0NaifEaAHJlhygB
-         iHsgrsuaqaaU9ttr0CyxnDnl6/ao+YgElVzraRP2iIUPQkGf/Zdi4hiFReepIqDmPCeI
-         DcMoOLNK71tpLLq4rsMdVEvCJXO+xLFB+lGHKOOjoTj5yphhLE14P1fo8PuIdWBcRLgC
-         tokQ0wJxnJCWIz3j490sgU2x6aPSBsCx7OaaDTlTCZdMYbdKVMpN/QGnQ4zUvtgFoXAr
-         Hykw==
-X-Gm-Message-State: AOJu0Yz4FafBfyiIBoYT/ATSzjpZZ6DTjU9rErZKWZHX1/HO6w5161iJ
-        ykR9tC/5xACK2OBr/U8e1FYteYY1v3P4EXq8zWM=
-X-Google-Smtp-Source: AGHT+IHnR9YY++aPCL+6tLnRr0XZ5JTa8kWa3j20XBlP5u8TMD5HwJ0BPx876YEPZsSsdjOOrqfFT20wA+vsWFp5LK8=
-X-Received: by 2002:adf:f0c2:0:b0:32d:ba78:d608 with SMTP id
- x2-20020adff0c2000000b0032dba78d608mr1906451wro.52.1697822786819; Fri, 20 Oct
- 2023 10:26:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231020132749.1398012-1-arnd@kernel.org>
-In-Reply-To: <20231020132749.1398012-1-arnd@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 20 Oct 2023 10:26:15 -0700
-Message-ID: <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: hide cgroup functions for configs without cgroups
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Fri, 20 Oct 2023 13:28:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA2D124
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:28:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 65B6BC433C8;
+        Fri, 20 Oct 2023 17:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697822889;
+        bh=X4QB2lpGaxlWrCqA5AJ7s1WLRSS55GpOzezkfRrRPD4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=FKMHC+kCz21r5nO1E2IBtcCyWzPvK9CTBuB0vN/+fh/Kzf+B3fSwNEq0ZVzCQlWXS
+         SvoaYJ/BQopLR3y0tWgeGKdcZcpCk4/0dONkSRmoZP0EARtM/OJ4oDFo91jCx9zfyV
+         i83dM/bIevhThrg8f0Q4oiqmtRKzfrBNLv8d9RR9d/FP82V4ObZUhyJsq7GOOcZ8i/
+         gFH3R7xwUHAkvLqFsTC1IgU3FX4KDMTbWlJDU0XlrpLIDjihvcH/smVTZzbkhqcgAB
+         x6NPbhiM7rUhJT8QBQd9+5BX/ldyK2dMgKxpWbdtGYY+5D7mEqf5qflfNmRsPmfDmv
+         4mRU6qLO7cL9Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53566C595CE;
+        Fri, 20 Oct 2023 17:28:09 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 6.6-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <877cnhjry3.wl-tiwai@suse.de>
+References: <877cnhjry3.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <877cnhjry3.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.6-rc7
+X-PR-Tracked-Commit-Id: 8e13caa2150b5a1287a1900952d3d7e04363f921
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 14f6863328164a9e66024bce5f2fa27de7dc00f0
+Message-Id: <169782288933.8382.9586565169394139044.pr-tracker-bot@kernel.org>
+Date:   Fri, 20 Oct 2023 17:28:09 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,55 +58,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 6:27=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When cgroups are disabled, the newly added functions don't build:
->
-> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared (f=
-irst use in this function)
->   917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->       |              ^~~~~~~~~~~~~~~~~~~
-> kernel/bpf/task_iter.c:925:60: error: invalid application of 'sizeof' to =
-incomplete type 'struct css_task_iter'
->   925 |         kit->css_it =3D bpf_mem_alloc(&bpf_global_ma, sizeof(stru=
-ct css_task_iter));
->       |                                                            ^~~~~~
->
-> Hide them in an #ifdef section.
->
-> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs=
-")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/bpf/task_iter.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 654601dd6b493..15a184f4f954d 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -904,6 +904,7 @@ __diag_push();
->  __diag_ignore_all("-Wmissing-prototypes",
->                   "Global functions as their definitions will be in vmlin=
-ux BTF");
->
-> +#ifdef CONFIG_CGROUPS
->  __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
->                 struct cgroup_subsys_state *css, unsigned int flags)
->  {
-> @@ -947,6 +948,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf=
-_iter_css_task *it)
->         css_task_iter_end(kit->css_it);
->         bpf_mem_free(&bpf_global_ma, kit->css_it);
->  }
-> +#endif
+The pull request you sent on Fri, 20 Oct 2023 16:20:52 +0200:
 
-Did you actually test build it without cgroups and with bpf+btf?
-I suspect the resolve_btfid step should be failing the build.
-It needs
-#ifdef CONFIG_CGROUPS
-around BTF_ID_FLAGS(func, bpf_iter_css_task*
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.6-rc7
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/14f6863328164a9e66024bce5f2fa27de7dc00f0
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
