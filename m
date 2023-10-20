@@ -2,134 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C48767D09B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFCA7D09BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376417AbjJTHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        id S1376445AbjJTHwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjJTHvR (ORCPT
+        with ESMTP id S230371AbjJTHwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:51:17 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60A8A3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:51:15 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c50b7c36so621450e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697788274; x=1698393074; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1mrqe+VaNyg+k16K8uNieYvGU9qfJUtjNYAfSLsQb4w=;
-        b=Zzio+iARSeQxccD9VVTuq6D/dnAPIYjjXQQfvhQWbh6YCWvFEnMmV8r2FN9GaeTear
-         kR9sfAX9CuupOq3qcyx9SKWZZU7ukZJLfa8XXWcCYrNhO03YFmi0+WuZ1pQP6YspChjD
-         RRcUYH0dn1DZH50jadUiwQETAmrZKTcjYOPUNts9bNlDuJZWI7pzemk7Yp2OtfoqHlZ2
-         ri4O7djtT3A45EVvK5LDfLn9vQR8o1PFf72PQRmc4hwNbcCALT8F9W1XJhESYeh+yvLg
-         muLA3THnQglh3CgovYVhfNTVpK9eHDALKnlZS4KyWTyDTb7cksvXAELLmhPHdDCjWw4m
-         w99g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697788274; x=1698393074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1mrqe+VaNyg+k16K8uNieYvGU9qfJUtjNYAfSLsQb4w=;
-        b=EZCk5SpVdiVhQty5wzb9FbLCM2imfiM3BYz1Lo9fyzELfU2T7ZBgialTo1VdaahZIh
-         dMnffsG99m/P7mzU8D/YBC+vZsHMvzCxjAoOBgETH7EDIOXmwSJFjwNSwm8YMlSsiL46
-         XpLMBIdzZ2oymPZEetJe+E6A6oeWiJb98T2oUh/QSax2DMDG2dJeu5v90Z1YuAUyKToV
-         LVPHyGmHTLagPNa5IUsf2k8oq0dQq9/2IHrzGPmTDcb2HZ6QBiyNdlLn50Ihm6llbRla
-         QsbSmYm46WAb1TtSIUEkqYAaUwBH8KrBQzHNRYJ3b3+F+b2Wf3f4kbUAENcnpPOFTLPH
-         tOJg==
-X-Gm-Message-State: AOJu0YyluBw5Sj72NdZYZezvIEAI30OaAhdo+d8r15CUTn3FVd5MhGx6
-        e5s4DKuPa+B4RUPHhqd+CLQ=
-X-Google-Smtp-Source: AGHT+IFQOb4eOxyPRC6LQC2Q6VTlzY0Ik1B0kbnUFlGvgV5qpxFZlh1THAbPo3f1F7rWOdm0y6x8SQ==
-X-Received: by 2002:ac2:5e9c:0:b0:503:1875:5ae5 with SMTP id b28-20020ac25e9c000000b0050318755ae5mr702341lfq.38.1697788273850;
-        Fri, 20 Oct 2023 00:51:13 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id h25-20020a170906261900b00992e14af9c3sm964876ejc.143.2023.10.20.00.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 00:51:13 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 20 Oct 2023 09:51:10 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 2/3] sched/nohz: Update comments about NEWILB_KICK
-Message-ID: <ZTIxbrgYHdTMfhVs@gmail.com>
-References: <20231020014031.919742-1-joel@joelfernandes.org>
- <20231020014031.919742-2-joel@joelfernandes.org>
+        Fri, 20 Oct 2023 03:52:47 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908C1E8;
+        Fri, 20 Oct 2023 00:52:45 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7E974660734D;
+        Fri, 20 Oct 2023 08:52:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697788364;
+        bh=s6xNo054UbCmvOigN/xb7evicnVwrAIzmcYcO9sC4HE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=b0IaizazmmKSDzATXVjDiDjuLemdxVvtGRYn996pLgephr1lWEZqMVrNYJChj0LB0
+         FauAoQ/w+XXMFfhniM08Wdipt1DJGI8CjuK8HKX4auu2pQPGkP6XFh71QTWwJ265ea
+         Pl+MzL4qicK0k06YStkLzIrJrzuoRyXwDRr9x98atSPXnEkBFuwgom1IUCh2VD/wd1
+         0SPkkJu1+JyJUEmSdlmeiEoIc6mbaEySint/40eTGZ1pV+YIlZORnCkwddrNkWjfu7
+         3HY7ix3DucBa2WtvafdSdN0mIEiLsff+e6tWZjgkd1bXwBKaYQ87tiuEuVxXsraVdQ
+         BWYTqmEsPmXOA==
+Message-ID: <0572689f-c127-4603-b21a-303f4f20f7d7@collabora.com>
+Date:   Fri, 20 Oct 2023 09:52:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020014031.919742-2-joel@joelfernandes.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: mediatek: mt8186: Change I2C 4/5/6 ap clocks parent
+ to infra
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, matthias.bgg@gmail.com,
+        u.kleine-koenig@pengutronix.de, chun-jie.chen@mediatek.com,
+        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231019124914.13545-1-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5H0rUajeU-i8nYyV2xWFQTnzqxioZCCyyP_RZXKqmcugQ@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <CAGXv+5H0rUajeU-i8nYyV2xWFQTnzqxioZCCyyP_RZXKqmcugQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Joel Fernandes (Google) <joel@joelfernandes.org> wrote:
-
-> How ILB is triggered without IPIs is cryptic. Out of mercy for future
-> code readers, document it in code comments.
+Il 20/10/23 07:06, Chen-Yu Tsai ha scritto:
+> On Thu, Oct 19, 2023 at 8:49 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Fix the parenting of clocks imp_iic_wrap_ap_clock_i2c{4-6}, as those
+>> are effectively parented to infra_ao_i2c{4-6} and not to the I2C_AP.
+>> This permits the correct (and full) enablement and disablement of the
+>> I2C4, I2C5 and I2C6 bus clocks, satisfying the whole clock tree of
+>> those.
+>>
+>> As an example, when requesting to enable imp_iic_wrap_ap_clock_i2c4:
+>>
+>> Before: infra_ao_i2c_ap -> imp_iic_wrap_ap_clock_i2c4
+>> After:  infra_ao_i2c_ap -> infra_ao_i2c4 -> imp_iic_wrap_ap_clock_i2c4
+>>
+>> Fixes: 66cd0b4b0ce5 ("clk: mediatek: Add MT8186 imp i2c wrapper clock support")
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > 
-> The comments are derived from a discussion with Vincent in a past
-> review.
+> I'm curious about what led to discovering this error?
 > 
-> Cc: Suleiman Souhlal <suleiman@google.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/fair.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
+
+I had lockups during boot when probing I2C, so some research led me to
+discover that the clock tree wasn't fully satisfied... :-)
+
+Cheers,
+Angelo
+
+> ChenYu
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 965c30fbbe5c..8e276d12c3cb 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11959,8 +11959,19 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
->  }
->  
->  /*
-> - * Check if we need to run the ILB for updating blocked load before entering
-> - * idle state.
-> + * Check if we need to directly run the ILB for updating blocked load before
-> + * entering idle state. Here we run ILB directly without issuing IPIs.
-> + *
-> + * Note that when this function is called, the tick may not yet be stopped on
-> + * this CPU yet. nohz.idle_cpus_mask is updated only when tick is stopped and
-> + * cleared on the next busy tick. In other words, nohz.idle_cpus_mask updates
-> + * don't align with CPUs enter/exit idle to avoid bottlenecks due to high idle
-> + * entry/exit rate (usec). So it is possible that _nohz_idle_balance() is
-> + * called from this function on (this) CPU that's not yet in the mask. That's
-> + * OK because the goal of nohz_run_idle_balance() is to run ILB only for
-> + * updating the blocked load of already idle CPUs without waking up one of
-> + * those idle CPUs and outside the preempt disable / irq off phase of the local
-> + * cpu about to enter idle, because it can take a long time.
+>> ---
+>>   drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c | 6 +++---
+>>   drivers/clk/mediatek/clk-mt8186-infra_ao.c     | 6 +++---
+>>   2 files changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
+>> index 640ccb553274..871b8ff4c287 100644
+>> --- a/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
+>> +++ b/drivers/clk/mediatek/clk-mt8186-imp_iic_wrap.c
+>> @@ -29,11 +29,11 @@ static const struct mtk_gate imp_iic_wrap_clks[] = {
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C3,
+>>                  "imp_iic_wrap_ap_clock_i2c3", "infra_ao_i2c_ap", 3),
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C4,
+>> -               "imp_iic_wrap_ap_clock_i2c4", "infra_ao_i2c_ap", 4),
+>> +               "imp_iic_wrap_ap_clock_i2c4", "infra_ao_i2c4", 4),
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C5,
+>> -               "imp_iic_wrap_ap_clock_i2c5", "infra_ao_i2c_ap", 5),
+>> +               "imp_iic_wrap_ap_clock_i2c5", "infra_ao_i2c5", 5),
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C6,
+>> -               "imp_iic_wrap_ap_clock_i2c6", "infra_ao_i2c_ap", 6),
+>> +               "imp_iic_wrap_ap_clock_i2c6", "infra_ao_i2c6", 6),
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C7,
+>>                  "imp_iic_wrap_ap_clock_i2c7", "infra_ao_i2c_ap", 7),
+>>          GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_AP_CLOCK_I2C8,
+>> diff --git a/drivers/clk/mediatek/clk-mt8186-infra_ao.c b/drivers/clk/mediatek/clk-mt8186-infra_ao.c
+>> index 837304cd0ed7..c490f1a310f8 100644
+>> --- a/drivers/clk/mediatek/clk-mt8186-infra_ao.c
+>> +++ b/drivers/clk/mediatek/clk-mt8186-infra_ao.c
+>> @@ -132,7 +132,7 @@ static const struct mtk_gate infra_ao_clks[] = {
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_AUDIO_26M_BCLK, "infra_ao_audio26m", "clk26m", 4),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_SSUSB_TOP_P1_HCLK, "infra_ao_ssusb_p1_hclk", "top_axi", 5),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_SPI1, "infra_ao_spi1", "top_spi", 6),
+>> -       GATE_INFRA_AO2(CLK_INFRA_AO_I2C4, "infra_ao_i2c4", "top_i2c", 7),
+>> +       GATE_INFRA_AO2(CLK_INFRA_AO_I2C4, "infra_ao_i2c4", "infra_ao_i2c_ap", 7),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_MODEM_TEMP_SHARE, "infra_ao_mdtemp", "clk26m", 8),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_SPI2, "infra_ao_spi2", "top_spi", 9),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_SPI3, "infra_ao_spi3", "top_spi", 10),
+>> @@ -145,7 +145,7 @@ static const struct mtk_gate infra_ao_clks[] = {
+>>          GATE_INFRA_AO2_FLAGS(CLK_INFRA_AO_SSPM, "infra_ao_sspm", "top_sspm", 15, CLK_IS_CRITICAL),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_SSUSB_TOP_P1_SYS,
+>>                         "infra_ao_ssusb_p1_sys", "top_ssusb_1p", 16),
+>> -       GATE_INFRA_AO2(CLK_INFRA_AO_I2C5, "infra_ao_i2c5", "top_i2c", 18),
+>> +       GATE_INFRA_AO2(CLK_INFRA_AO_I2C5, "infra_ao_i2c5", "infra_ao_i2c_ap", 18),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_I2C5_ARBITER, "infra_ao_i2c5a", "top_i2c", 19),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_I2C5_IMM, "infra_ao_i2c5_imm", "top_i2c", 20),
+>>          GATE_INFRA_AO2(CLK_INFRA_AO_I2C1_ARBITER, "infra_ao_i2c1a", "top_i2c", 21),
+>> @@ -167,7 +167,7 @@ static const struct mtk_gate infra_ao_clks[] = {
+>>                               CLK_IS_CRITICAL),
+>>          GATE_INFRA_AO3_FLAGS(CLK_INFRA_AO_SSPM_32K_SELF, "infra_ao_sspm_32k", "clk32k", 4,
+>>                               CLK_IS_CRITICAL),
+>> -       GATE_INFRA_AO3(CLK_INFRA_AO_I2C6, "infra_ao_i2c6", "top_i2c", 6),
+>> +       GATE_INFRA_AO3(CLK_INFRA_AO_I2C6, "infra_ao_i2c6", "infra_ao_i2c_ap", 6),
+>>          GATE_INFRA_AO3(CLK_INFRA_AO_AP_MSDC0, "infra_ao_ap_msdc0", "top_axi", 7),
+>>          GATE_INFRA_AO3(CLK_INFRA_AO_MD_MSDC0, "infra_ao_md_msdc0", "top_axi", 8),
+>>          GATE_INFRA_AO3(CLK_INFRA_AO_MSDC0_SRC, "infra_ao_msdc0_clk", "top_msdc50_0", 9),
+>> --
+>> 2.42.0
+>>
 
-Much appreciated! Feel free to update comments for the entire relevant code 
-base, a lot of it has become cryptic and under-documented at best as 
-complexity increased ...
-
-Thanks,
-
-	Ingo
