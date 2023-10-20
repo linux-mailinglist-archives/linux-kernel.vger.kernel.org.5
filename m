@@ -2,207 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848DA7D126B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4460D7D1271
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377626AbjJTPPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        id S1377601AbjJTPRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377807AbjJTPPK (ORCPT
+        with ESMTP id S1377620AbjJTPRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:15:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A11210C4;
-        Fri, 20 Oct 2023 08:15:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A41D7C433C8;
-        Fri, 20 Oct 2023 15:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697814902;
-        bh=fQWTPcxX2DTXkfY3FpRlIf4VIzmaST2HtcNdBmy+f1o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E6K6IoatxWWQ+lVg/PZxX9Q7T1Ekg7NYw5jKs0nsptV6TCXov2uZaeZTiH3YanVJn
-         dW9sI7e2VAOaFofprb4gz2qVAUYfzESWOSTF3WfnQDknB3kAW8+H6JPYhgxwN3AEse
-         qNMw+aZcaAGPJjGjXYfdsTt6cOGUauMRMMeYtzcgxHphWfFLkVEt6n906mCLFUnJCH
-         lyxGIMxlYnoOXaUVA9I63VPQOWAjVirM6aENuDUVkdg4CRNlwrgB+Ao3fgrleN+cik
-         sv8Yeg5piWIdogVAM13Z43kMVFqtKVu6IiFTIb6l5dhoJfGsYUnyvSdefL3LvDEKsY
-         yIWA6SsnHE3rA==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507cd62472dso2332921e87.0;
-        Fri, 20 Oct 2023 08:15:02 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwEr2PNlFPMa7KlJpYzRaofaoxc0XtMjdjynxtxZvEaOGdzKFUC
-        5/mZJr1tMWCAM+mxZE852iNIlKG4eYTZoiwSkA==
-X-Google-Smtp-Source: AGHT+IGOqTTM+pZlPxJbb1PzmIynWyFPKiahnRFqNvOq08Vu4pWF7xMH4GoE8Q4fjtpxgTCClRTvF4DhW3eoVcfs1XE=
-X-Received: by 2002:a05:6512:108d:b0:500:acae:30c5 with SMTP id
- j13-20020a056512108d00b00500acae30c5mr1833965lfg.15.1697814900823; Fri, 20
- Oct 2023 08:15:00 -0700 (PDT)
+        Fri, 20 Oct 2023 11:17:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8554D52
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697815014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uL74QOOODH8z7/HLBYoyiSfFz8MZP6UcEZUC9sHk/D4=;
+        b=T7omDvdqOos6XSRoRVNApj7ssyFrooUJSvPMHT7dXwQZieVp0Gra56BUhJNmTokuY6XT6p
+        5Br/fqYy64+VAG9r94MHV9GHUzEotd922yEAstBMV7oJuKbsVBXLWKP3sNl3qe3c64fxng
+        KhRpheIWExa4lzfuVvY+ar3bUSUga6M=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-cby8rI-DNJG2cKvASd6qBA-1; Fri, 20 Oct 2023 11:16:52 -0400
+X-MC-Unique: cby8rI-DNJG2cKvASd6qBA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53dfe3af1b9so613332a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:16:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697815011; x=1698419811;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uL74QOOODH8z7/HLBYoyiSfFz8MZP6UcEZUC9sHk/D4=;
+        b=p3JkEJ3iSKsBoIYLQbU997ptISel2s6yDFOGExO4O9CcSuYjuJsRmIwr80BY6mtmNI
+         nmoWunX5IgNtWTq+oZ0iK4/Wj6tn7FwJxB/HDKylWw+THrq4ehT4CTBedTUm3TEnANSI
+         SHGkGSS2X/a4Lau+q+C674jBpd/fie7EI4VgBKpH0vD+vov/SRbBdg2DwNGio5TQ9Lec
+         JhgAPDoNHUpMazCuMgatRDXIgjWvEUy/xbbmjq4kgDr6rhn6q6kwl4NNn/l2FudWI4gE
+         vqPTnQtR9ulOY8QPbc8GTTx4CY4PVG2R6uA9jchz7ob59Y2T1pYUdEDbrEbfeJKkq2+9
+         bTqA==
+X-Gm-Message-State: AOJu0YwdamFo4ZHb8lYZGzZxVZezJyG7tL/cl7v0RE/GFoCnWQ7gh1j+
+        gykEFimJT3GGpCWpae5KwxVh9rqlFmNKvhTBSNk1JQ5i1BerCoxFITUV458GYk1+eXwMcSHoKqG
+        QnDqhzTbl0CCF1ODVSeKbj5wz
+X-Received: by 2002:a05:6402:2787:b0:53e:fc60:85bd with SMTP id b7-20020a056402278700b0053efc6085bdmr2276509ede.24.1697815011255;
+        Fri, 20 Oct 2023 08:16:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGYdNibxJHxyJGPVR5i/Yhr/fTPmr4VyB6rpDzVOAKQ0gtTV4BCXCGgLN2G0yHVvbXa7P8C6A==
+X-Received: by 2002:a05:6402:2787:b0:53e:fc60:85bd with SMTP id b7-20020a056402278700b0053efc6085bdmr2276476ede.24.1697815010854;
+        Fri, 20 Oct 2023 08:16:50 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id co2-20020a0564020c0200b0053ed70ebd7csm1621946edb.31.2023.10.20.08.16.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 08:16:49 -0700 (PDT)
+Message-ID: <789ff693-a4f0-eef7-7991-59c031fefe49@redhat.com>
+Date:   Fri, 20 Oct 2023 17:16:47 +0200
 MIME-Version: 1.0
-References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
- <20231005160550.2423075-3-quic_devipriy@quicinc.com> <20231018204608.qyifcnnzgi2bgzn6@pengutronix.de>
-In-Reply-To: <20231018204608.qyifcnnzgi2bgzn6@pengutronix.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 20 Oct 2023 10:14:48 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+df_nmNVuf46-a5Dafe4THxD-5HS-BPsTn_yzTckrOJw@mail.gmail.com>
-Message-ID: <CAL_Jsq+df_nmNVuf46-a5Dafe4THxD-5HS-BPsTn_yzTckrOJw@mail.gmail.com>
-Subject: Re: [PATCH V15 2/4] dt-bindings: pwm: add IPQ6018 binding
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Devi Priya <quic_devipriy@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lee@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, thierry.reding@gmail.com,
-        ndesaulniers@google.com, trix@redhat.com, baruch@tkos.co.il,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-pwm@vger.kernel.org, nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: PIC probing code from e179f6914152 failing
+Content-Language: en-US, nl
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>, kys@microsoft.com,
+        hpa@linux.intel.com
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 3:46=E2=80=AFPM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Hello,
->
-> On Thu, Oct 05, 2023 at 09:35:48PM +0530, Devi Priya wrote:
-> > DT binding for the PWM block in Qualcomm IPQ6018 SoC.
-> >
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
-> > Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
-> > Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> > ---
-> > v15:
-> >
-> >   No change
-> >
-> > v14:
-> >
-> >   Picked up the R-b tag
-> >
-> > v13:
-> >
-> >   Updated the file name to match the compatible
-> >
-> >   Sorted the properties and updated the order in the required field
-> >
-> >   Dropped the syscon node from examples
-> >
-> > v12:
-> >
-> >   Picked up the R-b tag
-> >
-> > v11:
-> >
-> >   No change
-> >
-> > v10:
-> >
-> >   No change
-> >
-> > v9:
-> >
-> >   Add 'ranges' property to example (Rob)
-> >
-> >   Drop label in example (Rob)
-> >
-> > v8:
-> >
-> >   Add size cell to 'reg' (Rob)
-> >
-> > v7:
-> >
-> >   Use 'reg' instead of 'offset' (Rob)
-> >
-> >   Drop 'clock-names' and 'assigned-clock*' (Bjorn)
-> >
-> >   Use single cell address/size in example node (Bjorn)
-> >
-> >   Move '#pwm-cells' lower in example node (Bjorn)
-> >
-> >   List 'reg' as required
-> >
-> > v6:
-> >
-> >   Device node is child of TCSR; remove phandle (Rob Herring)
-> >
-> >   Add assigned-clocks/assigned-clock-rates (Uwe Kleine-K=C3=B6nig)
-> >
-> > v5: Use qcom,pwm-regs for phandle instead of direct regs (Bjorn
-> >     Andersson, Kathiravan T)
-> >
-> > v4: Update the binding example node as well (Rob Herring's bot)
-> >
-> > v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
-> >
-> > v2: Make #pwm-cells const (Rob Herring)
-> >
-> >  .../bindings/pwm/qcom,ipq6018-pwm.yaml        | 45 +++++++++++++++++++
-> >  1 file changed, 45 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-=
-pwm.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yam=
-l b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-> > new file mode 100644
-> > index 000000000000..6d0d7ed271f7
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-> > @@ -0,0 +1,45 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/pwm/qcom,ipq6018-pwm.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm IPQ6018 PWM controller
-> > +
-> > +maintainers:
-> > +  - Baruch Siach <baruch@tkos.co.il>
->
-> Not being very fluent in dt and binding yaml I wonder if adding
->
->         allOf:
->           - $ref: pwm.yaml#
->
-> would be beneficial?!
+Hi Mario,
 
-Not really because the only thing you pick up is #pwm-cells, but
-that's still needed here since that varies by binding. A reference
-generally becomes useful when there are child nodes (e.g. a bus
-binding) or multiple properties.
+On 10/19/23 23:20, Mario Limonciello wrote:
+> On 10/18/2023 17:50, Thomas Gleixner wrote:
 
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,ipq6018-pwm
-> > +
-> > +  reg:
-> > +    description: Offset of PWM register in the TCSR block.
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  "#pwm-cells":
-> > +    const: 2
->
-> The driver only supports normal polarity. Is this a shortcoming of the
-> driver, or is the hardware incapable to do that, too?
->
-> If it's only the former I'd want #pwm-cells =3D <3> here. For ease of use
-> I'd not oppose if you pick #pwm-cells =3D <3> even if the hardware can
-> only do normal polarity.
+<snip>
 
-Devi, Can we get an answer here soon.
+>> But that brings up an interesting question. How are those affected
+>> machines even reaching a state where the user notices that just the
+>> keyboard and the GPIO are not working? Why?
+> 
+> So the GPIO controller driver (pinctrl-amd) uses platform_get_irq() to try to discover the IRQ to use.
+> 
+> This calls acpi_irq_get() which isn't implemented on x86 (hardcodes -EINVAL).
+> 
+> I can "work around it" by:
+> 
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 76bfcba25003..2b4b436c65d8 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -187,7 +187,8 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+>         }
+> 
+>         r = platform_get_resource(dev, IORESOURCE_IRQ, num);
+> -       if (has_acpi_companion(&dev->dev)) {
+> +       if (IS_ENABLED(CONFIG_ACPI_GENERIC_GSI) &&
+> +            has_acpi_companion(&dev->dev)) {
+>                 if (r && r->flags & IORESOURCE_DISABLED) {
+>                         ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
+>                         if (ret)
+> 
+> but the resource that is returned from the next hunk has the resource flags set wrong in the NULL pic case:
+> 
+> NULL case:
+> r: AMDI0030:00 flags: 0x30000418
+> PIC case:
+> r: AMDI0030:00 flags: 0x418
+> 
+> IOW NULL pic case has IORESOURCE_DISABLED / IORESOURCE_UNSET
+> 
+> This then later the GPIO controller interrupts are not actually working.
+> For example the attn pin for my I2C touchpad doesn't work.
 
-The MFD part has been applied and it references this schema causing
-warnings. So this needs to land or MFD schema reverted.
+Right the issue is that with the legacy-pic path disabled /
+with nr_legacy_irqs() returning 0 them there is no mapping
+added for the Legacy ISA IRQs which causes this problem.
 
-Rob
+My hack to set nr_legacy_irqs to 16 also for the NULL PIC from:
+https://bugzilla.kernel.org/show_bug.cgi?id=218003
+
+Does cause the Legacy ISA IRQ mappings to get added and makes
+the GPIO controller actually work, as can be seen from:
+
+https://bugzilla.kernel.org/attachment.cgi?id=305241&action=edit
+
+Which is a dmesg with that hack and it does NOT have this error:
+
+[    0.276113] amd_gpio AMDI0030:00: error -EINVAL: IRQ index 0 not found
+[    0.278464] amd_gpio: probe of AMDI0030:00 failed with error -22
+
+and the reporter also reports the touchpad works with this patch.
+
+As Thomas already said the legayc PIC really is not necessary,
+but what is still necessary on these laptops with the legacy PIC
+not initialized is to have the Legacy ISA IRQ mappings added
+by the kernel itself since these are missing from the MADT
+(if I have my ACPI/IOAPIC terminology correct).
+
+This quick hack (which is the one from the working dmesg)
+does this:
+
+--- a/arch/x86/kernel/i8259.c	
++++ a/arch/x86/kernel/i8259.c	
+@@ -394,7 +394,7 @@ static int legacy_pic_probe(void)
+ }
+ 
+ struct legacy_pic null_legacy_pic = {
+-	.nr_legacy_irqs = 0,
++	.nr_legacy_irqs = NR_IRQS_LEGACY,
+ 	.chip = &dummy_irq_chip,
+ 	.mask = legacy_pic_uint_noop,
+ 	.unmask = legacy_pic_uint_noop,
+
+But I believe this will break things when there are actually
+non legacy ISA IRQs / GSI-s using GSI numbers < NR_IRQS_LEGACY
+
+Thomas, I'm not at all familiar with this area of the kernel,
+but would checking if the MADT defines any non ISA GSIs under
+16 and if NOT use nr_legacy_irqs = NR_IRQS_LEGACY for the
+NULL PIC be an option?
+
+Or maybe some sort of DMI (sys_vendor == Lenovo) quirk to
+set nr_legacy_irqs = NR_IRQS_LEGACY for the NULL PIC ?
+
+Regards,
+
+Hans
+
+
+
