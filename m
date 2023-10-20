@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131487D079F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109D97D07A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346936AbjJTFc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S235252AbjJTFdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346645AbjJTFc4 (ORCPT
+        with ESMTP id S233471AbjJTFdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:32:56 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E70D51
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:54 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7b6d6773d05so173403241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697779973; x=1698384773; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QERO0uRdQXqqSaQdJAhee2LXGn28nhRHE84yn6ioXDc=;
-        b=UCHRbXYL3xC0knyXFuBAsnyrkLGlT5t1Rqg+cpKWHrQednZoHGoTfiInP7UE+NCSFR
-         wXSUe6Jwu7zzaVd3n85LoZnXW8+dqlE1Bhuxl3jPFfvL6x46DSNj9/D3DLF2LqmuCB9D
-         tWbot+5hrUbZVTCTn349B4xeWIal6d8nHMFgT+1sGLA7ZjBc5ojYa5D9rR9B8t5ub5VW
-         NV0+7zd6FNrsiehybQSpW6+JXRZkUN448cicU2ypFjj3plmy96MfLdNhMBjvLdQQpkcG
-         wiKlBsYehe+nSW73EcWYNU+qIicC6wCqfKAZSWXlkk4Az0wwxr7oLzYz2pnDrUz+I0OD
-         VnwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697779973; x=1698384773;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QERO0uRdQXqqSaQdJAhee2LXGn28nhRHE84yn6ioXDc=;
-        b=aqQ+LsCZoMiYLBEGsYOTp+vGHqfqYecB+bporfHrgE8OZSC7976KFkEMSRumIjNJYG
-         t4WpeH9zbLKsJJKk8O5V4KwCJbopmTFd6NeAvBw7GCf5Sym8EVQAxvY3SI1k5sx2NGc2
-         YohNR+8JdUn1g1qoAgWkz2KZENYCPdBNQLdK0X3F09XzLsWxYMLbowF3zkz76Phz49qY
-         JAnGAxlN2pdmfmMXQYT10qtHMyTsShpjnAG2p8zqS0y16ulTxzAH0r5HEEZEqLNrjstd
-         dE2/56xE1SphCBiXB53fK70i/9FyoGTjalE6pVrfb2hDzFCHx40T20d6S06XnjmOhIpg
-         GctQ==
-X-Gm-Message-State: AOJu0YxiDwRHEwcEZltAN6po6lp/lGU/+Y8jRwlXGLuWAeMWDF/Mwgy1
-        Q231svhk+SYt9Ffn86a5yuf2HA==
-X-Google-Smtp-Source: AGHT+IEuHUJNvQq/HPA6H9apAJz8f05F78aDSMAqahV84NRcnvPy5dpCqHEpkhIlb+0srBHZfqHiYw==
-X-Received: by 2002:a67:ae05:0:b0:452:5798:64bd with SMTP id x5-20020a67ae05000000b00452579864bdmr920744vse.35.1697779973258;
-        Thu, 19 Oct 2023 22:32:53 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id vq6-20020a05620a558600b0076e672f535asm359098qkn.57.2023.10.19.22.32.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 22:32:52 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 22:32:51 -0700
-From:   Yan Zhai <yan@cloudflare.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH v3 net-next 3/3] ipv6: avoid atomic fragment on GSO packets
-Message-ID: <77423bb774612f0e8eaabfd9501d03389ff2cdbd.1697779681.git.yan@cloudflare.com>
-References: <cover.1697779681.git.yan@cloudflare.com>
+        Fri, 20 Oct 2023 01:33:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8836A119;
+        Thu, 19 Oct 2023 22:33:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F50D21842;
+        Fri, 20 Oct 2023 05:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697780014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyJ/wzDi6i48iVYJkqxkfxMlKHMIM7+DIbHS1YWntQA=;
+        b=FcD3e3il7pO1iMz9Uisi8xhSglA1naMreeVOep+yyOgCE/cf3RW/9ahNz8F0dtYmx+r1op
+        yip2TC0SZ/Ep0ogz/M89H9TFl7c6AYi2ktfhT3zqRdbwdnuC4iJXp01YPrVrsoT2rChRjG
+        ARk0mCYhxOJYhcuhuvOmWO3KMJiJxEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697780014;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyJ/wzDi6i48iVYJkqxkfxMlKHMIM7+DIbHS1YWntQA=;
+        b=5h+O0a0IBCPO5f430xj/w4BMFK+OzoLtiycyRI5cZLMXlr0zhMNftsRBGLuaPXFzEbEREi
+        m5h9XE6FmFS7rwBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB1021348D;
+        Fri, 20 Oct 2023 05:33:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VufKNC0RMmXyXgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 20 Oct 2023 05:33:33 +0000
+Message-ID: <69ad0c7c-9e34-9eb6-835d-ac40a5023d91@suse.cz>
+Date:   Fri, 20 Oct 2023 07:33:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1697779681.git.yan@cloudflare.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 2/6] mm: kmem: add direct objcg pointer to task_struct
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231019225346.1822282-1-roman.gushchin@linux.dev>
+ <20231019225346.1822282-3-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231019225346.1822282-3-roman.gushchin@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -8.26
+X-Spamd-Result: default: False [-8.26 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.16)[69.18%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the ipv6 stack output a GSO packet, if its gso_size is larger than
-dst MTU, then all segments would be fragmented. However, it is possible
-for a GSO packet to have a trailing segment with smaller actual size
-than both gso_size as well as the MTU, which leads to an "atomic
-fragment". Atomic fragments are considered harmful in RFC-8021. An
-Existing report from APNIC also shows that atomic fragments are more
-likely to be dropped even it is equivalent to a no-op [1].
+On 10/20/23 00:53, Roman Gushchin wrote:
+> To charge a freshly allocated kernel object to a memory cgroup, the
+> kernel needs to obtain an objcg pointer. Currently it does it
+> indirectly by obtaining the memcg pointer first and then calling to
+> __get_obj_cgroup_from_memcg().
+> 
+> Usually tasks spend their entire life belonging to the same object
+> cgroup. So it makes sense to save the objcg pointer on task_struct
+> directly, so it can be obtained faster. It requires some work on fork,
+> exit and cgroup migrate paths, but these paths are way colder.
+> 
+> To avoid any costly synchronization the following rules are applied:
+> 1) A task sets it's objcg pointer itself.
+> 
+> 2) If a task is being migrated to another cgroup, the least
+>    significant bit of the objcg pointer is set atomically.
+> 
+> 3) On the allocation path the objcg pointer is obtained locklessly
+>    using the READ_ONCE() macro and the least significant bit is
+>    checked. If it's set, the following procedure is used to update
+>    it locklessly:
+>        - task->objcg is zeroed using cmpxcg
+>        - new objcg pointer is obtained
+>        - task->objcg is updated using try_cmpxchg
+>        - operation is repeated if try_cmpxcg fails
+>    It guarantees that no updates will be lost if task migration
+>    is racing against objcg pointer update. It also allows to keep
+>    both read and write paths fully lockless.
+> 
+> Because the task is keeping a reference to the objcg, it can't go away
+> while the task is alive.
+> 
+> This commit doesn't change the way the remote memcg charging works.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-Add an extra check in the GSO slow output path. For each segment from
-the original over-sized packet, if it fits with the path MTU, then avoid
-generating an atomic fragment.
-
-Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
-Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 processing")
-Reported-by: David Wragg <dwragg@cloudflare.com>
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
----
- net/ipv6/ip6_output.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 3270d56b5c37..3d4e8edaa10b 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -162,7 +162,13 @@ ip6_finish_output_gso_slowpath_drop(struct net *net, struct sock *sk,
- 		int err;
- 
- 		skb_mark_not_on_list(segs);
--		err = ip6_fragment(net, sk, segs, ip6_finish_output2);
-+		/* Last GSO segment can be smaller than gso_size (and MTU).
-+		 * Adding a fragment header would produce an "atomic fragment",
-+		 * which is considered harmful (RFC-8021). Avoid that.
-+		 */
-+		err = segs->len > mtu ?
-+			ip6_fragment(net, sk, segs, ip6_finish_output2) :
-+			ip6_finish_output2(net, sk, segs);
- 		if (err && ret == 0)
- 			ret = err;
- 	}
--- 
-2.30.2
-
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
