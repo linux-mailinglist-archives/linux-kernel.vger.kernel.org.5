@@ -2,127 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDF67D11A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D8C7D11D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377556AbjJTOfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        id S1377623AbjJTOuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377490AbjJTOfc (ORCPT
+        with ESMTP id S1377596AbjJTOt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:35:32 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC55819E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:35:28 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 75506E0008;
-        Fri, 20 Oct 2023 14:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697812527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bKkJpgqFVYr08H00yl52RojNphyV8fLQ0U+IXz9+aeo=;
-        b=p2ZL970JgoCOJF7mnsR4N02TXPx9TBQJRoQfRBuotvKqEViYeUtrVMJnj+g7n5wJiAHGK4
-        TLvFxQwY5KYdbp8PPwH8zq3yIQCI04SIj6KG24+yxe3Ib8APEE8ccj6uttcgYpIoMY2+JR
-        uVRWZSSJcnV572FCtno9otKJML9XZKi39khQgRHdR2UA2hhwVFnmW3bVmc/44hU4QiM2nJ
-        tGvCOXvYG6QSqSSzrZLghD1ggK5W+iS8LTGXZ0f4wEiUYmcqZlNwmc0jkr+KPVt/d3VqUi
-        mevULvSkePp9b376vNKGlV0Otqo5UlUso5wCsTlnDJkjwnRGdlz/PE43xFyrMw==
-Date:   Fri, 20 Oct 2023 16:35:25 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
-        imx@lists.linux.dev, joe@perches.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 Resent 6/6] i3c: master: svc: fix random hot join
- failure since timeout error
-Message-ID: <20231020163525.66485920@xps-13>
-In-Reply-To: <ZTKMTwU6cVAfGCKG@lizhi-Precision-Tower-5810>
-References: <20231018155926.3305476-1-Frank.Li@nxp.com>
-        <20231018155926.3305476-7-Frank.Li@nxp.com>
-        <20231019084452.11fd0645@xps-13>
-        <ZTFNvrsSoHOS3P2g@lizhi-Precision-Tower-5810>
-        <20231020160645.67e678ee@xps-13>
-        <ZTKMTwU6cVAfGCKG@lizhi-Precision-Tower-5810>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 20 Oct 2023 10:49:56 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E539D5E;
+        Fri, 20 Oct 2023 07:49:53 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id c1f2dbc25c6b1047; Fri, 20 Oct 2023 16:49:52 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 9CC00667008;
+        Fri, 20 Oct 2023 16:49:51 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/6] ACPI: property: Support using strings in reference properties
+Date:   Fri, 20 Oct 2023 16:35:40 +0200
+Message-ID: <2932408.e9J7NaK4W3@kreacher>
+In-Reply-To: <2187487.irdbgypaU6@kreacher>
+References: <2187487.irdbgypaU6@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdejlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshgrkhgrrhhirdgrihhluhhssehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:18:55 -0400:
+In order to allow referencing data nodes directly, which is not possible
+currently, add support for representing references in device properties
+as strings (relative or absolute name paths).  For example, after this
+change, the "mipi-img-flash-leds" property in the ASL snippet below will
+be treated as a proper reference to the LED0 object under LEDD.
 
-> On Fri, Oct 20, 2023 at 04:06:45PM +0200, Miquel Raynal wrote:
-> > Hi Frank,
-> >=20
-> > Frank.li@nxp.com wrote on Thu, 19 Oct 2023 11:39:42 -0400:
-> >  =20
-> > > On Thu, Oct 19, 2023 at 08:44:52AM +0200, Miquel Raynal wrote: =20
-> > > > Hi Frank,
-> > > >=20
-> > > > Frank.Li@nxp.com wrote on Wed, 18 Oct 2023 11:59:26 -0400:
-> > > >    =20
-> > > > > master side report:
-> > > > >   silvaco-i3c-master 44330000.i3c-master: Error condition: MSTATU=
-S 0x020090c7, MERRWARN 0x00100000
-> > > > >=20
-> > > > > BIT 20: TIMEOUT error
-> > > > >   The module has stalled too long in a frame. This happens when:
-> > > > >   - The TX FIFO or RX FIFO is not handled and the bus is stuck in=
- the
-> > > > > middle of a message,
-> > > > >   - No STOP was issued and between messages,
-> > > > >   - IBI manual is used and no decision was made.   =20
-> > > >=20
-> > > > I am still not convinced this should be ignored in all cases.
-> > > >=20
-> > > > Case 1 is a problem because the hardware failed somehow.   =20
-> > >=20
-> > > But so far, no action to handle this case in current code. =20
-> >=20
-> > Yes, but if you detect an issue and ignore it, it's not better than
-> > reporting it without handling it. Instead of totally ignoring this I
-> > would at least write a debug message (identical to what's below) before
-> > returning false, even though I am not convinced unconditionally
-> > returning false here is wise. If you fail a hardware sequence because
-> > you added a printk, it's a problem. Maybe you consider this line as
-> > noise, but I believe it's still an error condition. Maybe, however,
-> > this bit gets set after the whole sequence, and this is just a "bus
-> > is idle" condition. If that's the case, then you need some
-> > additional heuristics to properly ignore the bit?
-> >  =20
->=20
->                 dev_err(master->dev,                                     =
- =20
->                         "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x=
-\n",
->                         mstatus, merrwarn);
-> +
-> +		/* ignore timeout error */
-> +		if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT)
-> +			return false;
-> +
->=20
-> Is it okay move SVC_I3C_MERRWARN_TIMEOUT after dev_err?
+ Package ()
+ {
+     "mipi-img-flash-leds",  "\\_SB.PCI0.I2C2.LEDD.LED0",
+ }
 
-I think you mentioned earlier that the problem was not the printk but
-the return value. So perhaps there is a way to know if the timeout
-happened after a transaction and was legitimate or not?
+ Device (LEDD)
+ {
+     Name (_DSD, Package ()  // _DSD: Device-Specific Data
+     {
+         ToUUID ("dbb8e3e6-5886-4ba6-8795-1319f52a966b"), /* Hierarchical Data Extension */,
+         Package ()
+         {
+             Package ()
+             {
+                 "mipi-img-flash-led-0", 
+                 "LED0",
+             }
+         },
+     })
+     Name (LED0, Package ()  // _DSD: Device-Specific Data
+     {
+         ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301") /* Device Properties */,
+         Package ()
+         {
+             Package ()
+             {
+                 "mipi-img-max-current", 
+                 1000000,
+             }
+         }
+     })
+ }
 
-In any case we should probably lower the log level for this error.
+Also remove the mechanism allowing data nodes to be referenced
+indirectly, with the help of an object reference pointing to the
+"ancestor" device and a path relative to it (this mechanism is not
+expected to be in use in any production platform firmware in the field).
 
-Thanks,
-Miqu=C3=A8l
+Note that this change allows also using strings for referencing device
+objects, in addition to object references that have been supported
+already.
+
+While at it, add pr_fmt() macro to prefix printouts and update
+copyright.
+
+Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/property.c |  102 ++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 82 insertions(+), 20 deletions(-)
+
+Index: linux-pm/drivers/acpi/property.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/property.c
++++ linux-pm/drivers/acpi/property.c
+@@ -2,14 +2,17 @@
+ /*
+  * ACPI device specific properties support.
+  *
+- * Copyright (C) 2014, Intel Corporation
++ * Copyright (C) 2014 - 2023, Intel Corporation
+  * All rights reserved.
+  *
+  * Authors: Mika Westerberg <mika.westerberg@linux.intel.com>
+  *          Darren Hart <dvhart@linux.intel.com>
+  *          Rafael J. Wysocki <rafael.j.wysocki@intel.com>
++ *          Sakari Ailus <sakari.ailus@linux.intel.com>
+  */
+ 
++#define pr_fmt(fmt) "ACPI: " fmt
++
+ #include <linux/acpi.h>
+ #include <linux/device.h>
+ #include <linux/export.h>
+@@ -801,27 +804,15 @@ static int acpi_get_ref_args(struct fwno
+ 	u32 nargs = 0, i;
+ 
+ 	/*
+-	 * Find the referred data extension node under the
+-	 * referred device node.
+-	 */
+-	for (; *element < end && (*element)->type == ACPI_TYPE_STRING;
+-	     (*element)++) {
+-		const char *child_name = (*element)->string.pointer;
+-
+-		ref_fwnode = acpi_fwnode_get_named_child_node(ref_fwnode, child_name);
+-		if (!ref_fwnode)
+-			return -EINVAL;
+-	}
+-
+-	/*
+ 	 * Assume the following integer elements are all args. Stop counting on
+-	 * the first reference or end of the package arguments. In case of
+-	 * neither reference, nor integer, return an error, we can't parse it.
++	 * the first reference (possibly represented as a string) or end of the
++	 * package arguments. In case of neither reference, nor integer, return
++	 * an error, we can't parse it.
+ 	 */
+ 	for (i = 0; (*element) + i < end && i < num_args; i++) {
+ 		acpi_object_type type = (*element)[i].type;
+ 
+-		if (type == ACPI_TYPE_LOCAL_REFERENCE)
++		if (type == ACPI_TYPE_LOCAL_REFERENCE || type == ACPI_TYPE_STRING)
+ 			break;
+ 
+ 		if (type == ACPI_TYPE_INTEGER)
+@@ -845,6 +836,44 @@ static int acpi_get_ref_args(struct fwno
+ 	return 0;
+ }
+ 
++static struct fwnode_handle *acpi_parse_string_ref(const struct fwnode_handle *fwnode,
++						   const char *refstring)
++{
++	acpi_handle scope, handle;
++	struct acpi_data_node *dn;
++	struct acpi_device *device;
++	acpi_status status;
++
++	if (is_acpi_device_node(fwnode)) {
++		scope = to_acpi_device_node(fwnode)->handle;
++	} else if (is_acpi_data_node(fwnode)) {
++		scope = to_acpi_data_node(fwnode)->handle;
++	} else {
++		pr_debug("Bad node type for node %pfw\n", fwnode);
++		return NULL;
++	}
++
++	status = acpi_get_handle(scope, refstring, &handle);
++	if (ACPI_FAILURE(status)) {
++		acpi_handle_debug(scope, "Unable to get an ACPI handle for %s\n",
++				  refstring);
++		return NULL;
++	}
++
++	device = acpi_fetch_acpi_dev(handle);
++	if (device)
++		return acpi_fwnode_handle(device);
++
++	status = acpi_get_data_full(handle, acpi_nondev_subnode_tag,
++				    (void **)&dn, NULL);
++	if (ACPI_FAILURE(status) || !dn) {
++		acpi_handle_debug(handle, "Subnode not found\n");
++		return NULL;
++	}
++
++	return &dn->fwnode;
++}
++
+ /**
+  * __acpi_node_get_property_reference - returns handle to the referenced object
+  * @fwnode: Firmware node to get the property from
+@@ -887,6 +916,7 @@ int __acpi_node_get_property_reference(c
+ 	const union acpi_object *element, *end;
+ 	const union acpi_object *obj;
+ 	const struct acpi_device_data *data;
++	struct fwnode_handle *ref_fwnode;
+ 	struct acpi_device *device;
+ 	int ret, idx = 0;
+ 
+@@ -910,16 +940,30 @@ int __acpi_node_get_property_reference(c
+ 
+ 		args->fwnode = acpi_fwnode_handle(device);
+ 		args->nargs = 0;
++
++		return 0;
++	case ACPI_TYPE_STRING:
++		if (index)
++			return -ENOENT;
++
++		ref_fwnode = acpi_parse_string_ref(fwnode, obj->string.pointer);
++		if (!ref_fwnode)
++			return -EINVAL;
++
++		args->fwnode = ref_fwnode;
++		args->nargs = 0;
++
+ 		return 0;
+ 	case ACPI_TYPE_PACKAGE:
+ 		/*
+ 		 * If it is not a single reference, then it is a package of
+-		 * references followed by number of ints as follows:
++		 * references, followed by number of ints as follows:
+ 		 *
+ 		 *  Package () { REF, INT, REF, INT, INT }
+ 		 *
+-		 * The index argument is then used to determine which reference
+-		 * the caller wants (along with the arguments).
++		 * Here, REF may be either a local reference or a string. The
++		 * index argument is then used to determine which reference the
++		 * caller wants (along with the arguments).
+ 		 */
+ 		break;
+ 	default:
+@@ -947,6 +991,24 @@ int __acpi_node_get_property_reference(c
+ 			if (ret < 0)
+ 				return ret;
+ 
++			if (idx == index)
++				return 0;
++
++			break;
++		case ACPI_TYPE_STRING:
++			ref_fwnode = acpi_parse_string_ref(fwnode,
++							   element->string.pointer);
++			if (!ref_fwnode)
++				return -EINVAL;
++
++			element++;
++
++			ret = acpi_get_ref_args(idx == index ? args : NULL,
++						ref_fwnode, &element, end,
++						num_args);
++			if (ret < 0)
++				return ret;
++
+ 			if (idx == index)
+ 				return 0;
+ 
+
+
+
