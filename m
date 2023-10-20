@@ -2,151 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA107D0B7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2FE7D0B9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376800AbjJTJWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S1376691AbjJTJYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376678AbjJTJV6 (ORCPT
+        with ESMTP id S1376659AbjJTJYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:21:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8F71728
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697793679; x=1729329679;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a++LVpgYV0t0DpSZeHCFw0R4XO+/PCphuhcdSRisZ/4=;
-  b=nCLyKBFKlPQhiWGIUpI0FoBljO9qjq6VEjzfQsU9ygEW4A36QyuI1Qh9
-   TKobgB1g8xd2vGoQcffqZw/TPapxS2ny+fiZt9Q2L5iWQFypCKfXATvv1
-   jjMdylG8qywOLlXgn3EDHYEf9t59rN8JPplIylKbl2hYw7G6bcyUmVYjV
-   4qBeRwz/TH34A5Eo1ZDKQ8BuVZpY8WFfxVqC4WQE/BZUPnaUwQ2pKE2B7
-   j44cU0LzSQoIPt4CCg1oz15TMPRkYHYevNnHvFW9FX/lQc/pJDoi43fdW
-   mfeVbGc0Kg3g1K8O/CjOj3TpLEjn+EAXEv9HEkFpf2Wao9ikIcsQQlEgg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365802084"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="365802084"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:21:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="760990089"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="760990089"
-Received: from blavena-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.39.237])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:21:13 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2344E109D0A; Fri, 20 Oct 2023 12:21:11 +0300 (+03)
-Date:   Fri, 20 Oct 2023 12:21:11 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
- kexec
-Message-ID: <20231020092111.ho2rmhve23kgcxbr@box>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
- <8d0e4e71-0614-618a-0f84-55eeb6d27a6d@amd.com>
- <20231005212828.veeekxqc7rwvrbig@box>
- <e0459b50-7e21-7548-8151-9010ee88b0a6@amd.com>
- <20231005222839.jt2du72xogg3c5ny@box>
- <f4228262-02f9-3af5-8ef5-be109b5d3d13@amd.com>
+        Fri, 20 Oct 2023 05:24:33 -0400
+Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2179.outbound.protection.outlook.com [40.92.63.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B012CD57;
+        Fri, 20 Oct 2023 02:24:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DnFjxroFIgbYeZ4x0EPCYSzzYcBfSNFNVb4Am/DwC+LPT7pNAKjZxFS1OTCiYAUw5tX0c48I1iTHDKEOij6/wLoG0Qw0Fp8nwP+VYHXxwiJQxvfDUHc4fw4p3dN6FbSnmOR2SjZGEnm8LKRNQv3OSAeu3jIgVw6/VAUO3+5mK5ZsQ5k9LnaFgQE7xHFwoFdCRpnKq9qBJzT+YEe2sFhH+e1Nsk85PZB84DuhFZieGsStBHZRhySWbEvaWoU+ztULrUXDANHxdv9gzygkPUgeaYV6eZ8W6YDQ4WuD4cTqJwG9ZK4MSNAxYKwK/C7Ad6iW7rGSqTK32CovGqlQr0AaOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hjd54qI8ZxXJcpP229dyBk33amg3RvMFL4iyPlgR+Oc=;
+ b=d1jPpNAQzGcCFx0geVtImXz8vjiucbSj36vqTIXTuE4puvyOC2g2DirUadhobBJIkmCEgwQV0wTX3G19pCqf0eGDHwhaCSmyhH84lJNXkG2w0pjuc0hqEZPCKRcjcrs+xOY1XJAGIYgbq+eIQldMNxolaiLM1/59PcWq/Wj7tsPrMmc0OXGg03+15hFglIEm43uYpkhfpmt6nniUPr3s1V5ZpnErkzMgdDz51Kj9y1k2f5j23X87qklrvXVDEXWAsvvcrYKsICr2MY9LcKKNoEU+DxlrLM7GdhalCHQ/X12c8WzdMT1B1rnJwhojv0JwIj6VuFmanBjQm2khQ1EX7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hjd54qI8ZxXJcpP229dyBk33amg3RvMFL4iyPlgR+Oc=;
+ b=aY4cBmeBtPnaWlrW0C6ki2ptAnRNAdH/1G51qU6kawZOQ85sT8X+LVl3CF1tSiDMsfO1RLlgzXZHQmn2EFDGC0oIn0x0dCYrJLHQSbbOAcHl6hTdss8cexwefJEue+h8EiZbfaoRtqKVO6y3+d5+ga76Z7V0TIcfPNH4a9MDNy1MU9OZLm5LuIUNcrlOFVZgKIbMPKEHLO7urL6Api+u2Topi67NlpyCteYNFdGGMMl6iRHftrAoxvzBJrd+DbVB6/37MBi9KiSBHuvvhvaDzAEp/t3t309sFfc3G6dNMCrQkta+IWG6Gig+AesI0dL10WdrR/QAYIVt815W+GfK3w==
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
+ SYYP282MB0752.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:71::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.24; Fri, 20 Oct 2023 09:24:22 +0000
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::e39e:17fc:36d8:1ea8]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::e39e:17fc:36d8:1ea8%3]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
+ 09:24:22 +0000
+From:   Tianyi Liu <i.pear@outlook.com>
+To:     mark.rutland@arm.com
+Cc:     acme@kernel.org, adrian.hunter@intel.com,
+        alexander.shishkin@linux.intel.com, i.pear@outlook.com,
+        irogers@google.com, jolsa@kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        maz@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        pbonzini@redhat.com, peterz@infradead.org, seanjc@google.com,
+        x86@kernel.org
+Subject: Re: [PATCH v2 0/5] perf: KVM: Enable callchains for guests
+Date:   Fri, 20 Oct 2023 17:21:14 +0800
+Message-ID: <SY4P282MB10848CE48E2605CFC347AD659DDBA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <ZSlNsn-f1j2bB8pW@FVFF77S0Q05N.cambridge.arm.com>
+References: <ZSlNsn-f1j2bB8pW@FVFF77S0Q05N.cambridge.arm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [7UYIq8jZ07p1gQm1ShB5cGTFWmfZC1xVwcqfbEFDarFrrPHiHOoaHw==]
+X-ClientProxiedBy: SG2PR06CA0203.apcprd06.prod.outlook.com (2603:1096:4:1::35)
+ To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13)
+X-Microsoft-Original-Message-ID: <20231020092114.143091-1-i.pear@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4228262-02f9-3af5-8ef5-be109b5d3d13@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|SYYP282MB0752:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2a82c67-8639-474c-00bd-08dbd14e5848
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2rRP/srRHzBw69owbbG2s3utbEq7wKBdm7bRIqSwihVWmHwrEx+xUpRYgjMAikvSq5kKoGv3CT2Bvt5FeMAZ+hAwdKwQxGskapzVnnEZI02+2DxF38nMciTAwL1bYvn44lW1t1rhsEIeXz+qsDoVujRhIafe0W89lt6+fAx1jKSPNKe59tW9PMfQ48VZHzuUxs/Ni0ORQJbumtLDMGd3cM339CKzCMkZOFHwKWkfKt8/ceWsOGzhBWEtuIwGqLRxYiEhW7Exvx8Lyf9RD4QVE/SDVvYutFzJHsHNRp5FtCD6LWwnDenrCsdAJLYW/uwq+JXWqegys5ZHncZuYvIFagt+eezxTHKlKVPLIOiObXtRRatsDXnEs5xZe2cIQkgE/3CwgxBwBozG0SGU6l6QtbABI0qYWzegYbMdu6ewlsE4P7zaW79d8GqNVmN486JDtSnf0vW501ZKEaF9gyvPtL53+4fZmi5qtLTE/xG/3Jg3q6X4cKhwsmRDM4JWQ2T7w20r4BfqdVUU7g+s/dKphSWZ4Mv9kiR1IyRP2MSDGnVPxydKr4LRIQ2FzO5frjMYOLbQ+XXG8R+YLeeDvTrJvuigcMxpAqztDjXTgLIVue9A26ewiYqXI0rq/mG8iS76
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vK5oGDU6pZTV9NZEMYjjL2VXpKxHeh8w3wESNiSCapJfFRLRxN+GVapxOVJl?=
+ =?us-ascii?Q?wWkfa8bsK8fvxKj3KUmGHhzwftE05bFwyD/YCu6546yvdZVSWEngAyliG21O?=
+ =?us-ascii?Q?6cU1GkA0TFtayZzBRyDD4UBgJOrjkggN26c3k4eOldpN81rlUtWtXjdrojBi?=
+ =?us-ascii?Q?wUUpusOrAHWH5Epl4INEfZYETB4rfLr8SJija+R28eJDRmYwmiRffN0ac3Wi?=
+ =?us-ascii?Q?Hq26VTm7rS/9tmBMYK+EdOyKEb9HhZqCLhXh3VIJzOriVDZHY6AB5jQe1fsC?=
+ =?us-ascii?Q?PFNprDYtyQrXaEkxnSybIUMAP0t9AaeCzptkuUqgqgqL7hEsEJuw6YPNmIZ7?=
+ =?us-ascii?Q?iw0G08TRez9wiYSkY2IjBUkLpcD+NaT6TZlSDUIp2zWiGmOH91WRWyTlD63A?=
+ =?us-ascii?Q?peeg82/S8c5gXnKQDCjNqE9G+3rCWAilA0T0ijMH4c5TyncB65YWENKdEQIo?=
+ =?us-ascii?Q?7gZe/EBxppsYUOvS9E948rKPaDnCGBGiXUqWxXhWIUe/1UaOU0FBeuHPZqxZ?=
+ =?us-ascii?Q?NXkX9DjxUjllGHRcz8xoCbCkCcU2JM9reCIKn0+HWpn0j/9AiKpUdnnbXS8a?=
+ =?us-ascii?Q?7Z4r+wT/foJnMrQ1O8/SuuSFVsyxHSEaGYvQNJAg+GQOWVJ6PrdtsnBjHLvd?=
+ =?us-ascii?Q?1Qu4GUDY3PcyHdu+9QYuKOEuVl7i/vENXMvlfo5mrxuSlDJObmeKl9VNthOr?=
+ =?us-ascii?Q?ckAFgh23W3E7R9HjQx/DBxzTwBg2soGv1Lp++N7jEaGzFTCIsYMEXDefiHBS?=
+ =?us-ascii?Q?Kl3VLr+n29rj6DzFWUOqAT6Md3TZARmzZ+EofUp/YCcrI+AIdSKqoP55XdVG?=
+ =?us-ascii?Q?SXUFNL2mGnGAekbc7+sJ7qNJBL2Yme+CZq6yjZ9Kto+zbqYAXMrOQbSXWhzd?=
+ =?us-ascii?Q?+hdF2buLyh499LwKc7bUnq7/Oqw1HwIZgzbOs5oKFpH4I7PwzRIl1Uj2xYWA?=
+ =?us-ascii?Q?hQxm690c20d0galxWYu/aCX429ubhtpn0GN+vZH0yDqrYEEb2eYP7cODXlSE?=
+ =?us-ascii?Q?kdeZ09O90emfEqKO+y366iDQsCmnoy83mHA7ZOvf4W3NRo4py/KIgePcPFAp?=
+ =?us-ascii?Q?gn8pPLDM+s5BCJkU8JaVM9E8niveSob6iMwzLrvfq+UY1GNPpXqC0PJldXXc?=
+ =?us-ascii?Q?JH7s6nDkyziwLU+h0Re7e1YXiukllRNp3P3N45m+M5bcmziFkZHSltxPTFdq?=
+ =?us-ascii?Q?m3MRt3EFld2VOLBhJ3nbkNPmhz2ptXziV991S3T2U4mrEOGSADMopz1Fmkit?=
+ =?us-ascii?Q?T1CZGQfR9PuiWhYCGM8S?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2a82c67-8639-474c-00bd-08dbd14e5848
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 09:24:22.6958
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYYP282MB0752
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 02:24:11PM -0500, Kalra, Ashish wrote:
-> 
-> On 10/5/2023 5:28 PM, Kirill A. Shutemov wrote:
-> > On Thu, Oct 05, 2023 at 05:01:23PM -0500, Kalra, Ashish wrote:
-> > > On 10/5/2023 4:28 PM, Kirill A. Shutemov wrote:
-> > > > On Thu, Oct 05, 2023 at 01:41:38PM -0500, Kalra, Ashish wrote:
-> > > > > > +static void unshare_all_memory(bool unmap)
-> > > > > > +{
-> > > > > > +	unsigned long addr, end;
-> > > > > > +	long found = 0, shared;
-> > > > > > +
-> > > > > > +	/*
-> > > > > > +	 * Walk direct mapping and convert all shared memory back to private,
-> > > > > > +	 */
-> > > > > > +
-> > > > > > +	addr = PAGE_OFFSET;
-> > > > > > +	end  = PAGE_OFFSET + get_max_mapped();
-> > > > > > +
-> > > > > > +	while (addr < end) {
-> > > > > > +		unsigned long size;
-> > > > > > +		unsigned int level;
-> > > > > > +		pte_t *pte;
-> > > > > > +
-> > > > > > +		pte = lookup_address(addr, &level);
-> > > > > 
-> > > > > IIRC, you were earlier walking the direct mapping using
-> > > > > walk_page_range_novma(), any particular reason to use lookup_address()
-> > > > > instead ?
-> > > > 
-> > > > walk_page_range_novma() wants mmap lock to be taken, but it is tricky as
-> > > > we run here from atomic context in case of crash.
-> > > > 
-> > > > I considered using trylock to bypass the limitation, but it is a hack.
-> > > > 
-> > > > > 
-> > > > > > +		size = page_level_size(level);
-> > > > > > +
-> > > > > > +		if (pte && pte_decrypted(*pte)) {
-> > > > > 
-> > > > > Additionally need to add check for pte_none() here to handle physical memory
-> > > > > holes in direct mapping.
-> > > > 
-> > > > lookup_address() returns NULL for none entries.
-> > > > 
-> > > 
-> > > Looking at lookup_address_in_pgd(), at pte level it is simply returning
-> > > pte_offset_kernel() and there does not seem to be a check for returning NULL
-> > > if pte_none() ?
-> > 
-> > Hm. You are right.
-> > 
-> > I think it yet another quirk in how lookup_address() implemented. We need
-> > to make it straight too.
-> > 
-> > There's two options: either make lookup_address() return pointer for entry
-> > even if it is NULL, or add check for pte_none() after pte_offset_kernel()
-> > and return NULL if it is true.
-> > 
-> > I like the first option more as it allows caller to populate the entry if
-> > it wants.
-> 
-> Yes, i like the first option.
+Hi Mark,
 
-I tried to this, but lookup_address() has to many callers. It gets beyond
-the scope of the patchset. I will add pte_none() check on unshare side for
-now.
+On Fri, 13 Oct 2023 15:01:22 +0100, Mark Rutland wrote:
+> > > > The event processing flow is as follows (shown as backtrace):
+> > > >   #0 kvm_arch_vcpu_get_frame_pointer / kvm_arch_vcpu_read_virt (per arch)
+> > > >   #1 kvm_guest_get_frame_pointer / kvm_guest_read_virt
+> > > >      <callback function pointers in `struct perf_guest_info_callbacks`>
+> > > >   #2 perf_guest_get_frame_pointer / perf_guest_read_virt
+> > > >   #3 perf_callchain_guest
+> > > >   #4 get_perf_callchain
+> > > >   #5 perf_callchain
+> > > >
+> > > > Between #0 and #1 is the interface between KVM and the arch-specific
+> > > > impl, while between #1 and #2 is the interface between Perf and KVM.
+> > > > The 1st patch implements #0. The 2nd patch extends interfaces between #1
+> > > > and #2, while the 3rd patch implements #1. The 4th patch implements #3
+> > > > and modifies #4 #5. The last patch is for userspace utils.
+> > > >
+> > > > Since arm64 hasn't provided some foundational infrastructure (interface
+> > > > for reading from a virtual address of guest), the arm64 implementation
+> > > > is stubbed for now because it's a bit complex, and will be implemented
+> > > > later.
+> > >
+> > > I hope you realise that such an "interface" would be, by definition,
+> > > fragile and very likely to break in a subtle way. The only existing
+> > > case where we walk the guest's page tables is for NV, and even that is
+> > > extremely fragile.
+> >
+> > For walking the guest's page tables, yes, there're only very few
+> > use cases. Most of them are used in nested virtualization and XEN.
+> 
+> The key point isn't the lack of use cases; the key point is that *this is
+> fragile*.
+> 
+> Consider that walking guest page tables is only safe because:
+> 
+> (a) The walks happen in the guest-physical / intermiediate-physical address
+>     space of the guest, and so are not themselves subject to translation via
+>     the guest's page tables.
+> 
+> (b) Special traps were added to the architecture (e.g. for TLB invalidation)
+>     which allow the host to avoid race conditions when the guest modifies page
+>     tables.
+> 
+> For unwind we'd have to walk structures in the guest's virtual address space,
+> which can change under our feet at any time the guest is running, and handling
+> that requires much more care.
+> 
+> I think this needs a stronger justification, and an explanation of how you
+> handle such races.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Yes, guests can modify the page tables at any time, so the page table
+we obtain may be corrupted. We may not be able to complete the traversal
+of the page table or may receive incorrect data.
+
+However, these are not critical issues because we often encounter
+incorrect stack unwinding results. In fact, here we assume that the
+guest OS/program has stack frames (compiled with `fno-omit-frame-pointer`),
+but many programs do not adhere to such an assumption, which often leads
+to invalid results. This is almost unavoidable, especially when the
+guest OS is running third-party programs. The unwind results we record
+may be incorrect; if the unwind cannot continue, we only record the
+existing results. Addresses that cannot be resolved to symbols will be
+later marked as `[unknown]` by `perf kvm`, and this is very common.
+
+Our unwind strategy is conservative to ensure safety and do our best in
+readonly situations. If the guest page table is broken, or the address
+to be read is somehow not in the guest page table, we will not inject a
+page fault but simply stop the unwind. The function that walks the
+page table is done entirely in software and is readonly, having no
+additional impact on the guest. Some results could also be incorrect.
+It is sufficient as long as most of the records are correct for profiling.
+
+Do you think these address your concerns?
+
+Thanks,
+Tianyi Liu
