@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FB07D0AD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3267D0AD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376515AbjJTIsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 04:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        id S1376550AbjJTIsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376520AbjJTIsO (ORCPT
+        with ESMTP id S1376519AbjJTIsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 04:48:14 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B08D51;
-        Fri, 20 Oct 2023 01:48:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9FAD49;
+        Fri, 20 Oct 2023 01:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697791693; x=1729327693;
+  t=1697791692; x=1729327692;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=yG6eK+7AGqw8L3P7iFJ1dEXh4HF5j+xoQ/khjB5EmKI=;
-  b=mbY5GsTdFC0TmggcsJb0kFLlFkW6YcRx5dio91CcBjeRdsULsig6MtGv
-   bJWAGudP8H1u4ZYqvNtbav4Uay5JdY1x37neorvIJx/jQtoooj0dmjG3c
-   MeXON0N9S8Hlp+X6HIaDyO3xfAHDkVCha3bGg1vZHS9lQNdrqjz9B/PxH
-   TX7o2wOEj3Z8n6r7KV2y1V8oC3fSWMXgRuk8WxMlC4mf5ZmC9eg8x3xmW
-   4k2vJ5mDL/h8zPvhrVkVvbSg36LINp5cC4C25TNvVLMO0A3s+H1gqJ2oq
-   Y7q1FvOJ7VcrpimW1sTigj5w2Iw5BcLgIUGKEkoyvwlFqS8Ll1V0Zdbox
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="450683522"
+  bh=1P08c+02XrBKccGcreruYeIgD28f7+s17ZZyX78daGc=;
+  b=CMEDCpUPJOswyAe6+vH3IfTQrD2FzFchFXSwCa591iFEzTBXlR3CDcem
+   2a6ljM4MO4+iNwOAJVNZgrPWUKZQlDL+a04uWR7DL0EYYvlPvKIcy8m6z
+   bw5hW1HVBfTv5WlpgFa2Gg2RB2k1d4l8shW5WYSM42djjm+5prUOyT7hx
+   WxuH4NZnMUaK8iZwVQAAaJcc1taPBNWSi36wQrJnnzHiVHPBccfsQZBB0
+   WDT4Q8vb8aBEwY7TrDBf3KIZkJLHjLXCQi5U05fgoIE9EDxK4iiSS75Bn
+   U8+Kebjg6SA0yahw20UnMj6VPzJEQ3/LuoiHp7nkUNQw9lx+1PAsrr8th
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="450683511"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="450683522"
+   d="scan'208";a="450683511"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 01:48:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="873832166"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="873832168"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="873832166"
+   d="scan'208";a="873832168"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Oct 2023 01:47:52 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 20 Oct 2023 01:47:56 -0700
 From:   Raag Jadav <raag.jadav@intel.com>
 To:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
         mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
@@ -48,9 +48,9 @@ Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
         mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
         Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v1 2/8] pinctrl: intel: use acpi_dev_uid_match() for matching _UID
-Date:   Fri, 20 Oct 2023 14:17:26 +0530
-Message-Id: <20231020084732.17130-3-raag.jadav@intel.com>
+Subject: [PATCH v1 3/8] ACPI: sysfs: use acpi_device_uid() for fetching _UID
+Date:   Fri, 20 Oct 2023 14:17:27 +0530
+Message-Id: <20231020084732.17130-4-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
@@ -67,24 +67,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Convert manual _UID references to use standard ACPI helpers.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/device_sysfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 3be04ab760d3..999f453344d2 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -1694,7 +1694,7 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
- 		unsigned int i;
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index b9bbf0746199..9d8e90744cb5 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -410,7 +410,7 @@ static ssize_t uid_show(struct device *dev,
+ {
+ 	struct acpi_device *acpi_dev = to_acpi_device(dev);
  
- 		for (i = 0; table[i]; i++) {
--			if (!strcmp(adev->pnp.unique_id, table[i]->uid)) {
-+			if (acpi_dev_uid_match(adev, table[i]->uid)) {
- 				data = table[i];
- 				break;
- 			}
+-	return sprintf(buf, "%s\n", acpi_dev->pnp.unique_id);
++	return sprintf(buf, "%s\n", acpi_device_uid(acpi_dev));
+ }
+ static DEVICE_ATTR_RO(uid);
+ 
+@@ -554,7 +554,7 @@ int acpi_device_setup_files(struct acpi_device *dev)
+ 
+ 	if (dev->pnp.type.bus_address)
+ 		result = device_create_file(&dev->dev, &dev_attr_adr);
+-	if (dev->pnp.unique_id)
++	if (acpi_device_uid(dev))
+ 		result = device_create_file(&dev->dev, &dev_attr_uid);
+ 
+ 	if (acpi_has_method(dev->handle, "_SUN")) {
+@@ -635,7 +635,7 @@ void acpi_device_remove_files(struct acpi_device *dev)
+ 	if (acpi_has_method(dev->handle, "_HRV"))
+ 		device_remove_file(&dev->dev, &dev_attr_hrv);
+ 
+-	if (dev->pnp.unique_id)
++	if (acpi_device_uid(dev))
+ 		device_remove_file(&dev->dev, &dev_attr_uid);
+ 	if (dev->pnp.type.bus_address)
+ 		device_remove_file(&dev->dev, &dev_attr_adr);
 -- 
 2.17.1
 
