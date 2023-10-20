@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542AB7D1400
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B04D7D1408
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377826AbjJTQbl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 12:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        id S1377855AbjJTQdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJTQbk (ORCPT
+        with ESMTP id S229731AbjJTQdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:31:40 -0400
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B2CCA;
-        Fri, 20 Oct 2023 09:31:38 -0700 (PDT)
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-581e106fd25so57730eaf.0;
-        Fri, 20 Oct 2023 09:31:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697819498; x=1698424298;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A8cbask5PPgm23kmb/DbKZkHxKA+3OatK8d64IsUrco=;
-        b=EY43uhOdMmuXzc64nDLDl3ZR7OyvrNv9aN8UHTVDSPpbR4f3CpN9b7uvLHf+l9gil5
-         2oEG4gK8gV0FASRp5LkZtlafgX6r9koD7aKu4RZMOoAQ49Vy9KKK6vOXLyhnQpIJnVO1
-         G+X9ODkjU27dNWNQqi5tB8KN7lluaAkggmTFX6KQ9Olil7cKr1Ub6HT1Xj16LMMzJV07
-         huWDW9aU2Et1h90Z+PR/iPjUAr1Fh0Hto+gLdOodZY7cBLYZh5TQ3f+6yxHdwgiKh9Rq
-         6TQRNT9L62M3pp2s041adS7r4ty6KW1WeOaiHnbkZOCLcAhKB/3wldyJxYIVPHS+hful
-         8RNw==
-X-Gm-Message-State: AOJu0YzbVEAFQOW9gsKqgrAvgwylFz+swQgoYAXpCvjr21Z93QKyUEV6
-        N7boI9ufeoNg1Z9q5rLrWwOCYuOEoCtNI5vwvQU=
-X-Google-Smtp-Source: AGHT+IHBw6VJbXTQqfWtWLEnFIHfnVfLb5Nymi/BoMA4w402mDiOQrUcF+R+vkhLL+vrsxcOajk8DSBoHzOvk7PMLUw=
-X-Received: by 2002:a4a:bd84:0:b0:581:ed38:5505 with SMTP id
- k4-20020a4abd84000000b00581ed385505mr2576506oop.0.1697819497982; Fri, 20 Oct
- 2023 09:31:37 -0700 (PDT)
+        Fri, 20 Oct 2023 12:33:49 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00901D5E;
+        Fri, 20 Oct 2023 09:33:47 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.188.12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 571ED660737B;
+        Fri, 20 Oct 2023 17:33:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697819626;
+        bh=qAf3VEpznG3prdWZXqc557DgYUNT22t1DAY9WghAu+k=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=kxIb9rhY56Zh09c+xKKNsfn+CdSM2I7MVoJaUtB4doGcTTUT6bxvDoh8wQo7+qsD0
+         K8nzYVZbmnL3/wWhcydm+ipN0T9m/0nbqKWqE52KE8BkSZt6DmGOEuLw3mvHmkpDFd
+         /an8HY4m3/GCQQA40CRMiNZBTjb/fTpG7d8iq6sFZNvuD34ia+IctP8S4A06l/ikO+
+         DWmmNyaaSUATq/+kUtSoUBKzpV26GHx17pgcFL8Zj+q2815xSfgV/e4NsMP1bCGyAB
+         bI0I+4Ta5zBgOUbWQWY8J0SJRT3rkXLtZdPDWsoD6p80d/eluP6qp6BFcVOwylpd6l
+         3WzBwuIJdq+ZA==
+Message-ID: <53fcf507-c00e-4715-bc81-082282c37c86@collabora.com>
+Date:   Fri, 20 Oct 2023 21:33:23 +0500
 MIME-Version: 1.0
-References: <13365827.uLZWGnKmhe@kreacher> <9177552.CDJkKcVGEf@kreacher> <da85e126-b909-4652-9961-ed6867dc0817@arm.com>
-In-Reply-To: <da85e126-b909-4652-9961-ed6867dc0817@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 20 Oct 2023 18:31:26 +0200
-Message-ID: <CAJZ5v0j4V1nkb01N1BRX0quKM2GFmbO0=i-Ff6DY=11_wT5hmA@mail.gmail.com>
-Subject: Re: [PATCH v1 5/6] thermal: gov_step_wise: Fold update_passive_instance()
- into its caller
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        jeffxu@chromium.org, akpm@linux-foundation.org,
+        keescook@chromium.org, jannh@google.com, sroettger@google.com,
+        willy@infradead.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, jeffxu@google.com,
+        jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, surenb@google.com, alex.sierra@amd.com,
+        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
+        axelrasmussen@google.com, ben@decadent.org.uk,
+        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
+        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
+        corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
+        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
+        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
+        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
+        dave.hansen@intel.com, luto@kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v2 8/8] selftest mm/mseal mprotect/munmap/mremap/mmap
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+References: <20231017090815.1067790-1-jeffxu@chromium.org>
+ <20231017090815.1067790-9-jeffxu@chromium.org>
+ <3cf29cd5-8346-419f-88f1-3a5c8ddbacad@collabora.com>
+ <20231020152354.GC31411@noisy.programming.kicks-ass.net>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20231020152354.GC31411@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 6:16 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 10/6/23 18:49, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Fold update_passive_instance() into thermal_zone_trip_update() that is
-> > its only caller so as to make the code in question easeir to follow.
->
-> s/easeir/easier/
+On 10/20/23 8:23 PM, Peter Zijlstra wrote:
+> On Fri, Oct 20, 2023 at 07:24:03PM +0500, Muhammad Usama Anjum wrote:
+> 
+>> Please remove these. These macros would be picked up from the kernel
+>> headers automatically.
+> 
+> As per the previous discussions, how does that work if you have O= build
+> directories?
+Then headers should be prepared in that O= directory first.
+make headers O=abc && make -C tools/testing/selftests O=abc
 
-I'll fix this in the tree.
+> 
+> I find this push to force people to do 'make headers' in order to use
+> simple selftests quite misguided. You're making it *harder* to use,
+> leading to less use.
+I'm just following what we have been doing over selftests mailing list to
+fix build issues in different use cases and kselfest.rst. Let me share the
+history:
 
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/thermal/gov_step_wise.c |   28 ++++++++++------------------
-> >   1 file changed, 10 insertions(+), 18 deletions(-)
-> >
->
-> other than that LGTM:
->
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Around 2 years ago, selftest Makefile used to prepare kernel headers from
+source automatically and include them to build selftests. It had several
+bugs. So they separated the header preparation from selftest build. After a
+while people started getting build failures because they weren't building
+headers which were previously built automatically. So someone had written a
+patch (already in v6.6-rc6) to show informative error if headers aren't
+present. So now selftests can't be built until headers are built.
 
-Thank you!
+The understanding here is that selftests come with kernel source and they
+should be built using in-source kernel headers as people don't always have
+updated headers. I think, if someone want to build just one selftest
+without doing make headers, he should install kernel headers from source
+before doing so instead of adding duplicate defines in the test itself. It
+helps while development to not to keep the duplicate copy of these macros
+in selftest as well.
+
+
+-- 
+BR,
+Muhammad Usama Anjum
