@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC117D0E19
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1EB7D0E16
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377155AbjJTLFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
+        id S1377092AbjJTLFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377133AbjJTLFn (ORCPT
+        with ESMTP id S1376745AbjJTLF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:05:43 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F35F114
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:05:20 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1ea1742c1a5so193812fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:05:20 -0700 (PDT)
+        Fri, 20 Oct 2023 07:05:28 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27526CA
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:05:24 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1e9c28f8193so191698fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:05:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697799918; x=1698404718; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697799923; x=1698404723; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gK+cFoR1MyWIl8n0phUtp2lC8tfEt3+4PWkcgkrk9lI=;
-        b=W2OvXBWY6ET60Qygx4/Ibtx3Rj1fhBlEekqxnVVX7LnDXDlymTiAiyFxVQc00AvOP/
-         3kddzv2ak9MteblZwE0zexI++ygY6ZPZ0nZbKtGR1Gd5ar3U81E9TCqOilP+WQ4Czxyl
-         Y2MOqc+DbTPJHpJg1MbspAWG5crvo8ebKbc2Pk29g/iTCE3MtAQS31EOCsTPNcAsEa4q
-         ZHaFUmJ/yPRVqJb+Z/7PD6vCXhDZPy6q8DCuwiZdv5/KRQrdj+mhyyz3ducrw4BtsQeX
-         yhRX58xLBXXnjBQgFPY/dlPb0cWuTCw1fxSkHaMrWoVQuCRL7NiyEPwNyquRNaj5NlS7
-         VKOg==
+        bh=KvNzbx+wE6QPfE2MeeEi/ZV40Dr0N1fCnVWImcOfsdE=;
+        b=hapDtMvyN44CDAOhrzoxwO5qHGanr2x4kcwwsv+qdtX1sv0NEHMj9F1XxrKEyVlVhw
+         h8nlm0L/25h0IPzQBs03Gp0S1UYiJEfB3CW/yHPIawk97nDmgCiRj35+gadEcQDkH6wF
+         OYRYGTORDRbX4nFbI9N2f+MOINoAcMTpc/hNV8gj7dhjewA6IotdHjsKEislkJOKcA3F
+         fdBXBO2ZH6egZCsatlUVP79ZNG3fIuHucOPmbpilqrfssx2pkPRw3/LeDc5YCA4XXvvH
+         +DAT2lZKJLAr/PzWB/+VEDmIH3uYuJ+WTDt1ZXseqESvAOo96s1F2zUdrkWCvJ/68ujC
+         b8sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697799918; x=1698404718;
+        d=1e100.net; s=20230601; t=1697799923; x=1698404723;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gK+cFoR1MyWIl8n0phUtp2lC8tfEt3+4PWkcgkrk9lI=;
-        b=RQk0N6EzkPMD0UjdbiKdEuJD21RH5qPJsajrO5VnQUJEcm+cLCUcQgyL6K9lG85I+I
-         nYrVyi4+1bku8cMJLSxyS2hPSY4lRlMt6UALwc98WctZ46dtdnnCHm1l+K6OHV9rIVEX
-         TP0QiB88qh8VKmkJRX5xMk31ygRjpKmOvNCoSz5Z+DUXRxS40D6MWnp9BAQoysCN4gdB
-         RC3uWIWa4KiZGjhYTltFNdGmF7VhvIEOqEtpjDg5tv4MHo5EBbJ1UT0VEbHYELGSbeNH
-         XTp98ajjIDpFYQV+VXZJCMDZhIxBw/nbp8r5fZ/HUVastHpxqEgFOWKtzmcEWAnpxmPQ
-         k6Uw==
-X-Gm-Message-State: AOJu0Yx+6iQzzep2LtuTrh8fQwJBW0I4DugQMXeiZnIfO3evMOHf1AK3
-        w/KV6ZQX5D7rIq3PyJ9aemiXdg==
-X-Google-Smtp-Source: AGHT+IHzpFn+0JMDaI4Gs/mdtLhr+NGf107MOT2wTDU+64UeBpwHiVD2ZcJQjGH+akRjScgKxgEiwg==
-X-Received: by 2002:a05:6358:5922:b0:168:a35c:f07b with SMTP id g34-20020a056358592200b00168a35cf07bmr1449368rwf.0.1697799917664;
-        Fri, 20 Oct 2023 04:05:17 -0700 (PDT)
+        bh=KvNzbx+wE6QPfE2MeeEi/ZV40Dr0N1fCnVWImcOfsdE=;
+        b=bm5AZu6c4ib37AK3wugU25midYzekl3VsQige6XV6srOWWKJ9/1oyoDAc2FMdnMoHK
+         LT6kJNyPWuDoE+SysOrWoSdMQbKh9qLU3Wuhzb1g5e4Z9M+poBHjGQ6k1q7BarPFAo89
+         /ES2Tg5w6eAsnTRgbn7Pdl8KmdFDJa6TMDIybOeai6eZ+4bhaXAKnDCu7167G0jcAYAx
+         R6PYLDW1o4QX+3umXG2JKoiFTwWj/Z2tUJyZQLRdY98K1+xrndsmsx9vly4XeShMiRKw
+         bVYSs30JjzYfqhJWPOPfV6+5uF+6SjciJHINoqayBrsISwLjnL8rR945Od7JTxMvgRkh
+         /Bqg==
+X-Gm-Message-State: AOJu0YxNeCHT9lcX8q2jyd+P3RtBBv7+FSoMiWYCkNuqjKGmHwkKvmhZ
+        vbgb9PqG5TpBWmZQj5UuP1qnNg==
+X-Google-Smtp-Source: AGHT+IEZbrCU3UtQrs961bnYFojXLZPVOeYgp6UFfxmFOYWwqhfMWrAExdDU7Tw6uXfIF3bbdxeRGw==
+X-Received: by 2002:a05:6358:72a:b0:168:a3a4:6dc2 with SMTP id e42-20020a056358072a00b00168a3a46dc2mr1251379rwj.3.1697799923312;
+        Fri, 20 Oct 2023 04:05:23 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id z6-20020aa79f86000000b006be4bb0d2dcsm1323865pfr.149.2023.10.20.04.05.12
+        by smtp.gmail.com with ESMTPSA id z6-20020aa79f86000000b006be4bb0d2dcsm1323865pfr.149.2023.10.20.04.05.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 04:05:17 -0700 (PDT)
+        Fri, 20 Oct 2023 04:05:22 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, rppt@kernel.org, david@redhat.com,
         vbabka@suse.cz, mhocko@suse.com
@@ -58,9 +58,9 @@ Cc:     willy@infradead.org, mgorman@techsingularity.net, mingo@kernel.org,
         hannes@cmpxchg.org, osalvador@suse.de,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v4 1/2] mm: page_alloc: skip memoryless nodes entirely
-Date:   Fri, 20 Oct 2023 19:04:45 +0800
-Message-Id: <7300fc00a057eefeb9a68c8ad28171c3f0ce66ce.1697799303.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 2/2] mm: memory_hotplug: drop memoryless node from fallback lists
+Date:   Fri, 20 Oct 2023 19:04:46 +0800
+Message-Id: <63a3648aa6d49ad2dcf8c885d6a874e6c91624a0.1697799303.git.zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <cover.1697799303.git.zhengqi.arch@bytedance.com>
 References: <cover.1697799303.git.zhengqi.arch@bytedance.com>
@@ -75,59 +75,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In find_next_best_node(), we skipped memoryless nodes
-when building the zonelists of other normal nodes (N_NORMAL),
-but did not skip the memoryless node itself when building
-the zonelist. This will cause it to be traversed at runtime.
+In offline_pages(), if a node becomes memoryless, we
+will clear its N_MEMORY state by calling node_states_clear_node().
+But we do this after rebuilding the zonelists by calling
+build_all_zonelists(), which will cause this memoryless node to
+still be in the fallback list of other nodes. This will incur
+some runtime overhead.
 
-For example, say we have node0 and node1, node0 is memoryless
-node, then the fall back order of node0 and node1 as follows:
-
-[    0.153005] Fallback order for Node 0: 0 1
-[    0.153564] Fallback order for Node 1: 1
-
-After this patch, we skip memoryless node0 entirely, then
-the fall back order of node0 and node1 as follows:
-
-[    0.155236] Fallback order for Node 0: 1
-[    0.155806] Fallback order for Node 1: 1
-
-So it becomes completely invisible, which will reduce runtime
-overhead.
-
-And in this way, we will not try to allocate pages from memoryless
-node0, then the panic mentioned in [1] will also be fixed. Even though
-this problem has been solved by dropping the NODE_MIN_SIZE constrain
-in x86 [2], it would be better to fix it in the core MM as well.
-
-[1]. https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
-[2]. https://lore.kernel.org/all/20231017062215.171670-1-rppt@kernel.org/
+To drop memoryless nodes from fallback lists in this case, just
+call node_states_clear_node() before calling build_all_zonelists().
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Acked-by: David Hildenbrand <david@redhat.com>
 Acked-by: Ingo Molnar <mingo@kernel.org>
 ---
- mm/page_alloc.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mm/memory_hotplug.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ee392a324802..1f852929709f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5052,8 +5052,11 @@ int find_next_best_node(int node, nodemask_t *used_node_mask)
- 	int min_val = INT_MAX;
- 	int best_node = NUMA_NO_NODE;
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index d4a364fdaf8f..f019f7d6272c 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -2036,12 +2036,16 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 	/* reinitialise watermarks and update pcp limits */
+ 	init_per_zone_wmark_min();
  
--	/* Use the local node if we haven't already */
--	if (!node_isset(node, *used_node_mask)) {
 +	/*
-+	 * Use the local node if we haven't already, but for memoryless local
-+	 * node, we should skip it and fall back to other nodes.
++	 * Make sure to mark the node as memory-less before rebuilding the zone
++	 * list. Otherwise this node would still appear in the fallback lists.
 +	 */
-+	if (!node_isset(node, *used_node_mask) && node_state(node, N_MEMORY)) {
- 		node_set(node, *used_node_mask);
- 		return node;
++	node_states_clear_node(node, &arg);
+ 	if (!populated_zone(zone)) {
+ 		zone_pcp_reset(zone);
+ 		build_all_zonelists(NULL);
  	}
+ 
+-	node_states_clear_node(node, &arg);
+ 	if (arg.status_change_nid >= 0) {
+ 		kcompactd_stop(node);
+ 		kswapd_stop(node);
 -- 
 2.30.2
 
