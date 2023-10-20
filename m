@@ -2,102 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD627D07B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F007D07B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346633AbjJTFla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
+        id S235619AbjJTFm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbjJTFl2 (ORCPT
+        with ESMTP id S235614AbjJTFmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:41:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EAC1A6;
-        Thu, 19 Oct 2023 22:41:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 433941F38C;
-        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697780483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
-        b=tryR/mSKMBjG7XlRO/HjlizgTYSK0eFn6i2PODMFwegv2RThJ858mBN8mKggBmkebRTdG0
-        M7gHH8ISFPLmt67XYpBM/7L9YrGDEWD8urTvrgM55M3mqAI9wIfi2JYeMyaDxbakEunfu8
-        I8UFDfBlduYxDue3+63ajsUrnYYv0t0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697780483;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
-        b=beh7P0tZIIwhrLrnpjy27hvv36M90OppuYB7IgsmOJS6BllqqpcqggLjsJMoIau97w92I3
-        i0D77SybuqCq8BCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12B231348D;
-        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lHnWAwMTMmWYYQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 20 Oct 2023 05:41:23 +0000
-Message-ID: <9a5a8167-488b-3819-8aa5-ddd5bd5bacc2@suse.cz>
-Date:   Fri, 20 Oct 2023 07:41:22 +0200
+        Fri, 20 Oct 2023 01:42:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6271D1A4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:42:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79219C433C7;
+        Fri, 20 Oct 2023 05:42:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697780541;
+        bh=8k3PE1NFkxj9wPhoBUIveRHmdpO2uZTZ7oZXhJJ6Oz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F6ZQzqxAiich4MNbE8MgIacE8EJJRhs2C1AUg+gRv1RU28Yoksc5Z1JNxMgdlhWs0
+         QjvqiuG/9Vy9yekRWZhcAvZ3wLV7uCLtgx+WizeyZdgLO85cmcbzla+j9dAvikhurb
+         NcaF7Of6B1it3Ni9QmKTih1dqtbQLvnvKbPlS86o=
+Date:   Fri, 20 Oct 2023 07:42:17 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jayant Chowdhary <jchowdhary@google.com>
+Cc:     "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>, balbi@kernel.org,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "arakesh@google.com" <arakesh@google.com>,
+        "etalvala@google.com" <etalvala@google.com>
+Subject: Re: [PATCH] usb:gadget:uvc: Add super speed plus descriptors
+Message-ID: <2023102014-reference-diabetes-f859@gregkh>
+References: <4ca94f99-fe07-49c2-adc7-84df519792f5@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 6/6] mm: kmem: reimplement
- get_obj_cgroup_from_current()
-Content-Language: en-US
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20231019225346.1822282-1-roman.gushchin@linux.dev>
- <20231019225346.1822282-7-roman.gushchin@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231019225346.1822282-7-roman.gushchin@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.45
-X-Spamd-Result: default: False [-8.45 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-0.35)[76.41%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ca94f99-fe07-49c2-adc7-84df519792f5@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,19 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/23 00:53, Roman Gushchin wrote:
-> Reimplement get_obj_cgroup_from_current() using current_obj_cgroup().
-> get_obj_cgroup_from_current() and current_obj_cgroup() share 80% of
-> the code, so the new implementation is almost trivial.
-
-Great.
-
-> get_obj_cgroup_from_current() is a convenient function used by the
-> bpf subsystem, so there is no reason to get rid of it completely.
+On Thu, Oct 19, 2023 at 03:39:44PM -0700, Jayant Chowdhary wrote:
+> Currently the UVC gadget driver doesn't support super speed
+> plus connections since it doesn't advertise super speed plus descriptors.
+> This patch re-uses the super speed descriptors for super-speed plus.
+> As a result, hosts can recognize gadget devices when using a super
+> speed plus connection.
 > 
-> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
+> ---
+>  drivers/usb/gadget/function/f_uvc.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 
-Reviwed-by: Vlastimil Babka <vbabka@suse.cz>
+As this is obviously a copy of a previously posted patch, why did you
+not credit the original author?
 
-Thanks!
+thanks,
 
+greg k-h
