@@ -2,249 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 868177D109B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664EC7D10A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377304AbjJTNic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S1377423AbjJTNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377364AbjJTNia (ORCPT
+        with ESMTP id S1377401AbjJTNk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:38:30 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDFA1A8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:38:27 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphi-000368-A0; Fri, 20 Oct 2023 15:38:18 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphf-0032Vm-PR; Fri, 20 Oct 2023 15:38:15 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphf-001buo-2M;
-        Fri, 20 Oct 2023 15:38:15 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Sili Luo <rootlab@huawei.com>, stable@vger.kernel.org,
-        kernel@pengutronix.de, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] can: j1939: Fix UAF in j1939_sk_match_filter during setsockopt(SO_J1939_FILTER)
-Date:   Fri, 20 Oct 2023 15:38:14 +0200
-Message-Id: <20231020133814.383996-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+        Fri, 20 Oct 2023 09:40:28 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834A91A4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:40:26 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27dc1e4d8b6so720697a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697809226; x=1698414026; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AT1Br+4645wEB5/HzxukaZG+ZkWVdG8KDMFjDfmpMR0=;
+        b=qbRjv4WxxZWPGDr5BJXFP1Tap7CP+xxfPsuNaDkqO97idukHUqVa5G2Z9RhTtLE5aW
+         50XpT9THgn+gkgGwDDN/G1vM/OUl2J7yxS3J2FdRsIQHIWmATr8/cPQtDBF+T/5dAT8o
+         V7ZQZnVYKeWTcTGQGB5fR8h+sjaufc9wF7HwF8EWEcpwbbgaC+3FujHe9NYUsPlozV6G
+         7cFY1zBc0kbVpGGHQ3em4KsnpMYnsZkN83+fqJi0mMKkH0CNGJMjYSU3l/qcLSdpq1P+
+         MGj5VIsuxucCi6LUWl1tFX+WbW9ySJJ+f6dnlr2SuBA4P7+E9+pkuvN5wwMNDf8Ylj30
+         0Nug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697809226; x=1698414026;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AT1Br+4645wEB5/HzxukaZG+ZkWVdG8KDMFjDfmpMR0=;
+        b=sufVLcLpTnv5FXu457mzg9LDck7EskkfblO8Lz203fKlWVwffhdSyJ28tKwJxIBt78
+         SxbDO3qIeb/NiRO/0ajidLo2LlGqwafZ1VXsHvhHLtWbhjktyufx3UXBX5nDkb6vC7Dj
+         qfu0TamYzgD7LHaOMn/U1pq+Rcd6dMZn6P7HoybDViOr6ta4PNTJA0fmSJtnizDMn7LZ
+         x38gXvivr4e5JiJonje2uMdyBemn59wJ5vmF37BpMg85wNujJ142mUzBUI2pD7HWSKY9
+         xoj3W9O93HrYuunHOjXMfyaL4i7pRJn3wXRtygvX64Qwezj5VFzpFP2Y9ZIxrqtIoeTw
+         WgIQ==
+X-Gm-Message-State: AOJu0YwOj1AwoNe0rW7NrLpcsjgejwvCOZCSVxeNc3KzQrmwStLAmoQX
+        xATvzuN/JryKVJCvmL6n+Xf9wBB1v49X+gxWv15jRA==
+X-Google-Smtp-Source: AGHT+IECz/CVOb9yev+sghuyrhjeIz9jIXd/yZPfDbanPu/iz6U5KuCKzJ3ra8LiNpjSBdKvwxg2v3eM7W2UOt4dSq4=
+X-Received: by 2002:a17:90a:31c:b0:27d:68e1:c3d6 with SMTP id
+ 28-20020a17090a031c00b0027d68e1c3d6mr1924087pje.28.1697809225932; Fri, 20 Oct
+ 2023 06:40:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231020014031.919742-1-joel@joelfernandes.org> <20231020014031.919742-3-joel@joelfernandes.org>
+In-Reply-To: <20231020014031.919742-3-joel@joelfernandes.org>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 20 Oct 2023 15:40:14 +0200
+Message-ID: <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during newidle balance
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lock jsk->sk to prevent UAF when setsockopt(..., SO_J1939_FILTER, ...)
-modifies jsk->filters while receiving packets.
+On Fri, 20 Oct 2023 at 03:40, Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
+>
+> When newidle balancing triggers, we see that it constantly clobbers
+> rq->next_balance even when there is no newidle balance happening due to
+> the cost estimates.  Due to this, we see that periodic load balance
+> (rebalance_domains) may trigger way more often when the CPU is going in
+> and out of idle at a high rate but is no really idle. Repeatedly
+> triggering load balance there is a bad idea as it is a heavy operation.
+> It also causes increases in softirq.
 
-Following trace was seen on affected system:
- ==================================================================
- BUG: KASAN: slab-use-after-free in j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
- Read of size 4 at addr ffff888012144014 by task j1939/350
+we have 2 balance intervals:
+- one when idle based on the sd->balance_interval = sd_weight
+- one when busy which increases the period by multiplying it with
+busy_factor = 16
 
- CPU: 0 PID: 350 Comm: j1939 Tainted: G        W  OE      6.5.0-rc5 #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- Call Trace:
-  print_report+0xd3/0x620
-  ? kasan_complete_mode_report_info+0x7d/0x200
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  kasan_report+0xc2/0x100
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  __asan_load4+0x84/0xb0
-  j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  j1939_sk_recv+0x20b/0x320 [can_j1939]
-  ? __kasan_check_write+0x18/0x20
-  ? __pfx_j1939_sk_recv+0x10/0x10 [can_j1939]
-  ? j1939_simple_recv+0x69/0x280 [can_j1939]
-  ? j1939_ac_recv+0x5e/0x310 [can_j1939]
-  j1939_can_recv+0x43f/0x580 [can_j1939]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  ? raw_rcv+0x42/0x3c0 [can_raw]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  can_rcv_filter+0x11f/0x350 [can]
-  can_receive+0x12f/0x190 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  can_rcv+0xdd/0x130 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  __netif_receive_skb_one_core+0x13d/0x150
-  ? __pfx___netif_receive_skb_one_core+0x10/0x10
-  ? __kasan_check_write+0x18/0x20
-  ? _raw_spin_lock_irq+0x8c/0xe0
-  __netif_receive_skb+0x23/0xb0
-  process_backlog+0x107/0x260
-  __napi_poll+0x69/0x310
-  net_rx_action+0x2a1/0x580
-  ? __pfx_net_rx_action+0x10/0x10
-  ? __pfx__raw_spin_lock+0x10/0x10
-  ? handle_irq_event+0x7d/0xa0
-  __do_softirq+0xf3/0x3f8
-  do_softirq+0x53/0x80
-  </IRQ>
-  <TASK>
-  __local_bh_enable_ip+0x6e/0x70
-  netif_rx+0x16b/0x180
-  can_send+0x32b/0x520 [can]
-  ? __pfx_can_send+0x10/0x10 [can]
-  ? __check_object_size+0x299/0x410
-  raw_sendmsg+0x572/0x6d0 [can_raw]
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  ? apparmor_socket_sendmsg+0x2f/0x40
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  sock_sendmsg+0xef/0x100
-  sock_write_iter+0x162/0x220
-  ? __pfx_sock_write_iter+0x10/0x10
-  ? __rtnl_unlock+0x47/0x80
-  ? security_file_permission+0x54/0x320
-  vfs_write+0x6ba/0x750
-  ? __pfx_vfs_write+0x10/0x10
-  ? __fget_light+0x1ca/0x1f0
-  ? __rcu_read_unlock+0x5b/0x280
-  ksys_write+0x143/0x170
-  ? __pfx_ksys_write+0x10/0x10
-  ? __kasan_check_read+0x15/0x20
-  ? fpregs_assert_state_consistent+0x62/0x70
-  __x64_sys_write+0x47/0x60
-  do_syscall_64+0x60/0x90
-  ? do_syscall_64+0x6d/0x90
-  ? irqentry_exit+0x3f/0x50
-  ? exc_page_fault+0x79/0xf0
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+When becoming idle, the rq->next_balance can have been set using the
+16*sd_weight period so load_balance can wait for a long time before
+running idle load balance for this cpu.
+As a typical example, instead of waiting at most 8ms, we will wait
+128ms before we try to pull a task on the idle CPU.
 
- Allocated by task 348:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_alloc_info+0x1f/0x30
-  __kasan_kmalloc+0xb5/0xc0
-  __kmalloc_node_track_caller+0x67/0x160
-  j1939_sk_setsockopt+0x284/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+That's the reason for updating rq->next_balance in newidle_balance()
 
- Freed by task 349:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_free_info+0x2f/0x50
-  __kasan_slab_free+0x12e/0x1c0
-  __kmem_cache_free+0x1b9/0x380
-  kfree+0x7a/0x120
-  j1939_sk_setsockopt+0x3b2/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>
+> Another issue is ->last_balance is not updated after newidle balance
+> causing mistakes in the ->next_balance calculations.
 
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Reported-by: Sili Luo <rootlab@huawei.com>
-Suggested-by: Sili Luo <rootlab@huawei.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
-changes v2:
-- spin_lock_bh() instead of lock_sock()
+newly idle load balance is not equal to idle load balance. It's a
+light load balance trying to pull one  task and you can't really
+consider it to the normal load balance
 
- net/can/j1939/j1939-priv.h |  1 +
- net/can/j1939/socket.c     | 22 ++++++++++++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
+>
+> Fix by updating last_balance when a newidle load balance actually
+> happens and then updating next_balance. This is also how it is done in
+> other load balance paths.
+>
+> Testing shows a significant drop in softirqs when running:
+> cyclictest -i 100 -d 100 --latency=1000 -D 5 -t -m  -q
+>
+> Goes from ~6k to ~800.
 
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 16af1a7f80f6..c4d098362155 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -301,6 +301,7 @@ struct j1939_sock {
- 
- 	int ifindex;
- 	struct j1939_addr addr;
-+	spinlock_t filters_lock;
- 	struct j1939_filter *filters;
- 	int nfilters;
- 	pgn_t pgn_rx_filter;
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 14c431663233..641d37671c19 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -262,12 +262,17 @@ static bool j1939_sk_match_dst(struct j1939_sock *jsk,
- static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 				  const struct j1939_sk_buff_cb *skcb)
- {
--	const struct j1939_filter *f = jsk->filters;
--	int nfilter = jsk->nfilters;
-+	const struct j1939_filter *f;
-+	int nfilter;
-+
-+	spin_lock_bh(&jsk->filters_lock);
-+
-+	f = jsk->filters;
-+	nfilter = jsk->nfilters;
- 
- 	if (!nfilter)
- 		/* receive all when no filters are assigned */
--		return true;
-+		goto filter_match_found;
- 
- 	for (; nfilter; ++f, --nfilter) {
- 		if ((skcb->addr.pgn & f->pgn_mask) != f->pgn)
-@@ -276,9 +281,15 @@ static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 			continue;
- 		if ((skcb->addr.src_name & f->name_mask) != f->name)
- 			continue;
--		return true;
-+		goto filter_match_found;
- 	}
-+
-+	spin_unlock_bh(&jsk->filters_lock);
- 	return false;
-+
-+filter_match_found:
-+	spin_unlock_bh(&jsk->filters_lock);
-+	return true;
- }
- 
- static bool j1939_sk_recv_match_one(struct j1939_sock *jsk,
-@@ -401,6 +412,7 @@ static int j1939_sk_init(struct sock *sk)
- 	atomic_set(&jsk->skb_pending, 0);
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
-+	spin_lock_init(&jsk->filters_lock);
- 
- 	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
- 	sock_set_flag(sk, SOCK_RCU_FREE);
-@@ -703,9 +715,11 @@ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
- 		}
- 
- 		lock_sock(&jsk->sk);
-+		spin_lock_bh(&jsk->filters_lock);
- 		ofilters = jsk->filters;
- 		jsk->filters = filters;
- 		jsk->nfilters = count;
-+		spin_unlock_bh(&jsk->filters_lock);
- 		release_sock(&jsk->sk);
- 		kfree(ofilters);
- 		return 0;
--- 
-2.39.2
+Even if your figures look interesting, your patch adds regression in
+the load balance and the fairness.
 
+We can probably do improve the current behavior for decreasing number
+of ILB but your proposal is not the right solution IMO
+
+>
+> Cc: Suleiman Souhlal <suleiman@google.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/sched/fair.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 8e276d12c3cb..b147ad09126a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -12076,11 +12076,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>
+>         if (!READ_ONCE(this_rq->rd->overload) ||
+>             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+> -
+> -               if (sd)
+> -                       update_next_balance(sd, &next_balance);
+>                 rcu_read_unlock();
+> -
+>                 goto out;
+>         }
+>         rcu_read_unlock();
+> @@ -12095,8 +12091,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>                 int continue_balancing = 1;
+>                 u64 domain_cost;
+>
+> -               update_next_balance(sd, &next_balance);
+> -
+>                 if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
+>                         break;
+>
+> @@ -12109,6 +12103,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>                         t1 = sched_clock_cpu(this_cpu);
+>                         domain_cost = t1 - t0;
+>                         update_newidle_cost(sd, domain_cost);
+> +                       sd->last_balance = jiffies;
+> +                       update_next_balance(sd, &next_balance);
+>
+>                         curr_cost += domain_cost;
+>                         t0 = t1;
+> --
+> 2.42.0.655.g421f12c284-goog
+>
