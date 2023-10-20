@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4C77D06DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C797D06D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346888AbjJTD24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 23:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
+        id S1346893AbjJTD1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 23:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235594AbjJTD2v (ORCPT
+        with ESMTP id S233400AbjJTD1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 23:28:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245B3D4C;
-        Thu, 19 Oct 2023 20:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697772530; x=1729308530;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=96Gky6mpZZHpzgNi964Tps4EK4L+Pft4fZHmTBB7PZs=;
-  b=SZ5pGjCx+5SdJ/o0PCwaYnm8gfySxrz1JJNucTi/XSx7Q7L8Li+9ByK8
-   bL/+tCdVU/JYrJ0Hwi77jDyHwYqrCgpKgDoJoZJT4ftxZh7sgJYZmZbjg
-   ecIHF5aWZyP0KoS4SpkVZ8kIYoQwIbFXoa3rHig4LErYH5BgYNCiV40e0
-   Bvr/TGa6t//NmZlCAVOqgWzbqA5OqJcwpGoH+RY/UNC2jVgUopVQrDL9R
-   SaqJgQX+P7+45khGHwHnLIMcENTJU5BQgzxpDlhGuvAVW3NO4IWg8Bz76
-   9pW95xj36WGtZoOY3QSzpX0A6NRmG37tu/zYmKzQGaNcM0yqL4Kht0bXH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="472645905"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="472645905"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 20:28:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="827592040"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="827592040"
-Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Oct 2023 20:28:45 -0700
-From:   Gan Yi Fang <yi.fang.gan@intel.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>,
-        Gan Yi Fang <yi.fang.gan@intel.com>
-Subject: [PATCH net v2 1/1] net: stmmac: update MAC capabilities when tx queues are updated
-Date:   Fri, 20 Oct 2023 11:25:35 +0800
-Message-Id: <20231020032535.1777746-1-yi.fang.gan@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 19 Oct 2023 23:27:18 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872B2181
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:27:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VuVcYpV_1697772430;
+Received: from 30.97.48.56(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuVcYpV_1697772430)
+          by smtp.aliyun-inc.com;
+          Fri, 20 Oct 2023 11:27:11 +0800
+Message-ID: <0aaf6bf4-a327-9582-569e-2a634ce74af4@linux.alibaba.com>
+Date:   Fri, 20 Oct 2023 11:27:24 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mm: migrate: record the mlocked page status to remove
+ unnecessary lru drain
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        hughd@google.com, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <64899ad0bb78cde88b52abed1a5a5abbc9919998.1697632761.git.baolin.wang@linux.alibaba.com>
+ <1F80D8DA-8BB5-4C7E-BC2F-030BF52931F7@nvidia.com>
+ <87il73uos1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <2ad721be-b81e-d279-0055-f995a8cfe180@linux.alibaba.com>
+ <27f40fc2-806a-52a9-3697-4ed9cd7081d4@intel.com>
+ <e8099116-6f78-cb4a-5036-1d7e38b63e52@linux.alibaba.com>
+ <fd389af5-d949-43dc-9a35-d53112fe4a60@intel.com>
+ <05d596f3-c59c-76c3-495e-09f8573cf438@linux.alibaba.com>
+ <b9042fcb-05df-460f-87b8-4d7a04d3bd5e@intel.com>
+ <e84f8c2d-6264-f2a3-3737-17d48a0251f8@linux.alibaba.com>
+ <93abbbfb-27fb-4f65-883c-a6aa38c61fa0@intel.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <93abbbfb-27fb-4f65-883c-a6aa38c61fa0@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,67 +57,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 
-Upon boot up, the driver will configure the MAC capabilities based on
-the maximum number of tx and rx queues. When the user changes the
-tx queues to single queue, the MAC should be capable of supporting Half
-Duplex, but the driver does not update the MAC capabilities when it is
-configured so.
 
-Using the stmmac_reinit_queues() to check the number of tx queues
-and set the MAC capabilities accordingly.
+On 10/20/2023 10:54 AM, Yin, Fengwei wrote:
+> 
+> 
+> On 10/20/2023 10:45 AM, Baolin Wang wrote:
+>>
+>>
+>> On 10/20/2023 10:30 AM, Yin, Fengwei wrote:
+>>>
+>>>
+>>> On 10/20/2023 10:09 AM, Baolin Wang wrote:
+>>>>
+>>>>
+>>>> On 10/19/2023 8:07 PM, Yin, Fengwei wrote:
+>>>>>
+>>>>>
+>>>>> On 10/19/2023 4:51 PM, Baolin Wang wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 10/19/2023 4:22 PM, Yin Fengwei wrote:
+>>>>>>> Hi Baolin,
+>>>>>>>
+>>>>>>> On 10/19/23 15:25, Baolin Wang wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 10/19/2023 2:09 PM, Huang, Ying wrote:
+>>>>>>>>> Zi Yan <ziy@nvidia.com> writes:
+>>>>>>>>>
+>>>>>>>>>> On 18 Oct 2023, at 9:04, Baolin Wang wrote:
+>>>>>>>>>>
+>>>>>>>>>>> When doing compaction, I found the lru_add_drain() is an obvious hotspot
+>>>>>>>>>>> when migrating pages. The distribution of this hotspot is as follows:
+>>>>>>>>>>>         - 18.75% compact_zone
+>>>>>>>>>>>            - 17.39% migrate_pages
+>>>>>>>>>>>               - 13.79% migrate_pages_batch
+>>>>>>>>>>>                  - 11.66% migrate_folio_move
+>>>>>>>>>>>                     - 7.02% lru_add_drain
+>>>>>>>>>>>                        + 7.02% lru_add_drain_cpu
+>>>>>>>>>>>                     + 3.00% move_to_new_folio
+>>>>>>>>>>>                       1.23% rmap_walk
+>>>>>>>>>>>                  + 1.92% migrate_folio_unmap
+>>>>>>>>>>>               + 3.20% migrate_pages_sync
+>>>>>>>>>>>            + 0.90% isolate_migratepages
+>>>>>>>>>>>
+>>>>>>>>>>> The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
+>>>>>>>>>>> __unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
+>>>>>>>>>>> immediately, to help to build up the correct newpage->mlock_count in
+>>>>>>>>>>> remove_migration_ptes() for mlocked pages. However, if there are no mlocked
+>>>>>>>>>>> pages are migrating, then we can avoid this lru drain operation, especailly
+>>>>>>>>>>> for the heavy concurrent scenarios.
+>>>>>>>>>>
+>>>>>>>>>> lru_add_drain() is also used to drain pages out of folio_batch. Pages in folio_batch
+>>>>>>>>>> have an additional pin to prevent migration. See folio_get(folio); in folio_add_lru().
+>>>>>>>>>
+>>>>>>>>> lru_add_drain() is called after the page reference count checking in
+>>>>>>>>> move_to_new_folio().  So, I don't this is an issue.
+>>>>>>>>
+>>>>>>>> Agree. The purpose of adding lru_add_drain() is to address the 'mlock_count' issue for mlocked pages. Please see commit c3096e6782b7 and related comments. Moreover I haven't seen an increase in the number of page migration failures due to page reference count checking after this patch.
+>>>>>>>
+>>>>>>> I agree with your. My understanding also is that the lru_add_drain() is only needed
+>>>>>>> for mlocked folio to correct mlock_count. Like to hear the confirmation from Huge.
+>>>>>>>
+>>>>>>>
+>>>>>>> But I have question: why do we need use page_was_mlocked instead of check
+>>>>>>> folio_test_mlocked(src)? Does page migration clear the mlock flag? Thanks.
+>>>>>>
+>>>>>> Yes, please see the call trace: try_to_migrate_one() ---> page_remove_rmap() ---> munlock_vma_folio().
+>>>>>
+>>>>> Yes. This will clear mlock bit.
+>>>>>
+>>>>> What about set dst folio mlocked if source is before try_to_migrate_one()? And
+>>>>> then check whether dst folio is mlocked after? And need clear mlocked if migration
+>>>>> fails. I suppose the change is minor. Just a thought. Thanks.
+>>>>
+>>>> IMO, this will break the mlock related statistics in mlock_folio() when the remove_migration_pte() rebuilds the mlock status and mlock count.
+>>>>
+>>>> Another concern I can see is that, during the page migration, a concurrent munlock() can be called to clean the VM_LOCKED flags for the VMAs, so the remove_migration_pte() should not rebuild the mlock status and mlock count. But the dst folio's mlcoked status is still remained, which is wrong.
+>>>>
+>>>> So your suggested apporach seems not easy, and I think my patch is simple with re-using existing __migrate_folio_record() and __migrate_folio_extract() :)
+>>>
+>>> Can these concerns be addressed by clear dst mlocked after lru_add_drain() but before
+>>> remove_migration_pte()?
+>>
+>> IMHO, that seems too hacky to me. I still prefer to rely on the migration process of the mlcock pages.
+> 
+> BTW, Yosry tried to address the overlap of field lru and mlock_count:
+> https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@google.com/
+> But the lore doesn't group all the patches.
 
-Fixes: 0366f7e06a6b ("net: stmmac: add ethtool support for get/set channels")
-Cc: <stable@vger.kernel.org> # 5.17+
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c   | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ed1a5a31a491..5801f4d50f95 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1197,6 +1197,17 @@ static int stmmac_init_phy(struct net_device *dev)
- 	return ret;
- }
- 
-+static void stmmac_set_half_duplex(struct stmmac_priv *priv)
-+{
-+	/* Half-Duplex can only work with single tx queue */
-+	if (priv->plat->tx_queues_to_use > 1)
-+		priv->phylink_config.mac_capabilities &=
-+			~(MAC_10HD | MAC_100HD | MAC_1000HD);
-+	else
-+		priv->phylink_config.mac_capabilities |=
-+			(MAC_10HD | MAC_100HD | MAC_1000HD);
-+}
-+
- static int stmmac_phy_setup(struct stmmac_priv *priv)
- {
- 	struct stmmac_mdio_bus_data *mdio_bus_data;
-@@ -1228,10 +1239,7 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 						MAC_10FD | MAC_100FD |
- 						MAC_1000FD;
- 
--	/* Half-Duplex can only work with single queue */
--	if (priv->plat->tx_queues_to_use <= 1)
--		priv->phylink_config.mac_capabilities |= MAC_10HD | MAC_100HD |
--							 MAC_1000HD;
-+	stmmac_set_half_duplex(priv);
- 
- 	/* Get the MAC specific capabilities */
- 	stmmac_mac_phylink_get_caps(priv);
-@@ -7172,6 +7180,7 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
- 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
- 									rx_cnt);
- 
-+	stmmac_set_half_duplex(priv);
- 	stmmac_napi_add(dev);
- 
- 	if (netif_running(dev))
--- 
-2.34.1
-
+Thanks for the information. I'd like to review and test if this work can 
+continue.
