@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC3F7D1586
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7C07D1589
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377964AbjJTSLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        id S1377992AbjJTSMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjJTSLH (ORCPT
+        with ESMTP id S229604AbjJTSL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:11:07 -0400
-Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3F5D55;
-        Fri, 20 Oct 2023 11:11:02 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by sonata.ens-lyon.org (Postfix) with ESMTP id 55E1320108;
-        Fri, 20 Oct 2023 20:11:00 +0200 (CEST)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RXhLEAKQk6QO; Fri, 20 Oct 2023 20:11:00 +0200 (CEST)
-Received: from begin.home (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sonata.ens-lyon.org (Postfix) with ESMTPSA id 2F0F620107;
-        Fri, 20 Oct 2023 20:11:00 +0200 (CEST)
-Received: from samy by begin.home with local (Exim 4.97-RC1)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1qttxb-0000000Bn3d-2PL5;
-        Fri, 20 Oct 2023 20:10:59 +0200
-Date:   Fri, 20 Oct 2023 20:10:59 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] speakup: Document USB support
-Message-ID: <20231020181059.7rtj2csi7t6vorrm@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Fri, 20 Oct 2023 14:11:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA0D51;
+        Fri, 20 Oct 2023 11:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697825517; x=1729361517;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=voEK7holIGvvAdy/wSR3LlIkMHvaF8zMe1eSBNdjLo0=;
+  b=B1QX3J8GLxMwkTk4bzQv0Z5pGwap0f7oOlbYpBbTOO+HoQZh3Z5cw5Vk
+   v4extxesYF00z4anLvZwERyKTVUxkfKwhQWBh9Q5TWdzfklI1SdEZwMs7
+   yVVYND7NSZ8WwiwbkTgh7cbPdEHDt7j/a5nQlLHDFGRRaHyfWmQBFajje
+   mDYAsl2Kdayjo6VC1jLuGgSaujzkBqDNZiODRK6cnqrXdy8x2Ziod2pxb
+   6kbl7SY7c4qNs03JsGJLdvuxtRqtdI7+k12/mH4Rlk5yS6Mq9pOGprVwl
+   sn+hU2F4hx3iUtLMRxWujr95qMS170efEmYNqZTxfIIdD5EV/FxqvXjty
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="8110224"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="8110224"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 11:11:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="873998519"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="873998519"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 11:11:51 -0700
+Date:   Fri, 20 Oct 2023 21:11:48 +0300
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        len.brown@intel.com, robert.moore@intel.com,
+        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, linux@roeck-us.net, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1 4/8] ACPI: utils: use acpi_dev_uid_match() for
+ matching _UID
+Message-ID: <ZTLC5Jo97gYsL5wX@black.fi.intel.com>
+References: <20231020084732.17130-1-raag.jadav@intel.com>
+ <20231020084732.17130-5-raag.jadav@intel.com>
+ <ZTJYK02w8HZg26eI@smile.fi.intel.com>
+ <ZTJmnv6CsZUt0pIS@black.fi.intel.com>
+ <CAJZ5v0jvAeibnXSq92CBd1uXUgRnvsP0kEqfL8Du552=LT1dog@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jvAeibnXSq92CBd1uXUgRnvsP0kEqfL8Du552=LT1dog@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,43 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Speakup has been supporting USB for a while already.
+On Fri, Oct 20, 2023 at 07:11:53PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Oct 20, 2023 at 1:38 PM Raag Jadav <raag.jadav@intel.com> wrote:
+> >
+> > On Fri, Oct 20, 2023 at 01:36:27PM +0300, Andy Shevchenko wrote:
+> > > On Fri, Oct 20, 2023 at 02:17:28PM +0530, Raag Jadav wrote:
+> > > > Convert manual _UID references to use standard ACPI helpers.
+> > >
+> > > Yes, while not so obvious this is the correct replacement.
+> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > I think this is the only case which would suffer from the more obvious
+> > behaviour, i.e.
+> >
+> > bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+> > {
+> >         const char *uid1 = acpi_device_uid(adev);
+> >
+> >         return uid1 && uid2 && !strcmp(uid1, uid2);
+> > }
+> >
+> > That said, we can't be particularly sure about it's potential future users,
+> > especially when the usage will not be limited to just ACPI core since we're
+> > exporting it.
+> 
+> I actually agree with this, so please switch over to the above.
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Will send out a v2, thanks.
 
-diff --git a/Documentation/admin-guide/spkguide.txt b/Documentation/admin-guide/spkguide.txt
-index 74ea7f391942..0d5965138f8f 100644
---- a/Documentation/admin-guide/spkguide.txt
-+++ b/Documentation/admin-guide/spkguide.txt
-@@ -7,7 +7,7 @@ Last modified on Mon Sep 27 14:26:31 2010
- Document version 1.3
- 
- Copyright (c) 2005  Gene Collins
--Copyright (c) 2008  Samuel Thibault
-+Copyright (c) 2008, 2023  Samuel Thibault
- Copyright (c) 2009, 2010  the Speakup Team
- 
- Permission is granted to copy, distribute and/or modify this document
-@@ -83,8 +83,7 @@ spkout -- Speak Out
- txprt -- Transport
- dummy -- Plain text terminal
- 
--Note: Speakup does * NOT * support usb connections!  Speakup also does *
--NOT * support the internal Tripletalk!
-+Note: Speakup does * NOT * support the internal Tripletalk!
- 
- Speakup does support two other synthesizers, but because they work in
- conjunction with other software, they must be loaded as modules after
-@@ -94,6 +93,12 @@ These are as follows:
- decpc -- DecTalk PC (not available at boot up)
- soft -- One of several software synthesizers (not available at boot up)
- 
-+By default speakup looks for the synthesizer on the ttyS0 serial port. This can
-+be changed with the device parameter of the modules, for instance for
-+DoubleTalk LT:
-+
-+speakup_ltlk.dev=ttyUSB0
-+
- See the sections on loading modules and software synthesizers later in
- this manual for further details.  It should be noted here that the
- speakup.synth boot parameter will have no effect if Speakup has been
+Andy, can I add your review for this?
+
+Raag
