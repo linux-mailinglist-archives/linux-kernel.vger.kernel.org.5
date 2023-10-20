@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0317D0D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0177F7D0D12
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376812AbjJTK0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
+        id S1376802AbjJTK1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376794AbjJTK00 (ORCPT
+        with ESMTP id S1376715AbjJTK1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:26:26 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F4EB8;
-        Fri, 20 Oct 2023 03:26:24 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso922540a12.1;
-        Fri, 20 Oct 2023 03:26:24 -0700 (PDT)
+        Fri, 20 Oct 2023 06:27:22 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF22B8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:27:19 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b6559cbd74so97644466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697797582; x=1698402382; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqPy64WSZA+4wUylMe4RJhArwfqJFkAGmouyl6GLC3U=;
-        b=SoedXVhAXGqFPCgRlijCipN0O+FNqeOjo42goy00lCcoIiAxuieNLAzYrX3NXLZ9i0
-         BlG8vc4xBIXbnB70FsUVieC4fpvqi0T/N/6usK7g2Lxs4kLUvNx415xJMTFIz3sAkJCk
-         sukpaHBhvMIne9pXx4i2OsKoolK6tsH5DeLQBsjmUSrPIpETpICLTd7Px61OmpupH2bk
-         CHFUD4aSi6QFidV/XWaqxkVRwoKbbBJbBudnD01Sfopjl5ImZQE4oxuTC22E/8gfyv2o
-         EM1nJoLMg91oBMMdZFb2NN85zUUcVKqEROdkZRPANLbCCyWYIZn27FGOS1bB/O00y473
-         58wQ==
+        d=ventanamicro.com; s=google; t=1697797638; x=1698402438; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O9G9iqXSn4bIWBu+1DJE9aW2IMSJDKBdGcQ03iTHUdg=;
+        b=ggQl4cAl0qvH/xy2iY8hIKw3ouJfQu21CkAlQvrbyc8o6uo3qRhs+K7JxvuXKtNbhM
+         KOeJNisJ6OfAtU0R3/xyMGD6FhEnadXm3azqEICgU1Yelco7fa8oiaB+8VksVUNGNpx9
+         okHC2pwsf6+3gWjvuv6C73lVeBcd8073DhvvRueeNiHswgZWvRnUBKiMpznrul5YCAsL
+         p3hAPgSSTyv0W6EWkD+XuZ0pKK4HUuh8HvHfsK0kPPL7Uxm+jPEogH8n+3XSXxKo5AJT
+         bSHjJfN2FEVKi4mOz6s9/rQfgffbn60lZ7bI79ylUVVHXykwk4l/i/F7SGUrd08r+67m
+         p5hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697797582; x=1698402382;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rqPy64WSZA+4wUylMe4RJhArwfqJFkAGmouyl6GLC3U=;
-        b=PlRcsbTZiezfsl9aiG268dof0810fyXXMRUxwYte45qgqly37PosI0W2/o8wCWgOBn
-         hFB681fYaIU/lIBvo+aoFm+q+yZw0wXE6oggthrCDYgNrOuf1wdZcW2iCroBYt18xben
-         vlomAF7wvpLG9zIVbVWQYwqY1hM3N0nwloCpQU3Z7Id2P0HXmlr39reNPjpmaGVNsoV3
-         SqykcWVIk68LSDRJnva889RlGuHzcG5XswalZsL8FuRgR7WJ1Wb9jlYEOqcN006iXKGm
-         nzvzybweiWbyK6hX6bgrb8TeMRovqszodU949VdiApeccw09LfCiEOmQwreHtdAjlNbZ
-         Chgw==
-X-Gm-Message-State: AOJu0YwYlyYgh0eq6fFXElcqHY40ZZr8ZdQKiBK2RAAVXdlcLlpru3M7
-        JnU0KmUwrd1ndFMFaHCtY04=
-X-Google-Smtp-Source: AGHT+IEnlFPzgFG5Txjbr+/GrDtBQ71LyQiWuJ/n2/IlW+m/PujVaS1JJ1mqNN/tW7RHg3Sul40//g==
-X-Received: by 2002:a17:907:2d27:b0:9a1:c991:a521 with SMTP id gs39-20020a1709072d2700b009a1c991a521mr929212ejc.4.1697797582567;
-        Fri, 20 Oct 2023 03:26:22 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1709066bcf00b009a13fdc139fsm1183335ejs.183.2023.10.20.03.26.21
+        d=1e100.net; s=20230601; t=1697797638; x=1698402438;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9G9iqXSn4bIWBu+1DJE9aW2IMSJDKBdGcQ03iTHUdg=;
+        b=GMVKV8TGlucsqrt7oM7eOzxImgLlYGIRKKkDBlGKFDVzh05cTKck5pZ0oWZwqXmDGY
+         ta7+zQJ/WGXrvdxYJ0Rns4P3Ox9WOa3u3fM5lgDb+EtjL0eGi6fHy2Z7BjQvyV4cUyIH
+         Iol1q18T5la/p1lBc168auCLZK4KXur87fOW9Rg760/BtRuThyaFwhv2RINCPtwkCDDi
+         HENvMp5Y2AdmJ3WNveE13jtFOYySdibZJ1wsLxiy+QEmZc/NxtLkG4PDfFHSsUQK0RBC
+         /W6ZFc+tcikiReYIBPpWhGL5E+uISkcM32j7T5SLgg/VcfdWq/fItySOi88L4p6/Ho1M
+         Amow==
+X-Gm-Message-State: AOJu0YxXU+yOxivpR4+80x0FLqmC9X3vOOR9i/27X++6vswkl4YKweh7
+        Ve64Y2aDfcycc2WQFfgszwS0oQ==
+X-Google-Smtp-Source: AGHT+IHZl6pUqwMf9CFUA2xEvYwgpCp82Av0Lk//UAONUT1SVS4Axb4Qd2P3hrYxgtOT7flTfwUbaA==
+X-Received: by 2002:a17:907:3f85:b0:9be:6ff7:128a with SMTP id hr5-20020a1709073f8500b009be6ff7128amr1087855ejc.67.1697797637704;
+        Fri, 20 Oct 2023 03:27:17 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id a19-20020a1709065f9300b0099e12a49c8fsm1215456eju.173.2023.10.20.03.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 03:26:22 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 13:26:19 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ante Knezic <ante.knezic@helmholz.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     UNGLinuxDriver@microchip.com, andrew@lunn.ch, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, f.fainelli@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        woojung.huh@microchip.com
-Subject: Re: [PATCH net-next v3 2/2] net:dsa:microchip: add property to select
-Message-ID: <20231020102619.67fc3aaknvukwij4@skbuf>
-References: <20231019165409.5sgkyvxsidrrptgh@skbuf>
- <20231020084620.4603-1-ante.knezic@helmholz.de>
- <20231020092729.gpbr7s2cbmznmal7@skbuf>
- <20231020100053.wf3jivdkdfaunfgh@skbuf>
+        Fri, 20 Oct 2023 03:27:17 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 12:27:16 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        Evan Green <evan@rivosinc.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension
+ reporting
+Message-ID: <20231020-cee6ba8c9b3dc3c2a984fbb5@orel>
+References: <20231017131456.2053396-1-cleger@rivosinc.com>
+ <20231017131456.2053396-2-cleger@rivosinc.com>
+ <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
+ <20231018-scrap-bankable-a0f321d97a46@spud>
+ <20231018-flagpole-footpad-07a6228485f3@spud>
+ <844f6f35-3125-4014-852c-9ad7aee19ddc@rivosinc.com>
+ <20231019-flatten-showbiz-127b2e917a7a@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231020100053.wf3jivdkdfaunfgh@skbuf>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231019-flatten-showbiz-127b2e917a7a@spud>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Oleksij
-
-On Fri, Oct 20, 2023 at 01:00:53PM +0300, Vladimir Oltean wrote:
-> On Fri, Oct 20, 2023 at 12:27:29PM +0300, Vladimir Oltean wrote:
-> > On Fri, Oct 20, 2023 at 10:46:20AM +0200, Ante Knezic wrote:
-> > > Ok, will do. I am guessing I should leave the existing 
-> > > ksz8795_cpu_interface_select() as it is?
-> > 
-> > I would encourage moving it to the simpler call path as well, but
-> > ultimately this is up to you.
+On Thu, Oct 19, 2023 at 11:22:26AM +0100, Conor Dooley wrote:
+> On Thu, Oct 19, 2023 at 09:26:31AM +0200, Clément Léger wrote:
+...
+> > BTW, wouldn't
+> > it make more sense to get rid out of the unsupported extensions directly
+> > at ISA string parsing ? ie, if kernel is compiled without V support,
+> > then do not set the bits corresponding to these in the riscv_isa_ext[]
+> > array ? But the initial intent was probably to be able to report the
+> > full string through cpuinfo.
 > 
-> Also, could you please put spaces in the commit prefix ("net: dsa: microchip: ")?
+> Yeah, hysterical raisins I guess, it's always been that way. I don't
+> think anyone originally thought about such configurations and that is
+> how the cpuinfo stuff behaves. I strongly dislike the
+> riscv_isa_extension_available() interface, but one of Drew's patches
+> does at least improve things a bit. Kinda waiting for some of the
+> patches in flight to settle down before deciding if I want to refactor
+> stuff to be less of a potential for shooting oneself in the foot.
 
-One more thing. You two are working on separate things on the KSZ
-driver (Oleksij on
-https://patchwork.kernel.org/project/netdevbpf/cover/20231019122850.1199821-1-o.rempel@pengutronix.de/),
-and this creates conflicts in the DT schema and in ksz_common.h.
-For the most part, those are avoidable. Could you coordinate so that
-both of your next submissions do not conflict with each other? That
-means that each of your series can be applied independently of the other
-(Ante's first, or Oleksij's first).
+And I recall promising to try and do something with it too, but that
+promise got buried under other promises... It's still on the TODO, at
+least!
 
-For example, the dt-schema properties do not seem alphabetically sorted
-(microchip,synclko-125 comes after reset-gpios), so putting
-wakeup-source after reset-gpios, and leaving microchip,rmii-clk-internal
-at the end, seems a viable strategy in avoiding that conflict.
-
-The conflict in ksz_common.h will be automatically avoided when
-rmii_clk_internal stops being stored in struct ksz_device.
+drew
