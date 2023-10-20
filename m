@@ -2,353 +2,498 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D657D0748
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 06:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2EB7D074D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 06:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376277AbjJTEKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 00:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S1376285AbjJTEMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 00:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346919AbjJTEKF (ORCPT
+        with ESMTP id S233460AbjJTEMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 00:10:05 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2090.outbound.protection.outlook.com [40.107.215.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B687C9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 21:10:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QKHimK0OJRbb9nmk0IcvO5iJ2SBUhG42HZ2RNTBc3ljddEx0HDXZGyy3c5wMTDgaas86r9gk6H4UjAFC7ZrDP8KEuqZzkdVzuj3k7HLuNZ8lO8epzqBZrBZTzLl19XB2rlvxu6ltpPS4sOR68KD83kjbaWvWxCHhFSs4Xl1SKPHFSLQZQoIEPdu6+e+9sH79iJzB6S5cThcBGhqb8GXpRv5+PXfP95TxWy/XKLt8RhWrJsq5Bme+IiVqSEeVF6/Y86rqxsdYvhMS8+dQILRisJZXulmLT8HPJwFqhRjqxUHcBnCIpxvBo1SvR97cxjRsEJhxhUDZWitPV/mdfpFtCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7MNFzWx0kscNqlPpvKzYO1wNRYeVClRraPihFI9itGk=;
- b=afbAi5aN6lqqP48zdNmmrdXH6bS/izxztcHCm47H5B02DY1V5sG07ro5E1AEaEGlwsN192xagckTEhaD8ri3gEUaHCTUVvOdsbja5R1hztqZQ/Yq4hJmmgwYQGR0z22eBS+P0bXMwEbY+UELuMxcitW26hj1axIxrWfrdLJ0gpnHGr4mbq8v7sFEzV/FINRWI109joqemq+zZmNFw0VCTyBPAxbGTCyCM6stMLyKDfVfTyFD1pZ0ShkUCP/vp1Ida7qTkqB70mNAT7v858KfGdYQqB13gOxOfWwgAFjrc0VPy2tdDqnhFYsTqyPZTQkw2dcT1tk6pCt8habgM4BIcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7MNFzWx0kscNqlPpvKzYO1wNRYeVClRraPihFI9itGk=;
- b=emqTOb0BPy/pGIqcMo0TfuFc2o9ipkbZ102FjNKEgjl4yJ3VX5dsi2m32p8tUtAXC8Y9+wjb3WOAyiuqUEM34uSJsL7GzM/ToRgTMH2Zdq25WWQkMfcHiNPnHVPdGBImuchnC8wAq8gl/ZwaxRbVnb5tFapV1JrSwtHJ79qhF9Mgie+F3WLAO9mNWk1VVmF2ghS4w1alH1eBiNG0HAQCPsmw1nmkz7aXcM3oGWh99wV9BV8lQ2YXlJVSvItg6wN+4Ev6T7VrJ7Xk1MFGtjLAkY+/WGv2gz46cFKv/556hrOoBDlWxarIqxJc/ecZ4aAHw6MvAZKW95VIG4GAhZam4g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by SEZPR06MB6037.apcprd06.prod.outlook.com (2603:1096:101:ee::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
- 2023 04:09:51 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::32d4:1209:6b36:86e5]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::32d4:1209:6b36:86e5%7]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
- 04:09:51 +0000
-Message-ID: <b1d05ce2-1625-490f-ac5a-c88d3468385f@vivo.com>
-Date:   Fri, 20 Oct 2023 12:09:47 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] mm:vmscan: the dirty folio in folio_list skip
- unmap
-From:   zhiguojiang <justinjiang@vivo.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20231019131446.317-1-justinjiang@vivo.com>
- <20231019131446.317-2-justinjiang@vivo.com>
- <2d847d76-2e33-4296-992f-1a6d00c66ff5@redhat.com>
- <02e73251-33ff-4632-9d2c-bc268f397202@vivo.com>
-In-Reply-To: <02e73251-33ff-4632-9d2c-bc268f397202@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0213.apcprd06.prod.outlook.com
- (2603:1096:4:68::21) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+        Fri, 20 Oct 2023 00:12:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6A1C9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 21:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697775107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I47O23T9BvCYgonGJqGw8MfMmlJ1vLmY3miPYrwBuPQ=;
+        b=Lf7qmImtC+qanYbC7sg/lJms/Xb9Hig2CwWr1z4BY0sSiDBc8EmdtF4GwL6YtJFIk2UZbi
+        F3PxGxdUb0hItr/5vsxIP2C0bLcmgmefUOCqGK27kFi2FKmy0XPbTFkuTi6/DgYCt39CzQ
+        AeEhszeXldc8d2wy/UnV66DCEz2HSQ4=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-645-HRG5UhUBNC2FCydiUrHpJw-1; Fri, 20 Oct 2023 00:11:46 -0400
+X-MC-Unique: HRG5UhUBNC2FCydiUrHpJw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507ce973a03so330088e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 21:11:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697775104; x=1698379904;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I47O23T9BvCYgonGJqGw8MfMmlJ1vLmY3miPYrwBuPQ=;
+        b=whtytuio5stbVQ4aNUkWkfu8MYJ5A2Zur7LoJsQ8bNpm6rB1VD64SwClbLNg+W+jKk
+         YpsVGO8qdpYgUirl4ITvl7GS3dGHb70gmlgqZ1+OFVYwpI0WCm6fraK++/QcYe7+duKV
+         5/KReDmvctZFFpyHI6HNwk3YYjtyu/Oshgufb89Vn8kdcL288AJVY+cA70g/TdhVFSkD
+         7k/2kBEAi7wvt7H6gzOI2gEsaisfpm1ghQCYRWVBks+ZgwL/p99NNcYDfjr8UWv1dJQP
+         fLYppNCOcvXoiuu1l9EoEgsp+uV+h7dfuYzD51r+AcO8wuf8qrf4nioZ4x/SBuBB7CXy
+         9lcw==
+X-Gm-Message-State: AOJu0YwMSu3hlR3hiD6eE15QUlzfSsRjwfFPHBExZnNAmOwO6urSVsmb
+        cgkSTq8Gga0ZE8WppYzyd85v8LUtLVw6roENBleTaa25xBD2SEsM7j8zSDphLzRI+aNgSkDczpM
+        RllZSL9CzpE4RifUCFZc0zfPFnn+snyaxbJ7oSuHt
+X-Received: by 2002:ac2:58e2:0:b0:507:b8e5:dfd5 with SMTP id v2-20020ac258e2000000b00507b8e5dfd5mr352953lfo.5.1697775104384;
+        Thu, 19 Oct 2023 21:11:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFVH2GSaQQ0Fu8RL2xa3O3IN5CyG4LeMK8hUbKmOiKx6vdPnwX2l//h8x75BRTzVOphhHpJEc1wrkM51a92ecA=
+X-Received: by 2002:ac2:58e2:0:b0:507:b8e5:dfd5 with SMTP id
+ v2-20020ac258e2000000b00507b8e5dfd5mr352946lfo.5.1697775103857; Thu, 19 Oct
+ 2023 21:11:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SEZPR06MB6037:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37464ef1-6591-4ac9-988a-08dbd12267d8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CmuDy+Kw4bvz+dTA+QR/6j7YgABKvOJOJmJdf3mOiB6Fggvmm74pUz7oa7ras0qqhXTp8FAD6VPdhVYgMM57qqYW1U8tM9xmeiev/2Z4h7ogiuPfR3kOpSve3DGGzkzuJwaXB3q2pY8JD4S17IivHm4jf9AD0szlacOjVhz6QMuVQbztNScUKGtR2TT/EOJnlf7pgRMUH0zGc8NDEllnVYSZelJp7OzLzVajnrXVq+8N7RS4x2YG9f7bmeK6bg1VBJwABvdNEdO4gBX79H/HBqgtFzAQP49LlGPH7o+dbNJ1WtO28L8DtCg4C5CzHUMAPvnbkvr3jYU6fmGJ06QHsi6rv5PdClNAZ7qFWKvPRo8qnwSjwZCYBRZzw9NiFfzhuWMKYMZChDL9YoaZQeuxlLY/0NR4WRj5nAL8faTEKUx4h6w1vbHpROde09bnkB7nZRsK6y9gdWOGVgNemd7PkeEDTdAkXumiwBr5nkFv9oe/s3vKcDeZBBXoXgzD/YdW0uHI0oRpkGUqnG2GSGgnB8dMFuCzQDb0gvUQdgR18gL4d3u9QZ9NkY3YmfqhlXVPoyKcb4krWb73AyIa1D25s7nuRFrr4X9R4Q57NDnpZbeKtusTqgPTNCbYV5KXnLuB8E8ZDgeIQyDNXZxtZ+R3QY0wYtNOKik/mFO5SDc+CFPRqTK/6AW3Xx6QgwCxrBmZIfFZa8hUFM4gUQxePj1KDkLcEkJBn5TqekzNIM5yxzE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(136003)(39860400002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(31686004)(38350700005)(2906002)(38100700002)(6506007)(41300700001)(36756003)(31696002)(5660300002)(4326008)(6512007)(83380400001)(26005)(52116002)(86362001)(107886003)(53546011)(2616005)(478600001)(6486002)(6666004)(966005)(8936002)(8676002)(66946007)(66476007)(110136005)(316002)(66556008)(43062005)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWs4NkVNTFBkMmRMa0pEZ2d1UnZ0akpJVVNSaWx3MkkwRnVLNzVPZUt4T2sv?=
- =?utf-8?B?a09YbHhuU3E0Y1NwdXZpSHBrNjZObEp5VDFkOXlFOGo2VXl1eGlwdU5Lc0kv?=
- =?utf-8?B?RDI1dVgzQ0tLS0VPNDZEVWkyZmcwejRybUNOQjBqVE1ndFpvUGgvTkpLKzBm?=
- =?utf-8?B?RENQdnl2NktYaTZkblY1UkQrMWh4am9UYzRoTUJQSjBuMFRUTUVHM3FEVEtL?=
- =?utf-8?B?d0JlUURieXN3aGRIV2o5V1NpQUVxSnk1d2VVdjlHRWR4WFduUDF6R0FvOEFW?=
- =?utf-8?B?UElnV3BRaE9VRzl4L0g2eEY0Z0o2KzJNbDI1aUpMWnl1SFROUHJUMTNIbCtR?=
- =?utf-8?B?WjIrOTlFTzBZUDRKU3JsckhOR295WWZXRnpCWG1wVmxVcmlHU2FDREpkdzdm?=
- =?utf-8?B?Zkp4Y0FiSXBBWEIvUFpkM0NaWE92V2MwTU45b0FHUFpJb005WnB6cXNjZllo?=
- =?utf-8?B?SmdSZXVUbEsxOFE4Y0pWSldyQllGL294MWxRcWNrbjZnZ0o5b2tZRnlhQ0Vh?=
- =?utf-8?B?b0p2dmhVVmZZWnJRSUNZcllwdzRRQkdYaU15VTZMamlKMzAxK3NBMis5TVN6?=
- =?utf-8?B?UGNKU0haV25FaG1GQmFkeGU0UDYwdklxMzBpZEJ5bFhkQTZUbnZ0MVdEN3Q2?=
- =?utf-8?B?Sm0yL3BwZHdXV3VlTXFUYlNwSXVSb0RiR2pLSUFIUWMvTjk2alZGa3diNS8w?=
- =?utf-8?B?R2lmSlVqME1EMG5LdDhPcHFXSjRHemNlb0hOV1NXK2tMWE5YM2dnb3lGRmMw?=
- =?utf-8?B?NGdiQ3NLdUdvT21oejEwcmtYVlIwWm5nL0xiS2FPVWFVQVVHQTA3SUFhWjBs?=
- =?utf-8?B?OVFPZzNRV3ZzTzlSdHNHUm1objNOWVhwMVhuN1JFYnhNTDNFODRMYXg3YlNi?=
- =?utf-8?B?eUJrMHB2V2ZKWUJFelprQnFmVDN6a2ZsbEY1QWQwVFpndFZrNStZYlNqa2JI?=
- =?utf-8?B?dStENDYzTHdIVUZQQm9LeE9mZjlvSmlFdnhydXZuT212aGRsMERLSTR5ekkx?=
- =?utf-8?B?QXlmT3hxZ054dFRkWmpKOWV4bHdkeHVDRk10TzNPcFJ5MWl6SXVPOTJEb29C?=
- =?utf-8?B?cFFuU2l3VUdYanZrbktHQnpzTWtUbGJ3K21aRjVMZUVxV2FFcXZ6UWkyNWIy?=
- =?utf-8?B?ZndNVTJWYzZsL203RzNwc29Zb0s3VWlBRDFoWFJILzZCV1A4YXZrMnhqUnpS?=
- =?utf-8?B?VXR1VEkvM01BNnhRR2Eyb280Njk5NWg0Nmh3VXpxNG9YRm1KS0ZQWjZiVFJu?=
- =?utf-8?B?MWlDT2U5bzRvNWRYanNiZ01TVzAzTDF6NFFnRll5cCs4WjRzRkJWMmtoa0VC?=
- =?utf-8?B?djhjdTlwWnlBTkRDUWloVElNUmZ6VEtjZVpCSk1Zc0V5a1dyZktnL0VtRkhl?=
- =?utf-8?B?TkxFamFiUlYyYi9xZ2tVcndCRUV6anFvSzlIajI4R1pnU0tyNFI1RzAxUXRN?=
- =?utf-8?B?SDNYL2NpMVBOcVMzUld5Q2RyeVVTVEJqRkNGeFNKRHlJNUsxTWtwMi9TVEQ4?=
- =?utf-8?B?REZXQjhRUjNLdnQycDkzYnhzUGUzaGIyS3NmazJQUmtpMGtXOGI0Nkozb1My?=
- =?utf-8?B?QlM4NVBGR1I1R2xDS2kwdkM4MmM3SUpKVDUrUFBBd3EyeVV1d2kvVGpuQ0Jp?=
- =?utf-8?B?VnlrRGk4cWluVHJ0VWl1Z3h1bi80MFEwd1Q4ZGF0TlZ2a1BOZi9RdVFSUDlq?=
- =?utf-8?B?NDNGWEVqZmFLTGdTVitmR0MyekxOYVUvVkhEbnhGenlIRThuN1hsTGpQOUd4?=
- =?utf-8?B?aVRlN2VNWFFjQUxVdUdQSHpxbUlkL0JjVzcvZm9VTXhzVUNuODVVMzRBWkRT?=
- =?utf-8?B?aGo4c0dZTnZlSlBpQjBocWhLcEl3T0lDclAwbHBXR2RZcjlZc2w1UjNPajR4?=
- =?utf-8?B?MkQ4Rnhqc3lqbUV0czRoWmRZaWw0cUhMb0E0WFF0aUlZQiszY1N2YnBZTjFs?=
- =?utf-8?B?ekR3VnBTWnRQMnRVcmV3dHQ5eE41dS80ZlJHVEo4UkFsV0dJbU5OZDJxa2di?=
- =?utf-8?B?VE5rejdRdSs3U2ZTcFVkMFBYZStSMkZBdU4xeW1SMXJFVzQwV2loZ1ByTHk5?=
- =?utf-8?B?WU5Fa0U1YjBSc0FMU1pRN09BSlQ2clU3dHMyR3llOE1oNnZqdk9XWkd3OE1j?=
- =?utf-8?Q?BC1fGj9SZ35q93FhiSVel6mK/?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37464ef1-6591-4ac9-988a-08dbd12267d8
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 04:09:50.7596
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bAO2+0GdYGSiwRMPaPwzlya3fYJRcmFyQvgRreyAIAQ2rFD1TUlRM+K4T330GOzWxuUEdrECgksVrVmyy3e6nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6037
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
+ <1696928580-7520-3-git-send-email-si-wei.liu@oracle.com> <CACGkMEtkcyC54M_8A63uBEYjJP+EinLzTk3gP8CQ_rWs0Omt-Q@mail.gmail.com>
+ <1bd79050-8eb5-49f6-9e58-6c7eb3fcab3e@oracle.com> <CACGkMEt_zvBM=ysbXZJEC1sdbCk=BpcWvtjeuP_L2WH4ke1dWQ@mail.gmail.com>
+ <CAJaqyWf0AhsS6kaGUMVCosDjuRoeCAqO3OTVC=veqjV3jCqUjQ@mail.gmail.com>
+ <8f8c0c28-59a4-489b-9276-fc3b5cfa8faa@oracle.com> <CACGkMEs0W1joaNh0-a27Nekxn8V8CmGgr99p+r60dA6sQeys5g@mail.gmail.com>
+ <c9c819b9-4a63-4bb4-a977-881f6e653ed8@oracle.com> <CACGkMEuX8-T6BhbiqkTfF3NBoxS35zQ=k6Th=h0G5sDz4DV93Q@mail.gmail.com>
+ <CACGkMEtZ_oEydqsvJh0-eaDh4q_KHq9fLPg1uy-W1m7K_g+1-w@mail.gmail.com>
+ <d2b52f01-3d00-46ad-b58e-e23fd8a49e87@oracle.com> <CACGkMEvebhMo5dfcyq2MFhBvFVNbwrqVofJXaBe9Vmn1O4qVjA@mail.gmail.com>
+ <4ba8b63f-61e8-44cf-8e01-e467bd27ed5b@oracle.com> <CACGkMEuTchn+QU1QFh98E3YfUJaUM6Vnm0ECtRbqMsA-uCR2uQ@mail.gmail.com>
+ <CAJaqyWdMPVUd_zjd0nkQKvDmG2HPe5DBS-w5=mx4qSPCqtDJwg@mail.gmail.com> <07174d80-afad-4017-9088-02f2133e64b5@oracle.com>
+In-Reply-To: <07174d80-afad-4017-9088-02f2133e64b5@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 20 Oct 2023 12:11:31 +0800
+Message-ID: <CACGkMEsQb62oWLx8tLOk9B4UUTp1ErPLyiU1xf1kJwa1YvPZ-g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] vhost-vdpa: reset vendor specific mapping to initial
+ state in .release
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     Eugenio Perez Martin <eperezma@redhat.com>, mst@redhat.com,
+        xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023 at 6:28=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+>
+>
+> On 10/19/2023 7:39 AM, Eugenio Perez Martin wrote:
+> > On Thu, Oct 19, 2023 at 10:27=E2=80=AFAM Jason Wang <jasowang@redhat.co=
+m> wrote:
+> >> On Thu, Oct 19, 2023 at 2:47=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.=
+com> wrote:
+> >>>
+> >>>
+> >>> On 10/18/2023 7:53 PM, Jason Wang wrote:
+> >>>> On Wed, Oct 18, 2023 at 4:49=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracl=
+e.com> wrote:
+> >>>>>
+> >>>>> On 10/18/2023 12:00 AM, Jason Wang wrote:
+> >>>>>>> Unfortunately, it's a must to stick to ABI. I agree it's a mess b=
+ut we
+> >>>>>>> don't have a better choice. Or we can fail the probe if userspace
+> >>>>>>> doesn't ack this feature.
+> >>>>>> Antoher idea we can just do the following in vhost_vdpa reset?
+> >>>>>>
+> >>>>>> config->reset()
+> >>>>>> if (IOTLB_PERSIST is not set) {
+> >>>>>>        config->reset_map()
+> >>>>>> }
+> >>>>>>
+> >>>>>> Then we don't have the burden to maintain them in the parent?
+> >>>>>>
+> >>>>>> Thanks
+> >>>>> Please see my earlier response in the other email, thanks.
+> >>>>>
+> >>>>> ----------------%<----------------%<----------------
+> >>>>>
+> >>>>> First, the ideal fix would be to leave this reset_vendor_mappings()
+> >>>>> emulation code on the individual driver itself, which already has t=
+he
+> >>>>> broken behavior.
+> >>>> So the point is, not about whether the existing behavior is "broken"
+> >>>> or not.
+> >>> Hold on, I thought earlier we all agreed upon that the existing behav=
+ior
+> >>> of vendor driver self-clearing maps during .reset violates the vhost
+> >>> iotlb abstraction and also breaks the .set_map/.dma_map API. This is
+> >>> 100% buggy driver implementation itself that we should discourage or
+> >>> eliminate as much as possible (that's part of the goal for this serie=
+s),
+> >> I'm not saying it's not an issue, what I'm saying is, if the fix
+> >> breaks another userspace, it's a new bug in the kernel. See what Linus
+> >> said in [1]
+> >>
+> >> "If a change results in user programs breaking, it's a bug in the kern=
+el."
+> >>
+> >>> but here you seem to go existentialism and suggests the very opposite
+> >>> that every .set_map/.dma_map driver implementation, regardless being =
+the
+> >>> current or the new/upcoming, should unconditionally try to emulate th=
+e
+> >>> broken reset behavior for the sake of not breaking older userspace.
+> >> Such "emulation" is not done at the parent level. New parents just
+> >> need to implement reset_map() or not. everything could be done inside
+> >> vhost-vDPA as pseudo code that is shown above.
+> >>
+> >>> Set
+> >>> aside the criteria and definition for how userspace can be broken, ca=
+n
+> >>> we step back to the original question why we think it's broken, and w=
+hat
+> >>> we can do to promote good driver implementation instead of discuss th=
+e
+> >>> implementation details?
+> >> I'm not sure I get the point of this question. I'm not saying we don't
+> >> need to fix, what I am saying is that such a fix must be done in a
+> >> negotiable way. And it's better if parents won't get any burden. It
+> >> can just decide to implement reset_map() or not.
+> >>
+> >>> Reading the below response I found my major
+> >>> points are not heard even if written for quite a few times.
+> >> I try my best to not ignore any important things, but I can't promise
+> >> I will not miss any. I hope the above clarifies my points.
+> >>
+> >>> It's not
+> >>> that I don't understand the importance of not breaking old userspace,=
+ I
+> >>> appreciate your questions and extra patience, however I do feel the
+> >>> "broken" part is very relevant to our discussion here.
+> >>> If it's broken (in the sense of vhost IOTLB API) that you agree, I th=
+ink
+> >>> we should at least allow good driver implementations; and when you th=
+ink
+> >>> about the possibility of those valid good driver cases
+> >>> (.set_map/.dma_map implementations that do not clear maps in .reset),
+> >>> you might be able to see why it's coded the way as it is now.
+> >>>
+> >>>>    It's about whether we could stick to the old behaviour without
+> >>>> too much cost. And I believe we could.
+> >>>>
+> >>>> And just to clarify here, reset_vendor_mappings() =3D config->reset_=
+map()
+> >>>>
+> >>>>> But today there's no backend feature negotiation
+> >>>>> between vhost-vdpa and the parent driver. Do we want to send down t=
+he
+> >>>>> acked_backend_features to parent drivers?
+> >>>> There's no need to do that with the above code, or anything I missed=
+ here?
+> >>>>
+> >>>> config->reset()
+> >>>> if (IOTLB_PERSIST is not set) {
+> >>>>         config->reset_map()
+> >>>> }
+> >>> Implementation issue: this implies reset_map() has to be there for ev=
+ery
+> >>> .set_map implementations, but vendor driver implementation for custom
+> >>> IOMMU could well implement DMA ops by itself instead of .reset_map. T=
+his
+> >>> won't work for every set_map driver (think about the vduse case).
+> >> Well let me do it once again, reset_map() is not mandated:
+> >>
+> >> config->reset()
+> >> if (IOTLB_PERSIST is not set) {
+> >>      if (config->reset_map)
+> >>            config->reset_map()
+> > To avoid new parent drivers
+> I am afraid it's not just new parent drivers, but any well behaved
+> driver today may well break userspace if go with this forced emulation
+> code, if they have to implement reset_map for some reason (e.g. restored
+> to 1:1 passthrough mapping or other default state in mapping). For new
+> userspace and user driver we can guard against it using the
+> IOTLB_PERSIST flag, but the above code would get a big chance to break
+> setup with good driver and older userspace in practice.
+>
+> And .reset_map implementation doesn't necessarily need to clear maps.
+> For e.g. IOMMU API compliant driver that only needs simple DMA model for
+> passthrough, all .reset_map has to do is toggle to 1:1 mapping mode to
+> the default/initial state without taking care of maps, as
+> vhost_vdpa_unmap(0, -1ULL) earlier should have done the map cleaning job
+> already.
 
+Ok, finally, it takes me a while to understand the issue :)
 
-在 2023/10/20 11:59, zhiguojiang 写道:
+Actually, there are two things:
+
+1) stick the IOTLB mappings across the reset
+2) reset the vendor specific mappings to whatever the parent think
+it's comfort (like 1:1)
+
+So I think my suggestion doesn't work.
+
 >
 >
-> 在 2023/10/19 22:15, David Hildenbrand 写道:
->> [你通常不会收到来自 david@redhat.com 的电子邮件。请访问 
->> https://aka.ms/LearnAboutSenderIdentification，以了解这一点为什么很重要]
->>
->> On 19.10.23 15:14, Zhiguo Jiang wrote:
->>> In the shrink_folio_list() the sources of the file dirty folio include
->>> two ways below:
->>> 1. The dirty folio is from the incoming parameter folio_list,
->>>     which is the inactive file lru.
->>> 2. The dirty folio is from the PTE dirty bit transferred by
->>>     the try_to_unmap().
->>>
->>> For the first source of the dirty folio, if the dirty folio does not
->>> support pageout, the dirty folio can skip unmap in advance to reduce
->>> recyling time.
->>>
->>> Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
->>> ---
->>>
->>> Changelog:
->>> v1->v2:
->>> 1. Keep the original judgment flow.
->>> 2. Add the interface of folio_check_pageout().
->>> 3. The dirty folio which does not support pageout in inactive file lru
->>>     skip unmap in advance.
->>>
->>>   mm/vmscan.c | 103 
->>> +++++++++++++++++++++++++++++++++-------------------
->>>   1 file changed, 66 insertions(+), 37 deletions(-)
->>>
->>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>> index a68d01fcc307..e067269275a5 100755
->>> --- a/mm/vmscan.c
->>> +++ b/mm/vmscan.c
->>> @@ -925,6 +925,44 @@ static void folio_check_dirty_writeback(struct 
->>> folio *folio,
->>>               mapping->a_ops->is_dirty_writeback(folio, dirty, 
->>> writeback);
->>>   }
->>>
->>> +/* Check if a dirty folio can support pageout in the recyling 
->>> process*/
->>> +static bool folio_check_pageout(struct folio *folio,
->>> +                                             struct pglist_data 
->>> *pgdat)
->>> +{
->>> +     int ret = true;
->>> +
->>> +     /*
->>> +      * Anonymous folios are not handled by flushers and must be 
->>> written
->>> +      * from reclaim context. Do not stall reclaim based on them.
->>> +      * MADV_FREE anonymous folios are put into inactive file list 
->>> too.
->>> +      * They could be mistakenly treated as file lru. So further anon
->>> +      * test is needed.
->>> +      */
->>> +     if (!folio_is_file_lru(folio) ||
->>> +             (folio_test_anon(folio) && 
->>> !folio_test_swapbacked(folio)))
->>> +             goto out;
->>> +
->>> +     if (folio_test_dirty(folio) &&
->>> +             (!current_is_kswapd() ||
->>> +              !folio_test_reclaim(folio) ||
->>> +              !test_bit(PGDAT_DIRTY, &pgdat->flags))) {
->>> +             /*
->>> +              * Immediately reclaim when written back.
->>> +              * Similar in principle to folio_deactivate()
->>> +              * except we already have the folio isolated
->>> +              * and know it's dirty
->>> +              */
->>> +             node_stat_mod_folio(folio, NR_VMSCAN_IMMEDIATE,
->>> +                     folio_nr_pages(folio));
->>> +             folio_set_reclaim(folio);
->>> +
->>> +             ret = false;
->>> +     }
->>> +
->>> +out:
->>> +     return ret;
->>> +}
->>> +
->>>   static struct folio *alloc_demote_folio(struct folio *src,
->>>               unsigned long private)
->>>   {
->>> @@ -1078,6 +1116,12 @@ static unsigned int shrink_folio_list(struct 
->>> list_head *folio_list,
->>>               if (dirty && !writeback)
->>>                       stat->nr_unqueued_dirty += nr_pages;
->>>
->>> +             /* If the dirty folio dose not support pageout,
->>> +              * the dirty folio can skip this recycling.
->>> +              */
->>> +             if (!folio_check_pageout(folio, pgdat))
->>> +                     goto activate_locked;
->>> +
->>>               /*
->>>                * Treat this folio as congested if folios are cycling
->>>                * through the LRU so quickly that the folios marked
->>> @@ -1261,43 +1305,6 @@ static unsigned int shrink_folio_list(struct 
->>> list_head *folio_list,
->>>                       enum ttu_flags flags = TTU_BATCH_FLUSH;
->>>                       bool was_swapbacked = 
->>> folio_test_swapbacked(folio);
->>>
->>> -                     if (folio_test_dirty(folio)) {
->>> -                             /*
->>> -                              * Only kswapd can writeback 
->>> filesystem folios
->>> -                              * to avoid risk of stack overflow. 
->>> But avoid
->>> -                              * injecting inefficient single-folio 
->>> I/O into
->>> -                              * flusher writeback as much as 
->>> possible: only
->>> -                              * write folios when we've encountered 
->>> many
->>> -                              * dirty folios, and when we've 
->>> already scanned
->>> -                              * the rest of the LRU for clean 
->>> folios and see
->>> -                              * the same dirty folios again (with 
->>> the reclaim
->>> -                              * flag set).
->>> -                              */
->>> -                             if (folio_is_file_lru(folio) &&
->>> -                                     (!current_is_kswapd() ||
->>> - !folio_test_reclaim(folio) ||
->>> -                                      !test_bit(PGDAT_DIRTY, 
->>> &pgdat->flags))) {
->>> -                                     /*
->>> -                                      * Immediately reclaim when 
->>> written back.
->>> -                                      * Similar in principle to 
->>> folio_deactivate()
->>> -                                      * except we already have the 
->>> folio isolated
->>> -                                      * and know it's dirty
->>> -                                      */
->>> - node_stat_mod_folio(folio, NR_VMSCAN_IMMEDIATE,
->>> - nr_pages);
->>> - folio_set_reclaim(folio);
->>> -
->>> -                                     goto activate_locked;
->>> -                             }
->>> -
->>> -                             if (references == FOLIOREF_RECLAIM_CLEAN)
->>> -                                     goto keep_locked;
->>> -                             if (!may_enter_fs(folio, sc->gfp_mask))
->>> -                                     goto keep_locked;
->>> -                             if (!sc->may_writepage)
->>> -                                     goto keep_locked;
->>> -                     }
->>> -
->>>                       if (folio_test_pmd_mappable(folio))
->>>                               flags |= TTU_SPLIT_HUGE_PMD;
->>>
->>> @@ -1323,6 +1330,28 @@ static unsigned int shrink_folio_list(struct 
->>> list_head *folio_list,
->>>
->>>               mapping = folio_mapping(folio);
->>>               if (folio_test_dirty(folio)) {
->>> +                     /*
->>> +                      * Only kswapd can writeback filesystem folios
->>> +                      * to avoid risk of stack overflow. But avoid
->>> +                      * injecting inefficient single-folio I/O into
->>> +                      * flusher writeback as much as possible: only
->>> +                      * write folios when we've encountered many
->>> +                      * dirty folios, and when we've already scanned
->>> +                      * the rest of the LRU for clean folios and see
->>> +                      * the same dirty folios again (with the reclaim
->>> +                      * flag set).
->>> +                      */
->>> +                     if (folio_is_file_lru(folio) &&
->>> +                             !folio_check_pageout(folio, pgdat))
->>> +                             goto activate_locked;
->>> +
->>> +                     if (references == FOLIOREF_RECLAIM_CLEAN)
->>> +                             goto keep_locked;
->>> +                     if (!may_enter_fs(folio, sc->gfp_mask))
->>> +                             goto keep_locked;
->>> +                     if (!sc->may_writepage)
->>> +                             goto keep_locked;
->>> +
->>>                       /*
->>>                        * Folio is dirty. Flush the TLB if a writable 
->>> entry
->>>                        * potentially exists to avoid CPU writes 
->>> after I/O
->>
->> I'm confused. Did you apply this on top of v1 by accident?
-> Hi,
-> According to my modified mm_vmscan_lru_shrink_inactive test tracelog, 
-> in the 32 scanned inactive file pages, 20 were dirty, and the 20 dirty 
-> pages were not reclamed, but they took 20us to perform try_to_unmap.
+> >   to have this behavior if they need to
+> > implement reset_map,
+> >
+> > What if we add a new callback like "config->buggy_virtio_reset_map",
+> > different from regular reset_map callback at cleanup?
+> Right, separating out the need for old behavior emulation from
+> .reset_map is much cleaner, and this is what individual broken driver
+> has to maintain without penalizing other good drivers. Good to see what
+> I said earlier is heard.
 >
-> I think unreclaimed dirty folio in inactive file lru can skip to 
-> perform try_to_unmap. Please help to continue review. Thanks.
+> > Only mlx5 and
+> > vdpa_sim need to implement it, with a big warning, and new parent
+> > drivers can trust they'll never have the old bad behavior.
+> Let's see what Jason will say about it and try to converge on this
+> first, I think he seemed to imply that this is part of ABI that every
+> driver has to make compromise for. I'd better get it ack'ed before
+> proceeding to the rest.
+
+Thanks for your patience.
+
+I think we have some choices:
+
+(All of the below can work, but we need to choose the best)
+
+1) module parameter: this turns out to be hard for the management as
+it requires the subtle knowledge of a specific user space which turns
+out to be hard
+2) buggy_virtio_reset_map: seems like somehow a pollution of the
+config ops, I think we can do this only if we have other choice
+3) set_backend_features: I understand the concern that we should not
+propagate the vhost level feature to parent, the reason is most of
+them are irrelevant to the parent. I think the right way is to
+introduce get_parent_features()/set_parent_features() then we can
+choose to map some parent feature to vhost like
+(ENALBE_AFTER_DRIVER_OK and IOTLB_PERSIST)
+4) piggy backing whether we need to clean vendor specific IOTLB in
+config->reset(bool clean_map)
+
+Siwei, Eugenio, what's your opinion here?
+
+Thanks
+
 >
-> kswapd0-99      (     99) [005] .....   687.793724: 
-> mm_vmscan_lru_shrink_inactive: [Justin] nid 0 scan=32 isolate=32 
-> reclamed=12 nr_dirty=20 nr_unqueued_dirty=20 nr_writeback=0 
-> nr_congested=0 nr_immediate=0 nr_activate[0]=0 nr_activate[1]=20 
-> nr_ref_keep=0 nr_unmap_fail=0 priority=2 
-> file=RECLAIM_WB_FILE|RECLAIM_WB_ASYNC total=39 exe=0 reference_cost=5 
-> reference_exe=0 unmap_cost=21 unmap_exe=0 dirty_unmap_cost=20 
-> dirty_unmap_exe=0 pageout_cost=0 pageout_exe=0
+> Thanks,
+> -Siwei
 >
-To supplement, I think the unreclaimed dirty folio of the inactive file 
-lru in shrink_folio_list() can exit the recyling flow in advance and 
-avoid to execute some time-consuming interfaces, such as 
-folio_check_references() and try_to_unmap().
->> -- 
->> Cheers,
->>
->> David / dhildenb
->>
+> >
+> >> }
+> >>
+> >> Did you see any issue with VDUSE in this case?
+> >>
+> >>> But this is not the the point I was making. I think if you agree this=
+ is
+> >>> purely buggy driver implementation of its own, we should try to isola=
+te
+> >>> this buggy behavior to individual driver rather than overload vhost-v=
+dpa
+> >>> or vdpa core's role to help implement the emulation of broken driver
+> >>> behavior.
+> >> As I pointed out, if it is not noticeable in the userspace, that's
+> >> fine but it's not.
+> >>
+> >>> I don't get why .reset is special here, the abuse of .reset to
+> >>> manipulate mapping could also happen in other IOMMU unrelated driver
+> >>> entries like in .suspend, or in queue_reset.
+> >> Who can abuse reset here? It is totally under the control of
+> >> vhost-vDPA and it's not visible to uAPI. And we can fully control the
+> >> behaviour of vhost-vDPA.
+> >>
+> >>> If someday userspace is
+> >>> found coded around similar buggy driver implementation in other drive=
+r
+> >>> ops, do we want to follow and duplicate the same emulation in vdpa co=
+re
+> >>> as the precedent is already set here around .reset?
+> >> I think so, have you seen the links I give you? If you want to go
+> >> through the one from Linus thread[1], you can see the one that unbreak
+> >> virtio-IOMMU[2]:
+> >>
+> >> 1) Someday, we spot invalidate with size 0 is a bug
+> >> 2) We fix this bug by not allowing this
+> >> 3) But virtio-IOMMU userspace find that size 0 actually clean all the
+> >> IOTLB so it depends on the behaviour
+> >> 4) So the virtio-IOMMU userspace find it can't work after 2)
+> >> 5) Then we recover the behaviour before 2) via [2]
+> >>
+> >> Another example is the IOTLB_MSG_V2, V1 suffers from in-stable ABI in
+> >> 32bit archs, most of the userspace survives since it never runs on
+> >> 32bit archs. The fix is to introduce a V2 but we will stick to V1 by
+> >> default if V2 is not acknowledged by the userspace.
+> >>
+> >> I think the above 2 examples are sufficient for us to understand the
+> >> case. If not, I can help to clarify more since I'm involved in those 2
+> >> fixes.
+> >>
+> >>> The buggy driver can fail in a lot of other ways indefinitely during
+> >>> reset, if there's a buggy driver that's already broken the way as how=
+ it
+> >>> is and happens to survive with all userspace apps, we just don't care
+> >>> and let it be.
+> >> Without IOTLB_PRESIST it doesn't break. With IOTLB_PERSIST and if the
+> >> reset_map() is done unconditionally, it can break. That's my point.
+> >>
+> >>> There's no way we can enumerate all those buggy behaviors
+> >>> in .reset_map itself, it's overloading that driver API too much.
+> >> If it is not noticeable by userspace, we can do any fix at will. But
+> >> it is not, we don't have another choice. Especially considering the
+> >> cost is rather low.
+> >>
+> >>>>> Second, IOTLB_PERSIST is needed but not sufficient. Due to lack of
+> >>>>> backend feature negotiation in parent driver, if vhost-vdpa has to
+> >>>>> provide the old-behaviour emulation for compatibility on driver's
+> >>>>> behalf, it needs to be done per-driver basis. There could be good
+> >>>>> on-chip or vendor IOMMU implementation which doesn't clear the IOTL=
+B in
+> >>>>> .reset, and vendor specific IOMMU doesn't have to provide .reset_ma=
+p,
+> >>>> Then we just don't offer IOTLB_PRESIST, isn't this by design?
+> >>> Think about the vduse case, it can work with DMA ops directly so does=
+n't
+> >>> have to implement .reset_map, unless for some specific good reason.
+> >>> Because it's a conforming and valid/good driver implementation, we ma=
+y
+> >>> still allow it to advertise IOTLB_PERSIST to userspace.
+> >> I would like to know why this can't work in this case:
+> >>
+> >> config->reset()
+> >> if (IOTLB_PERSIST is not set) {
+> >>      if (config->reset_map)
+> >>            config->reset_map()
+> >> }
+> >>
+> >>> Which belongs to
+> >>> the 3rd bullet below:
+> >>>
+> >>> https://lore.kernel.org/virtualization/1696928580-7520-4-git-send-ema=
+il-si-wei.liu@oracle.com/
+> >>>
+> >>> There are 3 cases that backend may claim this feature bit on:
+> >>>
+> >>> - parent device that has to work with platform IOMMU
+> >>> - parent device with on-chip IOMMU that has the expected
+> >>>     .reset_map support in driver
+> >>> - parent device with vendor specific IOMMU implementation
+> >>>     that explicitly declares the specific backend feature
+> >>>
+> >>>>> we
+> >>>>> should allow these good driver implementations rather than
+> >>>>> unconditionally stick to some specific problematic behavior for eve=
+ry
+> >>>>> other good driver.
+> >>>> Then you can force reset_map() with set_map() that is what I suggest
+> >>>> in another thread, no?
+> >>> This is exactly what I was afraid of that broken behavior emulation m=
+ay
+> >>> become a dangerous slippery slope - in principle we should encourage
+> >>> good driver implementation, as they can work totally fine with older
+> >>> userspace. Why do they have to bother emulating broken behavior just
+> >>> because some other driver's misbehaving?
+> >> Please read the link [1], Linus has explained it.
+> >>
+> >>> And what's the boundary for
+> >>> this hack, do drivers backed by platform IOMMU even have to emulate (=
+if
+> >>> not why not, and is there substantial difference in between)?
+> >> The boundary is whether the behaviour change could be noticed but
+> >> userspace. And I've shown you it's not a burden with the pseudo codes.
+> >> If not, please explain why.
+> >>
+> >>> After
+> >>> getting through all of this, do you still believe everything is just =
+as
+> >>> easy and simple as what thought to be?
+> >> The truth is that bugs exist everywhere. We can't promise there's no
+> >> bug when developing an uAPI or subsystem. For kernel code, the bug
+> >> that touches uAPI might be fixed in a way that doesn't break existing
+> >> userspace. If you look at how downstream to maintain kABI, you will be
+> >> supersized furtherly.
+> >>
+> >>> Btw, I thought I was expecting but still haven't got the clear answer=
+s
+> >>> to what was the goal to do all this, we spent a lot of time trying to
+> >>> unbreak userspace,
+> >> The code is pretty simple. But yes, the time spent on justifying it
+> >> might take some time. That's the community. People need time to
+> >> understand each other's points.
+> >>
+> >>> but looks to me as if we were trying every possible
+> >>> way to break userspace
+> >> How could my suggestions break a userspace?
+> >>
+> >>> or try to approximate to the same brokenness
+> >>> mlx5_vdpa may have caused to the userspace. What we will get eventual=
+ly
+> >>> from these lengthy discussions?
+> >> Siwei, I'd really suggest you read the link I gave you. You may get
+> >> the answer. What's more, It doesn't cost too much then we know for
+> >> sure there would not be any issue, why not choose the hard way?
+> >>
+> >>> On the other hand, if you think it from
+> >>> vhost-vdpa user perspective, you'll clearly see there's just a couple=
+ of
+> >>> ways to unbreak userspace from the internal broken map which is out o=
+f
+> >>> sync with vhost-vdpa iotlb after device reset.
+> >> Patches are more than welcomed.
+> >>
+> >>> If this brokenness was
+> >>> something universally done from the vhost-vdpa layer itself, I'd feel
+> >>> it's more of a shared problem, but this is not the case I see it here=
+.
+> >>> While the long standing mlx5_vdpa/vdpa_sim issue is 100% misuse of
+> >>> .reset op in a wrong way per IOMMU API definition. Why leaving this
+> >>> discrepancy to the individual driver is not even an option, I'm still
+> >>> not sure?
+> >> Sorry? I start with a switch in the driver, and then I try to avoid
+> >> that. And it seems you don't want a burden on the driver as well.
+> >> Where did you see I say we can't do that in the driver? What I
+> >> disagree with is to use a module parameter.
+> >>
+> >> Even if I fail, it doesn't mean we can't do that in the driver code.
+> >> If you read the link[1] you can see the offending commit is a change
+> >> in uvcvideo driver.
+> >>
+> >> Thanks
+> >>
+> >>>
+> >>> Thanks,
+> >>> -Siwei
+> >>>
+> >>>>> Then we need a set of device flags (backend_features
+> >>>>> bit again?) to indicate the specific driver needs upper layer's hel=
+p on
+> >>>>> old-behaviour emulation.
+> >>>>>
+> >>>>> Last but not least, I'm not sure how to properly emulate
+> >>>>> reset_vendor_mappings() from vhost-vdpa layer. If a vendor driver h=
+as no
+> >>>>> .reset_map op implemented, or if .reset_map has a slightly differen=
+t
+> >>>>> implementation than what it used to reset the iotlb in the .reset o=
+p,
+> >>>> See above, for reset_vendor_mappings() I meant config->reset_map() e=
+xactly.
+> >>>>
+> >>>> Thanks
+> >>>>
+> >>>>> then this either becomes effectively dead code if no one ends up us=
+ing,
+> >>>>> or the vhost-vdpa emulation is helpless and limited in scope, unabl=
+e to
+> >>>>> cover all the cases.
+> >>>>>
+> >>>>> ----------------%<----------------%<----------------
+> >>>>>
 >
 
