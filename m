@@ -2,184 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E917B7D0F1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1CE7D0F21
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377206AbjJTLtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S1377225AbjJTLuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377216AbjJTLt3 (ORCPT
+        with ESMTP id S1377147AbjJTLuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:49:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DCB1BF;
-        Fri, 20 Oct 2023 04:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697802566; x=1729338566;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=bQz/LfAWgYDgtwkMay6xF+IAbu5wPfZ8ZJ3e4zonu2Y=;
-  b=YdKunT5Wlz5PCZjkMOok8Qlfthn7Y+eg78c95dVF5cFAqV3BSF7AY4j8
-   vtfFJievCzirRqzzY/3dwNlncbu/AfYNqIcBGRlNCuPuWkljAE2AVvlYB
-   ScdnNh8rbPhFtIuuT6iiJNc8p+dRCeCfHTj2c3dN6SZ+EgMfFWiXdQ5Fl
-   qx5jx8Y5Mit/Pt2m0H4kMtdCnOyaKNLA2Hg4nuUc1ui9N+yK7cH1yoWWJ
-   pCg59fgxmzRutJ7CYRF1Gh4TTc2JIs3vhPh0itXIZf0phV+w0V1+WaZwP
-   HT7UIzpMpz46qV+Sq64l9aSwtKuuDUxXia4JGxJL2sSh+AU/t4nnpSFnI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="386294369"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="386294369"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 04:49:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="750894033"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="750894033"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.102]) ([10.254.211.102])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 04:49:19 -0700
-Message-ID: <d3c2f048-551c-4a35-81c1-212f15c8ab8c@linux.intel.com>
-Date:   Fri, 20 Oct 2023 19:49:16 +0800
+        Fri, 20 Oct 2023 07:50:50 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4493C98;
+        Fri, 20 Oct 2023 04:50:45 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so110211266b.1;
+        Fri, 20 Oct 2023 04:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697802644; x=1698407444; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1BXpFmZotobe2WYOp6dHHJadZsngmwLQdTQTaRJwTnA=;
+        b=lORszuXInBVjKXkSeimvp8kScDVhD/ILxZPWILk5pcDCFU1qRtJyPZuMMNvoNxRMjx
+         4eRQne4tPbH7QFqUQCyEhbsbPq/uegqeTgIWc45vrVPtlg0ORIkchWfVlMXZX0frFwDw
+         NyIL5caHlVtprgOt/yyQiArvJ0AZKtNw4ONBM/mi5knM6nuyW0iqQjQZCd3pty9+LiEu
+         VbC57N4Z4s03ycZrIyA/PZgwFWGBsVjqdtv0Dqj0jMeC3lIjd9UaipDwOeCVfO2S2OdS
+         cLT/zvJTJuWP7uaGSx5GNRVMcQdN3AknELzHCJ0Tu5hfRvid+qi5mbxqz7aMZL5ZkMGY
+         5VPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697802644; x=1698407444;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1BXpFmZotobe2WYOp6dHHJadZsngmwLQdTQTaRJwTnA=;
+        b=GiQM5w6uFjmuVWfOkIvEntGuBfYuYg4KyU3SA7NpLLui7c5Apx8mEILYYo7DXwKpOf
+         a0Iy2iy6Xg7DlJeaDsuH1ticB6m6E8DFapEp2e/AnUio6ZByyi869vB+O2lASbpHXsrZ
+         cmO+1orsah7xkGlFHzjGYpOtvzYxb2sT4MQpDAfOBCmGAisDYRU8FqiW/kJNfWgdvFF2
+         O1TJHMAPgsf9MVlyjth2OVeXUJkyi7O/NSc/s5ezwHhBJVBhsrcGB3O54oihxNDIr0DU
+         7iLeScWTyaqhrZk5YuvZqcdCSCX7ClXPcftwQNyNQNziTsw6nUnrNWJbYcnRsNixmtT0
+         9XEg==
+X-Gm-Message-State: AOJu0YyYFbVHyZnMxkz7ysy3amORUET7pv12yHk4G61TdznWtw0hT93m
+        lP+XRlsxcrDEs7wSu4KxkO8=
+X-Google-Smtp-Source: AGHT+IH4SSfPUyyXEXRxntxeV4/0PAyE5eC0Y6HI3UL6kr/sseuOAfWQ9oPrlZX/ARDGNS/RvHZmuw==
+X-Received: by 2002:a17:907:d8d:b0:9b2:df16:851d with SMTP id go13-20020a1709070d8d00b009b2df16851dmr1233141ejc.57.1697802643458;
+        Fri, 20 Oct 2023 04:50:43 -0700 (PDT)
+Received: from ?IPV6:2a02:a466:68ed:1:974d:4d18:38cf:ab0f? (2a02-a466-68ed-1-974d-4d18-38cf-ab0f.fixed6.kpn.net. [2a02:a466:68ed:1:974d:4d18:38cf:ab0f])
+        by smtp.gmail.com with ESMTPSA id i6-20020a17090671c600b009920a690cd9sm1324627ejk.59.2023.10.20.04.50.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 04:50:42 -0700 (PDT)
+Message-ID: <e11ab885-10dc-4efa-8171-ebdb3ca61b24@gmail.com>
+Date:   Fri, 20 Oct 2023 13:50:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v6 3/8] iommu/vt-d: Add helper for nested domain
- allocation
-To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com
-References: <20231020093246.17015-1-yi.l.liu@intel.com>
- <20231020093246.17015-4-yi.l.liu@intel.com>
+Subject: Re: [PATCH v1 0/3] gpiolib: acpi: More fixes to the consolidation
+ rework
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20231019173457.2445119-1-andriy.shevchenko@linux.intel.com>
 Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231020093246.17015-4-yi.l.liu@intel.com>
+From:   Ferry Toth <fntoth@gmail.com>
+In-Reply-To: <20231019173457.2445119-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/20 17:32, Yi Liu wrote:
-> From: Lu Baolu <baolu.lu@linux.intel.com>
+Op 19-10-2023 om 19:34 schreef Andy Shevchenko:
+> On top what Hans already fixed, Ferry reported a few bugs that pointed
+> out to the same consolidation rework done in v6.2.
 > 
-> This adds helper for accepting user parameters and allocate a nested
-> domain.
+> The first is most serious issue, that needs to be fixed ASAP.
 > 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->   drivers/iommu/intel/Makefile |  2 +-
->   drivers/iommu/intel/iommu.h  |  2 ++
->   drivers/iommu/intel/nested.c | 55 ++++++++++++++++++++++++++++++++++++
->   3 files changed, 58 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/iommu/intel/nested.c
+> The second is good to have.
 > 
-> diff --git a/drivers/iommu/intel/Makefile b/drivers/iommu/intel/Makefile
-> index 7af3b8a4f2a0..5dabf081a779 100644
-> --- a/drivers/iommu/intel/Makefile
-> +++ b/drivers/iommu/intel/Makefile
-> @@ -1,6 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0
->   obj-$(CONFIG_DMAR_TABLE) += dmar.o
-> -obj-$(CONFIG_INTEL_IOMMU) += iommu.o pasid.o
-> +obj-$(CONFIG_INTEL_IOMMU) += iommu.o pasid.o nested.o
->   obj-$(CONFIG_DMAR_TABLE) += trace.o cap_audit.o
->   obj-$(CONFIG_DMAR_PERF) += perf.o
->   obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += debugfs.o
-> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-> index a91077a063ee..ff55184456dd 100644
-> --- a/drivers/iommu/intel/iommu.h
-> +++ b/drivers/iommu/intel/iommu.h
-> @@ -866,6 +866,8 @@ void *alloc_pgtable_page(int node, gfp_t gfp);
->   void free_pgtable_page(void *vaddr);
->   void iommu_flush_write_buffer(struct intel_iommu *iommu);
->   struct intel_iommu *device_to_iommu(struct device *dev, u8 *bus, u8 *devfn);
-> +struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *s2_domain,
-> +					       const struct iommu_user_data *user_data);
->   
->   #ifdef CONFIG_INTEL_IOMMU_SVM
->   void intel_svm_check(struct intel_iommu *iommu);
-> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-> new file mode 100644
-> index 000000000000..5a2920a98e47
-> --- /dev/null
-> +++ b/drivers/iommu/intel/nested.c
-> @@ -0,0 +1,55 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * nested.c - nested mode translation support
-> + *
-> + * Copyright (C) 2023 Intel Corporation
-> + *
-> + * Author: Lu Baolu <baolu.lu@linux.intel.com>
-> + *         Jacob Pan <jacob.jun.pan@linux.intel.com>
-> + *         Yi Liu <yi.l.liu@intel.com>
-> + */
-> +
-> +#define pr_fmt(fmt)	"DMAR: " fmt
-> +
-> +#include <linux/iommu.h>
-> +
-> +#include "iommu.h"
-> +
-> +static void intel_nested_domain_free(struct iommu_domain *domain)
-> +{
-> +	kfree(to_dmar_domain(domain));
-> +}
-> +
-> +static const struct iommu_domain_ops intel_nested_domain_ops = {
-> +	.free			= intel_nested_domain_free,
-> +};
-> +
-> +struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *s2_domain,
-> +					       const struct iommu_user_data *user_data)
-> +{
-> +	struct iommu_hwpt_vtd_s1 vtd;
-> +	struct dmar_domain *domain;
-> +	int ret;
-> +
-> +	ret = iommu_copy_struct_from_user(&vtd, user_data,
-> +					  IOMMU_HWPT_DATA_VTD_S1, __reserved);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	domain = kzalloc(sizeof(*domain), GFP_KERNEL_ACCOUNT);
-> +	if (!domain)
-> +		return NULL;
+> And the third one I'm not fully okay with, so open for advice on
+> how to improve.
+> 
+> Note, that long list of parameters to a _find_gpio() functions
+> can be hidden in the specifically crafted a new data structure,
+> but this is out of scope of the _fixes_ series. I'm all ears as
+> well for that one.
+> 
+> Andy Shevchenko (3):
+>    gpiolib: acpi: Add missing memset(0) to acpi_get_gpiod_from_data()
+>    gpiolib: Fix debug messaging in gpiod_find_and_request()
+>    gpiolib: Make debug messages in gpiod_find_by_fwnode() less confusing
 
-	return ERR_PTR(-ENOMEM);
-?
+For the series
+Tested-by: Ferry Toth <fntoth@gmail.com>
 
-> +
-> +	domain->use_first_level = true;
-> +	domain->s2_domain = to_dmar_domain(s2_domain);
-> +	domain->s1_pgtbl = vtd.pgtbl_addr;
-> +	domain->s1_cfg = vtd;
-> +	domain->domain.ops = &intel_nested_domain_ops;
-> +	domain->domain.type = IOMMU_DOMAIN_NESTED;
-> +	INIT_LIST_HEAD(&domain->devices);
-> +	INIT_LIST_HEAD(&domain->dev_pasids);
-> +	spin_lock_init(&domain->lock);
-> +	xa_init(&domain->iommu_array);
-> +
-> +	return &domain->domain;
-> +}
+>   drivers/gpio/gpiolib-acpi.c   | 10 ++++-----
+>   drivers/gpio/gpiolib-acpi.h   | 13 ++++++------
+>   drivers/gpio/gpiolib-of.c     | 13 ++++++------
+>   drivers/gpio/gpiolib-of.h     |  8 ++++----
+>   drivers/gpio/gpiolib-swnode.c |  4 ++--
+>   drivers/gpio/gpiolib-swnode.h |  1 +
+>   drivers/gpio/gpiolib.c        | 38 ++++++++++++++++++++---------------
+>   7 files changed, 48 insertions(+), 39 deletions(-)
+> 
 
-Best regards,
-baolu
