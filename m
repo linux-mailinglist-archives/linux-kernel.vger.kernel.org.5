@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD757D1177
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371C27D1179
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377527AbjJTOXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S1377537AbjJTOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377477AbjJTOW7 (ORCPT
+        with ESMTP id S1377499AbjJTOXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:22:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B998AD52;
-        Fri, 20 Oct 2023 07:22:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B231C433C7;
-        Fri, 20 Oct 2023 14:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697811777;
-        bh=8UjVHIG4pHIzf6WnY8xNDmsWFhbzt0q7zzNVbYQt34w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=djB+zb9L+53nV76+X/jaRZ1crfQvUPWje3uBQ/SrTXVat4NRJ0uOINVVpGVmH7FOz
-         b5p1TJvVz4aMzWyyIMHwCp75/sUVC/q51WZykYuU99mt0spXwMRTrWEsGwGHtTiOZd
-         TghHscFG3QzS3pucUGl6OLi2RuCxpAXYI30ZhRzw=
-Date:   Fri, 20 Oct 2023 16:22:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 6.1.58
-Message-ID: <2023102016-wanted-trash-a8c8@gregkh>
-References: <2023101518-subscript-entity-be71@gregkh>
- <169778656748.20306.1670865069010793541@noble.neil.brown.name>
+        Fri, 20 Oct 2023 10:23:52 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EF2D53
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:23:50 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6be1bc5aa1cso794043b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697811829; x=1698416629; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPSg6YbAJ9dydtHDvFmYfqGSuz9Cya55UUtEzlaAeGQ=;
+        b=nIQykx6Pv0dgbLP1DL4jSV1xWIguGaR4S0hdH5bEB4w3K0SeXc/lfP8G3C2a9gGAFG
+         1s+8uA0ei6PgykbtrJqvlhIy/69fSGQqwsF96qhx2fNptiNABfUrnaN8z+TGBGOtgheD
+         mupQ58rQmXbyHpx19TDrDvjcyX0nGdmqzax5k2Te9Zy+r72F1RQKCX+JO4Wct7AknQvP
+         GvKKQAlh9tqb4jZiYGb0CluAlgw7I3w5C/YgvF7/8+kYGL7irFumDaJxg6JeJdaRWGjN
+         h9rbLkpDgw2TJj516ZJoOowvPSObeVPpqgNw6+gjFWFu2M1RdSdeZIe8XF72ygGs6S2K
+         UmVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697811829; x=1698416629;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kPSg6YbAJ9dydtHDvFmYfqGSuz9Cya55UUtEzlaAeGQ=;
+        b=hu1RCQNdNxaMOw/06ykWc07bJXhC4ov85qTLtUZoeN0SRYt50K/pu86+kBDHBkTKY3
+         2ka3O54LtgJR+KxkTAnOD/eCp20ZOeqcTWYwRfrrectCpEoBMc1fObmtwf6CjadEcWOI
+         3oSKcgsK+mqxQmU/zDCw9y6UitBqC38Nu5epmo4pObl6jJky60zdGT+VbM1shVdvWPrq
+         tcBgBc0dBtBwL6AvPXIqQGtUjwWGQ7h1QhHMD1u5fIJTFynrxINZckbDv6PVHGCjmWaO
+         O4Vl/o4kblbIn97MoDnV9uYfcrWzN+xuD/6UnIOzTCikYgQdLN+20dhEYSMG07a/YVtj
+         Wg0A==
+X-Gm-Message-State: AOJu0YwI+E1gMhfdykDBX+DMuURwsYz9EtrazgjiexC9YSJmltLJ2r4L
+        JKwE/7eSKwQezxztsJf9OhX4qr96/toKgvpJtqy10g==
+X-Google-Smtp-Source: AGHT+IGmNpNuiYoq0oRxDLUNVlBI4C4N9PoMg8NRK8iCd/hrtqwOmUnDLraW7ovfvvq8U3IKpTbI1RF7h7I3hV0qwgA=
+X-Received: by 2002:a05:6a21:1a1:b0:17b:6ef4:6897 with SMTP id
+ le33-20020a056a2101a100b0017b6ef46897mr2279836pzb.2.1697811829508; Fri, 20
+ Oct 2023 07:23:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169778656748.20306.1670865069010793541@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231019033323.54147-1-yangyicong@huawei.com> <20231020134337.GD33965@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231020134337.GD33965@noisy.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 20 Oct 2023 16:23:38 +0200
+Message-ID: <CAKfTPtB=rc3qdFmZM-L_i64YhSytK5k1GitmKeRSbqKPzXOcJA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Remove SIS_PROP
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Yicong Yang <yangyicong@huawei.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        tim.c.chen@linux.intel.com, yu.c.chen@intel.com,
+        gautham.shenoy@amd.com, mgorman@suse.de, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        prime.zeng@huawei.com, yangyicong@hisilicon.com,
+        jonathan.cameron@huawei.com, ego@linux.vnet.ibm.com,
+        srikar@linux.vnet.ibm.com, linuxarm@huawei.com, 21cnbao@gmail.com,
+        kprateek.nayak@amd.com, wuyun.abel@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,88 +74,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 06:22:47PM +1100, NeilBrown wrote:
-> On Mon, 16 Oct 2023, Greg Kroah-Hartman wrote:
-> > I'm announcing the release of the 6.1.58 kernel.
-> > 
-> > All users of the 6.1 kernel series must upgrade.
-> > 
-> > The updated 6.1.y git tree can be found at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.1.y
-> > and can be browsed at the normal kernel.org git web browser:
-> > 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > ------------
-> > 
-> >  Makefile                 |    2 
-> >  fs/nfs/direct.c          |  134 ++++++++++++++---------------------------------
-> >  fs/nfs/write.c           |   23 +++-----
-> >  include/linux/nfs_page.h |    4 -
-> >  lib/test_meminit.c       |    2 
-> >  5 files changed, 55 insertions(+), 110 deletions(-)
-> > 
-> > Greg Kroah-Hartman (7):
-> >       Revert "NFS: More fixes for nfs_direct_write_reschedule_io()"
-> >       Revert "NFS: Use the correct commit info in nfs_join_page_group()"
-> >       Revert "NFS: More O_DIRECT accounting fixes for error paths"
-> >       Revert "NFS: Fix O_DIRECT locking issues"
-> >       Revert "NFS: Fix error handling for O_DIRECT write scheduling"
-> 
-> FYI the problem with these NFS patch is now described in comment #4 of
-> https://bugzilla.kernel.org/show_bug.cgi?id=217999
-> which I include below.  They can be reapplied if the "Fix error
-> handling..." patch is fixed up as described.
-> 
-> NeilBrown
-> 
-> FYI the cause of this corruption is that the  backport of
->    NFS: Fix error handling for O_DIRECT write scheduling
-> 
-> had an error.
-> The backported patch f16fd0b11f0f4d41846b5102b1656ea1fc9ac7a0
-> moves "pos += req_len" in nfs_direct_write_schedule_iovec() from after
->     req->wb_index = pos >> PAGE_SHIFT;
-> to before that statement.  This ->wb_index is wrong.
-> Possibly a better way to look at this is the use of "pos" is moved to *after* it is updated.
-> 
-> The upstream patch 954998b60caa8f2a3bf3abe490de6f08d283687a
-> doesn't move the use of pos because
-> Commit 70e9db69f927 ("NFS: Clean up O_DIRECT request allocation")
-> 
-> removes the use.
-> 
-> v6.1.56 can be fixed with
-> 
-> diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
-> index 5a976fa343df..69134e11e7d0 100644
-> --- a/fs/nfs/direct.c
-> +++ b/fs/nfs/direct.c
-> @@ -864,6 +864,8 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
->                                 result = PTR_ERR(req);
->                                 break;
->                         }
-> +                       req->wb_index = pos >> PAGE_SHIFT;
-> +                       req->wb_offset = pos & ~PAGE_MASK;
->  
->                         if (desc.pg_error < 0) {
->                                 nfs_free_request(req);
-> @@ -883,8 +885,6 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
->                         }
->  
->                         nfs_lock_request(req);
-> -                       req->wb_index = pos >> PAGE_SHIFT;
-> -                       req->wb_offset = pos & ~PAGE_MASK;
->                         if (nfs_pageio_add_request(&desc, req))
->                                 continue;
+On Fri, 20 Oct 2023 at 15:44, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+>
+> Since this had me looking at all that code, I did the below.
+>
+> Holler if there's objections etc..
+>
+> ---
+> Subject: sched/fair: Remove SIS_PROP
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Fri Oct 20 12:35:33 CEST 2023
+>
+> SIS_UTIL seems to work well, lets remove the old thing.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Nice, thanks for digging into this.  I think I'll leave this be for now,
-until someone submits a fully backported, and tested, series that they
-are willing to say actually works :)
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-thanks,
-
-greg k-h
+> ---
+>  include/linux/sched/topology.h |    2 -
+>  kernel/sched/core.c            |    5 ----
+>  kernel/sched/fair.c            |   48 -----------------------------------------
+>  kernel/sched/features.h        |    1
+>  kernel/sched/sched.h           |    3 --
+>  5 files changed, 59 deletions(-)
+>
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -109,8 +109,6 @@ struct sched_domain {
+>         u64 max_newidle_lb_cost;
+>         unsigned long last_decay_max_lb_cost;
+>
+> -       u64 avg_scan_cost;              /* select_idle_sibling */
+> -
+>  #ifdef CONFIG_SCHEDSTATS
+>         /* load_balance() stats */
+>         unsigned int lb_count[CPU_MAX_IDLE_TYPES];
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3792,9 +3792,6 @@ ttwu_do_activate(struct rq *rq, struct t
+>                 if (rq->avg_idle > max)
+>                         rq->avg_idle = max;
+>
+> -               rq->wake_stamp = jiffies;
+> -               rq->wake_avg_idle = rq->avg_idle / 2;
+> -
+>                 rq->idle_stamp = 0;
+>         }
+>  #endif
+> @@ -9991,8 +9988,6 @@ void __init sched_init(void)
+>                 rq->online = 0;
+>                 rq->idle_stamp = 0;
+>                 rq->avg_idle = 2*sysctl_sched_migration_cost;
+> -               rq->wake_stamp = jiffies;
+> -               rq->wake_avg_idle = rq->avg_idle;
+>                 rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+>
+>                 INIT_LIST_HEAD(&rq->cfs_tasks);
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7209,45 +7209,9 @@ static int select_idle_cpu(struct task_s
+>         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
+>         int i, cpu, idle_cpu = -1, nr = INT_MAX;
+>         struct sched_domain_shared *sd_share;
+> -       struct rq *this_rq = this_rq();
+> -       int this = smp_processor_id();
+> -       struct sched_domain *this_sd = NULL;
+> -       u64 time = 0;
+>
+>         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>
+> -       if (sched_feat(SIS_PROP) && !has_idle_core) {
+> -               u64 avg_cost, avg_idle, span_avg;
+> -               unsigned long now = jiffies;
+> -
+> -               this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+> -               if (!this_sd)
+> -                       return -1;
+> -
+> -               /*
+> -                * If we're busy, the assumption that the last idle period
+> -                * predicts the future is flawed; age away the remaining
+> -                * predicted idle time.
+> -                */
+> -               if (unlikely(this_rq->wake_stamp < now)) {
+> -                       while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
+> -                               this_rq->wake_stamp++;
+> -                               this_rq->wake_avg_idle >>= 1;
+> -                       }
+> -               }
+> -
+> -               avg_idle = this_rq->wake_avg_idle;
+> -               avg_cost = this_sd->avg_scan_cost + 1;
+> -
+> -               span_avg = sd->span_weight * avg_idle;
+> -               if (span_avg > 4*avg_cost)
+> -                       nr = div_u64(span_avg, avg_cost);
+> -               else
+> -                       nr = 4;
+> -
+> -               time = cpu_clock(this);
+> -       }
+> -
+>         if (sched_feat(SIS_UTIL)) {
+>                 sd_share = rcu_dereference(per_cpu(sd_llc_shared, target));
+>                 if (sd_share) {
+> @@ -7301,18 +7265,6 @@ static int select_idle_cpu(struct task_s
+>         if (has_idle_core)
+>                 set_idle_cores(target, false);
+>
+> -       if (sched_feat(SIS_PROP) && this_sd && !has_idle_core) {
+> -               time = cpu_clock(this) - time;
+> -
+> -               /*
+> -                * Account for the scan cost of wakeups against the average
+> -                * idle time.
+> -                */
+> -               this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+> -
+> -               update_avg(&this_sd->avg_scan_cost, time);
+> -       }
+> -
+>         return idle_cpu;
+>  }
+>
+> --- a/kernel/sched/features.h
+> +++ b/kernel/sched/features.h
+> @@ -49,7 +49,6 @@ SCHED_FEAT(TTWU_QUEUE, true)
+>  /*
+>   * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
+>   */
+> -SCHED_FEAT(SIS_PROP, false)
+>  SCHED_FEAT(SIS_UTIL, true)
+>
+>  /*
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1059,9 +1059,6 @@ struct rq {
+>         u64                     idle_stamp;
+>         u64                     avg_idle;
+>
+> -       unsigned long           wake_stamp;
+> -       u64                     wake_avg_idle;
+> -
+>         /* This is used to determine avg_idle's max value */
+>         u64                     max_idle_balance_cost;
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
