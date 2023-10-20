@@ -2,158 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1768B7D0E74
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89387D0E78
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377001AbjJTLc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S1377084AbjJTLd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377114AbjJTLcy (ORCPT
+        with ESMTP id S1377053AbjJTLdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:32:54 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758131A8;
-        Fri, 20 Oct 2023 04:32:52 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39KBWYGQ125728;
-        Fri, 20 Oct 2023 06:32:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697801554;
-        bh=s57fYIhfS20rjWlQ12aa02xnwrQND13J5l/63Zr09yQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=MEcYDgCguKYg5iwJhyIBLrc9OnGgoBc3fHSJmKD63ndKR8RxFjzupONLCeljLdzCh
-         3Fduwq4jBu5YmdxedECa9LmN6qzhd69HM32YLxXLEb/HUyTjhePJJstl5NPkpaOQRJ
-         I29aZmx6FHHymo4G5T9dbpP+Hb+NRszWcEAYMH9c=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39KBWYGk121769
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Oct 2023 06:32:34 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 20
- Oct 2023 06:32:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 20 Oct 2023 06:32:34 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39KBWMTX076525;
-        Fri, 20 Oct 2023 06:32:31 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-j721s2-evm: Add overlay for PCIE1 Endpoint Mode
-Date:   Fri, 20 Oct 2023 17:02:22 +0530
-Message-ID: <20231020113222.3161829-3-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020113222.3161829-1-s-vadapalli@ti.com>
-References: <20231020113222.3161829-1-s-vadapalli@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 20 Oct 2023 07:33:55 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457FC91
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:33:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 526E71F750;
+        Fri, 20 Oct 2023 11:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697801631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MkbZEfNBeAP+RACBjl1lGBgR8ZTNoYn92dc0ZQl2j5s=;
+        b=K1DyiuZigN78LZ2BF2lo5AowU/suftWqtebI9it8m34uIxBONGv0QViqcySBw7sOgqYIOe
+        YJCnlnWwS/G/6Z9YOvYMC2Sk18KgdpI1hHEOaUweirp8f/gN2inXwN6l+Jms6ykQ+mcCyP
+        71iUcMrxbUA4E1Ig8RHw7ybxznTkI4E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697801631;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MkbZEfNBeAP+RACBjl1lGBgR8ZTNoYn92dc0ZQl2j5s=;
+        b=YWdHNnwwYQT2UZ7mocvFZf1KQloIMdaSAkhISsY74Su8jkl/ybUqCkODYYCh7iwDlZperd
+        ktorCk7gdeALBfCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0532313584;
+        Fri, 20 Oct 2023 11:33:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5685AJ9lMmUfcAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 20 Oct 2023 11:33:51 +0000
+Date:   Fri, 20 Oct 2023 13:33:50 +0200
+Message-ID: <87r0lpjzoh.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc:     Anton Yakovlev <anton.yakovlev@opensynergy.com>, mst@redhat.com,
+        perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: Re: [PATCH v2] ALSA: virtio: use copy and fill_silence callbacks
+In-Reply-To: <ZTJMQ/zU2exf9xsd@fedora>
+References: <ZS+392ZzVIoEyv8n@fedora>
+        <871qdrn6sg.wl-tiwai@suse.de>
+        <e50c5a67-d2b7-4ef1-8aaa-309437fa8cb5@opensynergy.com>
+        <87y1fzkq8c.wl-tiwai@suse.de>
+        <ZTJMQ/zU2exf9xsd@fedora>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -10.10
+X-Spamd-Result: default: False [-10.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add overlay to enable the PCIE1 instance of PCIe on J721S2-EVM in
-Endpoint mode of operation.
+On Fri, 20 Oct 2023 11:45:39 +0200,
+Matias Ezequiel Vara Larsen wrote:
+> 
+> Hello Takashi,
+> 
+> On Thu, Oct 19, 2023 at 09:48:03AM +0200, Takashi Iwai wrote:
+> > On Thu, 19 Oct 2023 03:20:19 +0200,
+> > Anton Yakovlev wrote:
+> > > 
+> > > Hi Takashi,
+> > > 
+> > > On 19.10.2023 03:07, Takashi Iwai wrote:
+> > > > On Wed, 18 Oct 2023 12:48:23 +0200,
+> > > > Matias Ezequiel Vara Larsen wrote:
+> > > >> 
+> > > >> This commit replaces the mmap mechanism with the copy() and
+> > > >> fill_silence() callbacks for both capturing and playback for the
+> > > >> virtio-sound driver. This change is required to prevent the updating of
+> > > >> the content of a buffer that is already in the available ring.
+> > > >> 
+> > > >> The current mechanism splits a dma buffer into descriptors that are
+> > > >> exposed to the device. This dma buffer is shared with the user
+> > > >> application. When the device consumes a buffer, the driver moves the
+> > > >> request from the used ring to available ring.
+> > > >> 
+> > > >> The driver exposes the buffer to the device without knowing if the
+> > > >> content has been updated from the user. The section 2.8.21.1 of the
+> > > >> virtio spec states that: "The device MAY access the descriptor chains
+> > > >> the driver created and the memory they refer to immediately". If the
+> > > >> device picks up buffers from the available ring just after it is
+> > > >> notified, it happens that the content may be old.
+> > > >> 
+> > > >> By providing the copy() callback, the driver first updates the content
+> > > >> of the buffer, and then, exposes the buffer to the device by enqueuing
+> > > >> it in the available ring. Thus, device always picks up a buffer that is
+> > > >> updated. During copy(), the number of requests enqueued depends on the
+> > > >> "pos" and "bytes" arguments. The length of each request is period_size
+> > > >> bytes.
+> > > >> 
+> > > >> For capturing, the driver starts by exposing all the available buffers
+> > > >> to device. After device updates the content of a buffer, it enqueues it
+> > > >> in the used ring. It is only after the copy() for capturing is issued
+> > > >> that the driver re-enqueues the buffer in the available ring.
+> > > >> 
+> > > >> Co-developed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> > > >> Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+> > > >> ---
+> > > >> Changelog:
+> > > >> v1 -> v2:
+> > > >>   * Use snd_pcm_set_managed_buffer_all()for buffer allocation/freeing.
+> > > >>   * Make virtsnd_pcm_msg_send() generic by specifying the offset and size
+> > > >>     for the modified part of the buffer; this way no assumptions need to
+> > > >>     be made.
+> > > >>   * Disable SNDRV_PCM_INFO_NO_REWINDS since now only sequential
+> > > >>     reading/writing of frames is supported.
+> > > >>   * Correct comment at virtsnd_pcm_msg_send().
+> > > >>   * v1 patch at:
+> > > >>     https://ddec1-0-en-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=https%3a%2f%2flore.kernel.org%2flkml%2f20231016151000.GE119987%40fedora%2ft%2f&umid=2f305b77-83e7-47b6-a461-a8ca67d0bfe2&auth=53c7c7de28b92dfd96e93d9dd61a23e634d2fbec-2d5775265e7e1741ae8eb783a3cb78ed553093c1
+> > > >> 
+> > > >>   sound/virtio/virtio_pcm.c     |  7 ++-
+> > > >>   sound/virtio/virtio_pcm.h     |  9 ++--
+> > > >>   sound/virtio/virtio_pcm_msg.c | 93 ++++++++++++++++++++++-------------
+> > > >>   sound/virtio/virtio_pcm_ops.c | 81 +++++++++++++++++++++++++-----
+> > > >>   4 files changed, 137 insertions(+), 53 deletions(-)
+> > > > 
+> > > > Most of the code changes look good, but I wonder:
+> > > > 
+> > > >> 
+> > > >> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
+> > > >> index c10d91fff2fb..66d67eef1bcc 100644
+> > > >> --- a/sound/virtio/virtio_pcm.c
+> > > >> +++ b/sound/virtio/virtio_pcm.c
+> > > >> @@ -104,12 +104,11 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+> > > >>   	 * only message-based transport.
+> > > >>   	 */
+> > > >>   	vss->hw.info =
+> > > >> -		SNDRV_PCM_INFO_MMAP |
+> > > >> -		SNDRV_PCM_INFO_MMAP_VALID |
+> > > > 
+> > > > Do we need the removal of those MMAP features inevitably?
+> > > > Usually mmap can still work even if the driver implements the copy
+> > > > ops.  Those aren't always mutual exclusive.
+> > > 
+> > > The driver uses a message queue to communicate with the device. Thus,
+> > > the audio buffer is sliced into several I/O requests (= number of
+> > > periods) of the same size (= period size).
+> > > 
+> > > Before this, all such requests were enqueued when the substream started,
+> > > and immediately re-enqueued once the request is completed. This approach
+> > > made it possible to add mmap support. But for mmap there are no explicit
+> > > notifications from the application how many frames were written or read.
+> > > Thus, it was assumed that the virtual device should read/write frames to
+> > > requests based on timings. And there are some problems here:
+> > > 
+> > >   1. This was found to violate the virtio specification: if a request is
+> > >      already in the queue, the device can safely read/write there at any
+> > >      time.
+> > >   2. It looks like this breaks the use case with swiotlb. Personally I'm
+> > >      not sure how the application handles DMA ownership in the case of
+> > >      mmaped buffer.
+> > > 
+> > > To correctly implement mmap support, instead of transferring data via a
+> > > message queue, the driver and device must have a shared memory region.
+> > > We can add mmap in the future when we expand the functionality of the
+> > > device to support such shared memory.
+> > 
+> > Ah, then this implementation might be an overkill.  You're still using
+> > the (intermediate) vmalloc buffer allocated via PCM managed mode, and
+> > the actual data is copied from/to there.  So it doesn't conflict with
+> > the mmap operation at all.
+> > 
+> > I guess that the problem you're trying to solve (the immediate data
+> > transfer to the queue) can be implemented rather via PCM ack callback
+> > instead.  ALSA PCM core notifies the possible data transfer via PCM
+> > ack callback right after each change of appl_ptr or hw_ptr, including
+> > each read/write op or mmap commit.  Then the driver can check the
+> > change of appl_ptr (or hw_ptr for capture), fetch the newly available
+> > data, and queue it immediately.
+> > 
+> > Usually together with the use of ack callback, the driver sets
+> > SNDRV_PCM_INFO_SYNC_APPLPTR flag.  This prevents the mmap of the PCM
+> > control record (not the audio data) and enforces the use of
+> > SNDRV_PCM_IOCTL_SYNC_PTR ioctl instead (so that the driver always gets
+> > the ack callback).
+> > 
+> > 
+> 
+> Thanks for your comments. If I understand correctly, we have two
+> options:
+> 1. Use copy/fill_silence callbacks and use my own buffers thus disabling
+> mmap.
+> 2. Use mmap and the ack callback to track when appl_ptr changes thus
+> moving the content to the queues after it has been updated.
+> 
+> Am I right? 
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  3 ++
- .../boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso   | 53 +++++++++++++++++++
- 2 files changed, 56 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
+Not really.  The ack callback is always effective no matter whether
+the stream is transferred via mmap or read/write.  So, when you
+implement a la packet transfer via ack callback, it works for both
+mmap and read/write.  It's used typically for drivers doing a
+packet-based transfer, e.g. FireWire drivers or USB-audio.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 8d57ea89bf87..dc7e79e79a91 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -73,6 +73,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-common-proc-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
- k3-j721s2-evm-dtbs := k3-j721s2-common-proc-board.dtb k3-j721s2-evm-gesi-exp-board.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb
-+k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-evm.dtb k3-j721s2-evm-pcie1-ep.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtb
- 
- # Boards with J784s4 SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-@@ -85,3 +87,4 @@ DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721e-evm += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-+DTC_FLAGS_k3-j721s2-evm += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso b/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
-new file mode 100644
-index 000000000000..43568eb67d93
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT Overlay for enabling PCIE1 instance in Endpoint Configuration with the
-+ * J7 common processor board.
-+ *
-+ * J7 Common Processor Board Product Link: https://www.ti.com/tool/J721EXCPXEVM
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/soc/ti,sci_pm_domain.h>
-+
-+#include "k3-pinctrl.h"
-+
-+/*
-+ * Since Root Complex and Endpoint modes are mutually exclusive
-+ * disable Root Complex mode.
-+ */
-+&pcie1_rc {
-+	status = "disabled";
-+};
-+
-+&cbass_main {
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+	interrupt-parent = <&gic500>;
-+
-+	pcie1_ep: pcie-ep@2910000 {
-+		compatible = "ti,j7200-pcie-ep", "ti,j721e-pcie-ep";
-+		reg = <0x00 0x02910000 0x00 0x1000>,
-+		      <0x00 0x02917000 0x00 0x400>,
-+		      <0x00 0x0d800000 0x00 0x00800000>,
-+		      <0x00 0x18000000 0x00 0x08000000>;
-+		reg-names = "intd_cfg", "user_cfg", "reg", "mem";
-+		interrupt-names = "link_state";
-+		interrupts = <GIC_SPI 330 IRQ_TYPE_EDGE_RISING>;
-+		ti,syscon-pcie-ctrl = <&scm_conf 0x074>;
-+		max-link-speed = <3>;
-+		num-lanes = <1>;
-+		power-domains = <&k3_pds 276 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 276 41>;
-+		clock-names = "fck";
-+		max-functions = /bits/ 8 <6>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
-+		dma-coherent;
-+		phys = <&serdes0_pcie_link>;
-+		phy-names = "pcie-phy";
-+	};
-+};
--- 
-2.34.1
+OTOH, if you'd like to drop the intermediate ring buffer (enabled by
+snd_pcm_set_managed_buffer_all() and allocated/freed automatically at
+hw_params/hw_free in PCM core), you can implement PCM copy and
+fill_ops methods.  But in this case, you can't copy to
+runtime->dma_area like your patch; you may need a temporary buffer of
+your own, or handle directly the user pointer.
 
+And, even with copy/fill_ops implementations, mmap itself isn't
+prohibited when the driver provides its own mmap call.  This can be
+seen, for example, when a driver uses the iomem region as the data
+ring buffer.
+
+
+HTH,
+
+Takashi
+
+
+> Thanks, Matias.
+> 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > 
+> > > 
+> > > 
+> > > Best regards,
+> > > 
+> > > > 
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > Takashi
+> > > 
+> > > -- 
+> > > Anton Yakovlev
+> > > Senior Software Engineer
+> > > 
+> > > OpenSynergy GmbH
+> > > Rotherstr. 20, 10245 Berlin
+> > > 
+> > 
+> 
