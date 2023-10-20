@@ -2,343 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687F57D183C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF4B7D183F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345100AbjJTVfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        id S1344861AbjJTVfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbjJTVfL (ORCPT
+        with ESMTP id S233033AbjJTVfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:35:11 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53A5D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:35:05 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 2569D2C224A
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:35:05 +0000 (UTC)
-Received: from pdx1-sub0-mail-a302.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id B4F1B2C1149
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:35:04 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1697837704; a=rsa-sha256;
-        cv=none;
-        b=oVHbHtXM/5mR6HBgzcTWZ3Xr3iimdqd9jK2pmgG5ifSPrWMPhUzApwoInHgn1vXMlJsMMu
-        ANwuIP3DHHeuDh9WTUES0bCwxSP4lTAT6wBS4dCfv85bekXPcMy+fsrgOmueCEAYzsjAwG
-        d1RxrLyufuCJuV0GxBFJ1xeOVh1R/XyEOZGqn/MQjJ/U/doS3tUqy3EzLABaYADNcjOEmq
-        u8uCEe9vDF5c02yvSslSdqSJbmdraabHxNQVcsaPIdJHJg8a0r/iNK5tj6Pb04JZF4/JDA
-        HEbRc+KSof92HDwZNrmu0dJ4CedC99U4jFWgrHZDdeCggCaeaFj+7SVNLiptXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1697837704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=7CfAwxtc1GjVGjPpAu1RZavwIvZcA14MkN7wWbXh4lQ=;
-        b=20HmLoaLWgsRkaCkbCeU4RL+XW5Tb05v8QoD8ITd98VNJHJvwClZzrN70YLYjuphYS5c2w
-        9jeSM2yzyq87ZgEZgzVz8wHFeHr/aJsmqJxkr5i5TbNGzz1xjIrdG7kbX63g0pZXxoSjLz
-        CGNE/4ezAMxdVtQPtFjpScGyD3sj+SamqlcgzWw6F20B/KC2W8w339UbYbCd6YoKf/Mf2G
-        fNpt7BIRRh/8dJ7uSobIb6gwBdV2j8qBamr1RGlc0DHwv8i8yPrPmojOOS5ge23cTBdZ2W
-        V/2TIFqYm2Aqpnd/huzEJRPQV2GRPxOdm6s0IRejVIwwoGwrPYJ6+PSRFsJmLQ==
-ARC-Authentication-Results: i=1;
-        rspamd-6557c4b887-9gl4r;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Lyrical-Plucky: 773c9f865111460a_1697837704997_4011466361
-X-MC-Loop-Signature: 1697837704996:500481046
-X-MC-Ingress-Time: 1697837704996
-Received: from pdx1-sub0-mail-a302.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.104.111.61 (trex/6.9.2);
-        Fri, 20 Oct 2023 21:35:04 +0000
-Received: from kmjvbox (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a302.dreamhost.com (Postfix) with ESMTPSA id 4SByY42XmQzJF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1697837704;
-        bh=7CfAwxtc1GjVGjPpAu1RZavwIvZcA14MkN7wWbXh4lQ=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=Pf6gltDrAVN4P8eLd8oAYpciDthUGfFS9tFfzS4O8f7ScxrbWTs9FQQb9WQRR9+65
-         QDoQgra3QMRQm1WuPZ9z784ajvYme09Q7Oau305YkvzE5j2HNX6GsBhtdQodH3I3xq
-         G2IItCOK+HZdBeVHU/BAzlTOj5Z10QAktTwPn591ul+p3pLNbbe8Mt9YZT3XkTPYp1
-         dFDKpmzOyvtaSvNvcmal+m0teUHzbMbrM7gZzblOgswP1aLNwtiPYGxi3YuBdYiHaM
-         bl395eRbowgW7dcI7zu0+of2mUD2ypEo6wKsgV1k8znH3l5LwxupT5+IP5N1TbIorS
-         ghlalFDR2IxsQ==
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0042
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Fri, 20 Oct 2023 14:34:59 -0700
-Date:   Fri, 20 Oct 2023 14:34:59 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org
-Cc:     Miklos Szeredi <mszeredi@redhat.com>, linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>
-Subject: [PATCH v4] fuse: share lookup state between submount and its parent
-Message-ID: <20231020213459.GA3062@templeofstupid.com>
-References: <CAOssrKdH5x7YAnK4P8+5O8V934XtbH9JBSvctyM-pSmDMCq8yQ@mail.gmail.com>
+        Fri, 20 Oct 2023 17:35:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A752D76;
+        Fri, 20 Oct 2023 14:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697837731; x=1729373731;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4uBaV5gWt5hQ1EvlNqhy9jBWznYItgwFoDKFI3Rf8gc=;
+  b=JEY78/eRfCEG5ip34YRN7X1akaEqyat6VghCLgQ+vdPznYiQ7yhJwaWZ
+   izavM9SDkdrsSo1JzYdJamewqSsIGLZFSDp/NjZDdrJv/8F0KSlUGj/0x
+   DY5DaKH5Q6aM5qurElaG35jB0bP0BDLXofQmDZKJkOZy98Ft7qOsf7Dhb
+   vZIQY3Jmc5IwbHdORRSdJhThNlFaWMxe9u8ZWghMp2DOfsJoRL7QZwHp3
+   CKeiYdP3VUmK6piPxF9K0dTQ1pq4uv+Q1EgwsEdvY6MUqGhHw1JXyCaix
+   sJpihTIsXa+MInXISl5o+2UrAqXO9xOgmlDFyadaGIomDtPMqd+pviulf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="366807779"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="366807779"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 14:35:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="827856057"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="827856057"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Oct 2023 14:35:29 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 20 Oct 2023 14:35:29 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 20 Oct 2023 14:35:28 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 20 Oct 2023 14:35:28 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 20 Oct 2023 14:35:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DbFGAaYygsUXZyrTjwEEFK5nRcWa8m4pO+P1ug8YZnVGoJUsq0xxo4rO37pfShurAY+lSZIvp4WowweIwIXnXFZFs9XNTnJ8Q/MP9/oYnxLRXY8U/jQYUfzKc7xd8HuHWaIZPGko8mSaPre4nwB0GJNGmJNSq5120ilgHdA8GYonvkY5vsKzzs7JXQmNihNCMs06RiwMp2vBgqG7s30QcxDW0KfuXZ2vBhLhidzWaruG9WoFK0iMQUKvpok5iiAFCszFQOiqgOtytsSEVeZF8VUqlmoFk8gtlVysSlMeS5jGHLU+aAgKDw/ZAHvQIwo6/JetX5Kl8u65OaLu2kVaRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/Tamb4h2TNOBNYYnWWw+iZOdQs7+6Z6llxpodW2HoJs=;
+ b=S1Y6bNUAX72UPDqyjvj+iDWzKPqibZkAm9TtoZ6kWOhLcuO/gJoebSvEJvyzAOkerDIpQ1dyW11rFhXTCwzxbaYSjWpMb8H1uwTeZAuxAuWKcLTmOACdKZkJTueKltfF9l0j03UtZ/h/YzonWCiN/A8x1zh3zVdeiw7ihu2oEVMuRf+qdF4QKXrfbBKWuK1xqHyTwDzkJH5XSGPTyf/MaQSjhxY/FZjJ4zJQH1KGiP3c0hF23LtqYmzxxEEIOAQIBjwYM0lfUaZQ9Q0yO06uSBew7wm7Sw3gWIH9FeIJrwT77ghvQFfAnWZcl7lxPW+1V9y6Nu7JPIop3XiW6Vo1ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by SA0PR11MB4543.namprd11.prod.outlook.com (2603:10b6:806:99::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Fri, 20 Oct
+ 2023 21:35:26 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::34a7:52c3:3b8b:75f4]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::34a7:52c3:3b8b:75f4%4]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
+ 21:35:25 +0000
+Message-ID: <876a9c0a-527d-4719-a933-6c0b1aa9c4d4@intel.com>
+Date:   Fri, 20 Oct 2023 14:35:25 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next 6/6] i40e: Initialize hardware capabilities at
+ single place
+Content-Language: en-US
+To:     Ivan Vecera <ivecera@redhat.com>, <netdev@vger.kernel.org>
+CC:     <mschmidt@redhat.com>, <dacampbe@redhat.com>, <poros@redhat.com>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231020193746.2274379-1-ivecera@redhat.com>
+ <20231020193746.2274379-6-ivecera@redhat.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20231020193746.2274379-6-ivecera@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0227.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::22) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOssrKdH5x7YAnK4P8+5O8V934XtbH9JBSvctyM-pSmDMCq8yQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SA0PR11MB4543:EE_
+X-MS-Office365-Filtering-Correlation-Id: 209b6100-1bcb-456a-bc9e-08dbd1b4790c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4Nw446A/jDYYXPyXewwHr9XLLBxMhJwDzNfHwckxq/PUkNyATIs6ajeO0A6UyQ9NKJa6rbJAS1KLFnTnwligkSGBoO8f8JQBgig2kEXUyvZqfgaJeozrRhekKIi6DIW64iqHER4j7FFJooeIHSgC81dr1godkuSjg967yN0oSTnVlLJlRPVH4Q+vLi9cmVm5TktrXXqo1oRNWpFJbcqNQqtE9ZuZt9wzyLQ/4rYETq8mf01hVNXOLUIjXH/3fgY6MG0WurIcWYB+rtq7Gt80RwE9OAfaJi+QdgnxXoLDqrOg6G8BeARUdlz+xD/IbPqS4ZDhGIYqYhZk08lt/iWp2dth6WvFKtslGvGeJuUPGN/vG9A1NrmeXvOzjAFjx4hMHdgNxoO38k19t/o/KcCStJK9hT7x9Jj0KANj2uTTXs4ZLOQuaEKKaSesB2xmMPAtQ0cv0EOfAvK+4lxuvFtHnuInjvBxKnHK3PQ7B8YbZsP/LG7r8IBN4jcgpzSyPK5s4A3jmE5Hrl0gYyiYeAVDDQbv620VZIf4REcPVVrO27fl97L2vrfRQmaQ3RD2ue2SCot/HIyslL8jl7p+VSW4eEuqnEdOsgfuKh7UztFrOy8E2Wn335X5PpSrB84gO5xEvNtewEV+tyjeHtlh0QquZQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(66476007)(66556008)(31696002)(4744005)(2906002)(316002)(53546011)(26005)(6506007)(2616005)(82960400001)(86362001)(478600001)(38100700002)(54906003)(6486002)(66946007)(83380400001)(7416002)(8936002)(41300700001)(5660300002)(6512007)(4326008)(8676002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akRqVm0wNDBOUnFka2pVUXc3a2JVY1U0QXIxVzlKRDBaYUZRVW5RS0ZFa3hM?=
+ =?utf-8?B?TVVSRDg4OEhoVU1FS1FJb2QyRWp2VkoyMVRnOVllS2RhUDBybGZPRVR6a3Qw?=
+ =?utf-8?B?YURia2tpclN1UXliVFNtMEEwa0FEVkpFRmplT1IzaFQ3VE1WYjNRN0JSYy9H?=
+ =?utf-8?B?TkROclVVa3JkZUhhTVZsbUxQdzFhOHU4RHg5OStRYWhTWmp6WDdxWU8vUm9V?=
+ =?utf-8?B?OXQzd1BDMTFjbkZYaWRuVkMrbFR2V2RvNHYrMGVabmduYjdlWmNZREg1WDA0?=
+ =?utf-8?B?UlBJZWhLTlJwRVd2SERRQ29wMlBOenFlU3ZxL0M5MGticFJEcW1PbTdiTE9l?=
+ =?utf-8?B?Ni9EdFF6VjN0RDFBWjdUQjdkOWxkZVFyVjB3QkxFQkxVVUFPUGI5VHVYNkkz?=
+ =?utf-8?B?dW5HY2dvNVJYWER3QWlQZWhidllrc2NHbDkwV3N5ZWZlS1FPRmZZTFhGMm1u?=
+ =?utf-8?B?Q0xRdCt6ZWlMZlhoQldXRUY4RFUweFF5dStyVGVUbzEvSlpqc05VSTVDTUtY?=
+ =?utf-8?B?Wjl0cTJjSFVtZG1RSm1pTjZ0S2tHWDNmcVo2R01sdE9rdC81Y01BZ1Bwc3M1?=
+ =?utf-8?B?RHdSTDduZVN4d0ozUHg0T2lmVWVGNCtIbHgyQktDNWtDbEsxaDJneGNYQzA1?=
+ =?utf-8?B?RUd0VUltdXFSQUswLzh0UzJsNzFhTG4yRGhSY1hrakhVQVA3cGN1RnBqM1lH?=
+ =?utf-8?B?K01iZ0JuZVcxNVlzdHgxdHdMSUdnY3hmVFowbXVJZUIwR0YwcG14MTRsVTlN?=
+ =?utf-8?B?YkliNW1vR1R3cmJSd1l1cHFWQWd1ci9MZlIwUUVCUmYzQ3JONkFuWkJwQXc5?=
+ =?utf-8?B?ajIvSjBLcFhPTzRWVnF4N013V3hsM1U5dURQMjlOUVJWUElHdldLZkhEZzh6?=
+ =?utf-8?B?SGh1STd5NTJwbTd6cnVESTkwK2wrUHVIVWwzS2EyR1lSWFFCa29zTVdPZ3R4?=
+ =?utf-8?B?emJ4RnFNaisvOHZXeWZDU1M1bUIzVER3a2dzSnVGU3AxNW95TUxRWENyc1Zy?=
+ =?utf-8?B?VlRkK2NLbnhHTmVHRFhIZnM1NzVHRmpwTXFhSHdsL2ZwYk5uUkVkS1hlcmZ5?=
+ =?utf-8?B?UUs3aHFlRytTeXlHZ2lBbnhRZUNxTFF0dVNRcGZ4SWJ3WVJzSEd6a1Vxd1Y1?=
+ =?utf-8?B?eXFCQlRkSnJyWHM4dG5UOG5ubnZTeG1wcWJoNDhTdGRpdTVUcytvWi9XTkpt?=
+ =?utf-8?B?eWZHVDNTQ3JVb2xBWWJXTnUweHRoT1dJMEJGcEgyYlRvNTJxSkRmMmdGT0Np?=
+ =?utf-8?B?bmJraityaGI2bmlFbitIdi9ZOGtGSG91amM2S0dVR2t5T21sSXVEK1JXRDBk?=
+ =?utf-8?B?dmVZbXZrbEJCT09kWlpOODVnd3AxZStmb2xtN0x4RWl1TWpuRUpYeXpRRGUr?=
+ =?utf-8?B?SVBIWnpqRUJsZFZLWjR0NUxzclZxbjRxOWxScHZ1RG42QjljRHFhODdPU2Zl?=
+ =?utf-8?B?UHpxampFN1pRdzNOSmFaUlpsSWs0ZTk2d2tHWXE5Qjh0QjY3dDVtbElKSWQz?=
+ =?utf-8?B?cE1taGhrSHFwY3BhWm9VVkdDZnpwdko2UWlJR1licWJ4Z3Z5dXdCUExNVUFJ?=
+ =?utf-8?B?K3d0VVJ6bGVhMmVrRzBxdEFJN1I1SUx5Y2FiSUF1NXcyZmJ6ZjMrdlJXL2FE?=
+ =?utf-8?B?VDhlanJSM0NQQmdMdm9pYUZ4NzFoMkFuYml4ZktCRTBCRlpBYUdSZTJUN2pa?=
+ =?utf-8?B?U1V1TjdBcWR6bWk4MEVzOU10ZE4vd0ZQbmp0SDJ0SWNnZzN4cVlndHNZc3pT?=
+ =?utf-8?B?L3labUkzQVpuTnJveWxTNDU5aHkwRmJwbU8zY0dndmtCSWZRMVlWRmhydENs?=
+ =?utf-8?B?aHRIaXJxNnBPMThQSUxPQWxzT1Z0SUhJeW1Ib09MWXQ5ZmRoZmNadm05UVNu?=
+ =?utf-8?B?NTVkNjhPT3RTNVFDaG1kS0pzK0liaENZQ040ZW55ZUlpVTBXK0JQbFJmejYy?=
+ =?utf-8?B?bEU2RG1SVWw0YjQwR29RWWFZT0EvQThqd3RXVDJrSjBHV0paWFBGZWRnRzJT?=
+ =?utf-8?B?cmJqR2NlVTRyeW11b28yWnRGTG1yampKMWpWVDRpbVdPOGwvNnZqa0xMRmli?=
+ =?utf-8?B?MmkzcWRFRWU4RlNNbEVaQU9iOUFSdFNlVG9pSnhid0tmamFSd09ZY0xwcUJ6?=
+ =?utf-8?B?a0RQcnVjVEVmZUtEOEp5ZCtXWGJkMzd0NTgzYTlFV1pKZUdyM2JPZk92TGpo?=
+ =?utf-8?B?cHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 209b6100-1bcb-456a-bc9e-08dbd1b4790c
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 21:35:25.9556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v3rJfuLXAjaUIUYptkh1T/2gZ1WsRh7F/AQiq1dUmzRGXjDzUPJm6VDM7koAlkebRv8A71TbyLh7pUNlcqai1YyWbB2yb+wccYkpxaRh+Zw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4543
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fuse submounts do not perform a lookup for the nodeid that they inherit
-from their parent.  Instead, the code decrements the nlookup on the
-submount's fuse_inode when it is instantiated, and no forget is
-performed when a submount root is evicted.
 
-Trouble arises when the submount's parent is evicted despite the
-submount itself being in use.  In this author's case, the submount was
-in a container and deatched from the initial mount namespace via a
-MNT_DEATCH operation.  When memory pressure triggered the shrinker, the
-inode from the parent was evicted, which triggered enough forgets to
-render the submount's nodeid invalid.
 
-Since submounts should still function, even if their parent goes away,
-solve this problem by sharing refcounted state between the parent and
-its submount.  When all of the references on this shared state reach
-zero, it's safe to forget the final lookup of the fuse nodeid.
+On 10/20/2023 12:37 PM, Ivan Vecera wrote:
+> Some i40e_hw.caps bits are set in i40e_set_hw_caps(), some of them
+> in i40e_init_adminq() and the rest of them in i40e_sw_init().
+> Consolidate the initialization to single proper place i40e_set_hw_caps().
+> 
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
-Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
-Cc: stable@vger.kernel.org
-Fixes: 1866d779d5d2 ("fuse: Allow fuse_fill_super_common() for submounts")
----
-Changes since v3:
-
-- Remove rcu head from lookup tracking struct along with unnecessary
-  kfree_rcu call. (Feedback from Miklos Szeredi)
-- Make nlookup one implicitly.  Remove from struct and simplify places
-  where it was being used. (Feedback from Miklos Szeredi)
-- Remove unnecessary spinlock acquisition. (Feedback from Miklos
-  Szeredi)
-- Add a WARN_ON if the lookup tracking cookie cannot be found during
-  fuse_fill_super_submount.  (Feedback from Miklos Szeredi)
-
-Changes since v2:
-
-- Move to an approach where the lookup is shared between the submount's
-  parent and children.  Use a reference counted lookup cookie to decide
-  when it is safe to perform the forget of the final reference.
-  (Feedback from Miklos Szeredi)
-
-Changes since v1:
-
-- Cleanups to pacify test robot
-
-Changes since RFC:
-
-- Modified fuse_fill_super_submount to always fail if dentry cannot be
-  revalidated.  (Feedback from Bernd Schubert)
-- Fixed up an edge case where looked up but subsequently declared
-  invalid dentries were not correctly tracking nlookup.  (Error was
-  introduced in my RFC).
----
- fs/fuse/fuse_i.h | 15 ++++++++++
- fs/fuse/inode.c  | 74 ++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 86 insertions(+), 3 deletions(-)
-
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 405252bb51f2..9377c46f14c4 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -63,6 +63,19 @@ struct fuse_forget_link {
- 	struct fuse_forget_link *next;
- };
- 
-+/* Submount lookup tracking */
-+struct fuse_submount_lookup {
-+	/** Refcount */
-+	refcount_t count;
-+
-+	/** Unique ID, which identifies the inode between userspace
-+	 * and kernel */
-+	u64 nodeid;
-+
-+	/** The request used for sending the FORGET message */
-+	struct fuse_forget_link *forget;
-+};
-+
- /** FUSE inode */
- struct fuse_inode {
- 	/** Inode data */
-@@ -158,6 +171,8 @@ struct fuse_inode {
- 	 */
- 	struct fuse_inode_dax *dax;
- #endif
-+	/** Submount specific lookup tracking */
-+	struct fuse_submount_lookup *submount_lookup;
- };
- 
- /** FUSE inode state bits */
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 444418e240c8..243bda3cfdf6 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -68,6 +68,24 @@ struct fuse_forget_link *fuse_alloc_forget(void)
- 	return kzalloc(sizeof(struct fuse_forget_link), GFP_KERNEL_ACCOUNT);
- }
- 
-+static struct fuse_submount_lookup *fuse_alloc_submount_lookup(void)
-+{
-+	struct fuse_submount_lookup *sl;
-+
-+	sl = kzalloc(sizeof(struct fuse_submount_lookup), GFP_KERNEL_ACCOUNT);
-+	if (!sl)
-+		return NULL;
-+	sl->forget = fuse_alloc_forget();
-+	if (!sl->forget)
-+		goto out_free;
-+
-+	return sl;
-+
-+out_free:
-+	kfree(sl);
-+	return NULL;
-+}
-+
- static struct inode *fuse_alloc_inode(struct super_block *sb)
- {
- 	struct fuse_inode *fi;
-@@ -113,6 +131,17 @@ static void fuse_free_inode(struct inode *inode)
- 	kmem_cache_free(fuse_inode_cachep, fi);
- }
- 
-+static void fuse_cleanup_submount_lookup(struct fuse_conn *fc,
-+					 struct fuse_submount_lookup *sl)
-+{
-+	if (!refcount_dec_and_test(&sl->count))
-+		return;
-+
-+	fuse_queue_forget(fc, sl->forget, sl->nodeid, 1);
-+	sl->forget = NULL;
-+	kfree(sl);
-+}
-+
- static void fuse_evict_inode(struct inode *inode)
- {
- 	struct fuse_inode *fi = get_fuse_inode(inode);
-@@ -132,6 +161,11 @@ static void fuse_evict_inode(struct inode *inode)
- 					  fi->nlookup);
- 			fi->forget = NULL;
- 		}
-+
-+		if (fi->submount_lookup) {
-+			fuse_cleanup_submount_lookup(fc, fi->submount_lookup);
-+			fi->submount_lookup = NULL;
-+		}
- 	}
- 	if (S_ISREG(inode->i_mode) && !fuse_is_bad(inode)) {
- 		WARN_ON(!list_empty(&fi->write_files));
-@@ -332,6 +366,13 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
- 		fuse_dax_dontcache(inode, attr->flags);
- }
- 
-+static void fuse_init_submount_lookup(struct fuse_submount_lookup *sl,
-+				      u64 nodeid)
-+{
-+	sl->nodeid = nodeid;
-+	refcount_set(&sl->count, 1);
-+}
-+
- static void fuse_init_inode(struct inode *inode, struct fuse_attr *attr,
- 			    struct fuse_conn *fc)
- {
-@@ -395,12 +436,22 @@ struct inode *fuse_iget(struct super_block *sb, u64 nodeid,
- 	 */
- 	if (fc->auto_submounts && (attr->flags & FUSE_ATTR_SUBMOUNT) &&
- 	    S_ISDIR(attr->mode)) {
-+		struct fuse_inode *fi;
-+
- 		inode = new_inode(sb);
- 		if (!inode)
- 			return NULL;
- 
- 		fuse_init_inode(inode, attr, fc);
--		get_fuse_inode(inode)->nodeid = nodeid;
-+		fi = get_fuse_inode(inode);
-+		fi->nodeid = nodeid;
-+		fi->submount_lookup = fuse_alloc_submount_lookup();
-+		if (!fi->submount_lookup) {
-+			iput(inode);
-+			return NULL;
-+		}
-+		/* Sets nlookup = 1 on fi->submount_lookup->nlookup */
-+		fuse_init_submount_lookup(fi->submount_lookup, nodeid);
- 		inode->i_flags |= S_AUTOMOUNT;
- 		goto done;
- 	}
-@@ -423,11 +474,11 @@ struct inode *fuse_iget(struct super_block *sb, u64 nodeid,
- 		iput(inode);
- 		goto retry;
- 	}
--done:
- 	fi = get_fuse_inode(inode);
- 	spin_lock(&fi->lock);
- 	fi->nlookup++;
- 	spin_unlock(&fi->lock);
-+done:
- 	fuse_change_attributes(inode, attr, NULL, attr_valid, attr_version);
- 
- 	return inode;
-@@ -1465,6 +1516,8 @@ static int fuse_fill_super_submount(struct super_block *sb,
- 	struct super_block *parent_sb = parent_fi->inode.i_sb;
- 	struct fuse_attr root_attr;
- 	struct inode *root;
-+	struct fuse_submount_lookup *sl;
-+	struct fuse_inode *fi;
- 
- 	fuse_sb_defaults(sb);
- 	fm->sb = sb;
-@@ -1487,12 +1540,27 @@ static int fuse_fill_super_submount(struct super_block *sb,
- 	 * its nlookup should not be incremented.  fuse_iget() does
- 	 * that, though, so undo it here.
- 	 */
--	get_fuse_inode(root)->nlookup--;
-+	fi = get_fuse_inode(root);
-+	fi->nlookup--;
-+
- 	sb->s_d_op = &fuse_dentry_operations;
- 	sb->s_root = d_make_root(root);
- 	if (!sb->s_root)
- 		return -ENOMEM;
- 
-+	/*
-+	 * Grab the parent's submount_lookup pointer and take a
-+	 * reference on the shared nlookup from the parent.  This is to
-+	 * prevent the last forget for this nodeid from getting
-+	 * triggered until all users have finished with it.
-+	 */
-+	sl = parent_fi->submount_lookup;
-+	WARN_ON(!sl);
-+	if (sl) {
-+		refcount_inc(&sl->count);
-+		fi->submount_lookup = sl;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.25.1
-
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
