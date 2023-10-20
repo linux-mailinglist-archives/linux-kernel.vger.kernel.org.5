@@ -2,53 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6527D1518
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4357D1520
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377955AbjJTRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S1377944AbjJTRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377895AbjJTRok (ORCPT
+        with ESMTP id S229850AbjJTRtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:44:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B5A3;
-        Fri, 20 Oct 2023 10:44:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 204F6C433C9;
-        Fri, 20 Oct 2023 17:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697823878;
-        bh=tM18i9s5DyCKNvNL4uxB77beHUHrncqWw9WuGgi11Sc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qN6wGAxbfAChNjoLr5JDLEMA1Yj+VXAm1mIrvIai0T7d3G6o655pNSQo+SYWECDNJ
-         tkFS3gMulxYKpiNf3SesEVfzKyQjA/5DtMXpEuUMZ0dxODQ8d6kmjsSjqU1iGnX45t
-         U+OBJowH14NvBAGCP93/5kVnK3CAzSZAQiJto8Fwnuewnn4E7yoXVAqHfIsJHL6ODQ
-         SyDGio5RxL70E0jPTDGXylaFoJJ1Rmlb47upWX/MakTC510CcYcdjGU65YQmfWndaq
-         11TYcwA+E728enME8ni+F/2VRXXMIZQlLNiisg1bXJ79Yg5/pHzqZprTUWY3fifPJk
-         B54UYuQvwVrbw==
-Date:   Fri, 20 Oct 2023 23:14:28 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
-        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 3/5] PCI: endpoint: pci-epf-test: add doorbell test
-Message-ID: <20231020174428.GB46191@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-4-Frank.Li@nxp.com>
+        Fri, 20 Oct 2023 13:49:24 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3FAA3;
+        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-457cc01b805so451352137.0;
+        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697824159; x=1698428959; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
+        b=k3jkDQgyOOEGBLncynGx1oKHmRKfTL4IH/3SEE7/IRLCteJhKqo2xAu8NyM/8bPZ3g
+         L1i7MQvGBisWUe4antxtLa/TxuupknQxsOxJsXsHqSOuVKq6pjKZt5GmssTbiIy8riWH
+         m+mMpoLF8X4C4YKC+XRPEhb+HJpqag3gAFO0JBasZtQklz9g1ogh3hc2MC4+dHJDP3SZ
+         Q49gk0wu064j40aG4ow+qiIRahiYEYrRBVNVLy1z9UiHak2z1YBQ45OEhjUZdxZ50tup
+         FAYVmHAbShFqrmHV0ZHyju/viLB3wVkfHvmJviIo8TAPE0RyqVCefWY5OpHA6Yyaz+Y1
+         WuVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697824159; x=1698428959;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
+        b=LyRA2qkUkpi9WNrXhfxhqZT2YQ0tKj/633EFvN1eMpWwrWmu4OtQl3cRbE+KDZeaCq
+         loWElDgHszvFN24HlJn4DbnotGLthVUmgk70LJxUnD8GtYZTnIpJIO4A/JGJcbdyIBFv
+         RCAvEyuy0Mgun6i0fAC/B0alOHQiXN9e8npr8rYEuLNrn1gWwhKgnH0vu5VKvxwHZkvL
+         nw+3nRJwS2vRSxa24rkfOUGHk2bOmUYOctOVii0cxMG+0sfAY6N6GF1OHtkg1UsDe77r
+         AB8CPRZAtl4w80W8DbpHXSEUk3rYuTePcxAFiqgWnRJ3f0YJwnDm0vl91/Ef3Awi6FrP
+         Okzg==
+X-Gm-Message-State: AOJu0YyCWLpe31K15ndd1DEAZ+SWnUZ9S+9qzihhfjVdXn/kSFEsIsS5
+        3/Z8akraBwRLQw7FZTKWG2lxSDURkHzXc9UL94E=
+X-Google-Smtp-Source: AGHT+IG+YDJbUucLWpHMjGyz7FRf13DQj6hv3iEc+6Dur5YraL4KHTm4SjlD+Wrbjjp7foJIXDIbYD6FYpflaH7FUx8=
+X-Received: by 2002:a67:cb9b:0:b0:44e:8ae0:3df with SMTP id
+ h27-20020a67cb9b000000b0044e8ae003dfmr2333417vsl.3.1697824159203; Fri, 20 Oct
+ 2023 10:49:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230911220920.1817033-4-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Received: by 2002:ab0:3153:0:b0:783:def9:1a3a with HTTP; Fri, 20 Oct 2023
+ 10:49:18 -0700 (PDT)
+In-Reply-To: <ZTJmnsAxGDnks2aj@dread.disaster.area>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f> <ZTJmnsAxGDnks2aj@dread.disaster.area>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Fri, 20 Oct 2023 19:49:18 +0200
+Message-ID: <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,205 +75,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 06:09:18PM -0400, Frank Li wrote:
+On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
+> On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
+>> On Thu, Oct 19, 2023 at 05:30:40PM +0200, Mateusz Guzik wrote:
+>> > On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
+>> > > On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
+>> > > > Because scalability of the global inode_hash_lock really, really
+>> > > > sucks.
+>> > > >
+>> > > > 32-way concurrent create on a couple of different filesystems
+>> > > > before:
+>> > > >
+>> > > > -   52.13%     0.04%  [kernel]            [k] ext4_create
+>> > > >    - 52.09% ext4_create
+>> > > >       - 41.03% __ext4_new_inode
+>> > > >          - 29.92% insert_inode_locked
+>> > > >             - 25.35% _raw_spin_lock
+>> > > >                - do_raw_spin_lock
+>> > > >                   - 24.97% __pv_queued_spin_lock_slowpath
+>> > > >
+>> > > > [...]
+>> > >
+>> > > This is interesting completely independent of bcachefs so we should
+>> > > give
+>> > > it some testing.
+>> > >
+>> > > I updated a few places that had outdated comments.
+>> > >
+>> > > ---
+>> > >
+>> > > Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git
+>> > > tree.
+>> > > Patches in the vfs.unstable.inode-hash branch should appear in
+>> > > linux-next soon.
+>> > >
+>> > > Please report any outstanding bugs that were missed during review in
+>> > > a
+>> > > new review to the original patch series allowing us to drop it.
+>> > >
+>> > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
+>> > > patch has now been applied. If possible patch trailers will be
+>> > > updated.
+>> > >
+>> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+>> > > branch: vfs.unstable.inode-hash
+>> > >
+>> > > [22/32] vfs: inode cache conversion to hash-bl
+>> > >         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
+>> >
+>> > What, if anything, is blocking this? It is over 5 months now, I don't
+>> > see it in master nor -next.
+>
+> Not having a test machine that can validate my current vfs-scale
+> patchset for 4 of the 5 months makes it hard to measure and
+> demonstrate the efficacy of the changes on a current kernel....
+>
 
-Subject could be,
+Ok, see below.
 
-PCI: endpoint: pci-epf-test: Add doorbell support
+>> > To be clear there is no urgency as far as I'm concerned, but I did run
+>> > into something which is primarily bottlenecked by inode hash lock and
+>> > looks like the above should sort it out.
+>> >
+>> > Looks like the patch was simply forgotten.
+>> >
+>> > tl;dr can this land in -next please
+>>
+>> In case you can't be arsed, here is something funny which may convince
+>> you to expedite. ;)
+>>
+>> I did some benching by running 20 processes in parallel, each doing stat
+>> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
+>> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
+>>
+>> Best times:
+>> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+>> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+>> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+>> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+>> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
+>>
+>> NetBSD failed to complete the run, OOM-killing workers:
+>> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+>> OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
+>> time.
+>>
+>> So what I find funny is that Linux needed more time than OmniosCE (an
+>> Illumos variant, fork of Solaris).
+>>
+>> It also needed more time than FreeBSD, which is not necessarily funny
+>> but not that great either.
+>>
+>> All systems were mostly busy contending on locks and in particular Linux
+>> was almost exclusively busy waiting on inode hash lock.
+>
+> Did you bother to test the patch, or are you just complaining
+> that nobody has already done the work for you?
+>
 
-> Add three register: doorbell_bar, doorbell_addr, doorbell_data,
-> doorbell_done. Call pci_epf_alloc_doorbell() all a doorbell address space.
-> 
-> Root complex(RC) side driver can trigger pci-epc-test's doorbell callback
-> handler by write doorbell_data to mapped doorbell_bar's address space.
-> 
-> pci-epc-test will set doorbell_done in doorbell callback.
-> 
+Why are you giving me attitude?
 
-How about,
+I ran a test, found the major bottleneck and it turned out there is a
+patch which takes care of it, but its inclusion is stalled without
+further communication. So I asked about it.
 
-Add doorbell support to the EPF test driver by introducing 3 new registers:
+> Because if you tested the patch, you'd have realised that by itself
+> it does nothing to improve performance of the concurrent find+stat
+> workload. The lock contention simply moves to the sb_inode_list_lock
+> instead.
+>
 
-doorbell_bar
-doorbell_addr
-doorbell_data
+Is that something you benched? While it may be there is no change,
+going from one bottleneck to another does not automatically mean there
+are no gains in performance.
 
-The PCI RC driver can trigger the doorbell on the EP side by writing the
-content of "doorbell_data" to the address specified by the "doorbell_addr"
-register in the "doorbell_bar" BAR region.
+For example, this thing on FreeBSD used to take over one minute (just
+like on Linux right now), vast majority of which was spent on
+multicore issues. I massaged it down to ~18 seconds, despite it still
+being mostly bottlenecked on locks.
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+So I benched the hashbl change and it provides a marked improvement:
+stock:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+patched:  6.34s user 453.87s system 1312% cpu 35.052 total
 
-You should also update Documentation/PCI/endpoint/pci-test-* files in a separate
-commit with doorbell support.
+But indeed as expected it is still bottlenecked on locks.
 
-> ---
->  drivers/pci/endpoint/functions/pci-epf-test.c | 59 ++++++++++++++++++-
->  1 file changed, 58 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index 1f0d2b84296a3..566549919b87b 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -11,6 +11,7 @@
->  #include <linux/dmaengine.h>
->  #include <linux/io.h>
->  #include <linux/module.h>
-> +#include <linux/msi.h>
->  #include <linux/slab.h>
->  #include <linux/pci_ids.h>
->  #include <linux/random.h>
-> @@ -39,17 +40,21 @@
->  #define STATUS_IRQ_RAISED		BIT(6)
->  #define STATUS_SRC_ADDR_INVALID		BIT(7)
->  #define STATUS_DST_ADDR_INVALID		BIT(8)
-> +#define STATUS_DOORBELL_SUCCESS		BIT(9)
->  
->  #define FLAG_USE_DMA			BIT(0)
->  
->  #define TIMER_RESOLUTION		1
->  
-> +#define MAGIC_VERSION_MASK		GENMASK(7, 0)
-> +
->  static struct workqueue_struct *kpcitest_workqueue;
->  
->  struct pci_epf_test {
->  	void			*reg[PCI_STD_NUM_BARS];
->  	struct pci_epf		*epf;
->  	enum pci_barno		test_reg_bar;
-> +	enum pci_barno		doorbell_bar;
->  	size_t			msix_table_offset;
->  	struct delayed_work	cmd_handler;
->  	struct dma_chan		*dma_chan_tx;
-> @@ -74,6 +79,9 @@ struct pci_epf_test_reg {
->  	u32	irq_type;
->  	u32	irq_number;
->  	u32	flags;
-> +	u32	doorbell_bar;
-> +	u32	doorbell_addr;
-> +	u32	doorbell_data;
->  } __packed;
->  
->  static struct pci_epf_header test_header = {
-> @@ -693,6 +701,8 @@ static void pci_epf_test_unbind(struct pci_epf *epf)
->  	struct pci_epf_bar *epf_bar;
->  	int bar;
->  
-> +	pci_epf_free_doorbell(epf);
-> +
->  	cancel_delayed_work(&epf_test->cmd_handler);
->  	pci_epf_test_clean_dma_chan(epf_test);
->  	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
-> @@ -808,9 +818,22 @@ static int pci_epf_test_link_up(struct pci_epf *epf)
->  	return 0;
->  }
->  
-> +static int pci_epf_test_doorbell(struct pci_epf *epf, int index)
-> +{
-> +	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
-> +	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
-> +	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
-> +
-> +	reg->status |= STATUS_DOORBELL_SUCCESS;
-> +	pci_epf_test_raise_irq(epf_test, reg);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct pci_epc_event_ops pci_epf_test_event_ops = {
->  	.core_init = pci_epf_test_core_init,
->  	.link_up = pci_epf_test_link_up,
-> +	.doorbell = pci_epf_test_doorbell,
+> IOWs, those sb_inode_list_lock changes haven't been included for the
+> same reason as the hash-bl patches: outside micro-benchmarks, these
+> locks just don't show up in profiles on production machines.
+> Hence there's no urgency to "fix" these lock contention
+> problems despite the ease with which micro-benchmarks can reproduce
+> it...
+>
 
-I would like to pass this callback directly to the pci_epf_alloc_doorbell() API.
- Would that be feasible?
+The above is not a made-up microbenchmark though.
 
->  };
->  
->  static int pci_epf_test_alloc_space(struct pci_epf *epf)
-> @@ -859,7 +882,7 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
->  		epf_bar = &epf->bar[bar];
->  		add = (epf_bar->flags & PCI_BASE_ADDRESS_MEM_TYPE_64) ? 2 : 1;
->  
-> -		if (bar == test_reg_bar)
-> +		if (bar == test_reg_bar || bar == epf_test->doorbell_bar)
->  			continue;
->  
->  		if (!!(epc_features->reserved_bar & (1 << bar)))
-> @@ -900,9 +923,14 @@ static int pci_epf_test_bind(struct pci_epf *epf)
->  	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
->  	const struct pci_epc_features *epc_features;
->  	enum pci_barno test_reg_bar = BAR_0;
-> +	enum pci_barno doorbell_bar = NO_BAR;
->  	struct pci_epc *epc = epf->epc;
->  	bool linkup_notifier = false;
->  	bool core_init_notifier = false;
-> +	struct pci_epf_test_reg *reg;
-> +	struct msi_msg *msg;
-> +	u64 doorbell_addr;
-> +	u32 align;
->  
->  	if (WARN_ON_ONCE(!epc))
->  		return -EINVAL;
-> @@ -923,10 +951,39 @@ static int pci_epf_test_bind(struct pci_epf *epf)
->  	epf_test->test_reg_bar = test_reg_bar;
->  	epf_test->epc_features = epc_features;
->  
-> +	align = epc_features->align;
-> +	align = align ? align : 128;
-> +
-> +	ret = pci_epf_alloc_doorbell(epf, 1);
+I got someone running FreeBSD whose workload mostly consists of
+stating tens of millions of files in parallel and which was suffering
+a lot from perf standpoint -- flamegraphs show that contending on
+locks due to memory reclamation induced by stat calls is almost
+everything that was going on at the time. Said workload probably
+should not do that to begin with (instead have a db with everything it
+normally stats for?), but here we are.
 
-This should be renamed as pci_epc_alloc_doorbell() as per comment on patch 1/3.
-Also, the "msi_msg" pointer should be part of the EPC struct.
+That is to say, while I would not be in position to test Linux in the
+above workload, the problem (high inode turnover in memory) is very
+much real.
 
-> +	if (!ret) {
-> +		msg = epf->msg;
-> +		doorbell_bar = pci_epc_get_next_free_bar(epc_features, test_reg_bar + 1);
-> +
-> +		if (doorbell_bar > 0) {
-> +			epf_test->doorbell_bar = doorbell_bar;
-> +			doorbell_addr = msg->address_hi;
-> +			doorbell_addr <<= 32;
-> +			doorbell_addr |= msg->address_lo;
-> +			epf->bar[doorbell_bar].phys_addr = round_down(doorbell_addr, align);
-> +			epf->bar[doorbell_bar].barno = doorbell_bar;
-> +			epf->bar[doorbell_bar].size = align;
-> +		} else {
-> +			pci_epf_free_doorbell(epf);
-
-This one too should be renamed. 
-
-> +		}
-> +	}
-> +
->  	ret = pci_epf_test_alloc_space(epf);
-
-This one too.
-
->  	if (ret)
->  		return ret;
->  
-> +	reg = epf_test->reg[test_reg_bar];
-> +	reg->magic |= FIELD_PREP(MAGIC_VERSION_MASK, 0x1);
-
-Why are you writing this register? This register serves for the purpose of
-testing BAR0.
-
-- Mani
-
-> +	if (doorbell_bar > 0) {
-> +		reg->doorbell_addr = doorbell_addr & (align - 1);
-> +		reg->doorbell_data = msg->data;
-> +		reg->doorbell_bar = doorbell_bar;
-> +	}
-> +
->  	if (!core_init_notifier) {
->  		ret = pci_epf_test_core_init(epf);
->  		if (ret)
-> -- 
-> 2.34.1
-> 
+All that said, if a real deployment which runs into the problem is
+needed to justify the change, then I can't help (wrong system).
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Mateusz Guzik <mjguzik gmail.com>
