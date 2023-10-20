@@ -2,116 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0546B7D0D14
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E129B7D0D16
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376836AbjJTK2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
+        id S1376845AbjJTK3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376715AbjJTK2O (ORCPT
+        with ESMTP id S1376715AbjJTK27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:28:14 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C5DDB8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:28:09 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8CxyOg3VjJlFnMzAA--.64000S3;
-        Fri, 20 Oct 2023 18:28:07 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH90zVjJlvzssAA--.30051S3;
-        Fri, 20 Oct 2023 18:28:04 +0800 (CST)
-Subject: Re: [PATCH v3 0/8] Add objtool and orc support for LoongArch
-To:     Huacai Chen <chenhuacai@kernel.org>
-References: <1697768821-22931-1-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4wqO0=+EOhyH+t=0bpiX2DayddVArB=x_yzVvmX9OW1g@mail.gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <a967ebeb-f19d-4e36-3547-80e838ad2fa0@loongson.cn>
-Date:   Fri, 20 Oct 2023 18:28:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Fri, 20 Oct 2023 06:28:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEF5114;
+        Fri, 20 Oct 2023 03:28:57 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 10:28:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697797735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=RFHrA0nC1vueE8CtrHSfUQFbCQe9USd3Emg1LagU1lU=;
+        b=F4RKXSo79c0qG+n0bR/rDCn+YFyDZlKsRsaFfovnaKGQS533pjYSCvbSZR/p+YQesWMzPi
+        5fz3hAJEOcxNYMRCsLa//y4ZbIQFLUWtKJ1oF/6y2XFJdhJ4Pi+Gfy0hRlxQBGD3/dot08
+        2xOmKa6aPlPdvolBRdBiiHZL+WtVIz018C8XbIVlValtwzqFnunMWE3rdtYWDS9GIPTU7s
+        Ld0ymXylftCqNY0/qCI3ICzMZlCgXKkTEkNehxG+XqFMtR0FdWXTY9WEWhmddA/UoZodNx
+        /UC6LXGKive9uycaNAI4hh4hElSklKH96lB/8jNUdTkr2Awsy+w0si3fWu1tlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697797735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=RFHrA0nC1vueE8CtrHSfUQFbCQe9USd3Emg1LagU1lU=;
+        b=EBR0GD43x6le+KsvK1EnVnPkT+ZneDugWPVL9I5ygDnY9Ytv2bMzTswPCZ7MXsDxmaqxwx
+        TvRzxr5OvDVzZoDw==
+From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/percpu] x86/percpu: Introduce %rip-relative addressing to
+ PER_CPU_VAR()
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        linux-kernel@vger.kernel.org, Brian Gerst <brgerst@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4wqO0=+EOhyH+t=0bpiX2DayddVArB=x_yzVvmX9OW1g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Message-ID: <169779773451.3135.17158280311222053497.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxH90zVjJlvzssAA--.30051S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7AF48Zry3tFW5JrWDGFWDWrX_yoW8Aw1DpF
-        sFvrW2grWDW3sYy34kG3W0g34vvF1IkryYqFykGFWUArZ5Ary0qa97JFykZF17X3Z0va1Y
-        934Igr15WF17AagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
-        xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_
-        Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j0pB
-        -UUUUU=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/percpu branch of tip:
 
+Commit-ID:     59bec00ace28d565ae0a68b23063ef3b961d82d5
+Gitweb:        https://git.kernel.org/tip/59bec00ace28d565ae0a68b23063ef3b961d82d5
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Tue, 17 Oct 2023 18:27:34 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 20 Oct 2023 12:19:51 +02:00
 
-On 10/20/2023 04:51 PM, Huacai Chen wrote:
-> Cross compiling on X86 for LoongArch fails:
->
->   CALL    scripts/checksyscalls.sh
->   DESCEND objtool
-> make[5]: *** No rule to make target
-> '/usr/lib/gcc/x86_64-redhat-linux/8/include/stdbool.h', needed by
-> '/home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/exec-cmd.o'.
-> Stop.
-> make[4]: *** [Makefile:80:
-> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd-in.o]
-> Error 2
-> make[3]: *** [Makefile:82:
-> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd.a]
-> Error 2
-> make[2]: *** [Makefile:73: objtool] Error 2
-> make[1]: *** [/home/chenhuacai/linux-official.git/Makefile:1355:
-> tools/objtool] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
+x86/percpu: Introduce %rip-relative addressing to PER_CPU_VAR()
 
-It seems that there is no stdbool.h in your cross compile environment.
+Introduce x86_64 %rip-relative addressing to the PER_CPU_VAR() macro.
+Instructions using %rip-relative address operand are one byte shorter
+than their absolute address counterparts and are also compatible with
+position independent executable (-fpie) builds. The patch reduces
+code size of a test kernel build by 150 bytes.
 
-It works well with the following steps, you can try it.
+The PER_CPU_VAR() macro is intended to be applied to a symbol and should
+not be used with register operands. Introduce the new __percpu macro and
+use it in cmpxchg{8,16}b_emu.S instead.
 
-wget 
-https://github.com/loongson/build-tools/releases/download/2023.08.08/x86_64-cross-tools-loongarch64-gcc-libc.tar.xz
-tar xf x86_64-cross-tools-loongarch64-gcc-libc.tar.xz -C /opt
-export PATH=/opt/cross-tools/bin/:$PATH
-export 
-LD_LIBRARY_PATH=/opt/cross-tools/loongarch64-unknown-linux-gnu/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/opt/cross-tools/lib:$LD_LIBRARY_PATH
-export CROSS_COMPILE=loongarch64-unknown-linux-gnu-
-export ARCH=loongarch
+Also add a missing function comment to this_cpu_cmpxchg8b_emu().
 
-find /opt -name stdbool.h
-/opt/cross-tools/lib/gcc/loongarch64-unknown-linux-gnu/14.0.0/include/stdbool.h
-/opt/cross-tools/loongarch64-unknown-linux-gnu/include/c++/14.0.0/tr1/stdbool.h
+No functional changes intended.
 
-cd linux.git
-make loongson3_defconfig
-make menuconfig   # select CONFIG_UNWINDER_ORC
-make -j4
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/include/asm/percpu.h | 12 ++++++++----
+ arch/x86/lib/cmpxchg16b_emu.S | 12 ++++++------
+ arch/x86/lib/cmpxchg8b_emu.S  | 30 +++++++++++++++++++++---------
+ 3 files changed, 35 insertions(+), 19 deletions(-)
 
-Thanks,
-Tiezhu
-
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index ac3220a..bbcc1ca 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -4,17 +4,21 @@
+ 
+ #ifdef CONFIG_X86_64
+ #define __percpu_seg		gs
++#define __percpu_rel		(%rip)
+ #else
+ #define __percpu_seg		fs
++#define __percpu_rel
+ #endif
+ 
+ #ifdef __ASSEMBLY__
+ 
+ #ifdef CONFIG_SMP
+-#define PER_CPU_VAR(var)	%__percpu_seg:var
+-#else /* ! SMP */
+-#define PER_CPU_VAR(var)	var
+-#endif	/* SMP */
++#define __percpu		%__percpu_seg:
++#else
++#define __percpu
++#endif
++
++#define PER_CPU_VAR(var)	__percpu(var)__percpu_rel
+ 
+ #ifdef CONFIG_X86_64_SMP
+ #define INIT_PER_CPU_VAR(var)  init_per_cpu__##var
+diff --git a/arch/x86/lib/cmpxchg16b_emu.S b/arch/x86/lib/cmpxchg16b_emu.S
+index 6962df3..4fb4489 100644
+--- a/arch/x86/lib/cmpxchg16b_emu.S
++++ b/arch/x86/lib/cmpxchg16b_emu.S
+@@ -23,14 +23,14 @@ SYM_FUNC_START(this_cpu_cmpxchg16b_emu)
+ 	cli
+ 
+ 	/* if (*ptr == old) */
+-	cmpq	PER_CPU_VAR(0(%rsi)), %rax
++	cmpq	__percpu (%rsi), %rax
+ 	jne	.Lnot_same
+-	cmpq	PER_CPU_VAR(8(%rsi)), %rdx
++	cmpq	__percpu 8(%rsi), %rdx
+ 	jne	.Lnot_same
+ 
+ 	/* *ptr = new */
+-	movq	%rbx, PER_CPU_VAR(0(%rsi))
+-	movq	%rcx, PER_CPU_VAR(8(%rsi))
++	movq	%rbx, __percpu (%rsi)
++	movq	%rcx, __percpu 8(%rsi)
+ 
+ 	/* set ZF in EFLAGS to indicate success */
+ 	orl	$X86_EFLAGS_ZF, (%rsp)
+@@ -42,8 +42,8 @@ SYM_FUNC_START(this_cpu_cmpxchg16b_emu)
+ 	/* *ptr != old */
+ 
+ 	/* old = *ptr */
+-	movq	PER_CPU_VAR(0(%rsi)), %rax
+-	movq	PER_CPU_VAR(8(%rsi)), %rdx
++	movq	__percpu (%rsi), %rax
++	movq	__percpu 8(%rsi), %rdx
+ 
+ 	/* clear ZF in EFLAGS to indicate failure */
+ 	andl	$(~X86_EFLAGS_ZF), (%rsp)
+diff --git a/arch/x86/lib/cmpxchg8b_emu.S b/arch/x86/lib/cmpxchg8b_emu.S
+index 4980525..8632d7d 100644
+--- a/arch/x86/lib/cmpxchg8b_emu.S
++++ b/arch/x86/lib/cmpxchg8b_emu.S
+@@ -24,12 +24,12 @@ SYM_FUNC_START(cmpxchg8b_emu)
+ 	pushfl
+ 	cli
+ 
+-	cmpl	0(%esi), %eax
++	cmpl	(%esi), %eax
+ 	jne	.Lnot_same
+ 	cmpl	4(%esi), %edx
+ 	jne	.Lnot_same
+ 
+-	movl	%ebx, 0(%esi)
++	movl	%ebx, (%esi)
+ 	movl	%ecx, 4(%esi)
+ 
+ 	orl	$X86_EFLAGS_ZF, (%esp)
+@@ -38,7 +38,7 @@ SYM_FUNC_START(cmpxchg8b_emu)
+ 	RET
+ 
+ .Lnot_same:
+-	movl	0(%esi), %eax
++	movl	(%esi), %eax
+ 	movl	4(%esi), %edx
+ 
+ 	andl	$(~X86_EFLAGS_ZF), (%esp)
+@@ -53,18 +53,30 @@ EXPORT_SYMBOL(cmpxchg8b_emu)
+ 
+ #ifndef CONFIG_UML
+ 
++/*
++ * Emulate 'cmpxchg8b %fs:(%rsi)'
++ *
++ * Inputs:
++ * %esi : memory location to compare
++ * %eax : low 32 bits of old value
++ * %edx : high 32 bits of old value
++ * %ebx : low 32 bits of new value
++ * %ecx : high 32 bits of new value
++ *
++ * Notably this is not LOCK prefixed and is not safe against NMIs
++ */
+ SYM_FUNC_START(this_cpu_cmpxchg8b_emu)
+ 
+ 	pushfl
+ 	cli
+ 
+-	cmpl	PER_CPU_VAR(0(%esi)), %eax
++	cmpl	__percpu (%esi), %eax
+ 	jne	.Lnot_same2
+-	cmpl	PER_CPU_VAR(4(%esi)), %edx
++	cmpl	__percpu 4(%esi), %edx
+ 	jne	.Lnot_same2
+ 
+-	movl	%ebx, PER_CPU_VAR(0(%esi))
+-	movl	%ecx, PER_CPU_VAR(4(%esi))
++	movl	%ebx, __percpu (%esi)
++	movl	%ecx, __percpu 4(%esi)
+ 
+ 	orl	$X86_EFLAGS_ZF, (%esp)
+ 
+@@ -72,8 +84,8 @@ SYM_FUNC_START(this_cpu_cmpxchg8b_emu)
+ 	RET
+ 
+ .Lnot_same2:
+-	movl	PER_CPU_VAR(0(%esi)), %eax
+-	movl	PER_CPU_VAR(4(%esi)), %edx
++	movl	__percpu (%esi), %eax
++	movl	__percpu 4(%esi), %edx
+ 
+ 	andl	$(~X86_EFLAGS_ZF), (%esp)
+ 
