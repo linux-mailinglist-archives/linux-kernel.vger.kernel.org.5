@@ -2,79 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F447D1515
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6527D1518
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377936AbjJTRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        id S1377955AbjJTRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377895AbjJTRnl (ORCPT
+        with ESMTP id S1377895AbjJTRok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:43:41 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF871FA
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:43:39 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b9faf05f51so164508266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697823818; x=1698428618; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N1heveFnCrEJOdM4DCy3MHM1wUBeG4YS6MC7cDodL18=;
-        b=pUxKaGf5wpCD7/kJ27jTnuN0Euwx0Do5wm+7X8G7e6zOjxqnFkMATNAmOEcaNBntvY
-         4OWJTRDkbwYw2Ui9rFXYAyT4IDyVYpcGx+Z7Rmojz8qDoELRORMMe8hcjnR/jCFNuJW3
-         +Guc6SSnSweosgQrC2K0O0FcDYkc3RCOeTmPF+s9u042HY8XhT+MA8lgMsSwnZek17v3
-         VQm1Nnrt60AJqV9t2OoorZtCneuCj5IUFqJM3Frbp5qOA1NdIypa2Rcda45Sv2om7F5O
-         lRW0NNo+jQ+98/DUGYXcYYyYCWW2Bz1f4lIkS8sPyyB1FUzrveUQDKqSXtbaNDoAPjUM
-         OHtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697823818; x=1698428618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N1heveFnCrEJOdM4DCy3MHM1wUBeG4YS6MC7cDodL18=;
-        b=wYdfH6w52vbDWismutSQRfRfuvNl1lV/tYJhZeYdvARcQZH5B87lGbYWOTEh+tOQT1
-         yTdpZ7Y6OnvCHLjquS7WlWrNRxetUMq8HjegaZuksxXM5TiiV1Ucevy++NFBNs2Hezav
-         o1rLDNE+Er0tA/QlyF2dZw4hGNNLIcpFb5uhrhhm29/mvzglWFfXnKNjRidvptr7L7hs
-         /QCaor3rDCRSz6h+1zqpReo4geEWMwqGtaT9bX+zU80a/3jtGquZ+AyOqLigeULm+7V6
-         X8fOUv/u8KdF1z7KTr2i+9FPlc78O5+1V//NacuSWxtRutlhWZ1Q4+Cykk5c3Vd6iHiT
-         6D/g==
-X-Gm-Message-State: AOJu0YyXAYtvCG784USeMzHo25mTvktrXzBKMl+QD6xrWEU0QvAWEyx9
-        N96jkD6HOAneOnbBs+CuC3H00OGRnyrsrEkcqWCKcA==
-X-Google-Smtp-Source: AGHT+IEXZwXYQoD3qalHsmHbpcJqzZ7tmC/iIYPTkqCHECXMuZkRt9k/MgXunNY1rLGD07LOxsOxhXyUsPRzCRi/Qag=
-X-Received: by 2002:a17:906:da8c:b0:9ae:52fb:2202 with SMTP id
- xh12-20020a170906da8c00b009ae52fb2202mr1823652ejb.40.1697823818063; Fri, 20
- Oct 2023 10:43:38 -0700 (PDT)
+        Fri, 20 Oct 2023 13:44:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B5A3;
+        Fri, 20 Oct 2023 10:44:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 204F6C433C9;
+        Fri, 20 Oct 2023 17:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697823878;
+        bh=tM18i9s5DyCKNvNL4uxB77beHUHrncqWw9WuGgi11Sc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qN6wGAxbfAChNjoLr5JDLEMA1Yj+VXAm1mIrvIai0T7d3G6o655pNSQo+SYWECDNJ
+         tkFS3gMulxYKpiNf3SesEVfzKyQjA/5DtMXpEuUMZ0dxODQ8d6kmjsSjqU1iGnX45t
+         U+OBJowH14NvBAGCP93/5kVnK3CAzSZAQiJto8Fwnuewnn4E7yoXVAqHfIsJHL6ODQ
+         SyDGio5RxL70E0jPTDGXylaFoJJ1Rmlb47upWX/MakTC510CcYcdjGU65YQmfWndaq
+         11TYcwA+E728enME8ni+F/2VRXXMIZQlLNiisg1bXJ79Yg5/pHzqZprTUWY3fifPJk
+         B54UYuQvwVrbw==
+Date:   Fri, 20 Oct 2023 23:14:28 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
+        bhelgaas@google.com, devicetree@vger.kernel.org,
+        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
+        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 3/5] PCI: endpoint: pci-epf-test: add doorbell test
+Message-ID: <20231020174428.GB46191@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <20230911220920.1817033-4-Frank.Li@nxp.com>
 MIME-Version: 1.0
-References: <20231010032117.1577496-4-yosryahmed@google.com>
- <202310202303.c68e7639-oliver.sang@intel.com> <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
-In-Reply-To: <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 Oct 2023 10:42:58 -0700
-Message-ID: <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230911220920.1817033-4-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,71 +57,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 10:23=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
- wrote:
->
-> On Fri, Oct 20, 2023 at 9:18=E2=80=AFAM kernel test robot <oliver.sang@in=
-tel.com> wrote:
-> >
-> >
-> >
-> > Hello,
-> >
-> > kernel test robot noticed a -25.8% regression of will-it-scale.per_thre=
-ad_ops on:
-> >
-> >
-> > commit: 51d74c18a9c61e7ee33bc90b522dd7f6e5b80bb5 ("[PATCH v2 3/5] mm: m=
-emcg: make stats flushing threshold per-memcg")
-> > url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memc=
-g-change-flush_next_time-to-flush_last_time/20231010-112257
-> > base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-every=
-thing
-> > patch link: https://lore.kernel.org/all/20231010032117.1577496-4-yosrya=
-hmed@google.com/
-> > patch subject: [PATCH v2 3/5] mm: memcg: make stats flushing threshold =
-per-memcg
-> >
-> > testcase: will-it-scale
-> > test machine: 104 threads 2 sockets (Skylake) with 192G memory
-> > parameters:
-> >
-> >         nr_task: 100%
-> >         mode: thread
-> >         test: fallocate1
-> >         cpufreq_governor: performance
-> >
-> >
-> > In addition to that, the commit also has significant impact on the foll=
-owing tests:
-> >
-> > +------------------+---------------------------------------------------=
-------------+
-> > | testcase: change | will-it-scale: will-it-scale.per_thread_ops -30.0%=
- regression |
-> > | test machine     | 104 threads 2 sockets (Skylake) with 192G memory  =
-            |
-> > | test parameters  | cpufreq_governor=3Dperformance                    =
-              |
-> > |                  | mode=3Dthread                                     =
-              |
-> > |                  | nr_task=3D50%                                     =
-              |
-> > |                  | test=3Dfallocate1                                 =
-              |
-> > +------------------+---------------------------------------------------=
-------------+
-> >
->
-> Yosry, I don't think 25% to 30% regression can be ignored. Unless
-> there is a quick fix, IMO this series should be skipped for the
-> upcoming kernel open window.
+On Mon, Sep 11, 2023 at 06:09:18PM -0400, Frank Li wrote:
 
-I am currently looking into it. It's reasonable to skip the next merge
-window if a quick fix isn't found soon.
+Subject could be,
 
-I am surprised by the size of the regression given the following:
-      1.12 =C4=85  5%      +1.4        2.50 =C4=85  2%
-perf-profile.self.cycles-pp.__mod_memcg_lruvec_state
+PCI: endpoint: pci-epf-test: Add doorbell support
 
-IIUC we are only spending 1% more time in __mod_memcg_lruvec_state().
+> Add three register: doorbell_bar, doorbell_addr, doorbell_data,
+> doorbell_done. Call pci_epf_alloc_doorbell() all a doorbell address space.
+> 
+> Root complex(RC) side driver can trigger pci-epc-test's doorbell callback
+> handler by write doorbell_data to mapped doorbell_bar's address space.
+> 
+> pci-epc-test will set doorbell_done in doorbell callback.
+> 
+
+How about,
+
+Add doorbell support to the EPF test driver by introducing 3 new registers:
+
+doorbell_bar
+doorbell_addr
+doorbell_data
+
+The PCI RC driver can trigger the doorbell on the EP side by writing the
+content of "doorbell_data" to the address specified by the "doorbell_addr"
+register in the "doorbell_bar" BAR region.
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+You should also update Documentation/PCI/endpoint/pci-test-* files in a separate
+commit with doorbell support.
+
+> ---
+>  drivers/pci/endpoint/functions/pci-epf-test.c | 59 ++++++++++++++++++-
+>  1 file changed, 58 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 1f0d2b84296a3..566549919b87b 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/dmaengine.h>
+>  #include <linux/io.h>
+>  #include <linux/module.h>
+> +#include <linux/msi.h>
+>  #include <linux/slab.h>
+>  #include <linux/pci_ids.h>
+>  #include <linux/random.h>
+> @@ -39,17 +40,21 @@
+>  #define STATUS_IRQ_RAISED		BIT(6)
+>  #define STATUS_SRC_ADDR_INVALID		BIT(7)
+>  #define STATUS_DST_ADDR_INVALID		BIT(8)
+> +#define STATUS_DOORBELL_SUCCESS		BIT(9)
+>  
+>  #define FLAG_USE_DMA			BIT(0)
+>  
+>  #define TIMER_RESOLUTION		1
+>  
+> +#define MAGIC_VERSION_MASK		GENMASK(7, 0)
+> +
+>  static struct workqueue_struct *kpcitest_workqueue;
+>  
+>  struct pci_epf_test {
+>  	void			*reg[PCI_STD_NUM_BARS];
+>  	struct pci_epf		*epf;
+>  	enum pci_barno		test_reg_bar;
+> +	enum pci_barno		doorbell_bar;
+>  	size_t			msix_table_offset;
+>  	struct delayed_work	cmd_handler;
+>  	struct dma_chan		*dma_chan_tx;
+> @@ -74,6 +79,9 @@ struct pci_epf_test_reg {
+>  	u32	irq_type;
+>  	u32	irq_number;
+>  	u32	flags;
+> +	u32	doorbell_bar;
+> +	u32	doorbell_addr;
+> +	u32	doorbell_data;
+>  } __packed;
+>  
+>  static struct pci_epf_header test_header = {
+> @@ -693,6 +701,8 @@ static void pci_epf_test_unbind(struct pci_epf *epf)
+>  	struct pci_epf_bar *epf_bar;
+>  	int bar;
+>  
+> +	pci_epf_free_doorbell(epf);
+> +
+>  	cancel_delayed_work(&epf_test->cmd_handler);
+>  	pci_epf_test_clean_dma_chan(epf_test);
+>  	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+> @@ -808,9 +818,22 @@ static int pci_epf_test_link_up(struct pci_epf *epf)
+>  	return 0;
+>  }
+>  
+> +static int pci_epf_test_doorbell(struct pci_epf *epf, int index)
+> +{
+> +	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
+> +	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
+> +	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
+> +
+> +	reg->status |= STATUS_DOORBELL_SUCCESS;
+> +	pci_epf_test_raise_irq(epf_test, reg);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct pci_epc_event_ops pci_epf_test_event_ops = {
+>  	.core_init = pci_epf_test_core_init,
+>  	.link_up = pci_epf_test_link_up,
+> +	.doorbell = pci_epf_test_doorbell,
+
+I would like to pass this callback directly to the pci_epf_alloc_doorbell() API.
+ Would that be feasible?
+
+>  };
+>  
+>  static int pci_epf_test_alloc_space(struct pci_epf *epf)
+> @@ -859,7 +882,7 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
+>  		epf_bar = &epf->bar[bar];
+>  		add = (epf_bar->flags & PCI_BASE_ADDRESS_MEM_TYPE_64) ? 2 : 1;
+>  
+> -		if (bar == test_reg_bar)
+> +		if (bar == test_reg_bar || bar == epf_test->doorbell_bar)
+>  			continue;
+>  
+>  		if (!!(epc_features->reserved_bar & (1 << bar)))
+> @@ -900,9 +923,14 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+>  	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
+>  	const struct pci_epc_features *epc_features;
+>  	enum pci_barno test_reg_bar = BAR_0;
+> +	enum pci_barno doorbell_bar = NO_BAR;
+>  	struct pci_epc *epc = epf->epc;
+>  	bool linkup_notifier = false;
+>  	bool core_init_notifier = false;
+> +	struct pci_epf_test_reg *reg;
+> +	struct msi_msg *msg;
+> +	u64 doorbell_addr;
+> +	u32 align;
+>  
+>  	if (WARN_ON_ONCE(!epc))
+>  		return -EINVAL;
+> @@ -923,10 +951,39 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+>  	epf_test->test_reg_bar = test_reg_bar;
+>  	epf_test->epc_features = epc_features;
+>  
+> +	align = epc_features->align;
+> +	align = align ? align : 128;
+> +
+> +	ret = pci_epf_alloc_doorbell(epf, 1);
+
+This should be renamed as pci_epc_alloc_doorbell() as per comment on patch 1/3.
+Also, the "msi_msg" pointer should be part of the EPC struct.
+
+> +	if (!ret) {
+> +		msg = epf->msg;
+> +		doorbell_bar = pci_epc_get_next_free_bar(epc_features, test_reg_bar + 1);
+> +
+> +		if (doorbell_bar > 0) {
+> +			epf_test->doorbell_bar = doorbell_bar;
+> +			doorbell_addr = msg->address_hi;
+> +			doorbell_addr <<= 32;
+> +			doorbell_addr |= msg->address_lo;
+> +			epf->bar[doorbell_bar].phys_addr = round_down(doorbell_addr, align);
+> +			epf->bar[doorbell_bar].barno = doorbell_bar;
+> +			epf->bar[doorbell_bar].size = align;
+> +		} else {
+> +			pci_epf_free_doorbell(epf);
+
+This one too should be renamed. 
+
+> +		}
+> +	}
+> +
+>  	ret = pci_epf_test_alloc_space(epf);
+
+This one too.
+
+>  	if (ret)
+>  		return ret;
+>  
+> +	reg = epf_test->reg[test_reg_bar];
+> +	reg->magic |= FIELD_PREP(MAGIC_VERSION_MASK, 0x1);
+
+Why are you writing this register? This register serves for the purpose of
+testing BAR0.
+
+- Mani
+
+> +	if (doorbell_bar > 0) {
+> +		reg->doorbell_addr = doorbell_addr & (align - 1);
+> +		reg->doorbell_data = msg->data;
+> +		reg->doorbell_bar = doorbell_bar;
+> +	}
+> +
+>  	if (!core_init_notifier) {
+>  		ret = pci_epf_test_core_init(epf);
+>  		if (ret)
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
