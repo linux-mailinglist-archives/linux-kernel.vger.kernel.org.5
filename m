@@ -2,186 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4460D7D1271
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B097D1270
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377601AbjJTPRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
+        id S1377643AbjJTPRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377620AbjJTPRp (ORCPT
+        with ESMTP id S1377601AbjJTPR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:17:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8554D52
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697815014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uL74QOOODH8z7/HLBYoyiSfFz8MZP6UcEZUC9sHk/D4=;
-        b=T7omDvdqOos6XSRoRVNApj7ssyFrooUJSvPMHT7dXwQZieVp0Gra56BUhJNmTokuY6XT6p
-        5Br/fqYy64+VAG9r94MHV9GHUzEotd922yEAstBMV7oJuKbsVBXLWKP3sNl3qe3c64fxng
-        KhRpheIWExa4lzfuVvY+ar3bUSUga6M=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-cby8rI-DNJG2cKvASd6qBA-1; Fri, 20 Oct 2023 11:16:52 -0400
-X-MC-Unique: cby8rI-DNJG2cKvASd6qBA-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53dfe3af1b9so613332a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697815011; x=1698419811;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uL74QOOODH8z7/HLBYoyiSfFz8MZP6UcEZUC9sHk/D4=;
-        b=p3JkEJ3iSKsBoIYLQbU997ptISel2s6yDFOGExO4O9CcSuYjuJsRmIwr80BY6mtmNI
-         nmoWunX5IgNtWTq+oZ0iK4/Wj6tn7FwJxB/HDKylWw+THrq4ehT4CTBedTUm3TEnANSI
-         SHGkGSS2X/a4Lau+q+C674jBpd/fie7EI4VgBKpH0vD+vov/SRbBdg2DwNGio5TQ9Lec
-         JhgAPDoNHUpMazCuMgatRDXIgjWvEUy/xbbmjq4kgDr6rhn6q6kwl4NNn/l2FudWI4gE
-         vqPTnQtR9ulOY8QPbc8GTTx4CY4PVG2R6uA9jchz7ob59Y2T1pYUdEDbrEbfeJKkq2+9
-         bTqA==
-X-Gm-Message-State: AOJu0YwdamFo4ZHb8lYZGzZxVZezJyG7tL/cl7v0RE/GFoCnWQ7gh1j+
-        gykEFimJT3GGpCWpae5KwxVh9rqlFmNKvhTBSNk1JQ5i1BerCoxFITUV458GYk1+eXwMcSHoKqG
-        QnDqhzTbl0CCF1ODVSeKbj5wz
-X-Received: by 2002:a05:6402:2787:b0:53e:fc60:85bd with SMTP id b7-20020a056402278700b0053efc6085bdmr2276509ede.24.1697815011255;
-        Fri, 20 Oct 2023 08:16:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGYdNibxJHxyJGPVR5i/Yhr/fTPmr4VyB6rpDzVOAKQ0gtTV4BCXCGgLN2G0yHVvbXa7P8C6A==
-X-Received: by 2002:a05:6402:2787:b0:53e:fc60:85bd with SMTP id b7-20020a056402278700b0053efc6085bdmr2276476ede.24.1697815010854;
-        Fri, 20 Oct 2023 08:16:50 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id co2-20020a0564020c0200b0053ed70ebd7csm1621946edb.31.2023.10.20.08.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 08:16:49 -0700 (PDT)
-Message-ID: <789ff693-a4f0-eef7-7991-59c031fefe49@redhat.com>
-Date:   Fri, 20 Oct 2023 17:16:47 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: PIC probing code from e179f6914152 failing
-Content-Language: en-US, nl
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>, kys@microsoft.com,
-        hpa@linux.intel.com
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>
-References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
- <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 20 Oct 2023 11:17:29 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2042.outbound.protection.outlook.com [40.107.6.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE0DD60
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:17:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M6hlSLHE0hxFq/wIi7Ab9O4v7DjZChc7gHIsPLrPyX8zCR969SOiWwdqsbEjahmXPFpGZj5uo97IrDuPQz7Fe2rp66NHQ8u1zYd5FpAjD2C/bMFW5pf0THh0taYfDvyGthbrD747lLN2IHafhSIgjesXLNDRdAwMAQ+X0ciQCAPZM8rd7N6YRkYIV35tZg5QFK62cSUX8ayPdM64bny0XvN6uqmHoXfaL6OoS/vqlVm4o7BpvP0uuHo8FEadObSXdvzuRLu6P0UUzaRykbXXkrVWKk4eJXVXaVpxbhLMVxLxD1hXc+ooCXr1Lj5lD8/6qlOi3ppwb6adHI8petz5bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f0Bi3bn8qMesLCanq7j4h2Qx8K9aDOprrhmewVyXw2Q=;
+ b=OdQYjumGkcWmeioB9aBafmQGk5iMQX0yqWUnIxOtTJ/CKC3uUbCE0WqJICZxDoK3FbyOqzk1x/OyYbEezY9/tWWOq9cx7LGR7cKqTZfNq3rxssdsiob58iz52Jw8RfeCxPv55/NRigpcJWILs+H2TZ932dxxQ6OUY7gn+V0fKrZhrZ4o+hfFCmYSdEmpTsz0yUQut1+QwFWtWk2NP2wW59PwyJe/MqUh/S+7raQjzXxXTg/fSf+KH5tuzkljFv7yRUuu0w8o+fXvQKoQbuZAI7fljEjwVpBMxZ880NAsT7PLo/4eMFF/tHfriyUJ/NC9d4WmtR4Jk4t2jebgcgQnSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f0Bi3bn8qMesLCanq7j4h2Qx8K9aDOprrhmewVyXw2Q=;
+ b=gyhkkBSv5mCvd5k5ziUw9k/EY9q7q9dMzvyRd0IpEVrq49tg1idSYcM/zm2rs9eC3cX0sECldOFYwgZ1ZJbEfjcRPjL2Q7HnLKowzNynUIZIGqA9HBzoXhcEJ+KkWeOW0Gn3J/Feh3IH4Sb6k4csOxKtzV2Gw/6JRUPq7pf+pfU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM7PR04MB6902.eurprd04.prod.outlook.com (2603:10a6:20b:107::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Fri, 20 Oct
+ 2023 15:17:25 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
+ 15:17:25 +0000
+Date:   Fri, 20 Oct 2023 11:17:17 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 Resent 6/6] i3c: master: svc: fix random hot join
+ failure since timeout error
+Message-ID: <ZTKZ/a5T6DLJz/ZQ@lizhi-Precision-Tower-5810>
+References: <20231018155926.3305476-1-Frank.Li@nxp.com>
+ <20231018155926.3305476-7-Frank.Li@nxp.com>
+ <20231019084452.11fd0645@xps-13>
+ <ZTFNvrsSoHOS3P2g@lizhi-Precision-Tower-5810>
+ <20231020160645.67e678ee@xps-13>
+ <ZTKMTwU6cVAfGCKG@lizhi-Precision-Tower-5810>
+ <20231020163525.66485920@xps-13>
+ <ZTKTGG7J55Sj19Nd@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZTKTGG7J55Sj19Nd@lizhi-Precision-Tower-5810>
+X-ClientProxiedBy: SJ0PR03CA0192.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::17) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM7PR04MB6902:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c4dc173-b15d-4765-da25-08dbd17faa5d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9we8/hZi3b6sXpxIehlxp8glEEzFLKz+zNTR8xscbzzVtVzAEhY3AWT9oeL3JXh6JHwU0bO2++0+ZekvgxqL08flQY5TonL0QHJnQBaVnaYXOiuUebD7a5oDodH/T0nJP4AQUvzpq4ulLaHNPfcvtqTfOoKXj/2hJxsaQWF0K3DKgUR+xIoZEKDzQACptGCYvIXdxgR9OFJ3m7QS0/T1S8Cm8rImZwiGRJF/23lUAx3IZ3iYe6JpcQj8fcDA3d06lAnix4/YVFTDmtB+RtlZCRuZ8HDbZ67/UlNmmYCpa2vEK93Qeg6eQ50YGTXqGiBZpuf9WEQWPM9lnOZOI2nhJBIixk5P/5BwzG1ttWF40Bi3++cDGexGDyUZwZ2qpmjYj+JgGdLnE2vHIDq8YHPNfKjTLC/hbrjnEBDOstMQAtQWT2//K0EMxdynvQkoeoPgZ80VHyX8t2UkxQLDp/062wbwmBMERJ29DDo6qIcYhm4URFnhRrJ7KmRZ6PHVo7RB0CxKWaXMSkteObU/0DKb8UnwxckA9T1UjZkACXINyXvobXkJBOf1W9ckLVNC57rpCOcK3mC8FxxwtGQaizDYJwkRfhXk6SeO2s1N0/BccSrSENiKBc3k4pwabKP05CKu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(376002)(366004)(396003)(39860400002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(86362001)(316002)(6486002)(9686003)(38100700002)(66574015)(6512007)(26005)(478600001)(33716001)(41300700001)(66946007)(66556008)(66476007)(6506007)(38350700005)(52116002)(83380400001)(6666004)(6916009)(5660300002)(4326008)(8936002)(2906002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?FgzUpvBY2IBc8Z6LX6O72O5PzqKQ0luIpmagXSJKVKoa+hu5ovJ8sqBibz?=
+ =?iso-8859-1?Q?adYX3uMDvnmL0/4B+ffovbVSnAfs+lfXBm3mll567v6GoEMfi99eullRDg?=
+ =?iso-8859-1?Q?vyCWwHXSpJJKgN/dAoKbWBC8PNjvEdu3lyUibO80rtgPOwtrRwG8sRtdKY?=
+ =?iso-8859-1?Q?W81Ug+eAFd82vm/8lGu7myUtCfZEUQVWCUV95F31t5XEVkyvVNRFFJJ6CO?=
+ =?iso-8859-1?Q?lvhZ61fLUHAYqecy8HpjqDNP7DskYQQDRTMfJkIAUYsqkIJ+Jo6Lp0fyKR?=
+ =?iso-8859-1?Q?kZBKxpvOQcmf1Te/LWGfg3DqH5c1q/DiV018HNkwZ1DGVhps8OOuwFJ7BF?=
+ =?iso-8859-1?Q?139TYforYh4Z7owgqb0J1ktrQ6PAboSn+q5N+JdsjysZoyokbRWYQsmtEm?=
+ =?iso-8859-1?Q?eMomASMg7MxJF3NwfQ6K40iU3CGf4ELfkcpEXRffoEY3KETPCIMR7phY6J?=
+ =?iso-8859-1?Q?Z1BXuWkAkZ6mC3uMy5utWbVYZ6u6EytnVqoXZ2zVFoNufWSlXpcP2hpjnw?=
+ =?iso-8859-1?Q?QaawzJIbRj5LTZyO/kGsHjXtjQQ6P8HG6+V5xRcZI1x5HODN+Xt1UhxXJ3?=
+ =?iso-8859-1?Q?OehO3VkrO39C9Sjsc/O8bW36Yh9h0j6Gw7+gHihYLbsz7wCVxuWNG9nPlE?=
+ =?iso-8859-1?Q?LCEJTOyQmrOXY5RP2N8Cfhc2bnnJYEWRvdPgEeVRhQrZ2DMEdnUTU91m8y?=
+ =?iso-8859-1?Q?JB/ZeZ0H6CYIYywswfzUcEYgh6LrT3QGrzo/2PjrsI+D/SeS9wnhQvJQ5x?=
+ =?iso-8859-1?Q?evH49bMlKFUs6wRpPfTNd8AffrA0SV6iuD8w8ymp0dfMDis4MrdpHs4W28?=
+ =?iso-8859-1?Q?cQaVfAag+bAXH4ww2VhQxYfPmJm2sU/IRlVYP3aLvbPfCG+ZmVnecEWect?=
+ =?iso-8859-1?Q?ZGDYPeXzbX799Idb8BlFA8a3bEH3YhfDAZSVprv+zYBUHDrF+3XS3gNu2r?=
+ =?iso-8859-1?Q?Ndmc+7xagKaD0rWTOpTsHFyVNtfOi+2dmJUpJShaSKshq8zH5kY0pgFI/q?=
+ =?iso-8859-1?Q?FM1pzSvqPj1/pVWdOdS5fwmy/U5KffMYeIyQR2c/D1Nmp3ULRY/X1Y1BqB?=
+ =?iso-8859-1?Q?9yn9XQ6tarcvlcnJY4F0IAVMXh9HTXbHe/du1047XggY2M7PFP6Yn/0jhc?=
+ =?iso-8859-1?Q?TUD6V3SZays79camNQYWLwpFUPcml634SHG/3yy3J8aap0vMCJ51C4rTFf?=
+ =?iso-8859-1?Q?QIkZTUyQan0x0wPni5Oz8qyQLp7GsIcPfJEpT3ZzWju3+nEGsZ1Ks5gpLY?=
+ =?iso-8859-1?Q?rH+H0BEjCQMVToQsITdptbtELjb+61K/rioq1otVog6ZJTj86T8iRdU4Fi?=
+ =?iso-8859-1?Q?xf+IRPH5hlp8wZDHGrB0mYhys0ReSZNZGeQLFhArS0TYImuf2Rl0VV6BWS?=
+ =?iso-8859-1?Q?UUD9iseJgL7koxKSejHPj2v28Tbe5e5A0Uh9B+zY/eAxz9lvNefMdwr+5X?=
+ =?iso-8859-1?Q?DTWMQin58rYen7AFJ9zgJ1HPII7iHDu6CPAvlxGOimej+229kFkdjCj99U?=
+ =?iso-8859-1?Q?epFs72Uc0eRewoDmCPqOqA0mPQm+OeRx9dH9cz8VHXSCwymqjOPJfgOAxF?=
+ =?iso-8859-1?Q?FmBt8k9Bq4SDSup1RQK82HgVIt+H5KMtc9y8SHo9zsGQK+qgUOJ7D9AMz4?=
+ =?iso-8859-1?Q?ZpU660Cm6UofJSY5MLpIctO92mqzZ2Kx+S?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c4dc173-b15d-4765-da25-08dbd17faa5d
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 15:17:25.3577
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cNLLtHF10lWgjoz8JmiTwTRGKcEHF6u79NIa2M7OcP3i0dWGziZ0MLaT0RcpzjFdiFBZuptxSDcNe17ssL7Hkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6902
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
-
-On 10/19/23 23:20, Mario Limonciello wrote:
-> On 10/18/2023 17:50, Thomas Gleixner wrote:
-
-<snip>
-
->> But that brings up an interesting question. How are those affected
->> machines even reaching a state where the user notices that just the
->> keyboard and the GPIO are not working? Why?
+On Fri, Oct 20, 2023 at 10:47:52AM -0400, Frank Li wrote:
+> On Fri, Oct 20, 2023 at 04:35:25PM +0200, Miquel Raynal wrote:
+> > Hi Frank,
+> > 
+> > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:18:55 -0400:
+> > 
+> > > On Fri, Oct 20, 2023 at 04:06:45PM +0200, Miquel Raynal wrote:
+> > > > Hi Frank,
+> > > > 
+> > > > Frank.li@nxp.com wrote on Thu, 19 Oct 2023 11:39:42 -0400:
+> > > >   
+> > > > > On Thu, Oct 19, 2023 at 08:44:52AM +0200, Miquel Raynal wrote:  
+> > > > > > Hi Frank,
+> > > > > > 
+> > > > > > Frank.Li@nxp.com wrote on Wed, 18 Oct 2023 11:59:26 -0400:
+> > > > > >     
+> > > > > > > master side report:
+> > > > > > >   silvaco-i3c-master 44330000.i3c-master: Error condition: MSTATUS 0x020090c7, MERRWARN 0x00100000
+> > > > > > > 
+> > > > > > > BIT 20: TIMEOUT error
+> > > > > > >   The module has stalled too long in a frame. This happens when:
+> > > > > > >   - The TX FIFO or RX FIFO is not handled and the bus is stuck in the
+> > > > > > > middle of a message,
+> > > > > > >   - No STOP was issued and between messages,
+> > > > > > >   - IBI manual is used and no decision was made.    
+> > > > > > 
+> > > > > > I am still not convinced this should be ignored in all cases.
+> > > > > > 
+> > > > > > Case 1 is a problem because the hardware failed somehow.    
+> > > > > 
+> > > > > But so far, no action to handle this case in current code.  
+> > > > 
+> > > > Yes, but if you detect an issue and ignore it, it's not better than
+> > > > reporting it without handling it. Instead of totally ignoring this I
+> > > > would at least write a debug message (identical to what's below) before
+> > > > returning false, even though I am not convinced unconditionally
+> > > > returning false here is wise. If you fail a hardware sequence because
+> > > > you added a printk, it's a problem. Maybe you consider this line as
+> > > > noise, but I believe it's still an error condition. Maybe, however,
+> > > > this bit gets set after the whole sequence, and this is just a "bus
+> > > > is idle" condition. If that's the case, then you need some
+> > > > additional heuristics to properly ignore the bit?
+> > > >   
+> > > 
+> > >                 dev_err(master->dev,                                       
+> > >                         "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x\n",
+> > >                         mstatus, merrwarn);
+> > > +
+> > > +		/* ignore timeout error */
+> > > +		if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT)
+> > > +			return false;
+> > > +
+> > > 
+> > > Is it okay move SVC_I3C_MERRWARN_TIMEOUT after dev_err?
+> > 
+> > I think you mentioned earlier that the problem was not the printk but
+> > the return value. So perhaps there is a way to know if the timeout
+> > happened after a transaction and was legitimate or not?
 > 
-> So the GPIO controller driver (pinctrl-amd) uses platform_get_irq() to try to discover the IRQ to use.
+> Error message just annoise user, don't impact function. But return false
+> let IBI thread running to avoid dead lock. 
+
+I forget mention one thing. Any error message here will make SDA low for
+longer.  Before emit stop, SDA is low.
+
+I have not checked I3C spec yet about how long SDA will be allowed. it will
+worser if message go through uart port. The bus will be locked longer.
+
+It's better to print error message after emit_stop to reduce SDA low time.
+
+Frank
+
 > 
-> This calls acpi_irq_get() which isn't implemented on x86 (hardcodes -EINVAL).
+> > 
+> > In any case we should probably lower the log level for this error.
 > 
-> I can "work around it" by:
+> Only SVC_I3C_MERRWARN_TIMEOUT is warning
 > 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 76bfcba25003..2b4b436c65d8 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -187,7 +187,8 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
->         }
+> Maybe below logic is better
 > 
->         r = platform_get_resource(dev, IORESOURCE_IRQ, num);
-> -       if (has_acpi_companion(&dev->dev)) {
-> +       if (IS_ENABLED(CONFIG_ACPI_GENERIC_GSI) &&
-> +            has_acpi_companion(&dev->dev)) {
->                 if (r && r->flags & IORESOURCE_DISABLED) {
->                         ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
->                         if (ret)
+> 	if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT) {
+> 		dev_dbg(master->dev, 
+>                         "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x\n",
+> 			mstatus, merrwarn);
+> 		return false;
+> 	} 
+> 	
+> 	dev_err(master->dev,                                     
+>                 "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x\n",
+>                  mstatus, merrwarn); 
+> 	....
 > 
-> but the resource that is returned from the next hunk has the resource flags set wrong in the NULL pic case:
+> Frank
 > 
-> NULL case:
-> r: AMDI0030:00 flags: 0x30000418
-> PIC case:
-> r: AMDI0030:00 flags: 0x418
-> 
-> IOW NULL pic case has IORESOURCE_DISABLED / IORESOURCE_UNSET
-> 
-> This then later the GPIO controller interrupts are not actually working.
-> For example the attn pin for my I2C touchpad doesn't work.
-
-Right the issue is that with the legacy-pic path disabled /
-with nr_legacy_irqs() returning 0 them there is no mapping
-added for the Legacy ISA IRQs which causes this problem.
-
-My hack to set nr_legacy_irqs to 16 also for the NULL PIC from:
-https://bugzilla.kernel.org/show_bug.cgi?id=218003
-
-Does cause the Legacy ISA IRQ mappings to get added and makes
-the GPIO controller actually work, as can be seen from:
-
-https://bugzilla.kernel.org/attachment.cgi?id=305241&action=edit
-
-Which is a dmesg with that hack and it does NOT have this error:
-
-[    0.276113] amd_gpio AMDI0030:00: error -EINVAL: IRQ index 0 not found
-[    0.278464] amd_gpio: probe of AMDI0030:00 failed with error -22
-
-and the reporter also reports the touchpad works with this patch.
-
-As Thomas already said the legayc PIC really is not necessary,
-but what is still necessary on these laptops with the legacy PIC
-not initialized is to have the Legacy ISA IRQ mappings added
-by the kernel itself since these are missing from the MADT
-(if I have my ACPI/IOAPIC terminology correct).
-
-This quick hack (which is the one from the working dmesg)
-does this:
-
---- a/arch/x86/kernel/i8259.c	
-+++ a/arch/x86/kernel/i8259.c	
-@@ -394,7 +394,7 @@ static int legacy_pic_probe(void)
- }
- 
- struct legacy_pic null_legacy_pic = {
--	.nr_legacy_irqs = 0,
-+	.nr_legacy_irqs = NR_IRQS_LEGACY,
- 	.chip = &dummy_irq_chip,
- 	.mask = legacy_pic_uint_noop,
- 	.unmask = legacy_pic_uint_noop,
-
-But I believe this will break things when there are actually
-non legacy ISA IRQs / GSI-s using GSI numbers < NR_IRQS_LEGACY
-
-Thomas, I'm not at all familiar with this area of the kernel,
-but would checking if the MADT defines any non ISA GSIs under
-16 and if NOT use nr_legacy_irqs = NR_IRQS_LEGACY for the
-NULL PIC be an option?
-
-Or maybe some sort of DMI (sys_vendor == Lenovo) quirk to
-set nr_legacy_irqs = NR_IRQS_LEGACY for the NULL PIC ?
-
-Regards,
-
-Hans
-
-
-
+> > 
+> > Thanks,
+> > Miqu�l
