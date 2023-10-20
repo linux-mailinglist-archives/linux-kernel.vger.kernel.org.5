@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6177D17C5
+	by mail.lfdr.de (Postfix) with ESMTP id CC24E7D17C6
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbjJTVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S233125AbjJTVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbjJTVI1 (ORCPT
+        with ESMTP id S231893AbjJTVIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:08:27 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4ECD73
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:08:23 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so1242819b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:08:23 -0700 (PDT)
+        Fri, 20 Oct 2023 17:08:30 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCF210C0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:08:25 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so1123752b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697836103; x=1698440903; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1697836105; x=1698440905; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AhPF1MMHZEhOFgqY4sUe/XPMB20t97NOCXsCgM08HPE=;
-        b=oYd8F7nU3Cf3NOUqkYO4YTI/U6ldnI+EG+TMZxKti5XocDL74K6ZioY49iYwIsoEnm
-         Ws2vFi3QEK2W7PGCoL8rdyoMi5QHIaomlIAgobMA/Z2YhHp9btT9GUq3BWv5e0c2LbJf
-         6WAq6ZM+vn7E1CjgaFTB4esGjE47aEGG+Z0P4=
+        bh=DXnBfDlArT8QQ+dhtd2r5fMDGlrQTZfL2E4sRwVy3fU=;
+        b=Iu/XNEEYGxohnwSTLvfv4m9v02bvuXPrDS4a+kAt8x9UsUqVZTeSwHLL4YKPeXVQs4
+         3ynwaL2GtPp5f5wRpdTyi/ogfvgaiB5o7cREBGrdgsDJcmxQbV4wH4ioCzOl3Arp7xZD
+         fqZwyiF8+rmfK6DfjM1CJf8+NV+JqobTm4mZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697836103; x=1698440903;
+        d=1e100.net; s=20230601; t=1697836105; x=1698440905;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AhPF1MMHZEhOFgqY4sUe/XPMB20t97NOCXsCgM08HPE=;
-        b=CJAfC3i772G8BDCi+l7KJq+rETQYcrtTYI1tRlkkiWowSp4YR0Ytu28BepFlueyEmf
-         ThFndhq052GX2C6dh1a0EZAxNoN+Bc/5NyARMO32D6BiPmZrfdIIFOVMylwPjzAJupfp
-         biLJ/Ag8ExOxNHZnUJxpQd1JcFpWXD3f+CdYOKxEjTRIre6p26IpNEhXp+v/L1K07exx
-         TaLIoAlHOZG1J3yKZnDCKuJtFFzt4TVnS0T9kA0hmA+mYsBjMf/YhTD/wShLCuesmENX
-         aZhDtnk6veR5cK3AeKoZ6G9n9931ZL3IDHpJJ+cUbeIykkUiAPPV6friqjjNcf1FpxUn
-         ruAw==
-X-Gm-Message-State: AOJu0YwMHEDGoLeJNmei9R0J/fOJYdIC0GnW5DajP32HbDE3xs9Ep/iR
-        fSCCPELG1NS8M7oQnM3BHwgZbA==
-X-Google-Smtp-Source: AGHT+IEn2upkNqeg/hnhhzSxcZJ6GtSj6q90UcDzfz5BtaxiHNSgUhs1kRUZkW2TDlboIkqmKBaPEw==
-X-Received: by 2002:aa7:88cc:0:b0:6b8:f7ed:4deb with SMTP id k12-20020aa788cc000000b006b8f7ed4debmr2913689pff.13.1697836102688;
-        Fri, 20 Oct 2023 14:08:22 -0700 (PDT)
+        bh=DXnBfDlArT8QQ+dhtd2r5fMDGlrQTZfL2E4sRwVy3fU=;
+        b=DMlIEF3RPu81+/tw/sSLGl/mb9CdEgiCk8Vv7NhM+B0Tty6aL3TrNODaftcyrsljvN
+         az+NxrBjzczvkeG3/IHpNU0vV4dNiASH/2wA44BcFsyaqyaBgc+iB200ThgBGohTsgBQ
+         bwDqb6GDPmlvfUNNDg525mQuRkm3U3HHhjZIqqFZWQK5mJzm0V3j2c0PTnJpIu38PQKM
+         zdrihDt5PPsdUM/nhJmAVbjBOIkQCB06rmm3YZDQVoXnRN8ctrNOpko+PBGzJPvxElH5
+         u6d5BXwbeQ7pJv/V1uP4CdS6X/8D+HVHQKgffOwXfDtLCR23N/+3UiMh3GAVx5Q4XsOM
+         Bhbg==
+X-Gm-Message-State: AOJu0YwFzrz5wBx6wHEuFoy2mV+RO8RKCG+FcIJLNctPRzDmFQFt/oy8
+        rqzWKbScVxGlhx51gdXHosFTXA==
+X-Google-Smtp-Source: AGHT+IEb1MKkvrdCiTUUHUx2844H+lZouwvUUGZUYdWYX+sKgbuQD171isy8pFxgtyU5nlBqGpwG0Q==
+X-Received: by 2002:a05:6a21:7748:b0:15d:8409:8804 with SMTP id bc8-20020a056a21774800b0015d84098804mr3161452pzc.57.1697836104815;
+        Fri, 20 Oct 2023 14:08:24 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:c078:ee4f:479f:8486])
-        by smtp.gmail.com with ESMTPSA id w14-20020aa7954e000000b00686b649cdd0sm1969278pfq.86.2023.10.20.14.08.21
+        by smtp.gmail.com with ESMTPSA id w14-20020aa7954e000000b00686b649cdd0sm1969278pfq.86.2023.10.20.14.08.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 14:08:22 -0700 (PDT)
+        Fri, 20 Oct 2023 14:08:24 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Jakub Kicinski <kuba@kernel.org>,
         Hayes Wang <hayeswang@realtek.com>,
@@ -61,9 +61,9 @@ Cc:     Edward Hill <ecgh@chromium.org>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH v5 7/8] r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
-Date:   Fri, 20 Oct 2023 14:06:58 -0700
-Message-ID: <20231020140655.v5.7.Iaacab4e73761e7bd9bb622b30a804c5d20bd5b4c@changeid>
+Subject: [PATCH v5 8/8] r8152: Block future register access if register access fails
+Date:   Fri, 20 Oct 2023 14:06:59 -0700
+Message-ID: <20231020140655.v5.8.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
 In-Reply-To: <20231020210751.3415723-1-dianders@chromium.org>
 References: <20231020210751.3415723-1-dianders@chromium.org>
@@ -71,7 +71,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,454 +79,435 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Whenever the RTL8152_UNPLUG is set that just tells the driver that all
-accesses will fail and we should just immediately bail. A future patch
-will use this same concept at a time when the driver hasn't actually
-been unplugged but is about to be reset. Rename the flag in
-preparation for the future patch.
+Even though the functions to read/write registers can fail, most of
+the places in the r8152 driver that read/write register values don't
+check error codes. The lack of error code checking is problematic in
+at least two ways.
 
-This is a no-op change and just a search and replace.
+The first problem is that the r8152 driver often uses code patterns
+similar to this:
+  x = read_register()
+  x = x | SOME_BIT;
+  write_register(x);
+
+...with the above pattern, if the read_register() fails and returns
+garbage then we'll end up trying to write modified garbage back to the
+Realtek adapter. If the write_register() succeeds that's bad. Note
+that as of commit f53a7ad18959 ("r8152: Set memory to all 0xFFs on
+failed reg reads") the "garbage" returned by read_register() will at
+least be consistent garbage, but it is still garbage.
+
+It turns out that this problem is very serious. Writing garbage to
+some of the hardware registers on the Ethernet adapter can put the
+adapter in such a bad state that it needs to be power cycled (fully
+unplugged and plugged in again) before it can enumerate again.
+
+The second problem is that the r8152 driver generally has functions
+that are long sequences of register writes. Assuming everything will
+be OK if a random register write fails in the middle isn't a great
+assumption.
+
+One might wonder if the above two problems are real. You could ask if
+we would really have a successful write after a failed read. It turns
+out that the answer appears to be "yes, this can happen". In fact,
+we've seen at least two distinct failure modes where this happens.
+
+On a sc7180-trogdor Chromebook if you drop into kdb for a while and
+then resume, you can see:
+1. We get a "Tx timeout"
+2. The "Tx timeout" queues up a USB reset.
+3. In rtl8152_pre_reset() we try to reinit the hardware.
+4. The first several (2-9) register accesses fail with a timeout, then
+   things recover.
+
+The above test case was actually fixed by the patch ("r8152: Increase
+USB control msg timeout to 5000ms as per spec") but at least shows
+that we really can see successful calls after failed ones.
+
+On a different (AMD) based Chromebook with a particular adapter, we
+found that during reboot tests we'd also sometimes get a transitory
+failure. In this case we saw -EPIPE being returned sometimes. Retrying
+worked, but retrying is not always safe for all register accesses
+since reading/writing some registers might have side effects (like
+registers that clear on read).
+
+Let's fully lock out all register access if a register access fails.
+When we do this, we'll try to queue up a USB reset and try to unlock
+register access after the reset. This is slightly tricker than it
+sounds since the r8152 driver has an optimized reset sequence that
+only works reliably after probe happens. In order to handle this, we
+avoid the optimized reset if probe didn't finish. Instead, we simply
+retry the probe routine in this case.
+
+When locking out access, we'll use the existing infrastructure that
+the driver was using when it detected we were unplugged. This keeps us
+from getting stuck in delay loops in some parts of the driver.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
+Originally when looking at this problem I thought that the obvious
+solution was to "just" add better error handling to the driver. This
+_sounds_ appealing, but it's a massive change and touches a
+significant portion of the lines in this driver. It's also not always
+obvious what the driver should be doing to handle errors.
 
-(no changes since v2)
+If you feel like you need to be convinced and to see what it looked
+like to add better error handling, I put up my "work in progress"
+patch when I was investigating this at: https://crrev.com/c/4937290
+
+There is still some active debate between the two approaches, though,
+so it would be interesting to hear if anyone had any opinions.
+
+NOTE: Grant's review tag was removed in v5 since v5 changed somewhat
+significantly.
+
+Changes in v5:
+- Removed extra mutex_unlock() left over in v4.
+- Fixed minor typos.
+- Don't do queue an unbind/bind reset if probe fails; just retry probe.
+
+Changes in v4:
+- Took out some unnecessary locks/unlocks of the control mutex.
+- Added comment about reading version causing probe fail if 3 fails.
+- Added text to commit msg about the potential unbind/bind loop.
+
+Changes in v3:
+- Fixed v2 changelog ending up in the commit message.
+- farmework -> framework in comments.
 
 Changes in v2:
-- ("Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE") new for v2.
+- Reset patch no longer based on retry patch, since that was dropped.
+- Reset patch should be robust even if failures happen in probe.
+- Switched booleans to bits in the "flags" variable.
+- Check for -ENODEV instead of "udev->state == USB_STATE_NOTATTACHED"
 
- drivers/net/usb/r8152.c | 96 ++++++++++++++++++++---------------------
- 1 file changed, 48 insertions(+), 48 deletions(-)
+ drivers/net/usb/r8152.c | 207 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 176 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 982f9ca03e7a..65232848b31d 100644
+index 65232848b31d..afb20c0ed688 100644
 --- a/drivers/net/usb/r8152.c
 +++ b/drivers/net/usb/r8152.c
-@@ -764,7 +764,7 @@ enum rtl_register_content {
+@@ -773,6 +773,9 @@ enum rtl8152_flags {
+ 	SCHEDULE_TASKLET,
+ 	GREEN_ETHERNET,
+ 	RX_EPROTO,
++	IN_PRE_RESET,
++	PROBED_WITH_NO_ERRORS,
++	PROBE_SHOULD_RETRY,
+ };
  
- /* rtl8152 flags */
- enum rtl8152_flags {
--	RTL8152_UNPLUG = 0,
-+	RTL8152_INACCESSIBLE = 0,
- 	RTL8152_SET_RX_MODE,
- 	WORK_ENABLE,
- 	RTL8152_LINK_CHG,
-@@ -1245,7 +1245,7 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ #define DEVICE_ID_LENOVO_USB_C_TRAVEL_HUB		0x721e
+@@ -953,6 +956,8 @@ struct r8152 {
+ 	u8 version;
+ 	u8 duplex;
+ 	u8 autoneg;
++
++	unsigned int reg_access_reset_count;
+ };
+ 
+ /**
+@@ -1200,6 +1205,96 @@ static unsigned int agg_buf_sz = 16384;
+ 
+ #define RTL_LIMITED_TSO_SIZE	(size_to_mtu(agg_buf_sz) - sizeof(struct tx_desc))
+ 
++/* If register access fails then we block access and issue a reset. If this
++ * happens too many times in a row without a successful access then we stop
++ * trying to reset and just leave access blocked.
++ */
++#define REGISTER_ACCESS_MAX_RESETS	3
++
++static void rtl_set_inaccessible(struct r8152 *tp)
++{
++	set_bit(RTL8152_INACCESSIBLE, &tp->flags);
++	smp_mb__after_atomic();
++}
++
++static void rtl_set_accessible(struct r8152 *tp)
++{
++	clear_bit(RTL8152_INACCESSIBLE, &tp->flags);
++	smp_mb__after_atomic();
++}
++
++static
++int r8152_control_msg(struct r8152 *tp, unsigned int pipe, __u8 request,
++		      __u8 requesttype, __u16 value, __u16 index, void *data,
++		      __u16 size, const char *msg_tag)
++{
++	struct usb_device *udev = tp->udev;
++	int ret;
++
++	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
++		return -ENODEV;
++
++	ret = usb_control_msg(udev, pipe, request, requesttype,
++			      value, index, data, size,
++			      USB_CTRL_GET_TIMEOUT);
++
++	/* No need to issue a reset to report an error if the USB device got
++	 * unplugged; just return immediately.
++	 */
++	if (ret == -ENODEV)
++		return ret;
++
++	/* If the write was successful then we're done */
++	if (ret >= 0) {
++		tp->reg_access_reset_count = 0;
++		return ret;
++	}
++
++	dev_err(&udev->dev,
++		"Failed to %s %d bytes at %#06x/%#06x (%d)\n",
++		msg_tag, size, value, index, ret);
++
++	/* Block all future register access until we reset. Much of the code
++	 * in the driver doesn't check for errors. Notably, many parts of the
++	 * driver do a read/modify/write of a register value without
++	 * confirming that the read succeeded. Writing back modified garbage
++	 * like this can fully wedge the adapter, requiring a power cycle.
++	 */
++	rtl_set_inaccessible(tp);
++
++	/* If probe hasn't yet finished, then we'll request a retry of the
++	 * whole probe routine if we get any control transfer errors. We
++	 * never have to clear this bit since we free/reallocate the whole "tp"
++	 * structure if we retry probe.
++	 */
++	if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
++		set_bit(PROBE_SHOULD_RETRY, &tp->flags);
++		return ret;
++	}
++
++	/* Failing to access registers in pre-reset is not surprising since we
++	 * wouldn't be resetting if things were behaving normally. The register
++	 * access we do in pre-reset isn't truly mandatory--we're just reusing
++	 * the disable() function and trying to be nice by powering the
++	 * adapter down before resetting it. Thus, if we're in pre-reset,
++	 * we'll return right away and not try to queue up yet another reset.
++	 * We know the post-reset is already coming.
++	 */
++	if (test_bit(IN_PRE_RESET, &tp->flags))
++		return ret;
++
++	if (tp->reg_access_reset_count < REGISTER_ACCESS_MAX_RESETS) {
++		usb_queue_reset_device(tp->intf);
++		tp->reg_access_reset_count++;
++	} else if (tp->reg_access_reset_count == REGISTER_ACCESS_MAX_RESETS) {
++		dev_err(&udev->dev,
++			"Tried to reset %d times; giving up.\n",
++			REGISTER_ACCESS_MAX_RESETS);
++	}
++
++	return ret;
++}
++
+ static
+ int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ {
+@@ -1210,9 +1305,10 @@ int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_in,
+-			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
+-			      value, index, tmp, size, USB_CTRL_GET_TIMEOUT);
++	ret = r8152_control_msg(tp, tp->pipe_ctrl_in,
++				RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
++				value, index, tmp, size, "read");
++
+ 	if (ret < 0)
+ 		memset(data, 0xff, size);
+ 	else
+@@ -1233,9 +1329,9 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_out,
+-			      RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
+-			      value, index, tmp, size, USB_CTRL_SET_TIMEOUT);
++	ret = r8152_control_msg(tp, tp->pipe_ctrl_out,
++				RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
++				value, index, tmp, size, "write");
+ 
+ 	kfree(tmp);
+ 
+@@ -1244,10 +1340,8 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
+ 
  static void rtl_set_unplug(struct r8152 *tp)
  {
- 	if (tp->udev->state == USB_STATE_NOTATTACHED) {
--		set_bit(RTL8152_UNPLUG, &tp->flags);
-+		set_bit(RTL8152_INACCESSIBLE, &tp->flags);
- 		smp_mb__after_atomic();
- 	}
+-	if (tp->udev->state == USB_STATE_NOTATTACHED) {
+-		set_bit(RTL8152_INACCESSIBLE, &tp->flags);
+-		smp_mb__after_atomic();
+-	}
++	if (tp->udev->state == USB_STATE_NOTATTACHED)
++		rtl_set_inaccessible(tp);
  }
-@@ -1256,7 +1256,7 @@ static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
- 	u16 limit = 64;
- 	int ret = 0;
  
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
+ static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
+@@ -8262,7 +8356,7 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
+ 	struct r8152 *tp = usb_get_intfdata(intf);
+ 	struct net_device *netdev;
  
- 	/* both size and indix must be 4 bytes align */
-@@ -1300,7 +1300,7 @@ static int generic_ocp_write(struct r8152 *tp, u16 index, u16 byteen,
- 	u16 byteen_start, byteen_end, byen;
- 	u16 limit = 512;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	/* both size and indix must be 4 bytes align */
-@@ -1537,7 +1537,7 @@ static int read_mii_word(struct net_device *netdev, int phy_id, int reg)
- 	struct r8152 *tp = netdev_priv(netdev);
- 	int ret;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	if (phy_id != R8152_PHY_ID)
-@@ -1553,7 +1553,7 @@ void write_mii_word(struct net_device *netdev, int phy_id, int reg, int val)
- {
- 	struct r8152 *tp = netdev_priv(netdev);
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (phy_id != R8152_PHY_ID)
-@@ -1758,7 +1758,7 @@ static void read_bulk_callback(struct urb *urb)
- 	if (!tp)
- 		return;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (!test_bit(WORK_ENABLE, &tp->flags))
-@@ -1850,7 +1850,7 @@ static void write_bulk_callback(struct urb *urb)
- 	if (!test_bit(WORK_ENABLE, &tp->flags))
- 		return;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (!skb_queue_empty(&tp->tx_queue))
-@@ -1871,7 +1871,7 @@ static void intr_callback(struct urb *urb)
- 	if (!test_bit(WORK_ENABLE, &tp->flags))
- 		return;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	switch (status) {
-@@ -2615,7 +2615,7 @@ static void bottom_half(struct tasklet_struct *t)
- {
- 	struct r8152 *tp = from_tasklet(tp, t, tx_tl);
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (!test_bit(WORK_ENABLE, &tp->flags))
-@@ -2658,7 +2658,7 @@ int r8152_submit_rx(struct r8152 *tp, struct rx_agg *agg, gfp_t mem_flags)
- 	int ret;
- 
- 	/* The rx would be stopped, so skip submitting */
--	if (test_bit(RTL8152_UNPLUG, &tp->flags) ||
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags) ||
- 	    !test_bit(WORK_ENABLE, &tp->flags) || !netif_carrier_ok(tp->netdev))
+-	if (!tp)
++	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
  		return 0;
  
-@@ -3058,7 +3058,7 @@ static int rtl_enable(struct r8152 *tp)
- 
- static int rtl8152_enable(struct r8152 *tp)
- {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	set_tx_qlen(tp);
-@@ -3145,7 +3145,7 @@ static int rtl8153_enable(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	set_tx_qlen(tp);
-@@ -3177,7 +3177,7 @@ static void rtl_disable(struct r8152 *tp)
- 	u32 ocp_data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		return;
- 	}
-@@ -3631,7 +3631,7 @@ static u16 r8153_phy_status(struct r8152 *tp, u16 desired)
- 		}
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			break;
+ 	netdev = tp->netdev;
+@@ -8277,7 +8371,9 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
+ 	napi_disable(&tp->napi);
+ 	if (netif_carrier_ok(netdev)) {
+ 		mutex_lock(&tp->control);
++		set_bit(IN_PRE_RESET, &tp->flags);
+ 		tp->rtl_ops.disable(tp);
++		clear_bit(IN_PRE_RESET, &tp->flags);
+ 		mutex_unlock(&tp->control);
  	}
  
-@@ -3663,7 +3663,7 @@ static void r8153b_ups_en(struct r8152 *tp, bool enable)
- 			int i;
+@@ -8290,9 +8386,11 @@ static int rtl8152_post_reset(struct usb_interface *intf)
+ 	struct net_device *netdev;
+ 	struct sockaddr sa;
  
- 			for (i = 0; i < 500; i++) {
--				if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+				if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 					return;
- 				if (ocp_read_word(tp, MCU_TYPE_PLA, PLA_BOOT_CTRL) &
- 				    AUTOLOAD_DONE)
-@@ -3705,7 +3705,7 @@ static void r8153c_ups_en(struct r8152 *tp, bool enable)
- 			int i;
+-	if (!tp)
++	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
+ 		return 0;
  
- 			for (i = 0; i < 500; i++) {
--				if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+				if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 					return;
- 				if (ocp_read_word(tp, MCU_TYPE_PLA, PLA_BOOT_CTRL) &
- 				    AUTOLOAD_DONE)
-@@ -4050,8 +4050,8 @@ static int rtl_phy_patch_request(struct r8152 *tp, bool request, bool wait)
- 	for (i = 0; wait && i < 5000; i++) {
- 		u32 ocp_data;
++	rtl_set_accessible(tp);
++
+ 	/* reset the MAC address in case of policy change */
+ 	if (determine_ethernet_addr(tp, &sa) >= 0) {
+ 		rtnl_lock();
+@@ -9494,17 +9592,29 @@ static u8 __rtl_get_hw_ver(struct usb_device *udev)
+ 	__le32 *tmp;
+ 	u8 version;
+ 	int ret;
++	int i;
  
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
--			break;
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return -ENODEV;
+ 	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+ 	if (!tmp)
+ 		return 0;
  
- 		usleep_range(1000, 2000);
- 		ocp_data = ocp_reg_read(tp, OCP_PHY_PATCH_STAT);
-@@ -6009,7 +6009,7 @@ static int rtl8156_enable(struct r8152 *tp)
- 	u32 ocp_data;
- 	u16 speed;
+-	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
+-			      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp),
+-			      USB_CTRL_GET_TIMEOUT);
+-	if (ret > 0)
+-		ocp_data = (__le32_to_cpu(*tmp) >> 16) & VERSION_MASK;
++	/* Retry up to 3 times in case there is a transitory error. We do this
++	 * since retrying a read of the version is always safe and this
++	 * function doesn't take advantage of r8152_control_msg().
++	 */
++	for (i = 0; i < 3; i++) {
++		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
++				      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
++				      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp),
++				      USB_CTRL_GET_TIMEOUT);
++		if (ret > 0) {
++			ocp_data = (__le32_to_cpu(*tmp) >> 16) & VERSION_MASK;
++			break;
++		}
++	}
++
++	if (i != 0 && ret > 0)
++		dev_warn(&udev->dev, "Needed %d retries to read version\n", i);
  
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
+ 	kfree(tmp);
  
- 	r8156_fc_parameter(tp);
-@@ -6067,7 +6067,7 @@ static int rtl8156b_enable(struct r8152 *tp)
- 	u32 ocp_data;
- 	u16 speed;
+@@ -9603,25 +9713,14 @@ static bool rtl8152_supports_lenovo_macpassthru(struct usb_device *udev)
+ 	return 0;
+ }
  
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	set_tx_qlen(tp);
-@@ -6253,7 +6253,7 @@ static int rtl8152_set_speed(struct r8152 *tp, u8 autoneg, u32 speed, u8 duplex,
- 
- static void rtl8152_up(struct r8152 *tp)
+-static int rtl8152_probe(struct usb_interface *intf,
+-			 const struct usb_device_id *id)
++static int rtl8152_probe_once(struct usb_interface *intf,
++			      const struct usb_device_id *id, u8 version)
  {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
+ 	struct usb_device *udev = interface_to_usbdev(intf);
+ 	struct r8152 *tp;
+ 	struct net_device *netdev;
+-	u8 version;
+ 	int ret;
  
- 	r8152_aldps_en(tp, false);
-@@ -6263,7 +6263,7 @@ static void rtl8152_up(struct r8152 *tp)
+-	if (intf->cur_altsetting->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC)
+-		return -ENODEV;
+-
+-	if (!rtl_check_vendor_ok(intf))
+-		return -ENODEV;
+-
+-	version = rtl8152_get_version(intf);
+-	if (version == RTL_VER_UNKNOWN)
+-		return -ENODEV;
+-
+ 	usb_reset_device(udev);
+ 	netdev = alloc_etherdev(sizeof(struct r8152));
+ 	if (!netdev) {
+@@ -9784,10 +9883,20 @@ static int rtl8152_probe(struct usb_interface *intf,
+ 	else
+ 		device_set_wakeup_enable(&udev->dev, false);
  
- static void rtl8152_down(struct r8152 *tp)
++	/* If we saw a control transfer error while probing then we may
++	 * want to try probe() again. Consider this an error.
++	 */
++	if (test_bit(PROBE_SHOULD_RETRY, &tp->flags))
++		goto out2;
++
++	set_bit(PROBED_WITH_NO_ERRORS, &tp->flags);
+ 	netif_info(tp, probe, netdev, "%s\n", DRIVER_VERSION);
+ 
+ 	return 0;
+ 
++out2:
++	unregister_netdev(netdev);
++
+ out1:
+ 	tasklet_kill(&tp->tx_tl);
+ 	cancel_delayed_work_sync(&tp->hw_phy_work);
+@@ -9796,10 +9905,46 @@ static int rtl8152_probe(struct usb_interface *intf,
+ 	rtl8152_release_firmware(tp);
+ 	usb_set_intfdata(intf, NULL);
+ out:
++	if (test_bit(PROBE_SHOULD_RETRY, &tp->flags))
++		ret = -EAGAIN;
++
+ 	free_netdev(netdev);
+ 	return ret;
+ }
+ 
++#define RTL8152_PROBE_TRIES	3
++
++static int rtl8152_probe(struct usb_interface *intf,
++			 const struct usb_device_id *id)
++{
++	u8 version;
++	int ret;
++	int i;
++
++	if (intf->cur_altsetting->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC)
++		return -ENODEV;
++
++	if (!rtl_check_vendor_ok(intf))
++		return -ENODEV;
++
++	version = rtl8152_get_version(intf);
++	if (version == RTL_VER_UNKNOWN)
++		return -ENODEV;
++
++	for (i = 0; i < RTL8152_PROBE_TRIES; i++) {
++		ret = rtl8152_probe_once(intf, id, version);
++		if (ret != -EAGAIN)
++			break;
++	}
++	if (ret == -EAGAIN) {
++		dev_err(&intf->dev,
++			"r8152 failed probe after %d tries; giving up\n", i);
++		return -ENODEV;
++	}
++
++	return ret;
++}
++
+ static void rtl8152_disconnect(struct usb_interface *intf)
  {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		return;
- 	}
-@@ -6278,7 +6278,7 @@ static void rtl8153_up(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153_u1u2en(tp, false);
-@@ -6318,7 +6318,7 @@ static void rtl8153_down(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		return;
- 	}
-@@ -6339,7 +6339,7 @@ static void rtl8153b_up(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_u1u2en(tp, false);
-@@ -6363,7 +6363,7 @@ static void rtl8153b_down(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		return;
- 	}
-@@ -6400,7 +6400,7 @@ static void rtl8153c_up(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_u1u2en(tp, false);
-@@ -6481,7 +6481,7 @@ static void rtl8156_up(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_u1u2en(tp, false);
-@@ -6554,7 +6554,7 @@ static void rtl8156_down(struct r8152 *tp)
- {
- 	u32 ocp_data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		return;
- 	}
-@@ -6692,7 +6692,7 @@ static void rtl_work_func_t(struct work_struct *work)
- 	/* If the device is unplugged or !netif_running(), the workqueue
- 	 * doesn't need to wake the device, and could return directly.
- 	 */
--	if (test_bit(RTL8152_UNPLUG, &tp->flags) || !netif_running(tp->netdev))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags) || !netif_running(tp->netdev))
- 		return;
- 
- 	if (usb_autopm_get_interface(tp->intf) < 0)
-@@ -6731,7 +6731,7 @@ static void rtl_hw_phy_work_func_t(struct work_struct *work)
- {
- 	struct r8152 *tp = container_of(work, struct r8152, hw_phy_work.work);
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (usb_autopm_get_interface(tp->intf) < 0)
-@@ -6858,7 +6858,7 @@ static int rtl8152_close(struct net_device *netdev)
- 	netif_stop_queue(netdev);
- 
- 	res = usb_autopm_get_interface(tp->intf);
--	if (res < 0 || test_bit(RTL8152_UNPLUG, &tp->flags)) {
-+	if (res < 0 || test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
- 		rtl_drop_queued_tx(tp);
- 		rtl_stop_rx(tp);
- 	} else {
-@@ -6891,7 +6891,7 @@ static void r8152b_init(struct r8152 *tp)
- 	u32 ocp_data;
- 	u16 data;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	data = r8152_mdio_read(tp, MII_BMCR);
-@@ -6935,7 +6935,7 @@ static void r8153_init(struct r8152 *tp)
- 	u16 data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153_u1u2en(tp, false);
-@@ -6946,7 +6946,7 @@ static void r8153_init(struct r8152 *tp)
- 			break;
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			break;
- 	}
- 
-@@ -7075,7 +7075,7 @@ static void r8153b_init(struct r8152 *tp)
- 	u16 data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_u1u2en(tp, false);
-@@ -7086,7 +7086,7 @@ static void r8153b_init(struct r8152 *tp)
- 			break;
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			break;
- 	}
- 
-@@ -7157,7 +7157,7 @@ static void r8153c_init(struct r8152 *tp)
- 	u16 data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_u1u2en(tp, false);
-@@ -7177,7 +7177,7 @@ static void r8153c_init(struct r8152 *tp)
- 			break;
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			return;
- 	}
- 
-@@ -8006,7 +8006,7 @@ static void r8156_init(struct r8152 *tp)
- 	u16 data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	ocp_data = ocp_read_byte(tp, MCU_TYPE_USB, USB_ECM_OP);
-@@ -8027,7 +8027,7 @@ static void r8156_init(struct r8152 *tp)
- 			break;
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			return;
- 	}
- 
-@@ -8102,7 +8102,7 @@ static void r8156b_init(struct r8152 *tp)
- 	u16 data;
- 	int i;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	ocp_data = ocp_read_byte(tp, MCU_TYPE_USB, USB_ECM_OP);
-@@ -8136,7 +8136,7 @@ static void r8156b_init(struct r8152 *tp)
- 			break;
- 
- 		msleep(20);
--		if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 			return;
- 	}
- 
-@@ -9165,7 +9165,7 @@ static int rtl8152_ioctl(struct net_device *netdev, struct ifreq *rq, int cmd)
- 	struct mii_ioctl_data *data = if_mii(rq);
- 	int res;
- 
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return -ENODEV;
- 
- 	res = usb_autopm_get_interface(tp->intf);
-@@ -9267,7 +9267,7 @@ static const struct net_device_ops rtl8152_netdev_ops = {
- 
- static void rtl8152_unload(struct r8152 *tp)
- {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	if (tp->version != RTL_VER_01)
-@@ -9276,7 +9276,7 @@ static void rtl8152_unload(struct r8152 *tp)
- 
- static void rtl8153_unload(struct r8152 *tp)
- {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153_power_cut_en(tp, false);
-@@ -9284,7 +9284,7 @@ static void rtl8153_unload(struct r8152 *tp)
- 
- static void rtl8153b_unload(struct r8152 *tp)
- {
--	if (test_bit(RTL8152_UNPLUG, &tp->flags))
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
- 
- 	r8153b_power_cut_en(tp, false);
+ 	struct r8152 *tp = usb_get_intfdata(intf);
 -- 
 2.42.0.758.gaed0368e0e-goog
 
