@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAFD7D05AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D775B7D05B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346721AbjJTAK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
+        id S1346760AbjJTAN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjJTAK0 (ORCPT
+        with ESMTP id S1346719AbjJTANy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:10:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADC2CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:10:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EBB7CC433C8;
-        Fri, 20 Oct 2023 00:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697760625;
-        bh=UxsE/uWtbys8JcAUQ7gPTjZn3MW++33Gud8ZJFs3A8s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=B/jN+iqNKfTy4JNL3E1ttftNoMFriRRmTUfq+GWaka4Is8gxzok1yc/LvUun9Csej
-         T/Rpp+hisgGZa+7SUBcpiVbxoj5T7kVSgKaqy3n5H8bJs6TZMyhw/MGDl15QZGwQQJ
-         8arL1X4aMwfFvAyF82TonVtQQoePdAzzd/mcvV7gw/Yce4cOsIeewqUF2ZLhNBzAQ6
-         WxCICBcgOdQpRd0jYg2JFNYdgZxPcOYNIaa2UlOQk/9kLEmWfx6z+cfMM8Rtz0rPpE
-         +j+2madHpTc/rQLidawxbmnjZLb0ebA7HbNukWct4G9LEMdQrkkptqrl+p/LG690aT
-         3ugx3zAi42ITg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D273BC595CE;
-        Fri, 20 Oct 2023 00:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [RESEND PATCH bpf-next v6 0/8] Add Open-coded task,
- css_task and css iters
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169776062485.5217.16191150488708968895.git-patchwork-notify@kernel.org>
-Date:   Fri, 20 Oct 2023 00:10:24 +0000
-References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
-In-Reply-To: <20231018061746.111364-1-zhouchuyi@bytedance.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 20:13:54 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88182CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:13:52 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9c83b656fso1775215ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697760832; x=1698365632; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MAD0GymonKhVp5idan/hQP/ZSGOOIuiLDIayqa/R+JY=;
+        b=2PECyDyB+Qu9lWhVXjvMnHhzoXxM04gb0I6EkHTVW1pwNnLi7OR9wyJ6KXhLmW9Kkf
+         wAJURCMzLGerdlKzO4lbr9FcIRlXb2CHCW+Cqp5aNgAr/5WFTTb6kmDyIMnQ4iZLh30v
+         KU4bnLi8GRXm4NNrq/iOeUPXwzHzGjX+FlJ1RyPedS8xBtJle4HwnXDQLzVpyiOi70SW
+         3qR2rdiZRI8r/rDFF1TbgFJaAk+XU0BHxVY8IVZugQm4JVvHfLSmiz/3a6a5cRPG0rMt
+         mhfb5X6vLShzc26UhwgV6FRYgsUXBAc1W8ygTicufFhc71pC20S1rnDPAdvoSVZ9V9x1
+         4RDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697760832; x=1698365632;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MAD0GymonKhVp5idan/hQP/ZSGOOIuiLDIayqa/R+JY=;
+        b=jW7Yp9e5Qt58r1OBxZoL60UwzAtdVkGpb0sBrwVsgozT3pvXtFFIYsoZ81y54/S7WP
+         ELkcK/S1hM7TF/GGqCWlpMlTt7F4BiBAnA550X04LwhRvAUY9IMFnm+ZSWBsCwZBdjWF
+         KX9OoxLgeIOtaTV7aep9ci7MtyagsGHOoHIG9GAq5Xq8+JhzuqRb9LH9jhm+AW3l2V3x
+         1NEsTkLCdeDWuyB0c99ehDBWECrFyDDJe2I3/RpE8IHQ1KC+ixBa4+AustwXEVMAoOL3
+         2Eouj/kX0wqlDj3h8IALOH+tcKBbj/d7E30OT7AzSYQWa/ua3PnVNfAjdYHI7CUf9LJc
+         fTPg==
+X-Gm-Message-State: AOJu0YyWx1y9zyhG9p5MIDDL0D+gqFNw1AZAoOdE6cJHcIWrWEEOQdFN
+        t/smdBeaV/cEBSGiMHna1VwkLb3mBww=
+X-Google-Smtp-Source: AGHT+IFyYxrvznGGGQlvwIi5BcnD4kPqU6aMry2TjpSLSB2IZR8/8bU6BC4niY0jsoo5JMNhR/z1HTzXD5I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab03:b0:1c3:4d70:6ed9 with SMTP id
+ ik3-20020a170902ab0300b001c34d706ed9mr9607plb.3.1697760831964; Thu, 19 Oct
+ 2023 17:13:51 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 00:13:50 +0000
+In-Reply-To: <2034624b-579f-482e-8a7a-0dfc91740d7e@amd.com>
+Mime-Version: 1.0
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-49-michael.roth@amd.com> <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+ <ZS614OSoritrE1d2@google.com> <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+ <ZS_iS4UOgBbssp7Z@google.com> <924b755a-977a-4476-9525-a7626d728e18@amd.com>
+ <ZTFD8y5T9nPOpCyX@google.com> <2034624b-579f-482e-8a7a-0dfc91740d7e@amd.com>
+Message-ID: <ZTHGPlTXvLnEDbmd@google.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
+ NAE event
+From:   Sean Christopherson <seanjc@google.com>
+To:     Alexey Kardashevskiy <aik@amd.com>
+Cc:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 18 Oct 2023 14:17:38 +0800 you wrote:
-> This is version 6 of task, css_task and css iters support.
+On Fri, Oct 20, 2023, Alexey Kardashevskiy wrote:
 > 
-> --- Changelog ---
+> On 20/10/23 01:57, Sean Christopherson wrote:
+> > On Thu, Oct 19, 2023, Alexey Kardashevskiy wrote:
+> > > > 	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_request;
+> > > > 	return 0;
+> > > > }
+> > > 
+> > > This should work the KVM stored certs nicely but not for the global certs.
+> > > Although I am not all convinced that global certs is all that valuable but I
+> > > do not know the history of that, happened before I joined so I let others to
+> > > comment on that. Thanks,
+> > 
+> > Aren't the global certs provided by userspace too though?  If all certs are
+> > ultimately controlled by userspace, I don't see any reason to make the kernel a
+> > middle-man.
 > 
-> v5 -> v6:
-> 
-> Patch #3:
->  * In bpf_iter_task_next, return pos rather than goto out. (Andrii)
-> Patch #2, #3, #4:
->  * Add the missing __diag_ignore_all to avoid kernel build warning
-> Patch #5, #6, #7:
->  * Add Andrii's ack
-> 
-> [...]
+> The max blob size is 32KB or so and for 200 VMs it is:
 
-Here is the summary with links:
-  - [RESEND,bpf-next,v6,1/8] cgroup: Prepare for using css_task_iter_*() in BPF
-    https://git.kernel.org/bpf/bpf-next/c/6da88306811b
-  - [RESEND,bpf-next,v6,2/8] bpf: Introduce css_task open-coded iterator kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/9c66dc94b62a
-  - [RESEND,bpf-next,v6,3/8] bpf: Introduce task open coded iterator kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/c68a78ffe2cb
-  - [RESEND,bpf-next,v6,4/8] bpf: Introduce css open-coded iterator kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/7251d0905e75
-  - [RESEND,bpf-next,v6,5/8] bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
-    https://git.kernel.org/bpf/bpf-next/c/dfab99df147b
-  - [RESEND,bpf-next,v6,6/8] bpf: Let bpf_iter_task_new accept null task ptr
-    https://git.kernel.org/bpf/bpf-next/c/cb3ecf7915a1
-  - [RESEND,bpf-next,v6,7/8] selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
-    https://git.kernel.org/bpf/bpf-next/c/ddab78cbb52f
-  - [RESEND,bpf-next,v6,8/8] selftests/bpf: Add tests for open-coded task and css iter
-    https://git.kernel.org/bpf/bpf-next/c/130e0f7af9fc
+Not according to include/linux/psp-sev.h:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+#define SEV_FW_BLOB_MAX_SIZE	0x4000	/* 16KB */
 
+Ugh, and I see in another patch:
 
+  Also increase the SEV_FW_BLOB_MAX_SIZE another 4K page to allow space
+  for an extra certificate.
+
+-#define SEV_FW_BLOB_MAX_SIZE   0x4000  /* 16KB */
++#define SEV_FW_BLOB_MAX_SIZE   0x5000  /* 20KB */
+
+That's gross and just asking for ABI problems, because then there's this:
+
++::
++
++       struct kvm_sev_snp_set_certs {
++               __u64 certs_uaddr;
++               __u64 certs_len
++       };
++
++The certs_len field may not exceed SEV_FW_BLOB_MAX_SIZE.
+
+> - 6.5MB, all in the userspace so swappable  vs
+> - 32KB but in the kernel so not swappable.
+> Sure, a box capable of running 200 VMs must have plenty of RAM but still :)
+
+That's making quite a few assumptions.
+
+  1) That the global cert will be 32KiB (which clearly isn't the case today).
+  2) That every VM will want the global cert.
+  3) That userspace can't figure out a way to share the global cert.
+
+Even in that absolutely worst case scenario, I am not remotely convinced that it
+justifies taking on the necessary complexity to manage certs in-kernel.
+
+> Plus, GHCB now has to go via the userspace before talking to the PSP which
+> was not the case so far (though I cannot think of immediate implication
+> right now).
+
+Any argument along the lines of "because that's how we've always done it" is going
+to fall on deaf ears.  If there's a real performance bottleneck with kicking out
+to userspace, then I'll happily work to figure out a solution.  If.
