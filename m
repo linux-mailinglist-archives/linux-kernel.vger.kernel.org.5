@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 356257D07AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD627D07B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbjJTFks convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 01:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S1346633AbjJTFla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235599AbjJTFko (ORCPT
+        with ESMTP id S233505AbjJTFl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:40:44 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D71A4;
-        Thu, 19 Oct 2023 22:40:42 -0700 (PDT)
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-27d11401516so379485a91.2;
-        Thu, 19 Oct 2023 22:40:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697780442; x=1698385242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qjfQX/pwpr+oppLKOPOhk/9biL82OZa0ePqZEoQXKSc=;
-        b=JLpjpLJLKbqv+S78f4qfxkljWAwfjHvKxz00f/rg1yKHXBMyvG/chYPu5gZKSXxQ8e
-         KWtqiuADzVYLhH0g0TeyCpY7t6n9Xd/iy0z49k26OnT03LcYiWjWsAHMAhRhrh+zQZNp
-         kftMfhjnKlnNUhcnmKvL3EsEw+4Ap14bnp9APCMZkYVM/lyHuZD6XFAd8qrzWOmQGTX2
-         ppJbOYTcgVUnxa4/oUKyljKYK29lnadjc6SuX3qRG8Bj7WHxSKp4Fbtee8O7bIUAHDDH
-         lLdo8g5b6OKk10JPhO2Ce5SmYUln/TZVwVlNtEYXUTM0AeonOichXCbpXE3rT6sCsDnj
-         CpTw==
-X-Gm-Message-State: AOJu0YwnPRxCYqXJvn/N3klghEhdbCzihzWI2kyLgIZXHvtU50pQ4Mta
-        mnnZo81rzhm7nZKho3p4wqrk1JHh8GLJVxvrzC8=
-X-Google-Smtp-Source: AGHT+IHE0A9qTEGPi+9UD7nWvOGVy1HeYSmEiDejI/VMRIG458U0FW71nwPO1YaJMg7AuMzAwkqRVxSf2qsG45zjKY0=
-X-Received: by 2002:a17:90a:1c3:b0:27d:546d:f4a5 with SMTP id
- 3-20020a17090a01c300b0027d546df4a5mr822414pjd.43.1697780442052; Thu, 19 Oct
- 2023 22:40:42 -0700 (PDT)
+        Fri, 20 Oct 2023 01:41:28 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EAC1A6;
+        Thu, 19 Oct 2023 22:41:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 433941F38C;
+        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697780483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
+        b=tryR/mSKMBjG7XlRO/HjlizgTYSK0eFn6i2PODMFwegv2RThJ858mBN8mKggBmkebRTdG0
+        M7gHH8ISFPLmt67XYpBM/7L9YrGDEWD8urTvrgM55M3mqAI9wIfi2JYeMyaDxbakEunfu8
+        I8UFDfBlduYxDue3+63ajsUrnYYv0t0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697780483;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
+        b=beh7P0tZIIwhrLrnpjy27hvv36M90OppuYB7IgsmOJS6BllqqpcqggLjsJMoIau97w92I3
+        i0D77SybuqCq8BCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12B231348D;
+        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lHnWAwMTMmWYYQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 20 Oct 2023 05:41:23 +0000
+Message-ID: <9a5a8167-488b-3819-8aa5-ddd5bd5bacc2@suse.cz>
+Date:   Fri, 20 Oct 2023 07:41:22 +0200
 MIME-Version: 1.0
-References: <202310110451.rvdUZJEY-lkp@intel.com> <20231010234247.71604-1-namhyung@kernel.org>
- <CAP-5=fVpgYJMTgRjQc6zoMYjNkm7T0TSBPXLgz_VWuzwRo_ktg@mail.gmail.com>
-In-Reply-To: <CAP-5=fVpgYJMTgRjQc6zoMYjNkm7T0TSBPXLgz_VWuzwRo_ktg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 19 Oct 2023 22:40:30 -0700
-Message-ID: <CAM9d7ci1NMVsF7T5RsveJ3wXAimMWW4dfkf3hM6tvVc1e1AxAA@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Do not ignore the default vmlinux.h
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        oe-kbuild-all@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 6/6] mm: kmem: reimplement
+ get_obj_cgroup_from_current()
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231019225346.1822282-1-roman.gushchin@linux.dev>
+ <20231019225346.1822282-7-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231019225346.1822282-7-roman.gushchin@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -8.45
+X-Spamd-Result: default: False [-8.45 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.35)[76.41%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 6:36 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Tue, Oct 10, 2023 at 4:42 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The recent change made it possible to generate vmlinux.h from BTF and
-> > to ignore the file.  But we also have a minimal vmlinux.h that will be
-> > used by default.  It should not be ignored by GIT.
-> >
-> > Fixes: b7a2d774c9c5 ("perf build: Add ability to build with a generated vmlinux.h")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202310110451.rvdUZJEY-lkp@intel.com/
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->
-> Reviewed-by: Ian Rogers <irogers@google.com>
+On 10/20/23 00:53, Roman Gushchin wrote:
+> Reimplement get_obj_cgroup_from_current() using current_obj_cgroup().
+> get_obj_cgroup_from_current() and current_obj_cgroup() share 80% of
+> the code, so the new implementation is almost trivial.
 
-Applied to perf-tools-next, thanks!
+Great.
+
+> get_obj_cgroup_from_current() is a convenient function used by the
+> bpf subsystem, so there is no reason to get rid of it completely.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+
+Reviwed-by: Vlastimil Babka <vbabka@suse.cz>
+
+Thanks!
+
