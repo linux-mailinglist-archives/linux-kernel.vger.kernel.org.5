@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674DB7D15BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6ED7D159C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjJTSXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
+        id S229596AbjJTSWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjJTSXD (ORCPT
+        with ESMTP id S229437AbjJTSWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:23:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6347F1A8;
-        Fri, 20 Oct 2023 11:22:58 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K9bPiN001148;
-        Fri, 20 Oct 2023 18:22:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=bpg5taB8iHb+lLch0rw4kcWlUAdHfVGrtLiZFvW6mm8=;
- b=iAwbXbkgvLav9XoJ17hQNeqZjoqQdvVmTFBekvDlV1rgzX0a15oPXeafMEzWdOUk/6mz
- cXU3cIcLRuYF5vQYIDf30SXPqmxjSyB4lkw1edCtActSHinxwpvfuqz4YqMARBxI6NlR
- g83Zdqp7FPj9EeG6/KfCYmYiiLK4l2bNmeXmduzP5mwbD0Fr2FCvEB5999FglZReEDDu
- UVk49tKjOzZ0hmiWdHL/jdRh65+9tIc7W6qC/5y0YzPf6GQV8zzd1YLAIu5NyJ485cKh
- 5xk+/VRbIqA/oeU7aHpORWDpp3YpkM6lw2qb0cCqYTwR4wbP4b/wt2OoFIzErqHu2lVj 2Q== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubxhatdy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 18:22:49 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39KIMmHR009076
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 18:22:48 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 20 Oct 2023 11:22:47 -0700
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        "Anjelique Melendez" <quic_amelende@quicinc.com>
-Subject: [PATCH v6 7/7] leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
-Date:   Fri, 20 Oct 2023 11:22:17 -0700
-Message-ID: <20231020182218.22217-8-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231020182218.22217-1-quic_amelende@quicinc.com>
-References: <20231020182218.22217-1-quic_amelende@quicinc.com>
+        Fri, 20 Oct 2023 14:22:31 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F271A8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:22:29 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ca052ec63bso9327685ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697826149; x=1698430949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=04gH1wK0MN9lWn/YJPzI2WddwHxIZ8s/y81mEW7mDkQ=;
+        b=Lr9ID9yDkM16bb+2HlLfqAc8MuKa/2cAzq2S5BVwOZieEabyqCzHWeO4KBtbfKmpxP
+         oTCMyHlXZJoilixhSCR43zUBFkipk72FygdgC5UARU73Sjxr0WzjQjNmvgTRDn5eVCAL
+         K2A1KODbNRfea20xFtiItjHYYsW8xr3mXFVQI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697826149; x=1698430949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=04gH1wK0MN9lWn/YJPzI2WddwHxIZ8s/y81mEW7mDkQ=;
+        b=cWx6os8HLYLLgNmBfrdBHZGuMxhjis0ulMnlaCnM7EmSaivNeAtk6o2Ecu8NWO/7Ih
+         T7vGk5XyrxTDRf6GfFZxkQTNbHrZLd4vGCz11uJKfVKLsQ48anjRZUu1/ee2rLVynjVt
+         rx+WKcAmjLXsXG3IIaXnA/tA2maeevvstYLoBW5jm8tdT2FdKHAK07cm2w31u/xhpIax
+         O4lqojI8d8fmhwKY466YfaseJygLr4CQFqbwh1WEar2+HgHjJnt8Hs6ND3QnBsWYBI29
+         ahPMdDt8t7rsGmIvNzEjUq+IgV4d82haV30mVhOVQuEcrVAG32J+3GBSfOmBCkxSoYS1
+         Rc8w==
+X-Gm-Message-State: AOJu0YwZkVSPPovIq4kap78X63vWQIsDex5Z9WBzv2dm5Xnz+Ditfwp9
+        lmGzQEw7E4g36l9S+VO7ByJ5IMBanttkyPqBR30=
+X-Google-Smtp-Source: AGHT+IHY7//XAjVbmv0+8CTvhanr4J11DW7dmowhqoeDWSPu7A2hJov+lZgIQALeiVmTuJFeYMRjFQ==
+X-Received: by 2002:a17:902:ea0e:b0:1ca:20a0:7b08 with SMTP id s14-20020a170902ea0e00b001ca20a07b08mr2589174plg.50.1697826148954;
+        Fri, 20 Oct 2023 11:22:28 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id je22-20020a170903265600b001c625acfed0sm1826088plb.44.2023.10.20.11.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 11:22:28 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:22:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, ksummit@lists.linux.dev,
+        Azeem Shaikh <azeemshaikh38@gmail.com>
+Subject: Re: the nul-terminated string helper desk chair rearrangement
+Message-ID: <202310201111.595F790@keescook>
+References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
+ <20231019054642.GF14346@lst.de>
+ <202310182248.9E197FFD5@keescook>
+ <20231020044645.GC11984@lst.de>
+ <CAFhGd8o8FaD-3rkBAhEXhc8XqpUk_cLqNwyfpndVuSxDOei_gA@mail.gmail.com>
+ <CAHk-=wj4BZei4JTiX9qsAwk8PEKnPrvkG5FU0i_HNkcDpy7NGQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3Ag_HZhkRTcpHy2YA1VZ8iLXs2EaAK9v
-X-Proofpoint-ORIG-GUID: 3Ag_HZhkRTcpHy2YA1VZ8iLXs2EaAK9v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 mlxlogscore=979 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310200154
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj4BZei4JTiX9qsAwk8PEKnPrvkG5FU0i_HNkcDpy7NGQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the pm8350c lpg_data struct so that pm8350c devices are treated as
-PWM devices that support two-nvmem PPG scheme.
+On Fri, Oct 20, 2023 at 10:56:31AM -0700, Linus Torvalds wrote:
+> On Fri, 20 Oct 2023 at 10:40, Justin Stitt <justinstitt@google.com> wrote:
+> >
+> > There's some docs at [1]. Perhaps there could be more?
+> >
+> > [1]: https://elixir.bootlin.com/linux/v6.6-rc6/source/include/linux/fortify-string.h#L292
+> 
+> Note that we have so few 'strlcpy()' calls that we really should
+> remove that horrid horrid interface. It's a buggy piece of sh*t.
 
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-Reviewed-by: Lee Jones <lee@kernel.org>
----
- drivers/leds/rgb/leds-qcom-lpg.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Yup, that's on-going. There's just a few left; Azeem has been chipping
+away at strlcpy.
 
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index fdf453aa3859..3f22a8d260dd 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1783,11 +1783,13 @@ static const struct lpg_data pm8150l_lpg_data = {
- static const struct lpg_data pm8350c_pwm_data = {
- 	.triled_base = 0xef00,
- 
-+	.lut_size = 122,
-+
- 	.num_channels = 4,
- 	.channels = (const struct lpg_channel_data[]) {
--		{ .base = 0xe800, .triled_mask = BIT(7) },
--		{ .base = 0xe900, .triled_mask = BIT(6) },
--		{ .base = 0xea00, .triled_mask = BIT(5) },
-+		{ .base = 0xe800, .triled_mask = BIT(7), .sdam_offset = 0x48 },
-+		{ .base = 0xe900, .triled_mask = BIT(6), .sdam_offset = 0x56 },
-+		{ .base = 0xea00, .triled_mask = BIT(5), .sdam_offset = 0x64 },
- 		{ .base = 0xeb00 },
- 	},
- };
+> It does mean that if you used to have
+> 
+>     dst[4];
+>     strlcpy(dst, "abc", 8);
+> 
+> then that *used* to work (because it would copy four bytes: "abc\0"
+> and that fits in 'dst[]'). But
+> 
+>    dst[4];
+>    strscpy(dst, "abc", 8);
+> 
+> will overflow dst[], because it will do a word-copy and you told
+> 'strscpy()' that you had a 8-byte buffer, and it will try to write
+> "abc\0\0\0\0\0" into the destination.
+
+Luckily, we already have checks for these mismatched sizes at compile
+time (i.e. CONFIG_FORTIFY_SOURCE will already check for pathological
+cases like above where 8 > sizeof(dst)).
+
+> The above is insane code, but it's an example of why a blind
+> strlcpy->strscpy conversion might change semantics.
+
+Totally agreed. All of the recent string conversions have been paying
+close attention to the behavioral differences.
+
 -- 
-2.41.0
-
+Kees Cook
