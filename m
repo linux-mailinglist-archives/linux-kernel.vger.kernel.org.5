@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B1E7D0B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9287D0B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376578AbjJTJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
+        id S1376560AbjJTI7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376557AbjJTJAA (ORCPT
+        with ESMTP id S1376521AbjJTI7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:00:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B13A1A3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697792352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uvz9/SuKlOMM8eAgBNPqNzyC4gsPxikcYikuf/XYhDE=;
-        b=W/ad8hcr32ZUvgbUuKVT74tF8JnKkYUaFaMzThEGgtk5esj2TRr2YlvDlyIAbq8iPqbxBM
-        ytNpTqx9KSTWkIsvzgMw58aEYuuTEktZWJpEixT7M/8hzmyHKFSg/IEcjQp8TWHq5plFpl
-        9GJcr4Zh+KvMNe+wTMVuZAinKC1c7oE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-94-4w44VoWyNUGA_V2L9r8lXg-1; Fri, 20 Oct 2023 04:59:08 -0400
-X-MC-Unique: 4w44VoWyNUGA_V2L9r8lXg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d9751ca2cso274176f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:59:08 -0700 (PDT)
+        Fri, 20 Oct 2023 04:59:40 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C9AD49
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:59:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso789906a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697792377; x=1698397177; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cvAmJdm1L/4rW9zueL82ns0p9a2/AM1y8/kSiRhGWNs=;
+        b=grpTpOTaVlvfzQUDG9HofMaueUjrGqiEEkfLq2F4OdyLR7rZxVPUZlIEG0mr/anooY
+         GaYt9qWTwf6do6+gkosiHEMfDLI34bhpm6MqZf96yElzIYqxXMqEh6RQjfji3M3x9oZ8
+         efysu6mHcIuTc5NbyaC2h6hNxWpViJHgEDFrv7FMN1s9FTE18v9AOZiUz49/+f8diIxF
+         Ed6rGaJjQankOQKBFWYOHShr2jy8vBjmyNfsDpD9oWBeF1j1D9uwd/fx+waUdK88xU9B
+         ytvkZmYzqoAKTIgGKyur/13l2tFJkWTP8hREqZvLmy4GkIqMTcZtsCjvhfQpq7eADRZB
+         1Jww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697792347; x=1698397147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uvz9/SuKlOMM8eAgBNPqNzyC4gsPxikcYikuf/XYhDE=;
-        b=pKMhbtFAQk/fTNKdQlmEqtn6p4UtYVPjPC4MXm/SAADlmrx+ZFim8tizDN6RTkEAtz
-         8rSz3AQ6dlJ/aDbO0xeOT5J2ZLDWy3f9hKowG/5DUOzJN793Y6LXORJ/mf8qpG/UaPhb
-         O9mJtPQvehDVOS0TWYiP70bwVxop218zTi0L3vApgycLxdZ2+4+wqkI0c3+ASBV6nC22
-         2sD15kGocJkfeyZB/eE6s9u7OFzRVXkb8dhngGYRrErVcdo+krmF5sADido68kMOdNih
-         /CPP4qyIgMGdck3BBGu4YVM9cEN6ueKK7JUG/fjyDkmmM5P8VcuzAGIEZRpQ35ngmSyZ
-         QTxg==
-X-Gm-Message-State: AOJu0YxVtOFp1A/jgt9k6St5oYva/dcufj3myD6LpAlwfDJjI5DVC2DU
-        ivFfdUEU/zVLJUn6oTap/295YFpGgmQFvBcC9vkgb6rsu78TJjIMKGmZwmqQe/zpFEKtbQ39god
-        jvLjGuSOMVeBIeiUQr0ekmY7N
-X-Received: by 2002:a5d:5709:0:b0:319:71be:9248 with SMTP id a9-20020a5d5709000000b0031971be9248mr874305wrv.19.1697792347514;
-        Fri, 20 Oct 2023 01:59:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGwAlnz5LFaGpViOPQBVbbYYBiYpleDv/HpXbeUWdlmaJa7e7XRaJ3iQ9+0DjOBQ8udLXNkOQ==
-X-Received: by 2002:a5d:5709:0:b0:319:71be:9248 with SMTP id a9-20020a5d5709000000b0031971be9248mr874294wrv.19.1697792347172;
-        Fri, 20 Oct 2023 01:59:07 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
-        by smtp.gmail.com with ESMTPSA id a3-20020a5d4d43000000b003196b1bb528sm1226535wru.64.2023.10.20.01.59.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 01:59:06 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 04:59:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     zhenwei pi <pizhenwei@bytedance.com>, arei.gonglei@huawei.com,
-        linux-crypto@vger.kernel.org, jasowang@redhat.com,
-        linux-kernel@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] virtio-crypto: handle config changed by work queue
-Message-ID: <20231020045844-mutt-send-email-mst@kernel.org>
-References: <20231007064309.844889-1-pizhenwei@bytedance.com>
- <ZTIVDQZeHb2BlbH7@gondor.apana.org.au>
+        d=1e100.net; s=20230601; t=1697792377; x=1698397177;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cvAmJdm1L/4rW9zueL82ns0p9a2/AM1y8/kSiRhGWNs=;
+        b=tbUONslOHDL47eQXdua/5wQhgKiHRkqg3uC8qAkeDuB/bDihv5/P+e2dKyYjjppT/T
+         6sF+Cpku/8jFn2IcXOJmsZt546zp7+M5OtYl0CRBQlXLdKvv45O6JfafPL4vcPVauPJB
+         HsGYLVYVmAHGLoltJHeCfcvnIPSioc7ADgMJaMMvRqkJqGumX440+ebOLp7LOUj1dQ19
+         pdhG60msBoGVkaRn6rZZc58zLoy4Qpxv2Akj4bwbHqgekbQXFCi65Z7D2gN74UhtcSvJ
+         ihiw3hMvMPXvIEpgPgwnAuYMi1d4MGEiCnHB+5GyRPCzEpCM2/sFFRqoRFubFFSz17LD
+         ecWg==
+X-Gm-Message-State: AOJu0Ywe9HoZYH2SpdfhZ6s52h8kalOAlNqj+tAHDwdEvjtyD55z//5d
+        oUWom8gQr4hxTPNxgF2IPSRJNc76mp1FPWQsKIo=
+X-Google-Smtp-Source: AGHT+IExC8vevp0pndVAS1fIUdM8itmafKqC/1iLT5pWYt2ekKMsHxRecc1mgqSNbscHdmg7If2BgQ==
+X-Received: by 2002:a17:907:1c9e:b0:9ae:69ff:bcdb with SMTP id nb30-20020a1709071c9e00b009ae69ffbcdbmr966887ejc.31.1697792377182;
+        Fri, 20 Oct 2023 01:59:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709064a4600b009ae05f9eab3sm1071104ejv.65.2023.10.20.01.59.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 01:59:36 -0700 (PDT)
+Message-ID: <2bc15792-78f7-4498-b397-d8cf6053d864@linaro.org>
+Date:   Fri, 20 Oct 2023 10:59:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTIVDQZeHb2BlbH7@gondor.apana.org.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] coresight-tpdm: Correct the property name of MSR number
+Content-Language: en-US
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1697770311-15392-1-git-send-email-quic_taozha@quicinc.com>
+ <07ef7cf2-c5dc-4248-b72b-bad913f4508d@linaro.org>
+ <d6cba576-5b65-425a-b769-e26a2595b391@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <d6cba576-5b65-425a-b769-e26a2595b391@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 01:50:05PM +0800, Herbert Xu wrote:
-> On Sat, Oct 07, 2023 at 02:43:09PM +0800, zhenwei pi wrote:
-> > MST pointed out: config change callback is also handled incorrectly
-> > in this driver, it takes a mutex from interrupt context.
-> > 
-> > Handle config changed by work queue instead.
-> > 
-> > Cc: Gonglei (Arei) <arei.gonglei@huawei.com>
-> > Cc: Halil Pasic <pasic@linux.ibm.com>
-> > Cc: Michael S. Tsirkin <mst@redhat.com>
-> > Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> > ---
-> >  drivers/crypto/virtio/virtio_crypto_common.h |  3 +++
-> >  drivers/crypto/virtio/virtio_crypto_core.c   | 14 +++++++++++++-
-> >  2 files changed, 16 insertions(+), 1 deletion(-)
+On 20/10/2023 10:13, Tao Zhang wrote:
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> index b25284e..97654aa 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> @@ -892,7 +892,7 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
+>>>   
+>>>   	if (drvdata && tpdm_has_dsb_dataset(drvdata))
+>>>   		of_property_read_u32(drvdata->dev->of_node,
+>>> -			   "qcom,dsb_msr_num", &drvdata->dsb_msr_num);
+>>> +			   "qcom,dsb-msrs-num", &drvdata->dsb_msr_num);
+>> So you never tested your DTS... We can keep asking about this but still
+>> testing does not happen :/
 > 
-> Patch applied.  Thanks.
+> Since this new property has not been applied on the exist upstream DTS, 
+> I tested this driver with the
+> 
+> local DTS. Unfortunately, the property name in the local DTS is not 
+> updated, this is why it is not found
 
+But your local DTS would not pass dtbs_check tests, so that's why I am
+saying - you never tested it on mainline kernel.
 
-It's in my tree too, but git should be able to figure it out.
-
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Best regards,
+Krzysztof
 
