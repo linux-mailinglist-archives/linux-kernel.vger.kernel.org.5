@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65B27D0F38
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF4C7D0F3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377295AbjJTLz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        id S1377291AbjJTL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377255AbjJTLzx (ORCPT
+        with ESMTP id S1377277AbjJTLzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 07:55:53 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD93D4C;
-        Fri, 20 Oct 2023 04:55:50 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98377c5d53eso114549466b.0;
-        Fri, 20 Oct 2023 04:55:50 -0700 (PDT)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD795D51;
+        Fri, 20 Oct 2023 04:55:51 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9c3aec5f326so394230466b.1;
+        Fri, 20 Oct 2023 04:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697802949; x=1698407749; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697802950; x=1698407750; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0KmtVFbWzplAw+DN7VSv0tLTduS4IgtLHBkgos/qD5o=;
-        b=StImGmkem5m8rrsjcMA+ra3GkMVm9Zd3EhcKncY9WmccXhXpkLK6LaeTrUHWCkFR+y
-         pc1VtDQkNlpI4kHocLBC0mbo180WgtHrr77vY1QB8FAEAx8bjQ1e7kf9s4iXPwUQBbxI
-         gLzSgbwJtv6TcyiGGAYvX8qcQL6JkP4lcy2po0bYeDYzcIWnrZ0vNuTmqtMgMAV56ZBt
-         +WyuZjJ+frdl6FdntZiwU9bJb+l+YdvgF6Lw1JnkS7fqsAuRjcyjqKE4YWSSryPXFUW5
-         CJnxnzRWJC30P5ZlXmXFBpZssD0Ke4YRGGNzYikmFmrcF4TmL5jPKfnMG9CuRwKjIjG0
-         S1FQ==
+        bh=+AZ5ktdIxmIZ0T//vBhcoP9HGHOtenHtQrb+zrnkeE8=;
+        b=P9IsK8s0TPjcnGMWqdxYPaZRTDjZI7zYj+DqWjNqznJpxkMmjbjfAH8yM6HmNniROU
+         z81FP4CLImQjpNGYYNKsbDn+6eoMYhFCaKw6BqKX7LCPFgQh7HI6ynSW2lstFVzr0VJX
+         jTZ5zh+xqYrGk6/3Vfu1brQZG/1jg8SkxJeGqyuCuqe8o23WDN1gP319q8uooZfiQy1M
+         v9llCdQWm659ZG5FzL6Mwwn7LQsKiKMmP6gddlb18A3qLBplRMHaH3gok0oEdlhnaqDo
+         9tcGZX6D4LB3nlylsITnDvK+iJcYv7rf7wJc6GZ5oWIX4jlH9JEtZ4QHb69C1g7j2FTa
+         s9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697802949; x=1698407749;
+        d=1e100.net; s=20230601; t=1697802950; x=1698407750;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0KmtVFbWzplAw+DN7VSv0tLTduS4IgtLHBkgos/qD5o=;
-        b=tXx0poAjfTzhGcR0my6h86PAHZeF1tQu97b2D01fIzRGGJCeqJbMkRNKe79MkU85fg
-         Mb2HtLye5JFcbjW2Zf+4rowu2JYQtzf74Z8kpvgK5v0o+ptHCB6k0RlfZV7rqLLVcpNy
-         U3i984wXBDL0dczrdJOO8LnR71pv5LXbzlym4rI2CTVN8R6MlFpxxznlaSWgATJlOrVe
-         v/rU3UbT+xY4g8h/v46t/qjIzlA3Wrok1PxhZHE8haACerNrk7xdSzeQ0jF0Ht51F6Dj
-         d9qKL/jIBxR4ACu3J2gm+KnyL/DptC6ako9GhP0/3ua1zkKhQA5qVijLBy+3rZyGWyu2
-         pWLA==
-X-Gm-Message-State: AOJu0YzNruPchcMN+n/EFkHsApi13ZNfxYz4aTStVlnoWktv/W+5IJGJ
-        EPJSNSwgiFfxS8jFI9UwQjONXtNERnUThg==
-X-Google-Smtp-Source: AGHT+IGVcQBTH98uCK/zjTmDdZOn/3s4Sc2VQ0aDMYMmIDUn2iqBUFr7LfiPbXXISD54pRZAiT7H/g==
-X-Received: by 2002:a17:906:9c83:b0:9b2:b691:9b5f with SMTP id fj3-20020a1709069c8300b009b2b6919b5fmr1135159ejc.41.1697802949331;
-        Fri, 20 Oct 2023 04:55:49 -0700 (PDT)
+        bh=+AZ5ktdIxmIZ0T//vBhcoP9HGHOtenHtQrb+zrnkeE8=;
+        b=t7jRRBZYRL6xgtL5wXBL504HmVqn1e0+vQH0sVshfaAcXGOb1stqQoQmc0iivdT0KQ
+         aj4wnVzoNAGqkb2ATLeMLUuVFQfKy6WLxd16IHCf+PiAWN2d9wbfGo4VVY7EgPHg5WNu
+         j5i2caY6weHkBHdyl/8MYM9tN/9M7JQTJmATTN9RLM6Ft8ksZ8FC4VYlKV/Kr8Re5oWY
+         bUQTwHJsGCXEj7oOgkNjqIJh5yiXjR4hpg1SkYy3+Zk5BpB+AXcQkAN72jXIvVOo40LK
+         2yCVoEB74V2t7Abdg2z8jxr+DRJRrg6JIUQ4QdJGhpKuSuRCUXwomJPvNq/+SI8L3Qh3
+         s+QA==
+X-Gm-Message-State: AOJu0YwCluYHCcZIiNS+hNf/eGZUpZ8HFmDEoZogHklvE9jUPMuKytO7
+        QOwGKVeidi2yZAQ0c84d1XiggfITgGOAxQ==
+X-Google-Smtp-Source: AGHT+IG/LQK2PjfUAih+Cmlbsti+riWldSkcSTZ+NZYrOpRaoVmXlB2n8qBG4EXuvoJFTYS+HTq/Hg==
+X-Received: by 2002:a17:906:c14d:b0:9a9:f0e6:904e with SMTP id dp13-20020a170906c14d00b009a9f0e6904emr1274727ejc.16.1697802950144;
+        Fri, 20 Oct 2023 04:55:50 -0700 (PDT)
 Received: from tp.home.arpa (host-95-239-66-218.retail.telecomitalia.it. [95.239.66.218])
-        by smtp.gmail.com with ESMTPSA id v21-20020a170906489500b009b928eb8dd3sm1342014ejq.163.2023.10.20.04.55.48
+        by smtp.gmail.com with ESMTPSA id v21-20020a170906489500b009b928eb8dd3sm1342014ejq.163.2023.10.20.04.55.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 20 Oct 2023 04:55:49 -0700 (PDT)
 From:   Beniamino Galvani <b.galvani@gmail.com>
@@ -59,9 +59,9 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         David Ahern <dsahern@kernel.org>,
         Guillaume Nault <gnault@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/5] ipv6: remove "proto" argument from udp_tunnel6_dst_lookup()
-Date:   Fri, 20 Oct 2023 13:55:26 +0200
-Message-Id: <20231020115529.3344878-3-b.galvani@gmail.com>
+Subject: [PATCH net-next 3/5] ipv6: add new arguments to udp_tunnel6_dst_lookup()
+Date:   Fri, 20 Oct 2023 13:55:27 +0200
+Message-Id: <20231020115529.3344878-4-b.galvani@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231020115529.3344878-1-b.galvani@gmail.com>
 References: <20231020115529.3344878-1-b.galvani@gmail.com>
@@ -77,84 +77,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is now UDP-specific, the protocol is always IPPROTO_UDP.
+We want to make the function more generic so that it can be used by
+other UDP tunnel implementations such as geneve and vxlan. To do that,
+add the following arguments:
 
-This is similar to what already done for IPv4 in commit 78f3655adcb5
-("ipv4: remove "proto" argument from udp_tunnel_dst_lookup()").
+ - source and destination UDP port;
+ - ifindex of the output interface, needed by vxlan;
+ - the tos, because in some cases it is not taken from struct
+   ip_tunnel_info (for example, when it's inherited from the inner
+   packet);
+ - the dst cache, because not all tunnel types (e.g. vxlan) want to
+   use the one from struct ip_tunnel_info.
+
+With these parameters, the function no longer needs the full struct
+ip_tunnel_info as argument and we can pass only the relevant part of
+it (struct ip_tunnel_key).
+
+This is similar to what already done for IPv4 in commit 72fc68c6356b
+("ipv4: add new arguments to udp_tunnel_dst_lookup()").
 
 Suggested-by: Guillaume Nault <gnault@redhat.com>
 Signed-off-by: Beniamino Galvani <b.galvani@gmail.com>
 ---
- drivers/net/bareudp.c     | 5 ++---
- include/net/udp_tunnel.h  | 2 +-
- net/ipv6/ip6_udp_tunnel.c | 4 +---
- 3 files changed, 4 insertions(+), 7 deletions(-)
+ drivers/net/bareudp.c     | 10 +++++++---
+ include/net/udp_tunnel.h  |  7 ++++---
+ net/ipv6/ip6_udp_tunnel.c | 33 ++++++++++++++++++---------------
+ 3 files changed, 29 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/net/bareudp.c b/drivers/net/bareudp.c
-index 9a0a1a9f6cfe..9eb5e11c09b4 100644
+index 9eb5e11c09b4..9c11a0d0273b 100644
 --- a/drivers/net/bareudp.c
 +++ b/drivers/net/bareudp.c
-@@ -372,7 +372,7 @@ static int bareudp6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+@@ -371,8 +371,10 @@ static int bareudp6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	if (!sock)
  		return -ESHUTDOWN;
  
- 	dst = udp_tunnel6_dst_lookup(skb, dev, bareudp->net, sock, &saddr, info,
--				     IPPROTO_UDP, use_cache);
-+				     use_cache);
+-	dst = udp_tunnel6_dst_lookup(skb, dev, bareudp->net, sock, &saddr, info,
+-				     use_cache);
++	dst = udp_tunnel6_dst_lookup(skb, dev, bareudp->net, sock, 0, &saddr,
++				     key, 0, 0, key->tos,
++				     use_cache ?
++				     (struct dst_cache *) &info->dst_cache : NULL);
  	if (IS_ERR(dst))
  		return PTR_ERR(dst);
  
-@@ -499,8 +499,7 @@ static int bareudp_fill_metadata_dst(struct net_device *dev,
+@@ -499,7 +501,9 @@ static int bareudp_fill_metadata_dst(struct net_device *dev,
  		struct socket *sock = rcu_dereference(bareudp->sock);
  
  		dst = udp_tunnel6_dst_lookup(skb, dev, bareudp->net, sock,
--					     &saddr, info, IPPROTO_UDP,
--					     use_cache);
-+					     &saddr, info, use_cache);
+-					     &saddr, info, use_cache);
++					     0, &saddr, &info->key,
++					     0, 0, info->key.tos,
++					     use_cache ? &info->dst_cache : NULL);
  		if (IS_ERR(dst))
  			return PTR_ERR(dst);
  
 diff --git a/include/net/udp_tunnel.h b/include/net/udp_tunnel.h
-index 1dac296d8449..583867643bd1 100644
+index 583867643bd1..d716214fe03d 100644
 --- a/include/net/udp_tunnel.h
 +++ b/include/net/udp_tunnel.h
-@@ -175,7 +175,7 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
- 					 struct socket *sock,
+@@ -172,10 +172,11 @@ struct rtable *udp_tunnel_dst_lookup(struct sk_buff *skb,
+ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
+ 					 struct net_device *dev,
+ 					 struct net *net,
+-					 struct socket *sock,
++					 struct socket *sock, int oif,
  					 struct in6_addr *saddr,
- 					 const struct ip_tunnel_info *info,
--					 u8 protocol, bool use_cache);
-+					 bool use_cache);
+-					 const struct ip_tunnel_info *info,
+-					 bool use_cache);
++					 const struct ip_tunnel_key *key,
++					 __be16 sport, __be16 dport, u8 dsfield,
++					 struct dst_cache *dst_cache);
  
  struct metadata_dst *udp_tun_rx_dst(struct sk_buff *skb, unsigned short family,
  				    __be16 flags, __be64 tunnel_id,
 diff --git a/net/ipv6/ip6_udp_tunnel.c b/net/ipv6/ip6_udp_tunnel.c
-index fc122abf6b75..b9c906518ce2 100644
+index b9c906518ce2..a7bf0327b380 100644
 --- a/net/ipv6/ip6_udp_tunnel.c
 +++ b/net/ipv6/ip6_udp_tunnel.c
-@@ -121,7 +121,6 @@ EXPORT_SYMBOL_GPL(udp_tunnel6_xmit_skb);
+@@ -119,9 +119,13 @@ EXPORT_SYMBOL_GPL(udp_tunnel6_xmit_skb);
+  *      @dev: Tunnel device
+  *      @net: Network namespace of tunnel device
   *      @sock: Socket which provides route info
++ *      @oif: Index of the output interface
   *      @saddr: Memory to store the src ip address
-  *      @info: Tunnel information
-- *      @protocol: IP protocol
-  *      @use_cache: Flag to enable cache usage
+- *      @info: Tunnel information
+- *      @use_cache: Flag to enable cache usage
++ *      @key: Tunnel information
++ *      @sport: UDP source port
++ *      @dport: UDP destination port
++ *      @dsfield: The traffic class field
++ *      @dst_cache: The dst cache to use for lookup
   *      This function performs a route lookup on a UDP tunnel
   *
-@@ -135,7 +134,6 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
+  *      It returns a valid dst pointer and stores src address to be used in
+@@ -132,20 +136,17 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
+ 					 struct net_device *dev,
+ 					 struct net *net,
  					 struct socket *sock,
++					 int oif,
  					 struct in6_addr *saddr,
- 					 const struct ip_tunnel_info *info,
--					 u8 protocol,
- 					 bool use_cache)
+-					 const struct ip_tunnel_info *info,
+-					 bool use_cache)
++					 const struct ip_tunnel_key *key,
++					 __be16 sport, __be16 dport, u8 dsfield,
++					 struct dst_cache *dst_cache)
  {
  	struct dst_entry *dst = NULL;
-@@ -155,7 +153,7 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
- #endif
+-#ifdef CONFIG_DST_CACHE
+-	struct dst_cache *dst_cache;
+-#endif
+ 	struct flowi6 fl6;
+-	__u8 prio;
+ 
+ #ifdef CONFIG_DST_CACHE
+-	dst_cache = (struct dst_cache *)&info->dst_cache;
+-	if (use_cache) {
++	if (dst_cache) {
+ 		dst = dst_cache_get_ip6(dst_cache, saddr);
+ 		if (dst)
+ 			return dst;
+@@ -154,10 +155,12 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
  	memset(&fl6, 0, sizeof(fl6));
  	fl6.flowi6_mark = skb->mark;
--	fl6.flowi6_proto = protocol;
-+	fl6.flowi6_proto = IPPROTO_UDP;
- 	fl6.daddr = info->key.u.ipv6.dst;
- 	fl6.saddr = info->key.u.ipv6.src;
- 	prio = info->key.tos;
+ 	fl6.flowi6_proto = IPPROTO_UDP;
+-	fl6.daddr = info->key.u.ipv6.dst;
+-	fl6.saddr = info->key.u.ipv6.src;
+-	prio = info->key.tos;
+-	fl6.flowlabel = ip6_make_flowinfo(prio, info->key.label);
++	fl6.flowi6_oif = oif;
++	fl6.daddr = key->u.ipv6.dst;
++	fl6.saddr = key->u.ipv6.src;
++	fl6.fl6_sport = sport;
++	fl6.fl6_dport = dport;
++	fl6.flowlabel = ip6_make_flowinfo(dsfield, key->label);
+ 
+ 	dst = ipv6_stub->ipv6_dst_lookup_flow(net, sock->sk, &fl6,
+ 					      NULL);
+@@ -171,7 +174,7 @@ struct dst_entry *udp_tunnel6_dst_lookup(struct sk_buff *skb,
+ 		return ERR_PTR(-ELOOP);
+ 	}
+ #ifdef CONFIG_DST_CACHE
+-	if (use_cache)
++	if (dst_cache)
+ 		dst_cache_set_ip6(dst_cache, dst, &fl6.saddr);
+ #endif
+ 	*saddr = fl6.saddr;
 -- 
 2.40.1
 
