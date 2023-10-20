@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C12F7D14D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268B87D14D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbjJTRZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S1377713AbjJTR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjJTRZk (ORCPT
+        with ESMTP id S229905AbjJTR0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:25:40 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE3DD68
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:25:38 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so1613439a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:25:38 -0700 (PDT)
+        Fri, 20 Oct 2023 13:26:30 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D2911B;
+        Fri, 20 Oct 2023 10:26:28 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d834ec222so758671f8f.0;
+        Fri, 20 Oct 2023 10:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697822737; x=1698427537; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697822787; x=1698427587; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vFL5iFVqH1m9kZwhGzflcon42CaVngVznmVmEIhmRWY=;
-        b=BV2Znb0vBe22LbXjsB4Q3jfGBBM0t2vQrlyrdPMayg+G2oTwpcWOEzYE/k0Ffoz3Ve
-         wUJt8mTwgB7qMBEfmbKP3cqo5X91+k+q/MZ//wWoymNVATe0u6MpOtpzimijGSPzngIW
-         HtAUKLAfW+LBQ/w0FGVBxq4XsfKiGchu3lb5DsF9gW2fl0bK6PH0W+4LadLdXu+x7Tki
-         ETBInNHvVrwD042lRYFvBWw9p5AqAzPfIbcBWLcSumnJgl3Ap+JUQFx8dpf8gFdm2cr7
-         w0P9Lr7+wLQeDQuetED0tpWl6X9FVKQUhDw7A98jFDs2ZiqkVYcaeOCZAO9KUo6FtDxB
-         GZnA==
+        bh=QJSpYiCN3QN/TY7u+xw31FjEI9RUYvZalJzVd9jzlj8=;
+        b=M0SB6J5NjitIOCpYq96zx8rLm/tpqEEm8vvNI3Pd5UlcNtCek3EcODBlwf0XELWVYV
+         IeHIrq+7RMojG29t37UYz8mlfBabVF+iAEriaX9GQdk3t3AnmqoHPj7TCjtdP9qmtl0S
+         LNxxMXPyIurle1mAoZdMhCOZIKFrShrMO6s54SWBIFaLFW/qvJlXsgRMpCe3IQJQYw0A
+         oQlEgzh4BkIl4UPoOlLKWWNTHVcKcUIIZ7CWGctt0EecypKRt/jV1XE9r3QF7sa3vX9M
+         Q5vqSSsMcMuUaNBDebWCsSdcvO1sYXJkABDNCPznQSR1BfhLcFx8+j2G25gqbGsdP+Qs
+         JY9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697822737; x=1698427537;
+        d=1e100.net; s=20230601; t=1697822787; x=1698427587;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vFL5iFVqH1m9kZwhGzflcon42CaVngVznmVmEIhmRWY=;
-        b=L+ozOf6zzmmUX4XY/UmcI06T7vypj45myNrB16IPPE9dW56szB7rqil4Bhqnt+7G+k
-         hcgt4XYtMpIppZ4GtptF+QkzUJXlFcwxGd51yd7KnUCk0iPDKuYHv639xi5M7nOxcXPl
-         zBPvyRQKtlg9UN0zyJcDTyC+xWi9Y99uRr7CLpaOYp+xudMv+LauI10DjZRchaqV3Jef
-         1kq+x2X16EHIphFnY/UHqYXAmaZ4J1OiFsyp6y1/TuAXMVSFWDf4EmBw02EghSjwEFly
-         wBYsnI5x1b/WQoVOKXCTYWbr7ZbnVJqLdZRP15123gkPpg8WJhELYIAu4Pl6CpnOPqpN
-         96jg==
-X-Gm-Message-State: AOJu0Yxb1z67vHoHxzsg+o8jnVlbIjq2MgN47CPaVqH9n7S3BO3PG6tN
-        PqNUzA23XTcB1xqD+DmsQPyFmlOZjhulVM5aRKxkTPxS9RTKz3DlaDM=
-X-Google-Smtp-Source: AGHT+IEAJxJYH65UAOp0CGVbMLP+IaF4gPQ3JhAlGuol2lCyWHsYGBw+wUyT3+khfALaMw3q5iEsltZ+ywYBL7uUP44=
-X-Received: by 2002:a05:6402:50d2:b0:53d:f09a:4eef with SMTP id
- h18-20020a05640250d200b0053df09a4eefmr1994810edb.41.1697822736950; Fri, 20
- Oct 2023 10:25:36 -0700 (PDT)
+        bh=QJSpYiCN3QN/TY7u+xw31FjEI9RUYvZalJzVd9jzlj8=;
+        b=NO//8jiyYDoLYXeMZBncLd9XKO0LeuvmUpMc4JXFDdJutf3SiOa+MubLX2oxKHHXiZ
+         JkJqJ7Dmm8d7lnDl2cz/lMFm9upsUS6Ks1tkoi3CsmtzURNOzy9KH0NaifEaAHJlhygB
+         iHsgrsuaqaaU9ttr0CyxnDnl6/ao+YgElVzraRP2iIUPQkGf/Zdi4hiFReepIqDmPCeI
+         DcMoOLNK71tpLLq4rsMdVEvCJXO+xLFB+lGHKOOjoTj5yphhLE14P1fo8PuIdWBcRLgC
+         tokQ0wJxnJCWIz3j490sgU2x6aPSBsCx7OaaDTlTCZdMYbdKVMpN/QGnQ4zUvtgFoXAr
+         Hykw==
+X-Gm-Message-State: AOJu0Yz4FafBfyiIBoYT/ATSzjpZZ6DTjU9rErZKWZHX1/HO6w5161iJ
+        ykR9tC/5xACK2OBr/U8e1FYteYY1v3P4EXq8zWM=
+X-Google-Smtp-Source: AGHT+IHnR9YY++aPCL+6tLnRr0XZ5JTa8kWa3j20XBlP5u8TMD5HwJ0BPx876YEPZsSsdjOOrqfFT20wA+vsWFp5LK8=
+X-Received: by 2002:adf:f0c2:0:b0:32d:ba78:d608 with SMTP id
+ x2-20020adff0c2000000b0032dba78d608mr1906451wro.52.1697822786819; Fri, 20 Oct
+ 2023 10:26:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <CABWYdi1kiu1g1mAq6DpQWczg78tMzaVFnytNMemZATFHqYSqYw@mail.gmail.com>
- <20231020104728.2060-1-hdanton@sina.com>
-In-Reply-To: <20231020104728.2060-1-hdanton@sina.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 20 Oct 2023 10:25:25 -0700
-Message-ID: <CABWYdi0N7uvDex5CdKD60hNQ6UFuqoB=Ss52yQu6UoMJm0MFPw@mail.gmail.com>
-Subject: Re: wait_for_unix_gc can cause CPU overload for well behaved programs
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20231020132749.1398012-1-arnd@kernel.org>
+In-Reply-To: <20231020132749.1398012-1-arnd@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 20 Oct 2023 10:26:15 -0700
+Message-ID: <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: hide cgroup functions for configs without cgroups
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,78 +81,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 3:47=E2=80=AFAM Hillf Danton <hdanton@sina.com> wro=
+On Fri, Oct 20, 2023 at 6:27=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
 te:
 >
-> On Thu, 19 Oct 2023 15:35:01 -0700 Ivan Babrou <ivan@cloudflare.com>
-> > Hello,
-> >
-> > We have observed this issue twice (2019 and 2023): a well behaved
-> > service that doesn't pass any file descriptors around starts to spend
-> > a ton of CPU time in wait_for_unix_gc.
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> See if the diff below works for you, which prevents concurrent spinning
-> of unix_gc_lock, a variant of spin_trylock().
+> When cgroups are disabled, the newly added functions don't build:
 >
-> Hillf
-> --- x/net/unix/garbage.c
-> +++ y/net/unix/garbage.c
-> @@ -211,15 +211,10 @@ void unix_gc(void)
->         struct list_head cursor;
->         LIST_HEAD(not_cycle_list);
+> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
+> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared (f=
+irst use in this function)
+>   917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+>       |              ^~~~~~~~~~~~~~~~~~~
+> kernel/bpf/task_iter.c:925:60: error: invalid application of 'sizeof' to =
+incomplete type 'struct css_task_iter'
+>   925 |         kit->css_it =3D bpf_mem_alloc(&bpf_global_ma, sizeof(stru=
+ct css_task_iter));
+>       |                                                            ^~~~~~
 >
-> +       if (test_and_set_bit(0, &gc_in_progress))
-> +               return;
->         spin_lock(&unix_gc_lock);
+> Hide them in an #ifdef section.
 >
-> -       /* Avoid a recursive GC. */
-> -       if (gc_in_progress)
-> -               goto out;
-> -
-> -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
-> -       WRITE_ONCE(gc_in_progress, true);
-> -
->         /* First, select candidates for garbage collection.  Only
->          * in-flight sockets are considered, and from those only ones
->          * which don't have any external reference.
-> --
+> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs=
+")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  kernel/bpf/task_iter.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 654601dd6b493..15a184f4f954d 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -904,6 +904,7 @@ __diag_push();
+>  __diag_ignore_all("-Wmissing-prototypes",
+>                   "Global functions as their definitions will be in vmlin=
+ux BTF");
+>
+> +#ifdef CONFIG_CGROUPS
+>  __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+>                 struct cgroup_subsys_state *css, unsigned int flags)
+>  {
+> @@ -947,6 +948,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf=
+_iter_css_task *it)
+>         css_task_iter_end(kit->css_it);
+>         bpf_mem_free(&bpf_global_ma, kit->css_it);
+>  }
+> +#endif
 
-This could solve wait_for_unix_gc spinning, but it wouldn't affect
-unix_gc itself, from what I understand. There would always be one
-socket writer or destroyer punished by running the gc still. My linked
-repro code exercises that path rather than the waiting spinlock
-(there's a single writer thread), so it's something you can see for
-yourself.
-
-Your patch doesn't build, so I wasn't able to try it out:
-
-#26 154.3 /build/linux-source/net/unix/garbage.c: In function 'unix_gc':
-#26 154.3 /build/linux-source/net/unix/garbage.c:214:33: error:
-passing argument 2 of 'test_and_set_bit' from incompatible pointer
-type [-Werror=3Dincompatible-pointer-types]
-#26 154.3   214 |         if (test_and_set_bit(0, &gc_in_progress))
-#26 154.3       |                                 ^~~~~~~~~~~~~~~
-#26 154.3       |                                 |
-#26 154.3       |                                 bool * {aka _Bool *}
-#26 154.3 In file included from
-/build/linux-source/include/asm-generic/bitops/atomic.h:68,
-#26 154.3                  from
-/build/linux-source/arch/arm64/include/asm/bitops.h:25,
-#26 154.3                  from /build/linux-source/include/linux/bitops.h:=
-68,
-#26 154.3                  from /build/linux-source/include/linux/kernel.h:=
-22,
-#26 154.3                  from /build/linux-source/net/unix/garbage.c:66:
-#26 154.3 /build/linux-source/include/asm-generic/bitops/instrumented-atomi=
-c.h:68:79:
-note: expected 'volatile long unsigned int *' but argument is of type
-'bool *' {aka '_Bool *'}
-#26 154.3    68 | static __always_inline bool test_and_set_bit(long
-nr, volatile unsigned long *addr)
-#26 154.3       |
- ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-#26 154.3 /build/linux-source/net/unix/garbage.c:328:2: error: label
-'out' defined but not used [-Werror=3Dunused-label]
-#26 154.3   328 |  out:
-#26 154.3       |  ^~~
-#26 154.3 cc1: all warnings being treated as errors
+Did you actually test build it without cgroups and with bpf+btf?
+I suspect the resolve_btfid step should be failing the build.
+It needs
+#ifdef CONFIG_CGROUPS
+around BTF_ID_FLAGS(func, bpf_iter_css_task*
