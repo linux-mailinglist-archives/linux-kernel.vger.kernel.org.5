@@ -2,131 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C997B7D0FC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663647D0FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377296AbjJTMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
+        id S1377288AbjJTMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377079AbjJTMh7 (ORCPT
+        with ESMTP id S1377155AbjJTMmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:37:59 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C423126;
-        Fri, 20 Oct 2023 05:37:55 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id E4F765C0B43;
-        Fri, 20 Oct 2023 08:37:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 20 Oct 2023 08:37:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1697805471; x=1697891871; bh=9QNPqwRDcZlrvt91c+3etbh0BxgwUgfNZr/
-        o/gl+odo=; b=UanxiwEDWTEH0PBAKXMFyf8mk2xjAYLsWSefdeP/3w1hQgito+h
-        vRQb6i+U+r8kXQBa6JhuvyAfUUEhx7gOz72gFUwsjqTc2W3C6mioo4JJ3gv4um9o
-        yN+8onTen1NeGVUaxsJqR2/hAzNpbnx3nN/Ku2XvxjmLYdi/GGpaI6FnrcLi4op0
-        x+e5CgN1A9LGzw+Kvhvao7RSnGFuC3UYCP9PcbVro4IDNGNf6WMW3VMb4w5+nazc
-        3nv1wT7O3f5PKhKvspRDiP7QqkrCb8crsDnUbEzNdLaMe6QJYZ0xS/ksbgWbYP2M
-        1jQH7y0zwuSOuzctpVszR2+1QipacUJFGCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1697805471; x=1697891871; bh=9QNPqwRDcZlrvt91c+3etbh0BxgwUgfNZr/
-        o/gl+odo=; b=Ei/8V1NOxkilnST4rAAke0DTO34hvwfZeLWdiE9vQNXW9lpsVyj
-        HMG1x8ra+Ol0q0Hp/5nvKN1nFtxKAjw8AVI4tjla9D0trciB/XeLrWZfqvRoJUy3
-        7KEHYN1jzwnbQPFiGrHHi8YCV7vSv3iNB8xygwoRP2iA0uTtghurWIpZp4y0f0vs
-        BLH7g4xBVtQa8QK5AnleYNEWbCDd/8MmBqo93xtDsGE1y3jDJvoleMJ/hWNsFks+
-        jVGUQuofBhUlOJkPDRnK7PS0Cvow8Ambdjqix+Fao6kYrtsCfRlRqi76bFIGgtHr
-        fJro1rbHhNh2rh7t/CxDXsVPyJ06KY2pY+Q==
-X-ME-Sender: <xms:n3QyZbAiI46w1rfrxHic7zKHJ6jhwyq_uVqvKLmVXnDFAoE9-hdyjw>
-    <xme:n3QyZRgBVvhFWQR7RAWky47gk2d6nnQaE5pjOPPjXG64G5MK_iLpYLeB7Oxe4ju4P
-    1GLN_Og6Oi2>
-X-ME-Received: <xmr:n3QyZWlfGssOQaumdqCf7WY-HNCA2KO99RuQVsE6Sk-ck_ZMqCQhLis1Gvpp8hP6644gW3nEaVOW7jxXSgSTRtfZ7tYDGiSXQOYTz1NM8KaXVZZ93PvAuaU->
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdehfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:n3QyZdxhonMhRo4BOKKf8UJPhbXMsvAXWVBR5XQ_9yIQuIE6EKGxVQ>
-    <xmx:n3QyZQQXI1uYvgP_pzOD9-g6klhCbyaMDaphsjwToX8otPUZ0Ve97w>
-    <xmx:n3QyZQYBNYUvEfLvwKbGSTNOg3dHy0TCEEtVuxNGxo50CJ1MX430aA>
-    <xmx:n3QyZVQBIisVMfeV18DQhRhCk3G6kKYZgyfl-vxIlICZJpk12fafrw>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 20 Oct 2023 08:37:47 -0400 (EDT)
-Message-ID: <5e4f0e11-1896-041c-3b32-c05af91d1526@themaw.net>
-Date:   Fri, 20 Oct 2023 20:37:44 +0800
+        Fri, 20 Oct 2023 08:42:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B28126
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 05:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697805751; x=1729341751;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ZS32j1eQY1Yi6SVLYpQrchRlTJGbASGZQz5j7O46Mxg=;
+  b=b+sb3t9vukJA14GPvxN+LVR+oEL2NLiMBxUPtiCBG3n4pwg9oPYz6RC0
+   5l+0bSCqGW1p4s2y2bTJ0Gmv2hsk1VyTcIGVn3Ol51dTVa0c/frc/pjIY
+   tHQEHbt2EHu7e9nmHKQ/7wOFqhphY115lW71vSBxZPkHVvicv2J0Jm6Ci
+   FXnQSJyEocw9hCnAGvWPlI3xs0tGwMrnsrzhtNrnL3O1MQhZMCHTKa1fv
+   lPt2Ik7NrNtQjje4X78dxzUYvPZ2wYJ13gToAqxGYpu11MOddA0Lotzbo
+   zuAZ3h6i9zeu/PNutVWsbZh7jY2gSMce9VKmIq6JdfeKZakd8ow1dgUeq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="452967098"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="452967098"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:42:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="931004423"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="931004423"
+Received: from dgutows1-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.39.237])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:42:23 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id D971C10A1C7; Fri, 20 Oct 2023 15:42:20 +0300 (+03)
+Date:   Fri, 20 Oct 2023 15:42:20 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+Subject: Re: [PATCH 03/13] cpu/hotplug, x86/acpi: Disable CPU hotplug for
+ ACPI MADT wakeup
+Message-ID: <20231020124220.voezn7q72unnt2q6@box.shutemov.name>
+References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
+ <20231005131402.14611-4-kirill.shutemov@linux.intel.com>
+ <9f9fef1eb387e6098ca762d10e9c2002296c89f6.camel@intel.com>
+ <edcd14bce71326e168a4dc11e5f1771e6f623aa8.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: autofs: add autofs_parse_fd()
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        autofs@vger.kernel.org
-Cc:     Bill O'Donnell <bodonnel@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
- <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <edcd14bce71326e168a4dc11e5f1771e6f623aa8.camel@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/23 14:36, Arnd Bergmann wrote:
-> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
->> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit rootfs we call
->> it as compat mode boot testing. Recently it started to failed to get login
->> prompt.
->>
->> We have not seen any kernel crash logs.
->>
->> Anders, bisection is pointing to first bad commit,
->> 546694b8f658 autofs: add autofs_parse_fd()
->>
->> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->> Reported-by: Anders Roxell <anders.roxell@linaro.org>
-> I tried to find something in that commit that would be different
-> in compat mode, but don't see anything at all -- this appears
-> to be just a simple refactoring of the code, unlike the commits
-> that immediately follow it and that do change the mount
-> interface.
->
-> Unfortunately this makes it impossible to just revert the commit
-> on top of linux-next. Can you double-check your bisection by
-> testing 546694b8f658 and the commit before it again?
->
-> What are the exact mount options you pass to autofs in your fstab?
+On Fri, Oct 20, 2023 at 11:58:58AM +0000, Huang, Kai wrote:
+> On Tue, 2023-10-10 at 10:24 +0000, Huang, Kai wrote:
+> > >  /* Physical address of the Multiprocessor Wakeup Structure mailbox */
+> > > @@ -74,6 +75,9 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> > >  
+> > > 
+> > >  	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+> > >  
+> > > 
+> > > +	/* Disable CPU onlining/offlining */
+> > > +	cpu_hotplug_not_supported();
+> > > +
+> > 
+> > Both onlining/offlining are prevented, or just offlining?
+> > 
+> > The previous patch says:
+> > 
+> > 	It does not prevent the initial bring up of the CPU, but it stops 
+> > 	subsequent offlining.
+> > 
+> > And ...
+> > 
+> > [...]
+> > 
+> > 
+> > > --- a/kernel/cpu.c
+> > > +++ b/kernel/cpu.c
+> > > @@ -1522,7 +1522,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+> > >  	 * If the platform does not support hotplug, report it explicitly to
+> > >  	 * differentiate it from a transient offlining failure.
+> > >  	 */
+> > > -	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) || !cpu_hotplug_supported)
+> > > +	if (!cpu_hotplug_supported)
+> > >  		return -EOPNOTSUPP;
+> > >  	if (cpu_hotplug_disabled)
+> > >  		return -EBUSY;
+> > 
+> > ... here cpu_down_maps_locked() only prevents offlining if I am reading
+> > correctly.
+> > 
+> > Also, can we rename cpu_hotplug_supported to cpu_offline_supported to match the
+> > behaviour better?
+> > 
+> > Anyway, isn't it a little bit odd to have:
+> > 
+> > 	if (!cpu_hotplug_supported)
+> >  		return -EOPNOTSUPP;
+> >  	if (cpu_hotplug_disabled)
+> >  		return -EBUSY;
+> > 
+> > ?
+> 
+> I probably have missed something important, but I don't quite understand what's
+> the reason to have the CC_ATTR_HOTPLUG_DISABLED at the beginning, and now
+> replace it with cpu_hotplug_not_supported()?
 
-I've only just seen this report, sorry about that.
+CC_ATTR_HOTPLUG_DISABLED was a mistake. And now obvious when we only need
+to disable offlining dynamically, based on supported MADT MP WP version.
 
+> From the changelog:
+> 
+> 	Currently hotplug prevented based on the confidential computing
+> 	attribute which is set for Intel TDX. But TDX is not the only possible
+> 	user of the wake up method.
+> 
+> CC_ATTR_HOTPLUG_DISABLED is only used by TDX guest, but MADT can be used by non-
+> TDX guest too.
+> 
+> Anyway, if the purpose is just to prevent CPU from going offline, can this be
+> done by registering a cpuhp callback?
+> 
+> 	static int madt_wakeup_offline_cpu(unsigned int cpu)
+> 	{
+> 		return -EOPNOTSUPP;
+> 	}
+> 
+> 	...
+> 
+> 	err = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "madt-wakeup",
+> 			NULL, madt_wakeup_offline_cpu);
+> 	if (err) {
+> 		pr_err("Register CPU hotplug callback failed.\n");
+> 		/* BUG() ??? */
+> 	}
+> 
+> This doesn't pollute the common CPU hotplug code, thus to me looks more clear?
 
-I'll have a go at trying to reproduce it but debugging in an environment
+Thomas seems fine with cpu_hotplug_disable_offlining().
 
-like this will be something of a challenge I think.
-
-
-Ian
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
