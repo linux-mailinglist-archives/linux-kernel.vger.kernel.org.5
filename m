@@ -2,71 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8127D14E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814AF7D14E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377916AbjJTRaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S1377919AbjJTRam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjJTRaW (ORCPT
+        with ESMTP id S229997AbjJTRak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:30:22 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74755A3;
-        Fri, 20 Oct 2023 10:30:20 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso793618f8f.0;
-        Fri, 20 Oct 2023 10:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697823019; x=1698427819; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxpOXyb87A9tg1EnyFOnn6XQcp6Ef9sPYFZmIQknO/4=;
-        b=Cw1zd9eltba6besS6mIeJCLCvQnxEceYYk6FIzDMRjGcA2svzj8TW2qZ2CeLgoV2yp
-         2wdVGQ5a++UOKvKgJnJIfd3/tFBuOSeeaNM0c5/TqzuAGZrsl8Bz/9iKcBlvXZFottCf
-         RVQuoX1pFEHAKOrMzyry3yBs4f5Fl1hZ/DSbo2tCZ20D1NzhqIMWjK7i6mVJmGJvvciv
-         iY/r+ZUXjYegu+g+KXiHZcEwQbPP1AlBcp6VGZ+gst+l9nQ0hQKEY7zTN41jdylWHfMf
-         B01H7qZjSs30XEorE8Pid3G02/CZKacoH8V9+dRKuScnWTw/H/1b+Accu4uAdyUx5ojZ
-         /Sfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697823019; x=1698427819;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NxpOXyb87A9tg1EnyFOnn6XQcp6Ef9sPYFZmIQknO/4=;
-        b=ZgjixgPWHxMCRIqc67JCCmTUuT0ZdE+FBA/N7gdblvTWhJLR7cwogt8LaNUDQzaCn/
-         COcuqhGUhWjSNLkCSYKtgjf4Ob6iP7ez4D/RokGnlY7rOzP4zbiKesE6FTHK5nUvfURf
-         LfDdjNDVdVKgbnfl8lzEqCR2uaJ1M2kF8u7+CXvv0axsobGdUwuPnIFpiG+PB9Jrho2/
-         MPqtp00s9hfVGp6SzgjXJow0jhbpPmIfIUrgHYV6K2iqGfBXFhifwVW16Z4uLjNDP5pc
-         GEV9uJIHwVX4QxDuOb5exT5jwiswZeRqZOeDo3Zz0GshctBcrAEjY9ghCLoWwmwdjx/S
-         DtxA==
-X-Gm-Message-State: AOJu0YyDOY9W0+7FXXkw9SXRWmvRbceMwAnoOOoMa3JK0+asrvSc2onB
-        32D8xfSWUM3KwNV3ESGbytc=
-X-Google-Smtp-Source: AGHT+IHKMIMV/P7s2BKrgigGnTNV6sABljrLOhvsv462uIs/FRCd8uGfJnqGkQ+ETWSbQNPsKW/kyQ==
-X-Received: by 2002:a5d:5b1c:0:b0:32d:a61a:85cc with SMTP id bx28-20020a5d5b1c000000b0032da61a85ccmr3083519wrb.8.1697823018563;
-        Fri, 20 Oct 2023 10:30:18 -0700 (PDT)
-Received: from PC-PEDRO-ARCH.lan ([2001:8a0:7280:5801:9441:3dce:686c:bfc7])
-        by smtp.gmail.com with ESMTPSA id r6-20020a5d6946000000b00318147fd2d3sm2102854wrw.41.2023.10.20.10.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 10:30:18 -0700 (PDT)
-From:   Pedro Falcato <pedro.falcato@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-        Pedro Falcato <pedro.falcato@gmail.com>
-Subject: [PATCH] rcu: Remove unused macros from rcupdate.h
-Date:   Fri, 20 Oct 2023 18:30:15 +0100
-Message-ID: <20231020173015.30509-1-pedro.falcato@gmail.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Fri, 20 Oct 2023 13:30:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E59A3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:30:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D8BC433C7;
+        Fri, 20 Oct 2023 17:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1697823037;
+        bh=cJeCmKC38qm90zyfdcG4SUKfILLYa+5rU2Q+LCqJ8lM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XIbOXKykVs348OUb2DLZnFwaZAO6yQOODMlyMioGr7OgM6CvBy+LNZcvXM0I9N1U1
+         9N94CneC/tHv2yls/XwFziprrJXA1NQGwu7D3VG75vhzQMvmrGovs7eabtAjPKjT/x
+         ncOf/qPcc1NjxqBFZynMjaCLtE3pn3839yr3DUfw=
+Date:   Fri, 20 Oct 2023 10:30:36 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, acsjakub@amazon.de
+Subject: Re: [PATCH 0/5] avoid divide-by-zero due to max_nr_accesses
+ overflow
+Message-Id: <20231020103036.027282d16aaf56498230cc12@linux-foundation.org>
+In-Reply-To: <20231020171901.63994-1-sj@kernel.org>
+References: <20231019194924.100347-1-sj@kernel.org>
+        <20231020171901.63994-1-sj@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,32 +49,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ulong2long, USHORT_CMP_GE and USHORT_CMP_LT are redundant and have been
-unused for quite a few releases.
+On Fri, 20 Oct 2023 17:19:01 +0000 SeongJae Park <sj@kernel.org> wrote:
 
-Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
----
-Just a boring chore patch that cleans up a few unused macros.
+> On Thu, 19 Oct 2023 19:49:19 +0000 SeongJae Park <sj@kernel.org> wrote:
+> 
+> > The maximum nr_accesses of given DAMON context can be calculated by
+> > dividing the aggregation interval by the sampling interval.  Some logics
+> > in DAMON uses the maximum nr_accesses as a divisor.  Hence, the value
+> > shouldn't be zero.  Such case is avoided since DAMON avoids setting the
+> > agregation interval as samller than the sampling interval.  However,
+> > since nr_accesses is unsigned int while the intervals are unsigned long,
+> > the maximum nr_accesses could be zero while casting.
+> 
+> Actually, the issue was reported by Jakub, and I didn't add 'Reported-by:' tags
+> for him.  I sure Andrew could add that on his own, but I want to minimize
+> Andrew's load, so will send v2 of this patchset.  Andrew, please let me know if
+> that doesn't help but only increasing your load.
 
-I'm *very* interested in knowing how that ulong2long macro came along,
-though. What was wrong with '(long) a'?
- include/linux/rcupdate.h | 3 ---
- 1 file changed, 3 deletions(-)
+Editing the changelogs is far quicker than updating a patch series ;)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 5e5f920ade9..b9b6b828115 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -34,9 +34,6 @@
- 
- #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
- #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
--#define ulong2long(a)		(*(long *)(&(a)))
--#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
--#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
- 
- /* Exported common interfaces */
- void call_rcu(struct rcu_head *head, rcu_callback_t func);
--- 
-2.42.0
-
+btw, it's now conventional to add a link to the reporter's report.  The
+new "Closes:" tag, immediately after the Reported-by:.  But it's not a
+big deal.
