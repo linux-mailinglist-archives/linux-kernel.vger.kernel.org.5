@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1CD7D1626
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010187D1612
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjJTTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
+        id S229814AbjJTTGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjJTTHT (ORCPT
+        with ESMTP id S229473AbjJTTG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:07:19 -0400
-Received: from rcdn-iport-7.cisco.com (rcdn-iport-7.cisco.com [173.37.86.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C74C10E7;
-        Fri, 20 Oct 2023 12:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2334; q=dns/txt; s=iport;
-  t=1697828835; x=1699038435;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fv30yt0LjIxxDkJmPu1aq2CxwjmyWduwzcIDXyk48UI=;
-  b=WE7WbTRApBnG3u2KC99W6ZnMJfasi1zo0z0GgqBN1y3v0xOjFyndnpXF
-   +F+1HAVksHvZR0Gj2Gxg7mWVZW35mfLM4ub8bNGKlmkvwdv6Cs4a2gHmg
-   +o6/9C2+s3p5gOs2wfyvmC3aLfW5chQEhb318HHIOhmxtJ7I5+dkjTSRH
-   U=;
-X-CSE-ConnectionGUID: /f4vCI4+SCy2t33xxkI+0A==
-X-CSE-MsgGUID: Gj2Be+N3Qfa5FTHTijoMvA==
-X-IronPort-AV: E=Sophos;i="6.03,239,1694736000"; 
-   d="scan'208";a="126421357"
-Received: from rcdn-core-11.cisco.com ([173.37.93.147])
-  by rcdn-iport-7.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 19:07:15 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39KJ6XPK026372
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 20 Oct 2023 19:07:14 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH 08/13] scsi: fnic: Define stats to track multiqueue (MQ) IOs
-Date:   Fri, 20 Oct 2023 12:06:24 -0700
-Message-Id: <20231020190629.338623-9-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231020190629.338623-1-kartilak@cisco.com>
-References: <20231020190629.338623-1-kartilak@cisco.com>
+        Fri, 20 Oct 2023 15:06:28 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863BED4C
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:26 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5aa7fdd1420so799117a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697828786; x=1698433586; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=URtsuBkq1PlfP6enjE5/unNQzMTKd3kE7D83R3MqH4Q=;
+        b=TeBWtUDrZLa4tHwIIZWcQ40qkXDWrr6Gog33AaiZx/47BkAZqATPeQBQDWt2XJM/8c
+         yxK/QKldpIAVz+MmNMXNalMiFG+XjiyKL+gRgxDbhJDjyCvU85TYcMTazX2GWXNNUfAn
+         Fcl8Cm6TGP0E/Xmi9SNbBweAbykv6JLsuDN4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697828786; x=1698433586;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=URtsuBkq1PlfP6enjE5/unNQzMTKd3kE7D83R3MqH4Q=;
+        b=BqLNAOm8mUGowmUieTRuJFHNDZsFkx1nyYpbLN3WhetWWGkoRcazTlrnl1CZZdLKqz
+         KmGqskezdYgCM0O+mMB+zfQTzjKtO1/oU7skUmnoJ3LzDyYsXjY8v/pzokZpoiLtDtGA
+         BLEM8CjZ9FskKx1mLRFQ6Wg/Ux7asjPeQFsWP+Upb9kkmIReXxGpCRFluISBqSV64feS
+         haqZfPGppK7IpdY/q2xreSIZ0a+e8CQ48sCG/RtPT3iif8e8pllm+C3H2JB/oBIKazMH
+         OfmQFQdzENaQgSoqL/0uf5ZBMxssaYQq2MawRJHQ/rhE7dB8ys7MYo99+qfq6y/nkQDN
+         68RA==
+X-Gm-Message-State: AOJu0YxnQW3xUUTruvnfbFMQNyOkllQxyu+vvp5fO2d10WZsuiqUy28z
+        HMfFaAUzgnC+fO/02Jo8BsYpWw==
+X-Google-Smtp-Source: AGHT+IGZAx49Ov+0Y8NtP7+Nd4TtP5zk4M6HLrhjbp3+NqOYbrLuGFkh7nPl2xFTM0kJArIeJmcRgQ==
+X-Received: by 2002:a17:90b:3504:b0:27d:60b1:4f2c with SMTP id ls4-20020a17090b350400b0027d60b14f2cmr2592965pjb.4.1697828785944;
+        Fri, 20 Oct 2023 12:06:25 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 8-20020a17090a1a4800b002776288537fsm1953870pjl.53.2023.10.20.12.06.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 12:06:25 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 12:06:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] power: supply: bq2515x: replace deprecated strncpy with
+ strscpy
+Message-ID: <202310201206.2D1271C209@keescook>
+References: <20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-11.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define an array to track IOs for the different queues,
-print the IO stats in fnic get stats data.
+On Fri, Oct 20, 2023 at 06:59:34PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We expect bq2515x->model_name to be NUL-terminated based on its usage with
+> sysfs_emit and format strings:
+> 
+> val->strval is assigned to bq2515x->model_name in
+> bq2515x_mains_get_property():
+> |       val->strval = bq2515x->model_name;
+> 
+> ... then in power_supply_sysfs.c we use value.strval with a format string:
+> |       ret = sysfs_emit(buf, "%s\n", value.strval);
+> 
+> we assigned value.strval via:
+> |       ret = power_supply_get_property(psy, psp, &value);
+> ... which invokes psy->desc->get_property():
+> |       return psy->desc->get_property(psy, psp, val);
+> 
+> with bq2515x_mains_get_property():
+> |       static const struct power_supply_desc bq2515x_mains_desc = {
+> ...
+> |       	.get_property		= bq2515x_mains_get_property,
+> 
+> Moreover, no NUL-padding is required as bq2515x is zero-allocated in
+> bq2515x_charger.c:
+> |       bq2515x = devm_kzalloc(dev, sizeof(*bq2515x), GFP_KERNEL);
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
+> sizeof(dest)) as this more closely ties the destination buffer and the
+> length.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
----
- drivers/scsi/fnic/fnic_stats.h |  2 ++
- drivers/scsi/fnic/fnic_trace.c | 11 +++++++++++
- 2 files changed, 13 insertions(+)
+This looks like a good replacement, just like the prior I2C change.
 
-diff --git a/drivers/scsi/fnic/fnic_stats.h b/drivers/scsi/fnic/fnic_stats.h
-index 07d1556e3c32..9d7f98c452dd 100644
---- a/drivers/scsi/fnic/fnic_stats.h
-+++ b/drivers/scsi/fnic/fnic_stats.h
-@@ -2,6 +2,7 @@
- /* Copyright 2013 Cisco Systems, Inc.  All rights reserved. */
- #ifndef _FNIC_STATS_H_
- #define _FNIC_STATS_H_
-+#define FNIC_MQ_MAX_QUEUES 64
- 
- struct stats_timestamps {
- 	struct timespec64 last_reset_time;
-@@ -26,6 +27,7 @@ struct io_path_stats {
- 	atomic64_t io_btw_10000_to_30000_msec;
- 	atomic64_t io_greater_than_30000_msec;
- 	atomic64_t current_max_io_time;
-+	atomic64_t ios[FNIC_MQ_MAX_QUEUES];
- };
- 
- struct abort_stats {
-diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
-index be0d7c57b242..aaa4ea02fb7c 100644
---- a/drivers/scsi/fnic/fnic_trace.c
-+++ b/drivers/scsi/fnic/fnic_trace.c
-@@ -204,6 +204,7 @@ int fnic_get_stats_data(struct stats_debug_info *debug,
- 	int len = 0;
- 	int buf_size = debug->buf_size;
- 	struct timespec64 val1, val2;
-+	int i = 0;
- 
- 	ktime_get_real_ts64(&val1);
- 	len = scnprintf(debug->debug_buffer + len, buf_size - len,
-@@ -266,6 +267,16 @@ int fnic_get_stats_data(struct stats_debug_info *debug,
- 		  (u64)atomic64_read(&stats->io_stats.io_btw_10000_to_30000_msec),
- 		  (u64)atomic64_read(&stats->io_stats.io_greater_than_30000_msec));
- 
-+	len += scnprintf(debug->debug_buffer + len, buf_size - len,
-+			"------------------------------------------\n"
-+			"\t\tIO Queues and cumulative IOs\n"
-+			"------------------------------------------\n");
-+
-+	for (i = 0; i < FNIC_MQ_MAX_QUEUES; i++) {
-+		len += scnprintf(debug->debug_buffer + len, buf_size - len,
-+				"Q:%d -> %lld\n", i, (u64)atomic64_read(&stats->io_stats.ios[i]));
-+	}
-+
- 	len += scnprintf(debug->debug_buffer + len, buf_size - len,
- 		  "\nCurrent Max IO time : %lld\n",
- 		  (u64)atomic64_read(&stats->io_stats.current_max_io_time));
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.31.1
-
+Kees Cook
