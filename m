@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 664EC7D10A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025B77D10A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377423AbjJTNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S1377405AbjJTNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377401AbjJTNk2 (ORCPT
+        with ESMTP id S1377295AbjJTNkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:40:28 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834A91A4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:40:26 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27dc1e4d8b6so720697a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697809226; x=1698414026; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AT1Br+4645wEB5/HzxukaZG+ZkWVdG8KDMFjDfmpMR0=;
-        b=qbRjv4WxxZWPGDr5BJXFP1Tap7CP+xxfPsuNaDkqO97idukHUqVa5G2Z9RhTtLE5aW
-         50XpT9THgn+gkgGwDDN/G1vM/OUl2J7yxS3J2FdRsIQHIWmATr8/cPQtDBF+T/5dAT8o
-         V7ZQZnVYKeWTcTGQGB5fR8h+sjaufc9wF7HwF8EWEcpwbbgaC+3FujHe9NYUsPlozV6G
-         7cFY1zBc0kbVpGGHQ3em4KsnpMYnsZkN83+fqJi0mMKkH0CNGJMjYSU3l/qcLSdpq1P+
-         MGj5VIsuxucCi6LUWl1tFX+WbW9ySJJ+f6dnlr2SuBA4P7+E9+pkuvN5wwMNDf8Ylj30
-         0Nug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697809226; x=1698414026;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AT1Br+4645wEB5/HzxukaZG+ZkWVdG8KDMFjDfmpMR0=;
-        b=sufVLcLpTnv5FXu457mzg9LDck7EskkfblO8Lz203fKlWVwffhdSyJ28tKwJxIBt78
-         SxbDO3qIeb/NiRO/0ajidLo2LlGqwafZ1VXsHvhHLtWbhjktyufx3UXBX5nDkb6vC7Dj
-         qfu0TamYzgD7LHaOMn/U1pq+Rcd6dMZn6P7HoybDViOr6ta4PNTJA0fmSJtnizDMn7LZ
-         x38gXvivr4e5JiJonje2uMdyBemn59wJ5vmF37BpMg85wNujJ142mUzBUI2pD7HWSKY9
-         xoj3W9O93HrYuunHOjXMfyaL4i7pRJn3wXRtygvX64Qwezj5VFzpFP2Y9ZIxrqtIoeTw
-         WgIQ==
-X-Gm-Message-State: AOJu0YwOj1AwoNe0rW7NrLpcsjgejwvCOZCSVxeNc3KzQrmwStLAmoQX
-        xATvzuN/JryKVJCvmL6n+Xf9wBB1v49X+gxWv15jRA==
-X-Google-Smtp-Source: AGHT+IECz/CVOb9yev+sghuyrhjeIz9jIXd/yZPfDbanPu/iz6U5KuCKzJ3ra8LiNpjSBdKvwxg2v3eM7W2UOt4dSq4=
-X-Received: by 2002:a17:90a:31c:b0:27d:68e1:c3d6 with SMTP id
- 28-20020a17090a031c00b0027d68e1c3d6mr1924087pje.28.1697809225932; Fri, 20 Oct
- 2023 06:40:25 -0700 (PDT)
+        Fri, 20 Oct 2023 09:40:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1901A4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:40:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391DCC433C8;
+        Fri, 20 Oct 2023 13:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697809218;
+        bh=QUgIszFC9PR7hifADV9OwR7xg5JhFJQzv8VBLmCiESQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eujd29yVfk+SOEkhiuPXF8LytUJSBe8qoAB2586oO53c9Y3yNLBCzsSt5j3iELZKO
+         1LPfsqymImsItP8mOq07PtltWGt5imCsH004Vh33N4Mt7OzRny+quRuAqW41u+nuBj
+         wAUrbM7hZ8GvrlGsCQeYL6Zx+rYcc8gd4XbX9HBPOhWLCM4jI6R16zfVlDSBCUpDr/
+         ziLw+TMy6Xhm5q8fEOm5iw3DN0OhbaDbVBDa1I3DF+6ngtvP/7Sa+ee0SP1d1fBWrj
+         OU+vHE/9qOY5rqPrGlacjyyXmhkz0c8jDvltAdboVVKo7+1Vk5J0WpxUeWv9P9rvui
+         J4IFjXJ1516Gw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BC667CE0B9F; Fri, 20 Oct 2023 06:40:17 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 06:40:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        x86@kernel.org, joel@joelfernandes.org, frederic@kernel.org
+Subject: Re: [PATCH] clocksource: disable irq when holding watchdog_lock.
+Message-ID: <585a49dc-4594-42be-9bb9-c52d5189058b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <80ff5036-8449-44a6-ba2f-0130d3be6b57@I-love.SAKURA.ne.jp>
+ <CANDhNCpw+hEHNbtdAZR01HsHW_L1C0BXjZq21eXouQGNnYuUNQ@mail.gmail.com>
+ <878r826xys.ffs@tglx>
+ <90361195-4309-4a02-bd3f-8ee606e6d35b@I-love.SAKURA.ne.jp>
+ <c9ddbc3f-dbb8-4ccc-8eb6-43554327984b@paulmck-laptop>
+ <5ef329fe-1f3b-4d81-9625-9738620f051e@I-love.SAKURA.ne.jp>
+ <87r0lq3j2t.ffs@tglx>
+ <2c822e13-775c-4e55-bf2f-152dbca0c910@I-love.SAKURA.ne.jp>
+ <83c9317a-b1d2-4741-b955-98e7cd23595c@paulmck-laptop>
+ <108abe1f-56bc-42d1-90c5-180a3d66b5ab@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-References: <20231020014031.919742-1-joel@joelfernandes.org> <20231020014031.919742-3-joel@joelfernandes.org>
-In-Reply-To: <20231020014031.919742-3-joel@joelfernandes.org>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 20 Oct 2023 15:40:14 +0200
-Message-ID: <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during newidle balance
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <108abe1f-56bc-42d1-90c5-180a3d66b5ab@I-love.SAKURA.ne.jp>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,102 +64,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 at 03:40, Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
->
-> When newidle balancing triggers, we see that it constantly clobbers
-> rq->next_balance even when there is no newidle balance happening due to
-> the cost estimates.  Due to this, we see that periodic load balance
-> (rebalance_domains) may trigger way more often when the CPU is going in
-> and out of idle at a high rate but is no really idle. Repeatedly
-> triggering load balance there is a bad idea as it is a heavy operation.
-> It also causes increases in softirq.
+On Fri, Oct 20, 2023 at 09:50:48PM +0900, Tetsuo Handa wrote:
+> On 2023/10/20 12:30, Paul E. McKenney wrote:
+> > A bit of a long shot, but given your earlier console log, could you
+> > please try Frederic's patches?
+> > 
+> > https://lore.kernel.org/lkml/20231019233543.1243121-1-frederic@kernel.org/
+> 
+> Didn't make difference.
 
-we have 2 balance intervals:
-- one when idle based on the sd->balance_interval = sd_weight
-- one when busy which increases the period by multiplying it with
-busy_factor = 16
+Huh.  Thank you for trying it out!
 
-When becoming idle, the rq->next_balance can have been set using the
-16*sd_weight period so load_balance can wait for a long time before
-running idle load balance for this cpu.
-As a typical example, instead of waiting at most 8ms, we will wait
-128ms before we try to pull a task on the idle CPU.
+							Thanx, Paul
 
-That's the reason for updating rq->next_balance in newidle_balance()
-
->
-> Another issue is ->last_balance is not updated after newidle balance
-> causing mistakes in the ->next_balance calculations.
-
-newly idle load balance is not equal to idle load balance. It's a
-light load balance trying to pull one  task and you can't really
-consider it to the normal load balance
-
->
-> Fix by updating last_balance when a newidle load balance actually
-> happens and then updating next_balance. This is also how it is done in
-> other load balance paths.
->
-> Testing shows a significant drop in softirqs when running:
-> cyclictest -i 100 -d 100 --latency=1000 -D 5 -t -m  -q
->
-> Goes from ~6k to ~800.
-
-Even if your figures look interesting, your patch adds regression in
-the load balance and the fairness.
-
-We can probably do improve the current behavior for decreasing number
-of ILB but your proposal is not the right solution IMO
-
->
-> Cc: Suleiman Souhlal <suleiman@google.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
-> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/fair.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8e276d12c3cb..b147ad09126a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -12076,11 +12076,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->
->         if (!READ_ONCE(this_rq->rd->overload) ||
->             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
-> -
-> -               if (sd)
-> -                       update_next_balance(sd, &next_balance);
->                 rcu_read_unlock();
-> -
->                 goto out;
->         }
->         rcu_read_unlock();
-> @@ -12095,8 +12091,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->                 int continue_balancing = 1;
->                 u64 domain_cost;
->
-> -               update_next_balance(sd, &next_balance);
-> -
->                 if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
->                         break;
->
-> @@ -12109,6 +12103,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->                         t1 = sched_clock_cpu(this_cpu);
->                         domain_cost = t1 - t0;
->                         update_newidle_cost(sd, domain_cost);
-> +                       sd->last_balance = jiffies;
-> +                       update_next_balance(sd, &next_balance);
->
->                         curr_cost += domain_cost;
->                         t0 = t1;
-> --
-> 2.42.0.655.g421f12c284-goog
->
+> I booted another Ubuntu kernel used by installation ISO image, and found no problem.
+> Maybe the only way to narrow down is to build various kernel configurations?
+> 
+> ubuntu-23.10-live-server-amd64.iso
+> [    0.000000] Linux version 6.5.0-9-generic (buildd@bos03-amd64-043) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0, GNU ld (GNU Binutils for Ubuntu) 2.41) #9-Ubuntu SMP PREEMPT_DYNAMIC Sat Oct  7 01:35:40 UTC 2023 (Ubuntu 6.5.0-9.9-generic 6.5.3)
+> [    0.000000] Command line: BOOT_IMAGE=/casper/vmlinuz console=ttyS0,115200n8 console=tty0 ---
+> (...snipped...)
+> [    0.896948] smp: Bringing up secondary CPUs ...
+> [    0.899571] smpboot: x86: Booting SMP configuration:
+> [    0.901912] .... node  #0, CPUs:      #1 #2 #3 #4 #5 #6 #7
+> [    0.914558] TSC synchronization [CPU#0 -> CPU#1]:
+> [    0.916496] Measured 62205 cycles TSC warp between CPUs, turning off TSC clock.
+> [    0.916496] tsc: Marking TSC unstable due to check_tsc_sync_source failed
+> [    0.940504] smp: Brought up 1 node, 8 CPUs
+> [    0.944498] smpboot: Max logical packages: 1
+> [    0.946468] smpboot: Total of 8 processors activated (41779.32 BogoMIPS)
+> 
