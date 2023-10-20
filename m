@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF4B7D11D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052D57D11A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377637AbjJTOuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        id S1377547AbjJTOea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377603AbjJTOt4 (ORCPT
+        with ESMTP id S1377490AbjJTOe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:49:56 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551A0D5F;
-        Fri, 20 Oct 2023 07:49:54 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 36c620263d67cc07; Fri, 20 Oct 2023 16:49:52 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 58FFB667008;
-        Fri, 20 Oct 2023 16:49:52 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/6] ACPI: scan: MIPI DiSco for Imaging support
-Date:   Fri, 20 Oct 2023 16:33:56 +0200
-Message-ID: <2187487.irdbgypaU6@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        Fri, 20 Oct 2023 10:34:29 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8670219E
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1697812460; x=1698417260; i=efault@gmx.de;
+        bh=QtJgWLvcgIWB43JrJ3u31jdplw3iBoNu/v4f26qo2fA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
+         References;
+        b=hpPXWP9T8mJAG6PJ8JeF406xbDL5oBtRmynvMhXqsl65rVZf2HeJ8gnff0Bfp+J4
+         xj7PBJudw+7ip+edSiubEnig4n6uZ1Wq6XwvVGCWNQvt5+eXyUhUEXyXupuo97kZx
+         2qPpcrTtnk/ARPJ2Xi8KgGyoy0PdSBl+kubaPREkCrX9l+OszyFkwwWdr1T3v+whn
+         4+UyB3gGB5XpLZfIoQO9hpCgQs+U4w1UnSlbC7IpHfXaOG4Cth2AxWPik2d7qbMQK
+         QLQVl+XrVJWc1Nuvw1oRDCHoic4athO3FztH8YuzKi4NUpqkaJhbY5wVUbawtfRUJ
+         ksv7mlfOrmNPYwj+kg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from homer.fritz.box ([185.221.149.246]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ygO-1qq0Z02qxC-0066nj; Fri, 20
+ Oct 2023 16:34:20 +0200
+Message-ID: <15e4768144a74b093ad5a43f6e5c263fd98775fb.camel@gmx.de>
+Subject: Re: Runtime overhead of PREEMPT_DYNAMIC
+From:   Mike Galbraith <efault@gmx.de>
+To:     Emanuele Rocca <ema@debian.org>
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Date:   Fri, 20 Oct 2023 16:34:20 +0200
+In-Reply-To: <c6259a1824e570ddb7aaf114656aa387e028b76d.camel@gmx.de>
+References: <ZTJFA_Ac6nWawIHb@ariel>
+         <7a818250a8f36476f13b57a172fdb1ab23645edc.camel@gmx.de>
+         <ZTKDWnLrSnPs9VUi@ariel>
+         <c6259a1824e570ddb7aaf114656aa387e028b76d.camel@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdektdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffieeutdeikeevkeelieeigeehhfevgeetgefhffdvudeufedugeekueekffffvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhuvghfihdrohhrghdpmhhiphhirdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepfedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrghkrghrihdrrghilhhusheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
- gh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.42.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8oyPL33s02edddKEsSveNr9iAosXPTOe/lzFTOVkDghMEJpBGNe
+ dyCbS4IOHOWWMOHUWrcJG3OSkQoNh+w3+SBOCaJpeqOyFVzSTs5e8+mGadXDGoFFzTlOx8M
+ 0avAXVkB+5v6/Oty7M8BBQKVkO+uR4hKiDlwtclah2P5yBeBniYm1yLEXS9mDqOIxin9Ft0
+ 6Dst8iLYnjBnnzeoiNZxg==
+UI-OutboundReport: notjunk:1;M01:P0:9R5zOUn2Nuo=;jq/QxVtimCoPk1ThZ8ObCzfVcLM
+ iPexu0Om9A2Qnm3LBQebH4pcJb4GVyiXE5eRJc+33m0oTR79zoIKQZ3zffeCREOmXPJzIkr2N
+ /gBnsk7H1voHZ0F2x1NnNcLV3Ni1xgRZT5MqDmRWVW2bm8WXibGKFBjBY76Ri0eX2En2oqnde
+ 4UEj96oonJN8e8k1Npj7uO8A4cP57blROEbnLcxAWseLFiyUfy353B95MqP7vjQMj+AKIHWx+
+ w+S/TwjcCpEIddgHxYDeo5llcfRcEEG11pS6MIFvn2IhA87syWcaaVoj3rF82l3ez0CzwyVUd
+ 7lczBV57oR67tf7lXO4unFgq+m9h+TQG9KkkhOLgF+v49+GuBUKeAgZiuhg3A/UVpelPKHC+j
+ ubbeSkOUAByopWG19accylqqt32/SGh+5HuYWzFdUWnF4DfMTmnL9nofiULLLuwjtOgnfgpz1
+ KDa3FCWCl+VMDlsQx6CMd21UcmNOcOW/PdQiwzX88oPbjS2sirciBWcxGsf/dAs+7Ir0F5ybg
+ LQBBmlWZRXiQOKFeq6UzVJOabxoDahyEl+m/sSec7sFoshWHEZUw/Xrvt6cM7TSkaIt+AEaxH
+ ELM9hj+tmBrQNVFn/A3M56BiZbN4qAfltXo6lB99WJ6ACGXNntZsKY091N+6xK3i/np+43ZbJ
+ QCAF5QMRrIyFWErcagADnTEl5GI1SHQzQ0LK2b8sOy/hSxK9K+t6hD0QUpmKOK+zC25NHer99
+ fXRosbkSBh+Mv86dHELIZ+0w4zQT45l/gV4F4Qd74ymmFunnDSDX8qPiXnpCsCTM0FtFo3C6b
+ 4ml8WjwYk9bOhBWQMJ9AJDjxa5xdZXZ2HxOdCSNPRj7kgHbAFlHKSni8H8glCon3mTuqAO32r
+ T2BwWj+oGmNuHUarplE82eNu+4Rukmizz97tejlchKUZljInZUVnGNzJ1guSuOrPCPMq3N4Lf
+ pcMxhNI6lbwJOGlCbIrXDmFnEAQ=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Folks,
+On Fri, 2023-10-20 at 16:11 +0200, Mike Galbraith wrote:
+> On Fri, 2023-10-20 at 15:40 +0200, Emanuele Rocca wrote:
+> > Hi Mike,
+> >
+> > Here is the full diff between the kernel configurations I used. The on=
+ly
+> > change I made was setting CONFIG_PREEMPT_DYNAMIC=3Dn, everything else =
+was
+> > a consequence of that AFAICT, but please do let me know if you see
+> > anything that shouldn't be there.
+> >
+> > --- config-6.5.0-0.preempt-dynamic-amd64=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A02023-10-11 15:30:02.000000000 +0200
+> > +++ config-6.5.0-0.a.test-amd64=C2=A02023-10-11 14:30:02.000000000 +02=
+00
+> >
+> > @@ -10597,7 +10596,6 @@
+> > =C2=A0# end of Scheduler Debugging
+> > =C2=A0
+> > =C2=A0# CONFIG_DEBUG_TIMEKEEPING is not set
+> > -CONFIG_DEBUG_PREEMPT=3Dy
+> > =C2=A0
+> > =C2=A0#
+> > =C2=A0# Lock Debugging (spinlocks, mutexes, etc...)
+>
+> Seems you had also turned on DEBUG_PREEMPT in the dynamic setup, which
+> adds some overhead.. but not a metric ton.
 
-This is a new revision of
+Hm, I don't recall the overhead as being that bad, but thar she blows.
 
-https://lore.kernel.org/linux-acpi/13276375.uLZWGnKmhe@kreacher/
-
-which was reported to have issues and it took time to revisit it.
-
-> The main points from the original cover letter are still valid:
-> 
-> The general idea is the same - CSI-2 resource descriptors, introduced in
-> ACPI 6.4 and defined by
-> 
-> https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#camera-serial-i
-> nterface-csi-2-connection-resource-descriptor
-> 
-> are found and used for creating a set of software nodes that represent the
-> CSI-2 connection graph.
-> 
-> These software nodes need to be available before any scan handlers or ACPI
-> drivers are bound to any struct acpi_device objects, so all of that is done
-> at the early stage of ACPI device enumeration, but unnecessary ACPI
-> namespace walks are avoided.
-> 
-> The CSI-2 software nodes are populated with data extracted from the CSI-2
-> resource descriptors themselves and from device properties defined by the
-> MIPI DiSco for Imaging specification (see
-> https://www.mipi.org/specifications/mipi-disco-imaging).
-> 
-> Patches [4,6/6] come from the original series directly, but the other
-> patches have been changes substantially, so I've decided to re-start patch
-> series versioning from scratch.
-
-The v2 addresses at least 3 issues found in the v1 by code inspection:
-
-* A port_count field incrementation was missing in acpi_mipi_scan_crs_csi2(),
-  so its value for all of the devices having CSI2 resources in _CRS was always
-  1 (and it should be equal to the number of valid CSI2 connection resources).
-
-* Some acpi_mipi_crs_csi2_list members could be freed prematurely, so they were
-  inaccessible when extract_crs_csi2_conn_info() attempted to access them.
-
-* A check of remote_swnodes() against NULL was missing, which could result in
-  a crash in a case when the swnodes memory could not be allocated for some
-  acpi_mipi_crs_csi2_list entries.
-
-Apart from that, it rearranges the code somewhat to make it easier to follow
-and to avoid premature freeing of memory in it in general and the new file
-added by it is now called mipi-di.c (instead of mipi-disco-imaging.c) for
-compactness.
-
-The series is based on current linux-next.
-
-Thanks!
-
+i7-4790                                       avg         cmdline
+6.5.8-voluntary 3685.08 3679.93 3704.98   3689.99  1.000
+6.5.8-dynamic   3571.62 3568.61 3550.55   3563.59   .965
+                3052.06 3032.74 3019.93   3034.91   .822  +DEBUG_PREEMPT
+                3651.37 3599.87 3615.18   3622.14   .981  preempt=3Dnone
+                3459.58 3514.09 3539.88   3504.51   .949  preempt=3Dfull
 
 
