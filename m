@@ -2,222 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1987D0C2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FE67D0C37
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376724AbjJTJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        id S1376678AbjJTJqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376670AbjJTJnI (ORCPT
+        with ESMTP id S1376601AbjJTJqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:43:08 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CE2CA;
-        Fri, 20 Oct 2023 02:43:06 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K9bVNF022305;
-        Fri, 20 Oct 2023 09:42:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=gKgKE/3okkYeBZ3Ht9e//KK6FJL8oHwgra2hVscpmfI=;
- b=RlLDxHJEzEqPRoWIKD6uJm1+QBLLHImXqr4S4LLiYO8JwhKYorJwHUSvrIWG5FPiMFq8
- 3w9EEUEXO0NB+rzJRmtJjzBXnqkUyUq0r6jR4E5lxbD07WT6k3gylQKRZ71iTuSlTQnb
- LZc80/SnBxRIpkQEoznO16fZavKsErCRRxeakusPB9r6FBhhoBxrMR/sBbFvC4WH1KT1
- 1capsMliUSmuygT9Z40zfB9qQhz4n/Z8TLJPV8P8UIOQvPShDH4Jhv0nGW1pEd/z3krA
- F4Xg/qcc666iTY0t6pKAZoI0/Q0/JRlL0IU05G8JDb/RGCikXu3YZpI3o47ft8jR+iEb Jw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubxa1b9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 09:42:55 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K9gsfB012882
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 09:42:54 GMT
-Received: from [10.216.47.159] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 20 Oct
- 2023 02:42:47 -0700
-Message-ID: <279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com>
-Date:   Fri, 20 Oct 2023 15:12:44 +0530
+        Fri, 20 Oct 2023 05:46:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AE3C2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697795158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6oCqkd2UpOjJ2soDQ5GWL14dH9A3ncVb57QOugTBNwU=;
+        b=S0+TfQh8D9+oZrABxvQmMZ/DFmT08SEnsbpGAVMW4ebGfTPi/xJDiLEVuTB+tHBv8qXU4h
+        5vYWhulmbqTB6al0Irbl2S2QeVXtp9SLz3eaQdYbHXv9dWfPvPJ13AfsoPYmPh/nllHPU+
+        xYWqtMumOYguD3uWQMqKb72j2/EYLHo=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-360-tYRtTZvHPo2DdMQQ535Z4w-1; Fri, 20 Oct 2023 05:45:44 -0400
+X-MC-Unique: tYRtTZvHPo2DdMQQ535Z4w-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-775869cf2f5so268894685a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:45:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697795144; x=1698399944;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6oCqkd2UpOjJ2soDQ5GWL14dH9A3ncVb57QOugTBNwU=;
+        b=I8scBPnJcKL8xnwgFI+KIqD+kQ4AziNIOnF3qq5l/dsk3bF5/6hdbl9F1ZQB1GGPWK
+         RdsBxxYpBdYCK4NZyceYD4avhHIUneMjlXhJOjc16a8k8NxgGwX2Hel/7qlUUA4NgGQz
+         OO89NWHNP/xdbVU0oQlvzD0C5CKowYdrY3Q3WtIeZsPa5/MrXbBT+ROGk6MpddGgNfR1
+         yYZU8yCUlK/ftFULXAjfth6ZqUUCge3Hl3e4oHGdXawXCYs6ejsBrLoQvX9drWFiloQ5
+         dDNsNbFSR/KbQmNXuL5fC/4i4I6QeAC2ge3AO6y5hOlnjL1Di1dOCcLk0qJcho2ful0E
+         djKQ==
+X-Gm-Message-State: AOJu0Yzy4p0YTBfSKkTg76Orm7tP1+oWYZDiXxx32WajR7FDiSZHPL/K
+        mQXSqe3tG1NdFLLAZH32qiP5A4yTbu01UNhgZFJ7qV/rcaJbVk7MuIVacsa1tGF74vZ1umg4Z+V
+        hDdEdSdXm790kcNjSDWMriXKl
+X-Received: by 2002:a05:620a:4407:b0:774:20b7:b88 with SMTP id v7-20020a05620a440700b0077420b70b88mr6908447qkp.0.1697795144457;
+        Fri, 20 Oct 2023 02:45:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4X3I2IY6B/bPyYksLhL9XboCiKxu0P6kdHG2uHTdUZYV7mpUFf3Tsgg8xpvNTIxrM3CuWAQ==
+X-Received: by 2002:a05:620a:4407:b0:774:20b7:b88 with SMTP id v7-20020a05620a440700b0077420b70b88mr6908428qkp.0.1697795144111;
+        Fri, 20 Oct 2023 02:45:44 -0700 (PDT)
+Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
+        by smtp.gmail.com with ESMTPSA id v10-20020ae9e30a000000b00777611164c6sm477508qkf.15.2023.10.20.02.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 02:45:43 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:45:39 +0200
+From:   Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Anton Yakovlev <anton.yakovlev@opensynergy.com>, mst@redhat.com,
+        perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: Re: [PATCH v2] ALSA: virtio: use copy and fill_silence callbacks
+Message-ID: <ZTJMQ/zU2exf9xsd@fedora>
+References: <ZS+392ZzVIoEyv8n@fedora>
+ <871qdrn6sg.wl-tiwai@suse.de>
+ <e50c5a67-d2b7-4ef1-8aaa-309437fa8cb5@opensynergy.com>
+ <87y1fzkq8c.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 01/10] usb: dwc3: core: Access XHCI address space
- temporarily to read port info
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-2-quic_kriskura@quicinc.com>
- <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 07m-R_smzPgJysJaoTRDAlUTKD0PviSu
-X-Proofpoint-ORIG-GUID: 07m-R_smzPgJysJaoTRDAlUTKD0PviSu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_07,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1015 malwarescore=0 mlxscore=0 priorityscore=1501 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310200080
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y1fzkq8c.wl-tiwai@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Takashi,
 
+On Thu, Oct 19, 2023 at 09:48:03AM +0200, Takashi Iwai wrote:
+> On Thu, 19 Oct 2023 03:20:19 +0200,
+> Anton Yakovlev wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > On 19.10.2023 03:07, Takashi Iwai wrote:
+> > > On Wed, 18 Oct 2023 12:48:23 +0200,
+> > > Matias Ezequiel Vara Larsen wrote:
+> > >> 
+> > >> This commit replaces the mmap mechanism with the copy() and
+> > >> fill_silence() callbacks for both capturing and playback for the
+> > >> virtio-sound driver. This change is required to prevent the updating of
+> > >> the content of a buffer that is already in the available ring.
+> > >> 
+> > >> The current mechanism splits a dma buffer into descriptors that are
+> > >> exposed to the device. This dma buffer is shared with the user
+> > >> application. When the device consumes a buffer, the driver moves the
+> > >> request from the used ring to available ring.
+> > >> 
+> > >> The driver exposes the buffer to the device without knowing if the
+> > >> content has been updated from the user. The section 2.8.21.1 of the
+> > >> virtio spec states that: "The device MAY access the descriptor chains
+> > >> the driver created and the memory they refer to immediately". If the
+> > >> device picks up buffers from the available ring just after it is
+> > >> notified, it happens that the content may be old.
+> > >> 
+> > >> By providing the copy() callback, the driver first updates the content
+> > >> of the buffer, and then, exposes the buffer to the device by enqueuing
+> > >> it in the available ring. Thus, device always picks up a buffer that is
+> > >> updated. During copy(), the number of requests enqueued depends on the
+> > >> "pos" and "bytes" arguments. The length of each request is period_size
+> > >> bytes.
+> > >> 
+> > >> For capturing, the driver starts by exposing all the available buffers
+> > >> to device. After device updates the content of a buffer, it enqueues it
+> > >> in the used ring. It is only after the copy() for capturing is issued
+> > >> that the driver re-enqueues the buffer in the available ring.
+> > >> 
+> > >> Co-developed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> > >> Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+> > >> ---
+> > >> Changelog:
+> > >> v1 -> v2:
+> > >>   * Use snd_pcm_set_managed_buffer_all()for buffer allocation/freeing.
+> > >>   * Make virtsnd_pcm_msg_send() generic by specifying the offset and size
+> > >>     for the modified part of the buffer; this way no assumptions need to
+> > >>     be made.
+> > >>   * Disable SNDRV_PCM_INFO_NO_REWINDS since now only sequential
+> > >>     reading/writing of frames is supported.
+> > >>   * Correct comment at virtsnd_pcm_msg_send().
+> > >>   * v1 patch at:
+> > >>     https://ddec1-0-en-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=https%3a%2f%2flore.kernel.org%2flkml%2f20231016151000.GE119987%40fedora%2ft%2f&umid=2f305b77-83e7-47b6-a461-a8ca67d0bfe2&auth=53c7c7de28b92dfd96e93d9dd61a23e634d2fbec-2d5775265e7e1741ae8eb783a3cb78ed553093c1
+> > >> 
+> > >>   sound/virtio/virtio_pcm.c     |  7 ++-
+> > >>   sound/virtio/virtio_pcm.h     |  9 ++--
+> > >>   sound/virtio/virtio_pcm_msg.c | 93 ++++++++++++++++++++++-------------
+> > >>   sound/virtio/virtio_pcm_ops.c | 81 +++++++++++++++++++++++++-----
+> > >>   4 files changed, 137 insertions(+), 53 deletions(-)
+> > > 
+> > > Most of the code changes look good, but I wonder:
+> > > 
+> > >> 
+> > >> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
+> > >> index c10d91fff2fb..66d67eef1bcc 100644
+> > >> --- a/sound/virtio/virtio_pcm.c
+> > >> +++ b/sound/virtio/virtio_pcm.c
+> > >> @@ -104,12 +104,11 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+> > >>   	 * only message-based transport.
+> > >>   	 */
+> > >>   	vss->hw.info =
+> > >> -		SNDRV_PCM_INFO_MMAP |
+> > >> -		SNDRV_PCM_INFO_MMAP_VALID |
+> > > 
+> > > Do we need the removal of those MMAP features inevitably?
+> > > Usually mmap can still work even if the driver implements the copy
+> > > ops.  Those aren't always mutual exclusive.
+> > 
+> > The driver uses a message queue to communicate with the device. Thus,
+> > the audio buffer is sliced into several I/O requests (= number of
+> > periods) of the same size (= period size).
+> > 
+> > Before this, all such requests were enqueued when the substream started,
+> > and immediately re-enqueued once the request is completed. This approach
+> > made it possible to add mmap support. But for mmap there are no explicit
+> > notifications from the application how many frames were written or read.
+> > Thus, it was assumed that the virtual device should read/write frames to
+> > requests based on timings. And there are some problems here:
+> > 
+> >   1. This was found to violate the virtio specification: if a request is
+> >      already in the queue, the device can safely read/write there at any
+> >      time.
+> >   2. It looks like this breaks the use case with swiotlb. Personally I'm
+> >      not sure how the application handles DMA ownership in the case of
+> >      mmaped buffer.
+> > 
+> > To correctly implement mmap support, instead of transferring data via a
+> > message queue, the driver and device must have a shared memory region.
+> > We can add mmap in the future when we expand the functionality of the
+> > device to support such shared memory.
+> 
+> Ah, then this implementation might be an overkill.  You're still using
+> the (intermediate) vmalloc buffer allocated via PCM managed mode, and
+> the actual data is copied from/to there.  So it doesn't conflict with
+> the mmap operation at all.
+> 
+> I guess that the problem you're trying to solve (the immediate data
+> transfer to the queue) can be implemented rather via PCM ack callback
+> instead.  ALSA PCM core notifies the possible data transfer via PCM
+> ack callback right after each change of appl_ptr or hw_ptr, including
+> each read/write op or mmap commit.  Then the driver can check the
+> change of appl_ptr (or hw_ptr for capture), fetch the newly available
+> data, and queue it immediately.
+> 
+> Usually together with the use of ack callback, the driver sets
+> SNDRV_PCM_INFO_SYNC_APPLPTR flag.  This prevents the mmap of the PCM
+> control record (not the audio data) and enforces the use of
+> SNDRV_PCM_IOCTL_SYNC_PTR ioctl instead (so that the driver always gets
+> the ack callback).
+> 
+> 
 
-On 10/20/2023 2:02 PM, Johan Hovold wrote:
-> On Sat, Oct 07, 2023 at 09:17:57PM +0530, Krishna Kurapati wrote:
->> Currently host-only capable DWC3 controllers support Multiport.
-> 
-> You use the word "currently" in a few places like this (e.g. in comments
-> in the code). What exactly do you mean? That all current multiport
-> controllers are host-only, or that this is all that the driver supports
-> after your changes?
-> 
-This means that, today the capable multiport controllers are host-only 
-capable, not that the driver is designed that way.
+Thanks for your comments. If I understand correctly, we have two
+options:
+1. Use copy/fill_silence callbacks and use my own buffers thus disabling
+mmap.
+2. Use mmap and the ack callback to track when appl_ptr changes thus
+moving the content to the queues after it has been updated.
 
-> Please rephrase accordingly throughout so that this becomes clear.
-> 
-> In any case it looks like the above sentence is at least missing an
-> "only".
->   
->> +static int dwc3_read_port_info(struct dwc3 *dwc)
->> +{
->> +	void __iomem *base;
->> +	u8 major_revision;
->> +	u32 offset = 0;
-> 
-> I'd move the initialisation just before the loop.
-> 
->> +	u32 val;
->> +
->> +	/*
->> +	 * Remap xHCI address space to access XHCI ext cap regs,
-> 
-> Drop comma and merge with next line and break it closer to 80 chars
-> (instead of 65).
-> 
->> +	 * since it is needed to get port info.
-> 
-> s/since it is needed to get/which hold the/?
-> 
->> +	 */
->> +	base = ioremap(dwc->xhci_resources[0].start,
->> +				resource_size(&dwc->xhci_resources[0]));
->> +	if (IS_ERR(base))
->> +		return PTR_ERR(base);
->> +
->> +	do {
->> +		offset = xhci_find_next_ext_cap(base, offset,
->> +				XHCI_EXT_CAPS_PROTOCOL);
->> +		if (!offset)
->> +			break;
->> +
->> +		val = readl(base + offset);
->> +		major_revision = XHCI_EXT_PORT_MAJOR(val);
->> +
->> +		val = readl(base + offset + 0x08);
->> +		if (major_revision == 0x03) {
->> +			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
->> +		} else if (major_revision <= 0x02) {
->> +			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
->> +		} else {
->> +			dev_err(dwc->dev,
-> 
-> This should be dev_warn() (as in the xhci driver) now that you no longer
-> treat it as a fatal error.
-> 
->> +				"Unrecognized port major revision %d\n",
-> 
-> Merge this with the previous line (even if it makes that line 83 chars).
-> 
-> Use a lower case 'U' for consistency with most of the error messages.
-> 
-Sure, will change this to dev_warn and modify the "u".
+Am I right? 
 
->> +							major_revision);
->> +		}
->> +	} while (1);
->> +
->> +	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
->> +			dwc->num_usb2_ports, dwc->num_usb3_ports);
->> +
->> +	iounmap(base);
->> +
->> +	return 0;
->> +}
->> +
->>   static int dwc3_probe(struct platform_device *pdev)
->>   {
->>   	struct device		*dev = &pdev->dev;
->> @@ -1846,6 +1892,7 @@ static int dwc3_probe(struct platform_device *pdev)
->>   	void __iomem		*regs;
->>   	struct dwc3		*dwc;
->>   	int			ret;
->> +	unsigned int		hw_mode;
+Thanks, Matias.
+
+> thanks,
 > 
-> Nit: I'd place this one before ret.
-> >>
->>   	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
->>   	if (!dwc)
->> @@ -1926,6 +1973,20 @@ static int dwc3_probe(struct platform_device *pdev)
->>   			goto err_disable_clks;
->>   	}
->>   
->> +	/*
->> +	 * Currently only DWC3 controllers that are host-only capable
->> +	 * support Multiport.
->> +	 */
+> Takashi
 > 
-> So is this is a limitation of the hardware or implementation?
+> 
+> > 
+> > 
+> > Best regards,
+> > 
+> > > 
+> > > 
+> > > thanks,
+> > > 
+> > > Takashi
+> > 
+> > -- 
+> > Anton Yakovlev
+> > Senior Software Engineer
+> > 
+> > OpenSynergy GmbH
+> > Rotherstr. 20, 10245 Berlin
+> > 
 > 
 
-This is how the hardware is implemented today. I wanted to convey that 
-"lets check for host-only condition before going for reading port info"
-
->> +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
->> +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
->> +		ret = dwc3_read_port_info(dwc);
->> +		if (ret)
->> +			goto err_disable_clks;
->> +	} else {
->> +		dwc->num_usb2_ports = 1;
->> +		dwc->num_usb3_ports = 1;
->> +	}
->> +
->>   	spin_lock_init(&dwc->lock);
->>   	mutex_init(&dwc->mutex);
-> 
-> Johan
-> 
