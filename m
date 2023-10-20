@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D877D11DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DD07D11BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377597AbjJTOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S1377547AbjJTOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377537AbjJTOvy (ORCPT
+        with ESMTP id S1377429AbjJTOnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:51:54 -0400
-X-Greylist: delayed 123 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 20 Oct 2023 07:51:51 PDT
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63409CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:51:50 -0700 (PDT)
+        Fri, 20 Oct 2023 10:43:47 -0400
+X-Greylist: delayed 138733 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 20 Oct 2023 07:43:43 PDT
+Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0187106
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1697813509;
-        bh=OfnmEDS6+/ExGqWRIUUR2lwCKkzZhCSYoiR9KU8upQ8=;
-        h=From:To:Subject:Date;
-        b=V/V62EYa4PnQ7YU9Mb3L7RGjHul0DRN7LsupW7oPzE+GZ8/+CgQIP43vK4DH5CGHr
-         g3Gmuyy/Mqt3pbVyhOGLM0dKSYKCo2526QJcYB7KHt48lU8Ipbe6L8GIDr3eWPPkvm
-         WDdXr0HvNt7+jaTdtY1rWF7cYelKYf8lyZUvioZo=
+        s=s201512; t=1697813021;
+        bh=K83F6SskCJLMqeCBk7w6O0CFlOxHTQk9Oh1VXwnu6bQ=;
+        h=From:To:Subject:Date:In-Reply-To:References;
+        b=ZUHL2clxRG+MPwnLwAlGNm+vCWDYPoYi4XesKmvDoPxKz54FcJMi+v6U9eIKLxNSx
+         RLkYZUY0okAmgsMYSgb+F9G0id4C7Bc8p93LblAEicfiM18hDd2ZhRQK5hLvFCc+NV
+         k4WuQmFX8eph8hbb6wSQ2bnnprVu24cDfHKRFKbo=
 Received: from rtoax.lan ([120.245.114.36])
         by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
         id AE3AEEEC; Fri, 20 Oct 2023 22:43:35 +0800
-X-QQ-mid: xmsmtpt1697813015thc297b1d
-Message-ID: <tencent_6C0CC401036E21982C88CB2615D357E5D107@qq.com>
-X-QQ-XMAILINFO: N+tZcXNNUKPOa4P5MySVBADLO7ozZCgckOnnuNah+YBv7r5dRXP8QodJ80UraB
-         j833jPGKo6vOKJoLzHhvNwin8OEXXZXVFGsfhHAeFYS1o/m4a7VWVoQFRlNlACY4VkyIh0JNCxGx
-         3eMgIvalZYNOPRDZ77UpxVu7XjVnuUiVDA5+6RmMgE88rOhwMRWWXqwYXjl0jJCVsP7J2Td/Yfkw
-         ud0i6i/3ooc2L5H0MfdbvUonR+39uNcJhUbXR8fSEZEY8/V6HJH2lGoNX6woYKP1KhQyHWZ0mIvl
-         Ht36aKywzpBUq7jO88zeaUjAge0crV4wcYGk9LZjOJztJ1y73SvBV0E6ifFT2//7gI8mhP9zrmw+
-         Ve0Nr+y/WBGL/Vyjlk60ACdfa36qYNH1+acoHti6DoeW3X2Kt80kwuLLFubmkuqm2uOZxsIYof3y
-         zkP83QWO/4jCIjBONXj7xUqSZPo9YTEzM/KUt3HZJql5S5AXztyfcLRH3+owBvnB7SUGYZq43eNY
-         cdCvfj9pMIjtKnzzZd7MB1lv2vy/w5u0knRCKSGJLZ4JeRkETIQYWjEe78lIhXAW5SLxxqkCftG9
-         FoHRJMQc26dwZyvEerHxGA8lKnKwArWczGo47WH+I1L6MIhfA+v0Fn7r4A4L7eHlwx4gu4HMWAcb
-         zb/cGDkf8Z5NjXUD+sI1hk/xEWaHiJITY0fHTyCAXt2i0bQK7LNoZ+We7++HSoPc55ItqVge0tx2
-         G6wiDWCUQbto06VC1UfScQ3Ly8ZFnTKE9ujNisRl4He+hCTkhEvi/cDWRX40FfiGSjKaqXWnLIWl
-         /4sfcimS8idmdqFbeCjFvpAm+u4itVw1lt2Du/NLYnUvythJ4pbqfLVRg1JZZkCmn7bZbtRV9Tu/
-         oO9lVN4vA1oyXx2PYA2sApWQ+LZN6ULOTkBi3QGVMpHAhz/s/hQE9nmA0vfXMtXqW1165KuR9ET+
-         NYNnyZf39h9AETx4UniT2Rs51wKGfoxPMlEtA8i3DiZNyKHgkj/AuynedizFttMjVDyW859AeQVk
-         pL9apdsw==
+X-QQ-mid: xmsmtpt1697813017tr3admgz9
+Message-ID: <tencent_49AFDBA31F885906234219591097D42ABE08@qq.com>
+X-QQ-XMAILINFO: MmpliBmRb3iCu0TFj/+Ks7ktWUvfayv2uurkgvqnyHovMHS0AUi4113gtu1fIz
+         odH7cfi7qgLWd9vSrZh4Xyvw3YXJrb+zou0eOojNscTk6JxHjBDllg070sKwdX0AcrOg+Lu/vF8j
+         1bx60T6nDJvETAde7g/zs7V9dcDelygJZQwIIu+eXb1Z0KDHUbh4f8avtWiGp3ZIChMU+dyCMzP0
+         M47McCn4SQURXb+xPDUqkusXnqGx/K9sO5Jq9bVJjv+ppiKia5yMrHGVF2PjZvnJZwjI7052a+Gn
+         PQU94362WzsBO7geGKIlD4tS8eNtjjDV5ZfR8vlofuIGR+b0/kIBaW4T9aCE5Z1OE90IlxmIBOMD
+         L5Z9aylWK9GY1+YNrsVHIoxQIhYXdXCnvSsxevnEh+9vanX1QwVpgbeQREo+ph8toilGhQQBlpB7
+         Sxm9GVZvC3PXRJRF/ISCG/8dAcrxvMKyBdD3H8dZcQkL0Rrgt6I89sMcBeMJo1NvngZaVEYkUGjf
+         2sluDofD8ibXe6IRv82F4JAyxh5MBdbjncy3wnltrEWGB/XfsrLe4qg22vqHU7UVYds46nsMqB8w
+         HS8Zt7SzQC1QPFcZJ8cLxC05kW8in7VQZK+wofBsm82mEftCM8IFYgFVt4epzfHLJKyaRDntFgkY
+         1I8b3730I5aaXdKomPdOW/EAFZHDzGIJoNYqBrWuIncD9PVYbfEjZsBpeRRfksfzeGjt/jVcbRVn
+         k72To2fWg6EHQkshHPBJAQ/vSVzaB7Yd7YoxPGFz8Pxql6X2HqFccMGI6XItw3HVsLdmTJxpApY5
+         M8tpiqXnBXM/PMZWUUEibiWaSYmVOdRU5Y7a+C+wP29r4NUP4zkiSOOMCe8mgHNb5oXx2g2LPO+/
+         TfrL2Rb0+y3cxAlhUnBFV2BcVYHTLY8HKoI9S/XBS0zX8Lrx13IXVcdznk/5tVMEwvRwizEldvjw
+         cdzJdk2MhK7Tpzh1TXzOV5CHMMyia4SJZh6LQIXTgDGh7KOf6uYYUzO8YRBT5UVpbUUCwVKFyYS2
+         GDMRAkJw==
 X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
 From:   Rong Tao <rtoax@foxmail.com>
 To:     mark.rutland@arm.com, elver@google.com,
         linux-kernel@vger.kernel.org, peterz@infradead.org,
         rongtao@cestc.cn, rtoax@foxmail.com, tglx@linutronix.de
-Subject: [PATCH 0/2] Clear multi_stop_data::state atom use
-Date:   Fri, 20 Oct 2023 22:43:32 +0800
-X-OQ-MSGID: <cover.1697811159.git.rongtao@cestc.cn>
+Subject: [PATCH 1/2] stop_machine: Use non-atomic read multi_stop_data::state clearly
+Date:   Fri, 20 Oct 2023 22:43:33 +0800
+X-OQ-MSGID: <ec679f9a9877849ee649da1b355f995e71d42737.1697811778.git.rongtao@cestc.cn>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1697811778.git.rongtao@cestc.cn>
+References: <cover.1697811778.git.rongtao@cestc.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,17 +68,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rong Tao <rongtao@cestc.cn>
 
-Clear multi_stop_data::state atomic use, which does not pose a risk of
-misreading multi_stop_data::state, and add comments to
-smp_store_release.
+commit b1fc58333575 ("stop_machine: Avoid potential race behaviour")
+solved the race behaviour problem, to better show that race behaviour
+does not exist, pass the 'curstate' directly to ack_state() instead of
+refetching msdata->state in ack_state().
 
-Rong Tao (2):
-  stop_machine: Use non-atomic read multi_stop_data::state clearly
-  stop_machine: Apply smp_store_release() to multi_stop_data::state
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ kernel/stop_machine.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- kernel/stop_machine.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
+diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+index cedb17ba158a..268c2e581698 100644
+--- a/kernel/stop_machine.c
++++ b/kernel/stop_machine.c
+@@ -188,10 +188,11 @@ static void set_state(struct multi_stop_data *msdata,
+ }
+ 
+ /* Last one to ack a state moves to the next state. */
+-static void ack_state(struct multi_stop_data *msdata)
++static void ack_state(struct multi_stop_data *msdata,
++		      enum multi_stop_state curstate)
+ {
+ 	if (atomic_dec_and_test(&msdata->thread_ack))
+-		set_state(msdata, msdata->state + 1);
++		set_state(msdata, curstate + 1);
+ }
+ 
+ notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
+@@ -242,7 +243,7 @@ static int multi_cpu_stop(void *data)
+ 			default:
+ 				break;
+ 			}
+-			ack_state(msdata);
++			ack_state(msdata, curstate);
+ 		} else if (curstate > MULTI_STOP_PREPARE) {
+ 			/*
+ 			 * At this stage all other CPUs we depend on must spin
 -- 
 2.41.0
 
