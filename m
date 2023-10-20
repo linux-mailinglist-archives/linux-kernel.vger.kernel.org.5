@@ -2,271 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5FD7D157E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681F37D1583
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377957AbjJTSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
+        id S1377988AbjJTSKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377925AbjJTSI7 (ORCPT
+        with ESMTP id S229839AbjJTSKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:08:59 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F643D5A
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:08:57 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7aa161b2fso14490627b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697825336; x=1698430136; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RDarGDP1RT+TJzzdOkpOOWFxKR5bBC0tLy2rKhn8u+E=;
-        b=jvDTw4y2oDqUcjrKw/wKn6IyuBofLwbYUs+HoHVg7GkHJ8CanFTRfDvvOFsHXVT2Lq
-         nogDFcPfJmlmfsjogxdZ6ZBrkzopeAUBwmhm0f/Pipw7aK6fwMy8EEjmVhHSaCQfzJB+
-         HzO/S4IffrXHIaMUmoIPs9rJwb6sno6bbDLlVErEfgTF6oy5wQ4riaB9nUEGNZlLJ7s7
-         uM5oWJdiwajbZUVaEqimYlFvtu+VRjy9p19Dk7av5JA9UYCAbJ+jJUhH9tcRuKIYpd4A
-         QDIIIRdQQhkrSEYEnhd90sm3z/THbnCgedCx3+OGDIXbXDDCZ91lNxutUaHEe7tLj4GY
-         0rXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697825336; x=1698430136;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RDarGDP1RT+TJzzdOkpOOWFxKR5bBC0tLy2rKhn8u+E=;
-        b=u8xo/wvAFe80G42Z5Gvv99Q5UKVKHjBXLfWTOQC++vGhcE2XrOYj+/tX7BjSs+G41h
-         q9vU216u2XMX5dhoExMilJV4tkjiatZr42k/1q5t4tb9ne+FF6WQGmuGMUXDA+GipZSc
-         fDLbiEL1QQPCmOPhg/A7XJegJ7jYMnrB03O8Uok/jeUZjvbs38l9Df1n9ScfJziHRG2l
-         +vYtFSyQ2jArOPjHJOU1D2vd6mlg8MRV4wdGl70duELA/DPDoG7F2FOvclfQ8mmFbQJ1
-         TSmo0OWT9srgro60PsL2TrjiXkiQMPPoF6DLOJuHbHayXixjKxofLzCaT3XTREyNq1Yp
-         r6Pg==
-X-Gm-Message-State: AOJu0YxyEIaHr3s+R1jae9MhUICpsTrbwXLmNcr6cKenROsL3fPtZ6bu
-        UohdC2oeqs12ZMR+pcXOyh88YOGUjBE=
-X-Google-Smtp-Source: AGHT+IEgWy41pC/eTi/gJfRGC3ZhDUWXjAXPp8I/V7gc3dlmhMC6N2x8SU2flh6zFey7F1gX8cPCtljTf8k=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:cac6:0:b0:5a7:b543:7f0c with SMTP id
- m189-20020a0dcac6000000b005a7b5437f0cmr65661ywd.10.1697825336424; Fri, 20 Oct
- 2023 11:08:56 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:08:55 -0700
-In-Reply-To: <20230911114347.85882-7-cloudliang@tencent.com>
-Mime-Version: 1.0
-References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-7-cloudliang@tencent.com>
-Message-ID: <ZTLCN8HW0jcD6LaN@google.com>
-Subject: Re: [PATCH v4 6/9] KVM: selftests: Test consistency of CPUID with num
- of gp counters
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 20 Oct 2023 14:10:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F2CD5B;
+        Fri, 20 Oct 2023 11:10:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 246B7C433C7;
+        Fri, 20 Oct 2023 18:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697825418;
+        bh=huzjkmkK3JHtkojgquf10gotpxcSpKfROn6Vk0s6UKs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bRDohqWWICIqD+Z8T215e+YaaQO0mjoV0/uko24CyEIoiY3zbZU/OOJoyJ+KOjS84
+         pi5kDcXXVRt3EknjnnUqbj1nGrgUqgBPKXfcha7pvQAmMAmei6RI6pMNqK45u22imc
+         HFUy/EG4LLNDNEVmHrOmp9V0eNPamwAKGTDx+6J1AIAhnrHVtZ0IYpZATlvFtbs0O4
+         VaS6wMo8qMF8giuRecyOp/UGQfuAwOWgZm4HJ1vSiD9oObvsoTkQigsC6UbsoRyRAl
+         90sozgQr4kv4ZCymqvTMB1wnmB1kIbcWSQv2ycEwU3zgyxsY/fPX6hrqLBUQneixBp
+         VOF+6tdepMS4A==
+Date:   Fri, 20 Oct 2023 23:40:08 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 1/5] PCI: endpoint: Add RC-to-EP doorbell support
+ using platform MSI controllery
+Message-ID: <20231020181008.GF46191@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <20230911220920.1817033-2-Frank.Li@nxp.com>
+ <20231017183722.GB137137@thinkpad>
+ <ZS7YvWSlkQluPtg3@lizhi-Precision-Tower-5810>
+ <20231019150441.GA7254@thinkpad>
+ <ZTFSlpnF41BDzyiX@lizhi-Precision-Tower-5810>
+ <20231019172347.GC7254@thinkpad>
+ <ZTFxSnpqfHtVR1JJ@lizhi-Precision-Tower-5810>
+ <20231020171215.GA46191@thinkpad>
+ <ZTLAJu64wL17wrPj@lizhi-Precision-Tower-5810>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTLAJu64wL17wrPj@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023, Jinrong Liang wrote:
-> From: Jinrong Liang <cloudliang@tencent.com>
+On Fri, Oct 20, 2023 at 02:00:06PM -0400, Frank Li wrote:
+> On Fri, Oct 20, 2023 at 10:42:15PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Oct 19, 2023 at 02:11:22PM -0400, Frank Li wrote:
+> > > On Thu, Oct 19, 2023 at 10:53:47PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Thu, Oct 19, 2023 at 12:00:22PM -0400, Frank Li wrote:
+> > > > > On Thu, Oct 19, 2023 at 08:34:41PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > On Tue, Oct 17, 2023 at 02:55:57PM -0400, Frank Li wrote:
+> > > > > > > On Wed, Oct 18, 2023 at 12:07:22AM +0530, Manivannan Sadhasivam wrote:
+> > > > > > > > On Mon, Sep 11, 2023 at 06:09:16PM -0400, Frank Li wrote:
+> > > > > > > > > This commit introduces a common method for sending messages from the Root
+> > > > > > > > > Complex (RC) to the Endpoint (EP) by utilizing the platform MSI interrupt
+> > > > > > > > > controller, such as ARM GIC, as an EP doorbell. Maps the memory assigned
+> > > > > > > > > for the BAR region by the PCI host to the message address of the platform
+> > > > > > > > > MSI interrupt controller in the PCI EP. As a result, when the PCI RC writes
+> > > > > > > > 
+> > > > > > > > "Doorbell feature is implemented by mapping the EP's MSI interrupt controller
+> > > > > > > > message address to a dedicated BAR in the EPC core. It is the responsibility
+> > > > > > > > of the EPF driver to pass the actual message data to be written by the host to
+> > > > > > > > the doorbell BAR region through its own logic."
+> > > > > > > > 
+> > > > > > > > > to the BAR region, it triggers an IRQ at the EP. This implementation serves
+> > > > > > > > > as a common method for all endpoint function drivers.
+> > > > > > > > > 
+> > > > > > > > > However, it currently supports only one EP physical function due to
+> > > > > > > > > limitations in ARM MSI/IMS readiness.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/pci/endpoint/pci-epc-core.c | 192 ++++++++++++++++++++++++++++
+> > > > > > > > >  drivers/pci/endpoint/pci-epf-core.c |  44 +++++++
+> > > > > > > > >  include/linux/pci-epc.h             |   6 +
+> > > > > > > > >  include/linux/pci-epf.h             |   7 +
+> > > > > > > > >  4 files changed, 249 insertions(+)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> > > > > > > > > index 5a4a8b0be6262..d336a99c6a94f 100644
+> > > > > > > > > --- a/drivers/pci/endpoint/pci-epc-core.c
+> > > > > > > > > +++ b/drivers/pci/endpoint/pci-epc-core.c
+> > > > > > > > > @@ -10,6 +10,7 @@
+> > > > > > > > >  #include <linux/slab.h>
+> > > > > > > > >  #include <linux/module.h>
+> > > > > > > > >  
+> > > > > > > > > +#include <linux/msi.h>
+> > > > > > > > >  #include <linux/pci-epc.h>
+> > > > > > > > >  #include <linux/pci-epf.h>
+> > > > > > > > >  #include <linux/pci-ep-cfs.h>
+> > > > > > > > > @@ -783,6 +784,197 @@ void pci_epc_bme_notify(struct pci_epc *epc)
+> > > > > > > > >  }
+> > > > > > > > >  EXPORT_SYMBOL_GPL(pci_epc_bme_notify);
+> > > > > > > > >  
+> > > > > > > > > +/**
+> > > > > > > > > + * pci_epc_alloc_doorbell() - alloc an address space to let RC trigger EP side IRQ by write data to
+> > > > > > > > > + *			      the space.
+> > > > > > > > 
+> > > > > > > > "Allocate platform specific doorbell IRQs to be used by the host to trigger
+> > > > > > > > doorbells on EP."
+> > > > > > > > 
+> > > > > > > > > + *
+> > > > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > > > > > 
+> > > > > > > > EPC device for which the doorbell needs to be allocated
+> > > > > > > > 
+> > > > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > > > > > + * @num_msgs: the total number of doorbell messages
+> > > > > > > > 
+> > > > > > > > s/num_msgs/num_db
+> > > > > > > > 
+> > > > > > > > > + *
+> > > > > > > > > + * Return: 0 success, other is failure
+> > > > > > > > > + */
+> > > > > > > > > +int pci_epc_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
+> > > > > > > > > +{
+> > > > > > > > > +	int ret;
+> > > > > > > > > +
+> > > > > > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +
+> > > > > > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +
+> > > > > > > > > +	if (!epc->ops->alloc_doorbell)
+> > > > > > > > > +		return 0;
+> > > > > > > > 
+> > > > > > > > You mentioned 0 is a success. So if there is no callback, you want to return
+> > > > > > > > success?
+> > > > > > > > 
+> > > > > > > > > +
+> > > > > > > > > +	mutex_lock(&epc->lock);
+> > > > > > > > > +	ret = epc->ops->alloc_doorbell(epc, func_no, vfunc_no, num_msgs);
+> > > > > > > > 
+> > > > > > > > Why can't you just call the generic function here and in other places instead of
+> > > > > > > > implementing callbacks? I do not see a necessity for EPC specific callbacks. If
+> > > > > > > > there is one, please specify.
+> > > > > > > 
+> > > > > > > 1. Refer v1 your comments.
+> > > > > > > https://lore.kernel.org/imx/20230906145227.GC5930@thinkpad/
+> > > > > > 
+> > > > > > I do not find where I suggested the callback approach.
+> > > > > 
+> > > > > 	> > > If that, Each EPF driver need do duplicate work. 
+> > > > > 	> > > 
+> > > > > 	> > 
+> > > > > 	> > Yes, and that's how it should be. EPF core has no job in supplying the of_node.
+> > > > > 	> > It is the responsibility of the EPF drivers as they depend on OF for platform
+> > > > > 	> > support.
+> > > > > 	> 
+> > > > > 	> EPF driver still not depend on OF. such pci-epf-test, which was probed by
+> > > > > 	> configfs.
+> > > > > 	> 
+> > > > > 
+> > > > > 	Hmm, yeah. Then it should be part of the EPC driver.
+> > > > > 
+> > > > > 	Sorry for the confusion.
+> > > > > 
+> > > > > Here, all "EPF" should be "EPC". The key problem is of_node. EPC core have
+> > > > > not of_node, EPC core's parent driver (like dwc-ep driver) have of_node. 
+> > > > > 
+> > > > > pci_epc_generic_alloc_doorbell(dev), dev is probed by platform driver, such
+> > > > > as dwc-ep, which have of_node,  EPC core will create child device.
+> > > > > 
+> > > > > dwc-ep device
+> > > > >  |- epc core device
+> > > > > 
+> > > > > we can direct call pci_epc_generic_alloc_doorbell(epc->parent) here.
+> > > > > 
+> > > > > I may miss understand what your means. I think you want to dwc-ep
+> > > > > (with of_node) handle these alloc functions. 
+> > > > > 
+> > > > 
+> > > > My comment was to have just one function definition. But looking at it again, I
+> > > > think it is better to move all the (alloc, free, write_msg) definitions to
+> > > > dwc-ep, since the contents of those functions are not EPC core specific.
+> > > 
+> > > There are still problem. (alloc, free, write_msg) is quite common for all
+> > > controller and the system with MSI.
+> > > 
+> > > If move these into dwc-ep,  cdns or other controller have to duplicate 
+> > > these codes.
+> > > 
+> > > If you think it is not EPC core specific, how about create new help files?
+> > > 
+> > 
+> > Hmm, that sounds good to me. I think the best place would be:
+> > drivers/pci/endpoint/pci-ep-msi.c
 > 
-> Add test to check if non-existent counters can be accessed in guest after
-> determining the number of Intel generic performance counters by CPUID.
-> When the num of counters is less than 3, KVM does not emulate #GP if
-> a counter isn't present due to compatibility MSR_P6_PERFCTRx handling.
-> Nor will the KVM emulate more counters than it can support.
+> How about header file?
 > 
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> ---
->  .../selftests/kvm/x86_64/pmu_counters_test.c  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
+> int pci_epc_generic_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs);     
+> void pci_epc_generic_free_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no);
 > 
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index fe9f38a3557e..e636323e202c 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -17,6 +17,11 @@
->  /* Guest payload for any performance counter counting */
->  #define NUM_BRANCHES		10
->  
-> +static const uint64_t perf_caps[] = {
-> +	0,
-> +	PMU_CAP_FW_WRITES,
-> +};
+> Is it in include/linux/pci-epc.h, just 2 lines.
+> 
 
-Put this on the stack in the one testcase that uses it.  Placing the array super
-far away from its use makes it unnecessarily difficult to see that the testcase
-is simply running with and without full-width writes.
+Sorry, I don't understand what you are suggesting. Can you elaborate?
 
->  static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
->  						  void *guest_code)
->  {
-> @@ -189,6 +194,85 @@ static void test_intel_arch_events(void)
->  	}
->  }
->  
-> +static void __guest_wrmsr_rdmsr(uint32_t counter_msr, uint8_t nr_msrs,
-> +				bool expect_gp)
+My suggestion was to place the function definitions in
+drivers/pci/endpoint/pci-ep-msi.c, create a separate header
+include/linux/pci-ep-msi.h and place the declarations there. The EPC drivers
+want to use generic MSI support should include this header.
 
-Rather than pass in "expect_gp", compute it in here.  It's easy enough to explicitly
-check for MSR_P6_PERFCTR[0|1]
+- Mani
 
-> +{
-> +	uint64_t msr_val;
-> +	uint8_t vector;
-> +
-> +	vector = wrmsr_safe(counter_msr + nr_msrs, 0xffff);
+> Frank
+> > 
+> > Reason is, we cannot have this generic code under drivers/pci/controller/ as it
+> > is not a standalone PCI controller but a platform MSI controller. So having it
+> > under pci/endpoint/ makes much sense to me.
+> > 
+> > And this is not specific to EPF drivers as well, so we cannot have it under
+> > pci/endpoint/functions/.
+> > 
+> > - Mani
+> > 
+> > > Frank
+> > > 
+> > > > 
+> > > > In the EPC core, you can still have the callbacks specific to each EPC. This
+> > > > also solves your of_node problem.
+> > > > 
+> > > > - Mani
+> > > > 
+> > > > > > 
+> > > > > > > 2. Maybe some ep controller have built-in doorbell support. Write to some
+> > > > > > > address to trigger doorbell irq.
+> > > > > > > 
+> > > > > > 
+> > > > > > We will handle it whenever such EP controllers arrive. Until then, let's keep it
+> > > > > > simple.
+> > > > > > 
+> > > > > > - Mani
+> > > > > > 
+> > > > > > > Frank
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > > +	mutex_unlock(&epc->lock);
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > > +}
+> > > > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_alloc_doorbell);
+> > > > > > > > > +
+> > > > > > > > > +/**
+> > > > > > > > > + * pci_epc_free_doorbell() - free resource allocated by pci_epc_alloc_doorbell()
+> > > > > > > > > + *
+> > > > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > > > > > 
+> > > > > > > > Same as above.
+> > > > > > > > 
+> > > > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > > > > > + *
+> > > > > > > > > + * Return: 0 success, other is failure
+> > > > > > > > > + */
+> > > > > > > > > +void pci_epc_free_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
+> > > > > > > > > +{
+> > > > > > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	if (!epc->ops->free_doorbell)
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	mutex_lock(&epc->lock);
+> > > > > > > > > +	epc->ops->free_doorbell(epc, func_no, vfunc_no);
+> > > > > > > > 
+> > > > > > > > Same as suggested above.
+> > > > > > > > 
+> > > > > > > > > +	mutex_unlock(&epc->lock);
+> > > > > > > > > +}
+> > > > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_free_doorbell);
+> > > > > > > > > +
+> > > > > > > > > +static irqreturn_t pci_epf_generic_doorbell_handler(int irq, void *data)
+> > > > > > > > > +{
+> > > > > > > > > +	struct pci_epf *epf = data;
+> > > > > > > > > +
+> > > > > > > > > +	if (epf->event_ops && epf->event_ops->doorbell)
+> > > > > > > > > +		epf->event_ops->doorbell(epf, irq - epf->virq_base);
+> > > > > > > > 
+> > > > > > > > Same as suggested above.
+> > > > > > > > 
+> > > > > > > > > +
+> > > > > > > > > +	return IRQ_HANDLED;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static void pci_epc_generic_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
+> > > > > > > > > +{
+> > > > > > > > > +	struct pci_epc *epc = NULL;
+> > > > > > > > > +	struct class_dev_iter iter;
+> > > > > > > > > +	struct pci_epf *epf;
+> > > > > > > > > +	struct device *dev;
+> > > > > > > > > +
+> > > > > > > > > +	class_dev_iter_init(&iter, pci_epc_class, NULL, NULL);
+> > > > > > > > > +	while ((dev = class_dev_iter_next(&iter))) {
+> > > > > > > > > +		if (dev->parent != desc->dev)
+> > > > > > > > > +			continue;
+> > > > > > > > > +
+> > > > > > > > > +		epc = to_pci_epc(dev);
+> > > > > > > > > +
+> > > > > > > > > +		class_dev_iter_exit(&iter);
+> > > > > > > > > +		break;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	if (!epc)
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	/* Only support one EPF for doorbell */
+> > > > > > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
+> > > > > > > > > +
+> > > > > > > > 
+> > > > > > > > No need of this newline
+> > > > > > > > 
+> > > > > > > > > +	if (!epf)
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	if (epf->msg && desc->msi_index < epf->num_msgs)
+> > > > > > > > > +		epf->msg[desc->msi_index] = *msg;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +
+> > > > > > > > 
+> > > > > > > > Remove extra newline
+> > > > > > > > 
+> > > > > > > > > +/**
+> > > > > > > > > + * pci_epc_generic_alloc_doorbell() - Common help function. Allocate address space from MSI
+> > > > > > > > > + *                                    controller
+> > > > > > > > > + *
+> > > > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
+> > > > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
+> > > > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
+> > > > > > > > > + * @num_msgs: the total number of doorbell messages
+> > > > > > > > > + *
+> > > > > > > > 
+> > > > > > > > Same comment as for pci_epc_alloc_doorbell()
+> > > > > > > > 
+> > > > > > > > > + * Remark: use this function only if EPC driver just register one EPC device.
+> > > > > > > > > + *
+> > > > > > > > > + * Return: 0 success, other is failure
+> > > > > > > > > + */
+> > > > > > > > > +int pci_epc_generic_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
+> > > > > > > > > +{
+> > > > > > > > > +	struct pci_epf *epf;
+> > > > > > > > > +	struct device *dev;
+> > > > > > > > > +	int virq, last;
+> > > > > > > > > +	int ret;
+> > > > > > > > > +	int i;
+> > > > > > > > > +
+> > > > > > > > > +	if (IS_ERR_OR_NULL(epc))
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +
+> > > > > > > > > +	/* Currently only support one func and one vfunc for doorbell */
+> > > > > > > > > +	if (func_no || vfunc_no)
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +
+> > > > > > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
+> > > > > > > > > +	if (!epf)
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +
+> > > > > > > > > +	dev = epc->dev.parent;
+> > > > > > > > > +	ret = platform_msi_domain_alloc_irqs(dev, num_msgs, pci_epc_generic_write_msi_msg);
+> > > > > > > > > +	if (ret) {
+> > > > > > > > > +		dev_err(dev, "Failed to allocate MSI\n");
+> > > > > > > > > +		return -ENOMEM;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	last = -1;
+> > > > > > > > > +	for (i = 0; i < num_msgs; i++) {
+> > > > > > > > 
+> > > > > > > > You should iterate over msi_desc as below:
+> > > > > > > > 
+> > > > > > > >         msi_lock_descs(dev);
+> > > > > > > >         msi_for_each_desc(desc, dev, MSI_DESC_ALL) {
+> > > > > > > > 		...
+> > > > > > > > 	}
+> > > > > > > > 	msi_unlock_descs(dev);
+> > > > > > > > 
+> > > > > > > > > +		virq = msi_get_virq(dev, i);
+> > > > > > > > > +		if (i == 0)
+> > > > > > > > > +			epf->virq_base = virq;
+> > > > > > > > > +
+> > > > > > > > > +		ret = request_irq(virq, pci_epf_generic_doorbell_handler, 0,
+> > > > > > > > 
+> > > > > > > > 	request_irq(desc->irq, ...)
+> > > > > > > > 
+> > > > > > > > > +				  kasprintf(GFP_KERNEL, "pci-epc-doorbell%d", i), epf);
+> > > > > > > > > +
+> > > > > > > > > +		if (ret) {
+> > > > > > > > > +			dev_err(dev, "Failed to request doorbell\n");
+> > > > > > > > > +			goto err_free_irq;
+> > > > > > > > > +		}
+> > > > > > > > > +		last = i;
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	return 0;
+> > > > > > > > > +
+> > > > > > > > > +err_free_irq:
+> > > > > > > > > +	for (i = 0; i < last; i++)
+> > > > > > > > > +		kfree(free_irq(epf->virq_base + i, epf));
+> > > > > > > > > +	platform_msi_domain_free_irqs(dev);
+> > > > > > > > > +
+> > > > > > > > > +	return -EINVAL;
+> > > > > > > > 
+> > > > > > > > 	return ret;
+> > > > > > > > 
+> > > > > > > > > +}
+> > > > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_generic_alloc_doorbell);
+> > > > > > > > > +
+> > > > > > > > 
+> > > > > > > > [...]
+> > > > > > > > 
+> > > > > > > > > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> > > > > > > > > index 3f44b6aec4770..485c146a5efe2 100644
+> > > > > > > > > --- a/include/linux/pci-epf.h
+> > > > > > > > > +++ b/include/linux/pci-epf.h
+> > > > > > > > > @@ -79,6 +79,7 @@ struct pci_epc_event_ops {
+> > > > > > > > >  	int (*link_up)(struct pci_epf *epf);
+> > > > > > > > >  	int (*link_down)(struct pci_epf *epf);
+> > > > > > > > >  	int (*bme)(struct pci_epf *epf);
+> > > > > > > > > +	int (*doorbell)(struct pci_epf *epf, int index);
+> > > > > > > > 
+> > > > > > > > kdoc missing.
+> > > > > > > > 
+> > > > > > > > >  };
+> > > > > > > > >  
+> > > > > > > > >  /**
+> > > > > > > > > @@ -180,6 +181,9 @@ struct pci_epf {
+> > > > > > > > >  	unsigned long		vfunction_num_map;
+> > > > > > > > >  	struct list_head	pci_vepf;
+> > > > > > > > >  	const struct pci_epc_event_ops *event_ops;
+> > > > > > > > > +	struct msi_msg *msg;
+> > > > > > > > > +	u16 num_msgs;
+> > > > > > > > 
+> > > > > > > > num_db
+> > > > > > > > 
+> > > > > > > > You also need to add kdoc for each new member.
+> > > > > > > > 
+> > > > > > > > - Mani
+> > > > > > > > 
+> > > > > > > > -- 
+> > > > > > > > மணிவண்ணன் சதாசிவம்
+> > > > > > 
+> > > > > > -- 
+> > > > > > மணிவண்ணன் சதாசிவம்
+> > > > 
+> > > > -- 
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-Doing all this work to test _one_ MSR at a time is silly.  And I see no reason
-to do only negative testing.  Sure, postive testing might be redundant with other
-tests (I truly don't know), but _not_ hardcoding one-off tests often ends up
-requiring less code, and almost always results in more self-documenting code.
-E.g. it took me far too much staring to understand why the "no #GP" case expects
-to read back '0'.
-
-> +	__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,
-> +		       "Expected GP_VECTOR");
-
-Print the actual vector!  And the MSR!  One of my pet peeves with KVM's tests is
-not providing information on failure.  Having to hack a test or do interactive
-debug just to figure out which MSR failed is *super* frustrating.
-
-And I think it's worth providing a macro to handle the assertion+message, that
-way it'll be easier to add more sub-tests, e.g. that the MSR can be written back
-to '0'.
-
-> +
-> +	vector = rdmsr_safe(counter_msr + nr_msrs, &msr_val);
-> +	__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,
-> +		       "Expected GP_VECTOR");
-> +
-> +	if (!expect_gp)
-> +		GUEST_ASSERT_EQ(msr_val, 0);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void guest_rd_wr_gp_counter(void)
-> +{
-> +	uint8_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
-> +	uint64_t perf_capabilities = rdmsr(MSR_IA32_PERF_CAPABILITIES);
-> +	uint32_t counter_msr;
-> +	bool expect_gp = true;
-> +
-> +	if (perf_capabilities & PMU_CAP_FW_WRITES) {
-> +		counter_msr = MSR_IA32_PMC0;
-> +	} else {
-> +		counter_msr = MSR_IA32_PERFCTR0;
-> +
-> +		/* KVM drops writes to MSR_P6_PERFCTR[0|1]. */
-> +		if (nr_gp_counters == 0)
-> +			expect_gp = false;
-> +	}
-> +
-> +	__guest_wrmsr_rdmsr(counter_msr, nr_gp_counters, expect_gp);
-> +}
-> +
-> +/* Access the first out-of-range counter register to trigger #GP */
-> +static void test_oob_gp_counter(uint8_t eax_gp_num, uint64_t perf_cap)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +
-> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_rd_wr_gp_counter);
-> +
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_NR_GP_COUNTERS,
-> +				eax_gp_num);
-> +	vcpu_set_msr(vcpu, MSR_IA32_PERF_CAPABILITIES, perf_cap);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +}
-> +
-> +static void test_intel_counters_num(void)
-> +{
-> +	uint8_t nr_gp_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
-> +	unsigned int i;
-> +
-> +	TEST_REQUIRE(nr_gp_counters > 2);
-
-This is beyond silly.  Just iterate over all possible counter values.  Again,
-hardcoding values is almost never the best way to do things.
-
-> +
-> +	for (i = 0; i < ARRAY_SIZE(perf_caps); i++) {
-> +		/*
-> +		 * For compatibility reasons, KVM does not emulate #GP
-> +		 * when MSR_P6_PERFCTR[0|1] is not present, but it doesn't
-> +		 * affect checking the presence of MSR_IA32_PMCx with #GP.
-> +		 */
-> +		test_oob_gp_counter(0, perf_caps[i]);
-> +		test_oob_gp_counter(2, perf_caps[i]);
-> +		test_oob_gp_counter(nr_gp_counters, perf_caps[i]);
-> +
-> +		/* KVM doesn't emulate more counters than it can support. */
-> +		test_oob_gp_counter(nr_gp_counters + 1, perf_caps[i]);
-
-Hmm, so I think we should avoid blindly testing undefined MSRs.  I don't disagree
-that expecting #GP is reasonable, but I don't think this is the right place to
-test for architecturally undefined MSRs.  E.g. if Intel defines some completely
-unrelated MSR at 0xc3 or 0x4c9 then this test will fail.
-
-Rather than assume anything about "nr_gp_counters + 1", I think we should test up
-to what Intel has architecturally defined, e.g. define the max number of counters
-and then pass that in as the "possible" counters:
-
-#define GUEST_ASSERT_PMC_MSR_ACCESS(insn, msr, expect_gp, vector)		\
-__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
-	       "Expected %s on " #insn "(0x%x), got vector %u",			\
-	       expect_gp ? "#GP" : "no fault", msr, vector)			\
-
-static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
-				 uint8_t nr_counters, uint32_t or_mask)
-{
-	uint8_t i;
-
-	for (i = 0; i < nr_possible_counters; i++) {
-		const uint32_t msr = base_msr + i;
-
-		/*
-		 * Fixed counters are supported if the counter is less than the
-		 * number of enumerated contiguous counters *or* the counter is
-		 * explicitly enumerated in the supported counters mask.
-		 */
-		const bool expect_success = i < nr_counters || (or_mask & BIT(i));
-
-		/*
-		 * KVM drops writes to MSR_P6_PERFCTR[0|1] if the counters are
-		 * unsupported, i.e. doesn't #GP and reads back '0'.
-		 */
-		const uint64_t expected_val = expect_success ? 0xffff : 0;
-		const bool expect_gp = !expect_success && msr != MSR_P6_PERFCTR0 &&
-				       msr != MSR_P6_PERFCTR1;
-		uint8_t vector;
-		uint64_t val;
-
-		vector = wrmsr_safe(msr, 0xffff);
-		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
-
-		vector = rdmsr_safe(msr, &val);
-		GUEST_ASSERT_PMC_MSR_ACCESS(RDMSR, msr, expect_gp, vector);
-
-		/* On #GP, the result of RDMSR is undefined. */
-		if (!expect_gp)
-			__GUEST_ASSERT(val == expected_val,
-				       "Expected RDMSR(0x%x) to yield 0x%lx, got 0x%lx",
-				       msr, expected_val, val);
-
-		vector = wrmsr_safe(msr, 0);
-		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
-	}
-}
+-- 
+மணிவண்ணன் சதாசிவம்
