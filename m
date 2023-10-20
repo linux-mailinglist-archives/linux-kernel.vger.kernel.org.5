@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA057D1140
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71F57D1143
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377516AbjJTOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
+        id S1377523AbjJTONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377419AbjJTOLv (ORCPT
+        with ESMTP id S1377419AbjJTONl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:11:51 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456F893
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1697811104; x=1698415904; i=efault@gmx.de;
-        bh=nmczSBI2pFFgwL6eKCEn0u5bcuiQ7coKuKAHrXHH3Ag=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
-         References;
-        b=XaVa51oGSBG0Qi/rS2iki0S1wle/NMdW7bV6ApC85XZCtq2OXZ7kC4RSPSZ6DECd
-         OorcViNzE/cmd3pmTtiL+PIJkHvPGxjjYIlR7RlncMUPAQBkM2LXOJ7rUr6fqmbdc
-         TdWs2pUptCzCfokxiLW98bnXrxKYMGVkVxiYF5IzlNt5k0MvvM+BUpc0fhHY+xwzF
-         BCtlsesqiPLHu5DgOmjLMJkO+ys4N3NEQoLjgw1bHAed6zR/+LkPjHLh/dYfrzXgu
-         ARW05SLnBKyjQL7XslQGyJp8LTDf0F57RBxNAyW88HUD68DttW+enFkP3Vk1VBN92
-         LATD52cMPvUuI6eTdg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.221.149.246]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYvcA-1qyMTo0H0i-00UoPd; Fri, 20
- Oct 2023 16:11:44 +0200
-Message-ID: <c6259a1824e570ddb7aaf114656aa387e028b76d.camel@gmx.de>
-Subject: Re: Runtime overhead of PREEMPT_DYNAMIC
-From:   Mike Galbraith <efault@gmx.de>
-To:     Emanuele Rocca <ema@debian.org>
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Date:   Fri, 20 Oct 2023 16:11:43 +0200
-In-Reply-To: <ZTKDWnLrSnPs9VUi@ariel>
-References: <ZTJFA_Ac6nWawIHb@ariel>
-         <7a818250a8f36476f13b57a172fdb1ab23645edc.camel@gmx.de>
-         <ZTKDWnLrSnPs9VUi@ariel>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Fri, 20 Oct 2023 10:13:41 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F6C1A8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:13:39 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c504a5e1deso14112881fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697811217; x=1698416017; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cHYdL6+h/KwcGSepRnbK+lQxAZl07VmP927iBVBWsTk=;
+        b=aDA093I6+wUOa2nTsnZMtjmUVGC3+m21rsklqWtMESuAcFm2BCIS8onba/i/9j07pW
+         M41MDxzMZ+89qWAMpfNXaLCy08ffpBJPGvyLDo0vErpJLrH3BDDXz2t9KMTXytJm7kyY
+         7zUxlVNQCUw8mzWabnl6GD29j1+E8XlWxgqBcQSqh9LpjY3R5KhcOvYd8aT/UrdvU0jn
+         ywJne3BUk9v9lBn8hoo77pasqgoeiP4vradjmbUND6+UECE2z3QixypkK8dtJrem9sOu
+         86AReeqd5RxerZn98OiKBVS2sEAVYO8p/swaQUuybsozO7PhEkDC9dcYO2LNGV4IFebr
+         SeAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697811217; x=1698416017;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cHYdL6+h/KwcGSepRnbK+lQxAZl07VmP927iBVBWsTk=;
+        b=avBooce7oVoenshc6r2ckYjtlGbFsWDpiLc3AWfF0sp4WEgIMM/AmFBRO7bXuhkyXD
+         4vq73/4VB3f0d7bhSX3de1B5Yp9Uvp86+aOmfMKxj3Zew2HsFSmO2k/qCXndcCIkk6fC
+         qrabPLOzIO1uKkC7yXFVb1k3hzLe243o9soU8VGMZjtDunMKieIs/gkjcgLovWy9N1Ox
+         x5FRlu0CoTz/9wK5xtq4kzr/1Epz++I1QPXPuaDhA6ECVd9lwVmP9KUgdFUpZnpYtDVK
+         EP1XBXcdYVA21M6flag/zQigIatneLhcBzyCCQg9O+tv54pYgzro9qL7NCBusJHBL2fO
+         03MA==
+X-Gm-Message-State: AOJu0YzQpBrIF8A8XdkHjL5bstOcf0/wn4pTHOs0vdMyRslrVEri5nUn
+        BABrOj4A/lEyMtVoFO0+DEU6GA==
+X-Google-Smtp-Source: AGHT+IH1LYjTguHo+MHaRdY/6I5NY/1iAzCe0zVXaxylTCz7I0h9K0wfoZx/8GaCPtGlTYREXSVw9Q==
+X-Received: by 2002:ac2:5456:0:b0:507:b074:ecd4 with SMTP id d22-20020ac25456000000b00507b074ecd4mr1394560lfn.7.1697811217367;
+        Fri, 20 Oct 2023 07:13:37 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id k12-20020adff5cc000000b00326f5d0ce0asm1783191wrp.21.2023.10.20.07.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 07:13:37 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 17:13:32 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Zach O'Keefe <zokeefe@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 1/2] mm/khugepaged: Fix an uninitialized variable bug
+Message-ID: <a1f3242f-1aae-4b46-9893-36b11ee0a6dd@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ya0oBRzIObLGOe+BtNukTIBsIM22KAKK56AC/28STBvj5o0sjAH
- kU7ZByjiaZs/uj0B485f5CLBFDUuvlwLertcIyx9tLOrEwYwYvROBnWqfRYKOY9abnPqubH
- vXvFaaWWr4ceUEb1+rvLdN36fhxhZVI8liw06134hJFEKQzn4MSZ5OODvxj/8srvod9KDzU
- cFctldGHKElu9ujrJ/K8Q==
-UI-OutboundReport: notjunk:1;M01:P0:PG8iyFXqxXY=;1rorWEGKij9QHcZ1P/dWlS8eYH5
- BhtDg68wCtjWS8PugD7f1tfba+wqoAT86C+hf8lV0hhhelHvQz44jil4cL6NbE8Ic7eJqRDpx
- HuixhhthHTg5Q0g2rH8pzxSkFvSdLmfCPJfx8pElILNiwmRpDdvKhN07zNCvFc6QbiQVhXWLY
- tahOzBekeqOyr3Ijwc+nEyDm0IvazvDjc5TKH6iwZVbUCm70XKA+hurmX9I0E7BVerQtFltBl
- nfc8Df9iMe9xh1ccl2zLZfAPoVnpYZW9ZDYSQcTR3Zu64WUdVPb2k+1Eji6Qg9tdqgc9AHCGL
- ETcM1kIa7e7ZhQucd6+yp7Mjof/JHQMMMbNR9a/DKCwzIFkOINVmuA3ElvadtGWBeGqe//lPL
- Yr+K/4HagPXtw6BSGfXkqluzVUp9hbHDGY0+QgMJ42fdPgEIIRVjMDm8ZGSGZJF5RFdoRTO3l
- wbAFszmI/9+hUjXahxwNs/15g5DEBmNQhHLl+MCce441VOmdIc9H8MsBn/SN+i8bQMteQxYBX
- zjul5UkoKZ9Fy4y72ASaMK3bQ9m/fjpBABobWCRuk0sv2mTH8+8tb5+QS+Ee+6fV1FKDcbvqh
- ficDPpx6sd23kcCfBkEytLtxwSowbx11RzcbcQyQBy1J3X7CLp3sx2/jM1tsFTWOMa8xMbUyv
- zM7PKZuVpNRG218T8Ty0t6UJ5Ck9/2wDeMmaNxFRSIfGJdvdS+xAXV9YiiG09PQmswdX5kd1J
- I2IUdbtXhVpNs1zkS2OdMTZVZR0+VoLeHKlAYoACTCbv4Ong8azMgJlmLvY3rPI3Q6e8plZfG
- 3lk1E5J7k6s2zMpvgDgtX+Or7ZJh2Yk91emkCTHRawvsO0/j02HaF/65Jqlq6sBicKFR31Mir
- CxaPcE6g9O8XQezPRVDew49co7YBo9+MfTcZUnlnDAIlJBgYWrm/FPwGWlNISFH1WJFoAXwA7
- pBKz75AoBKwSFo5aJ1QhDgO4TYE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-20 at 15:40 +0200, Emanuele Rocca wrote:
-> Hi Mike,
->
-> Here is the full diff between the kernel configurations I used. The only
-> change I made was setting CONFIG_PREEMPT_DYNAMIC=3Dn, everything else wa=
-s
-> a consequence of that AFAICT, but please do let me know if you see
-> anything that shouldn't be there.
->
-> --- config-6.5.0-0.preempt-dynamic-amd64=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A02023-10-11 15:30:02.000000000 +0200
-> +++ config-6.5.0-0.a.test-amd64=C2=A02023-10-11 14:30:02.000000000 +0200
->
-> @@ -10597,7 +10596,6 @@
-> =C2=A0# end of Scheduler Debugging
-> =C2=A0
-> =C2=A0# CONFIG_DEBUG_TIMEKEEPING is not set
-> -CONFIG_DEBUG_PREEMPT=3Dy
-> =C2=A0
-> =C2=A0#
-> =C2=A0# Lock Debugging (spinlocks, mutexes, etc...)
+Smatch complains that "hpage" can be used uninitialized:
 
-Seems you had also turned on DEBUG_PREEMPT in the dynamic setup, which
-adds some overhead.. but not a metric ton.
+    mm/khugepaged.c:1234 collapse_huge_page()
+    error: uninitialized symbol 'hpage'.
 
-	-Mike
+Initialized it on this path.
+
+Fixes: 50ad2f24b3b4 ("mm/khugepaged: propagate enum scan_result codes back to callers")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+From static analysis.  Not tested.
+
+ mm/khugepaged.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 0622f8a5175d..a25f5b7c3e7e 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1062,8 +1062,10 @@ static int alloc_charge_hpage(struct page **hpage, struct mm_struct *mm,
+ 	int node = hpage_collapse_find_target_node(cc);
+ 	struct folio *folio;
+ 
+-	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask))
++	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask)) {
++		*hpage = NULL;
+ 		return SCAN_ALLOC_HUGE_PAGE_FAIL;
++	}
+ 
+ 	if (unlikely(mem_cgroup_charge(folio, mm, gfp))) {
+ 		folio_put(folio);
+-- 
+2.42.0
+
