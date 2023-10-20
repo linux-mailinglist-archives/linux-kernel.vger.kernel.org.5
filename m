@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8C57D158B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524AB7D158F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377990AbjJTSM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S230117AbjJTSNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377957AbjJTSM1 (ORCPT
+        with ESMTP id S229604AbjJTSNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:12:27 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A674D5E;
-        Fri, 20 Oct 2023 11:12:25 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39KIC64N091271;
-        Fri, 20 Oct 2023 13:12:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697825526;
-        bh=O5tj34Fk5wcP36nJvs/VWBsQMe3mczk8/9535aCy8Cs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qH2lVI/DPwvFiAPkUgK0c3L8GzueZfyeV/J3s82kxt6ZcGOChVhj40p23ZHtGS5kY
-         HTS5HZMBw7F9u8cEN6jqzMwd0I4LL39Mva+RLS+0/F/X3GdYzrT2MJ+6f9mP0iwu8/
-         U0fAFQzL5x5YZ0/Ki1e6a+IupEx1BF8ZlIuZXNLY=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39KIC6E3095769
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Oct 2023 13:12:06 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 20
- Oct 2023 13:12:06 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 20 Oct 2023 13:12:05 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39KIC5JD078186;
-        Fri, 20 Oct 2023 13:12:06 -0500
-Date:   Fri, 20 Oct 2023 13:12:05 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Ravi Gunasekaran <r-gunasekaran@ti.com>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <rogerq@kernel.org>, <andrew@lunn.ch>,
-        <f.fainelli@gmail.com>, <horms@kernel.org>,
-        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <srk@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH net-next v2] net: ethernet: ti: davinci_mdio: Update K3
- SoCs list for errata i2329
-Message-ID: <20231020181205.7zfsfq3aue6dazp2@theme>
-References: <20231020111738.14671-1-r-gunasekaran@ti.com>
- <20231020122359.vwia7sxrcjyeo3ov@pushover>
- <2046f9ad-b5c2-bc42-03de-6254d6ed92d3@ti.com>
+        Fri, 20 Oct 2023 14:13:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F51DD5B;
+        Fri, 20 Oct 2023 11:13:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F76C433C8;
+        Fri, 20 Oct 2023 18:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697825609;
+        bh=wOR5O9YegoVKw4ww+kiBFNh2VRvivdmGmXTHFswo0y8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ohtghylusGZ935EjRwomKqdPUesyozWCBjsi60LQHc4ypSYGZzersCHunwDzY1YZE
+         QIRI5iMhZKdKFXQqXo2FKV/ikYfCt4k6Vq1LKUlSXqh+mJlGU2vEPU///LSwTemMjb
+         6CDba3ArYel5UBERl9jsKfJCWIu95FJO86jG+pEla0tH5MyXNjOPQSYPS4p0qKikbi
+         MbjC9RCSTxPuoOYpoZfa5Wzg9yKkHa1MFlm9XXARJ8R1b5j9mzTfDEDK0v5AqRss+Z
+         QC3egmArFh9AeIX+cZTwi/HA5JyJmEL6hGhgWbH45iq/c5GN8oUfv9GYXnx5xAGtaT
+         m78rkgscsUU6A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 52983CE059F; Fri, 20 Oct 2023 11:13:29 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:13:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
+ transformation and address deps
+Message-ID: <79233008-4be2-4442-9600-f9ac1a654312@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
+ <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
+ <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+ <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
+ <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
+ <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
+ <0bf4cda3-cc43-0e77-e47b-43e1402ed276@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2046f9ad-b5c2-bc42-03de-6254d6ed92d3@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+In-Reply-To: <0bf4cda3-cc43-0e77-e47b-43e1402ed276@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,87 +71,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:35-20231020, Ravi Gunasekaran wrote:
+On Fri, Oct 20, 2023 at 06:00:19PM +0200, Jonas Oberhauser wrote:
 > 
+> Am 10/20/2023 um 3:57 PM schrieb Paul E. McKenney:
+> > On Fri, Oct 20, 2023 at 11:29:24AM +0200, Jonas Oberhauser wrote:
+> > > Am 10/19/2023 um 6:39 PM schrieb Paul E. McKenney:
+> > > > On Wed, Oct 18, 2023 at 12:11:58PM +0200, Jonas Oberhauser wrote:
+> > > > > Hi Paul,
+> > > > > [...]
+> > > > The compiler is forbidden from inventing pointer comparisons.
+> > > TIL :) Btw, do you remember a discussion where this is clarified? A quick
+> > > search didn't turn up anything.
+> > This was a verbal discussion with Richard Smith at the 2020 C++ Standards
+> > Committee meeting in Prague.  I honestly do not know what standardese
+> > supports this.
 > 
-> On 10/20/2023 5:53 PM, Nishanth Menon wrote:
-> > On 16:47-20231020, Ravi Gunasekaran wrote:
-> >> The errata i2329 affects certain K3 SoC versions. The k3-socinfo.c
-> >> driver generates the revision string for different variants of the
-> >> same SoC in an incremental fashion. This is not true for all SoCs.
-> >> An example case being J721E, for which the actual silicon revision
-> >> names are 1.0, 1.1 for its variants, while the k3-socinfo.c driver
-> >> interprets these variants as revisions 1.0, 2.0 respectively,
-> >> which is incorrect.
-> >>
-> >> While the work to fixup the silicon revision string is posted
-> >> to the soc tree, this patch serves as a fail-safe step by maintaining
-> >> a list of correct and incorrect revision strings, so that the fixup
-> >> work does not break the errata workaround for such corrected SoCs.
-> >>
-> >> The silicon revisions affected by the errata i2329 can be found under
-> >> the MDIO module in the "Advisories by Modules" section of each
-> >> SoC errata document listed below
-> >>
-> >> AM62x: https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
-> >> AM64X: https://www.ti.com/lit/er/sprz457g/sprz457g.pdf
-> >> AM65X: https://www.ti.com/lit/er/sprz452i/sprz452i.pdf
-> >> J7200: https://www.ti.com/lit/er/sprz491d/sprz491d.pdf
-> >> J721E: https://www.ti.com/lit/er/sprz455d/sprz455d.pdf
-> >> J721S2: https://www.ti.com/lit/er/sprz530b/sprz530b.pdf
-> >>
-> >> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
-> >> ---
-> >>
-> >> Changes since v1:
-> >> * For J721E, retained the incorrect SR ID and added the correct one
-> >> * Add AM65x SR2.1 to the workaround list
-> >>
-> >> v1: https://lore.kernel.org/all/20231018140009.1725-1-r-gunasekaran@ti.com/
-> >>
-> >>  drivers/net/ethernet/ti/davinci_mdio.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/drivers/net/ethernet/ti/davinci_mdio.c b/drivers/net/ethernet/ti/davinci_mdio.c
-> >> index 628c87dc1d28..25aaef502edc 100644
-> >> --- a/drivers/net/ethernet/ti/davinci_mdio.c
-> >> +++ b/drivers/net/ethernet/ti/davinci_mdio.c
-> >> @@ -516,9 +516,11 @@ static const struct soc_device_attribute k3_mdio_socinfo[] = {
-> >>  	{ .family = "AM64X", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "AM65X", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "AM65X", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> >> +	{ .family = "AM65X", .revision = "SR2.1", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "J7200", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "J7200", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "J721E", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> >> +	{ .family = "J721E", .revision = "SR1.1", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "J721E", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> >>  	{ .family = "J721S2", .revision = "SR1.0", .data = &am65_mdio_soc_data},
-> >>  	{ /* sentinel */ },
-> >>
-> > Looks like every device is impacted -> so, why not just flip the
-> > logic to indicate devices that are NOT impacted? is'nt that a smaller
-> > list?
-> >
-> 
-> At the moment, the list of unaffected devices is small. But as and when we
-> introduce more devices,
-> this list will need update. Also I feel that few years down the line, when
-> someone looks at the code,
-> a list of affected devices provides a better context as it is easier to trace it
-> back to the errata document.
+> Then this e-mail thread shall be my evidence for future discussion.
 
-Just handle it with a different compatible if needed. There is no loss
-of readability as the check is still readable based on soc_data. but
-this removes this entire mess of interdependency of merges completely
-out. There are still ROM only spins that are happening and as far as I
-see this mess just keeps growing. Alternatively, reading some IP level
-version register helps detect the fixed versions, uses that (infact
-you should probably insist to the design team to update the revision
-for the fix for this very purpose) - that way, the ones that may have
-been missed could be limited by soc_data management.
+I am sure that Richard will be delighted, especially given that he
+did not seem at all happy with this don't-invent-pointer-comparisons
+rule.  ;-)
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> > > > > Best wishes,
+> > > > > 
+> > > > > jonas
+> > > > > 
+> > > > > Am 10/6/2023 um 6:39 PM schrieb Jonas Oberhauser:
+> > > > > > Hi Paul,
+> > > > > > 
+> > > > > > The "more up-to-date information" makes it sound like (some of) the
+> > > > > > information in this section is out-of-date/no longer valid.
+> > > > The old smp_read_barrier_depends() that these section cover really
+> > > > does no longer exist.
+> > > 
+> > > (and the parts that are still there are all still relevant, while the parts
+> > > that only the authors know was intended to be there and is out-of-date is
+> > > already gone).
+> > The question is instead what parts that are still relevant are missing
+> > from rcu_dereference.rst.
+> > 
+> > > So I would add a disclaimer specifying that (since 4.15) *all* marked
+> > > accesses imply read dependency barriers which resolve most of the issues
+> > > mentioned in the remainder of the article.
+> > > However, some issues remain because the dependencies that are preserved by
+> > > such barriers are just *semantic* dependencies, and readers should check
+> > > rcu_dereference.rst for examples of what that implies.
+> > Or maybe it is now time to remove those sections from memory-barriers.txt,
+> > leaving only the first section's pointer to rcu_dereference.rst.
+> 
+> That would also make sense to me.
+> 
+> > It still feels a bit early to me, and I am still trying to figure out
+> > why you care so much about these sections.  ;-)
+> 
+> I honestly don't care about the sections themselves, but I do care about 1)
+> address dependency ordering and 2) not confusing people more than necessary.
+> IMHO the sections right now are more confusing than necessary.
+> As I said before, I think they should clarify what exactly is historical in
+> a short sentence. E.g.
+> 
+>  (2) Address-dependency barriers (historical).
+>      [!] This section is marked as HISTORICAL: it covers the obsolete barrier
+>      smp_read_barrier_depends(), the semantics of which is now implicit in all
+>      marked accesses. For more up-to-date information, including how compiler
+>      transformations related to pointer comparisons can sometimes cause problems,
+>      see Documentation/RCU/rcu_dereference.rst.
+> 
+> I think this tiny rewrite makes it much more clear. Specifically it tells *why* the text is historical (and why we maybe don't need to read it anymore).
+
+Good point!  I reworked this a bit and added it to both HISTORICAL
+sections, with your Suggested-by.
+
+> Btw, when I raised my concerns about what should be there I didn't mean to imply those points are missing, just trying to sketch what the paragraph should look like in my opinion.
+> The paragraphs you are adding already had several of those points.
+
+Very good, but I did have to ask.  It wouldn't be the first time that
+I left something out.  ;-)
+
+> > > > The longer-term direction, perhaps a few years from now, is for the
+> > > > first section to simply reference rcu_dereference.rst and for the second
+> > > > section to be removed completely.
+> > > Sounds good to me, but that doesn't mean we need to compromise the
+> > > readability in the interim :)
+> > Some compromise is needed for people that read the document some time
+> > back and are looking for something specific.
+> 
+> Yes. But the compromise should be "there's a blob of text other people don't
+> need to read", not "there's a blob of text that will leave other people
+> confused".
+
+Fair enough in general, but I cannot promise to never confuse people.
+This is after all memory ordering.  And different people will be confused
+by different things.
+
+But I do very much like your suggested clarification.  Please let me
+know if I messed anything up in the translation.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 566c71eee55b26ece5855ebbee6f8762495d78f7
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Oct 20 11:04:27 2023 -0700
+
+    doc: Clarify historical disclaimers in memory-barriers.txt
+    
+    This commit makes it clear that the reason that these sections are
+    historical is that smp_read_barrier_depends() is no more.  It also
+    removes the point about comparison operations, given that there are
+    other optimizations that can break address dependencies.
+    
+    Suggested-by: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Alan Stern <stern@rowland.harvard.edu>
+    Cc: Andrea Parri <parri.andrea@gmail.com>
+    Cc: Will Deacon <will@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Boqun Feng <boqun.feng@gmail.com>
+    Cc: Nicholas Piggin <npiggin@gmail.com>
+    Cc: David Howells <dhowells@redhat.com>
+    Cc: Jade Alglave <j.alglave@ucl.ac.uk>
+    Cc: Luc Maranget <luc.maranget@inria.fr>
+    Cc: Akira Yokosawa <akiyks@gmail.com>
+    Cc: Daniel Lustig <dlustig@nvidia.com>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Cc: Jonathan Corbet <corbet@lwn.net>
+    Cc: <linux-arch@vger.kernel.org>
+    Cc: <linux-doc@vger.kernel.org>
+
+diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+index d414e145f912..4202174a6262 100644
+--- a/Documentation/memory-barriers.txt
++++ b/Documentation/memory-barriers.txt
+@@ -396,10 +396,11 @@ Memory barriers come in four basic varieties:
+ 
+ 
+  (2) Address-dependency barriers (historical).
+-     [!] This section is marked as HISTORICAL: For more up-to-date
+-     information, including how compiler transformations related to pointer
+-     comparisons can sometimes cause problems, see
+-     Documentation/RCU/rcu_dereference.rst.
++     [!] This section is marked as HISTORICAL: it covers the long-obsolete
++     smp_read_barrier_depends() macro, the semantics of which are now
++     implicit in all marked accesses.  For more up-to-date information,
++     including how compiler transformations can sometimes break address
++     dependencies, see Documentation/RCU/rcu_dereference.rst.
+ 
+      An address-dependency barrier is a weaker form of read barrier.  In the
+      case where two loads are performed such that the second depends on the
+@@ -560,9 +561,11 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
+ 
+ ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
+ ----------------------------------------
+-[!] This section is marked as HISTORICAL: For more up-to-date information,
+-including how compiler transformations related to pointer comparisons can
+-sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
++[!] This section is marked as HISTORICAL: it covers the long-obsolete
++smp_read_barrier_depends() macro, the semantics of which are now implicit
++in all marked accesses.  For more up-to-date information, including
++how compiler transformations can sometimes break address dependencies,
++see Documentation/RCU/rcu_dereference.rst.
+ 
+ As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
+ DEC Alpha, which means that about the only people who need to pay attention
