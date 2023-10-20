@@ -2,315 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6DC7D1576
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5FD7D157E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377988AbjJTSHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S1377957AbjJTSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377925AbjJTSHR (ORCPT
+        with ESMTP id S1377925AbjJTSI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:07:17 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2053.outbound.protection.outlook.com [40.107.20.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BF4D55;
-        Fri, 20 Oct 2023 11:07:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZSEPasjWStYQGD/2ebHKey4HpwSGapIHaKkd8VhJ4uDydR06XNgjwezHLsHJOjNFQXz+iUTCuRIzY2pR547dB+tqvETNB2EHJhlVv7S8KcQ6FiQxSLC0cSTVCpiGaE6f9uE+VTov7L9ZVNwL1g9ryCZGWmdbWDIuwzhZq34lcKng+zMEITY0y/8Kk7XNd099QZe2HzJM7D12p2xGyHg69olVBUc/mHyACSRtxN6/sPUgSE/XjQ8VRGhrxaADSj5YGmZFJDLj/eK/nmfFnK/+NQr6Ow0Ja8FnS/lBhso/dUPbp4Ukb/bU4gvvUugPxYEds/kvZwvDq2R1MdOVyti1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U+Tb430DUqMq2dqUXX7UUIMkGDZWLbNdqgMJvB/K3Uo=;
- b=BP0HioeKXmI4qhq0MmT4GA+x5cPmKYC72Ul1c38dq6ALASOKMaUsicchSWOiVMeFqy3rE6xHrUuz5e9Nf0ath/vWwLp6vomfWdxAreVXXPLj3xLVScfqRA2nCN+tehMA1+62uImmfAijMxv2np1dlURWYfxHnuNFiIEErMD+5D6wjcDXrVosNoZ9ol94CJGYgmiZhNBs2BEaI7CnihkX2CNuD4dHcaYL23EicZlav5M/QtB+/OJyTJwxQeNQa4XUzF0Hsp8x4r0AzOJxv13TOLU8sSXm+ZXMT+P1RM3Cgnz2Ovr8/QCEesIzVEtNUV18LGJG4pgaJT6Ap/PVImqc0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U+Tb430DUqMq2dqUXX7UUIMkGDZWLbNdqgMJvB/K3Uo=;
- b=RedjjzEXdHENl/tbPRCXkyVQ6OTmjrdigxtqvWCusziIzkmPuR3mhXumjP47zapODJQ1MpEbpPd/0pwhHXLtktD2HpMPZJXDrzpdCWvHeWayoLrvhuIR3q5ApnzTltC9Nm5xergVMuBofu49ht/ZA0iZOYNXbNf8jjsAPddVXMU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM8PR04MB7729.eurprd04.prod.outlook.com (2603:10a6:20b:24c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.10; Fri, 20 Oct
- 2023 18:07:12 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
- 18:07:11 +0000
-Date:   Fri, 20 Oct 2023 14:07:02 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
-        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 4/5] misc: pci_endpoint_test: Add doorbell test case
-Message-ID: <ZTLBxvM/qNGw/FLd@lizhi-Precision-Tower-5810>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-5-Frank.Li@nxp.com>
- <20231020175304.GC46191@thinkpad>
- <20231020180139.GE46191@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231020180139.GE46191@thinkpad>
-X-ClientProxiedBy: SJ0PR05CA0066.namprd05.prod.outlook.com
- (2603:10b6:a03:332::11) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM8PR04MB7729:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc2bc133-4d72-4d3a-0822-08dbd19761ea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nmyfmsZUtBp6VQvvbC1a8xVspif4b++ZSZ04PkHWsRNnXuSyCxDvn0JfgRU4AWCnHpFlKV2AOYS7kILszjZi7DV0aaFTV87n7K1rLck2wFlAA8yqhMmm12trbRH4Y8dehMyH08AOmS+aYXmoLn0Yeb0THqYNnJFUxIYbKt37BxFHMcZDA5bsBSfwulqNPxaooeTWRRcWMXiBETFKX/I4NJoMsNP9z+iWy6w25fDplCSqIS1orfj7HpDStK9C/hSjEnMguJfeDMdcGBylxxqvPchlcWXc5hnerKwRgQm95NpKLRanAETAS4yhn8SzuxVSJ9hMBH5mcyWUjb+jxWFIoVPN4v2wG9IWGYPiimkX2kJr/cWJCvtH1SQ9lsOaZIgf3OQGcsoiJWjWllsZZ92XcYCcCnnApkNsYUI76MfnkjvwZLCkbj+TlbVohIQi8aoxeWZPV80PSAfzbu3397pP6HJtmQdq4pnNwzZvPdzSNbobqKfhHC8Un4JKpJyLEllLAIgjtyoXbgpogzBomeCngwRPXfXrW3dEk73RoEk/w6MwMq4nRFY67ZFOaLePVuO0KtsYH7pnPmc8V+d8BQDUs9Z06Ux9qCPMdB22C2ELHuozrCTKbUpYlHjPfLy7+Xn5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(366004)(39860400002)(136003)(376002)(396003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(33716001)(4326008)(86362001)(5660300002)(8936002)(8676002)(52116002)(6506007)(6512007)(9686003)(7416002)(2906002)(26005)(6666004)(38100700002)(316002)(66476007)(66946007)(66556008)(6916009)(478600001)(6486002)(38350700005)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z29OYTBkZkJYRjkwTDhYdzlhdVVWQVUzdkcwQ1dYdWFQbC9lZnd4OWgzNFpk?=
- =?utf-8?B?RXpoMVlTSVYwWnJva2tlU3pSR2hwQzdvY0d0T2pXand5c0l5Z3JGZjJ1RDFT?=
- =?utf-8?B?YnhaOWZZelRDMStVclZkd3k1WEpPZ0lVdEI0bmhnUVVBNWJIVnA4NzBuaDBT?=
- =?utf-8?B?TjJIclExRGtiWVJPcEJyY3Z6cDlNUjF5Rk1URC9Dc0FZUGdHalJXMkhTbXJz?=
- =?utf-8?B?UU42VmRwMmlQR0p4eUJ6SEZrUnJJUFoyczI0K3pLeUVhVHlwTkdFS3NkTGZY?=
- =?utf-8?B?WlkyWWxsRkpwcS9SdGJjWC9IS3lOSUU0UC9BZm9BYmJ1bjJSTE0xZ0F3Vytp?=
- =?utf-8?B?L0NBVHlhd2RzSlBBTkFRZzVaVTJDOTU0L1RvMDJLdEhrQnB1ekF6STlrdDFq?=
- =?utf-8?B?YVVIMGRDYVVUVkFaZmg4M0ZkcWM1NU5KWUlzSWhtZHhvOWlWZmNhb3lMWjQy?=
- =?utf-8?B?WEdYZTUvS3NxTGVRVlNpMlM5MHRXMjB1K0ZPVEJKUEY2ZWIxM3VxUWp6K1dR?=
- =?utf-8?B?MU5yOGpCMVpHVWoxcDVMSW5vSXgwSTFMQnJJNEs5eDR1SlBrRWJBRElSY3pQ?=
- =?utf-8?B?amlmS3JUaEYzQU52azVyZ0llTlJrdzk3Vk9GN25DK3hDdG5Dd3FPcU10SWU3?=
- =?utf-8?B?RHIwY1pwSWFuVU9TSGVWWHNycmFlcGpSWjlaNUlzYUl2ZnAvZkUvTTBmTUpq?=
- =?utf-8?B?ZWxpNHY3RzAxZkZNNFFuRlk3U2Q3d1lQNzUxOUdTaUQ4MlN3R2NsT2ZreGJ3?=
- =?utf-8?B?bzd0aEg3MkcxM1dDSW80Q1lPQ3BXeTRwNnhRMVBlRi8yNkJTQkFRK2pJaEpy?=
- =?utf-8?B?TjJRZ21zSkxmZTdPZmhiZ2ZYcjVRaGVNZmdFd3ZUaDcyeDlqQWtCUjl4Wk5X?=
- =?utf-8?B?cHNlb29KNmo5UC9ld0g1VHAzQWpMbGJBYXF1Um9uM2dHOVBZWXM4eUlzZS9J?=
- =?utf-8?B?VUdmNWJZV3ZuNHZEUHNaMmt3S0ZVOENwdFBoODVCUGNueE1VNGFVYzdqdXda?=
- =?utf-8?B?ZHVGZndlUGRkeU1lSlZMMFpyaWVTMXo5QjQzRnZjSjNyUkVZV1JxMk9odzY2?=
- =?utf-8?B?NUJrelAzYUF5NjVQd0lPWExCc3krU1ZOSWhiNnJjcW1aNlNvc0M3TWdKd0x6?=
- =?utf-8?B?dGNYVzJlK1NmdE9GbG9JMDl6MW5ZcUZVZEVLUFovbitFQjF5V3NmTkUvMzhr?=
- =?utf-8?B?aytlZnBuamdMRGI3eGJ6UlluQ1QyYTQvYmMrMFdkbkpHSzh4WGFnZTBRUjEv?=
- =?utf-8?B?Sy9oc1gzRkVtN1U4K1V6RVM4WkZmVFc2SGZaNGpZdlpPaERVQTR1L2Zjd3h4?=
- =?utf-8?B?TExTTkpWNFpiSmd2SkVRZHFPdDB6dGZGM1FTVDBKL2M4cFRMVWdCL3R4TUQ3?=
- =?utf-8?B?MzhvSjdlWkFuNUZlby9MMkwycjZ4T21iVUFhYW9ockRGYklTbmd4bmd1M2ZS?=
- =?utf-8?B?b0hGTkxlUXZkelNsWFJkbU93bldaaTFaajRyKzFUb3JadnNPTEZLVGFrcG5h?=
- =?utf-8?B?Uk9TWXUwMURVR3ZXU1BKeWMreDdZaThPUlpaUVpkK1VHTVE5VmxUSFYwWjZR?=
- =?utf-8?B?RmdsVGpHM1FuMjVyNTdpanJBTlFPTmVSUWZEcmpKVCtLNmlOdDUrSDRNRkwy?=
- =?utf-8?B?TXhHbDVVVVdXYXRuNUZWcFpHUHRkbHBQdFBIZXJWb2JBNGlDOHU0eENKanE5?=
- =?utf-8?B?c1dGaTlCL2M5NmcvNlNRdmJscDlXdzlLMWpvenNDanpORjc4TWMwQ1lkVUE4?=
- =?utf-8?B?RTZVSUY2SlQ3Zm9SMkxMWTZTcVllaXg3bVBpNkVEVFJFKzV2VjNCT282UTRM?=
- =?utf-8?B?REdDK0E1MmxFN1ZPYzZEdzlMeElOSy9DMmRpRjJvZXFIMlllanNhRHVYMnNP?=
- =?utf-8?B?bFl0TlllOTdnN1lxTC96eldyTDh2OTk0RVJGMjE1cUFuRVh1YUF2VDBHempl?=
- =?utf-8?B?bHRzS2RacXN0YlNXYTBXTVBVZkpjcndrTlBYUGlIS3MzNDFKYnpodmI0UjRT?=
- =?utf-8?B?YmpLMGI3NnhyRVJwYXVhelhrbnYzL1kvMFFqajJyWEdhU0lKQk85ZFlIaXZK?=
- =?utf-8?B?RkhORGs4d0ZLcTNKQjhIdTFZSUlVcUJGQjMzVG9yZDY2VmR2OVphejRUTXR0?=
- =?utf-8?Q?y903sefs3PQqox0R5lF0QQips?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc2bc133-4d72-4d3a-0822-08dbd19761ea
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 18:07:11.9151
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ERt1NdPLQIqqKNgJXHBsM+AiGnfh746pdKyxc5FJgGKQW2FAMxjsoYuBaE3OigKjEWnRXsukRkYp5WmyedRcJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7729
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 20 Oct 2023 14:08:59 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F643D5A
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:08:57 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7aa161b2fso14490627b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697825336; x=1698430136; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDarGDP1RT+TJzzdOkpOOWFxKR5bBC0tLy2rKhn8u+E=;
+        b=jvDTw4y2oDqUcjrKw/wKn6IyuBofLwbYUs+HoHVg7GkHJ8CanFTRfDvvOFsHXVT2Lq
+         nogDFcPfJmlmfsjogxdZ6ZBrkzopeAUBwmhm0f/Pipw7aK6fwMy8EEjmVhHSaCQfzJB+
+         HzO/S4IffrXHIaMUmoIPs9rJwb6sno6bbDLlVErEfgTF6oy5wQ4riaB9nUEGNZlLJ7s7
+         uM5oWJdiwajbZUVaEqimYlFvtu+VRjy9p19Dk7av5JA9UYCAbJ+jJUhH9tcRuKIYpd4A
+         QDIIIRdQQhkrSEYEnhd90sm3z/THbnCgedCx3+OGDIXbXDDCZ91lNxutUaHEe7tLj4GY
+         0rXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697825336; x=1698430136;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDarGDP1RT+TJzzdOkpOOWFxKR5bBC0tLy2rKhn8u+E=;
+        b=u8xo/wvAFe80G42Z5Gvv99Q5UKVKHjBXLfWTOQC++vGhcE2XrOYj+/tX7BjSs+G41h
+         q9vU216u2XMX5dhoExMilJV4tkjiatZr42k/1q5t4tb9ne+FF6WQGmuGMUXDA+GipZSc
+         fDLbiEL1QQPCmOPhg/A7XJegJ7jYMnrB03O8Uok/jeUZjvbs38l9Df1n9ScfJziHRG2l
+         +vYtFSyQ2jArOPjHJOU1D2vd6mlg8MRV4wdGl70duELA/DPDoG7F2FOvclfQ8mmFbQJ1
+         TSmo0OWT9srgro60PsL2TrjiXkiQMPPoF6DLOJuHbHayXixjKxofLzCaT3XTREyNq1Yp
+         r6Pg==
+X-Gm-Message-State: AOJu0YxyEIaHr3s+R1jae9MhUICpsTrbwXLmNcr6cKenROsL3fPtZ6bu
+        UohdC2oeqs12ZMR+pcXOyh88YOGUjBE=
+X-Google-Smtp-Source: AGHT+IEgWy41pC/eTi/gJfRGC3ZhDUWXjAXPp8I/V7gc3dlmhMC6N2x8SU2flh6zFey7F1gX8cPCtljTf8k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:cac6:0:b0:5a7:b543:7f0c with SMTP id
+ m189-20020a0dcac6000000b005a7b5437f0cmr65661ywd.10.1697825336424; Fri, 20 Oct
+ 2023 11:08:56 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:08:55 -0700
+In-Reply-To: <20230911114347.85882-7-cloudliang@tencent.com>
+Mime-Version: 1.0
+References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-7-cloudliang@tencent.com>
+Message-ID: <ZTLCN8HW0jcD6LaN@google.com>
+Subject: Re: [PATCH v4 6/9] KVM: selftests: Test consistency of CPUID with num
+ of gp counters
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 11:31:39PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Oct 20, 2023 at 11:23:04PM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Sep 11, 2023 at 06:09:19PM -0400, Frank Li wrote:
-> > > Using bit 0..7 of magic as version number in pci_endpoint_test struct to
-> > > support older driver versions. Save to 'version' field of struct
-> > > pci_endpoint_test to prevent reading non-existent address.
-> > > 
-> > 
-> > Since both drivers are in the kernel, I don't see a necessity to maintain
-> > compatibility. Does it make sense to load drivers of previous kernel revision
-> > with a new kernel?
-> > 
+On Mon, Sep 11, 2023, Jinrong Liang wrote:
+> From: Jinrong Liang <cloudliang@tencent.com>
 > 
-> Shoot... Sorry, I completely forgot that one is EP and another is host. Yes, we
-> do need to maintain compatibility.
+> Add test to check if non-existent counters can be accessed in guest after
+> determining the number of Intel generic performance counters by CPUID.
+> When the num of counters is less than 3, KVM does not emulate #GP if
+> a counter isn't present due to compatibility MSR_P6_PERFCTRx handling.
+> Nor will the KVM emulate more counters than it can support.
 > 
-> But can't we use the doorbell register contents to determine that?
+> Co-developed-by: Like Xu <likexu@tencent.com>
+> Signed-off-by: Like Xu <likexu@tencent.com>
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+>  .../selftests/kvm/x86_64/pmu_counters_test.c  | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> index fe9f38a3557e..e636323e202c 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> @@ -17,6 +17,11 @@
+>  /* Guest payload for any performance counter counting */
+>  #define NUM_BRANCHES		10
+>  
+> +static const uint64_t perf_caps[] = {
+> +	0,
+> +	PMU_CAP_FW_WRITES,
+> +};
 
-Doorbell register is not exist at old EP driver. If old EP driver register
-size is 64Byte,  doorbell register is 64 - 68.
+Put this on the stack in the one testcase that uses it.  Placing the array super
+far away from its use makes it unnecessarily difficult to see that the testcase
+is simply running with and without full-width writes.
 
-Read unexisted, or unmapped space will cause kernel dump or other side
-effects.
+>  static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
+>  						  void *guest_code)
+>  {
+> @@ -189,6 +194,85 @@ static void test_intel_arch_events(void)
+>  	}
+>  }
+>  
+> +static void __guest_wrmsr_rdmsr(uint32_t counter_msr, uint8_t nr_msrs,
+> +				bool expect_gp)
 
-Frank
+Rather than pass in "expect_gp", compute it in here.  It's easy enough to explicitly
+check for MSR_P6_PERFCTR[0|1]
 
-> 
-> - Mani
-> 
-> > > Add three registers: PCIE_ENDPOINT_TEST_DB_BAR, PCIE_ENDPOINT_TEST_DB_ADDR,
-> > > PCIE_ENDPOINT_TEST_DB_DATA.
-> > > 
-> > 
-> > This patch is not adding these registers and not this driver also. So this
-> > statement is wrong.
-> > 
-> > > Write data from PCI_ENDPOINT_TEST_DB_DATA to address from
-> > > PCI_ENDPOINT_TEST_DB_ADDR to trigger doorbell and wait for endpoint
-> > > feedback.
-> > > 
-> > 
-> > You can reuse a part of the commit description I suggested for previous patch.
-> > 
-> > Rest looks good to me.
-> > 
-> > - Mani
-> > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  drivers/misc/pci_endpoint_test.c | 48 ++++++++++++++++++++++++++++++++
-> > >  include/uapi/linux/pcitest.h     |  1 +
-> > >  2 files changed, 49 insertions(+)
-> > > 
-> > > diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-> > > index ed4d0ef5e5c31..ed0b025132d17 100644
-> > > --- a/drivers/misc/pci_endpoint_test.c
-> > > +++ b/drivers/misc/pci_endpoint_test.c
-> > > @@ -33,6 +33,8 @@
-> > >  #define IRQ_TYPE_MSIX				2
-> > >  
-> > >  #define PCI_ENDPOINT_TEST_MAGIC			0x0
-> > > +#define PCI_MAGIC_VERSION_MASK			GENMASK(7, 0)
-> > > +#define PCI_ENDPOINT_TEST_V1			0x1
-> > >  
-> > >  #define PCI_ENDPOINT_TEST_COMMAND		0x4
-> > >  #define COMMAND_RAISE_LEGACY_IRQ		BIT(0)
-> > > @@ -52,6 +54,7 @@
-> > >  #define STATUS_IRQ_RAISED			BIT(6)
-> > >  #define STATUS_SRC_ADDR_INVALID			BIT(7)
-> > >  #define STATUS_DST_ADDR_INVALID			BIT(8)
-> > > +#define STATUS_DOORBELL_SUCCESS			BIT(9)
-> > >  
-> > >  #define PCI_ENDPOINT_TEST_LOWER_SRC_ADDR	0x0c
-> > >  #define PCI_ENDPOINT_TEST_UPPER_SRC_ADDR	0x10
-> > > @@ -66,7 +69,12 @@
-> > >  #define PCI_ENDPOINT_TEST_IRQ_NUMBER		0x28
-> > >  
-> > >  #define PCI_ENDPOINT_TEST_FLAGS			0x2c
-> > > +#define PCI_ENDPOINT_TEST_DB_BAR		0x30
-> > > +#define PCI_ENDPOINT_TEST_DB_ADDR		0x34
-> > > +#define PCI_ENDPOINT_TEST_DB_DATA		0x38
-> > > +
-> > >  #define FLAG_USE_DMA				BIT(0)
-> > > +#define FLAG_SUPPORT_DOORBELL			BIT(1)
-> > >  
-> > >  #define PCI_DEVICE_ID_TI_AM654			0xb00c
-> > >  #define PCI_DEVICE_ID_TI_J7200			0xb00f
-> > > @@ -102,6 +110,7 @@ enum pci_barno {
-> > >  	BAR_3,
-> > >  	BAR_4,
-> > >  	BAR_5,
-> > > +	NO_BAR = -1,
-> > >  };
-> > >  
-> > >  struct pci_endpoint_test {
-> > > @@ -118,6 +127,7 @@ struct pci_endpoint_test {
-> > >  	enum pci_barno test_reg_bar;
-> > >  	size_t alignment;
-> > >  	const char *name;
-> > > +	u8 version;
-> > >  };
-> > >  
-> > >  struct pci_endpoint_test_data {
-> > > @@ -713,6 +723,38 @@ static bool pci_endpoint_test_set_irq(struct pci_endpoint_test *test,
-> > >  	return false;
-> > >  }
-> > >  
-> > > +static bool pci_endpoint_test_doorbell(struct pci_endpoint_test *test)
-> > > +{
-> > > +	enum pci_barno bar;
-> > > +	u32 data, status;
-> > > +	u32 addr;
-> > > +
-> > > +	if (test->version < PCI_ENDPOINT_TEST_V1)
-> > > +		return false;
-> > > +
-> > > +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
-> > > +	if (bar == NO_BAR)
-> > > +		return false;
-> > > +
-> > > +	data = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_DATA);
-> > > +	addr = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_ADDR);
-> > > +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
-> > > +
-> > > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_TYPE, irq_type);
-> > > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_NUMBER, 1);
-> > > +
-> > > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_STATUS, 0);
-> > > +	pci_endpoint_test_bar_writel(test, bar, addr, data);
-> > > +
-> > > +	wait_for_completion_timeout(&test->irq_raised, msecs_to_jiffies(1000));
-> > > +
-> > > +	status = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_STATUS);
-> > > +	if (status & STATUS_DOORBELL_SUCCESS)
-> > > +		return true;
-> > > +
-> > > +	return false;
-> > > +}
-> > > +
-> > >  static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
-> > >  				    unsigned long arg)
-> > >  {
-> > > @@ -760,6 +802,9 @@ static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
-> > >  	case PCITEST_CLEAR_IRQ:
-> > >  		ret = pci_endpoint_test_clear_irq(test);
-> > >  		break;
-> > > +	case PCITEST_DOORBELL:
-> > > +		ret = pci_endpoint_test_doorbell(test);
-> > > +		break;
-> > >  	}
-> > >  
-> > >  ret:
-> > > @@ -887,6 +932,9 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
-> > >  	misc_device->parent = &pdev->dev;
-> > >  	misc_device->fops = &pci_endpoint_test_fops;
-> > >  
-> > > +	test->version = FIELD_GET(PCI_MAGIC_VERSION_MASK,
-> > > +				  pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_MAGIC));
-> > > +
-> > >  	err = misc_register(misc_device);
-> > >  	if (err) {
-> > >  		dev_err(dev, "Failed to register device\n");
-> > > diff --git a/include/uapi/linux/pcitest.h b/include/uapi/linux/pcitest.h
-> > > index f9c1af8d141b4..479ca1aa3ae0b 100644
-> > > --- a/include/uapi/linux/pcitest.h
-> > > +++ b/include/uapi/linux/pcitest.h
-> > > @@ -20,6 +20,7 @@
-> > >  #define PCITEST_SET_IRQTYPE	_IOW('P', 0x8, int)
-> > >  #define PCITEST_GET_IRQTYPE	_IO('P', 0x9)
-> > >  #define PCITEST_CLEAR_IRQ	_IO('P', 0x10)
-> > > +#define PCITEST_DOORBELL	_IO('P', 0x11)
-> > >  
-> > >  #define PCITEST_FLAGS_USE_DMA	0x00000001
-> > >  
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+> +{
+> +	uint64_t msr_val;
+> +	uint8_t vector;
+> +
+> +	vector = wrmsr_safe(counter_msr + nr_msrs, 0xffff);
+
+Doing all this work to test _one_ MSR at a time is silly.  And I see no reason
+to do only negative testing.  Sure, postive testing might be redundant with other
+tests (I truly don't know), but _not_ hardcoding one-off tests often ends up
+requiring less code, and almost always results in more self-documenting code.
+E.g. it took me far too much staring to understand why the "no #GP" case expects
+to read back '0'.
+
+> +	__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,
+> +		       "Expected GP_VECTOR");
+
+Print the actual vector!  And the MSR!  One of my pet peeves with KVM's tests is
+not providing information on failure.  Having to hack a test or do interactive
+debug just to figure out which MSR failed is *super* frustrating.
+
+And I think it's worth providing a macro to handle the assertion+message, that
+way it'll be easier to add more sub-tests, e.g. that the MSR can be written back
+to '0'.
+
+> +
+> +	vector = rdmsr_safe(counter_msr + nr_msrs, &msr_val);
+> +	__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,
+> +		       "Expected GP_VECTOR");
+> +
+> +	if (!expect_gp)
+> +		GUEST_ASSERT_EQ(msr_val, 0);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void guest_rd_wr_gp_counter(void)
+> +{
+> +	uint8_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
+> +	uint64_t perf_capabilities = rdmsr(MSR_IA32_PERF_CAPABILITIES);
+> +	uint32_t counter_msr;
+> +	bool expect_gp = true;
+> +
+> +	if (perf_capabilities & PMU_CAP_FW_WRITES) {
+> +		counter_msr = MSR_IA32_PMC0;
+> +	} else {
+> +		counter_msr = MSR_IA32_PERFCTR0;
+> +
+> +		/* KVM drops writes to MSR_P6_PERFCTR[0|1]. */
+> +		if (nr_gp_counters == 0)
+> +			expect_gp = false;
+> +	}
+> +
+> +	__guest_wrmsr_rdmsr(counter_msr, nr_gp_counters, expect_gp);
+> +}
+> +
+> +/* Access the first out-of-range counter register to trigger #GP */
+> +static void test_oob_gp_counter(uint8_t eax_gp_num, uint64_t perf_cap)
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	struct kvm_vm *vm;
+> +
+> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_rd_wr_gp_counter);
+> +
+> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_NR_GP_COUNTERS,
+> +				eax_gp_num);
+> +	vcpu_set_msr(vcpu, MSR_IA32_PERF_CAPABILITIES, perf_cap);
+> +
+> +	run_vcpu(vcpu);
+> +
+> +	kvm_vm_free(vm);
+> +}
+> +
+> +static void test_intel_counters_num(void)
+> +{
+> +	uint8_t nr_gp_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
+> +	unsigned int i;
+> +
+> +	TEST_REQUIRE(nr_gp_counters > 2);
+
+This is beyond silly.  Just iterate over all possible counter values.  Again,
+hardcoding values is almost never the best way to do things.
+
+> +
+> +	for (i = 0; i < ARRAY_SIZE(perf_caps); i++) {
+> +		/*
+> +		 * For compatibility reasons, KVM does not emulate #GP
+> +		 * when MSR_P6_PERFCTR[0|1] is not present, but it doesn't
+> +		 * affect checking the presence of MSR_IA32_PMCx with #GP.
+> +		 */
+> +		test_oob_gp_counter(0, perf_caps[i]);
+> +		test_oob_gp_counter(2, perf_caps[i]);
+> +		test_oob_gp_counter(nr_gp_counters, perf_caps[i]);
+> +
+> +		/* KVM doesn't emulate more counters than it can support. */
+> +		test_oob_gp_counter(nr_gp_counters + 1, perf_caps[i]);
+
+Hmm, so I think we should avoid blindly testing undefined MSRs.  I don't disagree
+that expecting #GP is reasonable, but I don't think this is the right place to
+test for architecturally undefined MSRs.  E.g. if Intel defines some completely
+unrelated MSR at 0xc3 or 0x4c9 then this test will fail.
+
+Rather than assume anything about "nr_gp_counters + 1", I think we should test up
+to what Intel has architecturally defined, e.g. define the max number of counters
+and then pass that in as the "possible" counters:
+
+#define GUEST_ASSERT_PMC_MSR_ACCESS(insn, msr, expect_gp, vector)		\
+__GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
+	       "Expected %s on " #insn "(0x%x), got vector %u",			\
+	       expect_gp ? "#GP" : "no fault", msr, vector)			\
+
+static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
+				 uint8_t nr_counters, uint32_t or_mask)
+{
+	uint8_t i;
+
+	for (i = 0; i < nr_possible_counters; i++) {
+		const uint32_t msr = base_msr + i;
+
+		/*
+		 * Fixed counters are supported if the counter is less than the
+		 * number of enumerated contiguous counters *or* the counter is
+		 * explicitly enumerated in the supported counters mask.
+		 */
+		const bool expect_success = i < nr_counters || (or_mask & BIT(i));
+
+		/*
+		 * KVM drops writes to MSR_P6_PERFCTR[0|1] if the counters are
+		 * unsupported, i.e. doesn't #GP and reads back '0'.
+		 */
+		const uint64_t expected_val = expect_success ? 0xffff : 0;
+		const bool expect_gp = !expect_success && msr != MSR_P6_PERFCTR0 &&
+				       msr != MSR_P6_PERFCTR1;
+		uint8_t vector;
+		uint64_t val;
+
+		vector = wrmsr_safe(msr, 0xffff);
+		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
+
+		vector = rdmsr_safe(msr, &val);
+		GUEST_ASSERT_PMC_MSR_ACCESS(RDMSR, msr, expect_gp, vector);
+
+		/* On #GP, the result of RDMSR is undefined. */
+		if (!expect_gp)
+			__GUEST_ASSERT(val == expected_val,
+				       "Expected RDMSR(0x%x) to yield 0x%lx, got 0x%lx",
+				       msr, expected_val, val);
+
+		vector = wrmsr_safe(msr, 0);
+		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
+	}
+}
