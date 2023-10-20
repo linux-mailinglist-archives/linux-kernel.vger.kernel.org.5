@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 888C97D0663
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 04:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AF57D0664
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 04:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346833AbjJTCJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 22:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S1346845AbjJTCON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 22:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346758AbjJTCJ2 (ORCPT
+        with ESMTP id S1346758AbjJTCOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 22:09:28 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD5F11F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 19:09:26 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VuVIn4o_1697767761;
-Received: from 30.97.48.56(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuVIn4o_1697767761)
-          by smtp.aliyun-inc.com;
-          Fri, 20 Oct 2023 10:09:22 +0800
-Message-ID: <05d596f3-c59c-76c3-495e-09f8573cf438@linux.alibaba.com>
-Date:   Fri, 20 Oct 2023 10:09:35 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] mm: migrate: record the mlocked page status to remove
- unnecessary lru drain
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        hughd@google.com, vbabka@suse.cz, linux-mm@kvack.org,
+        Thu, 19 Oct 2023 22:14:11 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08F7115
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 19:14:09 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6c4b9e09521so237463a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 19:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697768049; x=1698372849; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qvDKp7hGETEWZJw5WAV27rym9fjaXJFJb3QCgDpE28Q=;
+        b=X3iLdymMkG0IfukecjMPMBOuYLTMcmh7Bm1+qGggrMZuQs44QrTcGb6eJb3Ng+dZx5
+         1SdNsLUwH7mCCKAlsnSJIjvEZuXzsgkMlUyZzhIO4qdvKhRHU7HAa0G0jC18ABH7jPJU
+         SEIBSbIfyMgJoCmHXD2ISHjZWsTF6yZ6zRYkkTMtqBh2F6knxRL0ekhEeIrn1JSUjH6H
+         a7elb6hemAbz1ZsarzyQxNyTxuQAJDwh81SxkOVCAwviPv1SsK+hdHdiCqvj1yNRdtc+
+         3GSQl0TknQBTPYCkqAo/OkGL/FLfEAYUpL80CTqgNGGlWnxf+OGi8/LeTDn8XDIWpcc5
+         c6Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697768049; x=1698372849;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qvDKp7hGETEWZJw5WAV27rym9fjaXJFJb3QCgDpE28Q=;
+        b=CXyBfk8m65scq/Gdxzt1UGBWUfcx92sb9t/LFu0iDM3B45MiESPV+HwF0L/9iNGL/6
+         OY4adyVcJf9QyWwsH+NaF9SixtK+qQK0TR8pOcbpOYHclW/BUZrKdmVEsFy4zxfW16Ix
+         tz5qs5NIYLVR6Nps95kVHarTY9PAww0TaP8elBm/O/j/DJ7/7AkMPjfxuur5GRa9cU1M
+         X7AOyNZpeHfUROKLdiqdTrJI1j1Jdhz1snWCQ2Kt6IaopZjuHbKDBgx/m3DqdxLACEMW
+         PTFYsB/RJVvlwp2u/QjKwof4dkCJF+WXUjib4iOfdOTlMTnSNwKdS+ibyCo0+lz7zkL4
+         4i7A==
+X-Gm-Message-State: AOJu0YzpYL72Bs8DTvxYCqlSqLdS0dSe5fX8ntcTDTAs5IIcroABBE8p
+        aki1lWL22d1oden+PjCOSqi895Rl51hF7w==
+X-Google-Smtp-Source: AGHT+IHHzT5cCsgqilYJXtUJWoq7MAjWGJO46hlMyo5MGSER1NeY0qkGafr/DU6FSi9cbq93rty10g==
+X-Received: by 2002:a05:6830:60f:b0:6c4:fc6d:88fb with SMTP id w15-20020a056830060f00b006c4fc6d88fbmr579599oti.33.1697768048866;
+        Thu, 19 Oct 2023 19:14:08 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id k12-20020a62840c000000b0068fb8080939sm467275pfd.65.2023.10.19.19.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 19:14:08 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 19:14:07 -0700
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
+        Dean ahn <deanahn@gctsemi.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-References: <64899ad0bb78cde88b52abed1a5a5abbc9919998.1697632761.git.baolin.wang@linux.alibaba.com>
- <1F80D8DA-8BB5-4C7E-BC2F-030BF52931F7@nvidia.com>
- <87il73uos1.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <2ad721be-b81e-d279-0055-f995a8cfe180@linux.alibaba.com>
- <27f40fc2-806a-52a9-3697-4ed9cd7081d4@intel.com>
- <e8099116-6f78-cb4a-5036-1d7e38b63e52@linux.alibaba.com>
- <fd389af5-d949-43dc-9a35-d53112fe4a60@intel.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <fd389af5-d949-43dc-9a35-d53112fe4a60@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/2] tty: gdm724x: Match alignment with open parenthesis
+Message-ID: <20231020021407.GE3017@Negi>
+References: <cover.1697184167.git.soumya.negi97@gmail.com>
+ <ff627fcbc9e450c2e8f4aa5810b94e56151efa2a.1697184167.git.soumya.negi97@gmail.com>
+ <a0a7274f-eba6-4f72-9569-ec4c4fff3a1a@kadam.mountain>
+ <20231013211326.GB25352@Negi>
+ <52732a88-7f40-4ce4-b75b-dded9827c1f0@kadam.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52732a88-7f40-4ce4-b75b-dded9827c1f0@kadam.mountain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/19/2023 8:07 PM, Yin, Fengwei wrote:
+On Sat, Oct 14, 2023 at 10:38:22AM +0300, Dan Carpenter wrote:
+> On Fri, Oct 13, 2023 at 02:13:26PM -0700, Soumya Negi wrote:
+> > On Fri, Oct 13, 2023 at 11:57:40AM +0300, Dan Carpenter wrote:
+> > > On Fri, Oct 13, 2023 at 01:26:34AM -0700, Soumya Negi wrote:
+> > > > Fix CHECK: Alignment should match open parenthesis
+> > > > Issue found by checkpatch.pl
+> > > > 
+> > > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> > > > ---
+> > > >  drivers/staging/gdm724x/gdm_tty.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+> > > > index 32b2e817ff04..4e5cac76db58 100644
+> > > > --- a/drivers/staging/gdm724x/gdm_tty.c
+> > > > +++ b/drivers/staging/gdm724x/gdm_tty.c
+> > > > @@ -271,8 +271,8 @@ int register_lte_tty_driver(void)
+> > > >  	int ret;
+> > > >  
+> > > >  	for (i = 0; i < TTY_MAX_COUNT; i++) {
+> > > > -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
+> > > > -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
+> > > > +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
+> > > > +					      TTY_DRIVER_DYNAMIC_DEV);
+> > > 
+> > > I prefered the original code.  It was more readable.
+> > > 
+> > > regards,
+> > > dan carpenter
+> > Hi Dan,
+> > 
+> > Noted. I'm curious what happens when some of the patches in a patchset
+> > are acceptable and some are not. Is everything disregarded by
+> > maintainers or are the good patches cherry-picked from the set?
 > 
+> Most of the time, you should just resend the series.  Sometimes a
+> maintainer will take the first few patches and then when they hit one
+> that can't be merged they'll stop.  So you should try to organize your
+> patchsets from fixes first, then cleanups and then least controversial
+> to most controversial.  Except people might be annoyed if it looks like
+> you're hiding a really controversial one at the end of a long series.
 > 
-> On 10/19/2023 4:51 PM, Baolin Wang wrote:
->>
->>
->> On 10/19/2023 4:22 PM, Yin Fengwei wrote:
->>> Hi Baolin,
->>>
->>> On 10/19/23 15:25, Baolin Wang wrote:
->>>>
->>>>
->>>> On 10/19/2023 2:09 PM, Huang, Ying wrote:
->>>>> Zi Yan <ziy@nvidia.com> writes:
->>>>>
->>>>>> On 18 Oct 2023, at 9:04, Baolin Wang wrote:
->>>>>>
->>>>>>> When doing compaction, I found the lru_add_drain() is an obvious hotspot
->>>>>>> when migrating pages. The distribution of this hotspot is as follows:
->>>>>>>       - 18.75% compact_zone
->>>>>>>          - 17.39% migrate_pages
->>>>>>>             - 13.79% migrate_pages_batch
->>>>>>>                - 11.66% migrate_folio_move
->>>>>>>                   - 7.02% lru_add_drain
->>>>>>>                      + 7.02% lru_add_drain_cpu
->>>>>>>                   + 3.00% move_to_new_folio
->>>>>>>                     1.23% rmap_walk
->>>>>>>                + 1.92% migrate_folio_unmap
->>>>>>>             + 3.20% migrate_pages_sync
->>>>>>>          + 0.90% isolate_migratepages
->>>>>>>
->>>>>>> The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
->>>>>>> __unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
->>>>>>> immediately, to help to build up the correct newpage->mlock_count in
->>>>>>> remove_migration_ptes() for mlocked pages. However, if there are no mlocked
->>>>>>> pages are migrating, then we can avoid this lru drain operation, especailly
->>>>>>> for the heavy concurrent scenarios.
->>>>>>
->>>>>> lru_add_drain() is also used to drain pages out of folio_batch. Pages in folio_batch
->>>>>> have an additional pin to prevent migration. See folio_get(folio); in folio_add_lru().
->>>>>
->>>>> lru_add_drain() is called after the page reference count checking in
->>>>> move_to_new_folio().  So, I don't this is an issue.
->>>>
->>>> Agree. The purpose of adding lru_add_drain() is to address the 'mlock_count' issue for mlocked pages. Please see commit c3096e6782b7 and related comments. Moreover I haven't seen an increase in the number of page migration failures due to page reference count checking after this patch.
->>>
->>> I agree with your. My understanding also is that the lru_add_drain() is only needed
->>> for mlocked folio to correct mlock_count. Like to hear the confirmation from Huge.
->>>
->>>
->>> But I have question: why do we need use page_was_mlocked instead of check
->>> folio_test_mlocked(src)? Does page migration clear the mlock flag? Thanks.
->>
->> Yes, please see the call trace: try_to_migrate_one() ---> page_remove_rmap() ---> munlock_vma_folio().
-> 
-> Yes. This will clear mlock bit.
-> 
-> What about set dst folio mlocked if source is before try_to_migrate_one()? And
-> then check whether dst folio is mlocked after? And need clear mlocked if migration
-> fails. I suppose the change is minor. Just a thought. Thanks.
+> regards,
+> dan carpenter
 
-IMO, this will break the mlock related statistics in mlock_folio() when 
-the remove_migration_pte() rebuilds the mlock status and mlock count.
+Thank you!
 
-Another concern I can see is that, during the page migration, a 
-concurrent munlock() can be called to clean the VM_LOCKED flags for the 
-VMAs, so the remove_migration_pte() should not rebuild the mlock status 
-and mlock count. But the dst folio's mlcoked status is still remained, 
-which is wrong.
+- Soumya
 
-So your suggested apporach seems not easy, and I think my patch is 
-simple with re-using existing __migrate_folio_record() and 
-__migrate_folio_extract() :)
