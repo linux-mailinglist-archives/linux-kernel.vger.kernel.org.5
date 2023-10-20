@@ -2,79 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B9C7D1851
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080C47D1862
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345616AbjJTVl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        id S1345286AbjJTVqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345344AbjJTVlZ (ORCPT
+        with ESMTP id S230156AbjJTVqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:41:25 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0161A10C4;
-        Fri, 20 Oct 2023 14:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=TknwrUUxoMhQrll7HrSv2xV0NraS4Bmkq6cAn/1c1wQ=; b=gIxS0X0e1zyUPPkiIxIQASLrI5
-        XWYOErfwjkwOL6JU8ilDyp0RbMdHpZjW/XBVW4CV98q5hw0PfjailbTJTeHjcBBr3nAOmaokLB4O/
-        n72T5aXF/cqeEETKhYffeP7O4KXV7Je3OCSpOl2D6zUyqZ+voHol8zLY7WWqwLj4VKzw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qtxEz-002owx-MK; Fri, 20 Oct 2023 23:41:09 +0200
-Date:   Fri, 20 Oct 2023 23:41:09 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>, kernel@pengutronix.de,
-        devicetree@vger.kernel.org,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        Eric Dumazet <edumazet@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: ksz9477: Add Wake
- on Magic Packet support
-Message-ID: <f529f376-34aa-49fd-97b9-6693c01f0a00@lunn.ch>
-References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019172953.ajqtmnnthohnlek7@skbuf>
- <20231020050856.GB3637381@pengutronix.de>
- <20231020082350.f3ttjnn6qfcmskno@skbuf>
- <20231020083438.GD3637381@pengutronix.de>
+        Fri, 20 Oct 2023 17:46:14 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52AD1703
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:45:43 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso14302875e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697838342; x=1698443142; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QxjlY5uEMjde2s1dEktp9/ACelgmEbqMgOPIWBYsGlA=;
+        b=Ro8/ie6rxWPGPPYgtllsAxe1RtjEAWtsTK0cAVVKQ85MlmgwcF0gc4BWhNE3whKvt3
+         ooI3SMilRolmYpkBcFShWM5nMsFqi4BqxOjW/QXuBhaj0ysSbPY3swLMx1HH+cBlJraZ
+         e4elSgt/i2ChX/Xf3v0wERm15YdT1ONXxJAPhTXaJn9I0Wot7CdeSJXJeHZ0wUiuKDwi
+         GMQQQf/qRh+ZZx+H7ANxEyrq4ztKpOWCLrPKWMoz3nR2MopbP0Gnp8NZWbAwc4g3UnD0
+         Cb0wiM71soCyO9luHkX3qr/+mNTaxluIyF3joBrb5xS2+rALPwA1HmD6HwLBDK4plgPb
+         9OcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697838342; x=1698443142;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QxjlY5uEMjde2s1dEktp9/ACelgmEbqMgOPIWBYsGlA=;
+        b=ZBc/9mUfGgdftFfPA7aqw4S9Pp8eXYb24Hi5iLWIhJ1YJj+jrG2+M2n37b01TUf5+L
+         FCRizckb350yrwF3SO+gGf3dsyCyvsz1UhD8LGwZwZr7FzWhDJpBcCPAE81E62a2lRxJ
+         b3F5v2L5Q8/0AZoSamzyx1DPK+hSPE2O4X3b0+MY1St9nzcux5UPgogplIndUbO/8OSl
+         /cEjAt629EbJdNv7jxeqQrM92tLUrxkNd5EstUhRrLAzwL1zilv1ont7PUlBQ2jAGVsR
+         52ultowWU/i/lGYbwPumKVy73LEo/fJ0v1In/gJb1oRKDTgWb/F9RKSpSr9bFph7FrVk
+         dWhQ==
+X-Gm-Message-State: AOJu0Ywx7SegWi+MLh1WCUBZ9JR7GQxX33NmaLJXQdZjRlf7dLtvY261
+        LjlrjgsqvksaJlxIIYQV5OmYpQ==
+X-Google-Smtp-Source: AGHT+IFBew19neBanzQT7imiVhuRWGKvNwUZnpZ09iZmlY1NKGIF6jKdwjH/gs2rXWd6fERiMXYm+w==
+X-Received: by 2002:adf:b307:0:b0:314:3369:df57 with SMTP id j7-20020adfb307000000b003143369df57mr6074420wrd.5.1697838342339;
+        Fri, 20 Oct 2023 14:45:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id w15-20020a5d608f000000b0032dbf32bd56sm2468482wrt.37.2023.10.20.14.45.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 14:45:41 -0700 (PDT)
+Message-ID: <35b62306-b4c8-4235-a024-f4a600c16091@linaro.org>
+Date:   Fri, 20 Oct 2023 23:45:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020083438.GD3637381@pengutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v2] arm64: dts: Update cache properties for
+ socionext
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, soc@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Pierre Gondois <pierre.gondois@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231020195022.4183862-2-robh@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231020195022.4183862-2-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Ah, yes, it is from get_wol(). Maybe a ksz_switch_macaddr_tryget(ds, port)
-> > which returns bool (true if dev->switch_macaddr is NULL, or if non-NULL
-> > and ether_addr_equal(dev->switch_macaddr->addr, port addr))?
+On 20/10/2023 21:50, Rob Herring wrote:
+> From: Pierre Gondois <pierre.gondois@arm.com>
 > 
-> Ack, something like this.
-> I'll send new version later.
+> The DeviceTree Specification v0.3 specifies that the cache node
+> 'compatible' and 'cache-level' properties are 'required'. Cf.
+> s3.8 Multi-level and Shared Cache Nodes
+> The 'cache-unified' property should be present if one of the
+> properties for unified cache is present ('cache-size', ...).
+> 
+> Update the Device Trees accordingly.
+> 
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Link: https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-And maybe add a comment. Seems like everybody got it wrong what is
-going on here. Maybe i should not of suggested it :-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-      Andrew
+Best regards,
+Krzysztof
+
