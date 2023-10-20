@@ -2,159 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 019657D05B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57027D05BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346748AbjJTAPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        id S1346767AbjJTAQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346716AbjJTAPp (ORCPT
+        with ESMTP id S1346721AbjJTAQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:15:45 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679E5CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:15:42 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-35748b32d73so998845ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:15:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1697760939; x=1698365739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mavY78H1YWmzBveT0yeZCxcrcnmsQliTa1UnMt+0QL8=;
-        b=N9UKgxS+/MBt5v12j6QEB70xkCMZ8g5LTAHxVEW+BebZTJvXbpYkzo/4NZDSGLsJIT
-         5ii5G0nScB65Bpo1MwhkLCpG0V48PKfttbVmkrlejssNnXQvWEJMcgRFJuBBLuTYEhGa
-         gGFHGDQRwWfCw1ZZ565aMmP2WeBkvxlSHbd9w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697760939; x=1698365739;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mavY78H1YWmzBveT0yeZCxcrcnmsQliTa1UnMt+0QL8=;
-        b=XrDAx5fMzRDrcWaDZQkPv6Zskc/mt4n+pvgNumf0ybmqtIi8O3OaXXWQ0ZFSA6ghp1
-         DEvO1F5Obpj0k+cOQsC/CuMwhAdrSA6Ocp5nCpc7BMjT+I2Z4d8DbfOm78ogervFTck3
-         z5iz8oBySt4ZwCvjhPYRq2bWfmKPnHIJnX+wDrDdGpL/4dZKjsjQIeoWwko1Bk1wrWWH
-         iYpexJVzmUXJBTx9IbCsLZbsiAgA6dHExRw4OFJdGTk2dFYJo5nXCRDtuNyL58qWWfdS
-         ZtxBV6/U5GJADfp47cl1BW7qn7cmtAivROSIAzFb8d0XCOOEFp5irhX9CPwclA8uakj7
-         YAMQ==
-X-Gm-Message-State: AOJu0YzA+eKUldLvAa8VQaFYlxtLGxs7/kMgNe2+hXRFoO3oRx/pde8e
-        7gvqwEAHKAHBOkGBhskluQ4dNVOoor+IbvLuNvFj1467
-X-Google-Smtp-Source: AGHT+IFTT8bntjPNn9KbYkuJLNM8Jou66TfYltHPkHiegMie47QbNKhG+fplwP3pmZrXUi1Ab1wcZw==
-X-Received: by 2002:a92:c262:0:b0:351:19a4:8e67 with SMTP id h2-20020a92c262000000b0035119a48e67mr608835ild.28.1697760939322;
-        Thu, 19 Oct 2023 17:15:39 -0700 (PDT)
-Received: from [10.211.55.3] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.googlemail.com with ESMTPSA id 2-20020a056e0220c200b003512c3e8809sm226274ilq.71.2023.10.19.17.15.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 17:15:38 -0700 (PDT)
-Message-ID: <e24e41be-b2c4-4bda-8a34-a628c55c4061@ieee.org>
-Date:   Thu, 19 Oct 2023 19:15:37 -0500
+        Thu, 19 Oct 2023 20:16:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDC3126;
+        Thu, 19 Oct 2023 17:16:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697761004; x=1729297004;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BqX6CmbZGsKDvvqm0PW9nz8RCwYq9ztprkqxDl3ZOck=;
+  b=LJhyPxuxztWMU4N4fFVzKQQT97LJfdhAgDFjAnq5xwy+e7XE0kJnE4BZ
+   Lluna8QPyda37PE2IpiVB6UeN1PlJCGvte1mrY42xDHodSpVCT2q880PL
+   JnUY63ZYhMECDI5TA7lRnWUkdIweBD2T+78KHNXk4cywUGwRownkHrCAT
+   jvgCVtoxvy8xD9mJdmuTynTRKnUZxoqnnail3C7UFaO589i3AW+0/R6En
+   6Ij/wMxhVUL0NPgULX49jxOvzZAN0z/tiqlPLBmRuOOuqRhXTPi2svPgY
+   PB3QueYOlDQ6Bo5SZxHIggtTjVK/EnhcSDprPzzAI44jXrYPzJbDBAtdy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="389260753"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="389260753"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 17:16:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="847897226"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="847897226"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Oct 2023 17:16:36 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtdBq-0002lg-27;
+        Fri, 20 Oct 2023 00:16:34 +0000
+Date:   Fri, 20 Oct 2023 08:15:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH -next v2] sunrpc: Use no_printk() in dfprintk*() dummies
+Message-ID: <202310200734.I6x6UCe1-lkp@intel.com>
+References: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] staging: greybus: Alignment should match open parenthesis
-Content-Language: en-US
-To:     Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20231019213949.GA2922@ubuntu>
-From:   Alex Elder <elder@ieee.org>
-In-Reply-To: <20231019213949.GA2922@ubuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/23 4:39 PM, Nandha Kumar Singaram wrote:
-> Adhere to linux coding style. Reported by checkpatch.pl:
-> CHECK: Alignment should match open parenthesis
+Hi Geert,
 
-Sometimes checkpatch.pl warns about things that are not
-really that important.  One class of this type of issue
-is white space errors.
+kernel test robot noticed the following build errors:
 
-Yes, consistency is good, but the kernel simply doesn't
-have universally consistent conventions, and I doubt
-it ever will.  There might be times where a source file
-consistently follows a white space convention that
-differs from what checkpatch wants.  Suggesting a
-wholesale change to that file to "fix" that typically
-wouldn't be welcome.
+[auto build test ERROR on next-20231016]
 
-Unfortunately without some experience it's hard to know
-which checkpatch warnings can be safely ignored.  I would
-place white space warnings at a lower priority for fixing
-than some others.  For example, this is also a pretty
-trivial warning:
-   CHECK: Macro argument 'gcam' may be better as '(gcam)' to avoid 
-precedence issues
-And it is most likely not a problem in this case, but fixing
-this type of warning is probably more constructive than
-just adjusting white space.
+url:    https://github.com/intel-lab-lkp/linux/commits/Geert-Uytterhoeven/sunrpc-Use-no_printk-in-dfprintk-dummies/20231017-104813
+base:   next-20231016
+patch link:    https://lore.kernel.org/r/a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert%2Brenesas%40glider.be
+patch subject: [PATCH -next v2] sunrpc: Use no_printk() in dfprintk*() dummies
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20231020/202310200734.I6x6UCe1-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200734.I6x6UCe1-lkp@intel.com/reproduce)
 
-I have no objection to your patch, and it's a fine way to
-get some experience with the patch process, but I don't
-think this particular change is necessary.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310200734.I6x6UCe1-lkp@intel.com/
 
-					-Alex
+All errors (new ones prefixed by >>):
 
-> Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-> ---
->   drivers/staging/greybus/camera.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-> index cdbb42cd413b..405c8e78aa72 100644
-> --- a/drivers/staging/greybus/camera.c
-> +++ b/drivers/staging/greybus/camera.c
-> @@ -220,7 +220,7 @@ static int gb_camera_operation_sync_flags(struct gb_connection *connection,
->   }
->   
->   static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
-> -		struct gb_camera_configure_streams_response *resp)
-> +				      struct gb_camera_configure_streams_response *resp)
->   {
->   	unsigned int max_pkt_size = 0;
->   	unsigned int i;
-> @@ -267,8 +267,7 @@ static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
->    * Validate the stream configuration response verifying padding is correctly
->    * set and the returned number of streams is supported
->    */
-> -static const int gb_camera_configure_streams_validate_response(
-> -		struct gb_camera *gcam,
-> +static const int gb_camera_configure_streams_validate_response(struct gb_camera *gcam,
->   		struct gb_camera_configure_streams_response *resp,
->   		unsigned int nstreams)
->   {
-> @@ -378,8 +377,8 @@ struct ap_csi_config_request {
->   #define GB_CAMERA_CSI_CLK_FREQ_MARGIN		150000000U
->   
->   static int gb_camera_setup_data_connection(struct gb_camera *gcam,
-> -		struct gb_camera_configure_streams_response *resp,
-> -		struct gb_camera_csi_params *csi_params)
-> +					   struct gb_camera_configure_streams_response *resp,
-> +					   struct gb_camera_csi_params *csi_params)
->   {
->   	struct ap_csi_config_request csi_cfg;
->   	struct gb_connection *conn;
-> @@ -783,8 +782,9 @@ static ssize_t gb_camera_op_capabilities(void *priv, char *data, size_t len)
->   }
->   
->   static int gb_camera_op_configure_streams(void *priv, unsigned int *nstreams,
-> -		unsigned int *flags, struct gb_camera_stream *streams,
-> -		struct gb_camera_csi_params *csi_params)
-> +					  unsigned int *flags,
-> +					  struct gb_camera_stream *streams,
-> +					  struct gb_camera_csi_params *csi_params)
->   {
->   	struct gb_camera *gcam = priv;
->   	struct gb_camera_stream_config *gb_streams;
+   In file included from include/linux/kernel.h:31,
+                    from arch/x86/include/asm/percpu.h:27,
+                    from arch/x86/include/asm/current.h:10,
+                    from include/linux/sched.h:12,
+                    from include/linux/sunrpc/svcauth_gss.h:12,
+                    from fs/nfsd/nfsfh.c:13:
+   fs/nfsd/nfsfh.c: In function 'nfsd_setuser_and_check_port':
+>> fs/nfsd/nfsfh.c:111:47: error: 'buf' undeclared (first use in this function)
+     111 |                         svc_print_addr(rqstp, buf, sizeof(buf)));
+         |                                               ^~~
+   include/linux/printk.h:427:33: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
+     129 |                 printk(fmt, ##__VA_ARGS__);             \
+         |                 ^~~~~~
+   include/linux/sunrpc/debug.h:70:41: note: in expansion of macro 'no_printk'
+      70 | # define dfprintk(fac, fmt, ...)        no_printk(fmt, ##__VA_ARGS__)
+         |                                         ^~~~~~~~~
+   include/linux/sunrpc/debug.h:25:9: note: in expansion of macro 'dfprintk'
+      25 |         dfprintk(FACILITY, fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~
+   fs/nfsd/nfsfh.c:110:17: note: in expansion of macro 'dprintk'
+     110 |                 dprintk("nfsd: request from insecure port %s!\n",
+         |                 ^~~~~~~
+   fs/nfsd/nfsfh.c:111:47: note: each undeclared identifier is reported only once for each function it appears in
+     111 |                         svc_print_addr(rqstp, buf, sizeof(buf)));
+         |                                               ^~~
+   include/linux/printk.h:427:33: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
+     129 |                 printk(fmt, ##__VA_ARGS__);             \
+         |                 ^~~~~~
+   include/linux/sunrpc/debug.h:70:41: note: in expansion of macro 'no_printk'
+      70 | # define dfprintk(fac, fmt, ...)        no_printk(fmt, ##__VA_ARGS__)
+         |                                         ^~~~~~~~~
+   include/linux/sunrpc/debug.h:25:9: note: in expansion of macro 'dfprintk'
+      25 |         dfprintk(FACILITY, fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~
+   fs/nfsd/nfsfh.c:110:17: note: in expansion of macro 'dprintk'
+     110 |                 dprintk("nfsd: request from insecure port %s!\n",
+         |                 ^~~~~~~
 
+
+vim +/buf +111 fs/nfsd/nfsfh.c
+
+9d7ed1355db5b0 J. Bruce Fields 2018-03-08  101  
+6fa02839bf9412 J. Bruce Fields 2007-11-12  102  static __be32 nfsd_setuser_and_check_port(struct svc_rqst *rqstp,
+6fa02839bf9412 J. Bruce Fields 2007-11-12  103  					  struct svc_export *exp)
+6fa02839bf9412 J. Bruce Fields 2007-11-12  104  {
+12045a6ee9908b J. Bruce Fields 2009-12-08  105  	int flags = nfsexp_flags(rqstp, exp);
+12045a6ee9908b J. Bruce Fields 2009-12-08  106  
+6fa02839bf9412 J. Bruce Fields 2007-11-12  107  	/* Check if the request originated from a secure port. */
+9d7ed1355db5b0 J. Bruce Fields 2018-03-08  108  	if (!nfsd_originating_port_ok(rqstp, flags)) {
+5216a8e70e25b0 Pavel Emelyanov 2008-02-21  109  		RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
+a48fd0f9f77b6e Kinglong Mee    2014-05-29  110  		dprintk("nfsd: request from insecure port %s!\n",
+6fa02839bf9412 J. Bruce Fields 2007-11-12 @111  		        svc_print_addr(rqstp, buf, sizeof(buf)));
+6fa02839bf9412 J. Bruce Fields 2007-11-12  112  		return nfserr_perm;
+6fa02839bf9412 J. Bruce Fields 2007-11-12  113  	}
+6fa02839bf9412 J. Bruce Fields 2007-11-12  114  
+6fa02839bf9412 J. Bruce Fields 2007-11-12  115  	/* Set user creds for this exportpoint */
+6fa02839bf9412 J. Bruce Fields 2007-11-12  116  	return nfserrno(nfsd_setuser(rqstp, exp));
+6fa02839bf9412 J. Bruce Fields 2007-11-12  117  }
+6fa02839bf9412 J. Bruce Fields 2007-11-12  118  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
