@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C281A7D13CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115057D13D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjJTQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S1377855AbjJTQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJTQPy (ORCPT
+        with ESMTP id S229799AbjJTQP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:15:54 -0400
+        Fri, 20 Oct 2023 12:15:58 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921C6114;
-        Fri, 20 Oct 2023 09:15:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DCD1A8;
+        Fri, 20 Oct 2023 09:15:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-        To:From:Reply-To:Content-ID:Content-Description;
-        bh=I4hMGAn3CCXbvIhFniLsRuw1X84vM7LzNgk6oVf6hDo=; b=g6XL6KrLFvXCVI21u1A5KeupFv
-        +QFnHNBtXPSX2WGx/qzbR8hAv15UjjS3G7GeUcRbT6Gzod96JethLXROgfY3uc2SU169IvhiZdRGh
-        PQGKjDFv0/nWu/OIs7h5I+YdQjcKmWPq6iD07vRG6QQQEc9KMRwcxd9MEFfDm+JhqgzS/494qQBHg
-        cmRRbbr+caoCft14R2moMfBDrzAlzzoBVVkfYfN3hN7MnKJVzuTCxV7GKaf92411iUcMwW41EdBZu
-        LzyJ/6kNrv4xSgCoDDiOqDloTvQ2En//Zuw6p8kbzieBn/ZS50xuBKNEiKD53bPkfqRtyRa8Wwy2S
-        MoYvVmXQ==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=tKr5NCYEWPmX5deg+2Ptja2Fo3YNlvlkNEh9wJh6ZDg=; b=ERnIsojrkc5WLnr34IDZQWQKrG
+        wFzlSNa4uSGkth0zeh9LHdVk5FXd6R1LgmCBut8RlHh4SGdWnzA22SU/ejGMiigfeW+6R5k7l2fg2
+        0uiPSrmfiUIoAU5Q2qVPTTjT2kI+9So4NYm2If5BnDiMQZk7Rt7YUcegC1ffCiPYVpfP+E6Imy9hV
+        i2YFd5mM2Jc+985Yim+drAaCsJdkxvZKx7L2lWkn8w4S+76vvn2Jy23msUjaZ2EOVxJJfAY6wkfgh
+        GDrxLxeDVf77oL1C2C89fPb2hRzeM7pGCmELvA/wEZqdkqmaffpDBxTbaPsfNHSm8zNZg6XsaeLtV
+        M17Mpk1w==;
 Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qts9u-00E44C-84; Fri, 20 Oct 2023 16:15:34 +0000
+        id 1qts9u-00E44E-8P; Fri, 20 Oct 2023 16:15:34 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qts9s-001UOZ-13;
+        id 1qts9s-001UOc-1F;
         Fri, 20 Oct 2023 17:15:32 +0100
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
@@ -40,14 +40,13 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dawei Li <set_pte_at@outlook.com>,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         linux-serial@vger.kernel.org, Paul Durrant <paul@xen.org>
-Subject: [PATCH v2 2/3] hvc/xen: fix error path in xen_hvc_init() to always register frontend driver
-Date:   Fri, 20 Oct 2023 17:15:28 +0100
-Message-Id: <20231020161529.355083-3-dwmw2@infradead.org>
+Subject: [PATCH v2 3/3] hvc/xen: fix console unplug
+Date:   Fri, 20 Oct 2023 17:15:29 +0100
+Message-Id: <20231020161529.355083-4-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231020161529.355083-1-dwmw2@infradead.org>
 References: <20231020161529.355083-1-dwmw2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -62,48 +61,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-The xen_hvc_init() function should always register the frontend driver,
-even when there's no primary console — as there may be secondary consoles.
-(Qemu can always add secondary consoles, but only the toolstack can add
-the primary because it's special.)
+On unplug of a Xen console, xencons_disconnect_backend() unconditionally
+calls free_irq() via unbind_from_irqhandler(), causing a warning of
+freeing an already-free IRQ:
+
+(qemu) device_del con1
+[   32.050919] ------------[ cut here ]------------
+[   32.050942] Trying to free already-free IRQ 33
+[   32.050990] WARNING: CPU: 0 PID: 51 at kernel/irq/manage.c:1895 __free_irq+0x1d4/0x330
+
+It should be using evtchn_put() to tear down the event channel binding,
+and let the Linux IRQ side of it be handled by notifier_del_irq() through
+the HVC code.
+
+On which topic... xencons_disconnect_backend() should call hvc_remove()
+*first*, rather than tearing down the event channel and grant mapping
+while they are in use. And then the IRQ is guaranteed to be freed by
+the time it's torn down by evtchn_put().
+
+Since evtchn_put() also closes the actual event channel, avoid calling
+xenbus_free_evtchn() except in the failure path where the IRQ was not
+successfully set up.
+
+However, calling hvc_remove() at the start of xencons_disconnect_backend()
+still isn't early enough. An unplug request is indicated by the backend
+setting its state to XenbusStateClosing, which triggers a notification
+to xencons_backend_changed(), which... does nothing except set its own
+frontend state directly to XenbusStateClosed without *actually* tearing
+down the HVC device or, you know, making sure it isn't actively in use.
+
+So the backend sees the guest frontend set its state to XenbusStateClosed
+and stops servicing the interrupt... and the guest spins for ever in the
+domU_write_console() function waiting for the ring to drain.
+
+Fix that one by calling hvc_remove() from xencons_backend_changed() before
+signalling to the backend that it's OK to proceed with the removal.
+
+Tested with 'dd if=/dev/zero of=/dev/hvc1' while telling Qemu to remove
+the console device.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Juergen Gross <jgross@suse.com>
 Cc: stable@vger.kernel.org
 ---
- drivers/tty/hvc/hvc_xen.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/tty/hvc/hvc_xen.c | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
-index f24e285b6441..4a768b504263 100644
+index 4a768b504263..34c01874f45b 100644
 --- a/drivers/tty/hvc/hvc_xen.c
 +++ b/drivers/tty/hvc/hvc_xen.c
-@@ -588,7 +588,7 @@ static int __init xen_hvc_init(void)
- 		ops = &dom0_hvc_ops;
- 		r = xen_initial_domain_console_init();
- 		if (r < 0)
--			return r;
-+			goto register_fe;
- 		info = vtermno_to_xencons(HVC_COOKIE);
- 	} else {
- 		ops = &domU_hvc_ops;
-@@ -597,7 +597,7 @@ static int __init xen_hvc_init(void)
- 		else
- 			r = xen_pv_console_init();
- 		if (r < 0)
--			return r;
-+			goto register_fe;
- 
- 		info = vtermno_to_xencons(HVC_COOKIE);
- 		info->irq = bind_evtchn_to_irq_lateeoi(info->evtchn);
-@@ -622,6 +622,7 @@ static int __init xen_hvc_init(void)
- 	}
- 
- 	r = 0;
-+ register_fe:
+@@ -377,18 +377,21 @@ void xen_console_resume(void)
  #ifdef CONFIG_HVC_XEN_FRONTEND
- 	r = xenbus_register_frontend(&xencons_driver);
- #endif
+ static void xencons_disconnect_backend(struct xencons_info *info)
+ {
+-	if (info->irq > 0)
+-		unbind_from_irqhandler(info->irq, NULL);
+-	info->irq = 0;
++	if (info->hvc != NULL)
++		hvc_remove(info->hvc);
++	info->hvc = NULL;
++	if (info->irq > 0) {
++		evtchn_put(info->evtchn);
++		info->irq = 0;
++		info->evtchn = 0;
++	}
++	/* evtchn_put() will also close it so this is only an error path */
+ 	if (info->evtchn > 0)
+ 		xenbus_free_evtchn(info->xbdev, info->evtchn);
+ 	info->evtchn = 0;
+ 	if (info->gntref > 0)
+ 		gnttab_free_grant_references(info->gntref);
+ 	info->gntref = 0;
+-	if (info->hvc != NULL)
+-		hvc_remove(info->hvc);
+-	info->hvc = NULL;
+ }
+ 
+ static void xencons_free(struct xencons_info *info)
+@@ -553,10 +556,23 @@ static void xencons_backend_changed(struct xenbus_device *dev,
+ 		if (dev->state == XenbusStateClosed)
+ 			break;
+ 		fallthrough;	/* Missed the backend's CLOSING state */
+-	case XenbusStateClosing:
++	case XenbusStateClosing: {
++		struct xencons_info *info = dev_get_drvdata(&dev->dev);;
++
++		/*
++		 * Don't tear down the evtchn and grant ref before the other
++		 * end has disconnected, but do stop userspace from trying
++		 * to use the device before we allow the backend to close.
++		 */
++		if (info->hvc) {
++			hvc_remove(info->hvc);
++			info->hvc = NULL;
++		}
++
+ 		xenbus_frontend_closed(dev);
+ 		break;
+ 	}
++	}
+ }
+ 
+ static const struct xenbus_device_id xencons_ids[] = {
+@@ -616,7 +632,7 @@ static int __init xen_hvc_init(void)
+ 		list_del(&info->list);
+ 		spin_unlock_irqrestore(&xencons_lock, flags);
+ 		if (info->irq)
+-			unbind_from_irqhandler(info->irq, NULL);
++			evtchn_put(info->evtchn);
+ 		kfree(info);
+ 		return r;
+ 	}
 -- 
 2.40.1
 
