@@ -2,202 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36977D19A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 01:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EA07D19A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 01:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjJTXgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 19:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        id S230146AbjJTXlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 19:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjJTXgt (ORCPT
+        with ESMTP id S229559AbjJTXlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 19:36:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E307D4C
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 16:36:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF524C433C8;
-        Fri, 20 Oct 2023 23:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697845007;
-        bh=AHox3vW6RLN4ZFLgXtMQXifWtp0VHjX3C9M5x6M9XC8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PGmsYM1GJukg/QYLw5TvPgWXQGifP1PADUPQZ9M2eQ6IDJS+F+6dcj/2JL8UFDyJG
-         woEzcdJyLDlnTxGFPx2NwD3a0K9jdHqJviH8Ft04TvQxyX/w8Fx9RYHp7ewU/xw2LP
-         QTuifMKTuwF6eykRegWMoPCvjY4fJMlQKbn0UkADme+ROZesBm+7Ii07vm6gr0tpVA
-         Wxy8gHMr+lRSy+PyCvuP3b0GwC6F4+vayj5reZJfRRoN31VbWNqLOPCBpxH7cs01Yw
-         66BKqEbtpx1zp1SRyxM9yYOne0kV6SINfJA4LnOUiuzA+/j9TTSDFu0BPfO/LaE7Nr
-         fWcvQLheJf5+g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6942ECE0D14; Fri, 20 Oct 2023 16:36:46 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 16:36:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <ea5c18ad-c25a-43d5-b2ef-ec64117dc38e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <87ttrngmq0.ffs@tglx>
- <87jzshhexi.ffs@tglx>
- <a375674b-de27-4965-a4bf-e0679229e28e@paulmck-laptop>
- <87pm1c3wbn.ffs@tglx>
- <61bb51f7-99ed-45bf-8c3e-f1d65137c894@paulmck-laptop>
- <8734y74g34.ffs@tglx>
- <4c7d06b9-8f5b-43ff-a2d6-86f54116da52@paulmck-laptop>
- <878r7wlx7d.fsf@oracle.com>
+        Fri, 20 Oct 2023 19:41:09 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FEBD51;
+        Fri, 20 Oct 2023 16:41:08 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KLZUkP018479;
+        Fri, 20 Oct 2023 23:41:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=bKFZg/LBpXWZUAVfLFf4lWiUNapQ7Gl7Xv4yj0bgCu4=;
+ b=wpWTTgpCHWQmuFke7ehdHYwwbIGEEV+vloZwin7o6xyre/7+L7dBa4Hz8FREDi4/fm9S
+ 7doWa5mYErpYPW3SF2ObUbt/wYlGqaMFqEjFMLGTPgYuE2ho+kaGnyrigTwVFNn6AeQD
+ DV0V3S01/PQPzD+RZX5rRGDuvmEtbpKnNBJkEKOoy9nwLh8qs68KHmdeCoT5tQNRV9CB
+ b9om/PkdcDb3s0F8Gw17gpthqeaqCTtkra0wgDDxIo70frod0+/aj5SiglSL8ES/Vuex
+ +A4nTqT5FlUFhHBjLegM8ZWuRFnuZKVnPDjKnRI5KYtbCMk+i4FxUCO6WvoU0qSe2kCZ ug== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tubw82vgv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Oct 2023 23:41:01 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39KLWMsq014110;
+        Fri, 20 Oct 2023 23:41:00 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tubwfw1gu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Oct 2023 23:41:00 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39KNf06m002147;
+        Fri, 20 Oct 2023 23:41:00 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tubwfw1gd-1;
+        Fri, 20 Oct 2023 23:40:59 +0000
+From:   Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, Liam.Howlett@oracle.com,
+        netdev@vger.kernel.org, oliver.sang@intel.com, kuba@kernel.org,
+        horms@kernel.org, anjali.k.kulkarni@oracle.com
+Subject: [PATCH v2] Fix NULL pointer dereference in cn_filter()
+Date:   Fri, 20 Oct 2023 16:40:58 -0700
+Message-ID: <20231020234058.2232347-1-anjali.k.kulkarni@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878r7wlx7d.fsf@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310200202
+X-Proofpoint-GUID: CFmDnzAWFB6owU8ti8ggAm50QlMlrWJi
+X-Proofpoint-ORIG-GUID: CFmDnzAWFB6owU8ti8ggAm50QlMlrWJi
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 03:56:38PM -0700, Ankur Arora wrote:
-> 
-> Paul E. McKenney <paulmck@kernel.org> writes:
-> 
-> > Thomas!
-> >
-> > On Thu, Oct 19, 2023 at 02:21:35AM +0200, Thomas Gleixner wrote:
-> >> Paul!
-> >>
-> >> On Wed, Oct 18 2023 at 10:19, Paul E. McKenney wrote:
-> >> > On Wed, Oct 18, 2023 at 03:16:12PM +0200, Thomas Gleixner wrote:
-> >> >> On Tue, Oct 17 2023 at 18:03, Paul E. McKenney wrote:
-> >> >> In the end there is no CONFIG_PREEMPT_XXX anymore. The only knob
-> >> >> remaining would be CONFIG_PREEMPT_RT, which should be renamed to
-> >> >> CONFIG_RT or such as it does not really change the preemption
-> >> >> model itself. RT just reduces the preemption disabled sections with the
-> >> >> lock conversions, forced interrupt threading and some more.
-> >> >
-> >> > Again, please, no.
-> >> >
-> >> > There are situations where we still need rcu_read_lock() and
-> >> > rcu_read_unlock() to be preempt_disable() and preempt_enable(),
-> >> > repectively.  Those can be cases selected only by Kconfig option, not
-> >> > available in kernels compiled with CONFIG_PREEMPT_DYNAMIC=y.
-> >>
-> >> Why are you so fixated on making everything hardcoded instead of making
-> >> it a proper policy decision problem. See above.
-> >
-> > Because I am one of the people who will bear the consequences.
-> >
-> > In that same vein, why are you so opposed to continuing to provide
-> > the ability to build a kernel with CONFIG_PREEMPT_RCU=n?  This code
-> > is already in place, is extremely well tested, and you need to handle
-> > preempt_disable()/preeempt_enable() regions of code in any case.  What is
-> > the real problem here?
-> 
-> I have a somewhat related question. What ties PREEMPTION=y to PREEMPT_RCU=y?
+Check that sk_user_data is not NULL, else return from cn_filter().
+Could not reproduce this issue, but Oliver Sang verified it has fixed
+the "Closes" problem below.
 
-This Kconfig block in kernel/rcu/Kconfig:
+Fixes: 2aa1f7a1f47c ("connector/cn_proc: Add filtering to fix some bugs")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202309201456.84c19e27-oliver.sang@intel.com/
+Signed-off-by: Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+---
+ drivers/connector/cn_proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-------------------------------------------------------------------------
+diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
+index 05d562e9c8b1..44b19e696176 100644
+--- a/drivers/connector/cn_proc.c
++++ b/drivers/connector/cn_proc.c
+@@ -54,7 +54,7 @@ static int cn_filter(struct sock *dsk, struct sk_buff *skb, void *data)
+ 	enum proc_cn_mcast_op mc_op;
+ 	uintptr_t val;
+ 
+-	if (!dsk || !data)
++	if (!dsk || !dsk->sk_user_data || !data)
+ 		return 0;
+ 
+ 	ptr = (__u32 *)data;
+-- 
+2.42.0
 
-config PREEMPT_RCU
-	bool
-	default y if PREEMPTION
-	select TREE_RCU
-	help
-	  This option selects the RCU implementation that is
-	  designed for very large SMP systems with hundreds or
-	  thousands of CPUs, but for which real-time response
-	  is also required.  It also scales down nicely to
-	  smaller systems.
-
-	  Select this option if you are unsure.
-
-------------------------------------------------------------------------
-
-There is no prompt string after the "bool", so it is not user-settable.
-Therefore, it is driven directly off of the value of PREEMPTION, taking
-the global default of "n" if PREEMPTION is not set and "y" otherwise.
-
-You could change the second line to read:
-
-	bool "Go ahead!  Make my day!"
-
-or preferably something more helpful.  This change would allow a
-preemptible kernel to be built with non-preemptible RCU and vice versa,
-as used to be the case long ago.  However, it might be way better to drive
-the choice from some other Kconfig option and leave out the prompt string.
-
-> I see e72aeafc66 ("rcu: Remove prompt for RCU implementation") from
-> 2015, stating that the only possible choice for PREEMPTION=y kernels
-> is PREEMPT_RCU=y:
-> 
->     The RCU implementation is chosen based on PREEMPT and SMP config options
->     and is not really a user-selectable choice.  This commit removes the
->     menu entry, given that there is not much point in calling something a
->     choice when there is in fact no choice..  The TINY_RCU, TREE_RCU, and
->     PREEMPT_RCU Kconfig options continue to be selected based solely on the
->     values of the PREEMPT and SMP options.
-
-The main point of this commit was to reduce testing effort and sysadm
-confusion by removing choices that were not necessary back then.
-
-> As far as I can tell (which isn't all that far), TREE_RCU=y makes strictly
-> stronger forward progress guarantees with respect to rcu readers (in
-> that they can't be preempted.)
-
-TREE_RCU=y is absolutely required if you want a kernel to run on a system
-with more than one CPU, and for that matter, if you want preemptible RCU,
-even on a single-CPU system.
-
-> So, can PREEMPTION=y run with, say TREE_RCU=y? Or maybe I'm missing something
-> obvious there.
-
-If you meant to ask about PREEMPTION and PREEMPT_RCU, in theory, you
-can run any combination:
-
-PREEMPTION && PREEMPT_RCU:  This is what we use today for preemptible
-	kernels, so this works just fine (famous last words).
-
-PREEMPTION && !PREEMPT_RCU:  A preemptible kernel with non-preemptible
-	RCU, so that rcu_read_lock() is preempt_disable() and
-	rcu_read_unlock() is preempt_enable().	This should just work,
-	except for the fact that cond_resched() disappears, which
-	stymies some of RCU's forward-progress mechanisms.  And this
-	was the topic of our earlier discussion on this thread.  The
-	fixes should not be too hard.
-
-	Of course, this has not been either tested or used for at least
-	eight years, so there might be some bitrot.  If so, I will of
-	course be happy to help fix it.
-
-!PREEMPTION && PREEMPT_RCU:  A non-preemptible kernel with preemptible
-	RCU.  Although this particular combination of Kconfig
-	options has not been tested for at least eight years, giving
-	a kernel built with CONFIG_PREEMPT_DYNAMIC=y the preempt=none
-	kernel boot parameter gets you pretty close.  Again, there is
-	likely to be some bitrot somewhere, but way fewer bits to rot
-	than for PREEMPTION && !PREEMPT_RCU.  Outside of the current
-	CONFIG_PREEMPT_DYNAMIC=y case, I don't see the need for this
-	combination, but if there is a need and if it is broken, I will
-	be happy to help fix it.
-
-!PREEMPTION && !PREEMPT_RCU:  A non-preemptible kernel with non-preemptible
-	RCU, which is what we use today for non-preemptible kernels built
-	with CONFIG_PREEMPT_DYNAMIC=n.	So to repeat those famous last
-	works, this works just fine.
-
-Does that help, or am I missing the point of your question?
-
-							Thanx, Paul
