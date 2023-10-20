@@ -2,141 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BDA7D0C2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1987D0C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376697AbjJTJnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S1376724AbjJTJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376601AbjJTJnH (ORCPT
+        with ESMTP id S1376670AbjJTJnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:43:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C8C2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697794941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B8zhNyoPjCzPI6JP3Ig1aNei31DQ1+NDAezu4yisodc=;
-        b=UxtIqX+MWVWF0WopgYGyA3jaTL5QiWIRt+a4vAsLS2hf//RM8u5VZWT8FyzAHYgHIE+qQx
-        mscpg7WRahrcNA45CULBmKGy7Xu/J6VAgBf31Oy8ul6cfnAkueGZ9jdgpLEIM3cFmalDUl
-        X1ZAnvvnjbGV26LzYCKCr6YnY9XzGsQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303-Pc5woKiDNdSm7SbBggyydQ-1; Fri, 20 Oct 2023 05:42:19 -0400
-X-MC-Unique: Pc5woKiDNdSm7SbBggyydQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4084e4ce543so3842295e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:42:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697794937; x=1698399737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B8zhNyoPjCzPI6JP3Ig1aNei31DQ1+NDAezu4yisodc=;
-        b=Eoe1Y39bDRnEcvKbh2pgvr5Qd/em3GXwV0iMezBDbONb/MvQrhxvAF+jk70+K/9dIa
-         7kT97ZGtNCTYsFu0rmPytq8OLMfb1Etj+m7+sCKOEpzbT5PPCY1lkX0diX/ts56eTI/e
-         kGqFqkx0UJibgLNx57xLx2etwBaQl0Gk31PfTPCqv9yKhZiIqi9NoWlDodLKTPN9oz2E
-         OgjDEfekn3dAtCoYtWrhOqOoMfSGEw9L1SPGWDfoc2xqQFWML7IObiXeM85GeYXvOaTc
-         85/Ifm2z5H17LoK9KqxPCAtpfaZXCt1S6hlxl0ety9RU3XRDdr+gEiLimgSh1mbxLCqC
-         8Xeg==
-X-Gm-Message-State: AOJu0Yyu2Nbq0Du27ATzmLmfn1zWDfS10Wm5J59ySqRVRyli3XqotY4J
-        qsc+fzIkfxS1QdXtYPq2MOaAx0T1lGr6RWN+YNhgHKp/Xo682KLVjnOQd2YLCuFcbdIN58yDHq+
-        jOSWedswQ+HP2MdfBdTYYp8aHjMXydiYD
-X-Received: by 2002:a05:600c:5010:b0:401:b652:b6cf with SMTP id n16-20020a05600c501000b00401b652b6cfmr1071101wmr.13.1697794937689;
-        Fri, 20 Oct 2023 02:42:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHM1EM6T+wMVFzF33cC7Y8KaN3eWcPR5dXbra2BbI2AyJPoDU5x0TqLATbg4eiyQEcfWjjlHA==
-X-Received: by 2002:a05:600c:5010:b0:401:b652:b6cf with SMTP id n16-20020a05600c501000b00401b652b6cfmr1071091wmr.13.1697794937447;
-        Fri, 20 Oct 2023 02:42:17 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05600c155200b00402ff8d6086sm1734198wmg.18.2023.10.20.02.42.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 02:42:16 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 05:42:14 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Su Hui <suhui@nfschina.com>
-Subject: Re: [PATCH] virtio_ring: add an error code check in virtqueue_resize
-Message-ID: <20231020054140-mutt-send-email-mst@kernel.org>
-References: <20231020092320.209234-1-suhui@nfschina.com>
- <20231020053047-mutt-send-email-mst@kernel.org>
- <1697794601.5857713-2-xuanzhuo@linux.alibaba.com>
+        Fri, 20 Oct 2023 05:43:08 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CE2CA;
+        Fri, 20 Oct 2023 02:43:06 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K9bVNF022305;
+        Fri, 20 Oct 2023 09:42:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=gKgKE/3okkYeBZ3Ht9e//KK6FJL8oHwgra2hVscpmfI=;
+ b=RlLDxHJEzEqPRoWIKD6uJm1+QBLLHImXqr4S4LLiYO8JwhKYorJwHUSvrIWG5FPiMFq8
+ 3w9EEUEXO0NB+rzJRmtJjzBXnqkUyUq0r6jR4E5lxbD07WT6k3gylQKRZ71iTuSlTQnb
+ LZc80/SnBxRIpkQEoznO16fZavKsErCRRxeakusPB9r6FBhhoBxrMR/sBbFvC4WH1KT1
+ 1capsMliUSmuygT9Z40zfB9qQhz4n/Z8TLJPV8P8UIOQvPShDH4Jhv0nGW1pEd/z3krA
+ F4Xg/qcc666iTY0t6pKAZoI0/Q0/JRlL0IU05G8JDb/RGCikXu3YZpI3o47ft8jR+iEb Jw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubxa1b9p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 09:42:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K9gsfB012882
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 09:42:54 GMT
+Received: from [10.216.47.159] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 20 Oct
+ 2023 02:42:47 -0700
+Message-ID: <279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com>
+Date:   Fri, 20 Oct 2023 15:12:44 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697794601.5857713-2-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 01/10] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-2-quic_kriskura@quicinc.com>
+ <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 07m-R_smzPgJysJaoTRDAlUTKD0PviSu
+X-Proofpoint-ORIG-GUID: 07m-R_smzPgJysJaoTRDAlUTKD0PviSu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_07,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1015 malwarescore=0 mlxscore=0 priorityscore=1501 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310200080
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 05:36:41PM +0800, Xuan Zhuo wrote:
-> On Fri, 20 Oct 2023 05:34:32 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > On Fri, Oct 20, 2023 at 05:23:21PM +0800, Su Hui wrote:
-> > > virtqueue_resize_packed() or virtqueue_resize_split() can return
-> > > error code if failed, so add a check for this.
-> > >
-> > > Signed-off-by: Su Hui <suhui@nfschina.com>
-> > > ---
-> > >
-> > > I'm not sure that return directly is right or not,
-> > > maybe there are some process should do before return.
-> >
-> > yes - presizely what virtqueue_enable_after_reset does.
-> >
-> > Error handling in virtqueue_enable_after_reset is really weird BTW.
-> > For some reason it overrides the error code returned.
-> >
-> >
-> >
-> >
-> >
-> > >  drivers/virtio/virtio_ring.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > > index 51d8f3299c10..cf662c3a755b 100644
-> > > --- a/drivers/virtio/virtio_ring.c
-> > > +++ b/drivers/virtio/virtio_ring.c
-> > > @@ -2759,6 +2759,9 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
-> > >  	else
-> > >  		err = virtqueue_resize_split(_vq, num);
-> > >
-> > > +	if (err)
-> > > +		return err;
-> > > +
-> > >  	return virtqueue_enable_after_reset(_vq);
-> >
-> > So I think it should be something like:
-> >
-> > 	int err_reset = virtqueue_enable_after_reset(_vq);
-> > 	BUG_ON(err_reset);
-> >
-> > 	return err;
-> >
-> 
-> How about WARN and vq->broken?
-> 
-> Thanks.
 
-Well, what are the cases where it can happen practically?
 
+On 10/20/2023 2:02 PM, Johan Hovold wrote:
+> On Sat, Oct 07, 2023 at 09:17:57PM +0530, Krishna Kurapati wrote:
+>> Currently host-only capable DWC3 controllers support Multiport.
 > 
-> >
-> >
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(virtqueue_resize);
-> > > --
-> > > 2.30.2
-> >
+> You use the word "currently" in a few places like this (e.g. in comments
+> in the code). What exactly do you mean? That all current multiport
+> controllers are host-only, or that this is all that the driver supports
+> after your changes?
+> 
+This means that, today the capable multiport controllers are host-only 
+capable, not that the driver is designed that way.
 
+> Please rephrase accordingly throughout so that this becomes clear.
+> 
+> In any case it looks like the above sentence is at least missing an
+> "only".
+>   
+>> +static int dwc3_read_port_info(struct dwc3 *dwc)
+>> +{
+>> +	void __iomem *base;
+>> +	u8 major_revision;
+>> +	u32 offset = 0;
+> 
+> I'd move the initialisation just before the loop.
+> 
+>> +	u32 val;
+>> +
+>> +	/*
+>> +	 * Remap xHCI address space to access XHCI ext cap regs,
+> 
+> Drop comma and merge with next line and break it closer to 80 chars
+> (instead of 65).
+> 
+>> +	 * since it is needed to get port info.
+> 
+> s/since it is needed to get/which hold the/?
+> 
+>> +	 */
+>> +	base = ioremap(dwc->xhci_resources[0].start,
+>> +				resource_size(&dwc->xhci_resources[0]));
+>> +	if (IS_ERR(base))
+>> +		return PTR_ERR(base);
+>> +
+>> +	do {
+>> +		offset = xhci_find_next_ext_cap(base, offset,
+>> +				XHCI_EXT_CAPS_PROTOCOL);
+>> +		if (!offset)
+>> +			break;
+>> +
+>> +		val = readl(base + offset);
+>> +		major_revision = XHCI_EXT_PORT_MAJOR(val);
+>> +
+>> +		val = readl(base + offset + 0x08);
+>> +		if (major_revision == 0x03) {
+>> +			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
+>> +		} else if (major_revision <= 0x02) {
+>> +			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
+>> +		} else {
+>> +			dev_err(dwc->dev,
+> 
+> This should be dev_warn() (as in the xhci driver) now that you no longer
+> treat it as a fatal error.
+> 
+>> +				"Unrecognized port major revision %d\n",
+> 
+> Merge this with the previous line (even if it makes that line 83 chars).
+> 
+> Use a lower case 'U' for consistency with most of the error messages.
+> 
+Sure, will change this to dev_warn and modify the "u".
+
+>> +							major_revision);
+>> +		}
+>> +	} while (1);
+>> +
+>> +	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
+>> +			dwc->num_usb2_ports, dwc->num_usb3_ports);
+>> +
+>> +	iounmap(base);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static int dwc3_probe(struct platform_device *pdev)
+>>   {
+>>   	struct device		*dev = &pdev->dev;
+>> @@ -1846,6 +1892,7 @@ static int dwc3_probe(struct platform_device *pdev)
+>>   	void __iomem		*regs;
+>>   	struct dwc3		*dwc;
+>>   	int			ret;
+>> +	unsigned int		hw_mode;
+> 
+> Nit: I'd place this one before ret.
+> >>
+>>   	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
+>>   	if (!dwc)
+>> @@ -1926,6 +1973,20 @@ static int dwc3_probe(struct platform_device *pdev)
+>>   			goto err_disable_clks;
+>>   	}
+>>   
+>> +	/*
+>> +	 * Currently only DWC3 controllers that are host-only capable
+>> +	 * support Multiport.
+>> +	 */
+> 
+> So is this is a limitation of the hardware or implementation?
+> 
+
+This is how the hardware is implemented today. I wanted to convey that 
+"lets check for host-only condition before going for reading port info"
+
+>> +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
+>> +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
+>> +		ret = dwc3_read_port_info(dwc);
+>> +		if (ret)
+>> +			goto err_disable_clks;
+>> +	} else {
+>> +		dwc->num_usb2_ports = 1;
+>> +		dwc->num_usb3_ports = 1;
+>> +	}
+>> +
+>>   	spin_lock_init(&dwc->lock);
+>>   	mutex_init(&dwc->mutex);
+> 
+> Johan
+> 
