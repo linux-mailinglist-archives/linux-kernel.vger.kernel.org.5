@@ -2,228 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0AB7D0DE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398F17D0DE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377038AbjJTKsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
+        id S1377076AbjJTKtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376909AbjJTKsF (ORCPT
+        with ESMTP id S1377158AbjJTKsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:48:05 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EB71BEB
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:46:49 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c41e95efcbso99746866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697798808; x=1698403608; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C4FNgEavOCML3+P3zV8vrHxk6JHiOQKnLJ34VOXcto0=;
-        b=I+U0/W+nxa0AT0kG1eL+c5Ly/SNKmeK4/ez6MnXTJfz7denXzzVahRybJ11PHRb8kZ
-         re2PUuSIN0Q3s+hxb+dPRF6r+Vo5CqDjKiZOFT+61xT1C3WJPD2j4UtIl5BjEEui4WHP
-         HWLu1FKzX4nUcMu7D/KvTgKcfMyQSzDjhcPgu0ZspzuAnzZu8KxAnRxi+sQOWMswECn5
-         b36+uNSYwSsP+TydCRwaJxqJYv+1tMnW3SNxE/HOr9MRqPbIRdBzEe09n+oTqCR6MW1I
-         sI0UsXP8+ltJ7gJGsXtmUmu1Wf0P3XK/2zteUzNSCC+b+TRTDhoTjBLpGD96vvPR8gbW
-         HB+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697798808; x=1698403608;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C4FNgEavOCML3+P3zV8vrHxk6JHiOQKnLJ34VOXcto0=;
-        b=o7do5U0dFgxwxl6b0uqx/cb7moKg3iu9jaGSNUsQKoXnPxqJ5/yRAtAC/JQLzJLCqt
-         Tkxii5MfAhIPtBhUFqB9SI4i+x4B0g7enhHiVppVk0RaAQaz1AXpV0mfB2IOmoRURmmV
-         1Tytd2M6smk0nnPcWKPfl4LXC77E+dvM0Jpj2WJXLaDisZ5wXrupzLgdB2ix8N8bjMFX
-         5LdnqFwQN9nxKseFuToXIB4mf5ljuLzQwYr0KTkNHAwv5f8ozNBs8S6BZzDnt3CKpTwd
-         PiH6ZrlqOxIGO6ysE7eeKOJ29JBY7uptm43ouEEdAEGZWlJXbOYALCYBmPdEktuuVJGj
-         99pg==
-X-Gm-Message-State: AOJu0YzQ23PJXHYJz2d+G9dKr8NYIeIkqVbYq+Z89bMkj7IXoh7MXQRT
-        8U+Zu6VVAcjvd9rvW8k5btEpmQ==
-X-Google-Smtp-Source: AGHT+IGO0GMjn00PKL7e3zKeoD4F27QBrWs+IFdZxdcX9F+Azofcpoji3ND0CTBFW2yKpQjyxJQKzg==
-X-Received: by 2002:a17:907:3d92:b0:9b2:b71f:83be with SMTP id he18-20020a1709073d9200b009b2b71f83bemr978732ejc.1.1697798807645;
-        Fri, 20 Oct 2023 03:46:47 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id f17-20020a1709062c5100b009c5c5c2c5a4sm1205348ejh.219.2023.10.20.03.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 03:46:47 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 12:46:46 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v3 8/9] tty: Add SBI debug console support to HVC SBI
- driver
-Message-ID: <20231020-f1ec2b7e384a4cfeae39966f@orel>
-References: <20231020072140.900967-1-apatel@ventanamicro.com>
- <20231020072140.900967-9-apatel@ventanamicro.com>
+        Fri, 20 Oct 2023 06:48:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE0FD7F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697798919; x=1729334919;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=RxYUZ2PpfO+CDNDoisSuR+YpWUzJvJJvGtNgwVx+uTM=;
+  b=G8One7IAdxkG7pvDiJqEwxE2cOnezI9hdt1HbJyuBk/92QE2lF1ZK8J8
+   mUcNn1UeHbB7p3IPkHX8Chlu3+qPC704m4jeSDYU0LBNb6AvBi0YdEmDh
+   /3wORFoWl/6XXJxvGjHp7jaCR8fxviIqOqJMpKVZiduIta2MwcQ12WL0k
+   KxSi6pJrFcb7FcCxwzKfAf/Us5amAPNdbdprYj5UeTrvOWZGELP5PfJ7f
+   mxioJBQXq6KGX2yPVMedqMSHEDQ+edzBC/Az61Vo9QfjYjg3qBZJpABao
+   SjZ52mkKBgc5CD9cAaeZjubEBOuftf+feWUwQ6iNBpMSPL2RhBEJl796V
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383689102"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="383689102"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 03:47:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="827699001"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="827699001"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Oct 2023 03:47:04 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtn1x-0003PC-35;
+        Fri, 20 Oct 2023 10:47:01 +0000
+Date:   Fri, 20 Oct 2023 18:46:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Edward Cree <ecree.xilinx@gmail.com>
+Subject: include/linux/netlink.h:116:6: warning: 'sfc: Unsupported: only
+ support mangle ipv4.ttl when we have an exact match on ttl, mask used for
+ match (' directive output truncated writing 104 bytes into a region of size
+ 80
+Message-ID: <202310201835.EOKa6EBx-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231020072140.900967-9-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 12:51:39PM +0530, Anup Patel wrote:
-> From: Atish Patra <atishp@rivosinc.com>
-> 
-> RISC-V SBI specification supports advanced debug console
-> support via SBI DBCN extension.
-> 
-> Extend the HVC SBI driver to support it.
-> 
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  drivers/tty/hvc/Kconfig         |  2 +-
->  drivers/tty/hvc/hvc_riscv_sbi.c | 82 ++++++++++++++++++++++++++++++---
->  2 files changed, 76 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
-> index 4f9264d005c0..6e05c5c7bca1 100644
-> --- a/drivers/tty/hvc/Kconfig
-> +++ b/drivers/tty/hvc/Kconfig
-> @@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
->  
->  config HVC_RISCV_SBI
->  	bool "RISC-V SBI console support"
-> -	depends on RISCV_SBI_V01
-> +	depends on RISCV_SBI
->  	select HVC_DRIVER
->  	help
->  	  This enables support for console output via RISC-V SBI calls, which
-> diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_sbi.c
-> index 31f53fa77e4a..56da1a4b5aca 100644
-> --- a/drivers/tty/hvc/hvc_riscv_sbi.c
-> +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
-> @@ -39,21 +39,89 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
->  	return i;
->  }
->  
-> -static const struct hv_ops hvc_sbi_ops = {
-> +static const struct hv_ops hvc_sbi_v01_ops = {
->  	.get_chars = hvc_sbi_tty_get,
->  	.put_chars = hvc_sbi_tty_put,
->  };
->  
-> -static int __init hvc_sbi_init(void)
-> +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int count)
->  {
-> -	return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
-> +	phys_addr_t pa;
-> +	struct sbiret ret;
-> +
-> +	if (is_vmalloc_addr(buf)) {
-> +		pa = page_to_phys(vmalloc_to_page(buf)) + offset_in_page(buf);
-> +		if (PAGE_SIZE < (offset_in_page(buf) + count))
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ce55c22ec8b223a90ff3e084d842f73cfba35588
+commit: 66f728872636e1167aedc5a18be6760083911900 sfc: add decrement ttl by offloading set ipv4 ttl actions
+date:   8 weeks ago
+config: x86_64-randconfig-016-20231007 (https://download.01.org/0day-ci/archive/20231020/202310201835.EOKa6EBx-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310201835.EOKa6EBx-lkp@intel.com/reproduce)
 
-I thought checkpatch complained about uppercase constants being on the
-left in comparisons.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310201835.EOKa6EBx-lkp@intel.com/
 
-> +			count = PAGE_SIZE - offset_in_page(buf);
-> +	} else {
-> +		pa = __pa(buf);
-> +	}
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				count, lower_32_bits(pa), upper_32_bits(pa),
-> +				0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				count, pa, 0, 0, 0, 0);
-> +	if (ret.error)
-> +		return 0;
-> +
-> +	return count;
+All warnings (new ones prefixed by >>):
 
-Shouldn't we return ret.value here in case it's less than count? I see we
-already do that below in get().
+   In file included from include/uapi/linux/neighbour.h:6:0,
+                    from include/linux/netdevice.h:45,
+                    from include/net/sch_generic.h:5,
+                    from include/net/pkt_cls.h:7,
+                    from drivers/net/ethernet/sfc/tc.c:12:
+   drivers/net/ethernet/sfc/tc.c: In function 'efx_tc_mangle.isra.17':
+>> include/linux/netlink.h:116:6: warning: 'sfc: Unsupported: only support mangle ipv4.ttl when we have an exact match on ttl, mask used for match (' directive output truncated writing 104 bytes into a region of size 80 [-Wformat-truncation=]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:1155:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: directive argument in the range [0, 254]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:1155:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: 'snprintf' output between 107 and 110 bytes into a destination of size 80
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:1155:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c: In function 'efx_tc_flower_record_encap_match':
+   include/linux/netlink.h:116:6: warning: ' conflicts with existing pseudo(MASK) entry for TOS mask ' directive output truncated writing 57 bytes into a region of size between 33 and 39 [-Wformat-truncation=]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:625:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: directive argument in the range [0, 2147483647]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:625:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: 'snprintf' output between 103 and 115 bytes into a destination of size 80
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:625:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: warning: ' conflicts with existing pseudo(MASK) entry for mask ' directive output truncated writing 53 bytes into a region of size between 24 and 33 [-Wformat-truncation=]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:632:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: directive argument in the range [0, 2147483647]
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:632:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:116:6: note: 'snprintf' output between 102 and 120 bytes into a destination of size 80
+     if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,        \
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           "%s" fmt "%s", "", ##args, "") >=          \
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netlink.h:131:2: note: in expansion of macro 'NL_SET_ERR_MSG_FMT'
+     NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+     ^~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/sfc/tc.c:632:5: note: in expansion of macro 'NL_SET_ERR_MSG_FMT_MOD'
+        NL_SET_ERR_MSG_FMT_MOD(extack,
+        ^~~~~~~~~~~~~~~~~~~~~~
 
->  }
-> -device_initcall(hvc_sbi_init);
->  
-> -static int __init hvc_sbi_console_init(void)
-> +static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count)
->  {
-> -	hvc_instantiate(0, 0, &hvc_sbi_ops);
-> +	phys_addr_t pa;
-> +	struct sbiret ret;
-> +
-> +	if (is_vmalloc_addr(buf)) {
-> +		pa = page_to_phys(vmalloc_to_page(buf)) + offset_in_page(buf);
-> +		if (PAGE_SIZE < (offset_in_page(buf) + count))
-> +			count = PAGE_SIZE - offset_in_page(buf);
-> +	} else {
-> +		pa = __pa(buf);
-> +	}
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				count, lower_32_bits(pa), upper_32_bits(pa),
-> +				0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				count, pa, 0, 0, 0, 0);
-> +	if (ret.error)
-> +		return 0;
-> +
-> +	return ret.value;
-> +}
-> +
-> +static const struct hv_ops hvc_sbi_dbcn_ops = {
-> +	.put_chars = hvc_sbi_dbcn_tty_put,
-> +	.get_chars = hvc_sbi_dbcn_tty_get,
-> +};
-> +
-> +static int __init hvc_sbi_init(void)
-> +{
-> +	int err;
-> +
-> +	if ((sbi_spec_version >= sbi_mk_version(2, 0)) &&
-> +	    (sbi_probe_extension(SBI_EXT_DBCN) > 0)) {
-> +		err = PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_dbcn_ops, 16));
 
-Why an outbuf size of only 16?
+vim +116 include/linux/netlink.h
 
-> +		if (err)
-> +			return err;
-> +		hvc_instantiate(0, 0, &hvc_sbi_dbcn_ops);
-> +	} else {
-> +		if (IS_ENABLED(CONFIG_RISCV_SBI_V01)) {
-> +			err = PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_v01_ops, 16));
-> +			if (err)
-> +				return err;
-> +			hvc_instantiate(0, 0, &hvc_sbi_v01_ops);
-> +		} else {
-> +			return -ENODEV;
-> +		}
-> +	}
->  
->  	return 0;
->  }
-> -console_initcall(hvc_sbi_console_init);
-> +device_initcall(hvc_sbi_init);
-> -- 
-> 2.34.1
->
+2d4bc93368f5a0 Johannes Berg 2017-04-12  107  
+51c352bdbcd23d Edward Cree   2022-10-18  108  /* We splice fmt with %s at each end even in the snprintf so that both calls
+51c352bdbcd23d Edward Cree   2022-10-18  109   * can use the same string constant, avoiding its duplication in .ro
+51c352bdbcd23d Edward Cree   2022-10-18  110   */
+51c352bdbcd23d Edward Cree   2022-10-18  111  #define NL_SET_ERR_MSG_FMT(extack, fmt, args...) do {			       \
+51c352bdbcd23d Edward Cree   2022-10-18  112  	struct netlink_ext_ack *__extack = (extack);			       \
+51c352bdbcd23d Edward Cree   2022-10-18  113  									       \
+51c352bdbcd23d Edward Cree   2022-10-18  114  	if (!__extack)							       \
+51c352bdbcd23d Edward Cree   2022-10-18  115  		break;							       \
+51c352bdbcd23d Edward Cree   2022-10-18 @116  	if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,	       \
+51c352bdbcd23d Edward Cree   2022-10-18  117  		     "%s" fmt "%s", "", ##args, "") >=			       \
+51c352bdbcd23d Edward Cree   2022-10-18  118  	    NETLINK_MAX_FMTMSG_LEN)					       \
+51c352bdbcd23d Edward Cree   2022-10-18  119  		net_warn_ratelimited("%s" fmt "%s", "truncated extack: ",      \
+51c352bdbcd23d Edward Cree   2022-10-18  120  				     ##args, "\n");			       \
+51c352bdbcd23d Edward Cree   2022-10-18  121  									       \
+51c352bdbcd23d Edward Cree   2022-10-18  122  	do_trace_netlink_extack(__extack->_msg_buf);			       \
+51c352bdbcd23d Edward Cree   2022-10-18  123  									       \
+51c352bdbcd23d Edward Cree   2022-10-18  124  	__extack->_msg = __extack->_msg_buf;				       \
+51c352bdbcd23d Edward Cree   2022-10-18  125  } while (0)
+51c352bdbcd23d Edward Cree   2022-10-18  126  
 
-Thanks,
-drew
+:::::: The code at line 116 was first introduced by commit
+:::::: 51c352bdbcd23d7ce46b06c1e64c82754dc44044 netlink: add support for formatted extack messages
+
+:::::: TO: Edward Cree <ecree.xilinx@gmail.com>
+:::::: CC: Jakub Kicinski <kuba@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
