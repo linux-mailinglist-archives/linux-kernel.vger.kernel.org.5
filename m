@@ -2,163 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCAA7D1618
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EC27D1634
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjJTTHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
+        id S229779AbjJTTLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjJTTG4 (ORCPT
+        with ESMTP id S229614AbjJTTLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:06:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BA21A8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:54 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7a6fd18abso15252917b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:54 -0700 (PDT)
+        Fri, 20 Oct 2023 15:11:12 -0400
+Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B176FD5B
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:11:09 -0700 (PDT)
+Received: by mail-oo1-xc4a.google.com with SMTP id 006d021491bc7-581f38fe82cso1969672eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697828813; x=1698433613; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJMiGrIhknpVYB+lLA3TXzIajTqOeaWLMLUUQN9BbMk=;
-        b=Wmj6A+bLcsIAm1sAyB9SiKTyAe/xF4yGTsuzgHhla78U+m78X9HLczAgVW9fdt1hz4
-         eUP/Ed9vn77cDvPwBq3mIS9g9tDknUcXszNrxz55l/hfRIE7/Ho6H2MVvgeZMqnp8Hu7
-         VUgFPcJwPA+v4HwRgt3f7YKej1k4zvL+CncCqGHJwEvc4qgkEAUhm9Ad9iKgfng7GHzh
-         0NT5gLdiEeLXMYNmxZi5TOrMBPwLMsYVNWt36c+s5UPIa9TBBxfUBNPrYt3QaWaYVM+p
-         kOCzH7QUvDm0jL82WgX/3W+cGsu3FuHrfFY69jfoWX77YjnW5phMe/oYTHjEQabilxN0
-         w10A==
+        d=google.com; s=20230601; t=1697829069; x=1698433869; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JCm2M6I5bgNLk9qAIkXy20cqaWg+1XaBIDAOydYH9Ss=;
+        b=U5Ny8KDY4rZVRqWlkixhibI67Yo2VCbvNUiMvMCxbU4+s4tK+in4eDDVKaMpGaZUvw
+         7Hk2Uub+4GSzi18+BC6aNa2MWElAd2USZF5UHKn/HwPVDfsS2OObGDOSkXnUUm4TN1N7
+         UW5aa+1kTPHH0smZ3uEjs2UMwQb2Iw4EA3/V0JXDZmbJ2ja2dujdXlkdRt5LPWnd5+2S
+         XqlAMzlya8RqudGicN7esfIn7ZKeXIfj1h23b7YJn77nZfhwfqjKOEp44Dfe8FZ9nTo6
+         iueD44LmqxV6/cdlo8AMpNhCVwo6bX4OTIjfZ2uwdLahoBX32hxalTXZDff9wYYNBDld
+         7UfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697828813; x=1698433613;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJMiGrIhknpVYB+lLA3TXzIajTqOeaWLMLUUQN9BbMk=;
-        b=oX0FttAaVtmxllXMnylZMDP+LaDwQbYBr33gOWoYZTL+L+K3RQkkO7tlaT48bIWC+U
-         srTAkn7GZmdonmhV0+LeIpuXq5dH1hQJsl8cKWdVtiH1XrJgjVCLCOvHpTwq7o7nHtaK
-         /T5g/Bzt5bchUakCkqjCaf/jIo1qnAA5LgEE0gw/pb3KyR4JikerzbkoRQUsKU3RO6K1
-         vgROM97Tam51ORHrLYJSx0y+b67Yz50LBVo6lQMoUmq+MdIdsGTAlq/bGANCJcPYVn9B
-         nrtZtVfHZNoJzSWYqrD4acM2JFnd1JOCTsgnhye0BgN0bFSLpP+If65DmwTkWCqo2Fcj
-         kqXw==
-X-Gm-Message-State: AOJu0YxME+VIyCZhcY2/fhBsm2ytyXSKrIy59ihkza/nLKYAlTC5s770
-        R1Zp3O6jH2d+4ysCrdvau6FD8neHOl0=
-X-Google-Smtp-Source: AGHT+IGIgsmKl9/EeQe6qAywriK9UwbK/k300V7nBKfGTSYuUwbuxCBVs3ZRc3wOXbeQIlmP3vxDbl1J5EU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d05:0:b0:d9a:5b63:a682 with SMTP id
- 5-20020a250d05000000b00d9a5b63a682mr51644ybn.13.1697828813642; Fri, 20 Oct
- 2023 12:06:53 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 12:06:51 -0700
-In-Reply-To: <20230911114347.85882-9-cloudliang@tencent.com>
+        d=1e100.net; s=20230601; t=1697829069; x=1698433869;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JCm2M6I5bgNLk9qAIkXy20cqaWg+1XaBIDAOydYH9Ss=;
+        b=t/qxnsPxQ5jLznl+Mp4zHrZisfEwqtDv/mB7S+AzVGbd2xTaCN23swiwzvEhTVspFJ
+         7Qneo2kp9mGvaDHJ+Ly6BxN22FW7IvaHHcqlnoVLA9FPAjGcoAM90hB4tWVx4v4Xs10O
+         +dnDRCtujmkSUwsuCai072lKzy+2Cwu2qFXy3YfmhBBCUzApKs8u2oI88T2D+rKn4yXj
+         76QYXIosIhYGD2s5PgjjG8Irfttzd01heW0OwUvy9w68LSzId1GRmPKRPgPKeJyMrp9+
+         0nLj1C7VvQOiqP5g4ljGCg2BYcc/CikluPHcWSNbIehvczEzOeVhIV1Ih7Kiai+l7IAk
+         Y/MA==
+X-Gm-Message-State: AOJu0YyCyKbqZDYaGNiwDmAwgJ2ReNmuy+AKwz+nfT6Sm/0bYl27OrgQ
+        GEbVZXFgHjNrXFb9Wwg16FzuwZQaRJf3eq4AeQ==
+X-Google-Smtp-Source: AGHT+IEqvLzXV0BCbJ0SSa/RhsQXtiSfYp3NxAn7pGZKKdDUbMG4kYhUVRRgyLbX/hTr51wstV6LTNAoB5/kVEFMnw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a4a:7441:0:b0:581:dbb1:219b with SMTP
+ id t1-20020a4a7441000000b00581dbb1219bmr947789ooe.0.1697829068928; Fri, 20
+ Oct 2023 12:11:08 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 19:11:07 +0000
 Mime-Version: 1.0
-References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-9-cloudliang@tencent.com>
-Message-ID: <ZTLPy9SYzJmgMxw9@google.com>
-Subject: Re: [PATCH v4 8/9] KVM: selftests: Test Intel supported fixed
- counters bit mask
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+X-B4-Tracking: v=1; b=H4sIAMrQMmUC/x2NUQrCMBAFr1L224UkpZB4FRExybYuSBp3tbaU3
+ t3g5zyYNzsoCZPCudtBaGHluTSwpw7S414mQs6NwRnXW+MM6ltKqhtm4YVEsc5fEtRPrc8N48s NwZtbU2Vqc8IQffSjtbk3AdppFRp5/Qcv1+P4AVjzVWGAAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697829067; l=2877;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=u+18cFaIHnUUKwHSCJsgL5LfGU9t+G4HsmSCTeLLoLQ=; b=8FO7so2vWbouPTrrT9aPtQNW43rRsmEn5X0jiNZbdX35BM72HcSNWPRlPuRiYWxYkDjOogAhU
+ riJeM/LPOzjBUjlfqbUeeBCfheXKSoLdgYkccwoGD7iS+oBRAs5jLLV
+X-Mailer: b4 0.12.3
+Message-ID: <20231020-strncpy-drivers-power-supply-bq25980_charger-c-v1-1-7b93be54537b@google.com>
+Subject: [PATCH] power: supply: bq25980: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023, Jinrong Liang wrote:
-> From: Jinrong Liang <cloudliang@tencent.com>
-> 
-> Add a test to check that fixed counters enabled via guest
-> CPUID.0xA.ECX (instead of EDX[04:00]) work as normal as usual.
-> 
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> ---
->  .../selftests/kvm/x86_64/pmu_counters_test.c  | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index df76f0f2bfd0..12c00bf94683 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -301,6 +301,59 @@ static void test_intel_counters_num(void)
->  	test_oob_fixed_ctr(nr_fixed_counters + 1);
->  }
->  
-> +static void fixed_counters_guest_code(void)
-> +{
-> +	uint64_t supported_bitmask = this_cpu_property(X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK);
-> +	uint32_t nr_fixed_counter = this_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
-> +	uint64_t msr_val;
-> +	unsigned int i;
-> +	bool expected;
-> +
-> +	for (i = 0; i < nr_fixed_counter; i++) {
-> +		expected = supported_bitmask & BIT_ULL(i) || i < nr_fixed_counter;
-> +
-> +		wrmsr_safe(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
-> +		wrmsr_safe(MSR_CORE_PERF_FIXED_CTR_CTRL, BIT_ULL(4 * i));
-> +		wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL, BIT_ULL(PMC_IDX_FIXED + i));
-> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
-> +		wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL, 0);
-> +		rdmsr_safe(MSR_CORE_PERF_FIXED_CTR0 + i, &msr_val);
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Y'all are making this way harder than it needs to be.  The previous patch already
-created a testcase to verify fixed counters, just use that!  Then test case verify
-that trying to enable unsupported fixed counters results in #GP, as opposed to the
-above which doesn't do any actual checking, e.g. KVM could completely botch the
-{RD,WR}MSR emulation but pass the test by not programming up a counter in perf.
+We expect bq->model_name to be NUL-terminated based on its usage with
+sysfs_emit and format strings:
 
-I.e. rather than have a separate test for the supported bitmask goofiness, have
-the fixed counters test iterate over the bitmask.  And then add a patch to verify
-the counters can be enabled and actually count.
+val->strval is assigned to bq->model_name in
+bq25980_get_charger_property():
+|       val->strval = bq->model_name;
 
-And peeking ahead at the vPMU version test, it's the exact same story there.
-Instead of hardcoding one-off tests, iterate on the version.  The end result is
-that the test provides _more_ coverage with _less_ code.  And without any of the
-hardcoded magic that takes a crystal ball to understand.
+... then in power_supply_sysfs.c we use value.strval with a format string:
+|       ret = sysfs_emit(buf, "%s\n", value.strval);
 
-*sigh* 
+we assigned value.strval via:
+|       ret = power_supply_get_property(psy, psp, &value);
+... which invokes psy->desc->get_property():
+|       return psy->desc->get_property(psy, psp, val);
 
-And even more importantly, this test is complete garbage.  The SDM clearly states
-that 
+with bq25980_get_charger_property():
+|       static const struct power_supply_desc bq25980_power_supply_desc = {
+...
+|       	.get_property = bq25980_get_charger_property,
 
-  With Architectural Performance Monitoring Version 5, register CPUID.0AH.ECX
-  indicates Fixed Counter enumeration. It is a bit mask which enumerates the
-  supported Fixed Counters in a processor. If bit 'i' is set, it implies that
-  Fixed Counter 'i' is supported.
+Moreover, no NUL-padding is required as bq is zero-allocated in
+bq25980_charger.c:
+|       bq = devm_kzalloc(dev, sizeof(*bq), GFP_KERNEL);
 
-*sigh*
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-The test passes because it only iterates over counters < nr_fixed_counter.  So
-as written, the test worse than useless.  It provides no meaningful value and is
-actively misleading.
+Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
+sizeof(dest)) as this more closely ties the destination buffer and the
+length.
 
-	for (i = 0; i < nr_fixed_counter; i++) {
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq24190_charger-c-v1-1-e896223cb795@google.com/
+Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com/
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-Maybe I haven't been explicit enough: the point of writing tests is to find and
-prevent bugs, not to get the tests passing.  That isn't to say we don't want a
-clean testgrid, but writing a "test" that doesn't actually test anything is a
-waste of everyone's time.
+Found with: $ rg "strncpy\("
+---
+ drivers/power/supply/bq25980_charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I appreciate that the PMU is subtle and complex (understatement), but things like
-this, where observing that the result of "supported_bitmask & BIT_ULL(i)" doesn't
-actually affect anything, doesn't require PMU knowledge.
+diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
+index d8411722266f..0c5e2938bb36 100644
+--- a/drivers/power/supply/bq25980_charger.c
++++ b/drivers/power/supply/bq25980_charger.c
+@@ -1223,7 +1223,7 @@ static int bq25980_probe(struct i2c_client *client)
+ 
+ 	mutex_init(&bq->lock);
+ 
+-	strncpy(bq->model_name, id->name, I2C_NAME_SIZE);
++	strscpy(bq->model_name, id->name, sizeof(bq->model_name));
+ 	bq->chip_info = &bq25980_chip_info_tbl[id->driver_data];
+ 
+ 	bq->regmap = devm_regmap_init_i2c(client,
 
-	for (i = 0; i < nr_fixed_counter; i++) {                                
-		expected = supported_bitmask & BIT_ULL(i) || i < nr_fixed_counter;
+---
+base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
+change-id: 20231020-strncpy-drivers-power-supply-bq25980_charger-c-9b8b8f11d309
 
-A concrete suggestion for writing tests: introduce bugs in what you're testing
-and verify that the test actually detects the bugs.  If you tried to do that for
-the above bitmask test you would have discovered you can't break KVM because KVM
-doesn't support this!  And if your test doesn't detect the bugs, that should also
-be a big clue that something isn't quite right.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
