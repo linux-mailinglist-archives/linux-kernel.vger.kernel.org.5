@@ -2,127 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34607D14BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB107D14BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjJTRTX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 13:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        id S1377908AbjJTRUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377886AbjJTRTV (ORCPT
+        with ESMTP id S229614AbjJTRUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:19:21 -0400
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03901D6F;
-        Fri, 20 Oct 2023 10:19:19 -0700 (PDT)
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-57b83ff7654so60093eaf.1;
-        Fri, 20 Oct 2023 10:19:19 -0700 (PDT)
+        Fri, 20 Oct 2023 13:20:04 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE1311B
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:20:02 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-351610727adso1459095ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1697822402; x=1698427202; darn=vger.kernel.org;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Jk3ZSSeatr3lIVeOg2wA+LI5enZ+MOKk3ZrYh+aCyY=;
+        b=BK0i2PChpnzpg/w07GQYKfHRpodtcFllZcIu4/UcDDx8w9tWzVAy9Ok+NKD6VrcysS
+         qLlXhObKy0/TRKHqzpOJWdgUlA56G/4CX2wNO57iMaBvVkZdrYnCn1omv6tuTmrD+7Db
+         goQn6Fb6mWuLNVs2dWAeGYJ8Ra8HqUbXXosAs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697822359; x=1698427159;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FZdk3IcTInpdu6dxFpN0K1xv4jMgNLN6oNZ7x7JyzCo=;
-        b=AhX5+W6N1NCFDJcb5tXA04V0IWNWY7UsKddrgv3ryhdi8SXVBGTZYHtn/kPG1+g19J
-         tjScrV3xPZvcvWwNJqVsrAlIIvwQstCK25IsJ8yIl5m6QyVa1wFmBAH4WmQDsOD8tHTA
-         YpfHplqIhICBa8Cex71hbzse9k1MqaHVa2/gbmylM68qUt+G4c7fcWAS3m9RUtedQ8p3
-         xTE8W1A2VvNj0r8Ltf6BxvmRjogIGT7HEzqJ1nAP9tCCRhxBup2WZgcpByXrjx2izs51
-         0+07MRl9gP9H67SmyvFW8DvTS7FxV8TB5kH0yRyyIvyv5ebQ8rGz1AtgoFYzrEQnd27Z
-         c+Fg==
-X-Gm-Message-State: AOJu0YxdR+gWBAAiqfPME/0sLBfgnx4QdSU4+243beybFSLM4AUZQGuz
-        dmQWrU1EeoVaprBMQNOBahNiW7WBoiQsmo9CJ68=
-X-Google-Smtp-Source: AGHT+IEbQq8YrmdXgL+MSVnT0GuElAEUqPisQdazuRTc9bl+OmZNuqaQgzsDJWHe1BP1Pigr5y6ig4GK4kRYrEfNFws=
-X-Received: by 2002:a4a:e9ed:0:b0:584:537:ffbd with SMTP id
- w13-20020a4ae9ed000000b005840537ffbdmr2759105ooc.0.1697822359012; Fri, 20 Oct
- 2023 10:19:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697822402; x=1698427202;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6Jk3ZSSeatr3lIVeOg2wA+LI5enZ+MOKk3ZrYh+aCyY=;
+        b=Rr5SQ8EmSzIyi8cZE1av11lWl3YIg4Ulvm29Qoe/ChtwwCKarlUPlrof7o+p99/REm
+         LG2MIc1HiyhFepy0EDqXTtomjg4vf3IwcJ//bcur3pZFaJi6ZwxgN2hP/JqVkRvdFyvk
+         bybcc7h0r26cAfK3AX90WlduSDxx5tMNHskZgTZQlAf74/pawzS83Amd3HuGcgxTBxff
+         4auN3lMdCO6odQZft4MchLS9RzlI40Y16ZILHNrBJ3aP9IcCr5KqUNUAdY8aDQBWePCo
+         USVDqRBXMtw4IMxEJzgOafqjpsmwBC1AJsuCXwXT4FQ4zTZO2YGQORmuRcCiPvt9jkO4
+         svWQ==
+X-Gm-Message-State: AOJu0YytSAEpSfXClMqNux0eJOFbvDIGCbUW8puP5kpTx9mRNvo8yCIq
+        fkbpO022a2lX75OVZLBmWAYjbw==
+X-Google-Smtp-Source: AGHT+IG5s/Wh0GiXVTRHGycjRqrkjj2WP6fjXT7R4vfOijDNRJcy+ruHZRUjngHSuX9EL04wbvxIcQ==
+X-Received: by 2002:a05:6602:2c88:b0:7a6:7d87:1181 with SMTP id i8-20020a0566022c8800b007a67d871181mr3432486iow.2.1697822401899;
+        Fri, 20 Oct 2023 10:20:01 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id gw8-20020a0566381ee800b00437a3c128dfsm655349jab.108.2023.10.20.10.20.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 10:20:01 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------gmVXVuiL9iWoW47fv3lRzrkr"
+Message-ID: <817898d0-dbe1-4016-af10-abd1731748ea@linuxfoundation.org>
+Date:   Fri, 20 Oct 2023 11:20:00 -0600
 MIME-Version: 1.0
-References: <13365827.uLZWGnKmhe@kreacher> <8282829.T7Z3S40VBb@kreacher> <63b7f4da-8ddb-443c-8074-66b7b0c6cd84@arm.com>
-In-Reply-To: <63b7f4da-8ddb-443c-8074-66b7b0c6cd84@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 20 Oct 2023 19:19:08 +0200
-Message-ID: <CAJZ5v0j9aZ-TGWj5oKeG3+pdDwpYv4y28-k3UtUMiyAroDMN5Q@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] thermal: trip: Define for_each_trip() macro
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     shuah <shuah@kernel.org>, skhan@linuxfoundation.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kselftest fixes update for Linux 6.6-rc7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 7:14 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 10/6/23 18:41, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Define a new macro for_each_trip() to be used by the thermal core code
-> > and thermal governors for walking trips in a given thermal zone.
-> >
-> > Modify for_each_thermal_trip() to use this macro instead of an open-
-> > coded loop over trips.
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/thermal/thermal_core.h |    3 +++
-> >   drivers/thermal/thermal_trip.c |    7 ++++---
-> >   2 files changed, 7 insertions(+), 3 deletions(-)
-> >
-> > Index: linux-pm/drivers/thermal/thermal_core.h
-> > ===================================================================
-> > --- linux-pm.orig/drivers/thermal/thermal_core.h
-> > +++ linux-pm/drivers/thermal/thermal_core.h
-> > @@ -116,6 +116,9 @@ void __thermal_zone_device_update(struct
-> >                                 enum thermal_notify_event event);
-> >
-> >   /* Helpers */
-> > +#define for_each_trip(__tz, __trip)  \
-> > +     for (__trip = __tz->trips; __trip - __tz->trips < __tz->num_trips; __trip++)
-> > +
-> >   void __thermal_zone_set_trips(struct thermal_zone_device *tz);
-> >   int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
-> >                           struct thermal_trip *trip);
-> > Index: linux-pm/drivers/thermal/thermal_trip.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/thermal/thermal_trip.c
-> > +++ linux-pm/drivers/thermal/thermal_trip.c
-> > @@ -13,12 +13,13 @@ int for_each_thermal_trip(struct thermal
-> >                         int (*cb)(struct thermal_trip *, void *),
-> >                         void *data)
-> >   {
-> > -     int i, ret;
-> > +     struct thermal_trip *trip;
-> > +     int ret;
-> >
-> >       lockdep_assert_held(&tz->lock);
-> >
-> > -     for (i = 0; i < tz->num_trips; i++) {
-> > -             ret = cb(&tz->trips[i], data);
-> > +     for_each_trip(tz, trip) {
-> > +             ret = cb(trip, data);
-> >               if (ret)
-> >                       return ret;
-> >       }
-> >
-> >
-> >
->
-> LGTM
->
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+This is a multi-part message in MIME format.
+--------------gmVXVuiL9iWoW47fv3lRzrkr
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks!
+Hi Linus,
+
+Please pull the following Kselftest fixes update for Linux 6.6-rc7.
+
+This Kselftest update for Linux 6.6-rc7 consists of one single fix
+to assert check in user_events abi_test to properly check bit value
+on Big Endian architectures. The current code treats the bit values
+as Little Endian and the check fails on Big Endian.
+
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit 6f874fa021dfc7bf37f4f37da3a5aaa41fe9c39c:
+
+   selftests: Fix wrong TARGET in kselftest top level Makefile (2023-09-26 18:47:37 -0600)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest_active-fixes-6.6-rc7
+
+for you to fetch changes up to cf5a103c98a6fb9ee3164334cb5502df6360749b:
+
+   selftests/user_events: Fix abi_test for BE archs (2023-10-17 15:07:19 -0600)
+
+----------------------------------------------------------------
+linux_kselftest_active-fixes-6.6-rc7
+
+This Kselftest update for Linux 6.6-rc7 consists of one single fix
+to assert check in user_events abi_test to properly check bit value
+on Big Endian architectures. The current code treats the bit values
+as Little Endian and the check fails on Big Endian.
+
+----------------------------------------------------------------
+Beau Belgrave (1):
+       selftests/user_events: Fix abi_test for BE archs
+
+  tools/testing/selftests/user_events/abi_test.c | 16 +++++++++-------
+  1 file changed, 9 insertions(+), 7 deletions(-)
+----------------------------------------------------------------
+--------------gmVXVuiL9iWoW47fv3lRzrkr
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux_kselftest_active-fixes-6.6-rc7.diff"
+Content-Disposition: attachment;
+ filename="linux_kselftest_active-fixes-6.6-rc7.diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3VzZXJfZXZlbnRzL2FiaV90
+ZXN0LmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy91c2VyX2V2ZW50cy9hYmlfdGVzdC5j
+CmluZGV4IDgyMDJmMTMyN2MzOS4uZjU1NzVlZjIwMDdjIDEwMDY0NAotLS0gYS90b29scy90
+ZXN0aW5nL3NlbGZ0ZXN0cy91c2VyX2V2ZW50cy9hYmlfdGVzdC5jCisrKyBiL3Rvb2xzL3Rl
+c3Rpbmcvc2VsZnRlc3RzL3VzZXJfZXZlbnRzL2FiaV90ZXN0LmMKQEAgLTQ3LDcgKzQ3LDcg
+QEAgc3RhdGljIGludCBjaGFuZ2VfZXZlbnQoYm9vbCBlbmFibGUpCiAJcmV0dXJuIHJldDsK
+IH0KIAotc3RhdGljIGludCByZWdfZW5hYmxlKGxvbmcgKmVuYWJsZSwgaW50IHNpemUsIGlu
+dCBiaXQpCitzdGF0aWMgaW50IHJlZ19lbmFibGUodm9pZCAqZW5hYmxlLCBpbnQgc2l6ZSwg
+aW50IGJpdCkKIHsKIAlzdHJ1Y3QgdXNlcl9yZWcgcmVnID0gezB9OwogCWludCBmZCA9IG9w
+ZW4oZGF0YV9maWxlLCBPX1JEV1IpOwpAQCAtNjksNyArNjksNyBAQCBzdGF0aWMgaW50IHJl
+Z19lbmFibGUobG9uZyAqZW5hYmxlLCBpbnQgc2l6ZSwgaW50IGJpdCkKIAlyZXR1cm4gcmV0
+OwogfQogCi1zdGF0aWMgaW50IHJlZ19kaXNhYmxlKGxvbmcgKmVuYWJsZSwgaW50IGJpdCkK
+K3N0YXRpYyBpbnQgcmVnX2Rpc2FibGUodm9pZCAqZW5hYmxlLCBpbnQgYml0KQogewogCXN0
+cnVjdCB1c2VyX3VucmVnIHJlZyA9IHswfTsKIAlpbnQgZmQgPSBvcGVuKGRhdGFfZmlsZSwg
+T19SRFdSKTsKQEAgLTkwLDcgKzkwLDggQEAgc3RhdGljIGludCByZWdfZGlzYWJsZShsb25n
+ICplbmFibGUsIGludCBiaXQpCiB9CiAKIEZJWFRVUkUodXNlcikgewotCWxvbmcgY2hlY2s7
+CisJaW50IGNoZWNrOworCWxvbmcgY2hlY2tfbG9uZzsKIAlib29sIHVtb3VudDsKIH07CiAK
+QEAgLTk5LDYgKzEwMCw3IEBAIEZJWFRVUkVfU0VUVVAodXNlcikgewogCiAJY2hhbmdlX2V2
+ZW50KGZhbHNlKTsKIAlzZWxmLT5jaGVjayA9IDA7CisJc2VsZi0+Y2hlY2tfbG9uZyA9IDA7
+CiB9CiAKIEZJWFRVUkVfVEVBUkRPV04odXNlcikgewpAQCAtMTM2LDkgKzEzOCw5IEBAIFRF
+U1RfRih1c2VyLCBiaXRfc2l6ZXMpIHsKIAogI2lmIEJJVFNfUEVSX0xPTkcgPT0gOAogCS8q
+IEFsbG93IDAtNjQgYml0cyBmb3IgNjQtYml0ICovCi0JQVNTRVJUX0VRKDAsIHJlZ19lbmFi
+bGUoJnNlbGYtPmNoZWNrLCBzaXplb2YobG9uZyksIDYzKSk7Ci0JQVNTRVJUX05FKDAsIHJl
+Z19lbmFibGUoJnNlbGYtPmNoZWNrLCBzaXplb2YobG9uZyksIDY0KSk7Ci0JQVNTRVJUX0VR
+KDAsIHJlZ19kaXNhYmxlKCZzZWxmLT5jaGVjaywgNjMpKTsKKwlBU1NFUlRfRVEoMCwgcmVn
+X2VuYWJsZSgmc2VsZi0+Y2hlY2tfbG9uZywgc2l6ZW9mKGxvbmcpLCA2MykpOworCUFTU0VS
+VF9ORSgwLCByZWdfZW5hYmxlKCZzZWxmLT5jaGVja19sb25nLCBzaXplb2YobG9uZyksIDY0
+KSk7CisJQVNTRVJUX0VRKDAsIHJlZ19kaXNhYmxlKCZzZWxmLT5jaGVja19sb25nLCA2Mykp
+OwogI2VuZGlmCiAKIAkvKiBEaXNhbGxvd2VkIHNpemVzIChldmVyeXRoaW5nIGJlc2lkZSA0
+IGFuZCA4KSAqLwpAQCAtMjAwLDcgKzIwMiw3IEBAIHN0YXRpYyBpbnQgY2xvbmVfY2hlY2so
+dm9pZCAqY2hlY2spCiAJZm9yIChpID0gMDsgaSA8IDEwOyArK2kpIHsKIAkJdXNsZWVwKDEw
+MDAwMCk7CiAKLQkJaWYgKCoobG9uZyAqKWNoZWNrKQorCQlpZiAoKihpbnQgKiljaGVjaykK
+IAkJCXJldHVybiAwOwogCX0KIAo=
+
+--------------gmVXVuiL9iWoW47fv3lRzrkr--
