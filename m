@@ -2,237 +2,422 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5727D11B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29A27D11D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377562AbjJTOj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S1377612AbjJTOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377429AbjJTOjZ (ORCPT
+        with ESMTP id S1377592AbjJTOty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:39:25 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C66114;
-        Fri, 20 Oct 2023 07:39:23 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KD7d51013019;
-        Fri, 20 Oct 2023 14:39:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=9tIIyuuF04P+aSzfIGe6Zoj1bP20ERzIPxNQ0/P8wKs=;
- b=HRslWG7tutzS9qAYJl3fciRuWUV7gTTTQ/+YdGCqogNUpdKlxSFwA1sz76mVQwZ5efbL
- v3KkABGr13e/+DRUz5HUUXDlKZ34OEnJ7cxQAgDYhvP1JGe/9BKAiqPTosMeHzCsCMTy
- EfWU3aBN21nJuOGOt640TK9Cw0fyPBKgcvqYH4nchjOOvNt1CaVzcCkZDkwZRFo7m7hM
- mVYh5KZtqiI9LTfTr/1eNTUz6N/cPfYhUxk0BjR2DPJPz1pey70/VqCG3hD1U2Yq4b7f
- EXreIvq20pFVS35uvwD0OQpFNjss3zbHzhiNzz8F65IUMRM0e/tjk1dy0EnQRBfaJqnS PA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tubwba0cc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 14:39:12 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39KCvbIq031347;
-        Fri, 20 Oct 2023 14:39:11 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tubwdvx0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 14:39:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jnGDqj5NT5tu/zE6rzjn/82tBNKLGs2uBPYxDghN4Dmkzn26lpVGAz8A1EpUwpRcIUe4uPCLrPkDmdUcF/dBbHFfh9w23vQqU8mWyW9R6ohDIRmaySktPeMBIUo8CPF/WOYBBnfPK4BjTIZdWjLFcMqmKZA7TNh8ftgS+zljnZY69T25u8scA7F+ydBEjHmXDWS26k1/wrx3SaVqSltjBg+CGnUQeQd5+g17vulwm2MFBa1kA+i1K2x3TlDMmKnrJEyNc+EBz6PxMvHJnA2WPQ49mdlWxGZWRAIXmOqERZdpkxfi8W5VvTV0k//EkycvvISYF79W4ebCzKtoGncvHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9tIIyuuF04P+aSzfIGe6Zoj1bP20ERzIPxNQ0/P8wKs=;
- b=SF9haX2OFgsPiBU/84XgLaOv/jxSSr4s/gOr/MPBqgx7F3U0JQjS+kuW2MFEDMWKJ2FKUJWvNIlgQmHFe00yUor355czrTRifXdYVdNvZxSQXeA9jheAas5v7tfGRBtAhHHHsQ2HXPyZHB8kesAs2SYCqSFD31ED8aAPmyYWl67+gePeu6cJv9toTNu8vAmQhaQf2uIAx3FLAImBGOyrlhVNPqHYek1d9p+EPo9OIkmwSWwUYzQa87Di8pbG0CT2oZxSylK6GR3aOqt8mI9ar3pH+H6sKdecdVncmhXpuY2IqISIUtLbWu8K8G8pLYS+xczZFZksvVkRaVu3SGhQzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9tIIyuuF04P+aSzfIGe6Zoj1bP20ERzIPxNQ0/P8wKs=;
- b=VMFo3/qSa8xsoIwH2fIGve4j0CLKjIp7qRvvXX25haKYgzR51TG4v/bOzFoeTQ0MarI0eR/NfMuAn4Dhf/8Kqb//e6rU+F5vDj5jg8ryFmQLZnJXb8yHqeCIZyWW2pI5/YxXYTCZ4gUNTgI7Nc17zkQ8cSkvHCakOIMP2AST46s=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by IA1PR10MB7488.namprd10.prod.outlook.com (2603:10b6:208:44f::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.25; Fri, 20 Oct
- 2023 14:39:08 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::8e27:f49:9cc3:b5af]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::8e27:f49:9cc3:b5af%7]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
- 14:39:08 +0000
-Message-ID: <bbddbf1f-33c1-cdae-9e0a-a05403bf44bd@oracle.com>
-Date:   Fri, 20 Oct 2023 07:39:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/1] selftests: KVM: add test to print boottime wallclock
-Content-Language: en-US
-To:     Andrew Jones <ajones@ventanamicro.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        shuah@kernel.org, dwmw2@infradead.org, joe.jin@oracle.com
-References: <20231006175715.105517-1-dongli.zhang@oracle.com>
- <ZTA3W-f4sOX3LHfi@google.com> <20231019-f96a45af9c235d89be644e67@orel>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-In-Reply-To: <20231019-f96a45af9c235d89be644e67@orel>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0205.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:9e::25) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        Fri, 20 Oct 2023 10:49:54 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337AD53;
+        Fri, 20 Oct 2023 07:49:50 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id da7c9715ab6fc771; Fri, 20 Oct 2023 16:49:49 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id D1FFB667008;
+        Fri, 20 Oct 2023 16:49:48 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 5/6] ACPI: scan: Extract MIPI DiSco for Imaging data into swnodes
+Date:   Fri, 20 Oct 2023 16:39:27 +0200
+Message-ID: <7609686.EvYhyI6sBW@kreacher>
+In-Reply-To: <2187487.irdbgypaU6@kreacher>
+References: <2187487.irdbgypaU6@kreacher>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2663:EE_|IA1PR10MB7488:EE_
-X-MS-Office365-Filtering-Correlation-Id: da3de50b-45d6-45fc-5283-08dbd17a511e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K+GMNGBdP6+jk/WKC2XgZXyeSs/AKnpcIy1QUUngtQmM6tsxgupoioJG8764DZRCnpUf3ottlq1ex0ANZ6rUEqbKPbhCzEdnrj2cnSPd8gZL6W1tuo2etVFwZbnFQrs3kPvQxptvvJb+T1QQ1b5F4V/kdoakSw3ut9frAUCuiu+d+q5IotGzXC3Hlw+HWJ6zJH59IjkYc5lTXCySQW73bDfT3ysJ/2QCvrsw6MmAhJ/cZTD4yjTNO+W/Ssf+8dgsCC0SlaCMpLjG3zNG2D4HFgLcVCeEZqutaJviXCmcSCX0wQ+V5Z2HF758W8kNfYJdpS8+HYrWncmTN17omKk9Rgt+KFFZqokl0DJ7oiBF+/OpQN9YNnRkEEZHJJIYx6xXL+Aom38eTTrCoCZDVgIzDk5OJfn6jJEYvKntnLf5r0zEBvZVnYyrnDTGuV7ykZddbZDsa6iPOzEcBnmVdgmDN2lAd69kgkrrJMkKJUo23XRcpqeMjS7D9qmoDChvXXdRdZLJHhcnQ8zbjraqvesXFC4slDNyvXOQHc2CppA7Nl79o5pCDzOhBAR1/9mtxKJ8dhEqrJ4Mtr/bIl3JSvh4aLmTd0pT9eK16I+cye/gq2h+ZTigyyN20TtvrPZwdC4btk7R7e+dthDiDAZOwMVv1A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(396003)(39860400002)(346002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(41300700001)(5660300002)(8676002)(4326008)(44832011)(2906002)(8936002)(31696002)(6512007)(6666004)(6506007)(38100700002)(107886003)(83380400001)(86362001)(66946007)(66556008)(26005)(66476007)(110136005)(2616005)(31686004)(316002)(53546011)(36756003)(966005)(478600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OG0yTHhmU281aHNjczZydDRlWUt2N3ZxQVBCVFpLNStHUzQ2b3czaC9BU2tC?=
- =?utf-8?B?L0ZpRmJDY21ZZkxhdm1Hdjg1VzVaL3RtekJPODRzRmhIL09va1hqa1htR2lJ?=
- =?utf-8?B?bzc2dXBGWnZUMGQwZFFiME95cTU4UHU2aUtuYzN4ZFlLeS96c0dWN0VEb3Va?=
- =?utf-8?B?T1JmVFRodzYyOVZlNmtWcEpOQnUrOFR0SXBXb284eHp3KzJLa1ZkYzFHWkVD?=
- =?utf-8?B?MUVHRU40eExoeHZCbUpNNndITFRsUVJvNW9vT2t2MjFYWDVreEJIOVdZYnRT?=
- =?utf-8?B?UGVyNm11ZEtMSkJBOGR1ME8rcSs5QzU0NTliNEJza3RNNVhlT0ZxVlRJZDFH?=
- =?utf-8?B?M2pHU0xuNmZOL09zbXlVc3Z3cFNuZDVnWU5WdmhUbXlCTFVPOTA4eHN3T0RD?=
- =?utf-8?B?ZlNPckJmSVBRN0JNQmNlVEY1YXRVNytCangzR1hNWGJMRzdEWkFZaTQ2eWlm?=
- =?utf-8?B?OHdscHg4VmpmMTlueWZkVkoyVFVhNXlLdnNEa2pmc3VneHh6M3VqQVQ0Y2E2?=
- =?utf-8?B?eVdlM01YVWNmVHRITlpUaXdFdEc2N0NXWUM2YkN2UW5xOGFJRXNGK3E4b084?=
- =?utf-8?B?Mlc5VVJNdkVpT2ZxaFgzeWQvd3JOMkpNc3owMFZvZW9iTzl0VDhOY0tzblpO?=
- =?utf-8?B?bE85bTY1TWxSc1Rlb2hPVjJSVTBqMUJ3bU5qVEM1MXJidWg3Q1cxaURsODVh?=
- =?utf-8?B?eEpLbWNCTzhXUnZDTFpzT3JTdkN4M3B0Yk5Bd01JaFgwc1dkZERYMGZDOUgv?=
- =?utf-8?B?WTZXdk9aQ3Iyb3VtWUF2aFViL0xNNE1Tc25RWGpzc2Rtd3h2enhiVWVHa3g1?=
- =?utf-8?B?UEhmb084SnpOR3B0bVIwcDNTY3ZZcWNUdW81WGNnUFphTUE2QkRKNGVYTnh1?=
- =?utf-8?B?N0tDWVBEaUFXL2hjODFBWjNIdU9ZVk8rNm1BQzZTWm5SY0YzTnFJeGx0TTN1?=
- =?utf-8?B?TnMzTFpCMTYyMTZGelQ0d0N2S3o5b291SlVMdmc1VHErTHlRTndHdmora1F1?=
- =?utf-8?B?VFQrYy9FV01sMlVVYWpDcEUyR0trb2UrOEFYUVFucGxPdDlHMDVQd1NiS2JB?=
- =?utf-8?B?L3VJWVNWS01XMURseWFIQmh6ZW1wUGlyV2NTMHZyNncxeHp2dEZZR0VaS1Nw?=
- =?utf-8?B?ZWJhT3hFa0o4dk4ySlQwbnhkTWFvZkFTR2o0elBuaDQrMndsVDRwMmd2bzRw?=
- =?utf-8?B?NnZxOU9kVHhtN1hRZlZTdFRVNi9QeHVTcWRsWThpeGRWSEt1U2Q5aitoN0Jt?=
- =?utf-8?B?RUlzRWpId2ZlQnJXOWRUaGMvNHBpWGN0ZFE2YVlkbGFOTVNqYVBNMmN0a0pO?=
- =?utf-8?B?MHFOS2FtQTFUbFV2MXpnTkFVZGNSeng1OVg4cXRBRHdza3RhaE9kYkpjN2Ew?=
- =?utf-8?B?aURkVCthSzFvNXZnSXV2Wm9lV095bS9HY3h4cnJUeHJBZnh6SVpuRDN4T1ZS?=
- =?utf-8?B?a29vNlZMOWFBNUpCWFBnd3g1TnUwQUZ3TjFmMm5ZMWNCcGV6bUdaRENoU1V3?=
- =?utf-8?B?QkVIUzJONFV6blNWV3NlS2VocERwMmE1TUs1RUx2UEs0NW9ScEIvb1ZpUi9M?=
- =?utf-8?B?WEcvNTc2UzFiMERidGhleThmejQxUEx4SXMvb21ZaXBTTXU1bHYyU2JhYVFy?=
- =?utf-8?B?OTN3WmJXK25FbnpiL2tKNzlSb2xNYzdTZDZRMUJPM0grUGpkQS9PNEYvUmll?=
- =?utf-8?B?K050S2Z3dXFpS1pKZnVFc3pueHEyRHNxUFNRVG9mUS95WTdxUzc5SHFLck03?=
- =?utf-8?B?VXF2cmxZY3lSTkdNY0xyTEZDR0NNQkN1M25KVVErVEJRUkwxL2RuZ1JsZG5Y?=
- =?utf-8?B?Sm5Ua1QvN2NSc0k1N2NZSGE5YTFxblZVRGVTeHpIMml5NHM5WGxvMHNPYi9h?=
- =?utf-8?B?U2RJd3Z5eWg3SXA4MWt4L0ZSZWdZOUxzUHdZazAvdmdLQjF1YkdiSU1sQkFO?=
- =?utf-8?B?cWl5amd3YlZOMkNmNWNuSlFid2ZTSjFXRy9vbE5GZTZ4N0hNZDBpK2t3Rk1p?=
- =?utf-8?B?TjhIL3k4a2laVkd2S0hzNkVTRUY2MUFGdHNwSTN0Z3BOZkVhdDQzcGNqbitp?=
- =?utf-8?B?TUtwbGRQREdGZlAwclFRbzNSaW4wRktKdGNyZjFUM1ZiNGdFSSszV0RqR25V?=
- =?utf-8?Q?/uDZL1uCzpDDJIIqXb+1wJATH?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?SEhoTTYwc0dZWU1QdDhCWWtOSGZUUllZaXRYVVNTTzNSZ2lHOGorWENqUVlm?=
- =?utf-8?B?dTFUdlhyZThvZVZwalhMY0dwa1dhbmJVRmVwbThtcnBVNElSN2NEcVpYaFFl?=
- =?utf-8?B?d09DVDIxTFE5a3lFTHVSZ21hQkQwSTh0Z1JuWGtzSkhYOHVXbFNpOEpjQTBw?=
- =?utf-8?B?bGN5QXQzVit3OWNTYUpmZHJmbGNsemp5WkFvUzlWVGhPMUN0Tlh3WndtK3o1?=
- =?utf-8?B?bmxlS1NDSlVRcyt3WmlDNE8rQW1xSEcyRU1lNTZGYUFrUG90bmRLd3BVVTll?=
- =?utf-8?B?ZEtBbGlwTkFBMFh2QkZTVnZhYWF5RFM1WG1FeUF1eHg5UlF4cEdQc2hxSk5N?=
- =?utf-8?B?TTRIZGFBOUxvempBM0YyNUpsRG1rcTIyL2dDVGxhUFBOajBJNTJOS3JUanpM?=
- =?utf-8?B?WldKZUZZTXR2b2VpYmwvS0pDYTAwZkV6UHg1Mzc5MG1VNmVFb0hkcnFiblds?=
- =?utf-8?B?cFlhSCthV1RTTUlSMENqcGpJV2RzdG9DZzM4VTdpN1MzOUxYdkxnMEovajRB?=
- =?utf-8?B?elk2d1BWNnpDaHV5aVdyWTZjeDdndy9VaDJXWDRyVEV2ZldrS2V5ZjIrcHRx?=
- =?utf-8?B?WjVCMVkreVk0MDJQVDFIVUtKWi9OaTJZUVUwVVozNGJiNUoxVndBakQwZVpQ?=
- =?utf-8?B?dlZnT2UyZFh6YmpzV0lrWVJvdHIxcnoxYkNTUlEvVU56OEN1UjZFTDhKNytw?=
- =?utf-8?B?V1FpaitRa0FnSHRyTGlEUXVrZ3Y0YmRuY3drQ21KcWNHcG1YdFVabTYzUVhw?=
- =?utf-8?B?RWc0NGo4UlY4TUdkby8vMVhHTnBTNTgyRGhGVUtGWVhJQ1pyN0tHQS9nNDJZ?=
- =?utf-8?B?T3AzUHVRTWdpMmRzZnBBdUV3TUtkT2crVGtiSUh6MjhwMnpHblFDb3FLd2Jt?=
- =?utf-8?B?dHVzOG5ERmpiaXUyQmlTQit4QXVKZ2VlT1JiQjYvaXprb2twbGZ1WjJVemU2?=
- =?utf-8?B?MHI0dm1KR3RXSjY1RmZQbllpNWxpWWJrOStsZndKS2ovdGs0QmZ4RTlrU1I5?=
- =?utf-8?B?MVlGWWRUZnl3SFlCaWRaOTN1cVpuM2NrZmlXUHZaNnJvVTZNU00rN25XUDh0?=
- =?utf-8?B?aTF0dnJhc3NtRVBYUi9sOExmaWhIdWNxb2h6WmFIcEhpU3pFSXNvcmc0a3cy?=
- =?utf-8?B?MklIZko2TGQ4OHZ5THcyVnlPMGxCMTVtb2hOckZFZU1jWHdyL3ZFL3dRaWhk?=
- =?utf-8?B?K2Q5K3pqS0dzVExXZTRGQWdYd1I0cm1ZMFJZYXplV0FLclFoTWJQSk12TWtQ?=
- =?utf-8?Q?7IkTQAQy8tgspND?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da3de50b-45d6-45fc-5283-08dbd17a511e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 14:39:08.2965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vXVTowErdROc0EVFpQLrrmODVV8lNHJZf7x/c/eKu5fcnzXjyOZIPqKfkJcJSlLyMYGVKjdN1wpgqXC3bO/BSQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7488
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310200121
-X-Proofpoint-GUID: ya29xi4ao20IUpHWk69GZzLbnvcNzi3T
-X-Proofpoint-ORIG-GUID: ya29xi4ao20IUpHWk69GZzLbnvcNzi3T
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdejlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeejhedvleetkeejleffffduhfffjeevtefftdevueffgeffueejtefhuedtfefgkeenucffohhmrghinhepmhhiphhirdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepfedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrghkrghrihdrrghilhhusheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean and Andrew,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On 10/18/23 23:51, Andrew Jones wrote:
-> On Wed, Oct 18, 2023 at 12:51:55PM -0700, Sean Christopherson wrote:
->> On Fri, Oct 06, 2023, Dongli Zhang wrote:
->>> As inspired by the discussion in [1], the boottime wallclock may drift due
->>> to the fact that the masterclock (or host monotonic clock) and kvmclock are
->>> calculated based on the algorithms in different domains.
->>>
->>> This is to introduce a testcase to print the boottime wallclock
->>> periodically to help diagnose the wallclock drift issue in the future.
->>>
->>> The idea is to wrmsr the MSR_KVM_WALL_CLOCK_NEW, and read the boottime
->>> wallclock nanoseconds immediately.
->>
->> This doesn't actually test anything of interest though.  IIUC, it requires a human
->> looking at the output for it to provide any value.  And it requires a manual
->> cancelation, which makes it even less suitable for selftests.
->>
->> I like the idea, e.g. I bet there are more utilities that could be written that
->> utilize the selftests infrastructure, just not sure what to do with this (assuming
->> it can't be massaged into an actual test).
+Add information extracted from the MIPI DiSco for Imaging device
+properties to software nodes created during the CSI-2 connection graph
+discovery.
 
-Thank you very much for the suggestion.
+Link: https://www.mipi.org/specifications/mipi-di
+Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/internal.h |    1 
+ drivers/acpi/mipi-di.c  |  240 +++++++++++++++++++++++++++++++++++++++++++++++-
+ drivers/acpi/scan.c     |   12 ++
+ include/acpi/acpi_bus.h |   10 ++
+ 4 files changed, 259 insertions(+), 4 deletions(-)
 
-Would that work if I turn it into a test:
+Index: linux-pm/drivers/acpi/mipi-di.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/mipi-di.c
++++ linux-pm/drivers/acpi/mipi-di.c
+@@ -6,12 +6,16 @@
+  *
+  * Support MIPI DisCo for Imaging by parsing ACPI _CRS CSI-2 records defined in
+  * Section 6.4.3.8.2.4 "Camera Serial Interface (CSI-2) Connection Resource
+- * Descriptor" of ACPI 6.5.
++ * Descriptor" of ACPI 6.5 and using device properties defined by the MIPI DisCo
++ * for Imaging specification.
+  *
+  * The implementation looks for the information in the ACPI namespace (CSI-2
+  * resource descriptors in _CRS) and constructs software nodes compatible with
+  * Documentation/firmware-guide/acpi/dsd/graph.rst to represent the CSI-2
+- * connection graph.
++ * connection graph.  The software nodes are then populated with the data
++ * extracted from the _CRS CSI-2 resource descriptors and the MIPI DisCo
++ * for Imaging device properties present in _DSD for the ACPI device objects
++ * with CSI-2 connections.
+  */
+ 
+ #include <linux/acpi.h>
+@@ -434,6 +438,238 @@ void acpi_mipi_scan_crs_csi2(void)
+ 		prepare_crs_csi2_swnodes(csi2);
+ }
+ 
++/*
++ * Get the index of the next property in the property array, with a given
++ * maximum value.
++ */
++#define NEXT_PROPERTY(index, max)			\
++	(WARN_ON((index) > ACPI_DEVICE_SWNODE_##max) ?	\
++	 ACPI_DEVICE_SWNODE_##max : (index)++)
++
++static void init_csi2_port_local(struct acpi_device *adev,
++				 struct acpi_device_software_node_port *port,
++				 struct fwnode_handle *port_fwnode,
++				 unsigned int index)
++{
++	acpi_handle handle = acpi_device_handle(adev);
++	unsigned int num_link_freqs;
++	int ret;
++
++	ret = fwnode_property_count_u64(port_fwnode, "mipi-img-link-frequencies");
++	if (ret <= 0)
++		return;
++
++	num_link_freqs = ret;
++	if (num_link_freqs > ARRAY_SIZE(port->link_frequencies)) {
++		acpi_handle_info(handle, "Too many link frequencies: %u\n",
++				 num_link_freqs);
++		num_link_freqs = ARRAY_SIZE(port->link_frequencies);
++	}
++
++	ret = fwnode_property_read_u64_array(port_fwnode,
++					     "mipi-img-link-frequencies",
++					     port->link_frequencies,
++					     num_link_freqs);
++	if (ret) {
++		acpi_handle_info(handle, "Unable to get link frequencies (%d)\n",
++				 ret);
++		return;
++	}
++
++	port->ep_props[NEXT_PROPERTY(index, EP_LINK_FREQUENCIES)] =
++				PROPERTY_ENTRY_U64_ARRAY_LEN("link-frequencies",
++							     port->link_frequencies,
++							     num_link_freqs);
++}
++
++static void init_csi2_port(struct acpi_device *adev,
++			   struct acpi_device_software_nodes *swnodes,
++			   struct acpi_device_software_node_port *port,
++			   struct fwnode_handle *port_fwnode,
++			   unsigned int port_index)
++{
++	unsigned int ep_prop_index = ACPI_DEVICE_SWNODE_EP_CLOCK_LANES;
++	acpi_handle handle = acpi_device_handle(adev);
++	u8 val[ARRAY_SIZE(port->data_lanes)];
++	unsigned int num_lanes = 0;
++	int ret;
++
++	if (GRAPH_PORT_NAME(port->port_name, port->port_nr))
++		return;
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)] =
++			SOFTWARE_NODE(port->port_name, port->port_props,
++				      &swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT]);
++
++	ret = fwnode_property_read_u8(port_fwnode, "mipi-img-clock-lane", val);
++	if (!ret)
++		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_CLOCK_LANES)] =
++			PROPERTY_ENTRY_U32("clock-lanes", val[0]);
++
++	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-data-lanes");
++	if (ret > 0) {
++		num_lanes = ret;
++
++		if (num_lanes > ARRAY_SIZE(port->data_lanes)) {
++			acpi_handle_info(handle, "Too many data lanes: %u\n",
++					 num_lanes);
++			num_lanes = ARRAY_SIZE(port->data_lanes);
++		}
++
++		ret = fwnode_property_read_u8_array(port_fwnode,
++						    "mipi-img-data-lanes",
++						    val, num_lanes);
++		if (!ret) {
++			unsigned int i;
++
++			for (i = 0; i < num_lanes; i++)
++				port->data_lanes[i] = val[i];
++
++			port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_DATA_LANES)] =
++				PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
++							     port->data_lanes,
++							     num_lanes);
++		}
++	}
++
++	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-lane-polarities");
++	if (ret > 0) {
++		unsigned long mask;
++		unsigned int i;
++
++		/*
++		 * Total number of lanes here is clock lane + data lanes.
++		 * Require that number to be low enough so they all can be
++		 * covered by the bits in one byte.
++		 */
++		BUILD_BUG_ON(BITS_PER_TYPE(u8) <= ARRAY_SIZE(port->data_lanes));
++
++		fwnode_property_read_u8_array(port_fwnode,
++					      "mipi-img-lane-polarities",
++					      val, 1);
++
++		for (mask = val[0], i = 0; i < num_lanes + 1; i++)
++			port->lane_polarities[i] = test_bit(i, &mask);
++
++		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_LANE_POLARITIES)] =
++				PROPERTY_ENTRY_U32_ARRAY_LEN("lane-polarities",
++							     port->lane_polarities,
++							     1 + num_lanes);
++	} else {
++		acpi_handle_info(handle, "No lane polarity bytes\n");
++	}
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_EP(port_index)] =
++		SOFTWARE_NODE("endpoint@0", swnodes->ports[port_index].ep_props,
++			      &swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)]);
++
++	if (port->crs_csi2_local)
++		init_csi2_port_local(adev, port, port_fwnode, ep_prop_index);
++}
++
++#define MIPI_IMG_PORT_PREFIX "mipi-img-port-"
++
++static struct fwnode_handle *get_mipi_port_handle(struct fwnode_handle *adev_fwnode,
++						  unsigned int port_nr)
++{
++	char port_name[sizeof(MIPI_IMG_PORT_PREFIX) + 2];
++
++	if (snprintf(port_name, sizeof(port_name), "%s%u",
++		     MIPI_IMG_PORT_PREFIX, port_nr) >= sizeof(port_name))
++		return NULL;
++
++	return fwnode_get_named_child_node(adev_fwnode, port_name);
++}
++
++static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
++{
++	struct acpi_buffer buffer = { .length = ACPI_ALLOCATE_BUFFER };
++	struct acpi_device_software_nodes *swnodes = csi2->swnodes;
++	acpi_handle handle = csi2->handle;
++	struct fwnode_handle *adev_fwnode;
++	struct acpi_device *adev;
++	acpi_status status;
++	unsigned int i;
++	int ret;
++
++	/*
++	 * Bail out if the swnodes are not available (either they have not been
++	 * allocated or they have been assigned to the device already).
++	 */
++	if (!swnodes)
++		return;
++
++	adev = acpi_fetch_acpi_dev(handle);
++	if (!adev)
++		return;
++
++	adev_fwnode = acpi_fwnode_handle(adev);
++
++	status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
++	if (ACPI_FAILURE(status)) {
++		acpi_handle_info(handle, "Unable to get the path name\n");
++		return;
++	}
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT] =
++			SOFTWARE_NODE(buffer.pointer, swnodes->dev_props, NULL);
++
++	for (i = 0; i < swnodes->num_ports; i++) {
++		struct acpi_device_software_node_port *port = &swnodes->ports[i];
++		struct fwnode_handle *port_fwnode;
++
++		/*
++		 * The MIPI DisCo for Imaging specification defines _DSD device
++		 * properties for providing CSI-2 port parameters that can be
++		 * accessed through the generic device properties framework.  To
++		 * access them, it is first necessary to find the data node
++		 * representing the port under the given ACPI device object.
++		 */
++		port_fwnode = get_mipi_port_handle(adev_fwnode, port->port_nr);
++		if (!port_fwnode) {
++			acpi_handle_info(handle,
++					 "MIPI port name too long for port %u\n",
++					 port->port_nr);
++			continue;
++		}
++
++		init_csi2_port(adev, swnodes, port, port_fwnode, i);
++
++		fwnode_handle_put(port_fwnode);
++	}
++
++	ret = software_node_register_node_group(swnodes->nodeptrs);
++	if (ret < 0) {
++		acpi_handle_info(handle,
++				 "Unable to register software nodes (%d)\n", ret);
++		return;
++	}
++
++	adev->swnodes = swnodes;
++	adev_fwnode->secondary = software_node_fwnode(swnodes->nodes);
++
++	/*
++	 * Prevents the swnodes from this csi2 entry from being assigned again
++	 * or freed prematurely.
++	 */
++	csi2->swnodes = NULL;
++}
++
++/**
++ * acpi_mipi_init_crs_csi2_swnodes - Initialize _CRS CSI-2 software nodes
++ *
++ * Use MIPI DiSco for Imaging device properties to finalize the initialization
++ * of CSI-2 software nodes for all ACPI device objects that have been already
++ * enumerated.
++ */
++void acpi_mipi_init_crs_csi2_swnodes(void)
++{
++	struct crs_csi2 *csi2, *csi2_tmp;
++
++	list_for_each_entry_safe(csi2, csi2_tmp, &acpi_mipi_crs_csi2_list, entry)
++		init_crs_csi2_swnodes(csi2);
++}
++
+ /**
+  * acpi_mipi_crs_csi2_cleanup - Free _CRS CSI-2 temporary data
+  */
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -287,6 +287,7 @@ static inline void acpi_init_lpit(void)
+ 
+ void acpi_mipi_check_crs_csi2(acpi_handle handle);
+ void acpi_mipi_scan_crs_csi2(void);
++void acpi_mipi_init_crs_csi2_swnodes(void);
+ void acpi_mipi_crs_csi2_cleanup(void);
+ 
+ #endif /* _ACPI_INTERNAL_H_ */
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -2447,6 +2447,13 @@ static void acpi_scan_postponed_branch(a
+ 
+ 	acpi_walk_namespace(ACPI_TYPE_ANY, handle, ACPI_UINT32_MAX,
+ 			    acpi_bus_check_add_2, NULL, NULL, (void **)&adev);
++
++	/*
++	 * Populate the ACPI _CRS CSI-2 software nodes for the ACPI devices that
++	 * have been added above.
++	 */
++	acpi_mipi_init_crs_csi2_swnodes();
++
+ 	acpi_bus_attach(adev, NULL);
+ }
+ 
+@@ -2516,11 +2523,12 @@ int acpi_bus_scan(acpi_handle handle)
+ 		return -ENODEV;
+ 
+ 	/*
+-	 * Allocate ACPI _CRS CSI-2 software nodes using information extracted
++	 * Set up ACPI _CRS CSI-2 software nodes using information extracted
+ 	 * from the _CRS CSI-2 resource descriptors during the ACPI namespace
+-	 * walk above.
++	 * walk above and MIPI DiSco for Imaging device properties.
+ 	 */
+ 	acpi_mipi_scan_crs_csi2();
++	acpi_mipi_init_crs_csi2_swnodes();
+ 
+ 	acpi_bus_attach(device, (void *)true);
+ 
+Index: linux-pm/include/acpi/acpi_bus.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_bus.h
++++ linux-pm/include/acpi/acpi_bus.h
+@@ -366,10 +366,17 @@ struct acpi_device_data {
+ 
+ struct acpi_gpio_mapping;
+ 
++#define ACPI_DEVICE_SWNODE_ROOT			0
++
+ #define ACPI_DEVICE_CSI2_DATA_LANES		4
+ 
+ #define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
+ 
++enum acpi_device_swnode_dev_props {
++	ACPI_DEVICE_SWNODE_DEV_NUM_OF,
++	ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES
++};
++
+ enum acpi_device_swnode_port_props {
+ 	ACPI_DEVICE_SWNODE_PORT_REG,
+ 	ACPI_DEVICE_SWNODE_PORT_NUM_OF,
+@@ -425,12 +432,14 @@ struct acpi_device_software_node_port {
+ 
+ /**
+  * struct acpi_device_software_nodes - Software nodes for an ACPI device
++ * @dev_props: Device properties.
+  * @nodes: Software nodes for root as well as ports and endpoints.
+  * @nodeprts: Array of software node pointers, for (un)registering them.
+  * @ports: Information related to each port and endpoint within a port.
+  * @num_ports: The number of ports.
+  */
+ struct acpi_device_software_nodes {
++	struct property_entry dev_props[ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES];
+ 	struct software_node *nodes;
+ 	const struct software_node **nodeptrs;
+ 	struct acpi_device_software_node_port *ports;
+@@ -455,6 +464,7 @@ struct acpi_device {
+ 	struct acpi_device_data data;
+ 	struct acpi_scan_handler *handler;
+ 	struct acpi_hotplug_context *hp;
++	struct acpi_device_software_nodes *swnodes;
+ 	const struct acpi_gpio_mapping *driver_gpios;
+ 	void *driver_data;
+ 	struct device dev;
 
-1. Capture boottime_wallclock_01.
-2. Wait for 10-second by default (configurable, e.g., max 60-second)
-3. Capture boottime_wallclock_02.
-4. Report error if drift.
 
 
-I have another pvclock vCPU hotplug test with the same flow.
-
-Thank you very much!
-
-Dongli Zhang
-
-> 
-> Yes, there's definitely code overlap between selftests and [debug/test]
-> utilities. For example, I snuck a utility into [1]. For that one, without
-> any command line parameters it runs as a typical test. Given command line
-> input, it behaves as a utility (which developers may use for additional
-> platform-specific testing). It seems like we need a way to build and
-> organize these types of things separately, i.e. a utility should probably
-> be in tools/$DIR not tools/testing/selftests/$DIR. For [1], I don't have
-> much of an excuse for not just splitting the two functionalities into two
-> files, but, for KVM selftests, we'd need to find a way to share the
-> framework.
-> 
-> [1] https://urldefense.com/v3/__https://lore.kernel.org/all/20231011135610.122850-14-ajones@ventanamicro.com/__;!!ACWV5N9M2RV99hQ!LuJ92LOR4jVJfhj8M0J9MUqP7520s259wSzAdAL1cV0zNrzVB2W0F_5gpEVX_SoHeKuivIt-VIVB6jaN5EuIKA$ 
-> 
-> Thanks,
-> drew
