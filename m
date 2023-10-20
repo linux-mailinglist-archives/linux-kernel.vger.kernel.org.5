@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCB17D084C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129D07D0860
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376346AbjJTGVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S1346974AbjJTGVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 02:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376363AbjJTGU7 (ORCPT
+        with ESMTP id S235631AbjJTGVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:20:59 -0400
+        Fri, 20 Oct 2023 02:21:15 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5FED79;
-        Thu, 19 Oct 2023 23:20:49 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K52wRL012498;
-        Fri, 20 Oct 2023 06:20:24 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D583D7F;
+        Thu, 19 Oct 2023 23:21:01 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K52Hl7010271;
+        Fri, 20 Oct 2023 06:20:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=icLHP/wLq08igmxhyYkjoWxYQfi1orlaO6g7edEjCVY=;
- b=Vz4oqzkeRYsoQDMDlu9ZT121/Oy0Fceds/a9Xx0Xx3lMBQ7mGOoXSPe4HqworV+I6iO6
- H2CQArd92+pSv232q/fLVdugHN+QodM+j1bx2AJbLNZ3Hm7d0dfJ1gHBOU6BwLOF1Bt0
- PvRGqQs+HYkrfBGdMwCZKCqlJpNpTtdrt56wDeCKHBbcZ2mDqO5nIJyRBSrsfQsnl91Z
- CrNNO4YYb0BOJc39g15YjmcX92mxWr+hlYsmUfybBtK1Yyt8pzMypj6aDyyaQTOEitBc
- RHveAbtKa61MCZIJlzeLB6Ypald+X42LtM0rH9hWMjnfEywccoHydoTSpk6P0qbZyH2S kg== 
+ bh=8NhxoiE2BMLc5QDoklL2Y2z6+7+j4qpgWB4Q9R1eYEs=;
+ b=Gr1SVGvp+RADubHwVkejOH3k046bdyIPbUesM35aI0w7zOk35fROFIqK0HHWppWCfC8Q
+ uGWRa6qefyd2a1zYyronFPof/bl8WDB7AejdSzUMFsBdU6RWsmQxDj4XOZ/i4vv59BZw
+ dSakPpfdB3aLDiaGlhvT5C72UIlvjZf3OsiSqznxOZFwLxmwIE4X1jMfSWQfZaMMfla3
+ 2ANnk4FnnKXFmM31j4NxuW5NP+0+bIE4C435uIm1KXKC8uWlF0NNcFJcYKfq0DzIJvl9
+ jTUlt98Zm0pM9WsS/7wdT/npRYJfSP1X+5uUSU83ysJCktSCAgkAL8q58hzfLDwxuq2Y Vw== 
 Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubxgguav-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubxd0ucc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 06:20:24 +0000
+        Fri, 20 Oct 2023 06:20:30 +0000
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K6KNQx027838
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K6KTY5027887
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 06:20:23 GMT
+        Fri, 20 Oct 2023 06:20:29 GMT
 Received: from varda-linux.qualcomm.com (10.80.80.8) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Thu, 19 Oct 2023 23:20:17 -0700
+ 15.2.1118.39; Thu, 19 Oct 2023 23:20:23 -0700
 From:   Varadarajan Narayanan <quic_varada@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
@@ -50,9 +50,9 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <linux-pm@vger.kernel.org>
 CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v5 5/9] clk: qcom: apss-ipq6018: ipq5332: add safe source switch for a53pll
-Date:   Fri, 20 Oct 2023 11:49:35 +0530
-Message-ID: <49422d258d67d33a2547fbb7f4f6e72d489c2301.1697781921.git.quic_varada@quicinc.com>
+Subject: [PATCH v5 6/9] cpufreq: qti: Enable cpufreq for ipq53xx
+Date:   Fri, 20 Oct 2023 11:49:36 +0530
+Message-ID: <92acab57a7bd87e73382d2e1720ab55eac202409.1697781921.git.quic_varada@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1697781921.git.quic_varada@quicinc.com>
 References: <cover.1697781921.git.quic_varada@quicinc.com>
@@ -63,16 +63,16 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KGzYfRq9N-_fYjFXjfLO8b64mPbe7CPD
-X-Proofpoint-ORIG-GUID: KGzYfRq9N-_fYjFXjfLO8b64mPbe7CPD
+X-Proofpoint-GUID: jATKbNVCmBf752gOnrAdbncAx9POk3yu
+X-Proofpoint-ORIG-GUID: jATKbNVCmBf752gOnrAdbncAx9POk3yu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-20_04,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310200053
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310200053
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -82,118 +82,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stromer Plus PLL found on IPQ53xx doesn't support dynamic
-frequency scaling. To achieve the same, we need to park the APPS
-PLL source to GPLL0, re configure the PLL and then switch the
-source to APSS_PLL_EARLY.
+IPQ53xx have different OPPs available for the CPU based on
+SoC variant. This can be determined through use of an eFuse
+register present in the silicon.
 
-To support this, register a clock notifier to get the PRE_RATE
-and POST_RATE notification. Change the APSS PLL source to GPLL0
-when PRE_RATE notification is received, then configure the PLL
-and then change back the source to APSS_PLL_EARLY.
+Added support for ipq53xx on nvmem driver which helps to
+determine OPPs at runtime based on the eFuse register which
+has the CPU frequency limits. opp-supported-hw dt binding
+can be used to indicate the available OPPs for each limit.
 
-Additionally, not all SKUs of IPQ53xx support scaling. Hence,
-do the above to the SKUs that support scaling.
+nvmem driver also creates the "cpufreq-dt" platform_device after
+passing the version matching data to the OPP framework so that the
+cpufreq-dt handles the actual cpufreq implementation.
 
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
 Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
-v5:	clk_notifier_register -> devm_clk_notifier_register
-v3:	devm_kzalloc for cpu_clk_notifier instead of global static
-v2:	Handle ABORT_RATE_CHANGE
-	Use local variable for apcs_alias0_clk_src.clkr.hw
-	Use single line comment instead of multi line style
+v5:	Merge IPQ53xx with existing APQ8096 case
+v2:	Move IPQ53xx after APQ8096SG
 ---
- drivers/clk/qcom/apss-ipq6018.c | 58 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+ drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+ drivers/cpufreq/qcom-cpufreq-nvmem.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/clk/qcom/apss-ipq6018.c b/drivers/clk/qcom/apss-ipq6018.c
-index 4e13a08..e6295b8 100644
---- a/drivers/clk/qcom/apss-ipq6018.c
-+++ b/drivers/clk/qcom/apss-ipq6018.c
-@@ -9,8 +9,11 @@
- #include <linux/clk-provider.h>
- #include <linux/regmap.h>
- #include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/soc/qcom/smem.h>
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index 675da7f..f43e5cd 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -180,6 +180,7 @@ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "ti,am62a7", },
+ 	{ .compatible = "ti,am62p5", },
  
- #include <dt-bindings/clock/qcom,apss-ipq.h>
-+#include <dt-bindings/arm/qcom,ids.h>
- 
- #include "common.h"
- #include "clk-regmap.h"
-@@ -84,15 +87,68 @@ static const struct qcom_cc_desc apss_ipq6018_desc = {
- 	.num_clks = ARRAY_SIZE(apss_ipq6018_clks),
- };
- 
-+static int cpu_clk_notifier_fn(struct notifier_block *nb, unsigned long action,
-+				void *data)
-+{
-+	struct clk_hw *hw;
-+	u8 index;
-+	int err;
-+
-+	if (action == PRE_RATE_CHANGE)
-+		index = P_GPLL0;
-+	else if (action == POST_RATE_CHANGE || action == ABORT_RATE_CHANGE)
-+		index = P_APSS_PLL_EARLY;
-+	else
-+		return NOTIFY_OK;
-+
-+	hw = &apcs_alias0_clk_src.clkr.hw;
-+	err = clk_rcg2_mux_closest_ops.set_parent(hw, index);
-+
-+	return notifier_from_errno(err);
-+}
-+
- static int apss_ipq6018_probe(struct platform_device *pdev)
- {
-+	struct clk_hw *hw = &apcs_alias0_clk_src.clkr.hw;
-+	struct notifier_block *cpu_clk_notifier;
- 	struct regmap *regmap;
-+	u32 soc_id;
-+	int ret;
-+
-+	ret = qcom_smem_get_soc_id(&soc_id);
-+	if (ret)
-+		return ret;
- 
- 	regmap = dev_get_regmap(pdev->dev.parent, NULL);
- 	if (!regmap)
- 		return -ENODEV;
- 
--	return qcom_cc_really_probe(pdev, &apss_ipq6018_desc, regmap);
-+	ret = qcom_cc_really_probe(pdev, &apss_ipq6018_desc, regmap);
-+	if (ret)
-+		return ret;
-+
-+	switch (soc_id) {
-+	/* Only below variants of IPQ53xx support scaling */
++	{ .compatible = "qcom,ipq5332", },
+ 	{ .compatible = "qcom,ipq8064", },
+ 	{ .compatible = "qcom,ipq8074", },
+ 	{ .compatible = "qcom,apq8064", },
+diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+index 3fa1264..e7e6a6a 100644
+--- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
++++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+@@ -153,6 +153,11 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
+ 	switch (msm_id) {
+ 	case QCOM_ID_MSM8996:
+ 	case QCOM_ID_APQ8096:
 +	case QCOM_ID_IPQ5332:
 +	case QCOM_ID_IPQ5322:
++	case QCOM_ID_IPQ5312:
++	case QCOM_ID_IPQ5302:
 +	case QCOM_ID_IPQ5300:
-+		cpu_clk_notifier = devm_kzalloc(&pdev->dev,
-+						sizeof(*cpu_clk_notifier),
-+						GFP_KERNEL);
-+		if (!cpu_clk_notifier)
-+			return -ENOMEM;
-+
-+		cpu_clk_notifier->notifier_call = cpu_clk_notifier_fn;
-+
-+		ret = devm_clk_notifier_register(&pdev->dev, hw->clk, cpu_clk_notifier);
-+		if (ret)
-+			return ret;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
- }
- 
- static struct platform_driver apss_ipq6018_driver = {
+ 		drv->versions = 1 << (unsigned int)(*speedbin);
+ 		break;
+ 	case QCOM_ID_MSM8996SG:
+@@ -406,6 +411,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+ 	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
++	{ .compatible = "qcom,ipq5332", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
+ 	{ .compatible = "qcom,ipq8074", .data = &match_data_ipq8074 },
+ 	{ .compatible = "qcom,apq8064", .data = &match_data_krait },
 -- 
 2.7.4
 
