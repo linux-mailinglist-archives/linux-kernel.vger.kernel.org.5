@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 971257D0D1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8427D0D19
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376870AbjJTK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
+        id S1376858AbjJTK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376842AbjJTK3A (ORCPT
+        with ESMTP id S1376843AbjJTK3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 06:29:00 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8938D52;
-        Fri, 20 Oct 2023 03:28:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B0CD53;
+        Fri, 20 Oct 2023 03:28:58 -0700 (PDT)
 Date:   Fri, 20 Oct 2023 10:28:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697797735;
+        s=2020; t=1697797736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VhHzo1Cv7+X6YKiJes2rk0Mf7POXMLyxJrcorpDyS4s=;
-        b=GzDaKj0HmAZ6iPfxGhT0JGrqyCtvN8oFszVWl50DZKK7FQMwfnK6nLSilYU1seD6eiCOeL
-        Fp+xE2qDLoPHV/EbgqjhfF7mqrURzSitQP+URxgybHcZ4rBDGVtzxJv9LAAxNy7Tajx0vl
-        XDwHOD3XTeC4331n6N9Y+/NLS42TseIVUfvGEiI+Z+cfhpgeMpFLbLqUq9sDcwwD2SulTN
-        5RFHaMORmNmQFF/p0rZLl0E50UHMx/s4z6ndVeU/mazZfRwbkcIFoCJgDOVKm72GbdYtKP
-        j5vG5fCbzddG0R3AHgxjOf6GIbYC03dRwwsDpGBW0dGtY6rYVKyKp3zIQpMUXw==
+        bh=ryI+sETQfH56NeQ9taaTVEPrYa8hd8IGX1KE8MVorwE=;
+        b=1WV+HfZpH5662UaeVeD9KsqGvZ13OqZucDjRDqt1/W554Lx16VOTIpPnWYhZeGQhGnzYCy
+        l8hsXEO90NBCmNuLa7fCzCc8RzcX5IIRc7q086BZJQ6Azz4pk4XayMzyj9zJ2eekKGt0Uy
+        LE7frxOixwnBjWRjtrVHbwcyGeFf5RzqnpwfRkSgk7HU2eFMS+Jm/iiniwt2KMvWyYkmPR
+        CGf5InUcTwFyOIhYPsIrBcI3zCzvfJ4wZAKV1gbBeZ3hit46lon6krRruKMzFAc8RIxmka
+        mwn1/nCzeZVb1arqdNiBH6MF45WGQaEoQUbIF9Kr6Cj0dzbyNRXMQ4tMt8RDsQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697797735;
+        s=2020e; t=1697797736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VhHzo1Cv7+X6YKiJes2rk0Mf7POXMLyxJrcorpDyS4s=;
-        b=+BNt2ql994GaQA5D24LQCr3xiFGbtD1LfdQc43o4h1iZ2qfHVztOI2VcwupqmSj7uyR45h
-        nCr7ilQLv+ncpxBg==
+        bh=ryI+sETQfH56NeQ9taaTVEPrYa8hd8IGX1KE8MVorwE=;
+        b=L1nmvbQ2ryEmmdgEKbWvTPcH/BYqJR9vexF4CQZVVi6KwClTLPCg2Pa0+NZhqVDZ3ecoJQ
+        uvf5qNkHzkjv4LDw==
 From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/percpu, xen: Correct PER_CPU_VAR() usage to
- include symbol and its addend
+Subject: [tip: x86/percpu] x86/percpu: Correct PER_CPU_VAR() usage to include
+ symbol and its addend
 Cc:     Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         linux-kernel@vger.kernel.org, Brian Gerst <brgerst@gmail.com>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sean Christopherson <seanjc@google.com>, x86@kernel.org
 MIME-Version: 1.0
-Message-ID: <169779773522.3135.10554164923279581371.tip-bot2@tip-bot2>
+Message-ID: <169779773584.3135.2298093434527491915.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,14 +63,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/percpu branch of tip:
 
-Commit-ID:     aa47f90cd4331e1809d56c72fcbdbbe0a85e5992
-Gitweb:        https://git.kernel.org/tip/aa47f90cd4331e1809d56c72fcbdbbe0a85e5992
+Commit-ID:     39d64ee59ceee0fb61243eab3c4b7b4492f80df2
+Gitweb:        https://git.kernel.org/tip/39d64ee59ceee0fb61243eab3c4b7b4492f80df2
 Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Tue, 17 Oct 2023 18:27:33 +02:00
+AuthorDate:    Tue, 17 Oct 2023 18:27:32 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Fri, 20 Oct 2023 12:19:51 +02:00
 
-x86/percpu, xen: Correct PER_CPU_VAR() usage to include symbol and its addend
+x86/percpu: Correct PER_CPU_VAR() usage to include symbol and its addend
 
 The PER_CPU_VAR() macro should be applied to a symbol and its addend.
 Inconsistent usage is currently harmless, but needs to be corrected
@@ -81,62 +80,67 @@ No functional changes intended.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Cc: linux-kernel@vger.kernel.org
 Cc: Brian Gerst <brgerst@gmail.com>
 Cc: H. Peter Anvin <hpa@zytor.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/xen/xen-asm.S | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/entry/calling.h  | 2 +-
+ arch/x86/entry/entry_32.S | 2 +-
+ arch/x86/entry/entry_64.S | 2 +-
+ arch/x86/kernel/head_64.S | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 9e5e680..448958d 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -28,7 +28,7 @@
-  * non-zero.
-  */
- SYM_FUNC_START(xen_irq_disable_direct)
--	movb $1, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	movb $1, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
- 	RET
- SYM_FUNC_END(xen_irq_disable_direct)
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index f690762..47368ab 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -173,7 +173,7 @@ For 32-bit we have the following conventions - kernel is built with
+ .endm
  
-@@ -69,7 +69,7 @@ SYM_FUNC_END(check_events)
- SYM_FUNC_START(xen_irq_enable_direct)
- 	FRAME_BEGIN
- 	/* Unmask events */
--	movb $0, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	movb $0, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
+ #define THIS_CPU_user_pcid_flush_mask   \
+-	PER_CPU_VAR(cpu_tlbstate) + TLB_STATE_user_pcid_flush_mask
++	PER_CPU_VAR(cpu_tlbstate + TLB_STATE_user_pcid_flush_mask)
+ 
+ .macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index 6e6af42..d4e094b 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -305,7 +305,7 @@
+ .macro CHECK_AND_APPLY_ESPFIX
+ #ifdef CONFIG_X86_ESPFIX32
+ #define GDT_ESPFIX_OFFSET (GDT_ENTRY_ESPFIX_SS * 8)
+-#define GDT_ESPFIX_SS PER_CPU_VAR(gdt_page) + GDT_ESPFIX_OFFSET
++#define GDT_ESPFIX_SS PER_CPU_VAR(gdt_page + GDT_ESPFIX_OFFSET)
+ 
+ 	ALTERNATIVE	"jmp .Lend_\@", "", X86_BUG_ESPFIX
+ 
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index b940e92..6d23665 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -252,7 +252,7 @@ SYM_FUNC_START(__switch_to_asm)
+ 
+ #ifdef CONFIG_STACKPROTECTOR
+ 	movq	TASK_stack_canary(%rsi), %rbx
+-	movq	%rbx, PER_CPU_VAR(fixed_percpu_data) + FIXED_stack_canary
++	movq	%rbx, PER_CPU_VAR(fixed_percpu_data + FIXED_stack_canary)
+ #endif
  
  	/*
- 	 * Preempt here doesn't matter because that will deal with any
-@@ -78,7 +78,7 @@ SYM_FUNC_START(xen_irq_enable_direct)
- 	 */
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index ea69959..bfe5ec2 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -449,7 +449,7 @@ SYM_CODE_START(soft_restart_cpu)
+ 	UNWIND_HINT_END_OF_STACK
  
- 	/* Test for pending */
--	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_pending
-+	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_pending)
- 	jz 1f
+ 	/* Find the idle task stack */
+-	movq	PER_CPU_VAR(pcpu_hot) + X86_current_task, %rcx
++	movq	PER_CPU_VAR(pcpu_hot + X86_current_task), %rcx
+ 	movq	TASK_threadsp(%rcx), %rsp
  
- 	call check_events
-@@ -97,7 +97,7 @@ SYM_FUNC_END(xen_irq_enable_direct)
-  * x86 use opposite senses (mask vs enable).
-  */
- SYM_FUNC_START(xen_save_fl_direct)
--	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
- 	setz %ah
- 	addb %ah, %ah
- 	RET
-@@ -113,7 +113,7 @@ SYM_FUNC_END(xen_read_cr2);
- 
- SYM_FUNC_START(xen_read_cr2_direct)
- 	FRAME_BEGIN
--	_ASM_MOV PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_arch_cr2, %_ASM_AX
-+	_ASM_MOV PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_arch_cr2), %_ASM_AX
- 	FRAME_END
- 	RET
- SYM_FUNC_END(xen_read_cr2_direct);
+ 	jmp	.Ljump_to_C_code
