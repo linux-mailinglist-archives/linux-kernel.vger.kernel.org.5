@@ -2,220 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9757D0E82
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10457D0EA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377155AbjJTLee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S1377236AbjJTLhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377141AbjJTLec (ORCPT
+        with ESMTP id S1377166AbjJTLhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:34:32 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE219D5B
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:34:29 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9c5b313b3ffso109287966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pqrs.dk; s=google; t=1697801668; x=1698406468; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fXvJpV0gpvSkUrAaGppJnbjeNlJABP+T2f/Ne1XnKTw=;
-        b=QkYBgQhmBFsfyP73EUzOvZDT/GEJnHObufFs6IWBqgMHsWUH0M+iq/NS7ChVHnELi+
-         rMNjEwbss/U1MdOxoCC3BBAsUj9tHA4cyJF/Ke8jwfCFQy3xRYtPwwKD5l3+svQCzm1v
-         MT5Ku8eM9TQ/ttWUdVeMNrcHK11HFBPm9Hp4l/BVkWk+QRDJbMrRlE0RK5bF8m86owCm
-         7IvUEbaqsmI+Uzp5JP4ADmGLAN0Pf322LI+E2WtoODzKLyqrUJmMizB7yoCge9xU14qK
-         jX8ldJcjtBPil0rdqXrjHWuoxuJ5JuNMNK+KAgqu2eATCyurVyRShtZ+1FCl3YaliAE4
-         T4cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697801668; x=1698406468;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fXvJpV0gpvSkUrAaGppJnbjeNlJABP+T2f/Ne1XnKTw=;
-        b=xVazZHw4GLdLtoTPrPinJFil/PydPuKv9CWpAFw3xGsRMWhOeuT6H14ikrKaA66xct
-         XnBZ0Vh7yUUswe0aCJFLruOWLseHTxI++CTE7MLJ535H1u2IdEIBz6OBYrv405XjwMPp
-         lekMdDMvhH1E14/mPJaSwjFXa+L0CqlIkQvLYyzfsvd6T2y63Oi+oXiPOEZRqy/yzYVH
-         aGW2rK5PXNOd0g6lh6cljbHbOHWU6pw5oj5W5N7D7nXkGEhUHCDYjQ1tPGTMGQBZIRoc
-         Jth+4cmavCUqCAR64dnK4pONMNVsIH1N7cjWL8/zGP4VcPBH6a7Epnby+5Fb8rqy+Jtm
-         lo/w==
-X-Gm-Message-State: AOJu0YwVsuVJw2HQ70565QMZUSZfSo/jxEi780cR4cTacsjp1miMpq01
-        dZcJse22OYhyYoa1KiUlLkRIeA==
-X-Google-Smtp-Source: AGHT+IE2cqRe/b7SznA5f9wgW3W00fTFZ38FmRaqPeuDiU4EW9+UF4yLZznf7d1onwrlLkBbX3ltTg==
-X-Received: by 2002:a17:907:86a0:b0:9bd:fc4a:c70b with SMTP id qa32-20020a17090786a000b009bdfc4ac70bmr1310791ejc.70.1697801668164;
-        Fri, 20 Oct 2023 04:34:28 -0700 (PDT)
-Received: from capella.localdomain ([193.89.194.60])
-        by smtp.gmail.com with ESMTPSA id ce10-20020a170906b24a00b009b654751c14sm1300320ejb.47.2023.10.20.04.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 04:34:27 -0700 (PDT)
-From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Date:   Fri, 20 Oct 2023 13:34:16 +0200
-Subject: [PATCH v5 3/3] clk: si5351: allow PLLs to be adjusted without
- reset
+        Fri, 20 Oct 2023 07:37:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6510D4C;
+        Fri, 20 Oct 2023 04:37:18 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:37:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697801837;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tW7YSgvT1sIejWKhmFk87XKju2fsmJGO/qsh36cwBFg=;
+        b=dRNM0VnUet/tRImlmov45zmlUUj76ZIVDZR3f/n1pChP+I7dw32LGM7uCfQj1tIKgkuV0v
+        qTpADEd6yfebor2/2oS/ghuMt+y363GXiIU06StPuSgGs0pzf7EHf9pFJ0NOpZIXLK9+Sa
+        /qtDpE5N7wrfAv1OA47jJS2j/2W4N3uEOtyvL1DPPe8FCtqo3iHAOr2gBqBkSX3GmMsvi+
+        qnCBfj3kPMd6Y42fwaSmTGRJ5xhO4aSHXfmOU/th5vDcZ/iQ2CCPFApThrhN7Qbou0PcqP
+        eLIz4tgkoeKHJVWl3SHzCyQx2HZ4B49TwOowslie7dI/WtRhk5QvCYt4Q0Gd5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697801837;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tW7YSgvT1sIejWKhmFk87XKju2fsmJGO/qsh36cwBFg=;
+        b=itJR1fpxYCK3P6ny2rzPYxaBGcwfOzrZqo4rol5pC2czz+8+Xke3BcQTb+53KjAlrDklNn
+        wGL/rVasFM5YSNDA==
+From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/bugs] x86/retpoline: Document some thunk handling aspects
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231010171020.462211-1-david.kaplan@amd.com>
+References: <20231010171020.462211-1-david.kaplan@amd.com>
 MIME-Version: 1.0
+Message-ID: <169780183267.3135.3911908270721154685.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231020-alvin-clk-si5351-no-pll-reset-v5-3-f0c1ba537f88@bang-olufsen.dk>
-References: <20231020-alvin-clk-si5351-no-pll-reset-v5-0-f0c1ba537f88@bang-olufsen.dk>
-In-Reply-To: <20231020-alvin-clk-si5351-no-pll-reset-v5-0-f0c1ba537f88@bang-olufsen.dk>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-Cc:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rabeeh Khoury <rabeeh@solid-run.com>,
-        Jacob Siverskog <jacob@teenage.engineering>,
-        Sergej Sawazki <sergej@taudac.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+The following commit has been merged into the x86/bugs branch of tip:
 
-Introduce a new PLL reset mode flag which controls whether or not to
-reset a PLL after adjusting its rate. The mode can be configured through
-platform data or device tree.
+Commit-ID:     9d9c22cc444af01ce254872b729af26864c43a3a
+Gitweb:        https://git.kernel.org/tip/9d9c22cc444af01ce254872b729af26864c43a3a
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Fri, 20 Oct 2023 13:17:14 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 20 Oct 2023 13:17:14 +02:00
 
-Since commit 6dc669a22c77 ("clk: si5351: Add PLL soft reset"), the
-driver unconditionally resets a PLL whenever its rate is adjusted.
-The rationale was that a PLL reset was required to get three outputs
-working at the same time. Before this change, the driver never reset the
-PLLs.
+x86/retpoline: Document some thunk handling aspects
 
-Commit b26ff127c52c ("clk: si5351: Apply PLL soft reset before enabling
-the outputs") subsequently introduced an option to reset the PLL when
-enabling a clock output that sourced it. Here, the rationale was that
-this is required to get a deterministic phase relationship between
-multiple output clocks.
+After a lot of experimenting (see thread Link points to) document for
+now the issues and requirements for future improvements to the thunk
+handling and potential issuing of a diagnostic when the default thunk
+hasn't been patched out.
 
-This clearly shows that it is useful to reset the PLLs in applications
-where multiple clock outputs are used. However, the Si5351 also allows
-for glitch-free rate adjustment of its PLLs if one avoids resetting the
-PLL. In our audio application where a single Si5351 clock output is used
-to supply a runtime adjustable bit clock, this unconditional PLL reset
-behaviour introduces unwanted glitches in the clock output.
+This documentation is only temporary and that close before the merge
+window it is only a placeholder for those future improvements.
 
-It would appear that the problem being solved in the former commit
-may be solved by using the optional device tree property introduced in
-the latter commit, obviating the need for an unconditional PLL reset
-after rate adjustment. But it's not OK to break the default behaviour of
-the driver, and it cannot be assumed that all device trees are using the
-property introduced in the latter commit. Hence, the new behaviour is
-made opt-in.
-
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Rabeeh Khoury <rabeeh@solid-run.com>
-Cc: Jacob Siverskog <jacob@teenage.engineering>
-Cc: Sergej Sawazki <sergej@taudac.com>
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Acked-by: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Suggested-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231010171020.462211-1-david.kaplan@amd.com
 ---
- drivers/clk/clk-si5351.c             | 47 +++++++++++++++++++++++++++++++++---
- include/linux/platform_data/si5351.h |  2 ++
- 2 files changed, 46 insertions(+), 3 deletions(-)
+ arch/x86/lib/retpoline.S | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/clk/clk-si5351.c b/drivers/clk/clk-si5351.c
-index cbf7cde01157..bed0fe3bfa08 100644
---- a/drivers/clk/clk-si5351.c
-+++ b/drivers/clk/clk-si5351.c
-@@ -506,6 +506,8 @@ static int si5351_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct si5351_hw_data *hwdata =
- 		container_of(hw, struct si5351_hw_data, hw);
-+	struct si5351_platform_data *pdata =
-+		hwdata->drvdata->client->dev.platform_data;
- 	u8 reg = (hwdata->num == 0) ? SI5351_PLLA_PARAMETERS :
- 		SI5351_PLLB_PARAMETERS;
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index d410aba..a48077c 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -129,6 +129,13 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
  
-@@ -518,9 +520,10 @@ static int si5351_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 		(hwdata->params.p2 == 0) ? SI5351_CLK_INTEGER_MODE : 0);
+ #ifdef CONFIG_RETHUNK
  
- 	/* Do a pll soft reset on the affected pll */
--	si5351_reg_write(hwdata->drvdata, SI5351_PLL_RESET,
--			 hwdata->num == 0 ? SI5351_PLL_RESET_A :
--					    SI5351_PLL_RESET_B);
-+	if (pdata->pll_reset[hwdata->num])
-+		si5351_reg_write(hwdata->drvdata, SI5351_PLL_RESET,
-+				 hwdata->num == 0 ? SI5351_PLL_RESET_A :
-+						    SI5351_PLL_RESET_B);
++/*
++ * Be careful here: that label cannot really be removed because in
++ * some configurations and toolchains, the JMP __x86_return_thunk the
++ * compiler issues is either a short one or the compiler doesn't use
++ * relocations for same-section JMPs and that breaks the returns
++ * detection logic in apply_returns() and in objtool.
++ */
+ 	.section .text..__x86.return_thunk
  
- 	dev_dbg(&hwdata->drvdata->client->dev,
- 		"%s - %s: p1 = %lu, p2 = %lu, p3 = %lu, parent_rate = %lu, rate = %lu\n",
-@@ -1222,6 +1225,44 @@ static int si5351_dt_parse(struct i2c_client *client,
- 		}
- 	}
- 
-+	/*
-+	 * Parse PLL reset mode. For compatibility with older device trees, the
-+	 * default is to always reset a PLL after setting its rate.
-+	 */
-+	pdata->pll_reset[0] = true;
-+	pdata->pll_reset[1] = true;
-+
-+	of_property_for_each_u32(np, "silabs,pll-reset-mode", prop, p, num) {
-+		if (num >= 2) {
-+			dev_err(&client->dev,
-+				"invalid pll %d on pll-reset-mode prop\n", num);
-+			return -EINVAL;
-+		}
-+
-+		p = of_prop_next_u32(prop, p, &val);
-+		if (!p) {
-+			dev_err(&client->dev,
-+				"missing pll-reset-mode for pll %d\n", num);
-+			return -EINVAL;
-+		}
-+
-+		switch (val) {
-+		case 0:
-+			/* Reset PLL whenever its rate is adjusted */
-+			pdata->pll_reset[num] = true;
-+			break;
-+		case 1:
-+			/* Don't reset PLL whenever its rate is adjusted */
-+			pdata->pll_reset[num] = false;
-+			break;
-+		default:
-+			dev_err(&client->dev,
-+				"invalid pll-reset-mode %d for pll %d\n", val,
-+				num);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* per clkout properties */
- 	for_each_child_of_node(np, child) {
- 		if (of_property_read_u32(child, "reg", &num)) {
-diff --git a/include/linux/platform_data/si5351.h b/include/linux/platform_data/si5351.h
-index c71a2dd66143..5f412a615532 100644
---- a/include/linux/platform_data/si5351.h
-+++ b/include/linux/platform_data/si5351.h
-@@ -105,10 +105,12 @@ struct si5351_clkout_config {
-  * @clk_xtal: xtal input clock
-  * @clk_clkin: clkin input clock
-  * @pll_src: array of pll source clock setting
-+ * @pll_reset: array indicating if plls should be reset after setting the rate
-  * @clkout: array of clkout configuration
+ #ifdef CONFIG_CPU_SRSO
+@@ -361,6 +368,14 @@ SYM_FUNC_END(call_depth_return_thunk)
+  * This code is only used during kernel boot or module init.  All
+  * 'JMP __x86_return_thunk' sites are changed to something else by
+  * apply_returns().
++ *
++ * This should be converted eventually to call a warning function which
++ * should scream loudly when the default return thunk is called after
++ * alternatives have been applied.
++ *
++ * That warning function cannot BUG() because the bug splat cannot be
++ * displayed in all possible configurations, leading to users not really
++ * knowing why the machine froze.
   */
- struct si5351_platform_data {
- 	enum si5351_pll_src pll_src[2];
-+	bool pll_reset[2];
- 	struct si5351_clkout_config clkout[8];
- };
- 
-
--- 
-2.42.0
-
+ SYM_CODE_START(__x86_return_thunk)
+ 	UNWIND_HINT_FUNC
