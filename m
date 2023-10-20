@@ -2,213 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6967D1311
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890417D1310
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377778AbjJTPmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S1377790AbjJTPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377789AbjJTPmc (ORCPT
+        with ESMTP id S1377717AbjJTPmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:42:32 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DE7AB
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:42:29 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso1453307a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:42:29 -0700 (PDT)
+        Fri, 20 Oct 2023 11:42:21 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C41B3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:42:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a397a7c1cso1226556276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697816546; x=1698421346; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zGC+3Kmw+D+b5Dj58mb9CrKsjrP+aMd2+KprUNQqghc=;
-        b=J13NetEmn6UJVj4RNFAMlmVDcXV9It1K5L4R91DVK+Gc402XcTqMkJlWHzBybOH0Bw
-         tn+UGf/0m26Ij8t76V2irnXxUYm7qTr1jWAg9ooMYWQoDg3HPK6uDTxePgub3LV3Lt9a
-         Ar4P2jJB5LdtqDnZ7Nf7/VCoyvg/K1qcDKB+o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697816546; x=1698421346;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=google.com; s=20230601; t=1697816538; x=1698421338; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zGC+3Kmw+D+b5Dj58mb9CrKsjrP+aMd2+KprUNQqghc=;
-        b=KWgxAL0ldc3pfK1BpYJJ0xQjXQtOekG+GIicS4WekNzl+WIu7lYnKE7TGpIFJXf/Hm
-         pPQ2UNoPXnKEQaRQs/XIm9lJy8t2i88SXz69lcek3QP+s7X0DwJ9yuTvBJEGHxBiDRBc
-         HGB1tocKsc6XoS2oGJw5chgmDBNPYV7tHPgXCphywQGKQS8qUB6YyEmQQF6rtiRZiHte
-         ZqjnD7rpYow6l8Nrz2q3rAbjyVQUsVCJnNyytn6f2kQEI3m26EsDEnvB0013azn9Wj5i
-         cwBYcC3JLj+0viJeywEF/4nQrGVDIF0tbdgfh44wm5srPIfezMuSETB5qMox1a+d3HhA
-         Dasw==
-X-Gm-Message-State: AOJu0Yzp7fAMczE500P9VlWFA9Hbe05P/Q6h8ECWO517huH8bNJ24JPt
-        GRnlHwLVa7qdGlTPJRwdXwq2I3u1WEbxb28nQXktYI9J
-X-Google-Smtp-Source: AGHT+IE38EnW05jODD2Rb6GzAhBq1JXmNKE5waT6kYR+UPMq4cWQiVB7GZmIUABq12U0oSBal5K2ig==
-X-Received: by 2002:a05:6402:190d:b0:53e:6da7:72ba with SMTP id e13-20020a056402190d00b0053e6da772bamr2333796edz.38.1697816546266;
-        Fri, 20 Oct 2023 08:42:26 -0700 (PDT)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id da11-20020a056402176b00b0053ebe6c1396sm1652990edb.27.2023.10.20.08.42.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 08:42:25 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40853f2e93eso42285e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:42:25 -0700 (PDT)
-X-Received: by 2002:a05:600c:4a22:b0:408:2b:5956 with SMTP id
- c34-20020a05600c4a2200b00408002b5956mr119419wmp.6.1697816544811; Fri, 20 Oct
- 2023 08:42:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231019212130.3146151-1-dianders@chromium.org>
- <20231019142019.v4.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid> <eaf05cf1486c418790a1b54cbcda3a98@realtek.com>
-In-Reply-To: <eaf05cf1486c418790a1b54cbcda3a98@realtek.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 20 Oct 2023 08:42:07 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XZQ0XXY7XpX2_ubOwGsi0Hw5otHyuJS2=9QzDJsaSGWg@mail.gmail.com>
-Message-ID: <CAD=FV=XZQ0XXY7XpX2_ubOwGsi0Hw5otHyuJS2=9QzDJsaSGWg@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] r8152: Block future register access if register
- access fails
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Grant Grundler <grundler@chromium.org>,
-        Edward Hill <ecgh@chromium.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Simon Horman <horms@kernel.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+        bh=jSLHEcMIztGYBTo6xVAEhhfF1F5jUZmJAk48UL6Ld3c=;
+        b=kXP8E3uq+Ns3U5c485fgD5Z4dGpow9YuvULKvKwGJ8/sFL5ULqgZ9xis/0m8kaa4G4
+         6rcRxDafLa1ARrNSM+HoNgOKs5AKc59/i557XSvgBnKn8pPsmX5lwKB4j7gySj/eY4PX
+         xuri448y3FCk/s0cj13mH712iJ+3Wtrqy6QSoOz55XQXSuy15tsVDUMesoBIYyDa1mcO
+         clZukieZlGNZ64qszOjjOhGBHfcc/9iZ5Ip+QKiXLThXu2zIpM4SvNfphWRe5Hh63r51
+         5nsVZTUbbDxAF4m4+7Wgoc9n/Mzqy5v//hKbwWZRIs1MaVTCztloGP/r8s75ZUt7Rn4i
+         LA9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697816538; x=1698421338;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jSLHEcMIztGYBTo6xVAEhhfF1F5jUZmJAk48UL6Ld3c=;
+        b=wNHpzb4b7VuGYUdTLhWe6IoJybyq8LpyJLwF3+QL9NMi6GJrnYZXtLeobwcBO/l0gP
+         +K6JOcbu3acmpm+hBpkouUP50WWh44aB6fPCe+LcuIzgKuGj4ywIrrI/m/Yciq32rwEG
+         W2jO2TxShGv1vVuSJq+CTqCKCcuH3yKlXqOiJdHVxcbyuSxr4H8jqMMiRHR0OJqnZtiZ
+         d01HFHgmz5dK06OV8eIuCG0uMEvwuplOifdxcc5K0dQmeir9kUjQ4fFoDOx8xbSh+45L
+         VJrVh1MRgn+AKADoo6+LQHSqbGtP0hhTjnRtD0PbPnG1UstTlrCAa+iJq0rfbs/dSdQr
+         AFeQ==
+X-Gm-Message-State: AOJu0YwPQc0jXXawSEMkVx1cBC6r1oWWE80K3G60uoBROK3wsNe6/k3D
+        Q1MFuybdfuTZTamrIyeMwXA/3pB8uvk=
+X-Google-Smtp-Source: AGHT+IGhtVqmbhmyJB3o1gXFA1kvTKqCvhyQl8OMzZz2qJpav2nsj7ZAINPu/3UyJ5C0TJe5CDGuJudpgf0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:c5c1:0:b0:d9a:ce79:6298 with SMTP id
+ v184-20020a25c5c1000000b00d9ace796298mr41424ybe.2.1697816538334; Fri, 20 Oct
+ 2023 08:42:18 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 20 Oct 2023 08:42:15 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231020154215.2191840-1-seanjc@google.com>
+Subject: [PATCH v2] swiotlb: Rewrite comment explaining why the source is
+ preserved on DMA_FROM_DEVICE
+From:   Sean Christopherson <seanjc@google.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Rewrite the comment explaining why swiotlb copies the original buffer to
+the TLB buffer before initiating DMA *from* the device, i.e. before the
+device DMAs into the TLB buffer.  The existing comment's argument that
+preserving the original data can prevent a kernel memory leak is bogus.
 
-On Fri, Oct 20, 2023 at 4:31=E2=80=AFAM Hayes Wang <hayeswang@realtek.com> =
-wrote:
->
-> Douglas Anderson <dianders@chromium.org>
-> > Sent: Friday, October 20, 2023 5:20 AM
-> [...]
-> >  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
-> > @@ -8265,6 +8353,17 @@ static int rtl8152_pre_reset(struct usb_interfac=
-e *intf)
-> >         if (!tp)
-> >                 return 0;
-> >
-> > +       /* We can only use the optimized reset if we made it to the end=
- of
-> > +        * probe without any register access fails, which sets
-> > +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have that then=
- return
-> > +        * an error here which tells the USB framework to fully unbind/=
-rebind
-> > +        * our driver.
-> > +        */
-> > +       if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
-> > +               mutex_unlock(&tp->control);
->
-> I think you forget to remove mutex_unlock here.
+If the driver that triggered the mapping _knows_ that the device will
+overwrite the entire mapping, or the driver will consume only the written
+parts, then copying from the original memory is completely pointless.
 
-Ugh, thanks for catching. I tested it with a bootup or two but I
-didn't re-run all tests or spend lots of time looking through the logs
-so I missed this. I'll run a few more cycles this time.
+If neither of the above holds true, then copying from the original adds
+value only if preserving the data is necessary for functional correctness,
+or the driver explicitly initialized the original memory.  If the driver
+didn't initialize the memory, then copying the original buffer to the TLB
+buffer simply changes what kernel data is leaked to userspace.
 
+Writing the entire TLB buffer _does_ prevent leaking stale TLB buffer data
+from a previous bounce, but that can be achieved by simply zeroing the TLB
+buffer when grabbing a slot.
 
-> > +               return -EIO;
-> > +       }
-> > +
-> >         netdev =3D tp->netdev;
-> >         if (!netif_running(netdev))
-> >                 return 0;
-> > @@ -8277,7 +8376,9 @@ static int rtl8152_pre_reset(struct usb_interface=
- *intf)
-> >         napi_disable(&tp->napi);
-> >         if (netif_carrier_ok(netdev)) {
-> >                 mutex_lock(&tp->control);
-> > +               set_bit(IN_PRE_RESET, &tp->flags);
-> >                 tp->rtl_ops.disable(tp);
-> > +               clear_bit(IN_PRE_RESET, &tp->flags);
-> >                 mutex_unlock(&tp->control);
-> >         }
-> >
-> > @@ -8293,6 +8394,8 @@ static int rtl8152_post_reset(struct usb_interfac=
-e *intf)
-> >         if (!tp)
-> >                 return 0;
-> >
-> > +       rtl_set_accessible(tp);
-> > +
->
-> Excuse me. I have a new idea. You could check if it is possible.
-> If you remove test_bit(PROBED_WITH_NO_ERRORS, &tp->flags) in pre_reset(),
-> the driver wouldn't be unbound and rebound. Instead, you test PROBED_WITH=
-_NO_ERRORS
-> here to re-initialize the device. Then, you could limit the times of USB =
-reset, and
-> the infinite loop wouldn't occur. The code would be like the following,
->
->         if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
->                 /* re-init */
->                 mutex_lock(&tp->control);
->                 tp->rtl_ops.init(tp);
->                 mutex_unlock(&tp->control);
->                 rtl_hw_phy_work_func_t(&tp->hw_phy_work.work);
->
->                 /* re-open(). Maybe move after checking netif_running(net=
-dev) */
->                 mutex_lock(&tp->control);
->                 tp->rtl_ops.up(tp);
->                 mutex_unlock(&tp->control);
->
->                 /* check if there is any control error */
->                 if (test_bit(RTL8152_INACCESSIBLE, &tp->flags) {
->                         if (tp->reg_access_reset_count < REGISTER_ACCESS_=
-MAX_RESETS) {
->                                 /* queue reset again ? */
->                         } else {
->                                 ...
->                         }
->                         /* return 0 ? */
->                 } else {
->                         set_bit(PROBED_WITH_NO_ERRORS, &tp->flags)
->                 }
->         }
+The real reason swiotlb ended up initializing the TLB buffer with the
+original buffer is that it's necessary to make swiotlb operate as
+transparently as possible, i.e. to behave as closely as possible to
+hardware, and to avoid corrupting the original buffer, e.g. if the driver
+knows the device will do partial writes and is relying on the unwritten
+data to be preserved.
 
-The above solution worries me.
+Cc: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/all/ZN5elYQ5szQndN8n@google.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-I guess one part of this is that it replicates some logic that's in
-probe(). That's not necessarily awful, but we'd at least want to
-reorganize things so that they could share code if possible, though
-maybe that's hard to do with the extra grabs of the mutex?
+v2: Rephrase blurb about memory corruption to make it clear that not clobbering
+    unwritten memory is hardware behavior (I'm belly laughing at how stupidly
+    obvious that sounds). [Robin]
 
-The other part that worries me is that in the core when we added the
-network device that something in the core might have cached bogus data
-about our network device. This doesn't seem wonderful to me.
+v1: https://lore.kernel.org/all/20231018173409.1871540-1-seanjc@google.com
 
-I guess yet another part is that your proposed solution there has a
-whole bunch of question marks on it. If it's not necessarily obvious
-what we should do in this case then it doesn't feel like a robust
-solution.
+ kernel/dma/swiotlb.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-It seems like your main concern here is with the potential for an
-infinite number of resets. I have sent up a small patch to the USB
-core [1] addressing this concern. Let's see what folks say about that
-patch. If it is accepted then it seems like we could just not worry
-about it. If it's not accepted then perhaps feedback on that patch
-will give us additional guidance.
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 01637677736f..fd5dacd0628d 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -1296,11 +1296,13 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+ 		pool->slots[index + i].orig_addr = slot_addr(orig_addr, i);
+ 	tlb_addr = slot_addr(pool->start, index) + offset;
+ 	/*
+-	 * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
+-	 * to the tlb buffer, if we knew for sure the device will
+-	 * overwrite the entire current content. But we don't. Thus
+-	 * unconditional bounce may prevent leaking swiotlb content (i.e.
+-	 * kernel memory) to user-space.
++	 * When the device is writing memory, i.e. dir == DMA_FROM_DEVICE, copy
++	 * the original buffer to the TLB buffer before initiating DMA in order
++	 * to preserve the original's data if the device does a partial write,
++	 * i.e. if the device doesn't overwrite the entire buffer.  Preserving
++	 * the original data, even if it's garbage, is necessary to match
++	 * hardware behavior.  Use of swiotlb is supposed to be transparent,
++	 * i.e. swiotlb must not corrupt memory by clobbering unwritten bytes.
+ 	 */
+ 	swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+ 	return tlb_addr;
 
-In the meantime I'll at least post v5 since I don't want to leave the
-patch up there with the mismatched mutex. I'll have my v5 point at my
-USB core patch.
+base-commit: 213f891525c222e8ed145ce1ce7ae1f47921cb9c
+-- 
+2.42.0.655.g421f12c284-goog
 
-[1] https://lore.kernel.org/r/20231020083125.1.I3e5f7abcbf6f08d392e31a5826b=
-7f234df662276@changeid
-
--Doug
