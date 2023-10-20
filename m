@@ -2,166 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A177D1049
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64987D1050
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377409AbjJTNJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
+        id S1377405AbjJTNNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377239AbjJTNJo (ORCPT
+        with ESMTP id S1377002AbjJTNNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:09:44 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C90DBE;
-        Fri, 20 Oct 2023 06:09:42 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 991F45C0ACE;
-        Fri, 20 Oct 2023 09:09:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 20 Oct 2023 09:09:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1697807381; x=1697893781; bh=H9rjDKi86egy+CCMRQXTpLLy3mneqPSVJpZ
-        0V0aMB0U=; b=PpYuKcxuV5/b9Dm0fNrNjLqu/+9aNEJ2L3jN7yvAaHzQLKwGkv8
-        5RQffEtTT8vxlyYSw7eP7+3KdRxE5nrvajVnq7bN3M1xNK/5q1vG+vloYKb3BVKc
-        nNkJDuszSN7/Mb3uUI867osCmN3Y7GAve9ZLVS235ihtRV6zZmVn7zwGT6oSaOUM
-        9KPJ5EFl5SQ1xqMo97yjpqAkTIW/fnJY6txMtIVZpJqES7EgCivhuK5oN9SsErM+
-        eNWZ3jl2GYc/oIsCtCow1FYiyD32kY4A6d+57qmOyrYS90MFrcwCKWSLaFII7P8y
-        t0CuXoZRHyaVTmMF1Yc0+bN7/sNK8QUcwVg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1697807381; x=1697893781; bh=H9rjDKi86egy+CCMRQXTpLLy3mneqPSVJpZ
-        0V0aMB0U=; b=R2ODgfmrxMoUKcsW5mCxmmxN5E/hV/wqa5/bE0QMHV1+TiYGFgc
-        caGjErhizrHXg5YVmMteojh7wgESXzGq2XgDwe/vAmKBdJx5tth5db7xNhJ8FHbH
-        gDjDq/M8YPDkoGMsGP5rNme4iuIVgmHDlh7UzvtDmwoRaxPKNX4vLTOKNd10Fg/O
-        5rUTdIONjl93uvkCQ+C94HR/5E+xKgWb2BAzsUJyEn65w4Z7LUZoKgFk82Hojms1
-        AVwNj3XJhS7knhXNEtJQZ9TnaBC4vvusIS03hY20+I313aPnExWzFMqS0mVoZ1BF
-        uWI/B5URD1ieK0b37XI/fTUkPh6ulFk9xQQ==
-X-ME-Sender: <xms:FXwyZf71TFLG7l9Dc16IiJlcpvHWjl88xVdzWo7_-Sdv3Q4w-t4EOQ>
-    <xme:FXwyZU4N5YF11Ah556Zcwozs632ohpnwOwqLkOkkqSiYY-GcHrEq7Q5iqbgx9YVns
-    psLEgElsKDH>
-X-ME-Received: <xmr:FXwyZWcWw_eKyB0TVjI68rJn0IjGkPn9wvLaaE7y7NFoVlxdJYnw4yoqxD0Nt9Pwolxx0F9wL1F9ZZl0DOk4HslPgkGeF_rZPsurNayF0Q_TcZUagBjlFEtf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdehlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:FXwyZQKACAL5-D3QHVTVx5h-cNTJoYN8g9N5E7WG1MyQaoJSdohD3Q>
-    <xmx:FXwyZTIRvHo2_EifTeMKJ0gyeX5_r8nnD9Qryv22RFUBUV4ABajd5g>
-    <xmx:FXwyZZzahPAD921in94LmGibQVwAJ01f1YL5U7qiQ8GtRQ3jItaIOA>
-    <xmx:FXwyZQqHBP_KeJK4vXBtDRWTFOWXxKaOOADS-re6klkDxAR1BVrLVQ>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 20 Oct 2023 09:09:37 -0400 (EDT)
-Message-ID: <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
-Date:   Fri, 20 Oct 2023 21:09:35 +0800
+        Fri, 20 Oct 2023 09:13:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED2F19E;
+        Fri, 20 Oct 2023 06:13:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB1A6C433C8;
+        Fri, 20 Oct 2023 13:13:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697807589;
+        bh=3v3w9N11nD6FfXU/AHmloGedz/Yr2LLf3n2MT+5UOQg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iR/1qWGCigk5mb+sUX+mtTgr+F11ZN3V1hOM3Q4nAK8r5fYeUto4kpybOnNrQq5Vb
+         nshaIcQcOuDGRRbKWlux8REmv7fgL2opspPCPRrvwwW6F959E0hywgJzEPcS3ovRrv
+         uaD7h/HL286fyaHjuucPf9LSoyu9lQXoKiQV/VUexU7JbOPAfHiZVE606VAuTidV+E
+         n+Kt2TRA0my61BWCkw9OTaCj+UWq3S8yBiSlLLqUp78+HnuuygqYh/vm48iUhXV3+W
+         BbLxxZgaEPWflBfgu+OPwmZs4zxlIqn4GWfiWRZWEPkkWoU0ROZ+r5eUDua9u7URsh
+         8u01+wfH6W4yw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Georgia Garcia <georgia.garcia@canonical.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Khadija Kamran <kamrankhadijadj@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] apparmor: mark new functions static
+Date:   Fri, 20 Oct 2023 15:12:57 +0200
+Message-Id: <20231020131303.785906-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: autofs: add autofs_parse_fd()
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
-        Christian Brauner <brauner@kernel.org>
-References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
- <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
- <CADYN=9+HDwqAz-eLV7uVuMa+_+foj+_keSG-TmD2imkwVJ_mpQ@mail.gmail.com>
- <432f1c1c-2f77-4b1b-b3f8-28330fd6bac3@kadam.mountain>
- <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/23 19:23, Arnd Bergmann wrote:
-> On Fri, Oct 20, 2023, at 12:45, Dan Carpenter wrote:
->> On Fri, Oct 20, 2023 at 11:55:57AM +0200, Anders Roxell wrote:
->>> On Fri, 20 Oct 2023 at 08:37, Arnd Bergmann <arnd@arndb.de> wrote:
->>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
->>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit rootfs we call
->>>>> it as compat mode boot testing. Recently it started to failed to get login
->>>>> prompt.
->>>>>
->>>>> We have not seen any kernel crash logs.
->>>>>
->>>>> Anders, bisection is pointing to first bad commit,
->>>>> 546694b8f658 autofs: add autofs_parse_fd()
->>>>>
->>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
->>>> I tried to find something in that commit that would be different
->>>> in compat mode, but don't see anything at all -- this appears
->>>> to be just a simple refactoring of the code, unlike the commits
->>>> that immediately follow it and that do change the mount
->>>> interface.
->>>>
->>>> Unfortunately this makes it impossible to just revert the commit
->>>> on top of linux-next. Can you double-check your bisection by
->>>> testing 546694b8f658 and the commit before it again?
->>> I tried these two patches again:
->>> 546694b8f658 ("autofs: add autofs_parse_fd()") - doesn't boot
->>> bc69fdde0ae1 ("autofs: refactor autofs_prepare_pipe()") - boots
->>>
->> One difference that I notice between those two patches is that we no
->> long call autofs_prepare_pipe().  We just call autofs_check_pipe().
-> Indeed, so some of the f_flags end up being different. I assumed
-> this was done intentionally, but it might be worth checking if
-> the patch below makes any difference when the flags get put
-> back the way they were. This is probably not the correct fix, but
-> may help figure out what is going on. It should apply to anything
-> from 546694b8f658 ("autofs: add autofs_parse_fd()") to the current
-> linux-next:
->
-> --- a/fs/autofs/inode.c
-> +++ b/fs/autofs/inode.c
-> @@ -358,6 +358,11 @@ static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
->          pr_debug("pipe fd = %d, pgrp = %u\n",
->                   sbi->pipefd, pid_nr(sbi->oz_pgrp));
->   
-> +        /* We want a packet pipe */
-> +        sbi->pipe->f_flags |= O_DIRECT;
-> +        /* We don't expect -EAGAIN */
-> +        sbi->pipe->f_flags &= ~O_NONBLOCK;
-> +
+From: Arnd Bergmann <arnd@arndb.de>
 
+Two new functions were introduced as global functions when they are
+only called from inside the file that defines them and should have
+been static:
 
-That makes sense, we do want a packet pipe and that does also mean
+security/apparmor/lsm.c:658:5: error: no previous prototype for 'apparmor_uring_override_creds' [-Werror=missing-prototypes]
+security/apparmor/lsm.c:682:5: error: no previous prototype for 'apparmor_uring_sqpoll' [-Werror=missing-prototypes]
 
-we don't want a non-blocking pipe, it will be interesting to see
+Fixes: c4371d90633b7 ("apparmor: add io_uring mediation")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ security/apparmor/lsm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-if that makes a difference. It's been a long time since Linus
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index 91ff91cf1aaef..4981bdf029931 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -655,7 +655,7 @@ static int profile_uring(struct aa_profile *profile, u32 request,
+  * Check to see if the current task is allowed to override it's credentials
+  * to service an io_uring operation.
+  */
+-int apparmor_uring_override_creds(const struct cred *new)
++static int apparmor_uring_override_creds(const struct cred *new)
+ {
+ 	struct aa_profile *profile;
+ 	struct aa_label *label;
+@@ -679,7 +679,7 @@ int apparmor_uring_override_creds(const struct cred *new)
+  * Check to see if the current task is allowed to create a new io_uring
+  * kernel polling thread.
+  */
+-int apparmor_uring_sqpoll(void)
++static int apparmor_uring_sqpoll(void)
+ {
+ 	struct aa_profile *profile;
+ 	struct aa_label *label;
+-- 
+2.39.2
 
-implemented that packet pipe and I can't remember now what the
-
-case was that lead to it.
-
-
-Ian
-
->          sbi->flags &= ~AUTOFS_SBI_CATATONIC;
->   
->          /*
