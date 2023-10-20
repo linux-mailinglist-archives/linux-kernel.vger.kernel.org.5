@@ -2,232 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8010E7D1558
+	by mail.lfdr.de (Postfix) with ESMTP id D6B6A7D155A
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377946AbjJTSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        id S1377977AbjJTSB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjJTSBw (ORCPT
+        with ESMTP id S1377935AbjJTSBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:01:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0E1D55;
-        Fri, 20 Oct 2023 11:01:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C942C433C7;
-        Fri, 20 Oct 2023 18:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697824910;
-        bh=zOJCG8xl57ebLi0HJCDV8JKToe5JmhU+GHr6FkPb0d4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QtMNsBaJKR2XNWFKqrRBz/ayO0Vk0DizPVoXVqmLxH8PYILEGhmhftZ8wOwePzIgF
-         7Uqk4Cws/XLEgu2DqQsvSqWyG21EQN4hL7XpvUPGSRo8L0pDQNLeqr9KddzWQcyC2Z
-         4VV7ORE3Zc8ZWJA659E36xSBwS9InfABp/TA7/8PmzWR89Fxuz0VL89swTpflHekfI
-         HnagXddKplSn697T/D4G4Ud5FJg2bjW6Nep4+a/2+hKpySc2ogoU1JCciYjDPXX8RB
-         aZ5w8wgLlsCQcXpUzWdLUgFOpBd1ti4HvFnBD7nrPCXYdjAwaNV9rtYx9ylml46YAT
-         L4be2l1yek8qA==
-Date:   Fri, 20 Oct 2023 23:31:39 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
-        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 4/5] misc: pci_endpoint_test: Add doorbell test case
-Message-ID: <20231020180139.GE46191@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-5-Frank.Li@nxp.com>
- <20231020175304.GC46191@thinkpad>
+        Fri, 20 Oct 2023 14:01:54 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0D4D5E
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:01:50 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso768757f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697824909; x=1698429709; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0cvDbRgvaE/MMtferZELFHjeUMk8nms5U1m9ICXk3xc=;
+        b=s4e7Sm1RKZkWdGyV52LBJAG7a7sWTGTdLeeyEZkYyMQe7WwIswOoyK6mU0YNggt2fL
+         kQw6UCk1kF3xNec8/O1hqz8/F4wvxgn/g4/lA+fxfWyXlXDL+Rr53ksnr1kyJpgN5ce2
+         knqaQTm0nPxl544WIAtP+lVW7nCMDMdZg+dJek0UmLUAZQFP9SAKLeJxtAatsstm3iAr
+         CVBJCaxbhL865agzptW9szA1wbDLLm5tCegAZBTR0w5lu9h3i6FFo/hk8XJOPqzIbKOR
+         VhA5Z3a7Qwr83jRR/bl6IYEjwo5nt/rZeFfx1REYVpl6ErQpe8AGaCh0rH2lce/Xl8qO
+         iL3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697824909; x=1698429709;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0cvDbRgvaE/MMtferZELFHjeUMk8nms5U1m9ICXk3xc=;
+        b=AIMKvPgKLNR8aOKpz8ARWVYZafGSLhMWqIXZBwZs8pklheDCOfShb6IKJm+jCR1Ifv
+         2OcbsqrF1TNVfLzZ5VYoPb2gpYh/SwUJTd8I3gh9THfoJ8x96b9v7n3npRmSr6fUBKPl
+         ZzaE43Zr4E5ggLG3WACh8MvXZfMdzVnVS9Ui8v2FkZJ/5eX/G++jX2UfMlfoXEsXi8Mr
+         Efh5xptyRkoV+5BCzrqQXmxI9+fm7DNCiYJL95/gqyzA/UFNlCNXrfYdNC3e4wM0Trfj
+         c3VzapnyLEsPaKh9ng8awUvXz41EHj+x1UhnpvQuSrRWDrOps87LmWy7ZGRF60KK9VC7
+         r1vQ==
+X-Gm-Message-State: AOJu0Yy4WzplonevE3la7UEtVWfoocD/gcZpkruJdLao/tcXJkZ4HjAA
+        BZHrrUA6jxVao/iUJe3weRLr7fx3vkdtwuggt14=
+X-Google-Smtp-Source: AGHT+IFacaNQW5+HH8YbBURHW1O00bcOLVSdcOKkd5GshXqTtnuuiDtYOTLUx3viN7cWPgkXU0OcMw==
+X-Received: by 2002:a5d:5291:0:b0:32d:a717:717a with SMTP id c17-20020a5d5291000000b0032da717717amr2202915wrv.40.1697824908876;
+        Fri, 20 Oct 2023 11:01:48 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id m10-20020adffe4a000000b0032ddc3b88e9sm2209549wrs.0.2023.10.20.11.01.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 11:01:48 -0700 (PDT)
+Message-ID: <8365d2fe-57e5-49c2-8221-5487d3fd7a8c@linaro.org>
+Date:   Fri, 20 Oct 2023 20:01:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231020175304.GC46191@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/4] dt-bindings: pwm: Add OpenCores PWM module
+To:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20231020103741.557735-1-william.qiu@starfivetech.com>
+ <20231020103741.557735-2-william.qiu@starfivetech.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231020103741.557735-2-william.qiu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 11:23:04PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Sep 11, 2023 at 06:09:19PM -0400, Frank Li wrote:
-> > Using bit 0..7 of magic as version number in pci_endpoint_test struct to
-> > support older driver versions. Save to 'version' field of struct
-> > pci_endpoint_test to prevent reading non-existent address.
-> > 
+On 20/10/2023 12:37, William Qiu wrote:
+> Add documentation to describe OpenCores Pulse Width Modulation
+> controller driver.
 > 
-> Since both drivers are in the kernel, I don't see a necessity to maintain
-> compatibility. Does it make sense to load drivers of previous kernel revision
-> with a new kernel?
-> 
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Shoot... Sorry, I completely forgot that one is EP and another is host. Yes, we
-do need to maintain compatibility.
+Please point me where this patch got review?
 
-But can't we use the doorbell register contents to determine that?
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> ---
+>  .../bindings/pwm/opencores,pwm-ocores.yaml    | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml b/Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml
+> new file mode 100644
+> index 000000000000..0f6a3434f155
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/opencores,pwm-ocores.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OpenCores PWM controller
+> +
+> +maintainers:
+> +  - William Qiu <william.qiu@starfivetech.com>
+> +
+> +description:
+> +  OpenCores PTC ip core contains a PWM controller. When operating in PWM mode, the PTC core
+> +  generates binary signal with user-programmable low and high periods. All PTC counters and
+> +  registers are 32-bit.
+> +
+> +allOf:
+> +  - $ref: pwm.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - opencores,pwm-ocores
 
-- Mani
+NAK. This is not something which received my review.
 
-> > Add three registers: PCIE_ENDPOINT_TEST_DB_BAR, PCIE_ENDPOINT_TEST_DB_ADDR,
-> > PCIE_ENDPOINT_TEST_DB_DATA.
-> > 
-> 
-> This patch is not adding these registers and not this driver also. So this
-> statement is wrong.
-> 
-> > Write data from PCI_ENDPOINT_TEST_DB_DATA to address from
-> > PCI_ENDPOINT_TEST_DB_ADDR to trigger doorbell and wait for endpoint
-> > feedback.
-> > 
-> 
-> You can reuse a part of the commit description I suggested for previous patch.
-> 
-> Rest looks good to me.
-> 
-> - Mani
-> 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  drivers/misc/pci_endpoint_test.c | 48 ++++++++++++++++++++++++++++++++
-> >  include/uapi/linux/pcitest.h     |  1 +
-> >  2 files changed, 49 insertions(+)
-> > 
-> > diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-> > index ed4d0ef5e5c31..ed0b025132d17 100644
-> > --- a/drivers/misc/pci_endpoint_test.c
-> > +++ b/drivers/misc/pci_endpoint_test.c
-> > @@ -33,6 +33,8 @@
-> >  #define IRQ_TYPE_MSIX				2
-> >  
-> >  #define PCI_ENDPOINT_TEST_MAGIC			0x0
-> > +#define PCI_MAGIC_VERSION_MASK			GENMASK(7, 0)
-> > +#define PCI_ENDPOINT_TEST_V1			0x1
-> >  
-> >  #define PCI_ENDPOINT_TEST_COMMAND		0x4
-> >  #define COMMAND_RAISE_LEGACY_IRQ		BIT(0)
-> > @@ -52,6 +54,7 @@
-> >  #define STATUS_IRQ_RAISED			BIT(6)
-> >  #define STATUS_SRC_ADDR_INVALID			BIT(7)
-> >  #define STATUS_DST_ADDR_INVALID			BIT(8)
-> > +#define STATUS_DOORBELL_SUCCESS			BIT(9)
-> >  
-> >  #define PCI_ENDPOINT_TEST_LOWER_SRC_ADDR	0x0c
-> >  #define PCI_ENDPOINT_TEST_UPPER_SRC_ADDR	0x10
-> > @@ -66,7 +69,12 @@
-> >  #define PCI_ENDPOINT_TEST_IRQ_NUMBER		0x28
-> >  
-> >  #define PCI_ENDPOINT_TEST_FLAGS			0x2c
-> > +#define PCI_ENDPOINT_TEST_DB_BAR		0x30
-> > +#define PCI_ENDPOINT_TEST_DB_ADDR		0x34
-> > +#define PCI_ENDPOINT_TEST_DB_DATA		0x38
-> > +
-> >  #define FLAG_USE_DMA				BIT(0)
-> > +#define FLAG_SUPPORT_DOORBELL			BIT(1)
-> >  
-> >  #define PCI_DEVICE_ID_TI_AM654			0xb00c
-> >  #define PCI_DEVICE_ID_TI_J7200			0xb00f
-> > @@ -102,6 +110,7 @@ enum pci_barno {
-> >  	BAR_3,
-> >  	BAR_4,
-> >  	BAR_5,
-> > +	NO_BAR = -1,
-> >  };
-> >  
-> >  struct pci_endpoint_test {
-> > @@ -118,6 +127,7 @@ struct pci_endpoint_test {
-> >  	enum pci_barno test_reg_bar;
-> >  	size_t alignment;
-> >  	const char *name;
-> > +	u8 version;
-> >  };
-> >  
-> >  struct pci_endpoint_test_data {
-> > @@ -713,6 +723,38 @@ static bool pci_endpoint_test_set_irq(struct pci_endpoint_test *test,
-> >  	return false;
-> >  }
-> >  
-> > +static bool pci_endpoint_test_doorbell(struct pci_endpoint_test *test)
-> > +{
-> > +	enum pci_barno bar;
-> > +	u32 data, status;
-> > +	u32 addr;
-> > +
-> > +	if (test->version < PCI_ENDPOINT_TEST_V1)
-> > +		return false;
-> > +
-> > +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
-> > +	if (bar == NO_BAR)
-> > +		return false;
-> > +
-> > +	data = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_DATA);
-> > +	addr = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_ADDR);
-> > +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
-> > +
-> > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_TYPE, irq_type);
-> > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_NUMBER, 1);
-> > +
-> > +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_STATUS, 0);
-> > +	pci_endpoint_test_bar_writel(test, bar, addr, data);
-> > +
-> > +	wait_for_completion_timeout(&test->irq_raised, msecs_to_jiffies(1000));
-> > +
-> > +	status = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_STATUS);
-> > +	if (status & STATUS_DOORBELL_SUCCESS)
-> > +		return true;
-> > +
-> > +	return false;
-> > +}
-> > +
-> >  static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
-> >  				    unsigned long arg)
-> >  {
-> > @@ -760,6 +802,9 @@ static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
-> >  	case PCITEST_CLEAR_IRQ:
-> >  		ret = pci_endpoint_test_clear_irq(test);
-> >  		break;
-> > +	case PCITEST_DOORBELL:
-> > +		ret = pci_endpoint_test_doorbell(test);
-> > +		break;
-> >  	}
-> >  
-> >  ret:
-> > @@ -887,6 +932,9 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
-> >  	misc_device->parent = &pdev->dev;
-> >  	misc_device->fops = &pci_endpoint_test_fops;
-> >  
-> > +	test->version = FIELD_GET(PCI_MAGIC_VERSION_MASK,
-> > +				  pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_MAGIC));
-> > +
-> >  	err = misc_register(misc_device);
-> >  	if (err) {
-> >  		dev_err(dev, "Failed to register device\n");
-> > diff --git a/include/uapi/linux/pcitest.h b/include/uapi/linux/pcitest.h
-> > index f9c1af8d141b4..479ca1aa3ae0b 100644
-> > --- a/include/uapi/linux/pcitest.h
-> > +++ b/include/uapi/linux/pcitest.h
-> > @@ -20,6 +20,7 @@
-> >  #define PCITEST_SET_IRQTYPE	_IOW('P', 0x8, int)
-> >  #define PCITEST_GET_IRQTYPE	_IO('P', 0x9)
-> >  #define PCITEST_CLEAR_IRQ	_IO('P', 0x10)
-> > +#define PCITEST_DOORBELL	_IO('P', 0x11)
-> >  
-> >  #define PCITEST_FLAGS_USE_DMA	0x00000001
-> >  
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
 
--- 
-மணிவண்ணன் சதாசிவம்
+Best regards,
+Krzysztof
+
