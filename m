@@ -2,159 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8527D1935
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B682E7D193C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbjJTWev convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 18:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S230285AbjJTWh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 18:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjJTWeu (ORCPT
+        with ESMTP id S229983AbjJTWh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 18:34:50 -0400
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B4891
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:34:45 -0700 (PDT)
-Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay09.hostedemail.com (Postfix) with ESMTP id A1C8480233;
-        Fri, 20 Oct 2023 22:34:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 6F1CB2002F;
-        Fri, 20 Oct 2023 22:34:41 +0000 (UTC)
-Message-ID: <fbd86466d325055846e5d63f62ca1dc8613ba80d.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: allow tags between co-developed-by and
- their sign-off
-From:   Joe Perches <joe@perches.com>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jacob Keller <jacob.e.keller@intel.com>
-Date:   Fri, 20 Oct 2023 15:34:40 -0700
-In-Reply-To: <20231020132156.37882-1-przemyslaw.kitszel@intel.com>
-References: <20231020132156.37882-1-przemyslaw.kitszel@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 20 Oct 2023 18:37:57 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA856D76
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:37:50 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1ca052ec63bso10958335ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697841470; x=1698446270; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pp7b71HPUhZRYWiCA2ecvkahN2T6L1Zohh0DcisfMqo=;
+        b=mpghkfyzOutQ8CeN0RTsOB/0AWJ4MqMMREcBV150vT/rU4NoA0CTQBI09Id5QZgKu6
+         zsDGGBYpFyLGzg/FOj8u29B6DTgrQLkbAV7OQJmfl29HFC57Ux4CvgUWCFQvQMNMXN04
+         gBLuVmp0DsoLj8I6TEB4/RGOu0MfMJ9eNFUnc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697841470; x=1698446270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pp7b71HPUhZRYWiCA2ecvkahN2T6L1Zohh0DcisfMqo=;
+        b=R+nYnuohgJVGp3WsEO/8H1EyitfjMVKZkVP18Q7Rd0wEDfFUNqBMn5ZiDGDsbDK+o/
+         6gxBVhU9PvoCpGMf9/+tOH2yf9O3VrjARYdr9x3vpVsOsW99fXI/+34MmZpbyDYTQVwM
+         Pu+h0pcvfddPIiQK0d4rl8ExA/bkKjt985ANbdIkFXW3EZcYRiYAYwCHfhkoy+Ziapez
+         I8ir4cwAfqYtpF3bcFV4SGoQ0OofYnJkSB7DZ4GjLgsGZLlu+gXhsUoKD8meFo05yrKg
+         zhCfuhYSl4q+z2TDKz+JS3UFy1ilXjp0nVwcGiyWR3FKS5pxxS/nJ3mCcAg1XfrCbRru
+         ZW6g==
+X-Gm-Message-State: AOJu0Yx+16rs34OOvBLDHK5zsBLl8s2I30OvBz4pSrFfs1nF45xB8csn
+        SnJWOp628fWdc9y6llTire8xOw==
+X-Google-Smtp-Source: AGHT+IFTI62df7sLkxercIq20RisYKYexu5tSVNibXFRfdyyl/NCUMISJDc3unFPOyM3yu6AVX3h4w==
+X-Received: by 2002:a17:903:610:b0:1c4:387a:3259 with SMTP id kg16-20020a170903061000b001c4387a3259mr3542740plb.46.1697841470337;
+        Fri, 20 Oct 2023 15:37:50 -0700 (PDT)
+Received: from khazhy-linux.svl.corp.google.com ([2620:15c:2a3:200:8e83:71b3:7861:9c5])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902c38c00b001bbd1562e75sm2013392plg.55.2023.10.20.15.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 15:37:50 -0700 (PDT)
+From:   Khazhismel Kumykov <khazhy@chromium.org>
+X-Google-Original-From: Khazhismel Kumykov <khazhy@google.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Yu Kuai <yukuai3@huawei.com>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com, linan122@huawei.com,
+        Khazhismel Kumykov <khazhy@google.com>
+Subject: [PATCH] blk-throttle: check for overflow in calculate_bytes_allowed
+Date:   Fri, 20 Oct 2023 15:36:17 -0700
+Message-ID: <20231020223617.2739774-1-khazhy@google.com>
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 6F1CB2002F
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: ejx1fdsi4p19nyntrhqe4nitqku94cta
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX192xNY8g1V4VJHRbK/KkJ93xdgnr/pv91c=
-X-HE-Tag: 1697841281-109740
-X-HE-Meta: U2FsdGVkX1/CJ6MPuslSjj72SWELfX+WrEQUXANFi+dkvn/6BM4rMZQ0XwrplW7GyMF27wNGSPLyqMU37ZGgH0Mw7UnGC4i7QkcMt/phT6OfrvK59oQJjLYluE7cSAnmVkyO9Zz7qfBIOWAf4SzQwuzfodpmHT35LoFqp8Vol4kp0RtadzunbhtJNoE0R0yGjVIhxQ/4uHGvCu0kG1oHcW+mzOa4m4twg/JIJqYCAqv+39PAw+tDu9TEDjUUqpM61lSu3RLYEy9Ns5E0pP3o9qn+PgymcFvYeiIqv29emCmnJOnkSVsninCTrf0aI8KQwHk2typc8uKYEheqFOzAdzFRQM+N/K1jSsuvgke8G/Qplc5ecFh9LSIUGOou3NA5
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-20 at 15:21 +0200, Przemek Kitszel wrote:
-> Allow additional tags between Co-developed-by: and Signed-off-by:.
-> Bump severity of missing SoB to ERROR.
-> 
-> Additional tags between Co-developed-by and corresponding Signed-off-by
-> could include Reviewed-by tags collected by Submitter, which is also
-> a Co-developer, but should sign-off at the very end of tags provided by
-> themself.
-> 
-> Missing SoB is promoted to error while that piece of code is touched.
-> 
-> Two sets of perl %hashes introduced to keep both (int) line numbers and
-> (string) messages handy for warning reporting, while keeping it correct
-> across 100+ line long commit messages.
-> 
-> Mateusz Polchlopek <mateusz.polchlopek@intel.com> has reported this to me.
-> 
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Inexact, we may reject some not-overflowing values incorrectly, but
+they'll be on the order of exabytes allowed anyways.
 
-Unless this is accepted by various process folk,
-and the documentation for it updated, I think this
-should not be applied.
+This fixes divide error crash on x86 if bps_limit is not configured or
+is set too high in the rare case that jiffy_elapsed is greater than HZ.
 
-> ---
->  scripts/checkpatch.pl | 36 +++++++++++++++++++++++-------------
->  1 file changed, 23 insertions(+), 13 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 7d16f863edf1..0400bf092bfa 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -2682,6 +2682,10 @@ sub process {
->  	my $suppress_statement = 0;
->  
->  	my %signatures = ();
-> +	my %signoffs = ();
-> +	my %signoffs_msg = ();
-> +	my %codevs = ();
-> +	my %codevs_msg = ();
->  
->  	# Pre-scan the patch sanitizing the lines.
->  	# Pre-scan the patch looking for any __setup documentation.
-> @@ -2967,11 +2971,13 @@ sub process {
->  		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
->  			$signoff++;
->  			$in_commit_log = 0;
-> +			my $ctx = $1;
-> +			$signoffs{$ctx} = $linenr;
-> +			$signoffs_msg{$ctx} = $herecurr;
->  			if ($author ne ''  && $authorsignoff != 1) {
-> -				if (same_email_addresses($1, $author)) {
-> +				if (same_email_addresses($ctx, $author)) {
->  					$authorsignoff = 1;
->  				} else {
-> -					my $ctx = $1;
->  					my ($email_name, $email_comment, $email_address, $comment1) = parse_email($ctx);
->  					my ($author_name, $author_comment, $author_address, $comment2) = parse_email($author);
->  
-> @@ -3158,22 +3164,15 @@ sub process {
->  				$signatures{$sig_nospace} = 1;
->  			}
->  
-> -# Check Co-developed-by: immediately followed by Signed-off-by: with same name and email
-> +# Collect Co-developed-by: to check if each is backed up by Signed-off-by: with
-> +# the same name and email. Checks are made after main loop.
->  			if ($sign_off =~ /^co-developed-by:$/i) {
->  				if ($email eq $author) {
->  					WARN("BAD_SIGN_OFF",
->  					      "Co-developed-by: should not be used to attribute nominal patch author '$author'\n" . $herecurr);
->  				}
-> -				if (!defined $lines[$linenr]) {
-> -					WARN("BAD_SIGN_OFF",
-> -					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . $herecurr);
-> -				} elsif ($rawlines[$linenr] !~ /^signed-off-by:\s*(.*)/i) {
-> -					WARN("BAD_SIGN_OFF",
-> -					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . $herecurr . $rawlines[$linenr] . "\n");
-> -				} elsif ($1 ne $email) {
-> -					WARN("BAD_SIGN_OFF",
-> -					     "Co-developed-by and Signed-off-by: name/email do not match\n" . $herecurr . $rawlines[$linenr] . "\n");
-> -				}
-> +				$codevs{$email} = $linenr;
-> +				$codevs_msg{$email} = $herecurr;
->  			}
->  
->  # check if Reported-by: is followed by a Closes: tag
-> @@ -7712,6 +7711,17 @@ sub process {
->  				     "From:/Signed-off-by: email subaddress mismatch: $sob_msg\n");
->  			}
->  		}
-> +		# check if each Co-developed-by tag is backed up by Sign-off,
-> +		# warn if Co-developed-by tag was put after a Signed-off-by tag
-> +		foreach my $codev (keys %codevs) {
-> +			if (!$signoffs{$codev}) {
-> +				ERROR("BAD_SIGN_OFF",
-> +				      "Co-developed-by: must be followed by Signed-off-by:\n" . $codevs_msg{$codev});
-> +			} elsif ($signoffs{$codev} <= $codevs{$codev}) {
-> +				WARN("BAD_SIGN_OFF",
-> +				     "Co-developed-by: must be followed by Signed-off-by:, but was placed after it\n" . $signoffs_msg{$codev} . $codevs_msg{$codev});
-> +			}
-> +		}
->  	}
->  
->  	print report_dump();
+Fixes: e8368b57c006 ("blk-throttle: use calculate_io/bytes_allowed() for throtl_trim_slice()")
+Fixes: 8d6bbaada2e0 ("blk-throttle: prevent overflow while calculating wait time")
+Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
+---
+ block/blk-throttle.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 38a881cf97d0..13e4377a8b28 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -723,6 +723,12 @@ static unsigned int calculate_io_allowed(u32 iops_limit,
+ 
+ static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
+ {
++	/*
++	 * Can result be wider than 64 bits?
++	 * We check against 62, not 64, due to ilog2 truncation.
++	 */
++	if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
++		return U64_MAX;
+ 	return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ);
+ }
+ 
+-- 
+2.42.0.655.g421f12c284-goog
 
