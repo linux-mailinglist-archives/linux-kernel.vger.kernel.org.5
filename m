@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 093B87D0C84
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777B37D0C88
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376888AbjJTJ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        id S1376920AbjJTJ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376845AbjJTJ7g (ORCPT
+        with ESMTP id S1376871AbjJTJ7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:59:36 -0400
+        Fri, 20 Oct 2023 05:59:46 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91152C2;
-        Fri, 20 Oct 2023 02:59:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BA5D8;
+        Fri, 20 Oct 2023 02:59:35 -0700 (PDT)
 Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SBg3K6fQpz15NKl;
-        Fri, 20 Oct 2023 17:56:45 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SBg3M5WlYz15NgH;
+        Fri, 20 Oct 2023 17:56:47 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 20 Oct 2023 17:59:31 +0800
+ 15.1.2507.31; Fri, 20 Oct 2023 17:59:32 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
@@ -30,12 +30,18 @@ CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Alexander Duyck <alexander.duyck@gmail.com>,
         Liang Chen <liangchen.linux@gmail.com>,
         Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Dima Tisnek <dimaqq@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net-next v12 3/5] page_pool: introduce page_pool_alloc() API
-Date:   Fri, 20 Oct 2023 17:59:50 +0800
-Message-ID: <20231020095952.11055-4-linyunsheng@huawei.com>
+        Eric Dumazet <edumazet@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <linux-doc@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v12 4/5] page_pool: update document about fragment API
+Date:   Fri, 20 Oct 2023 17:59:51 +0800
+Message-ID: <20231020095952.11055-5-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20231020095952.11055-1-linyunsheng@huawei.com>
 References: <20231020095952.11055-1-linyunsheng@huawei.com>
@@ -55,157 +61,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently page pool supports the below use cases:
-use case 1: allocate page without page splitting using
-            page_pool_alloc_pages() API if the driver knows
-            that the memory it need is always bigger than
-            half of the page allocated from page pool.
-use case 2: allocate page frag with page splitting using
-            page_pool_alloc_frag() API if the driver knows
-            that the memory it need is always smaller than
-            or equal to the half of the page allocated from
-            page pool.
-
-There is emerging use case [1] & [2] that is a mix of the
-above two case: the driver doesn't know the size of memory it
-need beforehand, so the driver may use something like below to
-allocate memory with least memory utilization and performance
-penalty:
-
-if (size << 1 > max_size)
-	page = page_pool_alloc_pages();
-else
-	page = page_pool_alloc_frag();
-
-To avoid the driver doing something like above, add the
-page_pool_alloc() API to support the above use case, and update
-the true size of memory that is acctually allocated by updating
-'*size' back to the driver in order to avoid exacerbating
-truesize underestimate problem.
-
-Rename page_pool_free() which is used in the destroy process to
-__page_pool_destroy() to avoid confusion with the newly added
-API.
-
-1. https://lore.kernel.org/all/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
-2. https://lore.kernel.org/all/20230526054621.18371-3-liangchen.linux@gmail.com/
+As more drivers begin to use the fragment API, update the
+document about how to decide which API to use for the
+driver author.
 
 Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 CC: Lorenzo Bianconi <lorenzo@kernel.org>
 CC: Alexander Duyck <alexander.duyck@gmail.com>
 CC: Liang Chen <liangchen.linux@gmail.com>
 CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: Dima Tisnek <dimaqq@gmail.com>
 ---
- include/net/page_pool/helpers.h | 66 +++++++++++++++++++++++++++++++++
- net/core/page_pool.c            |  4 +-
- 2 files changed, 68 insertions(+), 2 deletions(-)
+ Documentation/networking/page_pool.rst |  4 +-
+ include/net/page_pool/helpers.h        | 93 ++++++++++++++++++++++----
+ 2 files changed, 83 insertions(+), 14 deletions(-)
 
+diff --git a/Documentation/networking/page_pool.rst b/Documentation/networking/page_pool.rst
+index 215ebc92752c..60993cb56b32 100644
+--- a/Documentation/networking/page_pool.rst
++++ b/Documentation/networking/page_pool.rst
+@@ -58,7 +58,9 @@ a page will cause no race conditions is enough.
+ 
+ .. kernel-doc:: include/net/page_pool/helpers.h
+    :identifiers: page_pool_put_page page_pool_put_full_page
+-		 page_pool_recycle_direct page_pool_dev_alloc_pages
++		 page_pool_recycle_direct page_pool_free_va
++		 page_pool_dev_alloc_pages page_pool_dev_alloc_frag
++		 page_pool_dev_alloc page_pool_dev_alloc_va
+ 		 page_pool_get_dma_addr page_pool_get_dma_dir
+ 
+ .. kernel-doc:: net/core/page_pool.c
 diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 759489c037c7..1b76e05dc4d2 100644
+index 1b76e05dc4d2..4ebd544ae977 100644
 --- a/include/net/page_pool/helpers.h
 +++ b/include/net/page_pool/helpers.h
-@@ -82,6 +82,66 @@ static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
- 	return page_pool_alloc_frag(pool, offset, size, gfp);
+@@ -8,23 +8,46 @@
+ /**
+  * DOC: page_pool allocator
+  *
+- * The page_pool allocator is optimized for the XDP mode that
+- * uses one frame per-page, but it can fallback on the
+- * regular page allocator APIs.
++ * The page_pool allocator is optimized for recycling page or page fragment used
++ * by skb packet and xdp frame.
+  *
+- * Basic use involves replacing alloc_pages() calls with the
+- * page_pool_alloc_pages() call.  Drivers should use
+- * page_pool_dev_alloc_pages() replacing dev_alloc_pages().
++ * Basic use involves replacing and alloc_pages() calls with page_pool_alloc(),
++ * which allocate memory with or without page splitting depending on the
++ * requested memory size.
+  *
+- * The API keeps track of in-flight pages, in order to let API users know
+- * when it is safe to free a page_pool object.  Thus, API users
+- * must call page_pool_put_page() to free the page, or attach
+- * the page to a page_pool-aware object like skbs marked with
++ * If the driver knows that it always requires full pages or its allocations are
++ * always smaller than half a page, it can use one of the more specific API
++ * calls:
++ *
++ * 1. page_pool_alloc_pages(): allocate memory without page splitting when
++ * driver knows that the memory it need is always bigger than half of the page
++ * allocated from page pool. There is no cache line dirtying for 'struct page'
++ * when a page is recycled back to the page pool.
++ *
++ * 2. page_pool_alloc_frag(): allocate memory with page splitting when driver
++ * knows that the memory it need is always smaller than or equal to half of the
++ * page allocated from page pool. Page splitting enables memory saving and thus
++ * avoids TLB/cache miss for data access, but there also is some cost to
++ * implement page splitting, mainly some cache line dirtying/bouncing for
++ * 'struct page' and atomic operation for page->pp_frag_count.
++ *
++ * The API keeps track of in-flight pages, in order to let API users know when
++ * it is safe to free a page_pool object, the API users must call
++ * page_pool_put_page() or page_pool_free_va() to free the page_pool object, or
++ * attach the page_pool object to a page_pool-aware object like skbs marked with
+  * skb_mark_for_recycle().
+  *
+- * API users must call page_pool_put_page() once on a page, as it
+- * will either recycle the page, or in case of refcnt > 1, it will
+- * release the DMA mapping and in-flight state accounting.
++ * page_pool_put_page() may be called multi times on the same page if a page is
++ * split into multi fragments. For the last fragment, it will either recycle the
++ * page, or in case of page->_refcount > 1, it will release the DMA mapping and
++ * in-flight state accounting.
++ *
++ * dma_sync_single_range_for_device() is only called for the last fragment when
++ * page_pool is created with PP_FLAG_DMA_SYNC_DEV flag, so it depends on the
++ * last freed fragment to do the sync_for_device operation for all fragments in
++ * the same page when a page is split, the API user must setup pool->p.max_len
++ * and pool->p.offset correctly and ensure that page_pool_put_page() is called
++ * with dma_sync_size being -1 for fragment API.
+  */
+ #ifndef _NET_PAGE_POOL_HELPERS_H
+ #define _NET_PAGE_POOL_HELPERS_H
+@@ -73,6 +96,17 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+ 	return page_pool_alloc_pages(pool, gfp);
  }
  
-+static inline struct page *page_pool_alloc(struct page_pool *pool,
-+					   unsigned int *offset,
-+					   unsigned int *size, gfp_t gfp)
-+{
-+	unsigned int max_size = PAGE_SIZE << pool->p.order;
-+	struct page *page;
-+
-+	if ((*size << 1) > max_size) {
-+		*size = max_size;
-+		*offset = 0;
-+		return page_pool_alloc_pages(pool, gfp);
-+	}
-+
-+	page = page_pool_alloc_frag(pool, offset, *size, gfp);
-+	if (unlikely(!page))
-+		return NULL;
-+
-+	/* There is very likely not enough space for another fragment, so append
-+	 * the remaining size to the current fragment to avoid truesize
-+	 * underestimate problem.
-+	 */
-+	if (pool->frag_offset + *size > max_size) {
-+		*size = max_size - *offset;
-+		pool->frag_offset = max_size;
-+	}
-+
-+	return page;
-+}
-+
-+static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
-+					       unsigned int *offset,
-+					       unsigned int *size)
-+{
-+	gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
-+
-+	return page_pool_alloc(pool, offset, size, gfp);
-+}
-+
-+static inline void *page_pool_alloc_va(struct page_pool *pool,
-+				       unsigned int *size, gfp_t gfp)
-+{
-+	unsigned int offset;
-+	struct page *page;
-+
-+	/* Mask off __GFP_HIGHMEM to ensure we can use page_address() */
-+	page = page_pool_alloc(pool, &offset, size, gfp & ~__GFP_HIGHMEM);
-+	if (unlikely(!page))
-+		return NULL;
-+
-+	return page_address(page) + offset;
-+}
-+
-+static inline void *page_pool_dev_alloc_va(struct page_pool *pool,
-+					   unsigned int *size)
-+{
-+	gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
-+
-+	return page_pool_alloc_va(pool, size, gfp);
-+}
-+
- /**
-  * page_pool_get_dma_dir() - Retrieve the stored DMA direction.
-  * @pool:	pool from which page was allocated
-@@ -221,6 +281,12 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
++/**
++ * page_pool_dev_alloc_frag() - allocate a page fragment.
++ * @pool: pool from which to allocate
++ * @offset: offset to the allocated page
++ * @size: requested size
++ *
++ * Get a page fragment from the page allocator or page_pool caches.
++ *
++ * Return:
++ * Return allocated page fragment, otherwise return NULL.
++ */
+ static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+ 						    unsigned int *offset,
+ 						    unsigned int size)
+@@ -111,6 +145,19 @@ static inline struct page *page_pool_alloc(struct page_pool *pool,
+ 	return page;
+ }
+ 
++/**
++ * page_pool_dev_alloc() - allocate a page or a page fragment.
++ * @pool: pool from which to allocate
++ * @offset: offset to the allocated page
++ * @size: in as the requested size, out as the allocated size
++ *
++ * Get a page or a page fragment from the page allocator or page_pool caches
++ * depending on the requested size in order to allocate memory with least memory
++ * utilization and performance penalty.
++ *
++ * Return:
++ * Return allocated page or page fragment, otherwise return NULL.
++ */
+ static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
+ 					       unsigned int *offset,
+ 					       unsigned int *size)
+@@ -134,6 +181,18 @@ static inline void *page_pool_alloc_va(struct page_pool *pool,
+ 	return page_address(page) + offset;
+ }
+ 
++/**
++ * page_pool_dev_alloc_va() - allocate a page or a page fragment and return its
++ *			      va.
++ * @pool: pool from which to allocate
++ * @size: in as the requested size, out as the allocated size
++ *
++ * This is just a thin wrapper around the page_pool_alloc() API, and
++ * it returns va of the allocated page or page fragment.
++ *
++ * Return:
++ * Return the va for the allocated page or page fragment, otherwise return NULL.
++ */
+ static inline void *page_pool_dev_alloc_va(struct page_pool *pool,
+ 					   unsigned int *size)
+ {
+@@ -281,6 +340,14 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
  #define PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA	\
  		(sizeof(dma_addr_t) > sizeof(unsigned long))
  
-+static inline void page_pool_free_va(struct page_pool *pool, void *va,
-+				     bool allow_direct)
-+{
-+	page_pool_put_page(pool, virt_to_head_page(va), -1, allow_direct);
-+}
-+
- /**
-  * page_pool_get_dma_addr() - Retrieve the stored DMA address.
-  * @page:	page allocated from a page pool
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 2a3671c97ca7..5e409b98aba0 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -809,7 +809,7 @@ static void page_pool_empty_ring(struct page_pool *pool)
- 	}
- }
- 
--static void page_pool_free(struct page_pool *pool)
-+static void __page_pool_destroy(struct page_pool *pool)
++/**
++ * page_pool_free_va() - free a va into the page_pool
++ * @pool: pool from which va was allocated
++ * @va: va to be freed
++ * @allow_direct: freed by the consumer, allow lockless caching
++ *
++ * Free a va allocated from page_pool_allo_va().
++ */
+ static inline void page_pool_free_va(struct page_pool *pool, void *va,
+ 				     bool allow_direct)
  {
- 	if (pool->disconnect)
- 		pool->disconnect(pool);
-@@ -860,7 +860,7 @@ static int page_pool_release(struct page_pool *pool)
- 	page_pool_scrub(pool);
- 	inflight = page_pool_inflight(pool);
- 	if (!inflight)
--		page_pool_free(pool);
-+		__page_pool_destroy(pool);
- 
- 	return inflight;
- }
 -- 
 2.33.0
 
