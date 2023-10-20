@@ -2,148 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3947C7D1681
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08057D1684
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjJTTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S229836AbjJTTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJTTqP (ORCPT
+        with ESMTP id S229554AbjJTTuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:46:15 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F09D61
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:46:12 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a397a7c1cso1537696276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697831171; x=1698435971; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VY26jasGvoK52ErKJqQiLhyEvSJKvdG2hTJjnfxEGsM=;
-        b=ZNgOLavC8fzTZrLtjT8LABBsjAACnBHp8y++tiCif+Z3Xa6VKsWJsEIrSBnRbITeXn
-         oMbBpSVzGVD0q7C72jAGMelMWToILzy7pf8Q9Q564+4fxxTDSFVBINmfMaUuboZXNsT0
-         JbE2r02Kxv2O9H33zAgHz+SVQji/wWScrIAt9gRvcJXHQVWvRqVD5CQT2OMLcUGC9o+R
-         QU0Rn0o1WXno6dXr8FgSCfV+6Fnevy7xPkSei+SAFQolzfraAOarhyaJmsIzc70RFq4i
-         ICVRtqjt6NgYwWQRKVKF2yA2ZT8Aob+bviA5ZwxBvo1agAOUoFSge7x5kyRWcQ9TlMBJ
-         Gkaw==
+        Fri, 20 Oct 2023 15:50:08 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FDBD52;
+        Fri, 20 Oct 2023 12:50:03 -0700 (PDT)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ce37683cf6so621363a34.3;
+        Fri, 20 Oct 2023 12:50:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697831171; x=1698435971;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VY26jasGvoK52ErKJqQiLhyEvSJKvdG2hTJjnfxEGsM=;
-        b=kHSTgHwrcIKcnBSNzN9IQumLZN57fPAozbYI3J5ROK5ruwDKYoB74u2uM870te/sim
-         uo5AWu5QUIJG/QTgFOSG6V24pUPqoRy9IPOLInMUzqKi52BVpPEgYdvZVURyQPVdGL1v
-         vJ8FOkIewF4cIIDDHrEvgajSI3RAWkw7lGyXfuCp9EYtNH+Glprmgrf8+uo+Xl8eA3Jp
-         Ml8owlZrwhpoAqgH96YtQU8XPrz8NCADDp6SrG/5zzMzp9BSJikwo6pXIMZsWBSnr4Jd
-         QpmxW7c/sindZUeX4QNdrSTO4Jdxt6VtNp1VzIPCTLtEN7xBLO3htLp2ZdQxOszaljDP
-         vwmQ==
-X-Gm-Message-State: AOJu0Ywbq7whhYAFuuY/GDV8HQ4a8+eSvR0J5XF1vBO6AaJbb9B6mJ5I
-        83Mv/XN4unTztv/1PPpdvd4R0fNOcl8aysPWcw==
-X-Google-Smtp-Source: AGHT+IG97zohXV8c60rF/wNzxWx2VFDqrZjuW/RKQVsOoHrGomIA9J+a4stpEs9Ol6SfQRsZL3Blf2RTmc7HiEy5xQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:5008:0:b0:d77:f7c3:37db with SMTP
- id e8-20020a255008000000b00d77f7c337dbmr57402ybb.8.1697831171763; Fri, 20 Oct
- 2023 12:46:11 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 19:46:11 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAALZMmUC/x2NUQrCQAxEr1LybWB3LUW9iojUbbYGZBuSWi2ld
- zf4NbyBN7OBkTIZXJoNlBY2nqpDPDSQn30dCXlwhhTSMYYU0GatWVYclBdSQ5k+pGhvkdfqoaX PdHdVR68ztl13TqE8YmlP4KOiVPj7P7ze9v0H31wQnoAAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697831170; l=2331;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=MoENqRWLCZfJlaomoU9I/5Gv5zHSfuvBj5Ts109QtOo=; b=AGIAqvvph99TN7o26x2Jna1GEQQbXsXDNhvBOWVmAJ4nDa1gz+pDDw6NLF4IDqEqLdmoBb7dh
- eSFv7SOqwvQDEk2QPNb16gHfi0TAPdg5TkfUSc3zf/NMuwfjv7hn8ew
-X-Mailer: b4 0.12.3
-Message-ID: <20231020-strncpy-drivers-power-supply-surface_charger-c-v1-1-93ddbf668e10@google.com>
-Subject: [PATCH] power: supply: surface-charger: replace deprecated strncpy
- with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697831402; x=1698436202;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sM5vuZZPtLOe4hJSbBefWkWbsAhOGZLPnuNSBD0x/PI=;
+        b=Axnb2W1srnOS4Q16Ty83aXQXAaOO7lt7uY7CcknbOFGAzG769Xj2Gy/LQr9o5DUjKQ
+         L2BW0QMNath8u+L8z/sFrpGt0HPlcHC9yy+qXoeFilnkW5BdbncUt+ENcgNpiuZuwJ6o
+         ohfXK65DpwQdFZALNc7ws6CXuIwzk1uDlWZC5aLYTQUQ+w8SrcO1wbG9M3gEQlbDpKWu
+         aCiUzJVBiC8zbu6D8Soq42Xf7NrpvxDawhAaD9TV7SsxPdChlBcaefnWtOj6TIZ65lCU
+         kt2acj2yhFAU9ZWvNjo1YXzQQhKe5oR3i7t3HGkd3UJ9Xe3ocWWBKrAWa5nV5sgIzz1n
+         sQog==
+X-Gm-Message-State: AOJu0YwizKwFvEljSNKgVPlx4c/RuNgbowV6o+0Jf9YMWLtgV6QTBRVC
+        FANtzyS8ARmLBNowcCSoNA==
+X-Google-Smtp-Source: AGHT+IH7Zz7jeVqsvuY4TO59akjVdECQntAhusPs80kaL+pZG54AZrO5pMUSbkCIxgZXVe1DEpLQyw==
+X-Received: by 2002:a05:6870:1311:b0:1d5:a303:5f39 with SMTP id 17-20020a056870131100b001d5a3035f39mr3130325oab.49.1697831402489;
+        Fri, 20 Oct 2023 12:50:02 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id eb4-20020a056870a88400b001eace5491c8sm491643oab.18.2023.10.20.12.50.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 12:50:01 -0700 (PDT)
+Received: (nullmailer pid 4183428 invoked by uid 1000);
+        Fri, 20 Oct 2023 19:50:00 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     soc@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Pierre Gondois <pierre.gondois@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: Update cache properties for socionext
+Date:   Fri, 20 Oct 2023 14:49:53 -0500
+Message-ID: <20231020194953.4183220-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+From: Pierre Gondois <pierre.gondois@arm.com>
 
-We expect ac->name to be NUL-terminated based on its usage with format
-strings:
+The DeviceTree Specification v0.3 specifies that the cache node
+'compatible' and 'cache-level' properties are 'required'. Cf.
+s3.8 Multi-level and Shared Cache Nodes
+The 'cache-unified' property should be present if one of the
+properties for unified cache is present ('cache-size', ...).
 
-surface_charger.c:
-190: ac->psy_desc.name = ac->name;
+Update the Device Trees accordingly.
 
-...
-
-power_supply_core.c:
-174: dev_dbg(&psy->dev, "%s: Found supply : %s\n",
-175:   psy->desc->name, epsy->desc->name);
-
-Moreover, NUL-padding is not required as ac is already zero-allocated
-before being passed to spwr_ac_init():
-
-surface_charger.c:
-240: ac = devm_kzalloc(&sdev->dev, sizeof(*ac), GFP_KERNEL);
-241: if (!ac)
-242:   return -ENOMEM;
-243:
-244: spwr_ac_init(ac, sdev, p->registry, p->name);
-
-... this means any future NUL-byte assignments (like the ones that
-strncpy() does) are redundant.
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Let's also opt for the more idiomatic strscpy() usage of:
-(dest, src, sizeof(dest))
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Link: https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Note: build-tested only.
+ arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi | 1 +
+ arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi | 2 ++
+ arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi | 1 +
+ 3 files changed, 4 insertions(+)
 
-Found with: $ rg "strncpy\("
----
- drivers/power/supply/surface_charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/supply/surface_charger.c
-index cabdd8da12d0..7a6c62d6f883 100644
---- a/drivers/power/supply/surface_charger.c
-+++ b/drivers/power/supply/surface_charger.c
-@@ -175,7 +175,7 @@ static void spwr_ac_init(struct spwr_ac_device *ac, struct ssam_device *sdev,
- 			 struct ssam_event_registry registry, const char *name)
- {
- 	mutex_init(&ac->lock);
--	strncpy(ac->name, name, ARRAY_SIZE(ac->name) - 1);
-+	strscpy(ac->name, name, sizeof(ac->name));
+diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
+index 7bb36b071475..54e58d945fd7 100644
+--- a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
++++ b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
+@@ -52,6 +52,7 @@ cpu1: cpu@1 {
  
- 	ac->sdev = sdev;
+ 		l2: l2-cache {
+ 			compatible = "cache";
++			cache-level = <2>;
+ 		};
+ 	};
  
-
----
-base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
-change-id: 20231020-strncpy-drivers-power-supply-surface_charger-c-466920fb1f48
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+index 4e2171630272..18390cba2eda 100644
+--- a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
++++ b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+@@ -86,10 +86,12 @@ cpu3: cpu@101 {
+ 
+ 		a72_l2: l2-cache0 {
+ 			compatible = "cache";
++			cache-level = <2>;
+ 		};
+ 
+ 		a53_l2: l2-cache1 {
+ 			compatible = "cache";
++			cache-level = <2>;
+ 		};
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi b/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
+index 38ccfb46ea42..56e037900818 100644
+--- a/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
++++ b/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
+@@ -83,6 +83,7 @@ cpu3: cpu@3 {
+ 
+ 		l2: l2-cache {
+ 			compatible = "cache";
++			cache-level = <2>;
+ 		};
+ 	};
+ 
+-- 
+2.42.0
 
