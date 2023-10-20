@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF907D198C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 01:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4087D198D
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 01:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjJTXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 19:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
+        id S230264AbjJTXT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 19:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJTXTG (ORCPT
+        with ESMTP id S230086AbjJTXT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 19:19:06 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B52D46
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 16:19:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9bc6447193so1689181276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 16:19:00 -0700 (PDT)
+        Fri, 20 Oct 2023 19:19:27 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EC0D71
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 16:19:26 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507ac66a969so1693812e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 16:19:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697843939; x=1698448739; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LidG2fExW0rwMYjQ9PdGz9R964tJxbhZmIPXqTMSy5E=;
-        b=u6fzuD3rsjn3z3aHoTB50cXFsZlu5skZpJMntd8lw9hv8gL45x3eQgBgP/F7SESm7t
-         l80guAEAEXVrdMor2zJpyzSpPzJvtV934Rb/hYMVE0iTBGvI/oZEBrvdMXrZiNvVdg8X
-         h/RRshIw1SPsEVUdy1FZ55TC3yL28hMilns9oaPumWwaAKnT7Q91Btg9FB/8MZS6gUIs
-         9lsZvrczqbp01lU9PRNXiXrR8LaJXG93NeFRcFGqQfxdeczXjD1TzP1dymspTHzGjW/1
-         1pwDHF8OOTA6+Yiml2hLWHkABGCHgJdRqhy/AIdQrIu7X2ZYwJbq/9ZYVuiZY9V3KFcO
-         tpUQ==
+        d=gmail.com; s=20230601; t=1697843964; x=1698448764; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
+        b=BmPOHq/PHVm4U/5mDghRW68MaFUT+i+KgiZCpHOKxRq/E9o/XizyK8fvabsBEhGAv5
+         rt21nwmwci5sFnXnnKsGK2Y+AeQ/O8zNDLm4eUyDbXKSDkcQG5+FpuWQr7EN6TDZORo1
+         NLCRYC1B/VkjmeLo1gkrj2YfKYPWQX4WSnm/PyXzgx3MK8J0EfviJI/nroMWioQz+y7N
+         2cwM6CGlV57uachfxoHM/cAiI+hlzPuWt21gP0+Yoy+yONCs0VySy3+W+lGkwAux6Myn
+         egxYuIg8X/15D/evj3xoNfA3xh6vRP+UCZDWbkRM48R5wZBqV/sDg2y2JQ05rVZpPGR3
+         xXrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697843939; x=1698448739;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LidG2fExW0rwMYjQ9PdGz9R964tJxbhZmIPXqTMSy5E=;
-        b=Dj8B8C3Vfw945WRp9ZeZptTo5cCrG3hDUdDIZzzqN3F+NobZpIgdv/bXOc1IG54aqq
-         NP3c8KIJJH/ZGS5MHiwXsiMlxKflEFrpRPQEGYX20Cb69M9or3dRwM+4XEHiAnPXTOV7
-         6p/C6iF673LPCifv/TT0r/wOV9sguRXYjqRhYahA4QpBc6X9hcn33y75SWayx+BNmPsH
-         pFEHYn2WA/2XRpLKSsR6Z1IV2NHMl7H0ygV7kBF5eQljaiIY9APVm7ParlgIRpYsdmmL
-         xnpmcMsipYPJAjfLuqhNspJOFbCt2BH/aDwjBQ7IR0E8d0YqEisuabjcHLYE/ZtSUIMs
-         L1hQ==
-X-Gm-Message-State: AOJu0YzQ8d28M7/lP9zBb7/cF/ALX+XK3DonIYEAvMRCfuJaxIWn2iVr
-        QDlIORguxJ7h6fOA/LTRpf3qfnpNRn5+Ptq1zg==
-X-Google-Smtp-Source: AGHT+IGDcYkCzjAktivUcypqglvB0XdzOnw9qjmzTctlQYnD6q8k9McqKaubWwbxDSHcdHHkTO0P+szvTV+TyfJbNw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:868d:0:b0:d9a:3f67:672c with SMTP
- id z13-20020a25868d000000b00d9a3f67672cmr73076ybk.3.1697843939429; Fri, 20
- Oct 2023 16:18:59 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 23:18:59 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOIKM2UC/yWNQQqEMAwAvyI5G6j1pF8RWbQmmoO1JIso4t8te
- hmYy8wFRipk0BYXKO1issUsVVlAWIY4E8qUHbzzdeW8Q/trDOnESWUnNdS02vzxFw0DMlPNgx/ HhhlyJimxHO+i6+/7AZWwx81yAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697843938; l=1846;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=llDPq5cpan48qP/R2KAFEviR6LsPU5tD/kVlkY7ZT6w=; b=gSmFNZVEghVuGZ1QS+hwXLkUsPakqZ2ey8hP3gdAEqKztchsCYGZ3kvhhioAzBjOCIjiQ5ZDr
- dmN+6PRIoUyCYc+q36XkXT3ghMHtL5a7jLdyBrtHBLjb+Xfd7TxspxV
-X-Mailer: b4 0.12.3
-Message-ID: <20231020-strncpy-drivers-rpmsg-rpmsg_ns-c-v1-1-99b16b00c36c@google.com>
-Subject: [PATCH] rpmsg: replace deprecated strncpy with strscpy_pad
-From:   Justin Stitt <justinstitt@google.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697843964; x=1698448764;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
+        b=eMyYeUpYc2ve3gTnD6igtlEmXgxVICQgRDyYWIuFr2j9IbsTuwuG+fDFWZ8bZG3K8S
+         Bxcsr5aKfkJovcTos8FSkEAsyiwfW7sFqtkD2Kfq0ZbVbHzElls1uCBNURZccJTAknao
+         tFjx1PFIV8YVhFYxHA3Y/07Wzrm8nui94IM/LGfzWu6WA5QgM6z/o2LrtSMdcqCniQzy
+         mIEHnlRroN3gqmZMifRIk7WotK9hDEhS8ZSeVA3he8UsGhyeMzhJaki0GW+uPLFn/Q9l
+         k2JImfSxxgtHhUMbecMo7/Zc4/U8KzMavqda7yenxzmo3Je5OiTs+cbeEEsG7XO2qtRP
+         UFeA==
+X-Gm-Message-State: AOJu0Yz5L2VXls23eyTWic8aKjF71ouYh3G0DGO0JxDp2oJ3Wf8nynvr
+        PY60WzwZ2rb8vIpGFBsfd90=
+X-Google-Smtp-Source: AGHT+IFbO5a9uW2x8EMaPxKrNZYl8CKdmOJba3kWXFwTKqv6/E/6iwbLLAWd+A/kzuWQwx8SQFHmdA==
+X-Received: by 2002:ac2:4183:0:b0:507:9f51:acee with SMTP id z3-20020ac24183000000b005079f51aceemr2101993lfh.22.1697843963947;
+        Fri, 20 Oct 2023 16:19:23 -0700 (PDT)
+Received: from dell.localnet (77-255-201-154.dynamic.inetia.pl. [77.255.201.154])
+        by smtp.gmail.com with ESMTPSA id 24-20020ac24858000000b0050797006048sm576424lfy.68.2023.10.20.16.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 16:19:22 -0700 (PDT)
+From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+Date:   Sat, 21 Oct 2023 01:19:20 +0200
+Message-ID: <13380212.uLZWGnKmhe@dell>
+In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
+References: <20231008135601.542356-1-jmkrzyszt@gmail.com>
+ <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart2913659.e9J7NaK4W3";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+--nextPart2913659.e9J7NaK4W3
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+Date: Sat, 21 Oct 2023 01:19:20 +0200
+Message-ID: <13380212.uLZWGnKmhe@dell>
+In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
+MIME-Version: 1.0
 
-We expect chinfo.name to be NUL-terminated based on its use with format
-strings:
-|       dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
+On Thursday, 19 October 2023 13:40:57 CEST Mark Brown wrote:
+> On Sun, Oct 08, 2023 at 03:53:10PM +0200, Janusz Krzysztofik wrote:
+> > The driver is now built only when MACH_AMS_DELTA is selected, which
+> > requires a very specific selection of ARCH settings.  As a consequence, it
+> > gets very little attention from build-bots, if not none.
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Since chinfo is not default initialized, we should NUL-pad the `name`
-field so that the behavior is consistent with what strncpy() provides:
-|       struct rpmsg_channel_info chinfo;
+Hi Mark,
 
-Considering the above, a suitable replacement is `strscpy_pad` due to
-the fact that it guarantees both NUL-termination and NUL-padding on the
-destination buffer.
+Thanks for your Ack.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+Since the fix required for successful compilation of the ams-delta ASoC 
+driver already reached v6.6, my former suggestion to pass this change also 
+via Greg's tty tree is probably no longer vital.
 
-Found with: $ rg "strncpy\("
----
- drivers/rpmsg/rpmsg_ns.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Janusz
 
-diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-index c70ad03ff2e9..bde8c8d433e0 100644
---- a/drivers/rpmsg/rpmsg_ns.c
-+++ b/drivers/rpmsg/rpmsg_ns.c
-@@ -50,7 +50,7 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
- 	/* don't trust the remote processor for null terminating the name */
- 	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
- 
--	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
-+	strscpy_pad(chinfo.name, msg->name, sizeof(chinfo.name));
- 	chinfo.src = RPMSG_ADDR_ANY;
- 	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
- 
 
----
-base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-change-id: 20231020-strncpy-drivers-rpmsg-rpmsg_ns-c-ffe3fa2bb9ff
+--nextPart2913659.e9J7NaK4W3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnyr6IsGnTYAeAkHJ2WqSnltsjBoFAmUzCvgACgkQ2WqSnlts
+jBpNFAf9FNv7JXlsqK4cead1KZEZ3CLVzOWvKWgquVyK21Rf35wQOfJvzlWTXSeB
+J/GS5Jdb399q0uSGJ0H9tN7E2kUQ7A3EffqHigsjDsmUlJamS00OFWlw93CpZlKB
+11TtR6hrxxXoCoDZXmzYLvCac0+AZ6moIQ0mJqY6AlBho4QNAxPafvwaQ1bzAkmA
+v39as9EopIOAaH8XYgX2fnQruN8jY7s9dhZwoO7VzpzcQliwakIxE2fGbXpnh45s
+k0BHkOLJgF2z2nj2PekKh1vnGw0757dytIAUpPu/j/jtTA6AI94bTTEYMQHTWjaz
+fDCU+8ORkRns59sg882e2rnWGjh73A==
+=m2Dz
+-----END PGP SIGNATURE-----
+
+--nextPart2913659.e9J7NaK4W3--
+
+
 
