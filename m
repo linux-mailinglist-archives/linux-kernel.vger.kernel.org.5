@@ -2,119 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 010187D1612
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6748B7D1629
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbjJTTGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
+        id S229843AbjJTTHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJTTG2 (ORCPT
+        with ESMTP id S231156AbjJTTHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:06:28 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863BED4C
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:26 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5aa7fdd1420so799117a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697828786; x=1698433586; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=URtsuBkq1PlfP6enjE5/unNQzMTKd3kE7D83R3MqH4Q=;
-        b=TeBWtUDrZLa4tHwIIZWcQ40qkXDWrr6Gog33AaiZx/47BkAZqATPeQBQDWt2XJM/8c
-         yxK/QKldpIAVz+MmNMXNalMiFG+XjiyKL+gRgxDbhJDjyCvU85TYcMTazX2GWXNNUfAn
-         Fcl8Cm6TGP0E/Xmi9SNbBweAbykv6JLsuDN4g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697828786; x=1698433586;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=URtsuBkq1PlfP6enjE5/unNQzMTKd3kE7D83R3MqH4Q=;
-        b=BqLNAOm8mUGowmUieTRuJFHNDZsFkx1nyYpbLN3WhetWWGkoRcazTlrnl1CZZdLKqz
-         KmGqskezdYgCM0O+mMB+zfQTzjKtO1/oU7skUmnoJ3LzDyYsXjY8v/pzokZpoiLtDtGA
-         BLEM8CjZ9FskKx1mLRFQ6Wg/Ux7asjPeQFsWP+Upb9kkmIReXxGpCRFluISBqSV64feS
-         haqZfPGppK7IpdY/q2xreSIZ0a+e8CQ48sCG/RtPT3iif8e8pllm+C3H2JB/oBIKazMH
-         OfmQFQdzENaQgSoqL/0uf5ZBMxssaYQq2MawRJHQ/rhE7dB8ys7MYo99+qfq6y/nkQDN
-         68RA==
-X-Gm-Message-State: AOJu0YxnQW3xUUTruvnfbFMQNyOkllQxyu+vvp5fO2d10WZsuiqUy28z
-        HMfFaAUzgnC+fO/02Jo8BsYpWw==
-X-Google-Smtp-Source: AGHT+IGZAx49Ov+0Y8NtP7+Nd4TtP5zk4M6HLrhjbp3+NqOYbrLuGFkh7nPl2xFTM0kJArIeJmcRgQ==
-X-Received: by 2002:a17:90b:3504:b0:27d:60b1:4f2c with SMTP id ls4-20020a17090b350400b0027d60b14f2cmr2592965pjb.4.1697828785944;
-        Fri, 20 Oct 2023 12:06:25 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 8-20020a17090a1a4800b002776288537fsm1953870pjl.53.2023.10.20.12.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 12:06:25 -0700 (PDT)
+        Fri, 20 Oct 2023 15:07:20 -0400
+Received: from rcdn-iport-7.cisco.com (rcdn-iport-7.cisco.com [173.37.86.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C49910CE;
+        Fri, 20 Oct 2023 12:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3879; q=dns/txt; s=iport;
+  t=1697828837; x=1699038437;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hZgDvmmCEAxvPN4JkZ38Ljv3qILjjtSEDDA9V6Ihu/s=;
+  b=Y4k2rjY0KboSYN1kVMz0iW2zNTF+GScqTVLaWKWnFbYsjW6UfXjNBKys
+   TEOPM3FMLElksYdCg06Knux5qLkQJjHz5yqPIh6ps1qEmXbEDsdAY6Y6E
+   ka+vZkceDGTyCDgrGlTkheFKiAvYDEqkHFHBDb4eQtPrvgJLHPl2br+QX
+   8=;
+X-CSE-ConnectionGUID: uknWTbhaT7aHbKUh/XUSUA==
+X-CSE-MsgGUID: 7Jhf3EGIQ6ybieU/1iB7tw==
+X-IronPort-AV: E=Sophos;i="6.03,239,1694736000"; 
+   d="scan'208";a="126421366"
+Received: from rcdn-core-11.cisco.com ([173.37.93.147])
+  by rcdn-iport-7.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 19:07:17 +0000
+Received: from localhost.cisco.com ([10.193.101.253])
+        (authenticated bits=0)
+        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39KJ6XPL026372
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 20 Oct 2023 19:07:16 GMT
+From:   Karan Tilak Kumar <kartilak@cisco.com>
+To:     sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Karan Tilak Kumar <kartilak@cisco.com>
+Subject: [PATCH 09/13] scsi: fnic: Remove usage of host_lock
 Date:   Fri, 20 Oct 2023 12:06:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] power: supply: bq2515x: replace deprecated strncpy with
- strscpy
-Message-ID: <202310201206.2D1271C209@keescook>
-References: <20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com>
+Message-Id: <20231020190629.338623-10-kartilak@cisco.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231020190629.338623-1-kartilak@cisco.com>
+References: <20231020190629.338623-1-kartilak@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Authenticated-User: kartilak@cisco.com
+X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
+X-Outbound-Node: rcdn-core-11.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 06:59:34PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect bq2515x->model_name to be NUL-terminated based on its usage with
-> sysfs_emit and format strings:
-> 
-> val->strval is assigned to bq2515x->model_name in
-> bq2515x_mains_get_property():
-> |       val->strval = bq2515x->model_name;
-> 
-> ... then in power_supply_sysfs.c we use value.strval with a format string:
-> |       ret = sysfs_emit(buf, "%s\n", value.strval);
-> 
-> we assigned value.strval via:
-> |       ret = power_supply_get_property(psy, psp, &value);
-> ... which invokes psy->desc->get_property():
-> |       return psy->desc->get_property(psy, psp, val);
-> 
-> with bq2515x_mains_get_property():
-> |       static const struct power_supply_desc bq2515x_mains_desc = {
-> ...
-> |       	.get_property		= bq2515x_mains_get_property,
-> 
-> Moreover, no NUL-padding is required as bq2515x is zero-allocated in
-> bq2515x_charger.c:
-> |       bq2515x = devm_kzalloc(dev, sizeof(*bq2515x), GFP_KERNEL);
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
-> sizeof(dest)) as this more closely ties the destination buffer and the
-> length.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Remove usage of host_lock.
+Replace with fnic_lock, where necessary.
 
-This looks like a good replacement, just like the prior I2C change.
+Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+---
+ drivers/scsi/fnic/fnic_scsi.c | 27 ++++++---------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index f32781f8fdd0..9a1beb3e7269 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -170,17 +170,14 @@ __fnic_set_state_flags(struct fnic *fnic, unsigned long st_flags,
+ 			unsigned long clearbits)
+ {
+ 	unsigned long flags = 0;
+-	unsigned long host_lock_flags = 0;
+ 
+ 	spin_lock_irqsave(&fnic->fnic_lock, flags);
+-	spin_lock_irqsave(fnic->lport->host->host_lock, host_lock_flags);
+ 
+ 	if (clearbits)
+ 		fnic->state_flags &= ~st_flags;
+ 	else
+ 		fnic->state_flags |= st_flags;
+ 
+-	spin_unlock_irqrestore(fnic->lport->host->host_lock, host_lock_flags);
+ 	spin_unlock_irqrestore(&fnic->fnic_lock, flags);
+ 
+ 	return;
+@@ -479,12 +476,6 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+ 
+ 	atomic_inc(&fnic->in_flight);
+ 
+-	/*
+-	 * Release host lock, use driver resource specific locks from here.
+-	 * Don't re-enable interrupts in case they were disabled prior to the
+-	 * caller disabling them.
+-	 */
+-	spin_unlock(lp->host->host_lock);
+ 	fnic_priv(sc)->state = FNIC_IOREQ_NOT_INITED;
+ 	fnic_priv(sc)->flags = FNIC_NO_FLAGS;
+ 
+@@ -569,8 +560,6 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+ 			mempool_free(io_req, fnic->io_req_pool);
+ 		}
+ 		atomic_dec(&fnic->in_flight);
+-		/* acquire host lock before returning to SCSI */
+-		spin_lock(lp->host->host_lock);
+ 		return ret;
+ 	} else {
+ 		atomic64_inc(&fnic_stats->io_stats.active_ios);
+@@ -598,8 +587,6 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+ 		spin_unlock_irqrestore(io_lock, flags);
+ 
+ 	atomic_dec(&fnic->in_flight);
+-	/* acquire host lock before returning to SCSI */
+-	spin_lock(lp->host->host_lock);
+ 	return ret;
+ }
+ 
+@@ -1477,18 +1464,17 @@ static inline int fnic_queue_abort_io_req(struct fnic *fnic, int tag,
+ 					  struct fnic_io_req *io_req)
+ {
+ 	struct vnic_wq_copy *wq = &fnic->hw_copy_wq[0];
+-	struct Scsi_Host *host = fnic->lport->host;
+ 	struct misc_stats *misc_stats = &fnic->fnic_stats.misc_stats;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(host->host_lock, flags);
++	spin_lock_irqsave(&fnic->fnic_lock, flags);
+ 	if (unlikely(fnic_chk_state_flags_locked(fnic,
+ 						FNIC_FLAGS_IO_BLOCKED))) {
+-		spin_unlock_irqrestore(host->host_lock, flags);
++		spin_unlock_irqrestore(&fnic->fnic_lock, flags);
+ 		return 1;
+ 	} else
+ 		atomic_inc(&fnic->in_flight);
+-	spin_unlock_irqrestore(host->host_lock, flags);
++	spin_unlock_irqrestore(&fnic->fnic_lock, flags);
+ 
+ 	spin_lock_irqsave(&fnic->wq_copy_lock[0], flags);
+ 
+@@ -1923,20 +1909,19 @@ static inline int fnic_queue_dr_io_req(struct fnic *fnic,
+ 				       struct fnic_io_req *io_req)
+ {
+ 	struct vnic_wq_copy *wq = &fnic->hw_copy_wq[0];
+-	struct Scsi_Host *host = fnic->lport->host;
+ 	struct misc_stats *misc_stats = &fnic->fnic_stats.misc_stats;
+ 	struct scsi_lun fc_lun;
+ 	int ret = 0;
+ 	unsigned long intr_flags;
+ 
+-	spin_lock_irqsave(host->host_lock, intr_flags);
++	spin_lock_irqsave(&fnic->fnic_lock, intr_flags);
+ 	if (unlikely(fnic_chk_state_flags_locked(fnic,
+ 						FNIC_FLAGS_IO_BLOCKED))) {
+-		spin_unlock_irqrestore(host->host_lock, intr_flags);
++		spin_unlock_irqrestore(&fnic->fnic_lock, intr_flags);
+ 		return FAILED;
+ 	} else
+ 		atomic_inc(&fnic->in_flight);
+-	spin_unlock_irqrestore(host->host_lock, intr_flags);
++	spin_unlock_irqrestore(&fnic->fnic_lock, intr_flags);
+ 
+ 	spin_lock_irqsave(&fnic->wq_copy_lock[0], intr_flags);
+ 
 -- 
-Kees Cook
+2.31.1
+
