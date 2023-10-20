@@ -2,73 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A957D0780
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A87D0786
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345092AbjJTFJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
+        id S232838AbjJTFPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJTFJ3 (ORCPT
+        with ESMTP id S231400AbjJTFPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:09:29 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C093FB8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:09:26 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qthko-0001Lr-Dt; Fri, 20 Oct 2023 07:08:58 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qthkm-002xCC-Tz; Fri, 20 Oct 2023 07:08:56 +0200
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qthkm-00FNf4-Pe; Fri, 20 Oct 2023 07:08:56 +0200
-Date:   Fri, 20 Oct 2023 07:08:56 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: ksz9477: Add Wake
- on Magic Packet support
-Message-ID: <20231020050856.GB3637381@pengutronix.de>
-References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019172953.ajqtmnnthohnlek7@skbuf>
+        Fri, 20 Oct 2023 01:15:52 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7EEF7D4C
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:15:50 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 028EF2F4;
+        Thu, 19 Oct 2023 22:16:31 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.37.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 153BA3F64C;
+        Thu, 19 Oct 2023 22:15:47 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] drivers: perf: arm_pmuv3: Add new macro PMUV3_INIT_MAP_EVENT()
+Date:   Fri, 20 Oct 2023 10:45:43 +0530
+Message-Id: <20231020051543.2818951-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231019172953.ajqtmnnthohnlek7@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,40 +42,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 08:29:53PM +0300, Vladimir Oltean wrote:
-> On Thu, Oct 19, 2023 at 02:28:46PM +0200, Oleksij Rempel wrote:
-....
-> > @@ -109,10 +110,22 @@ void ksz9477_get_wol(struct ksz_device *dev, int port,
-> >  
-> >  	wol->supported = WAKE_PHY;
-> >  
-> > +	/* Check if at this moment we would be able to get the MAC address
-> > +	 * and use it for WAKE_MAGIC support. This result may change dynamically
-> > +	 * depending on configuration of other ports.
-> > +	 */
-> > +	ret = ksz_switch_macaddr_get(dev->ds, port, NULL);
-> > +	if (!ret) {
-> > +		wol->supported |= WAKE_MAGIC;
-> > +		ksz_switch_macaddr_put(dev->ds);
-> 
-> I don't get it, why do you release the reference on the MAC address as
-> soon as you successfully get it? Without a reference held, the
-> programmed address still lingers on, but the HSR offload code, on a
-> different port with a different MAC address, can change it and break WoL.
+This further compacts all remaining PMU init procedures requiring specific
+map_event functions via a new macro PMUV3_INIT_MAP_EVENT(). While here, it
+also changes generated init function names to match to those generated via
+the other macro PMUV3_INIT_SIMPLE(). This does not cause functional change.
 
-It is ksz9477_get_wol() function. We do not actually need to program
-here the MAC address, we only need to test if we would be able to get
-it. To show the use more or less correct information on WoL
-capabilities. For example, instead showing the user that Wake on Magic
-is supported, where we already know that is not the case, we can already
-show correct information. May be it will be better to have
-extra option for ksz_switch_macaddr_get() to not allocate and do the
-refcounting or have a separate function.
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v6.6-rc6 with dependent patch applied, and also on
+will/for-next/perf without it.
 
-Regards,
-Oleksij
+Changes in V2:
+
+- Updated the commit message
+- Rebased the patch after the following change
+  https://lore.kernel.org/all/20231016025436.1368945-1-anshuman.khandual@arm.com/
+
+Changes in V1:
+
+https://lore.kernel.org/all/20231009064714.186770-1-anshuman.khandual@arm.com/
+
+ drivers/perf/arm_pmuv3.c | 61 +++++++++++++---------------------------
+ 1 file changed, 20 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 4f6923ad4589..92fefc1bc7f6 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -1222,6 +1222,12 @@ static int name##_pmu_init(struct arm_pmu *cpu_pmu)			\
+ 	return armv8_pmu_init(cpu_pmu, #name, armv8_pmuv3_map_event);	\
+ }
+ 
++#define PMUV3_INIT_MAP_EVENT(name, map_event)				\
++static int name##_pmu_init(struct arm_pmu *cpu_pmu)			\
++{									\
++	return armv8_pmu_init(cpu_pmu, #name, map_event);		\
++}
++
+ PMUV3_INIT_SIMPLE(armv8_pmuv3)
+ 
+ PMUV3_INIT_SIMPLE(armv8_cortex_a34)
+@@ -1248,51 +1254,24 @@ PMUV3_INIT_SIMPLE(armv8_neoverse_v1)
+ PMUV3_INIT_SIMPLE(armv8_nvidia_carmel)
+ PMUV3_INIT_SIMPLE(armv8_nvidia_denver)
+ 
+-static int armv8_a35_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a35", armv8_a53_map_event);
+-}
+-
+-static int armv8_a53_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a53", armv8_a53_map_event);
+-}
+-
+-static int armv8_a57_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a57", armv8_a57_map_event);
+-}
+-
+-static int armv8_a72_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a72", armv8_a57_map_event);
+-}
+-
+-static int armv8_a73_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a73", armv8_a73_map_event);
+-}
+-
+-static int armv8_thunder_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_cavium_thunder", armv8_thunder_map_event);
+-}
+-
+-static int armv8_vulcan_pmu_init(struct arm_pmu *cpu_pmu)
+-{
+-	return armv8_pmu_init(cpu_pmu, "armv8_brcm_vulcan", armv8_vulcan_map_event);
+-}
++PMUV3_INIT_MAP_EVENT(armv8_cortex_a35, armv8_a53_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_cortex_a53, armv8_a53_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_cortex_a57, armv8_a57_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_cortex_a72, armv8_a57_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_cortex_a73, armv8_a73_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_cavium_thunder, armv8_thunder_map_event)
++PMUV3_INIT_MAP_EVENT(armv8_brcm_vulcan, armv8_vulcan_map_event)
+ 
+ static const struct of_device_id armv8_pmu_of_device_ids[] = {
+ 	{.compatible = "arm,armv8-pmuv3",	.data = armv8_pmuv3_pmu_init},
+ 	{.compatible = "arm,cortex-a34-pmu",	.data = armv8_cortex_a34_pmu_init},
+-	{.compatible = "arm,cortex-a35-pmu",	.data = armv8_a35_pmu_init},
+-	{.compatible = "arm,cortex-a53-pmu",	.data = armv8_a53_pmu_init},
++	{.compatible = "arm,cortex-a35-pmu",	.data = armv8_cortex_a35_pmu_init},
++	{.compatible = "arm,cortex-a53-pmu",	.data = armv8_cortex_a53_pmu_init},
+ 	{.compatible = "arm,cortex-a55-pmu",	.data = armv8_cortex_a55_pmu_init},
+-	{.compatible = "arm,cortex-a57-pmu",	.data = armv8_a57_pmu_init},
++	{.compatible = "arm,cortex-a57-pmu",	.data = armv8_cortex_a57_pmu_init},
+ 	{.compatible = "arm,cortex-a65-pmu",	.data = armv8_cortex_a65_pmu_init},
+-	{.compatible = "arm,cortex-a72-pmu",	.data = armv8_a72_pmu_init},
+-	{.compatible = "arm,cortex-a73-pmu",	.data = armv8_a73_pmu_init},
++	{.compatible = "arm,cortex-a72-pmu",	.data = armv8_cortex_a72_pmu_init},
++	{.compatible = "arm,cortex-a73-pmu",	.data = armv8_cortex_a73_pmu_init},
+ 	{.compatible = "arm,cortex-a75-pmu",	.data = armv8_cortex_a75_pmu_init},
+ 	{.compatible = "arm,cortex-a76-pmu",	.data = armv8_cortex_a76_pmu_init},
+ 	{.compatible = "arm,cortex-a77-pmu",	.data = armv8_cortex_a77_pmu_init},
+@@ -1310,8 +1289,8 @@ static const struct of_device_id armv8_pmu_of_device_ids[] = {
+ 	{.compatible = "arm,neoverse-n1-pmu",	.data = armv8_neoverse_n1_pmu_init},
+ 	{.compatible = "arm,neoverse-n2-pmu",	.data = armv9_neoverse_n2_pmu_init},
+ 	{.compatible = "arm,neoverse-v1-pmu",	.data = armv8_neoverse_v1_pmu_init},
+-	{.compatible = "cavium,thunder-pmu",	.data = armv8_thunder_pmu_init},
+-	{.compatible = "brcm,vulcan-pmu",	.data = armv8_vulcan_pmu_init},
++	{.compatible = "cavium,thunder-pmu",	.data = armv8_cavium_thunder_pmu_init},
++	{.compatible = "brcm,vulcan-pmu",	.data = armv8_brcm_vulcan_pmu_init},
+ 	{.compatible = "nvidia,carmel-pmu",	.data = armv8_nvidia_carmel_pmu_init},
+ 	{.compatible = "nvidia,denver-pmu",	.data = armv8_nvidia_denver_pmu_init},
+ 	{},
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
