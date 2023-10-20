@@ -2,98 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 801E37D0F55
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F37D0E04
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377338AbjJTMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
+        id S1377269AbjJTK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376985AbjJTMDH (ORCPT
+        with ESMTP id S1377197AbjJTK4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:03:07 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025E79E;
-        Fri, 20 Oct 2023 05:03:04 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39KC2rhf000702;
-        Fri, 20 Oct 2023 07:02:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697803373;
-        bh=euObzAVQLb2kNl6ho+Jc8405Du8j/FkJrWS8fMHsNQk=;
-        h=From:To:CC:Subject:Date;
-        b=Z2Bp82QPobEdnyOf32ZuGEV67Vv/HoIRYraPG2jGB4klDFG34DHVWGU+X297fd7oy
-         25Kq4b9M8C0DZatGg0t82KZwu+DY4ROMfVjt322duArPt9saKP1x+0Q7UFdsTFQkbm
-         hb+LZSStwIn76U7RMz5TUy3yNC1LMSniukGwRt9E=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39KC2r3S018904
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Oct 2023 07:02:53 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 20
- Oct 2023 07:02:53 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 20 Oct 2023 07:02:53 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39KC2nZ6092962;
-        Fri, 20 Oct 2023 07:02:50 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <lpieralisi@kernel.org>, <kw@linux.com>, <mani@kernel.org>,
-        <kishon@kernel.org>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH] misc: pci_endpoint_test: Add deviceID for J721S2 PCIe EP device support
-Date:   Fri, 20 Oct 2023 17:32:48 +0530
-Message-ID: <20231020120248.3168406-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 20 Oct 2023 06:56:42 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC6A10DA;
+        Fri, 20 Oct 2023 03:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697799383; x=1729335383;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SYMYe2HHJULwyFDbn+FSCP14QHIorY7iifD9AdYUFbs=;
+  b=QVS9n+WGf2EaJ4lODaoqR7UmcCvFQxTV6T4FQiOjR85uZ0BvOZ2tJYbt
+   iS4acZCyjYNk6c6aA8Bv4mfHGDi/5z7cieFcB3AwO/wAWx5oICEHwEOch
+   EkJSZk5ekvojfXnzoFPW0/53Zf2lCr/YS/euZThQnKjsum+Gl3tZ7NVu6
+   uym+YwHoeia/U2vnA9ny3MWfaDHZwsKMpdblnitnW3uueKYlRwCaz9Dn1
+   TY4iuqqpjpEJ2LmBDwacwgzpZPURHD+P9WIP//mdYJPVh7LC9kYQSsICP
+   fCal1N5Y5r96bvPExf0It+oYLYvofrz3SkWZMvXWO8swceuhlLxquCzNI
+   Q==;
+X-CSE-ConnectionGUID: RVZyG8nFStKSThuyJ81xIw==
+X-CSE-MsgGUID: XXlTzESNQ+Gp3W7cPA3jIQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="10424440"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Oct 2023 03:56:22 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 20 Oct 2023 03:56:18 -0700
+Received: from che-dk-ungapp05lx.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 20 Oct 2023 03:56:15 -0700
+From:   Vishvambar Panth S <vishvambarpanth.s@microchip.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <jacob.e.keller@intel.com>, <kuba@kernel.org>
+CC:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <richardcochran@gmail.com>
+Subject: [PATCH v3 net-next] net: microchip: lan743x: improve throughput with rx timestamp config
+Date:   Sat, 21 Oct 2023 00:28:01 +0530
+Message-ID: <20231020185801.25649-1-vishvambarpanth.s@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DEVICE_ID for J721S2 and enable support for endpoints configured
-with this DEVICE_ID in the pci_endpoint_test driver.
+Currently all RX frames are timestamped which results in a performance
+penalty when timestamping is not needed.  The default is now being
+changed to not timestamp any Rx frames (HWTSTAMP_FILTER_NONE), but
+support has been added to allow changing the desired RX timestamping
+mode (HWTSTAMP_FILTER_ALL -  which was the previous setting and
+HWTSTAMP_FILTER_PTP_V2_EVENT are now supported) using
+SIOCSHWTSTAMP. All settings were tested using the hwstamp_ctl application.
+It is also noted that ptp4l, when started, preconfigures the device to
+timestamp using HWTSTAMP_FILTER_PTP_V2_EVENT, so this driver continues
+to work properly "out of the box".
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Test setup:  x64 PC with LAN7430 ---> x64 PC as partner
+
+iperf3 with - Timestamp all incoming packets:
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-5.05   sec   517 MBytes   859 Mbits/sec    0    sender
+[  5]   0.00-5.00   sec   515 MBytes   864 Mbits/sec         receiver
+
+iperf Done.
+
+iperf3 with - Timestamp only PTP packets:
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-5.04   sec   563 MBytes   937 Mbits/sec    0    sender
+[  5]   0.00-5.00   sec   561 MBytes   941 Mbits/sec         receiver
+
+Signed-off-by: Vishvambar Panth S <vishvambarpanth.s@microchip.com>
 ---
- drivers/misc/pci_endpoint_test.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Change Log:
+v2->v3
+        * Added static to lan743x_rx_cfg_b_tstamp_config
 
-diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-index ed4d0ef5e5c3..7e1acc68d435 100644
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -71,6 +71,7 @@
- #define PCI_DEVICE_ID_TI_AM654			0xb00c
- #define PCI_DEVICE_ID_TI_J7200			0xb00f
- #define PCI_DEVICE_ID_TI_AM64			0xb010
-+#define PCI_DEVICE_ID_TI_J721S2		0xb013
- #define PCI_DEVICE_ID_LS1088A			0x80c0
- #define PCI_DEVICE_ID_IMX8			0x0808
+v1->v2
+        * As per community comments, dropped netif_warn
+        * dropped HWTSTAMP_FILTER_PTP_V2_DELAY_REQ & SYNC cases.
+        * replaced two separate decision points with mask & setting
+
+ .../net/ethernet/microchip/lan743x_ethtool.c  |  3 +-
+ drivers/net/ethernet/microchip/lan743x_main.c | 45 ++++++++++++++++++-
+ drivers/net/ethernet/microchip/lan743x_main.h |  8 ++++
+ drivers/net/ethernet/microchip/lan743x_ptp.c  |  9 ++++
+ 4 files changed, 63 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+index 2db5949b4c7e..6961cfc55fb9 100644
+--- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
++++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+@@ -1047,7 +1047,8 @@ static int lan743x_ethtool_get_ts_info(struct net_device *netdev,
+ 			    BIT(HWTSTAMP_TX_ON) |
+ 			    BIT(HWTSTAMP_TX_ONESTEP_SYNC);
+ 	ts_info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) |
+-			      BIT(HWTSTAMP_FILTER_ALL);
++			      BIT(HWTSTAMP_FILTER_ALL) |
++			      BIT(HWTSTAMP_FILTER_PTP_V2_EVENT);
+ 	return 0;
+ }
  
-@@ -999,6 +1000,9 @@ static const struct pci_device_id pci_endpoint_test_tbl[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_AM64),
- 	  .driver_data = (kernel_ulong_t)&j721e_data,
- 	},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_J721S2),
-+	  .driver_data = (kernel_ulong_t)&j721e_data,
-+	},
- 	{ }
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index a36f6369f132..afbd4a785f0d 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1864,6 +1864,50 @@ static int lan743x_tx_get_avail_desc(struct lan743x_tx *tx)
+ 		return last_head - last_tail - 1;
+ }
+ 
++static void lan743x_rx_cfg_b_tstamp_config(struct lan743x_adapter *adapter,
++					   int rx_ts_config)
++{
++	int channel_number;
++	int index;
++	u32 data;
++
++	for (index = 0; index < LAN743X_USED_RX_CHANNELS; index++) {
++		channel_number = adapter->rx[index].channel_number;
++		data = lan743x_csr_read(adapter, RX_CFG_B(channel_number));
++		data &= RX_CFG_B_TS_MASK_;
++		data |= rx_ts_config;
++		lan743x_csr_write(adapter, RX_CFG_B(channel_number),
++				  data);
++	}
++}
++
++int lan743x_rx_set_tstamp_mode(struct lan743x_adapter *adapter,
++			       int rx_filter)
++{
++	u32 data;
++
++	switch (rx_filter) {
++	case HWTSTAMP_FILTER_PTP_V2_EVENT:
++			lan743x_rx_cfg_b_tstamp_config(adapter,
++						       RX_CFG_B_TS_DESCR_EN_);
++			data = lan743x_csr_read(adapter, PTP_RX_TS_CFG);
++			data |= PTP_RX_TS_CFG_EVENT_MSGS_;
++			lan743x_csr_write(adapter, PTP_RX_TS_CFG, data);
++			break;
++	case HWTSTAMP_FILTER_NONE:
++			lan743x_rx_cfg_b_tstamp_config(adapter,
++						       RX_CFG_B_TS_NONE_);
++			break;
++	case HWTSTAMP_FILTER_ALL:
++			lan743x_rx_cfg_b_tstamp_config(adapter,
++						       RX_CFG_B_TS_ALL_RX_);
++			break;
++	default:
++			return -ERANGE;
++	}
++	return 0;
++}
++
+ void lan743x_tx_set_timestamping_mode(struct lan743x_tx *tx,
+ 				      bool enable_timestamping,
+ 				      bool enable_onestep_sync)
+@@ -2938,7 +2982,6 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
+ 		data |= RX_CFG_B_RX_PAD_2_;
+ 	data &= ~RX_CFG_B_RX_RING_LEN_MASK_;
+ 	data |= ((rx->ring_size) & RX_CFG_B_RX_RING_LEN_MASK_);
+-	data |= RX_CFG_B_TS_ALL_RX_;
+ 	if (!(adapter->csr.flags & LAN743X_CSR_FLAG_IS_A0))
+ 		data |= RX_CFG_B_RDMABL_512_;
+ 
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index 52609fc13ad9..b648461787d2 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -522,6 +522,8 @@
+ 	(((u32)(rx_latency)) & 0x0000FFFF)
+ #define PTP_CAP_INFO				(0x0A60)
+ #define PTP_CAP_INFO_TX_TS_CNT_GET_(reg_val)	(((reg_val) & 0x00000070) >> 4)
++#define PTP_RX_TS_CFG				(0x0A68)
++#define PTP_RX_TS_CFG_EVENT_MSGS_               GENMASK(3, 0)
+ 
+ #define PTP_TX_MOD				(0x0AA4)
+ #define PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_	(0x10000000)
+@@ -657,6 +659,9 @@
+ 
+ #define RX_CFG_B(channel)			(0xC44 + ((channel) << 6))
+ #define RX_CFG_B_TS_ALL_RX_			BIT(29)
++#define RX_CFG_B_TS_DESCR_EN_			BIT(28)
++#define RX_CFG_B_TS_NONE_			0
++#define RX_CFG_B_TS_MASK_			(0xCFFFFFFF)
+ #define RX_CFG_B_RX_PAD_MASK_			(0x03000000)
+ #define RX_CFG_B_RX_PAD_0_			(0x00000000)
+ #define RX_CFG_B_RX_PAD_2_			(0x02000000)
+@@ -991,6 +996,9 @@ struct lan743x_rx {
+ 	struct sk_buff *skb_head, *skb_tail;
  };
- MODULE_DEVICE_TABLE(pci, pci_endpoint_test_tbl);
+ 
++int lan743x_rx_set_tstamp_mode(struct lan743x_adapter *adapter,
++			       int rx_filter);
++
+ /* SGMII Link Speed Duplex status */
+ enum lan743x_sgmii_lsd {
+ 	POWER_DOWN = 0,
+diff --git a/drivers/net/ethernet/microchip/lan743x_ptp.c b/drivers/net/ethernet/microchip/lan743x_ptp.c
+index 39e1066ecd5f..2f04bc77a118 100644
+--- a/drivers/net/ethernet/microchip/lan743x_ptp.c
++++ b/drivers/net/ethernet/microchip/lan743x_ptp.c
+@@ -1493,6 +1493,10 @@ int lan743x_ptp_open(struct lan743x_adapter *adapter)
+ 	temp = lan743x_csr_read(adapter, PTP_TX_MOD2);
+ 	temp |= PTP_TX_MOD2_TX_PTP_CLR_UDPV4_CHKSUM_;
+ 	lan743x_csr_write(adapter, PTP_TX_MOD2, temp);
++
++	/* Default Timestamping */
++	lan743x_rx_set_tstamp_mode(adapter, HWTSTAMP_FILTER_NONE);
++
+ 	lan743x_ptp_enable(adapter);
+ 	lan743x_csr_write(adapter, INT_EN_SET, INT_BIT_1588_);
+ 	lan743x_csr_write(adapter, PTP_INT_EN_SET,
+@@ -1653,6 +1657,9 @@ static void lan743x_ptp_disable(struct lan743x_adapter *adapter)
+ {
+ 	struct lan743x_ptp *ptp = &adapter->ptp;
+ 
++	/* Disable Timestamping */
++	lan743x_rx_set_tstamp_mode(adapter, HWTSTAMP_FILTER_NONE);
++
+ 	mutex_lock(&ptp->command_lock);
+ 	if (!lan743x_ptp_is_enabled(adapter)) {
+ 		netif_warn(adapter, drv, adapter->netdev,
+@@ -1785,6 +1792,8 @@ int lan743x_ptp_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
+ 		break;
+ 	}
+ 
++	ret = lan743x_rx_set_tstamp_mode(adapter, config.rx_filter);
++
+ 	if (!ret)
+ 		return copy_to_user(ifr->ifr_data, &config,
+ 			sizeof(config)) ? -EFAULT : 0;
 -- 
-2.34.1
+2.25.1
 
