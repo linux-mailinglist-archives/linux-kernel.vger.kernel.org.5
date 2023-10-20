@@ -2,648 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8817D134C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96DF7D134D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377824AbjJTP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S1377804AbjJTP5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377810AbjJTP5A (ORCPT
+        with ESMTP id S1377676AbjJTP5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:57:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA178D57;
-        Fri, 20 Oct 2023 08:56:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B768C433C7;
-        Fri, 20 Oct 2023 15:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697817416;
-        bh=LU2hL9b4hnNU6+vwyFlzvgIPIfjJD0MUr6xwE2SP37c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txNDTxdsuaxOiI4TmtJlD1Rv8IGfQh0CTl1lGG6V26CzORmoQ/4aOzXcuIR9G+wfc
-         Xd4Fxqck7eXy2zT59a59RAi+v29y0RxIRqHLtr14G+BCBeNIH/KSZCRr+W67Em7Ehw
-         f6BKBJdf+w/4HAKXNi57XfJOGt007FTLbJ4nY/f2piZVaKYx6Lc+WOz8RYx36QYwfg
-         M4gQMT19wC4uvuaE4MauiGYDS4vBevSDW3YBrw2zsLucSs8bT0GsVzkA46ZX5J/FAF
-         +tiDR3/6rJDidPR9lrdkOeLakv6pZbndmkSBsKnQgmdp8kuWgdzKYPa4mqz/ItfJQA
-         kujjg7ujeWdJg==
-Date:   Fri, 20 Oct 2023 16:56:51 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] backlight: mp3309c: Add support for MPS MP3309C
-Message-ID: <20231020-esquire-rug-24a27fb72314@spud>
-References: <20231020135434.2598578-1-f.suligoi@asem.it>
- <20231020135434.2598578-3-f.suligoi@asem.it>
+        Fri, 20 Oct 2023 11:57:35 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2063.outbound.protection.outlook.com [40.107.100.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06216D8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:57:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QAH67m4M0x6s4X09CXkyvTdCc0lXp2Eah0ecH/PIpOH6qyT+V4SQievBtiEfTGtyKU+ajenLsTACWpLSNeSl3Do2h7fZvFTHNj/s20m/FKRGCGWMhW6lA/QQi7T1kmtv5HuqQHTGdwmdNoABxIFjMv9x24yroEXWLt0Wn9SRQc/pZ8u2d2ireQ4QZlbEz6J6ziVj+dYbJ4CvOHUzv8rLSnCTRg027RjOO1LrgHB241TFmZaFA2fMCI5k2iPTiuJrdklWZ4l5kLWdat/Hlc/Qba8oas4LQDMXtSJwL9byKtHFAgAKg/VgTOEXZiyN8zE5lcTiyNUkjv0Y69t5sAwh2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TnjffVlKH4Hr1H/LKb6+KG9T9P8saUndmkezQxjVB5A=;
+ b=QwQzk3VoCw5580ZfywNh/GEvwE8R7VWmyYbAn3LeB00c4v1l2HKJLicblhOM1G9D4Cm1zZlHwQMy9d0RXR9Osvv+WFMvWj7LcJlQluA2vA45X5LxQGPfcWUYlsG6o+s4L8jg6UA1l6PN8rnCXXt0IOY3R1+jI1pdRg4IyXbS9UfErZgnV6jqvAsFEZYCYsqh7uH50bII+utXnCzYKiZhVHCHl0a6vAQlSzGHJTQicnIMf38j82ADDiTdjpD6Fuyu24E6QfJMDMypYC7uDgdF0kZciBneyIdIhZZhMAEK64h9vCaoeqwXE+45si+hp41+MybvsMopkQrBd5vXMJ2PjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TnjffVlKH4Hr1H/LKb6+KG9T9P8saUndmkezQxjVB5A=;
+ b=ijVQI1ggaxZynkHQNm7oNPlHA1VqANAu89H/5oqCVMuzk8FWamvsUnr357YPvQ2Wt82O9UylZyZAybfqDVwal3Icu+hOxzSESx3JPAmH7/ptJvnzKp1HRYSsLJ0WGGAXbYDs4NUrcQw6TO9rjE5P/hkRSWCeR4cKvvjHtVD0QX0=
+Received: from MW3PR05CA0005.namprd05.prod.outlook.com (2603:10b6:303:2b::10)
+ by MN0PR12MB5956.namprd12.prod.outlook.com (2603:10b6:208:37f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
+ 2023 15:57:29 +0000
+Received: from MWH0EPF000989EB.namprd02.prod.outlook.com
+ (2603:10b6:303:2b:cafe::73) by MW3PR05CA0005.outlook.office365.com
+ (2603:10b6:303:2b::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.8 via Frontend
+ Transport; Fri, 20 Oct 2023 15:57:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000989EB.mail.protection.outlook.com (10.167.241.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6907.22 via Frontend Transport; Fri, 20 Oct 2023 15:57:28 +0000
+Received: from BLR-L-RKODSARA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 20 Oct
+ 2023 10:57:21 -0500
+From:   Raghavendra K T <raghavendra.kt@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David Hildenbrand" <david@redhat.com>, <rppt@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bharata B Rao <bharata@amd.com>,
+        Aithal Srikanth <sraithal@amd.com>,
+        "kernel test robot" <oliver.sang@intel.com>,
+        Raghavendra K T <raghavendra.kt@amd.com>,
+        Sapkal Swapnil <Swapnil.Sapkal@amd.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: [PATCH V1 0/1] sched/numa: Fix mm numa_scan_seq based unconditional scan 
+Date:   Fri, 20 Oct 2023 21:27:45 +0530
+Message-ID: <cover.1697816692.git.raghavendra.kt@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fmrSnAj5eGo+Mp1q"
-Content-Disposition: inline
-In-Reply-To: <20231020135434.2598578-3-f.suligoi@asem.it>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EB:EE_|MN0PR12MB5956:EE_
+X-MS-Office365-Filtering-Correlation-Id: dba973d3-4f22-4ac4-3ac5-08dbd18542d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZUbu2moHcOmkkIFri/oMHX0p/67wZy7s1s4otIxB/TbK6IkO4RnEKwK8ywA89+Rp4lg1g+IkvKikF+CrW2w9ySiUipzl63SmbVganXknwtmxVPPNPlDwEc5a3DEQwST6IRZ5ujtXi2reqhF9mD6zb9Dm5DS2HnuK1YtHYUBIl3MnpeZT2ZFLrYgFvPXosN7mac/iFADhgDsGpV0thGlcGiQEw1Badu0B3gcqgJEsA1jhlXOQAi6naR8mW/pN56uekzVG+fve6vwG9onoieeIwedquldHhAKRSrrw9fE7GdN0VEDDroqqrF3SEt/ov3TKP5B1uorDvIGVrTRLXGGSiPEZzq1XA31pfzRYnLu6n9VqpRpqBVXD6tXZFdb73+RE5jFJWly417S1gqFA/Nz0Mvlu87KdSauMNgX4gqUet/f/4JW1dWRbrQAQFHdg5KdixB8BCcNdL1RRRu5hN/OVIjx58rR/4p3lP5X5H0S1jnry0QVD5GV5VpE7Ic5HWGe31lt5c6WeWxDnXFXl/0pwb79ib72lSB1IsRxBrsZ1Gdvif9Gqgcs2Pk1w16E3egNWlbT2quEoqWGUxfvHHsHvgTfXq3LAS7Q7Lb5J2d71M/TzagkfO0/sIbln9j1aKPvFwyncVlUc3Q2sroT9aIDqrQWWK/3ga/3H6+P3i64n310HiQzBJFWIKbktlVa2D9mrqjKUGbiZl7TaaBbkCpVFkWbVBhzb8VLCXqpHsg4gzPVM8n4Wp6sT5gHQu2sRehcnvPUH60e4JeS4R4L0AuF4JQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(376002)(396003)(230922051799003)(64100799003)(82310400011)(1800799009)(186009)(451199024)(36840700001)(46966006)(40470700004)(2616005)(7696005)(40460700003)(81166007)(356005)(36860700001)(36756003)(82740400003)(4743002)(426003)(336012)(26005)(7416002)(41300700001)(2906002)(6666004)(40480700001)(478600001)(966005)(47076005)(83380400001)(16526019)(8676002)(8936002)(4326008)(5660300002)(110136005)(70586007)(316002)(54906003)(70206006)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 15:57:28.3645
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dba973d3-4f22-4ac4-3ac5-08dbd18542d3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EB.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5956
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+NUMA balancing code that updates PTEs by allowing unconditional scan
+based on the value of processes' mm numa_scan_seq is not perfect.
 
---fmrSnAj5eGo+Mp1q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+More description is in patch1.
 
-On Fri, Oct 20, 2023 at 03:54:34PM +0200, Flavio Suligoi wrote:
-> The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring=
- a
-> programmable switching frequency to optimize efficiency.
-> The brightness can be controlled either by I2C commands (called "analog"
-> mode) or by a PWM input signal (PWM mode).
-> This driver supports both modes.
->=20
-> For DT configuration details, please refer to:
-> - Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
->=20
-> The datasheet is available at:
-> - https://www.monolithicpower.com/en/mp3309c.html
->=20
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->=20
-> v5:
->  - checked and resend for updated kernel 6.6.0-rc1
+Have used the below patch to identify the corner case.
 
-Why is this v5 patch attached to a 1 patch "series" that only purports
-to contain a binding patch?
+Detailed Result: (Only part of the result is updated
+in patch1 to save space in commit log)
 
-Thanks,
-Conor.
+Detailed Result:
 
-> v4:
->  - add brightness-levels property
->  - force fixed 32 brightness levels (0..31) in analog-i2c dimming mode
->  - remove useless irq and reset_gpio from mp3309c_chip structure
-> v3:
->  - fix SPDX obsolete spelling
->  - in mp3309c_bl_update_status, change from msleep_interruptible() to msl=
-eep()
->    and improve the related comment
-> v2:
->  - fix dependecies in Kconfig
->  - fix Kconfig MP3309C entry order
->  - remove switch-on-delay-ms property
->  - remove optional gpio property to reset external devices
->  - remove dimming-mode property (the analog-i2c dimming mode is the defau=
-lt; the
->    presence of the pwms property, in DT, selects automatically the pwm di=
-mming
->    mode)
->  - substitute three boolean properties, used for the overvoltage-protecti=
-on
->    values, with a single enum property
->  - drop simple tracing messages
->  - use dev_err_probe() in probe function
->  - change device name from mp3309c_bl to the simple mp3309c
->  - remove shutdown function
-> v1:
->  - first version
->=20
->  MAINTAINERS                       |   7 +
->  drivers/video/backlight/Kconfig   |  11 +
->  drivers/video/backlight/Makefile  |   1 +
->  drivers/video/backlight/mp3309c.c | 443 ++++++++++++++++++++++++++++++
->  4 files changed, 462 insertions(+)
->  create mode 100644 drivers/video/backlight/mp3309c.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 90f13281d297..3d23b869e2aa 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14474,6 +14474,13 @@ S:	Maintained
->  F:	Documentation/driver-api/tty/moxa-smartio.rst
->  F:	drivers/tty/mxser.*
-> =20
-> +MP3309C BACKLIGHT DRIVER
-> +M:	Flavio Suligoi <f.suligoi@asem.it>
-> +L:	dri-devel@lists.freedesktop.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
-> +F:	drivers/video/backlight/mp3309c.c
-> +
->  MR800 AVERMEDIA USB FM RADIO DRIVER
->  M:	Alexey Klimov <klimov.linux@gmail.com>
->  L:	linux-media@vger.kernel.org
-> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kc=
-onfig
-> index 51387b1ef012..1144a54a35c0 100644
-> --- a/drivers/video/backlight/Kconfig
-> +++ b/drivers/video/backlight/Kconfig
-> @@ -402,6 +402,17 @@ config BACKLIGHT_LP8788
->  	help
->  	  This supports TI LP8788 backlight driver.
-> =20
-> +config BACKLIGHT_MP3309C
-> +	tristate "Backlight Driver for MPS MP3309C"
-> +	depends on I2C && PWM
-> +	select REGMAP_I2C
-> +	help
-> +	  This supports MPS MP3309C backlight WLED driver in both PWM and
-> +	  analog/I2C dimming modes.
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called mp3309c.
-> +
->  config BACKLIGHT_PANDORA
->  	tristate "Backlight driver for Pandora console"
->  	depends on TWL4030_CORE
-> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/M=
-akefile
-> index f72e1c3c59e9..1af583de665b 100644
-> --- a/drivers/video/backlight/Makefile
-> +++ b/drivers/video/backlight/Makefile
-> @@ -44,6 +44,7 @@ obj-$(CONFIG_BACKLIGHT_LP855X)		+=3D lp855x_bl.o
->  obj-$(CONFIG_BACKLIGHT_LP8788)		+=3D lp8788_bl.o
->  obj-$(CONFIG_BACKLIGHT_LV5207LP)	+=3D lv5207lp.o
->  obj-$(CONFIG_BACKLIGHT_MAX8925)		+=3D max8925_bl.o
-> +obj-$(CONFIG_BACKLIGHT_MP3309C)		+=3D mp3309c.o
->  obj-$(CONFIG_BACKLIGHT_MT6370)		+=3D mt6370-backlight.o
->  obj-$(CONFIG_BACKLIGHT_OMAP1)		+=3D omap1_bl.o
->  obj-$(CONFIG_BACKLIGHT_PANDORA)		+=3D pandora_bl.o
-> diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/=
-mp3309c.c
-> new file mode 100644
-> index 000000000000..3fe4469ef43f
-> --- /dev/null
-> +++ b/drivers/video/backlight/mp3309c.c
-> @@ -0,0 +1,443 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Driver for MPS MP3309C White LED driver with I2C interface
-> + *
-> + * This driver support both analog (by I2C commands) and PWM dimming con=
-trol
-> + * modes.
-> + *
-> + * Copyright (C) 2023 ASEM Srl
-> + * Author: Flavio Suligoi <f.suligoi@asem.it>
-> + *
-> + * Based on pwm_bl.c
-> + */
-> +
-> +#include <linux/backlight.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/i2c.h>
-> +#include <linux/pwm.h>
-> +#include <linux/regmap.h>
-> +
-> +#define REG_I2C_0	0x00
-> +#define REG_I2C_1	0x01
-> +
-> +#define REG_I2C_0_EN	0x80
-> +#define REG_I2C_0_D0	0x40
-> +#define REG_I2C_0_D1	0x20
-> +#define REG_I2C_0_D2	0x10
-> +#define REG_I2C_0_D3	0x08
-> +#define REG_I2C_0_D4	0x04
-> +#define REG_I2C_0_RSRV1	0x02
-> +#define REG_I2C_0_RSRV2	0x01
-> +
-> +#define REG_I2C_1_RSRV1	0x80
-> +#define REG_I2C_1_DIMS	0x40
-> +#define REG_I2C_1_SYNC	0x20
-> +#define REG_I2C_1_OVP0	0x10
-> +#define REG_I2C_1_OVP1	0x08
-> +#define REG_I2C_1_VOS	0x04
-> +#define REG_I2C_1_LEDO	0x02
-> +#define REG_I2C_1_OTP	0x01
-> +
-> +#define ANALOG_I2C_NUM_LEVELS	32		/* 0..31 */
-> +#define ANALOG_I2C_REG_MASK	0x7c
-> +
-> +#define MP3309C_PWM_DEFAULT_NUM_LEVELS	256	/* 0..255 */
-> +
-> +enum mp3309c_status_value {
-> +	FIRST_POWER_ON,
-> +	BACKLIGHT_OFF,
-> +	BACKLIGHT_ON,
-> +};
-> +
-> +enum mp3309c_dimming_mode_value {
-> +	DIMMING_PWM,
-> +	DIMMING_ANALOG_I2C,
-> +};
-> +
-> +struct mp3309c_platform_data {
-> +	unsigned int max_brightness;
-> +	unsigned int default_brightness;
-> +	unsigned int *levels;
-> +	u8  dimming_mode;
-> +	u8  over_voltage_protection;
-> +	bool sync_mode;
-> +	u8 status;
-> +};
-> +
-> +struct mp3309c_chip {
-> +	struct device *dev;
-> +	struct mp3309c_platform_data *pdata;
-> +	struct backlight_device *bl;
-> +	struct gpio_desc *enable_gpio;
-> +	struct regmap *regmap;
-> +	struct pwm_device *pwmd;
-> +};
-> +
-> +static const struct regmap_config mp3309c_regmap =3D {
-> +	.name =3D "mp3309c_regmap",
-> +	.reg_bits =3D 8,
-> +	.reg_stride =3D 1,
-> +	.val_bits =3D 8,
-> +	.max_register =3D REG_I2C_1,
-> +};
-> +
-> +static int mp3309c_enable_device(struct mp3309c_chip *chip)
-> +{
-> +	u8 reg_val;
-> +	int ret;
-> +
-> +	/* I2C register #0 - Device enable */
-> +	ret =3D regmap_update_bits(chip->regmap, REG_I2C_0, REG_I2C_0_EN,
-> +				 REG_I2C_0_EN);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * I2C register #1 - Set working mode:
-> +	 *  - set one of the two dimming mode:
-> +	 *    - PWM dimming using an external PWM dimming signal
-> +	 *    - analog dimming using I2C commands
-> +	 *  - enable/disable synchronous mode
-> +	 *  - set overvoltage protection (OVP)
-> +	 */
-> +	reg_val =3D 0x00;
-> +	if (chip->pdata->dimming_mode =3D=3D DIMMING_PWM)
-> +		reg_val |=3D REG_I2C_1_DIMS;
-> +	if (chip->pdata->sync_mode)
-> +		reg_val |=3D REG_I2C_1_SYNC;
-> +	reg_val |=3D chip->pdata->over_voltage_protection;
-> +	ret =3D regmap_write(chip->regmap, REG_I2C_1, reg_val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mp3309c_bl_update_status(struct backlight_device *bl)
-> +{
-> +	struct mp3309c_chip *chip =3D bl_get_data(bl);
-> +	int brightness =3D backlight_get_brightness(bl);
-> +	struct pwm_state pwmstate;
-> +	unsigned int analog_val, bits_val;
-> +	int i, ret;
-> +
-> +	if (chip->pdata->dimming_mode =3D=3D DIMMING_PWM) {
-> +		/*
-> +		 * PWM control mode
-> +		 */
-> +		pwm_get_state(chip->pwmd, &pwmstate);
-> +		pwm_set_relative_duty_cycle(&pwmstate,
-> +					    chip->pdata->levels[brightness],
-> +					    chip->pdata->levels[chip->pdata->max_brightness]);
-> +		pwmstate.enabled =3D true;
-> +		ret =3D pwm_apply_state(chip->pwmd, &pwmstate);
-> +		if (ret)
-> +			return ret;
-> +
-> +		switch (chip->pdata->status) {
-> +		case FIRST_POWER_ON:
-> +		case BACKLIGHT_OFF:
-> +			/*
-> +			 * After 20ms of low pwm signal level, the chip turns
-> +			 * off automatically. In this case, before enabling the
-> +			 * chip again, we must wait about 10ms for pwm signal to
-> +			 * stabilize.
-> +			 */
-> +			if (brightness > 0) {
-> +				msleep(10);
-> +				mp3309c_enable_device(chip);
-> +				chip->pdata->status =3D BACKLIGHT_ON;
-> +			} else {
-> +				chip->pdata->status =3D BACKLIGHT_OFF;
-> +			}
-> +			break;
-> +		case BACKLIGHT_ON:
-> +			if (brightness =3D=3D 0)
-> +				chip->pdata->status =3D BACKLIGHT_OFF;
-> +			break;
-> +		}
-> +	} else {
-> +		/*
-> +		 * Analog (by I2C command) control mode
-> +		 *
-> +		 * The first time, before setting brightness, we must enable the
-> +		 * device
-> +		 */
-> +		if (chip->pdata->status =3D=3D FIRST_POWER_ON)
-> +			mp3309c_enable_device(chip);
-> +
-> +		/*
-> +		 * Dimming mode I2C command (fixed dimming range 0..31)
-> +		 *
-> +		 * The 5 bits of the dimming analog value D4..D0 is allocated
-> +		 * in the I2C register #0, in the following way:
-> +		 *
-> +		 *     +--+--+--+--+--+--+--+--+
-> +		 *     |EN|D0|D1|D2|D3|D4|XX|XX|
-> +		 *     +--+--+--+--+--+--+--+--+
-> +		 */
-> +		analog_val =3D brightness;
-> +		bits_val =3D 0;
-> +		for (i =3D 0; i <=3D 5; i++)
-> +			bits_val +=3D ((analog_val >> i) & 0x01) << (6 - i);
-> +		ret =3D regmap_update_bits(chip->regmap, REG_I2C_0,
-> +					 ANALOG_I2C_REG_MASK, bits_val);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (brightness > 0)
-> +			chip->pdata->status =3D BACKLIGHT_ON;
-> +		else
-> +			chip->pdata->status =3D BACKLIGHT_OFF;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct backlight_ops mp3309c_bl_ops =3D {
-> +	.update_status =3D mp3309c_bl_update_status,
-> +};
-> +
-> +static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
-> +				 struct mp3309c_platform_data *pdata)
-> +{
-> +	struct device_node *node =3D chip->dev->of_node;
-> +	struct property *prop_pwms, *prop_levels;
-> +	int length =3D 0;
-> +	int ret, i;
-> +	unsigned int num_levels, tmp_value;
-> +
-> +	if (!node) {
-> +		dev_err(chip->dev, "failed to get DT node\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	/*
-> +	 * Dimming mode: the MP3309C provides two dimming control mode:
-> +	 *
-> +	 * - PWM mode
-> +	 * - Analog by I2C control mode (default)
-> +	 *
-> +	 * I2C control mode is assumed as default but, if the pwms property is
-> +	 * found in the backlight node, the mode switches to PWM mode.
-> +	 */
-> +	pdata->dimming_mode =3D DIMMING_ANALOG_I2C;
-> +	prop_pwms =3D of_find_property(node, "pwms", &length);
-> +	if (prop_pwms) {
-> +		chip->pwmd =3D devm_pwm_get(chip->dev, NULL);
-> +		if (IS_ERR(chip->pwmd))
-> +			return dev_err_probe(chip->dev, PTR_ERR(chip->pwmd),
-> +					     "error getting pwm data\n");
-> +		pdata->dimming_mode =3D DIMMING_PWM;
-> +		pwm_apply_args(chip->pwmd);
-> +	}
-> +
-> +	/*
-> +	 * In I2C control mode the dimming levels (0..31) are fixed by the
-> +	 * hardware, while in PWM control mode they can be chosen by the user,
-> +	 * to allow nonlinear mappings.
-> +	 */
-> +	if  (pdata->dimming_mode =3D=3D DIMMING_ANALOG_I2C) {
-> +		/*
-> +		 * Analog (by I2C commands) control mode: fixed 0..31 brightness
-> +		 * levels
-> +		 */
-> +		num_levels =3D ANALOG_I2C_NUM_LEVELS;
-> +
-> +		/* Enable GPIO used in I2C dimming mode only */
-> +		chip->enable_gpio =3D devm_gpiod_get(chip->dev, "enable",
-> +						   GPIOD_OUT_HIGH);
-> +		if (IS_ERR(chip->enable_gpio))
-> +			return dev_err_probe(chip->dev,
-> +					     PTR_ERR(chip->enable_gpio),
-> +					     "error getting enable gpio\n");
-> +	} else {
-> +		/*
-> +		 * PWM control mode: check for brightness level in DT
-> +		 */
-> +		prop_levels =3D of_find_property(node, "brightness-levels",
-> +					       &length);
-> +		if (prop_levels) {
-> +			/* Read brightness levels from DT */
-> +			num_levels =3D length / sizeof(u32);
-> +			if (num_levels < 2)
-> +				return -EINVAL;
-> +		} else {
-> +			/* Use default brightness levels */
-> +			num_levels =3D MP3309C_PWM_DEFAULT_NUM_LEVELS;
-> +		}
-> +	}
-> +
-> +	/* Fill brightness levels array */
-> +	pdata->levels =3D devm_kcalloc(chip->dev, num_levels,
-> +				     sizeof(*pdata->levels), GFP_KERNEL);
-> +	if (!pdata->levels)
-> +		return -ENOMEM;
-> +	if (prop_levels) {
-> +		ret =3D of_property_read_u32_array(node, "brightness-levels",
-> +						 pdata->levels,
-> +						 num_levels);
-> +		if (ret < 0)
-> +			return ret;
-> +	} else {
-> +		for (i =3D 0; i < num_levels; i++)
-> +			pdata->levels[i] =3D i;
-> +	}
-> +
-> +	pdata->max_brightness =3D num_levels - 1;
-> +
-> +	ret =3D of_property_read_u32(node, "default-brightness",
-> +				   &pdata->default_brightness);
-> +	if (ret)
-> +		pdata->default_brightness =3D pdata->max_brightness;
-> +	if (pdata->default_brightness > pdata->max_brightness) {
-> +		dev_err(chip->dev,
-> +			"default brightness exceeds max brightness\n");
-> +		pdata->default_brightness =3D pdata->max_brightness;
-> +	}
-> +
-> +	/*
-> +	 * Over-voltage protection (OVP)
-> +	 *
-> +	 * This (optional) property values are:
-> +	 *
-> +	 *  - 13.5V
-> +	 *  - 24V
-> +	 *  - 35.5V (hardware default setting)
-> +	 *
-> +	 * If missing, the default value for OVP is 35.5V
-> +	 */
-> +	pdata->over_voltage_protection =3D REG_I2C_1_OVP1;
-> +	if (!of_property_read_u32(node, "mps,overvoltage-protection-microvolt",
-> +				  &tmp_value)) {
-> +		switch (tmp_value) {
-> +		case 13500000:
-> +			pdata->over_voltage_protection =3D 0x00;
-> +			break;
-> +		case 24000000:
-> +			pdata->over_voltage_protection =3D REG_I2C_1_OVP0;
-> +			break;
-> +		case 35500000:
-> +			pdata->over_voltage_protection =3D REG_I2C_1_OVP1;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	/* Synchronous (default) and non-synchronous mode */
-> +	pdata->sync_mode =3D true;
-> +	if (of_property_read_bool(node, "mps,no-sync-mode"))
-> +		pdata->sync_mode =3D false;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mp3309c_probe(struct i2c_client *client)
-> +{
-> +	struct mp3309c_platform_data *pdata =3D dev_get_platdata(&client->dev);
-> +	struct mp3309c_chip *chip;
-> +	struct backlight_properties props;
-> +	struct pwm_state pwmstate;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-> +		dev_err(&client->dev, "failed to check i2c functionality\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	chip =3D devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> +	if (!chip)
-> +		return -ENOMEM;
-> +
-> +	chip->dev =3D &client->dev;
-> +
-> +	chip->regmap =3D devm_regmap_init_i2c(client, &mp3309c_regmap);
-> +	if (IS_ERR(chip->regmap))
-> +		return dev_err_probe(&client->dev, PTR_ERR(chip->regmap),
-> +				     "failed to allocate register map\n");
-> +
-> +	i2c_set_clientdata(client, chip);
-> +
-> +	if (!pdata) {
-> +		pdata =3D devm_kzalloc(chip->dev, sizeof(*pdata), GFP_KERNEL);
-> +		if (!pdata)
-> +			return -ENOMEM;
-> +
-> +		ret =3D pm3309c_parse_dt_node(chip, pdata);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +	chip->pdata =3D pdata;
-> +
-> +	/* Backlight properties */
-> +	props.brightness =3D pdata->default_brightness;
-> +	props.max_brightness =3D pdata->max_brightness;
-> +	props.scale =3D BACKLIGHT_SCALE_LINEAR;
-> +	props.type =3D BACKLIGHT_RAW;
-> +	props.power =3D FB_BLANK_UNBLANK;
-> +	props.fb_blank =3D FB_BLANK_UNBLANK;
-> +	chip->bl =3D devm_backlight_device_register(chip->dev, "mp3309c",
-> +						  chip->dev, chip,
-> +						  &mp3309c_bl_ops, &props);
-> +	if (IS_ERR(chip->bl))
-> +		return dev_err_probe(chip->dev, PTR_ERR(chip->bl),
-> +				     "error registering backlight device\n");
-> +
-> +	/* In PWM dimming mode, enable pwm device */
-> +	if (chip->pdata->dimming_mode =3D=3D DIMMING_PWM) {
-> +		pwm_init_state(chip->pwmd, &pwmstate);
-> +		pwm_set_relative_duty_cycle(&pwmstate,
-> +					    chip->pdata->default_brightness,
-> +					    chip->pdata->max_brightness);
-> +		pwmstate.enabled =3D true;
-> +		ret =3D pwm_apply_state(chip->pwmd, &pwmstate);
-> +		if (ret)
-> +			return dev_err_probe(chip->dev, ret,
-> +					     "error setting pwm device\n");
-> +	}
-> +
-> +	chip->pdata->status =3D FIRST_POWER_ON;
-> +	backlight_update_status(chip->bl);
-> +
-> +	return 0;
-> +}
-> +
-> +static void mp3309c_remove(struct i2c_client *client)
-> +{
-> +	struct mp3309c_chip *chip =3D i2c_get_clientdata(client);
-> +	struct backlight_device *bl =3D chip->bl;
-> +
-> +	bl->props.power =3D FB_BLANK_POWERDOWN;
-> +	bl->props.brightness =3D 0;
-> +	backlight_update_status(chip->bl);
-> +}
-> +
-> +static const struct of_device_id mp3309c_match_table[] =3D {
-> +	{ .compatible =3D "mps,mp3309c", },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, mp3309c_match_table);
-> +
-> +static const struct i2c_device_id mp3309c_id[] =3D {
-> +	{ "mp3309c", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, mp3309c_id);
-> +
-> +static struct i2c_driver mp3309c_i2c_driver =3D {
-> +	.driver	=3D {
-> +			.name		=3D KBUILD_MODNAME,
-> +			.of_match_table	=3D mp3309c_match_table,
-> +	},
-> +	.probe		=3D mp3309c_probe,
-> +	.remove		=3D mp3309c_remove,
-> +	.id_table	=3D mp3309c_id,
-> +};
-> +
-> +module_i2c_driver(mp3309c_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("Backlight Driver for MPS MP3309C");
-> +MODULE_AUTHOR("Flavio Suligoi <f.suligoi@asem.it>");
-> +MODULE_LICENSE("GPL");
-> --=20
-> 2.34.1
->=20
+SUT: AMD EPYC Milan with 2 NUMA nodes 256 cpus.
 
---fmrSnAj5eGo+Mp1q
-Content-Type: application/pgp-signature; name="signature.asc"
+Base kernel: upstream 6.6-rc6 (dd72f9c7e512) with Mels patch-series
+from tip/sched/core [1] applied.
 
------BEGIN PGP SIGNATURE-----
+Summary: Some benchmarks imrove. There is increase in system
+time due to additional scanning. But elapsed time shows gain.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTKjQwAKCRB4tDGHoIJi
-0tXeAP9CjYoPjVfUd01Srj5cGeJaf4TpRf47U2oo5eixdfSwIQEAsHV4azaLIt+V
-gKhHTgQuyEq7sgOZ20FGpncNGQQtFw4=
-=oHNv
------END PGP SIGNATURE-----
+However there is also some overhead seen for benchmarks like NUMA01.
 
---fmrSnAj5eGo+Mp1q--
+kernbench
+==========		base                  patched
+Amean     user-128    13799.58 (   0.00%)    13789.86 *   0.07%*
+Amean     syst-128     3280.80 (   0.00%)     3249.67 *   0.95%*
+Amean     elsp-128      165.09 (   0.00%)      164.78 *   0.19%*
+
+Duration User       41404.28    41375.08
+Duration System      9862.22     9768.48
+Duration Elapsed      519.87      518.72
+
+Ops NUMA PTE updates                 1041416.00      831536.00
+Ops NUMA hint faults                  263296.00      220966.00
+Ops NUMA pages migrated               258021.00      212769.00
+Ops AutoNUMA cost                       1328.67        1114.69
+
+autonumabench
+
+NUMA01_THREADLOCAL
+==================
+Amean     syst-NUMA01_THREADLOCAL       10.65 (   0.00%)       26.47 *-148.59%*
+Amean     elsp-NUMA01_THREADLOCAL       81.79 (   0.00%)       67.74 *  17.18%*
+
+Duration User       54832.73    47379.67
+Duration System        75.00      185.75
+Duration Elapsed      576.72      476.09
+
+Ops NUMA PTE updates                  394429.00    11121044.00
+Ops NUMA hint faults                    1001.00     8906404.00
+Ops NUMA pages migrated                  288.00     2998694.00
+Ops AutoNUMA cost                          7.77       44666.84
+
+NUMA01
+=====
+Amean     syst-NUMA01       31.97 (   0.00%)       52.95 * -65.62%*
+Amean     elsp-NUMA01      143.16 (   0.00%)      150.81 *  -5.34%*
+
+Duration User       84839.49    91342.19
+Duration System       224.26      371.12
+Duration Elapsed     1005.64     1059.01
+
+Ops NUMA PTE updates                33929508.00    50116313.00
+Ops NUMA hint faults                34993820.00    52895783.00
+Ops NUMA pages migrated              5456115.00     7441228.00
+Ops AutoNUMA cost                     175310.27      264971.11
+
+NUMA02
+=========
+Amean     syst-NUMA02        0.86 (   0.00%)        0.86 *  -0.50%*
+Amean     elsp-NUMA02        3.99 (   0.00%)        3.82 *   4.40%*
+
+Duration User        1186.06     1092.07
+Duration System         6.44        6.47
+Duration Elapsed       31.28       30.30
+
+Ops NUMA PTE updates                     776.00         731.00
+Ops NUMA hint faults                     527.00         490.00
+Ops NUMA pages migrated                  183.00         153.00
+Ops AutoNUMA cost                          2.64           2.46
+
+Link: https://lore.kernel.org/linux-mm/ZSXF3AFZgIld1meX@gmail.com/T/
+
+Raghavendra K T (1):
+  sched/numa: Fix mm numa_scan_seq based unconditional scan
+
+ include/linux/mm_types.h | 3 +++
+ kernel/sched/fair.c      | 4 +++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+---8<---
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 010ba1b7cb0e..a4870b01c8a1 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -10,6 +10,30 @@
+ #include <linux/tracepoint.h>
+ #include <linux/binfmts.h>
+ 
++TRACE_EVENT(sched_vma_start_seq,
++
++	TP_PROTO(struct task_struct *t, struct vm_area_struct *vma, int start_seq),
++
++	TP_ARGS(t, vma, start_seq),
++
++	TP_STRUCT__entry(
++		__array(	char,	comm,	TASK_COMM_LEN	)
++		__field(	pid_t,	pid			)
++		__field(	void *,	vma			)
++		__field(	int, start_seq		)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->comm, t->comm, TASK_COMM_LEN);
++		__entry->pid	= t->pid;
++		__entry->vma	= vma;
++		__entry->start_seq	= start_seq;
++	),
++
++	TP_printk("comm=%s pid=%d vma = %px start_seq=%d", __entry->comm, __entry->pid, __entry->vma,
++			 __entry->start_seq)
++);
++
+ /*
+  * Tracepoint for calling kthread_stop, performed to end a kthread:
+  */
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c8af3a7ccba7..e0c16ea8470b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3335,6 +3335,7 @@ static void task_numa_work(struct callback_head *work)
+ 				continue;
+ 
+ 			vma->numab_state->start_scan_seq = mm->numa_scan_seq;
++			trace_sched_vma_start_seq(p, vma, mm->numa_scan_seq);
+ 
+ 			vma->numab_state->next_scan = now +
+ 				msecs_to_jiffies(sysctl_numa_balancing_scan_delay);
+
+
+-- 
+2.34.1
+
