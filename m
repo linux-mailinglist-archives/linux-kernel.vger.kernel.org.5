@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF127D160C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAAA7D1610
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjJTTB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S229723AbjJTTFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJTTB4 (ORCPT
+        with ESMTP id S229473AbjJTTF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:01:56 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CD4114
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:01:54 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c16757987fso16891101fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:01:54 -0700 (PDT)
+        Fri, 20 Oct 2023 15:05:29 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11F0D4C
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:05:26 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a61f7aaf8so1442629276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:05:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1697828512; x=1698433312; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+rNwtsqBRU4k0b40DC9TyN3y9Xu8Yggpfh/XWF4qWmY=;
-        b=df2L0RDCcllQp3bJL/HfYYNogRQRjZXKPeA/Vr8Vwe6gGwH5j83YlXuJlZpjJfB8aa
-         yw9isFFhaw5VXFTuGId+Uul4OLZdllTjxhJBBoOLOkgmVmNEwDjO5iEtehEF1qePEgIn
-         eTF+bFjM0TqM98xOI5v6Xozif9OCTEloDORH3rYZJbFih9e2JUNL+sKK8f2yUl0tUr5f
-         f5MyMKM5mUzmA+I7tP9nfeKmGcq4NVVjdub/upgNPrnpMMBriV0oJlPRYwGecCjFD8VV
-         /vksq3jiImwvOUlUlW1fDtBPfp4GOYfgpkptVlwNzNZWuHLQCpJo90IBtM8+504pf8/m
-         uBJQ==
+        d=google.com; s=20230601; t=1697828726; x=1698433526; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kK3RwRQ2hFONySy7vb2rlodkP+v8D8sjNHk/2UXCQCw=;
+        b=EFIK5Xpz+34ho6bGbNYhtTTAOKRNZBChdY961KgaC3rQm/R9jtB1AvVD9VbDC579IH
+         v5hPaBylm71IcYiqZ0IsNY81y1JL5sr8p8XJ2sBt67yQpNdM00Y8ufjUOk0SCqskkQlo
+         or63JBl69lQ/jjoADt39FhCSIV4QLoxVCURrUNrM+1E3+G3n0g5AKOaCD4MVEzkHYfx6
+         7LhFSQeCc3WnZuAa0KmUIknkrXA4ftNsDH9zJFLAeTcTIsRKYmqm2vE4vo0VPLbqYRdH
+         Xmm61BhkknQDCIdqX1MbUafc537intIJnbpYjGejoo6VJSuQhwpkCj+fZKW2lZc4TS8i
+         C/7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697828512; x=1698433312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+rNwtsqBRU4k0b40DC9TyN3y9Xu8Yggpfh/XWF4qWmY=;
-        b=gRIMDaVJbCdDFNXlWBej9Es7ZuPPbfROZrXBHie8mJyKX6D7Pdn4sNl6YCm7b2lvep
-         E7RANn/zpEZbAD94wACfdU14GCnVsSZ0s8O7BE+5jLiAWqJWnV7wE943BvBOnYKsAxiK
-         7HFdDd53e55vJKkfa7/oMkfz1xNEY/dFl4NiDkvknSvE7iqY07txPY9v13cAhkvzx3uR
-         GBuReXHOiSMmZ6dj1VNCFZy5ZRs7iRj4YeF3smfDBeKeJ4r4/KCpplqTSfVNMOwesv8V
-         4zaiJ4BKHLqJTniP93mGf+NsF/BC3nuGLP7K0Kjp5iYzSoDG4VsLqVEsGU3/hiH9/dt2
-         Qv5A==
-X-Gm-Message-State: AOJu0YwF2OEGgOn7BBwR33dER5jjUkihGATJ0hmgw21LsRnNTC1hnnaX
-        g0ENAZ5YPlRb7WHbqtz62EpL+Q==
-X-Google-Smtp-Source: AGHT+IE47nBA9ytsrzVwsDYVlnvKftOrPtSFjGHR+mjdn/HhdGWaG/rDK3adcbET1UhwFzS2ARF4eQ==
-X-Received: by 2002:a2e:b896:0:b0:2c5:103b:b0af with SMTP id r22-20020a2eb896000000b002c5103bb0afmr1977821ljp.24.1697828512390;
-        Fri, 20 Oct 2023 12:01:52 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id az20-20020a05600c601400b004054dcbf92asm2781208wmb.20.2023.10.20.12.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 12:01:51 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 20:01:49 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cdrom: Missing a blank line after declarations
-Message-ID: <ZTLOnUgfWDHHkHvK@equinox>
-References: <20231015172846.7275-1-edson.drosdeck@gmail.com>
- <ZS2eKOZF2J7q7zkE@equinox>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS2eKOZF2J7q7zkE@equinox>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697828726; x=1698433526;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kK3RwRQ2hFONySy7vb2rlodkP+v8D8sjNHk/2UXCQCw=;
+        b=c9iHAnir4nXVlenw7H0QAO5n7KPygIiylUJLhS7ogJZ08eIubYRd/aLU7ansYVBTAC
+         B8DUTMaOK/4WHmFXOmVNor+a4t5RR3NQ4BvBhDtlYc+H3JZA65v3hnTEpL5Op8kCgvB3
+         UwQ6YQff4WXoq4CZNLBsIxMje3FPwPO1O0yqk/nGCTEUx1CZ2h4C3H8BtblMrbcQkOuL
+         eCAC9cyWo2P9P3TlR55UiuIUnrB9o5DMoWiA8TAbOtX8RLBmlrZ6TDn7YTjBMi0bWyJS
+         2kqOxGtZW69qsk/y3OgG6ZkoR7SXpfmym63fsdOg1mG8gRZvnrsKZz0jOkMfvBrVwfeA
+         svYQ==
+X-Gm-Message-State: AOJu0YxKDbaaBaGvUjatLUgCK5FfMYPy8fSz5ryPUYdXuqaBQ5SHogFH
+        RFYvkL3FiFs7kobZchoUmnHaIQcFdEv67zqWIA==
+X-Google-Smtp-Source: AGHT+IFIgFCUI8HjqfIf+Tklc39JbTp6ZaF/+XXlfiROC7bIg7hcKRNqFinXZ9QpU3wT9cqFbgb/bHQiEOBuCbThNA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:d34e:0:b0:d9a:e3d9:99bd with SMTP
+ id e75-20020a25d34e000000b00d9ae3d999bdmr52155ybf.5.1697828725873; Fri, 20
+ Oct 2023 12:05:25 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 19:05:25 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAHTPMmUC/x2NUQrCQAwFr1LybWC70kW9iojYbawB2cZE65bSu
+ xv8nAfzZgUjZTI4NSsozWw8FYd210B+3MpIyIMzxBD3bYgB7a0ly4KD8kxqKNOXFO0j8lywf8U u1Xp1VUefM/aUjrk7pBApgZ+K0p3rP3i+bNsPsPSlOYAAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697828724; l=2863;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=T9L+60rFiC2C22tjDxmZadYML+C8IPdvUbMCCZ+8ZV8=; b=g+KZD1lwFHNJ1xFiRWb7uqcL0Z5bEAbJH48+DOSAsG+RzN1Fpq+/0v1gC/I3Gh+CXpoyvlGbm
+ 8FNycQ/9sVEB7z1Ag9/AEX/GrjaQo1VSyvG8K+T824uWpGW7D3fSaty
+X-Mailer: b4 0.12.3
+Message-ID: <20231020-strncpy-drivers-power-supply-bq256xx_charger-c-v1-1-2fad856124f9@google.com>
+Subject: [PATCH] power: supply: bq256xx: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 09:33:44PM +0100, Phillip Potter wrote:
-> 
-> Hi Edson,
-> 
-> Thanks for the patch, looks good to me, will send on for inclusion. That
-> said, I will also tweak the title/commit description to a more imperative
-> style, given that this description itself currently triggers
-> checkpatch.pl due to line length.
-> 
-> Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
-> 
-> Regards,
-> Phil
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Hi Edson,
+We expect bq->model_name to be NUL-terminated based on its usage with
+sysfs_emit and format strings:
 
-After conversing with the Block maintainer (Jens Axboe) it has been
-decided that this will not infact be merged, as all it does is introduce
-newlines and patches of this type generally just cause problem for
-auto-application of patches to stable kernel branches. Thank you anyway
-though, and by all means feel free to send other CD-ROM patches my way
-in future.
+val->strval is assigned to bq->model_name in
+bq256xx_get_charger_property():
+|       val->strval = bq->model_name;
 
-Regards,
-Phil
+... then in power_supply_sysfs.c we use value.strval with a format string:
+|       ret = sysfs_emit(buf, "%s\n", value.strval);
+
+we assigned value.strval via:
+|       ret = power_supply_get_property(psy, psp, &value);
+... which invokes psy->desc->get_property():
+|       return psy->desc->get_property(psy, psp, val);
+
+with bq256xx_get_charger_property():
+|       static const struct power_supply_desc bq256xx_power_supply_desc = {
+...
+|       	.get_property = bq256xx_get_charger_property,
+
+Moreover, no NUL-padding is required as bq is zero-allocated in
+bq256xx_charger.c:
+|       bq = devm_kzalloc(dev, sizeof(*bq), GFP_KERNEL);
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
+sizeof(dest)) as this more closely ties the destination buffer and the
+length.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq24190_charger-c-v1-1-e896223cb795@google.com/
+Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com/
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/power/supply/bq256xx_charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/bq256xx_charger.c b/drivers/power/supply/bq256xx_charger.c
+index 82d3cd5ee2f9..85e1185275b9 100644
+--- a/drivers/power/supply/bq256xx_charger.c
++++ b/drivers/power/supply/bq256xx_charger.c
+@@ -1706,7 +1706,7 @@ static int bq256xx_probe(struct i2c_client *client)
+ 
+ 	mutex_init(&bq->lock);
+ 
+-	strncpy(bq->model_name, id->name, I2C_NAME_SIZE);
++	strscpy(bq->model_name, id->name, sizeof(bq->model_name));
+ 
+ 	bq->regmap = devm_regmap_init_i2c(client,
+ 					bq->chip_info->bq256xx_regmap_config);
+
+---
+base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
+change-id: 20231020-strncpy-drivers-power-supply-bq256xx_charger-c-be69c58602e6
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
