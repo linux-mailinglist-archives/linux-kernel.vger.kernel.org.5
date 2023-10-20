@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 080C47D1862
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C084E7D1865
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345286AbjJTVqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S1345494AbjJTVqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjJTVqO (ORCPT
+        with ESMTP id S233193AbjJTVqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:46:14 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52AD1703
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:45:43 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso14302875e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697838342; x=1698443142; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QxjlY5uEMjde2s1dEktp9/ACelgmEbqMgOPIWBYsGlA=;
-        b=Ro8/ie6rxWPGPPYgtllsAxe1RtjEAWtsTK0cAVVKQ85MlmgwcF0gc4BWhNE3whKvt3
-         ooI3SMilRolmYpkBcFShWM5nMsFqi4BqxOjW/QXuBhaj0ysSbPY3swLMx1HH+cBlJraZ
-         e4elSgt/i2ChX/Xf3v0wERm15YdT1ONXxJAPhTXaJn9I0Wot7CdeSJXJeHZ0wUiuKDwi
-         GMQQQf/qRh+ZZx+H7ANxEyrq4ztKpOWCLrPKWMoz3nR2MopbP0Gnp8NZWbAwc4g3UnD0
-         Cb0wiM71soCyO9luHkX3qr/+mNTaxluIyF3joBrb5xS2+rALPwA1HmD6HwLBDK4plgPb
-         9OcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697838342; x=1698443142;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QxjlY5uEMjde2s1dEktp9/ACelgmEbqMgOPIWBYsGlA=;
-        b=ZBc/9mUfGgdftFfPA7aqw4S9Pp8eXYb24Hi5iLWIhJ1YJj+jrG2+M2n37b01TUf5+L
-         FCRizckb350yrwF3SO+gGf3dsyCyvsz1UhD8LGwZwZr7FzWhDJpBcCPAE81E62a2lRxJ
-         b3F5v2L5Q8/0AZoSamzyx1DPK+hSPE2O4X3b0+MY1St9nzcux5UPgogplIndUbO/8OSl
-         /cEjAt629EbJdNv7jxeqQrM92tLUrxkNd5EstUhRrLAzwL1zilv1ont7PUlBQ2jAGVsR
-         52ultowWU/i/lGYbwPumKVy73LEo/fJ0v1In/gJb1oRKDTgWb/F9RKSpSr9bFph7FrVk
-         dWhQ==
-X-Gm-Message-State: AOJu0Ywx7SegWi+MLh1WCUBZ9JR7GQxX33NmaLJXQdZjRlf7dLtvY261
-        LjlrjgsqvksaJlxIIYQV5OmYpQ==
-X-Google-Smtp-Source: AGHT+IFBew19neBanzQT7imiVhuRWGKvNwUZnpZ09iZmlY1NKGIF6jKdwjH/gs2rXWd6fERiMXYm+w==
-X-Received: by 2002:adf:b307:0:b0:314:3369:df57 with SMTP id j7-20020adfb307000000b003143369df57mr6074420wrd.5.1697838342339;
-        Fri, 20 Oct 2023 14:45:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id w15-20020a5d608f000000b0032dbf32bd56sm2468482wrt.37.2023.10.20.14.45.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 14:45:41 -0700 (PDT)
-Message-ID: <35b62306-b4c8-4235-a024-f4a600c16091@linaro.org>
-Date:   Fri, 20 Oct 2023 23:45:40 +0200
+        Fri, 20 Oct 2023 17:46:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4F510F9;
+        Fri, 20 Oct 2023 14:46:40 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KLSoP4021504;
+        Fri, 20 Oct 2023 21:46:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=9VYrZNyRJxcuHF8g0qEMMo0m1W1VPJCd0bidkFmQh2k=;
+ b=XDPn1M8WWiVukLohTuy+cFedkhFpcXRQpOrdszpWKNAuzkBzQ+I8kh4H3gA3T28wuKNM
+ /pRLw2u6gqHLWmLJRJrUHmeR/1FMFBKOaMZW7up/tFht+jlAUGHz8cSU6IUBxe6rtC7x
+ 9EkUEtiek6oCcIXQnlnFcRx+jgrPC9hfaQXy3MalfSaDT9UhUFRLJmP8aeYQIXlJdftm
+ 7PDTfizIFMrChxHS6vNst37+bBVx4ineGzwvj7iWvetYPev7FUJd7NstvbLnyYmIhl6x
+ oMp9lTAXZYUddd+duVrR+59W1d1I3rj6rs6JD33LLCesz0NtbC48wHhlHS2cD4Xa8SMU sQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubwr36fr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 21:46:35 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39KLkYKY022595
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 21:46:34 GMT
+Received: from [10.48.241.70] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 20 Oct
+ 2023 14:46:34 -0700
+Message-ID: <060a8bd0-6470-4d75-a5bb-e012c3e7cb3d@quicinc.com>
+Date:   Fri, 20 Oct 2023 14:46:33 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v2] arm64: dts: Update cache properties for
- socionext
+Subject: Re: [PATCH 1/5] [brcmfmac] Add support for encoding/decoding 6g
+ chanspecs
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, soc@kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Pierre Gondois <pierre.gondois@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231020195022.4183862-2-robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231020195022.4183862-2-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Daniel Berlin <dberlin@dberlin.org>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>
+CC:     <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <linux-kernel@vger.kernel.org>
+References: <cover.1697650207.git.dberlin@dberlin.org>
+ <0b95944fcf047b3ec83cecb0c65ca24de43810fd.1697650207.git.dberlin@dberlin.org>
+ <d55c968a-d953-67d7-cdff-f856422607f5@broadcom.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <d55c968a-d953-67d7-cdff-f856422607f5@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tsVGui_6M6OCbHfNXcwqjRTpoaV_Qs4Y
+X-Proofpoint-ORIG-GUID: tsVGui_6M6OCbHfNXcwqjRTpoaV_Qs4Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=748 impostorscore=0
+ adultscore=0 mlxscore=0 clxscore=1011 phishscore=0 spamscore=0
+ malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310200185
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2023 21:50, Rob Herring wrote:
-> From: Pierre Gondois <pierre.gondois@arm.com>
-> 
-> The DeviceTree Specification v0.3 specifies that the cache node
-> 'compatible' and 'cache-level' properties are 'required'. Cf.
-> s3.8 Multi-level and Shared Cache Nodes
-> The 'cache-unified' property should be present if one of the
-> properties for unified cache is present ('cache-size', ...).
-> 
-> Update the Device Trees accordingly.
-> 
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> Link: https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+On 10/20/2023 2:57 AM, Arend van Spriel wrote:
+> On 10/19/2023 3:42 AM, Daniel Berlin wrote:
+>> This patch adds support for 6G chanspecs, as part of adding 6G and
+>> 802.11ax support.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In ath drivers we are actively discouraging the use of "G" since 1) that 
+is not the SI unit for gigahertz, and 2) it conflicts with the use of 
+that term in cellular communication where it refers to the generation of 
+technology. So I'd recommend using GHz in descriptions/comments and 
+GHZ/ghz in identifiers.
 
-Best regards,
-Krzysztof
-
+Side note: in USA, Comcast have started promoting their network as 
+"10G". In their case they're referring to 10 Gbps speeds. They are being 
+called out for misleading consumers with that terminology.
+<https://arstechnica.com/tech-policy/2023/10/comcast-should-stop-advertising-slower-speeds-as-10g-industry-group-says/>
