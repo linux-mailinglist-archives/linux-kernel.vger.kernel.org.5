@@ -2,86 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8F77D10B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFE77D10BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377456AbjJTNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        id S1377470AbjJTNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377222AbjJTNpi (ORCPT
+        with ESMTP id S1377438AbjJTNrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:45:38 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEF0A3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:45:33 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C67564000F;
-        Fri, 20 Oct 2023 13:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697809531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lr/z7uihQprUld3MCX8m2TxbGzxLF1jBcFQtsJ1q8Lc=;
-        b=biU7ESoHpgUw+DDQz7V86GfiGC9KtHEliOGtPOBH2lqU8v9/dKa7TpQRy/qtWhw8nFH2iv
-        SPRudRRN8PXjnJSt1sep9Vyoc2uvua23p4NRnADvgbOFKXF9mYrqgSa2XYkuvqGRMkXqih
-        2Djs7z08wehMsdbDIskMWYzd2tv3SX+rYNAMX16zDcP03I1XMldDNv98b8aUIcFRx3QMyx
-        L58Kusya/Twsickg6kRU0wnTpc5bksBZaWwlRxkmITvRWxHFGXzc/hIhcgXO5l8bd5FHp4
-        9vTzCJC9Nr0T8VqOiewC15HTEuoOlfOBaNkbhdeIfHIBRzw7WnBR4SGJnvgOnQ==
-Date:   Fri, 20 Oct 2023 15:45:28 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Zbigniew, Lukwinski" <zbigniew.lukwinski@linux.intel.com>
-Cc:     Frank Li <Frank.Li@nxp.com>, alexandre.belloni@bootlin.com,
-        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] i3c: master: add enable(disable) hot join in sys
- entry
-Message-ID: <20231020154528.2f5f68f5@xps-13>
-In-Reply-To: <57efe6de-cf65-32ed-fd1e-a388e1676c70@linux.intel.com>
-References: <20231018205929.3435110-1-Frank.Li@nxp.com>
-        <20231018205929.3435110-2-Frank.Li@nxp.com>
-        <57efe6de-cf65-32ed-fd1e-a388e1676c70@linux.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 20 Oct 2023 09:47:20 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFD3CA
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:47:16 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5a9bc2ec556so583234a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697809636; x=1698414436; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ujFKaHWQlVUmMQlPTcdZIic60Ioy7TSqQ3nDhHoDDn0=;
+        b=P6hJA9XHLrlREANM92ye5l+V/OvcbTs9+UCzklsxfA+8AWC2JFc3ImCtV4ectOGTkh
+         ABMJoNI3/T1b90RNFNBMNHvPEyZ5mcPXcGCP+OjLVezORt1WOZeJhjXp4D7Fdu+BmDt2
+         736ngLQ/QdC6O0hRN+h8OzjY2f4Ba+vmCBJjrLMBOoRu49V/QyPAZX33coy7A7VaCjCF
+         4zyAGQA91ak6Q6I3bYsdbGrFTZ9NFWiIdUE07XMVb8M0+KTF+785ac3Czh1ic/9ArUtD
+         4TjOavBfPz7YIGHs3zm1hwp/hI1OGwboG22n3JL0bkksqaCoTjCfvQvzqKDjyFQli1Sh
+         c5JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697809636; x=1698414436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ujFKaHWQlVUmMQlPTcdZIic60Ioy7TSqQ3nDhHoDDn0=;
+        b=FdkxRause94nZHZgRWoXk/reI8+1FfF3lOUmbwQPLcNTxAgRxuRflml+JO3eumCS1b
+         mAnnnbEZbsYQ3CIFdO/6kXWO6wUAj3RRyt0fJHap0nv6nBmordFLopjGsbf/oiPqEwRf
+         /i2HS8l2gRiMSNYuGGV0nGeUZt8a9gdi2vRcj121eLA1oz7+Cse4Uf173jRoH9YRoiUJ
+         s3B7b8kRzzV+IMyX6xkNQWkLm16AoKtAMRlx3nXJI3PX3HyO1Yc9BP6emjG5DmpGwG/b
+         oe4ZOzvb0CMuZPiWlb0fLDgnQYNmhz2HaTs1HC2q2S+whh8tDEN8fSnrdx3PH7JkcyUY
+         HMBQ==
+X-Gm-Message-State: AOJu0YznV4VJwlQYbfKbflkvEOZsIDjZQBoxeES5Y5k/uRAJUzoLAv66
+        q/UqcoM0GodIseTfwmyYuwGUVR+JkhMGHpxtYjC+IA==
+X-Google-Smtp-Source: AGHT+IEe1qO4q6kLy01GbxGxRAix8XMIPBN+082Nf7nryQBHvgSvHroABh+Pz6NLehEhxMDygq9zBHrYtbpZO8gR1/0=
+X-Received: by 2002:a05:6a21:66cb:b0:172:f4e:5104 with SMTP id
+ ze11-20020a056a2166cb00b001720f4e5104mr1738132pzb.20.1697809636011; Fri, 20
+ Oct 2023 06:47:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20231020072140.900967-1-apatel@ventanamicro.com>
+ <20231020072140.900967-9-apatel@ventanamicro.com> <20231020-f1ec2b7e384a4cfeae39966f@orel>
+In-Reply-To: <20231020-f1ec2b7e384a4cfeae39966f@orel>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 20 Oct 2023 19:17:03 +0530
+Message-ID: <CAK9=C2Vg8O_6OaND_s1MhpBHpm1petoU7DNXOOaSOxXYUY1iAw@mail.gmail.com>
+Subject: Re: [PATCH v3 8/9] tty: Add SBI debug console support to HVC SBI driver
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukwinski,
-
-zbigniew.lukwinski@linux.intel.com wrote on Fri, 20 Oct 2023 10:55:27
-+0200:
-
-> On 10/18/2023 10:59 PM, Frank Li wrote:
-> > Add hotjoin entry in sys file system allow user enable/disable hotjoin
-> > feature.
+On Fri, Oct 20, 2023 at 4:16=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Fri, Oct 20, 2023 at 12:51:39PM +0530, Anup Patel wrote:
+> > From: Atish Patra <atishp@rivosinc.com>
 > >
-> > Add (*enable(disable)_hotjoin)() to i3c_master_controller_ops.
-> > Add api i3c_master_enable(disable)_hotjoin(); =20
->=20
-> What is the use case for having HJ enable knob in sysfs available for use=
-r space other than for debug stuff? In other words, does user space really =
-need to enable/disable HJ in runtime for other reason but debug? If it is o=
-nly for debug maybe it=C2=A0 could be move to debugFS?
+> > RISC-V SBI specification supports advanced debug console
+> > support via SBI DBCN extension.
+> >
+> > Extend the HVC SBI driver to support it.
+> >
+> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/tty/hvc/Kconfig         |  2 +-
+> >  drivers/tty/hvc/hvc_riscv_sbi.c | 82 ++++++++++++++++++++++++++++++---
+> >  2 files changed, 76 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+> > index 4f9264d005c0..6e05c5c7bca1 100644
+> > --- a/drivers/tty/hvc/Kconfig
+> > +++ b/drivers/tty/hvc/Kconfig
+> > @@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
+> >
+> >  config HVC_RISCV_SBI
+> >       bool "RISC-V SBI console support"
+> > -     depends on RISCV_SBI_V01
+> > +     depends on RISCV_SBI
+> >       select HVC_DRIVER
+> >       help
+> >         This enables support for console output via RISC-V SBI calls, w=
+hich
+> > diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_risc=
+v_sbi.c
+> > index 31f53fa77e4a..56da1a4b5aca 100644
+> > --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> > +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> > @@ -39,21 +39,89 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *=
+buf, int count)
+> >       return i;
+> >  }
+> >
+> > -static const struct hv_ops hvc_sbi_ops =3D {
+> > +static const struct hv_ops hvc_sbi_v01_ops =3D {
+> >       .get_chars =3D hvc_sbi_tty_get,
+> >       .put_chars =3D hvc_sbi_tty_put,
+> >  };
+> >
+> > -static int __init hvc_sbi_init(void)
+> > +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int=
+ count)
+> >  {
+> > -     return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf)) {
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+> > +             if (PAGE_SIZE < (offset_in_page(buf) + count))
+>
+> I thought checkpatch complained about uppercase constants being on the
+> left in comparisons.
 
-I don't think hotjoin should be considered as a debug feature. The
-problem here is the power consumption which is higher if you enable
-this feature (you need to keep everything clocked and ready to handle
-an IBI) whereas if your design is "fixed" (more like an I2C bus) you
-may save power by disabling this feature.
+Nope checkpatch does not complain about this.
 
-A module parameter does not fit here because it's a per-bus
-configuration.
+>
+> > +                     count =3D PAGE_SIZE - offset_in_page(buf);
+> > +     } else {
+> > +             pa =3D __pa(buf);
+> > +     }
+> > +
+> > +     if (IS_ENABLED(CONFIG_32BIT))
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
+E,
+> > +                             count, lower_32_bits(pa), upper_32_bits(p=
+a),
+> > +                             0, 0, 0);
+> > +     else
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
+E,
+> > +                             count, pa, 0, 0, 0, 0);
+> > +     if (ret.error)
+> > +             return 0;
+> > +
+> > +     return count;
+>
+> Shouldn't we return ret.value here in case it's less than count? I see we
+> already do that below in get().
 
-Thanks,
-Miqu=C3=A8l
+Ahh, yes. Good catch, I will update.
+
+>
+> >  }
+> > -device_initcall(hvc_sbi_init);
+> >
+> > -static int __init hvc_sbi_console_init(void)
+> > +static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count=
+)
+> >  {
+> > -     hvc_instantiate(0, 0, &hvc_sbi_ops);
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf)) {
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+> > +             if (PAGE_SIZE < (offset_in_page(buf) + count))
+> > +                     count =3D PAGE_SIZE - offset_in_page(buf);
+> > +     } else {
+> > +             pa =3D __pa(buf);
+> > +     }
+> > +
+> > +     if (IS_ENABLED(CONFIG_32BIT))
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ=
+,
+> > +                             count, lower_32_bits(pa), upper_32_bits(p=
+a),
+> > +                             0, 0, 0);
+> > +     else
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ=
+,
+> > +                             count, pa, 0, 0, 0, 0);
+> > +     if (ret.error)
+> > +             return 0;
+> > +
+> > +     return ret.value;
+> > +}
+> > +
+> > +static const struct hv_ops hvc_sbi_dbcn_ops =3D {
+> > +     .put_chars =3D hvc_sbi_dbcn_tty_put,
+> > +     .get_chars =3D hvc_sbi_dbcn_tty_get,
+> > +};
+> > +
+> > +static int __init hvc_sbi_init(void)
+> > +{
+> > +     int err;
+> > +
+> > +     if ((sbi_spec_version >=3D sbi_mk_version(2, 0)) &&
+> > +         (sbi_probe_extension(SBI_EXT_DBCN) > 0)) {
+> > +             err =3D PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_dbcn_ops=
+, 16));
+>
+> Why an outbuf size of only 16?
+
+The output buffer size of 16 is a very common choice across
+HVC drivers. The next best choice is 256.
+
+I guess 256 is better so I will go with that.
+
+>
+> > +             if (err)
+> > +                     return err;
+> > +             hvc_instantiate(0, 0, &hvc_sbi_dbcn_ops);
+> > +     } else {
+> > +             if (IS_ENABLED(CONFIG_RISCV_SBI_V01)) {
+> > +                     err =3D PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_=
+v01_ops, 16));
+> > +                     if (err)
+> > +                             return err;
+> > +                     hvc_instantiate(0, 0, &hvc_sbi_v01_ops);
+> > +             } else {
+> > +                     return -ENODEV;
+> > +             }
+> > +     }
+> >
+> >       return 0;
+> >  }
+> > -console_initcall(hvc_sbi_console_init);
+> > +device_initcall(hvc_sbi_init);
+> > --
+> > 2.34.1
+> >
+>
+> Thanks,
+> drew
+
+Regards,
+Anup
