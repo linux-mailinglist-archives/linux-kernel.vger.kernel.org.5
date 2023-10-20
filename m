@@ -2,412 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 405777D0872
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E66E7D0874
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346978AbjJTGZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
+        id S1376304AbjJTG2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 02:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235634AbjJTGZG (ORCPT
+        with ESMTP id S229558AbjJTG2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:25:06 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65143D55;
-        Thu, 19 Oct 2023 23:25:01 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 85F2D5C0BCA;
-        Fri, 20 Oct 2023 02:25:00 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 20 Oct 2023 02:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697783100; x=1697869500; bh=a8
-        6LnDRuk28PigZ4CQHO6r+juEkdcI+21r+nqmdw2G8=; b=KHBkVaokj/3gMEVhdx
-        JHIT9hQU8Y6sZQAX5H8Hg1zaPgQgtXZogD++y0XDlc9ue46YCdF8ozPFr1OiNmh7
-        rvRt23iMrDcJrlxcUr9N+PmMeg2660qzHm6fnKgilO5O86smhTc8+QhFbgT6J8pE
-        o9x1bzfDO7p9ZlkrYyC+/3+cLYW1E1SqLxpHMD5oQnzswxZXLppf55krYJNew7cA
-        K0XS3hH1P9F+uUe8beslmnomGFfBWCLINEqyY9qc+BqqxQCwIXNii+5l30uF2tc9
-        O/0/QsDKPvQBN6PgS0bCKhmZCi67NttlPTVjO8j4fjVjotoHbWJRw9FCf8FAZGUd
-        eS4w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697783100; x=1697869500; bh=a86LnDRuk28Pi
-        gZ4CQHO6r+juEkdcI+21r+nqmdw2G8=; b=IMcIBLgi7/eAgvampo9Yuyf/Owe7z
-        SsjCq/GNbMySXyjAheEZ+MgI8t9a77FcHYVWct2MY5PIQC1uDn4/ymlZ+Umts6qP
-        U0+W7omXFPUkBPowJge5uIlTQGwZU+w5PxYdjx4rzlnAOZOoEHdJDrK3eytTwS9q
-        ORV5/o22yjaa7mugSAki0IhIJ5vSjBi7aZedwgcCekj4QrTrVRUQSAyh8WL89u/f
-        GH7U6Uk2UCdkLgKJ77Tx1zfvG1yAMF/GhejP0khV6UOdoU/4+k/YSORgvFGiV/IR
-        CIGj6zgmTlqceApZKm0rwsf6aK6zM0awZSDw9yxLMBtYzTD8I1IZEZwRw==
-X-ME-Sender: <xms:Oh0yZRn5qL7HM7mkM9cv0U9NwlW6bkZ6BX23inCg7TvmTf0Un4iQ9w>
-    <xme:Oh0yZc2hwJYYZU9HpiGF5MPj5KdL6O4JDIENSABDyf80czrL0Yc_olis6Rw3PpudC
-    09BruipHvUkAODQFXg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeejgddutdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:Oh0yZXpqvyf_qyFYqF-vg4HI-fWCzYKA4-HGbkNASB5z4JaPPAESMQ>
-    <xmx:Oh0yZRlehR_g2u1ZgxunQv9TWhJvn9L0bnHi6MXGOIdfYmeqDn2lHQ>
-    <xmx:Oh0yZf1Ko-e4m4YGrGHluKOdK5fHqdf03ek2Zg8KhKN99NnN3muWgg>
-    <xmx:PB0yZW3FwOotApXKRKJxg9Su5pgNNVVqD3iU0gJd6GxcxrqU3UEdkQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D44F0B60089; Fri, 20 Oct 2023 02:24:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Fri, 20 Oct 2023 02:28:36 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D71D46
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:28:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nWgQiMymGkWLJlO5epx1sdHuVcn0s2IwQyhif+9VvUfJDwyASepvmzCu2EzdbYQBvjmU+niaRpg8/HwX8OUAskJKqTUzw7uV1NBK/8sSTcxom5K89+uBIc3mm1/0xjknp1WahvzhqvuipKthQpU31sMvGqwRPSB5zHXgiOiizV9BWgOvefn4QYSq4ptAdQFUb+emyTt6xa3pCaz9psMUM2s7VvhakcLntTd0yThaoJLFCYiTFgnmL+P5QihC0lEm1R5Xf4abMyFiO2hpx2VmKC7xa7PGIdUn8op4xR2kt5ZxS7r7ClTNG/htvuaEnF0yobpVRktpu43qZhHuQMqhrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JcB01EX+Kne+GnrqpXoo7+eKMlQeN5wi7mDAQJKfoJg=;
+ b=S/OXSlIrYvymLsUvlVrDg7aH91WoO0CZ+IJ71cn2/t68y5kPG0Eprnh3jTEG9jIPXTjJfhHUhae22135UMvEIIaXEttHv3hYm4vllNlm9w+d/fisarL24kaSOyCzlyVr+iZlGzxOoQBlITDciBkIG5B60GXR50WYEWJFYOQBmzhQrkiAwZnlcb9BWEwXskMv5uMK2juQlRggn+nknRdTE0N4NbzS/6cVeyEZC+zP0Pmw6EFC1F9IXc51E4QO7mE+/WrU63QAupsinLsyRs/RD3tCbUX2tv5+6/2IwuKHcy73PY0sh3/Mx4/Zh86ctc935IaLVc3qrY5fkg/APmZlUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JcB01EX+Kne+GnrqpXoo7+eKMlQeN5wi7mDAQJKfoJg=;
+ b=wgewHxJ8ZBW8T+1zVa4l+2liPqOVHk+sQagRTrmuOwuwdeFEkEJqTrMF2ArOGlOn+xuPkyeD9+XYkNGQi8XDf4lsbBxK5faspSfpGbLnHxHEletBcO1acj9oawaCOcnsT7HsGNYzk4VMaCbNdsFMbv7vq4eyhR7Jwk/9h56xYPI=
+Received: from DS7PR03CA0270.namprd03.prod.outlook.com (2603:10b6:5:3b3::35)
+ by LV3PR12MB9410.namprd12.prod.outlook.com (2603:10b6:408:212::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Fri, 20 Oct
+ 2023 06:28:32 +0000
+Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
+ (2603:10b6:5:3b3:cafe::6f) by DS7PR03CA0270.outlook.office365.com
+ (2603:10b6:5:3b3::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35 via Frontend
+ Transport; Fri, 20 Oct 2023 06:28:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Fri, 20 Oct 2023 06:28:31 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 20 Oct
+ 2023 01:28:31 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27
+ via Frontend Transport; Fri, 20 Oct 2023 01:28:28 -0500
+From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <Basavaraj.Hiregoudar@amd.com>,
+        <Sunil-kumar.Dommati@amd.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        "open list" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/5] ASoC: amd: Add acpi machine id for acp6.3 version based platform
+Date:   Fri, 20 Oct 2023 11:58:11 +0530
+Message-ID: <20231020062822.3913760-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-Id: <a07d417f-c2b5-4418-b788-ec37ccad513a@app.fastmail.com>
-In-Reply-To: <20231020034921.1179-3-jyanchou@realtek.com>
-References: <20231020034921.1179-1-jyanchou@realtek.com>
- <20231020034921.1179-3-jyanchou@realtek.com>
-Date:   Fri, 20 Oct 2023 08:24:37 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Jyan Chou" <jyanchou@realtek.com>,
-        "Adrian Hunter" <adrian.hunter@intel.com>, jh80.chung@samsung.com,
-        "Ulf Hansson" <ulf.hansson@linaro.org>
-Cc:     riteshh@codeaurora.org, "Rob Herring" <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        "Conor Dooley" <conor+dt@kernel.org>, asutoshd@codeaurora.org,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Brian Norris" <briannorris@chromium.org>,
-        "Doug Brown" <doug@schmorgal.com>,
-        "Tony Huang" <tonyhuang.sunplus@gmail.com>, abel.vesa@linaro.org,
-        william.qiu@starfivetech.com
-Subject: Re: [PATCH V3][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|LV3PR12MB9410:EE_
+X-MS-Office365-Filtering-Correlation-Id: b42f84be-544e-45df-d596-08dbd135c7ed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4dX/tPwY6tjvPzUu1uFmv1OlaF79OMljws/fhFjllJWfWxWkmfnsFaM6JK7v2bFoZ0OQkoq2d2OyhCo8KSs0bXrdc0RZ40Vn7wTvqfIK+Zh44pBnoL3noDyIHGeccAOfHm3v4RnB0c7tVLfaaQzRbShRth8PcJdqTnyvGnh6ByL+Bf29tY3tnr1zoADIXTmWAyTA3gQvBSxfgqe8uY0KDNkRTQ1LV8CHBCu9OW6cCmoyJpnyhEfdVLMkG0gLM0P5G0iVZGzOuYotbnphMgJ12nCuNMRdnJwZgLAqNGN40TR9+YOv4v5HPH6urZ7qPfy0rkzUFzdoOKrvGlturvXZK7Th6RPddcIVlyr01rVp+bIM6B0hOsTeUC0FJYeRVfbfSrFrKO8f+3688u+zXulWxZxeCm9TcBwHfdX4qp32yfuPNWMLVH8s7bhpjrfOW+BncVSGADextvp4iCd1B+WMDF66o4x4uTMO3SYCjYiDZYeC6Vz33bIE1+xwX/NmTKjh1bPrfj+zSCFGegZIX2wmtreuY/t508lLuLlSSOXFrj7m49yZKWUHekl82jZDQutgpCC0q2QTxGonTWZBXE3ANd0cBy4qDoZmtO+jbt/hinmA2tsyPcVk+vKaklmBiYPziwXcQ+BH+6ihOIo7fT6FTaypJeUvbc/eAJLDiSTGtPvmiBpU++X98bc0GCR1/Nw8zYfXSnstdiP0ygFgrtmMEWYW4yDAHiER2nrMA0NPIOgXiVHRc4FGRNO3wROeUYidXCBwKpR4Ewy8xuC+Y6/Dzw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(82310400011)(46966006)(40470700004)(36840700001)(40460700003)(4326008)(8936002)(40480700001)(47076005)(478600001)(36756003)(356005)(82740400003)(26005)(2616005)(1076003)(81166007)(336012)(426003)(70586007)(54906003)(5660300002)(86362001)(316002)(6666004)(6916009)(41300700001)(70206006)(7696005)(8676002)(2906002)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 06:28:31.9688
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b42f84be-544e-45df-d596-08dbd135c7ed
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9410
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023, at 05:49, Jyan Chou wrote:
-> We implemented cmdq feature on Synopsys DesignWare mmc driver.
-> The difference between dw_mmc.c and dw_mmc_cqe.c were distinct
-> register definitions, mmc user flow and the addition of cmdq.
->
-> New version of User Guide had modify mmc driver's usage flow,
-> we may need to renew code to precisely follow user guide.
->
-> More over, We added a wait status function to satisfy synopsys
-> user guide's description, since this flow might be specific in
-> synopsys host driver only.
->
-> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+Add acpi machine id for ACP6.3 version based platform and configure
+driver data to enable SOF sound card support on newer boards.
 
->
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 159a3e9490ae..894b89a396bb 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -762,6 +762,19 @@ config MMC_DW_PLTFM
-> 
->  	  If unsure, say Y.
-> 
-> +config MMC_DW_CQE
-> +	tristate "Synopsys DesignWare Memory Card with CQE Interface"
-> +	depends on ARC || ARM || ARM64 || MIPS || COMPILE_TEST
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/amd/acp-config.c  | 12 ++++++++++++
+ sound/soc/amd/mach-config.h |  1 +
+ 2 files changed, 13 insertions(+)
 
-Why do you need these specific architectures? For a generic
-driver, it should not make a difference which architecture it
-is built for, and it seems silly to exclude e.g. RISCV here.
+diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
+index a58d646d28f6..20cee7104c2b 100644
+--- a/sound/soc/amd/acp-config.c
++++ b/sound/soc/amd/acp-config.c
+@@ -263,4 +263,16 @@ struct snd_soc_acpi_mach snd_soc_acpi_amd_rmb_sof_machines[] = {
+ };
+ EXPORT_SYMBOL(snd_soc_acpi_amd_rmb_sof_machines);
+ 
++struct snd_soc_acpi_mach snd_soc_acpi_amd_acp63_sof_machines[] = {
++	{
++		.id = "AMDI1019",
++		.drv_name = "acp63-dsp",
++		.pdata = &acp_quirk_data,
++		.fw_filename = "sof-acp_6_3.ri",
++		.sof_tplg_filename = "sof-acp_6_3.tplg",
++	},
++	{},
++};
++EXPORT_SYMBOL(snd_soc_acpi_amd_acp63_sof_machines);
++
+ MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/sound/soc/amd/mach-config.h b/sound/soc/amd/mach-config.h
+index d392e6d6e6e1..ce5d77639086 100644
+--- a/sound/soc/amd/mach-config.h
++++ b/sound/soc/amd/mach-config.h
+@@ -21,6 +21,7 @@
+ extern struct snd_soc_acpi_mach snd_soc_acpi_amd_sof_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_amd_rmb_sof_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_amd_vangogh_sof_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_amd_acp63_sof_machines[];
+ 
+ struct config_entry {
+ 	u32 flags;
+-- 
+2.34.1
 
-Maybe just use 'depends on OF'.
-
-> +DECLARE_COMPLETION(dw_mci_wait);
-
-I'm worried by the use of all these blocking and busy-waiting
-primitives in the driver. In addition to the completion, I see
-a tasklet, a timer, various readl_poll_timeout, and more.
-
-In an ideal block device implementation, none of these should
-be needed, as the block requests should get queued up from
-the blk_mq logic and completed when an interrupt happens.
-
-In mmc, this is traditionally a bit more complex, but I would
-hope we can avoid most of the additional deferral in new
-drivers, and explain why the other ones are needed when this
-is not possible.
-
-Let's have a look at them individually.
-
-> +#if defined(CONFIG_DEBUG_FS)
-> +static int dw_mci_cqe_req_show(struct seq_file *s, void *v)
-> +{
-> +	struct dw_mci_slot *slot = s->private;
-> +	struct mmc_request *mrq;
-> +	struct mmc_command *cmd;
-> +	struct mmc_command *stop;
-> +	struct mmc_data	*data;
-> +
-
-You should not need an #ifdef around the debugfs helpers, if you
-use the registration interface correctly, it all gets dropped
-by dead code elimination.
-
-> +static int dw_mci_cqe_start_command(struct dw_mci *host,
-> +				    struct mmc_command *cmd, u32 cmd_flags)
-> +{
-....
-> +
-> +	host->int_waiting = &dw_mci_wait;
-> +	end = jiffies + msecs_to_jiffies(DW_MCI_TIMEOUT_Ms);
-> +	mod_timer(&host->timer, end);
-
-This is just a timeout that happens when the command does not
-complete within the expected time, right? If so that is probably
-fine.
-
-> +		spin_lock_irqsave(&host->irq_lock, flags);
-> +		mcq_writew(host, CMD_R, cmd_flags);
-> +		spin_unlock_irqrestore(&host->irq_lock, flags);
-> +
-> +		wait_for_completion(host->int_waiting);
-
-This is odd for a couple of reasons:
-
-- an MMIO write is not serialized by a spinlock because the
-  bus fabric between the CPU and the device has no concept
-  of locking, so if you actually rely on the lock to do something
-  here, that is likely broken
-
-- Using spin_lock_irqsave() implies that this function can be called
-  from both atomic and non-atomic context, but then you have a blocking
-  function right after it, so you could have used the much cheaper
-  spin_lock_irq() here, if the lock is in fact useful
-
-- The function is named ..._start_command(), which to me implies
-  that it just pushes an operation to the device, but does not
-  actually wait for it, so the wait_for_completion() seems
-  misplaced here.
-
-> +		if (xfer_flag == 1) {
-> +			ret = readl_poll_timeout(host->regs + SDMMC_NORMAL_INT_STAT_R, 
-> status,
-> +						 (status & SDMMC_XFER_COMPLETE) ==
-> +						 SDMMC_XFER_COMPLETE, 10, DW_MCI_TIMEOUT);
-> +			if (ret) {
-> +				/*error interrupt detected*/
-> +				if ((mcq_readw(host, NORMAL_INT_STAT_R) & SDMMC_ERR_INTERRUPT) &&
-> +				    host->tuning)
-> +					dev_info(host->dev, "Tuning error ... keep tuning\n");
-> +				else
-> +					dev_err(host->dev, "Timeout waiting xfer complete, status = 
-> 0x%x\n",
-> +						(status & 0xffff));
-> +			}
-> +		} else {
-> +			ret = readl_poll_timeout(host->regs + SDMMC_NORMAL_INT_STAT_R, 
-> status,
-> +						 (status & SDMMC_CMD_COMPLETE) ==
-> +						SDMMC_CMD_COMPLETE, 10, DW_MCI_TIMEOUT);
-> +			if (ret)
-> +				dev_err(host->dev, "Timeout waiting cmd request complete\n");
-> +		}
-
-And these appear to defer the operation even more: regardless of
-the xfer_flag, you always end up in an expensive poll loop
-that starts a timer. If these are expected to not need the timer
-in normal operation, please add some comments to explain the logic,
-otherwise this may need to be restructured in a way that waits for
-an interrupt instead of a slow timer.
-
-> +
-> +static int dw_mci_cqe_wait_status(struct dw_mci *host, struct 
-> mmc_command *cmd, u32 *status)
-> +{
-> +	struct mmc_command wait;
-> +	u32 cmdr;
-> +	u32 cur_state;
-> +	unsigned long timeend;
-> +	int err = 0;
-> +
-> +	/* According to Synopsys userguide, we need to send wait command after
-> +	 * stop cmd to check current status
-> +	 */
-> +
-> +	wait = host->stat_ready;
-> +	memset(&wait, 0, sizeof(struct mmc_command));
-> +
-> +	timeend = jiffies + msecs_to_jiffies(500);
-> +	do {
-> +		wait.opcode = MMC_SEND_STATUS;
-> +		wait.arg = 1 << 16;
-> +		wait.flags = MMC_RSP_SPI_R2 | MMC_RSP_R1 | MMC_CMD_AC;
-> +		wait.data = NULL;
-> +		cmdr = (wait.opcode << 8) | SDMMC_RESP_LEN_48 |
-> +			SDMMC_CMD_CHK_RESP_CRC | SDMMC_CMD_IDX_CHK_ENABLE;
-> +
-> +		mcq_writew(host, XFER_MODE_R, 0);
-> +		mcq_writel(host, ARGUMENT_R, wait.arg);
-> +		err = dw_mci_cqe_start_command(host, &wait, cmdr);
-> +		if (err) {
-> +			dw_mci_cqe_reset(host);
-> +			break;
-> +		}
-> +
-> +		dw_mci_cqe_read_rsp(host, &wait, wait.resp);
-> +		*status = wait.resp[0];
-> +		cur_state = R1_CURRENT_STATE(wait.resp[0]);
-> +		err = -DW_MCI_NOT_READY;
-> +		if (cur_state == R1_STATE_TRAN) {
-> +			if (wait.resp[0] & R1_READY_FOR_DATA) {
-> +				err = 0;
-> +				break;
-> +			}
-> +		}
-> +	} while (time_before(jiffies, timeend));
-> +
-> +	return err;
-> +}
-
-My first impression here was that this is a 500ms busy loop,
-which would have been crazy, but I now see that it actually
-blocks in the dw_mci_cqe_start_command() function I commented
-on above, so it probably does the right thing here.
-
-This would still be clearer if you changed the ..._start_command()
-function to just start the command without blocking and then had
-the waiting bit in the function called ...wait_status().
-
-> +static void dw_mci_cqe_submit_data(struct dw_mci *host, struct 
-> mmc_data *data)
-> +{
-> +	u32 dir = 0;
-> +
-> +	host->sg = NULL;
-> +	host->data = data;
-> +
-> +	if (data->flags & MMC_DATA_READ)
-> +		dir = DMA_FROM_DEVICE;
-> +	else
-> +		dir = DMA_TO_DEVICE;
-> +
-> +	host->dma_nents = dma_map_sg(mmc_dev(host->slot->mmc),
-> +				     data->sg, data->sg_len, dir);
-> +	host->sg = data->sg;
-> +
-> +	host->using_dma = 1;
-> +
-> +	dw_mci_cqe_submit_data_dma(host);
-> +}
-
-I think this is based on what the mmc layer expects
-you to do, but I would point out that dma_map_sg() is
-a fairly expensive operation on some chips, so it would
-be nice to be able to map the buffers in advance and
-not at the time when they are about to be submitted.
-
-> +static void dw_mci_cqe_request(struct mmc_host *mmc, struct 
-> mmc_request *mrq)
-> +{
-> +	struct dw_mci_slot *slot = mmc_priv(mmc);
-> +	struct dw_mci *host = slot->host;
-> +
-> +	WARN_ON(slot->mrq);
-> +
-> +	/*
-> +	 * The check for card presence and queueing of the request must be
-> +	 * atomic, otherwise the card could be removed in between and the
-> +	 * request wouldn't fail until another card was inserted.
-> +	 */
-> +
-> +	if (!dw_mci_cqe_get_cd(mmc)) {
-> +		mrq->cmd->error = -ENOMEDIUM;
-> +		mmc_request_done(mmc, mrq);
-> +		return;
-> +	}
-> +
-> +	down_write(&host->cr_rw_sem);
-> +
-> +	slot->mrq = mrq;
-> +	host->mrq = mrq;
-> +
-> +	dw_mci_cqe_start_request(host, slot);
-> +
-> +	tasklet_schedule(&host->tasklet);
-> +
-> +	up_write(&host->cr_rw_sem);
-> +}
-
-The tasklet function pretty much only calls mmc_request_done(),
-which I think can be called from any context, so why do you
-need to defer to a tasklet here?
-
-> +
-> +/* Register access macros */
-> +#define mcq_readl(dev, reg)                     \
-> +	readl_relaxed((dev)->regs + SDMMC_##reg)
-> +#define mcq_writel(dev, reg, value)                     \
-> +	writel_relaxed((value), (dev)->regs + SDMMC_##reg)
-> +
-> +#define mcq_readw(dev, reg)                     \
-> +	readw_relaxed((dev)->regs + SDMMC_##reg)
-> +#define mcq_writew(dev, reg, value)                     \
-> +	writew_relaxed((value), (dev)->regs + SDMMC_##reg)
-> +
-> +#define mcq_readb(dev, reg)                     \
-> +	readb_relaxed((dev)->regs + SDMMC_##reg)
-> +#define mcq_writeb(dev, reg, value)                     \
-> +	writeb_relaxed((value), (dev)->regs + SDMMC_##reg)
-
-The use of _relaxed MMIO helpers is probably a bug here, as this
-skips the serialization against DMA and leads to incorrect data.
-
-Anything that is not performance critical or that interacts
-with DMA should use the normal readl/writel functions instead
-of the relaxed ones.
-
-> +#define dw_mci_get_int(dev)    \
-> +	do {    \
-> +		dev->normal_interrupt = mcq_readw(dev, NORMAL_INT_STAT_R);   \
-> +		dev->error_interrupt = mcq_readw(dev, ERROR_INT_STAT_R);   \
-> +		dev->auto_error_interrupt = mcq_readw(dev, AUTO_CMD_STAT_R);     \
-> +	} while (0)
-
-You only have two callers of this, so I think this would
-be clearer when you open-code it.
-
-> +/*clear status register, we always keep the card interrupt*/
-> +#define dw_mci_clr_int(dev)                                            
->  \
-> +	do {                                                            \
-> +		mcq_writew(dev, ERROR_INT_STAT_R, mcq_readw(dev, ERROR_INT_STAT_R) & 
-> 0xffff); \
-> +		mcq_writew(dev, NORMAL_INT_STAT_R, mcq_readw(dev, NORMAL_INT_STAT_R) 
-> & 0xffff); \
-> +	} while (0)
-
-Same here.
-
-> +/* Board platform data */
-> +struct dw_mci_board {
-> +	unsigned int bus_hz; /* Clock speed at the cclk_in pad */
-> +	u32 caps;       /* Capabilities */
-> +	u32 caps2;      /* More capabilities */
-> +	u32 pm_caps;    /* PM capabilities */
-> +
-> +	/* delay in mS before detecting cards after interrupt */
-> +	u32 detect_delay_ms;
-> +
-> +	struct reset_control *rstc;
-> +};
-
-This looks like an artifact from pre-DT days, just fold this into the
-dw_mci structure directly.
-
-     Arnd
