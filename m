@@ -2,183 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 673277D1803
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95887D1809
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbjJTVZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        id S232068AbjJTV0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjJTVZV (ORCPT
+        with ESMTP id S231792AbjJTV0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:25:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0952A3;
-        Fri, 20 Oct 2023 14:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697837115; x=1729373115;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Lt4EEq3dCngt4VjJ2Rev5llYwlGDc1dn4gqvqp+j+aw=;
-  b=HGKBTxAI8lIHrGrmIvLgqnTztQY/QlgeR1OE92dv9kYa/d2WS4gcje2h
-   6ojx1FAHuvNqPEoK8coL0jrqO+xq4sb/VLR7/3uK41FZZ9K5SdqQvXHHd
-   uuYNUz04hzJC8MvLKr/fMyALHju6Z5i80RfPHRXLthL9QbRvNPPbvieOI
-   ST4tDGHz8mv7V7es4gtkoKr3g6FMRUoRUfgMyLMaMhOgc7xDbJi3lUZh4
-   DI8gELs/Z/Wz/zhYjoGCc87NwbtRU0hVibapdc3fKQnP0HYp6etemVeoB
-   TYyHarRbYlFIo2KMhEaGQ54AwVPChQAyLHqbuVY641ohnKKi/pDOnorXp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="366805919"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="366805919"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 14:25:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="1088858176"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="1088858176"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Oct 2023 14:25:03 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:25:03 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:25:02 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 20 Oct 2023 14:25:02 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 20 Oct 2023 14:25:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VMSTPfnDd9mOP6oAQh5cR7+HryKQZ27aZO+hQDgpmrAmppVgrHl6Y6zXqoVHVOPKUR/4fDJ4eoRg35SsrzYRqrhgBMx/Vmu6m1SbGn8BMlUX1H5yfSsw7qA7eLJXM7DsJay3ZCZ6P2DsnJSRf8sSyBVoeJZJGskbkWNMEZDOTmvLvXh8nCGz/TyHko2Wigtk0BOu4+U78JukFzGjHlkVVoOJlVG0kiXI6UmkAbn4i6FXKP8ytBDEk2BIARnghMEVK5f31Fnp6TJoZ7upBDh/iUBYwXRP2nY38WHNoLtCG2aPxbAgYl5lK6Fsl7T6+/BZEIpRP8VcSmSJAQ3lwr+DNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tVkM8ZPfa4UK+w/sp5gkYYF6lNw9QLreHxwMdsONKWA=;
- b=kxehvMFJLEaNQHcx7NX2rjz/4RjBfIYWRYMgTLzNQO1EBSHWmHdMDqvzlMqYitghfnaNLgZAXV/JBYUnQEXD/ckFphbN1ssglRA+8t5ni4rBEVPE79wPgbF3gBjdY7bQ+OtDzK9vUsNPHT1O0Rw9lXb2CWN9WcI1idKGpGuO0ifjdM7S0OwzEQu4QIL5qpqdJ56p7lYOt/UAP42v/MrJ58EivC5gPacVCp6rMCM4PN5/o5lUNL8jzwpoxq96OUHltQdJ2wFVCqdhtrJOat4mvTRvCa/ijMTKCc/pMRzcjfJJeoj+C9gq6TwJt2njmZ/dYjw4OsDD7sL5GtnJXv1vtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by MW3PR11MB4539.namprd11.prod.outlook.com (2603:10b6:303:2f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
- 2023 21:25:00 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::34a7:52c3:3b8b:75f4]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::34a7:52c3:3b8b:75f4%4]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
- 21:25:00 +0000
-Message-ID: <2eadecc9-80d3-4a26-857c-e8c4a455a5ea@intel.com>
-Date:   Fri, 20 Oct 2023 14:24:59 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 2/6] i40e: Remove _t suffix from enum type names
-Content-Language: en-US
-To:     Ivan Vecera <ivecera@redhat.com>, <netdev@vger.kernel.org>
-CC:     <mschmidt@redhat.com>, <dacampbe@redhat.com>, <poros@redhat.com>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231020193746.2274379-1-ivecera@redhat.com>
- <20231020193746.2274379-2-ivecera@redhat.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20231020193746.2274379-2-ivecera@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0165.namprd04.prod.outlook.com
- (2603:10b6:303:85::20) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+        Fri, 20 Oct 2023 17:26:52 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200E3D70
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:26:45 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40853c639abso6825915e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697837203; x=1698442003; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHYjWkNPmtF9r9aeFX/xUIwcyd64NppqN/TdcvoeUSc=;
+        b=lZSZZanfUiuzoFaNbT9QRH4c0QXtvkssfI2W2pc0NAxyr4Pl8MekskrRy31z7TqcbO
+         UmpKvH1NW5ws+CpXE5e1aOeKWF9h+XQDkr8CRe/n8mAUcPRKhnSB3Ge80pavcLsu6ebc
+         wu4X3GU4waTxaEN4XHgfo2jYh3wE629JGh8bFMbxc0u6b6D+C3iMXWD7i7Spf402+Oly
+         hyFc0QnGASu530wqP6ys8ftnwlrArQQ48H6q7FiovJ1eBwElDrl+1YO9ocTjssGGhQM4
+         Msg6Xc2sd3j1OD3DSXC0TPOcp2lrA2yYyQqxAzREZv1tt44hDGpFt7GGw7t0wnbXTlLM
+         lCxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697837203; x=1698442003;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZHYjWkNPmtF9r9aeFX/xUIwcyd64NppqN/TdcvoeUSc=;
+        b=gr6w3lFQCba20BAJ3HNnDCFzzoWVGr6XhaIiL0Y7G4Y1KJS5S1e409WOJ8egwg7gps
+         S0DZF74rrqEQy5gtEWOlAou6WRYr+DKgVvxj3mAze7R3MzJRQ7ikp2qIzXQWDIyu9CgU
+         hcLa0ILIlfOIgCtzdJQBZtsPnXAiti4uUiLg42L/m6X9/y5bzaCxAVmFIzQEmcFOXllQ
+         YlB8vURgqZSrJ+nXKPfL7I7GQhzI2TL76UvS6jj+qpPc4aXwajJwH2Ih1SuD/ioZYIN1
+         5xfz3p1D0/A72Vn09iJB0g6PkfFvm0DLXZ/x9M8pLthfwSRnUlo7YS7nmAHzFrLQTUpY
+         JwAg==
+X-Gm-Message-State: AOJu0YxYKVO3qumvR/1OT5RFng1W04GFOjOpa9RWNINmIcMAtv7xHUwQ
+        KwcfOjjhmF9uDm1jszIuRzbbkw==
+X-Google-Smtp-Source: AGHT+IFRAhrl3tHBW+U6xon/uJrsLJfYk/6lfOn5/BA1/NFw0IMgu3RVszTl0vcHTum/Uj1NNjmnSQ==
+X-Received: by 2002:a05:6000:1105:b0:32d:939d:c7cf with SMTP id z5-20020a056000110500b0032d939dc7cfmr2438552wrw.52.1697837203522;
+        Fri, 20 Oct 2023 14:26:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id z7-20020a5d4c87000000b0031980294e9fsm2428238wrs.116.2023.10.20.14.26.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 14:26:43 -0700 (PDT)
+Message-ID: <ccb48488-7fa2-4784-8c5c-7d6084d16016@linaro.org>
+Date:   Fri, 20 Oct 2023 23:26:41 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|MW3PR11MB4539:EE_
-X-MS-Office365-Filtering-Correlation-Id: 813cc222-5f60-4c44-9a28-08dbd1b30451
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hZNWJUmCgOAXKCHQ8ExFbpi+nq9HJxPNHL1sAaSLrs/oVExHuLa+ix351SGuBLEVLyj94fZufjpJKSFTzA4Vir3ficA5j1rFO1f5N3ETDHoD5mpfUiJQZnokRHE5ZjXgT2U6yPcmkL+GPCm+ULLSBiTEaF9AQx9js++643OBxDXVIgNXBOiADpUHQ4VMs6c5vwLrOearlW0clhgEByr1xR2oi/OhFRkGL0Tqj0by+fbCYHybZIUkEfbeSsLVSYE/zvpZRr8yMrl3bil/I6SCDfYgORJ0hVohEBlv/NPUGTbhHzE6qgJuKK7pWIncUHI7aUVHtD6WAv5Yee/k1QiQ3Lz1eoSvDcVLvekXI1rP/Q6aLLem3Z+idz8/deHLuu8jvZ3mc/KcmbRpB6zUr0E/PTEnBohbi1lul/nPbyGLeHzalrAUz8/ZdUH0Df5gsZo+bQ12aOKK2WNqT1T2DYB6XDvyFeZiU9E+fRxBajQ1YKhJIs0iwXbtbdWkahbDtTB6SE9mcurFvwMbMXVSi4SouDlVfHEv+cuRwaH/LtDzdhWcDCS+Qpr7Vb29egjqnGHZdEvSzZqnpPJbaIeflHqDm44XAbChZMwj14xCYWEyjV9wqOx9NUn6vvFk4Asy//s40a0uThdRKiuqS3PCzKNzlg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(39860400002)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(66946007)(31696002)(86362001)(41300700001)(66476007)(54906003)(66556008)(316002)(478600001)(5660300002)(82960400001)(6486002)(4326008)(2906002)(36756003)(8676002)(2616005)(38100700002)(53546011)(8936002)(7416002)(6512007)(6506007)(26005)(4744005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXFpck9BV29XU1o1K29reXFGdW1qTkptU0JLWWNmbHZxQlhGeTBUSlNVZFda?=
- =?utf-8?B?ZkpqNXdJaG9GQlN1bEpTazBYek1rbFRRNVpyNGdqS0oxZnR5alBzTEgzZUJP?=
- =?utf-8?B?dlpZN3VIZytydU1jYmxEV0xYS1pEaWY3VEJzaGZsdnlRN05BYk5LdFhaZmtn?=
- =?utf-8?B?d1ptMEp2Kzhza1I2NGRjWDVxTGV1eGN3SVYrK0lhOEJyeVRHeXhkWG5FV0dC?=
- =?utf-8?B?ai96QW9iYWZVVUNJeUxPeWJLdEFtTVVjaW55WjI5RmZkTVBmTUlnSW9NaW5N?=
- =?utf-8?B?WVMvU0lucDdNcjJUR0ZvZStUcTZhbkdFN0xRd2NHb1RDd3MvRXo0VnRvNEYr?=
- =?utf-8?B?VmlwdFZNd0ZYeldjcW04ZHVXdGRhdGo3RGQ5WFhjYXlIN21LVGFYVEU4U1V2?=
- =?utf-8?B?MmljL2FYSmNqRWpBRHByV2I0TkpTRWN4TndGQTVCbE43UVBxaUtLZlRnaVZO?=
- =?utf-8?B?WjZtY2NCUHp1K0hYaXp3QzgwS1V2OFRzSGlRTUNSVi9oMlhXVWtpUGRvUy9G?=
- =?utf-8?B?NnIxMFdqdVRwTkZreXYydkVqbDlpTFEzU1BTLzU5NlJDaHBqajZHS3BiWXdq?=
- =?utf-8?B?WnN3ZEF6bkFZUmoycXZyMXY1Yzk3SG14Skc1YllSL3ptd25WNXJhSVJVeThV?=
- =?utf-8?B?bXJqcW9jYWhOd0ZxTWgzS0lmNkN0R2RGRkVKSjRhaUZLcllmd3MrZ2U2VStR?=
- =?utf-8?B?YTNabVkzaWNaRmd6eUFwYk9wRUhlY29CSDRjK2hlS2tIdmt6SWx3amtScFNN?=
- =?utf-8?B?Z3U3WDMrQllSNmlqS2M4MFZQYTNFaDZ2Zyt3anlrUkFQV0hYOXYzdjJ2eHZE?=
- =?utf-8?B?Q011dXc2UGZDbFBFU3hXNHJpaGlsYU5XOEVBTzR0UXdDN094eW0zb2RJajJs?=
- =?utf-8?B?ckFPb1NoQnp3QlpucE5OUVlkYTBvVldjTXIzeSsvT0RTY3VYSUVJdHBvWnVP?=
- =?utf-8?B?cTlieE5BQ0ZaVHBWOW13Qkh6akNXamJWVlZxdTlPODk1cXlvcmJ1bm43U0w1?=
- =?utf-8?B?K2VGZTdpblhKbjZsVWtnd3pmU0pYSTc2Y2Frd2UyRERMbSswWU5ROTU5aDUy?=
- =?utf-8?B?TUlnandLUUtEc0tQSlg0U2krN1VYNTZSMU40cWZsNU1adzJVdm9FU1djcmpu?=
- =?utf-8?B?azBCRTlwZ3BJY3ZoRkQ0aDJsalozYjQzODY1QVZBcEVzck1GVGw5VmZ3RGZ6?=
- =?utf-8?B?UXlTblFsSkN3SlNkS3RiSENEQnFSU1crS2JvUVk4TDJiekh2UzBNaTk4L3Mv?=
- =?utf-8?B?Z3pVYjZSWHJkUlBmMS8rQnQweEl0dWxpYThwdjNNV0Q1V0ZCSHM4eXJoc01T?=
- =?utf-8?B?aE9qNWh4Znc3T242WTNzRGFaRlJSRzZ1NlQwVnkwZ3lBcXpSd0lJcElZT2Vl?=
- =?utf-8?B?RUFtTW1yQ3kzZlZQdzlCUCtkTU82TktDejc5dE54Vk4rY1VPNld4T1BNUS9C?=
- =?utf-8?B?L2lBQTgyZzFPT3BreWFaOEtqQ2RNQ2hrVW1KTVh5ZTg3bmg5N0VRL01ISC93?=
- =?utf-8?B?ZzIzQWdCWUVaemxONFd6azVIQTBHM1piMFkzOVhsb3B0dkpISEY2a2U3bnU0?=
- =?utf-8?B?R1U5dWlpZUFiVFl1VDkvN2RFNVhqdGhhbldueXVSVlhRMnAzN0xQL251Z3B1?=
- =?utf-8?B?aGkxS0o3ZlNucXF6dnQrRzVIM08xNDZkdUNvYjAxc2t1UEtZYnd3bUpHVmda?=
- =?utf-8?B?L040alZaL3p4ZkJpLzhpaDlVaTF2THI1NEhqdTRXUDlXYWhCTlJQVmRKVDNI?=
- =?utf-8?B?MnppbnBrSVRSOXNEQUh0TWxCYldiOWN3YitobjhuZUY2aTdOdFUvWGozMlZS?=
- =?utf-8?B?WTJLcDRjRzRBa01IRmRTWWkwUkdjdXdwbXNmQ2U0b0x6OXAvaXlIQ0dFdDR1?=
- =?utf-8?B?RkNKUFBXVE12OXdFVkdqNUVaempPb1FQS3lKTk55RlY1N1RMOTlIdjljc0Ev?=
- =?utf-8?B?TSsxb2VWcTZ2aFZnaE9MMUcrU0NXWWM2ZnYwQmYrVFcxcWxJSHYyZ05IUUs3?=
- =?utf-8?B?ZnVDakU1ckpCSjc3QmsxYU9TNThNSVZhVEh2T2hOd3lLbngxbXZ2T2YvNk1w?=
- =?utf-8?B?L3RZOGt4OVdDOTBVdXJhMXNKT1ZiYlhVZnJzeTMxOHBNaEdZR21XOFNhSHRw?=
- =?utf-8?B?Y2llaktNcGJmY1ZsNWlrMytmamxYWVpKazJqRWJuZUhlcGZJdkRRWTRoOWdw?=
- =?utf-8?B?ZWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 813cc222-5f60-4c44-9a28-08dbd1b30451
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 21:25:00.5947
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SDPDLwZ8s72XVGXFo4gES23GfwDpweA7hK/v/niA6oaBfrp0cnvNvEbXPAz5fLXBJgB6mE79+ohbHel9x83TqKMS+zvVGOzRMAgjUvyreV8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4539
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v2] arm64: dts: Update cache properties for
+ socionext
+To:     Rob Herring <robh@kernel.org>, soc@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Pierre Gondois <pierre.gondois@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231020195022.4183862-2-robh@kernel.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231020195022.4183862-2-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/20/2023 12:37 PM, Ivan Vecera wrote:
-> Enum type names should not be suffixed by '_t'. Either to use
-> 'typedef enum name name_t' to so plain 'name_t var' instead of
-> 'enum name_t var'.
+On 20/10/2023 21:50, Rob Herring wrote:
+> From: Pierre Gondois <pierre.gondois@arm.com>
 > 
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> The DeviceTree Specification v0.3 specifies that the cache node
+> 'compatible' and 'cache-level' properties are 'required'. Cf.
+> s3.8 Multi-level and Shared Cache Nodes
+> The 'cache-unified' property should be present if one of the
+> properties for unified cache is present ('cache-size', ...).
+> 
+> Update the Device Trees accordingly.
+> 
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Link: https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> I noticed this one fell thru the cracks from the rest of the series.
+> 
+> Arnd, Can you take this directly.
 
-Thanks for fixing this style violation.
+A bit after Pierre - in April 2023 - I sent similar which was said to be
+"applied":
+https://lore.kernel.org/all/f9a2c0d7-a78d-9368-f9bb-e8aba11e7d81@socionext.com/
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Maybe the Socionext status in MAINTAINERS should be odd fixes?
+
+Best regards,
+Krzysztof
+
