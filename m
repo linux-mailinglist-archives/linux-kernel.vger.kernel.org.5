@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BA37D196C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933907D196E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbjJTW6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 18:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
+        id S231354AbjJTW6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 18:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjJTW6O (ORCPT
+        with ESMTP id S230204AbjJTW6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 18:58:14 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279D6D7F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:12 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6bd5730bef9so1204676b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:12 -0700 (PDT)
+        Fri, 20 Oct 2023 18:58:43 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8017A10C6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:32 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5836ab12so1619128276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697842691; x=1698447491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SrppkFveU0fvDNdY36XrefeVlH08k8+eMXH9fdF2ahI=;
-        b=o1rpwW6U5Omzs2U1BUOTjUuRO27P6kGowYTlDYhpw/00BKK2Ep/COfFhbcf5XKaPTQ
-         toWq5v12clc8UeA/w/MKYUXaNFYxWfcWzoF+SZd75cI/gX2kVRD/tSYmAb9CH4IJ8Wvp
-         N8tXXjKG0j5Ph9Z9EDs2abM8pEBNOR+ammehGDJjoyyZ3UIc6LzhLVGfVAGcAF526hs8
-         snHhlHYO2FvjefgUoJrq43cD96psDS7mOWFiOqPxC8nOOt/9R/t+OhcmQxgiUH8057Mm
-         q5gI9cUHodOX1UYir/6nJe6QRwTvst/CXIFBX5M3zPNU8tvSE5Elrx+86Fbgkf2Awm0g
-         dmDg==
+        d=google.com; s=20230601; t=1697842711; x=1698447511; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nV7hUiXwTHfWM008m9tGJ1YLn/BzCMBzf+rjk0AGTB0=;
+        b=qR9abIwpBYqeCJa+5pUkw3oT4J+WVdXGTIhNJLjANGmOSEvuNKiTXeDEIGEeEQw9u+
+         BkAkETn5320gYhgmgXmse6GwZbQz5kidYKUB6iG5kHinHtYt+Biq09qRbd2BndnrHVcU
+         lvXc9B3eL0rmfVlFwYVLe8eI+WtbozDtV/kBt9iqZ6ixErvPysc0+2n3FTCvrbTpVuTm
+         PMcmhVuf8Nm2CZ+kz1Uk7ewYSJYgdYjojzkFzlEI3TMMwfc/V5+Jmv0APWmuC/M9jZ5q
+         s0P14fBL5U0p4fWnvE71WtC+Q0QrIlRUV6Pvtb/hrpP5FDUwgdXXNTEuMT99WGRfz748
+         /MEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697842691; x=1698447491;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SrppkFveU0fvDNdY36XrefeVlH08k8+eMXH9fdF2ahI=;
-        b=RL1KYLj3woJmpFl+ZnFYFCcIGwZC46uYli46kF588darrPlWdDSdVPTwJnjnfK/OMR
-         M5oolu3x3JZSC5rvTldW89IbAmalGONzpc8bqiqK8Zgkz2v1EgDbFA4yds7errjMlWhb
-         UGROX6Kwz7WCFY1GFAeCduPpO6klozSYWrqR6AAPMM25vRRdzTVYnHJDRHu5hYGL29Pi
-         zgnAC6Noh5BvK1SZwKLvimkwqGi/TgdGfEEik1FxKFweqwuy/nQag59fRP9oriw8zIlQ
-         QALTZdnHWOMoERQyagaPuiiRUkfVnIYldeVPhTv3xXp2n5tWXCLVgTEotoTeGwfcsF3R
-         p3uA==
-X-Gm-Message-State: AOJu0Yxj/JI1EFiOKs+yOT5RYZkVNzQQhV44uAKDmHxT2QZHq/TuPcsh
-        ma4fJ0uQiYx9JgTo6H62msQfU2iC4/U=
-X-Google-Smtp-Source: AGHT+IHSVZv9jju1/ELecw1EVpvoQU379lbFaP9R/rbK4eU/20BIUMhAW8Vy3g3gpGIqO/cRuobIeZbk1C8=
+        d=1e100.net; s=20230601; t=1697842711; x=1698447511;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nV7hUiXwTHfWM008m9tGJ1YLn/BzCMBzf+rjk0AGTB0=;
+        b=JaLlLMN9nQ5YwtWBKbO35Nv9GhEsPig+IRQ04Dc2cU+357c7NdKTzRLRJdbrtmRb6Q
+         sx4MZqRYuYmSvqvBmu+xRjAqtyAYaemr+sdaQTC9Qj55lSdOUJOPI33n64qwkM54hu+L
+         Avc5NPiZkg1Gaip2z0AQmS1C7RYiHSMVU8fY+QTPpS4dq7tcLU3Y4pDsa7iJPL3WbcP+
+         DV1gavsvt0ltzmwlXtsMmar3YS7t4jaVDr8K9xTvvo8B3X9duTKv2V5OZBxNf2454NaY
+         VcVA1SooPmB1fsMuI17X2p1084574PVv3dniGotf0yx6saSgz4kFBTT+84pKv+gUrKRv
+         XfPA==
+X-Gm-Message-State: AOJu0YxPCrxgRAZoXE4TsFe7VdMQ2cqWaChN/YmUOgnhnlnsoNNlh+GA
+        30yZUhi2ukbMnz0rRBQUPjx55Bs9wX8=
+X-Google-Smtp-Source: AGHT+IEAaQ9vGQXrDQ7YTSPaOgbWm4DgSvaj703/FKyK96m8YdUpJyMR/+YqbEiDiU0UsL/ZLPV3DFG2q3E=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:be1:b0:690:bc3f:4fe2 with SMTP id
- x33-20020a056a000be100b00690bc3f4fe2mr103940pfu.1.1697842691387; Fri, 20 Oct
- 2023 15:58:11 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 15:56:27 -0700
-In-Reply-To: <20230905182006.2964-1-zeming@nfschina.com>
+ (user=seanjc job=sendgmr) by 2002:a25:938c:0:b0:d9a:37cf:c22b with SMTP id
+ a12-20020a25938c000000b00d9a37cfc22bmr69932ybm.1.1697842711533; Fri, 20 Oct
+ 2023 15:58:31 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 15:56:29 -0700
+In-Reply-To: <20231002040839.2630027-1-mizhang@google.com>
 Mime-Version: 1.0
-References: <20230905182006.2964-1-zeming@nfschina.com>
+References: <20231002040839.2630027-1-mizhang@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <169766488985.1913247.10258683336910491113.b4-ty@google.com>
-Subject: =?UTF-8?Q?Re=3A_=5Bv2_PATCH=5D_x86=2Fkvm=2Fmmu=3A_Remove_unnecessary_=E2=80=98NU?=
-        =?UTF-8?Q?LL=E2=80=99_values_from_sptep?=
+Message-ID: <169766419668.1911126.2774635531681023250.b4-ty@google.com>
+Subject: Re: [PATCH v2] KVM: x86: Service NMI requests after PMI requests in
+ VM-Enter path
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, pbonzini@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, Li zeming <zeming@nfschina.com>
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mingwei Zhang <mizhang@google.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Like Xu <likexu@tencent.com>, Kan Liang <kan.liang@intel.com>,
+        Dapeng1 Mi <dapeng1.mi@intel.com>, Xin Li <xin@zytor.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Sep 2023 02:20:06 +0800, Li zeming wrote:
-> Remove spte and sptep initialization assignments, add sptep assignment
-> check and processing.
+On Mon, 02 Oct 2023 04:08:39 +0000, Mingwei Zhang wrote:
+> Service NMI requests after PMI requests in vcpu_enter_guest() so that KVM
+> does not need to cancel and redo the VM-Enter. Because APIC emulation
+> "injects" NMIs via KVM_REQ_NMI, handling PMI requests after NMI requests
+> means KVM won't detect the pending NMI request until the final check for
+> outstanding requests. Detecting requests at the final stage is costly as
+> KVM has already loaded guest state, potentially queued events for
+> injection, disabled IRQs, dropped SRCU, etc., most of which needs to be
+> unwound.
+> 
+> [...]
 
-Applied to kvm-x86 mmu, with a beefed up changelog.  Thanks!
+Applied to kvm-x86 pmu, thanks!
 
-[1/1] x86/kvm/mmu: Remove unnecessary =E2=80=98NULL=E2=80=99 values from sp=
-tep
-      https://github.com/kvm-x86/linux/commit/1de9992f9de0
+I made a tweak to the code and massaged one part of the changelog.  For the
+code, I hoisted PMU/PMI above SMI too, mainly to keep SMI+NMI together, but
+also because *technically* the guest could configure LVTPC to send an SMI (LOL).
+
+Regarding the changelog, I replaced the justification about correctness with
+this:
+
+    Note that changing the order of request processing doesn't change the end
+    result, as KVM's final check for outstanding requests prevents entering
+    the guest until all requests are serviced.  I.e. KVM will ultimately
+    coalesce events (or not) regardless of the ordering.
+    
+The architectural behavior of NMIs and KVM's unintuitive simultaneous NMI
+handling simply doesn't matter as far as this patch is concerned, especially
+when considering the SMI technicality.  E.g. the net effect would be the same
+even if KVM allowed only a single NMIs.
+
+Please holler if you disagree with either/both of the above changes.
+
+[1/1] KVM: x86: Service NMI requests after PMI requests in VM-Enter path
+      https://github.com/kvm-x86/linux/commit/4b09cc132a59
 
 --
 https://github.com/kvm-x86/linux/tree/next
