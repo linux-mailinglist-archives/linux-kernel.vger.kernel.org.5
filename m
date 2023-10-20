@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F307D0737
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18097D073A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376311AbjJTDvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 23:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S1376321AbjJTDww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 23:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbjJTDvb (ORCPT
+        with ESMTP id S235612AbjJTDwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 23:51:31 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A165181;
-        Thu, 19 Oct 2023 20:51:28 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39K3nXGi93723204, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39K3nXGi93723204
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 11:49:33 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 20 Oct 2023 11:49:33 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 20 Oct 2023 11:49:33 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Fri, 20 Oct 2023 11:49:33 +0800
-From:   Jyan Chou <jyanchou@realtek.com>
-To:     <adrian.hunter@intel.com>, <jh80.chung@samsung.com>,
-        <ulf.hansson@linaro.org>
-CC:     <riteshh@codeaurora.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <asutoshd@codeaurora.org>, <p.zabel@pengutronix.de>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <arnd@arndb.de>,
-        <briannorris@chromium.org>, <doug@schmorgal.com>,
-        <tonyhuang.sunplus@gmail.com>, <abel.vesa@linaro.org>,
-        <william.qiu@starfivetech.com>, <jyanchou@realtek.com>
-Subject: [PATCH V3][4/4] dt-bindings: mmc: Add dt-bindings for realtek mmc driver
-Date:   Fri, 20 Oct 2023 11:49:21 +0800
-Message-ID: <20231020034921.1179-5-jyanchou@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231020034921.1179-1-jyanchou@realtek.com>
-References: <20231020034921.1179-1-jyanchou@realtek.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 19 Oct 2023 23:52:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04F8E8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697773967; x=1729309967;
+  h=date:from:to:cc:subject:message-id;
+  bh=UlEJDhHazDDe+VMgQ9iipcWdmkC8BDCVW5/uMuqscPw=;
+  b=I4RmydEDuhb+d9TivYL1/ZNZH+7FxgFfymbum5holT6urz9r3PkMbP9j
+   sjF3xSPYpPw2uIUkKTegEjYoS9W3hXWkqXB5QZl2RRGZrCiGBRaKKK22z
+   7VQwU8EZUqG2QUV/Aqn+1jRsVFm0qjshwKylW70+g4S+N9lNv1y8Sb4v2
+   gnmAw+sATBSpQ49sH3oHPmYtsEe59eYJQISMGDa3SzcR4yCD97N6vi93/
+   9ll8jyjwUJbgi7DGQoqqxmY8bzpOAMcuJdCBUzf/sE/fR+rWbB+gGhu97
+   686oztzPJN3kmqVljhM2ix8bkKjFltfhKiXePmrTuCMACqpGYvd0aNnvF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383636797"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="383636797"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 20:52:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="750776708"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="750776708"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 19 Oct 2023 20:52:46 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtgZ1-0002xe-2T;
+        Fri, 20 Oct 2023 03:52:43 +0000
+Date:   Fri, 20 Oct 2023 11:51:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ 50dcc2e0d62e3c4a54f39673c4dc3dcde7c74d52
+Message-ID: <202310201145.mpkLAJwd-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,180 +60,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the device-tree bindings for Realtek SoCs mmc driver.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: 50dcc2e0d62e3c4a54f39673c4dc3dcde7c74d52  x86/boot: efistub: Assign global boot_params variable
 
-Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+elapsed time: 2473m
 
----
-v2 -> v3:
-- Modify dt-bindings' content and description.
-- Fix coding style.
-- Update the list of maintainers.
+configs tested: 132
+configs skipped: 2
 
-v0 -> v2:
-- Add dt-bindings.
----
----
- .../bindings/mmc/realtek-dw-mshc.yaml         | 150 ++++++++++++++++++
- 1 file changed, 150 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
-new file mode 100644
-index 000000000000..b1e37fb37be9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
-@@ -0,0 +1,150 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/realtek-dw-mshc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek designware mobile storage host controller
-+
-+description:
-+  Realtek uses the Synopsys designware mobile storage host controller
-+  to interface a SoC with storage medium. This file documents the Realtek
-+  specific extensions.
-+
-+allOf:
-+  - $ref: synopsys-dw-mshc-common.yaml#
-+
-+maintainers:
-+  - Jyan Chou <jyanchou@realtek.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - realtek,rtd-dw-cqe-emmc
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    maxItems: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  cqe:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 4
-+
-+  clock-names:
-+    minItems: 2
-+    maxItems: 4
-+
-+  clock-freq-min-max:
-+    description:
-+      Clk frequency should be in the interval.
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: reset
-+
-+  speed-step:
-+    maxItems: 1
-+
-+  pinctrl-0:
-+    description:
-+      should contain default/high speed pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-1:
-+    description:
-+      should contain sdr50 mode pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-2:
-+    description:
-+      should contain ddr50 mode pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-3:
-+    description:
-+      should contain hs200 speed pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-4:
-+    description:
-+      should contain hs400 speed pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-5:
-+    description:
-+      should contain tune0 pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-6:
-+    description:
-+      should contain tune1 pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-7:
-+    description:
-+      should contain tune2 pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-8:
-+    description:
-+      should contain tune3 pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-9:
-+    description:
-+      should contain tune4 pin ctrl.
-+    maxItems: 1
-+
-+  pinctrl-names:
-+    maxItems: 10
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - pinctrl-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    emmc: mmc@12000 {
-+        compatible = "realtek,rtd-dw-cqe-emmc";
-+        reg = <0x00012000 0x00600>,
-+              <0x00012180 0x00060>;
-+        reg-names = "emmc", "cqhci";
-+        interrupts = <0 42 4>;
-+        clocks = <&cc 22>, <&cc 26>, <&cc 121>, <&cc 122>;
-+        clock-names = "biu", "ciu", "vp0", "vp1";
-+        clock-freq-min-max = <300000 400000000>;
-+        clock-frequency = <400000>;
-+        vmmc-supply = <&reg_vcc1v8>;
-+        resets = <&rst 20>;
-+        reset-names = "reset";
-+        speed-step = <3>;
-+        cqe = <1>;
-+        pinctrl-names = "default", "sdr50", "ddr50", "hs200", "hs400",
-+                        "tune0", "tune1", "tune2", "tune3", "tune4";
-+        pinctrl-0 = <&emmc_pins_sdr50>;
-+        pinctrl-1 = <&emmc_pins_sdr50>;
-+        pinctrl-2 = <&emmc_pins_ddr50>;
-+        pinctrl-3 = <&emmc_pins_hs200>;
-+        pinctrl-4 = <&emmc_pins_hs400>;
-+        pinctrl-5 = <&emmc_pins_tune0>;
-+        pinctrl-6 = <&emmc_pins_tune1>;
-+        pinctrl-7 = <&emmc_pins_tune2>;
-+        pinctrl-8 = <&emmc_pins_tune3>;
-+        pinctrl-9 = <&emmc_pins_tune4>;
-+        };
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231018   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231019   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231019   gcc  
+i386         buildonly-randconfig-002-20231019   gcc  
+i386         buildonly-randconfig-003-20231019   gcc  
+i386         buildonly-randconfig-004-20231019   gcc  
+i386         buildonly-randconfig-005-20231019   gcc  
+i386         buildonly-randconfig-006-20231019   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231019   gcc  
+i386                  randconfig-002-20231019   gcc  
+i386                  randconfig-003-20231019   gcc  
+i386                  randconfig-004-20231019   gcc  
+i386                  randconfig-005-20231019   gcc  
+i386                  randconfig-006-20231019   gcc  
+i386                  randconfig-011-20231019   gcc  
+i386                  randconfig-012-20231019   gcc  
+i386                  randconfig-013-20231019   gcc  
+i386                  randconfig-014-20231019   gcc  
+i386                  randconfig-015-20231019   gcc  
+i386                  randconfig-016-20231019   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231018   gcc  
+loongarch             randconfig-001-20231019   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231018   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231018   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231018   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231019   gcc  
+x86_64       buildonly-randconfig-002-20231019   gcc  
+x86_64       buildonly-randconfig-003-20231019   gcc  
+x86_64       buildonly-randconfig-004-20231019   gcc  
+x86_64       buildonly-randconfig-005-20231019   gcc  
+x86_64       buildonly-randconfig-006-20231019   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231018   gcc  
+x86_64                randconfig-002-20231018   gcc  
+x86_64                randconfig-003-20231018   gcc  
+x86_64                randconfig-004-20231018   gcc  
+x86_64                randconfig-005-20231018   gcc  
+x86_64                randconfig-006-20231018   gcc  
+x86_64                randconfig-011-20231020   gcc  
+x86_64                randconfig-012-20231020   gcc  
+x86_64                randconfig-013-20231020   gcc  
+x86_64                randconfig-014-20231020   gcc  
+x86_64                randconfig-015-20231020   gcc  
+x86_64                randconfig-016-20231020   gcc  
+x86_64                randconfig-071-20231020   gcc  
+x86_64                randconfig-072-20231020   gcc  
+x86_64                randconfig-073-20231020   gcc  
+x86_64                randconfig-074-20231020   gcc  
+x86_64                randconfig-075-20231020   gcc  
+x86_64                randconfig-076-20231020   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
