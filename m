@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423317D0FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1787D0FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377372AbjJTMqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S1377274AbjJTMrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377437AbjJTMqL (ORCPT
+        with ESMTP id S1376956AbjJTMrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:46:11 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21A610F0;
-        Fri, 20 Oct 2023 05:46:03 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a81ab75f21so8124947b3.2;
-        Fri, 20 Oct 2023 05:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697805963; x=1698410763; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jps82JBDACzoR3tUfyIbEtBbVZCxrcf9ApmwOX34umg=;
-        b=laXN9bG1zVF8AtIP8UkdsW4iRjoCMsoW78sUky8pqGfIcUCKqVF3FjUMaqPVB0aEIL
-         ku62I1LU5ZzawW4qAepATyBTtIpAj047WXFJ2Rk67D3TnSRHuGhKP+1IF9HsScbgq3ZF
-         LlLL6M/td5VDMMdOm5eWny9ezycVrh/AYKwnN6g8uBfkldhZAwetXX6HmhKkyZ56LwFb
-         4zFtVi5Nk8hiKI+xlolDk5yPwcLx783Gk25bf55nY4VoGR+EDnSNWpAPClKNMJ1VpxiU
-         z0G5SdkX3fdaVud8BbJGZbXNGgrLeQf1OXj9iAu1BxZpsQ+g9Mt4x3nQ8yGfOn0pqNsx
-         kDBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697805963; x=1698410763;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jps82JBDACzoR3tUfyIbEtBbVZCxrcf9ApmwOX34umg=;
-        b=qhuh/oRxJJJgUOCEPj+/kKXMzOgkjr7fL9gBRn6SAElBVOWH858SZblwIGsgmkiaxA
-         +Xszia2hqTZ6i6y81L2LLECOnYmDvJzB1Pm5ctrvy71+ZcmlhpzqfQAsdrljlNcD8rjK
-         T0aGk0GpJQUVcTll1KvBXUYn24HHtLmgSBBiU3nymeAx736cTTBSXz/FEuAn+Cv2aOQu
-         j2H/jvtSaslQHVqwm4Yk3kxFSEied0IXl8tIFccV9NQyHPSbzgVXRZCrtF3zJXPIq5TU
-         ln2ITDKAZJU3VrTCmkwxvNVzlB6qD6HOA7DQRPBVQMP+Q+o6Iyk2nq4yjj9tkohWa1qJ
-         idXw==
-X-Gm-Message-State: AOJu0YyU70G84/rrY/EOfaMmxuxuAOeVssndcSr1hKLOcMFnSLrfQFyR
-        W+1mZRGhwQvdvkrr8y+JZMQ=
-X-Google-Smtp-Source: AGHT+IE6t/1v27h+fcqmTdO36JdundJNToc6FICMQ+l92k0VypVbJHWYvo6kei8XbZDOyOkNc3/wwA==
-X-Received: by 2002:a05:690c:dc4:b0:5a7:aa54:42b1 with SMTP id db4-20020a05690c0dc400b005a7aa5442b1mr2232055ywb.28.1697805962604;
-        Fri, 20 Oct 2023 05:46:02 -0700 (PDT)
-Received: from localhost ([2607:fb90:3e1a:8bc6:bf58:5f88:bb90:604])
-        by smtp.gmail.com with ESMTPSA id m205-20020a8171d6000000b0059af121d0b8sm654571ywc.52.2023.10.20.05.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 05:46:01 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 05:46:00 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-btrfs@vger.kernel.org, dm-devel@redhat.com,
-        ntfs3@lists.linux.dev, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/13] ip_tunnel: convert __be16 tunnel flags to
- bitmaps
-Message-ID: <ZTJ2iKk3sBFzVQJl@yury-ThinkPad>
-References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
- <ZS148saIsG7WY8ul@yury-ThinkPad>
+        Fri, 20 Oct 2023 08:47:31 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D7291;
+        Fri, 20 Oct 2023 05:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697806050; x=1729342050;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=aXXmqAMTaJ9llNy54dgQduDOBZlBWnWwsrEn2k0KPf8=;
+  b=eg5kLCVlCOr3dgpo9WjJh9IIJFJmumbk9VYowJyA9dkPsuUZFeFwEeYl
+   2yk1xe4OkVjiZJSAN3AfRJ6dMc9p6Pi+iUC7wKlwx3Red9f4Hasc5K93G
+   j7MOZ+btxuN3lc/2lZeSV0L+pVmb9K4N7EAcJpNSCGv49b1UZrkTwAs4j
+   PjPbpqNepjcwsZi3u5p/SE5lVX5/ZVxafCIwW5I7m2gVWba8/MsBxmmjs
+   wnJbZKGXdw324vzB6x+WtQMNfKuP6KHgR8nVXNJHRccs+e449RBMgMg0r
+   83Sj/ieO7YiwULP+eSe3Drk630ECNK+9X3n9yR7aStY2G4VUvYNWMimrk
+   w==;
+X-CSE-ConnectionGUID: j5zftE2fQGeYR+MQxGrMGg==
+X-CSE-MsgGUID: iEkiYNzOQ1W2SQf1bIdoew==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="10428489"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Oct 2023 05:47:29 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 20 Oct 2023 05:47:11 -0700
+Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Fri, 20 Oct 2023 05:47:10 -0700
+Message-ID: <c339d334-5fe4-4c1a-81ee-42882d93f3e5@microchip.com>
+Date:   Fri, 20 Oct 2023 14:46:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS148saIsG7WY8ul@yury-ThinkPad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rtc: at91rm9200: annotate at91_rtc_remove with __exit
+ again
+Content-Language: en-US, fr-FR
+To:     <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+CC:     kernel test robot <lkp@intel.com>, <linux-rtc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231016041816.246426-1-alexandre.belloni@bootlin.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <20231016041816.246426-1-alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Stephen
-
-On Mon, Oct 16, 2023 at 10:55:02AM -0700, Yury Norov wrote:
-> On Mon, Oct 16, 2023 at 06:52:34PM +0200, Alexander Lobakin wrote:
-> > Based on top of "Implement MTE tag compression for swapped pages"[0]
-> > from Alexander Potapenko as it uses its bitmap_{read,write}() functions
-> > to not introduce another pair of similar ones.
-> > 
-> > Derived from the PFCP support series[1] as this grew bigger (2 -> 13
-> > commits) and involved more core bitmap changes. Only commits 10 and 11
-> > are from the mentioned tree, the rest is new. PFCP itself still depends
-> > on this series.
-> > 
-> > IP tunnels have their flags defined as `__be16`, including UAPI, and
-> > after GTP was accepted, there are no more free bits left. UAPI (incl.
-> > direct usage of one of the user structs) and explicit Endianness only
-> > complicate things.
-> > Since it would either way end up with hundreds of locs due to all that,
-> > pick bitmaps right from the start to store the flags in the most native
-> > and scalable format with rich API. I don't think it's worth trying to
-> > praise luck and pick smth like u32 only to redo everything in x years :)
-> > More details regarding the IP tunnel flags is in 11 and 13.
-> > 
-> > The rest is just a good bunch of prereqs and tests: a couple of new
-> > helpers and extensions to the old ones, a few optimizations to partially
-> > mitigate IP tunnel object code growth due to __be16 -> long, and
-> > decouping one UAPI struct used throughout the whole kernel into the
-> > userspace and the kernel space counterparts to eliminate the dependency.
-> > 
-> > [0] https://lore.kernel.org/lkml/20231011172836.2579017-1-glider@google.com
-> > [1] https://lore.kernel.org/netdev/20230721071532.613888-1-marcin.szycik@linux.intel.com
-
-[...]
-
-> > ---
-> > Not sure whether it's fine to have that all in one series, but OTOH
-> > there's not much stuff I could split (like, 3 commits), it either
-> > depends directly (new helpers etc.) or will just generate suboptimal
-> > code w/o some of the commits.
-> > 
-> > I'm also thinking of which tree this would ideally be taken through.
-> > The main subject is networking, but most of the commits are generic.
-> > My idea is to push this via Yury / bitmaps and then ask the netdev
-> > maintainers to pull his tree before they take PFCP (dependent on this
-> > one).
+On 16/10/2023 at 06:18, alexandre.belloni@bootlin.com wrote:
+> From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 > 
-> Let's wait for more comments, but I'm generally OK with the generic
-> part, and have nothing against moving it, or the whole series, through
-> bitmap-for-next.
+> Without __exit, having the driver as a builtin after dropping the __exit
+> annotation results in:
+> 
+>>> drivers/rtc/rtc-at91rm9200.c:561:13: warning: 'at91_rtc_remove' defined but not used [-Wunused-function]
+>       561 | static void at91_rtc_remove(struct platform_device *pdev)
+>           |             ^~~~~~~~~~~~~~~
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310160705.vlElNOGb-lkp@intel.com/
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-I put this into bitmap-for-next, and it caused build failures for
-Stephen:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Thanks Alexandre, best regards,
+   Nicolas
 
-https://lore.kernel.org/lkml/20220722191657.1d7282c2@canb.auug.org.au/
+> ---
+>   drivers/rtc/rtc-at91rm9200.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
+> index 3f5ff9867c02..c16fe711a0d9 100644
+> --- a/drivers/rtc/rtc-at91rm9200.c
+> +++ b/drivers/rtc/rtc-at91rm9200.c
+> @@ -558,7 +558,7 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
+>   /*
+>    * Disable and remove the RTC driver
+>    */
+> -static void at91_rtc_remove(struct platform_device *pdev)
+> +static void __exit at91_rtc_remove(struct platform_device *pdev)
+>   {
+>          /* Disable all interrupts */
+>          at91_rtc_write_idr(AT91_RTC_ACKUPD | AT91_RTC_ALARM |
+> --
+> 2.41.0
+> 
 
-I can reproduce them too. So, removing from -next. Alexander, can you
-run another round with all found issues fixed?
-
-Thanks,
-Yury
