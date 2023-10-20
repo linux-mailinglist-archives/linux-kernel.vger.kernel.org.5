@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 308817D0F8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30807D0F95
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377338AbjJTMUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
+        id S1377376AbjJTMV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377028AbjJTMUU (ORCPT
+        with ESMTP id S1377028AbjJTMVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:20:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F091106;
-        Fri, 20 Oct 2023 05:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697804418; x=1729340418;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TtO2xAOjFTqqWN9AGE5WjjbobtfUiNkYAkAsqkDI+Zg=;
-  b=LKfYLBFCofYA0KLz9AI33uooDrz6dec84CTaeK5uT2lm8XtYGwskhWb8
-   rb6oLcSYs7F0uNNItMZN/CoMtvGB4lyaezizuiWnXhftbou7w6EcWuKQq
-   aJB3FnFeYdXxqqsOcA2dDCnIKGV9PFUVCkJB+Q37nFtJNJZ4J1YoCdbPL
-   rmdIVxuxnKeVvt/Ib62VaiX5Nq16vKlBIOrT5h7ycU4k83KNOPC9kyOOO
-   Nn03VIKCV26YmSy+S9naVQIDVMn5wN4OxSGouDj/oW0s7cwqyD2Ojb68g
-   KCZGaj+3FHVO34Ta9xA3NY05orEHEnYs4q4TdyPVeZFFnxi3oJr8W7iih
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="472708026"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="472708026"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:20:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="707213299"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="707213299"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.102]) ([10.254.211.102])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:20:03 -0700
-Message-ID: <49f095e8-b27a-4fba-9fd4-152271fb4a14@linux.intel.com>
-Date:   Fri, 20 Oct 2023 20:20:00 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com
-Subject: Re: [PATCH v6 5/8] iommu/vt-d: Make domain attach helpers to be
- extern
+        Fri, 20 Oct 2023 08:21:24 -0400
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2353106;
+        Fri, 20 Oct 2023 05:21:21 -0700 (PDT)
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+        by mx0.infotecs.ru (Postfix) with ESMTP id 7D07110CD493;
+        Fri, 20 Oct 2023 15:21:16 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 7D07110CD493
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+        t=1697804476; bh=MeYVgElruHgoPzcT+C8vkLtksDQKssoIBbZPZzRGhUY=;
+        h=From:To:CC:Subject:Date:From;
+        b=IvFgiRPeE2SzWWsBX+hylfJcub+A+eTAHHCkWRS87osccwTslTqcPvybB7V7jEF2S
+         iOxdQrNhrnjca3jC0A2X8cNTtjkua5ZqjqiRBrqoriPVF1T0dThQkWe0uVv9FNqLU6
+         5lK1W+g/6uCU7rbok1xzve78RwJG+S2y2jZ7EqGc=
+Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 7A762300EAA4;
+        Fri, 20 Oct 2023 15:21:16 +0300 (MSK)
+From:   Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To:     "David S. Miller" <davem@davemloft.net>
+CC:     Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Chas Williams <chas@cmf.nrl.navy.mil>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH net-next] net: atm: Remove redundant check.
+Thread-Topic: [PATCH net-next] net: atm: Remove redundant check.
+Thread-Index: AQHaA0/sv44EDzb/ykSk/HUfw6flbQ==
+Date:   Fri, 20 Oct 2023 12:21:16 +0000
+Message-ID: <20231020121853.3454896-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
 Content-Language: en-US
-To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com
-References: <20231020093246.17015-1-yi.l.liu@intel.com>
- <20231020093246.17015-6-yi.l.liu@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231020093246.17015-6-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.17.0.10]
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2023/10/20 11:07:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/20 09:36:00 #22238310
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/20 17:32, Yi Liu wrote:
-> This makes the helpers visible to nested.c.
-> 
-> Suggested-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->   drivers/iommu/intel/iommu.c | 15 ++++++---------
->   drivers/iommu/intel/iommu.h |  7 +++++++
->   2 files changed, 13 insertions(+), 9 deletions(-)
+Checking the 'adev' variable is unnecessary,
+because 'cdev' has already been checked earlier.
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with SVACE.
 
-Best regards,
-baolu
+Fixes: 656d98b09d57 ("[ATM]: basic sysfs support for ATM devices")
+Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+---
+ net/atm/atm_sysfs.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/net/atm/atm_sysfs.c b/net/atm/atm_sysfs.c
+index 466353b3dde4..54e7fb1a4ee5 100644
+--- a/net/atm/atm_sysfs.c
++++ b/net/atm/atm_sysfs.c
+@@ -116,8 +116,6 @@ static int atm_uevent(const struct device *cdev, struct=
+ kobj_uevent_env *env)
+ 		return -ENODEV;
+=20
+ 	adev =3D to_atm_dev(cdev);
+-	if (!adev)
+-		return -ENODEV;
+=20
+ 	if (add_uevent_var(env, "NAME=3D%s%d", adev->type, adev->number))
+ 		return -ENOMEM;
+--=20
+2.39.2
