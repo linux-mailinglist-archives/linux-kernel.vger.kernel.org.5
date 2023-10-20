@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AA57D1031
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8F17D1043
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377390AbjJTNCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S1377403AbjJTNHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377017AbjJTNCj (ORCPT
+        with ESMTP id S1377144AbjJTNG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:02:39 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BBF9F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:02:37 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 053FB1C0003;
-        Fri, 20 Oct 2023 13:02:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697806955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aJ6lRyFte6SRxSGEWtH+fbG11URdig+4dlQW94H/x40=;
-        b=DZFiaH9LfsR73LdWPiZxQehtQXehHaOPqtXb9iG+kDPTFhhm8/pS8En77JZZuo/UDf/haU
-        4IAAk+ea9lRKa3CrSszt+/gEM+z1o12tnjyxDmvZH5VAZzBbsMmOcGPQL56aB1zYRMgHW+
-        QUxdZBc2x3/R8LNakSRiqthHKWgzQzPtG86VqAmeDZLE0YMh9jmchi7vKeOwP0SOLkpYLZ
-        p6mHh7nm9gcsomijwcbkeesbPfwOYZguFbSCJr/AM73QSe68tQ4iO4+g0QuRr8o/jT++NH
-        xg86+j5lcjls9zHYdqMbtxntOkO34LD7llugO9MFemyBPkhJhb/5NhTQMi5ytg==
-From:   thomas.perrot@bootlin.com
-To:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clement.leger@bootlin.com,
-        Thomas Perrot <thomas.perrot@bootlin.com>
-Subject: [PATCH] ARM: at91: pm: set soc_pm.data.mode in at91_pm_secure_init()
-Date:   Fri, 20 Oct 2023 15:02:19 +0200
-Message-ID: <20231020130219.1255937-1-thomas.perrot@bootlin.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 20 Oct 2023 09:06:58 -0400
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41718B8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:06:53 -0700 (PDT)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1e9b6f39f9eso563977fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:06:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697807212; x=1698412012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qoifS+46L935RaOWjpS8M82tnDKrW+MvtenA40on/GA=;
+        b=fiH52N7M0MsAm6rlUmQ40WW2T8Fd77rwSuvk7ETOhwY2oQvaswX3usFkkCXWrV0BTl
+         dA1jrL1jZ6vVbtqqEATGnY2i7UjVPNQoRalq7l2c6+piKSBJOU9r4A/38EcsS3J0jezc
+         M1tbg7Q2hN5lDBoACXWmYPsmJf9wRE5o9tG1WtkRh7u8i4E4A6oyuGj69EQ8JqhPj3PS
+         aJWeN+UQkhy1GDdcXeCaAx9PtNFfH+ijtrFWE5h64ZLh+NsQApNK9+nHsWd90gQGbC2Z
+         /UeVdjPEuCcMZsXKNZM2vuSepU02XWppMte/aFPUpi6IuC5l/dGfcqg95S6+HASihsJr
+         d1bw==
+X-Gm-Message-State: AOJu0Yw43bTXaleyFtbiSn5+JZeSI4oy9weVZInKxbeWsWhN7wC1M6hK
+        FUC927Gu76/vlrX4bOVPKg==
+X-Google-Smtp-Source: AGHT+IErTEs7gVCuW7P2bJpMAh0j1jao5EUSDsAiQDFXDr2mhhA5u3pG+6PrGB9WMXV5orp4mKLZCQ==
+X-Received: by 2002:a05:6871:918b:b0:1e9:c974:5f7e with SMTP id ak11-20020a056871918b00b001e9c9745f7emr1962949oac.40.1697807212365;
+        Fri, 20 Oct 2023 06:06:52 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id p3-20020a05687052c300b001e98fa5c9edsm349124oak.40.2023.10.20.06.06.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 06:06:51 -0700 (PDT)
+Received: (nullmailer pid 2963897 invoked by uid 1000);
+        Fri, 20 Oct 2023 13:06:50 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH v2] irqchip/ls-scfg-msi: Use device_get_match_data()
+Date:   Fri, 20 Oct 2023 08:02:56 -0500
+Message-ID: <20231020130255.2954415-3-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.perrot@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Perrot <thomas.perrot@bootlin.com>
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data in a single step without the unnecessary
+intermediate match pointer. With this, adjust the includes to
+explicitly include the correct headers. That also serves as
+preparation to remove implicit includes within the DT headers.
+of_platform.h currently includes platform_device.h among others.
 
-In non secure mode, soc_pm.data.mode is set when entering pm in
-at91_pm_begin(). This value is used (not only) to determine if the system
-is going into slow clock mode (at91_suspend_entering_slow_clock()). This
-function is called from various drivers to check this and act accordingly.
-If not set, the driver might enter an incorrect suspend mode. When using
-secure suspend mode, at91_pm_begin() is not called and thus
-soc_pm.data.mode is not set. Since when using secure suspend, only one
-suspend mode is supported, set this value directly in
-at91_pm_secure_init().
-
-Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm/mach-at91/pm.c | 3 +++
- 1 file changed, 3 insertions(+)
+v2:
+ - Expand commit message
+---
+ drivers/irqchip/irq-ls-scfg-msi.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 1a26af0fabc7..345b91dc6627 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -1103,6 +1103,7 @@ static void __init at91_pm_secure_init(void)
- 	if (res.a0 == 0) {
- 		pr_info("AT91: Secure PM: suspend mode set to %s\n",
- 			pm_modes[suspend_mode].pattern);
-+		soc_pm.data.mode = suspend_mode;
- 		return;
- 	}
+diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-msi.c
+index f31a262fe438..15cf80b46322 100644
+--- a/drivers/irqchip/irq-ls-scfg-msi.c
++++ b/drivers/irqchip/irq-ls-scfg-msi.c
+@@ -17,7 +17,8 @@
+ #include <linux/irqdomain.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_pci.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/spinlock.h>
  
-@@ -1112,6 +1113,7 @@ static void __init at91_pm_secure_init(void)
- 	res = sam_smccc_call(SAMA5_SMC_SIP_GET_SUSPEND_MODE, 0, 0);
- 	if (res.a0 == 0) {
- 		pr_warn("AT91: Secure PM: failed to get default mode\n");
-+		soc_pm.data.mode = -1;
- 		return;
- 	}
+ #define MSI_IRQS_PER_MSIR	32
+@@ -334,20 +335,17 @@ MODULE_DEVICE_TABLE(of, ls_scfg_msi_id);
  
-@@ -1119,6 +1121,7 @@ static void __init at91_pm_secure_init(void)
- 		pm_modes[suspend_mode].pattern);
+ static int ls_scfg_msi_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *match;
+ 	struct ls_scfg_msi *msi_data;
+ 	struct resource *res;
+ 	int i, ret;
  
- 	soc_pm.data.suspend_mode = res.a1;
-+	soc_pm.data.mode = soc_pm.data.suspend_mode;
- }
- static const struct of_device_id atmel_shdwc_ids[] = {
- 	{ .compatible = "atmel,sama5d2-shdwc" },
+-	match = of_match_device(ls_scfg_msi_id, &pdev->dev);
+-	if (!match)
+-		return -ENODEV;
+-
+ 	msi_data = devm_kzalloc(&pdev->dev, sizeof(*msi_data), GFP_KERNEL);
+ 	if (!msi_data)
+ 		return -ENOMEM;
+ 
+-	msi_data->cfg = (struct ls_scfg_msi_cfg *) match->data;
++	msi_data->cfg = (struct ls_scfg_msi_cfg *)device_get_match_data(&pdev->dev);
++	if (!msi_data->cfg)
++		return -ENODEV;
+ 
+ 	msi_data->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(msi_data->regs)) {
 -- 
-2.41.0
+2.42.0
 
