@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21417D0A8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6B27D0A91
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376481AbjJTIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 04:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        id S1376472AbjJTIcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376433AbjJTIcA (ORCPT
+        with ESMTP id S1376484AbjJTIcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 04:32:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98943112;
-        Fri, 20 Oct 2023 01:31:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E84C433C8;
-        Fri, 20 Oct 2023 08:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697790718;
-        bh=l9qV989JwaBiiJEzdeKJlntVo1EREOKiVHaZsdwHnJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=odWlbFAl7nFcaG6RVc59qHHDTE03y7C5RVLLzVqY7BcsH/eKUuqi5QJqQkX+DjdwI
-         MGqJeRYmQdvcSRri1kX3RgvV1r55817E6yF41wrXWIqo5pIlNcXsjKeToLo6uY9ABW
-         UxYMUZ96W4r3EENLUZY8CALyLETey9uFMBhkT5xxUmU4VFoRszx+PMFQHFLkBjMIvT
-         FW2cLYwr0ufo2kK6ijcppybmTvgPGluMjf7tr71bBpwCaB+vm4m9Ze9BXwgg4vIYP3
-         Zt1UoOfGnJt/jHxIp1PFWjQADpaEJhQVF6FOdx/cdngfKLYmWDl9DectfttbwX66k6
-         cWDca6gXppdOA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qtkvK-0001jy-13;
-        Fri, 20 Oct 2023 10:32:03 +0200
-Date:   Fri, 20 Oct 2023 10:32:02 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 01/10] usb: dwc3: core: Access XHCI address space
- temporarily to read port info
-Message-ID: <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-2-quic_kriskura@quicinc.com>
+        Fri, 20 Oct 2023 04:32:19 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FD218F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:32:17 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso748463a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:32:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697790736; x=1698395536; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tqRU8lrO5DdEsJ7yzHOjWhQgZG94Il8pn8Nsr/6qC54=;
+        b=YQ+wkOceBwVJbSw7QIQkjyG+/6qpGgXgcja3T+zjJDhKIPG6q+WrDg84buJA44FFjh
+         qoDSrdR7aTwjpbWf2OeFErYlgTizH6xgplgjvKulkjEuyZsO53h2G+8QSp+8jruTL+mu
+         hl4g88oWYTPSJ+6bT8wBDwA+MIIDNYN+wOTtLOC0rTRZ0rMRSEg73SQ7PmqSTIvFNbRe
+         JoWRLz6EN3jLRZK4a3rHKcIMM2hWxhD38GUU1V/a/vmb6H5cex06TtqPNgUaV3TAGs1w
+         k3XCbEcCwWqlX1mbJfa4SffONJlHxbVDcqd7WRpjSbFVsT+u8SVfeOYmDG9fVBNU59bH
+         6jYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697790736; x=1698395536;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tqRU8lrO5DdEsJ7yzHOjWhQgZG94Il8pn8Nsr/6qC54=;
+        b=LaqbH0+EiI4Ki0YlAdmjoQCLVXZC28Bc1qpy81qpC2zYmOERc0av744GMpeeJdgqNy
+         5zBZRhePbtKFymwQDcCcDwz5ulJ7LndQEZxdNpfNoSoSj+FFOU8dfviUvJusuuSfgLcu
+         dEDNn5prFw3+ggcSeKd/za2EXmqBtBSoT6Ddpl0h+oFkV2TJchEG27lU4Xmxo3u3w1OB
+         Ka0bRiRd2Q3lwmE1WS/yBDb/FaZA+iiGdbVmNdWZpXw31cBav55OmvUMuMPc95AMCa1D
+         yMRA6tkAcrbmK+/wBGs/US9NcVHhJ10+uVA54UsxBpkP9iO+hAcllDAFE4vMNWTd+fXw
+         nOFg==
+X-Gm-Message-State: AOJu0YyPVsmwcablObkQpTCK4B7WEYBliY27Gxlzf6Nn5UDlnjR0Y3sL
+        bn7NXRjGrKDuLz724WMFExg=
+X-Google-Smtp-Source: AGHT+IEb6xP1ALmiI0M4CBQddyaawn9u+DgDcAxnAtAukvVxZEk28V3a98gpRRqFGFqkycesRY2RjQ==
+X-Received: by 2002:a17:907:5cb:b0:9bf:b022:dc7 with SMTP id wg11-20020a17090705cb00b009bfb0220dc7mr772906ejb.48.1697790736212;
+        Fri, 20 Oct 2023 01:32:16 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id o14-20020a17090611ce00b009b29553b648sm1001362eja.206.2023.10.20.01.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 01:32:15 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 20 Oct 2023 10:32:13 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, rppt@kernel.org, david@redhat.com,
+        vbabka@suse.cz, mhocko@suse.com, willy@infradead.org,
+        mgorman@techsingularity.net, aneesh.kumar@linux.ibm.com,
+        ying.huang@intel.com, hannes@cmpxchg.org, osalvador@suse.de,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 2/2] mm: memory_hotplug: drop memoryless node from
+ fallback lists
+Message-ID: <ZTI7DRNdObvSZXFG@gmail.com>
+References: <cover.1697711415.git.zhengqi.arch@bytedance.com>
+ <9f1dbe7ee1301c7163b2770e32954ff5e3ecf2c4.1697711415.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231007154806.605-2-quic_kriskura@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9f1dbe7ee1301c7163b2770e32954ff5e3ecf2c4.1697711415.git.zhengqi.arch@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:17:57PM +0530, Krishna Kurapati wrote:
-> Currently host-only capable DWC3 controllers support Multiport.
 
-You use the word "currently" in a few places like this (e.g. in comments
-in the code). What exactly do you mean? That all current multiport
-controllers are host-only, or that this is all that the driver supports
-after your changes?
+* Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 
-Please rephrase accordingly throughout so that this becomes clear.
+> In offline_pages(), if a node becomes memoryless, we
+> will clear its N_MEMORY state by calling node_states_clear_node().
+> But we do this after rebuilding the zonelists by calling
+> build_all_zonelists(), which will cause this memoryless node to
+> still be in the fallback list of other nodes. This will incur
+> some runtime overhead.
+> 
+> To drop memoryless node from fallback lists in this case, just
+> call node_states_clear_node() before calling build_all_zonelists().
 
-In any case it looks like the above sentence is at least missing an
-"only".
- 
-> +static int dwc3_read_port_info(struct dwc3 *dwc)
-> +{
-> +	void __iomem *base;
-> +	u8 major_revision;
-> +	u32 offset = 0;
+s/memoryless node
+ /memoryless nodes
 
-I'd move the initialisation just before the loop.
-
-> +	u32 val;
-> +
-> +	/*
-> +	 * Remap xHCI address space to access XHCI ext cap regs,
-
-Drop comma and merge with next line and break it closer to 80 chars
-(instead of 65).
-
-> +	 * since it is needed to get port info.
-
-s/since it is needed to get/which hold the/?
-
-> +	 */
-> +	base = ioremap(dwc->xhci_resources[0].start,
-> +				resource_size(&dwc->xhci_resources[0]));
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	do {
-> +		offset = xhci_find_next_ext_cap(base, offset,
-> +				XHCI_EXT_CAPS_PROTOCOL);
-> +		if (!offset)
-> +			break;
-> +
-> +		val = readl(base + offset);
-> +		major_revision = XHCI_EXT_PORT_MAJOR(val);
-> +
-> +		val = readl(base + offset + 0x08);
-> +		if (major_revision == 0x03) {
-> +			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
-> +		} else if (major_revision <= 0x02) {
-> +			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
-> +		} else {
-> +			dev_err(dwc->dev,
-
-This should be dev_warn() (as in the xhci driver) now that you no longer
-treat it as a fatal error.
-
-> +				"Unrecognized port major revision %d\n",
-
-Merge this with the previous line (even if it makes that line 83 chars).
-
-Use a lower case 'U' for consistency with most of the error messages.
-
-> +							major_revision);
-> +		}
-> +	} while (1);
-> +
-> +	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
-> +			dwc->num_usb2_ports, dwc->num_usb3_ports);
-> +
-> +	iounmap(base);
-> +
-> +	return 0;
-> +}
-> +
->  static int dwc3_probe(struct platform_device *pdev)
->  {
->  	struct device		*dev = &pdev->dev;
-> @@ -1846,6 +1892,7 @@ static int dwc3_probe(struct platform_device *pdev)
->  	void __iomem		*regs;
->  	struct dwc3		*dwc;
->  	int			ret;
-> +	unsigned int		hw_mode;
-
-Nit: I'd place this one before ret.
-
->  
->  	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
->  	if (!dwc)
-> @@ -1926,6 +1973,20 @@ static int dwc3_probe(struct platform_device *pdev)
->  			goto err_disable_clks;
->  	}
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/memory_hotplug.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index d4a364fdaf8f..f019f7d6272c 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -2036,12 +2036,16 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>  	/* reinitialise watermarks and update pcp limits */
+>  	init_per_zone_wmark_min();
 >  
 > +	/*
-> +	 * Currently only DWC3 controllers that are host-only capable
-> +	 * support Multiport.
+> +	 * Make sure to mark the node as memory-less before rebuilding the zone
+> +	 * list. Otherwise this node would still appear in the fallback lists.
 > +	 */
+> +	node_states_clear_node(node, &arg);
 
-So is this is a limitation of the hardware or implementation?
+Acked-by: Ingo Molnar <mingo@kernel.org>
 
-> +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
-> +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
-> +		ret = dwc3_read_port_info(dwc);
-> +		if (ret)
-> +			goto err_disable_clks;
-> +	} else {
-> +		dwc->num_usb2_ports = 1;
-> +		dwc->num_usb3_ports = 1;
-> +	}
-> +
->  	spin_lock_init(&dwc->lock);
->  	mutex_init(&dwc->mutex);
+Thanks,
 
-Johan
+	Ingo
