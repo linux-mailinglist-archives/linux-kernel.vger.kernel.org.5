@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1FE7D062E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 03:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440887D0637
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 03:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346828AbjJTBkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 21:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S1346827AbjJTBnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 21:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346805AbjJTBkq (ORCPT
+        with ESMTP id S1346809AbjJTBnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 21:40:46 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB347124
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 18:40:44 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3574cde48b4so1066595ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 18:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697766044; x=1698370844; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m0pwSa2GbXJihOZrNu7aMcnrt6aomdhOt1W1hRoVbr8=;
-        b=N44iB+AmDtzIIgLBjpm32TTYi98/zApjmjJ1fnQPghi2nhfvDY8fJqkFIMsg2+ukGu
-         pg/OlKXxJlIg9T9ys70LiFam6r7U+LUiS/9irMfmvHS9XRsKaIQWY2ysuMCgGzSJ/VGv
-         h+TG+s8yfyMKNkXAC/6cCnfY9gGFxdiD1vUa8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697766044; x=1698370844;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m0pwSa2GbXJihOZrNu7aMcnrt6aomdhOt1W1hRoVbr8=;
-        b=ONOFXLSR4mtBa0sYKumbyqiEIDNAT3IilqL0Rv/qNVjuwCGHTBTt9N3gncQFGTD1a4
-         XSfAYRbXzTaZNBoyiRgZ9ISA7xGQCmTivuLUX1Bw9BEuVrO6mPpKjvQu82egCYAN7Q9i
-         AgXQnyX7G8NcpaYjDWJVYK0TrisqSYUjL0mLJVVXBFSxXqtLNO0W6yT9U2mlJauIskgx
-         t+F9EKOLPskxCYBTbxajjATHIonro2vc6IvvQW3vwV3x3ULjcVA72EkWFrOh6uN24v2v
-         m2kh814ulLbQASF8GUaP8CMbRulzvPCLVdjMi/2DzcYaJS2yKhtTXA2jY99nTSesxJG9
-         iBOw==
-X-Gm-Message-State: AOJu0Yzc8D8ODGlX9YANZMxZMbtI4Uvp1KEX4nKKatbDG0wRWvjyGz1b
-        YoHa8lWjUAb+JbEYmN+LOclMNqgTFt8yiomefAPFnA==
-X-Google-Smtp-Source: AGHT+IEbjO8xFNME7aragcQ5plTxHyQwlDYPbxPXL6etAIv8PmIGBNNwr5fNyZKGj4poZA7mTjr1Cg==
-X-Received: by 2002:a05:6e02:214b:b0:34d:e998:fb4f with SMTP id d11-20020a056e02214b00b0034de998fb4fmr850150ilv.10.1697766043833;
-        Thu, 19 Oct 2023 18:40:43 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id h9-20020a056e020d4900b00350f5584876sm270394ilj.27.2023.10.19.18.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 18:40:43 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc:     "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 3/3] sched: Update ->next_balance correctly during newidle balance
-Date:   Fri, 20 Oct 2023 01:40:28 +0000
-Message-ID: <20231020014031.919742-3-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231020014031.919742-1-joel@joelfernandes.org>
-References: <20231020014031.919742-1-joel@joelfernandes.org>
+        Thu, 19 Oct 2023 21:43:04 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431ED119;
+        Thu, 19 Oct 2023 18:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697766180;
+        bh=RcONGGUP+t0yTiKTpy5L7tV29oN1Vf/lUY4ZI43AkQc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LL8WP0QbE4BK9Tnt4Qnp6mPi9IYZ8kedhEiHglDyZYXnXYVBSRWRlya8AwoqvJIF+
+         13rauMxbbwrD2/Nrz0khQIE1PEEv3+ex1gmPxegiAFYpf7S8IodR51W405Ulsfh0F3
+         uQrkhSpo/SWChMbf5uQGVhos8qkudDler4oQDKzM1LFo7UJ+auiL/RkwyCUpHzB5Wm
+         QsymJd9cIo/0mA8k+0RS5fNhFbyVc8FxgOWMr77LLUkYEjtqpIws1MifLtQ06PRAVo
+         kub+w+HltR+d+xn0Euy5QHUuYaNfZoLUhwUwXDzsSKzVoogr2kElE0cU57vFLKeRnY
+         Yb1fFWnjcLHSQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SBS5c0RDpz4wnx;
+        Fri, 20 Oct 2023 12:43:00 +1100 (AEDT)
+Date:   Fri, 20 Oct 2023 12:42:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the sound-asoc tree
+Message-ID: <20231020124259.7d77b077@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/vp5RwhVEh75twrm4tNXaI7H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
+--Sig_/vp5RwhVEh75twrm4tNXaI7H
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When newidle balancing triggers, we see that it constantly clobbers
-rq->next_balance even when there is no newidle balance happening due to
-the cost estimates.  Due to this, we see that periodic load balance
-(rebalance_domains) may trigger way more often when the CPU is going in
-and out of idle at a high rate but is no really idle. Repeatedly
-triggering load balance there is a bad idea as it is a heavy operation.
-It also causes increases in softirq.
+Hi all,
 
-Another issue is ->last_balance is not updated after newidle balance
-causing mistakes in the ->next_balance calculations.
+After merging the sound-asoc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Fix by updating last_balance when a newidle load balance actually
-happens and then updating next_balance. This is also how it is done in
-other load balance paths.
+sound/soc/sof/intel/hda.c: In function 'hda_dsp_remove':
+sound/soc/sof/intel/hda.c:1384:16: error: 'return' with a value, in functio=
+n returning void [-Werror=3Dreturn-type]
+ 1384 |         return 0;
+      |                ^
+sound/soc/sof/intel/hda.c:1330:6: note: declared here
+ 1330 | void hda_dsp_remove(struct snd_sof_dev *sdev)
+      |      ^~~~~~~~~~~~~~
+sound/soc/sof/intel/hda.c: In function 'hda_dsp_remove_late':
+sound/soc/sof/intel/hda.c:1392:1: error: control reaches end of non-void fu=
+nction [-Werror=3Dreturn-type]
+ 1392 | }
+      | ^
+cc1: all warnings being treated as errors
 
-Testing shows a significant drop in softirqs when running:
-cyclictest -i 100 -d 100 --latency=1000 -D 5 -t -m  -q
+Caused by a bad automatic merge between commit
 
-Goes from ~6k to ~800.
+  e4d09de3919b ("ASoC: SOF: make .remove callback return void")
 
-Cc: Suleiman Souhlal <suleiman@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+and commit
+
+  3d1a05581361 ("ASoC: SOF: Intel: Move binding to display driver outside o=
+f deferred probe")
+
+from the sound tree.
+
+I have applied the follwoing merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 20 Oct 2023 12:37:26 +1100
+Subject: [PATCH] fix for bad merge of "ASoC: SOF: Intel: Move binding to
+ display driver outside of deferred probe"
+
+with "ASoC: SOF: make .remove callback return void"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- kernel/sched/fair.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/sof/intel/hda.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8e276d12c3cb..b147ad09126a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12076,11 +12076,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 
- 	if (!READ_ONCE(this_rq->rd->overload) ||
- 	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 2f12265c472b..8342fcf52f52 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1380,8 +1380,6 @@ void hda_dsp_remove(struct snd_sof_dev *sdev)
+=20
+ 	if (!sdev->dspless_mode_selected)
+ 		iounmap(sdev->bar[HDA_DSP_BAR]);
 -
--		if (sd)
--			update_next_balance(sd, &next_balance);
- 		rcu_read_unlock();
--
- 		goto out;
- 	}
- 	rcu_read_unlock();
-@@ -12095,8 +12091,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		int continue_balancing = 1;
- 		u64 domain_cost;
- 
--		update_next_balance(sd, &next_balance);
--
- 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
- 			break;
- 
-@@ -12109,6 +12103,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 			t1 = sched_clock_cpu(this_cpu);
- 			domain_cost = t1 - t0;
- 			update_newidle_cost(sd, domain_cost);
-+			sd->last_balance = jiffies;
-+			update_next_balance(sd, &next_balance);
- 
- 			curr_cost += domain_cost;
- 			t0 = t1;
--- 
-2.42.0.655.g421f12c284-goog
+-	return 0;
+ }
+=20
+ int hda_dsp_remove_late(struct snd_sof_dev *sdev)
+@@ -1389,6 +1387,8 @@ int hda_dsp_remove_late(struct snd_sof_dev *sdev)
+ 	iounmap(sof_to_bus(sdev)->remap_addr);
+ 	sof_hda_bus_exit(sdev);
+ 	hda_codec_i915_exit(sdev);
++
++	return 0;
+ }
+=20
+ int hda_power_down_dsp(struct snd_sof_dev *sdev)
+--=20
+2.40.1
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vp5RwhVEh75twrm4tNXaI7H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUx2yMACgkQAVBC80lX
+0GyE8Qf+KPpRGYyXxqxsyyp51ZIxJDlXBy+18P4irT6UVAVo//OKygfM7Rje8M21
+L2rgJqKRR7eqzZY9PJ06pOVjYoimLIhl4Jl8Trmbmq3ImKm3M4lZGXoIKnp9XSxH
+2XogZuYPZkYOzcQG9vbdNXq0pQWi9kdVPLZYHXG6ge9sxSiLE4FmblGcpW9A/yQq
+OpiTv1z75mCg9h52EV7F5uqY695ikiFnrozRm3LzhPHEr/U6/tbvXssnQkMqWV1f
+GaZuu4sdLbHDIE5pqCw2Kh+qDBIvqbP82/vw2Ytqy/iw3oIEwIB1yVIRBRvqBbDa
+zZIBxSvrmmM3YITpGGqLtcXzr2N2sA==
+=wz9p
+-----END PGP SIGNATURE-----
+
+--Sig_/vp5RwhVEh75twrm4tNXaI7H--
