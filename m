@@ -2,206 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0407D1428
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159F07D142A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377916AbjJTQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        id S1377931AbjJTQhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjJTQhA (ORCPT
+        with ESMTP id S1377917AbjJTQhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:37:00 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BA4D63
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 09:36:57 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-351250be257so3707665ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 09:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697819817; x=1698424617; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9hC4nL6redQSBoYQJzaTuLfHsbZDhIMKmoiNfdDp30=;
-        b=fC/1kg6wXsaUJbb2Fnj9NUerspWAGaLseuimoLq9142tYvfSFB6wm5q6oLwslyFjxL
-         /C7h2PEBxxZVb3SrmVEuj0R/5qzoeLqgdAZYBC5jhOvdsAup/K0e0pPX9tGH4uQO3QgL
-         DwDMt3J9HHP1DzmFM8vGl+2dUA8iS73bSJnjjzLJt8DRv+/31V4746JdVWe3CJ7jfcwT
-         7dBixpxhVM8FvyN6PlhpsDXMtjl3BvaqVGgPayrxNAif3vqfTyb6S6wwEI+u1zkKdXt5
-         ptQ4+xdm+vQOj05AdgIyjcpaRwIDEosBJQBBBpw8YFDxp1FJE7Aln5Q00cI7g/dB/2aU
-         WuQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697819817; x=1698424617;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t9hC4nL6redQSBoYQJzaTuLfHsbZDhIMKmoiNfdDp30=;
-        b=tfbcnyP3QTYcHz8zpCXBfLysYGTTyQNcQo2GiugjIY1dlpU8m+9b+BfEMnGL091tKP
-         CMQ1VAjkv/il2/uYsa+xHcMGRhlaeb+AlpAU8d9pcuwjj6/Kx++7bypO5FmprdU5lf7f
-         7WFOtuxNpxhndO6YK7KJXKdxh5IckSXaKDM1zOF/7+sHK0celFCksOzLnOcMX5YNCWuK
-         Ai3qDVqEAJ4sjdGwMD8RkZvkbDtOubWj3go7yUVk5kxXZaP/saKDCALQFLSnTI6kw7aA
-         PsehUoENVgGGJZ3x6FSmdYpcIem2BFg8mvBWMo4OHa6nu5oy5aFIsHaK+zGAgxGITJuM
-         oZXg==
-X-Gm-Message-State: AOJu0Yz75PyANYz8oUP3AtQzCjCJkeQuO9KnJHry6I5s6zbZ/mAAzuLL
-        tifLf82gkHxYza/2kAjMSu9B4udY9CI=
-X-Google-Smtp-Source: AGHT+IErBYRk5RSu27/tu6H4mXHVqWs0dQWv7AHNX55KFrbnnB+ii+yjDutyMqVXdXx8OcYYdac6Bg==
-X-Received: by 2002:a05:6e02:1544:b0:345:787a:cb1c with SMTP id j4-20020a056e02154400b00345787acb1cmr3151137ilu.6.1697819816765;
-        Fri, 20 Oct 2023 09:36:56 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:b74d:59d2:dbfd:c8dd])
-        by smtp.gmail.com with ESMTPSA id f15-20020a63f10f000000b005af7ee01ab4sm1699571pgi.6.2023.10.20.09.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 09:36:56 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: finish previous checkpoints before returning from remount
-Date:   Fri, 20 Oct 2023 09:36:45 -0700
-Message-ID: <20231020163645.2852056-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+        Fri, 20 Oct 2023 12:37:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2580CD61
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 09:37:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135ABC433C8;
+        Fri, 20 Oct 2023 16:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697819823;
+        bh=IKXvz0RUOrs45XsQ+nGeRi2+3vpHR0dpcPyszdbrLks=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=lR5fdsD0B7Ja2DIlG2phhgKJMnrg2aCf29I5oI3aZ01AECEmI83bTQAnOBquAHRoL
+         R6BbfjbR1MA/CaHZZdLprChXP+eI/qjH7yAzXCBGg7S0wECCIxhkoYGyErYC8GsOeJ
+         xMPGTl/EWmXNcCjDGotZzvRAtKjtPfuzf9T4PlKQdfkveTcqe/7Q0dpqt1o2KyPEQi
+         gp8ZQkBsKm0httkDFFBJT0PUwQpIQpCQpjS4FGNRB4oyk2UzX2TEcHJL6OCWcb5ncm
+         OVjBlosCRgO3FxzGD0FDAjXVCDj15AMsyITSzIJhzspdrDIasZNufPOOR7hX9pZQDj
+         MiwmO6sZ2ElLA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v10 00/15] Linux RISC-V AIA Support
+In-Reply-To: <CAK9=C2WVkbDtz9uZTNjEcJzKQ44cHLR=+nSVZZmSptzL_U4NNA@mail.gmail.com>
+References: <20231003044403.1974628-1-apatel@ventanamicro.com>
+ <87o7gu7mo9.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2XMzzYri8TNBASKqc-VmJWjGdoOHy-fczksfkU0ahhgOQ@mail.gmail.com>
+ <87h6mlbryy.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2VE9-L49tMKHjSTGDSpOFZGZw14LtD1V4GMXGiVQ-A=ng@mail.gmail.com>
+ <87o7gtpdb4.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2WVkbDtz9uZTNjEcJzKQ44cHLR=+nSVZZmSptzL_U4NNA@mail.gmail.com>
+Date:   Fri, 20 Oct 2023 18:36:59 +0200
+Message-ID: <87v8b1i72s.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Anup Patel <apatel@ventanamicro.com> writes:
 
-Flush remaining checkpoint requests at the end of remount, since a new
-checkpoint would be triggered while remount and we need to take care of
-it before returning from remount, in order to avoid the below race
-condition.
+> On Fri, Oct 20, 2023 at 8:10=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
+el.org> wrote:
+>>
+>> Anup Patel <apatel@ventanamicro.com> writes:
+>>
+>> > On Fri, Oct 20, 2023 at 2:17=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@k=
+ernel.org> wrote:
+>> >>
+>> >> Thanks for the quick reply!
+>> >>
+>> >> Anup Patel <apatel@ventanamicro.com> writes:
+>> >>
+>> >> > On Thu, Oct 19, 2023 at 7:13=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjor=
+n@kernel.org> wrote:
+>> >> >>
+>> >> >> Hi Anup,
+>> >> >>
+>> >> >> Anup Patel <apatel@ventanamicro.com> writes:
+>> >> >>
+>> >> >> > The RISC-V AIA specification is ratified as-per the RISC-V inter=
+national
+>> >> >> > process. The latest ratified AIA specifcation can be found at:
+>> >> >> > https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-i=
+nterrupts-1.0.pdf
+>> >> >> >
+>> >> >> > At a high-level, the AIA specification adds three things:
+>> >> >> > 1) AIA CSRs
+>> >> >> >    - Improved local interrupt support
+>> >> >> > 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+>> >> >> >    - Per-HART MSI controller
+>> >> >> >    - Support MSI virtualization
+>> >> >> >    - Support IPI along with virtualization
+>> >> >> > 3) Advanced Platform-Level Interrupt Controller (APLIC)
+>> >> >> >    - Wired interrupt controller
+>> >> >> >    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI g=
+enerator)
+>> >> >> >    - In Direct-mode, injects external interrupts directly into H=
+ARTs
+>> >> >>
+>> >> >> Thanks for working on the AIA support! I had a look at the series,=
+ and
+>> >> >> have some concerns about interrupt ID abstraction.
+>> >> >>
+>> >> >> A bit of background, for readers not familiar with the AIA details.
+>> >> >>
+>> >> >> IMSIC allows for 2047 unique MSI ("msi-irq") sources per hart, and
+>> >> >> each MSI is dedicated to a certain hart. The series takes the appr=
+oach
+>> >> >> to say that there are, e.g., 2047 interrupts ("lnx-irq") globally.
+>> >> >> Each lnx-irq consists of #harts * msi-irq -- a slice -- and in the
+>> >> >> slice only *one* msi-irq is acutally used.
+>> >> >>
+>> >> >> This scheme makes affinity changes more robust, because the interr=
+upt
+>> >> >> sources on "other" harts are pre-allocated. On the other hand it
+>> >> >> requires to propagate irq masking to other harts via IPIs (this is
+>> >> >> mostly done up setup/tear down). It's also wasteful, because msi-i=
+rqs
+>> >> >> are hogged, and cannot be used.
+>> >> >>
+>> >> >> Contemporary storage/networking drivers usually uses queues per co=
+re
+>> >> >> (or a sub-set of cores). The current scheme wastes a lot of msi-ir=
+qs.
+>> >> >> If we instead used a scheme where "msi-irq =3D=3D lnx-irq", instea=
+d of
+>> >> >> "lnq-irq =3D {hart 0;msi-irq x , ... hart N;msi-irq x}", there wou=
+ld be
+>> >> >> a lot MSIs for other users. 1-1 vs 1-N. E.g., if a storage device
+>> >> >> would like to use 5 queues (5 cores) on a 128 core system, the cur=
+rent
+>> >> >> scheme would consume 5 * 128 MSIs, instead of just 5.
+>> >> >>
+>> >> >> On the plus side:
+>> >> >> * Changing interrupts affinity will never fail, because the interr=
+upts
+>> >> >>   on each hart is pre-allocated.
+>> >> >>
+>> >> >> On the negative side:
+>> >> >> * Wasteful interrupt usage, and a system can potientially "run out=
+" of
+>> >> >>   interrupts. Especially for many core systems.
+>> >> >> * Interrupt masking need to proagate to harts via IPIs (there's no
+>> >> >>   broadcast csr in IMSIC), and a more complex locking scheme IMSIC
+>> >> >>
+>> >> >> Summary:
+>> >> >> The current series caps the number of global interrupts to maximum
+>> >> >> 2047 MSIs for all cores (whole system). A better scheme, IMO, woul=
+d be
+>> >> >> to expose 2047 * #harts unique MSIs.
+>> >> >>
+>> >> >> I think this could simplify/remove(?) the locking as well.
+>> >> >
+>> >> > Exposing 2047 * #harts unique MSIs has multiple issues:
+>> >> > 1) The irq_set_affinity() does not work for MSIs because each
+>> >> >      IRQ is not tied to a particular HART. This means we can't
+>> >> >      balance the IRQ processing load among HARTs.
+>> >>
+>> >> Yes, you can balance. In your code, each *active* MSI is still
+>> >> bound/active to a specific hard together with the affinity mask. In an
+>> >> 1-1 model you would still need to track the affinity mask, but the
+>> >> irq_set_affinity() would be different. It would try to allocate a new
+>> >> MSI from the target CPU, and then switch to having that MSI active.
+>> >>
+>> >> That's what x86 does AFAIU, which is also constrained by the # of
+>> >> available MSIs.
+>> >>
+>> >> The downside, as I pointed out, is that the set affinity action can
+>> >> fail for a certain target CPU.
+>> >
+>> > Yes, irq_set_affinity() can fail for the suggested approach plus for
+>> > RISC-V AIA, one HART does not have access to other HARTs
+>> > MSI enable/disable bits so the approach will also involve IPI.
+>>
+>> Correct, but the current series does a broadcast to all cores, where the
+>> 1-1 approach is at most an IPI to a single core.
+>>
+>> 128+c machines are getting more common, and you have devices that you
+>> bring up/down on a per-core basis. Broadcasting IPIs to all cores, when
+>> dealing with a per-core activity is a pretty noisy neighbor.
+>
+> Broadcast IPI in the current approach is only done upon MSI mask/unmask
+> operation. It is not done upon set_affinity() of interrupt handling.
 
-  - Thread                          - checkpoint thread
-  do_remount()
-   down_write(&sb->s_umount);
-   f2fs_remount()
-    f2fs_disable_checkpoint(sbi) -> add checkpoints to the list
-                                    block_operations()
-                                     down_read_trylock(&sb->s_umount) = 0
-   up_write(&sb->s_umount);
-                                     f2fs_quota_sync()
-                                      dquot_writeback_dquots()
-                                       WARN_ON_ONCE(!rwsem_is_locked(&sb->s_umount));
+I'm aware. We're on the same page here.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fs/f2fs/super.c | 59 +++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 27 deletions(-)
+>>
+>> This could be fixed in the existing 1-n approach, by not require to sync
+>> the cores that are not handling the MSI in question. "Lazy disable"
+>
+> Incorrect. The approach you are suggesting involves an IPI upon every
+> irq_set_affinity(). This is because a HART can only enable it's own
+> MSI ID so when an IRQ is moved to from HART A to HART B with
+> a different ID X on HART B then we will need an IPI in irq_set_affinit()
+> to enable ID X on HART B.
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index a8c8232852bb..d6edf7df6abd 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2286,9 +2286,9 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	unsigned long old_sb_flags;
- 	int err;
- 	bool need_restart_gc = false, need_stop_gc = false;
--	bool need_restart_ckpt = false, need_stop_ckpt = false;
- 	bool need_restart_flush = false, need_stop_flush = false;
- 	bool need_restart_discard = false, need_stop_discard = false;
-+	bool need_enable_checkpoint = false, need_disable_checkpoint = false;
- 	bool no_read_extent_cache = !test_opt(sbi, READ_EXTENT_CACHE);
- 	bool no_age_extent_cache = !test_opt(sbi, AGE_EXTENT_CACHE);
- 	bool enable_checkpoint = !test_opt(sbi, DISABLE_CHECKPOINT);
-@@ -2452,24 +2452,6 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 		clear_sbi_flag(sbi, SBI_IS_CLOSE);
- 	}
- 
--	if ((*flags & SB_RDONLY) || test_opt(sbi, DISABLE_CHECKPOINT) ||
--			!test_opt(sbi, MERGE_CHECKPOINT)) {
--		f2fs_stop_ckpt_thread(sbi);
--		need_restart_ckpt = true;
--	} else {
--		/* Flush if the prevous checkpoint, if exists. */
--		f2fs_flush_ckpt_thread(sbi);
--
--		err = f2fs_start_ckpt_thread(sbi);
--		if (err) {
--			f2fs_err(sbi,
--			    "Failed to start F2FS issue_checkpoint_thread (%d)",
--			    err);
--			goto restore_gc;
--		}
--		need_stop_ckpt = true;
--	}
--
- 	/*
- 	 * We stop issue flush thread if FS is mounted as RO
- 	 * or if flush_merge is not passed in mount option.
-@@ -2481,7 +2463,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	} else {
- 		err = f2fs_create_flush_cmd_control(sbi);
- 		if (err)
--			goto restore_ckpt;
-+			goto restore_gc;
- 		need_stop_flush = true;
- 	}
- 
-@@ -2503,8 +2485,31 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 			err = f2fs_disable_checkpoint(sbi);
- 			if (err)
- 				goto restore_discard;
-+			need_enable_checkpoint = true;
- 		} else {
- 			f2fs_enable_checkpoint(sbi);
-+			need_disable_checkpoint = true;
-+		}
-+	}
-+
-+	/*
-+	 * Place this routine at the end, since a new checkpoint would be
-+	 * triggered while remount and we need to take care of it before
-+	 * returning from remount.
-+	 */
-+	if ((*flags & SB_RDONLY) || test_opt(sbi, DISABLE_CHECKPOINT) ||
-+			!test_opt(sbi, MERGE_CHECKPOINT)) {
-+		f2fs_stop_ckpt_thread(sbi);
-+	} else {
-+		/* Flush if the prevous checkpoint, if exists. */
-+		f2fs_flush_ckpt_thread(sbi);
-+
-+		err = f2fs_start_ckpt_thread(sbi);
-+		if (err) {
-+			f2fs_err(sbi,
-+			    "Failed to start F2FS issue_checkpoint_thread (%d)",
-+			    err);
-+			goto restore_checkpoint;
- 		}
- 	}
- 
-@@ -2522,6 +2527,13 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	adjust_unusable_cap_perc(sbi);
- 	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
- 	return 0;
-+restore_checkpoint:
-+	if (need_enable_checkpoint) {
-+		f2fs_enable_checkpoint(sbi);
-+	} else if (need_disable_checkpoint) {
-+		if (f2fs_disable_checkpoint(sbi))
-+			f2fs_warn(sbi, "checkpoint has not been disabled");
-+	}
- restore_discard:
- 	if (need_restart_discard) {
- 		if (f2fs_start_discard_thread(sbi))
-@@ -2537,13 +2549,6 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 		clear_opt(sbi, FLUSH_MERGE);
- 		f2fs_destroy_flush_cmd_control(sbi, false);
- 	}
--restore_ckpt:
--	if (need_restart_ckpt) {
--		if (f2fs_start_ckpt_thread(sbi))
--			f2fs_warn(sbi, "background ckpt thread has stopped");
--	} else if (need_stop_ckpt) {
--		f2fs_stop_ckpt_thread(sbi);
--	}
- restore_gc:
- 	if (need_restart_gc) {
- 		if (f2fs_start_gc_thread(sbi))
--- 
-2.42.0.283.g2d96d420d3-goog
+Yes, the 1-1 approach will require an IPI to one target cpu on affinity
+changes, and similar on mask/unmask.
 
+The 1-n approach, require no-IPI on affinity changes (nice!), but IPI
+broadcast to all cores on mask/unmask (not so nice).
+
+>> >> My concern is interrupts become a scarce resource with this
+>> >> implementation, but maybe my view is incorrect. I've seen bare-metal
+>> >> x86 systems (no VMs) with ~200 cores, and ~2000 interrupts, but maybe
+>> >> that is considered "a lot of interrupts".
+>> >>
+>> >> As long as we don't get into scenarios where we're running out of
+>> >> interrupts, due to the software design.
+>> >>
+>> >
+>> > The current approach is simpler and ensures irq_set_affinity
+>> > always works. The limit of max 2047 IDs is sufficient for many
+>> > systems (if not all).
+>>
+>> Let me give you another view. On a 128c system each core has ~16 unique
+>> interrupts for disposal. E.g. the Intel E800 NIC has more than 2048
+>> network queue pairs for each PF.
+>
+> Clearly, this example is a hypothetical and represents a poorly
+> designed platform.
+>
+> Having just 16 IDs per-Core is a very poor design choice. In fact, the
+> Server SoC spec mandates a minimum 255 IDs.
+
+You are misreading. A 128c system with 2047 MSIs per-core, will only
+have 16 *per-core unique* (2047/128) interrupts with the current series.
+
+I'm not saying that each IMSIC has 16 IDs, I'm saying that in a 128c
+system with the maximum amount of MSIs possible in the spec, you'll end
+up with 16 *unique* interrupts per core.
+
+> Regarding NICs which support a large number of queues, the driver
+> will typically enable only one queue per-core and set the affinity to
+> separate cores. We have user-space data plane applications based
+> on DPDK which are capable of using a large number of NIC queues
+> but these applications are polling based and don't use MSIs.
+
+That's one sample point, and clearly not the only one. There are *many*
+different usage models. Just because you *assign* MSI, doesn't mean they
+are firing all the time.
+
+I can show you a couple of networking setups where this is clearly not
+enough. Each core has a large number of QoS queues, and each queue would
+very much like to have a dedicated MSI.
+
+>> > When we encounter a system requiring a large number of MSIs,
+>> > we can either:
+>> > 1) Extend the AIA spec to support greater than 2047 IDs
+>> > 2) Re-think the approach in the IMSIC driver
+>> >
+>> > The choice between #1 and #2 above depends on the
+>> > guarantees we want for irq_set_affinity().
+>>
+>> The irq_set_affinity() behavior is better with this series, but I think
+>> the other downsides: number of available interrupt sources, and IPI
+>> broadcast are worse.
+>
+> The IPI overhead in the approach you are suggesting will be
+> even bad compared to the IPI overhead of the current approach
+> because we will end-up doing IPI upon every irq_set_affinity()
+> in the suggested approach compared to doing IPI upon every
+> mask/unmask in the current approach.
+
+Again, very workload dependent.
+
+This series does IPI broadcast on masking/unmasking, which means that
+cores that don't care get interrupted because, say, a network queue-pair
+is setup on another core.
+
+Some workloads never change the irq affinity.
+
+I'm just pointing out that there are pro/cons with both variants.
+
+> The biggest advantage of the current approach is a reliable
+> irq_set_affinity() which is a very valuable thing to have.
+
+...and I'm arguing that we're paying a big price for that.
+
+> ARM systems easily support a large number of LPIs per-core.
+> For example, GIC-700 supports 56000 LPIs per-core.
+> (Refer, https://developer.arm.com/documentation/101516/0300/About-the-GIC=
+-700/Features)
+
+Yeah, but this is not the GIC. This is something that looks more like
+the x86 world. We'll be stuck with a lot of implementations with AIA 1.0
+spec, and many cores.
+
+> In the RISC-V world, we can easily define a small fast track
+> extension based on S*csrind extension which can allow a
+> large number of IMSIC IDs per-core.
+>
+> Instead of addressing problems on a hypothetical system,
+> I suggest we go ahead with the current approach and deal
+> with a system having MSI over-subscription when such a
+> system shows up.
+
+I've pointed out my concerns. We're not agreeing, but hey, I'm just one
+sample point here! I'll leave it here for others to chime in!
+
+Still much appreciate all the hard work on the series!
+
+
+Have a nice weekend,
+Bj=C3=B6rn
