@@ -2,95 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227117D1112
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3C77D1117
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377429AbjJTN50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S1377434AbjJTN5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377405AbjJTN5Y (ORCPT
+        with ESMTP id S1377432AbjJTN5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:57:24 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2448FD55
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:57:23 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so1184193a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697810241; x=1698415041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VBEOcHttaIcP/pxR3LNkSah4DuVLoNv+g8kB+GAwIHU=;
-        b=WQ7bkNPN4sMRlqOT+c7seM+fMuJFPrXJfz53yTT//0ci+WEV64RGQAzNWwMf/2Lsqb
-         eCRvHDUjMAqV0DGcSoWawXwm22MgRDb+wom6TIbsBq/HbzV6Om4CBQogyjS7jclGPKLr
-         Gdjx9A7r+posdNQR9M5DVR9C8qeV8ANp75DmW8plEHecuf+BSp6MyMvIRlVuTmzlWxa/
-         tyV6+Ye9/iWXa3kfn7sTx2LOEGKhzBWl76knDaQ2w019FnP/k+aanKpffROOxMA9Zg0m
-         KpRLrkE1IAa8i0KwTNvPNa6LmO2tdiwrMUZaESo/PXFfK3KvY9XQKg5NGErH5qV0w28M
-         7C0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697810241; x=1698415041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VBEOcHttaIcP/pxR3LNkSah4DuVLoNv+g8kB+GAwIHU=;
-        b=Axl/F59HrcQZ1iIpaO/YN8LXKWeM54ufH2qTIHslLuvglClmVXu8x2FUDuLKdbSM1m
-         VuAcI5leMWGmr44Q7m2Gjl90Xq+BSM+cFzcZl21vlj7IF83zvG88a5pvrm69XhthRMAd
-         WsCCiX2lOMv3AeH99Y53ORQa+nBoSWRz3DDh+y/jsALP13RHI9I+w0M4StdLJW627dZ1
-         LD3N1pLHwKlzEysLHRsk+2iMJ0ZNlwvQXTWUVuv0+t+Z3kuWiHDYx2KF76v2TFdCUv1g
-         hFK083U+kiVKlX6wnIAfiGq66JAiwcKOyTTpxB9yQgpppFoxNyJttldNpYz7flv8Vmuf
-         n9tA==
-X-Gm-Message-State: AOJu0YwoPHg8SsSKaWDKu9Z1pILlak+cQgDa7VQQjCq/zrEhcmkb2ahp
-        JOrts8SsgFQjJb1gbKyADbyncguaIml/d3NNoVcmSg==
-X-Google-Smtp-Source: AGHT+IGP32Vs6LhSO5Q+dFeyM+jo7MvJ9Do6f3Utqc/r3xR+RomnORAiVakOBNSyJSpezxCesfkyCNRViMFSh/IfRdQ=
-X-Received: by 2002:a50:d795:0:b0:53e:467c:33f1 with SMTP id
- w21-20020a50d795000000b0053e467c33f1mr1740179edi.8.1697810241480; Fri, 20 Oct
- 2023 06:57:21 -0700 (PDT)
+        Fri, 20 Oct 2023 09:57:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543331A3;
+        Fri, 20 Oct 2023 06:57:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB60AC433C8;
+        Fri, 20 Oct 2023 13:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697810261;
+        bh=NWWSj3PLnRvOGqG39XXNzVNGIizV32NCvVENn8XsJmk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=asUxzodMQUUeoeJBAgHWO1iQhtqNT1Xd/1E/pQ3wn1fUNswRVHYlnO3umpma6B3T3
+         0RK0JIISXPODwWLOWFFHGhwvZw3cLgAcO/5rwVAY0QFKQOQYon4OdBBjCq2XsXN9f3
+         yez3cPd2R6iwZmV22FTmFSi5jzaqVOrkUwYk6+s/U/fQH9Wh+zxihOCIBhJ6Wj5k66
+         hJGmOaNnaTMm4uELqrYIuBTdvBItsa1tJsHb/Jdc+tN0yVQnPdq0sLMRtx8YpMBh0P
+         AbrUDd/tgWAKPY6m6BR3qt4g1iQyn3Nu1vdLdXO0OtzRtcd9i/c1nwNxcSJlaLSggL
+         JBErRhmIJXWjg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7D476CE018A; Fri, 20 Oct 2023 06:57:40 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 06:57:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
+ transformation and address deps
+Message-ID: <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
+ <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
+ <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+ <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
+ <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
 MIME-Version: 1.0
-References: <cover.1697779681.git.yan@cloudflare.com> <e721c615e22fc4d3d53bfa230d5d71462ae9c9a8.1697779681.git.yan@cloudflare.com>
- <CANn89iKU6-htPJh3YwvDEDhnVtkXgPOE+2rvzWCbKCpU25kbDw@mail.gmail.com>
- <CAO3-PbqtEPQro4wsQbaD-UbF-2RpxsVKVvs3M0X10-oE7K1LXA@mail.gmail.com>
- <CANn89iK6WE1MUdHKfNcEf=uhKXustwQ-mtC5_toVAkz=VFctgQ@mail.gmail.com> <20231020100055.GC9493@breakpoint.cc>
-In-Reply-To: <20231020100055.GC9493@breakpoint.cc>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Fri, 20 Oct 2023 08:57:10 -0500
-Message-ID: <CAO3-Pbo0N75vWNb0dtCS_47B+yM_y=m1_wjY3xS4cu_GRCw-=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 1/3] ipv6: remove dst_allfrag test on ipv6 output
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 5:01=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
-te:
->
-> Eric Dumazet <edumazet@google.com> wrote:
-> > I also noticed that iproute2 was not supporting RTAX_FEATURE_ALLFRAG,
-> > so we might kill it completely ?
->
-> Yes, I intentionally did not expose it in iproute2.
->
-> Lets remove ALLFRAG.
+On Fri, Oct 20, 2023 at 11:29:24AM +0200, Jonas Oberhauser wrote:
+> 
+> Am 10/19/2023 um 6:39 PM schrieb Paul E. McKenney:
+> > On Wed, Oct 18, 2023 at 12:11:58PM +0200, Jonas Oberhauser wrote:
+> > > Hi Paul,
+> > > [...]
+> > The compiler is forbidden from inventing pointer comparisons.
+> 
+> TIL :) Btw, do you remember a discussion where this is clarified? A quick
+> search didn't turn up anything.
 
-I will do that in V4 later today to completely clean it up then.
-Always cheerful to delete code!
+This was a verbal discussion with Richard Smith at the 2020 C++ Standards
+Committee meeting in Prague.  I honestly do not know what standardese
+supports this.
 
-Yan
+> > > Best wishes,
+> > > 
+> > > jonas
+> > > 
+> > > Am 10/6/2023 um 6:39 PM schrieb Jonas Oberhauser:
+> > > > Hi Paul,
+> > > > 
+> > > > The "more up-to-date information" makes it sound like (some of) the
+> > > > information in this section is out-of-date/no longer valid.
+> > The old smp_read_barrier_depends() that these section cover really
+> > does no longer exist.
+> 
+> You mean that they *intend to* cover? smp_read_barrier_depends never appears
+> in the text, so anyone reading this section without prior knowledge has no
+> way of realizing that this is what the sections are talking about.
+
+It also doesn't appear in the kernel anymore.
+
+> On the other hand the implicit address dependency barriers that do exist are
+> mentioned in the text. And that part is still true.
+
+And this relevant discussion is moving to rcu_dereference.rst, and the
+current text is just for people who read memory-barriers.txt some time
+back and are expecting to find the same information in the same place.
+
+So if there are things that rcu_dereference.rst is missing, they do
+need to be added.
+
+> > > > But after reading the sections, it seems the information is valid, but
+> > > > discusses mostly the history of address dependency barriers.
+> > > > 
+> > > > Given that the sepcond part  specifically already starts with a
+> > > > disclaimer that this information is purely relevant to people interested
+> > > > in history or working on alpha, I think it would make more sense to
+> > > > modify things slightly differently.
+> > > > 
+> > > > Firstly I'd remove the "historical" part in the first section, and add
+> > > > two short paragraphs explaining that
+> > > > 
+> > > > - every marked access implies a address dependency barrier
+> > This is covered in rcu_dereference.rst.
+> 
+> Let me quote a much wiser man than myself here: "
+> 
+> The problem is that people insist on diving into the middle of documents,
+> so sometimes repetition is a necessary form of self defense.  ;-)
+> 
+> "
+
+;-) ;-) ;-)
+
+> The main reason I would like to add this here at the very top is that
+> 
+> - this section serves to frigthen children about the dangers of address
+> dependencies,
+> 
+> - never mentions a way to add them - I need to happen to read another
+> section of the manual to find that out
+
+Both are now the job of rcu_dereference.rst.
+
+> - and says this information is historical without specifying which parts are
+> still relevant
+
+Readers not interested in history should just go to rcu_dereference.rst,
+and if pieces are missing from rcu_dereference.rst, they should be
+added there.  (Except of course not the historical points that are not
+relevant to the current kernel.)
+
+> (and the parts that are still there are all still relevant, while the parts
+> that only the authors know was intended to be there and is out-of-date is
+> already gone).
+
+The question is instead what parts that are still relevant are missing
+from rcu_dereference.rst.
+
+> So I would add a disclaimer specifying that (since 4.15) *all* marked
+> accesses imply read dependency barriers which resolve most of the issues
+> mentioned in the remainder of the article.
+> However, some issues remain because the dependencies that are preserved by
+> such barriers are just *semantic* dependencies, and readers should check
+> rcu_dereference.rst for examples of what that implies.
+
+Or maybe it is now time to remove those sections from memory-barriers.txt,
+leaving only the first section's pointer to rcu_dereference.rst.
+It still feels a bit early to me, and I am still trying to figure out
+why you care so much about these sections.  ;-)
+
+> > [...]
+> > most situations would be better served by an _acquire() suffix than by
+> > a relaxed version of [...] an atomic [...]
+> 
+> I completely agree. I even considered removing address dependencies
+> altogether from the company-internal memory models.
+> But people sometimes get a little bit angry and start asking many questions.
+> The valuable time of the model maintainer should be considered when
+> designing memory models.
+
+Yeah, that is always a tough tradeoff, to be sure!
+
+> > > > - address dependencies considered by the model are *semantic*
+> > > > dependencies, meaning that a *syntactic* dependency is not sufficient to
+> > > > imply ordering; see the rcu file for some examples where compilers can
+> > > > elide syntactic dependencies
+> > There is a bunch of text in rcu_dereference.rst to this effect.  Or
+> > is there some aspect that is missing from that document?
+> 
+> That's what I meant by "see the rcu file" --- include a link to
+> rcu_dereference.rst in that paragraph.
+> So that people know to check out rcu_dereference.rst for more explanations
+> to this effect.
+
+You mean this paragraph?
+
+ (2) Address-dependency barriers (historical).
+     [!] This section is marked as HISTORICAL: For more up-to-date
+     information, including how compiler transformations related to pointer
+     comparisons can sometimes cause problems, see
+     Documentation/RCU/rcu_dereference.rst.
+
+If so, that last line is intended to be the required link.
+
+Or am I looking in the wrong place?
+
+> > The longer-term direction, perhaps a few years from now, is for the
+> > first section to simply reference rcu_dereference.rst and for the second
+> > section to be removed completely.
+> 
+> Sounds good to me, but that doesn't mean we need to compromise the
+> readability in the interim :)
+
+Some compromise is needed for people that read the document some time
+back and are looking for something specific.
+
+> > [...]
+> > The problem is that people insist on diving into the middle of documents,
+> > so sometimes repetition is a necessary form of self defense.  ;-)
+> > 
+> > But I very much appreciate your review and feedback, and I also apologize
+> > for my slowness.
+> 
+> Thanks for the response, I started thinking my mails aren't getting through
+> again.
+
+Again, apologies!
+
+							Thanx, Paul
