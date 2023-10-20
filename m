@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B8A7D08B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2307D08B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376449AbjJTGo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S1376355AbjJTGq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 02:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347047AbjJTGoI (ORCPT
+        with ESMTP id S235622AbjJTGq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:44:08 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CD71729
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:43:53 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1ca72f8ff3aso3733775ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697784233; x=1698389033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBfG7y1wS6npxpsDoB4LPtvQaNRqYIKOIQ4wevmC8p0=;
-        b=KUfRVSopeS9Tjh+EHJvDjLv1SdPKOkt+uEn2D2FIg5SH2o1cARYB7l6fwhQCuqkNVY
-         wy8LKSZVfALz7zseTynqeuI3SsPADQyAx2/+YV9Yjgy3ijRuDfyx+Q6eM2XpLq+/HWO3
-         1hTU09KyzaMuGOKZifs/9e7W2r29RCUXm1ghgSmzkS1hPQMPAP27JMR47c6D887iFU9A
-         aFMUJx9amGhJCjPmI/7skuUL9myinyCfjrnV5AWa0jWg6DNib93F+ugSYwOffIFCr7dT
-         8gCwpiXqYTtYoRXaR4jQois9ocGtW9gNN/PWkm/qzGiFWdIiN30k4dM2+ZO+7zmZUzjc
-         Gfag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697784233; x=1698389033;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jBfG7y1wS6npxpsDoB4LPtvQaNRqYIKOIQ4wevmC8p0=;
-        b=aaApOasPIB8brnTsAoa/ezoOu/G1j7fhB3bFlEV9vSk5GSPfqgxveCP8/bGj4QjvyS
-         FuLiauXQwt0/oijG/J7YqTWY1AunClLE2a/GeS30NBzaxb7ky97ZqFrxewlLu5UA4Gp/
-         SmoUx5eQOVw+ip/sQzxdlpW/PI8YIvaYoL9uM1wl1NmwqbiCvABoMKy4ac+/b2IJpaSs
-         M7wKoc6o7t4a5o8FRZSAe3WIn3atu7nxH0brbmoWGNcMa9g3aU8er/OaOpqYg3pXXoRz
-         gBKJ004dUaHeEiYjB1NN5DrqxS1bdKYYM9vOD476PplwP0i1XRY/uVJp2e38RxhdbSGo
-         6u7w==
-X-Gm-Message-State: AOJu0YyIxcCwVfVDp/ECIsTExrjPl1WeAwAgKnhwpCeJ61P7qCoQu7uz
-        KY3dRJFgC9K73fNq6iCDtEFP
-X-Google-Smtp-Source: AGHT+IHBnmxbWanPC5CN2BOkeTciCen2gLcMRjhDdIc93xy8/IDPdeFK5Ms03eR3Kq0WAmKzTno+ZA==
-X-Received: by 2002:a17:902:ea95:b0:1c9:d90b:c3e4 with SMTP id x21-20020a170902ea9500b001c9d90bc3e4mr996805plb.10.1697784232954;
-        Thu, 19 Oct 2023 23:43:52 -0700 (PDT)
-Received: from localhost.localdomain ([117.202.186.40])
-        by smtp.gmail.com with ESMTPSA id t3-20020a170902bc4300b001c60ba709b7sm760951plz.125.2023.10.19.23.43.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 23:43:52 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vidyas@nvidia.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v6 3/3] PCI: tegra194: Refactor EP initialization completion
-Date:   Fri, 20 Oct 2023 12:13:20 +0530
-Message-Id: <20231020064320.5302-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231020064320.5302-1-manivannan.sadhasivam@linaro.org>
-References: <20231020064320.5302-1-manivannan.sadhasivam@linaro.org>
+        Fri, 20 Oct 2023 02:46:26 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2671598;
+        Thu, 19 Oct 2023 23:46:25 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K5OJtP024300;
+        Fri, 20 Oct 2023 06:46:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : from : subject : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ehATourjSW2RB4zjc0CeHK506bFDAo3dFHe2K8h+9Es=;
+ b=Gy9D9VWZeeLWc3gH97WqhufNxf0jfHgwYr4O+WuLGkM8ShWMXa248CPOgRsdjuNZAhpS
+ o8T0ZGj5/gvinCTU/aQABT+btCbMF0PKkRnJydawG3S+s2xRnhzK744PQxS1Vq7Jtggt
+ 0Uf50ttJ/JQ6cmNfEwvfe5YYENlqLJJNp3BBQFNe63G+LsKZx5gplTK6X1E/3aayq4/k
+ mEOfYl0EAmiO941D8hZaTuh7JDl7KZA6wcJS0oBi5upaXOkS+dqh9sbQw5yR9/IKM66y
+ cbOWCWiti0dz+yAQUDCMq24LLiWueSKFvrJhDEXM4WSjiE9q8KNJDhUzYk9pT9UxU1ab EQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubwkh1sg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 06:46:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K6k43X006291
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 06:46:04 GMT
+Received: from [10.216.18.86] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 23:45:57 -0700
+Message-ID: <3bc7ed02-709a-4216-b077-82082f6729e5@quicinc.com>
+Date:   Fri, 20 Oct 2023 12:15:52 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Maramaina Naresh <quic_mnaresh@quicinc.com>
+Subject: Re: [PATCH V1 0/4] Add per-cpu PM QoS support for QCOM UFS
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_nguyenb@quicinc.com>
+References: <1696952947-18062-1-git-send-email-quic_mnaresh@quicinc.com>
+ <23c91551-9d94-4ec6-85eb-be1e2af20dc7@acm.org>
+Content-Language: en-US
+In-Reply-To: <23c91551-9d94-4ec6-85eb-be1e2af20dc7@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UmNAVeBex0NdLO1uq4C4oY4VBxeS1BvJ
+X-Proofpoint-ORIG-GUID: UmNAVeBex0NdLO1uq4C4oY4VBxeS1BvJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_05,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=868 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 priorityscore=1501 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310200057
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -74,39 +90,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vidya Sagar <vidyas@nvidia.com>
+Hi Bart,
 
-Instead of doing the initialization complete and notifying it to the EPF
-drivers separately, let's call the dw_pcie_ep_init_notify() function that
-takes care of both.
+Thank you for reviewing the patch.  This is not specific to the Qualcomm 
+driver.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-[mani: modified the commit message]
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-tegra194.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+We will move this feature to core UFS.
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index a962f2c7794f..a8835287fc3a 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1897,14 +1897,12 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
- 	val = (upper_32_bits(ep->msi_mem_phys) & MSIX_ADDR_MATCH_HIGH_OFF_MASK);
- 	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_HIGH_OFF, val);
- 
--	ret = dw_pcie_ep_init_complete(ep);
-+	ret = dw_pcie_ep_init_notify(ep);
- 	if (ret) {
- 		dev_err(dev, "Failed to complete initialization: %d\n", ret);
- 		goto fail_init_complete;
- 	}
- 
--	dw_pcie_ep_init_notify(ep);
--
- 	/* Program the private control to allow sending LTR upstream */
- 	if (pcie->of_data->has_ltr_req_fix) {
- 		val = appl_readl(pcie, APPL_LTR_MSG_2);
--- 
-2.25.1
+Thanks,
 
+Naresh.
+
+On 10/12/2023 2:26 AM, Bart Van Assche wrote:
+> On 10/10/23 08:49, Maramaina Naresh wrote:
+>> Add per-cpu PM QoS support for ufs. This improves random io performance
+>> by 20% for ufs.
+>
+> What in this patch series (other than the DT-bindings) is specific to
+> the Qualcomm driver? If the answer is not much: please move this
+> functionality into the UFS driver core.
+>
+> Thanks,
+>
+> Bart.
+>
