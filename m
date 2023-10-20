@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1CE7D06D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4C77D06DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346887AbjJTDZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 23:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
+        id S1346888AbjJTD24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 23:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233400AbjJTDZE (ORCPT
+        with ESMTP id S235594AbjJTD2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 23:25:04 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A2181;
-        Thu, 19 Oct 2023 20:25:00 -0700 (PDT)
-Received: from canpemm100004.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SBVJ367hGzrTKr;
-        Fri, 20 Oct 2023 11:22:11 +0800 (CST)
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm100004.china.huawei.com (7.192.105.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 20 Oct 2023 11:24:57 +0800
-Subject: Re: [PATCH] scsi: libsas: fix set zero-address when device-type !=
- NO_DEVICE
-To:     Xingui Yang <yangxingui@huawei.com>, <john.g.garry@oracle.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangfenglong@huawei.com>, <xiabing12@h-partners.com>
-References: <20231020024240.7708-1-yangxingui@huawei.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <31524a87-9e02-5e43-5d71-5747c2e6e6b0@huawei.com>
-Date:   Fri, 20 Oct 2023 11:24:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 19 Oct 2023 23:28:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245B3D4C;
+        Thu, 19 Oct 2023 20:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697772530; x=1729308530;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=96Gky6mpZZHpzgNi964Tps4EK4L+Pft4fZHmTBB7PZs=;
+  b=SZ5pGjCx+5SdJ/o0PCwaYnm8gfySxrz1JJNucTi/XSx7Q7L8Li+9ByK8
+   bL/+tCdVU/JYrJ0Hwi77jDyHwYqrCgpKgDoJoZJT4ftxZh7sgJYZmZbjg
+   ecIHF5aWZyP0KoS4SpkVZ8kIYoQwIbFXoa3rHig4LErYH5BgYNCiV40e0
+   Bvr/TGa6t//NmZlCAVOqgWzbqA5OqJcwpGoH+RY/UNC2jVgUopVQrDL9R
+   SaqJgQX+P7+45khGHwHnLIMcENTJU5BQgzxpDlhGuvAVW3NO4IWg8Bz76
+   9pW95xj36WGtZoOY3QSzpX0A6NRmG37tu/zYmKzQGaNcM0yqL4Kht0bXH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="472645905"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="472645905"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 20:28:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="827592040"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="827592040"
+Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Oct 2023 20:28:45 -0700
+From:   Gan Yi Fang <yi.fang.gan@intel.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        Gan Yi Fang <yi.fang.gan@intel.com>
+Subject: [PATCH net v2 1/1] net: stmmac: update MAC capabilities when tx queues are updated
+Date:   Fri, 20 Oct 2023 11:25:35 +0800
+Message-Id: <20231020032535.1777746-1-yi.fang.gan@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20231020024240.7708-1-yangxingui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.14]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm100004.china.huawei.com (7.192.105.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/20 10:42, Xingui Yang wrote:
-> phy->attached_sas_addr will be set to a zero-address when
-> phy->linkrate < SAS_LINK_RATE_1_5_GBPS but device-type != NO_DEVICE,
-> and it may trigger BUG() as follows when do revalidate with zero-address:
+From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 
-Hi  Xingui,
+Upon boot up, the driver will configure the MAC capabilities based on
+the maximum number of tx and rx queues. When the user changes the
+tx queues to single queue, the MAC should be capable of supporting Half
+Duplex, but the driver does not update the MAC capabilities when it is
+configured so.
 
-Why is this zero-addressed PHY added to another port? A zero-addressed 
-PHY should not belong to any port.
+Using the stmmac_reinit_queues() to check the number of tx queues
+and set the MAC capabilities accordingly.
 
-Thanks,
-Jason
+Fixes: 0366f7e06a6b ("net: stmmac: add ethtool support for get/set channels")
+Cc: <stable@vger.kernel.org> # 5.17+
+Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c   | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-> 
-> [562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
-> [562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 0000000000000000 (stp)
-> [562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's already part of another port
-> [562240.085064] ------------[ cut here ]------------
-> [562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
-> [562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
-> [562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 0x0000000003bcbebf)
-> [562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain [libsas]
-> [562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
-> [562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-> [562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-> [562240.479751] sp : ffff0000300cfa70
-> [562240.674822] Call trace:
-> [562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-> [562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
-> [562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
-> [562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
-> [562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
-> [562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
-> [562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
-> [562240.756014]  process_one_work+0x1b4/0x448
-> [562240.764548]  worker_thread+0x54/0x468
-> [562240.772562]  kthread+0x134/0x138
-> [562240.779989]  ret_from_fork+0x10/0x18
-> 
-> So set a zero-address for phy->attached_sas_addr only when
-> phy->attached_dev_type == NO_DEVICE.
-> 
-> Fixes: 7d1d86518118 ("[SCSI] libsas: fix false positive 'device attached' conditions")
-> 
-> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-> ---
->   drivers/scsi/libsas/sas_expander.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-> index a2204674b680..5a81754d3768 100644
-> --- a/drivers/scsi/libsas/sas_expander.c
-> +++ b/drivers/scsi/libsas/sas_expander.c
-> @@ -239,8 +239,7 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id,
->   	/* help some expanders that fail to zero sas_address in the 'no
->   	 * device' case
->   	 */
-> -	if (phy->attached_dev_type == SAS_PHY_UNUSED ||
-> -	    phy->linkrate < SAS_LINK_RATE_1_5_GBPS)
-> +	if (phy->attached_dev_type == SAS_PHY_UNUSED)
->   		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
->   	else
->   		memcpy(phy->attached_sas_addr, dr->attached_sas_addr, SAS_ADDR_SIZE);
-> 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index ed1a5a31a491..5801f4d50f95 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1197,6 +1197,17 @@ static int stmmac_init_phy(struct net_device *dev)
+ 	return ret;
+ }
+ 
++static void stmmac_set_half_duplex(struct stmmac_priv *priv)
++{
++	/* Half-Duplex can only work with single tx queue */
++	if (priv->plat->tx_queues_to_use > 1)
++		priv->phylink_config.mac_capabilities &=
++			~(MAC_10HD | MAC_100HD | MAC_1000HD);
++	else
++		priv->phylink_config.mac_capabilities |=
++			(MAC_10HD | MAC_100HD | MAC_1000HD);
++}
++
+ static int stmmac_phy_setup(struct stmmac_priv *priv)
+ {
+ 	struct stmmac_mdio_bus_data *mdio_bus_data;
+@@ -1228,10 +1239,7 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+ 						MAC_10FD | MAC_100FD |
+ 						MAC_1000FD;
+ 
+-	/* Half-Duplex can only work with single queue */
+-	if (priv->plat->tx_queues_to_use <= 1)
+-		priv->phylink_config.mac_capabilities |= MAC_10HD | MAC_100HD |
+-							 MAC_1000HD;
++	stmmac_set_half_duplex(priv);
+ 
+ 	/* Get the MAC specific capabilities */
+ 	stmmac_mac_phylink_get_caps(priv);
+@@ -7172,6 +7180,7 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+ 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
+ 									rx_cnt);
+ 
++	stmmac_set_half_duplex(priv);
+ 	stmmac_napi_add(dev);
+ 
+ 	if (netif_running(dev))
+-- 
+2.34.1
+
