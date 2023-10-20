@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0BA7D0E94
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481807D0EAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377222AbjJTLha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        id S1377282AbjJTLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377171AbjJTLhV (ORCPT
+        with ESMTP id S1377107AbjJTLhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:37:21 -0400
+        Fri, 20 Oct 2023 07:37:23 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC3FD52;
-        Fri, 20 Oct 2023 04:37:19 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:37:17 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14DBD5B;
+        Fri, 20 Oct 2023 04:37:20 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:37:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697801838;
+        s=2020; t=1697801839;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qp1QHW1BYAziAuE66cKDriXpe2XnJn3/biI4q/JPSMg=;
-        b=lQ0fZem+4eO+AjvS7ZiiB0CeoF4VtaENTCkODcCzWUsA6AIEDSgi8B6Sp+WDwO8+xl4sv2
-        tAJ73fzBBhSMbdvNkThdSCd+nq2E6WP2aOvT9yunYlwc/MuBkcOJU56iQsqp1xcr1nR4MO
-        byrCZqU33ya+/8mu3eVWmobcaS6wO5oWoQKFl8rri04g0E8dtf7NtWDEfUytwQEohQni+s
-        fQyp/r7uPy2Lf/37/q86KrsQ+NEH1gdri/ksnTlbgZB+jM7zrT9Nia6YyABOIj6QTfBPLR
-        hgw6UeA2+lTeg8dR55a35mRrKbbKuxFYGTpaSXlFCLwG/oU5tYVRP7KMdRhPFA==
+        bh=T7rquPvt7QDQYVBgfg7x6sEf6nSLkJi4u/H+hJZVgpQ=;
+        b=rFfSAjl8/PxgczolkAh73sOxI2xvBLrFo5zXVzUNieFghPDZUxYCNwOo5Ph15a5GYK32sA
+        QH5fQ0rk6vwVlA6QFhcmBvbgjQqOgXZ/pzF7Qxpv2aKZNp32lsY9WN+hL34z+2hCC0iZ9I
+        uul9QmtSeDjr0gZizeG1i893UM01mp3pkYciJ/iP5dQTA6Yb0pPXz+0sTlXk2fJ2rbgR9R
+        JnphsQlSiqoHz6ijlr8IiCFh83e39SrJRyYm90Z97c6GugVNdZ1mh9b4zSBgXZfFieo/HG
+        ZsiCiC/7sd1MUkRNHthKGk7/Bupe3hAMadnW/07dzuW0nX3DDI1NMtLXzxiSxA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697801838;
+        s=2020e; t=1697801839;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qp1QHW1BYAziAuE66cKDriXpe2XnJn3/biI4q/JPSMg=;
-        b=6nXRRk1fZ0x93X3pYFldrFM+fGPUm3Gsk3y//1W9eIclUIOvV+XPZUPudVPI6JM/cs5X5u
-        78yW+4VXVXxq3QDw==
+        bh=T7rquPvt7QDQYVBgfg7x6sEf6nSLkJi4u/H+hJZVgpQ=;
+        b=RwK4D5/YuUONiOXgiGKvv1ktKXph0Klyt16WrJU2vwep31Pb2tLLuGzAKnb+eOJIQfgUyv
+        rYBnFQyYzBvXjzCQ==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
+Subject: [tip: x86/bugs] x86/srso: Move retbleed IBPB check into existing
+ 'has_microcode' code block
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <26d461bd509cc840af24c94586561c06d39812b2.1693889988.git.jpoimboe@kernel.org>
-References: <26d461bd509cc840af24c94586561c06d39812b2.1693889988.git.jpoimboe@kernel.org>
+In-Reply-To: <0a22b86b1f6b07f9046a9ab763fc0e0d1b7a91d4.1693889988.git.jpoimboe@kernel.org>
+References: <0a22b86b1f6b07f9046a9ab763fc0e0d1b7a91d4.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169780183764.3135.10171760219368406494.tip-bot2@tip-bot2>
+Message-ID: <169780183877.3135.16167476121418163828.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,63 +68,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     0a3c49178c3c3e6f29280567ccb549826dd3a3f1
-Gitweb:        https://git.kernel.org/tip/0a3c49178c3c3e6f29280567ccb549826dd3a3f1
+Commit-ID:     351236947a45a512c517153bbe109fe868d05e6d
+Gitweb:        https://git.kernel.org/tip/351236947a45a512c517153bbe109fe868d05e6d
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:05:01 -07:00
+AuthorDate:    Mon, 04 Sep 2023 22:04:59 -07:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Fri, 20 Oct 2023 12:40:42 +02:00
+CommitterDate: Fri, 20 Oct 2023 12:29:25 +02:00
 
-x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
+x86/srso: Move retbleed IBPB check into existing 'has_microcode' code block
 
-Macros already exist for unaligned code block symbols.  Use them.
+Simplify the code flow a bit by moving the retbleed IBPB check into the
+existing 'has_microcode' block.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/26d461bd509cc840af24c94586561c06d39812b2.1693889988.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/0a22b86b1f6b07f9046a9ab763fc0e0d1b7a91d4.1693889988.git.jpoimboe@kernel.org
 ---
- arch/x86/lib/retpoline.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 8ba79d2..415521d 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -149,7 +149,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
-  * As a result, srso_alias_safe_ret() becomes a safe return.
-  */
- 	.pushsection .text..__x86.rethunk_untrain
--SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_CODE_START_NOALIGN(srso_alias_untrain_ret)
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_NOENDBR
- 	ASM_NOP2
-@@ -159,7 +159,7 @@ SYM_FUNC_END(srso_alias_untrain_ret)
- 	.popsection
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 941ac94..6b443f0 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2430,10 +2430,8 @@ static void __init srso_select_mitigation(void)
+ 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
+ 			return;
+ 		}
+-	}
  
- 	.pushsection .text..__x86.rethunk_safe
--SYM_START(srso_alias_safe_ret, SYM_L_GLOBAL, SYM_A_NONE)
-+SYM_CODE_START_NOALIGN(srso_alias_safe_ret)
- 	lea 8(%_ASM_SP), %_ASM_SP
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_UNRET_SAFE
-@@ -187,7 +187,7 @@ SYM_CODE_END(srso_alias_return_thunk)
-  */
- 	.align 64
- 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
--SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
-+SYM_CODE_START_LOCAL_NOALIGN(srso_untrain_ret)
- 	ANNOTATE_NOENDBR
- 	.byte 0x48, 0xb8
- 
-@@ -255,7 +255,7 @@ SYM_CODE_END(srso_return_thunk)
-  */
- 	.align 64
- 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
--SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
-+SYM_CODE_START_LOCAL_NOALIGN(retbleed_untrain_ret)
- 	ANNOTATE_NOENDBR
- 	/*
- 	 * As executed from retbleed_untrain_ret, this is:
+-	if (retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
+-		if (has_microcode) {
++		if (retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
+ 			srso_mitigation = SRSO_MITIGATION_IBPB;
+ 			goto out;
+ 		}
