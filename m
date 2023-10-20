@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F52E7D1964
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCDF7D196A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjJTW4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 18:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S229555AbjJTW6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 18:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbjJTW4r (ORCPT
+        with ESMTP id S230188AbjJTW6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 18:56:47 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADFCD7A
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:56:44 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a828bdcfbaso19324557b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:56:44 -0700 (PDT)
+        Fri, 20 Oct 2023 18:58:05 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6881D79
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:02 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-27e293ff6daso438a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697842603; x=1698447403; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4wuE33JR6uRipbrn8kdzQrSZIpZ8wHAHfWDfHw4x2Go=;
-        b=3eiPf0+PzGX70YmdaODsJ7bUJcU5w32j2jYgh+cKURMXGAIAINfIhjWo3wNpHiuOKU
-         n3kYQKQzu3kdVN6NaK4cgmiOWB/3AxA54FOoJeNxYxHDqqFVAAOUmyHCCI//o12qUWwM
-         GH2ZowGMd86tZgR7nmTQCKDrriMqZ4db2LZey1LrWk6mEdJTlklJYIFDQCSf5sI016sn
-         IZnH0lkNj9b6WNBj62rvhPIFHLnftqivD+/D4stFxmPsSDknzKN7kcXwWKS698Rexssb
-         31RGCYxVgbpNrmk6v2LwSOr0BkA7akwT40U64edruA0I9Z0oopvqP+9n6Iv118xsjJnD
-         RAsQ==
+        d=google.com; s=20230601; t=1697842682; x=1698447482; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YJUbXLc41eB4MhMk4dwKPTxYx78Ax4qZ5YkFcbOnrU=;
+        b=g52c0ASOETzdo/gVmHylVla5THW3yVGVj08JVffS735RQPUzH0/F2tbA1xZ+MWz+YS
+         QCXTvJT/ylvBacMZUATKxaI7EAkn5zglv0t82S0oKDvCIsUjY6LTlyrXcqVJY2Pp638H
+         3MhbBWzbXO2RcImP75cK0yOnSfYFsvFMxHqWGSyyu3Zn33qAOhF9R6TG6zbQ9e/uC8O+
+         cK35FJl+AmCFkZatdzqM67tcChmr1Rwrp4g5GcvmKg7Ny/bMfj3CdPrcDYnEsy4WuiYf
+         cbF55Up3i4jQnSmYF0mY72Z7ZXZ4dnvw9v083Z/GZ2zqCrPYYcusxhLByEVe9EIsZbl2
+         Y48g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697842603; x=1698447403;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4wuE33JR6uRipbrn8kdzQrSZIpZ8wHAHfWDfHw4x2Go=;
-        b=DJbt7oPcG8C4EyyASyDUujbx8G9aydBnGaFkd1QSYxDVptcl4/mGrGnSDIrhmCBAUU
-         LzH7CDS8TdIYX5e++J94orzIYiCbJ4KTgjTwNpWf6UJ/p8ul6GL6EaS7zZOWKghO5C44
-         LLCghQzJ6rX7FwiDPoCEJY6dkSmLKDTWuBqwCLx9pqmQe/KEELMLR+6WSSo8FWSA9788
-         ch6i46bkAn80BtN4P7Dpj1LQJhgwCFTVajf+tSCOVaJUlJe5m25wLxxrgKWT/I6tyVkb
-         Q850AC0CKfiGzkK5S0aS43pDs1+XylmnzjxNNHK2skfrtSh3AZHdR9bImDSeTFJY1WF+
-         8hOg==
-X-Gm-Message-State: AOJu0Yzl5kCe5agBFuQzFDNzGCqj5A4yv+2la8lZj57ElcD92WkHlC8S
-        TLpi4IP8YhNGtiMtVSaqqp4HNxxZugc=
-X-Google-Smtp-Source: AGHT+IEFeC6rrkwTpPozE6wC3tZ7yqN0ETi+88hv8Jirws+BdHPbVzuw5siyvgARe8gtQf5TRxiGRXB9Rjk=
+        d=1e100.net; s=20230601; t=1697842682; x=1698447482;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YJUbXLc41eB4MhMk4dwKPTxYx78Ax4qZ5YkFcbOnrU=;
+        b=GMpeVbyNf6C/Z9BLt+7b50g+6JIuZr3mIiDYvAIbykWOl7AYranTGbuRE7VGVMHMaS
+         ddyd1kI7BbrEi1pC5nSxVOKdd5NYGD4WFP6YuEf0enUy8s9BiKFJyYL1QUq0+5eAMUvp
+         9l8CUu9G6PKIId5VdPM87FaAbB5Gf1oXaBBXpmaSNhKUhpAHFvU5rpD3NDWgjx/oPjhO
+         dLWJJWOi0g5puJcnUD8DTcL63n4HP7sXfP+bWmT29vuSYdBgh5/VlcJClltZIQmBzFnc
+         DzrxiIrD8bKvjEMr6DP7/YaYq7CXPXk+e4pwHgpuOZUqdcEGZfcRGvdsur+B6GcYc8kH
+         yFQA==
+X-Gm-Message-State: AOJu0YziZidKfWvHzY6Uvj+ZI6BU/dUaE/xkyy4W3408MxXKfJ2klBzh
+        lZO/e8cKuWZgXCmtE98I7Oc05Le6N0o=
+X-Google-Smtp-Source: AGHT+IGfYZWevFY4LmuyPUFyRmMlkbI4CYl3i++HdLF4sX1XJI0e/0I3e9txRYNsBFnmgQ94Pj9gzteLP7Y=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:dd10:0:b0:577:619e:d3c9 with SMTP id
- g16-20020a0ddd10000000b00577619ed3c9mr80276ywe.10.1697842603528; Fri, 20 Oct
- 2023 15:56:43 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 15:56:21 -0700
-In-Reply-To: <20231005031237.1652871-1-jmattson@google.com>
+ (user=seanjc job=sendgmr) by 2002:a17:90b:3788:b0:27d:3b44:86fc with SMTP id
+ mz8-20020a17090b378800b0027d3b4486fcmr74085pjb.7.1697842681955; Fri, 20 Oct
+ 2023 15:58:01 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 15:56:25 -0700
+In-Reply-To: <1ce85d9c7c9e9632393816cf19c902e0a3f411f1.1697731406.git.maciej.szmigiero@oracle.com>
 Mime-Version: 1.0
-References: <20231005031237.1652871-1-jmattson@google.com>
+References: <1ce85d9c7c9e9632393816cf19c902e0a3f411f1.1697731406.git.maciej.szmigiero@oracle.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <169766229957.1906201.16765121392662291005.b4-ty@google.com>
-Subject: Re: [PATCH v2] x86: KVM: Add feature flag for CPUID.80000021H:EAX[bit 1]
+Message-ID: <169773243871.2018423.1481448432661434673.b4-ty@google.com>
+Subject: Re: [PATCH v2] KVM: x86: Ignore MSR_AMD64_TW_CFG access
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
+To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 20:12:37 -0700, Jim Mattson wrote:
-> Define an X86_FEATURE_* flag for CPUID.80000021H:EAX.[bit 1], and
-> advertise the feature to userspace via KVM_GET_SUPPORTED_CPUID.
+On Thu, 19 Oct 2023 18:06:57 +0200, Maciej S. Szmigiero wrote:
+> Hyper-V enabled Windows Server 2022 KVM VM cannot be started on Zen1 Ryzen
+> since it crashes at boot with SYSTEM_THREAD_EXCEPTION_NOT_HANDLED +
+> STATUS_PRIVILEGED_INSTRUCTION (in other words, because of an unexpected #GP
+> in the guest kernel).
 > 
-> Per AMD's "Processor Programming Reference (PPR) for AMD Family 19h
-> Model 61h, Revision B1 Processors (56713-B1-PUB)," this CPUID bit
-> indicates that a WRMSR to MSR_FS_BASE, MSR_GS_BASE, or
-> MSR_KERNEL_GS_BASE is non-serializing. This is a change in previously
-> architected behavior.
+> This is because Windows tries to set bit 8 in MSR_AMD64_TW_CFG and can't
+> handle receiving a #GP when doing so.
 > 
 > [...]
 
-Applied to kvm-x86 misc, thanks!
+Applied to kvm-x86 misc, thanks!  I added a paragraph at the end of the
+changelog to capture the gist of the discussion on why we agreed that having
+KVM eat MSR accesses is the least awful option.  I also tagged this for stable.
 
-[1/1] x86: KVM: Add feature flag for CPUID.80000021H:EAX[bit 1]
-      https://github.com/kvm-x86/linux/commit/329369caeccb
+Paolo, holler if you want to grab this for v6.6 and I'll drop my copy.
+
+[1/1] KVM: x86: Ignore MSR_AMD64_TW_CFG access
+      https://github.com/kvm-x86/linux/commit/2770d4722036
 
 --
 https://github.com/kvm-x86/linux/tree/next
