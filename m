@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FCB7D099C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2817F7D099D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376430AbjJTHhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S1376438AbjJTHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376317AbjJTHhp (ORCPT
+        with ESMTP id S1376317AbjJTHia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:37:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D03593;
-        Fri, 20 Oct 2023 00:37:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0980BC433C7;
-        Fri, 20 Oct 2023 07:37:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697787464;
-        bh=GI0hZ0zC3w4UUqmfCOExvfTwcUMptnt24qo2d5p1zbE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Vd7RPiiDjoRn2Pf5P5hsRPkxBRtoOCxPVHBrqddJRbvy31jolrs/XDfbrce9fZzJo
-         uk7X9vbTNc85QlTeMdscZWrPwfEXxKvpKfsvXR9dKuRv8+ywId3MnH5C4kTGnayD+0
-         RDGngcjYm398wLzCBsVfrTX93usg9qtKDUpZBdav1Nqt/irXGymExdD+Z/gTMva75E
-         wRWn3Augi+8zw77eaMNV5x99e8IQHoCU7zaxV99Jx4kyCCCJfwvEULjKOkphPFV3fM
-         ti7izaewwiOSX2Z9vG3oYxkTwndj0znxoHSDrolObqpRejY6ay9ZscrVlkDyWUGbbp
-         4WC2HH73tJz4Q==
-Date:   Fri, 20 Oct 2023 08:37:34 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Peter Rosin <peda@axentia.se>,
-        Stephen Warren <swarren@nvidia.com>,
-        Rob Herring <robh@kernel.org>,
+        Fri, 20 Oct 2023 03:38:30 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BEF91
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:38:28 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so3870485e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697787507; x=1698392307; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/KThKo4jmYx+C7nHHaCwoPbIW3yJzTHN31FdSecDUqs=;
+        b=vlTk2avxHFGhBdY6WTwWDpNMp/iLNi9GnCo0yYbzFxEkuxGTRtnOenPJmKwHgwx1Il
+         yI4NBApvD0oLsY+gWfzSsDpDGCCIRy1GMQ8zSQvbbYyCUvjEhGKqPuoQjCDxC995iwZd
+         eXoBiY2qp8cb2bjSOYZdmPZtLo2E5e8xLap6srPaH0UynMOCWlx4C2BQ02mKVqoRe7p+
+         s3SLycjAK6kd6aVzf9W7Qg3m+9WTH6Wwzksu/Zh3iIyBizX18GAHa3KP71lt+T5BHwf+
+         VLwMYY85ncvuTsusVAD263jFtqu6zRylr7kAMW+H4BooaYzdXyY72woSxnb79MrgwwG4
+         0jrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697787507; x=1698392307;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/KThKo4jmYx+C7nHHaCwoPbIW3yJzTHN31FdSecDUqs=;
+        b=lZIOHZm0NCG4tbKVmuGeAK9+Wvbz9tFVrE3lE6ht5ule/S+YpLMtN6Yy38sfG+/Q+p
+         lh9oSd36fm4nHoZjWd5k24C52sQTr4BM30QQkw2fiUJwpAhUwAoAnsa2rPm/2iYQv1/8
+         sz68C+1syoLWF0mei3BJZiNpprc1aSFJcAx9TkxeJ1kuyNs69M91s1JBIUy16oQRJEH3
+         wmzInUkf+mCPI0QYUCOF7kyi5uu2QqCVYF5To9a0al7DGhv56v8WmC4F8cz1IEwqlIwx
+         yQi1YEfcBTSx1Mzg1jV1GnzbVjxdHeOEv9ZshQmLS/XSSHW6osaDg1bFEi5QbO6RW86v
+         1I8Q==
+X-Gm-Message-State: AOJu0YwTt/WnHsBkaUYoS1jBVZSDPIvJEk4j2sl9jHska8gtB5kzf1e+
+        TtOxRc5iM8np72CCgWy2hoFnj8iOHq6oa4ekpWI=
+X-Google-Smtp-Source: AGHT+IGYvrLjEn/0tZV4BoVeorM/lJEq8yk5rw3LmUxqDDNSi0iUcz3I5+xYYfWFtT8WkV4Z9Yac0g==
+X-Received: by 2002:a05:600c:3b84:b0:3f6:9634:c8d6 with SMTP id n4-20020a05600c3b8400b003f69634c8d6mr874813wms.18.1697787507093;
+        Fri, 20 Oct 2023 00:38:27 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id x10-20020a05600c21ca00b003feea62440bsm1451580wmj.43.2023.10.20.00.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 00:38:26 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 10:38:23 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     kenechukwu maduechesi <maduechesik@gmail.com>
+Cc:     shreeya.patel23498@gmail.com, outreachy@lists.linux.dev,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 3/3] i2c: muxes: i2c-mux-gpmux: Use
- of_get_i2c_adapter_by_node()
-Message-ID: <20231020083734.20fed5c5@jic23-huawei>
-In-Reply-To: <20231019101017.425284-4-herve.codina@bootlin.com>
-References: <20231019101017.425284-1-herve.codina@bootlin.com>
-        <20231019101017.425284-4-herve.codina@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rts5208: Add parenthesis to macro arguments
+Message-ID: <3371515f-aaac-4449-83af-e7f10d60eae3@kadam.mountain>
+References: <20231020065439.GA3579@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020065439.GA3579@ubuntu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,41 +71,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 12:10:16 +0200
-Herve Codina <herve.codina@bootlin.com> wrote:
-
-> i2c-mux-gpmux uses the pair of_find_i2c_adapter_by_node() /
-> i2c_put_adapter(). These pair alone is not correct to properly lock the
-> I2C parent adapter.
+On Thu, Oct 19, 2023 at 11:54:39PM -0700, kenechukwu maduechesi wrote:
+> Checkpatch suggests using (reg) and (host) instead of reg and host
 > 
-> Indeed, i2c_put_adapter() decrements the module refcount while
-> of_find_i2c_adapter_by_node() does not increment it. This leads to an
-> underflow of the parent module refcount.
+> The use of parenthesis in the macro argument '(reg)' ensures proper
+> precedence and resolves potential issues that may arise due to the
+> surrounding code context. This modification adheres to the recommended
+> coding style and improves the readability or maintainability of the
+> code.
 > 
-> Use the dedicated function, of_get_i2c_adapter_by_node(), to handle
-> correctly the module refcount.
-> 
-> Fixes: ac8498f0ce53 ("i2c: i2c-mux-gpmux: new driver")
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> Acked-by: Peter Rosin <peda@axentia.se>
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
+> Signed-off-by: kenechukwu maduechesi <maduechesik@gmail.com>
 > ---
->  drivers/i2c/muxes/i2c-mux-gpmux.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/staging/rts5208/rtsx.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/i2c/muxes/i2c-mux-gpmux.c b/drivers/i2c/muxes/i2c-mux-gpmux.c
-> index baccf4bfaf02..8305661e1253 100644
-> --- a/drivers/i2c/muxes/i2c-mux-gpmux.c
-> +++ b/drivers/i2c/muxes/i2c-mux-gpmux.c
-> @@ -52,7 +52,7 @@ static struct i2c_adapter *mux_parent_adapter(struct device *dev)
->  		dev_err(dev, "Cannot parse i2c-parent\n");
->  		return ERR_PTR(-ENODEV);
->  	}
-> -	parent = of_find_i2c_adapter_by_node(parent_np);
-> +	parent = of_get_i2c_adapter_by_node(parent_np);
->  	of_node_put(parent_np);
->  	if (!parent)
->  		return ERR_PTR(-EPROBE_DEFER);
+> diff --git a/drivers/staging/rts5208/rtsx.h b/drivers/staging/rts5208/rtsx.h
+> index 2e101da83220..7d3373797eb4 100644
+> --- a/drivers/staging/rts5208/rtsx.h
+> +++ b/drivers/staging/rts5208/rtsx.h
+> @@ -39,17 +39,17 @@
+>  /*
+>   * macros for easy use
+>   */
+> -#define rtsx_writel(chip, reg, value) \
+> +#define rtsx_writel(chip, (reg), value) \
+
+This will break the build.  But also someone already fixed this in
+linux-next.
+
+>  	iowrite32(value, (chip)->rtsx->remap_addr + reg)
+
+regards,
+dan carpenter
 
