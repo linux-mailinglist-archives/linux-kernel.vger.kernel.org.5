@@ -2,119 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3A37D0CA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765977D0CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376831AbjJTKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        id S1376743AbjJTKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376648AbjJTKCs (ORCPT
+        with ESMTP id S1376648AbjJTKDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:02:48 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0F4D5F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:02:46 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7b3d33663so6795847b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697796165; x=1698400965; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mL5MxDvI3oBEsamV1IpDNv4PqsfIio+p7+hVRLdZkE=;
-        b=UYOoQ476ce/PtnDV75b1LiSRuur+1fpqjQceUCtjSOlMkzFBsjK31/Wm68h1KQX9Vt
-         TAyQMJ5CbB7jFqIt3HwaoKGtdSYdMBvMDLENKXYJMnhiCCiCF8BnMFerKesrhgEfXAXL
-         jAs7uTrjAka2vz4YSB1NqZOtnNJxVinhZeNax1L+nnuzsHSTnaUaS96q2ZGXlqbY3VnT
-         HRFdswTGQBhpqJVAB3ACJKSD+iBYYVh7SFCYzveBTNyaSYj4kVhv7VtcXEjG9bMlAfSv
-         54JLpBzA1DePGSffUGUQosx/6ytmOdtd29KJhGBA2GeQgkpTe6pcQbUt52bk7S4GMrSS
-         6eFw==
+        Fri, 20 Oct 2023 06:03:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC53A11B
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697796145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=DkCqzPplBFPYgjJf4t0QjtC4cYyCvLwawhN6fpCigWs=;
+        b=MnUbM5d7Xt8KM+GqUZi5f6eJdsBT8BhsJL91b3VDO3hjE3oTLc+nNwdTUGfHLWOnd84cwv
+        sBfCTv9TFay0jeBp/sGhkWh0CCXbOp7pbJQuG7X5vfGLBwHxxEgqaPYZEQjYBOHAMe9Bbf
+        n2UYc4gSCWyfTmUwBEdLwWzmEkrVfns=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-PwFGQyVJMTqmrkMuEFHlVg-1; Fri, 20 Oct 2023 06:02:23 -0400
+X-MC-Unique: PwFGQyVJMTqmrkMuEFHlVg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408508aa81cso3392035e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:02:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697796165; x=1698400965;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+mL5MxDvI3oBEsamV1IpDNv4PqsfIio+p7+hVRLdZkE=;
-        b=IIHxV/M7AjiN+m9xSpg54T5J4dLDqlIpurTXQZJ6vSOFGInsfEi7uF1usGF0ZnADuQ
-         6ov9NthS1cbgngxrEuyNf6hDUp4jopYZ1ryUCFHJuO/AKK+8Te3g4ZTZX7AW9dW3iSMp
-         6hScK8SfdI/ShNjQ0NzDswHR4PFTTJ6JkGbGAH0ucPb4LrjOFXikqY5nv6teLQxuk/0k
-         K7kmYwpjJTGRGqzZMseJT0xRjiZdM4yosmWnG8ZYB6T/nZmYtJalXkwDmpcSsgqs8UJY
-         uVc1nVyYr61CKS8qoWFzEl1OD71UXHK8Z+TK5mJniey/O2udktFXxr3l50KA1vo7/Rtq
-         Xxtg==
-X-Gm-Message-State: AOJu0YycqLMRJYe37Xn6ZfpV6ZZewVMfcr8V9kZmQt2kv24N7MfNWJwt
-        poOdNksxsFcYBOljW7x6J4Ucw21jfjMZEIQdvEYWHg==
-X-Google-Smtp-Source: AGHT+IEpfYvqZ6a+6ydGk21xngAVclYvEKHHwgr56y8sAhA5hFI+i7S/41Hi3xZbJii/5ZwTg+MpAq7gxp6nNN+sguw=
-X-Received: by 2002:a5b:608:0:b0:d9a:e947:447b with SMTP id
- d8-20020a5b0608000000b00d9ae947447bmr1325314ybq.14.1697796165580; Fri, 20 Oct
- 2023 03:02:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697796143; x=1698400943;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DkCqzPplBFPYgjJf4t0QjtC4cYyCvLwawhN6fpCigWs=;
+        b=iJBS5o3mUNxaJN+oqIs9ArQDE0C0O8COnB5O/OQohQcaDBFvBa8b4O1sOU6+M+Seqx
+         cNdZN7KJ6Qn2GQt8u/6/FJsmiJuvRXoU9gydccl4YLXfIuBIExxwIQ0TgpIV4gedAJi1
+         ITZKbzDerJiZG8WToyVRLIozUi5gEIsBMseHrwPEdAqUCn3UcaB+HTuZEL5YwAYRBTjk
+         qCJypWKfTGfh12jRl1BKp9F102pGOgC8DY1MPsNhWEjwZjWP8KqL6HtgehopAx6maPfx
+         onKEPOfZer5ttcxpe+i8AFkwo4yr/T0T7pMrT9sGNmmj/xcCiCRLaeoaZdDM/h8tKyhY
+         qt5g==
+X-Gm-Message-State: AOJu0YxRe6pCDOMKepCPtUSJGz1xOZuOaldkVCp/afpCAnyZJAiFeiP1
+        DCg/jGLJcPxauT0/Qg5qeqSl2TZXraVwE7DhwR1ZsQn4vhhMBPeVAUiyN6agMYPH0TkUFbXiiSz
+        lba55syDYG3UA5cgaK0LEB9UV
+X-Received: by 2002:a05:600c:35ca:b0:405:3955:5872 with SMTP id r10-20020a05600c35ca00b0040539555872mr1138496wmq.18.1697796142644;
+        Fri, 20 Oct 2023 03:02:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFHM369pSv2IVpw5SDZC9sAjVu72UGtDGPQ01F6BNkUEB/ftsbIqn3tOfEmp6/+2/Z/fm+9XA==
+X-Received: by 2002:a05:600c:35ca:b0:405:3955:5872 with SMTP id r10-20020a05600c35ca00b0040539555872mr1138457wmq.18.1697796142106;
+        Fri, 20 Oct 2023 03:02:22 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:c100:5d8:2d46:b11e:6784? (p200300cbc719c10005d82d46b11e6784.dip0.t-ipconnect.de. [2003:cb:c719:c100:5d8:2d46:b11e:6784])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05600c155200b00402ff8d6086sm1773905wmg.18.2023.10.20.03.02.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 03:02:21 -0700 (PDT)
+Message-ID: <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
+Date:   Fri, 20 Oct 2023 12:02:19 +0200
 MIME-Version: 1.0
-References: <cover.1697710527.git.viresh.kumar@linaro.org> <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
- <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com> <20231020034547.suggwoefx5kauek4@vireshk-i7>
-In-Reply-To: <20231020034547.suggwoefx5kauek4@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 20 Oct 2023 12:02:08 +0200
-Message-ID: <CAPDyKFqMA9=qdz4L3Oqj0zRQmSj0bxrF1RzZu-pBcuj9__GSRw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Lokesh Gidra <lokeshgidra@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
+ <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
+ <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
+ <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
+ <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
+ <ZS7ZqztMbhrG52JQ@x1n> <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
+ <ZTGJHesvkV84c+l6@x1n>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZTGJHesvkV84c+l6@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 at 05:45, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 19-10-23, 13:16, Ulf Hansson wrote:
-> > On Thu, 19 Oct 2023 at 12:22, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > +       /*
-> > > +        * There are two genpd (as required-opp) cases that we need to handle,
-> > > +        * devices with a single genpd and ones with multiple genpds.
-> > > +        *
-> > > +        * The single genpd case requires special handling as we need to use the
-> > > +        * same `dev` structure (instead of a virtual one provided by genpd
-> > > +        * core) for setting the performance state. Lets treat this as a case
-> > > +        * where the OPP's level is directly available without required genpd
-> > > +        * link in the DT.
-> > > +        *
-> > > +        * Just update the `level` with the right value, which
-> > > +        * dev_pm_opp_set_opp() will take care of in the normal path itself.
-> > > +        */
-> > > +       if (required_table->is_genpd && opp_table->required_opp_count == 1 &&
-> > > +           !opp_table->genpd_virt_devs) {
-> > > +               if (!WARN_ON(opp->level))
-> >
-> > Hmm. Doesn't this introduce an unnecessary limitation?
-> >
-> > An opp node that has a required-opps phande, may have "opp-hz",
-> > "opp-microvolt", etc. Why would we not allow the "opp-level" to be
-> > used too?
->
-> Such platforms need to call dev_pm_opp_set_config() with genpd names
-> and it should all work just fine. The point is that we can't use the
-> same `dev` pointer with another OPP table, i.e. device's dev pointer
-> for the genpd's table here.
+On 19.10.23 21:53, Peter Xu wrote:
+> On Thu, Oct 19, 2023 at 05:41:01PM +0200, David Hildenbrand wrote:
+>> That's not my main point. It can easily become a maintenance burden without
+>> any real use cases yet that we are willing to support.
+> 
+> That's why I requested a few times that we can discuss the complexity of
+> cross-mm support already here, and I'm all ears if I missed something on
+> the "maintenance burden" part..
+> 
+> I started by listing what I think might be different, and we can easily
+> speedup single-mm with things like "if (ctx->mm != mm)" checks with
+> e.g. memcg, just like what this patch already did with pgtable depositions.
+> 
+> We keep saying "maintenance burden" but we refuse to discuss what is that..
 
-For the single PM domain case, consumer drivers are often not able to
-use dev_pm_opp_set_config(). That's because the PM domain has already
-been attached from some of the generic buses, through
-dev_pm_domain_attach().
+Let's recap
 
-In this case, as dev_pm_opp_set_config() ends up trying to attach
-again, via dev_pm_domain_attach_by_name() it would receive
-"ERR_PTR(-EEXIST)".
+(1) We have person A up-streaming code written by person B, whereby B is 
+not involved in the discussions nor seems to be active to maintain that 
+code.
 
-Or maybe I didn't quite understand your point?
+Worse, the code that is getting up-streamed was originally based on a 
+different kernel version that has significant differences in some key 
+areas -- for example, page pinning, exclusive vs. shared.
 
-Kind regards
-Uffe
+I claim that nobody here fully understands the code at hand (just look 
+at the previous discussions), and reviewers have to sort out the mess 
+that was created by the very way this stuff is getting upstreamed here.
+
+We're already struggling to get the single-mm case working correctly.
+
+
+(2) Cross-mm was not even announced anywhere nor mentioned which use it 
+would have; I had to stumble over this while digging through the code. 
+Further, is it even *tested*? AFAIKS in patch #3 no. Why do we have to 
+make the life of reviewers harder by forcing them to review code that 
+currently *nobody* on this earth needs?
+
+
+(3) You said "What else we can benefit from single mm?  One less mmap 
+read lock, but probably that's all we can get;" and I presented two 
+non-obvious issues. I did not even look any further because I really 
+have better things to do than review complicated code without real use 
+cases at hand. As I said "maybe that works as expected, I
+don't know and I have no time to spare on reviewing features with no
+real use cases)"; apparently I was right by just guessing that memcg 
+handling is missing.
+
+
+The sub-feature in question (cross-mm) has no solid use cases; at this 
+point I am not even convinced the use case you raised requires 
+*userfaultfd*; for the purpose of moving a whole VMA worth of pages 
+between two processes; I don't see the immediate need to get userfaultfd 
+involved and move individual pages under page lock etc.
+
+> 
+> I'll leave that to Suren and Lokesh to decide.  For me the worst case is
+> one more flag which might be confusing, which is not the end of the world..
+> Suren, you may need to work more thoroughly to remove cross-mm implications
+> if so, just like when renaming REMAP to MOVE.
+
+I'm asking myself why you are pushing so hard to include complexity 
+"just because we can"; doesn't make any sense to me, honestly.
+
+Maybe you have some other real use cases that ultimately require 
+userfaultfd for cross-mm that you cannot share?
+
+Will the world end when we have to use a separate flag so we can open 
+this pandora's box when really required?
+
+
+Again, moving anon pages within a process is a known thing; we do that 
+already via mremap; the only difference here really is, that we have to 
+get the rmap right because we don't adjust VMAs. It's a shame we don't 
+try to combine both code paths, maybe it's not easily possible like we 
+did with mprotect vs. uffd-wp.
+
+Moving anon pages between process is currently only done via COW, where 
+all things (page pinning, memcg, ...) have been figured out and are 
+simply working as expected. Making uffd special by coding-up their own 
+thing does not sound compelling to me.
+
+
+I am clearly against any unwarranted features+complexity. Again, I will 
+stop arguing further, the whole thing of "include it just because we 
+can" to avoid a flag (that we might never even see) doesn't make any 
+sense to me and likely never will.
+
+The whole way this feature is getting upstreamed is just messed up IMHO 
+and I the reasoning used in this thread to stick
+as-close-as-possible to some code person B wrote some years ago (e.g., 
+naming, sub-features) is far out of my comprehension.
+
+-- 
+Cheers,
+
+David / dhildenb
+
