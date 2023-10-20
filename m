@@ -2,315 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2FF7D11D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809EC7D11C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377607AbjJTOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S1377562AbjJTOpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377593AbjJTOty (ORCPT
+        with ESMTP id S1377429AbjJTOpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:49:54 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402DFCF;
-        Fri, 20 Oct 2023 07:49:52 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 23c09529ab9a123a; Fri, 20 Oct 2023 16:49:50 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3EE04667008;
-        Fri, 20 Oct 2023 16:49:50 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 3/6] ACPI: scan: Extract _CRS CSI-2 connection information into swnodes
-Date:   Fri, 20 Oct 2023 16:37:13 +0200
-Message-ID: <10382681.nUPlyArG6x@kreacher>
-In-Reply-To: <2187487.irdbgypaU6@kreacher>
-References: <2187487.irdbgypaU6@kreacher>
+        Fri, 20 Oct 2023 10:45:09 -0400
+X-Greylist: delayed 434 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 20 Oct 2023 07:45:04 PDT
+Received: from b1712.mx.srv.dfn.de (b1712.mx.srv.dfn.de [194.95.234.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9234A19E;
+        Fri, 20 Oct 2023 07:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        uniklinik-freiburg.de; h=mime-version:content-transfer-encoding
+        :content-id:content-type:content-type:content-language
+        :accept-language:in-reply-to:references:message-id:date:date
+        :subject:subject:from:from:received:received:received; s=s1; t=
+        1697812668; x=1699627069; bh=xaqiTiaHUMKPQPBP2nbNQFRpF0OrJpSUn2k
+        mUFCgflc=; b=Y1bHc1dMz4BiOWNFa6Mt0GZU6QsZ4hmR75TWxkFPO/5fFvqr+Z4
+        N9fS0LWMXJF+mZM+AXXld5k/YeBPDW9r1hpq9qodtYcHTqJ7G1A+Ztiqs0Jf+Cqi
+        tZZDA/5mFsMjoLFsUfEN7vIQsHH2AJCTkvU88Wm3dXFDN44nMQ2DX/BI=
+Received: from ukl-fm1.ukl.uni-freiburg.de (ukl-fm-ha.ukl.uni-freiburg.de [193.196.199.18])
+        by b1712.mx.srv.dfn.de (Postfix) with ESMTPS id 039F74016E;
+        Fri, 20 Oct 2023 16:37:47 +0200 (CEST)
+Received: from ukl-ex2.ad.uniklinik-freiburg.de (xxx52.ukl.uni-freiburg.de [193.196.253.52])
+        by ukl-fm1.ukl.uni-freiburg.de  with ESMTPS id 39KEbeb8015176-39KEbebA015176
+        (version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
+        Fri, 20 Oct 2023 16:37:40 +0200
+Received: from UKL-EX4.ad.uniklinik-freiburg.de (193.196.253.54) by
+ ukl-ex2.ad.uniklinik-freiburg.de (193.196.253.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 20 Oct 2023 16:37:40 +0200
+Received: from UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071])
+ by UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071%5]) with mapi
+ id 15.01.2507.032; Fri, 20 Oct 2023 16:37:40 +0200
+From:   "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>
+To:     "smfrench@gmail.com" <smfrench@gmail.com>,
+        "matoro_mailinglist_kernel@matoro.tk" 
+        <matoro_mailinglist_kernel@matoro.tk>,
+        "pc@manguebit.com" <pc@manguebit.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "paul@darkrain42.org" <paul@darkrain42.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "ronniesahlberg@gmail.com" <ronniesahlberg@gmail.com>,
+        "bharathsm@microsoft.com" <bharathsm@microsoft.com>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "brian.pardy@gmail.com" <brian.pardy@gmail.com>,
+        "nspmangalore@gmail.com" <nspmangalore@gmail.com>
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
+ is mounted (cifsd-cfid-laundromat in"D" state)
+Thread-Topic: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS
+ share is mounted (cifsd-cfid-laundromat in"D" state)
+Thread-Index: AQHaA2L6GXEWZinVBEmsDkQRFDlV8A==
+Date:   Fri, 20 Oct 2023 14:37:40 +0000
+Message-ID: <779ef3ac542e7e39027dee19d669ad2f81b05bcc.camel@uniklinik-freiburg.de>
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+         <ZPfPfyIoVxw5L6El@debian.me>
+         <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+         <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+         <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
+         <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
+         <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
+         <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
+         <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
+         <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
+         <ZRN9MtBqYnT6oX60@vaarsuvius>
+         <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
+         <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
+         <E1F307C7-9B1E-40F6-860B-6050856E8395@manguebit.com>
+         <CA6E0F87-65FD-4672-AA0C-A761E5006B7D@manguebit.com>
+         <CAH2r5mse_2sfXF+tdTmie5LLtBuc+6DOumDH3rn=5V24yhrYVQ@mail.gmail.com>
+         <c88b2ecd27524153c2acd8aba6ae3c80@matoro.tk>
+         <457a5483c3c4ca5bb6c7ec6f4231074c.pc@manguebit.com>
+In-Reply-To: <457a5483c3c4ca5bb6c7ec6f4231074c.pc@manguebit.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [193.196.253.71]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EB79D542FA71234BB0135EE8EF78E273@ad.uniklinik-freiburg.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdektdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeektddvveeijeekveekvdffieffheeitdehkeekfeeiheffkefgledtheelhedvudenucffohhmrghinhepuhgvfhhirdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepfedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrghkrghrihdrrghilhhusheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-FEAS-Client-IP: 193.196.253.52
+X-FE-Last-Public-Client-IP: 193.196.253.52
+X-FE-Policy-ID: 1:4:1:SYSTEM
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Use the connection information extracted from the _CRS CSI-2 resource
-descriptors for all devices that have them to populate port names and the
-"reg", "bus-type" and "remote-endpoint" properties in the software nodes
-representing the CSI-2 connection graph.
-
-Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#camera-serial-interface-csi-2-connection-resource-descriptor
-Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/mipi-di.c  |  153 +++++++++++++++++++++++++++++++++++++++++++++++-
- include/acpi/acpi_bus.h |   53 ++++++++++++++++
- 2 files changed, 205 insertions(+), 1 deletion(-)
-
-Index: linux-pm/include/acpi/acpi_bus.h
-===================================================================
---- linux-pm.orig/include/acpi/acpi_bus.h
-+++ linux-pm/include/acpi/acpi_bus.h
-@@ -366,8 +366,61 @@ struct acpi_device_data {
- 
- struct acpi_gpio_mapping;
- 
-+#define ACPI_DEVICE_CSI2_DATA_LANES		4
-+
-+#define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
-+
-+enum acpi_device_swnode_port_props {
-+	ACPI_DEVICE_SWNODE_PORT_REG,
-+	ACPI_DEVICE_SWNODE_PORT_NUM_OF,
-+	ACPI_DEVICE_SWNODE_PORT_NUM_ENTRIES
-+};
-+
-+enum acpi_device_swnode_ep_props {
-+	ACPI_DEVICE_SWNODE_EP_REMOTE_EP,
-+	ACPI_DEVICE_SWNODE_EP_BUS_TYPE,
-+	ACPI_DEVICE_SWNODE_EP_REG,
-+	ACPI_DEVICE_SWNODE_EP_CLOCK_LANES,
-+	ACPI_DEVICE_SWNODE_EP_DATA_LANES,
-+	ACPI_DEVICE_SWNODE_EP_LANE_POLARITIES,
-+	/* TX only */
-+	ACPI_DEVICE_SWNODE_EP_LINK_FREQUENCIES,
-+	ACPI_DEVICE_SWNODE_EP_NUM_OF,
-+	ACPI_DEVICE_SWNODE_EP_NUM_ENTRIES
-+};
-+
-+/*
-+ * Each device has a root software node plus two times as many nodes as the
-+ * number of CSI-2 ports.
-+ */
-+#define ACPI_DEVICE_SWNODE_PORT(port)	(2 * (port) + 1)
-+#define ACPI_DEVICE_SWNODE_EP(endpoint)	\
-+		(ACPI_DEVICE_SWNODE_PORT(endpoint) + 1)
-+
-+/**
-+ * struct acpi_device_software_node_port - MIPI DisCo for Imaging CSI-2 port
-+ * @port_name: Port name.
-+ * @data_lanes: "data-lanes" property values.
-+ * @lane_polarities: "lane-polarities" property values.
-+ * @link_frequencies: "link_frequencies" property values.
-+ * @port_nr: Port number.
-+ * @crs_crs2_local: _CRS CSI2 record present (i.e. this is a transmitter one).
-+ * @port_props: Port properties.
-+ * @ep_props: Endpoint properties.
-+ * @remote_ep: Reference to the remote endpoint.
-+ */
- struct acpi_device_software_node_port {
-+	char port_name[ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH + 1];
-+	u32 data_lanes[ACPI_DEVICE_CSI2_DATA_LANES];
-+	u32 lane_polarities[ACPI_DEVICE_CSI2_DATA_LANES + 1 /* clock lane */];
-+	u64 link_frequencies[ACPI_DEVICE_CSI2_DATA_LANES];
- 	unsigned int port_nr;
-+	bool crs_csi2_local;
-+
-+	struct property_entry port_props[ACPI_DEVICE_SWNODE_PORT_NUM_ENTRIES];
-+	struct property_entry ep_props[ACPI_DEVICE_SWNODE_EP_NUM_ENTRIES];
-+
-+	struct software_node_ref_args remote_ep[1];
- };
- 
- /**
-Index: linux-pm/drivers/acpi/mipi-di.c
-===================================================================
---- linux-pm.orig/drivers/acpi/mipi-di.c
-+++ linux-pm/drivers/acpi/mipi-di.c
-@@ -23,6 +23,8 @@
- #include <linux/slab.h>
- #include <linux/string.h>
- 
-+#include <media/v4l2-fwnode.h>
-+
- #include "internal.h"
- 
- static LIST_HEAD(acpi_mipi_crs_csi2_list);
-@@ -240,6 +242,142 @@ overflow:
- 			 port_count);
- }
- 
-+#define ACPI_CRS_CSI2_PHY_TYPE_C	0
-+#define ACPI_CRS_CSI2_PHY_TYPE_D	1
-+
-+static unsigned int next_csi2_port_index(struct acpi_device_software_nodes *swnodes,
-+					 unsigned int port_nr)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < swnodes->num_ports; i++) {
-+		struct acpi_device_software_node_port *port = &swnodes->ports[i];
-+
-+		if (port->port_nr == port_nr)
-+			return i;
-+
-+		if (port->port_nr == NO_CSI2_PORT) {
-+			port->port_nr = port_nr;
-+			return i;
-+		}
-+	}
-+
-+	return NO_CSI2_PORT;
-+}
-+
-+/* Print graph port name into a buffer, return non-zero on failure. */
-+#define GRAPH_PORT_NAME(var, num)					    \
-+	(snprintf((var), sizeof(var), SWNODE_GRAPH_PORT_NAME_FMT, (num)) >= \
-+	 sizeof(var))
-+
-+static void extract_crs_csi2_conn_info(acpi_handle local_handle,
-+				       struct acpi_device_software_nodes *local_swnodes,
-+				       struct crs_csi2_connection *conn)
-+{
-+	struct crs_csi2 *remote_csi2 = acpi_mipi_get_crs_csi2(conn->remote_handle);
-+	struct acpi_device_software_nodes *remote_swnodes;
-+	struct acpi_device_software_node_port *local_port, *remote_port;
-+	struct software_node *local_node, *remote_node;
-+	unsigned int local_index, remote_index;
-+	unsigned int bus_type;
-+
-+	/*
-+	 * If the previous steps have failed to make room for a _CRS CSI-2
-+	 * representation for the remote end of the given connection, skip it.
-+	 */
-+	if (!remote_csi2)
-+		return;
-+
-+	remote_swnodes = remote_csi2->swnodes;
-+	if (!remote_swnodes)
-+		return;
-+
-+	switch (conn->csi2_data.phy_type) {
-+	case ACPI_CRS_CSI2_PHY_TYPE_C:
-+		bus_type = V4L2_FWNODE_BUS_TYPE_CSI2_CPHY;
-+		break;
-+
-+	case ACPI_CRS_CSI2_PHY_TYPE_D:
-+		bus_type = V4L2_FWNODE_BUS_TYPE_CSI2_DPHY;
-+		break;
-+
-+	default:
-+		acpi_handle_info(local_handle, "unknown CSI-2 PHY type %u\n",
-+				 conn->csi2_data.phy_type);
-+		return;
-+	}
-+
-+	local_index = next_csi2_port_index(local_swnodes,
-+					   conn->csi2_data.local_port_instance);
-+	if (WARN_ON_ONCE(local_index >= local_swnodes->num_ports))
-+		return;
-+
-+	remote_index = next_csi2_port_index(remote_swnodes,
-+					    conn->csi2_data.resource_source.index);
-+	if (WARN_ON_ONCE(remote_index >= remote_swnodes->num_ports))
-+		return;
-+
-+	local_port = &local_swnodes->ports[local_index];
-+	local_node = &local_swnodes->nodes[ACPI_DEVICE_SWNODE_EP(local_index)];
-+	local_port->crs_csi2_local = true;
-+
-+	remote_port = &remote_swnodes->ports[remote_index];
-+	remote_node = &remote_swnodes->nodes[ACPI_DEVICE_SWNODE_EP(remote_index)];
-+
-+	local_port->remote_ep[0] = SOFTWARE_NODE_REFERENCE(remote_node);
-+	remote_port->remote_ep[0] = SOFTWARE_NODE_REFERENCE(local_node);
-+
-+	local_port->ep_props[ACPI_DEVICE_SWNODE_EP_REMOTE_EP] =
-+			PROPERTY_ENTRY_REF_ARRAY("remote-endpoint",
-+						 local_port->remote_ep);
-+
-+	local_port->ep_props[ACPI_DEVICE_SWNODE_EP_BUS_TYPE] =
-+			PROPERTY_ENTRY_U32("bus-type", bus_type);
-+
-+	local_port->ep_props[ACPI_DEVICE_SWNODE_EP_REG] =
-+			PROPERTY_ENTRY_U32("reg", 0);
-+
-+	local_port->port_props[ACPI_DEVICE_SWNODE_PORT_REG] =
-+			PROPERTY_ENTRY_U32("reg", conn->csi2_data.local_port_instance);
-+
-+	if (GRAPH_PORT_NAME(local_port->port_name,
-+			    conn->csi2_data.local_port_instance))
-+		acpi_handle_info(local_handle, "local port %u name too long",
-+				 conn->csi2_data.local_port_instance);
-+
-+	remote_port->ep_props[ACPI_DEVICE_SWNODE_EP_REMOTE_EP] =
-+			PROPERTY_ENTRY_REF_ARRAY("remote-endpoint",
-+						 remote_port->remote_ep);
-+
-+	remote_port->ep_props[ACPI_DEVICE_SWNODE_EP_BUS_TYPE] =
-+			PROPERTY_ENTRY_U32("bus-type", bus_type);
-+
-+	remote_port->ep_props[ACPI_DEVICE_SWNODE_EP_REG] =
-+			PROPERTY_ENTRY_U32("reg", 0);
-+
-+	remote_port->port_props[ACPI_DEVICE_SWNODE_PORT_REG] =
-+			PROPERTY_ENTRY_U32("reg", conn->csi2_data.resource_source.index);
-+
-+	if (GRAPH_PORT_NAME(remote_port->port_name,
-+			    conn->csi2_data.resource_source.index))
-+		acpi_handle_info(local_handle, "remote port %u name too long",
-+				 conn->csi2_data.resource_source.index);
-+}
-+
-+static void prepare_crs_csi2_swnodes(struct crs_csi2 *csi2)
-+{
-+	struct acpi_device_software_nodes *local_swnodes = csi2->swnodes;
-+	acpi_handle local_handle = csi2->handle;
-+	struct crs_csi2_connection *conn;
-+
-+	/* Bail out if the allocation of swnodes has failed. */
-+	if (!local_swnodes)
-+		return;
-+
-+	list_for_each_entry(conn, &csi2->connections, entry)
-+		extract_crs_csi2_conn_info(local_handle, local_swnodes, conn);
-+}
-+
- /**
-  * acpi_mipi_scan_crs_csi2 - Create ACPI _CRS CSI-2 software nodes
-  *
-@@ -278,9 +416,22 @@ void acpi_mipi_scan_crs_csi2(void)
- 	}
- 	list_splice(&aux_list, &acpi_mipi_crs_csi2_list);
- 
--	/* Allocate softwware nodes for representing the CSI-2 information. */
-+	/*
-+	 * Allocate softwware nodes for representing the CSI-2 information.
-+	 *
-+	 * This needs to be done for all of the list entries in one go, because
-+	 * they may point to each other without restrictions and the next step
-+	 * relies on the availability of swnodes memory for each list entry.
-+	 */
- 	list_for_each_entry(csi2, &acpi_mipi_crs_csi2_list, entry)
- 		alloc_crs_csi2_swnodes(csi2);
-+
-+	/*
-+	 * Set up software node properties using data from _CRS CSI-2 resource
-+	 * descriptors.
-+	 */
-+	list_for_each_entry(csi2, &acpi_mipi_crs_csi2_list, entry)
-+		prepare_crs_csi2_swnodes(csi2);
- }
- 
- /**
-
-
-
+QW0gTW9udGFnLCBkZW0gMTYuMTAuMjAyMyB1bSAxNTo0MSAtMDMwMCBzY2hyaWViIFBhdWxvIEFs
+Y2FudGFyYToNCj4gbWF0b3JvIDxtYXRvcm9fbWFpbGluZ2xpc3Rfa2VybmVsQG1hdG9yby50az4g
+d3JpdGVzOg0KPiANCj4gPiBEbyB5b3UgaGF2ZSBiYWNrcG9ydHMgb2YgdGhlc2UgdG8gNi41P8Kg
+IEkgdHJpZWQgdG8gZG8gaXQgbWFudWFsbHkNCj4gPiBidXQgDQo+ID4gdGhlcmUncyBhbHJlYWR5
+IHNvIG1hbnkgY2hhbmdlcyBiZXR3ZWVuIDYuNSBhbmQgdGhlc2UgY29tbWl0cy4NCj4gDQo+IFBs
+ZWFzZSBmaW5kIGF0dGFjaGVkIHR3byBwYXRjaGVzIHRoYXQgc2hvdWxkIGZpeCB5b3VyIFNNQjEg
+Y2FzZS7CoA0KPiBUaGV5DQo+IGFwcGxpZWQgY2xlYW5seSBvbiB0b3Agb2YgdjYuNS55IGJyYW5j
+aC4NCj4gDQo+IExldCBtZSBrbm93IGlmIGl0IHdvcmtzIGZvciB5b3UgYW5kIHRoZW4gSSdsbCBh
+c2sgc3RhYmxlIHRlYW0gdG8gcGljaw0KPiB0aG9zZSB1cC4NCg0KVGhhbmtzIQ0KSSBjYW4gY29u
+ZmlybSB0aGF0IHRoZSBwYXRjaGVzIGFwcGx5IGNsZWFubHkgb24gNi41LjggYW5kIGhlbHAgYSBs
+b3QNCndpdGggdGhlIGlzc3VlIGhlcmUgKHZlcnM9My4xLjEsIGdlbnRvbyBjbGllbnQsIE1TIEFE
+IHNlcnZlciB3aXRoIERGUykuDQoNCg==
