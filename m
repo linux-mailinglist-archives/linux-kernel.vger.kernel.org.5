@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 126B87D0F14
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633E17D0EE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377313AbjJTLs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
+        id S1377343AbjJTLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377368AbjJTLsN (ORCPT
+        with ESMTP id S1377218AbjJTLkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:48:13 -0400
+        Fri, 20 Oct 2023 07:40:10 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52E12D4C;
-        Fri, 20 Oct 2023 04:38:30 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:37:59 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F2E2D50;
+        Fri, 20 Oct 2023 04:38:33 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:38:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697801880;
+        s=2020; t=1697801881;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H3OP++RJI8kU9Lsnn3h2TfE2n/gvupRkhkSC9l2/MvI=;
-        b=TryOOopwrTwe0mAGFVMb/q77esum8lDaV5pY2Uc8rqLoQvV6rTEpLX28OknFVQ3Yrc3o13
-        WUUndxvTdFM9jBRdNYnfXWyIUVdaplCZKP678+vMCbUx/IcmcmuxErh+uRklVvKIgV2Dmm
-        VynwzZZ457S9VTLXsYXOpHnvJu2ILW3iUic7kZlAY3nqMOAAyQ0y7+z22bRVxVvjhtC4uW
-        s06j2WEeD0frW7d+qgB0+IhBfbWURnYsLzG20WcKfA3uR5pwUnaGAYAYFxBItruozEWBhV
-        yD/2dKkm8jJ0JKwPtYaVkSSA4THZlMLJyEBl1++8OiViPEfrWTwaoq4C22hL9Q==
+        bh=4Z+Xf1HWij3PGSMHsuadRrHlnMgQr68v7RxfDYbFLiI=;
+        b=Sk/P9pXtsIGKI4iKp1fuXqdGyYzDVwxgG09G1EOYDicNdrhIDKOYLEfbOF79+WMgQYyCXj
+        EfoLMPaqvQCj6duED/Z8y1eGcOBc9wfEAfGucSUpNFiMcVH2LbjKbNZkl6CrbnH3gGJ5Uw
+        VvTtvj9xNIj4o3JRBZIIUont4r8WJzXIFepbXSrOKIIM75qw+ptPgYtMG4xoB2w9XpzNpm
+        aKPxfNE2LvjNCXNdJbvNfhALBETSAdoFXzUpVUg3PcEn9/WPDQPdNtkt2nPhHr4KBid4EJ
+        fkhGGj8NvvyUg4uekz04bCckDrhr/c3yftO+pqMUbsapOOnFW1tA2TTb9IJh1g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697801880;
+        s=2020e; t=1697801881;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H3OP++RJI8kU9Lsnn3h2TfE2n/gvupRkhkSC9l2/MvI=;
-        b=mCd2ywvYHwFwk2MmwuPVc6dn4/opa76Hhemn5UoWZdcjunOghs5i9G6M6R2pztSPqHaQhV
-        SESvDwiIqAFek8AA==
+        bh=4Z+Xf1HWij3PGSMHsuadRrHlnMgQr68v7RxfDYbFLiI=;
+        b=g6XrqxK7F+omBPEcq9yLmWC/r9YCZ0X/h5y2BjE0M3/bGymbmK/r8u7eVLWCkwvzGMwQaN
+        Em+Ced4itRzrXuCA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode/intel: Save the microcode only
- after a successful late-load
+Subject: [tip: x86/microcode] x86/microcode/intel: Cleanup code further
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115902.505491309@linutronix.de>
-References: <20231002115902.505491309@linutronix.de>
+In-Reply-To: <20231002115902.389400871@linutronix.de>
+References: <20231002115902.389400871@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169780187951.3135.16662695399510377839.tip-bot2@tip-bot2>
+Message-ID: <169780188065.3135.7928004054471571540.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,131 +66,166 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     81473520ac894010c012c6c1ecc9ed86d91a234b
-Gitweb:        https://git.kernel.org/tip/81473520ac894010c012c6c1ecc9ed86d91a234b
+Commit-ID:     0177669ee61de4dc641f9ad86a3df6f22327cf6c
+Gitweb:        https://git.kernel.org/tip/0177669ee61de4dc641f9ad86a3df6f22327cf6c
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 13:59:44 +02:00
+AuthorDate:    Mon, 02 Oct 2023 13:59:41 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 19 Oct 2023 14:21:29 +02:00
+CommitterDate: Thu, 19 Oct 2023 14:10:50 +02:00
 
-x86/microcode/intel: Save the microcode only after a successful late-load
+x86/microcode/intel: Cleanup code further
 
-There are situations where the late microcode is loaded into memory but
-is not applied:
-
-  1) The rendezvous fails
-  2) The microcode is rejected by the CPUs
-
-If any of this happens then the pointer which was updated at firmware
-load time is stale and subsequent CPU hotplug operations either fail to
-update or create inconsistent microcode state.
-
-Save the loaded microcode in a separate pointer before the late load is
-attempted and when successful, update the hotplug pointer accordingly
-via a new microcode_ops callback.
-
-Remove the pointless fallback in the loader to a microcode pointer which
-is never populated.
+Sanitize the microcode scan loop, fixup printks and move the loading
+function for builtin microcode next to the place where it is used and mark
+it __init.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115902.505491309@linutronix.de
+Link: https://lore.kernel.org/r/20231002115902.389400871@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/core.c     |  4 +++-
- arch/x86/kernel/cpu/microcode/intel.c    | 30 +++++++++++------------
- arch/x86/kernel/cpu/microcode/internal.h |  1 +-
- 3 files changed, 20 insertions(+), 15 deletions(-)
+ arch/x86/kernel/cpu/microcode/intel.c | 76 ++++++++++----------------
+ 1 file changed, 32 insertions(+), 44 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index de3eb97..2b742fe 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -397,6 +397,10 @@ static int microcode_reload_late(void)
- 	store_cpu_caps(&prev_info);
- 
- 	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
-+
-+	if (microcode_ops->finalize_late_load)
-+		microcode_ops->finalize_late_load(ret);
-+
- 	if (!ret) {
- 		pr_info("Reload succeeded, microcode revision: 0x%x -> 0x%x\n",
- 			old, boot_cpu_data.microcode);
 diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index e6a3ebb..c587b67 100644
+index 9463b14..d6ff6eb 100644
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -34,6 +34,7 @@ static const char ucode_path[] = "kernel/x86/microcode/GenuineIntel.bin";
- 
- /* Current microcode patch used in early patching on the APs. */
- static struct microcode_intel *ucode_patch_va __read_mostly;
-+static struct microcode_intel *ucode_patch_late __read_mostly;
+@@ -36,7 +36,7 @@ static const char ucode_path[] = "kernel/x86/microcode/GenuineIntel.bin";
+ static struct microcode_intel *intel_ucode_patch __read_mostly;
  
  /* last level cache size per core */
- static unsigned int llc_size_per_core __ro_after_init;
-@@ -454,12 +455,9 @@ static enum ucode_state apply_microcode_intel(int cpu)
+-static int llc_size_per_core __ro_after_init;
++static unsigned int llc_size_per_core __ro_after_init;
+ 
+ /* microcode format is extended from prescott processors */
+ struct extended_signature {
+@@ -294,29 +294,6 @@ static struct microcode_intel *scan_microcode(void *data, size_t size,
+ 	return patch;
+ }
+ 
+-static bool load_builtin_intel_microcode(struct cpio_data *cp)
+-{
+-	unsigned int eax = 1, ebx, ecx = 0, edx;
+-	struct firmware fw;
+-	char name[30];
+-
+-	if (IS_ENABLED(CONFIG_X86_32))
+-		return false;
+-
+-	native_cpuid(&eax, &ebx, &ecx, &edx);
+-
+-	sprintf(name, "intel-ucode/%02x-%02x-%02x",
+-		      x86_family(eax), x86_model(eax), x86_stepping(eax));
+-
+-	if (firmware_request_builtin(&fw, name)) {
+-		cp->size = fw.size;
+-		cp->data = (void *)fw.data;
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int apply_microcode_early(struct ucode_cpu_info *uci)
+ {
+ 	struct microcode_intel *mc;
+@@ -360,6 +337,28 @@ static int apply_microcode_early(struct ucode_cpu_info *uci)
+ 	return 0;
+ }
+ 
++static bool load_builtin_intel_microcode(struct cpio_data *cp)
++{
++	unsigned int eax = 1, ebx, ecx = 0, edx;
++	struct firmware fw;
++	char name[30];
++
++	if (IS_ENABLED(CONFIG_X86_32))
++		return false;
++
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++
++	sprintf(name, "intel-ucode/%02x-%02x-%02x",
++		x86_family(eax), x86_model(eax), x86_stepping(eax));
++
++	if (firmware_request_builtin(&fw, name)) {
++		cp->size = fw.size;
++		cp->data = (void *)fw.data;
++		return true;
++	}
++	return false;
++}
++
+ int __init save_microcode_in_initrd_intel(void)
+ {
+ 	struct ucode_cpu_info uci;
+@@ -432,25 +431,16 @@ void load_ucode_intel_ap(void)
+ 	apply_microcode_early(&uci);
+ }
+ 
+-/* Accessor for microcode pointer */
+-static struct microcode_intel *ucode_get_patch(void)
+-{
+-	return intel_ucode_patch;
+-}
+-
+ void reload_ucode_intel(void)
+ {
+-	struct microcode_intel *p;
+ 	struct ucode_cpu_info uci;
+ 
+ 	intel_cpu_collect_info(&uci);
+ 
+-	p = ucode_get_patch();
+-	if (!p)
++	uci.mc = intel_ucode_patch;
++	if (!uci.mc)
+ 		return;
+ 
+-	uci.mc = p;
+-
+ 	apply_microcode_early(&uci);
+ }
+ 
+@@ -488,8 +478,7 @@ static enum ucode_state apply_microcode_intel(int cpu)
  	if (WARN_ON(raw_smp_processor_id() != cpu))
  		return UCODE_ERROR;
  
--	mc = ucode_patch_va;
--	if (!mc) {
--		mc = uci->mc;
--		if (!mc)
--			return UCODE_NFOUND;
--	}
-+	mc = ucode_patch_late;
-+	if (!mc)
-+		return UCODE_NFOUND;
- 
- 	/*
- 	 * Save us the MSR write below - which is a particular expensive
-@@ -578,15 +576,7 @@ static enum ucode_state parse_microcode_blobs(int cpu, struct iov_iter *iter)
- 	if (!new_mc)
- 		return UCODE_NFOUND;
- 
--	/* Save for CPU hotplug */
--	save_microcode_patch((struct microcode_intel *)new_mc);
--	uci->mc = ucode_patch_va;
--
--	vfree(new_mc);
--
--	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
--		 cpu, cur_rev, uci->cpu_sig.rev);
--
-+	ucode_patch_late = (struct microcode_intel *)new_mc;
- 	return UCODE_NEW;
+-	/* Look for a newer patch in our cache: */
+-	mc = ucode_get_patch();
++	mc = intel_ucode_patch;
+ 	if (!mc) {
+ 		mc = uci->mc;
+ 		if (!mc)
+@@ -680,18 +669,17 @@ static enum ucode_state request_microcode_fw(int cpu, struct device *device)
  }
  
-@@ -643,10 +633,20 @@ static enum ucode_state request_microcode_fw(int cpu, struct device *device)
- 	return ret;
- }
- 
-+static void finalize_late_load(int result)
-+{
-+	if (!result)
-+		save_microcode_patch(ucode_patch_late);
-+
-+	vfree(ucode_patch_late);
-+	ucode_patch_late = NULL;
-+}
-+
  static struct microcode_ops microcode_intel_ops = {
- 	.request_microcode_fw	= request_microcode_fw,
- 	.collect_cpu_info	= collect_cpu_info,
- 	.apply_microcode	= apply_microcode_intel,
-+	.finalize_late_load	= finalize_late_load,
+-	.request_microcode_fw             = request_microcode_fw,
+-	.collect_cpu_info                 = collect_cpu_info,
+-	.apply_microcode                  = apply_microcode_intel,
++	.request_microcode_fw	= request_microcode_fw,
++	.collect_cpu_info	= collect_cpu_info,
++	.apply_microcode	= apply_microcode_intel,
  };
  
- static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
-diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
-index 1cfc6ec..32f6ad5 100644
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -31,6 +31,7 @@ struct microcode_ops {
- 	 */
- 	enum ucode_state (*apply_microcode)(int cpu);
- 	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
-+	void (*finalize_late_load)(int result);
- };
+-static int __init calc_llc_size_per_core(struct cpuinfo_x86 *c)
++static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
+ {
+ 	u64 llc_size = c->x86_cache_size * 1024ULL;
  
- extern struct ucode_cpu_info ucode_cpu_info[];
+ 	do_div(llc_size, c->x86_max_cores);
+-
+-	return (int)llc_size;
++	llc_size_per_core = (unsigned int)llc_size;
+ }
+ 
+ struct microcode_ops * __init init_intel_microcode(void)
+@@ -704,7 +692,7 @@ struct microcode_ops * __init init_intel_microcode(void)
+ 		return NULL;
+ 	}
+ 
+-	llc_size_per_core = calc_llc_size_per_core(c);
++	calc_llc_size_per_core(c);
+ 
+ 	return &microcode_intel_ops;
+ }
