@@ -2,119 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DB67D1616
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCAA7D1618
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjJTTGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        id S229998AbjJTTHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjJTTGv (ORCPT
+        with ESMTP id S229925AbjJTTG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:06:51 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9B5D6B
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:48 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-27d113508bfso982928a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:48 -0700 (PDT)
+        Fri, 20 Oct 2023 15:06:56 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BA21A8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:54 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7a6fd18abso15252917b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697828808; x=1698433608; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUVJcwpArHb7MBkbp3dkAUppiUopD2zQbbvJscJg8PQ=;
-        b=jMbyAUTA7kRk7I7iE4WthE7sPQnCMtegi4Ex+tV4XpldKSd1uiEtUFKG/LHovcDxSK
-         N+7OMXt4Z3m0P96IHnbr/HDkT5VncS7t3T8oHXW6sc2+ls4WgUjy8uRapMwr+j+FZZ1y
-         ItnU9PJR53IA/aizssNDf5tAuA53H4MIPpykw=
+        d=google.com; s=20230601; t=1697828813; x=1698433613; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WJMiGrIhknpVYB+lLA3TXzIajTqOeaWLMLUUQN9BbMk=;
+        b=Wmj6A+bLcsIAm1sAyB9SiKTyAe/xF4yGTsuzgHhla78U+m78X9HLczAgVW9fdt1hz4
+         eUP/Ed9vn77cDvPwBq3mIS9g9tDknUcXszNrxz55l/hfRIE7/Ho6H2MVvgeZMqnp8Hu7
+         VUgFPcJwPA+v4HwRgt3f7YKej1k4zvL+CncCqGHJwEvc4qgkEAUhm9Ad9iKgfng7GHzh
+         0NT5gLdiEeLXMYNmxZi5TOrMBPwLMsYVNWt36c+s5UPIa9TBBxfUBNPrYt3QaWaYVM+p
+         kOCzH7QUvDm0jL82WgX/3W+cGsu3FuHrfFY69jfoWX77YjnW5phMe/oYTHjEQabilxN0
+         w10A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697828808; x=1698433608;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUVJcwpArHb7MBkbp3dkAUppiUopD2zQbbvJscJg8PQ=;
-        b=Pb38dKpHZmgamPnJCWCr+ZXbbdF2g3RpDJp6tAygUlTIUNJhgx66NgF7rpCK05oP9Z
-         bkaoVxQOsLphoyjEyaItv7GtdRh45HIX/hipTq5+EjA9LlbIHDk669ijHkWKNdmLotOb
-         FEdnmr7KK/oLNFRBRPA27C9NC23coVHl5/cnQRK3yOZdwM/3865OPMbOmrjNMJ89i461
-         ftH8RcTnlK5VpqN03mWpdwSKo+oO/jYjf3M0kGGeOjSNsUY6jBpvufG/U6L8z44YJz/L
-         /MXwzgWV0FkTziM6jIyutTg74SOxKtopmU/KpldoiLqaEVLVEpBJ8atxE2WsYlvdHqxg
-         hohg==
-X-Gm-Message-State: AOJu0Yz2idvJDJwky7UgkBIA3ofHMe/WOZ5T2ClQGZiCd89LVZOSzL0L
-        xyDMD4O2FDFYQmHpj+BTpVyXyw==
-X-Google-Smtp-Source: AGHT+IEgFtHiGyOoViYf0N8c2I/S8dvVLOWnmh9wYvf5dD2u2G6gwpgPYyPbb6rknXVZIZeLc/dx/Q==
-X-Received: by 2002:a17:90b:2ec4:b0:27d:a59:ebae with SMTP id ss4-20020a17090b2ec400b0027d0a59ebaemr2899423pjb.46.1697828807938;
-        Fri, 20 Oct 2023 12:06:47 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p20-20020a17090ad31400b0027d15bd9fa2sm3536022pju.35.2023.10.20.12.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 12:06:47 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 12:06:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] power: supply: bq256xx: replace deprecated strncpy with
- strscpy
-Message-ID: <202310201206.428C617@keescook>
-References: <20231020-strncpy-drivers-power-supply-bq256xx_charger-c-v1-1-2fad856124f9@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020-strncpy-drivers-power-supply-bq256xx_charger-c-v1-1-2fad856124f9@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1697828813; x=1698433613;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WJMiGrIhknpVYB+lLA3TXzIajTqOeaWLMLUUQN9BbMk=;
+        b=oX0FttAaVtmxllXMnylZMDP+LaDwQbYBr33gOWoYZTL+L+K3RQkkO7tlaT48bIWC+U
+         srTAkn7GZmdonmhV0+LeIpuXq5dH1hQJsl8cKWdVtiH1XrJgjVCLCOvHpTwq7o7nHtaK
+         /T5g/Bzt5bchUakCkqjCaf/jIo1qnAA5LgEE0gw/pb3KyR4JikerzbkoRQUsKU3RO6K1
+         vgROM97Tam51ORHrLYJSx0y+b67Yz50LBVo6lQMoUmq+MdIdsGTAlq/bGANCJcPYVn9B
+         nrtZtVfHZNoJzSWYqrD4acM2JFnd1JOCTsgnhye0BgN0bFSLpP+If65DmwTkWCqo2Fcj
+         kqXw==
+X-Gm-Message-State: AOJu0YxME+VIyCZhcY2/fhBsm2ytyXSKrIy59ihkza/nLKYAlTC5s770
+        R1Zp3O6jH2d+4ysCrdvau6FD8neHOl0=
+X-Google-Smtp-Source: AGHT+IGIgsmKl9/EeQe6qAywriK9UwbK/k300V7nBKfGTSYuUwbuxCBVs3ZRc3wOXbeQIlmP3vxDbl1J5EU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:d05:0:b0:d9a:5b63:a682 with SMTP id
+ 5-20020a250d05000000b00d9a5b63a682mr51644ybn.13.1697828813642; Fri, 20 Oct
+ 2023 12:06:53 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 12:06:51 -0700
+In-Reply-To: <20230911114347.85882-9-cloudliang@tencent.com>
+Mime-Version: 1.0
+References: <20230911114347.85882-1-cloudliang@tencent.com> <20230911114347.85882-9-cloudliang@tencent.com>
+Message-ID: <ZTLPy9SYzJmgMxw9@google.com>
+Subject: Re: [PATCH v4 8/9] KVM: selftests: Test Intel supported fixed
+ counters bit mask
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 07:05:25PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Mon, Sep 11, 2023, Jinrong Liang wrote:
+> From: Jinrong Liang <cloudliang@tencent.com>
 > 
-> We expect bq->model_name to be NUL-terminated based on its usage with
-> sysfs_emit and format strings:
+> Add a test to check that fixed counters enabled via guest
+> CPUID.0xA.ECX (instead of EDX[04:00]) work as normal as usual.
 > 
-> val->strval is assigned to bq->model_name in
-> bq256xx_get_charger_property():
-> |       val->strval = bq->model_name;
+> Co-developed-by: Like Xu <likexu@tencent.com>
+> Signed-off-by: Like Xu <likexu@tencent.com>
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+>  .../selftests/kvm/x86_64/pmu_counters_test.c  | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
 > 
-> ... then in power_supply_sysfs.c we use value.strval with a format string:
-> |       ret = sysfs_emit(buf, "%s\n", value.strval);
-> 
-> we assigned value.strval via:
-> |       ret = power_supply_get_property(psy, psp, &value);
-> ... which invokes psy->desc->get_property():
-> |       return psy->desc->get_property(psy, psp, val);
-> 
-> with bq256xx_get_charger_property():
-> |       static const struct power_supply_desc bq256xx_power_supply_desc = {
-> ...
-> |       	.get_property = bq256xx_get_charger_property,
-> 
-> Moreover, no NUL-padding is required as bq is zero-allocated in
-> bq256xx_charger.c:
-> |       bq = devm_kzalloc(dev, sizeof(*bq), GFP_KERNEL);
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
-> sizeof(dest)) as this more closely ties the destination buffer and the
-> length.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq24190_charger-c-v1-1-e896223cb795@google.com/
-> Similar-to: https://lore.kernel.org/all/20231020-strncpy-drivers-power-supply-bq2515x_charger-c-v1-1-46664c6edf78@google.com/
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> index df76f0f2bfd0..12c00bf94683 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> @@ -301,6 +301,59 @@ static void test_intel_counters_num(void)
+>  	test_oob_fixed_ctr(nr_fixed_counters + 1);
+>  }
+>  
+> +static void fixed_counters_guest_code(void)
+> +{
+> +	uint64_t supported_bitmask = this_cpu_property(X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK);
+> +	uint32_t nr_fixed_counter = this_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
+> +	uint64_t msr_val;
+> +	unsigned int i;
+> +	bool expected;
+> +
+> +	for (i = 0; i < nr_fixed_counter; i++) {
+> +		expected = supported_bitmask & BIT_ULL(i) || i < nr_fixed_counter;
+> +
+> +		wrmsr_safe(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
+> +		wrmsr_safe(MSR_CORE_PERF_FIXED_CTR_CTRL, BIT_ULL(4 * i));
+> +		wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL, BIT_ULL(PMC_IDX_FIXED + i));
+> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
+> +		wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+> +		rdmsr_safe(MSR_CORE_PERF_FIXED_CTR0 + i, &msr_val);
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Y'all are making this way harder than it needs to be.  The previous patch already
+created a testcase to verify fixed counters, just use that!  Then test case verify
+that trying to enable unsupported fixed counters results in #GP, as opposed to the
+above which doesn't do any actual checking, e.g. KVM could completely botch the
+{RD,WR}MSR emulation but pass the test by not programming up a counter in perf.
 
--- 
-Kees Cook
+I.e. rather than have a separate test for the supported bitmask goofiness, have
+the fixed counters test iterate over the bitmask.  And then add a patch to verify
+the counters can be enabled and actually count.
+
+And peeking ahead at the vPMU version test, it's the exact same story there.
+Instead of hardcoding one-off tests, iterate on the version.  The end result is
+that the test provides _more_ coverage with _less_ code.  And without any of the
+hardcoded magic that takes a crystal ball to understand.
+
+*sigh* 
+
+And even more importantly, this test is complete garbage.  The SDM clearly states
+that 
+
+  With Architectural Performance Monitoring Version 5, register CPUID.0AH.ECX
+  indicates Fixed Counter enumeration. It is a bit mask which enumerates the
+  supported Fixed Counters in a processor. If bit 'i' is set, it implies that
+  Fixed Counter 'i' is supported.
+
+*sigh*
+
+The test passes because it only iterates over counters < nr_fixed_counter.  So
+as written, the test worse than useless.  It provides no meaningful value and is
+actively misleading.
+
+	for (i = 0; i < nr_fixed_counter; i++) {
+
+Maybe I haven't been explicit enough: the point of writing tests is to find and
+prevent bugs, not to get the tests passing.  That isn't to say we don't want a
+clean testgrid, but writing a "test" that doesn't actually test anything is a
+waste of everyone's time.
+
+I appreciate that the PMU is subtle and complex (understatement), but things like
+this, where observing that the result of "supported_bitmask & BIT_ULL(i)" doesn't
+actually affect anything, doesn't require PMU knowledge.
+
+	for (i = 0; i < nr_fixed_counter; i++) {                                
+		expected = supported_bitmask & BIT_ULL(i) || i < nr_fixed_counter;
+
+A concrete suggestion for writing tests: introduce bugs in what you're testing
+and verify that the test actually detects the bugs.  If you tried to do that for
+the above bitmask test you would have discovered you can't break KVM because KVM
+doesn't support this!  And if your test doesn't detect the bugs, that should also
+be a big clue that something isn't quite right.
