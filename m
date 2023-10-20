@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F3E7D175A
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4037D175B
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbjJTUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 16:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        id S231151AbjJTUrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 16:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbjJTUrp (ORCPT
+        with ESMTP id S230348AbjJTUrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 16:47:45 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC491D51;
-        Fri, 20 Oct 2023 13:47:43 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso1157386b3a.2;
-        Fri, 20 Oct 2023 13:47:43 -0700 (PDT)
+        Fri, 20 Oct 2023 16:47:46 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CFCE8;
+        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so1179124b3a.2;
+        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697834863; x=1698439663; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mm7dtlx0Z3ORS3BpllS20dd9G/AciSYgKTckitgJskM=;
-        b=gk2nIdCc3be2ppxntJ0kb3coXmOqwnvKChPTqLAXDndxiomFoOV0T04nefrUJygfg4
-         W7tBAnLSlK66I1MCmXI+rxjqK0zxJ5EujjHeYWOlT1ZmNJNkeo994P63GxoP0mq1eg/Q
-         2oaGXuJbSGH2Q1g0kfP1vFsm75LFl+QoO3cu9/qgNy3NKsuEVuYt8S6tPMrrvz59zfp6
-         2mYqs0U/QUscZW5XM8GDJkYtkHiUhe7bZoR8MsLTXZVjem7BWK1n0d49vOPR3zDMq5Zu
-         WLn5uhLUeRQqXfuxj8oY3TIDsJPg86xmh7pNZ29JPApr+B+VE5olcdrLP6dkYtTuFr7F
-         bm8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697834863; x=1698439663;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697834864; x=1698439664; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mm7dtlx0Z3ORS3BpllS20dd9G/AciSYgKTckitgJskM=;
-        b=CpZkfAl61CEyQKgSwE2+mJyUUjM60uqrcdVjf/xPLk0vCNRO8hZEdTmPwf01csBRcK
-         ohHydfs3F7ycxU7iK0Osf3abzVI+kmOO+uNvjlw8EWpT6XS7U8h3CnyWA7/5YrtBZmSI
-         8O9vI7AKsyhBkFvVKi2f2Ga0PRqR4kJ9xXmempiLEJJx3U5qNHVesdk69ExPvNFfuzsZ
-         ShB2AslFM+wLj6ajy5ZTVZT1mr7VfEeWd6LLojCyuq0F9pgWc76XPiT8T30RJ+VYB4F+
-         0h7H4ucW9acTrEylo/NEzlg/86mY4BSWoemhkJ5WpkaPTw9e9/zzQ76kZTVyAczE73mJ
-         DUuQ==
-X-Gm-Message-State: AOJu0YxrS/xNkTKTyOT4FfMZwKThGxoR1p28iAsoi7yE7KOuKPKKCTgK
-        NnhTndWjjxvOFYVvpVZg0YM=
-X-Google-Smtp-Source: AGHT+IGNAW08UrC9GMhPGqpScR5qg4UfBmZqwC6ITV1HsWdo7h5JeeE5B0GTahaJ7KzNxv3P6sKk8A==
-X-Received: by 2002:aa7:88d0:0:b0:68e:41e9:10be with SMTP id k16-20020aa788d0000000b0068e41e910bemr2696426pff.20.1697834863278;
-        Fri, 20 Oct 2023 13:47:43 -0700 (PDT)
+        bh=s0ZIMRigGTwdVjAgf14DvEXgC3201/iiyAMjiEO7lCw=;
+        b=YZbhJEo4UOjprrvjrvFewOSic0H1Fdd2aWy9RxOXWOyVWMm04JY6DG4ic6DUoK+POC
+         pKveaFOEcJsIVoq4Pi1pl8Vj8SDGXrfiS7zWN2xQTH/Kg2vC67oMNzTfEzpSLkWIWrFR
+         5qIWBMOLTdhfDKSBy14laUy8ArK/n8vLhwg+lyRGZSrmVqTA074PJfJ0dFtPXDKhoedV
+         ee6batgpo9oTJ0z9fWkqxneeYxjJthOdMCUF0Aei6x8ID/ZpmhMtxrL47kSxpAz/IHK7
+         cKmHa4jE4rHAZHfwhlq0iow/5vPkLZY5KhVHTEVy7XfGpzIA26XuYYe0GwBX5CY7/G1y
+         v7Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697834864; x=1698439664;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=s0ZIMRigGTwdVjAgf14DvEXgC3201/iiyAMjiEO7lCw=;
+        b=tW8GXgNNB0cmEV/D2NhWfCv4TWA2b8VK5aWXm71HVIE5i8AHjy8TPL2YPybWp+GAGq
+         +HvcrER7wt5KC0Tfu0Z3kv8rxjvPP8IkMoI7pC77SPiqwG33b68AWylEMKYih1pvP0e2
+         t2ErIxYjHa3K5GqnSe0Wjv/1wNamYwh2FV1YWc1FhtDZVh2Xx+qsXYIi371KFd3dEHL+
+         IsQWop61xUMpiHgTlyPZzAqxuZV7fOGM7CElIyfoCigvHUB0rIZEeDgsdbE16Oqw7Ww0
+         LrEkji1QxBLChBfb7Nw9UlxehXGYKtqI5sJkTJQXJm22eBnNUw4AhLjR/kB5OEb0GZ9e
+         lAwg==
+X-Gm-Message-State: AOJu0YzYoqzUk/5esNk0quk+nzY5HFTFjtIPtWPMqpkpdN4d5iPRrxZj
+        VOhytdTCxWbeQ/2VjyKHzd4=
+X-Google-Smtp-Source: AGHT+IGtL1KfgniFkyeYJwoXAdhulf7vCTfY1ZGKd2pY2Dm7K5N+SYYozkceWdlrZeW2t3JUlOPedQ==
+X-Received: by 2002:a05:6a00:853:b0:6be:b79:eca with SMTP id q19-20020a056a00085300b006be0b790ecamr3278962pfk.32.1697834864411;
+        Fri, 20 Oct 2023 13:47:44 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:17e0:7ea9:fbc6:4c7d])
-        by smtp.gmail.com with ESMTPSA id r25-20020aa79639000000b00694f14a784bsm1971183pfg.52.2023.10.20.13.47.42
+        by smtp.gmail.com with ESMTPSA id r25-20020aa79639000000b00694f14a784bsm1971183pfg.52.2023.10.20.13.47.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 13:47:42 -0700 (PDT)
+        Fri, 20 Oct 2023 13:47:44 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,10 +61,12 @@ Cc:     Ian Rogers <irogers@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 1/3] perf lock contention: Clear lock addr after use
-Date:   Fri, 20 Oct 2023 13:47:39 -0700
-Message-ID: <20231020204741.1869520-1-namhyung@kernel.org>
+Subject: [PATCH v3 2/3] perf lock contention: Check race in tstamp elem creation
+Date:   Fri, 20 Oct 2023 13:47:40 -0700
+Message-ID: <20231020204741.1869520-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+In-Reply-To: <20231020204741.1869520-1-namhyung@kernel.org>
+References: <20231020204741.1869520-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,62 +79,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It checks the current lock to calculated the delta of contention time.
-The address is saved in the tstamp map which is allocated at begining of
-contention and released at end of contention.
-
-But it's possible for bpf_map_delete_elem() to fail.  In that case, the
-element in the tstamp map kept for the current lock and it makes the
-next contention for the same lock tracked incorrectly.  Specificially
-the next contention begin will see the existing element for the task and
-it'd just return.  Then the next contention end will see the element and
-calculate the time using the timestamp for the previous begin.
-
-This can result in a large value for two small contentions happened from
-time to time.  Let's clear the lock address so that it can be updated
-next time even if the bpf_map_delete_elem() failed.
+When pelem is NULL, it'd create a new entry with zero data.  But it
+might be preempted by IRQ/NMI just before calling bpf_map_update_elem()
+then there's a chance to call it twice for the same pid.  So it'd be
+better to use BPF_NOEXIST flag and check the return value to prevent
+the race.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 4900a5dfb4a4..b11179452e19 100644
+index b11179452e19..69d31fd77cd0 100644
 --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
 +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -389,6 +389,7 @@ int contention_end(u64 *ctx)
+@@ -328,7 +328,11 @@ int contention_begin(u64 *ctx)
+ 	if (pelem == NULL) {
+ 		struct tstamp_data zero = {};
  
- 	duration = bpf_ktime_get_ns() - pelem->timestamp;
- 	if ((__s64)duration < 0) {
-+		pelem->lock = 0;
- 		bpf_map_delete_elem(&tstamp, &pid);
- 		__sync_fetch_and_add(&time_fail, 1);
- 		return 0;
-@@ -422,6 +423,7 @@ int contention_end(u64 *ctx)
- 	data = bpf_map_lookup_elem(&lock_stat, &key);
- 	if (!data) {
- 		if (data_map_full) {
-+			pelem->lock = 0;
- 			bpf_map_delete_elem(&tstamp, &pid);
- 			__sync_fetch_and_add(&data_fail, 1);
- 			return 0;
-@@ -445,6 +447,7 @@ int contention_end(u64 *ctx)
- 				data_map_full = 1;
- 			__sync_fetch_and_add(&data_fail, 1);
- 		}
-+		pelem->lock = 0;
- 		bpf_map_delete_elem(&tstamp, &pid);
- 		return 0;
- 	}
-@@ -458,6 +461,7 @@ int contention_end(u64 *ctx)
- 	if (data->min_time > duration)
- 		data->min_time = duration;
- 
-+	pelem->lock = 0;
- 	bpf_map_delete_elem(&tstamp, &pid);
- 	return 0;
- }
+-		bpf_map_update_elem(&tstamp, &pid, &zero, BPF_ANY);
++		if (bpf_map_update_elem(&tstamp, &pid, &zero, BPF_NOEXIST) < 0) {
++			__sync_fetch_and_add(&task_fail, 1);
++			return 0;
++		}
++
+ 		pelem = bpf_map_lookup_elem(&tstamp, &pid);
+ 		if (pelem == NULL) {
+ 			__sync_fetch_and_add(&task_fail, 1);
 -- 
 2.42.0.655.g421f12c284-goog
 
