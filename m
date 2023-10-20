@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809EC7D11C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB26D7D11B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377562AbjJTOpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S1377566AbjJTOiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377429AbjJTOpJ (ORCPT
+        with ESMTP id S1377527AbjJTOiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:45:09 -0400
-X-Greylist: delayed 434 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 20 Oct 2023 07:45:04 PDT
-Received: from b1712.mx.srv.dfn.de (b1712.mx.srv.dfn.de [194.95.234.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9234A19E;
-        Fri, 20 Oct 2023 07:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        uniklinik-freiburg.de; h=mime-version:content-transfer-encoding
-        :content-id:content-type:content-type:content-language
-        :accept-language:in-reply-to:references:message-id:date:date
-        :subject:subject:from:from:received:received:received; s=s1; t=
-        1697812668; x=1699627069; bh=xaqiTiaHUMKPQPBP2nbNQFRpF0OrJpSUn2k
-        mUFCgflc=; b=Y1bHc1dMz4BiOWNFa6Mt0GZU6QsZ4hmR75TWxkFPO/5fFvqr+Z4
-        N9fS0LWMXJF+mZM+AXXld5k/YeBPDW9r1hpq9qodtYcHTqJ7G1A+Ztiqs0Jf+Cqi
-        tZZDA/5mFsMjoLFsUfEN7vIQsHH2AJCTkvU88Wm3dXFDN44nMQ2DX/BI=
-Received: from ukl-fm1.ukl.uni-freiburg.de (ukl-fm-ha.ukl.uni-freiburg.de [193.196.199.18])
-        by b1712.mx.srv.dfn.de (Postfix) with ESMTPS id 039F74016E;
-        Fri, 20 Oct 2023 16:37:47 +0200 (CEST)
-Received: from ukl-ex2.ad.uniklinik-freiburg.de (xxx52.ukl.uni-freiburg.de [193.196.253.52])
-        by ukl-fm1.ukl.uni-freiburg.de  with ESMTPS id 39KEbeb8015176-39KEbebA015176
-        (version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
-        Fri, 20 Oct 2023 16:37:40 +0200
-Received: from UKL-EX4.ad.uniklinik-freiburg.de (193.196.253.54) by
- ukl-ex2.ad.uniklinik-freiburg.de (193.196.253.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 20 Oct 2023 16:37:40 +0200
-Received: from UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071])
- by UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071%5]) with mapi
- id 15.01.2507.032; Fri, 20 Oct 2023 16:37:40 +0200
-From:   "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>
-To:     "smfrench@gmail.com" <smfrench@gmail.com>,
-        "matoro_mailinglist_kernel@matoro.tk" 
-        <matoro_mailinglist_kernel@matoro.tk>,
-        "pc@manguebit.com" <pc@manguebit.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "paul@darkrain42.org" <paul@darkrain42.org>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "ronniesahlberg@gmail.com" <ronniesahlberg@gmail.com>,
-        "bharathsm@microsoft.com" <bharathsm@microsoft.com>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        "brian.pardy@gmail.com" <brian.pardy@gmail.com>,
-        "nspmangalore@gmail.com" <nspmangalore@gmail.com>
-Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
- is mounted (cifsd-cfid-laundromat in"D" state)
-Thread-Topic: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS
- share is mounted (cifsd-cfid-laundromat in"D" state)
-Thread-Index: AQHaA2L6GXEWZinVBEmsDkQRFDlV8A==
-Date:   Fri, 20 Oct 2023 14:37:40 +0000
-Message-ID: <779ef3ac542e7e39027dee19d669ad2f81b05bcc.camel@uniklinik-freiburg.de>
-References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
-         <ZPfPfyIoVxw5L6El@debian.me>
-         <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
-         <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
-         <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
-         <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
-         <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
-         <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
-         <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
-         <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
-         <ZRN9MtBqYnT6oX60@vaarsuvius>
-         <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
-         <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
-         <E1F307C7-9B1E-40F6-860B-6050856E8395@manguebit.com>
-         <CA6E0F87-65FD-4672-AA0C-A761E5006B7D@manguebit.com>
-         <CAH2r5mse_2sfXF+tdTmie5LLtBuc+6DOumDH3rn=5V24yhrYVQ@mail.gmail.com>
-         <c88b2ecd27524153c2acd8aba6ae3c80@matoro.tk>
-         <457a5483c3c4ca5bb6c7ec6f4231074c.pc@manguebit.com>
-In-Reply-To: <457a5483c3c4ca5bb6c7ec6f4231074c.pc@manguebit.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [193.196.253.71]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EB79D542FA71234BB0135EE8EF78E273@ad.uniklinik-freiburg.de>
-Content-Transfer-Encoding: base64
+        Fri, 20 Oct 2023 10:38:05 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9B114;
+        Fri, 20 Oct 2023 07:38:04 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso1326716a12.1;
+        Fri, 20 Oct 2023 07:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697812682; x=1698417482; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pjBwNWpR8uoTt7yL2JwXrNyMkZDaAsBp9vs5MsXaXcU=;
+        b=OTQMGTIzrAWeHA4Fbnq8BJzSAj/+kqztQ30eJsy63bozcry7GpvrrjUqYhj6ouDcRi
+         WP/YTCeXDcoNhN1hyyyw96eh+aXJfNpEJzAUH+F6/7TgtXHiXL0F8gaADmmCqjSk2XHK
+         e8PKsOwW9q6e5r8KDLdegvnr5faM5GT7MXlGZU0ZxG/bzbRFPmXg4brl9g0kEwuNMpb/
+         cCDYlYgRUJ/KMGmqb3Jm8P/Xt11rwxgRF4rFFF4uXjFAm+3P9caVFc9TIpNaSSG9uajR
+         qFq9xUy9vTRcf6V5BqxWvnCT081TwyklRR+MBNDw7hthsqX/OguyWvpFvfcWpGuKwTRu
+         L2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697812682; x=1698417482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pjBwNWpR8uoTt7yL2JwXrNyMkZDaAsBp9vs5MsXaXcU=;
+        b=slkk5MMg3mFxzVB88eyHLg5ob0MUrOYfBAOFGiYNqWPUwcqax/3EgdFnkJy/MR+TGb
+         M+3jsHo99xuKdJKrR18VNCMfn0GsYPygDsSTa6aUUUpEaj8yt2ICpI83RLyQHS7HRvJ2
+         KU481Zuf+npoNDX363I6QUhepezKNSTN7GWnJw7VsaIEZPVztz74iNp5gGKiHm/hW/MF
+         GXxvGK13O65+PKGH54kyCewYEm4uorzM4xRP+Ipnc/Qk+d0BgtEnwzOZQdYs4tu4ZLEt
+         beZV0LMvFd1LmlyzAoAWvcsekTZC0oWvUOgPvMkz4QChXurPoodOCqxGIk2w+CY+yg0V
+         BtXw==
+X-Gm-Message-State: AOJu0Yz4EDwdfpOPrE1R9AaUsFhk3equDDsIE2MJ//GvwvEQF/HJODz6
+        o7HF6GO2SK+pZi+nH1/aTxQ=
+X-Google-Smtp-Source: AGHT+IGA0b+ydD3hEt71z4EGORuauwp8TxwlVz6PlNd2I2R0WB/SsXZ0sj01ayHkYrvI0lmhAD/rPQ==
+X-Received: by 2002:a05:6402:518e:b0:53e:332e:3e03 with SMTP id q14-20020a056402518e00b0053e332e3e03mr1923675edd.4.1697812682378;
+        Fri, 20 Oct 2023 07:38:02 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id s14-20020a05640217ce00b0053e625da9absm1565214edy.41.2023.10.20.07.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 07:38:02 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 17:37:59 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     netdev@vger.kernel.org, woojung.huh@microchip.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        marex@denx.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        o.rempel@pengutronix.de
+Subject: Re: [PATCH net-next v4 2/2] net: dsa: microchip: add property to
+ select internal RMII reference clock
+Message-ID: <20231020143759.eknrcfbztrc543mm@skbuf>
+References: <cover.1697811160.git.ante.knezic@helmholz.de>
+ <492ba34018bd5035bcc33402746df121df172f73.1697811160.git.ante.knezic@helmholz.de>
 MIME-Version: 1.0
-X-FEAS-Client-IP: 193.196.253.52
-X-FE-Last-Public-Client-IP: 193.196.253.52
-X-FE-Policy-ID: 1:4:1:SYSTEM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <492ba34018bd5035bcc33402746df121df172f73.1697811160.git.ante.knezic@helmholz.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QW0gTW9udGFnLCBkZW0gMTYuMTAuMjAyMyB1bSAxNTo0MSAtMDMwMCBzY2hyaWViIFBhdWxvIEFs
-Y2FudGFyYToNCj4gbWF0b3JvIDxtYXRvcm9fbWFpbGluZ2xpc3Rfa2VybmVsQG1hdG9yby50az4g
-d3JpdGVzOg0KPiANCj4gPiBEbyB5b3UgaGF2ZSBiYWNrcG9ydHMgb2YgdGhlc2UgdG8gNi41P8Kg
-IEkgdHJpZWQgdG8gZG8gaXQgbWFudWFsbHkNCj4gPiBidXQgDQo+ID4gdGhlcmUncyBhbHJlYWR5
-IHNvIG1hbnkgY2hhbmdlcyBiZXR3ZWVuIDYuNSBhbmQgdGhlc2UgY29tbWl0cy4NCj4gDQo+IFBs
-ZWFzZSBmaW5kIGF0dGFjaGVkIHR3byBwYXRjaGVzIHRoYXQgc2hvdWxkIGZpeCB5b3VyIFNNQjEg
-Y2FzZS7CoA0KPiBUaGV5DQo+IGFwcGxpZWQgY2xlYW5seSBvbiB0b3Agb2YgdjYuNS55IGJyYW5j
-aC4NCj4gDQo+IExldCBtZSBrbm93IGlmIGl0IHdvcmtzIGZvciB5b3UgYW5kIHRoZW4gSSdsbCBh
-c2sgc3RhYmxlIHRlYW0gdG8gcGljaw0KPiB0aG9zZSB1cC4NCg0KVGhhbmtzIQ0KSSBjYW4gY29u
-ZmlybSB0aGF0IHRoZSBwYXRjaGVzIGFwcGx5IGNsZWFubHkgb24gNi41LjggYW5kIGhlbHAgYSBs
-b3QNCndpdGggdGhlIGlzc3VlIGhlcmUgKHZlcnM9My4xLjEsIGdlbnRvbyBjbGllbnQsIE1TIEFE
-IHNlcnZlciB3aXRoIERGUykuDQoNCg==
+On Fri, Oct 20, 2023 at 04:25:04PM +0200, Ante Knezic wrote:
+> +static void ksz88x3_config_rmii_clk(struct ksz_device *dev)
+> +{
+> +	bool rmii_clk_internal;
+> +
+> +	if (!ksz_is_ksz88x3(dev))
+> +		return;
+> +
+> +	rmii_clk_internal = of_property_read_bool(dev->dev->of_node,
+> +						  "microchip,rmii-clk-internal");
+> +
+> +	ksz_cfg(dev, KSZ88X3_REG_FVID_AND_HOST_MODE,
+> +		KSZ88X3_PORT3_RMII_CLK_INTERNAL, rmii_clk_internal);
+> +}
+
+Sorry, I didn't realize on v3 that you didn't completely apply my
+feedback on v2. Can "microchip,rmii-clk-internal" be a port device tree
+property? You have indeed moved its parsing to port code, but it is
+still located directly under the switch node in the device tree.
+
+I'm thinking that if this property was also applicable to other switches
+with multiple RMII ports, the setting would be per port rather than global.
