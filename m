@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7E07D164C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B5F7D164D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjJTTfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        id S229896AbjJTTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJTTfi (ORCPT
+        with ESMTP id S229886AbjJTTfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:35:38 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49720D52
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:35:33 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7c95b8d14so13315657b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:35:33 -0700 (PDT)
+        Fri, 20 Oct 2023 15:35:47 -0400
+Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AA2D6B
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:35:45 -0700 (PDT)
+Received: by mail-oo1-xc4a.google.com with SMTP id 006d021491bc7-581e2fc1178so1585519eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697830532; x=1698435332; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lE8sc7lMxPUTiCNze+DpXwWn8FTfkpYeh3kEHU1GTO8=;
-        b=EDVoRq/HlEm8eLCzq1tmhJjgtBU/CJsO9EJh1KQ07TsH2jMAJ3UevR+jp3tzuaZLok
-         v0CM4m8tO3Twjl7pup4/UeIqf3eobG3uP7eSd4yN4SvBWpKsRT8DoKuwLiKNL3tHC9SV
-         MK+R8awfM0PU0y1zhVEsZAKqcesUBlSNUdiKk=
+        d=google.com; s=20230601; t=1697830544; x=1698435344; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9+iAGOL8fBcRKregm2UatJBSjxVyGVTi97qzrD87J/M=;
+        b=aRyQvAni2EHDC0yRsExYndr00a4pAr2Rtc9NCVfSzpCdgmvO5I5cL6jHXAntyhyxL2
+         FI9KRSEINv+Hs6h/g1KbBbbso/zbisELGQolS1SFa35WUNcqQ2iZ9dnMyQAqQ1/QUCF7
+         klwPq5O8MSJFKEYZ0DM3XcZwQh3+MzdWqiLmcC1ojS+1CtCn1Xw7Mek462kLySxhoc4h
+         FehbPwXpxTs61coqrVJ9RGMalTRWJN0Ymdl4kSyOZGeAJpjLzdsOzlUIta2TRhogRJve
+         +P1QXvrg5VOCNk4mHO7U2CSk6Zhiezr8zxVyhIj8LTgfHtEwoGataffKbvaUqYufSGtR
+         eGhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697830532; x=1698435332;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lE8sc7lMxPUTiCNze+DpXwWn8FTfkpYeh3kEHU1GTO8=;
-        b=AfcgY5VL/I4bjqQwzg+O5qdXsW06KfZ/kvnrLtXGwokAi9bRhNo5VB17+SsI6ZKlgU
-         9S0APk46XazdUFzrHMZa79KexHHa+VczbGfPmhpmVxjA9VA+G0CmbUKvQZhqgpJvssLl
-         z6KHektIAn0B5sxFLFAxFlS1ys1wG1mfoujflej+JF+LnEvY2E3mvxK9eNOYGU+LVnX1
-         7UJSOWIdlDuAeytvBAhz70SVJJnOUOWdWFI5oNHwH+GNq7s1J6dxbgDjyGWo49J3bh0J
-         2V5YDQRdawkpIPBLf7kYpRFYgYz1zAvBQ0K+WzH9zR68xik4Chcu53fMbvhmYvh08adm
-         YmCw==
-X-Gm-Message-State: AOJu0YwgdI951s45RNMGow7RduaBOoOFyIJ4feyngCna1VsQQapar1ct
-        yGnCjnonzrlh09jOttcfTS9r6YsA+N9EwygQCNbRTA==
-X-Google-Smtp-Source: AGHT+IFFR6JbKQHRmgDymH+yYcdqV4a00GQtxOE+bW1LRTtg43H8mRXY8EcQ+QbZtDleHGFGavx90BozcrWErCODPls=
-X-Received: by 2002:a81:65c2:0:b0:583:3c54:6d89 with SMTP id
- z185-20020a8165c2000000b005833c546d89mr2795753ywb.44.1697830532450; Fri, 20
- Oct 2023 12:35:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231018235944.1860717-1-markhas@chromium.org>
- <7b08520e-8f36-45a1-9b7a-316a33c8e8c4@linux.intel.com> <CANg-bXDvZ00ZHEgbUf1NwDrOKfDF4vpBOxZ4hGEp-ohs6-pZpw@mail.gmail.com>
- <5bc82aca-04f2-463b-ba52-34bcae6724d5@linux.intel.com> <CANg-bXCaUOxSTfR1oXKrdnDozA9Hn-NL7mqg+zvLASLQyouChA@mail.gmail.com>
- <80f8a742-4a60-4c75-9093-dcd63de70b66@linux.intel.com>
-In-Reply-To: <80f8a742-4a60-4c75-9093-dcd63de70b66@linux.intel.com>
-From:   Mark Hasemeyer <markhas@chromium.org>
-Date:   Fri, 20 Oct 2023 13:35:21 -0600
-Message-ID: <CANg-bXBbQVEJ-SwLoHfnu30pCkFcJb9Dywxf603cwUOD6N19Bw@mail.gmail.com>
-Subject: Re: [PATCH v1] ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Brady Norander <bradynorander@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org,
-        Curtis Malainey <cujomalainey@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1697830544; x=1698435344;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9+iAGOL8fBcRKregm2UatJBSjxVyGVTi97qzrD87J/M=;
+        b=tqciglbmKg1Lmo4pCJfTBH6K7KSTMUCCxtlc2W+9x5u4ZlKc2osrcSBL02YjKdrXvb
+         9xJh3c6lJLa88QcoOJqo2JkJrgYO678tIMKWxWwvU3adn0hiqvUoc/wnekLANYVs1T7J
+         koa6owmixrMciwyGtQsEX8DM2mCwEfIgak1KyXAR3RoFXUzqCz+CcZh3rlyERAFhbAJ6
+         y377ehH24UFOCv/oU2X2d7mEssHgEV/pt4eGCRatCQiWgLh6buJmi4OvNMII4dBpJFp0
+         z2vBjHcsUBD4CZUEuDFy98rh6zIF2k0amupaPmJ8lOueWbym1opS1KgeGL5i77E9n2p6
+         YeLQ==
+X-Gm-Message-State: AOJu0Yxrtlxsm8fmfNGRnlrCYBBKc9JWEDAtFEC6mP0IDFkc6SlBX0aH
+        pUp6IiqCbXvivNTHQogv7lZnEwk0tt+p86QOGw==
+X-Google-Smtp-Source: AGHT+IHZQUY9baCehYvzXAaS7x9nNF6uHCQ2/74bV2qdNWPoNwNQLv1R/Hn9zc2YRsn/RnRPDVOTLR2TZ+Z8Sxp5Ag==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6808:448f:b0:3ad:da36:1dd6 with
+ SMTP id eq15-20020a056808448f00b003adda361dd6mr1891601oib.1.1697830544173;
+ Fri, 20 Oct 2023 12:35:44 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 19:35:43 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAI7WMmUC/x2N0QrCMAwAf2Xk2UBXJwx/RUTaLNOAdCWp0zL27
+ ys+Hfdyt4GxChtcuw2UVzFZUpP+1AG9QnoyytQcvPPn3nmHVjRRrjiprKyGefmyon1yftcGnQP xI4ZSWCsSRkfjEN0lkB+hRbPyLL//8Hbf9wN9+HSXgAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697830543; l=2313;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=zmP6Agkd7BUv41JUTgaRBkw1r6Q9BZkiPWT2tLR0LAQ=; b=qUt1cyoTbXs6qmJVgPAXz5mbtcGQzIOLTkM7z8UR/GVWZ8gVAAzFiOhg9+1gcHscXS/bles5K
+ Hd71E9a1vbbDBn24xeS1hMCC89N3IDNnw1W+pJJ4CZNXEiLH5v1sOMH
+X-Mailer: b4 0.12.3
+Message-ID: <20231020-strncpy-drivers-power-supply-surface_battery-c-v1-1-cabaea50e667@google.com>
+Subject: [PATCH] platform/surface: aggregator: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> There's been multiple rounds of discussions with Curtis, we introduced
-> DMI_OEM_STRING but it's still not good enough, and now the previous
-> conventions are not being followed on what is a relatively old platform
-> already...
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Thanks for pointing that out. ChromeOS uses the fw_path module
-parameter for JSL boards so I missed this. The DMI_BIOS_VERSION should
-be consistent across all Chromebooks assuming 3rd party firmware
-wasn't installed. I'll throw up another patch addressing this.
+We expect bat->name to be NUL-terminated based on its usage with
+strcmp():
+
+power_supply_core.c:
+445: return strcmp(psy->desc->name, name) == 0;
+
+... and also by the manual `... - 1` for the length argument of the
+original strncpy() invocation.
+
+Furthermore, no NUL-padding is needed as bat is zero-allocated before
+calling spwr_battery_init():
+826: bat = devm_kzalloc(&sdev->dev, sizeof(*bat), GFP_KERNEL);
+827: if (!bat)
+828:   return -ENOMEM;
+829:
+830: spwr_battery_init(bat, sdev, p->registry, p->name);
+
+... this means any further NUL-byte assignments (like the ones that
+strncpy() does) are redundant.
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+Let's also opt to use the more idiomatic strscpy() usage of:
+(dest, src, sizeof(dest)).
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/power/supply/surface_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/surface_battery.c b/drivers/power/supply/surface_battery.c
+index 19d2f8834e56..196d290dc596 100644
+--- a/drivers/power/supply/surface_battery.c
++++ b/drivers/power/supply/surface_battery.c
+@@ -722,7 +722,7 @@ static void spwr_battery_init(struct spwr_battery_device *bat, struct ssam_devic
+ 			      struct ssam_event_registry registry, const char *name)
+ {
+ 	mutex_init(&bat->lock);
+-	strncpy(bat->name, name, ARRAY_SIZE(bat->name) - 1);
++	strscpy(bat->name, name, sizeof(bat->name));
+ 
+ 	bat->sdev = sdev;
+ 
+
+---
+base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
+change-id: 20231020-strncpy-drivers-power-supply-surface_battery-c-b0c84b05ac28
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
