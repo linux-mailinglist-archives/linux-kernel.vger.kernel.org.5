@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802FD7D1386
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8C37D138B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377895AbjJTQEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S1377902AbjJTQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377860AbjJTQEu (ORCPT
+        with ESMTP id S1377860AbjJTQE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:04:50 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2089.outbound.protection.outlook.com [40.92.58.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FC3D8;
-        Fri, 20 Oct 2023 09:04:49 -0700 (PDT)
+        Fri, 20 Oct 2023 12:04:56 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04olkn2036.outbound.protection.outlook.com [40.92.73.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6DDD4C;
+        Fri, 20 Oct 2023 09:04:54 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dNpdL38jqfsQLIHWcR7D5U4X63bb4alYR1DtaYjrkEw+c+JBPCC44ryXSsaNQ44PcVlNL8yDhaICKj3vkzTJr/Ch6EatSig2Se4WLux4xUx0nDZI8q16ZrRNJpB5me+y2ckV1tBN0eqBzP7iIVth+8esQ+SJrZcodaVIslgifvktEcRLG81nZTZDjNHrQL2UYWSaWYiVyfF6VhgH9tCVobJLMn3o9ARuFLPye4G8OENGmfZ+15diXhkuh2VgwNVgJ5XlP5JeA3hIrwlRL0D0/xiFRPw2pLVUho3ozFeIT0wrzbENI4Arry63YuQEh30poaXiKjH4W1u29hNwDTVc7Q==
+ b=Y8JIz06ePK/Van9kaG3bakGBw6D+8EMRsBRGJMqIY8rDXZG/KqyjZ+Hpn/zM1+hPlhdyxFRK8urbJRni++lldWgDLl24TWyaaSTNtXEaoBw4yDpcV5YEc2gCrOMQ2OVKPmCPs8hWc829miUscuuU68MQMBzz/vKBZVut4Fwwy9UbVR+tpasa//87b9p3BcljMR0+b5HQm0t8MlE/4keQCnYr2eISePUBzqForNX5+GZUoYIZv8hf0LXv6m5D8ngYSGJJwkm19iZ50YKObBgxNcNpQi3QgciB0DuUQuBtfc45dvw5XgPjPuK8PaJZCHvkU8FgM0lmykOP40vmWOsMFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AuS9cjJzEGfcLKVQ2Gi0b8BQ6oIDdeyzIN4dWzPwyzE=;
- b=hzMfu7DqkVw4dyCu/E2SKoKHTxvV3UwgTI5M8gfDeROyxAnQrRFY8MqLFJak/VOXq9ApqfiTJzf20jQyMdCcYlzwX1K6OKwcwbycrPv25WGDoDW+r6Ut+45GsuwT1joYje8tL8eGoKELwVmfgQOOAG3QtEP/ZWZCu/m0v6GXnQuaqkrBtTTHqZGS+m5QsSZvIx9fE0KCwNsL6tHuSkdGG1VlMGF3+1X86W/SdZKY6ajJ4hruBqoW4n6OuBPGpVak+zVUjitlsN+Z8FAQX5zYp74y65HlCf1ATFPTHTcz/1fS3U0b8KxzCZmEp/PtcAvoemeH0UqWp0vxawJvDsLeGg==
+ bh=ZZ7LzYawi1BjZNDRWoZEgW9zBmP8vBiaG+P8yaIcFPE=;
+ b=kU0rbrQq1g320jkx0J62DRcxmy2J8h6Q9jo3fWJy+0siVP53a10CNI5p9+k/dsP8H/+myqneybPqz+juTI6sK8y+lb2CLU+xHM+S+x4IpX+E3J0W5tp3qNx+xcbx1R1TZPZmflr3GqcZk9D3pWUSuCf7wgfMUoSmsSoqDUD432emAutS2Tiamcl2jyTjh459SVjYGpnVyMIO+d9oyuGSxHLn5UVwp1kzaInVRp3XcVbNaOGuAIoyr90PPwEak0XKyXkUYMtA72KhZVRVAvRFh8N+91q+lDn0HP62vHhNEyvIsQ47qOIyFSb0WOcC1JlZ5oBzlakeeaZegf5vnV569w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
  by AM9PR02MB6930.eurprd02.prod.outlook.com (2603:10a6:20b:26d::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
- 2023 16:04:48 +0000
+ 2023 16:04:51 +0000
 Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
  ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6886.034; Fri, 20 Oct 2023
- 16:04:48 +0000
+ 16:04:51 +0000
 From:   Cameron Williams <cang1@live.co.uk>
 To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Cc:     Cameron Williams <cang1@live.co.uk>, stable@vger.kernel.org
-Subject: [PATCH v4 01/11] tty: 8250: Fix IS-200 PCI ID comment
-Date:   Fri, 20 Oct 2023 17:03:07 +0100
-Message-ID: <DU0PR02MB78993B6AD85F6550AF6590FBC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
+Subject: [PATCH v4 02/11] tty: 8250: Remove UC-257 and UC-431
+Date:   Fri, 20 Oct 2023 17:03:08 +0100
+Message-ID: <DU0PR02MB78995ADF7394C74AD4CF3357C4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020160412.118550-1-cang1@live.co.uk>
 References: <BBPatchesV4>
  <20231020160412.118550-1-cang1@live.co.uk>
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-TMN:  [XygCAdmQTIUEXFPJKL1XxRN+MmcjhJ44]
+X-TMN:  [X4O2jWJw2xv5EjEGXMEHhEj1PxTXw+VT]
 X-ClientProxiedBy: LO0P265CA0011.GBRP265.PROD.OUTLOOK.COM
  (2603:10a6:600:355::19) To DU0PR02MB7899.eurprd02.prod.outlook.com
  (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <20231020160412.118550-2-cang1@live.co.uk>
+X-Microsoft-Original-Message-ID: <20231020160412.118550-3-cang1@live.co.uk>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|AM9PR02MB6930:EE_
-X-MS-Office365-Filtering-Correlation-Id: 959ee49d-7e30-4c9d-d962-08dbd18648bd
+X-MS-Office365-Filtering-Correlation-Id: 3a734468-64fd-4a5e-c1bd-08dbd1864aeb
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TJXNSqVvM/DsLVX5rBGsnwOFlfweliXoPgnB2U2kbl2V1M3VSsbQPh+TMf6UMlEH7ye26oJABpC/drxwQ+m5w16dGqMh3dzsNKSMUO8eLljvyVO+hPhRpqsfM/XPz0XzC787LCp+yydPxZldbcG0Gcnwi03pYWS3xeSOKZ1mXIoYyseYecjhpO0bjs10Lt1jOvDqCDDkEsjrABviJ1aT1xyz1fljPDa+I+fa/M7IoaVxgUQ+9uvWDqE6X+li9Gko9bGj+qeH4zB/2ONuXKZbTeuyh8Ar6rkxylP/vGyLQLQJIQakedEPlLkYeT4Im9tdlQCAYi/pcAdfKembXEeAG/Bi9sxquF9v3TqPdL8pQhir2jNaShLK4RVqMWoC0YnYgmNIMMtrVyNEqst8TqKCK6wRBaM6leF0Q+w1DrqkTNDd9RBbLaKmbDDOQHjzI30emOSd5FBmLcFs6Ygy1rV/rDu41/WNP0CFkNeiENlyIxzDgNTnx6VZLU/tDoZXVkIZu28QaK+t8JIm34iwus7VY5GZKy0fLkA0tPQWanIXcljaOnXqgoKxBKcFIP1AtCBvUPeHw1VMRqPOTD2g/NkMUzDKbNQzyWRLE9JzfVqe8aRSvsw+4odvmUDhd0BWIPql9e0eQ52Z0a38CO0kWlLNjA==
+X-Microsoft-Antispam-Message-Info: bqOHvWHJpVCYTJV4rXZDVXKgxNaiGxzZ05GfJrF0f5Ol48ymIapBlbVEpY4wy45sowUyhgDEhEzTsa4uw4UdgcNMMdV+2bvYsmr608StWRVOM5SvMVYOWLTRfG+RKhFULiWvavPOy1ussh8HuOPw9aBC/svmIyptE5ULtXfHO0Oi69n9QxDsA9eZHDN2RPBbl5XcjNH82/4PtxMqv/GKGyXTgIflniKx0Yo8MzLFEzs7O6UKF1j1EAH2L0gSudejmn8QAXHM6kvO/Rc46LGldI4CoJPrn+KgDQndInbDUftTpooaIwCGGim1uyIb0tzt0/BPtPVbZothxbTGS96UWiXZbx8ixSbRBOwv36VFQtYPsy73i+eAa92wnZTV68pyW5FBR6J7S5NeKojlj9HH+kKJcL6IIiJlhWC/bedd8GF7Z39gEvsShKXhNSEftVHi3WduOZNY3+aaVFpQXlTrp6Sbpgf9KwGrPAe5us40+iDXPhkenrQOYabs0cpHXhQqb4fSHyLF5+GxJDbFKKOvLR66QyKjNpvVdtWRC9aZBc7/3nr4vArgOt3J64ESqEkcvW63tRgqG8Ej7mCoshZ32h0gf7Qwq8BVHNqA89YP6OMQ4/T11lMe8zoK0Zbxmkr5G/t4I4cvc9L9zxqHS7RMGw==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E2Xq7cFxMH+4fP4JbV54TdsoFYVSyZzGCVqxbvNNueIfDOgoxB6lc9XQbwew?=
- =?us-ascii?Q?VA8XYPAUgqTYtiWLJC/ohh5doZk1sYpqPJGpkZ9MKU58gmsbeMr2n+HJlcIc?=
- =?us-ascii?Q?HrMEyelzvpvJkLpHdokoqLyVdHrdJiI5soicx8WN7TcxIBhL1fgSyvDrZM9T?=
- =?us-ascii?Q?2cw6w2tF4zGojqKksIlPFk4gq1/aCvrJfDokwfI6aHs5DX2isfmFDnVNdGHL?=
- =?us-ascii?Q?J+Rt9gaDtAlq7fHnWvXVppWPC1yRsHf7FUw/SptVKClvC9GrEQzezY/kVm5w?=
- =?us-ascii?Q?siACm6kXkxRq3+qlTk2QJdWtuQV8S948R7NXbahKFlz22CCUTMeom9TlHI8y?=
- =?us-ascii?Q?ax/29zeHGCgi3HqxJQWE/ZvSmWq4z8hTZWoBny6M+bIFryd5AFO6zVN/h7Dg?=
- =?us-ascii?Q?vFOwsCggoj5ed3hoXzv6od4sYf3SogvXlNobW+BjeLPJ29r14AZEIYrrB0sV?=
- =?us-ascii?Q?cmYvQfmkKAvQ2mYtQTwrkVz7mC5ZoEKGhEExfI3gnmiMeXVf6pZzkL54G19v?=
- =?us-ascii?Q?qJ0VeBFf1Kf/8++MxTn7uSdWB7istP+Y0/Z51ujdLAfOrpZXr+S1NLA198rX?=
- =?us-ascii?Q?jKOgys6CqAkxpxoij93Vgl/QgNdH0LKPYxXNkgFKfjfXtJOrXD8mi6YmR2z3?=
- =?us-ascii?Q?EFw6lkF/XA/BuX9n/2ggdleXOcGuCEQUk+HgImGd4FPz94FbD3Ys1efp5Dxw?=
- =?us-ascii?Q?x2R4Jnc3oR/e4y0jpePEFgYVtboFajk97Q9yjtJundOSUhdSxC2MnoVx3ZJi?=
- =?us-ascii?Q?o4YJG+7Jo9wxr1HFXs2EWJB+i6gJ6D8kmgJoiOCn6UychemL1VwP1OQCoumJ?=
- =?us-ascii?Q?L00zg8jfO9aKSpHdUbKMkus+EnonAuckpKVzd5dk3ZyZr5T8ENeh1+omZKhu?=
- =?us-ascii?Q?EYLkMWaAQx0YvWIl2LcIBX1AzVzdKcmYocJe8D4PMr3pYg45ys3Mb/PfZ/e+?=
- =?us-ascii?Q?3RUaJ4T1PcslY5aY6hvmZtFsBEelwgTY7avu5KaLU2dE3gv1c+91EmcOOI/Y?=
- =?us-ascii?Q?+/EJzldqwMJUk/sE3m11Rr+g5ip1ImWeFZh95i3UdOxmBngUhcnYO68du0Ia?=
- =?us-ascii?Q?LUi+DKafy/H3wIPVv2cCjuh+5g3cYkkHEDWWXj5JMyY8vYa4Xr4GhyPluylp?=
- =?us-ascii?Q?J5ChQq+evdwCj4ccCsU74F4ciBZkUbOscBBJ2cQqbEjAqPh+Vac1Rq4Ff8TD?=
- =?us-ascii?Q?r5rJFt8gNLhQK/dVCmv1yWrTUGRhLd43brKzkQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ybyRhqy0OoQ6VssDGzreVOQIddPLtKGTejY+D5YWrPC97dtXei60+sqMYYuz?=
+ =?us-ascii?Q?JpccBRPmzPnZ49j1QPYb2YKFDgDDefT0AWs5xORKJmXbU/RxS0F7aHW13D43?=
+ =?us-ascii?Q?3bIqQ61+8fF5x4QvKz4iZwRdFBpfi5XFshs5MWc0nrb6E6Z5lBokalgdQX5Y?=
+ =?us-ascii?Q?icSuGzsxSuXSc/+p3w0wcSrxxfgMW1w+IICYi0lCipKAEJAuW7hpy0t1s6JL?=
+ =?us-ascii?Q?G2Y3XeZbkBOvkIRGNgi3Kz1PTwenPSu+C8hCuTf8zKeiehPaVxLrkTI9e2Zx?=
+ =?us-ascii?Q?U8l8JKgXBsluOa+FPUGkNftjUWbvK1y8GskeYt+keFCR0JMdUeDs6Xz8IFtY?=
+ =?us-ascii?Q?BMTVAR0lAzznB5khg2fKh72bANiJKx9lwwyP2dqEdSbPJk9PdTwhf6bbfpQW?=
+ =?us-ascii?Q?X2pq8mFwB/XGFUUewnjly3evg25UGCTr45R8WWT/NW2VAQO50BohgKWmyCPV?=
+ =?us-ascii?Q?PdXM8GztKhiRizoho6W1puQcOkDm3PiLhNnjaEwlwzCRqsNTS0FvCeW4LNxu?=
+ =?us-ascii?Q?8eeDj275bGiMMTafNfzneEx/fpVT+uOx9y9shLjla1tGYOlpdI7JZSbABwx9?=
+ =?us-ascii?Q?ThIo7JFZIzK8NxmzLQsndYnQepa0oOKJdxQbBzZNBH1+4nKhE5ngxyci2/H/?=
+ =?us-ascii?Q?+8rPyJyRhIpfd6Jmlh1YhzHP+n+FrrIkZly8ydKAdRSgOfZphCpfO3V8VTfn?=
+ =?us-ascii?Q?PPZu/5fTxI98IErQrK4vohwvTSDPWrtzB6zvPCmcfyQd13slac35ulcIgM6u?=
+ =?us-ascii?Q?yo//awW23CuXITBATkl8qv+WdeKBBQCncWiofRCSry+sxnm/AJs44dUU62aW?=
+ =?us-ascii?Q?aUfe9BWqAeQRxl2pkr3QnvIyL0Rw3DQZmiTWopfpJwvVM+UuF7rPVZNHUjXD?=
+ =?us-ascii?Q?O2I8EpismJYvbtS8QhJDbSS/75uYMFo1tfUfq3/aqBQ9p1dM/WzFBEVjU9YX?=
+ =?us-ascii?Q?LVS/E5DMWKdHPwlk6Hwp2fYKc9T6oQ5nr+DWMzOJGFTxxgH3oUtPMmd6Pbmt?=
+ =?us-ascii?Q?GD9EpyylugEnzQUbTBDhrXpKQtGBWA1rCm1Dsfh1l2iP9OSpKxyApz8iQuX1?=
+ =?us-ascii?Q?hlmC4047wWfpuuIWsxz+QbOQH2LaF0oyfc8SC9fbXatwkiQjqeGe+MbIw1kJ?=
+ =?us-ascii?Q?tFJe/MDIlXPdigecqj7YAwbPEvKHUJL63KVqHAcsIv2/pBvBDW+1GD5r9WBB?=
+ =?us-ascii?Q?uZlSNFNGFHmelAXiWOx/bejqFFvOlDwDq4k7Ng=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 959ee49d-7e30-4c9d-d962-08dbd18648bd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a734468-64fd-4a5e-c1bd-08dbd1864aeb
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 16:04:48.2294
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 16:04:51.8816
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6930
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,27 +99,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the PCI comment for the IS-200 card. The PCI ID for the IS-200
-is 0x0d80, and the definition used (PCI_DEVICE_ID_INTASHIELD_IS200)
-is indeed 0x0d80, clarify that by fixing the comment as its
-neighbouring cards are all at 0x0020 offsets.
+The UC-257 is a serial + LPT card, so remove it from this driver.
+A patch has been submitted to add it to parport_serial instead.
 
-Fixes: 737c17561fb2 ("[SERIAL] Support for Intashield 2 port PCI serial card")
+Additionaly, the UC-431 does not use this card ID, only the UC-420
+does. The 431 is a 3-port card and there is no generic 3-port configuration
+available, so remove reference to it from this driver.
+
+Fixes: 152d1afa834c ("tty: Add support for Brainboxes UC cards.")
 Cc: stable@vger.kernel.org
 Signed-off-by: Cameron Williams <cang1@live.co.uk>
 ---
-I argue for fixing this rather than removing due to this patch series (and
-the code already in the kernel) referring to the rest of the cards in
-the manufacturer's product line by hex ID, makes sense to me to
-have the hex IDs all displayed correctly one way or another in the
-one driver as the IS-200 and 400 are the only cards to use a definition instead.
+With regards to the parport_serial patch, I mistakenly did not copy in
+the LKML, only the maintainer, so I have no link to the patch, my mistake
+and apologies.
 
 v3 - v4:
-Added Fixes: and Cc: tag
-Added above note for reviewer.
+Split patch v3 part 2 into Fixes and Additions
+Add Fixes: and Cc: tag.
 
 v2 - v3:
-Clarify commit message with better explanation of the change.
 Re-submit patch series using git send-email to make threading work.
 
 v1 - v2:
@@ -132,22 +131,36 @@ the tty/serial/8250 subsystem.
 [3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 [4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 
- drivers/tty/serial/8250/8250_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_pci.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 62a9bd30b4db..ecb4e9acc70d 100644
+index ecb4e9acc70d..a59b9b8eaa68 100644
 --- a/drivers/tty/serial/8250/8250_pci.c
 +++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -4917,7 +4917,7 @@ static const struct pci_device_id serial_pci_tbl[] = {
- 	 * IntaShield IS-200
- 	 */
- 	{	PCI_VENDOR_ID_INTASHIELD, PCI_DEVICE_ID_INTASHIELD_IS200,
--		PCI_ANY_ID, PCI_ANY_ID, 0, 0,	/* 135a.0811 */
-+		PCI_ANY_ID, PCI_ANY_ID, 0, 0,	/* 135a.0d80 */
- 		pbn_b2_2_115200 },
+@@ -4940,13 +4940,6 @@ static const struct pci_device_id serial_pci_tbl[] = {
+ 		PCI_ANY_ID, PCI_ANY_ID,
+ 		0, 0,
+ 		pbn_b2_1_115200 },
+-	/*
+-	 * Brainboxes UC-257
+-	 */
+-	{	PCI_VENDOR_ID_INTASHIELD, 0x0861,
+-		PCI_ANY_ID, PCI_ANY_ID,
+-		0, 0,
+-		pbn_b2_2_115200 },
  	/*
- 	 * IntaShield IS-400
+ 	 * Brainboxes UC-260/271/701/756
+ 	 */
+@@ -5026,7 +5019,7 @@ static const struct pci_device_id serial_pci_tbl[] = {
+ 		0, 0,
+ 		pbn_b2_4_115200 },
+ 	/*
+-	 * Brainboxes UC-420/431
++	 * Brainboxes UC-420
+ 	 */
+ 	{       PCI_VENDOR_ID_INTASHIELD, 0x0921,
+ 		PCI_ANY_ID, PCI_ANY_ID,
 -- 
 2.42.0
 
