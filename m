@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373447D0F52
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B097D0F56
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377327AbjJTMAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S1377362AbjJTMDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376985AbjJTMAo (ORCPT
+        with ESMTP id S1377346AbjJTMDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:00:44 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A9C1BF;
-        Fri, 20 Oct 2023 05:00:41 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d0760cd20so6425896d6.0;
-        Fri, 20 Oct 2023 05:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697803241; x=1698408041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIKXyvCrPlJkXSUN3jOs1qukwDq8mum31g8U+4d5eTo=;
-        b=D97ybIEXSVA15Rge51qeMBeTpfIhQoxywOQjYG4OSukdRNPjuSYzkvOSuFGIwkSfdm
-         9B1hO1XguATAWmFDgSnEGfM4bpJj55Mx7+a8K737vh7K9Wz8zvngOCUSsezoFk3aMmgd
-         y+ucWF+qlLs4Sd0w85c136a8w6yq29TSbiDHVZPw0OqIZEZuFoO6L2C4Uk/ffJIOFqtn
-         qhkjOJKXtSDgY6QXEhQxMl1ZrLhbFBik/d18CNalYtdDUUKscY5Fj/9BnUOGnpFy9nbT
-         1pigVFCbOc3o/77/DLgNmtmD4LtcF5Iatr0sdF6j0HaFHzh1sqNCxu1UyV7SJYedIStZ
-         D70w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697803241; x=1698408041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XIKXyvCrPlJkXSUN3jOs1qukwDq8mum31g8U+4d5eTo=;
-        b=kU9qPx5UqcWFzicX2owacFfO0YPQnxgYg9CCc8+MELvoLP+2QynM42mU0EvzIce+qO
-         tWaFSwwd9voQNq1v9RfjN3led/nJ9eTIRkLnRJ8GmBYN2HKGiEVyFdBPb/xNytL6bQ8g
-         cSngVnMJr6nw2kkzt7EyMf4ij+mn3TJI/OBBH8mEzgWeu61/PY9mzt2BKiw+BZ3AfR35
-         mOFQYnUFZeifWe4MgaixTSfTX1Ou0C08A5WVPtaWgkMg5hZuqADf//u6QN4v8b0/1h6o
-         TYvhwCZp3IBrdnzK02zUvw9Yiq22HxBXjPA8RkKhgPOuVs8CIusyHQCln0/iRPx5O54v
-         Lt3w==
-X-Gm-Message-State: AOJu0YwUUXzYUqMgpgLsL5FNOIn10U4Q6qDxZ1ACYex9Y5cuV1XrN1KI
-        lqDehLYFgJXiHcfrHiDPKDLjHmofUMdhs11AjGssda2d
-X-Google-Smtp-Source: AGHT+IEPBLT7eZYqqWbTCOeDeMYDZ5Ubq3VZnMWDfjvv3NiAJGXOoHIw9t5KJMBFN666SPvrtv9GAD+Mqs5ZmrttVhE=
-X-Received: by 2002:a0c:db8d:0:b0:66d:78c8:262b with SMTP id
- m13-20020a0cdb8d000000b0066d78c8262bmr2151113qvk.4.1697803240827; Fri, 20 Oct
- 2023 05:00:40 -0700 (PDT)
+        Fri, 20 Oct 2023 08:03:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2B19E;
+        Fri, 20 Oct 2023 05:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697803391; x=1729339391;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a0cCePIIEGKptYoyh7Pp+IV6nY/vFaOdAf4qBUS5Nws=;
+  b=oEREyZY7TT0rSKTajf4gbz050HzsGx2dXVkc6Ens+kWtvdk0HD8iu+a1
+   XqSpS5GXdpuKAd9Q2c8LLy162ZmlatQWpmjX1nXSFy6u12wUuTTvwHggT
+   04DRMQCs3td3OAxmWbfJwS9BYHJdXeUGYMzo5zzTeU9+NwMiDJF0Ded3J
+   urmw8KdVYe9zLDDNHdwxiZQPSqLXh2Z+HhEZEXBW73F+Jmf98CjE+B5oR
+   T49fxsTPtH6vEshn4a2as5wo0TXM/vxEtMKGWzctThXxxk11GUmW7xiQd
+   uQJEYa4mC9SYCxi4yrtw66uklmNJhKg6fcaFZWswYMW2zSbMc5QpjDspd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="452962009"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="452962009"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:03:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="901123585"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="901123585"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Oct 2023 05:00:58 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtoDZ-0003Uk-22;
+        Fri, 20 Oct 2023 12:03:05 +0000
+Date:   Fri, 20 Oct 2023 20:02:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:TTY LAYER AND SERIAL DRIVERS" 
+        <linux-serial@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, alexandre.belloni@bootlin.com,
+        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, miquel.raynal@bootlin.com
+Subject: Re: [PATCH 1/1] tty: i3c: add tty over i3c master support
+Message-ID: <202310201933.9lZn2Ebl-lkp@intel.com>
+References: <20231018211111.3437929-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-References: <20231020092735.2565-1-bragathemanick0908@gmail.com>
-In-Reply-To: <20231020092735.2565-1-bragathemanick0908@gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Fri, 20 Oct 2023 23:00:28 +1100
-Message-ID: <CAGRGNgXaKWS_2pfk1BBf2s3JZ2yF2v8m57VkZ_WgjEHGBzgmXA@mail.gmail.com>
-Subject: Re: [PATCH] b43legacy: Removed unneeded variable in debugfs
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, kvalo@kernel.org,
-        linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018211111.3437929-1-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,19 +71,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bragatheswaran,
+Hi Frank,
 
-On Fri, Oct 20, 2023 at 8:27=E2=80=AFPM Bragatheswaran Manickavel
-<bragathemanick0908@gmail.com> wrote:
->
-> Removed unneeded variable. Issue identified using Coccinelle semantic.
+kernel test robot noticed the following build warnings:
 
-Coccinelle cannot detect unused code or variables.
+[auto build test WARNING on tty/tty-testing]
+[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.6-rc6 next-20231019]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/tty-i3c-add-tty-over-i3c-master-support/20231019-051407
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20231018211111.3437929-1-Frank.Li%40nxp.com
+patch subject: [PATCH 1/1] tty: i3c: add tty over i3c master support
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231020/202310201933.9lZn2Ebl-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310201933.9lZn2Ebl-lkp@intel.com/reproduce)
 
---=20
-Julian Calaby
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310201933.9lZn2Ebl-lkp@intel.com/
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+All warnings (new ones prefixed by >>):
+
+   drivers/tty/i3c_tty.c: In function 'tty_i3c_rxwork':
+   drivers/tty/i3c_tty.c:265:26: error: 'struct i3c_priv_xfer' has no member named 'actual_len'
+     265 |                 if (xfers.actual_len) {
+         |                          ^
+   drivers/tty/i3c_tty.c:266:82: error: 'struct i3c_priv_xfer' has no member named 'actual_len'
+     266 |                         tty_insert_flip_string(&sport->port, sport->buffer, xfers.actual_len);
+         |                                                                                  ^
+   drivers/tty/i3c_tty.c:271:25: error: implicit declaration of function 'i3c_device_getstatus_format1' [-Werror=implicit-function-declaration]
+     271 |                         i3c_device_getstatus_format1(sport->i3cdev, &status);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/tty/i3c_tty.c: At top level:
+>> drivers/tty/i3c_tty.c:400:6: warning: no previous prototype for 'i3c_remove' [-Wmissing-prototypes]
+     400 | void i3c_remove(struct i3c_device *dev)
+         |      ^~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/i3c_remove +400 drivers/tty/i3c_tty.c
+
+   399	
+ > 400	void i3c_remove(struct i3c_device *dev)
+   401	{
+   402		struct ttyi3c_port *sport = dev_get_drvdata(&dev->dev);
+   403	
+   404		tty_port_unregister_device(&sport->port, i3c_tty_driver, sport->minor);
+   405		cancel_work_sync(&sport->txwork);
+   406		destroy_workqueue(sport->workqueue);
+   407	}
+   408	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
