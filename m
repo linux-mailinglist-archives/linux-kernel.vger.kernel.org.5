@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623FC7D05DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDF87D05E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346787AbjJTAiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S1346793AbjJTAli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235577AbjJTAiR (ORCPT
+        with ESMTP id S233033AbjJTAlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:38:17 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9ACA3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:38:14 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6b1cec068a9so307467b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697762294; x=1698367094; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H40udxrnn6fdY9pib9PfDMy1TSaBomffUjfkk2BSewI=;
-        b=uCkYPNl3tvavX87RL4G0bB5+gAcFj9MtCSa/4E50M+RmSxxDvlzuvn5GQgd7Ai1tfh
-         olkBliyoBcguL9K3jiTy4D2iqi+hTyoDdV0TRfkOWju/HM31p9/eDQ+x8y8pCFv0ZevS
-         TQPbm5v1KZuxeu5y5Nd+58oHbFDP3Q7pHJeNGZZRpfKEy4a6GobeuXm9F9ZU6775QiQD
-         4//A+KJo8TvRdo/QR/BJawvRKOEnCsWKsBGKoJR11KFOmDn3e/bChcwUawIfGIxEoJ0o
-         ljeKsbFOYyiVpWXiobNuOgt7C741Mwi2mx/FjUqoWNTK0f8+5vT9NtUJmC2P9s7JD09N
-         Pa1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697762294; x=1698367094;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H40udxrnn6fdY9pib9PfDMy1TSaBomffUjfkk2BSewI=;
-        b=lnPlkgrw1qc7nds8Ye7itfgv9NtyAo8hN34zvKHrHN1pNqdDbE+TAuV+yrgSgm3bjI
-         pUBf+Z/CUg+zLg3gch/rIzy2U0Soe00zf74kSVWl5ozAj4MWwnnXbytkCrVZyI2GcrRI
-         Tty1VOvsS6XzYnL+BQ30ob3X7C0GjSOp/4SUaynQ72UjEEKawABrL+P6hXkNghER0DmV
-         8wmlnV0n+aKABbJB6AiyYfx4Rij2lW1zOx4SR91/KhnAG+YWteq1aSt2LThSf1RDpnEg
-         xMf3uYpBS2z+oPPRqSr9C2GPmhLDLOyGo7OQNch+fZpnMPmpAdbbE/XmIZNWet10qld2
-         zXEQ==
-X-Gm-Message-State: AOJu0YwcgXy3OrZ6IUd6kaFpeDGJg8H53IZwtHijrRDU74b7I5TO5pBw
-        tSolVyl4QGQmgU/SIvG3SJNfb/7pTwg=
-X-Google-Smtp-Source: AGHT+IELL9viuq8UdFZWvwSbupP45GkAT2WZYjJlTmGqxOPsDTd4Blod3iQrgTe1E56Y3r+imx7ll3zjC1c=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:bc6:b0:6b5:a01f:f7fb with SMTP id
- x6-20020a056a000bc600b006b5a01ff7fbmr7196pfu.6.1697762294368; Thu, 19 Oct
- 2023 17:38:14 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 17:38:12 -0700
-In-Reply-To: <47c8a177d81762e0561fc47cc274076de901edbf.1696926843.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1696926843.git.isaku.yamahata@intel.com> <47c8a177d81762e0561fc47cc274076de901edbf.1696926843.git.isaku.yamahata@intel.com>
-Message-ID: <ZTHL9NQ87LNdB8qk@google.com>
-Subject: Re: [PATCH 09/12] KVM: X86: Add debugfs to inject machine check on VM exit
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-coco@lists.linux.dev, Chao Peng <chao.p.peng@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 Oct 2023 20:41:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88BFC0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:41:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFF9C433C7;
+        Fri, 20 Oct 2023 00:41:34 +0000 (UTC)
+Date:   Thu, 19 Oct 2023 20:41:32 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH] eventfs: Fix failure path in eventfs_create_events_dir()
+Message-ID: <20231019204132.6662fef0@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> The KVM/x86 handles machine-check in the guest specially.  It sets up the
-> guest so that vcpu exits from running guests, checks the exit reason and,
-> manually raises the machine check by calling do_machine_check().
-> 
-> To test the KVM machine check execution path, KVM wants to inject the
-> machine check in the context of vcpu instead of the context of the process
-> of MCE injection.  Wire up the MCE injection framework for KVM to trigger
-> MCE in the vcpu context.  Add a kvm vcpu debugfs entry for an operator to
-> tell KVM to inject MCE.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-But this isn't "injecting" a #MC, it's just having KVM call do_machine_check()
-before enabling IRQs after a VM-Exit.  I don't see how that is interesting enough
-to warrant a dedicated knob and code in KVM's run loop.
+The failure path of allocating ei goes to a path that dereferences ei.
+Add another label that skips over the ei dereferences to do the rest of
+the clean up.
 
-> @@ -10814,6 +10823,11 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		fpu_sync_guest_vmexit_xfd_state();
->  
->  	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
-> +	if (unlikely(req_mce_inject)) {
-> +		mce_call_atomic_injector_chain(smp_processor_id());
-> +		kvm_machine_check();
-> +		mce_inject_unlock();
-> +	}
->  
->  	if (vcpu->arch.guest_fpu.xfd_err)
->  		wrmsrl(MSR_IA32_XFD_ERR, 0);
-> -- 
-> 2.25.1
-> 
+Link: https://lore.kernel.org/all/70e7bace-561c-95f-1117-706c2c220bc@inria.fr/
+
+Fixes: 5790b1fb3d67 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 9f19b6608954..1885f1f1f339 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -735,7 +735,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 
+ 	ei = kzalloc(sizeof(*ei), GFP_KERNEL);
+ 	if (!ei)
+-		goto fail;
++		goto fail_ei;
+ 
+ 	inode = tracefs_get_inode(dentry->d_sb);
+ 	if (unlikely(!inode))
+@@ -781,6 +781,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+  fail:
+ 	kfree(ei->d_children);
+ 	kfree(ei);
++ fail_ei:
+ 	tracefs_failed_creating(dentry);
+ 	return ERR_PTR(-ENOMEM);
+ }
+-- 
+2.42.0
+
