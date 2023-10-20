@@ -2,222 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA7E7D0AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7987D0ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376493AbjJTIkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 04:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        id S1376514AbjJTIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376458AbjJTIkO (ORCPT
+        with ESMTP id S1376502AbjJTIon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 04:40:14 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D979D46
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:40:12 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso9788045e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 01:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697791211; x=1698396011; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cyWHa/QB8NjRGYd7Kdth0egvi9lD9HQW7X6C8NUiI8w=;
-        b=R6Q9CvowKhcmQWW1f2rva1p1n7DN2FMihksDL7sAFzNUe9N4p318YE0L8GeXhZscMJ
-         c0MZdOtzCr+NiOUcbo1QusvUM3k40bdiqTEjn8fOVmZOY8AW3FKn+1fNItDHuDFz9aEg
-         gFW5QbmdAznI6XpAGeM+eyYDw0IkyBPwcK0GVGnQfcVZYEAboxhmPdbMbmXUk0YTduiN
-         HVyp3ALN8aywww0upNGlEmKDZxuKV06gl7wqFVbmJZnYpHYBKNYUxSGdXZgGk7nB0QMS
-         BFVlC7Xq8pInPMZKBwW4tBJZB/KRH5egPWGLgph4jh/Vnnq0Wk3eSrB6nO+6s5AarIuz
-         BJCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697791211; x=1698396011;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cyWHa/QB8NjRGYd7Kdth0egvi9lD9HQW7X6C8NUiI8w=;
-        b=EwG6w3KJ7z4y8xmAovQ6n+o/NH4BlXpIzCy2ib/M/TTq4cVu5t2ykqbGRlxuxDOCdy
-         40oJDubzJtL66y/kXVOW6gf8eAabmhu401MyxPYvMsiOoGR0Z06jdhdak0BKS/Slzevp
-         3v66dYmGB0vv/iin+XKgna8G0KuBoD3JDSqRDCXF1xAHXELShV+ir2sUZ+D42pTlparb
-         tp7TWFnZNjAme3Qvfd+iiCtBekfp0H1ZE84ePVYEVRdgW/cG2x0bUfO98ircqLU7jjy3
-         KCIXUdlua3XZl2ZNpJr1l+EOhJDjsOUtpT3/Y/vuXVef6jK/JwLPXEiUHd2AMzVwY9fP
-         wXlg==
-X-Gm-Message-State: AOJu0Yx1hlFFc5KEEgRZJMMcQ7WrEkwnFTY8IOLEMfCJS6Q8GcTnTiDQ
-        5+/VkKJiDN+j5seAs9Qnpzlb+w==
-X-Google-Smtp-Source: AGHT+IGe62Ste2VstOvjYH0ZAedP5PLzGr5YmyGE8u3E0mTEelJwHqktcfhkfiSIxhwAUpDgwHnIjQ==
-X-Received: by 2002:a05:600c:b4d:b0:408:33ba:569a with SMTP id k13-20020a05600c0b4d00b0040833ba569amr4301728wmr.8.1697791210584;
-        Fri, 20 Oct 2023 01:40:10 -0700 (PDT)
-Received: from google.com (65.0.187.35.bc.googleusercontent.com. [35.187.0.65])
-        by smtp.gmail.com with ESMTPSA id i21-20020a05600c355500b00405bbfd5d16sm1635616wmq.7.2023.10.20.01.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 01:40:10 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 09:40:06 +0100
-From:   Vincent Donnefort <vdonnefort@google.com>
-To:     Sebastian Ene <sebastianene@google.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        akpm@linux-foundation.org, maz@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, qperret@google.com, smostafa@google.com
-Subject: Re: [PATCH v2 11/11] arm64: ptdump: Add support for guest stage-2
- pagetables dumping
-Message-ID: <ZTI85i0PmI_6doz1@google.com>
-References: <20231019144032.2943044-1-sebastianene@google.com>
- <20231019144032.2943044-13-sebastianene@google.com>
+        Fri, 20 Oct 2023 04:44:43 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2135.outbound.protection.outlook.com [40.107.255.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DB2D41;
+        Fri, 20 Oct 2023 01:44:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L/CTrKqSGvW6lQwVxBqgo518If8xzHVv6ru3brRr4ATBHefQtXPBo+Ad0L0T3FsSPvmL2F7p4NUVYAW8CiaJXeO9DfslWUTX/YCL1ORoy8wxX9SJ/R5t7H+CZyG2sMEvT8calINGwSX60twfFLf3ce+uFEwUFlayfq+PKeTsDiScQNXpytzrNMYTmtlAIYFxddNR7R8iazmPEEeXM7+ZRU07FC/bBblrmcKZLDkIbsXcIxbbxb9roetO3eAJa0ANpYVRMToWMAsRYm/YxhHvABKYUv3SNWnuzNQbRZDXJ3aktXuwcNiWpxpVlHbRGkq+nKgV6JHQBi66vRUh8cuhcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kV0FZyonkpUObozelfwSHTvjYkN2DZEjW6NLwLMed00=;
+ b=NuKL65UpG5WXf4CLRJYDqrjGVE3oHZuCUXzpEfP6j5XOi7dOalY5AgitAz9sfwuft8GgkvWv3I7yn2tekWe+0FghjwTDB+NEc13UUy/YhvVp04F2Pf4PDGO50P4/suXv87StycKz73pbUrG81N8LVPDTmW+064Ti0OBBEnWqRdERXGG6nfuVAJpTFwUnBeiME7mWKAKPjWHbUIFYbPm2/6eie5bXn9AWMSW79OhTGdN8oSo3ejof+z6WPpQD43IIMib3GO1nXevA6qlNUB1P05WtRp2+fl3kuqLQ2vuVVRYw26iQCSNqU87nt57em0B2bQo2gaAnnoGmWxLneIpQ8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kV0FZyonkpUObozelfwSHTvjYkN2DZEjW6NLwLMed00=;
+ b=ILrDihYvV3VWkB7fpEUZAGXGYvQreSoyLkieVetinb01q4MpsI+iwYWy49noj1+Yf2OCS4NWTHd5ZJo92SD2mK9rjlTpsOu2ZnJhac2khujsXbTc1OL31FvfVgOIY1PyHIvYmSM2jR3MaSHL2wKMe6ZtQ0jUGb/kYlO113xe2jouj8elDBmg+Dwq4mOux1tfGKwJTsTNSAVPS+rsVMqUWVny6R+VmZrmq/d4LjG5+6ZUAbwB58GdR6Xy0xHHltcu7UZ1cJh6inErCev8a8LjR6BUJzsXW/mIaTACd72ZxHo+E2cFCaBEoZT77AuAKyDkx4B6iD+Q+VFx1Bl0r8Du/w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by KL1PR06MB6553.apcprd06.prod.outlook.com (2603:1096:820:f1::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Fri, 20 Oct
+ 2023 08:44:28 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::40ac:5701:4617:f503]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::40ac:5701:4617:f503%4]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
+ 08:44:28 +0000
+From:   Huan Yang <link@vivo.com>
+To:     Yu Zhao <yuzhao@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Huan Yang <link@vivo.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH 0/2] check MGLRU promoted without hold page lock
+Date:   Fri, 20 Oct 2023 16:43:49 +0800
+Message-Id: <20231020084358.463846-1-link@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0198.apcprd04.prod.outlook.com
+ (2603:1096:4:14::36) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019144032.2943044-13-sebastianene@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|KL1PR06MB6553:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f7eeff4-8763-4b46-ac5c-08dbd148c55a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i/ST7Ofe3xqlhataChgMtooHHbbjdKgETjOenlC7GR0w6ODjri0Yk+vwWUYWO1DqAekXqowGcq3O+0Ar5xknO1h4eiQQIWoczTy51jmURILN5Jk0CYsmFlk2h31obxnWm3tp0qghA5qGERqMJtAiePrGyS0kQLTW5SEmiFDjdL7EeRExz1QYKbE+2zpKC0iTNpVkb2zBZ8WvnliN2PT41WcEqwCc7TSxkuT0qjba6EqTGa0qm/sKSfj0AO3muP310j1tSyDhEsO6GERAQCZCgoFp5YWk982Cpy08yYkBASxBxEQUAKSS3rplsqs3nf/UsiFRMyBLHjDJ3VBzM/mh3wpvu45GmNFK45tGJYnZkn5gmoydcIBfDhyP5zOYdcPin8NwRkyhm0UjR8AjxHOEw06PAIC918IciSy+PKAr+ZUoBVBovn/dVkkIRL9yrIN9q4aUE2BcnDdaNnJ9S1s1WUTR1RBThJ0ISTDn9oA65uJA95vcoyh45IGoeZ1Dyj41IOEHPC/IgsRNbF+FTdDaOITqU6cAcjlx0BU1SctO+IQSwxIXY9n8mzW6Rga5mgitdvxDivoKAf3G+TvOlhGTkpiW78VF4c0PUXMTQvb8NfspwAHkGy4Rb1vcrX0RKonF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(376002)(136003)(366004)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(36756003)(38350700005)(6512007)(83380400001)(110136005)(66476007)(66556008)(38100700002)(86362001)(52116002)(2906002)(26005)(107886003)(2616005)(1076003)(6506007)(6666004)(4326008)(478600001)(6486002)(66946007)(41300700001)(316002)(8936002)(966005)(8676002)(4744005)(921008)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q/ESa6DFKnm0YvwGnxWU8FBDHlY91VVfn4od+s1k9ij0L+Wj4yyEc9UTKIKD?=
+ =?us-ascii?Q?IBexsBebfVddUepLnogv42qGy7aybMNWYksRWFfSOVfsXO/221+iTYAsDFfs?=
+ =?us-ascii?Q?GbswTMY4W5i7iSu7+bLuuoRdUfGDOwE10TBCv5G/6tlegdal/gV3JGq6lagT?=
+ =?us-ascii?Q?aFwUmu+nP+XVK0NavX0NbRdqdOgSJZRjQXvJcRtX+MUUiCz/KssNQerhs0Oz?=
+ =?us-ascii?Q?EPYKBi79s/zMhpeFbaIQYIHcsMUjON3GfXbMu6OcbGn6R29sWUq72HLlwpbm?=
+ =?us-ascii?Q?EERy2VO/zBS1pVHa/rrRJPDMVQ+F3owaacovx3How4B3OrKLyQYzdqj/tjXb?=
+ =?us-ascii?Q?kwegQl+xujewlXAID/OuJdoH1/gh1sFR2qugNnkITZ8KlfIJjoXxyvXNwi1v?=
+ =?us-ascii?Q?nvQwvArsrlGwYQpcu8e19Uks0z060ObywGsmGvy2JvuH8kJc5+NQNp1OUhBX?=
+ =?us-ascii?Q?kG4IyxNaf7JkghdqCrePrim/sx20ixkdQHJQ43t/yyQuSCY3SU0/EIoXdoDA?=
+ =?us-ascii?Q?ecq6dpSsWzi3sRIsVZCaySZy5ZzhqlJb7KpunItHkkk2gaZ1x5b4d7Wop6Hg?=
+ =?us-ascii?Q?g/5vGd+cOOAtzzlHLOtyKenckA++rqHO04Ldx1LX8sDC6aIPAPTA8d9zUr3S?=
+ =?us-ascii?Q?7RmUFD4Y2XwrgGGCb74u6M9mPzNbufEyuNn0qPkK6z8JbPOlPxauFH9MIusR?=
+ =?us-ascii?Q?/xm6b59JfbXaTeQdenh54FalD0u9ij2fN2cKLG8FQeVJHa2xLqt2mOEai/jb?=
+ =?us-ascii?Q?S6gBb1pZ1vU//S4/O0BTtQfmXv598UPj6P9fTVpYZqVsjZXopG8G4DAaWi/S?=
+ =?us-ascii?Q?r4JTIu2NN0NmpliSKsSUVjLOAxxTJuETcDqk0QkdlxjlD8/tbmpIYxPThAqT?=
+ =?us-ascii?Q?arCv1h0tD7d0544YXDwg6/vQsWX+Srp0c51QD5ORXTxRlTnoIuf/03BnHn+u?=
+ =?us-ascii?Q?h9j6BEyKEv+rj2+zlPrRaYyXG0YcLEzEHJqba53n8hNkehP0zwyDfbZ7KzJp?=
+ =?us-ascii?Q?krTNiTyA5WmoPLs3EujOZNlyHJ2YdSIQa6C+2W0xdUfhOFiH28qEUm+F3+sM?=
+ =?us-ascii?Q?kUWOT/5oFy+Hukzx98Q/+U4B42NnhCkBqo2XfoKFvE9dpdFgo3wSS0GI4Pgu?=
+ =?us-ascii?Q?6MtbUWkuUn0WkPbry2I8imz6Aqqgk6EZb1nghvmYquAhVmopwuhwMXrZV1EK?=
+ =?us-ascii?Q?keTy7PIx9IziR7TVyoiBC7bOAdrRqM8HWBxMkzNlukoeV5kD22ajAsC+2U8m?=
+ =?us-ascii?Q?7mf+6Liv691iEcGjybACWFCtEj4HsCOPoRkE+nf7DLFeVZgYTyToTtet0N+u?=
+ =?us-ascii?Q?F3krzZUGNs5gBrUI0hQfoMHTlypUeer8QoYMwayssr5rlnyb/57zSYrjtTEQ?=
+ =?us-ascii?Q?DojkY+EQ8qiwNkscHcTqzKkY+OciH/ewWRzR4NSTmprqr0ZFbe5C5vBKqGmA?=
+ =?us-ascii?Q?FaJPfGRQ1FDvN/GIqbhtUEbUfulUZ/tHlkqE1WQZNAhJonuMcF3cE/pSGPny?=
+ =?us-ascii?Q?cBfJokjRh9qzNtUhM1ZaVQjzESptGWa5jCsiSQGNhqBg6altbwzzLSU7oLGW?=
+ =?us-ascii?Q?l6fYoUS6dDg3Mh7W4e3kAz18rhKC3a6uKorM36aT?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f7eeff4-8763-4b46-ac5c-08dbd148c55a
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 08:44:28.4511
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T1sUSvzgUg+RrxhnRoC97YZwD167LJ3mQGBnomr4voYH0NDLe7qv/gS7xyxv2ei5UklfKI9lr2/Hqw868HHEMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6553
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:40:33PM +0000, Sebastian Ene wrote:
-> Register a debugfs file on guest creation to be able to view their
-> second translation tables with ptdump. This assumes that the host is in
-> control of the guest stage-2 and has direct access to the pagetables.
+This patchset add a new reclaim_stat named nr_promote to observe
+number folios which MGLRU promoted before shrink touch, and then
+show in mm_vmscan_lru_shrink_inactive. Also, fix nr_scanned in MGLRU
+trace into nr_taken. (patch1)
 
-What about pKVM? The walker you wrote for the host stage-2 should be
-reusable in that case?
+Base this trace, here are many folio promoted before shrink touch,
+so, due to the high frequence, move this check before hold page lock
+is better.(patch2)
 
-> 
-> Signed-off-by: Sebastian Ene <sebastianene@google.com>
-> ---
->  arch/arm64/include/asm/ptdump.h | 21 +++++++--
->  arch/arm64/kvm/mmu.c            |  3 ++
->  arch/arm64/mm/ptdump.c          | 84 +++++++++++++++++++++++++++++++++
->  arch/arm64/mm/ptdump_debugfs.c  |  5 +-
->  4 files changed, 108 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-> index 35b883524462..be86244d532b 100644
-> --- a/arch/arm64/include/asm/ptdump.h
-> +++ b/arch/arm64/include/asm/ptdump.h
-> @@ -5,6 +5,8 @@
->  #ifndef __ASM_PTDUMP_H
->  #define __ASM_PTDUMP_H
->  
-> +#include <asm/kvm_pgtable.h>
-> +
->  #ifdef CONFIG_PTDUMP_CORE
->  
->  #include <linux/mm_types.h>
-> @@ -30,14 +32,27 @@ struct ptdump_info {
->  void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
->  #ifdef CONFIG_PTDUMP_DEBUGFS
->  #define EFI_RUNTIME_MAP_END	DEFAULT_MAP_WINDOW_64
-> -void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name);
-> +struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
-> +				       const char *name);
->  #else
-> -static inline void ptdump_debugfs_register(struct ptdump_info *info,
-> -					   const char *name) { }
-> +static inline struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
-> +						     const char *name)
-> +{
-> +	return NULL;
-> +}
->  #endif
->  void ptdump_check_wx(void);
->  #endif /* CONFIG_PTDUMP_CORE */
->  
-> +#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
-> +void ptdump_register_guest_stage2(struct kvm_pgtable *pgt, void *lock);
-> +void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt);
-> +#else
-> +static inline void ptdump_register_guest_stage2(struct kvm_pgtable *pgt,
-> +						void *lock) { }
-> +static inline void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt) { }
-> +#endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
+Due to we will not actually touch this folio, nr_promote trace is
+unnecessary, remove this trace.
 
-I believe this should be compatible with VHE as well, that option should be
-renamed.
+This patchset based on link:
+https://lore.kernel.org/all/20231018082104.3918770-1-link@vivo.com/
 
-> +
->  #ifdef CONFIG_DEBUG_WX
->  #define debug_checkwx()	ptdump_check_wx()
->  #else
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 482280fe22d7..e47988dba34d 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -11,6 +11,7 @@
->  #include <linux/sched/signal.h>
->  #include <trace/events/kvm.h>
->  #include <asm/pgalloc.h>
-> +#include <asm/ptdump.h>
->  #include <asm/cacheflush.h>
->  #include <asm/kvm_arm.h>
->  #include <asm/kvm_mmu.h>
-> @@ -908,6 +909,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu, unsigned long t
->  	if (err)
->  		goto out_free_pgtable;
->  
-> +	ptdump_register_guest_stage2(pgt, &kvm->mmu_lock);
->  	mmu->last_vcpu_ran = alloc_percpu(typeof(*mmu->last_vcpu_ran));
->  	if (!mmu->last_vcpu_ran) {
->  		err = -ENOMEM;
-> @@ -1021,6 +1023,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->  	write_unlock(&kvm->mmu_lock);
->  
->  	if (pgt) {
-> +		ptdump_unregister_guest_stage2(pgt);
->  		kvm_pgtable_stage2_destroy(pgt);
->  		kfree(pgt);
->  	}
-> diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-> index 4687840dcb69..facfb15468f5 100644
-> --- a/arch/arm64/mm/ptdump.c
-> +++ b/arch/arm64/mm/ptdump.c
-> @@ -26,6 +26,7 @@
->  #include <asm/ptdump.h>
->  #include <asm/kvm_pkvm.h>
->  #include <asm/kvm_pgtable.h>
-> +#include <asm/kvm_host.h>
->  
->  
->  enum address_markers_idx {
-> @@ -543,6 +544,22 @@ void ptdump_check_wx(void)
->  #ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
->  static struct ptdump_info stage2_kernel_ptdump_info;
->  
-> +#define GUEST_NAME_LEN	(32U)
-> +
-> +struct ptdump_registered_guest {
-> +	struct list_head		reg_list;
-> +	struct ptdump_info		info;
-> +	struct mm_struct		mem;
-> +	struct kvm_pgtable_snapshot	snapshot;
-> +	struct dentry			*dentry;
-> +	rwlock_t			*lock;
-> +	char				reg_name[GUEST_NAME_LEN];
-> +};
-> +
-> +static LIST_HEAD(ptdump_guest_list);
-> +static DEFINE_MUTEX(ptdump_list_lock);
-> +static u16 guest_no;
+Which have many mistake pointed by Yu Zhao.(thanks)
 
-This is not robust enough: If 1 VM starts then 65535 others which are killed.
-guest_no overflows. The next number is 0 which is already taken.
+Huan Yang (2):
+  tracing: mm: multigen-lru: fix mglru trace
+  mm: multi-gen LRU: move promoted folio out of lock
 
-Linux has and ID allocation to solve this problem, but I don't think this is
-necessary anyway. This should simply reuse the struct kvm->debugfs_dentry.
+ include/trace/events/vmscan.h |  3 ++-
+ mm/vmscan.c                   | 31 ++++++++++++++++++++++---------
+ 2 files changed, 24 insertions(+), 10 deletions(-)
 
-Also probably most of the informations contained in ptdump_registered_guest can
-be found in struct kvm. The debugfs should then probably simply take struct kvm
-for the private argument.
+-- 
+2.34.1
 
-> +
->  static phys_addr_t ptdump_host_pa(void *addr)
->  {
->  	return __pa(addr);
-> @@ -740,6 +757,73 @@ static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
->  
->  	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
->  }
-
-[...]
