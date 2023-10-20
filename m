@@ -2,371 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D8E7D149E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43DF7D149F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377862AbjJTRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S229817AbjJTRNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjJTRNB (ORCPT
+        with ESMTP id S229692AbjJTRNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:13:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B343A3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:12:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697821979; x=1729357979;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gpUiJMwmkFwlOFmFdLdipIbLm1/5/wSUBTFzSRkhCTg=;
-  b=WlPtbOI6XOISlq36nnMwY4oEJOsHB51t9O4yEx10w8E43McPGH+xn9JG
-   fQMsv3OmzukYbrhUhEkCzE55d3UjyV0nShFq6FzgMTI+XXkSlaQrZ5Yuz
-   IbebcLHVeEHTdgdvwRWn+jLcmKXUv1J8XXiLTTbhSYwKl9iu9l4mvhrSo
-   H8r+B2QtA/8WX6lpzBiqSn9/suwT83cFQThvo+9zTq2D+rroiTIfo5ry/
-   YCOtIudWa59ho0aMTCjU25o7biJur1viSXRFQOhzPXePUxEDbWCQLgPtI
-   K6BLOWhl8uCAaIHJtgSPZ+cias3jCdD8fVUvIEow8XODCXIQYWvEg1L5B
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="385424749"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="385424749"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 10:12:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="761114755"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="761114755"
-Received: from gneiger-mobl3.amr.corp.intel.com (HELO [10.209.88.124]) ([10.209.88.124])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 10:12:56 -0700
-Message-ID: <ca3c0ed7-c457-49ee-b243-c1e67a3ff0c8@linux.intel.com>
-Date:   Fri, 20 Oct 2023 10:12:56 -0700
-MIME-Version: 1.0
+        Fri, 20 Oct 2023 13:13:31 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F54D68
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:13:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NaK3uWCkvmLBb2nCAHQSN8O+eFHoCu/+lEv66YQtMSUy3knZTOrdI0xrucT/VgDcpLa12dISvmEP2q84vwJDHhiRgi0wBTLf16MCB2293hqqJ6ZlJl1s3D//Tx0UfPWM2C9r05WCjYaUXlH/9jsUXoE4djq8DW68+t9aglVtGhxRQvMRnkFxuk/Lx+LS1pnMHHDpy/ZUhLDlTgYX7ersl4ZnCJqhwyPibp0rMS2r2t7/4OP4t2PE3XSTkKgv947XSZGDMoFzQFaccqsoVsu2zz839hMx6JKxYFqspMWBZUrwXzZ7XzmA0jA1MZnkdJPgOw4AD3BGdXxj3thHCtf/Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cLFaoaTeuhnsZtIKDNNVtBg5dAicT4LsE6dsNmR+WQk=;
+ b=ZiIW+j+ZesdLioSsoFFTvD6nClVpm7+mOV64I5ix93EFxve2ZqP3UnNDjH2Rbhcb6drKN0yyHLY2nbeoXkMmN1KRWkOu1CKkUz8O57UmRpxKqSsQLOHZny6yyYzhwXIHR3bEWl5l3zUUFbaehRjvZmzjxrPIB6/YedPHmgOlUtluq7DHaYH4VxKhzRKqnB2hF4xCS4s/ww3w9dQ1emHFIkAIRuAO/8eNmc9PDzoysfRbObRuBHrFDUMXbHgiPZDmL6mu5/FIaGxjRJ5hdYv0h6FfxWUIDhHUoB/mt6JfVwy3Hnw+sku8+E2j7PKZ/KRL5p5TGe/jOu47XhqrHh3dnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cLFaoaTeuhnsZtIKDNNVtBg5dAicT4LsE6dsNmR+WQk=;
+ b=1pPxvy0LidH2HhG87OXlDwJU8tpoirMYRh2pKXvYr1bNAAMKsHjSm3xgz+rqO0hH+H5srr8/DIc41xo4nT26JMcoN7BF9Ee0iqtOeguf3dfKJkEoKGIEYbuREELi/2DGcSutoV86UuZAEB8SYhQEpEngLl6LWgMh0WYDzKbC0cA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by MW4PR12MB7482.namprd12.prod.outlook.com (2603:10b6:303:212::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
+ 2023 17:13:22 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%4]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
+ 17:13:22 +0000
+Message-ID: <47ee8f0e-1a50-4284-b33f-115f898fedcf@amd.com>
+Date:   Fri, 20 Oct 2023 12:13:18 -0500
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 01/13] x86/acpi: Extract ACPI MADT wakeup code into a
- separate file
+Subject: Re: PIC probing code from e179f6914152 failing
 Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
- <20231020151242.1814-2-kirill.shutemov@linux.intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231020151242.1814-2-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, kys@microsoft.com,
+        hpa@linux.intel.com
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+ <789ff693-a4f0-eef7-7991-59c031fefe49@redhat.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <789ff693-a4f0-eef7-7991-59c031fefe49@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DS7PR06CA0015.namprd06.prod.outlook.com
+ (2603:10b6:8:2a::26) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW4PR12MB7482:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce47fd11-44f3-48ca-8af7-08dbd18fdce0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nUByDcYeyAn110UUPV8DXdxjEZTEjgojORwKGmQj7wQEkmIi1sSO6UuYLNaDyUAJVBQMHakynNodYQC7l/hlBx1WqMb9aV3neLeYJJmebRvXXL/jcK32KVYFF9a22GwtfiiyjCces6J+bKhE993X4FNg5A1tSjDCdU7dLI2A8Ujq9F+v/bg81QFfLyTlpvWPsYSGQXUbIBArvz4Yso1ayLtHxtNrOuWwMiOIn5wCRdmHRYhPI7VVM+jkgaRIo4eFL+Ad9e95F5RWwYlazQz06/PGaZBEddnDm585xzV5xQZYcT/GMIodEDi6f9Yu9EIzSYnFWSXhk/J/fYd/hDBEVd+b7YIq+1u6UQR2Ro4/kq1YomXeQoJtpjwU90R+u/BSJ6U2HGvhCjsqqCXoSvnSl+Ho2tbIxwiUzmW6KNzAr54IKGfTU+/Fg03686ZMbFFf3gOzQiI+gWIKdg9SYJry0GUOdJkd6mw18AJFCRaK8KAynJbRC+duRwkIZEbcip4QAQEp3bNcvCP4gXSRzV4xxRI7PPmN0A54OlvhX5vdGf9BUh6kMPXGtqE4L0gK0PP2MzQ5BuEC5pjLSufB8DIhVPsL5LhLDNsxixNHdhrpbvZTumft0br0UkgJmGAR7DP1SjDT7q6rdRpxNyPhGv7alAuIdxEGs1gMGYqM0k76nHqKkskOmymvOUXRuaey5HND
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(36756003)(41300700001)(44832011)(8936002)(8676002)(4326008)(5660300002)(31696002)(2906002)(86362001)(31686004)(6506007)(53546011)(966005)(6486002)(83380400001)(6512007)(478600001)(38100700002)(2616005)(316002)(6666004)(26005)(54906003)(66946007)(66556008)(66476007)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TTlNeWxtU2x3ZTVQMnRVVEp6dkRMcjJLMFgvVi8vRkp6Q1JnaWVmRkltNFVu?=
+ =?utf-8?B?b1pEWXRBdk9XVkFtbGNxMjczVmRCMzY5QjFIZHM5TDF0OUhkMXowVGFGelNF?=
+ =?utf-8?B?R2lEUW8rMVYrMWJZMEdwOWlXTXdBNUhscTBCMUhwQmh1bWhYOHQ5Tk93WUVS?=
+ =?utf-8?B?S2V3TDI0ZmpjZDhqc0YrM0tpd2cyMW1DRHZlNWI0blhtZ3k5c3VncSs1OHF4?=
+ =?utf-8?B?ZjR6MUNsNVJxTGdXZXFkcTZ3VUtrWWh3K3c1SlY3MUJteGovemMwN1lENE1n?=
+ =?utf-8?B?VkVZbVhmQ2RCWW9qTUZnT1J1dlF0M2JqLzBxMDhMbTNHS0JORTlEZGtubGhD?=
+ =?utf-8?B?K2JxQnQ5UW9ESXRaUzVJRUx4WlRnekYzNWJxOGdrZXpTRXlVNS81OWNNc0dK?=
+ =?utf-8?B?Vy9IZnNSR1BGUCtFcU1qY3VjTFZLNEQxdVBYanpuSzVBTmpYQ0xjaWVJSVk2?=
+ =?utf-8?B?Y3krcXZnWWQ1MWZadVpwVWRtVldrRXI0U3BLOTg1RzlqMXVBS0FGRGF4Zi9K?=
+ =?utf-8?B?bFZlVDk2YUExbVd3QWFRcTdaQ0JxT3F2QkYvdzFTUUdIK1l2RWtLa2sxcFI5?=
+ =?utf-8?B?Yms1K3BvSVlpcnVhYy9nYzZVWEhUMDNSbWYzNXF6RUVTYUNnTnFJc3FBaTFt?=
+ =?utf-8?B?NHVRZnVaM3BMcXBuc1FETVRhNUMvTzdFaHRYQnhTb1ZqN1RES0gxdXhqdSsx?=
+ =?utf-8?B?ZnpUd3FOUCsxbHJOSGE4bUtUUHBNblNrU1dBYWdtTnVCR0NtOUZFT05kNDA5?=
+ =?utf-8?B?UWlLakxBbE91dGQ5SG05MjAzM0lteU55Q1RTOGVhTVo3VjViYlJnQjg4bVhv?=
+ =?utf-8?B?QXdGWVhoM3VKMEZmMnk3QUE4amZDN3NPRHZIb3ZOSWlmUE1TV2FHTFU4dFV3?=
+ =?utf-8?B?Uk1GZVpNWi96NndqRHdJdklqYUZPWmNJazgrMzRBUEpmYVVubUhKV1dER2Fr?=
+ =?utf-8?B?L1VrLzNYUEFEVEZKdFJlOEZ5ZkRtYlVKWXJsK3pLcmF5emp2Rm8yaFBwalYv?=
+ =?utf-8?B?Qms1aGs3TktqVVRDR3FJT2p4ZFZ6OFdDeE9GRm41eGl5dU9CUzFseVNNc2V2?=
+ =?utf-8?B?ZkxpTnhwMkZXcVA4TWdUYlVOQjdKQXo0dVpQdndCQVZTSDh4WC9UMEZpUXB3?=
+ =?utf-8?B?ekpjOS9oRTJrUWxmU2xuWjJIZTV5SHZVcStrcFJrN3grTkVIK0pjVGNCUGV5?=
+ =?utf-8?B?RU1uYWVmL3ZsSmZqaUtETDJxUHQvZ3BNaFNLaFRrVkJGMWdrbWpHbTFGV0NJ?=
+ =?utf-8?B?aHlCbVpYVkRteXg2T21HYWVVcFMvc0NnaVZJd09PcTlVV21JYlJOUFpmSllx?=
+ =?utf-8?B?MW9HM2I4NWtTTWdUVHV2M3R0UVNyRHV2WXIvVHNORFhlUHQyVGk3WkxWSDdU?=
+ =?utf-8?B?NVQ2YVlDNEJXYXMzSkE1TTVNckp6a1FhWUFFRU5hbnhlWmRSWEQ1c20wOTFU?=
+ =?utf-8?B?QzVVNjFrMVRPWVBoREYzdDVBYitBQ2krb01XbjBIekdXS0VsWFhHOXRrbGRK?=
+ =?utf-8?B?MVUwRVBUV3NkajN4dm8rdlN6b2t3MmpOU2YzaFFnZ3hkd1VnR0xmbkhRZXVB?=
+ =?utf-8?B?VTNqVmU2Mm53OFhxS01zb0xzbm1zZTdaaW5RNkp4SGo5NWRadWxMVFNsM2I5?=
+ =?utf-8?B?VVhhdjNLMUVVZjd4dlIwM0NYWENrRStMeGxPT2RCWkpkMkc5ZmVJUWRMYW95?=
+ =?utf-8?B?NEN6cGsvY0wrRGF3Mlkwa2ZaNElvV3k4MkxsMFdvLzl3K2xvVDRDUVhrVjN6?=
+ =?utf-8?B?NjF0R1cyVUF4RVM0bW9DMUxBQlphQmVzbDkwamZGUGtONmU2dFA3U2ZQVDFn?=
+ =?utf-8?B?WHZQTFZIWGVrQ0xWODNKZnJZaDRZMnZXOTZWdHdjL3VXcXh3Ykp4NXQ4U21G?=
+ =?utf-8?B?b1FidndiSktrSnFmaDlJRlowaVhwODNJZTFmNFdBOVd4aWN2RDFJdHBaTEht?=
+ =?utf-8?B?OGNqaWFEZ1pCaFVQK1ppRXZXUUFGTklENFE2RFF0UzIzc3h0WU5EL3ZWUHRX?=
+ =?utf-8?B?bXVBSVl5NjFRUW5Cd0NvS1hHVjVyUDIrT2ZpYTF1NlJQR2E5VFdMOEZUWHhP?=
+ =?utf-8?B?ZFFDZUhVK2p3VDcvNlFHd0t0MXFRczZXallPTTd3VGdtc09rczZZLy94OW1S?=
+ =?utf-8?Q?2ITxWyKDbzp3VO5YlR5HQLFlv?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce47fd11-44f3-48ca-8af7-08dbd18fdce0
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 17:13:22.0993
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jw0Q/3838afgKDw3olMhGGvmA73PhkqZvCI1UvUoWZyTrOqCx2VzwAWFYQf8p5VX5K6vaKOGW+rww0t6Oy0jTA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7482
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/20/2023 8:12 AM, Kirill A. Shutemov wrote:
-> In order to prepare for the expansion of support for the ACPI MADT
-> wakeup method, move the relevant code into a separate file.
+On 10/20/2023 10:16, Hans de Goede wrote:
+> Hi Mario,
 > 
-> Introduce a new configuration option to clearly indicate dependencies
-> without the use of ifdefs.
+> On 10/19/23 23:20, Mario Limonciello wrote:
+>> On 10/18/2023 17:50, Thomas Gleixner wrote:
 > 
-> There have been no functional changes.
+> <snip>
 > 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
-
-Looks good to me.
-
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
-
->  arch/x86/Kconfig                   |  7 +++
->  arch/x86/include/asm/acpi.h        |  5 ++
->  arch/x86/kernel/acpi/Makefile      | 11 ++--
->  arch/x86/kernel/acpi/boot.c        | 86 +-----------------------------
->  arch/x86/kernel/acpi/madt_wakeup.c | 81 ++++++++++++++++++++++++++++
->  5 files changed, 100 insertions(+), 90 deletions(-)
->  create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
+>>> But that brings up an interesting question. How are those affected
+>>> machines even reaching a state where the user notices that just the
+>>> keyboard and the GPIO are not working? Why?
+>>
+>> So the GPIO controller driver (pinctrl-amd) uses platform_get_irq() to try to discover the IRQ to use.
+>>
+>> This calls acpi_irq_get() which isn't implemented on x86 (hardcodes -EINVAL).
+>>
+>> I can "work around it" by:
+>>
+>> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+>> index 76bfcba25003..2b4b436c65d8 100644
+>> --- a/drivers/base/platform.c
+>> +++ b/drivers/base/platform.c
+>> @@ -187,7 +187,8 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+>>          }
+>>
+>>          r = platform_get_resource(dev, IORESOURCE_IRQ, num);
+>> -       if (has_acpi_companion(&dev->dev)) {
+>> +       if (IS_ENABLED(CONFIG_ACPI_GENERIC_GSI) &&
+>> +            has_acpi_companion(&dev->dev)) {
+>>                  if (r && r->flags & IORESOURCE_DISABLED) {
+>>                          ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
+>>                          if (ret)
+>>
+>> but the resource that is returned from the next hunk has the resource flags set wrong in the NULL pic case:
+>>
+>> NULL case:
+>> r: AMDI0030:00 flags: 0x30000418
+>> PIC case:
+>> r: AMDI0030:00 flags: 0x418
+>>
+>> IOW NULL pic case has IORESOURCE_DISABLED / IORESOURCE_UNSET
+>>
+>> This then later the GPIO controller interrupts are not actually working.
+>> For example the attn pin for my I2C touchpad doesn't work.
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 799102f4d909..9957a73bb386 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1108,6 +1108,13 @@ config X86_LOCAL_APIC
->  	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
->  	select IRQ_DOMAIN_HIERARCHY
->  
-> +config X86_ACPI_MADT_WAKEUP
-> +	def_bool y
-> +	depends on X86_64
-> +	depends on ACPI
-> +	depends on SMP
-> +	depends on X86_LOCAL_APIC
-> +
->  config X86_IO_APIC
->  	def_bool y
->  	depends on X86_LOCAL_APIC || X86_UP_IOAPIC
-> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-> index c8a7fc23f63c..b536b5a6a57b 100644
-> --- a/arch/x86/include/asm/acpi.h
-> +++ b/arch/x86/include/asm/acpi.h
-> @@ -73,6 +73,11 @@ static inline bool acpi_skip_set_wakeup_address(void)
->  
->  #define acpi_skip_set_wakeup_address acpi_skip_set_wakeup_address
->  
-> +union acpi_subtable_headers;
-> +
-> +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> +			      const unsigned long end);
-> +
->  /*
->   * Check if the CPU can handle C2 and deeper
->   */
-> diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
-> index fc17b3f136fe..8c7329c88a75 100644
-> --- a/arch/x86/kernel/acpi/Makefile
-> +++ b/arch/x86/kernel/acpi/Makefile
-> @@ -1,11 +1,12 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -obj-$(CONFIG_ACPI)		+= boot.o
-> -obj-$(CONFIG_ACPI_SLEEP)	+= sleep.o wakeup_$(BITS).o
-> -obj-$(CONFIG_ACPI_APEI)		+= apei.o
-> -obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc.o
-> +obj-$(CONFIG_ACPI)			+= boot.o
-> +obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
-> +obj-$(CONFIG_ACPI_APEI)			+= apei.o
-> +obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
-> +obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
->  
->  ifneq ($(CONFIG_ACPI_PROCESSOR),)
-> -obj-y				+= cstate.o
-> +obj-y					+= cstate.o
->  endif
->  
-> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-> index 2a0ea38955df..111bd226ad99 100644
-> --- a/arch/x86/kernel/acpi/boot.c
-> +++ b/arch/x86/kernel/acpi/boot.c
-> @@ -66,13 +66,6 @@ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
->  static bool acpi_support_online_capable;
->  #endif
->  
-> -#ifdef CONFIG_X86_64
-> -/* Physical address of the Multiprocessor Wakeup Structure mailbox */
-> -static u64 acpi_mp_wake_mailbox_paddr;
-> -/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
-> -static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-> -#endif
-> -
->  #ifdef CONFIG_X86_IO_APIC
->  /*
->   * Locks related to IOAPIC hotplug
-> @@ -357,60 +350,6 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
->  
->  	return 0;
->  }
-> -
-> -#ifdef CONFIG_X86_64
-> -static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> -{
-> -	/*
-> -	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
-> -	 *
-> -	 * Wakeup of secondary CPUs is fully serialized in the core code.
-> -	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
-> -	 */
-> -	if (!acpi_mp_wake_mailbox) {
-> -		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-> -						sizeof(*acpi_mp_wake_mailbox),
-> -						MEMREMAP_WB);
-> -	}
-> -
-> -	/*
-> -	 * Mailbox memory is shared between the firmware and OS. Firmware will
-> -	 * listen on mailbox command address, and once it receives the wakeup
-> -	 * command, the CPU associated with the given apicid will be booted.
-> -	 *
-> -	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
-> -	 * firmware before the wakeup command is visible.  smp_store_release()
-> -	 * ensures ordering and visibility.
-> -	 */
-> -	acpi_mp_wake_mailbox->apic_id	    = apicid;
-> -	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
-> -	smp_store_release(&acpi_mp_wake_mailbox->command,
-> -			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-> -
-> -	/*
-> -	 * Wait for the CPU to wake up.
-> -	 *
-> -	 * The CPU being woken up is essentially in a spin loop waiting to be
-> -	 * woken up. It should not take long for it wake up and acknowledge by
-> -	 * zeroing out ->command.
-> -	 *
-> -	 * ACPI specification doesn't provide any guidance on how long kernel
-> -	 * has to wait for a wake up acknowledgement. It also doesn't provide
-> -	 * a way to cancel a wake up request if it takes too long.
-> -	 *
-> -	 * In TDX environment, the VMM has control over how long it takes to
-> -	 * wake up secondary. It can postpone scheduling secondary vCPU
-> -	 * indefinitely. Giving up on wake up request and reporting error opens
-> -	 * possible attack vector for VMM: it can wake up a secondary CPU when
-> -	 * kernel doesn't expect it. Wait until positive result of the wake up
-> -	 * request.
-> -	 */
-> -	while (READ_ONCE(acpi_mp_wake_mailbox->command))
-> -		cpu_relax();
-> -
-> -	return 0;
-> -}
-> -#endif /* CONFIG_X86_64 */
->  #endif /* CONFIG_X86_LOCAL_APIC */
->  
->  #ifdef CONFIG_X86_IO_APIC
-> @@ -1160,29 +1099,6 @@ static int __init acpi_parse_madt_lapic_entries(void)
->  	}
->  	return 0;
->  }
-> -
-> -#ifdef CONFIG_X86_64
-> -static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> -				     const unsigned long end)
-> -{
-> -	struct acpi_madt_multiproc_wakeup *mp_wake;
-> -
-> -	if (!IS_ENABLED(CONFIG_SMP))
-> -		return -ENODEV;
-> -
-> -	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-> -	if (BAD_MADT_ENTRY(mp_wake, end))
-> -		return -EINVAL;
-> -
-> -	acpi_table_print_madt_entry(&header->common);
-> -
-> -	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-> -
-> -	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
-> -
-> -	return 0;
-> -}
-> -#endif				/* CONFIG_X86_64 */
->  #endif				/* CONFIG_X86_LOCAL_APIC */
->  
->  #ifdef	CONFIG_X86_IO_APIC
-> @@ -1379,7 +1295,7 @@ static void __init acpi_process_madt(void)
->  				smp_found_config = 1;
->  			}
->  
-> -#ifdef CONFIG_X86_64
-> +#ifdef CONFIG_X86_ACPI_MADT_WAKEUP
->  			/*
->  			 * Parse MADT MP Wake entry.
->  			 */
-> diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-> new file mode 100644
-> index 000000000000..58cdfc0b6c0a
-> --- /dev/null
-> +++ b/arch/x86/kernel/acpi/madt_wakeup.c
-> @@ -0,0 +1,81 @@
-> +#include <linux/acpi.h>
-> +#include <linux/io.h>
-> +#include <asm/apic.h>
-> +#include <asm/barrier.h>
-> +#include <asm/processor.h>
-> +
-> +/* Physical address of the Multiprocessor Wakeup Structure mailbox */
-> +static u64 acpi_mp_wake_mailbox_paddr;
-> +
-> +/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
-> +static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-> +
-> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> +{
-> +	/*
-> +	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
-> +	 *
-> +	 * Wakeup of secondary CPUs is fully serialized in the core code.
-> +	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
-> +	 */
-> +	if (!acpi_mp_wake_mailbox) {
-> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-> +						sizeof(*acpi_mp_wake_mailbox),
-> +						MEMREMAP_WB);
-> +	}
-> +
-> +	/*
-> +	 * Mailbox memory is shared between the firmware and OS. Firmware will
-> +	 * listen on mailbox command address, and once it receives the wakeup
-> +	 * command, the CPU associated with the given apicid will be booted.
-> +	 *
-> +	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
-> +	 * firmware before the wakeup command is visible.  smp_store_release()
-> +	 * ensures ordering and visibility.
-> +	 */
-> +	acpi_mp_wake_mailbox->apic_id	    = apicid;
-> +	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
-> +	smp_store_release(&acpi_mp_wake_mailbox->command,
-> +			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-> +
-> +	/*
-> +	 * Wait for the CPU to wake up.
-> +	 *
-> +	 * The CPU being woken up is essentially in a spin loop waiting to be
-> +	 * woken up. It should not take long for it wake up and acknowledge by
-> +	 * zeroing out ->command.
-> +	 *
-> +	 * ACPI specification doesn't provide any guidance on how long kernel
-> +	 * has to wait for a wake up acknowledgement. It also doesn't provide
-> +	 * a way to cancel a wake up request if it takes too long.
-> +	 *
-> +	 * In TDX environment, the VMM has control over how long it takes to
-> +	 * wake up secondary. It can postpone scheduling secondary vCPU
-> +	 * indefinitely. Giving up on wake up request and reporting error opens
-> +	 * possible attack vector for VMM: it can wake up a secondary CPU when
-> +	 * kernel doesn't expect it. Wait until positive result of the wake up
-> +	 * request.
-> +	 */
-> +	while (READ_ONCE(acpi_mp_wake_mailbox->command))
-> +		cpu_relax();
-> +
-> +	return 0;
-> +}
-> +
-> +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> +			      const unsigned long end)
-> +{
-> +	struct acpi_madt_multiproc_wakeup *mp_wake;
-> +
-> +	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-> +	if (BAD_MADT_ENTRY(mp_wake, end))
-> +		return -EINVAL;
-> +
-> +	acpi_table_print_madt_entry(&header->common);
-> +
-> +	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-> +
-> +	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
-> +
-> +	return 0;
-> +}
+> Right the issue is that with the legacy-pic path disabled /
+> with nr_legacy_irqs() returning 0 them there is no mapping
+> added for the Legacy ISA IRQs which causes this problem.
+> 
+> My hack to set nr_legacy_irqs to 16 also for the NULL PIC from:
+> https://bugzilla.kernel.org/show_bug.cgi?id=218003
+> 
+> Does cause the Legacy ISA IRQ mappings to get added and makes
+> the GPIO controller actually work, as can be seen from:
+> 
+> https://bugzilla.kernel.org/attachment.cgi?id=305241&action=edit
+> 
+> Which is a dmesg with that hack and it does NOT have this error:
+> 
+> [    0.276113] amd_gpio AMDI0030:00: error -EINVAL: IRQ index 0 not found
+> [    0.278464] amd_gpio: probe of AMDI0030:00 failed with error -22
+> 
+> and the reporter also reports the touchpad works with this patch.
+> 
+> As Thomas already said the legayc PIC really is not necessary,
+> but what is still necessary on these laptops with the legacy PIC
+> not initialized is to have the Legacy ISA IRQ mappings added
+> by the kernel itself since these are missing from the MADT
+> (if I have my ACPI/IOAPIC terminology correct).
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+They're not missing, the problem is that the ioapic code doesn't
+let it get updated because of what I see as an extra nr_legacy_irqs()
+check.
+
+The series I posted I believe fixes this issue.
+
+> 
+> This quick hack (which is the one from the working dmesg)
+> does this:
+> 
+> --- a/arch/x86/kernel/i8259.c	
+> +++ a/arch/x86/kernel/i8259.c	
+> @@ -394,7 +394,7 @@ static int legacy_pic_probe(void)
+>   }
+>   
+>   struct legacy_pic null_legacy_pic = {
+> -	.nr_legacy_irqs = 0,
+> +	.nr_legacy_irqs = NR_IRQS_LEGACY,
+>   	.chip = &dummy_irq_chip,
+>   	.mask = legacy_pic_uint_noop,
+>   	.unmask = legacy_pic_uint_noop,
+> 
+> But I believe this will break things when there are actually
+> non legacy ISA IRQs / GSI-s using GSI numbers < NR_IRQS_LEGACY
+> 
+> Thomas, I'm not at all familiar with this area of the kernel,
+> but would checking if the MADT defines any non ISA GSIs under
+> 16 and if NOT use nr_legacy_irqs = NR_IRQS_LEGACY for the
+> NULL PIC be an option?
+> 
+> Or maybe some sort of DMI (sys_vendor == Lenovo) quirk to
+> set nr_legacy_irqs = NR_IRQS_LEGACY for the NULL PIC ?
+> 
+
+I'd prefer we don't do this.
+As tglx pointed out there is an underlying bug and we shouldn't paper 
+over it with quirks.
+
+My guess at what he doesn't see this issue on his system is that the 
+default preconfigured IOAPIC mappings (polarity and triggering) happen 
+to match the values that would have been programmed from _CRS.
+
+That's not the case here.
