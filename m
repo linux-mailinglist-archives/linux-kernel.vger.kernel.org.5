@@ -2,142 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E74B17D17DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5551A7D17E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbjJTVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S232938AbjJTVLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjJTVK1 (ORCPT
+        with ESMTP id S233335AbjJTVLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:10:27 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576F8112;
-        Fri, 20 Oct 2023 14:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1697836215; x=1698441015; i=w_armin@gmx.de;
-        bh=kFgVOLW+XKGG9Dulheyn+xrEGtWuwccHJv/X261e87w=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-         References;
-        b=oF08p2AQTIHOWJIgWlit3N2rt74aIraiIs3Uvwq76EKVcbfe68jdrNqqZB/khtPV
-         1qcBcKKT6UA3XUw33wddSnHcbn5Cp86+amTqBwAHOph/g6PUMEz5uGPLKROm123J3
-         0nn7Uq6ogQuVNRrAHz6wUwH4Z+BRqvv0IuH7NdrviHGadPPTjUBZ+AR5JFoqJ7EeY
-         L2Ks0l+VMJ01X+D+Xx+4mp8rgZXDJ92/YmqI5OjdZ/jSJISbFJ24oyHKUjGyyGSb+
-         22yevMiDwsK9I/IJbFEa8U4ToYtnFXC9zvIuI1XBzuOOJ+pVf2aXjqU+U9pHrfDLt
-         PmXLHwoWtIRen6SDQw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MORAa-1r9pkH05gU-00Pz4b; Fri, 20 Oct 2023 23:10:15 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
-        markgross@kernel.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] platform/x86: wmi: Decouple WMI device removal from wmi_block_list
-Date:   Fri, 20 Oct 2023 23:10:05 +0200
-Message-Id: <20231020211005.38216-6-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231020211005.38216-1-W_Armin@gmx.de>
-References: <20231020211005.38216-1-W_Armin@gmx.de>
+        Fri, 20 Oct 2023 17:11:12 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C6610FA
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:11:04 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso1917115a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:11:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697836259; x=1698441059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YLj+SmhNGHAbmx7AtEGeh++5cFknBV82w6tQGWOTRUk=;
+        b=KrC9prAhht6EFVE/Afk0Sybte5WtLOe7DTWL9yuy0J2gbJYSrrZVVwuqffMt5gp51r
+         3fZ8dOQNH6rrLcYApreplUVpThIuQUcDH05TgCqMIuu5b3U9UrOZ+tI/4jyvY5ZD17Uu
+         V9d8UpVFFRV09/ZvgzYUuSLFuyyUtoKQO2VXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697836259; x=1698441059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YLj+SmhNGHAbmx7AtEGeh++5cFknBV82w6tQGWOTRUk=;
+        b=MO407nhTAiqLu7mTVWKMHQb6S/9BW4izBRWy74coPa4jlvchsA8mUSS+Ky8smzlwwh
+         DtGZIutHg2HxyuJAYemn20xxFmmRvFaRXsRGn4NRvNPJZwKGAdI8VanEZoccqMWPUHMD
+         2wGBJS+2xh8p5UKZ+eVoVxRX0E85rriR5uGreG+v5cs1foD+qLhnTx3Fi7dOhb0yaqoj
+         /2J6DzGdrHMlAQfaYRZlM4XE6WP8B4RMBawUHUXIDU+HcpM6FG5T2LwSiAxJcrQF2/aq
+         Idg4tApI8KJ1wDErJhG6Fmc3rkIJB4fVC+UCX3nfZi6XRcT/1pasDgpzS9ietTtpeXVh
+         2yCw==
+X-Gm-Message-State: AOJu0Yx6eK3xtEuwQDw32ublg8AX7P7UziueZXEPyWreQ/szC9sWL3XG
+        q9nT6FOmyEkcr0z9yOLFyN9FlpyWG9bHFg2l3qzyU7a1
+X-Google-Smtp-Source: AGHT+IGXwJ67A4pgfbnG0QnMCUvTqUafbBM5vhcAK8jqlHTftQQXKAGOlHkxZBAPGtYbql3rYTJi7A==
+X-Received: by 2002:a17:907:9056:b0:9a5:846d:d823 with SMTP id az22-20020a170907905600b009a5846dd823mr1341124ejc.45.1697836259187;
+        Fri, 20 Oct 2023 14:10:59 -0700 (PDT)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id jy20-20020a170907763400b009b97d9ae329sm2202275ejc.198.2023.10.20.14.10.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 14:10:58 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40837124e1cso8625e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:10:57 -0700 (PDT)
+X-Received: by 2002:a05:600c:4f91:b0:408:3e63:f457 with SMTP id
+ n17-20020a05600c4f9100b004083e63f457mr157300wmq.2.1697836257414; Fri, 20 Oct
+ 2023 14:10:57 -0700 (PDT)
 MIME-Version: 1.0
+References: <20231019212130.3146151-1-dianders@chromium.org>
+ <20231019142019.v4.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
+ <eaf05cf1486c418790a1b54cbcda3a98@realtek.com> <CAD=FV=XZQ0XXY7XpX2_ubOwGsi0Hw5otHyuJS2=9QzDJsaSGWg@mail.gmail.com>
+In-Reply-To: <CAD=FV=XZQ0XXY7XpX2_ubOwGsi0Hw5otHyuJS2=9QzDJsaSGWg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 20 Oct 2023 14:10:42 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vx60LchWqQbALx_tAzK3hnqwSF949KY+R7yWvxfYPQAQ@mail.gmail.com>
+Message-ID: <CAD=FV=Vx60LchWqQbALx_tAzK3hnqwSF949KY+R7yWvxfYPQAQ@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] r8152: Block future register access if register
+ access fails
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Grant Grundler <grundler@chromium.org>,
+        Edward Hill <ecgh@chromium.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Simon Horman <horms@kernel.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:upUz/s9hYkGaaetVpAZiTov/Dp6BZHRY9u7NNsKYG7ZsPneSYaN
- kME8qFo2oFWNV1icG+l8vgEWvmCLw+N9F/U9yhDgCOx9N8ajPePy5lBbyFo/CcfwlczOeS+
- 9Y+moiM3hwxCZvXpyqjgC3zf8Bn1M3r5AFSxUWuoTDcj3xGZMRn1OKZeXZWQ2G5gi29w3Bw
- tReZ3vESZ9jJESGeFeMCg==
-UI-OutboundReport: notjunk:1;M01:P0:uRYRACoYQNg=;xJ5zlELhxwZnziIgQaehFu6ytf2
- HQ0FxqEdXu93Z51O0juNh54QHy1xunaclvigTJ5UgUGlO6I85mafj1t1YebP0Enfi2lZH3/WA
- ofXjOKaIvfNM6VseXzheZLYXkreZUplT3n951nJDs1UNdZXtifS1F8v/nWGa709+1NfJUqrIp
- f89xcxz6L8kBB2fw8HhjZRgqbNxBTE+c1KLEsMG4ISxMUP87yHyBhwlQvxqDd+1SieVQVdNtE
- TJP+gkVTqLYEgFbU5T29i5pvn9lDNEKaiFbIoXWLjUFx7ZF0qb77wuO1Ffvvj0O57oiProqI0
- dJUjbxGAAnOJhxUME+Dvu/4bCWrVXscf6zLmNJHkcN+PMUifbow5HFblT92DrwR991tNZNf62
- 1OHoxdR6yNZNXO9g/7Q4tRfDIUJyc3tjVRvy7X8c/F0vNarIkWtms20XiT5orqrxsTabnyCCi
- SOXJFnbVChsHaAMIsvUbmW7/7X3V0Pk6dwa2Dg6M04TtLsfEUYA5u293MQNjLAvZvbCS6tZGh
- dM4h4LP7u0q/DxF8tY9r0Lq4d4iL2vQ9zanJATo5LBm76AAOaLimYCHOSznsLiirbvCaXXbus
- yVwodVY2fSVAPTuNkkVfz0UadAAyZdqv0h5o/PDoWO2odsgK/h2oAHZPpM64TRlX+8NYDcQho
- aS9KlBzDtu8u1fx1eYvXQ1rKlxMBQSYM4DrX2TySoQSVkntjt6UMTpqZETJ2JvSCLB3Y8bABQ
- js/dcukxoHGnrtiebHokoghBFiYC1H4DHwwQmwK5rt6TpyWx5lReUoHUE0AUA+Vo94GmoI0Vo
- pNo90t1URQO1xS7wfkAEdaW3pdyQsuPB7qnRjpKmyg/MF/Oa3M3YsQKSsrKFskwtvUMkZt098
- S2fkks0mwQYsqszg0n9Rj0Zjraask6IR0fha7HlAU0/C7Z5qNClYPkUwW2QLxAhFkcJ5k7nBx
- 92vDKjSAAYpAwnlJhtJjFjuRMak=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use device_for_each_child_reverse() to find and unregister WMI devices
-belonging to a WMI bus device instead of iterating thru the entire
-wmi_block_list.
+Hi,
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+On Fri, Oct 20, 2023 at 8:42=E2=80=AFAM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> > > @@ -8293,6 +8394,8 @@ static int rtl8152_post_reset(struct usb_interf=
+ace *intf)
+> > >         if (!tp)
+> > >                 return 0;
+> > >
+> > > +       rtl_set_accessible(tp);
+> > > +
+> >
+> > Excuse me. I have a new idea. You could check if it is possible.
+> > If you remove test_bit(PROBED_WITH_NO_ERRORS, &tp->flags) in pre_reset(=
+),
+> > the driver wouldn't be unbound and rebound. Instead, you test PROBED_WI=
+TH_NO_ERRORS
+> > here to re-initialize the device. Then, you could limit the times of US=
+B reset, and
+> > the infinite loop wouldn't occur. The code would be like the following,
+> >
+> >         if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
+> >                 /* re-init */
+> >                 mutex_lock(&tp->control);
+> >                 tp->rtl_ops.init(tp);
+> >                 mutex_unlock(&tp->control);
+> >                 rtl_hw_phy_work_func_t(&tp->hw_phy_work.work);
+> >
+> >                 /* re-open(). Maybe move after checking netif_running(n=
+etdev) */
+> >                 mutex_lock(&tp->control);
+> >                 tp->rtl_ops.up(tp);
+> >                 mutex_unlock(&tp->control);
+> >
+> >                 /* check if there is any control error */
+> >                 if (test_bit(RTL8152_INACCESSIBLE, &tp->flags) {
+> >                         if (tp->reg_access_reset_count < REGISTER_ACCES=
+S_MAX_RESETS) {
+> >                                 /* queue reset again ? */
+> >                         } else {
+> >                                 ...
+> >                         }
+> >                         /* return 0 ? */
+> >                 } else {
+> >                         set_bit(PROBED_WITH_NO_ERRORS, &tp->flags)
+> >                 }
+> >         }
+>
+> The above solution worries me.
+>
+> I guess one part of this is that it replicates some logic that's in
+> probe(). That's not necessarily awful, but we'd at least want to
+> reorganize things so that they could share code if possible, though
+> maybe that's hard to do with the extra grabs of the mutex?
+>
+> The other part that worries me is that in the core when we added the
+> network device that something in the core might have cached bogus data
+> about our network device. This doesn't seem wonderful to me.
+>
+> I guess yet another part is that your proposed solution there has a
+> whole bunch of question marks on it. If it's not necessarily obvious
+> what we should do in this case then it doesn't feel like a robust
+> solution.
+>
+> It seems like your main concern here is with the potential for an
+> infinite number of resets. I have sent up a small patch to the USB
+> core [1] addressing this concern. Let's see what folks say about that
+> patch. If it is accepted then it seems like we could just not worry
+> about it. If it's not accepted then perhaps feedback on that patch
+> will give us additional guidance.
+>
+> In the meantime I'll at least post v5 since I don't want to leave the
+> patch up there with the mismatched mutex. I'll have my v5 point at my
+> USB core patch.
+>
+> [1] https://lore.kernel.org/r/20231020083125.1.I3e5f7abcbf6f08d392e31a582=
+6b7f234df662276@changeid
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 6b3b2fe464d2..5c27b4aa9690 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1280,19 +1280,6 @@ static int wmi_add_device(struct platform_device *p=
-dev, struct wmi_device *wdev)
- 	return device_add(&wdev->dev);
- }
+OK, Alan responded to the patch above and suggested simply putting the
+retry in the probe routine itself. I think that's actually in the same
+spirit as your suggestion but addresses the concerns that I had. I
+coded it up and tested it and it seems to work, so I posted that as v5
+[2]. Please take a look.
 
--static void wmi_free_devices(struct acpi_device *device)
--{
--	struct wmi_block *wblock, *next;
--
--	/* Delete devices for all the GUIDs */
--	list_for_each_entry_safe(wblock, next, &wmi_block_list, list) {
--		if (wblock->acpi_device =3D=3D device) {
--			list_del(&wblock->list);
--			device_unregister(&wblock->dev.dev);
--		}
--	}
--}
--
- static bool guid_already_parsed_for_legacy(struct acpi_device *device, co=
-nst guid_t *guid)
- {
- 	struct wmi_block *wblock;
-@@ -1487,16 +1474,28 @@ static void acpi_wmi_notify_handler(acpi_handle ha=
-ndle, u32 event,
- 		event, 0);
- }
-
-+static int wmi_remove_device(struct device *dev, void *data)
-+{
-+	struct wmi_block *wblock =3D dev_to_wblock(dev);
-+
-+	list_del(&wblock->list);
-+	device_unregister(dev);
-+
-+	return 0;
-+}
-+
- static void acpi_wmi_remove(struct platform_device *device)
- {
- 	struct acpi_device *acpi_device =3D ACPI_COMPANION(&device->dev);
-+	struct device *wmi_bus_device =3D dev_get_drvdata(&device->dev);
-
- 	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
- 				   acpi_wmi_notify_handler);
- 	acpi_remove_address_space_handler(acpi_device->handle,
- 				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
--	wmi_free_devices(acpi_device);
--	device_unregister(dev_get_drvdata(&device->dev));
-+
-+	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device);
-+	device_unregister(wmi_bus_device);
- }
-
- static int acpi_wmi_probe(struct platform_device *device)
-=2D-
-2.39.2
-
+[2] https://lore.kernel.org/r/20231020210751.3415723-1-dianders@chromium.or=
+g
