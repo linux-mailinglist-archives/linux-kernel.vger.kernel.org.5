@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D06FD7D0788
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F207D078D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345309AbjJTFSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S1345842AbjJTFUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJTFSn (ORCPT
+        with ESMTP id S232429AbjJTFT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:18:43 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5742B8;
-        Thu, 19 Oct 2023 22:18:38 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39K5ILVJ03796783, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39K5ILVJ03796783
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 13:18:21 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 20 Oct 2023 13:18:21 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 20 Oct 2023 13:18:20 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 20 Oct 2023 13:18:20 +0800
-From:   =?utf-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "benchuanggli@gmail.com" <benchuanggli@gmail.com>
-Subject: RE: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-Thread-Topic: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-Thread-Index: AQHaAYdvaUivfrDiG06E3JgYAyloabBPFJAAgAMQaGA=
-Date:   Fri, 20 Oct 2023 05:18:20 +0000
-Message-ID: <c74fafea1ebe454c845e22306e356f7d@realtek.com>
-References: <20231018055326.18256-1-jyanchou@realtek.com>
- <20231018055326.18256-5-jyanchou@realtek.com>
- <4a20bcf9-c0d7-45e9-ab19-e7e3bb073601@kernel.org>
-In-Reply-To: <4a20bcf9-c0d7-45e9-ab19-e7e3bb073601@kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.236]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 20 Oct 2023 01:19:58 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A36FB8;
+        Thu, 19 Oct 2023 22:19:56 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39K5JgWZ047974;
+        Fri, 20 Oct 2023 00:19:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697779182;
+        bh=YOyCVbrH9XYmK1l7b4XXUCGJm7bSvnigEETh7vRt/cc=;
+        h=From:To:CC:Subject:Date;
+        b=qrnKYoT52Wnf/00F4PJKDO1L5ybSTwFL9W1xvBBN6hJFAAGqDszK3J49W1z6gjdqP
+         3pCKv9GC8LNsWFaLfnKcdDHLc5xAkhB98uqag+aCUdgLEgGNWokXU3JNHK8hTjiEfz
+         gAi1fTljNYQ+PLwkb5/ZkV2zh7+rkII8s3edH9CA=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39K5JgB4038204
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Oct 2023 00:19:42 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 20
+ Oct 2023 00:19:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 20 Oct 2023 00:19:42 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39K5JgNI116867;
+        Fri, 20 Oct 2023 00:19:42 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.31])
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 39K5JfVh026773;
+        Fri, 20 Oct 2023 00:19:41 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>, MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH v6 0/3] Add AM65x ICSSG Ethernet support
+Date:   Fri, 20 Oct 2023 10:49:34 +0530
+Message-ID: <20231020051937.3709871-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,45 +70,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+IFBsZWFzZSB1c2Ugc3ViamVjdCBwcmVmaXhlcyBtYXRjaGluZyB0
-aGUgc3Vic3lzdGVtLiBZb3UgY2FuIGdldCB0aGVtIGZvciBleGFtcGxlIHdpdGggYGdpdCBsb2cg
-LS1vbmVsaW5lIC0tIERJUkVDVE9SWV9PUl9GSUxFYCBvbiB0aGUgZGlyZWN0b3J5IHlvdXIgcGF0
-Y2ggaXMgdG91Y2hpbmcuDQo+IFBsZWFzZSB1c2Ugc2NyaXB0cy9nZXRfbWFpbnRhaW5lcnMucGwg
-dG8gZ2V0IGEgbGlzdCBvZiBuZWNlc3NhcnkgcGVvcGxlIGFuZCBsaXN0cyB0byBDQy4gSXQgbWln
-aHQgaGFwcGVuLCB0aGF0IGNvbW1hbmQgd2hlbiBydW4gb24gYW4gb2xkZXIga2VybmVsLCBnaXZl
-cyB5b3Ugb3V0ZGF0ZWQgZW50cmllcy4gVGhlcmVmb3JlIHBsZWFzZSBiZSBzdXJlIHlvdSBiYXNl
-IHlvdXIgcGF0Y2hlcyBvbiByZWNlbnQgTGludXgga2VybmVsLg0KDQpUaGFua3MgZm9yIHlvdXIg
-cmVtaW5kLiBXZSBoYWQgbW9kaWZpZWQgb3VyIGNvZGUgYW5kIHJlc2VuZCBuZXcgcGF0Y2hlcy4N
-Cg0KPiBZb3UgbWlzc2VkIGF0IGxlYXN0IGRldmljZXRyZWUgbGlzdCAobWF5YmUgbW9yZSksIHNv
-IHRoaXMgd29uJ3QgYmUgdGVzdGVkIGJ5IGF1dG9tYXRlZCB0b29saW5nLiBQZXJmb3JtaW5nIHJl
-dmlldyBvbiB1bnRlc3RlZCBjb2RlIG1pZ2h0IGJlIGEgd2FzdGUgb2YgdGltZSwgdGh1cyBJIHdp
-bGwgc2tpcCB0aGlzIHBhdGNoIGVudGlyZWx5IHRpbGwgeW91IGZvbGxvdyB0aGUgcHJvY2VzcyBh
-bGxvd2luZyB0aGUgPiBwYXRjaCB0byBiZSB0ZXN0ZWQuDQo+IEFsc28sIGNvZGluZyBzdHlsZSBv
-ZiB5b3VyIGV4YW1wbGUgaXMgbWVzc3kuDQoNCkl0IHdhcyBvdXIgbWlzdGFrZSB0aGF0IGRpZG4n
-dCBjaGVjayBkdC1iaW5kaW5ncyBhY2N1cmF0ZWx5LiBXZSBoYWQgY29ycmVjdGVkIGl0IGFuZCBy
-ZXNlbmQgdG8gYWxsIG5lY2Vzc2FyeSBUby9DYyBlbnRyaWVzLiBUaGFua3MuDQoNCkJlc3QgcmVn
-YXJkcywNCkp5YW4NCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogS3J6eXN6
-dG9mIEtvemxvd3NraSA8a3J6a0BrZXJuZWwub3JnPiANClNlbnQ6IFdlZG5lc2RheSwgT2N0b2Jl
-ciAxOCwgMjAyMyAxMDoyNSBQTQ0KVG86IEp5YW4gQ2hvdSBb5ZGo6Iq35a6JXSA8anlhbmNob3VA
-cmVhbHRlay5jb20+OyBhZHJpYW4uaHVudGVyQGludGVsLmNvbTsgdWxmLmhhbnNzb25AbGluYXJv
-Lm9yZzsgamg4MC5jaHVuZ0BzYW1zdW5nLmNvbQ0KQ2M6IGxpbnV4LW1tY0B2Z2VyLmtlcm5lbC5v
-cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGJlbmNodWFuZ2dsaUBnbWFpbC5jb20N
-ClN1YmplY3Q6IFJlOiBbUEFUQ0ggVjJdWzQvNF0gbW1jOiBBZGQgZHQtYmluZGluZ3MgZm9yIHJl
-YWx0ZWsgbW1jIGRyaXZlcg0KDQoNCkV4dGVybmFsIG1haWwuDQoNCg0KDQpPbiAxOC8xMC8yMDIz
-IDA3OjUzLCBKeWFuIENob3Ugd3JvdGU6DQo+IERvY3VtZW50IHRoZSBkZXZpY2UtdHJlZSBiaW5k
-aW5ncyBmb3IgUmVhbHRlayBTb0NzIG1tYyBkcml2ZXIuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEp5
-YW4gQ2hvdSA8anlhbmNob3VAcmVhbHRlay5jb20+DQoNClBsZWFzZSB1c2Ugc3ViamVjdCBwcmVm
-aXhlcyBtYXRjaGluZyB0aGUgc3Vic3lzdGVtLiBZb3UgY2FuIGdldCB0aGVtIGZvciBleGFtcGxl
-IHdpdGggYGdpdCBsb2cgLS1vbmVsaW5lIC0tIERJUkVDVE9SWV9PUl9GSUxFYCBvbiB0aGUgZGly
-ZWN0b3J5IHlvdXIgcGF0Y2ggaXMgdG91Y2hpbmcuDQoNClBsZWFzZSB1c2Ugc2NyaXB0cy9nZXRf
-bWFpbnRhaW5lcnMucGwgdG8gZ2V0IGEgbGlzdCBvZiBuZWNlc3NhcnkgcGVvcGxlIGFuZCBsaXN0
-cyB0byBDQy4gSXQgbWlnaHQgaGFwcGVuLCB0aGF0IGNvbW1hbmQgd2hlbiBydW4gb24gYW4gb2xk
-ZXIga2VybmVsLCBnaXZlcyB5b3Ugb3V0ZGF0ZWQgZW50cmllcy4gVGhlcmVmb3JlIHBsZWFzZSBi
-ZSBzdXJlIHlvdSBiYXNlIHlvdXIgcGF0Y2hlcyBvbiByZWNlbnQgTGludXgga2VybmVsLg0KDQpZ
-b3UgbWlzc2VkIGF0IGxlYXN0IGRldmljZXRyZWUgbGlzdCAobWF5YmUgbW9yZSksIHNvIHRoaXMg
-d29uJ3QgYmUgdGVzdGVkIGJ5IGF1dG9tYXRlZCB0b29saW5nLiBQZXJmb3JtaW5nIHJldmlldyBv
-biB1bnRlc3RlZCBjb2RlIG1pZ2h0IGJlIGEgd2FzdGUgb2YgdGltZSwgdGh1cyBJIHdpbGwgc2tp
-cCB0aGlzIHBhdGNoIGVudGlyZWx5IHRpbGwgeW91IGZvbGxvdyB0aGUgcHJvY2VzcyBhbGxvd2lu
-ZyB0aGUgcGF0Y2ggdG8gYmUgdGVzdGVkLg0KDQpQbGVhc2Uga2luZGx5IHJlc2VuZCBhbmQgaW5j
-bHVkZSBhbGwgbmVjZXNzYXJ5IFRvL0NjIGVudHJpZXMuDQoNCkFsc28sIGNvZGluZyBzdHlsZSBv
-ZiB5b3VyIGV4YW1wbGUgaXMgbWVzc3kuDQoNCkJlc3QgcmVnYXJkcywNCktyenlzenRvZg0KDQo=
+Hi All,
+
+This series adds support for ICSSG ethernet on AM65x SR2.0. 
+This series also enables TI_ICSSG_PRUETH as loadable kernel module.
+This series is based on the latest next-20230925 linux-next.
+
+This is the v6 of the series [v1]. This addresses comments made on v5.
+
+Changes from v5 to v6:
+*) Fixed build failure seen on previous revision by creating new dtb
+   k3-am654-evm.dtb. This dtb will now contain base-board and the ICSSG2
+   overlay.
+*) Removed renaming of k3-am654-base-board.dts to k3-am654-common-board.dts
+   Now k3-am654-base-board.dts remains as it was.
+
+Changes from v4 to v5:
+*) Modified commit message of patch 2/4 as asked by Vignesh.
+*) Dropped patch 4/4 ("Enable TI_ICSSG_PRUETH") as it was having build
+   warning.
+
+Changes from v3 to v4:
+*) Added RB tag of Andrew Davis.
+*) Added LAKML to the --cc of this series as it was dropped in v3.
+
+Changes from v2 to v3:
+*) Changed comment of icssg nodes in device trees from "Dual Ethernet
+   application node" to "Ethernet node" as asked by Andrew L.
+*) Applied k3-am654-idk.dtbo at build time to the k3-am654-base-board.dtb
+   in order to not have orphan DTBO as asked by Andrew D.
+*) Modified k3-am654-gp-evm.dtb to have k3-am654-icssg2.dtbo as well.
+
+Changes from v1 to v2:
+*) Moved ICSSG2 nodes from k3-am654-base-board.dts to new overlay file
+   k3-am654-icssg2.dtso as asked by Andrew.
+*) Renamed k3-am654-base-board.dts to k3-am654-common-board.dts
+*) Added "Enable TI_ICSSG_PRUETH" patch to this series.
+
+[v1] https://lore.kernel.org/all/20230911071245.2173520-1-danishanwar@ti.com/
+[v2] https://lore.kernel.org/all/20230921060913.721336-1-danishanwar@ti.com/
+[v3] https://lore.kernel.org/all/20230926045337.1248276-1-danishanwar@ti.com/
+[v4] https://lore.kernel.org/all/20231003105539.1698436-1-danishanwar@ti.com/
+[v5] https://lore.kernel.org/all/20231013110150.4142508-1-danishanwar@ti.com/
+
+Thanks and Regards,
+MD Danish Anwar
+MD Danish Anwar (3):
+  arm64: dts: ti: k3-am65-main: Add ICSSG IEP nodes
+  arm64: dts: ti: k3-am654-base-board: add ICSSG2 Ethernet support
+  arm64: dts: ti: k3-am654-idk: Add ICSSG Ethernet ports
+
+ arch/arm64/boot/dts/ti/Makefile             |   4 +
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi    |  36 +++
+ arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 145 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am654-idk.dtso    | 296 ++++++++++++++++++++
+ 4 files changed, 481 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+
+base-commit: 4230ea146b1e64628f11e44290bb4008e391bc24
+-- 
+2.34.1
+
