@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052D57D11A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2BE7D11AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377547AbjJTOea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
+        id S1377559AbjJTOg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 10:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377490AbjJTOe3 (ORCPT
+        with ESMTP id S1377527AbjJTOg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:34:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8670219E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1697812460; x=1698417260; i=efault@gmx.de;
-        bh=QtJgWLvcgIWB43JrJ3u31jdplw3iBoNu/v4f26qo2fA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
-         References;
-        b=hpPXWP9T8mJAG6PJ8JeF406xbDL5oBtRmynvMhXqsl65rVZf2HeJ8gnff0Bfp+J4
-         xj7PBJudw+7ip+edSiubEnig4n6uZ1Wq6XwvVGCWNQvt5+eXyUhUEXyXupuo97kZx
-         2qPpcrTtnk/ARPJ2Xi8KgGyoy0PdSBl+kubaPREkCrX9l+OszyFkwwWdr1T3v+whn
-         4+UyB3gGB5XpLZfIoQO9hpCgQs+U4w1UnSlbC7IpHfXaOG4Cth2AxWPik2d7qbMQK
-         QLQVl+XrVJWc1Nuvw1oRDCHoic4athO3FztH8YuzKi4NUpqkaJhbY5wVUbawtfRUJ
-         ksv7mlfOrmNPYwj+kg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.221.149.246]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ygO-1qq0Z02qxC-0066nj; Fri, 20
- Oct 2023 16:34:20 +0200
-Message-ID: <15e4768144a74b093ad5a43f6e5c263fd98775fb.camel@gmx.de>
-Subject: Re: Runtime overhead of PREEMPT_DYNAMIC
-From:   Mike Galbraith <efault@gmx.de>
-To:     Emanuele Rocca <ema@debian.org>
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Date:   Fri, 20 Oct 2023 16:34:20 +0200
-In-Reply-To: <c6259a1824e570ddb7aaf114656aa387e028b76d.camel@gmx.de>
-References: <ZTJFA_Ac6nWawIHb@ariel>
-         <7a818250a8f36476f13b57a172fdb1ab23645edc.camel@gmx.de>
-         <ZTKDWnLrSnPs9VUi@ariel>
-         <c6259a1824e570ddb7aaf114656aa387e028b76d.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Fri, 20 Oct 2023 10:36:27 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F906D5E;
+        Fri, 20 Oct 2023 07:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Z/6zKPKF3hdIP4o+3v8/dUx6MorHqNGqLwm78ILSxho=; b=pyHF96wxzujXx9RrIKtrBWqiF3
+        6vSMOQOaaD2cWlmevMRYIH6ElggbIoNHqQOp7z56/FaFfRBTWNabSYakdTpWdmXKyeAcpkC78G/3o
+        i18hC83J4eS6+XH6izx8c43WYdQU98HR/SrWSAaEPczRVrS2saRIf1EA02U5Bjpyd2L1IPGOA9XnT
+        6pV3cLgYFQpaOfvQMySHh3R1zuaK3JptXC7zTdQ8qwwSG8cFHtxxE8/B30Ha7G/qH1TgwvzxX62f0
+        zPgcKAyv31Hcz7ub4U5lS//kfSaNkNgzkC4CjLX8za/cNCnANKs5n3XWoP6oVcGSdaABSSUFHWSC9
+        55ajVsIA==;
+Received: from [192.168.13.184] (helo=localhost)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qtqbu-003A2x-86; Fri, 20 Oct 2023 16:36:22 +0200
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+To:     linux-alpha@vger.kernel.org, mattst88@gmail.com,
+        ink@jurassic.park.msu.ru, richard.henderson@linaro.org
+Cc:     linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+        kernel@gpiccoli.net, macro@orcam.me.uk,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH V6] alpha: Clean-up the panic notifier code
+Date:   Fri, 20 Oct 2023 16:34:54 +0200
+Message-ID: <20231020143616.23082-1-gpiccoli@igalia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8oyPL33s02edddKEsSveNr9iAosXPTOe/lzFTOVkDghMEJpBGNe
- dyCbS4IOHOWWMOHUWrcJG3OSkQoNh+w3+SBOCaJpeqOyFVzSTs5e8+mGadXDGoFFzTlOx8M
- 0avAXVkB+5v6/Oty7M8BBQKVkO+uR4hKiDlwtclah2P5yBeBniYm1yLEXS9mDqOIxin9Ft0
- 6Dst8iLYnjBnnzeoiNZxg==
-UI-OutboundReport: notjunk:1;M01:P0:9R5zOUn2Nuo=;jq/QxVtimCoPk1ThZ8ObCzfVcLM
- iPexu0Om9A2Qnm3LBQebH4pcJb4GVyiXE5eRJc+33m0oTR79zoIKQZ3zffeCREOmXPJzIkr2N
- /gBnsk7H1voHZ0F2x1NnNcLV3Ni1xgRZT5MqDmRWVW2bm8WXibGKFBjBY76Ri0eX2En2oqnde
- 4UEj96oonJN8e8k1Npj7uO8A4cP57blROEbnLcxAWseLFiyUfy353B95MqP7vjQMj+AKIHWx+
- w+S/TwjcCpEIddgHxYDeo5llcfRcEEG11pS6MIFvn2IhA87syWcaaVoj3rF82l3ez0CzwyVUd
- 7lczBV57oR67tf7lXO4unFgq+m9h+TQG9KkkhOLgF+v49+GuBUKeAgZiuhg3A/UVpelPKHC+j
- ubbeSkOUAByopWG19accylqqt32/SGh+5HuYWzFdUWnF4DfMTmnL9nofiULLLuwjtOgnfgpz1
- KDa3FCWCl+VMDlsQx6CMd21UcmNOcOW/PdQiwzX88oPbjS2sirciBWcxGsf/dAs+7Ir0F5ybg
- LQBBmlWZRXiQOKFeq6UzVJOabxoDahyEl+m/sSec7sFoshWHEZUw/Xrvt6cM7TSkaIt+AEaxH
- ELM9hj+tmBrQNVFn/A3M56BiZbN4qAfltXo6lB99WJ6ACGXNntZsKY091N+6xK3i/np+43ZbJ
- QCAF5QMRrIyFWErcagADnTEl5GI1SHQzQ0LK2b8sOy/hSxK9K+t6hD0QUpmKOK+zC25NHer99
- fXRosbkSBh+Mv86dHELIZ+0w4zQT45l/gV4F4Qd74ymmFunnDSDX8qPiXnpCsCTM0FtFo3C6b
- 4ml8WjwYk9bOhBWQMJ9AJDjxa5xdZXZ2HxOdCSNPRj7kgHbAFlHKSni8H8glCon3mTuqAO32r
- T2BwWj+oGmNuHUarplE82eNu+4Rukmizz97tejlchKUZljInZUVnGNzJ1guSuOrPCPMq3N4Lf
- pcMxhNI6lbwJOGlCbIrXDmFnEAQ=
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,41 +53,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-20 at 16:11 +0200, Mike Galbraith wrote:
-> On Fri, 2023-10-20 at 15:40 +0200, Emanuele Rocca wrote:
-> > Hi Mike,
-> >
-> > Here is the full diff between the kernel configurations I used. The on=
-ly
-> > change I made was setting CONFIG_PREEMPT_DYNAMIC=3Dn, everything else =
-was
-> > a consequence of that AFAICT, but please do let me know if you see
-> > anything that shouldn't be there.
-> >
-> > --- config-6.5.0-0.preempt-dynamic-amd64=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A02023-10-11 15:30:02.000000000 +0200
-> > +++ config-6.5.0-0.a.test-amd64=C2=A02023-10-11 14:30:02.000000000 +02=
-00
-> >
-> > @@ -10597,7 +10596,6 @@
-> > =C2=A0# end of Scheduler Debugging
-> > =C2=A0
-> > =C2=A0# CONFIG_DEBUG_TIMEKEEPING is not set
-> > -CONFIG_DEBUG_PREEMPT=3Dy
-> > =C2=A0
-> > =C2=A0#
-> > =C2=A0# Lock Debugging (spinlocks, mutexes, etc...)
->
-> Seems you had also turned on DEBUG_PREEMPT in the dynamic setup, which
-> adds some overhead.. but not a metric ton.
+The alpha panic notifier has some code issues, not following
+the conventions of other notifiers. Also, it might halt the
+machine but still it is set to run as early as possible, which
+doesn't seem to be a good idea.
 
-Hm, I don't recall the overhead as being that bad, but thar she blows.
+So, let's clean the code and set the notifier to run as the
+latest, following the same approach other architectures are
+doing.
 
-i7-4790                                       avg         cmdline
-6.5.8-voluntary 3685.08 3679.93 3704.98   3689.99  1.000
-6.5.8-dynamic   3571.62 3568.61 3550.55   3563.59   .965
-                3052.06 3032.74 3019.93   3034.91   .822  +DEBUG_PREEMPT
-                3651.37 3599.87 3615.18   3622.14   .981  preempt=3Dnone
-                3459.58 3514.09 3539.88   3504.51   .949  preempt=3Dfull
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+---
 
+V6:
+- Dropped the include removal (thanks Maciej/Petr!)
+- Rebased on top of v6.6-rc6 
+
+ arch/alpha/kernel/setup.c | 35 +++++++++++++++--------------------
+ 1 file changed, 15 insertions(+), 20 deletions(-)
+
+diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+index c80258ec332f..8397ef1d4e11 100644
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -47,13 +47,6 @@
+ #include <linux/log2.h>
+ #include <linux/export.h>
+ 
+-static int alpha_panic_event(struct notifier_block *, unsigned long, void *);
+-static struct notifier_block alpha_panic_block = {
+-	alpha_panic_event,
+-        NULL,
+-        INT_MAX /* try to do it first */
+-};
+-
+ #include <linux/uaccess.h>
+ #include <asm/hwrpb.h>
+ #include <asm/dma.h>
+@@ -434,6 +427,21 @@ static const struct sysrq_key_op srm_sysrq_reboot_op = {
+ };
+ #endif
+ 
++static int alpha_panic_event(struct notifier_block *this,
++			     unsigned long event, void *ptr)
++{
++	/* If we are using SRM and serial console, just hard halt here. */
++	if (alpha_using_srm && srmcons_output)
++		__halt();
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block alpha_panic_block = {
++	.notifier_call = alpha_panic_event,
++	.priority = INT_MIN, /* may not return, do it last */
++};
++
+ void __init
+ setup_arch(char **cmdline_p)
+ {
+@@ -1426,19 +1434,6 @@ const struct seq_operations cpuinfo_op = {
+ 	.show	= show_cpuinfo,
+ };
+ 
+-
+-static int
+-alpha_panic_event(struct notifier_block *this, unsigned long event, void *ptr)
+-{
+-#if 1
+-	/* FIXME FIXME FIXME */
+-	/* If we are using SRM and serial console, just hard halt here. */
+-	if (alpha_using_srm && srmcons_output)
+-		__halt();
+-#endif
+-        return NOTIFY_DONE;
+-}
+-
+ static __init int add_pcspkr(void)
+ {
+ 	struct platform_device *pd;
+-- 
+2.42.0
 
