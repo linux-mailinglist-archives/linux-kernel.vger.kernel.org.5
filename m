@@ -2,215 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787F37D12EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7544D7D12EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377691AbjJTPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S1377676AbjJTPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377601AbjJTPg0 (ORCPT
+        with ESMTP id S1377651AbjJTPg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:36:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CF9AB
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:36:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D730CC433C8;
-        Fri, 20 Oct 2023 15:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697816184;
-        bh=s1xV3JBd6JIKm+NQbSAbEH6DMv5wORv7APbuEHALwfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pNHvl4mYVct+XX8kx8UXf2TT0nVK+m3RiqBgFauhIyP34BfS24P6w3cN+sNYgh86L
-         zIefFNd8SChjbE5mt0RcnCDDVnHQI9kiZ34N/Ndcb99gaYfbftUXfVN2jHE+rGi3tm
-         n1WJoP51Ny99stXZhmuo1Jrobgy4wuqH2wA5OViwEeNmvPtRxtmTZNsEomW/GeuStz
-         E56SShxBTIycb5PteKMvF+cjGSX68RZRJUltSn2U6mia4caFYA/aHgilLqBlYv75n1
-         XaB4EfF6m1ZGVqn9pgmCTZdSpN7ahbLcycEwthBAeTyHfVar01kDyclkbMcSWk/O7u
-         O/Z9xWkCKirLA==
-Date:   Fri, 20 Oct 2023 16:36:19 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v4 1/3] dt-bindings: usb: add rk3588 compatible to
- rockchip,dwc3
-Message-ID: <20231020-shudder-tackle-cc98a82f1cd0@spud>
-References: <20231020150022.48725-1-sebastian.reichel@collabora.com>
- <20231020150022.48725-2-sebastian.reichel@collabora.com>
+        Fri, 20 Oct 2023 11:36:59 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C25B8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:36:53 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-579de633419so10412977b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697816213; x=1698421013; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tu6pyTUtGymaS2j2r9iQnDpyhQcaCvR7FSo8pcjNejA=;
+        b=oQKM4VbKDW4+J9kxOY6nRHrICm/EV1SxdqzIfk4w1bEgsxkpurSIUowSF8tBl16jKk
+         MEdoEKZbNrWrmh73jpaZyzNN+MdkEUYp4LqCngoLK52Z5XNWLLR0Lz/UbHvy5fid8Iaf
+         cUoZu4I0OcX6DMVp2WZzc2k2zZilm/2iGAxqE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697816213; x=1698421013;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tu6pyTUtGymaS2j2r9iQnDpyhQcaCvR7FSo8pcjNejA=;
+        b=qBdoez4ot2Z1kfpjEkivrQGcjKSgT+lS5rG+S1NjXtG5xRKAmyCa4R3PNpV+no1vEc
+         RzV68A89R4ixGS0CsKGEaz6VTavxsNsctkg2itMedN3LcrEd/0j66bIBU2CtOzpDlE7h
+         2yNJW+8YHObrTE0t8xmct6JoX1ZV8rOvLVGnwtK2D1xPAvbzDoxgTSiGxHOb4v9CBZh6
+         5Zp4TrOq67NgA1BtuvbguEvmCeaRl+t3yOF2H0m+PnZ1jPWvXOA4FkRUNTZmUZFc55Ez
+         MTHvUt9kiIQjC+Jk1Kovks3QhqUmmpzC4T2GR8LNhCT0y0Ol5S0xaKQg/RIfnBO8FgUA
+         fH6A==
+X-Gm-Message-State: AOJu0Yw2YMc7vdJq+DV1Rvm1tpgd63rsJRDwKKNDEq0N3JTs/UvzRlwR
+        fA0i3f21h4YNrFoX/AKqPe1RCXK/xUBj71LSwRFkgg==
+X-Google-Smtp-Source: AGHT+IFqUlPG6dlUmNyqyGkuC10+FI40s+GmD/Bn0XNtOkYk8p12lirTlbLaNaqGbzu5h56aM3HWjjPYZb8mY6Vee1A=
+X-Received: by 2002:a81:7354:0:b0:5a8:1973:190a with SMTP id
+ o81-20020a817354000000b005a81973190amr2633859ywc.8.1697816212688; Fri, 20 Oct
+ 2023 08:36:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xK1bQfKTFhB0MwbA"
-Content-Disposition: inline
-In-Reply-To: <20231020150022.48725-2-sebastian.reichel@collabora.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018235944.1860717-1-markhas@chromium.org>
+ <7b08520e-8f36-45a1-9b7a-316a33c8e8c4@linux.intel.com> <CANg-bXDvZ00ZHEgbUf1NwDrOKfDF4vpBOxZ4hGEp-ohs6-pZpw@mail.gmail.com>
+ <5bc82aca-04f2-463b-ba52-34bcae6724d5@linux.intel.com>
+In-Reply-To: <5bc82aca-04f2-463b-ba52-34bcae6724d5@linux.intel.com>
+From:   Mark Hasemeyer <markhas@chromium.org>
+Date:   Fri, 20 Oct 2023 09:36:40 -0600
+Message-ID: <CANg-bXCaUOxSTfR1oXKrdnDozA9Hn-NL7mqg+zvLASLQyouChA@mail.gmail.com>
+Subject: Re: [PATCH v1] ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Brady Norander <bradynorander@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> FWIW we use this other quirk:
+> DMI_MATCH(DMI_PRODUCT_FAMILY, "Google"),
 
---xK1bQfKTFhB0MwbA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unfortunately DMI_PRODUCT_FAMILY is empty on these particular devices.
+The coreboot version field is the only entry that has "Google" in it.
 
-On Fri, Oct 20, 2023 at 04:11:40PM +0200, Sebastian Reichel wrote:
-> RK3588 has three DWC3 controllers. Two of them are fully functional in
-> host, device and OTG mode including USB2 support. They are connected to
-> dedicated PHYs, that also support USB-C's DisplayPort alternate mode.
->=20
-> The third controller is connected to one of the combphy's shared
-> with PCIe and SATA. It can only be used in host mode and does not
-> support USB2. Compared to the other controllers this one needs
-> some extra clocks.
->=20
-> While adding the extra clocks required by RK3588, I noticed grf_clk
-> is not available on RK3568, so I disallowed it for that platform.
->=20
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../bindings/usb/rockchip,dwc3.yaml           | 60 +++++++++++++++++--
->  1 file changed, 55 insertions(+), 5 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/D=
-ocumentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> index 291844c8f3e1..264c2178d61d 100644
-> --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> @@ -20,9 +20,6 @@ description:
->    Type-C PHY
->    Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
-> =20
-> -allOf:
-> -  - $ref: snps,dwc3.yaml#
-> -
->  select:
->    properties:
->      compatible:
-> @@ -30,6 +27,7 @@ select:
->          enum:
->            - rockchip,rk3328-dwc3
->            - rockchip,rk3568-dwc3
-> +          - rockchip,rk3588-dwc3
->    required:
->      - compatible
-> =20
-> @@ -39,6 +37,7 @@ properties:
->        - enum:
->            - rockchip,rk3328-dwc3
->            - rockchip,rk3568-dwc3
-> +          - rockchip,rk3588-dwc3
->        - const: snps,dwc3
-> =20
->    reg:
-> @@ -58,7 +57,9 @@ properties:
->            Master/Core clock, must to be >=3D 62.5 MHz for SS
->            operation and >=3D 30MHz for HS operation
->        - description:
-> -          Controller grf clock
-> +          Controller grf clock OR UTMI clock
-> +      - description:
-> +          PIPE clock
-> =20
->    clock-names:
->      minItems: 3
-> @@ -66,7 +67,10 @@ properties:
->        - const: ref_clk
->        - const: suspend_clk
->        - const: bus_clk
-> -      - const: grf_clk
-> +      - enum:
-> +          - grf_clk
-> +          - utmi
-> +      - const: pipe
-> =20
->    power-domains:
->      maxItems: 1
-> @@ -86,6 +90,52 @@ required:
->    - clocks
->    - clock-names
-> =20
-> +allOf:
-> +  - $ref: snps,dwc3.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: rockchip,rk3328-dwc3
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 3
+> How many engineers does it take to identify a Chromebook, eh?
 
-minItems for clocks and clock-names is already 3, is it not?
-
-Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-> +          maxItems: 4
-> +        clock-names:
-> +          minItems: 3
-> +          items:
-> +            - const: ref_clk
-> +            - const: suspend_clk
-> +            - const: bus_clk
-> +            - const: grf_clk
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: rockchip,rk3568-dwc3
-> +    then:
-> +      properties:
-> +        clocks:
-> +          maxItems: 3
-> +        clock-names:
-> +          maxItems: 3
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: rockchip,rk3588-dwc3
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          minItems: 3
-> +          items:
-> +            - const: ref_clk
-> +            - const: suspend_clk
-> +            - const: bus_clk
-> +            - const: utmi
-> +            - const: pipe
-> +
->  examples:
->    - |
->      #include <dt-bindings/clock/rk3328-cru.h>
-> --=20
-> 2.42.0
->=20
-
---xK1bQfKTFhB0MwbA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTKecwAKCRB4tDGHoIJi
-0nobAP9gB+qsHrTFsAFDJu4+fvKBpfSdY02kTL2MPTojpyy3eAD8C3SFcHdhD6T3
-zRXBywGwE+6lPmCkSRVvQByGqxESRAk=
-=vfSY
------END PGP SIGNATURE-----
-
---xK1bQfKTFhB0MwbA--
+Ha! There has been some discussion about this: to come up with a
+canonical way for Chromebook identification throughout the kernel. But
+nothing has been settled on AFAIK.
