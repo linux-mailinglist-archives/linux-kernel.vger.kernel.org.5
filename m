@@ -2,411 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D4D7D0790
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82A27D0796
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345479AbjJTFUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S1345309AbjJTF03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjJTFUF (ORCPT
+        with ESMTP id S233471AbjJTF0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:20:05 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E27B8;
-        Thu, 19 Oct 2023 22:20:02 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39K5Jqeb057712;
-        Fri, 20 Oct 2023 00:19:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697779192;
-        bh=E3UGNciNPviE0yyMJecgu9qjLnCe+cB7xBmhnnYiKMc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=kK7hOKK1TQcUEY3EXakCz8kr2jCHJZMh2dssJqTZ3d3OBvsqIK8D6lip62I+PqEF5
-         bXe9FiCwR2bz/xFK2/4xhHVrv4Wq4DLj/qkJGodhYohCWzNPQkRz8LYBLsAhHcOEdn
-         NfblF9zC2ezEBckf0mbTJLdJv1NSRkmZ6OCIFgBw=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39K5JqCg061713
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Oct 2023 00:19:52 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 20
- Oct 2023 00:19:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 20 Oct 2023 00:19:48 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39K5JmH8092985;
-        Fri, 20 Oct 2023 00:19:48 -0500
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.31])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 39K5Jl3K026792;
-        Fri, 20 Oct 2023 00:19:48 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>, MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH v6 3/3] arm64: dts: ti: k3-am654-idk: Add ICSSG Ethernet ports
-Date:   Fri, 20 Oct 2023 10:49:37 +0530
-Message-ID: <20231020051937.3709871-4-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020051937.3709871-1-danishanwar@ti.com>
-References: <20231020051937.3709871-1-danishanwar@ti.com>
+        Fri, 20 Oct 2023 01:26:25 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA57D51
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:26:22 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7aae07e7ba4so157969241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697779581; x=1698384381; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IVgRisShFqd7EiamTTw+bWWTirWYsFZ+qCSq/HGAIy0=;
+        b=SZN0+PVof30n4KVsW5UjKM07VgQ5XRWG8+QdcZJ5WtL3H3NMLqBtHyg705dIKAjnNr
+         w4HclU8zb25S/xDEy+d6UfEyte1vetCzjo+8I8RBkWozQra9JNKqfLqR4dW8MyPEueHw
+         6JyhxGcG3LJyEsfdKwSc9k97nmKatRM5eGcxLN/qVPm2Oo2cpUGfjtnkXl5aTx84bhWA
+         WTy4mVD64lHjPad9gHlHxTiXJGk6dHagEyVbSsCmRJQuj9yXYuF6s0iSwrBxdv2rgtnH
+         Z+6HqKWrNJPEZUWKLQdrnGa/ksn4eEQH6If+9/RcaoH1HglMW6/oX7FSITfqD1XMeSlb
+         ximw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697779581; x=1698384381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IVgRisShFqd7EiamTTw+bWWTirWYsFZ+qCSq/HGAIy0=;
+        b=kcHkwHlz5vMJHfF+Ul9csyqcDPplJxpdiXI/jATZCogtEMlLdBo3YCNOdc4AYieg3i
+         qy2yFnQJPo5K/SU/kNQdFAnAiMxeq0rv8a3zgnI7A0SBaU5wnTHYDrTPh6V1aH30QjJc
+         cgNEvGm8ZzrvoOBYkdQV7C2yVgmLsbrjaW4QNPX3LqciFpSqJ3hST55rrZBtDex0q1QH
+         hv4ophbUPwylXpYa4YHSASuusX8BwG5FigmzZI0VQOu44IpROpkOs+qMf8EICOASjrE5
+         GpzyJTzA+OeT1/1PVXI+BWOA/4uRDZ4AQRbtgEGe6m7mKg3GdyMU7lNM3bgS15CnynPC
+         EoBg==
+X-Gm-Message-State: AOJu0YxwrIeYQ0v2eOwzal+LIwdDOmOuM1wrky/Pp8k1RsS3ZPdsJbrd
+        BFfzTg5+htunvZM4gn0An80H7UFryzmLVnXvVdS/xQ==
+X-Google-Smtp-Source: AGHT+IHo8erdk2AN0cF2HUMClMRLyNwghQbHQC1m7KfJFjkcJhqBzh3HXIExQo07E3k6BH9SqTyX3KGslOi9ibHfP8c=
+X-Received: by 2002:a67:ef51:0:b0:457:dbe3:ef45 with SMTP id
+ k17-20020a67ef51000000b00457dbe3ef45mr1085001vsr.19.1697779581093; Thu, 19
+ Oct 2023 22:26:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231012051509.738750-1-apatel@ventanamicro.com>
+ <20231012051509.738750-4-apatel@ventanamicro.com> <20231019-1e6f411e1cbc4a3b0fbff3f5@orel>
+In-Reply-To: <20231019-1e6f411e1cbc4a3b0fbff3f5@orel>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 20 Oct 2023 10:56:09 +0530
+Message-ID: <CAK9=C2XSdrOSTp7skR4btGFkfL==0E+Su71d4bgJGXB80x6rBw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] RISC-V: KVM: Allow some SBI extensions to be
+ disabled by default
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IDK application board has 4 Gigabit Ethernet ports.
+On Thu, Oct 19, 2023 at 1:27=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Thu, Oct 12, 2023 at 10:45:04AM +0530, Anup Patel wrote:
+> > Currently, all SBI extensions are enabled by default which is
+> > problematic for SBI extensions (such as DBCN) which are forwarded
+> > to the KVM user-space because we might have an older KVM user-space
+> > which is not aware/ready to handle newer SBI extensions. Ideally,
+> > the SBI extensions forwarded to the KVM user-space must be
+> > disabled by default.
+> >
+> > To address above, we allow certain SBI extensions to be disabled
+> > by default so that KVM user-space must explicitly enable such
+> > SBI extensions to receive forwarded calls from Guest VCPU.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/kvm_vcpu_sbi.h |  4 +++
+> >  arch/riscv/kvm/vcpu.c                 |  6 ++++
+> >  arch/riscv/kvm/vcpu_sbi.c             | 45 ++++++++++++++++-----------
+> >  3 files changed, 36 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include=
+/asm/kvm_vcpu_sbi.h
+> > index 8d6d4dce8a5e..c02bda5559d7 100644
+> > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > @@ -35,6 +35,9 @@ struct kvm_vcpu_sbi_return {
+> >  struct kvm_vcpu_sbi_extension {
+> >       unsigned long extid_start;
+> >       unsigned long extid_end;
+> > +
+> > +     bool default_unavail;
+> > +
+> >       /**
+> >        * SBI extension handler. It can be defined for a given extension=
+ or group of
+> >        * extension. But it should always return linux error codes rathe=
+r than SBI
+> > @@ -59,6 +62,7 @@ int kvm_riscv_vcpu_get_reg_sbi_ext(struct kvm_vcpu *v=
+cpu,
+> >  const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_find_ext(
+> >                               struct kvm_vcpu *vcpu, unsigned long exti=
+d);
+> >  int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *ru=
+n);
+> > +void kvm_riscv_vcpu_sbi_init(struct kvm_vcpu *vcpu);
+> >
+> >  #ifdef CONFIG_RISCV_SBI_V01
+> >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_v01;
+> > diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> > index c061a1c5fe98..e087c809073c 100644
+> > --- a/arch/riscv/kvm/vcpu.c
+> > +++ b/arch/riscv/kvm/vcpu.c
+> > @@ -141,6 +141,12 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+> >       if (rc)
+> >               return rc;
+> >
+> > +     /*
+> > +      * Setup SBI extensions
+> > +      * NOTE: This must be the last thing to be initialized.
+> > +      */
+> > +     kvm_riscv_vcpu_sbi_init(vcpu);
+>
+> With this, we no longer defer probing to the first access (whether that's
+> by the guest or KVM userspace). With our current small set of SBI
+> extensions where only a single one has a probe function, then this
+> simpler approach is good enough. We can always go back to the lazy
+> approach later if needed.
 
-This patch adds support for the 4 Gigabit Ethernet ports
-which are provided by ICSSG0 and ICSSG1.
-The IEP0 SYNC_OUT0 pins are used for PPS out on the IDK card.
+I agree. We can fallback to lazy probing in the future if required.
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile          |   2 +
- arch/arm64/boot/dts/ti/k3-am654-idk.dtso | 296 +++++++++++++++++++++++
- 2 files changed, 298 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+>
+> > +
+> >       /* Reset VCPU */
+> >       kvm_riscv_reset_vcpu(vcpu);
+> >
+> > diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+> > index 9cd97091c723..1b1cee86efda 100644
+> > --- a/arch/riscv/kvm/vcpu_sbi.c
+> > +++ b/arch/riscv/kvm/vcpu_sbi.c
+> > @@ -155,14 +155,8 @@ static int riscv_vcpu_set_sbi_ext_single(struct kv=
+m_vcpu *vcpu,
+> >       if (!sext)
+> >               return -ENOENT;
+> >
+> > -     /*
+> > -      * We can't set the extension status to available here, since it =
+may
+> > -      * have a probe() function which needs to confirm availability fi=
+rst,
+> > -      * but it may be too early to call that here. We can set the stat=
+us to
+> > -      * unavailable, though.
+> > -      */
+> > -     if (!reg_val)
+> > -             scontext->ext_status[sext->ext_idx] =3D
+> > +     scontext->ext_status[sext->ext_idx] =3D (reg_val) ?
+> > +                     KVM_RISCV_SBI_EXT_AVAILABLE :
+> >                       KVM_RISCV_SBI_EXT_UNAVAILABLE;
+>
+> We're missing the change to riscv_vcpu_get_sbi_ext_single() which should
+> also drop the comment block explaining the limits to status knowledge
+> without initial probing (which we now do) and then just check for
+> available, i.e.
+>
+> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+> index bb76c3cf633f..92c42d9aba1c 100644
+> --- a/arch/riscv/kvm/vcpu_sbi.c
+> +++ b/arch/riscv/kvm/vcpu_sbi.c
+> @@ -186,15 +186,8 @@ static int riscv_vcpu_get_sbi_ext_single(struct kvm_=
+vcpu *vcpu,
+>         if (!sext)
+>                 return -ENOENT;
+>
+> -       /*
+> -        * If the extension status is still uninitialized, then we should=
+ probe
+> -        * to determine if it's available, but it may be too early to do =
+that
+> -        * here. The best we can do is report that the extension has not =
+been
+> -        * disabled, i.e. we return 1 when the extension is available and=
+ also
+> -        * when it only may be available.
+> -        */
+> -       *reg_val =3D scontext->ext_status[sext->ext_idx] !=3D
+> -                               KVM_RISCV_SBI_EXT_UNAVAILABLE;
+> +       *reg_val =3D scontext->ext_status[sext->ext_idx] =3D=3D
+> +                               KVM_RISCV_SBI_EXT_AVAILABLE;
+>
+>         return 0;
+>  }
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 349b2f7604e9..77a347f9f47d 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -47,6 +47,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
- k3-am654-evm-dtbs := k3-am654-base-board.dtb k3-am654-icssg2.dtbo
-+k3-am654-idk-dtbs := k3-am654-evm.dtb k3-am654-idk.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-@@ -55,6 +56,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtb
- 
- # Boards with J7200 SoC
- k3-j7200-evm-dtbs := k3-j7200-common-proc-board.dtb k3-j7200-evm-quad-port-eth-exp.dtbo
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-new file mode 100644
-index 000000000000..150428dfce6f
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT overlay for IDK application board on AM654 EVM
-+ *
-+ * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/net/ti-dp83867.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	aliases {
-+		ethernet3 = "/icssg0-eth/ethernet-ports/port@0";
-+		ethernet4 = "/icssg0-eth/ethernet-ports/port@1";
-+		ethernet5 = "/icssg1-eth/ethernet-ports/port@0";
-+		ethernet6 = "/icssg1-eth/ethernet-ports/port@1";
-+	};
-+
-+	/* Ethernet node on PRU-ICSSG0 */
-+	icssg0_eth: icssg0-eth {
-+		compatible = "ti,am654-icssg-prueth";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg0_rgmii_pins_default>;
-+		sram = <&msmc_ram>;
-+		ti,prus = <&pru0_0>, <&rtu0_0>, <&tx_pru0_0>, <&pru0_1>, <&rtu0_1>, <&tx_pru0_1>;
-+		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-+
-+		ti,pruss-gp-mux-sel = <2>,	/* MII mode */
-+				      <2>,
-+				      <2>,
-+				      <2>,	/* MII mode */
-+				      <2>,
-+				      <2>;
-+
-+		ti,mii-g-rt = <&icssg0_mii_g_rt>;
-+		ti,mii-rt = <&icssg0_mii_rt>;
-+		ti,iep = <&icssg0_iep0>,  <&icssg0_iep1>;
-+
-+		interrupt-parent = <&icssg0_intc>;
-+		interrupts = <24 0 2>, <25 1 3>;
-+		interrupt-names = "tx_ts0", "tx_ts1";
-+
-+		dmas = <&main_udmap 0xc100>, /* egress slice 0 */
-+		       <&main_udmap 0xc101>, /* egress slice 0 */
-+		       <&main_udmap 0xc102>, /* egress slice 0 */
-+		       <&main_udmap 0xc103>, /* egress slice 0 */
-+		       <&main_udmap 0xc104>, /* egress slice 1 */
-+		       <&main_udmap 0xc105>, /* egress slice 1 */
-+		       <&main_udmap 0xc106>, /* egress slice 1 */
-+		       <&main_udmap 0xc107>, /* egress slice 1 */
-+
-+		       <&main_udmap 0x4100>, /* ingress slice 0 */
-+		       <&main_udmap 0x4101>, /* ingress slice 1 */
-+		       <&main_udmap 0x4102>, /* mgmnt rsp slice 0 */
-+		       <&main_udmap 0x4103>; /* mgmnt rsp slice 1 */
-+		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-+			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-+			    "rx0", "rx1";
-+
-+		ethernet-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			icssg0_emac0: port@0 {
-+				reg = <0>;
-+				phy-handle = <&icssg0_phy0>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+			icssg0_emac1: port@1 {
-+				reg = <1>;
-+				phy-handle = <&icssg0_phy1>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+		};
-+	};
-+
-+	/* Ethernet node on PRU-ICSSG1 */
-+	icssg1_eth: icssg1-eth {
-+		compatible = "ti,am654-icssg-prueth";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg1_rgmii_pins_default>;
-+		sram = <&msmc_ram>;
-+		ti,prus = <&pru1_0>, <&rtu1_0>, <&tx_pru1_0>, <&pru1_1>, <&rtu1_1>, <&tx_pru1_1>;
-+		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-+
-+		ti,pruss-gp-mux-sel = <2>,	/* MII mode */
-+				      <2>,
-+				      <2>,
-+				      <2>,	/* MII mode */
-+				      <2>,
-+				      <2>;
-+
-+		ti,mii-g-rt = <&icssg1_mii_g_rt>;
-+		ti,mii-rt = <&icssg1_mii_rt>;
-+		ti,iep = <&icssg1_iep0>,  <&icssg1_iep1>;
-+
-+		interrupt-parent = <&icssg1_intc>;
-+		interrupts = <24 0 2>, <25 1 3>;
-+		interrupt-names = "tx_ts0", "tx_ts1";
-+
-+		dmas = <&main_udmap 0xc200>, /* egress slice 0 */
-+		       <&main_udmap 0xc201>, /* egress slice 0 */
-+		       <&main_udmap 0xc202>, /* egress slice 0 */
-+		       <&main_udmap 0xc203>, /* egress slice 0 */
-+		       <&main_udmap 0xc204>, /* egress slice 1 */
-+		       <&main_udmap 0xc205>, /* egress slice 1 */
-+		       <&main_udmap 0xc206>, /* egress slice 1 */
-+		       <&main_udmap 0xc207>, /* egress slice 1 */
-+
-+		       <&main_udmap 0x4200>, /* ingress slice 0 */
-+		       <&main_udmap 0x4201>, /* ingress slice 1 */
-+		       <&main_udmap 0x4202>, /* mgmnt rsp slice 0 */
-+		       <&main_udmap 0x4203>; /* mgmnt rsp slice 1 */
-+		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-+			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-+			    "rx0", "rx1";
-+
-+		ethernet-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			icssg1_emac0: port@0 {
-+				reg = <0>;
-+				phy-handle = <&icssg1_phy0>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4110>;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+			icssg1_emac1: port@1 {
-+				reg = <1>;
-+				phy-handle = <&icssg1_phy1>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4114>;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+		};
-+	};
-+};
-+
-+&main_pmx0 {
-+
-+	icssg0_mdio_pins_default: icssg0-mdio-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0294, PIN_INPUT, 0) /* (AE26) PRG0_MDIO0_MDIO */
-+			AM65X_IOPAD(0x0298, PIN_OUTPUT, 0) /* (AE28) PRG0_MDIO0_MDC */
-+		>;
-+	};
-+
-+	icssg0_rgmii_pins_default: icssg0-rgmii-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0244, PIN_INPUT, 2) /* (AB28) PRG0_PRU1_GPO0.PRG0_RGMII2_RD0 */
-+			AM65X_IOPAD(0x0248, PIN_INPUT, 2) /* (AC28) PRG0_PRU1_GPO1.PRG0_RGMII2_RD1 */
-+			AM65X_IOPAD(0x024c, PIN_INPUT, 2) /* (AC27) PRG0_PRU1_GPO2.PRG0_RGMII2_RD2 */
-+			AM65X_IOPAD(0x0250, PIN_INPUT, 2) /* (AB26) PRG0_PRU1_GPO3.PRG0_RGMII2_RD3 */
-+			AM65X_IOPAD(0x0274, PIN_OUTPUT, 2) /* (AC25) PRG0_PRU1_GPO12.PRG0_RGMII2_TD0 */
-+			AM65X_IOPAD(0x0278, PIN_OUTPUT, 2) /* (AD25) PRG0_PRU1_GPO13.PRG0_RGMII2_TD1 */
-+			AM65X_IOPAD(0x027c, PIN_OUTPUT, 2) /* (AD24) PRG0_PRU1_GPO14.PRG0_RGMII2_TD2 */
-+			AM65X_IOPAD(0x0280, PIN_OUTPUT, 2) /* (AE27) PRG0_PRU1_GPO15.PRG0_RGMII2_TD3 */
-+			AM65X_IOPAD(0x0284, PIN_INPUT, 2) /* (AC24) PRG0_PRU1_GPO16.PRG0_RGMII2_TXC */
-+			AM65X_IOPAD(0x0270, PIN_OUTPUT, 2) /* (AB24) PRG0_PRU1_GPO11.PRG0_RGMII2_TX_CTL */
-+			AM65X_IOPAD(0x025c, PIN_INPUT, 2) /* (AB27) PRG0_PRU1_GPO6.PRG0_RGMII2_RXC */
-+			AM65X_IOPAD(0x0254, PIN_INPUT, 2) /* (AA25) PRG0_PRU1_GPO4.PRG0_RGMII2_RX_CTL */
-+
-+			AM65X_IOPAD(0x01f4, PIN_INPUT, 2) /* (V24) PRG0_PRU0_GPO0.PRG0_RGMII1_RD0 */
-+			AM65X_IOPAD(0x01f8, PIN_INPUT, 2) /* (W25) PRG0_PRU0_GPO1.PRG0_RGMII1_RD1 */
-+			AM65X_IOPAD(0x01fc, PIN_INPUT, 2) /* (W24) PRG0_PRU0_GPO2.PRG0_RGMII1_RD2 */
-+			AM65X_IOPAD(0x0200, PIN_INPUT, 2) /* (AA27) PRG0_PRU0_GPO3.PRG0_RGMII1_RD3 */
-+			AM65X_IOPAD(0x0224, PIN_OUTPUT, 2) /* (AD27) PRG0_PRU0_GPO12.PRG0_RGMII1_TD0 */
-+			AM65X_IOPAD(0x0228, PIN_OUTPUT, 2) /* (AC26) PRG0_PRU0_GPO13.PRG0_RGMII1_TD1 */
-+			AM65X_IOPAD(0x022c, PIN_OUTPUT, 2) /* (AD26) PRG0_PRU0_GPO14.PRG0_RGMII1_TD2 */
-+			AM65X_IOPAD(0x0230, PIN_OUTPUT, 2) /* (AA24) PRG0_PRU0_GPO15.PRG0_RGMII1_TD3 */
-+			AM65X_IOPAD(0x0234, PIN_INPUT, 2) /* (AD28) PRG0_PRU0_GPO16.PRG0_RGMII1_TXC */
-+			AM65X_IOPAD(0x0220, PIN_OUTPUT, 2) /* (AB25) PRG0_PRU0_GPO11.PRG0_RGMII1_TX_CTL */
-+			AM65X_IOPAD(0x020c, PIN_INPUT, 2) /* (Y25) PRG0_PRU0_GPO6.PRG0_RGMII1_RXC */
-+			AM65X_IOPAD(0x0204, PIN_INPUT, 2) /* (Y24) PRG0_PRU0_GPO4.PRG0_RGMII1_RX_CTL */
-+		>;
-+	};
-+
-+	icssg0_iep0_pins_default: icssg0-iep0-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0240, PIN_INPUT, 2) /* (U24) PRG0_PRU0_GPO19.PRG0_IEP0_EDC_SYNC_OUT0 */
-+		>;
-+	};
-+
-+	icssg1_mdio_pins_default: icssg1-mdio-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0180, PIN_INPUT, 0) /* (AD18) PRG1_MDIO0_MDIO */
-+			AM65X_IOPAD(0x0184, PIN_OUTPUT, 0) /* (AH18) PRG1_MDIO0_MDC */
-+		>;
-+	};
-+
-+	icssg1_rgmii_pins_default: icssg1-rgmii-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0130, PIN_INPUT, 2) /* (AH24) PRG1_PRU1_GPO0.PRG1_RGMII2_RD0 */
-+			AM65X_IOPAD(0x0134, PIN_INPUT, 2) /* (AH23) PRG1_PRU1_GPO1.PRG1_RGMII2_RD1 */
-+			AM65X_IOPAD(0x0138, PIN_INPUT, 2) /* (AG21) PRG1_PRU1_GPO2.PRG1_RGMII2_RD2 */
-+			AM65X_IOPAD(0x013c, PIN_INPUT, 2) /* (AH22) PRG1_PRU1_GPO3.PRG1_RGMII2_RD3 */
-+			AM65X_IOPAD(0x0160, PIN_OUTPUT, 2) /* (AE20) PRG1_PRU1_GPO12.PRG1_RGMII2_TD0 */
-+			AM65X_IOPAD(0x0164, PIN_OUTPUT, 2) /* (AF19) PRG1_PRU1_GPO13.PRG1_RGMII2_TD1 */
-+			AM65X_IOPAD(0x0168, PIN_OUTPUT, 2) /* (AH19) PRG1_PRU1_GPO14.PRG1_RGMII2_TD2 */
-+			AM65X_IOPAD(0x016c, PIN_OUTPUT, 2) /* (AG19) PRG1_PRU1_GPO15.PRG1_RGMII2_TD3 */
-+			AM65X_IOPAD(0x0170, PIN_INPUT, 2) /* (AE19) PRG1_PRU1_GPO16.PRG1_RGMII2_TXC */
-+			AM65X_IOPAD(0x015c, PIN_OUTPUT, 2) /* (AC20) PRG1_PRU1_GPO11.PRG1_RGMII2_TX_CTL */
-+			AM65X_IOPAD(0x0148, PIN_INPUT, 2) /* (AG22) PRG1_PRU1_GPO6.PRG1_RGMII2_RXC */
-+			AM65X_IOPAD(0x0140, PIN_INPUT, 2) /* (AE21) PRG1_PRU1_GPO4.PRG1_RGMII2_RX_CTL */
-+
-+			AM65X_IOPAD(0x00e0, PIN_INPUT, 2) /* (AE22) PRG1_PRU0_GPO0.PRG1_RGMII1_RD0 */
-+			AM65X_IOPAD(0x00e4, PIN_INPUT, 2) /* (AG24) PRG1_PRU0_GPO1.PRG1_RGMII1_RD1 */
-+			AM65X_IOPAD(0x00e8, PIN_INPUT, 2) /* (AF23) PRG1_PRU0_GPO2.PRG1_RGMII1_RD2 */
-+			AM65X_IOPAD(0x00ec, PIN_INPUT, 2) /* (AD21) PRG1_PRU0_GPO3.PRG1_RGMII1_RD3 */
-+			AM65X_IOPAD(0x0110, PIN_OUTPUT, 2) /* (AH20) PRG1_PRU0_GPO12.PRG1_RGMII1_TD0 */
-+			AM65X_IOPAD(0x0114, PIN_OUTPUT, 2) /* (AH21) PRG1_PRU0_GPO13.PRG1_RGMII1_TD1 */
-+			AM65X_IOPAD(0x0118, PIN_OUTPUT, 2) /* (AG20) PRG1_PRU0_GPO14.PRG1_RGMII1_TD2 */
-+			AM65X_IOPAD(0x011c, PIN_OUTPUT, 2) /* (AD19) PRG1_PRU0_GPO15.PRG1_RGMII1_TD3 */
-+			AM65X_IOPAD(0x0120, PIN_INPUT, 2) /* (AD20) PRG1_PRU0_GPO16.PRG1_RGMII1_TXC */
-+			AM65X_IOPAD(0x010c, PIN_OUTPUT, 2) /* (AF21) PRG1_PRU0_GPO11.PRG1_RGMII1_TX_CTL */
-+			AM65X_IOPAD(0x00f8, PIN_INPUT, 2) /* (AF22) PRG1_PRU0_GPO6.PRG1_RGMII1_RXC */
-+			AM65X_IOPAD(0x00f0, PIN_INPUT, 2) /* (AG23) PRG1_PRU0_GPO4.PRG1_RGMII1_RX_CTL */
-+		>;
-+	};
-+
-+	icssg1_iep0_pins_default: icssg1-iep0-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x012c, PIN_INPUT, 2) /* (AG26) PRG1_PRU0_GPO19.PRG1_IEP0_EDC_SYNC_OUT0 */
-+		>;
-+	};
-+};
-+
-+&icssg0_mdio {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg0_mdio_pins_default>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	icssg0_phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+
-+	icssg0_phy1: ethernet-phy@3 {
-+		reg = <3>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+};
-+
-+&icssg0_iep0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg0_iep0_pins_default>;
-+};
-+
-+&icssg1_mdio {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg1_mdio_pins_default>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	icssg1_phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+
-+	icssg1_phy1: ethernet-phy@3 {
-+		reg = <3>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+};
-+
-+&icssg1_iep0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg1_iep0_pins_default>;
-+};
--- 
-2.34.1
+Thanks, I will include this change in the next revision.
 
+>
+> >
+> >       return 0;
+> > @@ -337,18 +331,8 @@ const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_=
+find_ext(
+> >                           scontext->ext_status[entry->ext_idx] =3D=3D
+> >                                               KVM_RISCV_SBI_EXT_AVAILAB=
+LE)
+> >                               return ext;
+> > -                     if (scontext->ext_status[entry->ext_idx] =3D=3D
+> > -                                             KVM_RISCV_SBI_EXT_UNAVAIL=
+ABLE)
+> > -                             return NULL;
+> > -                     if (ext->probe && !ext->probe(vcpu)) {
+> > -                             scontext->ext_status[entry->ext_idx] =3D
+> > -                                     KVM_RISCV_SBI_EXT_UNAVAILABLE;
+> > -                             return NULL;
+> > -                     }
+> >
+> > -                     scontext->ext_status[entry->ext_idx] =3D
+> > -                             KVM_RISCV_SBI_EXT_AVAILABLE;
+> > -                     return ext;
+> > +                     return NULL;
+> >               }
+> >       }
+> >
+> > @@ -419,3 +403,26 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu=
+, struct kvm_run *run)
+> >
+> >       return ret;
+> >  }
+> > +
+> > +void kvm_riscv_vcpu_sbi_init(struct kvm_vcpu *vcpu)
+> > +{
+> > +     struct kvm_vcpu_sbi_context *scontext =3D &vcpu->arch.sbi_context=
+;
+> > +     const struct kvm_riscv_sbi_extension_entry *entry;
+> > +     const struct kvm_vcpu_sbi_extension *ext;
+> > +     int i;
+> > +
+> > +     for (i =3D 0; i < ARRAY_SIZE(sbi_ext); i++) {
+> > +             entry =3D &sbi_ext[i];
+> > +             ext =3D entry->ext_ptr;
+> > +
+> > +             if (ext->probe && !ext->probe(vcpu)) {
+> > +                     scontext->ext_status[entry->ext_idx] =3D
+> > +                             KVM_RISCV_SBI_EXT_UNAVAILABLE;
+> > +                     continue;
+> > +             }
+> > +
+> > +             scontext->ext_status[entry->ext_idx] =3D ext->default_una=
+vail ?
+> > +                                     KVM_RISCV_SBI_EXT_UNAVAILABLE :
+> > +                                     KVM_RISCV_SBI_EXT_AVAILABLE;
+> > +     }
+> > +}
+> > --
+> > 2.34.1
+> >
+>
+> Thanks,
+> drew
+
+Regards,
+Anup
