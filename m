@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723AE7D0739
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FD07D073D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 06:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376298AbjJTDwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 23:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        id S1346936AbjJTD7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 23:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346958AbjJTDwb (ORCPT
+        with ESMTP id S233460AbjJTD7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 23:52:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8179E
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697773946; x=1729309946;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=T+eg4VWHy1wt/cDepYHGKQi+IdTi8lM4F39yCNr3/nA=;
-  b=dHMtAMN+YespnfwmrNURkL6Zx4oiuXD0k/f6XPNY6WyMcNqsOSAmVXMP
-   Pu6YV9l4+ZyguKo7HXpW0kmSY8K0mGwAyewmYmsMya4/rfv35XBdHLN8s
-   3EcljNeJqtyERNz6p/WihHu4IKB5YC4hOD6mdxWucuPImzkIzV+0HvqL4
-   86PUyxpMfr0zvaQh+CNuD+stt1N+17B+Qos3tQvBBh/Ahkvqe37CxAm2c
-   qvXzHnMxNqE6Pw0djwp0nAdDReOW76K/YLDoslrOqJzovCrkfgj3LDXSI
-   WV8ZRSVs6B86AbEvJouHAnma5dRcTyjWk1KXlBeJ+vPoEPMUUuUczxVDt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365760871"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="365760871"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 20:52:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="4980665"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Oct 2023 20:51:15 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 19 Oct 2023 20:52:25 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 19 Oct 2023 20:52:19 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 19 Oct 2023 20:52:19 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 19 Oct 2023 20:52:17 -0700
+        Thu, 19 Oct 2023 23:59:45 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2119.outbound.protection.outlook.com [40.107.117.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14C9C9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:59:41 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l9ZlFJ6SlxnJexxlZQo4qr59C7r2tiJjakEKplrGTharkSbXdDs1hPseQdDsNtk8KfRNlbwj+rWT6zGUxBiIfY8R19NAFphyy1LXV8p0FLXOAVmuKM0xftUx/YFrAbjkeCqZz2Fgy1ooyAPkFLxJidNQvsXI/SyuweCNNQtiLRCfWEOaDyTZsoeDqgU3CC+gT8+2uvToNVsJfRPVCFBJuA8XNv8Lxl68oR5CBoRS9uDxiL7RM2iYGeLD3xu+HWB4AHOV1y4H1tuyI9vPnejMdDJaVkmznO3q4FRX3PYsdD1U5Khh7SSZDKDnQrMEIKsaMAo9BWDk2DugjzhKfDa08g==
+ b=Cs/eGZ4j5ldMlvC9M1J1374aKqzVMFSHBRBe/mQ55YHMgh4LHV0qb96UyvFnJN4I+TVy8W1J8mwmg8FVZNsIvWHufMrKZeeL7Q3wfwEVcR8uCD6I3LGoyBfMlkWAcBBtwo7Snev9lFaqjXbHz+qhp/c8fqOiKFk9WVR4hkLsEuC8VjgrpRK5GBgei5gpBwoNYZxjMYH/E9S/vn/3tafwQAd2XyFZMM9TBHIeVVD6ec3Hx07hIPnu+ICiN8VQZz9e2k3AGq81PAdjXaKUE+MWlOivswfBwsoG1hcWy1FLCeTLNtXtPNtOhvIFpj7MIXBjqPvVcwO4KwDhtFNCziWxGQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AlPG1UAebS30kq75cpKn/nnNDbhIfuWQTqXPdPhNU0Q=;
- b=Log+v/DPsPAsDz1GDp3oW4LgaEtSD/AkcBX8cghUhA68/Gyum3lemlmfkSlEZllpjqWXm0zZEaflF8q2SEgdW9eNq6TcHVjRYMVts5noiQaho5zKa0gs/gz+se3HU9cPF2bc+pWBmu24omJVviEo2jj9gZFkjU1gH6vzOvQHcV0w1yP126KVk3BgaaI2tTXWRy3thx7lTQRnDyikQfvmE5nNdvXAFBPFN5jBJELPF/jt5n1eN/eJ/3wEwuGAsqyUfrSrVcmly/TIzO9D5yUzpFWfGVezN27pawYgJtdIxvECVsp5vcY4vwXlgngsLh6tqkh89bFNLcAMe9/R/N3mag==
+ bh=knv0zgJrQHVyN6U3U3Lx7RLB5vc8k26pzyFhy2ge0Pc=;
+ b=a78d/IpNGyASL+cQM4oNDLN/10RKc7pHjNv7GyyjAfGmSBgdXNgbuTiy4NcRkOBPxUNxA3BQY5YsjsxrdVbUxWlHPWQCNG0UABuBCjyczVkmJ4vTpVU73GgU26+apa6TjoiHPyRgFh0/iZKI3L80vV05s0qyXC1/Blz9BQ3UONtC0T2XFtTM4/HjK/hEPWq1qpq0mr6fBizlvVMtfwTSGR2H5gQ3U1UpMGwo+XwcqjmwzBOTq9tBtV0Vc/twZgHsaeGcJs1RYXbrfuRLyRxsirsAHf/vrmhX2AW1AfIhsUnXksrZumckdGGXBE0t2p0zLJZEAYI57A6I0U0sXsM/lg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=knv0zgJrQHVyN6U3U3Lx7RLB5vc8k26pzyFhy2ge0Pc=;
+ b=XO/B3FgtVh7rvNttyDi7swuN/k31jJ3vvlYV+82Fc/gVWRrKwq9ZQpxTGa75/clnE2GqWKWGxxNdt/rsq+KELwjXSf5Azk05fIsMANqP0plwmwPLQGbVRLY8kbG2Mg3O53NzhprzyU39vtjCrUDe8vHw5BjMRdmZyvAevqYHukwFAv0mfMau8iL3iSuNwLBdO1fNfhtjstcCRqUH74YBTGW4vEMNy67CYzHBEB6+cwzlbvZmdXaMJKgiSEa8zPDKR1EfKVJApJQ0SoJcVIoyDvHI2+VA5CKnoEspYEl5QT8o23q7g1KMWTGn2jjT0Xg0ARqcAxMD8/1dgmniWCcscQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by CY5PR11MB6510.namprd11.prod.outlook.com (2603:10b6:930:42::7) with
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by SI2PR06MB4539.apcprd06.prod.outlook.com (2603:1096:4:151::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Fri, 20 Oct
- 2023 03:52:14 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::d108:2976:a361:da49]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::d108:2976:a361:da49%6]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
- 03:52:14 +0000
-Message-ID: <fb225c52-0d46-4a67-a897-f39b5c1b5554@intel.com>
-Date:   Fri, 20 Oct 2023 11:52:06 +0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
+ 2023 03:59:36 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::32d4:1209:6b36:86e5]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::32d4:1209:6b36:86e5%7]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
+ 03:59:36 +0000
+Message-ID: <02e73251-33ff-4632-9d2c-bc268f397202@vivo.com>
+Date:   Fri, 20 Oct 2023 11:59:33 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: migrate: record the mlocked page status to remove
- unnecessary lru drain
-Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-CC:     "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        <akpm@linux-foundation.org>, <mgorman@techsingularity.net>,
-        <hughd@google.com>, <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <64899ad0bb78cde88b52abed1a5a5abbc9919998.1697632761.git.baolin.wang@linux.alibaba.com>
- <1F80D8DA-8BB5-4C7E-BC2F-030BF52931F7@nvidia.com>
- <87il73uos1.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <2ad721be-b81e-d279-0055-f995a8cfe180@linux.alibaba.com>
- <27f40fc2-806a-52a9-3697-4ed9cd7081d4@intel.com>
- <e8099116-6f78-cb4a-5036-1d7e38b63e52@linux.alibaba.com>
- <fd389af5-d949-43dc-9a35-d53112fe4a60@intel.com>
- <05d596f3-c59c-76c3-495e-09f8573cf438@linux.alibaba.com>
- <b9042fcb-05df-460f-87b8-4d7a04d3bd5e@intel.com>
- <e84f8c2d-6264-f2a3-3737-17d48a0251f8@linux.alibaba.com>
- <93abbbfb-27fb-4f65-883c-a6aa38c61fa0@intel.com>
- <0aaf6bf4-a327-9582-569e-2a634ce74af4@linux.alibaba.com>
- <CAJD7tkbA0Ofvw8wQM0017DKWC3SXOT71rCnUhGkoPgQ4wOfLOA@mail.gmail.com>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <CAJD7tkbA0Ofvw8wQM0017DKWC3SXOT71rCnUhGkoPgQ4wOfLOA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR02CA0037.apcprd02.prod.outlook.com
- (2603:1096:4:196::8) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+Subject: Re: [PATCH v2 1/2] mm:vmscan: the dirty folio in folio_list skip
+ unmap
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20231019131446.317-1-justinjiang@vivo.com>
+ <20231019131446.317-2-justinjiang@vivo.com>
+ <2d847d76-2e33-4296-992f-1a6d00c66ff5@redhat.com>
+From:   zhiguojiang <justinjiang@vivo.com>
+In-Reply-To: <2d847d76-2e33-4296-992f-1a6d00c66ff5@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR01CA0135.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::15) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CY5PR11MB6510:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0a1f2981-d190-417d-5119-08dbd11ff1e1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SI2PR06MB4539:EE_
+X-MS-Office365-Filtering-Correlation-Id: cfa45300-fa7e-41b0-8bd5-08dbd120f987
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DgyCgWN/BF6b5FbecMUmUWPvbB22FDw+9/tfhxuDju0jaZyp60gCQIqCHOYVniSYxpyIVzWWNoP9g1LJPWkSNWmylu5fvCBrcoBqhBlTVjmJZ30rFsf13redaLvE20twafvf37ok6O0eJkZfd3Yxl+Njp4fNlpQpAaKAfEtbfbxw1xBLDg/CRUJZwmgnZDRxN6W2AYcnL1k/M88i1IHXEPygF/p/JZw0uwI/BkU+EqXi1Fcvlps98/TswcAvWYvzNpIawc/aAhKVAzt6QUnQdszHW9Hc8NmvMTqcoS7Ru4/2uwpAL6/waI+3jzH0BqCA4b1dbNgok99Gb4e1uJeLhX4DKLL3WAgwQPuJZg2MdAfHUFzraSMuqbZQbgfFz6jM8b2MQ0JfOzg0e8o3XiLqCyxIB57Og0ctzC5YW4Hy8KmVgIFsu3uFEO0wmZL2iwaZ/PTy18nOmz8NiaIvmAVbj9pt8CzkrmM95msYKjQNcs8dWua1/YzTg84MvxDJWPnePuTwsCHp3Aq125Q+6FrF9RtL+SFORrsY66ssrwHS0oZuLoFEB22ibBAPOZkFaL6V9ycDzyJIFucmANyyYMcjEVa/wV+Qb7/8j0RDkOw7lJdmrBKMt9v1+cK1mgMacX5IekAQwZ1XCqDLUVHeNKTRCM9m9yQRxia30uUXh7n5IsVq28abIEDwNnRiUdgXAQpd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(39860400002)(136003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(38100700002)(86362001)(31696002)(4326008)(36756003)(2616005)(82960400001)(26005)(478600001)(966005)(8936002)(5660300002)(6486002)(54906003)(110136005)(66946007)(316002)(2906002)(6506007)(53546011)(66476007)(6512007)(66556008)(6666004)(41300700001)(83380400001)(8676002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: NYkSXRZklUpfrM9fvoUyHQ1OdWISysEgrSDvXBwUqV3Py5lkrqVD8/kSjL9/RsmeNC5gyZ8HqFAuJybS5xBVzH0jdG9NCE30bWoVzV+98TYaTRr/hBUO6bSmN0BSiyvWf9bb28wX70kH656B95AFi46D83FGKzfE1iXpEJFbmiDmzcbMxHseHIJ9K6djc6zOL2HLJvbI1HF30QScjNkFjr6iiqNr2tp0Zo8Af/h/17NHdjF1RaPscz+Yk2T3Uog+WqVzZSiym93+4lGTG2GbEYpo8c1CfT0XeB6+jIk6TwGm24PdHCSTYF1axzRd0v7Ou2eM+56AH3VDXk20xiyzT7dStERZZA09WsYOaavVzuiPD1WVOxYUz5ctfaE0DeNilNizVoH/64nuhjiH6lIKrgWiKEcVO3vWeSz2WufzlqsxYZ7nXLmJmJ3NQMr9RyTWmL0jXEbGnD6FcxMxyriYWnCCiIG8vGJOk4kCrc6KQkb0VipP0vk+80q7fZw7WclpD8YuBEGNwcbh9pndu1e3MZMhM17CQnyK6SGZT7Vy41aVqyKPNPuDoUeh4/fU9LH8TQBKhv87UlIVDt8eUhiTXGSxTq142ICxLfLfLmcyPyHOqlmoE+lSQwFyxfVzCN3366t7jrVIsEj/0J1chmuG0XpcbFS64tc+ezz8tPfNljbdahK7pI8lKLEiMj3hqNBLBapc1Gucr4FT+5lg1HTRNR3+pKgGli85Y15Jn6M+4Xk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39860400002)(366004)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(110136005)(316002)(66946007)(66556008)(478600001)(6666004)(6486002)(66476007)(8676002)(966005)(8936002)(36756003)(41300700001)(5660300002)(31696002)(4326008)(38100700002)(6506007)(2616005)(107886003)(53546011)(86362001)(52116002)(6512007)(83380400001)(2906002)(26005)(38350700005)(31686004)(43062005)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXhBVE5DZUF1S25hS0FGR00vUHZJSm56NjZsQ3lxeHJCaWE4aHZTellnaG9m?=
- =?utf-8?B?ZzEvdjVBUExRRTdOOFNtOVVGSmVXcExOSGtPUGJEVllUdGV0bDhxdlMxajg0?=
- =?utf-8?B?Qkc1eHZTOGJQVmtQTHg1eFJsNWNhcVBQMkRnbExxclJidThqM1dKS2pkME44?=
- =?utf-8?B?SGp0OW1uOHdQVjZlOEdrYkdxT2JkZ2lkak9wYVhjUzVmVmZrWGNJY0NQYmlr?=
- =?utf-8?B?VEFEVmtaMnJQYmRxT09vYWlzRW9wbGFUMFVQNGFQWStibVQxcTZ6djZldGVG?=
- =?utf-8?B?MFRYVFBwS1NiQ0ZBL1NnRTZDMTVWRVFYRnNkR0I0bUhDcDI0b0dZR2xpTFVG?=
- =?utf-8?B?V1d5MlhDR2lOYUd0Tmg3WVNoZjJ5bWxiT0xXT3FlMDJUellHUUFJQTQ5NjFo?=
- =?utf-8?B?dGloSGdKcjFxUzBoVTNDdGFONWN2VjlMUEdkZ2JLM3ZIQnBCK3dPWU5MTEZo?=
- =?utf-8?B?RExrK0E2RXNqcE9wWmNCL2NyUHJDRUhBYXA4K0Vkc1Y5ZU9QdXlVZGZMVjdG?=
- =?utf-8?B?d3IvOGREWGYrSVd6WnpYWVVvMmJNVTBHM2h6bXVKWGZ6SG0zZnJ5R1JvV04v?=
- =?utf-8?B?MFdCUzZEZEQvalBzZFNqeVFMQ2dCZTBwNURxY281Ry9uVlZOemZTa2crRVpp?=
- =?utf-8?B?Vk0zTDM4WkE4KzhUai9jOStUSGoxVkNTT2ROSzNvY0FvWGtnaklRV05SOEpX?=
- =?utf-8?B?M1hFMHRqZ3haZXFHdWNmNEpVSjZtNkdwL1l4dFVkaC82WGpkdkVmdzRWbXEr?=
- =?utf-8?B?SnA1NGVMcFFJV1BnMng4Ti8rVitoR3NnWmh4eXA5MXdSR2hQTXN1UlpldS9M?=
- =?utf-8?B?RVU4cjhhQ1hrRFNSRDBxYlVYTWpBVUtkNE50RHVIbm1kaTh5Y3EyMVNPcElE?=
- =?utf-8?B?RG1uS0czY1Z2dVFjRjJjb2hhc2hRZTJuaWF5dFRHenVkNnZMdWszeWZZa1lD?=
- =?utf-8?B?UlhDQ2lwNDMvaW54SSsyZTJWWUNOYjJUaU8rakltL0lDeDJnMkt1Qmw1WEZS?=
- =?utf-8?B?WW9rZWVZZFgycEsyWFpIckZlbC84ZVBxTVF1WXkvdzNZTU16ak9neDdlNldP?=
- =?utf-8?B?N2lJbjNiZXRoSE5IZ3kzall2UlN1L0xaV3BtajNrcHFJN3AwczZ3NGc0K0lX?=
- =?utf-8?B?Vi9kUFVSaGhZSkpvVWZXQmNKemRyYUR5WFpGeVJtNDd2YW52akhqVDJOTCtH?=
- =?utf-8?B?MmhtZmUyUU5XOWl5RjB2NHZ6aHJrTGFsTUdIdWdTSENwZmlhbEJkeWNnN0xB?=
- =?utf-8?B?RVpUNmI0T3U2REd5cUFhOWI0N3JsN2lsVnJjM3pqQ3AyRFVmWUlpalFuQnpJ?=
- =?utf-8?B?K0dUNSsxM1pFS1Fybm5CV3VMQ2dtN2ZRdE1qaHhpMCtMcVVoaG10b2crRyti?=
- =?utf-8?B?c2R3R1p5UlRpaURXaCtIUkxlRGRJN2wyNlpDZVRPbXlacDZxQVNRTU5IR3FQ?=
- =?utf-8?B?SGQ5RkpkKzVDSmd6VlE3anB1NldTaXNnc3dJVXh0dHVkOFBVM0RHTktHUGk4?=
- =?utf-8?B?OUoxaDBZeEtnU25Da2YvMEljTnY3QjMxRHY3RnZ6bjAwYVpFbzhsQWhyTThR?=
- =?utf-8?B?NXlDUFFnaGNtbnQ2WXdwQkk2UEhlbk15SlBabkJOa0Y1V1h2TEhISUJsRWJS?=
- =?utf-8?B?bjBqZEhnYjBoSFBDbjl4MVEzWEZGVkh5b2IwWjV4SGgweEtpaUR3djBSVFRp?=
- =?utf-8?B?QzZuV3pNWEVOT1ZVOXY1Yjg1ckJVN1hqYURaUS9HclJXRTBpMm5XYlE3dG5q?=
- =?utf-8?B?WE9CUXRMcDBtbE83ZmNMdVlld0k4UmYvZHlUMU12a2pXVVRlWEVCQ0lNN1Fr?=
- =?utf-8?B?S25vblBOTmV1VU51b1gxbUVtMysrQklMTFYzaUVkVXhja0s5eFJ4M1h1cWVF?=
- =?utf-8?B?RCtjNlZKN0VjSVhFN0hnQzIrM2dxaDlzK1FpM0NxcDBJT00xUmUwK3FvbFU3?=
- =?utf-8?B?THNHbE1rR05lSCtNdmFYV3lvZSt2Rk52cE05QXBLVEJlSlRDTVU5VEMrc254?=
- =?utf-8?B?RjQ2dXpvWHI1dTRrcEVJOUxiMjZGbkFJcVdqdWZNRGdXMGY4TEN5Z0JXcWJ3?=
- =?utf-8?B?VldmMkpieXh1UjBMUTZvR0M3T0l4OXgwVnpQTmJwNWpQeHhlN29ra1BmVlov?=
- =?utf-8?B?VjJJcTFwN0tjMXh6NGVWcFlTdCtIRjlidi9oVW4yN3dRV3NsUjgyWFZicWUw?=
- =?utf-8?B?NkE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a1f2981-d190-417d-5119-08dbd11ff1e1
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkJHSHp4NDJ5U3ZkTEE4K0lzOGhsV0QwNy9uQzRxdWQ1eFd1L3JGVVhXODhI?=
+ =?utf-8?B?NEE4a2duWEV1akIrZ0dJVWVlMWROdmZKRVhISVovb2VzelFzczVmcEt6QTQ0?=
+ =?utf-8?B?dUZhejM5MHRIZUcvcnRxbzVLTERZckFIV0V0NlNXRHhWL1hNUUJRQzJmQU5n?=
+ =?utf-8?B?aE9TQ2wwR2d3NXBLSWxKUWNMQ05oQXNIY2pWaS9GUXRLTGtVMHRxUjVYR0pk?=
+ =?utf-8?B?Z2lKV3BtNjFhQ0wweXJjUzVSaWJnemdrTkNpYjErWnQ1a3ljRU5TZldlcDJq?=
+ =?utf-8?B?L1FrRWJqSGxmZEF4NDNueityQ3dsRHpUOVRZRXJab21EbHErdUoxUXQrMVhs?=
+ =?utf-8?B?azB3SVFudzRIclBNVVNER2VwMUQ2YjdXdmRBL0t4SitNRjh1ZlIvOFpnRDE4?=
+ =?utf-8?B?TExMMFJHMTQ4R1RQbkpEMERPZFhaTlAzeHlObzBMMFJVMUV3aTdQZ3lyWEp2?=
+ =?utf-8?B?NXJwNU9BMlpsekNqeTRPT05GUVFHczBrR0RWcm81M0MrT0QwTUdyK25VMFNP?=
+ =?utf-8?B?ZlhNTWRVQXJkMlVFekJqTnVUZnlzdGY1VENXK2JIVDFwNnZLKzF5QlRBRGVR?=
+ =?utf-8?B?YjRhYTlKY2ZtUnlSM2hTRjdkZUxLUXFSQmhZRnhJMEdVQTlDbE1YeEJvVm1n?=
+ =?utf-8?B?T01ZUDJPd0xXSEVoSVJ5MHJUNlBuWk9lSndLYkoxcHh0UlhnZGd1QSt3b21C?=
+ =?utf-8?B?RVFHaXQ0K2pYaHRpa3o2bHdLVDBBMkNweGRLRlFMRjNGamRwd203KzFyNjhY?=
+ =?utf-8?B?aDhIQzMvb1FzbFVOS1N2aXdhbDhxYXRXcnRrbWlOVHdPT2ttbmZEVWRaN2xh?=
+ =?utf-8?B?MHdPbkZvM002VW5NNG9GSmtYR25BdU45U1A1LytMNXN2c0o2RnN2Wkw0TmhR?=
+ =?utf-8?B?dzdoN1pxOXk4eW4ybWlKMXBGTWsza2hFcWp1QUpGWGFFRmhVTXY2SlpwMmxr?=
+ =?utf-8?B?OG5RQlZ1SGtSV2ZYaFVBL3duR21jMlkzS2NXUm4yNUZQVkdybWFhNVZoa1JV?=
+ =?utf-8?B?TmFPNVVQZ1hESHZCK3p1Tmp1S0FMUUxFOFNqWFZJM0ZWTDVVeHU2NjFLU21i?=
+ =?utf-8?B?cnlNbDAyYjJ5c0d1ZzRabXEvTnJBSGhUNWN0NDBDNHY5ZndCYVU4MllDQS9a?=
+ =?utf-8?B?b0pQZ29YY1hOMWp6MEJ5RlI4T0NPcVhZenZtTjJuUlBKV1Vpb0NnbXhaeXY4?=
+ =?utf-8?B?QWM0SzdJc0x1dkloK3pmSmdJc1pCb2RuNUZDdDMwbjhJY3ZTQi9DUllYR0pJ?=
+ =?utf-8?B?djI5YU93WFB3QmthWjBqZnFSK2JKOGF5dEJPT3JTbVQzWTJMMU0wRjRWS0Zj?=
+ =?utf-8?B?UGlSOE5Pbk5zWlZiV0Z0MlovTHFQcUZxRjhpOTJCbjlMc3YveWJJOVBhSGl2?=
+ =?utf-8?B?cnFNeWtJakxwQjVkQ2dXdDNkeEdmWmhiYmIvdzVmU1hwTWN4ZmNyK01KTG9o?=
+ =?utf-8?B?aVBvZllRMzgydmw2cVUzbzlDenJIdit5ZWpVQ3BKOG11MjQwUGxSMzgzZllq?=
+ =?utf-8?B?VXVaRTdvY0V4TStBSm90TFVPQkllZmZYaTdOM29GV3pUSTRXbDEvTzlJTDNU?=
+ =?utf-8?B?UTJhVXd6YjVvVWtySTlZTDdoRjhESFcrTTFadzRoZExiS2FZaklQMUN1eFlW?=
+ =?utf-8?B?bURUOWdTdmNZamtCdVpwTldJaUtITWM1SlZBT2FMRDFLcDF6Ry9oSWdIaVBm?=
+ =?utf-8?B?cUpyalNrd1JRTldsWGJERnZZM0JMU2xIWTJqVWVuQmdXbkQ2NUtkTWJva0Nl?=
+ =?utf-8?B?OUkraWtqTFVxM0pNa2xpSDJVUnR2RFFvZHgzMzl2MFJzMktZR3VVVllDNGhr?=
+ =?utf-8?B?ZXpnQlFTNkNmMDUzejFiZm9ERU9YYnNzNkc5bnBaOXlsRjZCVzAyT1ZMOEVP?=
+ =?utf-8?B?YUdRaGlMaVZuK1FpQUFTZnE2ekRWZVBrU1VvWVQ0M0tDdG5Jc2NLN2prblpM?=
+ =?utf-8?B?bGZSRFNiV1dkU2dlTjEzaVlhZk5jS1NXVjkxVXZVNnhRQjY0b0J1Nms5VGtx?=
+ =?utf-8?B?U0krM2tkaUNneXBiV2FTMStDQXJVcEY1NStXUkxuVnNReHR3VUZWT3FpL0RO?=
+ =?utf-8?B?VC90akFRVTdMUzJKT2ZFQncyU1hobG9KTXZTWWJGd2VmbTRCRHJMaWFzeEVN?=
+ =?utf-8?Q?JcgDLFmYApXRYf+GJBpzF0pnP?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfa45300-fa7e-41b0-8bd5-08dbd120f987
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 03:52:13.8079
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 03:59:35.9762
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: quQbqz7qI0rlvK+gBLSMmVWx4Y6ds5tJN/OrBWBebuh0LCC+hOaxQUgDUS2EezKLe/tGsy5vEJYL9JoQziHTzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6510
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-MS-Exchange-CrossTenant-UserPrincipalName: KEaYVVhJGSoFrvpebzOmnLQ6RxrsjnlTLwXt8YnAWhUd61DkzoLY5NS/egxrwWiz6l3n1+hkLoEmq/DsrlDkSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4539
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -178,37 +128,214 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/20/2023 11:45 AM, Yosry Ahmed wrote:
->>>>
->>>> IMHO, that seems too hacky to me. I still prefer to rely on the migration process of the mlcock pages.
->>>
->>> BTW, Yosry tried to address the overlap of field lru and mlock_count:
->>> https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@google.com/
->>> But the lore doesn't group all the patches.
+在 2023/10/19 22:15, David Hildenbrand 写道:
+> [你通常不会收到来自 david@redhat.com 的电子邮件。请访问 
+> https://aka.ms/LearnAboutSenderIdentification，以了解这一点为什么很重要]
+>
+> On 19.10.23 15:14, Zhiguo Jiang wrote:
+>> In the shrink_folio_list() the sources of the file dirty folio include
+>> two ways below:
+>> 1. The dirty folio is from the incoming parameter folio_list,
+>>     which is the inactive file lru.
+>> 2. The dirty folio is from the PTE dirty bit transferred by
+>>     the try_to_unmap().
 >>
->> Thanks for the information. I'd like to review and test if this work can
->> continue.
-> 
-> The motivation for this work was reviving the unevictable LRU for the
-> memcg recharging RFC series [1]. However, that series was heavily
-> criticized. I was not intending on following up on it.
-> 
-> If reworking the mlock_count is beneficial for other reasons, I am
-> happy to respin it if the work needed to make it mergeable is minimal.
-> Otherwise, I don't think I have the time to revisit (but feel free to
-> pick up the patches if you'd like).
-> 
-> [1]https://lore.kernel.org/lkml/20230720070825.992023-1-yosryahmed@google.com/
+>> For the first source of the dirty folio, if the dirty folio does not
+>> support pageout, the dirty folio can skip unmap in advance to reduce
+>> recyling time.
+>>
+>> Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+>> ---
+>>
+>> Changelog:
+>> v1->v2:
+>> 1. Keep the original judgment flow.
+>> 2. Add the interface of folio_check_pageout().
+>> 3. The dirty folio which does not support pageout in inactive file lru
+>>     skip unmap in advance.
+>>
+>>   mm/vmscan.c | 103 +++++++++++++++++++++++++++++++++-------------------
+>>   1 file changed, 66 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index a68d01fcc307..e067269275a5 100755
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -925,6 +925,44 @@ static void folio_check_dirty_writeback(struct 
+>> folio *folio,
+>>               mapping->a_ops->is_dirty_writeback(folio, dirty, 
+>> writeback);
+>>   }
+>>
+>> +/* Check if a dirty folio can support pageout in the recyling process*/
+>> +static bool folio_check_pageout(struct folio *folio,
+>> +                                             struct pglist_data *pgdat)
+>> +{
+>> +     int ret = true;
+>> +
+>> +     /*
+>> +      * Anonymous folios are not handled by flushers and must be 
+>> written
+>> +      * from reclaim context. Do not stall reclaim based on them.
+>> +      * MADV_FREE anonymous folios are put into inactive file list too.
+>> +      * They could be mistakenly treated as file lru. So further anon
+>> +      * test is needed.
+>> +      */
+>> +     if (!folio_is_file_lru(folio) ||
+>> +             (folio_test_anon(folio) && !folio_test_swapbacked(folio)))
+>> +             goto out;
+>> +
+>> +     if (folio_test_dirty(folio) &&
+>> +             (!current_is_kswapd() ||
+>> +              !folio_test_reclaim(folio) ||
+>> +              !test_bit(PGDAT_DIRTY, &pgdat->flags))) {
+>> +             /*
+>> +              * Immediately reclaim when written back.
+>> +              * Similar in principle to folio_deactivate()
+>> +              * except we already have the folio isolated
+>> +              * and know it's dirty
+>> +              */
+>> +             node_stat_mod_folio(folio, NR_VMSCAN_IMMEDIATE,
+>> +                     folio_nr_pages(folio));
+>> +             folio_set_reclaim(folio);
+>> +
+>> +             ret = false;
+>> +     }
+>> +
+>> +out:
+>> +     return ret;
+>> +}
+>> +
+>>   static struct folio *alloc_demote_folio(struct folio *src,
+>>               unsigned long private)
+>>   {
+>> @@ -1078,6 +1116,12 @@ static unsigned int shrink_folio_list(struct 
+>> list_head *folio_list,
+>>               if (dirty && !writeback)
+>>                       stat->nr_unqueued_dirty += nr_pages;
+>>
+>> +             /* If the dirty folio dose not support pageout,
+>> +              * the dirty folio can skip this recycling.
+>> +              */
+>> +             if (!folio_check_pageout(folio, pgdat))
+>> +                     goto activate_locked;
+>> +
+>>               /*
+>>                * Treat this folio as congested if folios are cycling
+>>                * through the LRU so quickly that the folios marked
+>> @@ -1261,43 +1305,6 @@ static unsigned int shrink_folio_list(struct 
+>> list_head *folio_list,
+>>                       enum ttu_flags flags = TTU_BATCH_FLUSH;
+>>                       bool was_swapbacked = 
+>> folio_test_swapbacked(folio);
+>>
+>> -                     if (folio_test_dirty(folio)) {
+>> -                             /*
+>> -                              * Only kswapd can writeback filesystem 
+>> folios
+>> -                              * to avoid risk of stack overflow. But 
+>> avoid
+>> -                              * injecting inefficient single-folio 
+>> I/O into
+>> -                              * flusher writeback as much as 
+>> possible: only
+>> -                              * write folios when we've encountered 
+>> many
+>> -                              * dirty folios, and when we've already 
+>> scanned
+>> -                              * the rest of the LRU for clean folios 
+>> and see
+>> -                              * the same dirty folios again (with 
+>> the reclaim
+>> -                              * flag set).
+>> -                              */
+>> -                             if (folio_is_file_lru(folio) &&
+>> -                                     (!current_is_kswapd() ||
+>> - !folio_test_reclaim(folio) ||
+>> -                                      !test_bit(PGDAT_DIRTY, 
+>> &pgdat->flags))) {
+>> -                                     /*
+>> -                                      * Immediately reclaim when 
+>> written back.
+>> -                                      * Similar in principle to 
+>> folio_deactivate()
+>> -                                      * except we already have the 
+>> folio isolated
+>> -                                      * and know it's dirty
+>> -                                      */
+>> -                                     node_stat_mod_folio(folio, 
+>> NR_VMSCAN_IMMEDIATE,
+>> -                                                     nr_pages);
+>> -                                     folio_set_reclaim(folio);
+>> -
+>> -                                     goto activate_locked;
+>> -                             }
+>> -
+>> -                             if (references == FOLIOREF_RECLAIM_CLEAN)
+>> -                                     goto keep_locked;
+>> -                             if (!may_enter_fs(folio, sc->gfp_mask))
+>> -                                     goto keep_locked;
+>> -                             if (!sc->may_writepage)
+>> -                                     goto keep_locked;
+>> -                     }
+>> -
+>>                       if (folio_test_pmd_mappable(folio))
+>>                               flags |= TTU_SPLIT_HUGE_PMD;
+>>
+>> @@ -1323,6 +1330,28 @@ static unsigned int shrink_folio_list(struct 
+>> list_head *folio_list,
+>>
+>>               mapping = folio_mapping(folio);
+>>               if (folio_test_dirty(folio)) {
+>> +                     /*
+>> +                      * Only kswapd can writeback filesystem folios
+>> +                      * to avoid risk of stack overflow. But avoid
+>> +                      * injecting inefficient single-folio I/O into
+>> +                      * flusher writeback as much as possible: only
+>> +                      * write folios when we've encountered many
+>> +                      * dirty folios, and when we've already scanned
+>> +                      * the rest of the LRU for clean folios and see
+>> +                      * the same dirty folios again (with the reclaim
+>> +                      * flag set).
+>> +                      */
+>> +                     if (folio_is_file_lru(folio) &&
+>> +                             !folio_check_pageout(folio, pgdat))
+>> +                             goto activate_locked;
+>> +
+>> +                     if (references == FOLIOREF_RECLAIM_CLEAN)
+>> +                             goto keep_locked;
+>> +                     if (!may_enter_fs(folio, sc->gfp_mask))
+>> +                             goto keep_locked;
+>> +                     if (!sc->may_writepage)
+>> +                             goto keep_locked;
+>> +
+>>                       /*
+>>                        * Folio is dirty. Flush the TLB if a writable 
+>> entry
+>>                        * potentially exists to avoid CPU writes after 
+>> I/O
+>
+> I'm confused. Did you apply this on top of v1 by accident?
+Hi,
+According to my modified mm_vmscan_lru_shrink_inactive test tracelog, in 
+the 32 scanned inactive file pages, 20 were dirty, and the 20 dirty 
+pages were not reclamed, but they took 20us to perform try_to_unmap.
 
-I believe reworking the mlock_count is focus here. If there is no overlap
-between lru and mlock_count, the whole logic of lru_add_drain() can be
-removed here.
+I think unreclaimed dirty folio in inactive file lru can skip to perform 
+try_to_unmap. Please help to continue review. Thanks.
 
-And I noticed the link:
-https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@google.com/
-only has cover letter and the patches didn't grouped.
-
-
-Regards
-Yin, Fengwei
+kswapd0-99      (     99) [005] .....   687.793724: 
+mm_vmscan_lru_shrink_inactive: [Justin] nid 0 scan=32 isolate=32 
+reclamed=12 nr_dirty=20 nr_unqueued_dirty=20 nr_writeback=0 
+nr_congested=0 nr_immediate=0 nr_activate[0]=0 nr_activate[1]=20 
+nr_ref_keep=0 nr_unmap_fail=0 priority=2 
+file=RECLAIM_WB_FILE|RECLAIM_WB_ASYNC total=39 exe=0 reference_cost=5 
+reference_exe=0 unmap_cost=21 unmap_exe=0 dirty_unmap_cost=20 
+dirty_unmap_exe=0 pageout_cost=0 pageout_exe=0
+>
+> -- 
+> Cheers,
+>
+> David / dhildenb
+>
 
