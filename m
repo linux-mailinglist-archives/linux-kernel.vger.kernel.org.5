@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0177F7D0D12
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0546B7D0D14
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376802AbjJTK1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S1376836AbjJTK2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376715AbjJTK1W (ORCPT
+        with ESMTP id S1376715AbjJTK2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:27:22 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF22B8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:27:19 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b6559cbd74so97644466b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697797638; x=1698402438; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=O9G9iqXSn4bIWBu+1DJE9aW2IMSJDKBdGcQ03iTHUdg=;
-        b=ggQl4cAl0qvH/xy2iY8hIKw3ouJfQu21CkAlQvrbyc8o6uo3qRhs+K7JxvuXKtNbhM
-         KOeJNisJ6OfAtU0R3/xyMGD6FhEnadXm3azqEICgU1Yelco7fa8oiaB+8VksVUNGNpx9
-         okHC2pwsf6+3gWjvuv6C73lVeBcd8073DhvvRueeNiHswgZWvRnUBKiMpznrul5YCAsL
-         p3hAPgSSTyv0W6EWkD+XuZ0pKK4HUuh8HvHfsK0kPPL7Uxm+jPEogH8n+3XSXxKo5AJT
-         bSHjJfN2FEVKi4mOz6s9/rQfgffbn60lZ7bI79ylUVVHXykwk4l/i/F7SGUrd08r+67m
-         p5hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697797638; x=1698402438;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O9G9iqXSn4bIWBu+1DJE9aW2IMSJDKBdGcQ03iTHUdg=;
-        b=GMVKV8TGlucsqrt7oM7eOzxImgLlYGIRKKkDBlGKFDVzh05cTKck5pZ0oWZwqXmDGY
-         ta7+zQJ/WGXrvdxYJ0Rns4P3Ox9WOa3u3fM5lgDb+EtjL0eGi6fHy2Z7BjQvyV4cUyIH
-         Iol1q18T5la/p1lBc168auCLZK4KXur87fOW9Rg760/BtRuThyaFwhv2RINCPtwkCDDi
-         HENvMp5Y2AdmJ3WNveE13jtFOYySdibZJ1wsLxiy+QEmZc/NxtLkG4PDfFHSsUQK0RBC
-         /W6ZFc+tcikiReYIBPpWhGL5E+uISkcM32j7T5SLgg/VcfdWq/fItySOi88L4p6/Ho1M
-         Amow==
-X-Gm-Message-State: AOJu0YxXU+yOxivpR4+80x0FLqmC9X3vOOR9i/27X++6vswkl4YKweh7
-        Ve64Y2aDfcycc2WQFfgszwS0oQ==
-X-Google-Smtp-Source: AGHT+IHZl6pUqwMf9CFUA2xEvYwgpCp82Av0Lk//UAONUT1SVS4Axb4Qd2P3hrYxgtOT7flTfwUbaA==
-X-Received: by 2002:a17:907:3f85:b0:9be:6ff7:128a with SMTP id hr5-20020a1709073f8500b009be6ff7128amr1087855ejc.67.1697797637704;
-        Fri, 20 Oct 2023 03:27:17 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id a19-20020a1709065f9300b0099e12a49c8fsm1215456eju.173.2023.10.20.03.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 03:27:17 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 12:27:16 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        Evan Green <evan@rivosinc.com>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Samuel Ortiz <sameo@rivosinc.com>
-Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension
- reporting
-Message-ID: <20231020-cee6ba8c9b3dc3c2a984fbb5@orel>
-References: <20231017131456.2053396-1-cleger@rivosinc.com>
- <20231017131456.2053396-2-cleger@rivosinc.com>
- <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
- <20231018-scrap-bankable-a0f321d97a46@spud>
- <20231018-flagpole-footpad-07a6228485f3@spud>
- <844f6f35-3125-4014-852c-9ad7aee19ddc@rivosinc.com>
- <20231019-flatten-showbiz-127b2e917a7a@spud>
+        Fri, 20 Oct 2023 06:28:14 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C5DDB8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:28:09 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8CxyOg3VjJlFnMzAA--.64000S3;
+        Fri, 20 Oct 2023 18:28:07 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH90zVjJlvzssAA--.30051S3;
+        Fri, 20 Oct 2023 18:28:04 +0800 (CST)
+Subject: Re: [PATCH v3 0/8] Add objtool and orc support for LoongArch
+To:     Huacai Chen <chenhuacai@kernel.org>
+References: <1697768821-22931-1-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H4wqO0=+EOhyH+t=0bpiX2DayddVArB=x_yzVvmX9OW1g@mail.gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <a967ebeb-f19d-4e36-3547-80e838ad2fa0@loongson.cn>
+Date:   Fri, 20 Oct 2023 18:28:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231019-flatten-showbiz-127b2e917a7a@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H4wqO0=+EOhyH+t=0bpiX2DayddVArB=x_yzVvmX9OW1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8AxH90zVjJlvzssAA--.30051S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7AF48Zry3tFW5JrWDGFWDWrX_yoW8Aw1DpF
+        sFvrW2grWDW3sYy34kG3W0g34vvF1IkryYqFykGFWUArZ5Ary0qa97JFykZF17X3Z0va1Y
+        934Igr15WF17AagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
+        xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_
+        Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j0pB
+        -UUUUU=
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 11:22:26AM +0100, Conor Dooley wrote:
-> On Thu, Oct 19, 2023 at 09:26:31AM +0200, Clément Léger wrote:
-...
-> > BTW, wouldn't
-> > it make more sense to get rid out of the unsupported extensions directly
-> > at ISA string parsing ? ie, if kernel is compiled without V support,
-> > then do not set the bits corresponding to these in the riscv_isa_ext[]
-> > array ? But the initial intent was probably to be able to report the
-> > full string through cpuinfo.
-> 
-> Yeah, hysterical raisins I guess, it's always been that way. I don't
-> think anyone originally thought about such configurations and that is
-> how the cpuinfo stuff behaves. I strongly dislike the
-> riscv_isa_extension_available() interface, but one of Drew's patches
-> does at least improve things a bit. Kinda waiting for some of the
-> patches in flight to settle down before deciding if I want to refactor
-> stuff to be less of a potential for shooting oneself in the foot.
 
-And I recall promising to try and do something with it too, but that
-promise got buried under other promises... It's still on the TODO, at
-least!
 
-drew
+On 10/20/2023 04:51 PM, Huacai Chen wrote:
+> Cross compiling on X86 for LoongArch fails:
+>
+>   CALL    scripts/checksyscalls.sh
+>   DESCEND objtool
+> make[5]: *** No rule to make target
+> '/usr/lib/gcc/x86_64-redhat-linux/8/include/stdbool.h', needed by
+> '/home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/exec-cmd.o'.
+> Stop.
+> make[4]: *** [Makefile:80:
+> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd-in.o]
+> Error 2
+> make[3]: *** [Makefile:82:
+> /home/chenhuacai/linux-official.git/tools/objtool/libsubcmd/libsubcmd.a]
+> Error 2
+> make[2]: *** [Makefile:73: objtool] Error 2
+> make[1]: *** [/home/chenhuacai/linux-official.git/Makefile:1355:
+> tools/objtool] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
+
+It seems that there is no stdbool.h in your cross compile environment.
+
+It works well with the following steps, you can try it.
+
+wget 
+https://github.com/loongson/build-tools/releases/download/2023.08.08/x86_64-cross-tools-loongarch64-gcc-libc.tar.xz
+tar xf x86_64-cross-tools-loongarch64-gcc-libc.tar.xz -C /opt
+export PATH=/opt/cross-tools/bin/:$PATH
+export 
+LD_LIBRARY_PATH=/opt/cross-tools/loongarch64-unknown-linux-gnu/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/cross-tools/lib:$LD_LIBRARY_PATH
+export CROSS_COMPILE=loongarch64-unknown-linux-gnu-
+export ARCH=loongarch
+
+find /opt -name stdbool.h
+/opt/cross-tools/lib/gcc/loongarch64-unknown-linux-gnu/14.0.0/include/stdbool.h
+/opt/cross-tools/loongarch64-unknown-linux-gnu/include/c++/14.0.0/tr1/stdbool.h
+
+cd linux.git
+make loongson3_defconfig
+make menuconfig   # select CONFIG_UNWINDER_ORC
+make -j4
+
+Thanks,
+Tiezhu
+
