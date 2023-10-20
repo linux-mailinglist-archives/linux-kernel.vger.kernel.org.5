@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5B07D0FB1
+	by mail.lfdr.de (Postfix) with ESMTP id 030CC7D0FB0
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377317AbjJTMbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S1377297AbjJTMbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377275AbjJTMbT (ORCPT
+        with ESMTP id S1377175AbjJTMbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 08:31:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F3411B;
-        Fri, 20 Oct 2023 05:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697805076; x=1729341076;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gTBSc+Him2rlpc1XUvn/vsh1+bJnfkhgoNBXhhw/W4c=;
-  b=YPKSMwZbqtE6x5QQ7yCbUBKQJ4M+S1RzqSqQgvl652rqpjk1FtBOwFVt
-   saUmZCbpBTWT7KkJuQBtch6/j2hkpzLCIRiujsgOnlpP0FmbVN3B1MB84
-   75LFPiP4T4d7oCofVmsxVSHOzSLfD54izTzArhkvwTdKCudgYLpSC5I4C
-   rTxh6AaIURkIfILyfeuBBzqJkeZj+GZgFQyWidXqUjyakYUhcuMIqUGAi
-   zJ+ajZcfzUGqbTlmFuGSUq6SWCVFkLSFlr/CWwzoQnI4jecu4m0vDEgkV
-   QE43v2vJzbOpJy0q9u76FkwU+0VFdd4JlliygAhyYX49W14fsAqPYTrlN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383702064"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="383702064"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:31:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="5369963"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.209.150])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 05:31:11 -0700
-Message-ID: <3076a365-607c-45d8-9a97-f2a1b5466d07@intel.com>
-Date:   Fri, 20 Oct 2023 15:31:06 +0300
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E37FD49;
+        Fri, 20 Oct 2023 05:31:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3265FC433C8;
+        Fri, 20 Oct 2023 12:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697805076;
+        bh=TnUgXdqyGtzm8E1Kiu/VhELFbSOgtUP7stBuM+IFdbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N23TIUJ50sdcWqGuvqgGgxOoWMcPoC5Pq+hCwlWiyIVRvsS8bioPRqK8R8+KbmmHj
+         gNldSrh5NACFIiv34hQjzNoAowwu3qZbggcJS1A9N2/ylAG2emIzf+biLPqX3AcPrx
+         vAB8bzguJ3uOdElGCHnHuLqLwTMAXtZ5JNhqhbtD4VgYvZ2m4P3IX5KBsHtL6sj1cR
+         wNA1qggl//7dWMWzkJAncnI/6kjl7hZ+2dGySIWbKEczuNc2x6CRmAv/1dPsIYNMvP
+         fv+T4KIq6qsv0i3ipnvRstP70fZiBfEHbA6NgKGV3fvsigZldyKPFGYFuiiAVhWgsD
+         1KSHNgLEBQC8g==
+Date:   Fri, 20 Oct 2023 14:31:13 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 4/4] Revert "kernel/sched: Modify initial boot task idle
+ setup"
+Message-ID: <ZTJzEVkVfSMGumWU@lothringen>
+References: <20231019233543.1243121-1-frederic@kernel.org>
+ <20231019233543.1243121-5-frederic@kernel.org>
+ <20231020082531.GS33217@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] mmc: sdhci-of-dwcmshc: Add support for T-Head
- TH1520
-Content-Language: en-US
-To:     Drew Fustini <dfustini@baylibre.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20231017-th1520-mmc-v2-0-4678c8cc4048@baylibre.com>
- <20231017-th1520-mmc-v2-3-4678c8cc4048@baylibre.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231017-th1520-mmc-v2-3-4678c8cc4048@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020082531.GS33217@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,463 +64,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/23 23:43, Drew Fustini wrote:
-> Add support for the mmc controller in the T-Head TH1520 with the new
-> compatible "thead,th1520-dwcmshc". Implement custom sdhci_ops for
-> set_uhs_signaling, reset, voltage_switch, and platform_execute_tuning.
+On Fri, Oct 20, 2023 at 10:25:31AM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 20, 2023 at 01:35:43AM +0200, Frederic Weisbecker wrote:
+> > Now that rcutiny can deal with early boot PF_IDLE setting, revert
+> > commit cff9b2332ab762b7e0586c793c431a8f2ea4db04.
+> > 
+> > This fixes several subtle issues introduced on RCU-tasks(-trace):
+> > 
+> > 1) RCU-tasks stalls when:
+> > 
+> >    1.1 Grace period is started before init/0 had a chance to set PF_IDLE,
+> >        keeping it stuck in the holdout list until idle ever schedules.
+> > 
+> >    1.2 Grace period is started when some possible CPUs have never been
+> >        online, keeping their idle tasks stuck in the holdout list until
+> >        the CPU ever boots up.
+> > 
+> >    1.3 Similar to 1.1 but with secondary CPUs: Grace period is started
+> >        concurrently with secondary CPU booting, putting its idle task in
+> >        the holdout list because PF_IDLE isn't yet observed on it. It
+> >        stays then stuck in the holdout list until that CPU ever
+> >        schedules. The effect is mitigated here by all the smpboot
+> >        kthreads and the hotplug AP thread that must run to bring the
+> >        CPU up.
+> > 
+> > 2) Spurious warning on RCU task trace that assumes offline CPU's idle
+> >    task is always PF_IDLE.
+> > 
+> > More issues have been found in RCU-tasks related to PF_IDLE which should
+> > be fixed with later changes as those are not regressions:
+> > 
+> > 3) The RCU-Tasks semantics consider the idle loop as a quiescent state,
+> >    however:
+> > 
+> >    3.1 The boot code preceding the idle entry is included in this
+> >        quiescent state. Especially after the completion of kthreadd_done
+> >        after which init/1 can launch userspace concurrently. The window
+> >        is tiny before PF_IDLE is set but it exists.
+> > 
+> >    3.2 Similarly, the boot code preceding the idle entry on secondary
+> >        CPUs is wrongly accounted as RCU tasks quiescent state.
+> > 
 > 
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 358 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 358 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index 3a3bae6948a8..88ed0937c4e9 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -8,6 +8,7 @@
->   */
->  
->  #include <linux/acpi.h>
-> +#include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/iopoll.h>
-> @@ -35,6 +36,21 @@
->  #define DWCMSHC_CARD_IS_EMMC		BIT(0)
->  #define DWCMSHC_ENHANCED_STROBE		BIT(8)
->  #define DWCMSHC_EMMC_ATCTRL		0x40
-> +/* Tuning and auto-tuning fields in AT_CTRL_R control register */
-> +#define AT_CTRL_AT_EN			BIT(0) /* autotuning is enabled */
-> +#define AT_CTRL_CI_SEL			BIT(1) /* interval to drive center phase select */
-> +#define AT_CTRL_SWIN_TH_EN		BIT(2) /* sampling window threshold enable */
-> +#define AT_CTRL_RPT_TUNE_ERR		BIT(3) /* enable reporting framing errors */
-> +#define AT_CTRL_SW_TUNE_EN		BIT(4) /* enable software managed tuning */
-> +#define AT_CTRL_WIN_EDGE_SEL_MASK	GENMASK(11, 8) /* bits [11:8] */
-> +#define AT_CTRL_WIN_EDGE_SEL		0xf /* sampling window edge select */
-> +#define AT_CTRL_TUNE_CLK_STOP_EN	BIT(16) /* clocks stopped during phase code change */
-> +#define AT_CTRL_PRE_CHANGE_DLY_MASK	GENMASK(18, 17) /* bits [18:17] */
-> +#define AT_CTRL_PRE_CHANGE_DLY		0x1  /* 2-cycle latency */
-> +#define AT_CTRL_POST_CHANGE_DLY_MASK	GENMASK(20, 19) /* bits [20:19] */
-> +#define AT_CTRL_POST_CHANGE_DLY		0x3  /* 4-cycle latency */
-> +#define AT_CTRL_SWIN_TH_VAL_MASK	GENMASK(31, 24) /* bits [31:24] */
-> +#define AT_CTRL_SWIN_TH_VAL		0x9  /* sampling window threshold */
->  
->  /* Rockchip specific Registers */
->  #define DWCMSHC_EMMC_DLL_CTRL		0x800
-> @@ -72,6 +88,82 @@
->  	(((x) & DWCMSHC_EMMC_DLL_TIMEOUT) == 0))
->  #define RK35xx_MAX_CLKS 3
->  
-> +/* PHY register area pointer */
-> +#define DWC_MSHC_PTR_PHY_R	0x300
-> +
-> +/* PHY general configuration */
-> +#define PHY_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x00)
-> +#define PHY_CNFG_RSTN_DEASSERT	0x1  /* Deassert PHY reset */
-> +#define PHY_CNFG_PAD_SP_MASK	GENMASK(19, 16) /* bits [19:16] */
-> +#define PHY_CNFG_PAD_SP		0x0c /* PMOS TX drive strength */
-> +#define PHY_CNFG_PAD_SN_MASK	GENMASK(23, 20) /* bits [23:20] */
-> +#define PHY_CNFG_PAD_SN		0x0c /* NMOS TX drive strength */
-> +
-> +/* PHY command/response pad settings */
-> +#define PHY_CMDPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x04)
-> +
-> +/* PHY data pad settings */
-> +#define PHY_DATAPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x06)
-> +
-> +/* PHY clock pad settings */
-> +#define PHY_CLKPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x08)
-> +
-> +/* PHY strobe pad settings */
-> +#define PHY_STBPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x0a)
-> +
-> +/* PHY reset pad settings */
-> +#define PHY_RSTNPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x0c)
-> +
-> +/* Bitfields are common for all pad settings */
-> +#define PHY_PAD_RXSEL_1V8		0x1 /* Receiver type select for 1.8V */
-> +#define PHY_PAD_RXSEL_3V3		0x2 /* Receiver type select for 3.3V */
-> +
-> +#define PHY_PAD_WEAKPULL_MASK		GENMASK(4, 3) /* bits [4:3] */
-> +#define PHY_PAD_WEAKPULL_PULLUP		0x1 /* Weak pull down enabled */
+> Urgh... so the plan is to fix RCU-tasks for all of the above to not rely
+> on PF_IDLE ? Because I rather like the more strict PF_IDLE and
+> subsequently don't much like this revert.
 
-down -> up ?
+Yeah I can't say I really like the old coverage of PF_IDLE either. The new one
+(after Liam's patch) is only halfway better defined though: it makes the boot
+CPU's idle behave quite well: PF_IDLE is set on idle entry. And secondary
+CPU's idle behave quite well also except when they go offline and then online
+again. And then the secondary boot code becomes PF_IDLE.
 
-> +#define PHY_PAD_WEAKPULL_PULLDOWN	0x2 /* Weak pull down enabled */
-> +
-> +#define PHY_PAD_TXSLEW_CTRL_P_MASK	GENMASK(8, 5) /* bits [8:5] */
-> +#define PHY_PAD_TXSLEW_CTRL_P		0x3 /* Slew control for P-Type pad TX */
-> +#define PHY_PAD_TXSLEW_CTRL_N_MASK	GENMASK(12, 9) /* bits [12:9] */
-> +#define PHY_PAD_TXSLEW_CTRL_N		0x3 /* Slew control for N-Type pad TX */
-> +
-> +/* PHY CLK delay line settings */
-> +#define PHY_SDCLKDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x1d)
-> +#define PHY_SDCLKDL_CNFG_UPDATE	BIT(4) /* set before writing to SDCLKDL_DC */
-> +
-> +/* PHY CLK delay line delay code */
-> +#define PHY_SDCLKDL_DC_R		(DWC_MSHC_PTR_PHY_R + 0x1e)
-> +#define PHY_SDCLKDL_DC_INITIAL		0x40 /* initial delay code */
-> +#define PHY_SDCLKDL_DC_DEFAULT		0x32 /* default delay code */
-> +#define PHY_SDCLKDL_DC_HS400		0x18 /* delay code for HS400 mode */
-> +
-> +/* PHY drift_cclk_rx delay line configuration setting */
-> +#define PHY_ATDL_CNFG_R			(DWC_MSHC_PTR_PHY_R + 0x21)
-> +#define PHY_ATDL_CNFG_INPSEL_MASK	GENMASK(3, 2) /* bits [3:2] */
-> +#define PHY_ATDL_CNFG_INPSEL		0x3 /* delay line input source */
-> +
-> +/* PHY DLL control settings */
-> +#define PHY_DLL_CTRL_R			(DWC_MSHC_PTR_PHY_R + 0x24)
-> +#define PHY_DLL_CTRL_DISABLE		0x0 /* PHY DLL is enabled */
-> +#define PHY_DLL_CTRL_ENABLE		0x1 /* PHY DLL is disabled */
-> +
-> +/* PHY DLL  configuration register 1 */
-> +#define PHY_DLL_CNFG1_R			(DWC_MSHC_PTR_PHY_R + 0x25)
-> +#define PHY_DLL_CNFG1_SLVDLY_MASK	GENMASK(5, 4) /* bits [5:4] */
-> +#define PHY_DLL_CNFG1_SLVDLY		0x2 /* DLL slave update delay input */
-> +#define PHY_DLL_CNFG1_WAITCYCLE		0x5 /* DLL wait cycle input */
-> +
-> +/* PHY DLL configuration register 2 */
-> +#define PHY_DLL_CNFG2_R			(DWC_MSHC_PTR_PHY_R + 0x26)
-> +#define PHY_DLL_CNFG2_JUMPSTEP		0xa /* DLL jump step input */
-> +
-> +/* PHY DLL master and slave delay line configuration settings */
-> +#define PHY_DLLDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x28)
-> +#define PHY_DLLDL_CNFG_SLV_INPSEL_MASK	GENMASK(6, 5) /* bits [6:5] */
-> +#define PHY_DLLDL_CNFG_SLV_INPSEL	0x3 /* clock source select for slave DL */
-> +
-> +#define FLAG_IO_FIXED_1V8	BIT(0)
-> +
->  #define BOUNDARY_OK(addr, len) \
->  	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
->  
-> @@ -92,6 +184,8 @@ struct dwcmshc_priv {
->  	struct clk	*bus_clk;
->  	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
->  	void *priv; /* pointer to SoC private stuff */
-> +	u16 delay_line;
-> +	u16 flags;
->  };
->  
->  /*
-> @@ -157,6 +251,129 @@ static void dwcmshc_request(struct mmc_host *mmc, struct mmc_request *mrq)
->  	sdhci_request(mmc, mrq);
->  }
->  
-> +static void th1520_phy_1_8v_init(struct sdhci_host *host)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	u32 val;
-> +
-> +	if (!priv)
-> +		return;
-> +
-> +	/* deassert phy reset & set tx drive strength */
-> +	val = PHY_CNFG_RSTN_DEASSERT;
-> +	val |= FIELD_PREP(PHY_CNFG_PAD_SP_MASK, PHY_CNFG_PAD_SP);
-> +	val |= FIELD_PREP(PHY_CNFG_PAD_SN_MASK, PHY_CNFG_PAD_SN);
-> +	sdhci_writel(host, val, PHY_CNFG_R);
-> +
-> +	/* disable delay line */
-> +	sdhci_writeb(host, PHY_SDCLKDL_CNFG_UPDATE, PHY_SDCLKDL_CNFG_R);
-> +
-> +	/* set delay line */
-> +	sdhci_writeb(host, priv->delay_line, PHY_SDCLKDL_DC_R);
-> +	sdhci_writeb(host, PHY_DLL_CNFG2_JUMPSTEP, PHY_DLL_CNFG2_R);
-> +
-> +	/* enable delay lane */
-> +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
-> +	val &= ~(PHY_SDCLKDL_CNFG_UPDATE);
-> +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
-> +
-> +	/* configure phy pads */
-> +	val = PHY_PAD_RXSEL_1V8;
-> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLUP);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_CMDPAD_CNFG_R);
-> +	sdhci_writew(host, val, PHY_DATAPAD_CNFG_R);
-> +	sdhci_writew(host, val, PHY_RSTNPAD_CNFG_R);
-> +
-> +	val = FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_CLKPAD_CNFG_R);
-> +
-> +	val = PHY_PAD_RXSEL_1V8;
-> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLDOWN);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_STBPAD_CNFG_R);
-> +
-> +	/* enable data strobe mode */
-> +	sdhci_writeb(host, FIELD_PREP(PHY_DLLDL_CNFG_SLV_INPSEL_MASK, PHY_DLLDL_CNFG_SLV_INPSEL),
-> +		     PHY_DLLDL_CNFG_R);
-> +
-> +	/* enable phy dll */
-> +	sdhci_writeb(host, PHY_DLL_CTRL_ENABLE, PHY_DLL_CTRL_R);
-> +}
-> +
-> +static void th1520_phy_3_3v_init(struct sdhci_host *host)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	u32 val;
-> +
-> +	/* deassert phy reset & set tx drive strength */
-> +	val = PHY_CNFG_RSTN_DEASSERT;
-> +	val |= FIELD_PREP(PHY_CNFG_PAD_SP_MASK, PHY_CNFG_PAD_SP);
-> +	val |= FIELD_PREP(PHY_CNFG_PAD_SN_MASK, PHY_CNFG_PAD_SN);
-> +	sdhci_writel(host, val, PHY_CNFG_R);
-> +
-> +	/* disable delay line */
-> +	sdhci_writeb(host, PHY_SDCLKDL_CNFG_UPDATE, PHY_SDCLKDL_CNFG_R);
-> +
-> +	/* set delay line */
-> +	sdhci_writeb(host, priv->delay_line, PHY_SDCLKDL_DC_R);
-> +	sdhci_writeb(host, PHY_DLL_CNFG2_JUMPSTEP, PHY_DLL_CNFG2_R);
-> +
-> +	/* enable delay lane */
-> +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
-> +	val &= ~(PHY_SDCLKDL_CNFG_UPDATE);
-> +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
-> +
-> +	/* configure phy pads */
-> +	val = PHY_PAD_RXSEL_3V3;
-> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLUP);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_CMDPAD_CNFG_R);
-> +	sdhci_writew(host, val, PHY_DATAPAD_CNFG_R);
-> +	sdhci_writew(host, val, PHY_RSTNPAD_CNFG_R);
-> +
-> +	val = FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_CLKPAD_CNFG_R);
-> +
-> +	val = PHY_PAD_RXSEL_3V3;
-> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLDOWN);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
-> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
-> +	sdhci_writew(host, val, PHY_STBPAD_CNFG_R);
-> +
-> +	/* enable phy dll */
-> +	sdhci_writeb(host, PHY_DLL_CTRL_ENABLE, PHY_DLL_CTRL_R);
-> +}
-> +
-> +static void th1520_sdhci_set_phy(struct sdhci_host *host)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	u16 emmc_ctrl;
-> +
-> +	/* Before power on, set PHY configs */
-> +	if (priv->flags & FLAG_IO_FIXED_1V8)
-> +		th1520_phy_1_8v_init(host);
-> +	else
-> +		th1520_phy_3_3v_init(host);
-> +
-> +	if (host->mmc->caps & MMC_CAP_NONREMOVABLE) {
-> +		emmc_ctrl = sdhci_readw(host, priv->vendor_specific_area1 + DWCMSHC_EMMC_CONTROL);
-> +		emmc_ctrl |= DWCMSHC_CARD_IS_EMMC;
-> +		sdhci_writew(host, emmc_ctrl, priv->vendor_specific_area1 + DWCMSHC_EMMC_CONTROL);
-> +	}
-> +
-> +	sdhci_writeb(host, FIELD_PREP(PHY_DLL_CNFG1_SLVDLY_MASK, PHY_DLL_CNFG1_SLVDLY) |
-> +		     PHY_DLL_CNFG1_WAITCYCLE, PHY_DLL_CNFG1_R);
-> +}
-> +
->  static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
->  				      unsigned int timing)
->  {
-> @@ -189,9 +406,26 @@ static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
->  		ctrl_2 |= DWCMSHC_CTRL_HS400;
->  	}
->  
-> +	if (priv->flags & FLAG_IO_FIXED_1V8)
-> +		ctrl_2 |= SDHCI_CTRL_VDD_180;
->  	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
->  }
->  
-> +static void th1520_set_uhs_signaling(struct sdhci_host *host,
-> +				     unsigned int timing)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +
-> +	dwcmshc_set_uhs_signaling(host, timing);
-> +	if (timing == MMC_TIMING_MMC_HS400) {
-> +		priv->delay_line = PHY_SDCLKDL_DC_HS400;
-> +		th1520_sdhci_set_phy(host);
-> +	} else {
-> +		sdhci_writeb(host, 0, PHY_DLLDL_CNFG_R);
-> +	}
-> +}
-> +
->  static void dwcmshc_hs400_enhanced_strobe(struct mmc_host *mmc,
->  					  struct mmc_ios *ios)
->  {
-> @@ -338,6 +572,85 @@ static void rk35xx_sdhci_reset(struct sdhci_host *host, u8 mask)
->  	sdhci_reset(host, mask);
->  }
->  
-> +static int th1520_execute_tuning(struct sdhci_host *host, u32 opcode)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	u32 val = 0;
-> +
-> +	if (host->flags & SDHCI_HS400_TUNING)
-> +		return 0;
-> +
-> +	sdhci_writeb(host, FIELD_PREP(PHY_ATDL_CNFG_INPSEL_MASK, PHY_ATDL_CNFG_INPSEL),
-> +		     PHY_ATDL_CNFG_R);
-> +	val = sdhci_readl(host, priv->vendor_specific_area1 + DWCMSHC_EMMC_ATCTRL);
-> +
-> +	/*
-> +	 * configure tuning settings:
-> +	 *  - center phase select code driven in block gap interval
-> +	 *  - disable reporting of framing errors
-> +	 *  - disable software managed tuning
-> +	 *  - disable user selection of sampling window edges,
-> +	 *    instead tuning calculated edges are used
-> +	 */
-> +	val &= ~(AT_CTRL_CI_SEL | AT_CTRL_RPT_TUNE_ERR | AT_CTRL_SW_TUNE_EN |
-> +		 FIELD_PREP(AT_CTRL_WIN_EDGE_SEL_MASK, AT_CTRL_WIN_EDGE_SEL));
-> +
-> +	/*
-> +	 * configure tuning settings:
-> +	 *  - enable auto-tuning
-> +	 *  - enable sampling window threshold
-> +	 *  - stop clocks during phase code change
-> +	 *  - set max latency in cycles between tx and rx clocks
-> +	 *  - set max latency in cycles to switch output phase
-> +	 *  - set max sampling window threshold value
-> +	 */
-> +	val |= AT_CTRL_AT_EN | AT_CTRL_SWIN_TH_EN | AT_CTRL_TUNE_CLK_STOP_EN;
-> +	val |= FIELD_PREP(AT_CTRL_PRE_CHANGE_DLY_MASK, AT_CTRL_PRE_CHANGE_DLY);
-> +	val |= FIELD_PREP(AT_CTRL_POST_CHANGE_DLY_MASK, AT_CTRL_POST_CHANGE_DLY);
-> +	val |= FIELD_PREP(AT_CTRL_SWIN_TH_VAL_MASK, AT_CTRL_SWIN_TH_VAL);
-> +
-> +	sdhci_writel(host, val, priv->vendor_specific_area1 + DWCMSHC_EMMC_ATCTRL);
-> +	val = sdhci_readl(host, priv->vendor_specific_area1 + DWCMSHC_EMMC_ATCTRL);
-> +
-> +	/* check if is possible to enable auto-tuning */
-> +	if (!(val & AT_CTRL_AT_EN)) {
-> +		dev_err(mmc_dev(host->mmc), "failed to enable auto tuning\n");
-> +		return -EIO;
-> +	}
-> +
-> +	/* perform tuning */
-> +	sdhci_start_tuning(host);
-> +	host->tuning_err = __sdhci_execute_tuning(host, opcode);
-> +	if (host->tuning_err) {
-> +		/* disable auto-tuning upon tuning error */
-> +		val &= ~AT_CTRL_AT_EN;
-> +		sdhci_writel(host, val, priv->vendor_specific_area1 + DWCMSHC_EMMC_ATCTRL);
-> +		dev_err(mmc_dev(host->mmc), "tuning failed: %d\n", host->tuning_err);
-> +		return -EIO;
-> +	}
-> +	sdhci_end_tuning(host);
-> +
-> +	return 0;
-> +}
-> +
-> +static void th1520_sdhci_reset(struct sdhci_host *host, u8 mask)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> +	u16 ctrl_2;
-> +
-> +	sdhci_reset(host, mask);
-> +
-> +	if (priv->flags & FLAG_IO_FIXED_1V8) {
-> +		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +		if (!(ctrl_2 & SDHCI_CTRL_VDD_180)) {
-> +			ctrl_2 |= SDHCI_CTRL_VDD_180;
-> +			sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
-> +		}
-> +	}
-> +}
-> +
->  static const struct sdhci_ops sdhci_dwcmshc_ops = {
->  	.set_clock		= sdhci_set_clock,
->  	.set_bus_width		= sdhci_set_bus_width,
-> @@ -356,6 +669,17 @@ static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
->  	.adma_write_desc	= dwcmshc_adma_write_desc,
->  };
->  
-> +static const struct sdhci_ops sdhci_dwcmshc_th1520_ops = {
-> +	.set_clock		= sdhci_set_clock,
-> +	.set_bus_width		= sdhci_set_bus_width,
-> +	.set_uhs_signaling	= th1520_set_uhs_signaling,
-> +	.get_max_clock		= dwcmshc_get_max_clock,
-> +	.reset			= th1520_sdhci_reset,
-> +	.adma_write_desc	= dwcmshc_adma_write_desc,
-> +	.voltage_switch		= th1520_phy_1_8v_init,
-> +	.platform_execute_tuning = &th1520_execute_tuning,
-> +};
-> +
->  static const struct sdhci_pltfm_data sdhci_dwcmshc_pdata = {
->  	.ops = &sdhci_dwcmshc_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-> @@ -379,6 +703,12 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk35xx_pdata = {
->  		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
->  };
->  
-> +static const struct sdhci_pltfm_data sdhci_dwcmshc_th1520_pdata = {
-> +	.ops = &sdhci_dwcmshc_th1520_ops,
-> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-> +};
-> +
->  static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
->  {
->  	int err;
-> @@ -447,6 +777,10 @@ static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
->  		.compatible = "snps,dwcmshc-sdhci",
->  		.data = &sdhci_dwcmshc_pdata,
->  	},
-> +	{
-> +		.compatible = "thead,th1520-dwcmshc",
-> +		.data = &sdhci_dwcmshc_th1520_pdata,
-> +	},
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, sdhci_dwcmshc_dt_ids);
-> @@ -542,6 +876,30 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  			goto err_clk;
->  	}
->  
-> +	if (pltfm_data == &sdhci_dwcmshc_th1520_pdata) {
-> +		priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
-> +
-> +		if ((device_property_read_bool(dev, "mmc-ddr-1_8v")) |
-> +		    (device_property_read_bool(dev, "mmc-hs200-1_8v")) |
-> +		    (device_property_read_bool(dev, "mmc-hs400-1_8v")))
-> +			priv->flags |= FLAG_IO_FIXED_1V8;
-> +		else
-> +			priv->flags &= ~FLAG_IO_FIXED_1V8;
-> +
-> +		/*
-> +		 * start_signal_voltage_switch() will try 3.3V first
-> +		 * then 1.8V. Use SDHCI_SIGNALING_180 ranther than
+We probably need something like this:
 
-ranther -> rather
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 3b9d5c7eb4a2..b24d7937b989 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1394,7 +1394,9 @@ void cpuhp_report_idle_dead(void)
+ {
+ 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+ 
++	current->flags &= ~PF_IDLE;
+ 	BUG_ON(st->state != CPUHP_AP_OFFLINE);
++
+ 	rcutree_report_cpu_dead();
+ 	st->state = CPUHP_AP_IDLE_DEAD;
+ 	/*
+@@ -1642,6 +1644,8 @@ void cpuhp_online_idle(enum cpuhp_state state)
+ {
+ 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+ 
++	current->flags |= PF_IDLE;
++
+ 	/* Happens for the boot cpu */
+ 	if (state != CPUHP_AP_ONLINE_IDLE)
+ 		return;
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 5007b25c5bc6..342f58a329f5 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -373,7 +373,6 @@ EXPORT_SYMBOL_GPL(play_idle_precise);
+ 
+ void cpu_startup_entry(enum cpuhp_state state)
+ {
+-	current->flags |= PF_IDLE;
+ 	arch_cpu_idle_prepare();
+ 	cpuhp_online_idle(state);
+ 	while (1)
 
-> +		 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
-> +		 * in sdhci_start_signal_voltage_switch().
-> +		 */
-> +		if (priv->flags & FLAG_IO_FIXED_1V8) {
-> +			host->flags &= ~SDHCI_SIGNALING_330;
-> +			host->flags |=  SDHCI_SIGNALING_180;
-> +		}
-> +
-> +		sdhci_enable_v4_mode(host);
-> +	}
-> +
->  #ifdef CONFIG_ACPI
->  	if (pltfm_data == &sdhci_dwcmshc_bf3_pdata)
->  		sdhci_enable_v4_mode(host);
-> 
 
+And then RCU-tasks can better rely on it as it really draws correctly
+the idle coverage. As for working on top of that, we have thought about
+solutions, lemme try to make them proper.
+
+Thanks.
