@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7307D17A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D23F7D17AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjJTVAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 17:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S230389AbjJTVFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJTVAO (ORCPT
+        with ESMTP id S229555AbjJTVFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:00:14 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F318DD61
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:00:07 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a669a4ec51so43041339f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697835607; x=1698440407; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yo+YzGcf5ti2JGohRAjm5fHeXV6DLkhxTHbBeTwM3H0=;
-        b=MljrZ35fuWC/vULrQCsvfEHcgSbKShqFujcpQzw+LM6LYimQz73S2hLDLLswYoQ265
-         VEeXEhLrQiXDtowKBzqB3sYAPVLuTpW8qnHeOm0fmYReqCkCwLg6/NgolDORzd2GkJgQ
-         3Ou09kSKdh25ZajWZz9RttoxC0oTGc9O5WgTg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697835607; x=1698440407;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yo+YzGcf5ti2JGohRAjm5fHeXV6DLkhxTHbBeTwM3H0=;
-        b=qR+YyFkXV0BwHDUZhmlZ9IZplcVcsUqZS7zDCsV6L0MEbgL2GzZRg2ZlY4gsAB29BP
-         4c5VSHti4fSHSgNWVrdKag5MjLy16DE62D2pCejl80hi4frlTAaGP8uNSvsboTq2niZN
-         MkeHqlnHgxV57VpR2xARNqnt8yDvmuB1kzrACYPRphQXMMG+25C6NGKhOSc7QnI1IR+e
-         fnLfnfP2bmyB85saiYbfc7rV3YNGnRJia7+0abylCpnqfJaPe8k0xIxRz96y4y/4jcgH
-         TmuFqjDO1UQ/QrnNE68dvFcvT8wH+k+OGGT5YtX14bp9vsNOctllXJBkiuIw64KhJXz5
-         PbwA==
-X-Gm-Message-State: AOJu0Yz7GaZ8qf7YgPH4tijlRiOm1u83JwczNTjqIztv1E/kiFDRGBiO
-        jnNUlksPN2L8ZM48GaXnVgi4+kHLGfTeg/tzHts=
-X-Google-Smtp-Source: AGHT+IHLHEyod+8rFouea36HiEYaF4mxyr+6M++FfbGIBZU2nDJ69584ByMJ7vuTFzTPPec8CAEqCg==
-X-Received: by 2002:a05:6602:1355:b0:7a2:a6db:9a58 with SMTP id i21-20020a056602135500b007a2a6db9a58mr3565751iov.15.1697835607174;
-        Fri, 20 Oct 2023 14:00:07 -0700 (PDT)
-Received: from markhas1.lan (71-218-45-6.hlrn.qwest.net. [71.218.45.6])
-        by smtp.gmail.com with ESMTPSA id y127-20020a6bc885000000b0076373f90e46sm850966iof.33.2023.10.20.14.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 14:00:06 -0700 (PDT)
-From:   Mark Hasemeyer <markhas@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Curtis Malainey <cujomalainey@chromium.org>,
-        Mark Hasemeyer <markhas@chromium.org>, stable@vger.kernel.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        sound-open-firmware@alsa-project.org
-Subject: [PATCH v1] ALSA: SOF: sof-pci-dev: Fix community key quirk detection
-Date:   Fri, 20 Oct 2023 14:59:53 -0600
-Message-ID: <20231020145953.v1.1.Iaf5702dc3f8af0fd2f81a22ba2da1a5e15b3604c@changeid>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+        Fri, 20 Oct 2023 17:05:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EB7D60;
+        Fri, 20 Oct 2023 14:05:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4056BC433C7;
+        Fri, 20 Oct 2023 21:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697835907;
+        bh=Elxhk2Dpng0QYormybPqQvqGrljIJdvhIjHnQugf8Aw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CxRn5Wen+tHmFyOjC5cErUb4FjXC/5aXJGY8YCKssgsr8mHrQ6FS4MqWkmUwlKa6O
+         njiflYbjExbJJ4hmFju1xJi01RSXH4oemQqyQNGsTjbV2jEbsCLpu0+CEzMhSS+kPH
+         qLHZGbGZ8re9P6Mgpk/IcJ+27RzSwckdZHUhZxagACHPGeIYfBcWITdudsTDqALdUx
+         t9SSVavuWrkfW5vhC/g9L5WemB+jWjWlxzfHH6aYJ2P8WmEgK7zAe1adYDuOtMOzR1
+         XwX2fAnz3V3D2eIBCalnWQDUdtWsh4JzFqOf3ISEKtU+d7C9zwH90UOwNXGOhznsYN
+         Cmm9MoAgXB2qA==
+Message-ID: <301d4acd4dd208239c00cec196d1c26c6bcf1a91.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Fri, 20 Oct 2023 17:05:03 -0400
+In-Reply-To: <CAHk-=wjma9_TSwXosG7GBXQaZ465VH1t4a4iQ8J=PFpE=4bhVA@mail.gmail.com>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <CAHk-=wjma9_TSwXosG7GBXQaZ465VH1t4a4iQ8J=PFpE=4bhVA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Chromebooks do not populate the product family DMI value resulting
-in firmware load failures.
+On Fri, 2023-10-20 at 13:06 -0700, Linus Torvalds wrote:
+> On Fri, 20 Oct 2023 at 05:12, Jeff Layton <jlayton@kernel.org> wrote:.
+> >=20
+> > I'd _really_ like to see a proper change counter added before it's
+> > merged, or at least space in the on-disk inode reserved for one until w=
+e
+> > can get it plumbed in.
+>=20
+> Hmm. Can we not perhaps just do an in-memory change counter, and try
+> to initialize it to a random value when instantiating an inode? Do we
+> even *require* on-disk format changes?
+>=20
+> So on reboot, the inode would count as "changed" as far any remote
+> user is concerned. It would flush client caches, but isn't that what
+> you'd want anyway? I'd hate to waste lots of memory, but maybe people
+> would be ok with just a 32-bit random value. And if not...
+>=20
+> But I actually came into this whole discussion purely through the
+> inode timestamp side, so I may *entirely* miss what the change counter
+> requirements for NFSd actually are. If it needs to be stable across
+> reboots, my idea is clearly complete garbage.
+>=20
+> You can now all jump on me and point out my severe intellectual
+> limitations. Please use small words when you do ;)
+>=20
 
-Add another quirk detection entry that looks for "Google" in the BIOS
-version. Theoretically, PRODUCT_FAMILY could be replaced with
-BIOS_VERSION, but it is left as a quirk to be conservative.
+Much like inode timestamps, we do depend on the change attribute
+persisting across reboots. Having to invalidate all of your cached data
+just because the server rebooted is particularly awful. That usually
+results in the server being hammered with reads from all of the clients
+at once, soon after rebooting.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
----
-
- sound/soc/sof/sof-pci-dev.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 1d706490588e..64b326e3ef85 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -145,6 +145,13 @@ static const struct dmi_system_id community_key_platforms[] = {
- 			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google"),
- 		}
- 	},
-+	{
-+		.ident = "Google firmware",
-+		.callback = chromebook_use_community_key,
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VERSION, "Google"),
-+		}
-+	},
- 	{},
- };
- 
--- 
-2.42.0.655.g421f12c284-goog
-
+--=20
+Jeff Layton <jlayton@kernel.org>
