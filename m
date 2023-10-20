@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD357D08F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155A47D0904
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376374AbjJTG7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
+        id S1376400AbjJTHAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376317AbjJTG7U (ORCPT
+        with ESMTP id S1376396AbjJTHAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:59:20 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9ACD5D
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:59:16 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qtjTW-000806-Do; Fri, 20 Oct 2023 08:59:14 +0200
-Message-ID: <fe56d275-a859-4f0e-8652-88fb1b12bf93@leemhuis.info>
-Date:   Fri, 20 Oct 2023 08:59:13 +0200
+        Fri, 20 Oct 2023 03:00:11 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0E41A8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:00:08 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c1c66876aso72234366b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697785207; x=1698390007; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mfzc4g4zpz1yB50AYWx8YASQ5286qFySoxi1isAPweU=;
+        b=OlkxWS0sGR4Bp1SIhhL8WFRZPr5ryyF8qrEqv3NJJJ/vbGBQzUnZaKO+6w6cxaLyRU
+         kHTiOVrti/lDTH9Fpx4KoCyhhFRJrwfqy56NbvQJ0cvjKaglX9TQSfb9S5R1/I9RxKeA
+         7hA27e7MzyEghixh1I3GvfOJV8VkJnsCNCBFPvyzpjyfoOYuVpsWaWnnqHM1/W94jebh
+         95iVT/liLgn5siO3rGa3kliQLQK1hb1pH7NL6q7mGVR3varydLxoqwwx9n5VtsG+Ki/J
+         hfGg4R3pwKlhzQShlwzBXHKUcmti0GyGOUFldBOOY4/d3QpJnDIoM26oe13C2tqa68d3
+         dDCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697785207; x=1698390007;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfzc4g4zpz1yB50AYWx8YASQ5286qFySoxi1isAPweU=;
+        b=jqZ9WxcIDCQsgZ8bwzJWMUwMKC6e10ELqzspkzApXrSdja5K8fRzhYGJxu8OGMaELL
+         UediLHDRi4vUsUoWN43JZ76t08sfdwtPn8YiZ+z+4L0yUtZFuuDi7hngMpMqyhdX34sz
+         YzHB03nIQuejaEJFb1Ub5g/mo4e6eVguxSxevwZ/eklwTWycIqsSxfcMSxunQShxXMC5
+         FiPLRRb0+ZS04bXBmMI6GzgrJAycso2OgqnUDqAvRVXc98wpUWdp6MQlHS4s1KB4DqyZ
+         C2YQ/RVOCImVi/M3ymHPa59uXIdozVR4OL232fD759NsT5stEAV04StLZDJtqk18KDoV
+         68VQ==
+X-Gm-Message-State: AOJu0YylWNq7fK3OMd8HHMs16XmJss29aUf0xCWB8XGpyNnvI411P529
+        dTHqlXzdKdHcCm7U1xw698ZlSA==
+X-Google-Smtp-Source: AGHT+IEZqAyMu8v1hoVkDa8FfYgxlppDc03tZC3u+R6BXwEKi6FVD1uBaavEM53OTZbjc063+/cESw==
+X-Received: by 2002:a17:907:9495:b0:9a5:b878:7336 with SMTP id dm21-20020a170907949500b009a5b8787336mr566170ejc.7.1697785206642;
+        Fri, 20 Oct 2023 00:00:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id o14-20020a17090611ce00b009b29553b648sm862496eja.206.2023.10.20.00.00.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 00:00:05 -0700 (PDT)
+Message-ID: <ba3ac1b2-d924-44cb-97dd-6af65a1db7a8@linaro.org>
+Date:   Fri, 20 Oct 2023 09:00:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: X86 parallel bring up regression
-Content-Language: en-US, de-DE
-To:     Mario Limonciello <mario.limonciello@amd.com>, x86@kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Gong, Richard" <Richard.Gong@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Helge Deller <deller@gmx.de>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-References: <3d96c70e-da3b-49c2-a776-930a9f1b815d@amd.com>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <3d96c70e-da3b-49c2-a776-930a9f1b815d@amd.com>
+Subject: Re: [PATCH v2 05/10] dt-bindings: riscv: Add andestech,cpu-intc to
+ interrupt-controller
+Content-Language: en-US
+To:     Yu Chien Peter Lin <peterlin@andestech.com>, conor@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     prabhakar.mahadev-lad.rj@bp.renesas.com, tim609@andestech.com,
+        dylan@andestech.com, locus84@andestech.com, dminus@andestech.com
+References: <20231019135905.3658215-1-peterlin@andestech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231019135905.3658215-1-peterlin@andestech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697785157;7da6ce22;
-X-HE-SMSGID: 1qtjTW-000806-Do
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+On 19/10/2023 15:59, Yu Chien Peter Lin wrote:
+> Add "andestech,cpu-intc" compatible string for Andes INTC which
+> provides Andes-specific IRQ chip functions.
+> 
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> ---
+> Changes v1 -> v2:
+>   - New patch
+> ---
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> index 97e8441eda1c..5b216e11c69f 100644
+> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> @@ -99,7 +99,9 @@ properties:
+>          const: 1
+>  
+>        compatible:
+> -        const: riscv,cpu-intc
+> +        enum:
+> +          - riscv,cpu-intc
+> +          - andestech,cpu-intc
 
-On 19.10.23 22:26, Mario Limonciello wrote:
-> 
-> We've recently found that there was a regression from 6.5 that broke
-> resume from suspend-to-ram on some AMD platforms.
-> 
-> We bisected it and confirmed it's introduced by 0c7ffa32dbd6
-> ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and
-> enable it").
-> 
-> Furthermore; we confirmed that on 6.6-rc6 adding cpuhp.parallel=0 to the
-> kernel command line avoids the issue.
-> 
-> Here are bootup kernel logs from an affected system at 7e75178 (doesn't
-> reproduce) and 0c7ffa32 (does reproduce).
-> https://gist.github.com/superm1/c251c0849956b8389309f03871fba091
-> 
-> Is it possible that this is caused by the system entering S3 with x2apic
-> enabled but leaving with it disabled?
-> 
-> I notice in the resume path on a boot with cpuhp.parallel=0 that x2apic
-> "explicitly" gets turned on again.
-> 
-> <snip>
-> smpboot: CPU 127 is now offline
-> ACPI: PM: Low-level resume complete
-> ACPI: PM: Restoring platform NVS memory
-> x2apic enabled
-> AMD-Vi: Virtual APIC enabled
-> AMD-Vi: Virtual APIC enabled
-> LVT offset 0 assigned for vector 0x400
-> Enabling non-boot CPUs ...
-> smpboot: Booting Node 0 Processor 1 APIC 0x2
-> masked ExtINT on CPU#1
-> ACPI: \_SB_.PLTF.C002: Found 2 idle states
-> CPU1 is up
-> smpboot: Booting Node 0 Processor 2 APIC 0x4
-> </snip>
-> 
-> I hypothesize this could be caused by .Lread_apicid finding x2apic
-> disabled but then trying to read from apic_mmio_base which isn't
-> initialized because x2apic was used (AFAICT apic_set_fixmap() never gets
-> called in this case).
+Keep alphabetical order. Do not add stuff to the end of the lists. This
+is a generic rule. Everywhere.
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+Best regards,
+Krzysztof
 
-#regzbot ^introduced 0c7ffa32dbd6
-#regzbot title x86: resume from suspend-to-ram broken on some AMD platforms
-#regzbot ignore-activity
-
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
-
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
