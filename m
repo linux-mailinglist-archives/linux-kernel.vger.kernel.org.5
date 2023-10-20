@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3597D0EFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69E87D0ED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377232AbjJTLm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        id S1377364AbjJTLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377274AbjJTLmG (ORCPT
+        with ESMTP id S1377271AbjJTLjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:42:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF9E1BD8;
-        Fri, 20 Oct 2023 04:39:01 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:38:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697801886;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/r6TKfAIPF4DGJsQq1QWq5Z7B0tfCqdwYnDmLEgikdw=;
-        b=Tp5Rah7f6feNE2r4Oj3mkhFPPjRsjoJdGkkt4V/0Dr92ZQMO3OdLRttMQU8z0o3XFAwE6+
-        01zfnIH56+tpFzvFK1kp8gVVd7Ksw1Gr54n1JxBikQ848pg1JlUuslhKjhe9D13GM0bxKP
-        avhfXLZ6qDHSo5P7XCZpNZoKqij/o3wWLdz8fE4HTAG+ZKdD4VZDhYAsTELciwxcmPmrG2
-        r8dGAYQLK5aCa5EML5+6R598Pb6jzhuaEFncif2fH4+DXNIm/4qrEd/o3iLeYQQvw7Zu0p
-        0lach3D1StsrbDdjSYMEA/9Lw23iSHbWNtPZV1clvbkoKMrD7Q86vE+S8KAaYQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697801886;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/r6TKfAIPF4DGJsQq1QWq5Z7B0tfCqdwYnDmLEgikdw=;
-        b=KvxXJTJXy4FouC170ttL2MVUGbzZ0drlbwj1hlP7xYVw3LNFLV2+ZoJAIorT5wrXa0Am6n
-        MwysuABAG2BytsBw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/boot/32: Disable stackprotector and tracing
- for mk_early_pgtbl_32()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115902.156063939@linutronix.de>
-References: <20231002115902.156063939@linutronix.de>
+        Fri, 20 Oct 2023 07:39:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A41213E;
+        Fri, 20 Oct 2023 04:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697801897; x=1729337897;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JePTitzuY0GQtcJN+j6l1yJWlx9JL0zZgTWlbLVx8N8=;
+  b=Ksik9nfIDemqOWvDHAgyjBxp1T2qeJmtINxn/8gEWfZfd7LrdZ5WQqFB
+   g0dN9j/J8IPgoGqzwiQYN7yk/Lr9rDnCHwtfixSU4toI5ZDEfFg3TrE9P
+   lbhTWMZ7V8B2xrU7eGqkNsf1WxREJdeorInhHrgGveMDQftUF4eosUDgL
+   To/mjGOr5S/3koG/YpYXG7FbM14yOimSrMVOOrT/6UOu605+XSru7p76+
+   tKPgvJaWppYxDuPqzBTVfJmcRdO2L+xqjFXypeONYjjWjcNlztYQmRlYf
+   lMHCkYMaA1Y83xuNyFDPOE9GyUp1BC4vKYrwD3kd/BO2dBi8Y75os2N5J
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="450707539"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="450707539"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 04:38:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="901121259"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="901121259"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 04:35:59 -0700
+Date:   Fri, 20 Oct 2023 14:38:06 +0300
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
+        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, linux@roeck-us.net, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1 4/8] ACPI: utils: use acpi_dev_uid_match() for
+ matching _UID
+Message-ID: <ZTJmnv6CsZUt0pIS@black.fi.intel.com>
+References: <20231020084732.17130-1-raag.jadav@intel.com>
+ <20231020084732.17130-5-raag.jadav@intel.com>
+ <ZTJYK02w8HZg26eI@smile.fi.intel.com>
 MIME-Version: 1.0
-Message-ID: <169780188598.3135.13135735219422593841.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTJYK02w8HZg26eI@smile.fi.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/microcode branch of tip:
+On Fri, Oct 20, 2023 at 01:36:27PM +0300, Andy Shevchenko wrote:
+> On Fri, Oct 20, 2023 at 02:17:28PM +0530, Raag Jadav wrote:
+> > Convert manual _UID references to use standard ACPI helpers.
+> 
+> Yes, while not so obvious this is the correct replacement.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Commit-ID:     242db7589460ca94e28c51ffbddd621756f97e11
-Gitweb:        https://git.kernel.org/tip/242db7589460ca94e28c51ffbddd621756f97e11
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 13:59:36 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Wed, 18 Oct 2023 11:11:43 +02:00
+I think this is the only case which would suffer from the more obvious
+behaviour, i.e.
 
-x86/boot/32: Disable stackprotector and tracing for mk_early_pgtbl_32()
+bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+{
+        const char *uid1 = acpi_device_uid(adev);
 
-Stackprotector cannot work before paging is enabled. The read from the per
-CPU variable __stack_chk_guard is always accessing the virtual address
-either directly on UP or via FS on SMP. In physical address mode this
-results in an access to memory above 3GB.
+        return uid1 && uid2 && !strcmp(uid1, uid2);
+}
 
-So this works by chance as the hardware returns the same value when there
-is no RAM at this physical address. When there is RAM populated above 3G
-then the read is by chance the same as nothing changes that memory during
-the very early boot stage.
+That said, we can't be particularly sure about it's potential future users,
+especially when the usage will not be limited to just ACPI core since we're
+exporting it.
 
-Stop relying on pure luck and disable the stack protector for the only C
-function which is called during early boot before paging is enabled.
-
-Remove function tracing from the whole source file as there is no way to
-trace this at all, but in case of CONFIG_DYNAMIC_FTRACE=n
-mk_early_pgtbl_32() would access global function tracer variables in
-physical address mode which again might work by chance.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115902.156063939@linutronix.de
----
- arch/x86/kernel/Makefile | 1 +
- arch/x86/kernel/head32.c | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 3269a0e..0000325 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -16,6 +16,7 @@ CFLAGS_REMOVE_kvmclock.o = -pg
- CFLAGS_REMOVE_ftrace.o = -pg
- CFLAGS_REMOVE_early_printk.o = -pg
- CFLAGS_REMOVE_head64.o = -pg
-+CFLAGS_REMOVE_head32.o = -pg
- CFLAGS_REMOVE_sev.o = -pg
- CFLAGS_REMOVE_rethook.o = -pg
- endif
-diff --git a/arch/x86/kernel/head32.c b/arch/x86/kernel/head32.c
-index 246a609..bf678d6 100644
---- a/arch/x86/kernel/head32.c
-+++ b/arch/x86/kernel/head32.c
-@@ -70,7 +70,8 @@ asmlinkage __visible void __init __noreturn i386_start_kernel(void)
-  * always zero at this stage.
-  */
- void __init mk_early_pgtbl_32(void);
--void __init mk_early_pgtbl_32(void)
-+
-+void __init __no_stack_protector mk_early_pgtbl_32(void)
- {
- #ifdef __pa
- #undef __pa
+Raag
