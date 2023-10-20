@@ -2,174 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A4B7D0D51
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D937D0D54
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376964AbjJTKgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
+        id S1376991AbjJTKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376927AbjJTKf7 (ORCPT
+        with ESMTP id S1376957AbjJTKf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 06:35:59 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2066.outbound.protection.outlook.com [40.107.244.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842E1170A;
-        Fri, 20 Oct 2023 03:35:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eie8hEckEEs14ha4gJtlx4iKiWSxWboTJ0GzLIrBT47YmYIH2HYhBG+esVViKlu2ssHOIxQwTftgXxUah7bWEs/VUIOJqdIN/aEcHAoOme0v/VIHxToVlwYsL/s8bdBEiuItjS/hNtmJDOSEGphuzEoOBkrQZq3Z0mX8/Y6JJ3cYuc+42+8KAh6YzJEJ5UD8+OHI2VZxTio7v8TMbRw/dfhdE/9V594Zm4Gg4W20oneWHcR/YWGhCz716DESM811JgL+P3g6e+5QzhiC78aJfRUlg7fIF7pF6siqDnMcb/R+pFtVNcgTmA2xnGygd20R3JczZthcZRLVjWvwx3KW9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2le8x+RMQjzghYYr9XRaIW8ILaPqXqW4/Ubwyoda9BM=;
- b=BzRvaWMlSvRKghsrmxHJvQnM1a5JS6gp0PFg9DTXxitEtD5tUOfwndWMEEw//i1uvcmNTw89oE4g31YNiPNjh+LYQ0EL0Zf8B3REIruJ9z6SJauKQaxN1IN+8i/VJuJO9D1VpIgxGViiPRqaFoYC11jX/eWztHuMkCQEem+8qkz4vqYMGZmcgiJXoxcxxM2oWakvzqmd+v+vtaD8Hw1EgykMoa78gaRb04AuPN8utTlOu6oVfJBpyg2cojUnxMwkI4B8G3KPAlml2bUS0ou/8Nrf2z8v+8P6EybysygH5J7hTkzmHh6jofW5VOeUvpl9XFk654tIA4SGpmoBycIFmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2le8x+RMQjzghYYr9XRaIW8ILaPqXqW4/Ubwyoda9BM=;
- b=sKeH60d6HPI97D8BmuMtC3z0Pvofgqd0Fg/agGW12lY/QVlxKujFUBooQAr4UI3DDC3eeIL8YslOARKKRYi0GbZPPnPsHV9DecU07z/HTFk6BwfZU0dUDmzeZJpl8m5K3pqlh5Lc5jPhfGm5HIPAkDpxSlOBVzpdUmXRm/8EINo=
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
- by PH7PR12MB5711.namprd12.prod.outlook.com (2603:10b6:510:1e2::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
- 2023 10:35:46 +0000
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::167:7f5a:82a1:e2b9]) by SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::167:7f5a:82a1:e2b9%4]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
- 10:35:46 +0000
-From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
-To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "colnor+dt@kernel.org" <colnor+dt@kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
-Subject: RE: [PATCH v5 RESEND 0/4] increase ecam size value to discover 256
- buses during
-Thread-Topic: [PATCH v5 RESEND 0/4] increase ecam size value to discover 256
- buses during
-Thread-Index: AQHZ/+89QXgcS12G7EKSCK4TL1ydHbBSgl0g
-Date:   Fri, 20 Oct 2023 10:35:46 +0000
-Message-ID: <SN7PR12MB7201A57631FB1E0FB60A9BC08BDBA@SN7PR12MB7201.namprd12.prod.outlook.com>
-References: <20231016051102.1180432-1-thippeswamy.havalige@amd.com>
-In-Reply-To: <20231016051102.1180432-1-thippeswamy.havalige@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|PH7PR12MB5711:EE_
-x-ms-office365-filtering-correlation-id: 2137cafc-0d2c-4b7e-9e46-08dbd158520d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gs4iATO2idUPuf24ts6nMSFBWjwIYSx9nqkGvDx9wR/geNv5oYt+HuWX1/VuHv1DzUH5BHCaNGjdW6AkbdS+9FPhzPZSU6BGXVJGSBxv/zXEC5vUmC/GtVv3wzhfocjN/2EJt0Vt3o4qF7uRurXPRZE7d/8ATQuNTFNrf0lKIXfXN92rDTYPQpGNKl9DLMXdjb0giMQHuq+/jz48AeJWJqqk20w4G7elGAwAnA6D2ryGiYcF8QntVp4eRMXoBgTev9QjZC6fz00aSLNdPkIT1eHFoV5rL8KxmEz7KDqxAwgvehb7GM0Lk+RlSpR4UE4sK17r4hACnm5Wc1DkXU1em1hhY0x0JCslMefiXLoI4IP+5OJAc3xuydTC6/B6PtCoGqsDSu+/JO/u+f2Ffogm8Q3vkUt3SwCUbLgiT3Z1CNP58Q5q+kJ/Dxb37JVp3FJCnufvlSP3YnXsX8igfobbKb4nyKfHzpN1lsxjKxwS4ftgqxBmkoHJ0HyQrhABtyWQFU5QuFsWbrWq3YLsHXz+E9KQQgl95+QE/jOAQuMr6WIcQOA4KM8HfMcbrm3VHpyNOMu4cROnGrv9gBw6Ru7PLcdhkHYNg8n+LVvmu7tJjrh1/IXNSqU5hNLq80D623XK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(33656002)(41300700001)(7416002)(55016003)(5660300002)(4326008)(8676002)(8936002)(52536014)(2906002)(86362001)(38070700009)(478600001)(9686003)(122000001)(26005)(76116006)(53546011)(83380400001)(6506007)(7696005)(71200400001)(66556008)(66476007)(66946007)(64756008)(66446008)(38100700002)(316002)(54906003)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TgurxyjkJH1v4YlMrmX13F63Ga9rwdl9owytLjBXbZqXDB5UedhQTXBsqipQ?=
- =?us-ascii?Q?x7MQScePOWi1FJoLRLUxtQbcMqWlDRv28Uk5lr2U98LOiiNgNH70nq/EY7s0?=
- =?us-ascii?Q?y/Kw/nDFZRzoPtOs78KlcqnuqJdyGLEsB1laJuNe+OoTB2Qm8R35KMOFMKjM?=
- =?us-ascii?Q?MBPik+XFhIeYyVBtIKIzK8pSZujCCbjbqwlgIKRpiIog+3QPQeUtiIOVV8Pk?=
- =?us-ascii?Q?1DqRzEumesuuqBTSLGZ5yfD74APNWFXo4Pg0Fth3rO1BLfFAxeHv2hs9YOlL?=
- =?us-ascii?Q?5zxKGHPENRFab78BMF01OsfqND3Ln7m3PcOsWOWasqAbGXWgqxred3eavt8g?=
- =?us-ascii?Q?+ljl60peabg0pMn7pgZFXszb0XZYfShH/CPV7DyB8+nxHiWqBFNBNRhXjB1/?=
- =?us-ascii?Q?faN6CgdRWKIutbJ/3zri1KXbSCSMiuBIYbEMYA90ok4G/4+0t7RYNMTyB6OA?=
- =?us-ascii?Q?6Bg/2pxX7Sr58E0THE/S71WCJppI8VMopUFWJC/FMIthjabF45dKunFD754Q?=
- =?us-ascii?Q?TW21NKjDdADW/B8GhkmSkcWi+XVfW8c9GG5TLV3lyhIuyZDPuk4tKMu5MT7i?=
- =?us-ascii?Q?ieJR3Ih9ile5JXcWiaKMsbQFow3YBKTd3paC1+9/tX2V21+qXjaq3GoNlVCW?=
- =?us-ascii?Q?gTlbOfMclhwzJpsD+HsixjgZyYohEuuMUVYyEve9NY3h19rTDgDtDNjNJhBw?=
- =?us-ascii?Q?+Pj3zFi5maMgNmU8bYIr5PLYnImnXV8IJ4X9kSeeopoW1mpvl/drJQ112flU?=
- =?us-ascii?Q?8GLf/PA8z87oXfEKbe6YDupf4IO3ho9oekYNBbnvVxxBt7EdVxnJDw+LNxjT?=
- =?us-ascii?Q?krmUySFbX8I+eqkPzEpRWEbnZnLqrtRmBOCvMVgPaHhW5oiqzSBU9fShYujY?=
- =?us-ascii?Q?GYG7THU4wgXgnnwZMtHYJREeSeak4uV91hSGb1VIHGEAwQH2yrrqJ77LhPX0?=
- =?us-ascii?Q?zH4rJEGGYZeRGAAH7i5quT2WatUxdbQZ45HPNxHHUyNKeEAhhBdCk3MLmbIJ?=
- =?us-ascii?Q?OnFJmrYS0h/ELls4kWtWLOW/OFX/E6Tyc7YF2vOTNfr+Glnq4YzfG/aCvXb5?=
- =?us-ascii?Q?WiBG9NplEgb1B/nm0htAffIlVV4/lRa6ZSz7Wu3IPXHW+/5PStZR2tfxEfqR?=
- =?us-ascii?Q?97QTVZDnt+C8gT1DN0LCiEYjKHLN2H4pT8Ms6MYbnecgtsAuU+PS0GANLog8?=
- =?us-ascii?Q?EFEkolRUdHVbWAi96rz2mCRB+H7TS+Raz8I+TLiJ2qHJLvgQttLxWuUrki24?=
- =?us-ascii?Q?82ZjlJJ2CWsXJdKs+9h0Cg6qmzV+YdvBpCxW7gUQL7qi6TfpyvVlFS4iq3f6?=
- =?us-ascii?Q?k8q+QyYvimfw4y2eoUBUz9zPopeyccTVdL4aiMJQSM5V55Kmgh0HmaEBXqr9?=
- =?us-ascii?Q?e/GAGrR0q7jf3pZ6Pfvkg6fCYrmK0uH1ZR+Add5g+hssCXMhJqe6ssgYMX4n?=
- =?us-ascii?Q?0g6ohgYaYAoIZcgQGJivu6l0Fl1mPH1sSdjpgfxHod1fUf2HvaxlUzu90d2M?=
- =?us-ascii?Q?C6bkUs/5CIU+3d09buHa8mkThCa/9Fc5W8T89AxdviAyHc0IpYyCNhl8r6VM?=
- =?us-ascii?Q?q8DD9xCPgyDgmBSKNJo=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8804ED61
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:35:52 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so105794066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1697798151; x=1698402951; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zcOsTWZFgk36Pr6gD973XFfrWfkQhr13IcUUfM7456o=;
+        b=B3HpL9rwjP58F9+ojrAYWhu0KKiuIa9tjlrJWOUopb8kGUUHqTYSXloUhow/KsMnL6
+         vBnZioIZ5CeUdV+HtrBwgtgMvtj2gfesgi4u5ghTMW0wJttqsMem5C0FltBKhyehrYKD
+         EVBN2rp7rrldWw2WWydUEidCZ0S0slEDHUO4SLB07VGmplKuWiLZIMQei+4K8Bf7rjqS
+         Lgt8uVZlC2lklG9CwUycytTDOnLmO0rOsJgqbCL2mSIuoM9RZk8j3cWxwHtgEw179I3W
+         GV241vorvwQb0LHP557m2eYz8Cfs0KGmVKuclyoUFI+GSHlGlRsPoyu45XVSaNRki4DF
+         qvtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697798151; x=1698402951;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zcOsTWZFgk36Pr6gD973XFfrWfkQhr13IcUUfM7456o=;
+        b=LNCsuqF5RTRhpifwHtVwgPoasIwp8qE2EtAfQ5CNjGSPgSMy3nuA+QN0HW0u1oyoh8
+         dSEPU7oW+jz4nk2jC1EEeKj6fMSc8Lpezub4PM1A1W65RCyivGku4DlYtk9RM4pfOptX
+         kQzDOouRaZHa4r+sz3GM041kEwAzuQJascMSekqEZDIBAuMgXWiBUeFxcuezsNYmUr8f
+         J/aPBTyUwXKhmUPptJoNiGaJ9ORWfs5vh7Zecj0/4ynAoZO6EQjpQx1w3SI+6hjzSLk9
+         CdMKLAM6RcIFGwmHQm6W98grEKzMBvROCwtyQ54YMVqBoiLoMVRmJig9QhkZ0mCWzKzc
+         1I0w==
+X-Gm-Message-State: AOJu0YxawmgEGmEgLNBeBnaoNj0B3QqbRqYyAc4kA1lmUZdz0s++WGLb
+        iIg2biRNfc1bbZeV+6NIJtVzdw==
+X-Google-Smtp-Source: AGHT+IFXFm/4t+e5StIvyM1NDl6E74qUulPaU1GTzNjJDDZnnlzXaNEbp6AQa7eU8JChbIQrHL2+tw==
+X-Received: by 2002:a17:906:fe04:b0:9c3:cd12:1925 with SMTP id wy4-20020a170906fe0400b009c3cd121925mr966287ejb.58.1697798150757;
+        Fri, 20 Oct 2023 03:35:50 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (k10064.upc-k.chello.nl. [62.108.10.64])
+        by smtp.gmail.com with ESMTPSA id h7-20020a1709063c0700b0099c53c4407dsm1226701ejg.78.2023.10.20.03.35.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 03:35:50 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Date:   Fri, 20 Oct 2023 12:35:46 +0200
+Subject: [PATCH v2 1/2] dt-bindings: usb: add NXP PTN36502 Type-C redriver
+ bindings
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2137cafc-0d2c-4b7e-9e46-08dbd158520d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2023 10:35:46.7009
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NEKIA6ZZHm25pB5RWiuidJQZxYg9fEvAEmIYZ4xq7XoFJYsi29aPlkAPwjcb1lhNH8diISyKTMkucKeG/TCn9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5711
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231020-ptn36502-v2-1-b37a337d463e@fairphone.com>
+References: <20231020-ptn36502-v2-0-b37a337d463e@fairphone.com>
+In-Reply-To: <20231020-ptn36502-v2-0-b37a337d463e@fairphone.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Document bindings for this Type-C USB 3.1 Gen 1 and DisplayPort v1.2
+combo redriver.
 
-Can you please provide an update on this patch series.
+The PTN36502 can also run in GPIO mode where it is configured
+differently, without any I2C connection, but this is not supported yet.
 
-Regards,
-Thippeswamy H
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+ .../devicetree/bindings/usb/nxp,ptn36502.yaml      | 94 ++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-> -----Original Message-----
-> From: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> Sent: Monday, October 16, 2023 10:41 AM
-> To: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> Cc: bhelgaas@google.com; lpieralisi@kernel.org; kw@linux.com;
-> robh@kernel.org; krzysztof.kozlowski+dt@linaro.org; colnor+dt@kernel.org;
-> Havalige, Thippeswamy <thippeswamy.havalige@amd.com>; Simek, Michal
-> <michal.simek@amd.com>; Gogada, Bharat Kumar
-> <bharat.kumar.gogada@amd.com>
-> Subject: [PATCH v5 RESEND 0/4] increase ecam size value to discover 256
-> buses during
->=20
-> Current driver is supports up to 16 buses. The following code fixes to su=
-pport
-> up to 256 buses.
->=20
-> update "NWL_ECAM_VALUE_DEFAULT " to 16  can access up to 256MB ECAM
-> region to detect 256 buses.
->=20
-> Update ecam size to 256MB in device tree binding example.
->=20
-> Remove unwanted code.
->=20
-> Thippeswamy Havalige (4):
->   PCI: xilinx-nwl: Remove unnecessary code which updates primary,
->     secondary and sub-ordinate bus numbers
->   dt-bindings: PCI: xilinx-nwl: Modify ECAM size in example
->   PCI: xilinx-nwl: Rename ECAM size default macro
->   PCI: xilinx-nwl: Increase ECAM size to accommodate 256 buses
->=20
->  .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml |  2 +-
->  drivers/pci/controller/pcie-xilinx-nwl.c       | 18 +++---------------
->  2 files changed, 4 insertions(+), 16 deletions(-)
->=20
-> --
-> 2.25.1
+diff --git a/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml b/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml
+new file mode 100644
+index 000000000000..eee548ac1abe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml
+@@ -0,0 +1,94 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/nxp,ptn36502.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PTN36502 Type-C USB 3.1 Gen 1 and DisplayPort v1.2 combo redriver
++
++maintainers:
++  - Luca Weiss <luca.weiss@fairphone.com>
++
++properties:
++  compatible:
++    enum:
++      - nxp,ptn36502
++
++  reg:
++    maxItems: 1
++
++  vdd18-supply:
++    description: Power supply for VDD18 pin
++
++  retimer-switch:
++    description: Flag the port as possible handle of SuperSpeed signals retiming
++    type: boolean
++
++  orientation-switch:
++    description: Flag the port as possible handler of orientation switching
++    type: boolean
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: Super Speed (SS) Output endpoint to the Type-C connector
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: Super Speed (SS) Input endpoint from the Super-Speed PHY
++
++      port@2:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Sideband Use (SBU) AUX lines endpoint to the Type-C connector for the purpose of
++          handling altmode muxing and orientation switching.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        typec-mux@1a {
++            compatible = "nxp,ptn36502";
++            reg = <0x1a>;
++
++            vdd18-supply = <&usb_redrive_1v8>;
++
++            retimer-switch;
++            orientation-switch;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    usb_con_ss: endpoint {
++                        remote-endpoint = <&typec_con_ss>;
++                    };
++                };
++                port@1 {
++                    reg = <1>;
++                    phy_con_ss: endpoint {
++                        remote-endpoint = <&usb_phy_ss>;
++                    };
++                };
++                port@2 {
++                    reg = <2>;
++                    usb_con_sbu: endpoint {
++                        remote-endpoint = <&typec_dp_aux>;
++                    };
++                };
++            };
++        };
++    };
++...
+
+-- 
+2.42.0
 
