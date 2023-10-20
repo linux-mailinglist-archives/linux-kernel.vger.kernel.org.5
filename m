@@ -2,155 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BEA7D0F06
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742747D0F09
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377155AbjJTLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
+        id S1377210AbjJTLqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377302AbjJTLpI (ORCPT
+        with ESMTP id S1377216AbjJTLqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:45:08 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C0A6597;
-        Fri, 20 Oct 2023 04:44:01 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KAYH8u014089;
-        Fri, 20 Oct 2023 04:43:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=lT/SSeJWOwvaoxmw8OJwj/hd5bY2fzUWYDEH7M+KLj0=;
- b=NiIk52O+vx/OnBko+OrSfLD6j39n4DMdZHCrGIZYriHqfOXM75od1gPgUApdOhKCGQxl
- eyYcwWHaM7Rdv4whtfkF9m1eJ103wd2BG/YAa8v0RoDK6ri5bOtnybaaIw64xwdDB8yX
- wNVq6NIldmHE2jq81aZ0PSXkI6ePr5e1WgaIH2GspdiG6OD1vLFzMTkx7tFgIgiyz1ic
- Y7y5db5J4Cvnhzi9Ezn8PGYj1ScdtjRwav41OdsSzgMUo5hH2MTefZTSWMf68DEu3bhy
- vnbVQDMfR4qajC64O8JEvule86FUyO7dXEniHkkfVHU8ZsjH4yanv5Et0XXUt1sok6uG IQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3tubwyjar6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 04:43:10 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 20 Oct
- 2023 04:43:07 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Fri, 20 Oct 2023 04:43:07 -0700
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 7DF655B692C;
-        Fri, 20 Oct 2023 04:43:07 -0700 (PDT)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>,
-        Shinas Rasheed <srasheed@marvell.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        "Sathesh Edara" <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net-next v4] octeon_ep: assert hardware structure sizes
-Date:   Fri, 20 Oct 2023 04:43:01 -0700
-Message-ID: <20231020114302.2334660-1-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 20 Oct 2023 07:46:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4598610E5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 04:46:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C851A2F4;
+        Fri, 20 Oct 2023 04:46:47 -0700 (PDT)
+Received: from [192.168.1.89] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62CC23F5A1;
+        Fri, 20 Oct 2023 04:46:06 -0700 (PDT)
+Message-ID: <7aab63e2-b133-49ec-ab8b-36ebec685de2@arm.com>
+Date:   Fri, 20 Oct 2023 12:46:05 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jqrUGGDjF8UxTtIgPJMkC0ciSg5G0a8Y
-X-Proofpoint-GUID: jqrUGGDjF8UxTtIgPJMkC0ciSg5G0a8Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     dm-devel@lists.linux.dev, agk@redhat.com, agk@redhat.com,
+        linux-kernel@vger.kernel.org
+From:   Christian Loehle <christian.loehle@arm.com>
+Subject: [PATCHv2] dm: delay: use kthread instead of timers and wq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up structure defines related to hardware data to be
-asserted to fixed sizes, as padding is not allowed
-by hardware.
+The current design of timers and wq to realize the delays
+is insufficient especially for delays below ~50ms.
+The design is enhanced with a kthread to flush the expired delays,
+trading some CPU time (in some cases) for better delay accuracy and
+delays closer to what the user requested for smaller delays.
+The new design is chosen as long as all the delays are below 50ms.
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+Since bios can't be completed in interrupt context using a kthread
+is probably the most reasonable way to approach this.
+
+Testing with
+echo "0 2097152 zero" | dmsetup create dm-zeros
+for i in $(seq 0 20);
+do
+  echo "0 2097152 delay /dev/mapper/dm-zeros 0 $i" | dmsetup create dm-delay-${i}ms;
+done
+
+Some performance numbers for comparison
+beaglebone black (single core) CONFIG_HZ_1000=y:
+fio --name=1msread --rw=randread --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-1ms
+Theoretical maximum: 1000 IOPS
+Previous: 250 IOPS
+Kthread: 500 IOPS
+fio --name=10msread --rw=randread --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms
+Theoretical maximum: 100 IOPS
+Previous: 45 IOPS
+Kthread: 50 IOPS
+fio --name=1mswrite --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-1ms
+Theoretical maximum: 1000 IOPS
+Previous: 498 IOPS
+Kthread: 1000 IOPS
+fio --name=10mswrite --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms
+Theoretical maximum: 100 IOPS
+Previous: 90 IOPS
+Kthread: 100 IOPS
+fio --name=10mswriteasync --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms --numjobs=32 --iodepth=64 --ioengine=libaio --group_reporting
+Previous: 13.3k IOPS
+Kthread: 13.3k IOPS
+(This one is just to prove the new design isn't impacting throughput,
+not really about delays)
+
+Signed-off-by: Christian Loehle <christian.loehle@arm.com>
 ---
-V4:
-  - Changed packed attributes to static assertions for fixed sizes
-V3: https://lore.kernel.org/all/20231016092051.2306831-1-srasheed@marvell.com/
-  - Updated changelog to indicate this is a cleanup
-V2: https://lore.kernel.org/all/20231010194026.2284786-1-srasheed@marvell.com/
-  - Updated changelog to provide more information
-V1: https://lore.kernel.org/all/20231006120225.2259533-1-srasheed@marvell.com/
+v2:
+	- Keep the timer wq and delay design for longer delays
+	- Address the rest of Mike's minor comments
 
- drivers/net/ethernet/marvell/octeon_ep/octep_rx.h | 3 +++
- drivers/net/ethernet/marvell/octeon_ep/octep_tx.h | 4 ++++
- 2 files changed, 7 insertions(+)
+ drivers/md/dm-delay.c | 106 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 91 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-index 782a24f27f3e..49feae80d7d2 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-@@ -20,6 +20,7 @@ struct octep_oq_desc_hw {
- 	dma_addr_t buffer_ptr;
- 	u64 info_ptr;
+diff --git a/drivers/md/dm-delay.c b/drivers/md/dm-delay.c
+index 7433525e5985..18f4adf11713 100644
+--- a/drivers/md/dm-delay.c
++++ b/drivers/md/dm-delay.c
+@@ -13,6 +13,7 @@
+ #include <linux/blkdev.h>
+ #include <linux/bio.h>
+ #include <linux/slab.h>
++#include <linux/kthread.h>
+ 
+ #include <linux/device-mapper.h>
+ 
+@@ -31,6 +32,7 @@ struct delay_c {
+ 	struct workqueue_struct *kdelayd_wq;
+ 	struct work_struct flush_expired_bios;
+ 	struct list_head delayed_bios;
++	struct task_struct *worker;
+ 	atomic_t may_delay;
+ 
+ 	struct delay_class read;
+@@ -48,6 +50,7 @@ struct dm_delay_info {
  };
-+static_assert(sizeof(struct octep_oq_desc_hw) == 16);
  
- #define OCTEP_OQ_DESC_SIZE    (sizeof(struct octep_oq_desc_hw))
+ static DEFINE_MUTEX(delayed_bios_lock);
++static void flush_delayed_bios_fast(struct delay_c *dc, bool flush_all);
  
-@@ -39,6 +40,7 @@ struct octep_oq_resp_hw_ext {
- 	/* checksum verified. */
- 	u64 csum_verified:2;
- };
-+static_assert(sizeof(struct octep_oq_resp_hw_ext) == 8);
+ static void handle_delayed_timer(struct timer_list *t)
+ {
+@@ -56,6 +59,27 @@ static void handle_delayed_timer(struct timer_list *t)
+ 	queue_work(dc->kdelayd_wq, &dc->flush_expired_bios);
+ }
  
- #define  OCTEP_OQ_RESP_HW_EXT_SIZE   (sizeof(struct octep_oq_resp_hw_ext))
++static inline int delay_is_fast(struct delay_c *dc)
++{
++	return !!dc->worker;
++}
++
++static int flush_worker_fn(void *data)
++{
++	struct delay_c *dc = data;
++
++	while (1) {
++		flush_delayed_bios_fast(dc, 0);
++		if (unlikely(list_empty(&dc->delayed_bios))) {
++			set_current_state(TASK_INTERRUPTIBLE);
++			schedule();
++		} else
++			cond_resched();
++	}
++
++	return 0;
++}
++
+ static void queue_timeout(struct delay_c *dc, unsigned long expires)
+ {
+ 	mutex_lock(&dc->timer_lock);
+@@ -66,6 +90,23 @@ static void queue_timeout(struct delay_c *dc, unsigned long expires)
+ 	mutex_unlock(&dc->timer_lock);
+ }
  
-@@ -50,6 +52,7 @@ struct octep_oq_resp_hw {
- 	/* The Length of the packet. */
- 	__be64 length;
- };
-+static_assert(sizeof(struct octep_oq_resp_hw) == 8);
++static void flush_delayed_bios_fast(struct delay_c *dc, bool flush_all)
++{
++	struct dm_delay_info *delayed, *next;
++
++	mutex_lock(&delayed_bios_lock);
++	list_for_each_entry_safe(delayed, next, &dc->delayed_bios, list) {
++		if (flush_all || time_after_eq(jiffies, delayed->expires)) {
++			struct bio *bio = dm_bio_from_per_bio_data(delayed,
++						sizeof(struct dm_delay_info));
++			list_del(&delayed->list);
++			dm_submit_bio_remap(bio, NULL);
++			delayed->class->ops--;
++		}
++	}
++	mutex_unlock(&delayed_bios_lock);
++}
++
+ static void flush_bios(struct bio *bio)
+ {
+ 	struct bio *n;
+@@ -78,7 +119,7 @@ static void flush_bios(struct bio *bio)
+ 	}
+ }
  
- #define OCTEP_OQ_RESP_HW_SIZE   (sizeof(struct octep_oq_resp_hw))
+-static struct bio *flush_delayed_bios(struct delay_c *dc, int flush_all)
++static struct bio *flush_delayed_bios(struct delay_c *dc, bool flush_all)
+ {
+ 	struct dm_delay_info *delayed, *next;
+ 	unsigned long next_expires = 0;
+@@ -93,7 +134,6 @@ static struct bio *flush_delayed_bios(struct delay_c *dc, int flush_all)
+ 			list_del(&delayed->list);
+ 			bio_list_add(&flush_bios, bio);
+ 			delayed->class->ops--;
+-			continue;
+ 		}
  
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-index 21e75ff9f5e7..86c98b13fc44 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-@@ -36,6 +36,7 @@ struct octep_tx_sglist_desc {
- 	u16 len[4];
- 	dma_addr_t dma_ptr[4];
- };
-+static_assert(sizeof(struct octep_tx_sglist_desc) == 40);
+ 		if (!start_timer) {
+@@ -110,12 +150,17 @@ static struct bio *flush_delayed_bios(struct delay_c *dc, int flush_all)
+ 	return bio_list_get(&flush_bios);
+ }
  
- /* Each Scatter/Gather entry sent to hardwar hold four pointers.
-  * So, number of entries required is (MAX_SKB_FRAGS + 1)/4, where '+1'
-@@ -239,6 +240,7 @@ struct octep_instr_hdr {
- 	/* Reserved3 */
- 	u64 reserved3:1;
- };
-+static_assert(sizeof(struct octep_instr_hdr) == 8);
++
++
+ static void flush_expired_bios(struct work_struct *work)
+ {
+ 	struct delay_c *dc;
  
- /* Hardware Tx completion response header */
- struct octep_instr_resp_hdr {
-@@ -263,6 +265,7 @@ struct octep_instr_resp_hdr {
- 	/* Opcode for the return packet  */
- 	u64 opcode:16;
- };
-+static_assert(sizeof(struct octep_instr_hdr) == 8);
+ 	dc = container_of(work, struct delay_c, flush_expired_bios);
+-	flush_bios(flush_delayed_bios(dc, 0));
++	if (delay_is_fast(dc))
++		flush_delayed_bios_fast(dc, 0);
++	else
++		flush_bios(flush_delayed_bios(dc, 0));
+ }
  
- /* 64-byte Tx instruction format.
-  * Format of instruction for a 64-byte mode input queue.
-@@ -293,6 +296,7 @@ struct octep_tx_desc_hw {
- 	/* Additional headers available in a 64-byte instruction. */
- 	u64 exhdr[4];
- };
-+static_assert(sizeof(struct octep_tx_desc_hw) == 64);
+ static void delay_dtr(struct dm_target *ti)
+@@ -131,8 +176,11 @@ static void delay_dtr(struct dm_target *ti)
+ 		dm_put_device(ti, dc->write.dev);
+ 	if (dc->flush.dev)
+ 		dm_put_device(ti, dc->flush.dev);
++	if (dc->worker)
++		kthread_stop(dc->worker);
  
- #define OCTEP_IQ_DESC_SIZE (sizeof(struct octep_tx_desc_hw))
- #endif /* _OCTEP_TX_H_ */
+-	mutex_destroy(&dc->timer_lock);
++	if (!delay_is_fast(dc))
++		mutex_destroy(&dc->timer_lock);
+ 
+ 	kfree(dc);
+ }
+@@ -175,6 +223,7 @@ static int delay_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ {
+ 	struct delay_c *dc;
+ 	int ret;
++	unsigned int max_delay;
+ 
+ 	if (argc != 3 && argc != 6 && argc != 9) {
+ 		ti->error = "Requires exactly 3, 6 or 9 arguments";
+@@ -188,16 +237,14 @@ static int delay_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	}
+ 
+ 	ti->private = dc;
+-	timer_setup(&dc->delay_timer, handle_delayed_timer, 0);
+-	INIT_WORK(&dc->flush_expired_bios, flush_expired_bios);
+ 	INIT_LIST_HEAD(&dc->delayed_bios);
+-	mutex_init(&dc->timer_lock);
+ 	atomic_set(&dc->may_delay, 1);
+ 	dc->argc = argc;
+ 
+ 	ret = delay_class_ctr(ti, &dc->read, argv);
+ 	if (ret)
+ 		goto bad;
++	max_delay = dc->read.delay;
+ 
+ 	if (argc == 3) {
+ 		ret = delay_class_ctr(ti, &dc->write, argv);
+@@ -206,6 +253,10 @@ static int delay_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 		ret = delay_class_ctr(ti, &dc->flush, argv);
+ 		if (ret)
+ 			goto bad;
++		if (max_delay < dc->write.delay)
++			max_delay = dc->write.delay;
++		if (max_delay < dc->flush.delay)
++			max_delay = dc->flush.delay;
+ 		goto out;
+ 	}
+ 
+@@ -216,19 +267,36 @@ static int delay_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 		ret = delay_class_ctr(ti, &dc->flush, argv + 3);
+ 		if (ret)
+ 			goto bad;
++		if (max_delay < dc->flush.delay)
++			max_delay = dc->flush.delay;
+ 		goto out;
+ 	}
+ 
+ 	ret = delay_class_ctr(ti, &dc->flush, argv + 6);
+ 	if (ret)
+ 		goto bad;
++	if (max_delay < dc->flush.delay)
++		max_delay = dc->flush.delay;
+ 
+ out:
+-	dc->kdelayd_wq = alloc_workqueue("kdelayd", WQ_MEM_RECLAIM, 0);
+-	if (!dc->kdelayd_wq) {
+-		ret = -EINVAL;
+-		DMERR("Couldn't start kdelayd");
+-		goto bad;
++	if (max_delay < 50) {
++		/*
++		 * In case of small requested delays, use kthread instead of
++		 * timers and workqueue to achieve better latency.
++		 */
++		dc->worker = kthread_create(&flush_worker_fn, dc,
++				"dm-delay-flush-worker");
++		if (!dc->worker)
++			goto bad;
++	} else {
++		INIT_WORK(&dc->flush_expired_bios, flush_expired_bios);
++		timer_setup(&dc->delay_timer, handle_delayed_timer, 0);
++		dc->kdelayd_wq = alloc_workqueue("kdelayd", WQ_MEM_RECLAIM, 0);
++		if (!dc->kdelayd_wq) {
++			ret = -EINVAL;
++			DMERR("Couldn't start kdelayd");
++			goto bad;
++		}
+ 	}
+ 
+ 	ti->num_flush_bios = 1;
+@@ -260,7 +328,10 @@ static int delay_bio(struct delay_c *dc, struct delay_class *c, struct bio *bio)
+ 	list_add_tail(&delayed->list, &dc->delayed_bios);
+ 	mutex_unlock(&delayed_bios_lock);
+ 
+-	queue_timeout(dc, expires);
++	if (delay_is_fast(dc))
++		wake_up_process(dc->worker);
++	else
++		queue_timeout(dc, expires);
+ 
+ 	return DM_MAPIO_SUBMITTED;
+ }
+@@ -270,8 +341,13 @@ static void delay_presuspend(struct dm_target *ti)
+ 	struct delay_c *dc = ti->private;
+ 
+ 	atomic_set(&dc->may_delay, 0);
+-	del_timer_sync(&dc->delay_timer);
+-	flush_bios(flush_delayed_bios(dc, 1));
++
++	if (delay_is_fast(dc))
++		flush_delayed_bios_fast(dc, 1);
++	else {
++		del_timer_sync(&dc->delay_timer);
++		flush_bios(flush_delayed_bios(dc, 1));
++	}
+ }
+ 
+ static void delay_resume(struct dm_target *ti)
 -- 
-2.25.1
-
+2.34.1
