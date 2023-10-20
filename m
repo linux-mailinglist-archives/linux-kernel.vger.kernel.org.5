@@ -2,126 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A96F7D05A7
+	by mail.lfdr.de (Postfix) with ESMTP id EEE3C7D05A8
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346734AbjJTAEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S1346750AbjJTAEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjJTAEI (ORCPT
+        with ESMTP id S235579AbjJTAEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:04:08 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D243ECF;
-        Thu, 19 Oct 2023 17:04:06 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40806e40fccso1733635e9.2;
-        Thu, 19 Oct 2023 17:04:06 -0700 (PDT)
+        Thu, 19 Oct 2023 20:04:22 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EE412F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:04:19 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5ad5178d1bfso185501a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:04:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697760245; x=1698365045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k8rgHM7FZqxCqzn7vvq1TlUzERIDuJUAdkWJ8iiKEaQ=;
-        b=clB+zGYHs/NktN3rp/F7A0O9ExdzxDeTRaNPZYA8jV6ipbr7wp26A/ErQXo5dubWNv
-         bHv/L5/9szBRlfM1h32TLKkcDjRCHs4TdOqVFVykOfrnccpv1/FDTDicxNlk3oqxTWOy
-         /uhyMqcVjYCDdKGLks1Ii5phG/9NNzMGq4fysaIDzjjHsNfGKubFycYDH8EKANBmUB1c
-         U39m4VmKB/+fkh/4Nr84/sgyEAZ/6uuEQg58YBX6P112eCV4234++DdbzLaSs6BP6zuZ
-         6focYJ9u+TshGLDXIOswUGLaaFSssoqndWRKGEykJgP0r35TOM0T5j1ohoMna3jgCKZW
-         Ykvg==
+        d=chromium.org; s=google; t=1697760258; x=1698365058; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WyinLtXIDJ/J+W6Ws5k+7hFrel/yPirPuKlAKtlZbkQ=;
+        b=SwqLfM5VRahAzpHfZU/mst5iVfVxp9PMrbBJ/ejbR6VV1D/c6WLYd14N73i4PBZUsr
+         dyzmQKNB1APZuLsyHSplGtnEUdaw1kwkQaZF3zs9biOeauGbVfBzH7vI+dBsnv6GlUzQ
+         bOi8Rc6v3X4bB5qShVaaYgvxY6SVrOjOz2RyE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697760245; x=1698365045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k8rgHM7FZqxCqzn7vvq1TlUzERIDuJUAdkWJ8iiKEaQ=;
-        b=P48ELnTxvJS/ex7uafSMfR4J2NTtnG8XzMrE8HxS0jny9aiA62wAxaEJ2UrBiMRT+8
-         tkEwcrtEXcqTWq6tR0XVvCZO1VuF+IQmpk24Uv6EbZt8Wb2PVqvKOca1bPIXVZPo0N4j
-         f6HRKj+VMW+GusAlRk5wztB9al4q/KBq7MzNQ2xWYuH9GUk2f/Gis7j/TByAueCJOfMU
-         s3yF4T4cZAcJWDWu7aQLIT4/m719fvp8HaM6rPJPnX+crriqLMu/nQGn/4k7PVENaEJP
-         6zeWlNlh+3+jK7P4f7Ws7yINTR9I2evtu6VOR4rFosO3cZZwxIxf4Da+aZ6NExqYV+mB
-         ltJA==
-X-Gm-Message-State: AOJu0Yy2b2PT9FBp+lDWLZ/hacm1Y7Jp4CR6iLLfpcFumy7pgfafpSC1
-        H+zIrTlsyrFJ3Hm89C0/wYYOwq4PksAOcPonESo=
-X-Google-Smtp-Source: AGHT+IHdv7lkZrt8UJ//L/e8bVOjECVyYtNV+uypimXs+1Cig9E/s9CPakUtlbdc2PIqiauWw253HPN30C5Hif1WiXQ=
-X-Received: by 2002:a5d:5b1c:0:b0:323:2f54:b6cb with SMTP id
- bx28-20020a5d5b1c000000b003232f54b6cbmr342241wrb.8.1697760245097; Thu, 19 Oct
- 2023 17:04:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697760258; x=1698365058;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WyinLtXIDJ/J+W6Ws5k+7hFrel/yPirPuKlAKtlZbkQ=;
+        b=EJfbqwtR+o5ljaI3UhbIBB5XT28dLnnSYcWVv0/ucA5BLDjnBosNxiCDHwpfy6RXfL
+         P8xO2/847/jlujrC6dR1F7GsUU73oZ1LfS2Rc2f6E+dDGZRJ4IN/vXI/MUvB52RPw6r8
+         k8jwFamhUc8ewvMysK6Db4Uu1uafMSFfMy7o4ORryYZ3hm2FeooyFpyDr9au7+8gKzYD
+         cwfzie57s1fTUYPKkiTrsyZJKBEWpkA9lGVU20U5Twl8OWhG4R0AprWRjFCcCZRvpvOP
+         3d58gyHj86pYDNs/Q8FRZ94ZRp7dmN4xcT+uFYWkONM61g9XaLJL9nNsKQZsW8aGxoa1
+         LoKQ==
+X-Gm-Message-State: AOJu0YwoUEJSCRffsfaGbRpL4r6uO7s0g08QkDcQEjY/sJluQMXDubPh
+        2vbsSWz1ykGth4tMkK94aqwfgk6W2r7KGXtOnqw=
+X-Google-Smtp-Source: AGHT+IGLdbduWG19T1e0Z4j49YgX7FlC4Q5RiYDw4z81sX/pEbOSv8eYtkL1VVbIR3nJtcknqdeW+Q==
+X-Received: by 2002:a05:6a20:2451:b0:158:17e6:7a6 with SMTP id t17-20020a056a20245100b0015817e607a6mr329364pzc.42.1697760258529;
+        Thu, 19 Oct 2023 17:04:18 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h13-20020a17090ac38d00b0027cbc50b826sm2116506pjt.17.2023.10.19.17.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 17:04:17 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:04:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] PNP: replace deprecated strncpy with memcpy
+Message-ID: <202310191637.9EBDCC364@keescook>
+References: <20231019-strncpy-drivers-pnp-pnpbios-rsparser-c-v1-1-e47d93b52e3e@google.com>
 MIME-Version: 1.0
-References: <20231018061746.111364-1-zhouchuyi@bytedance.com> <20231018061746.111364-9-zhouchuyi@bytedance.com>
-In-Reply-To: <20231018061746.111364-9-zhouchuyi@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 19 Oct 2023 17:03:53 -0700
-Message-ID: <CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v6 8/8] selftests/bpf: Add tests for
- open-coded task and css iter
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019-strncpy-drivers-pnp-pnpbios-rsparser-c-v1-1-e47d93b52e3e@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 11:18=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.co=
-m> wrote:
->
-> +
-> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> +__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s=
-")
-> +int BPF_PROG(iter_css_task_for_each)
-> +{
-> +       u64 cg_id =3D bpf_get_current_cgroup_id();
-> +       struct cgroup *cgrp =3D bpf_cgroup_from_id(cg_id);
-> +       struct cgroup_subsys_state *css;
-> +       struct task_struct *task;
-> +
-> +       if (cgrp =3D=3D NULL)
-> +               return 0;
-> +       css =3D &cgrp->self;
-> +
-> +       bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
-> +
-> +       }
-> +       bpf_cgroup_release(cgrp);
-> +       return 0;
-> +}
+On Thu, Oct 19, 2023 at 11:28:32PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous
+> interfaces.
+> 
+> After having precisely calculated the lengths and ensuring we don't
+> overflow the buffer, this really decays to just a memcpy. Let's not use
+> a C string api as it makes the intention of the code confusing.
 
-I think we should relax allowlist in patch 2 further.
-Any sleepable is safe.
-Allowlist is needed to avoid dead locking on css_set_lock.
-Any lsm and any iter (even non-sleepable) and any sleepable
-seems to be safe.
+This is another case where we're building a C string from a byte array.
 
-Then the above test would need s/fentry.s/fentry/ to stay relevant.
+> It'd be nice to use strscpy() in this case (as we clearly want
+> NUL-termination) because it'd clean up the code a bit. However, I don't
+> quite know enough about what is going on here to justify a drop-in
+> replacement -- too much bit magic and why (PNP_NAME_LEN - 2)? I'm afraid
+> using strscpy() may result in copying too many or too few bytes into our
+> dev->name buffer resulting in different behavior. At least using
+> memcpy() we can ensure the behavior is exactly the same.
+> 
+> Side note:
+> NUL-padding is not required because insert_device() calls
+> pnpbios_parse_data_stream() with a zero-allocated `dev`:
+> 299 |  static int __init insert_device(struct pnp_bios_node *node) {
+> ...
+> 312 |  dev = pnp_alloc_dev(&pnpbios_protocol, node->handle, id);
+> ...
+> 316 |  pnpbios_parse_data_stream(dev, node);
+> 
+> then pnpbios_parse_data_stream() calls pnpbios_parse_compatible_ids().
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-I would also add:
+tl;dr:
 
-SEC("iter/cgroup")
-int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
-{
-        struct seq_file *seq =3D ctx->meta->seq;
-        struct cgroup *cgrp =3D ctx->cgroup;
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-        /* epilogue */
-        if (cgrp =3D=3D NULL) ..
+My ramblings below...
 
-        bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
-           BPF_SEQ_PRINTF(); // something about task
-        }
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  drivers/pnp/pnpbios/rsparser.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pnp/pnpbios/rsparser.c b/drivers/pnp/pnpbios/rsparser.c
+> index 2f31b212b1a5..70af7821d3fa 100644
+> --- a/drivers/pnp/pnpbios/rsparser.c
+> +++ b/drivers/pnp/pnpbios/rsparser.c
+> @@ -454,8 +454,8 @@ static unsigned char *pnpbios_parse_compatible_ids(unsigned char *p,
+>  		switch (tag) {
 
-To demonstrate how new kfunc iter can be combined with cgroup iter and
-it won't deadlock, though cgroup iter is not sleepable.
+So we've got a fixed-sized C string as a destination:
 
-I've applied the current set. Pls send a follow up. Thanks
+struct pnp_dev {
+	...
+        char name[PNP_NAME_LEN];        /* contains a human-readable name */
+
+include/linux/pnp.h:#define PNP_NAME_LEN                50
+
+And a funky "source length" calculation, which appears to be effectively
+a u16 (it's either the low 3 bits of a u8, or a full u16);
+
+	int len ...
+
+                /* determine the type of tag */
+                if (p[0] & LARGE_TAG) { /* large tag */
+                        len = (p[2] << 8) | p[1];
+                        tag = p[0];
+                } else {        /* small tag */
+                        len = p[0] & 0x07;
+                        tag = ((p[0] >> 3) & 0x0f);
+                }
+
+The old code was doing:
+
+		case LARGE_TAG_ANSISTR:
+			strncpy(dev->name, p + 3,
+				len >= PNP_NAME_LEN ? PNP_NAME_LEN - 2 : len);
+			dev->name[len >=
+				  PNP_NAME_LEN ? PNP_NAME_LEN - 1 : len] = '\0';
+			break;
+
+The two conditionals are not the same -- the first is -2, the latter is
+-1, but only when len >= PNP_NAME_LEN. This smells like a bug? For the
+len >= PNP_NAME_LEN case, it will copy 48 bytes and then write a %NUL to
+index 49 (byte 50). ... ... source byte 49 is ignored for no reason I
+can see.
+
+Regardless, the point is to copy no more than min(len, PNP_NAME_LEN - 1)
+from "p + 3" to not overflow dev->name, and leaving it %NUL terminated.
+
+So, I think what you have is identical behavior, and likely still
+contains the 1 byte short bug, which I think is fine to keep as-is since
+it's been like this forever and it's PNP...
+
+-Kees
+
+-- 
+Kees Cook
