@@ -2,90 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B4A7D1480
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4177D1483
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjJTRCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
+        id S229843AbjJTRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjJTRCi (ORCPT
+        with ESMTP id S229692AbjJTRDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:02:38 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B545CA;
-        Fri, 20 Oct 2023 10:02:37 -0700 (PDT)
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b2e07e5f3aso1114621b6e.0;
-        Fri, 20 Oct 2023 10:02:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697821356; x=1698426156;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=em6W/wKA5nIven/0xrneSCPDb3lC+lDEs9feH0KsLuc=;
-        b=jYAWQrJfyCEvReJyDSzWDzTQD8MzrzgrO4kQ8vUN1okbkwLza7YTP0Dpxm5D8hHseE
-         lWxTAN1pEIEA3HAclamwDp6lsmzt+qvbipB13P0NC59vpquiKI8kXOarq2CjX2OWI0fS
-         zMun2v78Nmdb4yIcPa90LKifUF045tpec0lok00aUIvoMjmbIw7XPE9rrXSeTtHAY6qs
-         zozVu8OFXSt8QIoII9zhPLhlJFfWvOayJdT7bzJjHS1shkMVdoKV6Oh7SSiEGMGcF2J/
-         dX5UH8ROFb8fQ+xxhZ9ojG8gccgwchKWvQNVglIR8by93wlSMj/c+3M2qIXntw9ASsWC
-         itYw==
-X-Gm-Message-State: AOJu0YzfJMIFrK4pbw4EzTLZ9zSPLodbLe4IqVafPfa39UuTZt2lx7tf
-        e5IwU2660Pglc0NEbrvFRg==
-X-Google-Smtp-Source: AGHT+IEfleuQMGHz1zdXCLu0snW6Wqv3IOe8sAN1Y4wVWkLk99mTuPYTskpRl6S/76Krg/jY48JnJA==
-X-Received: by 2002:a05:6808:1588:b0:3b2:f461:b31e with SMTP id t8-20020a056808158800b003b2f461b31emr1299538oiw.29.1697821356485;
-        Fri, 20 Oct 2023 10:02:36 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id t9-20020a05680800c900b003af569ad2c6sm394737oic.3.2023.10.20.10.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 10:02:35 -0700 (PDT)
-Received: (nullmailer pid 3633193 invoked by uid 1000);
-        Fri, 20 Oct 2023 17:02:34 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dt-bindings: ti,ds90ub960: Add missing type for "i2c-alias"
-Date:   Fri, 20 Oct 2023 12:02:24 -0500
-Message-ID: <20231020170225.3632933-1-robh@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Fri, 20 Oct 2023 13:03:44 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2475A3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:03:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D944140004;
+        Fri, 20 Oct 2023 17:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697821419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u12+nGJMZaiiMrsLReza/Q7S146dX0nFCHWkZWl7fl8=;
+        b=mRGEZ679UgWRTeS2PIjJA3JrloelBLoGHV9z9nnlkmDGo3YptdekMKV1Phky5wNcL03S7R
+        veNDpBQFol+O0UVac2q/6gOHw0UY2aJNumoLkCCqCTu20U0lX8uwDtyn6Blfpf1XZer2fB
+        pIp0t8mlgbeQPPD03qsRxmyBZZKU+VYnb4Yid15Kybt5fKwY1/wufAp0EXpJYln9wwACZW
+        PO7AYS9xWP6YfMeuvJweacgPDX3AOSs/a1xL48vYWtB3RQiaCkqc/rWQflEW3NGcCkJJeg
+        8tibZYj6Al4nN1O0cFiZq/DNPBCesGLz1MAngbuF9Io2YUjbZ305LFulibhjNQ==
+Date:   Fri, 20 Oct 2023 19:03:37 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 Resent 6/6] i3c: master: svc: fix random hot join
+ failure since timeout errory
+Message-ID: <20231020190337.13ef5638@xps-13>
+In-Reply-To: <ZTKhJOAAz4CaupEf@lizhi-Precision-Tower-5810>
+References: <20231018155926.3305476-1-Frank.Li@nxp.com>
+        <20231018155926.3305476-7-Frank.Li@nxp.com>
+        <20231019084452.11fd0645@xps-13>
+        <ZTFNvrsSoHOS3P2g@lizhi-Precision-Tower-5810>
+        <20231020160645.67e678ee@xps-13>
+        <ZTKMTwU6cVAfGCKG@lizhi-Precision-Tower-5810>
+        <20231020163525.66485920@xps-13>
+        <ZTKTGG7J55Sj19Nd@lizhi-Precision-Tower-5810>
+        <20231020172006.5de0998b@xps-13>
+        <ZTKhJOAAz4CaupEf@lizhi-Precision-Tower-5810>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every DT property needs a type defined, but "i2c-alias" is missing any
-type definition. It's a "uint32", so add a type reference.
+Hi Frank,
 
-Fixes: 313e8b32c616 ("media: dt-bindings: media: add TI DS90UB960 FPD-Link III Deserializer")
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Frank.li@nxp.com wrote on Fri, 20 Oct 2023 11:47:48 -0400:
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml b/Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml
-index 289737721c2c..0b71e6f911a8 100644
---- a/Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/ti,ds90ub960.yaml
-@@ -69,6 +69,7 @@ properties:
-             maxItems: 1
- 
-           i2c-alias:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-             description:
-               The I2C address used for the serializer. Transactions to this
-               address on the I2C bus where the deserializer resides are
--- 
-2.42.0
+> On Fri, Oct 20, 2023 at 05:20:06PM +0200, Miquel Raynal wrote:
+> > Hi Frank,
+> >=20
+> > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:47:52 -0400:
+> >  =20
+> > > On Fri, Oct 20, 2023 at 04:35:25PM +0200, Miquel Raynal wrote: =20
+> > > > Hi Frank,
+> > > >=20
+> > > > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:18:55 -0400:
+> > > >    =20
+> > > > > On Fri, Oct 20, 2023 at 04:06:45PM +0200, Miquel Raynal wrote:   =
+=20
+> > > > > > Hi Frank,
+> > > > > >=20
+> > > > > > Frank.li@nxp.com wrote on Thu, 19 Oct 2023 11:39:42 -0400:
+> > > > > >      =20
+> > > > > > > On Thu, Oct 19, 2023 at 08:44:52AM +0200, Miquel Raynal wrote=
+:     =20
+> > > > > > > > Hi Frank,
+> > > > > > > >=20
+> > > > > > > > Frank.Li@nxp.com wrote on Wed, 18 Oct 2023 11:59:26 -0400:
+> > > > > > > >        =20
+> > > > > > > > > master side report:
+> > > > > > > > >   silvaco-i3c-master 44330000.i3c-master: Error condition=
+: MSTATUS 0x020090c7, MERRWARN 0x00100000
+> > > > > > > > >=20
+> > > > > > > > > BIT 20: TIMEOUT error
+> > > > > > > > >   The module has stalled too long in a frame. This happen=
+s when:
+> > > > > > > > >   - The TX FIFO or RX FIFO is not handled and the bus is =
+stuck in the
+> > > > > > > > > middle of a message,
+> > > > > > > > >   - No STOP was issued and between messages,
+> > > > > > > > >   - IBI manual is used and no decision was made.       =20
+> > > > > > > >=20
+> > > > > > > > I am still not convinced this should be ignored in all case=
+s.
+> > > > > > > >=20
+> > > > > > > > Case 1 is a problem because the hardware failed somehow.   =
+    =20
+> > > > > > >=20
+> > > > > > > But so far, no action to handle this case in current code.   =
+  =20
+> > > > > >=20
+> > > > > > Yes, but if you detect an issue and ignore it, it's not better =
+than
+> > > > > > reporting it without handling it. Instead of totally ignoring t=
+his I
+> > > > > > would at least write a debug message (identical to what's below=
+) before
+> > > > > > returning false, even though I am not convinced unconditionally
+> > > > > > returning false here is wise. If you fail a hardware sequence b=
+ecause
+> > > > > > you added a printk, it's a problem. Maybe you consider this lin=
+e as
+> > > > > > noise, but I believe it's still an error condition. Maybe, howe=
+ver,
+> > > > > > this bit gets set after the whole sequence, and this is just a =
+"bus
+> > > > > > is idle" condition. If that's the case, then you need some
+> > > > > > additional heuristics to properly ignore the bit?
+> > > > > >      =20
+> > > > >=20
+> > > > >                 dev_err(master->dev,                             =
+         =20
+> > > > >                         "Error condition: MSTATUS 0x%08x, MERRWAR=
+N 0x%08x\n",
+> > > > >                         mstatus, merrwarn);
+> > > > > +
+> > > > > +		/* ignore timeout error */
+> > > > > +		if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT)
+> > > > > +			return false;
+> > > > > +
+> > > > >=20
+> > > > > Is it okay move SVC_I3C_MERRWARN_TIMEOUT after dev_err?   =20
+> > > >=20
+> > > > I think you mentioned earlier that the problem was not the printk b=
+ut
+> > > > the return value. So perhaps there is a way to know if the timeout
+> > > > happened after a transaction and was legitimate or not?   =20
+> > >=20
+> > > Error message just annoise user, don't impact function. But return fa=
+lse
+> > > let IBI thread running to avoid dead lock.=20
+> > >  =20
+> > > >=20
+> > > > In any case we should probably lower the log level for this error. =
+  =20
+> > >=20
+> > > Only SVC_I3C_MERRWARN_TIMEOUT is warning
+> > >=20
+> > > Maybe below logic is better
+> > >=20
+> > > 	if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT) {
+> > > 		dev_dbg(master->dev,=20
+> > >                         "Error condition: MSTATUS 0x%08x, MERRWARN 0x=
+%08x\n",
+> > > 			mstatus, merrwarn);
+> > > 		return false;
+> > > 	}=20
+> > > =09
+> > > 	dev_err(master->dev,                                    =20
+> > >                 "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x\n",
+> > >                  mstatus, merrwarn);=20
+> > > 	....
+> > >  =20
+> >=20
+> > Yes, this looks better but I wonder if we should add an additional
+> > condition to just return false in this case;  =20
+>=20
+> What's additional condition we can check?
 
+Well, you're the one bothered with an error case which is not a real
+error. You're saying "this error is never a problem" and I am saying
+that I believe it is not a problem is your particular case, but in
+general there might be situations where it *is* a problem. So you need
+to find proper conditions to check against in order to determine
+whether this is just an info with no consequence or an error.
+
+> > something saying "this
+> > timeout is legitimate and has no impact". =20
+>=20
+> Add comments "this timeout is legitimate and has no impact" or dev_dbg
+> print that?
+
+No I'm talking about the additional heuristics.
+
+Thanks,
+Miqu=C3=A8l
