@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777AA7D0DF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919597D0DFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 12:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377144AbjJTK4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 06:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S1377109AbjJTK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 06:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377018AbjJTK4K (ORCPT
+        with ESMTP id S1377051AbjJTK4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 06:56:10 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9C1CA
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:05 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso5684325e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:05 -0700 (PDT)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D48E8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:06 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40651a72807so5097895e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 03:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697799364; x=1698404164; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697799365; x=1698404165; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dyrgqfjPSG0wVAtLEVKnZM/LIpobQ9gTCztYcpYP7eM=;
-        b=oaRB2dvW4NJDNrz0QWV0YXDdhpcUszLVzubhYANZgsYeMdwiqXmsrDTSqA8D7sPReW
-         9L1LPcyGpXvwzmE4Li0GXw5HBNqgeBRmkezsesBis5alBhLb4WqWNqEGgeEbreuebpQw
-         jbmknydeLS45B/5Kg9ttxXwmc3QwdQ3vYX7eqfIXW/AZCwywCKGm5DV5HC372VtrJlYa
-         kvWYUumbd0ruETNRtFRSj3rC18w4s7nz5WzYHFZS4sGmR7apqTuSmtwmrsF5WyGm0vSM
-         6kY8jfq2rkYPsO/ODFh0Is0PSPVAS/P5tuhuLOmjUdxcbMnwwAl7D5YW4iSAWGyPZvao
-         fD8g==
+        bh=YRbaZ8Ef1/VZbZ1Yxpg4ZanC3ZxTD3DH0ZyYq9tLTZ8=;
+        b=d+hd1qrNILTFjR/0SeUcj6Rll7b/BuymtKDBiYfUHu9bJMKRaw5HQinl1ei7eRhgd1
+         /BJ7sRWk3S6MZ3EGqItbhK0JI/88HdlcKhdEyoq0LGFFVwVk6RfpQ2IdqVGaDOgoyyjG
+         GCOao622pz6gWGyc4Kt13Y31It83PEIBI90yPYTfgyR4oh9hYUFhemOae3qerkO9YCXV
+         6pyIgwvkKFy1V9mAg8FoDLlL6RiPjrVmyDJgHMQ7PJnyd8Os8RW7+qGBCrkUFS30fEHZ
+         RyZ/KfmzqgEuvaN7iZa1APrdLQ4Dtnez+3tkN4fTFy7vJLZ57U8BcB6FWUw42u6R5A1J
+         c5Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697799364; x=1698404164;
+        d=1e100.net; s=20230601; t=1697799365; x=1698404165;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dyrgqfjPSG0wVAtLEVKnZM/LIpobQ9gTCztYcpYP7eM=;
-        b=qnznnMEHFoWnscCK9S0w/LaOPEFa3SgEMTsBAOf6AAmAgfw10R/5G/OvuIL7q2ts9u
-         jehbkUeuqI8YfQNmN6j2JI5Zwy3otVEUtucQtp1+IieB4v/gttYY2O6V9p2D1qrW6WsV
-         su2TtqqfQAx3P+CnoP+09q4DYGXjocXWhFJ2XthjVa55+12vYpK2iGbJowS+Yg6Tr6Vs
-         XTyvaJYdU9HyB5ccc3EWw5o34Exz1ImfhGAj3NF/8yW10ISLU1kuiyMPcfjk26Q9PxCf
-         kVIInjQRiw/hBjdU9+1PSV89WbR07a3cyZ4HFe9lpwel0EC+Tb7P7JvNuLj8RA62rafL
-         GdiA==
-X-Gm-Message-State: AOJu0YzraYKKg+h2MYkmdLJ3fPjxxenIRNF6Q7Dzechrm2cg6ZjLLkoN
-        DwsZscEZM+xqRAb5+vhxZP/alA==
-X-Google-Smtp-Source: AGHT+IG9lDmOpHZ8p9uhiVid3pYZHTS6V7bDkv6dU0REjMlCssGoDiZkky8Uv7MmaQpBg8TzHGp6ew==
-X-Received: by 2002:a05:600c:a47:b0:408:3e7a:82ea with SMTP id c7-20020a05600c0a4700b004083e7a82eamr1210773wmq.1.1697799363879;
-        Fri, 20 Oct 2023 03:56:03 -0700 (PDT)
+        bh=YRbaZ8Ef1/VZbZ1Yxpg4ZanC3ZxTD3DH0ZyYq9tLTZ8=;
+        b=gFKMfU5vaxCphNBS4u1nmqpEUy6Lxn9tmQK+iZkot3EieSyC2nV+KvqLZNnKdmBYWm
+         Kvl5yWewjxZaGtMzzutAkdMWRUzRo5cFM+hZxO8AGsZJi/VbP9RMUIBdM25WHjkz7Vhu
+         gMwDtc89U6wGrozlH/tufNCYlgskA3qZ5c5yBH/7uo432RDxYQuuAcKR83BkedbIaq2d
+         AKg8W7QL2LVngM9xCVBGUFOk+MmiI1vRjmt4oSSQytudjyc0jPFEe9bqCCd31pWyfLKC
+         dnkxcAeW3apKkS0vf/6pFasrCCcYSSW68oO56KM/95sg4qMA3Ls+LMuDaO34aBGR2DUO
+         jOPw==
+X-Gm-Message-State: AOJu0Yx9uHqJCSITywEwqWFurSCkm1oHUr+sfJydqYX60eEGXopU4ubE
+        4WQiY3iAhIrLaZz4BKwGrvdeXA==
+X-Google-Smtp-Source: AGHT+IGi42aP8GCCjDqzsue+hg2+yJsIZ408/fc2DoT6sKJ1mgr20X2NyOHAsqYtdbIqRaMHmOqLvA==
+X-Received: by 2002:a05:600c:1912:b0:401:b6f6:d90c with SMTP id j18-20020a05600c191200b00401b6f6d90cmr1253075wmq.35.1697799365203;
+        Fri, 20 Oct 2023 03:56:05 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id x9-20020a05600c420900b004065e235417sm6578937wmh.21.2023.10.20.03.56.02
+        by smtp.gmail.com with ESMTPSA id x9-20020a05600c420900b004065e235417sm6578937wmh.21.2023.10.20.03.56.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 03:56:03 -0700 (PDT)
+        Fri, 20 Oct 2023 03:56:04 -0700 (PDT)
 From:   srinivas.kandagatla@linaro.org
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/6] nvmem: add explicit config option to read old syntax fixed OF cells
-Date:   Fri, 20 Oct 2023 11:55:41 +0100
-Message-Id: <20231020105545.216052-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/6] dt-bindings: nvmem: move deprecated cells binding to its own file
+Date:   Fri, 20 Oct 2023 11:55:42 +0100
+Message-Id: <20231020105545.216052-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231020105545.216052-1-srinivas.kandagatla@linaro.org>
 References: <20231020105545.216052-1-srinivas.kandagatla@linaro.org>
@@ -82,373 +80,305 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-Binding for fixed NVMEM cells defined directly as NVMEM device subnodes
-has been deprecated. It has been replaced by the "fixed-layout" NVMEM
-layout binding.
+Support for old NVMEM fixed cells was deprecated in favour of
+"fixed-layout". It's still part of the nvmem.yaml though and may be
+unknowingly used by new bindings added without much of analyze.
 
-New syntax is meant to be clearer and should help avoiding imprecise
-bindings.
-
-NVMEM subsystem already supports the new binding. It should be a good
-idea to limit support for old syntax to existing drivers that actually
-support & use it (we can't break backward compatibility!). That way we
-additionally encourage new bindings & drivers to ignore deprecated
-binding.
-
-It wasn't clear (to me) if rtc and w1 code actually uses old syntax
-fixed cells. I enabled them to don't risk any breakage.
+To make it more difficult to accidentally support old syntax move its
+binding to separated file with "deprecated" in its name.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-[for meson-{efuse,mx-efuse}.c]
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-[for mtk-efuse.c, nvmem/core.c, nvmem-provider.h]
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-[MT8192, MT8195 Chromebooks]
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-[for microchip-otpc.c]
-Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-[SAMA7G5-EK]
-Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/mtd/mtdcore.c          | 2 ++
- drivers/nvmem/apple-efuses.c   | 1 +
- drivers/nvmem/core.c           | 8 +++++---
- drivers/nvmem/imx-ocotp-scu.c  | 1 +
- drivers/nvmem/imx-ocotp.c      | 1 +
- drivers/nvmem/meson-efuse.c    | 1 +
- drivers/nvmem/meson-mx-efuse.c | 1 +
- drivers/nvmem/microchip-otpc.c | 1 +
- drivers/nvmem/mtk-efuse.c      | 1 +
- drivers/nvmem/qcom-spmi-sdam.c | 1 +
- drivers/nvmem/qfprom.c         | 1 +
- drivers/nvmem/rave-sp-eeprom.c | 1 +
- drivers/nvmem/rockchip-efuse.c | 1 +
- drivers/nvmem/sc27xx-efuse.c   | 1 +
- drivers/nvmem/sec-qfprom.c     | 1 +
- drivers/nvmem/sprd-efuse.c     | 1 +
- drivers/nvmem/stm32-romem.c    | 1 +
- drivers/nvmem/sunplus-ocotp.c  | 1 +
- drivers/nvmem/sunxi_sid.c      | 1 +
- drivers/nvmem/uniphier-efuse.c | 1 +
- drivers/nvmem/zynqmp_nvmem.c   | 1 +
- drivers/rtc/nvmem.c            | 1 +
- drivers/w1/slaves/w1_ds250x.c  | 1 +
- include/linux/nvmem-provider.h | 2 ++
- 24 files changed, 30 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/mtd/mtd.yaml          |  7 ++++-
+ .../bindings/mtd/partitions/nvmem-cells.yaml  |  1 +
+ .../nvmem/amlogic,meson-gxbb-efuse.yaml       |  1 +
+ .../bindings/nvmem/amlogic,meson6-efuse.yaml  |  1 +
+ .../bindings/nvmem/apple,efuses.yaml          |  1 +
+ .../devicetree/bindings/nvmem/imx-ocotp.yaml  |  1 +
+ .../bindings/nvmem/mediatek,efuse.yaml        |  1 +
+ .../nvmem/microchip,sama7g5-otpc.yaml         |  1 +
+ .../devicetree/bindings/nvmem/mxs-ocotp.yaml  |  1 +
+ .../nvmem/nvmem-deprecated-cells.yaml         | 28 +++++++++++++++++++
+ .../devicetree/bindings/nvmem/nvmem.yaml      |  9 ------
+ .../bindings/nvmem/qcom,qfprom.yaml           |  1 +
+ .../bindings/nvmem/qcom,sec-qfprom.yaml       |  1 +
+ .../bindings/nvmem/qcom,spmi-sdam.yaml        |  1 +
+ .../bindings/nvmem/rockchip,otp.yaml          |  1 +
+ .../bindings/nvmem/rockchip-efuse.yaml        |  1 +
+ .../nvmem/socionext,uniphier-efuse.yaml       |  1 +
+ .../bindings/nvmem/sunplus,sp7021-ocotp.yaml  |  1 +
+ .../bindings/rtc/amlogic,meson6-rtc.yaml      |  1 +
+ 19 files changed, 50 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 9bd661be3ae9..fbf60d1364f0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -552,6 +552,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.dev = &mtd->dev;
- 	config.name = dev_name(&mtd->dev);
- 	config.owner = THIS_MODULE;
-+	config.add_legacy_fixed_of_cells = of_device_is_compatible(node, "nvmem-cells");
- 	config.reg_read = mtd_nvmem_reg_read;
- 	config.size = mtd->size;
- 	config.word_size = 1;
-@@ -898,6 +899,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 	config.name = compatible;
- 	config.id = NVMEM_DEVID_AUTO;
- 	config.owner = THIS_MODULE;
-+	config.add_legacy_fixed_of_cells = true;
- 	config.type = NVMEM_TYPE_OTP;
- 	config.root_only = true;
- 	config.ignore_wp = true;
-diff --git a/drivers/nvmem/apple-efuses.c b/drivers/nvmem/apple-efuses.c
-index 9b7c87102104..d3d49d22338b 100644
---- a/drivers/nvmem/apple-efuses.c
-+++ b/drivers/nvmem/apple-efuses.c
-@@ -36,6 +36,7 @@ static int apple_efuses_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct nvmem_config config = {
- 		.dev = &pdev->dev,
-+		.add_legacy_fixed_of_cells = true,
- 		.read_only = true,
- 		.reg_read = apple_efuses_read,
- 		.stride = sizeof(u32),
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index eaf6a3fe8ca6..2710943f53c4 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -997,9 +997,11 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index b82ca03e969c..f322290ee516 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -43,7 +43,12 @@ patternProperties:
+     deprecated: true
  
--	rval = nvmem_add_cells_from_legacy_of(nvmem);
--	if (rval)
--		goto err_remove_cells;
-+	if (config->add_legacy_fixed_of_cells) {
-+		rval = nvmem_add_cells_from_legacy_of(nvmem);
-+		if (rval)
-+			goto err_remove_cells;
-+	}
+   "^otp(-[0-9]+)?$":
+-    $ref: ../nvmem/nvmem.yaml#
++    type: object
++
++    allOf:
++      - $ref: ../nvmem/nvmem.yaml#
++      - $ref: ../nvmem/nvmem-deprecated-cells.yaml#
++
+     unevaluatedProperties: false
  
- 	rval = nvmem_add_cells_from_fixed_layout(nvmem);
- 	if (rval)
-diff --git a/drivers/nvmem/imx-ocotp-scu.c b/drivers/nvmem/imx-ocotp-scu.c
-index c38d9c1c3f48..517d83e11af2 100644
---- a/drivers/nvmem/imx-ocotp-scu.c
-+++ b/drivers/nvmem/imx-ocotp-scu.c
-@@ -220,6 +220,7 @@ static int imx_scu_ocotp_write(void *context, unsigned int offset,
+     description: |
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+index 5474d63268dc..9518281007af 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+@@ -19,6 +19,7 @@ maintainers:
+ allOf:
+   - $ref: /schemas/mtd/partitions/partition.yaml#
+   - $ref: /schemas/nvmem/nvmem.yaml#
++  - $ref: /schemas/nvmem/nvmem-deprecated-cells.yaml#
  
- static struct nvmem_config imx_scu_ocotp_nvmem_config = {
- 	.name = "imx-scu-ocotp",
-+	.add_legacy_fixed_of_cells = true,
- 	.read_only = false,
- 	.word_size = 4,
- 	.stride = 1,
-diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-index a223d9537f22..434f197e27bf 100644
---- a/drivers/nvmem/imx-ocotp.c
-+++ b/drivers/nvmem/imx-ocotp.c
-@@ -615,6 +615,7 @@ static int imx_ocotp_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->clk);
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/amlogic,meson-gxbb-efuse.yaml b/Documentation/devicetree/bindings/nvmem/amlogic,meson-gxbb-efuse.yaml
+index e49c2754ff55..9801fe6f91b5 100644
+--- a/Documentation/devicetree/bindings/nvmem/amlogic,meson-gxbb-efuse.yaml
++++ b/Documentation/devicetree/bindings/nvmem/amlogic,meson-gxbb-efuse.yaml
+@@ -11,6 +11,7 @@ maintainers:
  
- 	priv->params = of_device_get_match_data(&pdev->dev);
-+	imx_ocotp_nvmem_config.add_legacy_fixed_of_cells = true;
- 	imx_ocotp_nvmem_config.size = 4 * priv->params->nregs;
- 	imx_ocotp_nvmem_config.dev = dev;
- 	imx_ocotp_nvmem_config.priv = priv;
-diff --git a/drivers/nvmem/meson-efuse.c b/drivers/nvmem/meson-efuse.c
-index d6b533497ce1..b922df99f9bc 100644
---- a/drivers/nvmem/meson-efuse.c
-+++ b/drivers/nvmem/meson-efuse.c
-@@ -93,6 +93,7 @@ static int meson_efuse_probe(struct platform_device *pdev)
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- 	econfig->dev = dev;
- 	econfig->name = dev_name(dev);
-+	econfig->add_legacy_fixed_of_cells = true;
- 	econfig->stride = 1;
- 	econfig->word_size = 1;
- 	econfig->reg_read = meson_efuse_read;
-diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
-index d6d7aeda31f9..3ff04d5ca8f8 100644
---- a/drivers/nvmem/meson-mx-efuse.c
-+++ b/drivers/nvmem/meson-mx-efuse.c
-@@ -210,6 +210,7 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
- 	efuse->config.owner = THIS_MODULE;
- 	efuse->config.dev = &pdev->dev;
- 	efuse->config.priv = efuse;
-+	efuse->config.add_legacy_fixed_of_cells = true;
- 	efuse->config.stride = drvdata->word_size;
- 	efuse->config.word_size = drvdata->word_size;
- 	efuse->config.size = SZ_512;
-diff --git a/drivers/nvmem/microchip-otpc.c b/drivers/nvmem/microchip-otpc.c
-index 436e0dc4f337..7cf81738a3e0 100644
---- a/drivers/nvmem/microchip-otpc.c
-+++ b/drivers/nvmem/microchip-otpc.c
-@@ -261,6 +261,7 @@ static int mchp_otpc_probe(struct platform_device *pdev)
- 		return ret;
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/amlogic,meson6-efuse.yaml b/Documentation/devicetree/bindings/nvmem/amlogic,meson6-efuse.yaml
+index 84b3dfd21e09..b5cf740f96fa 100644
+--- a/Documentation/devicetree/bindings/nvmem/amlogic,meson6-efuse.yaml
++++ b/Documentation/devicetree/bindings/nvmem/amlogic,meson6-efuse.yaml
+@@ -12,6 +12,7 @@ maintainers:
  
- 	mchp_nvmem_config.dev = otpc->dev;
-+	mchp_nvmem_config.add_legacy_fixed_of_cells = true;
- 	mchp_nvmem_config.size = size;
- 	mchp_nvmem_config.priv = otpc;
- 	nvmem = devm_nvmem_register(&pdev->dev, &mchp_nvmem_config);
-diff --git a/drivers/nvmem/mtk-efuse.c b/drivers/nvmem/mtk-efuse.c
-index b36cd0dcc8c7..87c94686cfd2 100644
---- a/drivers/nvmem/mtk-efuse.c
-+++ b/drivers/nvmem/mtk-efuse.c
-@@ -83,6 +83,7 @@ static int mtk_efuse_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->base);
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- 	pdata = device_get_match_data(dev);
-+	econfig.add_legacy_fixed_of_cells = true;
- 	econfig.stride = 1;
- 	econfig.word_size = 1;
- 	econfig.reg_read = mtk_reg_read;
-diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
-index 70f2d4f2efbf..9aa8f42faa4c 100644
---- a/drivers/nvmem/qcom-spmi-sdam.c
-+++ b/drivers/nvmem/qcom-spmi-sdam.c
-@@ -142,6 +142,7 @@ static int sdam_probe(struct platform_device *pdev)
- 	sdam->sdam_config.name = "spmi_sdam";
- 	sdam->sdam_config.id = NVMEM_DEVID_AUTO;
- 	sdam->sdam_config.owner = THIS_MODULE;
-+	sdam->sdam_config.add_legacy_fixed_of_cells = true;
- 	sdam->sdam_config.stride = 1;
- 	sdam->sdam_config.word_size = 1;
- 	sdam->sdam_config.reg_read = sdam_read;
-diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-index 525be03b7bba..116a39e804c7 100644
---- a/drivers/nvmem/qfprom.c
-+++ b/drivers/nvmem/qfprom.c
-@@ -357,6 +357,7 @@ static int qfprom_probe(struct platform_device *pdev)
- {
- 	struct nvmem_config econfig = {
- 		.name = "qfprom",
-+		.add_legacy_fixed_of_cells = true,
- 		.stride = 1,
- 		.word_size = 1,
- 		.id = NVMEM_DEVID_AUTO,
-diff --git a/drivers/nvmem/rave-sp-eeprom.c b/drivers/nvmem/rave-sp-eeprom.c
-index df6a1c594b78..9ecf3873cbb7 100644
---- a/drivers/nvmem/rave-sp-eeprom.c
-+++ b/drivers/nvmem/rave-sp-eeprom.c
-@@ -328,6 +328,7 @@ static int rave_sp_eeprom_probe(struct platform_device *pdev)
- 	of_property_read_string(np, "zii,eeprom-name", &config.name);
- 	config.priv		= eeprom;
- 	config.dev		= dev;
-+	config.add_legacy_fixed_of_cells	= true;
- 	config.size		= size;
- 	config.reg_read		= rave_sp_eeprom_reg_read;
- 	config.reg_write	= rave_sp_eeprom_reg_write;
-diff --git a/drivers/nvmem/rockchip-efuse.c b/drivers/nvmem/rockchip-efuse.c
-index 4004c5bece42..2b40978ddb18 100644
---- a/drivers/nvmem/rockchip-efuse.c
-+++ b/drivers/nvmem/rockchip-efuse.c
-@@ -205,6 +205,7 @@ static int rockchip_rk3399_efuse_read(void *context, unsigned int offset,
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/apple,efuses.yaml b/Documentation/devicetree/bindings/nvmem/apple,efuses.yaml
+index e0860b6b85f3..d3abdafdbca0 100644
+--- a/Documentation/devicetree/bindings/nvmem/apple,efuses.yaml
++++ b/Documentation/devicetree/bindings/nvmem/apple,efuses.yaml
+@@ -16,6 +16,7 @@ maintainers:
  
- static struct nvmem_config econfig = {
- 	.name = "rockchip-efuse",
-+	.add_legacy_fixed_of_cells = true,
- 	.stride = 1,
- 	.word_size = 1,
- 	.read_only = true,
-diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-index 2210da40dfbd..bff27011f4ff 100644
---- a/drivers/nvmem/sc27xx-efuse.c
-+++ b/drivers/nvmem/sc27xx-efuse.c
-@@ -247,6 +247,7 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
- 	econfig.reg_read = sc27xx_efuse_read;
- 	econfig.priv = efuse;
- 	econfig.dev = &pdev->dev;
-+	econfig.add_legacy_fixed_of_cells = true;
- 	nvmem = devm_nvmem_register(&pdev->dev, &econfig);
- 	if (IS_ERR(nvmem)) {
- 		dev_err(&pdev->dev, "failed to register nvmem config\n");
-diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
-index e48c2dc0c44b..19799b3fe00a 100644
---- a/drivers/nvmem/sec-qfprom.c
-+++ b/drivers/nvmem/sec-qfprom.c
-@@ -47,6 +47,7 @@ static int sec_qfprom_probe(struct platform_device *pdev)
- {
- 	struct nvmem_config econfig = {
- 		.name = "sec-qfprom",
-+		.add_legacy_fixed_of_cells = true,
- 		.stride = 1,
- 		.word_size = 1,
- 		.id = NVMEM_DEVID_AUTO,
-diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-index 7e6e31db4baa..bb3105f3291f 100644
---- a/drivers/nvmem/sprd-efuse.c
-+++ b/drivers/nvmem/sprd-efuse.c
-@@ -408,6 +408,7 @@ static int sprd_efuse_probe(struct platform_device *pdev)
- 	econfig.read_only = false;
- 	econfig.name = "sprd-efuse";
- 	econfig.size = efuse->data->blk_nums * SPRD_EFUSE_BLOCK_WIDTH;
-+	econfig.add_legacy_fixed_of_cells = true;
- 	econfig.reg_read = sprd_efuse_read;
- 	econfig.reg_write = sprd_efuse_write;
- 	econfig.priv = efuse;
-diff --git a/drivers/nvmem/stm32-romem.c b/drivers/nvmem/stm32-romem.c
-index 0f84044bd1ad..1541c20709d2 100644
---- a/drivers/nvmem/stm32-romem.c
-+++ b/drivers/nvmem/stm32-romem.c
-@@ -207,6 +207,7 @@ static int stm32_romem_probe(struct platform_device *pdev)
- 	priv->cfg.priv = priv;
- 	priv->cfg.owner = THIS_MODULE;
- 	priv->cfg.type = NVMEM_TYPE_OTP;
-+	priv->cfg.add_legacy_fixed_of_cells = true;
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- 	priv->lower = 0;
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
+index 99e60d713dac..be1314454bec 100644
+--- a/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
++++ b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
+@@ -16,6 +16,7 @@ description: |
  
-diff --git a/drivers/nvmem/sunplus-ocotp.c b/drivers/nvmem/sunplus-ocotp.c
-index f3a18aa0a6c7..38f5d9df39cd 100644
---- a/drivers/nvmem/sunplus-ocotp.c
-+++ b/drivers/nvmem/sunplus-ocotp.c
-@@ -145,6 +145,7 @@ static int sp_ocotp_read(void *priv, unsigned int offset, void *value, size_t by
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- static struct nvmem_config sp_ocotp_nvmem_config = {
- 	.name = "sp-ocotp",
-+	.add_legacy_fixed_of_cells = true,
- 	.read_only = true,
- 	.word_size = 1,
- 	.size = QAC628_OTP_SIZE,
-diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
-index 5d364d85347f..ba14a76208ab 100644
---- a/drivers/nvmem/sunxi_sid.c
-+++ b/drivers/nvmem/sunxi_sid.c
-@@ -153,6 +153,7 @@ static int sunxi_sid_probe(struct platform_device *pdev)
- 	nvmem_cfg->dev = dev;
- 	nvmem_cfg->name = "sunxi-sid";
- 	nvmem_cfg->type = NVMEM_TYPE_OTP;
-+	nvmem_cfg->add_legacy_fixed_of_cells = true;
- 	nvmem_cfg->read_only = true;
- 	nvmem_cfg->size = cfg->size;
- 	nvmem_cfg->word_size = 1;
-diff --git a/drivers/nvmem/uniphier-efuse.c b/drivers/nvmem/uniphier-efuse.c
-index 0a1dbb80537e..6ad3295d3195 100644
---- a/drivers/nvmem/uniphier-efuse.c
-+++ b/drivers/nvmem/uniphier-efuse.c
-@@ -52,6 +52,7 @@ static int uniphier_efuse_probe(struct platform_device *pdev)
- 	econfig.size = resource_size(res);
- 	econfig.priv = priv;
- 	econfig.dev = dev;
-+	econfig.add_legacy_fixed_of_cells = true;
- 	nvmem = devm_nvmem_register(dev, &econfig);
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/mediatek,efuse.yaml b/Documentation/devicetree/bindings/nvmem/mediatek,efuse.yaml
+index 7ec2988b597e..cf5f9e22bb7e 100644
+--- a/Documentation/devicetree/bindings/nvmem/mediatek,efuse.yaml
++++ b/Documentation/devicetree/bindings/nvmem/mediatek,efuse.yaml
+@@ -16,6 +16,7 @@ maintainers:
  
- 	return PTR_ERR_OR_ZERO(nvmem);
-diff --git a/drivers/nvmem/zynqmp_nvmem.c b/drivers/nvmem/zynqmp_nvmem.c
-index f49bb9a26d05..7f15aa89a9d0 100644
---- a/drivers/nvmem/zynqmp_nvmem.c
-+++ b/drivers/nvmem/zynqmp_nvmem.c
-@@ -58,6 +58,7 @@ static int zynqmp_nvmem_probe(struct platform_device *pdev)
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- 	priv->dev = dev;
- 	econfig.dev = dev;
-+	econfig.add_legacy_fixed_of_cells = true;
- 	econfig.reg_read = zynqmp_nvmem_read;
- 	econfig.priv = priv;
+ properties:
+   $nodename:
+diff --git a/Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml b/Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
+index a296d348adb4..cc25f2927682 100644
+--- a/Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
++++ b/Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
+@@ -16,6 +16,7 @@ description: |
  
-diff --git a/drivers/rtc/nvmem.c b/drivers/rtc/nvmem.c
-index 07ede21cee34..37df7e80525b 100644
---- a/drivers/rtc/nvmem.c
-+++ b/drivers/rtc/nvmem.c
-@@ -21,6 +21,7 @@ int devm_rtc_nvmem_register(struct rtc_device *rtc,
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
  
- 	nvmem_config->dev = dev;
- 	nvmem_config->owner = rtc->owner;
-+	nvmem_config->add_legacy_fixed_of_cells = true;
- 	nvmem = devm_nvmem_register(dev, nvmem_config);
- 	if (IS_ERR(nvmem))
- 		dev_err(dev, "failed to register nvmem device for RTC\n");
-diff --git a/drivers/w1/slaves/w1_ds250x.c b/drivers/w1/slaves/w1_ds250x.c
-index 7592c7050d1d..cb426f7dd23d 100644
---- a/drivers/w1/slaves/w1_ds250x.c
-+++ b/drivers/w1/slaves/w1_ds250x.c
-@@ -168,6 +168,7 @@ static int w1_eprom_add_slave(struct w1_slave *sl)
- 	struct nvmem_device *nvmem;
- 	struct nvmem_config nvmem_cfg = {
- 		.dev = &sl->dev,
-+		.add_legacy_fixed_of_cells = true,
- 		.reg_read = w1_nvmem_read,
- 		.type = NVMEM_TYPE_OTP,
- 		.read_only = true,
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index dae26295e6be..1b81adebdb8b 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -82,6 +82,7 @@ struct nvmem_cell_info {
-  * @owner:	Pointer to exporter module. Used for refcounting.
-  * @cells:	Optional array of pre-defined NVMEM cells.
-  * @ncells:	Number of elements in cells.
-+ * @add_legacy_fixed_of_cells:	Read fixed NVMEM cells from old OF syntax.
-  * @keepout:	Optional array of keepout ranges (sorted ascending by start).
-  * @nkeepout:	Number of elements in the keepout array.
-  * @type:	Type of the nvmem storage
-@@ -112,6 +113,7 @@ struct nvmem_config {
- 	struct module		*owner;
- 	const struct nvmem_cell_info	*cells;
- 	int			ncells;
-+	bool			add_legacy_fixed_of_cells;
- 	const struct nvmem_keepout *keepout;
- 	unsigned int		nkeepout;
- 	enum nvmem_type		type;
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
+index a9b822aeaa7e..f43186f98607 100644
+--- a/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
++++ b/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
+@@ -11,6 +11,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
+new file mode 100644
+index 000000000000..951af28bbfb3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
+@@ -0,0 +1,28 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/nvmem-deprecated-cells.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVMEM old syntax for fixed cells
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  Before introducing NVMEM layouts all NVMEM (fixed) cells were defined
++  as direct device subnodes. That syntax was replaced by "fixed-layout"
++  and is deprecated now. No new bindings should use it.
++
++patternProperties:
++  "@[0-9a-f]+(,[0-7])?$":
++    type: object
++    allOf:
++      - $ref: layouts/fixed-cell.yaml
++      - properties:
++          compatible: false
++    deprecated: true
++
++additionalProperties: true
++
++...
+diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+index 9f921d940142..4fd015d402ce 100644
+--- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+@@ -46,15 +46,6 @@ properties:
+       container may reference more advanced (dynamic) layout
+       parsers.
+ 
+-patternProperties:
+-  "@[0-9a-f]+(,[0-7])?$":
+-    type: object
+-    allOf:
+-      - $ref: layouts/fixed-cell.yaml
+-      - properties:
+-          compatible: false
+-    deprecated: true
+-
+ additionalProperties: true
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+index 8740938c32eb..8c8f05d9eaf1 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+@@ -11,6 +11,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+index 9b133f783d29..2ada2099946d 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+@@ -16,6 +16,7 @@ description:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml b/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
+index cd980def97b8..068bedf5dbc9 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
+@@ -16,6 +16,7 @@ description: |
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml b/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
+index 9c6eff788928..a44d44b32809 100644
+--- a/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
++++ b/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
+@@ -49,6 +49,7 @@ required:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+   - if:
+       properties:
+diff --git a/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml b/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
+index c5403e149080..b80fd8d1ae5b 100644
+--- a/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
++++ b/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
+@@ -11,6 +11,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
+index efccc5aacbe0..e27cbae2d63a 100644
+--- a/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
++++ b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
+@@ -12,6 +12,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
+index da3f1de7d281..af97eeb8316c 100644
+--- a/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
++++ b/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
+@@ -12,6 +12,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nvmem.yaml#
++  - $ref: nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/rtc/amlogic,meson6-rtc.yaml b/Documentation/devicetree/bindings/rtc/amlogic,meson6-rtc.yaml
+index 8bf7d3a9be98..3a4551253e3e 100644
+--- a/Documentation/devicetree/bindings/rtc/amlogic,meson6-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/amlogic,meson6-rtc.yaml
+@@ -13,6 +13,7 @@ maintainers:
+ allOf:
+   - $ref: rtc.yaml#
+   - $ref: /schemas/nvmem/nvmem.yaml#
++  - $ref: /schemas/nvmem/nvmem-deprecated-cells.yaml#
+ 
+ properties:
+   compatible:
 -- 
 2.25.1
 
