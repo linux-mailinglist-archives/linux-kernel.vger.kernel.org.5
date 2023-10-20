@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B787D1320
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89FF7D1324
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377736AbjJTPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        id S1377777AbjJTPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377663AbjJTPtk (ORCPT
+        with ESMTP id S1377787AbjJTPur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:49:40 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2B51A3;
-        Fri, 20 Oct 2023 08:49:37 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SBpsm1khlz67M1H;
-        Fri, 20 Oct 2023 23:49:00 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 20 Oct
- 2023 16:49:34 +0100
-Date:   Fri, 20 Oct 2023 16:49:33 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-CC:     <rafael@kernel.org>, <len.brown@intel.com>,
-        <robert.moore@intel.com>, <mika.westerberg@linux.intel.com>,
-        <andriy.shevchenko@linux.intel.com>, <mark.rutland@arm.com>,
-        <will@kernel.org>, <linux@roeck-us.net>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <acpica-devel@lists.linuxfoundation.org>,
-        <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-hwmon@vger.kernel.org>,
-        <mallikarjunappa.sangannavar@intel.com>, <bala.senthil@intel.com>
-Subject: Re: [PATCH v1 1/8] ACPI: utils: Introduce acpi_dev_uid_match() for
- matching _UID
-Message-ID: <20231020164933.00002f53@Huawei.com>
-In-Reply-To: <20231020084732.17130-2-raag.jadav@intel.com>
-References: <20231020084732.17130-1-raag.jadav@intel.com>
-        <20231020084732.17130-2-raag.jadav@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 20 Oct 2023 11:50:47 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1C1D60
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:50:45 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso14083851fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1697817043; x=1698421843; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z7Unt13qEslS+WpNaJrnD/5CwOiBRKQDbQgXxuuTjBI=;
+        b=ImrYmy1YDMKRmIN3zC6DTT9kjnPHlkSWAAtTzfLeI+pVF3zCi3qXtJxcydG+7AA2O0
+         2whBTX+KZWeAJ6bH8d8MiKrrCuCvTKaQ/i3z+ZWy4Z7t9oVJ17ZQnMmwlC2ry0x7ve7j
+         afQDom1NPXTAOXU/JOEiC3lY07joBtoBQBgyk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697817043; x=1698421843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z7Unt13qEslS+WpNaJrnD/5CwOiBRKQDbQgXxuuTjBI=;
+        b=nljgHytBigJyn8nU4yFDqqjJloHrTryHc40nkzoJTxFlQHMnBrxRD1S6kg+BmiTxv9
+         dhbOt01Xi6LUiI1JtBCvLfkMXBlIiwM5LYu1QSszkfoot863FzbxxO4PKOjuSVjZb/XQ
+         25lb5bs3pJv9bvw7rd3i6iHjw+4rmya54js3L6M8vL63uYcPQWv+mr4ChwZU8h3npsxN
+         9MXqf/6Y1gY18/yo6wW+dFwLPEIy9DCnpcItpw9noWJg71sVJxjWsTEiL7wtH6IKZ2Ob
+         KCLBj6pgHHghyIQSJknFn3SZknepnNDuFxYzreL843GpWnHgEchknhdptBDavenP4+oW
+         WyJQ==
+X-Gm-Message-State: AOJu0YzDkep31HfGBTbKYSK44awUdrmbtopop/XlZlTgdETzMw+7Wa84
+        4lDuRW1JayPC/NCWORT5rmwl/tsbluFsxwGXPcySuQ==
+X-Google-Smtp-Source: AGHT+IEM6LwZfCRsTlSFVPikBNaQG14vdTM6yWo45oC1wORCej6jv0EQrRX2i9OhhA6JM3iZ9P2dTJ/25yW10tqSWu4=
+X-Received: by 2002:a2e:bc07:0:b0:2c5:9e2:ed14 with SMTP id
+ b7-20020a2ebc07000000b002c509e2ed14mr2601912ljf.39.1697817043155; Fri, 20 Oct
+ 2023 08:50:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231020014031.919742-1-joel@joelfernandes.org>
+ <20231020014031.919742-3-joel@joelfernandes.org> <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
+ <ZTKHK2EwgOc8y38v@gmail.com>
+In-Reply-To: <ZTKHK2EwgOc8y38v@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 20 Oct 2023 11:50:32 -0400
+Message-ID: <CAEXW_YR7bH7gQgqnT6gzFsHE85URch1R78juAn37i3KmkRfvFg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during newidle balance
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 14:17:25 +0530
-Raag Jadav <raag.jadav@intel.com> wrote:
+On Fri, Oct 20, 2023 at 9:57=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrot=
+e:
+>
+>
+> * Vincent Guittot <vincent.guittot@linaro.org> wrote:
+>
+> > Even if your figures look interesting, your patch adds regression in
+> > the load balance and the fairness.
+>
+> Indeed - I've removed it from tip:sched/core for the time being.
 
-> Introduce acpi_dev_uid_match() helper that matches the device with
-> supplied _UID string.
-> 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->  /**
->   * acpi_dev_hid_uid_match - Match device by supplied HID and UID
->   * @adev: ACPI device to match.
->   * @hid2: Hardware ID of the device.
->   * @uid2: Unique ID of the device, pass NULL to not check _UID.
->   *
-> - * Matches HID and UID in @adev with given @hid2 and @uid2.
-> - * Returns true if matches.
-> + * Matches HID and UID in @adev with given @hid2 and @uid2. Absence of @uid2
-> + * will be treated as a match. If user wants to validate @uid2, it should be
-> + * done before calling this function. This behaviour is as needed by most of
-> + * its current users.
+Sorry we should have marked it as RFC. We still feel there are issues
+in the newidle balance code and the fix is in the right direction,
+we'll continue discussing with Vincent on the other thread and try to
+come up with a proper solution.
 
-If there are other other users that need different behavior are they
-buggy?  Also what behavior is this referring to?
+Thank you Ingo and Vincent!
 
-I'd just drop the at last sentence as confusing and not adding much.
-
-> + *
-> + * Returns:
-> + *  - %true if matches or @uid2 is NULL.
-> + *  - %false otherwise.
->   */
->  bool acpi_dev_hid_uid_match(struct acpi_device *adev,
->  			    const char *hid2, const char *uid2)
->  {
->  	const char *hid1 = acpi_device_hid(adev);
-> -	const char *uid1 = acpi_device_uid(adev);
->  
->  	if (strcmp(hid1, hid2))
->  		return false;
->  
-> -	if (!uid2)
-> -		return true;
-> -
-> -	return uid1 && !strcmp(uid1, uid2);
-> +	return acpi_dev_uid_match(adev, uid2);
->  }
->  EXPORT_SYMBOL(acpi_dev_hid_uid_match);
->  
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 254685085c82..d1fe6446ffe0 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -760,6 +760,7 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
->  		adev->power.states[ACPI_STATE_D3_HOT].flags.explicit_set);
->  }
->  
-> +bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2);
->  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
->  int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer);
->  
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index afd94c9b8b8a..db3a33e19c97 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -787,6 +787,11 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->  
->  struct acpi_device;
->  
-> +static inline bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
-> +{
-> +	return false;
-> +}
-> +
->  static inline bool
->  acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2)
->  {
-
+ - Joel & Vineeth
