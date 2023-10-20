@@ -2,205 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12CE7D106C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F687D106D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377282AbjJTNVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        id S1377348AbjJTNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376933AbjJTNVt (ORCPT
+        with ESMTP id S1377121AbjJTNWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:21:49 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF28A1A4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:21:46 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KCu0RV022006;
-        Fri, 20 Oct 2023 13:21:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=cn3A9D3vs6gY2tISNgTA79RuBjXE7FcJPQkABNQ9BwA=;
- b=G+nTgB+iePeMNdTHG/B8DIFgpa75BuZWtWWB52BX7C3opbouI4cq+SmHdQOjN6rSwXW9
- pUzRL5b7i+0EFU4CN7aFL2LKRRSWuNVlpNkD3odXBh12SQIJB6j5C3pFh6UqzO+a6PEr
- EbQx8sC6nf9PgWTIzyH+gU211stV2ri4kn0oAm3yn/S4BfTJGnoVFxSPhuHIRfo6edjh
- JGLMEsf5DnOcWGVj7QJ2kYQJybNVCuVu6FVOPAvd2R6dfiicIGzVmCQXoO3Zu6mJXcwd
- QsL+nPGnn7hM5xVgJspNQjUO9wE9IG16Kq/ezv7zkxz6vyJGKTmwLCWApAAECd1v0phz Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tusyyh3sw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 13:21:22 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39KD48dD011989;
-        Fri, 20 Oct 2023 13:21:17 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tusyyh3bn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 13:21:17 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39KC3cYV024191;
-        Fri, 20 Oct 2023 13:21:11 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tuc294rwq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 13:21:11 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39KDL9Wa9503376
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 13:21:09 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14C3C20043;
-        Fri, 20 Oct 2023 13:21:09 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B435820040;
-        Fri, 20 Oct 2023 13:21:06 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Fri, 20 Oct 2023 13:21:06 +0000 (GMT)
-Date:   Fri, 20 Oct 2023 18:51:05 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Peter Zijlstra <peterz@infradead.org>, ndesaulniers@google.com,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Fri, 20 Oct 2023 09:22:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630971A4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:22:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697808136; x=1729344136;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lgFBsksrThg+LeGxqSd4+8oVFDLCpEtdibbHLoIWvaw=;
+  b=ASAtGfs95i/MEDMyyfoNABuUBb+Gy7GB+3zPQ7/PZKxMIxTMc8wxZuzu
+   sWBtTsqKEGG1NKAhO6NeOhWCx15DtsjN8XwCLPzNUOVg1rvn3lAeBgOjG
+   9XDrZfZcI3CgR3FocCcR40IROXRm0NhHYcQyc8e9Pvh1dnxrvEAKL7lso
+   nOmRZ8Q5RmDt8w2Z5PJWQwkfkSU1WYZ+UXCQxOvJARL0bATfzAI+H3xh2
+   LjA9xOoFo95J9HDRKvupLvI1SguO8H4S2ujO1djd4CbLN+2BhDR1Sw9C4
+   jRfQ0GhDKTGMiF5mHqEVlPaFzYDK0kiaCOkcZOvd/AiDv4MTKoqMo9Vcw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="452973477"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="452973477"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 06:22:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="901137858"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="901137858"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Oct 2023 06:20:03 -0700
+Received: from pkitszel-desk.tendawifi.com (unknown [10.255.194.60])
+        by irvmail002.ir.intel.com (Postfix) with ESMTP id 840AE2FC7B;
+        Fri, 20 Oct 2023 14:22:10 +0100 (IST)
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/smp: Dynamically build powerpc topology
-Message-ID: <20231020132105.GN2194132@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20230830122614.73067-1-srikar@linux.vnet.ibm.com>
- <874jil5wa8.fsf@mail.lhotse>
+Cc:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH] checkpatch: allow tags between co-developed-by and their sign-off
+Date:   Fri, 20 Oct 2023 15:21:56 +0200
+Message-Id: <20231020132156.37882-1-przemyslaw.kitszel@intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <874jil5wa8.fsf@mail.lhotse>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7QUhefKdV8FgB4G3v769i-HgoQuO5-H9
-X-Proofpoint-ORIG-GUID: wiPZSuxEnd9zgKljV5LUPxO-V1kNW2cZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1015
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310200108
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Michael Ellerman <mpe@ellerman.id.au> [2023-10-20 23:10:55]:
+Allow additional tags between Co-developed-by: and Signed-off-by:.
+Bump severity of missing SoB to ERROR.
 
-> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> > Currently there are four powerpc specific sched topologies.  These are
-> > all statically defined.  However not all these topologies are used by
-> > all powerpc systems.
-> >
-> > To avoid unnecessary degenerations by the scheduler , masks and flags
-> > are compared. However if the sched topologies are build dynamically then
-> > the code is simpler and there are greater chances of avoiding
-> > degenerations.
-> >
-> > Even x86 builds its sched topologies dynamically and new changes are
-> > very similar to the way x86 is building its topologies.
-> >
-> > System Configuration
-> > type=Shared mode=Uncapped smt=8 lcpu=128 mem=1063126592 kB cpus=96 ent=40.00
-> >
-> > $ lscpu
-> > Architecture:                    ppc64le
-> > Byte Order:                      Little Endian
-> > CPU(s):                          1024
-> > On-line CPU(s) list:             0-1023
-> > Model name:                      POWER10 (architected), altivec supported
-> > Model:                           2.0 (pvr 0080 0200)
-> > Thread(s) per core:              8
-> > Core(s) per socket:              32
-> > Socket(s):                       4
-> > Hypervisor vendor:               pHyp
-> > Virtualization type:             para
-> > L1d cache:                       8 MiB (256 instances)
-> > L1i cache:                       12 MiB (256 instances)
-> > NUMA node(s):                    4
-> >
-> > From dmesg of v6.5
-> > [    0.174444] smp: Bringing up secondary CPUs ...
-> > [    3.918535] smp: Brought up 4 nodes, 1024 CPUs
-> > [   38.001402] sysrq: Changing Loglevel
-> > [   38.001446] sysrq: Loglevel set to 9
-> >
-> > From dmesg of v6.5 + patch
-> > [    0.174462] smp: Bringing up secondary CPUs ...
-> > [    3.421462] smp: Brought up 4 nodes, 1024 CPUs
-> > [   35.417917] sysrq: Changing Loglevel
-> > [   35.417959] sysrq: Loglevel set to 9
-> >
-> > 5 runs of ppc64_cpu --smt=1 (time measured: lesser is better)
-> > Kernel  N  Min     Max     Median  Avg      Stddev     %Change
-> > v6.5    5  518.08  574.27  528.61  535.388  22.341542
-> > +patch  5  481.73  495.47  484.21  486.402  5.7997     -9.14963
-> >
-> > 5 runs of ppc64_cpu --smt=8 (time measured: lesser is better)
-> > Kernel  N  Min      Max      Median   Avg       Stddev     %Change
-> > v6.5    5  1094.12  1117.1   1108.97  1106.3    8.606361
-> > +patch  5  1067.5   1090.03  1073.89  1076.574  9.4189347  -2.68697
-> >
-> > Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > ---
-> >  arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
-> >  1 file changed, 28 insertions(+), 50 deletions(-)
-> >
-> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> > index 48b8161179a8..c16443a04c26 100644
-> > --- a/arch/powerpc/kernel/smp.c
-> > +++ b/arch/powerpc/kernel/smp.c
-> > @@ -92,15 +92,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
-> >  EXPORT_PER_CPU_SYMBOL(cpu_core_map);
-> >  EXPORT_SYMBOL_GPL(has_big_cores);
-> >  
-> > -enum {
-> > -#ifdef CONFIG_SCHED_SMT
-> > -	smt_idx,
-> > -#endif
-> > -	cache_idx,
-> > -	mc_idx,
-> > -	die_idx,
-> > -};
-> > -
-> >  #define MAX_THREAD_LIST_SIZE	8
-> >  #define THREAD_GROUP_SHARE_L1   1
-> >  #define THREAD_GROUP_SHARE_L2_L3 2
-> > @@ -1048,16 +1039,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
-> >  	return cpu_coregroup_mask(cpu);
-> >  }
-> >  
-> > -static struct sched_domain_topology_level powerpc_topology[] = {
-> > -#ifdef CONFIG_SCHED_SMT
-> > -	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
-> > -#endif
-> > -	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
-> > -	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
-> > -	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(DIE) },
-> > -	{ NULL, },
-> > -};
-> 
-> This doesn't apply on my next or upstream.
-> 
-> It looks like it depends on your other 6-patch series. Please append
-> this patch to that series.
-> 
-> cheers
+Additional tags between Co-developed-by and corresponding Signed-off-by
+could include Reviewed-by tags collected by Submitter, which is also
+a Co-developer, but should sign-off at the very end of tags provided by
+themself.
 
-Ok, will do the needful in the next iteration.
+Missing SoB is promoted to error while that piece of code is touched.
 
+Two sets of perl %hashes introduced to keep both (int) line numbers and
+(string) messages handy for warning reporting, while keeping it correct
+across 100+ line long commit messages.
+
+Mateusz Polchlopek <mateusz.polchlopek@intel.com> has reported this to me.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+---
+ scripts/checkpatch.pl | 36 +++++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7d16f863edf1..0400bf092bfa 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2682,6 +2682,10 @@ sub process {
+ 	my $suppress_statement = 0;
+ 
+ 	my %signatures = ();
++	my %signoffs = ();
++	my %signoffs_msg = ();
++	my %codevs = ();
++	my %codevs_msg = ();
+ 
+ 	# Pre-scan the patch sanitizing the lines.
+ 	# Pre-scan the patch looking for any __setup documentation.
+@@ -2967,11 +2971,13 @@ sub process {
+ 		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
+ 			$signoff++;
+ 			$in_commit_log = 0;
++			my $ctx = $1;
++			$signoffs{$ctx} = $linenr;
++			$signoffs_msg{$ctx} = $herecurr;
+ 			if ($author ne ''  && $authorsignoff != 1) {
+-				if (same_email_addresses($1, $author)) {
++				if (same_email_addresses($ctx, $author)) {
+ 					$authorsignoff = 1;
+ 				} else {
+-					my $ctx = $1;
+ 					my ($email_name, $email_comment, $email_address, $comment1) = parse_email($ctx);
+ 					my ($author_name, $author_comment, $author_address, $comment2) = parse_email($author);
+ 
+@@ -3158,22 +3164,15 @@ sub process {
+ 				$signatures{$sig_nospace} = 1;
+ 			}
+ 
+-# Check Co-developed-by: immediately followed by Signed-off-by: with same name and email
++# Collect Co-developed-by: to check if each is backed up by Signed-off-by: with
++# the same name and email. Checks are made after main loop.
+ 			if ($sign_off =~ /^co-developed-by:$/i) {
+ 				if ($email eq $author) {
+ 					WARN("BAD_SIGN_OFF",
+ 					      "Co-developed-by: should not be used to attribute nominal patch author '$author'\n" . $herecurr);
+ 				}
+-				if (!defined $lines[$linenr]) {
+-					WARN("BAD_SIGN_OFF",
+-					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . $herecurr);
+-				} elsif ($rawlines[$linenr] !~ /^signed-off-by:\s*(.*)/i) {
+-					WARN("BAD_SIGN_OFF",
+-					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . $herecurr . $rawlines[$linenr] . "\n");
+-				} elsif ($1 ne $email) {
+-					WARN("BAD_SIGN_OFF",
+-					     "Co-developed-by and Signed-off-by: name/email do not match\n" . $herecurr . $rawlines[$linenr] . "\n");
+-				}
++				$codevs{$email} = $linenr;
++				$codevs_msg{$email} = $herecurr;
+ 			}
+ 
+ # check if Reported-by: is followed by a Closes: tag
+@@ -7712,6 +7711,17 @@ sub process {
+ 				     "From:/Signed-off-by: email subaddress mismatch: $sob_msg\n");
+ 			}
+ 		}
++		# check if each Co-developed-by tag is backed up by Sign-off,
++		# warn if Co-developed-by tag was put after a Signed-off-by tag
++		foreach my $codev (keys %codevs) {
++			if (!$signoffs{$codev}) {
++				ERROR("BAD_SIGN_OFF",
++				      "Co-developed-by: must be followed by Signed-off-by:\n" . $codevs_msg{$codev});
++			} elsif ($signoffs{$codev} <= $codevs{$codev}) {
++				WARN("BAD_SIGN_OFF",
++				     "Co-developed-by: must be followed by Signed-off-by:, but was placed after it\n" . $signoffs_msg{$codev} . $codevs_msg{$codev});
++			}
++		}
+ 	}
+ 
+ 	print report_dump();
 -- 
-Thanks and Regards
-Srikar Dronamraju
+2.38.1
+
