@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B04D7D1408
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC9F7D140A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377855AbjJTQdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
+        id S1377866AbjJTQeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjJTQdt (ORCPT
+        with ESMTP id S229871AbjJTQeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:33:49 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00901D5E;
-        Fri, 20 Oct 2023 09:33:47 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.188.12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 571ED660737B;
-        Fri, 20 Oct 2023 17:33:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697819626;
-        bh=qAf3VEpznG3prdWZXqc557DgYUNT22t1DAY9WghAu+k=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=kxIb9rhY56Zh09c+xKKNsfn+CdSM2I7MVoJaUtB4doGcTTUT6bxvDoh8wQo7+qsD0
-         K8nzYVZbmnL3/wWhcydm+ipN0T9m/0nbqKWqE52KE8BkSZt6DmGOEuLw3mvHmkpDFd
-         /an8HY4m3/GCQQA40CRMiNZBTjb/fTpG7d8iq6sFZNvuD34ia+IctP8S4A06l/ikO+
-         DWmmNyaaSUATq/+kUtSoUBKzpV26GHx17pgcFL8Zj+q2815xSfgV/e4NsMP1bCGyAB
-         bI0I+4Ta5zBgOUbWQWY8J0SJRT3rkXLtZdPDWsoD6p80d/eluP6qp6BFcVOwylpd6l
-         3WzBwuIJdq+ZA==
-Message-ID: <53fcf507-c00e-4715-bc81-082282c37c86@collabora.com>
-Date:   Fri, 20 Oct 2023 21:33:23 +0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, jeffxu@google.com,
-        jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
-        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
-        dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v2 8/8] selftest mm/mseal mprotect/munmap/mremap/mmap
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <20231017090815.1067790-1-jeffxu@chromium.org>
- <20231017090815.1067790-9-jeffxu@chromium.org>
- <3cf29cd5-8346-419f-88f1-3a5c8ddbacad@collabora.com>
- <20231020152354.GC31411@noisy.programming.kicks-ass.net>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231020152354.GC31411@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 20 Oct 2023 12:34:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EEBD6B;
+        Fri, 20 Oct 2023 09:34:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75C26C433C7;
+        Fri, 20 Oct 2023 16:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1697819648;
+        bh=dKYd/12MjaWQfmGSj1V3kcKO/BZ3aLW0Ffk7QfWNPBg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zPs2WckD1f1dvmFYwwvemYD6GDE5M8HkbjSPYVlx/K4R0WRe0vBlqvn4prb+p3SCR
+         qmT70LEpvgWad7VaRpyqoULmHnnxk4/m0Ok1UYAtXO/RgGk9kIXNWdLhOx3pFEDxIZ
+         3kIjPeMBxpcguF9j9ZCr/5f8vynAFi2Edos8Xqwo=
+Date:   Fri, 20 Oct 2023 09:34:07 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Zach O'Keefe <zokeefe@google.com>, Yang Shi <shy828301@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Zach O'Keefe <zokeefe@google.com>
+Subject: Re: [PATCH 1/2] mm/khugepaged: Fix an uninitialized variable bug
+Message-Id: <20231020093407.02be8ef4984ce31a7222f69f@linux-foundation.org>
+In-Reply-To: <a1f3242f-1aae-4b46-9893-36b11ee0a6dd@moroto.mountain>
+References: <a1f3242f-1aae-4b46-9893-36b11ee0a6dd@moroto.mountain>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/23 8:23 PM, Peter Zijlstra wrote:
-> On Fri, Oct 20, 2023 at 07:24:03PM +0500, Muhammad Usama Anjum wrote:
+On Fri, 20 Oct 2023 17:13:32 +0300 Dan Carpenter <dan.carpenter@linaro.org> wrote:
+
+> Smatch complains that "hpage" can be used uninitialized:
 > 
->> Please remove these. These macros would be picked up from the kernel
->> headers automatically.
+>     mm/khugepaged.c:1234 collapse_huge_page()
+>     error: uninitialized symbol 'hpage'.
 > 
-> As per the previous discussions, how does that work if you have O= build
-> directories?
-Then headers should be prepared in that O= directory first.
-make headers O=abc && make -C tools/testing/selftests O=abc
-
+> Initialized it on this path.
 > 
-> I find this push to force people to do 'make headers' in order to use
-> simple selftests quite misguided. You're making it *harder* to use,
-> leading to less use.
-I'm just following what we have been doing over selftests mailing list to
-fix build issues in different use cases and kselfest.rst. Let me share the
-history:
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -1062,8 +1062,10 @@ static int alloc_charge_hpage(struct page **hpage, struct mm_struct *mm,
+>  	int node = hpage_collapse_find_target_node(cc);
+>  	struct folio *folio;
+>  
+> -	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask))
+> +	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask)) {
+> +		*hpage = NULL;
+>  		return SCAN_ALLOC_HUGE_PAGE_FAIL;
+> +	}
+>  
+>  	if (unlikely(mem_cgroup_charge(folio, mm, gfp))) {
+>  		folio_put(folio);
 
-Around 2 years ago, selftest Makefile used to prepare kernel headers from
-source automatically and include them to build selftests. It had several
-bugs. So they separated the header preparation from selftest build. After a
-while people started getting build failures because they weren't building
-headers which were previously built automatically. So someone had written a
-patch (already in v6.6-rc6) to show informative error if headers aren't
-present. So now selftests can't be built until headers are built.
+Thanks.   Seems this was accidentally fixed by 
 
-The understanding here is that selftests come with kernel source and they
-should be built using in-source kernel headers as people don't always have
-updated headers. I think, if someone want to build just one selftest
-without doing make headers, he should install kernel headers from source
-before doing so instead of adding duplicate defines in the test itself. It
-helps while development to not to keep the duplicate copy of these macros
-in selftest as well.
+Author:     Peter Xu <peterx@redhat.com>
+AuthorDate: Wed Feb 22 14:52:47 2023 -0500
+Commit:     Andrew Morton <akpm@linux-foundation.org>
+CommitDate: Tue Mar 28 16:20:06 2023 -0700
+
+    mm/khugepaged: alloc_charge_hpage() take care of mem charge errors
 
 
--- 
-BR,
-Muhammad Usama Anjum
+Which was quite a long time ago.  Are you scanning old kernel versions?
