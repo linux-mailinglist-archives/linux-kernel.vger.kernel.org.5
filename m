@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A59D7D1338
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0841B7D133D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377756AbjJTPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        id S1377823AbjJTPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377736AbjJTPze (ORCPT
+        with ESMTP id S1377824AbjJTPzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:55:34 -0400
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F99ED65;
-        Fri, 20 Oct 2023 08:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=4Wxr8YyJBV
-        Ji9dsEnvrWsVWlX7GW5YDL5ggU4ht88YY=; h=date:references:in-reply-to:
-        subject:cc:to:from; d=openbsd.org; b=5uh8cM/3362zsHWWsOJQQ46mNmFkN73zH
-        KtMFfu5/V5BQjgUqramyy6DLokJoEDDFiTXDZ9iUmZ33ICuFYcRAWnD1u1Dy6mL5GBBpzV
-        cK0utCgesrjOUEgYntUsl8hY0EbCeuyTBqgYTMKlXmvilryrzM8byogl9HLQCThr3rMysD
-        L82kOgtwM7VU3G72B8IDyDKGiKO5YgnzU3kOkbpogCOzuEGaVauGn0Zg2M1eCSwbcPzmIM
-        GVGqBq3zKy+Lc0W0r82Inq0AQq5NBneSdFBScYh0F+MKxTGmaENtL7eSiIGg+yuhmKUFy/
-        CQE/qsUjQmJsRTTtKDVa+NXOPLbbg==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-        by cvs.openbsd.org (OpenSMTPD) with ESMTP id 8d5b7bfa;
-        Fri, 20 Oct 2023 09:55:28 -0600 (MDT)
-From:   "Theo de Raadt" <deraadt@openbsd.org>
-To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FStephen=5FR=3DC3=3DB6ttger=3F=3D?= 
-        <sroettger@google.com>
-cc:     Jeff Xu <jeffxu@google.com>, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-In-reply-to: <CAEAAPHbB0yZfpXGMib4bbH8z5diKfur5M6mAfZuB6qi9UVpcPw@mail.gmail.com>
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com> <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com> <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com> <55960.1697566804@cvs.openbsd.org> <CALmYWFs81T=XnT=AXQTo0+9FXo=OBAV_4rrYPSn9-16O-gBTZg@mail.gmail.com> <95482.1697587015@cvs.openbsd.org> <CALmYWFtQX57Z7ttKxrdXQH4QupFn4vi5KfizUBH9NkmP-S1JDw@mail.gmail.com> <ZS/3GCKvNn5qzhC4@casper.infradead.org> <CALmYWFu_uY=cWzAQaLtS0CdNrm+cO7tKz4sY2Ff02WQ8mGUUXw@mail.gmail.com> <7071.1697661373@cvs.openbsd.org> <CAEAAPHbB0yZfpXGMib4bbH8z5diKfur5M6mAfZuB6qi9UVpcPw@mail.gmail.com>
-Comments: In-reply-to =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FStephen=5FR=3DC3=3DB6?=
- =?us-ascii?Q?ttger=3F=3D?= <sroettger@google.com>
-   message dated "Thu, 19 Oct 2023 10:28:32 +0200."
+        Fri, 20 Oct 2023 11:55:45 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8021112
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:55:39 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507bd644a96so1395809e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697817338; x=1698422138; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U6kzOgo9KLgnzG1tBcKH3CK3w1Ak8u2S5mlzy6a00p8=;
+        b=IgRjW4R+Md9eLeHioWeQ/m5ikyTTIA2uzr3R5piAw87QweXMC+HASeXhplxfwouP5p
+         ZUlEtdruRDqulS1ugPDNV6O2J3GEEXU5LOSR5wMThPO6jKKY+2j5II7MLqXbVcqRF6Pe
+         c1x2kR0Ds0OE4V+Hx/zXNn6XP0mWJPTp5Vx0Mw/KSEsMRKoPVyKKYrx1WhLcm7WmOurU
+         GNsuDHDtSVCj+vPOPRfRxROM0M3+axZ7wZquqR2nSvkVP+zEj0u8FSoYQ/YCPQQklzsd
+         fRS3KI8vzS/ACdRkzUF3VNpu4Reoaj+dZtOFu05irdsy9pbs3yHg4WN4Kkn+BssMw9Fp
+         QqNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697817338; x=1698422138;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U6kzOgo9KLgnzG1tBcKH3CK3w1Ak8u2S5mlzy6a00p8=;
+        b=L6QppC6IB7N7ol3EYN66x26/ELs48ijntQOT+QS+Hy575rOGGVYS6TcWfJfzu9ZbZT
+         faq1oE4R+yj4WzqpezkHOhjQwFvhf68aYZXlvAFJsGdHGJ3nSpKlKoFYck+jVCVmDLjR
+         XEE4QabU/WusBkii6FS3/qRs2MgA+PlcAdq0LoBI6Y0NP2sEZ+X7d9fT5iKCTTt3xR6e
+         3zHVXB3dp7vmglPSADetlvVuD1MFefjabAtP7e7fKZ7hZrH2nb/8SzWLiErMbCDEiuzI
+         tO40F7v6IiCGxXrmWPuNHYyiPltpTtUxI96bzqYVTYhPAjguGqb7T8Ny3Yq4ZCwftFzj
+         tkMw==
+X-Gm-Message-State: AOJu0Yy4q3U3g+JuoqU2d9AnzT8NLAX64llS11QQCCQ/XTp3HQarE0wD
+        hm5eOTzQrJHaJmbcZvQvAQit+Q==
+X-Google-Smtp-Source: AGHT+IFpm3YF6F1pk+UdApdLVX+ULTxt+ZFtNP4MtvY8mHk6SL+aZm0RGmKhltAzr1WzPTmhZutzQQ==
+X-Received: by 2002:a19:760d:0:b0:507:99fe:28f3 with SMTP id c13-20020a19760d000000b0050799fe28f3mr1587690lff.34.1697817337768;
+        Fri, 20 Oct 2023 08:55:37 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id u16-20020adff890000000b0032d8ce46caasm1944414wrp.93.2023.10.20.08.55.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 08:55:37 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 18:55:34 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Chen Shuo <1289151713@qq.com>
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: camera: fixes alignment should match
+ open parenthesis
+Message-ID: <de77b29e-fb65-407d-ab77-f4a2a77a8422@kadam.mountain>
+References: <tencent_2E5278ECD059882823EF2A5209D98B53E306@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 20 Oct 2023 09:55:28 -0600
-Message-ID: <20251.1697817328@cvs.openbsd.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_2E5278ECD059882823EF2A5209D98B53E306@qq.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen R=C3=B6ttger <sroettger@google.com> wrote:
+On Fri, Oct 20, 2023 at 11:12:03PM +0800, Chen Shuo wrote:
+> This patch fixes the checks reported by checkpatch.pl
+> for alignment should match open parenthesis
+> 
+> Signed-off-by: Chen Shuo <1289151713@qq.com>
+> ---
+>  drivers/staging/greybus/camera.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+> index cdbb42cd413b..ed9e16bab4cc 100644
+> --- a/drivers/staging/greybus/camera.c
+> +++ b/drivers/staging/greybus/camera.c
+> @@ -378,7 +378,7 @@ struct ap_csi_config_request {
+>  #define GB_CAMERA_CSI_CLK_FREQ_MARGIN		150000000U
+>  
+>  static int gb_camera_setup_data_connection(struct gb_camera *gcam,
+> -		struct gb_camera_configure_streams_response *resp,
+> +					   struct gb_camera_configure_streams_response *resp,
+>  		struct gb_camera_csi_params *csi_params)
+>  {
 
-> > > IMO: The approaches mimmutable() and mseal() took are different, but
-> > > we all want to seal the memory from attackers and make the linux
-> > > application safer.
-> >
-> > I think you are building mseal for chrome, and chrome alone.
-> >
-> > I do not think this will work out for the rest of the application space
-> > because
-> >
-> > 1) it is too complicated
-> > 2) experience with mimmutable() says that applications don't do any of =
-it
-> >    themselves, it is all in execve(), libc initialization, and ld.so.
-> >    You don't strike me as an execve, libc, or ld.so developer.
->=20
-> We do want to build this in a way that it can be applied automatically by=
- ld.so
-> and we appreciate all your feedback on this.
+Just leave it as-is.  The original was fine.  I know that these days
+we can go over the 80 character mark but, really, does this make things
+easier to read?
 
-Hi Stephen,
-
-I am pretty sure your mechanism will be useable by ld.so.
-
-What bothers me is the complex many-bits approach may encourage people
-to set only a subset of the bits, and then believe they have a security
-primitive.
-
-Partial sealing is not safe.  I define partial sealing as "blocking munmap,
-but not mprotect".  Or "blocking mprotect, but not madvise or mmap".
-
-In Message-id <ZS/3GCKvNn5qzhC4@casper.infradead.org> Matthew stated there
-that there are two aspects being locked: which object is mapped, and the
-permission of that mapping.  When additional system calls msync() and madvi=
-se()
-are included in the picture, there are 3 actions being prevented:
-
- - Can someone replace the object
- - Can someone change the permission
- - Can someone throw away the cached pages, reverting to original
-   content of the object (that is the madvise / msync)
-
-In Message-id: <CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gm=
-ail.com>
-Jan reminded us of this piece.  I'm taking this as a long-standing security
-hole in some sub-operations of msync/madvise which can write to data regions
-that aren't actually writeable.  Sub-operations with this problem are MADV_=
-FREE,
-MADV_DONTNEED, POSIX_MADV_DONTNEED, MS_INVALIDATE.. on Linux MADV_WIPEONFOR=
-K,
-and probably a whole bunch of others.  I am testing OpenBSD changes which
-demand PROT_WRITE permission for these sub-operations.  Perhaps some systems
-are already careful.
-
-If you leave any of these operators available, the object is not actually s=
-ealed
-against abuse.  I believe an attacker will simply switch to a different ope=
-rator
-(mmap, munmap, mprotect, madvise, msync) to achieve a similar objective of
-damaging the permission or contents.
-
-Since mseal() is designed to create partial sealings, the name of the propo=
-sed
-system call really smells.
-
-> The intention of
-> splitting the sealing
-> by syscall was to provide flexibility while still allowing ld.so to
-> seal all operations.
-
-Yes, you will have ld.so set all the bits, and the same in C runtime
-initialization.  If you convince glibc to stop make the stack executable
-in dlopen(), the kernel could automatically do it.. With Linux backwards
-compat management, getting there would be an extremely long long long
-roadmap.  But anyways the idea would be "set all the bits".  Because otherw=
-ise
-the object or data isn't safe.
-
-> Does Linus' proposal to just split munmap / mprotect sealing address your
-> complexity concerns? ld.so would always use both flags which should then =
-behave
-> similar to mimmutable().
-
-No, I think it is weak, because it isn't sealed.
-
-A seperate mail in the thread from you says this is about chrome wanting
-to use PKU on RWX objects.  I think that's the reason for wanting to
-seperate the sealing (I haven't heard of other applications wanting that).
-How about we explore that in the other subthread..
+regards,
+dan carpenter
 
