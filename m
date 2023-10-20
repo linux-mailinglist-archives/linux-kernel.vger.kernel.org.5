@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C167E7D11F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 16:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908377D120A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377618AbjJTO6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 10:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S1377647AbjJTPAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377598AbjJTO6Q (ORCPT
+        with ESMTP id S1377621AbjJTPAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 10:58:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3275A19E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 07:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EVzWsEuaNJGLQOuFsDllHb6GxWozS+1uqoW74dil+CA=; b=Xbp9Ale5vTnUa8U7fTCHLtSDA1
-        PiPaEWiPky7CbAAeyvBkkrwmtl0E440L8Uy1QmWZkCfkZLTRvGcTsbPz9XvEmy2HtVN4sr91K8b9K
-        2u0ZRbUOSrMq/X4LaZ90/7N1IMJid5sPUAbelKpoZNZ/QDbnbtvcYFwe1OtcmxvPCydtnEVCSccWd
-        whSGcT/GOoEh/ZQgoV/O1e1VLioHEGSknJiAMBCcxgUYDfOyf3OJP40JEYQ8GHuatVcl5i5e+Rsc7
-        kC6tnSX2wchWOXvWgLwp5XjrhZYbQ7KSC2dFZF6QkDp4XBO4lk3iCcBZ1upi7eI75zLVX/VQLV7zN
-        TGcPmLcg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qtqww-00Dj96-Jt; Fri, 20 Oct 2023 14:58:06 +0000
-Date:   Fri, 20 Oct 2023 15:58:06 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Zhang Zhiyu <zhiyuzhang999@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, secalert@redhat.com
-Subject: Re: KASAN: slab-use-after-free Read in radix_tree_lookup in&after
- Linux Kernel 6.4-rc6
-Message-ID: <ZTKVfoQZplpB8rki@casper.infradead.org>
-References: <CALf2hKtDJGqmsiSykbX8EEfbthwt6a4Bs98m60dUkS7URW-C8g@mail.gmail.com>
- <CALf2hKucyJjmgE8Ry50RvytMtWz8gVXGXwoECvoVYph7xkEDEQ@mail.gmail.com>
- <ZTI5tzh_tgCBnr35@alley>
- <ZTJz4/hddcv1J6pJ@casper.infradead.org>
- <ad7f2b88-d483-47d9-9f62-12b55805e1a3@bytedance.com>
+        Fri, 20 Oct 2023 11:00:32 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D847FD52;
+        Fri, 20 Oct 2023 08:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=RYGYs5XXTeoNP2XkujGDwK18zSEZgl2Ltx2KXN09L/Y=; b=HG
+        A+cwA59FKS0ShhrY88XTfJ/LpcVSQzq8tIHV1WGxSA1v1l31BNcd1Xa/qUhf1xo1uVC/RLp9kEmAj
+        bO1geBIpBP9NE2N6dx/3GjhQhi+YYBy5D8He5hRACOj5OlNOhUyV1qtjVsm1Pe+2csq/wJsEME6Js
+        n+Iz8bEbaHfQVbQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qtqyt-002nOE-GB; Fri, 20 Oct 2023 17:00:07 +0200
+Date:   Fri, 20 Oct 2023 17:00:07 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>, linux-doc@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH] docs: rust: add "The Rust experiment" section
+Message-ID: <5c3f3ef8-e93c-49f1-881f-11c02afdaf7d@lunn.ch>
+References: <20231018160922.1018962-1-ojeda@kernel.org>
+ <d47553f1-1832-4c69-8a8c-71c58048ff30@lunn.ch>
+ <CANiq72=E7TPLcq-yiQF9E8a33ghbogPcbv-yMqFKBxMQ0oOxNQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ad7f2b88-d483-47d9-9f62-12b55805e1a3@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72=E7TPLcq-yiQF9E8a33ghbogPcbv-yMqFKBxMQ0oOxNQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:51:18PM +0800, Qi Zheng wrote:
-> Hi all,
+On Wed, Oct 18, 2023 at 06:41:10PM +0200, Miguel Ojeda wrote:
+> On Wed, Oct 18, 2023 at 6:27 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > It very unlikely end users read this document.
 > 
-> On 2023/10/20 20:34, Matthew Wilcox wrote:
-> > On Fri, Oct 20, 2023 at 10:26:31AM +0200, Petr Mladek wrote:
-> > > Adding Matthew into Cc in the hope that he is still familiar with the
-> > > code. Also adding Andrew who accepts patches.
-> > 
-> > oh joy.  i love dealing with cves.
-> > 
-> > > > > I agree, this issue looks to be in kernel-core radix tree code in ./lib/radix-tree.c in two of any places.
-> > 
-> > the radix tree code is the victim here.  maybe also the perpetrator, but
-> > it's rather hard to say.
-> > 
-> > shrink_slab_memcg()
-> > 	down_read_trylock(&shrinker_rwsem)
-> > 	shrinker = idr_find(&shrinker_idr, i);
-> > 
-> > i assume is the path to this bug.  the reporter didn't run the
-> > stacktrace through scripts/decode_stacktrace.sh so it's less useful than
-> > we might want.
-> > 
-> > prealloc_memcg_shrinker() calls idr_alloc and idr_remove under
-> > shrinker_rwsem in write mode, so that should be fine.
-> > 
-> > unregister_memcg_shrinker() calls idr_remove after asserting &shrinker_rwsem
-> > is held (although not asserting that it's held for write ... hmm ... but
-> > both callers appear to hold it for write anyway)
-> > 
-> > so i don't see why we'd get a UAF here.
-> > 
-> > anyway, adding Qi Zheng to the cc since they're responsible for the
-> > shrinker code.
+> We can add a note to the Kconfig symbol too -- would that be OK with you?
 > 
-> Thanks for CC'ing me, I'd be happy to troubleshoot any issues that may
-> be shrinker related.
+> > And that statement is
+> > not limited to end users, it is true for everybody.
 > 
-> Between v6.4-rc1 and v6.4 versions, we briefly implemented lockless slab
-> shrink using the SRCU method. In these versions, we call idr_alloc and
-> idr_remove under shrinker_mutex, and idr_find under srcu_read_lock.
+> Agreed, but that bit is meant to emphasize that end users do not have
+> a reason to use it at all (unlike kernel developers etc. from the
+> previous paragraph)
 > 
-> These are all legitimate uses of the IDR APIs and the shrinker_idr
-> will never be destroyed, so at a quick glance I didn't see why it would
-> cause UAF here.
+> > What we should be saying is that Rust for the Linux kernel in general
+> > is not ready for production use. Developing drivers in Rust is
+> > currently for experimentation only. Given the experimental nature of
+> > the work, there is some risk Rust will never be ready for production
+> > use.
+> 
+> The risk is that Rust gets dropped from the kernel because it is not
+> used enough, not so much that there is a fundamental problem to solve
+> in order to reach production.
 
-I'm not an expert on how all the RCU flavours interact, but I don't
-think that's safe.  The IDR (radix tree) will RCU-free nodes, but I
-don't think holding the srcu_read_lock is enough to prevent the nodes
-being freed.  I think you'd need to take the rcu_read_lock() around
-the call to idr_find().
+I've talked to a small number of netdev developers, not many, but
+some. The general impression i get is that it is unclear what
+experimental actually means, and they have no idea what makes it not
+production ready. The two are also not necessarily mutually exclusive.
 
-> Anyway I will keep working on this issue, and it would be nice if
-> there was a way to reproduce it.
+To me, it appears Rust is not production ready because:
 
-So I think the CVE is inappropriately issued.  The SRCU code was added in
-v6.4-rc1 and removed before v6.4.  I don't think CVEs are appropriate for
-bugs which only existed in development kernels.  How do we revoke CVEs?
+You need to disable module versioning.
+You need to disable structure layout randomisation
+
+On X86, you need to disable X86_KERNEL_IBT and RETHUNK, both of which
+are part of the mitigation for speculative execution vulnerabilities
+
+So no vendor is going to release a kernel with these disabled.
+
+Networking also tends to be architecture independent, so production
+features need to run on X86, ARM, ARM64, and to a lesser extent MIPS,
+RISC-V, etc. I know this is documented, but it does not appear to be
+that well known within the networking community.
+
+Networking people also tend to be interested in endianness, does the
+code work on big endian as well as little endian? Big endian is dying
+out, but its not gone yet. However, with only x86 supported in
+mainline today, it does not seem possible to test big endian. I assume
+the rust type system will actually deal with this to a large extent?
+But are developers writing abstractions which are sound with respect
+to endianness?
+
+I think it would be good to describe the experiment a bit. With a
+multi year experiment, you often have short term goals and long term
+goals.  What are these goals? What is the Rust for linux community
+trying to prove in the next few kernel cycles? What do you consider to
+be 4 or more cycles away? What do you consider not so important now
+because its not needed for your short term goals? That might also help
+developers understand when it will transition to production ready, but
+still be experimental.
+
+And you obviously need a disclaimer, Rust for Linux is a community,
+developers are free to scratch their own itch, so things might happen
+in a different order. And information like this might help get people
+involved, helping solve some of the limitations, spur research into
+different goals etc.
+
+	Andrew
