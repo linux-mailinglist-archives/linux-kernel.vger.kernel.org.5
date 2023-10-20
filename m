@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D187D0A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFEE7D0A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 10:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235711AbjJTIYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 04:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S1376466AbjJTI0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 04:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235694AbjJTIYA (ORCPT
+        with ESMTP id S1376440AbjJTI0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 04:24:00 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF724C0;
-        Fri, 20 Oct 2023 01:23:54 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083f61312eso4375525e9.3;
-        Fri, 20 Oct 2023 01:23:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697790233; x=1698395033; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4CpDwt0mIHXa5SjKWHCoaE9qIzOGUHJct+s3WKSwVDU=;
-        b=YZZcR/b2XLpmxvb+WnuIB1QiG1U+1anE36FLntSWz6M0gqKat5x3e/3rFzX7Ax3GXW
-         CXbGChWGTvkttaGb0GdGFIM6c59IMVsk1ZqvN+AYzf+35MxJt2W8C1od6jK3i46YyNRe
-         dkdNL3axJ/EVTSY+WbWk4PyjgtYyb6dxA8mXliXrTVFnhsiIEYEr2FebUnexiqLjz2NZ
-         10YncTYJBRSfr2yeOOyF9Pf0HsIRsV50me7y1G85ADvqdvK86mlmox5d27/P3qL3hpqT
-         z66++UPgnpg07vNqM5FSF8dlEwqWWwxQrOaieC9cD+GZuPYUjVAtB0YphY0UKOrbVVCv
-         LrTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697790233; x=1698395033;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4CpDwt0mIHXa5SjKWHCoaE9qIzOGUHJct+s3WKSwVDU=;
-        b=NHVvk39VEbPoobmRwbGzWIztUVjDdiN71JPkyytTZ/zWfOgJotzNpzxM8tLz1QAFp+
-         IV5QxbXqOSy6C5Hh3t9Svxd8xKNG4zQmVpggbrQOTDEwtMdULHNz3Q4k1S259y+FZ39V
-         xOZULtW66eUi5GsNqlfBZfTXc4Ul3I2bgFgOR3/1450sp77Rd5WgWdLj4ws8ywZcxCKP
-         9bPPwuL4cZKqcr61QsIskfDB6ZAEpZ4XR2oZs4TV5UYYe0IqjG6JxJ5Rc/RUsWUHaAxU
-         84+bp7iyTx42C3IByG3efeKD+zUsTEhgI9yWKnSgWv0Xr6lGzOvQbn9C0Ie9yTGk8Yjv
-         I0Sg==
-X-Gm-Message-State: AOJu0Yz9h1gX5qPZ1Fw3ma0/n6dphD4uZZhwEyWcWTm8qJedZgfTorLq
-        KBfPNoMtJvA2P95YUStDqwYgug6bDZyTKQ==
-X-Google-Smtp-Source: AGHT+IHnnC4mklZfLAW60TnEnNxQtbqdf2yOeDlAPmk6S0FQh1TCdkL68HteMTGmVS8PkBhdfMIxRg==
-X-Received: by 2002:a05:600c:3147:b0:405:4a78:a892 with SMTP id h7-20020a05600c314700b004054a78a892mr806944wmo.9.1697790232887;
-        Fri, 20 Oct 2023 01:23:52 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id je20-20020a05600c1f9400b004063ea92492sm1607389wmb.22.2023.10.20.01.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 01:23:52 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:23:50 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: ksz9477: Add Wake
- on Magic Packet support
-Message-ID: <20231020082350.f3ttjnn6qfcmskno@skbuf>
-References: <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-1-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019122850.1199821-6-o.rempel@pengutronix.de>
- <20231019172953.ajqtmnnthohnlek7@skbuf>
- <20231020050856.GB3637381@pengutronix.de>
+        Fri, 20 Oct 2023 04:26:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BED119;
+        Fri, 20 Oct 2023 01:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=osKF5xTE5Os5a5WuR1qk2MjC7K8kkdHQ+IqvT4rA6Yw=; b=RRATIkQhj9m5LFwq5iYAbS63vW
+        z4aKuTIIYOZfs3dDKmQY0Y5/4Io9WB4Eul5JUY/3KNsQJeAEYD3pmG4Rffg2X676ZCwuaKtFIynyB
+        mnYgtC/DUJ/n9/X+Wsj0zgW9PK+RMLyeEfSxWWSMzGzuuqPNYD+jPr2UUFEOgv1HphaYEG/7Xnyxr
+        MEilGOpGwDNm6gnSI0af1NDmPlpxLHmpivXG+qNBmoQ/66M2+t/kP1zK8lDSIBh41dt6BivwaX4Wm
+        3PCcLw/FG06r5J9aE8QNrJLOFCp+QBEVYDyrMOycRKfedCdXeiKbjgVuHs+x6dAb9cDQhAM2Dq54i
+        CG6L7kTg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qtkp2-00AsVt-0q;
+        Fri, 20 Oct 2023 08:25:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E87B8300392; Fri, 20 Oct 2023 10:25:31 +0200 (CEST)
+Date:   Fri, 20 Oct 2023 10:25:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 4/4] Revert "kernel/sched: Modify initial boot task idle
+ setup"
+Message-ID: <20231020082531.GS33217@noisy.programming.kicks-ass.net>
+References: <20231019233543.1243121-1-frederic@kernel.org>
+ <20231019233543.1243121-5-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231020050856.GB3637381@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231019233543.1243121-5-frederic@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 07:08:56AM +0200, Oleksij Rempel wrote:
-> On Thu, Oct 19, 2023 at 08:29:53PM +0300, Vladimir Oltean wrote:
-> > I don't get it, why do you release the reference on the MAC address as
-> > soon as you successfully get it? Without a reference held, the
-> > programmed address still lingers on, but the HSR offload code, on a
-> > different port with a different MAC address, can change it and break WoL.
+On Fri, Oct 20, 2023 at 01:35:43AM +0200, Frederic Weisbecker wrote:
+> Now that rcutiny can deal with early boot PF_IDLE setting, revert
+> commit cff9b2332ab762b7e0586c793c431a8f2ea4db04.
 > 
-> It is ksz9477_get_wol() function. We do not actually need to program
-> here the MAC address, we only need to test if we would be able to get
-> it. To show the use more or less correct information on WoL
-> capabilities. For example, instead showing the user that Wake on Magic
-> is supported, where we already know that is not the case, we can already
-> show correct information. May be it will be better to have
-> extra option for ksz_switch_macaddr_get() to not allocate and do the
-> refcounting or have a separate function.
+> This fixes several subtle issues introduced on RCU-tasks(-trace):
+> 
+> 1) RCU-tasks stalls when:
+> 
+>    1.1 Grace period is started before init/0 had a chance to set PF_IDLE,
+>        keeping it stuck in the holdout list until idle ever schedules.
+> 
+>    1.2 Grace period is started when some possible CPUs have never been
+>        online, keeping their idle tasks stuck in the holdout list until
+>        the CPU ever boots up.
+> 
+>    1.3 Similar to 1.1 but with secondary CPUs: Grace period is started
+>        concurrently with secondary CPU booting, putting its idle task in
+>        the holdout list because PF_IDLE isn't yet observed on it. It
+>        stays then stuck in the holdout list until that CPU ever
+>        schedules. The effect is mitigated here by all the smpboot
+>        kthreads and the hotplug AP thread that must run to bring the
+>        CPU up.
+> 
+> 2) Spurious warning on RCU task trace that assumes offline CPU's idle
+>    task is always PF_IDLE.
+> 
+> More issues have been found in RCU-tasks related to PF_IDLE which should
+> be fixed with later changes as those are not regressions:
+> 
+> 3) The RCU-Tasks semantics consider the idle loop as a quiescent state,
+>    however:
+> 
+>    3.1 The boot code preceding the idle entry is included in this
+>        quiescent state. Especially after the completion of kthreadd_done
+>        after which init/1 can launch userspace concurrently. The window
+>        is tiny before PF_IDLE is set but it exists.
+> 
+>    3.2 Similarly, the boot code preceding the idle entry on secondary
+>        CPUs is wrongly accounted as RCU tasks quiescent state.
+> 
 
-Ah, yes, it is from get_wol(). Maybe a ksz_switch_macaddr_tryget(ds, port)
-which returns bool (true if dev->switch_macaddr is NULL, or if non-NULL
-and ether_addr_equal(dev->switch_macaddr->addr, port addr))?
+Urgh... so the plan is to fix RCU-tasks for all of the above to not rely
+on PF_IDLE ? Because I rather like the more strict PF_IDLE and
+subsequently don't much like this revert.
