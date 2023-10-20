@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2817F7D099D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F867D09A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376438AbjJTHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
+        id S1376442AbjJTHlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376317AbjJTHia (ORCPT
+        with ESMTP id S1376317AbjJTHlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:38:30 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BEF91
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:38:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so3870485e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697787507; x=1698392307; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/KThKo4jmYx+C7nHHaCwoPbIW3yJzTHN31FdSecDUqs=;
-        b=vlTk2avxHFGhBdY6WTwWDpNMp/iLNi9GnCo0yYbzFxEkuxGTRtnOenPJmKwHgwx1Il
-         yI4NBApvD0oLsY+gWfzSsDpDGCCIRy1GMQ8zSQvbbYyCUvjEhGKqPuoQjCDxC995iwZd
-         eXoBiY2qp8cb2bjSOYZdmPZtLo2E5e8xLap6srPaH0UynMOCWlx4C2BQ02mKVqoRe7p+
-         s3SLycjAK6kd6aVzf9W7Qg3m+9WTH6Wwzksu/Zh3iIyBizX18GAHa3KP71lt+T5BHwf+
-         VLwMYY85ncvuTsusVAD263jFtqu6zRylr7kAMW+H4BooaYzdXyY72woSxnb79MrgwwG4
-         0jrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697787507; x=1698392307;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/KThKo4jmYx+C7nHHaCwoPbIW3yJzTHN31FdSecDUqs=;
-        b=lZIOHZm0NCG4tbKVmuGeAK9+Wvbz9tFVrE3lE6ht5ule/S+YpLMtN6Yy38sfG+/Q+p
-         lh9oSd36fm4nHoZjWd5k24C52sQTr4BM30QQkw2fiUJwpAhUwAoAnsa2rPm/2iYQv1/8
-         sz68C+1syoLWF0mei3BJZiNpprc1aSFJcAx9TkxeJ1kuyNs69M91s1JBIUy16oQRJEH3
-         wmzInUkf+mCPI0QYUCOF7kyi5uu2QqCVYF5To9a0al7DGhv56v8WmC4F8cz1IEwqlIwx
-         yQi1YEfcBTSx1Mzg1jV1GnzbVjxdHeOEv9ZshQmLS/XSSHW6osaDg1bFEi5QbO6RW86v
-         1I8Q==
-X-Gm-Message-State: AOJu0YwTt/WnHsBkaUYoS1jBVZSDPIvJEk4j2sl9jHska8gtB5kzf1e+
-        TtOxRc5iM8np72CCgWy2hoFnj8iOHq6oa4ekpWI=
-X-Google-Smtp-Source: AGHT+IGYvrLjEn/0tZV4BoVeorM/lJEq8yk5rw3LmUxqDDNSi0iUcz3I5+xYYfWFtT8WkV4Z9Yac0g==
-X-Received: by 2002:a05:600c:3b84:b0:3f6:9634:c8d6 with SMTP id n4-20020a05600c3b8400b003f69634c8d6mr874813wms.18.1697787507093;
-        Fri, 20 Oct 2023 00:38:27 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id x10-20020a05600c21ca00b003feea62440bsm1451580wmj.43.2023.10.20.00.38.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 00:38:26 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 10:38:23 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     kenechukwu maduechesi <maduechesik@gmail.com>
-Cc:     shreeya.patel23498@gmail.com, outreachy@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rts5208: Add parenthesis to macro arguments
-Message-ID: <3371515f-aaac-4449-83af-e7f10d60eae3@kadam.mountain>
-References: <20231020065439.GA3579@ubuntu>
+        Fri, 20 Oct 2023 03:41:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AAF93;
+        Fri, 20 Oct 2023 00:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697787660; x=1729323660;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fS62KeVFtHKj3IzMszL8FfoyimzWJ7T3TmklfnrmAnk=;
+  b=BCxt5KraMbWQnOCN9YpgwNy2AC+TU6/sZN+hyB+FxkUKZd/nm/qV8Kth
+   5K5Av4/tVCoYfP3rtxJSt/vjtUsWOR7HT2P1jX+TOn/rxKmSyZ7olrkmx
+   OcMb1ZT4NuUiGSzT7MCh4mEKTzvaxK8ohUlgL2MOKGBPY6tLhGKm8z7fd
+   Wp1/VZrnBhmbwcABa77kS/MdMVoxiXJx4i1ncTprSyGPw/6261QJ2gFEf
+   gvhgUAfQ/BBbaABsOvlkKYyppcfzC51cfOD+Crwhaq7oid4+MRHlcdRjq
+   P2W3vWjPtB8vreAcOmvIldqqrHb9c1rpohYtCZnzVQnCSsva9fhsiZm9M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="376829458"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="376829458"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 00:40:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="5028885"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.209.150])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 00:39:46 -0700
+Message-ID: <613c51f0-c32e-4de5-9627-525d92fb06ed@intel.com>
+Date:   Fri, 20 Oct 2023 10:40:52 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020065439.GA3579@ubuntu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: cqhci: Be more verbose in error irq handler
+Content-Language: en-US
+To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Radoslaw Biernacki <biernacki@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>, upstream@semihalf.com
+References: <20231016095610.1095084-1-korneld@chromium.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231016095610.1095084-1-korneld@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 11:54:39PM -0700, kenechukwu maduechesi wrote:
-> Checkpatch suggests using (reg) and (host) instead of reg and host
+On 16/10/23 12:56, Kornel Dulęba wrote:
+> There are several reasons for controller to generate an error interrupt.
+> They include controller<->card timeout, and CRC mismatch error.
+> Right now we only get one line in the logs stating that CQE recovery was
+> triggered, but with no information about what caused it.
+> To figure out what happened be more verbose and dump the registers from
+> irq error handler logic.
+> This matches the behaviour of the software timeout logic, see
+> cqhci_timeout.
 > 
-> The use of parenthesis in the macro argument '(reg)' ensures proper
-> precedence and resolves potential issues that may arise due to the
-> surrounding code context. This modification adheres to the recommended
-> coding style and improves the readability or maintainability of the
-> code.
-> 
-> Signed-off-by: kenechukwu maduechesi <maduechesik@gmail.com>
+> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
 > ---
->  drivers/staging/rts5208/rtsx.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  drivers/mmc/host/cqhci-core.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/staging/rts5208/rtsx.h b/drivers/staging/rts5208/rtsx.h
-> index 2e101da83220..7d3373797eb4 100644
-> --- a/drivers/staging/rts5208/rtsx.h
-> +++ b/drivers/staging/rts5208/rtsx.h
-> @@ -39,17 +39,17 @@
->  /*
->   * macros for easy use
->   */
-> -#define rtsx_writel(chip, reg, value) \
-> +#define rtsx_writel(chip, (reg), value) \
+> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+> index b3d7d6d8d654..33abb4bd53b5 100644
+> --- a/drivers/mmc/host/cqhci-core.c
+> +++ b/drivers/mmc/host/cqhci-core.c
+> @@ -700,8 +700,9 @@ static void cqhci_error_irq(struct mmc_host *mmc, u32 status, int cmd_error,
+>  
+>  	terri = cqhci_readl(cq_host, CQHCI_TERRI);
+>  
+> -	pr_debug("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d TERRI: 0x%08x\n",
+> -		 mmc_hostname(mmc), status, cmd_error, data_error, terri);
+> +	pr_warn("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d\n",
+> +		 mmc_hostname(mmc), status, cmd_error, data_error);
+> +	cqhci_dumpregs(cq_host);
 
-This will break the build.  But also someone already fixed this in
-linux-next.
+For debugging, isn't dynamic debug seems more appropriate?
 
->  	iowrite32(value, (chip)->rtsx->remap_addr + reg)
-
-regards,
-dan carpenter
+>  
+>  	/* Forget about errors when recovery has already been triggered */
+>  	if (cq_host->recovery_halt)
 
