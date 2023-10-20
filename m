@@ -2,143 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B0F7D1593
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69E57D15B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 20:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjJTSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 14:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S229787AbjJTSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 14:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJTSPA (ORCPT
+        with ESMTP id S229555AbjJTSWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 14:15:00 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E87ED5D
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:14:58 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7bbe0a453so15939607b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 11:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697825697; x=1698430497; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NjxtAigxI0HmCKPvB9UmZgA+mMJTBsPd7/Wkgi0tm4s=;
-        b=edobgOcEo2DQnIYa3i60Q0paZQLOBUFFJAspGON0iKv3guCLgQnv3MoUyA5m4XC6B2
-         1NnYrYOXf7ldJY7MtDeGWtmXcZF9gbcimkmUKsw4Tc+/ZndpptNZzqzFc2INZef6xm0S
-         /RPkQNIfekKCAhsQeQyPYpRiEfVlt9Y+ca0Rd0NKmzHNBrEir/weWKIrwLexMzg+b/em
-         uTi2rvaIE1haxah05bSE9QMepMX8j88AYAS3WXIXfMFnU4ehq2hiBJUE9kQ8VA/ylj4L
-         P1eh2Z9KYUc9mDdpZ4aruyzZZzflvk8I95vWb8Nd8z0LiZSHIiZzBpJKO83k2jNizmiA
-         fhWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697825697; x=1698430497;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NjxtAigxI0HmCKPvB9UmZgA+mMJTBsPd7/Wkgi0tm4s=;
-        b=Fmw7KDVQXpRXyZTtxncmF1u4Q/kAXeDBUvU9Xg6KXOcCttD4306UbMOrrYgLj9hPPp
-         z73kkLgAj/D0zq1CXmycYZHddkaUtlr6cPX2/MEuJ5ash4zNPXyCWU67fMDwAaRX7nmn
-         WsmNOBnwJD3nVZcV8tqpO+86pRqEiXYbOTdzyQmd/Q77it7t3KZFE1DJYfgKZ7o7YORS
-         ju5BbhsotBhRq8vU3PvqwoRiESo4ylOgiKVLQRqOtJC38wJ8gLIUMWZgeGwFalxhn10L
-         FBEk/1uf4F30cqzK4rfnw+GdD8JYiBHqodvuvaAFH0iy3xSiZbqx0UM/rPSbpe97IDhW
-         r2fg==
-X-Gm-Message-State: AOJu0YzSqHn2prhtjuqDHGBZh2VqkKkmcVLyCICq9VNy0WVrYGR6taCY
-        qFXN3YU3uoT5i+3M/RIOSil/HIoTggOb/21ojQ==
-X-Google-Smtp-Source: AGHT+IF9SRE85ngks2gCtXwLYmkhJ3/uV8+grnXvrUYQkNHVHLP3fosnqqpIA3GEUwLdiQJy9CtyqVgplrjQH9jIsA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1083:b0:d9a:6007:223a with
- SMTP id v3-20020a056902108300b00d9a6007223amr82297ybu.8.1697825697460; Fri,
- 20 Oct 2023 11:14:57 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 18:14:47 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJbDMmUC/x2NUQrCQAwFr1LybWA3VUGvIiJumtaAbNekVkvp3
- V38nAfzZgUXU3E4NyuYzOo65gpx1wA/7nkQ1K4yUKA2Bgrok2UuC3ams5hjGT9i6O9SngumF+3 jKdyqakOdGY+JOYZDz9QmqKfFpNfvP3i5btsPUwdLHoAAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697825696; l=2477;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=JmvkYA0HtU/j7JDgpCDudlk1OJo4lvEUsupF7z8hezA=; b=reN8ZCf+oaoqlz7W8BUFLMQjlrdg0RWOzYHkUPRlg80x9tWDd0LI/VU/0C9F7Cv4z62I3vr4S
- MgzW8oVQ0SgAYcyQOaq0PxhkKmOjOEfBBehIC/R/ncW9Ox0M3ys31Q7
-X-Mailer: b4 0.12.3
-Message-ID: <20231020-strncpy-drivers-power-supply-bq24190_charger-c-v1-1-e896223cb795@google.com>
-Subject: [PATCH] power: supply: bq24190_charger: replace deprecated strncpy
- with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 20 Oct 2023 14:22:55 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B54D6A;
+        Fri, 20 Oct 2023 11:22:53 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KI5fYJ029777;
+        Fri, 20 Oct 2023 18:22:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=e8rxuQk/2ug768QjWGfvPaNQ15UCKIp/Vn0HPG51xrs=;
+ b=G6G4L2sBwszw2r5+DJpEnqhTKTEZtw3nlpCD0lHO7FbpT2lhxzZO0avIZ+pS4EKSHN46
+ uuQq4ulzCBWwt6J9m6msryCsFiuZY3t+J2PC/63dnIv+icgIH5MElerE7l1cF+wW9rxj
+ m4iklosVr0+D9DjULrOXw04aC9zGA/LunF3949y/gFGlAJYbQzOgM7ptZOdHSN6K//uG
+ hF0NH0EuSvVFLygLNHuDFixCfo8eSPctSmrP8LN+o+3dTJEL31wtcQOHdNcga14FAFdR
+ SKgETi5TMj+T+nRmIUx+mZOLpF/MbqHzdcog204bl3bSsMevfnJBRzyvax18J9gsj6mC 9Q== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tuxhc0165-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 18:22:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39KIMd5R003806
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 18:22:39 GMT
+Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 20 Oct 2023 11:22:38 -0700
+From:   Anjelique Melendez <quic_amelende@quicinc.com>
+To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
+CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
+        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
+        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
+        "Anjelique Melendez" <quic_amelende@quicinc.com>
+Subject: [PATCH v6 0/7] Add support for LUT PPG
+Date:   Fri, 20 Oct 2023 11:22:10 -0700
+Message-ID: <20231020182218.22217-1-quic_amelende@quicinc.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aGC2Oe30_cV_nQgHf0oFNrbvJPZCh3VY
+X-Proofpoint-ORIG-GUID: aGC2Oe30_cV_nQgHf0oFNrbvJPZCh3VY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310200154
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+In certain PMICs, LUT pattern and LPG configuration is stored in SDAM
+modules instead of LUT peripheral. This feature is called PPG.
 
-We expect bdi->model_name to be NUL-terminated based on its usage with
-sysfs_emit and format strings:
+This change series adds support for PPG. Thanks!
 
-val->strval is assigned to bdi->model_name in
-bq24190_charger_get_property():
-1186 | val->strval = bdi->model_name;
+Changes since v5:
+  - Patch 4/7
+    - Update logic so that multicolor led device triggers pattern
+      on all LEDs at the same time
+    - Update nitpicks from Lee
+  - Patch 5/7
+    - Update nitpicks from Lee
+Changes since v4:
+  - Patch 3/7
+    - Get rid of r/w helpers
+    - Use regmap_read_poll_timeout() in qcom_pbs_wait_for_ack()
+    - Update error path in qcom_pbs_trigger_event()
+    - Fix reverse christmas tree
+  - Patch 4/7
+    - Get rid of r/w helpers
+    - Update variables to use "sdam" instead of "nvmem"
+    - Fix comments
+    - Fix reverse christmas tree
+    - Update lpg_pattern_set() logic
+  - Patch 5/7
+    - Removed sdam_lut_base from lpg_data
+Changes since v3:
+  - Patch 4/7
+    - Fix function returns
+    - Move register definition to top of file
+    - Revert max_brightness and probe accidental changes
+    - Combine init_sdam() and parse_sdam()
+    - Change error prints in probe to use dev_err_probe
+    - Remove ppg_en variable
+    - Update when pbs triggers are set/cleared
+  - Patch 6/7
+    - Remove use of nvmem_count
+    - Move register definition to top of file
+    - Remove lpg_get_sdam_lut_idx()
+Changes since v2:
+  - Patch 1/7
+    - Fix dt_binding_check error
+    - Rename binding file to match compatible
+    - Iclude SoC specific comptaibles
+  - Patch 2/7
+    - Update nvmem-names list
+  - Patch 3/7
+    - Update EXPORT_SYMBOL to EXPORT_SYMBOL_GPL
+    - Fix return/break logic in qcom_pbs_wait_for_ack()
+    - Update iterators to be int
+    - Add constants
+    - Fix function calls in qcom_pbs_trigger_event()
+    - Remove unnessary comments
+    - Return -EPROBE_DEFER from get_pbs_client_device()
+Changes since v1:
+  - Patch 1/7
+    - Fix dt_binding_check errors
+    - Update binding description
+  - Path 2/7
+    - Fix dt_binding_check errors
+    - Update per variant constraints
+    - Update nvmem description
+  - Patch 3/7
+    - Update get_pbs_client_device()
+    - Drop use of printk
+    - Remove unused function
 
-... then in power_supply_sysfs.c we use value.strval with a format string:
-311  | ret = sysfs_emit(buf, "%s\n", value.strval);
+Anjelique Melendez (7):
+  dt-bindings: soc: qcom: Add qcom,pbs bindings
+  dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+  soc: qcom: add QCOM PBS driver
+  leds: rgb: leds-qcom-lpg: Add support for PPG through single SDAM
+  leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data to support PPG
+  leds: rgb: leds-qcom-lpg: Include support for PPG with dedicated LUT
+    SDAM
+  leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
 
-we assigned value.strval via:
-285  | ret = power_supply_get_property(psy, psp, &value);
-... which invokes psy->desc->get_property():
-1210 | return psy->desc->get_property(psy, psp, val);
+ .../bindings/leds/leds-qcom-lpg.yaml          |  89 ++++-
+ .../bindings/soc/qcom/qcom,pbs.yaml           |  46 +++
+ drivers/leds/rgb/leds-qcom-lpg.c              | 344 ++++++++++++++++--
+ drivers/soc/qcom/Kconfig                      |   9 +
+ drivers/soc/qcom/Makefile                     |   1 +
+ drivers/soc/qcom/qcom-pbs.c                   | 243 +++++++++++++
+ include/linux/soc/qcom/qcom-pbs.h             |  30 ++
+ 7 files changed, 733 insertions(+), 29 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+ create mode 100644 drivers/soc/qcom/qcom-pbs.c
+ create mode 100644 include/linux/soc/qcom/qcom-pbs.h
 
-with bq24190_charger_get_property():
-1320 | static const struct power_supply_desc bq24190_charger_desc = {
-...
-1325 | 	.get_property		= bq24190_charger_get_property,
-
-Moreover, no NUL-padding is required as bdi is zero-allocated in
-bq24190_charger.c:
-1798 | bdi = devm_kzalloc(dev, sizeof(*bdi), GFP_KERNEL);
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/power/supply/bq24190_charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
-index 3f99cb9590ba..1db290ee2591 100644
---- a/drivers/power/supply/bq24190_charger.c
-+++ b/drivers/power/supply/bq24190_charger.c
-@@ -1803,7 +1803,7 @@ static int bq24190_probe(struct i2c_client *client)
- 
- 	bdi->client = client;
- 	bdi->dev = dev;
--	strncpy(bdi->model_name, id->name, I2C_NAME_SIZE);
-+	strscpy(bdi->model_name, id->name, sizeof(bdi->model_name));
- 	mutex_init(&bdi->f_reg_lock);
- 	bdi->charge_type = POWER_SUPPLY_CHARGE_TYPE_FAST;
- 	bdi->f_reg = 0;
-
----
-base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
-change-id: 20231020-strncpy-drivers-power-supply-bq24190_charger-c-6bcc105fc23b
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+2.41.0
 
