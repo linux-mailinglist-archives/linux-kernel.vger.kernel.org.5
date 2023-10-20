@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271357D0BFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463537D0C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376736AbjJTJfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
+        id S1376720AbjJTJjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376803AbjJTJfq (ORCPT
+        with ESMTP id S1376881AbjJTJjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:35:46 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19318D55
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:35:41 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qtlut-0003Mz-MB; Fri, 20 Oct 2023 11:35:39 +0200
-Message-ID: <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info>
-Date:   Fri, 20 Oct 2023 11:35:38 +0200
+        Fri, 20 Oct 2023 05:39:01 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8409EC0;
+        Fri, 20 Oct 2023 02:38:58 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SBfZ56rVXzFr7C;
+        Fri, 20 Oct 2023 17:34:53 +0800 (CST)
+Received: from huawei.com (10.50.163.32) by kwepemm000005.china.huawei.com
+ (7.193.23.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 20 Oct
+ 2023 17:38:54 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/qm - prevent soft lockup in receive loop
+Date:   Fri, 20 Oct 2023 17:35:58 +0800
+Message-ID: <20231020093558.16695-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
- L570
-Content-Language: en-US, de-DE
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jaak Ristioja <jaak@ristioja.ee>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
- <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info>
- <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
- <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
- <ZSO9uArAtsPMPeTP@debian.me>
- <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697794542;f9661a6a;
-X-HE-SMSGID: 1qtlut-0003Mz-MB
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.10.23 10:54, Huacai Chen wrote:
-> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
->>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
->>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
->>>> Leemhuis) <regressions@leemhuis.info> wrote:
->>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
->>>>>>
->>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
->>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
->>>>>> screen after boot until the display manager starts... if it does start
->>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
->>>>>>
->>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
->>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
->>>>>> subsys_initcall_sync").
->>>>>
->>>>> Hmmm, no reaction since it was posted a while ago, unless I'm missing
->>>>> something.
->>>>>
->>>>> Huacai Chen, did you maybe miss this report? The problem is apparently
->>>>> caused by a commit of yours (that Javier applied), you hence should look
->>>>> into this.
->>>> I'm sorry but it looks very strange, could you please share your config file?
->>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
->>> again. So I guess the reason:
->>
->> Did Jaak reply privately? It should have been disclosed in public
->> ML here instead.
-> Yes, he replied privately, and disabling DRM_SIMPLEDRM was suggested by me.
+In the scenario where the accelerator business is fully loaded.
+When the workqueue receiving messages and performing callback
+processing, there are a large number of messages that need to be
+received, and there are continuously messages that have been
+processed and need to be received.
+This will cause the receive loop here to be locked for a long time.
+This scenario will cause watchdog timeout problems on OS with kernel
+preemption turned off.
 
-Well, this to me still looks a lot (please correct me if I'm wrong) like
-regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
-if I understood things correctly. Or is there a proper fix for this
-already in the works and I just missed this? Or is there some good
-reason why this won't/can't be fixed?
+The error logs:
+watchdog: BUG: soft lockup - CPU#23 stuck for 23s! [kworker/u262:1:1407]
+[ 1461.978428][   C23] Call trace:
+[ 1461.981890][   C23]  complete+0x8c/0xf0
+[ 1461.986031][   C23]  kcryptd_async_done+0x154/0x1f4 [dm_crypt]
+[ 1461.992154][   C23]  sec_skcipher_callback+0x7c/0xf4 [hisi_sec2]
+[ 1461.998446][   C23]  sec_req_cb+0x104/0x1f4 [hisi_sec2]
+[ 1462.003950][   C23]  qm_poll_req_cb+0xcc/0x150 [hisi_qm]
+[ 1462.009531][   C23]  qm_work_process+0x60/0xc0 [hisi_qm]
+[ 1462.015101][   C23]  process_one_work+0x1c4/0x470
+[ 1462.020052][   C23]  worker_thread+0x150/0x3c4
+[ 1462.024735][   C23]  kthread+0x108/0x13c
+[ 1462.028889][   C23]  ret_from_fork+0x10/0x18
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Therefore, it is necessary to add an actively scheduled operation in the
+while loop to prevent this problem.
+After adding it, no matter whether the OS turns on or off the kernel
+preemption function. Neither will cause watchdog timeout issues.
 
-#regzbot poke
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/qm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
->>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
->>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
->>> no platform device created for SIMPLEDRM at early stage, so it seems
->>> also "no problem".
->>
->> I don't understand above. You mean that after that commit the platform
->> device is also none, right?
-> No. The SIMPLEDRM driver needs a platform device to work, and that
-> commit makes the platform device created earlier. So, before that
-> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
-> commit, SIMPLEDRM works, but the screen is blank.
-> 
-> Huacai
->>
->> Confused...
->>
->> --
->> An old man doll... just what I always wanted! - Clara
-> 
-> 
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index 6ee24313d851..18599f3634c3 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -888,6 +888,8 @@ static void qm_poll_req_cb(struct hisi_qp *qp)
+ 		qm_db(qm, qp->qp_id, QM_DOORBELL_CMD_CQ,
+ 		      qp->qp_status.cq_head, 0);
+ 		atomic_dec(&qp->qp_status.used);
++
++		cond_resched();
+ 	}
+ 
+ 	/* set c_flag */
+-- 
+2.24.0
+
