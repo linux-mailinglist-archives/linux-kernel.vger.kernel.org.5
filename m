@@ -2,130 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A417D16E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F857D16E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbjJTUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 16:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
+        id S230162AbjJTUZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 16:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjJTUWe (ORCPT
+        with ESMTP id S229554AbjJTUZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 16:22:34 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5301FD63
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 13:22:32 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 39B9F40E0193;
-        Fri, 20 Oct 2023 20:22:29 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EcV4Ofp_9DwU; Fri, 20 Oct 2023 20:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697833347; bh=bQIeUlnI+1Vpkuoi3K6di3lGq2uGWPayBk6/l1Il/3c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D42Mpj/4s3W+q0i7frQ3c2rZOzgKshR8/MXVQ4Hg/SZrHgj+TOVNy00KDlFWmS/mG
-         8REaggIILI1/mPx4BlGtlCy6b+7t5/DoIVYKRAjadJ15ta1Cztm+7jAukBQXpi/DnW
-         oU2SZ0sdllRELa3gYmmONerbH4SiXa7TvFcx6EHg9AGiEoH5pF8IjltqfNhk8p+rFX
-         /H0A/BPgORtlN8ckxbiap84xenveUKYzm80UQa2npGl2UII33Fn1Brh6yoegwbkpKs
-         gYREXyChX4NWR7XXY+U5x0XIJcU/ci+yMjmNbhfw3zWfRR5Z+oam/pMyFP8TJpjmEH
-         x7OIT1D6rn76A7Y7UKJDnaSDXiVtDQXdF9Mpc4O2Gm6zuJWa5HCMP5hE3M1QD3jn4s
-         XQfdjNafmmHlJeHYNQc+nd3Nr2Q4Z/HohxofxJcISO1IXnPSgv9/SYcutFlSSKuApC
-         LHVT7G0GrYlHBYhIcm0QKLX0hZKxe73+S//xZ/bmoXk7tj9I4lm7SQXHrbd7tZt53g
-         6kaynTMTSpFsHWWmx/++urmNs8bN5qz1I9RZlupYJ4xkbqCNtVGkmK789LSmjeiHQ+
-         xXEwAMQXvlldZJZxoxfdbpwEjJiGHXxzn2m4/Kjh6HhiyUgR+yDRulKDXQWW63NPFi
-         mKE41mf2vj0TTvI5l2G5gc7Y=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 308C740E0196;
-        Fri, 20 Oct 2023 20:22:03 +0000 (UTC)
-Date:   Fri, 20 Oct 2023 22:21:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        Tim Gardner <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "matija.glavinic-pecotic.ext@nokia.com" 
-        <matija.glavinic-pecotic.ext@nokia.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/mm: Print the encryption features correctly when a
- paravisor is present
-Message-ID: <20231020202158.GHZTLhZpmes+uiHOE2@fat_crate.local>
-References: <20231019062030.3206-1-decui@microsoft.com>
- <00ff2f75-e780-4e2d-bcc9-f441f5ef879c@intel.com>
- <SA1PR21MB13352433C4D72AE19F1FF56EBFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
- <5245c0df-130c-443d-896b-01887875382b@intel.com>
- <SA1PR21MB1335B68B21B1F37ECC6D77F0BFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
+        Fri, 20 Oct 2023 16:25:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F7AD63;
+        Fri, 20 Oct 2023 13:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697833507; x=1729369507;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=5pNSvTZbWx58Mg2C+HXhbZ0YgeE49K6MON74reseULc=;
+  b=QzuBYaVLyEZ7qjXdPDKSf8Y5OhSUL4sN8wT8ELRQxXpqbp1NM/81i3yN
+   mLHE/uMBirhYTa7/i2TXqZCLG5i/Kg/KDixRIZJPOknIsCKegOBMFfZPw
+   LAUTFDr/tyYVhaYHYVjfEqrbrlpZ5IKIC5QMRPissTMU8bzCSFmXBVVuF
+   tx/SF5zQyM3mNzBc3paOWb9w1SF2VlMHeXJGHRD1WFMc/TTKGwXp8XPer
+   Ckn8mE6SysRBWO74lG6ZxiToEw6iOat8xs3YYO3zUN0jsZMNcm2FMLzMF
+   Ici1vdKkwNOSuehfD35M3MswZZBPxWiGwK0cSkUua5H/kblFYc1fyLouV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="417703028"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="417703028"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 13:24:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="761167655"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="761167655"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Oct 2023 13:24:29 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qtw2l-0003xi-0a;
+        Fri, 20 Oct 2023 20:24:27 +0000
+Date:   Sat, 21 Oct 2023 04:23:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Kory Maincent <kory.maincent@bootlin.com>
+Subject: Re: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback to
+ use kernel_hwtstamp_config
+Message-ID: <202310210416.0nNTYS2E-lkp@intel.com>
+References: <20231009155138.86458-2-kory.maincent@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <SA1PR21MB1335B68B21B1F37ECC6D77F0BFDBA@SA1PR21MB1335.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009155138.86458-2-kory.maincent@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 08:00:13PM +0000, Dexuan Cui wrote:
-> Currently arch/x86/mm/mem_encrypt.c: print_mem_encrypt_feature_info()
-> prints an incorrect and confusing message 
-> "Memory Encryption Features active: AMD SEV".
-> when an Intel TDX VM with a paravisor runs on Hyper-V.
-> 
-> So I think a kernel patch is needed.
+Hi Köry,
 
-So I'm trying to parse this:
+kernel test robot noticed the following build errors:
 
-"Hyper-V provides two modes for running a TDX/SNP VM:
+[auto build test ERROR on net-next/main]
 
-1) In TD Partitioning mode (TDX) or vTOM mode (SNP) with a paravisor;
-2) In "fully enlightened" mode with the normal TDX shared bit or SNP C-bit
-   control over page encryption, and no paravisor."
+url:    https://github.com/intel-lab-lkp/linux/commits/K-ry-Maincent/net-Convert-PHYs-hwtstamp-callback-to-use-kernel_hwtstamp_config/20231009-235451
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231009155138.86458-2-kory.maincent%40bootlin.com
+patch subject: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback to use kernel_hwtstamp_config
+config: csky-randconfig-002-20231020 (https://download.01.org/0day-ci/archive/20231021/202310210416.0nNTYS2E-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310210416.0nNTYS2E-lkp@intel.com/reproduce)
 
-and it all sounds like word salad to me.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310210416.0nNTYS2E-lkp@intel.com/
 
-The fact that you've managed to advertize a salad of CPUID bits to the
-guest to lead to such confusing statement, sounds like a major insanity.
+All errors (new ones prefixed by >>):
 
-> the native TDX/SNP CPUID capability is hidden from the VM
+   drivers/net/phy/nxp-c45-tja11xx.c: In function 'nxp_c45_hwtstamp':
+>> drivers/net/phy/nxp-c45-tja11xx.c:1033:13: error: 'cfg' undeclared (first use in this function)
+    1033 |         if (cfg->tx_type < 0 || cfg->tx_type > HWTSTAMP_TX_ON)
+         |             ^~~
+   drivers/net/phy/nxp-c45-tja11xx.c:1033:13: note: each undeclared identifier is reported only once for each function it appears in
 
-Why do you wonder then that it detects wrong?! You're hiding it!
 
-> but cc_platform_has(CC_ATTR_MEM_ENCRYPT) and
-> cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) are true;
+vim +/cfg +1033 drivers/net/phy/nxp-c45-tja11xx.c
 
-I guess you need to go to talk to Michael:
-
-812b0597fb40 ("x86/hyperv: Change vTOM handling to use standard coco mechanisms")
+  1023	
+  1024	static int nxp_c45_hwtstamp(struct mii_timestamper *mii_ts,
+  1025				    struct kernel_hwtstamp_config *config,
+  1026				    struct netlink_ext_ack *extack)
+  1027	{
+  1028		struct nxp_c45_phy *priv = container_of(mii_ts, struct nxp_c45_phy,
+  1029							mii_ts);
+  1030		struct phy_device *phydev = priv->phydev;
+  1031		const struct nxp_c45_phy_data *data;
+  1032	
+> 1033		if (cfg->tx_type < 0 || cfg->tx_type > HWTSTAMP_TX_ON)
+  1034			return -ERANGE;
+  1035	
+  1036		data = nxp_c45_get_data(phydev);
+  1037		priv->hwts_tx = cfg->tx_type;
+  1038	
+  1039		switch (cfg->rx_filter) {
+  1040		case HWTSTAMP_FILTER_NONE:
+  1041			priv->hwts_rx = 0;
+  1042			break;
+  1043		case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
+  1044		case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
+  1045		case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
+  1046			priv->hwts_rx = 1;
+  1047			cfg->rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+  1048			break;
+  1049		default:
+  1050			return -ERANGE;
+  1051		}
+  1052	
+  1053		if (priv->hwts_rx || priv->hwts_tx) {
+  1054			phy_write_mmd(phydev, MDIO_MMD_VEND1,
+  1055				      data->regmap->vend1_event_msg_filt,
+  1056				      EVENT_MSG_FILT_ALL);
+  1057			data->ptp_enable(phydev, true);
+  1058		} else {
+  1059			phy_write_mmd(phydev, MDIO_MMD_VEND1,
+  1060				      data->regmap->vend1_event_msg_filt,
+  1061				      EVENT_MSG_FILT_NONE);
+  1062			data->ptp_enable(phydev, false);
+  1063		}
+  1064	
+  1065		if (nxp_c45_poll_txts(priv->phydev))
+  1066			goto nxp_c45_no_ptp_irq;
+  1067	
+  1068		if (priv->hwts_tx)
+  1069			nxp_c45_set_reg_field(phydev, &data->regmap->irq_egr_ts_en);
+  1070		else
+  1071			nxp_c45_clear_reg_field(phydev, &data->regmap->irq_egr_ts_en);
+  1072	
+  1073	nxp_c45_no_ptp_irq:
+  1074		return 0;
+  1075	}
+  1076	
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
