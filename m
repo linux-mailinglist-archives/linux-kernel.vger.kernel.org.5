@@ -2,221 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E9F7D05EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A76E7D05F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346814AbjJTAoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
+        id S1346808AbjJTAtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346767AbjJTAoI (ORCPT
+        with ESMTP id S1346767AbjJTAtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:44:08 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14B8FA;
-        Thu, 19 Oct 2023 17:44:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aYojC0vHRbqR8J1sAoEIlNzJnOuVLXqa1y+OWUcR4sJN4yzwbez7riQxus8YkyXlIS/L+Lh84/Z1uGIAg3GqIsoQu/5KkcCkOHRXjcr4KSlDKWP1vT++MrG8Zw9hL+BVbDtnT8NVw5JHnIrkbkDDLa7m1dCSC8lhydMslA+GeXWPj8rUubS+JYbSCIsyde46c5eg/MVeApBubnwq69LEJ74N82w4naI+I2cpzZu2ElvUBzTpZ5wg8M02A0+/UcqfjtzlSzuWfLN+F6KDKIS5GNTXSGSP5h+1SEZGHrzfSkOCfNJ6WDOqT3vzSsiBgX4lkmfcfR0GB20kIytoCEaNXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KMgIm/ehAmqey2MOX1hwVa7hqKrH9Ffe58BLMV/epXE=;
- b=WmJJliqxe0chLSPJX8BRR+GZm0nwlpY4d/I8PsN+bQWaLXbzM+u7XnJXgrb98TRbCNQAea0KSqMWotiPYoFjLQGy7dlY1okXfm7+1P8oztqEYRJqLqPZQZTQr1O2o4LKKzcBdZeA7ZHOKrPhoRVANLcnIir0GoXrLEdD0q9oIO351u1Ocm9GH46W+4f3+eZa+8ej5UW+6rCVAfSilb/a2BFTAkVfHBaPQBR2OWsQhljB2mGS10N6qcSrm/Nn7X8pD0uEsuvqYWuOBvRaLX+EcFtIOF4aq4ghB0E7KWsUv80SB53D0LE7EVhhg7Avg/GRJj3USntIkedJoackCz5TSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KMgIm/ehAmqey2MOX1hwVa7hqKrH9Ffe58BLMV/epXE=;
- b=1sPrYAhsPUKUBVFjX7yUg5AjR/dTsggy6I2lzci4ETuC3dH/iHGisPs2b5JReXs2sqBfuPPLtoXt+7Hm8X50QG0IeX6gB+iubmhtMvydHQQ5pM1FN4EsX/iyWIVsSYbE7Wpg9tkpol2pC3UFC2Bv+0SM/OAPcYIzc0xLQb0Rsyk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by CH3PR12MB8728.namprd12.prod.outlook.com (2603:10b6:610:171::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Fri, 20 Oct
- 2023 00:44:04 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a%3]) with mapi id 15.20.6863.043; Fri, 20 Oct 2023
- 00:44:04 +0000
-Message-ID: <eea3a2f0-8aae-435e-b839-3f21c4a8e2e6@amd.com>
-Date:   Fri, 20 Oct 2023 11:43:38 +1100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
- NAE event
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-49-michael.roth@amd.com>
- <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
- <ZS614OSoritrE1d2@google.com> <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
- <ZS_iS4UOgBbssp7Z@google.com> <924b755a-977a-4476-9525-a7626d728e18@amd.com>
- <ZTFD8y5T9nPOpCyX@google.com> <2034624b-579f-482e-8a7a-0dfc91740d7e@amd.com>
- <ZTHGPlTXvLnEDbmd@google.com>
-From:   Alexey Kardashevskiy <aik@amd.com>
-In-Reply-To: <ZTHGPlTXvLnEDbmd@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SY5P300CA0071.AUSP300.PROD.OUTLOOK.COM
- (2603:10c6:10:247::18) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+        Thu, 19 Oct 2023 20:49:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6EEFA;
+        Thu, 19 Oct 2023 17:49:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CEF9C433C9;
+        Fri, 20 Oct 2023 00:49:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697762943;
+        bh=9IPz2MmxCzAMUtqeAKQ6/4/VO68F8fYr09w07o8HlVk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BuQZ4T8WbnmiItxronuQk02qekF/N0iZ20hsL6StDD8S5qJITFUOPXkr2JVuJcsyU
+         pSeB/+Yr4PPRLN/B2TptPn/KkPpvPBuby3Jn03xgvXEDLm2D4+yUM4fqvj3ekO2s/J
+         /Y7F8xuI+qxA1UR7YXUl2jMLEgMzaXxPjBxCz3IGKf7PHuRfzwjmwfXSqrFHkCLagF
+         HNDAinJkl4KYZPmQhaAwinHLX2JBfbl+fUWn+3f6+/AU+AH58ZVrJAFdtWy2pp7/WS
+         mya3qaMHUiyq/o8UpWLf1Dax50kMAGJ8VG7cqldUPXYWwZxg0KNqPWIDX+zn7a3EMn
+         fwTNQ3gxE8ANA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1EA6BCE0DEA; Thu, 19 Oct 2023 17:49:03 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:49:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 3/4] rcu: Make tiny RCU use ksoftirqd to trigger a QS
+ from idle
+Message-ID: <d81f562a-f3d1-44f8-9bbd-a026aaa529ee@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231019233543.1243121-1-frederic@kernel.org>
+ <20231019233543.1243121-4-frederic@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|CH3PR12MB8728:EE_
-X-MS-Office365-Filtering-Correlation-Id: 973f31b1-32e3-4094-3e40-08dbd105a8b8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D4P6sAQxb4G7RbpGIE8cDnA2cZkDnzpzvjWd2RD8a9eGhytPSfwHqiK0yNZGlKd3gz96vupuBSt1en5gWN1WyNNHAJtULtG9F7YHBeQdC+uAl5SdCnwyGe9jRk4VMo91i1fEgW3In9nd4IowNBrdMLBdDYhODxISkDfRCgpnFI7lyBzaf8R6loGQPA1SxAcKDUZDi58lIn1ca1jM8Ykpk+ky8pUywVKhjqi56EnTQu2OsjOTlIkY8W9JVUMZ9Yhtjh7Qvz4jqa+y9muKjUUWhOGxsKpn3jncOKuXEk+8DBDNq6bYirgoGnE24+AlLDu5ikjuDWe6XnAtxF3TJg87vbFrm38p8UDvSW9bbuaqwch8KS+tiNu4eO32UzSYHPDfYDh4cT1aXpYnV6ZWLD4wLaX/aWjYeNn0PxPKd3lbT0Rpm6fthpQzmoS134h0JPSw31Sh5SCL0uS+PoayIjcmG5nBBIMgnuelXQL/MNfz3Bftdv64PptjjsX8GKyVY6KRh4HSEPaNBP1mIpWVu1PGI6bRD+LCL05lWyL5L6EMO77lAngCalZr8jFw+I9JyjifEW1lWgGGYUOL99nozPJF4ELCOwCV8Dy4wYwztkoLEmvXbBmQAv8igr3sUag9uPYiEt1h5MtYiasoPjd5S3RcLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(31686004)(38100700002)(66946007)(316002)(6916009)(6486002)(5660300002)(8936002)(31696002)(54906003)(7416002)(7406005)(6666004)(83380400001)(8676002)(41300700001)(66476007)(2906002)(53546011)(6506007)(66556008)(6512007)(4326008)(2616005)(478600001)(26005)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVFxKzA1bXBYMkZJT2xLRXAvQlhRRDhSaUZGVVRyUnhYZUI2bEEzRllrQTFH?=
- =?utf-8?B?eUdDdkNUaWovK283amJBanMyUzRDSitpWjN5Sk1tUE9Oc1NlckpYcXdRcjgw?=
- =?utf-8?B?RG9Sc3FUU3VxMnVYTDJ0VzFFQU1GMk85R2ZRb2ZyOEtjMTlSVWh5WEhISVd2?=
- =?utf-8?B?ZE1oQU5GV2pLcWw3TEVYREZXTFZvRWIrVUNmc2hPb3loeDRNRlFtMkpPL1ZK?=
- =?utf-8?B?UkNkcVRWaE9DRmpFMmttWVhCRWRWT0p5YnVkZUx6aDRhd1pYMXBPRGY2cVBI?=
- =?utf-8?B?bkdUMjlXdXZPZkJ6cTNNMWdWbXJxeGViM0lpMWRJR0J5cmZHWmFwazUwalFN?=
- =?utf-8?B?WlpuaUJVNDNUQ3RMNVBHNXUwKzRDQXR0dWNhNy9DNWtvWEloeWlxMjczSWQx?=
- =?utf-8?B?cTFwcEJRY1hKOHJmMDNoa1hsa1NaT0d5MU8zL1dVaVFOVDIyVU9KbTlVSzZL?=
- =?utf-8?B?Y1lkNkZGdG5aMHdiY2R6RnEwOHVNSDBkTDZkVG5iVm9rRGZJejN2THFnaGU5?=
- =?utf-8?B?OHVEUWFidEZ1MjN0QzRUR05nQzY1SUlIbFZGc1BZNlQveVNoYXpMQnl6ZkJC?=
- =?utf-8?B?YkM3UXpNVXlzNXZ5WTFiUkpxVVpmbUlDK1FleFM4YmRjK1ViV3h3UmVlN1Vz?=
- =?utf-8?B?bUF0NmY1Ylk3aUR0V1dnUDNidDhpWWJIRktMcDRNUE56M1Jjb2xJMWhNajdC?=
- =?utf-8?B?ZEZFQkNmR2JDT1Y0T2xzdTk0LzBZUUdta0ZuSi9DMWYweDNRTW5ZRytxK3ZK?=
- =?utf-8?B?eVVaZkRQS3pQd3BBMmNha2xSTjFWYkVTT2wzZGJYa0NJaEo0cUhaY3psM2M2?=
- =?utf-8?B?M0RYNkZXZU1LRmpBbFdEbHgrZENrdUhIeFpMa1EydXJ0WVZ6TGJvWWJnR2Zn?=
- =?utf-8?B?T28vQ0Z3aCtjb1oxMU43aWJjNFp1bzZpYXBuSy9RSVZUMVFkVFhVOHBoRjI2?=
- =?utf-8?B?M2UrVWxpQmdhZnlGZFBQYTBDaVFRM094WFE5ZEQvYk9yeWlsZzBUeithajg3?=
- =?utf-8?B?OFJoOHFYMzRVZGEwcE9DdEFjeVBjdmVXYlVLMHNOUHBnZUovKzRwczJkS1FZ?=
- =?utf-8?B?ZUl2RDI3U2w1V3hsT1NhdDU2K2kxNXdraDN6QUxma3FNb0V2Zk16RFZ0c2Jk?=
- =?utf-8?B?UE53eTdrVWxkWlkxd3l4OStzSUFvazZna3ZmMXFCcFpjaFVibks0cS9zZHdv?=
- =?utf-8?B?N1lYWUJycTB2UXBhVlhiMlM5cE5NV1pRelFxbnZFRWVKV2ZQQysrUlNUcS82?=
- =?utf-8?B?VUZHU0ZQSjhYNVRWZDdENXdPZzZyMi85VS9wM1l3UUFNRnRSRjZ5YWJJMDhS?=
- =?utf-8?B?L09jT0ZpWWtNV3E5ajBBUGhaeW1zdDVjUm5PazZDSzBuTWVjeDRjSEgwQ0Fj?=
- =?utf-8?B?dW1VSEhEanVGc3YweEJGa2xTeW54enBmYk1CRElWRVFSWllOVUNzdjJWWHQ0?=
- =?utf-8?B?YWRWOWxYZ2o4R2dvQmhBUzN0U3lUVG5DR1M0NzdvTmc1UHhjSjFmYmxleEdr?=
- =?utf-8?B?M2pnWWJUTFpZV0VkQ2xUWThYRUY5czRpR1VyNTQzcHJKZjV5MFBkRFBZb1Ax?=
- =?utf-8?B?Z2NCbzl1WkdMYlI5WUl5R1RvNW5waG5hbFB3U0xZai94RFAxV0laaU1xSmly?=
- =?utf-8?B?dmsrcWxIaDRGRkp0RHI0eUljOUhMU2xtQWh0b3FwYlpFLy93OTltZG1QQ3R1?=
- =?utf-8?B?eVd4L0tseGdYZzRBRVM3Y1VDSHYyVlRPRjVsOS8xeEgrUlYwcVN5YVFHcXYx?=
- =?utf-8?B?eTNBK0ZCYk11bG5tNVJUTy90MHg1VTgwcFhXTkc1SEhxTkwwN2tkb0pwQUlT?=
- =?utf-8?B?TTlUeGZtaWdNc2piRU4yaVB2amxiZEhmcHpRelFPa0FsSDVacWlqVmp0YUs2?=
- =?utf-8?B?VnY3VUp4OGU5OGl4WjRuV2NQNWUwKy9yeXZ2RzFlT3FLUmNMQ1JaOG0vcUtN?=
- =?utf-8?B?dkdyN3EyWkJjeEcrRkFMa3luZG85MndyMFFVOXBUdFhYVzIwaElHenBLMkk2?=
- =?utf-8?B?QVRaZEROZzFHb2tBT2kwNCtzZTJ4aVYyWFRYNkM3WklCVG5WRjVWcDU0Qldw?=
- =?utf-8?B?dTJLWXFsK3puUzlXV0RsbEt6dXdBdXpaUmdZd1o5SVVvSGp0bzZPRnJNbG5F?=
- =?utf-8?Q?HjJCEwMN1jGUFatC+uV/cLVcV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 973f31b1-32e3-4094-3e40-08dbd105a8b8
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 00:44:04.2063
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l+AnVrzNXOViaXvY0K1pbIoFd5diF6xHdebfaD8K3j3buI9DH3BM4m5a1s/fvOrG1sXz7opTxkyozNTLYsqL2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8728
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019233543.1243121-4-frederic@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023 at 01:35:42AM +0200, Frederic Weisbecker wrote:
+> The commit:
+> 
+> 	cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
+> 
+> fixed an issue where rcutiny would request a quiescent state with
+> setting TIF_NEED_RESCHED in early boot when init/0 has the PF_IDLE flag
+> set but interrupts aren't enabled yet. A subsequent call to
+> cond_resched() would then enable IRQs too early.
+> 
+> When callbacks are enqueued in idle, RCU currently performs the
+> following:
+> 
+> 1) Call resched_cpu() to trigger exit from idle and go through the
+>    scheduler to call rcu_note_context_switch() -> rcu_qs()
+> 
+> 2) rcu_qs() notes the quiescent state and raises RCU_SOFTIRQ if there
+>    is a callback, waking up ksoftirqd since it isn't called from an
+>    interrupt.
+> 
+> However the call to resched_cpu() can opportunistically be replaced and
+> optimized with raising RCU_SOFTIRQ and forcing ksoftirqd wakeup instead.
+> 
+> It's worth noting that RCU grace period polling while idle is then
+> suboptimized but such a usecase can be considered very rare or even
+> non-existent.
+> 
+> The advantage of this optimization is that it also works if PF_IDLE is
+> set early because ksoftirqd is created way after IRQs are enabled on
+> boot and it can't be awaken before its creation. If
+> raise_ksoftirqd_irqoff() is called after the first scheduling point
+> but before kostfirqd is created, nearby voluntary schedule calls are
+> expected to provide the desired quiescent state and in the worst case
+> the first launch of ksoftirqd is close enough on the first initcalls.
+> 
+> Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
+> Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Sebastian Siewior <bigeasy@linutronix.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-On 20/10/23 11:13, Sean Christopherson wrote:
-> On Fri, Oct 20, 2023, Alexey Kardashevskiy wrote:
->>
->> On 20/10/23 01:57, Sean Christopherson wrote:
->>> On Thu, Oct 19, 2023, Alexey Kardashevskiy wrote:
->>>>> 	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_request;
->>>>> 	return 0;
->>>>> }
->>>>
->>>> This should work the KVM stored certs nicely but not for the global certs.
->>>> Although I am not all convinced that global certs is all that valuable but I
->>>> do not know the history of that, happened before I joined so I let others to
->>>> comment on that. Thanks,
->>>
->>> Aren't the global certs provided by userspace too though?  If all certs are
->>> ultimately controlled by userspace, I don't see any reason to make the kernel a
->>> middle-man.
->>
->> The max blob size is 32KB or so and for 200 VMs it is:
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+I did a touch-test of the series, and have started overnight testing.
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tiny.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
 > 
-> Not according to include/linux/psp-sev.h:
-> 
-> #define SEV_FW_BLOB_MAX_SIZE	0x4000	/* 16KB */
-> 
-> Ugh, and I see in another patch:
-> 
->    Also increase the SEV_FW_BLOB_MAX_SIZE another 4K page to allow space
->    for an extra certificate.
-> 
-> -#define SEV_FW_BLOB_MAX_SIZE   0x4000  /* 16KB */
-> +#define SEV_FW_BLOB_MAX_SIZE   0x5000  /* 20KB */
-> 
-> That's gross and just asking for ABI problems, because then there's this:
-> 
-> +::
+> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+> index fec804b79080..9460e4e9d84c 100644
+> --- a/kernel/rcu/tiny.c
+> +++ b/kernel/rcu/tiny.c
+> @@ -190,12 +190,15 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	local_irq_save(flags);
+>  	*rcu_ctrlblk.curtail = head;
+>  	rcu_ctrlblk.curtail = &head->next;
+> -	local_irq_restore(flags);
+>  
+>  	if (unlikely(is_idle_task(current))) {
+> -		/* force scheduling for rcu_qs() */
+> -		resched_cpu(0);
+> +		/*
+> +		 * Force resched to trigger a QS and handle callbacks right after.
+> +		 * This also takes care of avoiding too early rescheduling on boot.
+> +		 */
+> +		raise_ksoftirqd_irqoff(RCU_SOFTIRQ);
+>  	}
+> +	local_irq_restore(flags);
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> @@ -228,8 +231,16 @@ unsigned long start_poll_synchronize_rcu(void)
+>  	unsigned long gp_seq = get_state_synchronize_rcu();
+>  
+>  	if (unlikely(is_idle_task(current))) {
+> -		/* force scheduling for rcu_qs() */
+> -		resched_cpu(0);
+> +		unsigned long flags;
 > +
-> +       struct kvm_sev_snp_set_certs {
-> +               __u64 certs_uaddr;
-> +               __u64 certs_len
-> +       };
-> +
-> +The certs_len field may not exceed SEV_FW_BLOB_MAX_SIZE.
+> +		/*
+> +		 * Force resched to trigger a QS. This also takes care of avoiding
+> +		 * too early rescheduling on boot. It's suboptimized but GP
+> +		 * polling on idle isn't expected much as a usecase.
+> +		 */
+> +		local_irq_save(flags);
+> +		raise_ksoftirqd_irqoff(RCU_SOFTIRQ);
+> +		local_irq_restore(flags);
+>  	}
+>  	return gp_seq;
+>  }
+> -- 
+> 2.34.1
 > 
->> - 6.5MB, all in the userspace so swappable  vs
->> - 32KB but in the kernel so not swappable.
->> Sure, a box capable of running 200 VMs must have plenty of RAM but still :)
-> 
-> That's making quite a few assumptions.
-> 
->    1) That the global cert will be 32KiB (which clearly isn't the case today).
->    2) That every VM will want the global cert.
->    3) That userspace can't figure out a way to share the global cert.
-> 
-> Even in that absolutely worst case scenario, I am not remotely convinced that it
-> justifies taking on the necessary complexity to manage certs in-kernel.
-> 
->> Plus, GHCB now has to go via the userspace before talking to the PSP which
->> was not the case so far (though I cannot think of immediate implication
->> right now).
-> 
-> Any argument along the lines of "because that's how we've always done it" is going
-> to fall on deaf ears.  If there's a real performance bottleneck with kicking out
-> to userspace, then I'll happily work to figure out a solution.  If.
-
-No, not performance, I was trying to imagine what can go wrong if 
-multiple vcpus are making this call, all exiting to QEMU, in a loop, 
-racing, something like this.
-
-
-
--- 
-Alexey
-
-
