@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5ED7D07BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B057D07CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346657AbjJTFpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        id S1345309AbjJTFtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235599AbjJTFpW (ORCPT
+        with ESMTP id S233497AbjJTFti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:45:22 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F8C1A6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:45:15 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K5gQ3N008048;
-        Fri, 20 Oct 2023 05:44:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=nqrnMCe98ci6txoaU8IrERG77izBRJ91QlE6fdoyJJo=;
- b=gCulxrZEN8WbmydSY1btCVRTI4wA8LQ9XbIh2mdbG6otH8hScolJCWcgxb7yLZ1A8I+S
- JWFK6p3BEVlMUaj3pEEtAi3d+MxTY+B9+91tdqJyUbzquoBOfZGuKWOFfCCJ13nIgADb
- sLQwn0XHEOGJadP55Ylkj2eo0O/vWrP+lCBp2HWY6sNzVIIy4yOIjOIVV/tfAiyOLs7g
- MsvH44fKXwzsLbUJdxYK/A25Kga/X77tXj+/xP9mhxGV6O+2DWeSBEkQOK0Dq738dAXv
- 4cG3J2K/FULJFs7k5hYOk/mGHsGtNmHYHCklUw8WZnndRXaPkR+Gcntip+OvvM0Jl37c bA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tukmq03mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 05:44:52 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39K5hEuV011798;
-        Fri, 20 Oct 2023 05:44:51 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tukmq03kk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 05:44:51 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39K2oC9d002683;
-        Fri, 20 Oct 2023 05:44:50 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tuc44ahx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 05:44:50 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39K5imUY56295772
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Oct 2023 05:44:48 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 588E920043;
-        Fri, 20 Oct 2023 05:44:48 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37F4920040;
-        Fri, 20 Oct 2023 05:44:46 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Fri, 20 Oct 2023 05:44:46 +0000 (GMT)
-Date:   Fri, 20 Oct 2023 11:14:45 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Rohan McLure <rmclure@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v2 2/6] powerpc/smp: Enable Asym packing for cores on
- shared processor
-Message-ID: <20231020054445.GL2194132@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20231018163751.2423181-1-srikar@linux.vnet.ibm.com>
- <20231018163751.2423181-3-srikar@linux.vnet.ibm.com>
- <45a14ebb-91e7-489d-ad5d-6d39a48bc1f5@linux.vnet.ibm.com>
+        Fri, 20 Oct 2023 01:49:38 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CB7CA;
+        Thu, 19 Oct 2023 22:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=yMF4pcHvul9aj3NPNIUSsgOOjrOeA7W4g86fUYpJouU=;
+        t=1697780976; x=1698990576; b=h9quspUkPVO9QA1faW25l+Frsw8hu5AqyMQKAAEhUahbSgU
+        RNujxoaoF/F5hD+y5aniUX0Plx8R3OrjR+uP/2/vsZZ8ItpQkQeCrC68OQDv5Av082ahdSkRkgIXe
+        fbW4PDXxNab90Mysx7U8H7FX4oLJEwKYEhHhIn2E+9P6pyi1HyD66bZBUOfL6QS9xzId64nszxzk8
+        DyqI0+K8w+ZCSkNLY3mfbnfH7oYYibU4BcaAkm23dKFSVxJWwm3s2xxyCR++zXpQnPH8WT2mfz9av
+        bvcnpWCP1LMEHzPwUNOTFy8Qaen6ggT0FF95fN1hq0sqPzzMOL3mwcKVOhf9wLTg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qtiO1-0000000ENZE-015f;
+        Fri, 20 Oct 2023 07:49:29 +0200
+Message-ID: <007e30c2fe785e2f3fd7ffae9b85b7903f46e48c.camel@sipsolutions.net>
+Subject: Re: linux-next: manual merge of the net-next tree with the wireless
+ tree
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Fri, 20 Oct 2023 07:49:27 +0200
+In-Reply-To: <20231019144004.0f5b2533@kernel.org>
+References: <20231012113648.46eea5ec@canb.auug.org.au>
+         <987ecad0840a9d15bd844184ea595aff1f3b9c0c.camel@sipsolutions.net>
+         <20231019144004.0f5b2533@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <45a14ebb-91e7-489d-ad5d-6d39a48bc1f5@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: va9b7wCKRExEmjcCpA5TKGv1kXoUMz0J
-X-Proofpoint-GUID: K7lH2W5Asytm59uDHQ4YNKDr4Vn7yyok
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_04,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 mlxlogscore=914 bulkscore=0 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310200049
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Shrikanth Hegde <sshegde@linux.vnet.ibm.com> [2023-10-19 21:26:56]:
+On Thu, 2023-10-19 at 14:40 -0700, Jakub Kicinski wrote:
+> On Thu, 12 Oct 2023 10:10:10 +0200 Johannes Berg wrote:
+> > > I fixed it up (I just used the latter, there may be more needed) =20
+> >=20
+> > Just using net-next/wireless-next is fine, I actually noticed the issue
+> > while I was merging the trees to fix the previous conflicts here.
+>=20
+> Resolved the conflict in 041c3466f39d, could you double check?
 
-> 
-> 
-> On 10/18/23 10:07 PM, Srikar Dronamraju wrote:
-> > If there are shared processor LPARs, underlying Hypervisor can have more
-> > virtual cores to handle than actual physical cores.
-> > 
-> > Starting with Power 9, a core has 2 nearly independent thread groups.
-> > On a shared processors LPARs, it helps to pack threads to lesser number
-> > of cores so that the overall system performance and utilization
-> > improves. PowerVM schedules at a core level. Hence packing to fewer
-> > cores helps.
-> > 
-> > For example: Lets says there are two 8-core Shared LPARs that are
-> > actually sharing a 8 Core shared physical pool, each running 8 threads
-> > each. Then Consolidating 8 threads to 4 cores on each LPAR would help
-> > them to perform better. This is because each of the LPAR will get
-> > 100% time to run applications and there will no switching required by
-> > the Hypervisor.
-> > 
-> > To achieve this, enable SD_ASYM_PACKING flag at CACHE, MC and DIE level.
-> 
-> This would have a conflict with tip/master. 
-> DIE has been renamed to PKG and Both changelog and code below should 
-> change DIE to PKG. 
+I don't see anything there, but I guess that means it's good? Code looks
+fine.
 
-Once the changes are part of powerpc/merge, will rebase and accomodate the
-changes from DIE to PKG.
+> Also, there's another direct return without freeing the key in
+> ieee80211_key_link(), is that one okay ?
 
+*sigh*
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+No, it's not. I think that means I resolved the previous merge there
+incorrectly, because it's OK in wireless and broken in wireless-next,
+and it had been fixed in d097ae01ebd4 ("wifi: mac80211: fix potential
+key leak").
+
+Anyway, thanks for checking and noticing! Will fix.
+
+johannes
