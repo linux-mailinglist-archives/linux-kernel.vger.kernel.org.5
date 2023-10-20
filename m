@@ -2,176 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115057D13D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE727D13D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377855AbjJTQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S229814AbjJTQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 12:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjJTQP6 (ORCPT
+        with ESMTP id S230084AbjJTQQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:15:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DCD1A8;
-        Fri, 20 Oct 2023 09:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=tKr5NCYEWPmX5deg+2Ptja2Fo3YNlvlkNEh9wJh6ZDg=; b=ERnIsojrkc5WLnr34IDZQWQKrG
-        wFzlSNa4uSGkth0zeh9LHdVk5FXd6R1LgmCBut8RlHh4SGdWnzA22SU/ejGMiigfeW+6R5k7l2fg2
-        0uiPSrmfiUIoAU5Q2qVPTTjT2kI+9So4NYm2If5BnDiMQZk7Rt7YUcegC1ffCiPYVpfP+E6Imy9hV
-        i2YFd5mM2Jc+985Yim+drAaCsJdkxvZKx7L2lWkn8w4S+76vvn2Jy23msUjaZ2EOVxJJfAY6wkfgh
-        GDrxLxeDVf77oL1C2C89fPb2hRzeM7pGCmELvA/wEZqdkqmaffpDBxTbaPsfNHSm8zNZg6XsaeLtV
-        M17Mpk1w==;
-Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qts9u-00E44E-8P; Fri, 20 Oct 2023 16:15:34 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qts9s-001UOc-1F;
-        Fri, 20 Oct 2023 17:15:32 +0100
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Roger Pau Monne <roger.pau@citrix.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Dawei Li <set_pte_at@outlook.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Paul Durrant <paul@xen.org>
-Subject: [PATCH v2 3/3] hvc/xen: fix console unplug
-Date:   Fri, 20 Oct 2023 17:15:29 +0100
-Message-Id: <20231020161529.355083-4-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231020161529.355083-1-dwmw2@infradead.org>
-References: <20231020161529.355083-1-dwmw2@infradead.org>
+        Fri, 20 Oct 2023 12:16:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67081170D;
+        Fri, 20 Oct 2023 09:16:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBBDD143D;
+        Fri, 20 Oct 2023 09:16:57 -0700 (PDT)
+Received: from [10.57.82.142] (unknown [10.57.82.142])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBC823F5A1;
+        Fri, 20 Oct 2023 09:16:15 -0700 (PDT)
+Message-ID: <da85e126-b909-4652-9961-ed6867dc0817@arm.com>
+Date:   Fri, 20 Oct 2023 17:17:04 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 5/6] thermal: gov_step_wise: Fold
+ update_passive_instance() into its caller
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <13365827.uLZWGnKmhe@kreacher> <9177552.CDJkKcVGEf@kreacher>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <9177552.CDJkKcVGEf@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
 
-On unplug of a Xen console, xencons_disconnect_backend() unconditionally
-calls free_irq() via unbind_from_irqhandler(), causing a warning of
-freeing an already-free IRQ:
 
-(qemu) device_del con1
-[   32.050919] ------------[ cut here ]------------
-[   32.050942] Trying to free already-free IRQ 33
-[   32.050990] WARNING: CPU: 0 PID: 51 at kernel/irq/manage.c:1895 __free_irq+0x1d4/0x330
+On 10/6/23 18:49, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Fold update_passive_instance() into thermal_zone_trip_update() that is
+> its only caller so as to make the code in question easeir to follow.
 
-It should be using evtchn_put() to tear down the event channel binding,
-and let the Linux IRQ side of it be handled by notifier_del_irq() through
-the HVC code.
+s/easeir/easier/
 
-On which topic... xencons_disconnect_backend() should call hvc_remove()
-*first*, rather than tearing down the event channel and grant mapping
-while they are in use. And then the IRQ is guaranteed to be freed by
-the time it's torn down by evtchn_put().
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/gov_step_wise.c |   28 ++++++++++------------------
+>   1 file changed, 10 insertions(+), 18 deletions(-)
+> 
 
-Since evtchn_put() also closes the actual event channel, avoid calling
-xenbus_free_evtchn() except in the failure path where the IRQ was not
-successfully set up.
+other than that LGTM:
 
-However, calling hvc_remove() at the start of xencons_disconnect_backend()
-still isn't early enough. An unplug request is indicated by the backend
-setting its state to XenbusStateClosing, which triggers a notification
-to xencons_backend_changed(), which... does nothing except set its own
-frontend state directly to XenbusStateClosed without *actually* tearing
-down the HVC device or, you know, making sure it isn't actively in use.
-
-So the backend sees the guest frontend set its state to XenbusStateClosed
-and stops servicing the interrupt... and the guest spins for ever in the
-domU_write_console() function waiting for the ring to drain.
-
-Fix that one by calling hvc_remove() from xencons_backend_changed() before
-signalling to the backend that it's OK to proceed with the removal.
-
-Tested with 'dd if=/dev/zero of=/dev/hvc1' while telling Qemu to remove
-the console device.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Cc: stable@vger.kernel.org
----
- drivers/tty/hvc/hvc_xen.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
-index 4a768b504263..34c01874f45b 100644
---- a/drivers/tty/hvc/hvc_xen.c
-+++ b/drivers/tty/hvc/hvc_xen.c
-@@ -377,18 +377,21 @@ void xen_console_resume(void)
- #ifdef CONFIG_HVC_XEN_FRONTEND
- static void xencons_disconnect_backend(struct xencons_info *info)
- {
--	if (info->irq > 0)
--		unbind_from_irqhandler(info->irq, NULL);
--	info->irq = 0;
-+	if (info->hvc != NULL)
-+		hvc_remove(info->hvc);
-+	info->hvc = NULL;
-+	if (info->irq > 0) {
-+		evtchn_put(info->evtchn);
-+		info->irq = 0;
-+		info->evtchn = 0;
-+	}
-+	/* evtchn_put() will also close it so this is only an error path */
- 	if (info->evtchn > 0)
- 		xenbus_free_evtchn(info->xbdev, info->evtchn);
- 	info->evtchn = 0;
- 	if (info->gntref > 0)
- 		gnttab_free_grant_references(info->gntref);
- 	info->gntref = 0;
--	if (info->hvc != NULL)
--		hvc_remove(info->hvc);
--	info->hvc = NULL;
- }
- 
- static void xencons_free(struct xencons_info *info)
-@@ -553,10 +556,23 @@ static void xencons_backend_changed(struct xenbus_device *dev,
- 		if (dev->state == XenbusStateClosed)
- 			break;
- 		fallthrough;	/* Missed the backend's CLOSING state */
--	case XenbusStateClosing:
-+	case XenbusStateClosing: {
-+		struct xencons_info *info = dev_get_drvdata(&dev->dev);;
-+
-+		/*
-+		 * Don't tear down the evtchn and grant ref before the other
-+		 * end has disconnected, but do stop userspace from trying
-+		 * to use the device before we allow the backend to close.
-+		 */
-+		if (info->hvc) {
-+			hvc_remove(info->hvc);
-+			info->hvc = NULL;
-+		}
-+
- 		xenbus_frontend_closed(dev);
- 		break;
- 	}
-+	}
- }
- 
- static const struct xenbus_device_id xencons_ids[] = {
-@@ -616,7 +632,7 @@ static int __init xen_hvc_init(void)
- 		list_del(&info->list);
- 		spin_unlock_irqrestore(&xencons_lock, flags);
- 		if (info->irq)
--			unbind_from_irqhandler(info->irq, NULL);
-+			evtchn_put(info->evtchn);
- 		kfree(info);
- 		return r;
- 	}
--- 
-2.40.1
-
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
