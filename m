@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C907D0EE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9CA7D0ED8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377239AbjJTLlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
+        id S1377427AbjJTLkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377472AbjJTLks (ORCPT
+        with ESMTP id S1377292AbjJTLj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:40:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ADA10FE;
-        Fri, 20 Oct 2023 04:38:29 -0700 (PDT)
+        Fri, 20 Oct 2023 07:39:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8600110EF;
+        Fri, 20 Oct 2023 04:38:28 -0700 (PDT)
 Date:   Fri, 20 Oct 2023 11:37:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1697801878;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZElns6XfS40Ct9ZlUY549ENrx+odeWOPnSY+qHIXhuo=;
-        b=dDHqTwolvYbzBPqNGXfR5WbhU3I+qp+Q9BUmbnRyC2OmBE/7l2LsPDzfjSiEKz+QlRKE7L
-        B+XJsxhH7GYsCMF16axnwhp9L3erKu5PpPoc8uJ9pf82jvlc5p7kwFOgYRIQ0Y0ymXaAbD
-        A4OoxN+NemN69u1IERhRsEcTnfa7b1eOfzC3hVeE4U/pnksLmlBtVip1bZqArPbugp2DKA
-        cSeWVM0VfBcFG5Xi8GiEYLE37rg05ajKkCJhJXj7zBF7e2sgFd2qXjTSqKZWM1NEYGcG/S
-        GVQ7v6xoDETOOKjDlFLPEN2oCPi2hBmp0Ajg6PeG7RzXIkJeZ2JuTtLhIJsgOQ==
+        bh=AZcNLxKeb32JyJPRq2x/CTuJGV0ABU/61W1t5tr23c8=;
+        b=q0Un3Q1615mjy87usfabxnmfLoIopEfb/CZ2H21q0i5hmDrqJcc08qsdkDs1TYnFXdLPel
+        +naRKOdwmBrBoNI8GYUOfMmrx/5iMQXchWI/pP28jGPGADp5cxidZwiJNq4NOcnmiKhZCR
+        9OUB3aCCGhe+CctC4dQNWQxpSbVFAAwhF+oZuJk/jpvcCEi4j/7FwsJv/36ezWJheiUeN/
+        jgzX1WBMnCd82ZaheXSz7Wd4FJPKPLzCvj5jO/+HLQuls6s4O/7woCLf/t+hfD28jAkrdS
+        WEwkYJnO4kZs6y1F71V3234uBBHRrQ5XFI8Cno4tlhQBlC3JBV2JTNHSKmzkag==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1697801878;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZElns6XfS40Ct9ZlUY549ENrx+odeWOPnSY+qHIXhuo=;
-        b=8aHCPf0WGQR6biptwZBvFLbExpjWA1ZhUc6lwIKTsdsk/YJGST4VjsOqslgSc2n3ch6buH
-        ycJZKGreaBEIhTCA==
+        bh=AZcNLxKeb32JyJPRq2x/CTuJGV0ABU/61W1t5tr23c8=;
+        b=lggB6MI+YS+gpxGDXVQ0sFKdx3kfGJGk3Ff05/kkOfQJ+CBRbVW04OybhwkFP912oGLpOJ
+        Ezn2CQgDF35mmgCg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode/intel: Rework intel_cpu_collect_info()
+Subject: [tip: x86/microcode] x86/microcode/intel: Reuse intel_cpu_collect_info()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231017211722.851573238@linutronix.de>
-References: <20231017211722.851573238@linutronix.de>
+In-Reply-To: <20231002115902.741173606@linutronix.de>
+References: <20231002115902.741173606@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169780187796.3135.686281818568605462.tip-bot2@tip-bot2>
+Message-ID: <169780187740.3135.15267123687598374991.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,126 +66,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     5356907910df2e319df45d126b8a9ab1f4cf0cee
-Gitweb:        https://git.kernel.org/tip/5356907910df2e319df45d126b8a9ab1f4cf0cee
+Commit-ID:     c7ebbcef2052ac09e4fb511926c7275b96d3cc1c
+Gitweb:        https://git.kernel.org/tip/c7ebbcef2052ac09e4fb511926c7275b96d3cc1c
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 17 Oct 2023 23:23:45 +02:00
+AuthorDate:    Mon, 02 Oct 2023 13:59:49 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 19 Oct 2023 14:26:52 +02:00
+CommitterDate: Thu, 19 Oct 2023 14:28:03 +02:00
 
-x86/microcode/intel: Rework intel_cpu_collect_info()
+x86/microcode/intel: Reuse intel_cpu_collect_info()
 
-Nothing needs struct ucode_cpu_info. Make it take struct cpu_signature,
-let it return a boolean and simplify the implementation. Rename it now
-that the silly name clash with collect_cpu_info() is gone.
+No point for an almost duplicate function.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231017211722.851573238@linutronix.de
+Link: https://lore.kernel.org/r/20231002115902.741173606@linutronix.de
 ---
- arch/x86/include/asm/cpu.h            |  4 +--
- arch/x86/kernel/cpu/microcode/intel.c | 33 +++++++-------------------
- drivers/platform/x86/intel/ifs/load.c |  8 ++----
- 3 files changed, 14 insertions(+), 31 deletions(-)
+ arch/x86/kernel/cpu/microcode/intel.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-index 25050d9..068a07e 100644
---- a/arch/x86/include/asm/cpu.h
-+++ b/arch/x86/include/asm/cpu.h
-@@ -71,9 +71,9 @@ static inline void init_ia32_feat_ctl(struct cpuinfo_x86 *c) {}
- 
- extern __noendbr void cet_disable(void);
- 
--struct ucode_cpu_info;
-+struct cpu_signature;
- 
--int intel_cpu_collect_info(struct ucode_cpu_info *uci);
-+void intel_collect_cpu_info(struct cpu_signature *sig);
- 
- static inline bool intel_cpu_signatures_match(unsigned int s1, unsigned int p1,
- 					      unsigned int s2, unsigned int p2)
 diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index d3198de..4e5a88d 100644
+index 4e5a88d..134df28 100644
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -66,36 +66,21 @@ static inline unsigned int exttable_size(struct extended_sigtable *et)
- 	return et->count * EXT_SIGNATURE_SIZE + EXT_HEADER_SIZE;
- }
+@@ -419,21 +419,7 @@ void reload_ucode_intel(void)
  
--int intel_cpu_collect_info(struct ucode_cpu_info *uci)
-+void intel_collect_cpu_info(struct cpu_signature *sig)
+ static int collect_cpu_info(int cpu_num, struct cpu_signature *csig)
  {
+-	struct cpuinfo_x86 *c = &cpu_data(cpu_num);
 -	unsigned int val[2];
--	unsigned int family, model;
--	struct cpu_signature csig = { 0 };
--	unsigned int eax, ebx, ecx, edx;
 -
--	memset(uci, 0, sizeof(*uci));
+-	memset(csig, 0, sizeof(*csig));
 -
--	eax = 0x00000001;
--	ecx = 0;
--	native_cpuid(&eax, &ebx, &ecx, &edx);
--	csig.sig = eax;
-+	sig->sig = cpuid_eax(1);
-+	sig->pf = 0;
-+	sig->rev = intel_get_microcode_revision();
- 
--	family = x86_family(eax);
--	model  = x86_model(eax);
-+	if (x86_model(sig->sig) >= 5 || x86_family(sig->sig) > 6) {
-+		unsigned int val[2];
- 
--	if (model >= 5 || family > 6) {
- 		/* get processor flags from MSR 0x17 */
- 		native_rdmsr(MSR_IA32_PLATFORM_ID, val[0], val[1]);
--		csig.pf = 1 << ((val[1] >> 18) & 7);
-+		sig->pf = 1 << ((val[1] >> 18) & 7);
- 	}
+-	csig->sig = cpuid_eax(0x00000001);
 -
--	csig.rev = intel_get_microcode_revision();
+-	if ((c->x86_model >= 5) || (c->x86 > 6)) {
+-		/* get processor flags from MSR 0x17 */
+-		rdmsr(MSR_IA32_PLATFORM_ID, val[0], val[1]);
+-		csig->pf = 1 << ((val[1] >> 18) & 7);
+-	}
 -
--	uci->cpu_sig = csig;
+-	csig->rev = c->microcode;
 -
--	return 0;
++	intel_collect_cpu_info(csig);
+ 	return 0;
  }
--EXPORT_SYMBOL_GPL(intel_cpu_collect_info);
-+EXPORT_SYMBOL_GPL(intel_collect_cpu_info);
  
- /*
-  * Returns 1 if update has been found, 0 otherwise.
-@@ -378,7 +363,7 @@ static __init struct microcode_intel *get_microcode_blob(struct ucode_cpu_info *
- 	if (!(cp.data && cp.size))
- 		return NULL;
- 
--	intel_cpu_collect_info(uci);
-+	intel_collect_cpu_info(&uci->cpu_sig);
- 
- 	return scan_microcode(cp.data, cp.size, uci);
- }
-diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
-index cefd0d8..61174bd 100644
---- a/drivers/platform/x86/intel/ifs/load.c
-+++ b/drivers/platform/x86/intel/ifs/load.c
-@@ -227,7 +227,7 @@ out:
- 
- static int image_sanity_check(struct device *dev, const struct microcode_header_intel *data)
- {
--	struct ucode_cpu_info uci;
-+	struct cpu_signature sig;
- 
- 	/* Provide a specific error message when loading an older/unsupported image */
- 	if (data->hdrver != MC_HEADER_TYPE_IFS) {
-@@ -240,11 +240,9 @@ static int image_sanity_check(struct device *dev, const struct microcode_header_
- 		return -EINVAL;
- 	}
- 
--	intel_cpu_collect_info(&uci);
-+	intel_collect_cpu_info(&sig);
- 
--	if (!intel_find_matching_signature((void *)data,
--					   uci.cpu_sig.sig,
--					   uci.cpu_sig.pf)) {
-+	if (!intel_find_matching_signature((void *)data, sig.sig, sig.pf)) {
- 		dev_err(dev, "cpu signature, processor flags not matching\n");
- 		return -EINVAL;
- 	}
