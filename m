@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7817D079E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131487D079F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 07:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346658AbjJTFc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 01:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        id S1346936AbjJTFc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 01:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjJTFcx (ORCPT
+        with ESMTP id S1346645AbjJTFc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 01:32:53 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBD7119
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:52 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778927f2dd3so23391185a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:52 -0700 (PDT)
+        Fri, 20 Oct 2023 01:32:56 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E70D51
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:54 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7b6d6773d05so173403241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 22:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697779971; x=1698384771; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1697779973; x=1698384773; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9xpTogBhloZZ3cgxOHAvGjGFV2B6QzeETWE0jVApmhU=;
-        b=W5HYo6CzHn0n+hoSyGPdXLRPk7sDe9kyTLVSvCoWtjMgPhbsnd6DDmh+tFU5wF8rfQ
-         RJqEmYP3AU7cmo2moTlMJpLaQ3puZno8yFfEbkDM5H4pLKeTQmWxq8uEsW9WfOFD6I00
-         /fB2kMHootI9Y+koucBakT4yLrQPVCLHsxVuvi2cEVfQaTUWOhAUc65d1dHSyABO+ANL
-         G9IiC9klk/NZuF12Lc9wfpFHF5RDocpAEGuncVjd3Dps2HpEI8lih07s0p4oQ2FrN67f
-         osEGTtzFj/Nt/tAswwLlMTqWHyBSK0FbtVkfRqFOGX7QzKpWAgu15VCQBYGUQoOtQfTM
-         kYwQ==
+        bh=QERO0uRdQXqqSaQdJAhee2LXGn28nhRHE84yn6ioXDc=;
+        b=UCHRbXYL3xC0knyXFuBAsnyrkLGlT5t1Rqg+cpKWHrQednZoHGoTfiInP7UE+NCSFR
+         wXSUe6Jwu7zzaVd3n85LoZnXW8+dqlE1Bhuxl3jPFfvL6x46DSNj9/D3DLF2LqmuCB9D
+         tWbot+5hrUbZVTCTn349B4xeWIal6d8nHMFgT+1sGLA7ZjBc5ojYa5D9rR9B8t5ub5VW
+         NV0+7zd6FNrsiehybQSpW6+JXRZkUN448cicU2ypFjj3plmy96MfLdNhMBjvLdQQpkcG
+         wiKlBsYehe+nSW73EcWYNU+qIicC6wCqfKAZSWXlkk4Az0wwxr7oLzYz2pnDrUz+I0OD
+         VnwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697779971; x=1698384771;
+        d=1e100.net; s=20230601; t=1697779973; x=1698384773;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9xpTogBhloZZ3cgxOHAvGjGFV2B6QzeETWE0jVApmhU=;
-        b=SWsA3AVFgyAdU1kpPT0DCOu+8LxHWZHbJbsHDeT/+FCQQBwpbRTfcW3Srh5/lQ/TVY
-         /TKTAlvXFuFae8ENExqlcUlQ7jNk5+ZWHK+d2j/6eDIIWjGlfOdM0Lqm2QE92OTubzPh
-         B2MK3EO0SclbU4ckoUZjef1bfpPgsgZnk15c3ccNNwgsE3wejZIoeBGswsuNyLC6cz0/
-         odoLzx7HiV36Hc5/K15eP6wcgjMaH7LecK2xjKUc+/3QJH7jbhuPWKbsyhqWXjw0/IeL
-         ljL9SUfdOfJwDOywapenVTdIz7gYmhVMVPyuI7Jan4jZJVmSTLJ2+fvwEMw+IAaowiNn
-         g5vg==
-X-Gm-Message-State: AOJu0Yzbqrx38/k745rkc2IFSGueJDinJQ72oFhEWEcqYmnjclsAh29R
-        /EMRgqODkK9kWng2ByKp2eKGGQ==
-X-Google-Smtp-Source: AGHT+IGSkCTT/zquQUwd3swviH/Fg+gESUjwa/1PtV2qfkXpbULyGWMHdHpXDFA8evkAJp9nQqvX3Q==
-X-Received: by 2002:a05:620a:40c5:b0:778:8ce0:221a with SMTP id g5-20020a05620a40c500b007788ce0221amr824644qko.63.1697779971342;
-        Thu, 19 Oct 2023 22:32:51 -0700 (PDT)
+        bh=QERO0uRdQXqqSaQdJAhee2LXGn28nhRHE84yn6ioXDc=;
+        b=aqQ+LsCZoMiYLBEGsYOTp+vGHqfqYecB+bporfHrgE8OZSC7976KFkEMSRumIjNJYG
+         t4WpeH9zbLKsJJKk8O5V4KwCJbopmTFd6NeAvBw7GCf5Sym8EVQAxvY3SI1k5sx2NGc2
+         YohNR+8JdUn1g1qoAgWkz2KZENYCPdBNQLdK0X3F09XzLsWxYMLbowF3zkz76Phz49qY
+         JAnGAxlN2pdmfmMXQYT10qtHMyTsShpjnAG2p8zqS0y16ulTxzAH0r5HEEZEqLNrjstd
+         dE2/56xE1SphCBiXB53fK70i/9FyoGTjalE6pVrfb2hDzFCHx40T20d6S06XnjmOhIpg
+         GctQ==
+X-Gm-Message-State: AOJu0YxiDwRHEwcEZltAN6po6lp/lGU/+Y8jRwlXGLuWAeMWDF/Mwgy1
+        Q231svhk+SYt9Ffn86a5yuf2HA==
+X-Google-Smtp-Source: AGHT+IEuHUJNvQq/HPA6H9apAJz8f05F78aDSMAqahV84NRcnvPy5dpCqHEpkhIlb+0srBHZfqHiYw==
+X-Received: by 2002:a67:ae05:0:b0:452:5798:64bd with SMTP id x5-20020a67ae05000000b00452579864bdmr920744vse.35.1697779973258;
+        Thu, 19 Oct 2023 22:32:53 -0700 (PDT)
 Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id bq12-20020a05620a468c00b007678973eaa1sm356816qkb.127.2023.10.19.22.32.50
+        by smtp.gmail.com with ESMTPSA id vq6-20020a05620a558600b0076e672f535asm359098qkn.57.2023.10.19.22.32.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 22:32:50 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 22:32:49 -0700
+        Thu, 19 Oct 2023 22:32:52 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 22:32:51 -0700
 From:   Yan Zhai <yan@cloudflare.com>
 To:     netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -61,9 +61,8 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
         Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
         Alexander H Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH v3 net-next 2/3] ipv6: refactor ip6_finish_output for GSO
- handling
-Message-ID: <496ccff707e16e98163d2a3fbcfbc1f824fd8ec3.1697779681.git.yan@cloudflare.com>
+Subject: [PATCH v3 net-next 3/3] ipv6: avoid atomic fragment on GSO packets
+Message-ID: <77423bb774612f0e8eaabfd9501d03389ff2cdbd.1697779681.git.yan@cloudflare.com>
 References: <cover.1697779681.git.yan@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -78,61 +77,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Separate GSO and non-GSO packets handling to make the logic cleaner. For
-GSO packets, frag_max_size check can be omitted because it is only
-useful for packets defragmented by netfilter hooks. Both local output
-and GRO logic won't produce GSO packets when defragment is needed. This
-also mirrors what IPv4 side code is doing.
+When the ipv6 stack output a GSO packet, if its gso_size is larger than
+dst MTU, then all segments would be fragmented. However, it is possible
+for a GSO packet to have a trailing segment with smaller actual size
+than both gso_size as well as the MTU, which leads to an "atomic
+fragment". Atomic fragments are considered harmful in RFC-8021. An
+Existing report from APNIC also shows that atomic fragments are more
+likely to be dropped even it is equivalent to a no-op [1].
 
-Suggested-by: Florian Westphal <fw@strlen.de>
+Add an extra check in the GSO slow output path. For each segment from
+the original over-sized packet, if it fits with the path MTU, then avoid
+generating an atomic fragment.
+
+Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
+Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 processing")
+Reported-by: David Wragg <dwragg@cloudflare.com>
 Signed-off-by: Yan Zhai <yan@cloudflare.com>
 ---
- net/ipv6/ip6_output.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ net/ipv6/ip6_output.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index ae87a3817d4a..3270d56b5c37 100644
+index 3270d56b5c37..3d4e8edaa10b 100644
 --- a/net/ipv6/ip6_output.c
 +++ b/net/ipv6/ip6_output.c
-@@ -170,6 +170,16 @@ ip6_finish_output_gso_slowpath_drop(struct net *net, struct sock *sk,
- 	return ret;
- }
+@@ -162,7 +162,13 @@ ip6_finish_output_gso_slowpath_drop(struct net *net, struct sock *sk,
+ 		int err;
  
-+static int ip6_finish_output_gso(struct net *net, struct sock *sk,
-+				 struct sk_buff *skb, unsigned int mtu)
-+{
-+	if (!(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
-+	    !skb_gso_validate_network_len(skb, mtu))
-+		return ip6_finish_output_gso_slowpath_drop(net, sk, skb, mtu);
-+
-+	return ip6_finish_output2(net, sk, skb);
-+}
-+
- static int __ip6_finish_output(struct net *net, struct sock *sk, struct sk_buff *skb)
- {
- 	unsigned int mtu;
-@@ -183,16 +193,14 @@ static int __ip6_finish_output(struct net *net, struct sock *sk, struct sk_buff
- #endif
- 
- 	mtu = ip6_skb_dst_mtu(skb);
--	if (skb_is_gso(skb) &&
--	    !(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
--	    !skb_gso_validate_network_len(skb, mtu))
--		return ip6_finish_output_gso_slowpath_drop(net, sk, skb, mtu);
-+	if (skb_is_gso(skb))
-+		return ip6_finish_output_gso(net, sk, skb, mtu);
- 
--	if ((skb->len > mtu && !skb_is_gso(skb)) ||
-+	if (skb->len > mtu ||
- 	    (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max_size))
- 		return ip6_fragment(net, sk, skb, ip6_finish_output2);
--	else
--		return ip6_finish_output2(net, sk, skb);
-+
-+	return ip6_finish_output2(net, sk, skb);
- }
- 
- static int ip6_finish_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 		skb_mark_not_on_list(segs);
+-		err = ip6_fragment(net, sk, segs, ip6_finish_output2);
++		/* Last GSO segment can be smaller than gso_size (and MTU).
++		 * Adding a fragment header would produce an "atomic fragment",
++		 * which is considered harmful (RFC-8021). Avoid that.
++		 */
++		err = segs->len > mtu ?
++			ip6_fragment(net, sk, segs, ip6_finish_output2) :
++			ip6_finish_output2(net, sk, segs);
+ 		if (err && ret == 0)
+ 			ret = err;
+ 	}
 -- 
 2.30.2
 
