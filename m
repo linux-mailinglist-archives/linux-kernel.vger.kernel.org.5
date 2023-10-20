@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3327D17E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E8E7D17EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 23:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbjJTVPX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 17:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S230383AbjJTVTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 17:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJTVPV (ORCPT
+        with ESMTP id S229983AbjJTVTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 17:15:21 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0FA112
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:15:14 -0700 (PDT)
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-27d17f5457fso1874562a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:15:14 -0700 (PDT)
+        Fri, 20 Oct 2023 17:19:42 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CBBD65
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:19:35 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27cfb8442f9so935520a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 14:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697836775; x=1698441575; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a9YjEIQWy6daCcnZfKUCk0eX4Io5MUDbFHgVHcjxrWk=;
+        b=PNV9vn/5a1DnVJxIeVzJPor2YecmMN7Z6mahOizsTJMXGt53YBAAlm5Svq+TYrZ5Br
+         e2DZf8hlN6sc/r0LlG3SKezQaXEjAa9bKNXNCRy89gu6NFYXfdyKdjTvSeUmGTCBw8dp
+         I4Y52BbLEhjD/scGjrTx89vzpQvUDnL5IWXWwapTUAI3pEd6yIcrPXOmayWxbloPrmUW
+         c7RNvl0nA6Jeax49e5aa1RtnGqUxXw3TVGiaTOHf1bJPNRKXNt1rQmGdpExzwcmxvCzm
+         FdVFAgv7Iny7MS+aHBBuNmUeeo/ozz+KrQF+Fe/CmcTMO2T4GhTQR2lPlqgY9UvvqRoV
+         fP3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697836514; x=1698441314;
+        d=1e100.net; s=20230601; t=1697836775; x=1698441575;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1ZfilkoQw2CupMsJXyUJJH9aRuDysIcWfAL2PXV6lks=;
-        b=tqhD3+4BamavoxjgABw3CMn4n3Nj7+LGW0rVC7vnoQeT6MTJRLhIXyeyg5jXgU3hR/
-         6aaVU/+G5j744713RRi6sg6EPgzGGpDOZyCWbqEFL3RVg2d3lv04j728kkiRBBZH5LCX
-         pnZSytpkWQwVP9vpea4W998l9Tphnk5wJrewrE75XOrg6t4IMC3sRojA/26tXNKKqNMM
-         BzgD4Vjeon/Tq14wX6dnA85/BMlPHxj6+3wTx34BX2fCHmsNEChysEwbFMwvG95luKXQ
-         XSTR98VXobUum6Ha7S8iZcT1rlftwVFux2O/P+XP/2kCZ4jYBG0Uk8OfVc4UM1zekS67
-         QXdg==
-X-Gm-Message-State: AOJu0Yyx/CdhLUmDDnOX2AOXZAw+2+wghCyzfOOYlqXGW3rSgg3LDPnE
-        ckDaiw9qW2Lan/Mj1smvHk1dRAn7ai59cTpYuiU=
-X-Google-Smtp-Source: AGHT+IFv4dz9NCt78f+xBET2+rCGQhcql7WkFWZlji8osUN9EeG9GzIL508MOCpdzjWChBec4be826G1YobxsfZOJEE=
-X-Received: by 2002:a17:90a:c20d:b0:277:61d7:78be with SMTP id
- e13-20020a17090ac20d00b0027761d778bemr8688168pjt.14.1697836514280; Fri, 20
- Oct 2023 14:15:14 -0700 (PDT)
+        bh=a9YjEIQWy6daCcnZfKUCk0eX4Io5MUDbFHgVHcjxrWk=;
+        b=b05Fv88tD585HO06lWHFpDt6MgJ+wtREVBDbQH7m+HQSHy65casEcMWAxHuHoV3jES
+         PUJ69XWfeAMRjeuZDpZCGhhKJYqYc1KkLmxxmpbiAl7JTmTYTpuWIqRRM0PRf89pmiuF
+         fYqk1OTfUSlXlUneaxjrgAY5YQo0WrpRoO/r9SqzwaJOhFCSCJi97e4BxCEcUK1Gq1nZ
+         MnLk+uo1wKOxULf/TIh3/64NCAExvoa+jo4PhzzUHh/t6taiQhgvSdDxZ4CDaLE/R6FA
+         8D5JjIOrYyX4z2uRHh8xgbI5kxoK+9CClCwOnvmdNQ0lFrzW4bgFAHfszhW1UMZCLoZe
+         n5gQ==
+X-Gm-Message-State: AOJu0YxE8R890+lyeguAEU/1a/nyfx4VIojczQ4TNy4whhIEJFSxvtgi
+        wJv7ghmVKFd+7hG0oTfgRkEUFHAoZafQJgGMxkJg7Q==
+X-Google-Smtp-Source: AGHT+IFAnBcyEirWRbOHDgQa0BipdQ3XDegYyx70W6pwGiyHgf1ILQcSADmA0O0n6k0IJ1PfErLWMZ7dzz68cVep4C8=
+X-Received: by 2002:a17:90b:1e53:b0:271:7cd6:165d with SMTP id
+ pi19-20020a17090b1e5300b002717cd6165dmr2893154pjb.26.1697836774929; Fri, 20
+ Oct 2023 14:19:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZS7PIHUZfHcrfvi4@kernel.org> <CAM9d7cjkFQU+dd8m8pq6-u6JruY9tFi_86ZyiQrXGL9js_vuuA@mail.gmail.com>
- <ZTLkWVempj1xV6CV@kernel.org>
-In-Reply-To: <ZTLkWVempj1xV6CV@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 20 Oct 2023 14:15:03 -0700
-Message-ID: <CAM9d7cgW7PmgSj3kAowFOVLG56L=QHVCU=PfM+p7sVfQyJrt6Q@mail.gmail.com>
-Subject: Re: [PATCH] perf build: Remove stray '\' before that is warned about
- since grep 3.8
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231020145953.v1.1.Iaf5702dc3f8af0fd2f81a22ba2da1a5e15b3604c@changeid>
+In-Reply-To: <20231020145953.v1.1.Iaf5702dc3f8af0fd2f81a22ba2da1a5e15b3604c@changeid>
+From:   Curtis Malainey <cujomalainey@google.com>
+Date:   Fri, 20 Oct 2023 14:19:23 -0700
+Message-ID: <CAOReqxhrhzWh-aO5kt-7yqcfX9CbHW-WBgBAqQ9FqeUj-h1o=A@mail.gmail.com>
+Subject: Re: [PATCH v1] ALSA: SOF: sof-pci-dev: Fix community key quirk detection
+To:     Mark Hasemeyer <markhas@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        stable@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        sound-open-firmware@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,48 +82,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 1:34 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Oct 17, 2023 at 12:02:20PM -0700, Namhyung Kim escreveu:
-> > Hi Arnaldo,
-> >
-> > On Tue, Oct 17, 2023 at 11:15 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > To address this grep 3.8 warning:
-> > >
-> > >   grep: warning: stray \ before #
-> > >
-> > > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > > Cc: Ian Rogers <irogers@google.com>
-> > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > Cc: Namhyung Kim <namhyung@kernel.org>
-> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > ---
-> > >  tools/perf/Makefile.perf | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > index 456872ac410df4c0..25d5ccaec22a44fe 100644
-> > > --- a/tools/perf/Makefile.perf
-> > > +++ b/tools/perf/Makefile.perf
-> > > @@ -361,7 +361,7 @@ python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT
-> > >  ifeq ($(CONFIG_LIBTRACEEVENT),y)
-> > >    PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
-> >
-> > Do we need to change it here too?  Otherwise looks good
->
-> I think I did tests and simply removing the \ in this case will comment
-> out the rest of the line after the #, IIRC we would have to enclose it
-> in '', like
->
->   PYTHON_EXT_SRCS := $(shell grep -v '^\#' util/python-ext-sources)
->
-> But then if it works as-is, why pollute the patch? :-)
->
-> In general the less lines you touch in a patch, the better, don't fix
-> what isn't broken, helps reviewing, etc. :-)
+Curtis Malainey | Chrome OS Audio Senior Software Engineer |
+cujomalainey@google.com | Sound Open Firmware Lead
 
-Agreed, thanks!
-Namhyung
+
+On Fri, Oct 20, 2023 at 2:00=E2=80=AFPM Mark Hasemeyer <markhas@chromium.or=
+g> wrote:
+>
+> Some Chromebooks do not populate the product family DMI value resulting
+> in firmware load failures.
+>
+> Add another quirk detection entry that looks for "Google" in the BIOS
+> version. Theoretically, PRODUCT_FAMILY could be replaced with
+> BIOS_VERSION, but it is left as a quirk to be conservative.
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+
+Acked-by: Curtis Malainey <cujomalainey@chromium.org>
+
+> ---
+>
+>  sound/soc/sof/sof-pci-dev.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+> index 1d706490588e..64b326e3ef85 100644
+> --- a/sound/soc/sof/sof-pci-dev.c
+> +++ b/sound/soc/sof/sof-pci-dev.c
+> @@ -145,6 +145,13 @@ static const struct dmi_system_id community_key_plat=
+forms[] =3D {
+>                         DMI_MATCH(DMI_PRODUCT_FAMILY, "Google"),
+>                 }
+>         },
+> +       {
+> +               .ident =3D "Google firmware",
+> +               .callback =3D chromebook_use_community_key,
+> +               .matches =3D {
+> +                       DMI_MATCH(DMI_BIOS_VERSION, "Google"),
+> +               }
+> +       },
+>         {},
+>  };
+>
+> --
+> 2.42.0.655.g421f12c284-goog
+>
