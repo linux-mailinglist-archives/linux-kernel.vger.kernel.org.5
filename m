@@ -2,166 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A427D1108
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1BB7D1111
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377481AbjJTN4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S1377484AbjJTN5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377419AbjJTN4l (ORCPT
+        with ESMTP id S1377405AbjJTN5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:56:41 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3482E1A8;
-        Fri, 20 Oct 2023 06:56:39 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.188.12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 745D56607377;
-        Fri, 20 Oct 2023 14:56:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697810197;
-        bh=rKfZfpFQKx5mNZYmDoPXgE0AS8y+IyTbCZMCDsJThSQ=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=GDpC5UdMeV5DzD30TDmYalwaFxn1hMovA+uu/S5FTUYpQLOeERNorFBCv4gofox3a
-         iQA6F5vueG5gUgX35ADJg4EOCi6jjs6eY21q/pa39yr1ZqSYjjKjCgwzGK/969TA1a
-         ZD80vCXwVQs5QZ7Fp8hi5dCAsRZHI4VfaYNHGMy9irZC2ugHd5gAfTjUt5o2TELaLx
-         NNSy3+jXeodA0EwNPsMgld2HFkeALd3IYhjuAw5W4vfAGAukXsH2oh+5KKR5uvcpyV
-         TkXjWb9sHYI4Zdcyg3hHeiZAWeHy2vT1Zb1lFmlY4N/wKlCEHNVwIcv+XfwNDi95a/
-         Plz7SPiFE6kpg==
-Message-ID: <38f132b8-4fd2-40e2-b24e-62164a0ee4e6@collabora.com>
-Date:   Fri, 20 Oct 2023 18:56:07 +0500
+        Fri, 20 Oct 2023 09:57:05 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEAF126
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:57:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c2a0725825so131472666b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697810222; x=1698415022; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uv9UU3kI2GN01PVvTMVaUt4C4ErvxXyE3r2m0CfdYU4=;
+        b=msxUYX2GvYopnDqUaiYV6JsRTaUoooh294F2sHA4aTHIF1aBVY6YtEtnr1yQv+r7Ru
+         4IIxYpADwl41vuVTpecN4JG38eD4YvJuxlPOAVNTjvj8p6ZRPNY0vPgiL/FZl/+hosl+
+         NO9YW3GrSD9/5CPm3Gwz0ofeLk6nrhQ55048mkLj5NfH9n5xLqj6Xs7CQw+XGSYPOeBs
+         e/OKfV2VnasXyaFA6VVJUpgqed28mDFIhDtU7xci3q8OPxMRNPmXGgvVVdgNceeEd21d
+         Z/YGa3RtLI40LVmclZhb/8U3iqKA8G9qn3jyEch7rZNJJCiBzX1s1Ee76DizI3tMHaOO
+         NkEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697810222; x=1698415022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uv9UU3kI2GN01PVvTMVaUt4C4ErvxXyE3r2m0CfdYU4=;
+        b=NvhF2GRfHcfz4p1niLONkxsnNPV+F2dan7X+LcdMJlyNf2dc3i3xu2yFJAojXZ1C1c
+         4pe+AXgUEDZRodxZCPtIlKo9sQN4a7+mcu7RHXjBCKSrctrTYcy1y4xQ71a4hBPs4D2C
+         tp/gYANajv0GHowQv2cGtbopn6+IOhnuwuK+iO1BUhtfBbkh5xavuBvJVZRexIr+JZWu
+         4/is5vQoXLsVTScQWC/oAtNH6jx+wpH5J9SWyY/IzVkZ9qJwaJJxQVO9Rz6Kzfoh7xmu
+         RA6XJwc69D7JxXKsz7Pm7hzoSEI+R8SZFqM0Kj+pnXAcIGKFNAaiJg6a1T6g45Z0OL2h
+         vHHw==
+X-Gm-Message-State: AOJu0Yw6v/Du0YkZQmn0CcCzR5y6oBOj7uZo6cwFviy1tubR4i8hgzgr
+        wcdz2QASKJb5jz0a5V8OrO0=
+X-Google-Smtp-Source: AGHT+IElLKZVwPAu6e682+Bx3CFjYmJeQt2oOrba7RwzSNyojrJUFpdvUgU4BFXWYYfXsoHxCW65TQ==
+X-Received: by 2002:a17:907:804:b0:9be:e278:4d47 with SMTP id wv4-20020a170907080400b009bee2784d47mr1700592ejb.27.1697810221876;
+        Fri, 20 Oct 2023 06:57:01 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id o14-20020a17090611ce00b009b29553b648sm1513371eja.206.2023.10.20.06.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 06:57:01 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 20 Oct 2023 15:56:59 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during
+ newidle balance
+Message-ID: <ZTKHK2EwgOc8y38v@gmail.com>
+References: <20231020014031.919742-1-joel@joelfernandes.org>
+ <20231020014031.919742-3-joel@joelfernandes.org>
+ <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v2 6/8] mseal: Check seal flag for mremap(2)
-Content-Language: en-US
-To:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org
-References: <20231017090815.1067790-1-jeffxu@chromium.org>
- <20231017090815.1067790-7-jeffxu@chromium.org>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231017090815.1067790-7-jeffxu@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 2:08 PM, jeffxu@chromium.org wrote:
-> From: Jeff Xu <jeffxu@google.com>
-> 
-> mremap(2) can shrink/expand a VMA, or move a VMA to a fixed
-> address and overwriting or existing VMA. Sealing will
-> prevent unintended mremap(2) call.
-> 
-> What this patch does:
-> When a mremap(2) is invoked, if one of its VMAs has MM_SEAL_MREMAP
-> set from previous mseal(2) call, this mremap(2) will fail, without
-> any VMA modified.
-> 
-> This patch is based on following:
-> 1. At syscall entry point: SYSCALL_DEFINE5(mremap,...)
-> There are two cases:
-Maybe we can reduce the code duplication by bringing the check if memory is
-sealed before call to mremap_to().
 
-> a. going into mremap_to().
-> b. not going into mremap_to().
-> 
-> 2. For mremap_to() case.
-> Since mremap_to() is called only from SYSCALL_DEFINE5(mremap,..),
-> omit changing signature of mremap_to(), i.e. not passing
-> checkSeals flag.
-> In mremap_to(), it calls can_modify_mm() for src address and
-> dst address (when MREMAP_FIXED is used), before any update is
-> made to the VMAs.
-> 
-> 3. For non mremap_to() case.
-> It is still part of SYSCALL_DEFINE5(mremap,...).
-> It calls can_modify_mm() to check sealing in the src address,
-> before any update is made to src VMAs.
-> Check for dest address is not needed, because dest memory is
-> allocated in current mremap(2) call.
-> 
-> Signed-off-by: Jeff Xu <jeffxu@google.com>
-> ---
->  mm/mremap.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index ac363937f8c4..691fc32d37e4 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -836,7 +836,27 @@ static unsigned long mremap_to(unsigned long addr, unsigned long old_len,
->  	if ((mm->map_count + 2) >= sysctl_max_map_count - 3)
->  		return -ENOMEM;
->  
-> +	/*
-> +	 * Check src address for sealing.
-> +	 *
-> +	 * Note: mremap_to() currently called from one place:
-> +	 * SYSCALL_DEFINE4(pkey_mprotect, ...)
-> +	 * and not in any other places.
-> +	 * Therefore, omit changing the signature of mremap_to()
-> +	 * Otherwise, we might need to add checkSeals and pass it
-> +	 * from all callers of mremap_to().
-> +	 */
-> +	if (!can_modify_mm(mm, addr, addr + old_len, MM_SEAL_MREMAP))
-> +		return -EACCES;
-> +
->  	if (flags & MREMAP_FIXED) {
-> +		/*
-> +		 * Check dest address for sealing.
-> +		 */
-> +		if (!can_modify_mm(mm, new_addr, new_addr + new_len,
-> +				   MM_SEAL_MREMAP))
-> +			return -EACCES;
-> +
-Move these two checks to just before call to mremap_to() in sys_mremap() or
-even earlier. Or even better move the first condition before mremap_to()
-and second condition can be checked before call to mremap_to().
+* Vincent Guittot <vincent.guittot@linaro.org> wrote:
 
->  		ret = do_munmap(mm, new_addr, new_len, uf_unmap_early);
->  		if (ret)
->  			goto out;
-> @@ -995,6 +1015,11 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
->  		goto out;
->  	}
->  
-> +	if (!can_modify_mm(mm, addr, addr + old_len, MM_SEAL_MREMAP)) {
-> +		ret = -EACCES;
-> +		goto out;
-> +	}
-> +
->  	/*
->  	 * Always allow a shrinking remap: that just unmaps
->  	 * the unnecessary pages..
+> Even if your figures look interesting, your patch adds regression in
+> the load balance and the fairness.
 
--- 
-BR,
-Muhammad Usama Anjum
+Indeed - I've removed it from tip:sched/core for the time being.
+
+Thanks,
+
+	Ingo
