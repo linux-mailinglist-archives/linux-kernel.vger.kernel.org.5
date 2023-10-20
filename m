@@ -2,175 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B197D0BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25DA7D0BEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376662AbjJTJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        id S1376708AbjJTJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376728AbjJTJdD (ORCPT
+        with ESMTP id S1376783AbjJTJdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:33:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CD2D63;
-        Fri, 20 Oct 2023 02:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697794376; x=1729330376;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KFY6DFqQdqzEYR8dbOOBhT/l5R4uXZhFdyT3GIHn4js=;
-  b=b8yipmwxKtahFd/uMSiql8+IDUeohAWadYqTasLREw5pBUvfQBOl2hRE
-   LrOwCi8KcfVkJq7J3/aZgX7UPt+Byfv3tYAFf5/QiPteOscIdRvs6r6Xs
-   X7f5Guv2lOFQlThW6XuiEpGv3xwbnFdNAk4IrHCiafJxUC0Hm7UqcVrOp
-   ICXLlJ+AOGjgsfOT/s+XyPjqXTStOdZl8s+3UHjgOuZZysHsLH5Zugm/F
-   TvzUietGs/ufI+sb6mceGZb+XRb98KW9uR3ayooj96qznhDuMca35/4SJ
-   1lGgjzgl0P7kZXRtcFunH7K1j9l+RJ/xLef3LtfgVuNLeLlOfOEtijMo7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="450691761"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="450691761"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 02:32:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="733906314"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="733906314"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orsmga006.jf.intel.com with ESMTP; 20 Oct 2023 02:32:56 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com
-Subject: [PATCH v6 8/8] iommu/vt-d: Disallow read-only mappings to nest parent domain
-Date:   Fri, 20 Oct 2023 02:32:46 -0700
-Message-Id: <20231020093246.17015-9-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020093246.17015-1-yi.l.liu@intel.com>
-References: <20231020093246.17015-1-yi.l.liu@intel.com>
+        Fri, 20 Oct 2023 05:33:41 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97745D55
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:33:23 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso861672a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1697794402; x=1698399202; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/B2a2ZXqLwls1Vsw3h8JmPF3a45COfQmKittozQNWE4=;
+        b=kvsXwxgbbBHLrKSqKTT2LlGy7jtyy9VqQKk4e9XS5oHt79uosPExgdSzyY+wSI8Wcp
+         gd+GRl9EADqF5z47SjLWcXBBM7N+AdB5z0JZy8fLzkTOXDo6ZLdWvLi2p09deVy0qWr5
+         lQidFsZzjsRJHGy7fnR7xYFOFLlMFhe+iCo6jZzx8tZHcryIKZ9M7YXmlrztqetyr6Tc
+         U2BrSwV+yby/sxVS1JKklGCgYJtHVGchhlwWxIG6aj0Qzuz3CSvAtPubKF9ZOgvOKb7+
+         WmZbFyFhQXSuOcUWIq1GiR+IdFiMLvHNfMqSSvinAEIL3iySOEtvllMj0hK1vjM5AGOH
+         EUew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697794402; x=1698399202;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/B2a2ZXqLwls1Vsw3h8JmPF3a45COfQmKittozQNWE4=;
+        b=M6iMY0V8hTENfAUALlN7KdtsXPStNKuTSaR2L3ZI7ooS4TG9FbLJRtVfkgIKtuuNi9
+         X8QwJcZ9snZKdBMXvpJiiqAB8n2gmI5gn9BdT/j0cDN/h0e3d6rlbYHxGVtLy9mRFTOk
+         Xy1+QLfQ0xzjucG9G/QU0+rz/wXZDR+OJMnT69TCffzDvrXBxwieLor46Y8ehSRu4eqG
+         dJHisjPcYlAgtSFyHeeUcIYBvbRi5FfCHjSD++GMAZXZIyHOO+AsAnPO9kur5hdJdAjS
+         2PeqKYFx8TCrCASvU6KRjt72fCHsi1z6NIm/CCnCdsOEjbAdD+E4XTkKeqt0Z0dGgDLm
+         oBuQ==
+X-Gm-Message-State: AOJu0YxRhCd5DuBQaVV84KSBnMXVkAAsh9gQOmLmAVxxR6TCak26ClDN
+        4VQlDK0G8LQ4x/LlnddvfcwD5Q==
+X-Google-Smtp-Source: AGHT+IFVzakVPdt1/cwktBRmr1g7l+TM3g6ka7ob34Ou2CK7EFqYB723oYUCwfieN9a13Q1zXeTLhA==
+X-Received: by 2002:a17:907:7ea3:b0:9c6:10d4:d09f with SMTP id qb35-20020a1709077ea300b009c610d4d09fmr993488ejc.63.1697794401731;
+        Fri, 20 Oct 2023 02:33:21 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (k10064.upc-k.chello.nl. [62.108.10.64])
+        by smtp.gmail.com with ESMTPSA id t15-20020a1709066bcf00b009a13fdc139fsm1102535ejs.183.2023.10.20.02.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 02:33:21 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH v2 0/3] Handle reversed SBU orientation for FSA4480
+Date:   Fri, 20 Oct 2023 11:33:17 +0200
+Message-Id: <20231020-fsa4480-swap-v2-0-9a7f9bb59873@fairphone.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF1JMmUC/3XMSw7CIBSF4a00dyyGV6B15D5MB5SC3IHQgEFNw
+ 97Fzh3+JznfDsVldAUuww7ZVSyYYg9+GsAGE++O4NobOOWCUSaIL0bKkZLyMhuZFuq1WrWwbIJ
+ +2bLz+D6429w7YHmm/Dn0yn7rH6gyQskyau0Vp1JZe/UG8xZSdGebHjC31r4InkxlrAAAAA==
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+Short reason:
+Without swapping the SBU lanes, on QCM6490 Fairphone 5 the
+DisplayPort-over-USB-C doesn't work.
 
-When remapping hardware is configured by system software in scalable mode
-as Nested (PGTT=011b) and with PWSNP field Set in the PASID-table-entry,
-it may Set Accessed bit and Dirty bit (and Extended Access bit if enabled)
-in first-stage page-table entries even when second-stage mappings indicate
-that corresponding first-stage page-table is Read-Only.
+The Orient-Chip OCP96011 used in this phone is generally compatible with
+FSA4480 but has a difference how AUX+/- should be connected to SBU1/2.
 
-As the result, contents of pages designated by VMM as Read-Only can be
-modified by IOMMU via PML5E (PML4E for 4-level tables) access as part of
-address translation process due to DMAs issued by Guest.
+Long explanation, with my current understanding:
+* FSA4480 block diagram shows AUX+ connected to SBU2 and AUX- to SBU1.
+* OCP96011 block diagram shows AUX+ connected to SBU1 and AUX- to SBU2
+  (it's not 100% clear though in the picture but makes sense with the
+  observed behavior)
+* Fairphone 5 schematics have AUX+ connected to SBU2 and AUX- to SBU1,
+  which would be correct for FSA4480 but since OCP96011 is used (which
+  expects it to be the other way around) the Linux driver needs to
+  reverse it.
+  If AUX+ would be connected to SBU1 and AUX- to SBU2 as shown in the
+  OCP96011 block diagram, then no driver/dts change would be needed.
 
-This disallows read-only mappings in the domain that is supposed to be used
-as nested parent. Reference from Sapphire Rapids Specification Update [1],
-errata details, SPR17. Userspace should know this limitation by checking
-the IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17 flag reported in the IOMMU_GET_HW_INFO
-ioctl.
+Not sure if I've implemented the best solution in this patch. Other
+solutions I could think of are:
+* Add some custom boolean property to the node, e.g. 'fsa,swap-sbu'
+* Reverse when ocs,ocp96011 compatible is used. This would be incorrect
+  since when following the OCP96011 block diagram no reversing would be
+  needed, as explained above.
 
-[1] https://www.intel.com/content/www/us/en/content-details/772415/content-details.html
+However I think the current solution with data-lanes in the endpoint is
+the best fit and is also already used for a similar purpose in another
+USB mux driver.
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- drivers/iommu/intel/iommu.c  |  9 +++++++++
- drivers/iommu/intel/iommu.h  |  1 +
- include/uapi/linux/iommufd.h | 12 +++++++++++-
- 3 files changed, 21 insertions(+), 1 deletion(-)
+Changes in v2:
+- Expand commit message for first dt-bindings patch incl. ASCII art
+- Use fwnode_* instead of_* APIs
+- Drop manual check for data-lanes property length, read_u32_array will
+  already error on too short or too long property.
+- Drop dev_info for reversed data-lanes mapping
+- Link to v1: https://lore.kernel.org/r/20231013-fsa4480-swap-v1-0-b877f62046cc@fairphone.com
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index c7704e7efd4a..a0341a069fbf 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2193,6 +2193,11 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 	if ((prot & (DMA_PTE_READ|DMA_PTE_WRITE)) == 0)
- 		return -EINVAL;
- 
-+	if (!(prot & DMA_PTE_WRITE) && domain->is_nested_parent) {
-+		pr_err_ratelimited("Read-only mapping is disallowed on the domain which serves as the parent in a nested configuration, due to HW errata (ERRATA_772415_SPR17)\n");
-+		return -EINVAL;
-+	}
-+
- 	attr = prot & (DMA_PTE_READ | DMA_PTE_WRITE | DMA_PTE_SNP);
- 	attr |= DMA_FL_PTE_PRESENT;
- 	if (domain->use_first_level) {
-@@ -4101,6 +4106,9 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 		domain = iommu_domain_alloc(dev->bus);
- 		if (!domain)
- 			return ERR_PTR(-ENOMEM);
-+		container_of(domain,
-+			     struct dmar_domain,
-+			     domain)->is_nested_parent = request_nest_parent;
- 		return domain;
- 	}
- 
-@@ -4839,6 +4847,7 @@ static void *intel_iommu_hw_info(struct device *dev, u32 *length, u32 *type)
- 	if (!vtd)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vtd->flags = IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17;
- 	vtd->cap_reg = iommu->cap;
- 	vtd->ecap_reg = iommu->ecap;
- 	*length = sizeof(*vtd);
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index b4560983b8b9..0539a0f47557 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -593,6 +593,7 @@ struct dmar_domain {
- 					 * otherwise, goes through the second
- 					 * level.
- 					 */
-+	u8 is_nested_parent:1;		/* has other domains nested on it */
- 
- 	spinlock_t lock;		/* Protect device tracking lists */
- 	struct list_head devices;	/* all devices' list */
-diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
-index 9b843a197ea8..c8f523a7bc06 100644
---- a/include/uapi/linux/iommufd.h
-+++ b/include/uapi/linux/iommufd.h
-@@ -439,10 +439,20 @@ struct iommu_hwpt_alloc {
- };
- #define IOMMU_HWPT_ALLOC _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_ALLOC)
- 
-+/**
-+ * enum iommu_hw_info_vtd_flags - Flags for VT-d hw_info
-+ * @IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17: If set, disallow nesting on domains
-+ *                                   with read-only mapping.
-+ *                                   https://www.intel.com/content/www/us/en/content-details/772415/content-details.html
-+ */
-+enum iommu_hw_info_vtd_flags {
-+	IOMMU_HW_INFO_VTD_ERRATA_772415_SPR17 = 1 << 0,
-+};
-+
- /**
-  * struct iommu_hw_info_vtd - Intel VT-d hardware information
-  *
-- * @flags: Must be 0
-+ * @flags: Combination of enum iommu_hw_info_vtd_flags
-  * @__reserved: Must be 0
-  *
-  * @cap_reg: Value of Intel VT-d capability register defined in VT-d spec
+---
+Luca Weiss (3):
+      dt-bindings: usb: fsa4480: Add data-lanes property to endpoint
+      usb: typec: fsa4480: Add support to swap SBU orientation
+      dt-bindings: usb: fsa4480: Add compatible for OCP96011
+
+ .../devicetree/bindings/usb/fcs,fsa4480.yaml       | 43 ++++++++++++-
+ drivers/usb/typec/mux/fsa4480.c                    | 71 ++++++++++++++++++++++
+ 2 files changed, 111 insertions(+), 3 deletions(-)
+---
+base-commit: e3b18f7200f45d66f7141136c25554ac1e82009b
+change-id: 20231013-fsa4480-swap-9b0f76d73c19
+
+Best regards,
 -- 
-2.34.1
+Luca Weiss <luca.weiss@fairphone.com>
 
