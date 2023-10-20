@@ -2,76 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3457D152F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494A27D1532
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377964AbjJTRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S1377970AbjJTRxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377713AbjJTRwv (ORCPT
+        with ESMTP id S230008AbjJTRxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:52:51 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480B7FA
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:52:48 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a824ef7a83so14643567b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697824367; x=1698429167; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AtIETOjbkQJj6Htxj0fJlTMZYY9ybPlI+s+bOIC8pu4=;
-        b=QmTBrneph128UFo0ZPozYdW+0vcQbPkRAXiUWxievcc2UtTA65geZXYdvGdy1Ye2aA
-         yPIew+5poDdTCQVrpwTbrpIY4GN86bd9d9IvPC9hSJukdZw5YQx2N+4thED3OgEgS3wF
-         yTbbkw0TeBxXqA+ZSL2M9RpxQM34tFqp4ilOSYEE2j8Qq8C8+zHYvqh5Apk7eUZptBkG
-         VVk9gP/aj6/aOyuBKaOmARvrk2+ZwrZEVkjuo0Ya3NB+pr/sfG2/bZZJT44ltSPESOpt
-         Z4UbPU1Yhe3fg8ktkxHnj4U/+EwXDCruxdT5HBrJoImVurzUaqc1keJy6hhoqq+Rxysq
-         vFXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697824367; x=1698429167;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AtIETOjbkQJj6Htxj0fJlTMZYY9ybPlI+s+bOIC8pu4=;
-        b=mRvG45W3/k6GUUj0hc01cTsBsYX0yQeZW6jo4bLzNGp6z9WhVVYSCEGGp5tBCEIOt+
-         6Sc/KdjlJI8se/stZonFB8wFiB1pRSoQLNUgG55/umyPU0rRqBSaRIlU9DaLjfnIghrb
-         IAQY+0TNyAbrWUBEzH0CQDWmnxS7Qb5zx+SGOsG5GgkGNqYmrYuhGVBmpA7OM0xhXYWv
-         PicHDovcP63coXQyoCfaupDwcDhqkmERk1E63pI3yDBR7SaxIc4FKO8xj3x6JNHz+b5D
-         R5B1YZAwNUDXIdH/OmfMwwL30AZpLZZVpeX01/c8C5p8is/9I9WaJWZVlTsxLTPCkAVV
-         NGWA==
-X-Gm-Message-State: AOJu0YyAhqPuYpcvF+Ge6IPlfZBWaQ8/rLpZBqw3hAv/obZh3+Ho3+94
-        wli6X8K0f1ZlhMnPWpcXeKl0eqkiKTN+C+cKUw==
-X-Google-Smtp-Source: AGHT+IEYHzTPpIEqnJNQkKupZgg+UOt6w27w7zq4nhDyPMSx4obZaZI4NyxKV1YHxs8nDffJAu1jOClviB6Vg7Dpzg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:5084:0:b0:d9a:d319:fa9e with SMTP
- id e126-20020a255084000000b00d9ad319fa9emr48789ybb.12.1697824367496; Fri, 20
- Oct 2023 10:52:47 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 17:52:43 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGq+MmUC/53NSwqDMBSF4a1Ixr3FKG1iR91HkRLy0EvVhJsQF
- HHvTV1Ch/8ZnG9n0RLayB7VzshmjOiXEvxSMT2qZbCApjRr6qblNe8gJlp02MAQZksRwqSS8zT
- DKu+QRlw+QZm30gFBg1CibU0thXWClctA1uF6cq++9IgxedpOPfPf+ieUOXBQzkjFpbg51z0H7 4fJXrWfWX8cxxdUqE0x6QAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697824366; l=4167;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=IEWFXcfharNOSw9h5QXyYQ0F0PyhdIDYy+kU9BdlLGo=; b=KG9Wfj5pNyAZ1XJPZIdYVUFbz4Ukma8/wGl788PWQAVeEeyVVe1CMIhhOGKuzVpzXzxcMdN04
- I8vcKQ+wklFC79kFNxfcUlHEOhUmCgLmeF7saFIpN0VYQoM2Ai9OBBr
-X-Mailer: b4 0.12.3
-Message-ID: <20231020-strncpy-drivers-platform-x86-thinkpad_acpi-c-v1-1-312f2e33034f@google.com>
-Subject: [PATCH] platform/x86: thinkpad_acpi: replace deprecated strncpy with memcpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "=?utf-8?q?Ilpo_J=C3=A4rvinen?=" <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        Fri, 20 Oct 2023 13:53:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E880FD51;
+        Fri, 20 Oct 2023 10:53:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B226C433C7;
+        Fri, 20 Oct 2023 17:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697824394;
+        bh=zlzQselxabvwga7pwZwHtszfK36j7B5oGEvcCuWmbvY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RHKQ7jq0nGa0C6zbqjUOHa0dgGM93U7No/q0uLVyxXdsToA92e0+5J7zl5YFNPndl
+         3FHz6T/d0VP+IDUuyQNdbMAepCYvj3SQ3DHB0zoaDOUAqctOaNjBmt7v5BeDAGRJna
+         2HxeQvLLVxgMcEIYWQxPFPDVB/Wx3nMb0wr2PaYwqlRV8LmUbsL5m3MDSLTTSggQ4L
+         dqDrBakqHLCuQKMjR7aFjrJpw5WDLd6dq5aTQ8jIokqjRG77XG9480mT7XUwjq4CWu
+         hsxNg4gusLSE8+2hen7cK1BW2YpynmKq7fgH0inNu1r5oL+VVc4a/eKNAdBLDF5lko
+         UtF7Hp+TpZbPQ==
+Date:   Fri, 20 Oct 2023 23:23:04 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     manivannan.sadhasivam@linaro.org, aisheng.dong@nxp.com,
+        bhelgaas@google.com, devicetree@vger.kernel.org,
+        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
+        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 4/5] misc: pci_endpoint_test: Add doorbell test case
+Message-ID: <20231020175304.GC46191@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <20230911220920.1817033-5-Frank.Li@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230911220920.1817033-5-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,111 +57,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous
-interfaces.
+On Mon, Sep 11, 2023 at 06:09:19PM -0400, Frank Li wrote:
+> Using bit 0..7 of magic as version number in pci_endpoint_test struct to
+> support older driver versions. Save to 'version' field of struct
+> pci_endpoint_test to prevent reading non-existent address.
+> 
 
-We expect ec_fw_string to be NUL-terminated based on its use with format
-strings in thinkpad_acpi.c:
-11241 | pr_notice("ThinkPad firmware release %s doesn't match the known patterns\n",
-11242 |     ec_fw_string);
+Since both drivers are in the kernel, I don't see a necessity to maintain
+compatibility. Does it make sense to load drivers of previous kernel revision
+with a new kernel?
 
-Moreover, NUL-padding is not required since ec_fw_string is explicitly
-zero-initialized:
-11185 | char ec_fw_string[18] = {0};
+> Add three registers: PCIE_ENDPOINT_TEST_DB_BAR, PCIE_ENDPOINT_TEST_DB_ADDR,
+> PCIE_ENDPOINT_TEST_DB_DATA.
+> 
 
-When carefully copying bytes from one buffer to another in
-pre-determined blocks (like what's happening here with dmi_data):
+This patch is not adding these registers and not this driver also. So this
+statement is wrong.
 
-|       static void find_new_ec_fwstr(const struct dmi_header *dm, void *private)
-|       {
-|       	char *ec_fw_string = (char *) private;
-|       	const char *dmi_data = (const char *)dm;
-|       	/*
-|       	 * ThinkPad Embedded Controller Program Table on newer models
-|       	 *
-|       	 * Offset |  Name                | Width  | Description
-|       	 * ----------------------------------------------------
-|       	 *  0x00  | Type                 | BYTE   | 0x8C
-|       	 *  0x01  | Length               | BYTE   |
-|       	 *  0x02  | Handle               | WORD   | Varies
-|       	 *  0x04  | Signature            | BYTEx6 | ASCII for "LENOVO"
-|       	 *  0x0A  | OEM struct offset    | BYTE   | 0x0B
-|       	 *  0x0B  | OEM struct number    | BYTE   | 0x07, for this structure
-|       	 *  0x0C  | OEM struct revision  | BYTE   | 0x01, for this format
-|       	 *  0x0D  | ECP version ID       | STR ID |
-|       	 *  0x0E  | ECP release date     | STR ID |
-|       	 */
-|
-|       	/* Return if data structure not match */
-|       	if (dm->type != 140 || dm->length < 0x0F ||
-|       	memcmp(dmi_data + 4, "LENOVO", 6) != 0 ||
-|       	dmi_data[0x0A] != 0x0B || dmi_data[0x0B] != 0x07 ||
-|       	dmi_data[0x0C] != 0x01)
-|       		return;
-|
-|       	/* fwstr is the first 8byte string  */
-|       	strncpy(ec_fw_string, dmi_data + 0x0F, 8);
+> Write data from PCI_ENDPOINT_TEST_DB_DATA to address from
+> PCI_ENDPOINT_TEST_DB_ADDR to trigger doorbell and wait for endpoint
+> feedback.
+> 
 
-... we shouldn't be using a C string api. Let's instead use memcpy() as
-this more properly relays the intended behavior.
+You can reuse a part of the commit description I suggested for previous patch.
 
-Do note that ec_fw_string will still end up being NUL-terminated since
-we are memcpy'ing only 8 bytes into a buffer full of 18 zeroes. There's
-still some trailing NUL-bytes there. To ensure this behavior, let's add
-a BUILD_BUG_ON checking the length leaves space for at least one
-trailing NUL-byte.
+Rest looks good to me.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+- Mani
 
-Found with: $ rg "strncpy\("
----
- drivers/platform/x86/thinkpad_acpi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/misc/pci_endpoint_test.c | 48 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/pcitest.h     |  1 +
+>  2 files changed, 49 insertions(+)
+> 
+> diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
+> index ed4d0ef5e5c31..ed0b025132d17 100644
+> --- a/drivers/misc/pci_endpoint_test.c
+> +++ b/drivers/misc/pci_endpoint_test.c
+> @@ -33,6 +33,8 @@
+>  #define IRQ_TYPE_MSIX				2
+>  
+>  #define PCI_ENDPOINT_TEST_MAGIC			0x0
+> +#define PCI_MAGIC_VERSION_MASK			GENMASK(7, 0)
+> +#define PCI_ENDPOINT_TEST_V1			0x1
+>  
+>  #define PCI_ENDPOINT_TEST_COMMAND		0x4
+>  #define COMMAND_RAISE_LEGACY_IRQ		BIT(0)
+> @@ -52,6 +54,7 @@
+>  #define STATUS_IRQ_RAISED			BIT(6)
+>  #define STATUS_SRC_ADDR_INVALID			BIT(7)
+>  #define STATUS_DST_ADDR_INVALID			BIT(8)
+> +#define STATUS_DOORBELL_SUCCESS			BIT(9)
+>  
+>  #define PCI_ENDPOINT_TEST_LOWER_SRC_ADDR	0x0c
+>  #define PCI_ENDPOINT_TEST_UPPER_SRC_ADDR	0x10
+> @@ -66,7 +69,12 @@
+>  #define PCI_ENDPOINT_TEST_IRQ_NUMBER		0x28
+>  
+>  #define PCI_ENDPOINT_TEST_FLAGS			0x2c
+> +#define PCI_ENDPOINT_TEST_DB_BAR		0x30
+> +#define PCI_ENDPOINT_TEST_DB_ADDR		0x34
+> +#define PCI_ENDPOINT_TEST_DB_DATA		0x38
+> +
+>  #define FLAG_USE_DMA				BIT(0)
+> +#define FLAG_SUPPORT_DOORBELL			BIT(1)
+>  
+>  #define PCI_DEVICE_ID_TI_AM654			0xb00c
+>  #define PCI_DEVICE_ID_TI_J7200			0xb00f
+> @@ -102,6 +110,7 @@ enum pci_barno {
+>  	BAR_3,
+>  	BAR_4,
+>  	BAR_5,
+> +	NO_BAR = -1,
+>  };
+>  
+>  struct pci_endpoint_test {
+> @@ -118,6 +127,7 @@ struct pci_endpoint_test {
+>  	enum pci_barno test_reg_bar;
+>  	size_t alignment;
+>  	const char *name;
+> +	u8 version;
+>  };
+>  
+>  struct pci_endpoint_test_data {
+> @@ -713,6 +723,38 @@ static bool pci_endpoint_test_set_irq(struct pci_endpoint_test *test,
+>  	return false;
+>  }
+>  
+> +static bool pci_endpoint_test_doorbell(struct pci_endpoint_test *test)
+> +{
+> +	enum pci_barno bar;
+> +	u32 data, status;
+> +	u32 addr;
+> +
+> +	if (test->version < PCI_ENDPOINT_TEST_V1)
+> +		return false;
+> +
+> +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
+> +	if (bar == NO_BAR)
+> +		return false;
+> +
+> +	data = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_DATA);
+> +	addr = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_ADDR);
+> +	bar = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_DB_BAR);
+> +
+> +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_TYPE, irq_type);
+> +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_NUMBER, 1);
+> +
+> +	pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_STATUS, 0);
+> +	pci_endpoint_test_bar_writel(test, bar, addr, data);
+> +
+> +	wait_for_completion_timeout(&test->irq_raised, msecs_to_jiffies(1000));
+> +
+> +	status = pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_STATUS);
+> +	if (status & STATUS_DOORBELL_SUCCESS)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
+>  				    unsigned long arg)
+>  {
+> @@ -760,6 +802,9 @@ static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
+>  	case PCITEST_CLEAR_IRQ:
+>  		ret = pci_endpoint_test_clear_irq(test);
+>  		break;
+> +	case PCITEST_DOORBELL:
+> +		ret = pci_endpoint_test_doorbell(test);
+> +		break;
+>  	}
+>  
+>  ret:
+> @@ -887,6 +932,9 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
+>  	misc_device->parent = &pdev->dev;
+>  	misc_device->fops = &pci_endpoint_test_fops;
+>  
+> +	test->version = FIELD_GET(PCI_MAGIC_VERSION_MASK,
+> +				  pci_endpoint_test_readl(test, PCI_ENDPOINT_TEST_MAGIC));
+> +
+>  	err = misc_register(misc_device);
+>  	if (err) {
+>  		dev_err(dev, "Failed to register device\n");
+> diff --git a/include/uapi/linux/pcitest.h b/include/uapi/linux/pcitest.h
+> index f9c1af8d141b4..479ca1aa3ae0b 100644
+> --- a/include/uapi/linux/pcitest.h
+> +++ b/include/uapi/linux/pcitest.h
+> @@ -20,6 +20,7 @@
+>  #define PCITEST_SET_IRQTYPE	_IOW('P', 0x8, int)
+>  #define PCITEST_GET_IRQTYPE	_IO('P', 0x9)
+>  #define PCITEST_CLEAR_IRQ	_IO('P', 0x10)
+> +#define PCITEST_DOORBELL	_IO('P', 0x11)
+>  
+>  #define PCITEST_FLAGS_USE_DMA	0x00000001
+>  
+> -- 
+> 2.34.1
+> 
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 41584427dc32..bd9e06f5b860 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -11144,6 +11144,8 @@ static char __init tpacpi_parse_fw_id(const char * const s,
- 	return '\0';
- }
- 
-+#define EC_FW_STRING_LEN 18
-+
- static void find_new_ec_fwstr(const struct dmi_header *dm, void *private)
- {
- 	char *ec_fw_string = (char *) private;
-@@ -11172,7 +11174,8 @@ static void find_new_ec_fwstr(const struct dmi_header *dm, void *private)
- 		return;
- 
- 	/* fwstr is the first 8byte string  */
--	strncpy(ec_fw_string, dmi_data + 0x0F, 8);
-+	BUILD_BUG_ON(EC_FW_STRING_LEN <= 8);
-+	memcpy(ec_fw_string, dmi_data + 0x0F, 8);
- }
- 
- /* returns 0 - probe ok, or < 0 - probe error.
-@@ -11182,7 +11185,7 @@ static int __must_check __init get_thinkpad_model_data(
- 						struct thinkpad_id_data *tp)
- {
- 	const struct dmi_device *dev = NULL;
--	char ec_fw_string[18] = {0};
-+	char ec_fw_string[EC_FW_STRING_LEN] = {0};
- 	char const *s;
- 	char t;
- 
-
----
-base-commit: dab3e01664eaddae965699f1fec776609db0ea9d
-change-id: 20231019-strncpy-drivers-platform-x86-thinkpad_acpi-c-7a733d087ef7
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+-- 
+மணிவண்ணன் சதாசிவம்
