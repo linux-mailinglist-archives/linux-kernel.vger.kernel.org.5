@@ -2,443 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 032377D149B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D8E7D149E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377706AbjJTRMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S1377862AbjJTRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 13:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377718AbjJTRMa (ORCPT
+        with ESMTP id S229692AbjJTRNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:12:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1C0A3;
-        Fri, 20 Oct 2023 10:12:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D000EC433C8;
-        Fri, 20 Oct 2023 17:12:20 +0000 (UTC)
-Date:   Fri, 20 Oct 2023 22:42:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, aisheng.dong@nxp.com,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, imx@lists.linux.dev, jdmason@kudzu.us,
-        kernel@pengutronix.de, kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 1/5] PCI: endpoint: Add RC-to-EP doorbell support
- using platform MSI controllery
-Message-ID: <20231020171215.GA46191@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-2-Frank.Li@nxp.com>
- <20231017183722.GB137137@thinkpad>
- <ZS7YvWSlkQluPtg3@lizhi-Precision-Tower-5810>
- <20231019150441.GA7254@thinkpad>
- <ZTFSlpnF41BDzyiX@lizhi-Precision-Tower-5810>
- <20231019172347.GC7254@thinkpad>
- <ZTFxSnpqfHtVR1JJ@lizhi-Precision-Tower-5810>
+        Fri, 20 Oct 2023 13:13:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B343A3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 10:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697821979; x=1729357979;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gpUiJMwmkFwlOFmFdLdipIbLm1/5/wSUBTFzSRkhCTg=;
+  b=WlPtbOI6XOISlq36nnMwY4oEJOsHB51t9O4yEx10w8E43McPGH+xn9JG
+   fQMsv3OmzukYbrhUhEkCzE55d3UjyV0nShFq6FzgMTI+XXkSlaQrZ5Yuz
+   IbebcLHVeEHTdgdvwRWn+jLcmKXUv1J8XXiLTTbhSYwKl9iu9l4mvhrSo
+   H8r+B2QtA/8WX6lpzBiqSn9/suwT83cFQThvo+9zTq2D+rroiTIfo5ry/
+   YCOtIudWa59ho0aMTCjU25o7biJur1viSXRFQOhzPXePUxEDbWCQLgPtI
+   K6BLOWhl8uCAaIHJtgSPZ+cias3jCdD8fVUvIEow8XODCXIQYWvEg1L5B
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="385424749"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="385424749"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 10:12:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="761114755"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="761114755"
+Received: from gneiger-mobl3.amr.corp.intel.com (HELO [10.209.88.124]) ([10.209.88.124])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 10:12:56 -0700
+Message-ID: <ca3c0ed7-c457-49ee-b243-c1e67a3ff0c8@linux.intel.com>
+Date:   Fri, 20 Oct 2023 10:12:56 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTFxSnpqfHtVR1JJ@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 01/13] x86/acpi: Extract ACPI MADT wakeup code into a
+ separate file
+Content-Language: en-US
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
+ <20231020151242.1814-2-kirill.shutemov@linux.intel.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20231020151242.1814-2-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:11:22PM -0400, Frank Li wrote:
-> On Thu, Oct 19, 2023 at 10:53:47PM +0530, Manivannan Sadhasivam wrote:
-> > On Thu, Oct 19, 2023 at 12:00:22PM -0400, Frank Li wrote:
-> > > On Thu, Oct 19, 2023 at 08:34:41PM +0530, Manivannan Sadhasivam wrote:
-> > > > On Tue, Oct 17, 2023 at 02:55:57PM -0400, Frank Li wrote:
-> > > > > On Wed, Oct 18, 2023 at 12:07:22AM +0530, Manivannan Sadhasivam wrote:
-> > > > > > On Mon, Sep 11, 2023 at 06:09:16PM -0400, Frank Li wrote:
-> > > > > > > This commit introduces a common method for sending messages from the Root
-> > > > > > > Complex (RC) to the Endpoint (EP) by utilizing the platform MSI interrupt
-> > > > > > > controller, such as ARM GIC, as an EP doorbell. Maps the memory assigned
-> > > > > > > for the BAR region by the PCI host to the message address of the platform
-> > > > > > > MSI interrupt controller in the PCI EP. As a result, when the PCI RC writes
-> > > > > > 
-> > > > > > "Doorbell feature is implemented by mapping the EP's MSI interrupt controller
-> > > > > > message address to a dedicated BAR in the EPC core. It is the responsibility
-> > > > > > of the EPF driver to pass the actual message data to be written by the host to
-> > > > > > the doorbell BAR region through its own logic."
-> > > > > > 
-> > > > > > > to the BAR region, it triggers an IRQ at the EP. This implementation serves
-> > > > > > > as a common method for all endpoint function drivers.
-> > > > > > > 
-> > > > > > > However, it currently supports only one EP physical function due to
-> > > > > > > limitations in ARM MSI/IMS readiness.
-> > > > > > > 
-> > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > > > > ---
-> > > > > > >  drivers/pci/endpoint/pci-epc-core.c | 192 ++++++++++++++++++++++++++++
-> > > > > > >  drivers/pci/endpoint/pci-epf-core.c |  44 +++++++
-> > > > > > >  include/linux/pci-epc.h             |   6 +
-> > > > > > >  include/linux/pci-epf.h             |   7 +
-> > > > > > >  4 files changed, 249 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> > > > > > > index 5a4a8b0be6262..d336a99c6a94f 100644
-> > > > > > > --- a/drivers/pci/endpoint/pci-epc-core.c
-> > > > > > > +++ b/drivers/pci/endpoint/pci-epc-core.c
-> > > > > > > @@ -10,6 +10,7 @@
-> > > > > > >  #include <linux/slab.h>
-> > > > > > >  #include <linux/module.h>
-> > > > > > >  
-> > > > > > > +#include <linux/msi.h>
-> > > > > > >  #include <linux/pci-epc.h>
-> > > > > > >  #include <linux/pci-epf.h>
-> > > > > > >  #include <linux/pci-ep-cfs.h>
-> > > > > > > @@ -783,6 +784,197 @@ void pci_epc_bme_notify(struct pci_epc *epc)
-> > > > > > >  }
-> > > > > > >  EXPORT_SYMBOL_GPL(pci_epc_bme_notify);
-> > > > > > >  
-> > > > > > > +/**
-> > > > > > > + * pci_epc_alloc_doorbell() - alloc an address space to let RC trigger EP side IRQ by write data to
-> > > > > > > + *			      the space.
-> > > > > > 
-> > > > > > "Allocate platform specific doorbell IRQs to be used by the host to trigger
-> > > > > > doorbells on EP."
-> > > > > > 
-> > > > > > > + *
-> > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
-> > > > > > 
-> > > > > > EPC device for which the doorbell needs to be allocated
-> > > > > > 
-> > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
-> > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
-> > > > > > > + * @num_msgs: the total number of doorbell messages
-> > > > > > 
-> > > > > > s/num_msgs/num_db
-> > > > > > 
-> > > > > > > + *
-> > > > > > > + * Return: 0 success, other is failure
-> > > > > > > + */
-> > > > > > > +int pci_epc_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
-> > > > > > > +{
-> > > > > > > +	int ret;
-> > > > > > > +
-> > > > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	if (!epc->ops->alloc_doorbell)
-> > > > > > > +		return 0;
-> > > > > > 
-> > > > > > You mentioned 0 is a success. So if there is no callback, you want to return
-> > > > > > success?
-> > > > > > 
-> > > > > > > +
-> > > > > > > +	mutex_lock(&epc->lock);
-> > > > > > > +	ret = epc->ops->alloc_doorbell(epc, func_no, vfunc_no, num_msgs);
-> > > > > > 
-> > > > > > Why can't you just call the generic function here and in other places instead of
-> > > > > > implementing callbacks? I do not see a necessity for EPC specific callbacks. If
-> > > > > > there is one, please specify.
-> > > > > 
-> > > > > 1. Refer v1 your comments.
-> > > > > https://lore.kernel.org/imx/20230906145227.GC5930@thinkpad/
-> > > > 
-> > > > I do not find where I suggested the callback approach.
-> > > 
-> > > 	> > > If that, Each EPF driver need do duplicate work. 
-> > > 	> > > 
-> > > 	> > 
-> > > 	> > Yes, and that's how it should be. EPF core has no job in supplying the of_node.
-> > > 	> > It is the responsibility of the EPF drivers as they depend on OF for platform
-> > > 	> > support.
-> > > 	> 
-> > > 	> EPF driver still not depend on OF. such pci-epf-test, which was probed by
-> > > 	> configfs.
-> > > 	> 
-> > > 
-> > > 	Hmm, yeah. Then it should be part of the EPC driver.
-> > > 
-> > > 	Sorry for the confusion.
-> > > 
-> > > Here, all "EPF" should be "EPC". The key problem is of_node. EPC core have
-> > > not of_node, EPC core's parent driver (like dwc-ep driver) have of_node. 
-> > > 
-> > > pci_epc_generic_alloc_doorbell(dev), dev is probed by platform driver, such
-> > > as dwc-ep, which have of_node,  EPC core will create child device.
-> > > 
-> > > dwc-ep device
-> > >  |- epc core device
-> > > 
-> > > we can direct call pci_epc_generic_alloc_doorbell(epc->parent) here.
-> > > 
-> > > I may miss understand what your means. I think you want to dwc-ep
-> > > (with of_node) handle these alloc functions. 
-> > > 
-> > 
-> > My comment was to have just one function definition. But looking at it again, I
-> > think it is better to move all the (alloc, free, write_msg) definitions to
-> > dwc-ep, since the contents of those functions are not EPC core specific.
-> 
-> There are still problem. (alloc, free, write_msg) is quite common for all
-> controller and the system with MSI.
-> 
-> If move these into dwc-ep,  cdns or other controller have to duplicate 
-> these codes.
-> 
-> If you think it is not EPC core specific, how about create new help files?
-> 
 
-Hmm, that sounds good to me. I think the best place would be:
-drivers/pci/endpoint/pci-ep-msi.c
 
-Reason is, we cannot have this generic code under drivers/pci/controller/ as it
-is not a standalone PCI controller but a platform MSI controller. So having it
-under pci/endpoint/ makes much sense to me.
-
-And this is not specific to EPF drivers as well, so we cannot have it under
-pci/endpoint/functions/.
-
-- Mani
-
-> Frank
+On 10/20/2023 8:12 AM, Kirill A. Shutemov wrote:
+> In order to prepare for the expansion of support for the ACPI MADT
+> wakeup method, move the relevant code into a separate file.
 > 
-> > 
-> > In the EPC core, you can still have the callbacks specific to each EPC. This
-> > also solves your of_node problem.
-> > 
-> > - Mani
-> > 
-> > > > 
-> > > > > 2. Maybe some ep controller have built-in doorbell support. Write to some
-> > > > > address to trigger doorbell irq.
-> > > > > 
-> > > > 
-> > > > We will handle it whenever such EP controllers arrive. Until then, let's keep it
-> > > > simple.
-> > > > 
-> > > > - Mani
-> > > > 
-> > > > > Frank
-> > > > > 
-> > > > > > 
-> > > > > > > +	mutex_unlock(&epc->lock);
-> > > > > > > +
-> > > > > > > +	return ret;
-> > > > > > > +}
-> > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_alloc_doorbell);
-> > > > > > > +
-> > > > > > > +/**
-> > > > > > > + * pci_epc_free_doorbell() - free resource allocated by pci_epc_alloc_doorbell()
-> > > > > > > + *
-> > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
-> > > > > > 
-> > > > > > Same as above.
-> > > > > > 
-> > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
-> > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
-> > > > > > > + *
-> > > > > > > + * Return: 0 success, other is failure
-> > > > > > > + */
-> > > > > > > +void pci_epc_free_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
-> > > > > > > +{
-> > > > > > > +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	if (!epc->ops->free_doorbell)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	mutex_lock(&epc->lock);
-> > > > > > > +	epc->ops->free_doorbell(epc, func_no, vfunc_no);
-> > > > > > 
-> > > > > > Same as suggested above.
-> > > > > > 
-> > > > > > > +	mutex_unlock(&epc->lock);
-> > > > > > > +}
-> > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_free_doorbell);
-> > > > > > > +
-> > > > > > > +static irqreturn_t pci_epf_generic_doorbell_handler(int irq, void *data)
-> > > > > > > +{
-> > > > > > > +	struct pci_epf *epf = data;
-> > > > > > > +
-> > > > > > > +	if (epf->event_ops && epf->event_ops->doorbell)
-> > > > > > > +		epf->event_ops->doorbell(epf, irq - epf->virq_base);
-> > > > > > 
-> > > > > > Same as suggested above.
-> > > > > > 
-> > > > > > > +
-> > > > > > > +	return IRQ_HANDLED;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static void pci_epc_generic_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
-> > > > > > > +{
-> > > > > > > +	struct pci_epc *epc = NULL;
-> > > > > > > +	struct class_dev_iter iter;
-> > > > > > > +	struct pci_epf *epf;
-> > > > > > > +	struct device *dev;
-> > > > > > > +
-> > > > > > > +	class_dev_iter_init(&iter, pci_epc_class, NULL, NULL);
-> > > > > > > +	while ((dev = class_dev_iter_next(&iter))) {
-> > > > > > > +		if (dev->parent != desc->dev)
-> > > > > > > +			continue;
-> > > > > > > +
-> > > > > > > +		epc = to_pci_epc(dev);
-> > > > > > > +
-> > > > > > > +		class_dev_iter_exit(&iter);
-> > > > > > > +		break;
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > > +	if (!epc)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	/* Only support one EPF for doorbell */
-> > > > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
-> > > > > > > +
-> > > > > > 
-> > > > > > No need of this newline
-> > > > > > 
-> > > > > > > +	if (!epf)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	if (epf->msg && desc->msi_index < epf->num_msgs)
-> > > > > > > +		epf->msg[desc->msi_index] = *msg;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +
-> > > > > > 
-> > > > > > Remove extra newline
-> > > > > > 
-> > > > > > > +/**
-> > > > > > > + * pci_epc_generic_alloc_doorbell() - Common help function. Allocate address space from MSI
-> > > > > > > + *                                    controller
-> > > > > > > + *
-> > > > > > > + * @epc: the EPC device that need doorbell address and data from RC.
-> > > > > > > + * @func_no: the physical endpoint function number in the EPC device.
-> > > > > > > + * @vfunc_no: the virtual endpoint function number in the physical function.
-> > > > > > > + * @num_msgs: the total number of doorbell messages
-> > > > > > > + *
-> > > > > > 
-> > > > > > Same comment as for pci_epc_alloc_doorbell()
-> > > > > > 
-> > > > > > > + * Remark: use this function only if EPC driver just register one EPC device.
-> > > > > > > + *
-> > > > > > > + * Return: 0 success, other is failure
-> > > > > > > + */
-> > > > > > > +int pci_epc_generic_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
-> > > > > > > +{
-> > > > > > > +	struct pci_epf *epf;
-> > > > > > > +	struct device *dev;
-> > > > > > > +	int virq, last;
-> > > > > > > +	int ret;
-> > > > > > > +	int i;
-> > > > > > > +
-> > > > > > > +	if (IS_ERR_OR_NULL(epc))
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	/* Currently only support one func and one vfunc for doorbell */
-> > > > > > > +	if (func_no || vfunc_no)
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
-> > > > > > > +	if (!epf)
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	dev = epc->dev.parent;
-> > > > > > > +	ret = platform_msi_domain_alloc_irqs(dev, num_msgs, pci_epc_generic_write_msi_msg);
-> > > > > > > +	if (ret) {
-> > > > > > > +		dev_err(dev, "Failed to allocate MSI\n");
-> > > > > > > +		return -ENOMEM;
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > > +	last = -1;
-> > > > > > > +	for (i = 0; i < num_msgs; i++) {
-> > > > > > 
-> > > > > > You should iterate over msi_desc as below:
-> > > > > > 
-> > > > > >         msi_lock_descs(dev);
-> > > > > >         msi_for_each_desc(desc, dev, MSI_DESC_ALL) {
-> > > > > > 		...
-> > > > > > 	}
-> > > > > > 	msi_unlock_descs(dev);
-> > > > > > 
-> > > > > > > +		virq = msi_get_virq(dev, i);
-> > > > > > > +		if (i == 0)
-> > > > > > > +			epf->virq_base = virq;
-> > > > > > > +
-> > > > > > > +		ret = request_irq(virq, pci_epf_generic_doorbell_handler, 0,
-> > > > > > 
-> > > > > > 	request_irq(desc->irq, ...)
-> > > > > > 
-> > > > > > > +				  kasprintf(GFP_KERNEL, "pci-epc-doorbell%d", i), epf);
-> > > > > > > +
-> > > > > > > +		if (ret) {
-> > > > > > > +			dev_err(dev, "Failed to request doorbell\n");
-> > > > > > > +			goto err_free_irq;
-> > > > > > > +		}
-> > > > > > > +		last = i;
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > > +	return 0;
-> > > > > > > +
-> > > > > > > +err_free_irq:
-> > > > > > > +	for (i = 0; i < last; i++)
-> > > > > > > +		kfree(free_irq(epf->virq_base + i, epf));
-> > > > > > > +	platform_msi_domain_free_irqs(dev);
-> > > > > > > +
-> > > > > > > +	return -EINVAL;
-> > > > > > 
-> > > > > > 	return ret;
-> > > > > > 
-> > > > > > > +}
-> > > > > > > +EXPORT_SYMBOL_GPL(pci_epc_generic_alloc_doorbell);
-> > > > > > > +
-> > > > > > 
-> > > > > > [...]
-> > > > > > 
-> > > > > > > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
-> > > > > > > index 3f44b6aec4770..485c146a5efe2 100644
-> > > > > > > --- a/include/linux/pci-epf.h
-> > > > > > > +++ b/include/linux/pci-epf.h
-> > > > > > > @@ -79,6 +79,7 @@ struct pci_epc_event_ops {
-> > > > > > >  	int (*link_up)(struct pci_epf *epf);
-> > > > > > >  	int (*link_down)(struct pci_epf *epf);
-> > > > > > >  	int (*bme)(struct pci_epf *epf);
-> > > > > > > +	int (*doorbell)(struct pci_epf *epf, int index);
-> > > > > > 
-> > > > > > kdoc missing.
-> > > > > > 
-> > > > > > >  };
-> > > > > > >  
-> > > > > > >  /**
-> > > > > > > @@ -180,6 +181,9 @@ struct pci_epf {
-> > > > > > >  	unsigned long		vfunction_num_map;
-> > > > > > >  	struct list_head	pci_vepf;
-> > > > > > >  	const struct pci_epc_event_ops *event_ops;
-> > > > > > > +	struct msi_msg *msg;
-> > > > > > > +	u16 num_msgs;
-> > > > > > 
-> > > > > > num_db
-> > > > > > 
-> > > > > > You also need to add kdoc for each new member.
-> > > > > > 
-> > > > > > - Mani
-> > > > > > 
-> > > > > > -- 
-> > > > > > மணிவண்ணன் சதாசிவம்
-> > > > 
-> > > > -- 
-> > > > மணிவண்ணன் சதாசிவம்
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
+> Introduce a new configuration option to clearly indicate dependencies
+> without the use of ifdefs.
+> 
+> There have been no functional changes.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+
+Looks good to me.
+
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+
+>  arch/x86/Kconfig                   |  7 +++
+>  arch/x86/include/asm/acpi.h        |  5 ++
+>  arch/x86/kernel/acpi/Makefile      | 11 ++--
+>  arch/x86/kernel/acpi/boot.c        | 86 +-----------------------------
+>  arch/x86/kernel/acpi/madt_wakeup.c | 81 ++++++++++++++++++++++++++++
+>  5 files changed, 100 insertions(+), 90 deletions(-)
+>  create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 799102f4d909..9957a73bb386 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1108,6 +1108,13 @@ config X86_LOCAL_APIC
+>  	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
+>  	select IRQ_DOMAIN_HIERARCHY
+>  
+> +config X86_ACPI_MADT_WAKEUP
+> +	def_bool y
+> +	depends on X86_64
+> +	depends on ACPI
+> +	depends on SMP
+> +	depends on X86_LOCAL_APIC
+> +
+>  config X86_IO_APIC
+>  	def_bool y
+>  	depends on X86_LOCAL_APIC || X86_UP_IOAPIC
+> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+> index c8a7fc23f63c..b536b5a6a57b 100644
+> --- a/arch/x86/include/asm/acpi.h
+> +++ b/arch/x86/include/asm/acpi.h
+> @@ -73,6 +73,11 @@ static inline bool acpi_skip_set_wakeup_address(void)
+>  
+>  #define acpi_skip_set_wakeup_address acpi_skip_set_wakeup_address
+>  
+> +union acpi_subtable_headers;
+> +
+> +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> +			      const unsigned long end);
+> +
+>  /*
+>   * Check if the CPU can handle C2 and deeper
+>   */
+> diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
+> index fc17b3f136fe..8c7329c88a75 100644
+> --- a/arch/x86/kernel/acpi/Makefile
+> +++ b/arch/x86/kernel/acpi/Makefile
+> @@ -1,11 +1,12 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> -obj-$(CONFIG_ACPI)		+= boot.o
+> -obj-$(CONFIG_ACPI_SLEEP)	+= sleep.o wakeup_$(BITS).o
+> -obj-$(CONFIG_ACPI_APEI)		+= apei.o
+> -obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc.o
+> +obj-$(CONFIG_ACPI)			+= boot.o
+> +obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
+> +obj-$(CONFIG_ACPI_APEI)			+= apei.o
+> +obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
+> +obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
+>  
+>  ifneq ($(CONFIG_ACPI_PROCESSOR),)
+> -obj-y				+= cstate.o
+> +obj-y					+= cstate.o
+>  endif
+>  
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index 2a0ea38955df..111bd226ad99 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -66,13 +66,6 @@ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+>  static bool acpi_support_online_capable;
+>  #endif
+>  
+> -#ifdef CONFIG_X86_64
+> -/* Physical address of the Multiprocessor Wakeup Structure mailbox */
+> -static u64 acpi_mp_wake_mailbox_paddr;
+> -/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
+> -static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+> -#endif
+> -
+>  #ifdef CONFIG_X86_IO_APIC
+>  /*
+>   * Locks related to IOAPIC hotplug
+> @@ -357,60 +350,6 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
+>  
+>  	return 0;
+>  }
+> -
+> -#ifdef CONFIG_X86_64
+> -static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+> -{
+> -	/*
+> -	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
+> -	 *
+> -	 * Wakeup of secondary CPUs is fully serialized in the core code.
+> -	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
+> -	 */
+> -	if (!acpi_mp_wake_mailbox) {
+> -		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+> -						sizeof(*acpi_mp_wake_mailbox),
+> -						MEMREMAP_WB);
+> -	}
+> -
+> -	/*
+> -	 * Mailbox memory is shared between the firmware and OS. Firmware will
+> -	 * listen on mailbox command address, and once it receives the wakeup
+> -	 * command, the CPU associated with the given apicid will be booted.
+> -	 *
+> -	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
+> -	 * firmware before the wakeup command is visible.  smp_store_release()
+> -	 * ensures ordering and visibility.
+> -	 */
+> -	acpi_mp_wake_mailbox->apic_id	    = apicid;
+> -	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
+> -	smp_store_release(&acpi_mp_wake_mailbox->command,
+> -			  ACPI_MP_WAKE_COMMAND_WAKEUP);
+> -
+> -	/*
+> -	 * Wait for the CPU to wake up.
+> -	 *
+> -	 * The CPU being woken up is essentially in a spin loop waiting to be
+> -	 * woken up. It should not take long for it wake up and acknowledge by
+> -	 * zeroing out ->command.
+> -	 *
+> -	 * ACPI specification doesn't provide any guidance on how long kernel
+> -	 * has to wait for a wake up acknowledgement. It also doesn't provide
+> -	 * a way to cancel a wake up request if it takes too long.
+> -	 *
+> -	 * In TDX environment, the VMM has control over how long it takes to
+> -	 * wake up secondary. It can postpone scheduling secondary vCPU
+> -	 * indefinitely. Giving up on wake up request and reporting error opens
+> -	 * possible attack vector for VMM: it can wake up a secondary CPU when
+> -	 * kernel doesn't expect it. Wait until positive result of the wake up
+> -	 * request.
+> -	 */
+> -	while (READ_ONCE(acpi_mp_wake_mailbox->command))
+> -		cpu_relax();
+> -
+> -	return 0;
+> -}
+> -#endif /* CONFIG_X86_64 */
+>  #endif /* CONFIG_X86_LOCAL_APIC */
+>  
+>  #ifdef CONFIG_X86_IO_APIC
+> @@ -1160,29 +1099,6 @@ static int __init acpi_parse_madt_lapic_entries(void)
+>  	}
+>  	return 0;
+>  }
+> -
+> -#ifdef CONFIG_X86_64
+> -static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> -				     const unsigned long end)
+> -{
+> -	struct acpi_madt_multiproc_wakeup *mp_wake;
+> -
+> -	if (!IS_ENABLED(CONFIG_SMP))
+> -		return -ENODEV;
+> -
+> -	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
+> -	if (BAD_MADT_ENTRY(mp_wake, end))
+> -		return -EINVAL;
+> -
+> -	acpi_table_print_madt_entry(&header->common);
+> -
+> -	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+> -
+> -	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
+> -
+> -	return 0;
+> -}
+> -#endif				/* CONFIG_X86_64 */
+>  #endif				/* CONFIG_X86_LOCAL_APIC */
+>  
+>  #ifdef	CONFIG_X86_IO_APIC
+> @@ -1379,7 +1295,7 @@ static void __init acpi_process_madt(void)
+>  				smp_found_config = 1;
+>  			}
+>  
+> -#ifdef CONFIG_X86_64
+> +#ifdef CONFIG_X86_ACPI_MADT_WAKEUP
+>  			/*
+>  			 * Parse MADT MP Wake entry.
+>  			 */
+> diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
+> new file mode 100644
+> index 000000000000..58cdfc0b6c0a
+> --- /dev/null
+> +++ b/arch/x86/kernel/acpi/madt_wakeup.c
+> @@ -0,0 +1,81 @@
+> +#include <linux/acpi.h>
+> +#include <linux/io.h>
+> +#include <asm/apic.h>
+> +#include <asm/barrier.h>
+> +#include <asm/processor.h>
+> +
+> +/* Physical address of the Multiprocessor Wakeup Structure mailbox */
+> +static u64 acpi_mp_wake_mailbox_paddr;
+> +
+> +/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
+> +static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+> +
+> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+> +{
+> +	/*
+> +	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
+> +	 *
+> +	 * Wakeup of secondary CPUs is fully serialized in the core code.
+> +	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
+> +	 */
+> +	if (!acpi_mp_wake_mailbox) {
+> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+> +						sizeof(*acpi_mp_wake_mailbox),
+> +						MEMREMAP_WB);
+> +	}
+> +
+> +	/*
+> +	 * Mailbox memory is shared between the firmware and OS. Firmware will
+> +	 * listen on mailbox command address, and once it receives the wakeup
+> +	 * command, the CPU associated with the given apicid will be booted.
+> +	 *
+> +	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
+> +	 * firmware before the wakeup command is visible.  smp_store_release()
+> +	 * ensures ordering and visibility.
+> +	 */
+> +	acpi_mp_wake_mailbox->apic_id	    = apicid;
+> +	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
+> +	smp_store_release(&acpi_mp_wake_mailbox->command,
+> +			  ACPI_MP_WAKE_COMMAND_WAKEUP);
+> +
+> +	/*
+> +	 * Wait for the CPU to wake up.
+> +	 *
+> +	 * The CPU being woken up is essentially in a spin loop waiting to be
+> +	 * woken up. It should not take long for it wake up and acknowledge by
+> +	 * zeroing out ->command.
+> +	 *
+> +	 * ACPI specification doesn't provide any guidance on how long kernel
+> +	 * has to wait for a wake up acknowledgement. It also doesn't provide
+> +	 * a way to cancel a wake up request if it takes too long.
+> +	 *
+> +	 * In TDX environment, the VMM has control over how long it takes to
+> +	 * wake up secondary. It can postpone scheduling secondary vCPU
+> +	 * indefinitely. Giving up on wake up request and reporting error opens
+> +	 * possible attack vector for VMM: it can wake up a secondary CPU when
+> +	 * kernel doesn't expect it. Wait until positive result of the wake up
+> +	 * request.
+> +	 */
+> +	while (READ_ONCE(acpi_mp_wake_mailbox->command))
+> +		cpu_relax();
+> +
+> +	return 0;
+> +}
+> +
+> +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> +			      const unsigned long end)
+> +{
+> +	struct acpi_madt_multiproc_wakeup *mp_wake;
+> +
+> +	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
+> +	if (BAD_MADT_ENTRY(mp_wake, end))
+> +		return -EINVAL;
+> +
+> +	acpi_table_print_madt_entry(&header->common);
+> +
+> +	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+> +
+> +	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
+> +
+> +	return 0;
+> +}
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
