@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA8A7D0FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EFE7D0FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377215AbjJTMaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        id S1377271AbjJTMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376956AbjJTMaY (ORCPT
+        with ESMTP id S1377175AbjJTMbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:30:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE8711B;
-        Fri, 20 Oct 2023 05:30:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A12F2C433C9;
-        Fri, 20 Oct 2023 12:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697805022;
-        bh=+uf6l8qxqJVbft1lkynnlas3Eiq4n3dk8l8L9rbR2KU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AdIZAzR2SeCY5X7Hmq7TjcXV2kOHMK1xcGYHqfbP/9kBYVoQauINtdOB2nGXFewPS
-         CGu4T/rYw8gHr5+ezTZCMSC78sKZE3tyFg8VrNCfH+ctrcT/SJJoSUQT6rxjz4JdPc
-         aAtNHlqzvU3/LPg+hZwVJv8egBBGZsufQhfmq0jDW5Czt0oyqjUKXQ4RwTNbow4zkr
-         nlHIfXwI8fBP5KTzRcJw1NYUyRBZdRUg9qpRLx2TMIZVetvgaDe9qGk5UTvQCrskEx
-         qwGD8+MTgCZX1CgYEdWa8TM5x05Gc3y0w+XWlx29FR3rnnksWvyQN+ixMjX4MuiUbl
-         4lSNYOHxpMZvg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qtoe3-0002Q9-1s;
-        Fri, 20 Oct 2023 14:30:28 +0200
-Date:   Fri, 20 Oct 2023 14:30:27 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-Subject: Re: [PATCH v13 04/10] usb: dwc3: qcom: Add helper function to
- request threaded IRQ
-Message-ID: <ZTJy456413VVT8Uv@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-5-quic_kriskura@quicinc.com>
+        Fri, 20 Oct 2023 08:31:00 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46542D49;
+        Fri, 20 Oct 2023 05:30:58 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a8ada42c2aso7762647b3.3;
+        Fri, 20 Oct 2023 05:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697805057; x=1698409857; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=po603pLa6+WCSRfB+kSK68fxdf9syke8GemdI09pYiI=;
+        b=TweTCJmWt58QJ7k5GsMn9IadDX1CerCnT3A+hwl+vEzMtCDu3kzuq7TH4t9QlnMRc4
+         six2o5MvuoaWvz4uX2LnlfZ+DuSIzVH2hkLahj1IoGTSkGqMgTZhBghdG4kvI75gba1e
+         YfWC3hDFv+Nu7BeNO+mgihl0RNmGPH67/UIPE9WCXWqt0xLHAhYH+q96vPe+v8D5gm9L
+         XIU0i1PSP6KsYdj7JwLJvUWgkZ/VhI4Kc0IGLNz1JB673YZx6LF/XrMff9hKMVHbAhus
+         NJZL5Docy8NojZezpvn+jlk1CTgW/fQ16A3NjeQtES+BugVj34Arl+0L4Zuh281MVPWq
+         DxMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697805057; x=1698409857;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=po603pLa6+WCSRfB+kSK68fxdf9syke8GemdI09pYiI=;
+        b=MkwtQsBAjSq+wUOzCO50p03KezTzlKsGmhht1mWcHEFj9Ur0s0A72d9pkovdQMqrzw
+         5srzuxdy2R3eF++0hf2cRppvVByEMjmB9sjkXiaakvyb0x2jr0HNZRnou2Sdv27kk1OP
+         ausBWtHynB5oZ6GNLyfx648exc6ZXfWXyCm6EpbtyKqk45v5/sHZMvLcFVt73chdQQ8Y
+         uBwwuG7j19f5Tx/f6PuFxYt19VshZyZPh1BO9jahu80aIZwdw8uulq2b5WTtSxxN8SG9
+         4PlaxtSaWLRQ6FT+VVd0TydV8Sjdg59to5mIYnuDwfnoO82HkvZIGD/kYmHcAv8FJzSb
+         u4zA==
+X-Gm-Message-State: AOJu0Ywrf7wwYFWSBbxws/i+/geabpZTMI60k8PW4Fwiy/gqLTXCWx+x
+        RC4Rqj9TAYK41YW2SimMcnU=
+X-Google-Smtp-Source: AGHT+IEOIarenbX043L5oIbX6lbvtuAP32bTGnwRaigZvMyalrTwJO+TskT/MUvUAG4FNXSH60Yzgw==
+X-Received: by 2002:a81:4f57:0:b0:5a7:b8d4:60e1 with SMTP id d84-20020a814f57000000b005a7b8d460e1mr1817405ywb.9.1697805057406;
+        Fri, 20 Oct 2023 05:30:57 -0700 (PDT)
+Received: from localhost ([2607:fb90:3e1a:8bc6:bf58:5f88:bb90:604])
+        by smtp.gmail.com with ESMTPSA id v77-20020a814850000000b005a7daa09f43sm641359ywa.125.2023.10.20.05.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 05:30:56 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 05:30:55 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 11/13] ip_tunnel: convert __be16 tunnel flags to
+ bitmaps
+Message-ID: <ZTJy/7PMX/kGw2EL@yury-ThinkPad>
+References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
+ <20231016165247.14212-12-aleksander.lobakin@intel.com>
+ <20231018172747.305c65bd@kernel.org>
+ <CAG_fn=XP819PnkoR0G6_anRNq0t_r=drCFx4PT2VgRnrBaUjdA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231007154806.605-5-quic_kriskura@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG_fn=XP819PnkoR0G6_anRNq0t_r=drCFx4PT2VgRnrBaUjdA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,67 +86,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:18:00PM +0530, Krishna Kurapati wrote:
-> Cleanup setup irq call by implementing a new prep_irq helper function
-> and using it to request threaded IRQ's.
-
-Please replace this with:
-
-	Refactor interrupt setup by adding a new helper function for
-	requesting the wakeup interrupts.
-
-and similarly for Subject ("wakeup interrupts").
-
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 59 ++++++++++++++++--------------------
->  1 file changed, 26 insertions(+), 33 deletions(-)
+On Fri, Oct 20, 2023 at 09:41:10AM +0200, Alexander Potapenko wrote:
+> On Thu, Oct 19, 2023 at 2:27 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Mon, 16 Oct 2023 18:52:45 +0200 Alexander Lobakin wrote:
+> > >  40 files changed, 715 insertions(+), 415 deletions(-)
+> >
+> > This already has at least two conflicts with networking if I'm looking
+> > right. Please let the pre-req's go in via Yury's tree and then send
+> > this for net-next in the next release cycle.
 > 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 3de43df6bbe8..ef2006db7601 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -535,6 +535,24 @@ static int dwc3_qcom_get_irq(struct platform_device *pdev,
->  	return ret;
->  }
->  
-> +static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, char *irq_name,
-> +				char *disp_name, int irq)
-
-Please rename this one dwc3_qcom_request_irq() so that is obvious what
-it does without having to look at the implementation.
-
-This series eventually makes the driver only call this with irq_name ==
-disp_name so just drop the latter and rename the parameter as "name" and
-mention that in the commit message.
-
-Also move irq before name and add the missing const. That is:
-
-	static int dwc3_qcom_request_irq(struct dwc3_qcom *qcom, int irq, const char *name);
-
-> +{
-> +	int ret;
-> +
-> +	/* Keep wakeup interrupts disabled until suspend */
-> +	irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> +	ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
-> +					qcom_dwc3_resume_irq,
-> +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> +					disp_name, qcom);
-> +
-
-Drop stray newline.
-
-> +	if (ret)
-> +		dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
-
-Please spell out
-
-	"failed to request irq %s: %d\n"
-
-> +
-> +	return ret;
-> +}
-
-Johan
+> Yury, Andy,
+> 
+> The MTE part of my series will need to be reworked, so it might take a while.
+> Shall I maybe send v8 of
+> https://lore.kernel.org/lkml/20231011172836.2579017-1-glider@google.com/
+> (plus the test) separately to unblock Alexander?
+ 
+You better ask Alexander :). No objections from me.
