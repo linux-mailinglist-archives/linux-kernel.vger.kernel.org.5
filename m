@@ -2,188 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D304F7D1044
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A177D1049
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 15:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377360AbjJTNHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 09:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S1377409AbjJTNJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 09:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377002AbjJTNHT (ORCPT
+        with ESMTP id S1377239AbjJTNJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 09:07:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4909F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:06:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40806e40fccso6007185e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 06:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697807211; x=1698412011; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WCm+EqBMn/4mUTNVySVuHeEM7hbwegHPI112FGAJ2Rg=;
-        b=Gc0P72uST6FQzcRtuyo9qIsJtVYMz6wdTd7ItiKftm59iGZqS3un5KmhIeqDdHjuS4
-         6rteySTehjK17rmPTampSUtuUvMDZHmRXAwZkuQgI1UdRbJUftw/IVag23gs0tiUpHa9
-         h7iQ+uuR6Tsz8+WVFwrfGXKYXz5HDNV4nDwXmSZcjixS4MgKqsQh04isaW84Fi1cQ2f8
-         zDPmGg2QIv9/q4lMnLIpG7TABrARHZwEORwEeFrznU///ea3GgecJB9fGV0Qv0+M/Fn8
-         OaHkYMsKrz0l5M4f4J9Ep1BeDlEZQyNyGYxU4GOyRsgjDBIbBvXBhdieMFY61gWgbAOY
-         JjFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697807211; x=1698412011;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WCm+EqBMn/4mUTNVySVuHeEM7hbwegHPI112FGAJ2Rg=;
-        b=YeekQTJGkCByqQOE9l/adZ1764xGU7ao5hWQLf/+H8L1TQ/JO6VZ4szTacTSvY0ZVN
-         dwVx6r6nTCaoVRglrW5NVpxlNwH4M7RgtNGQWHEizYfupMPyv2Q9oo7ptNdW7gWY8x/t
-         Ijh3m8KZHVj/KagLxfWXLrhwvfGeTULYjcXyBXcty+UA8NuPJcZiD3mtMgJHbnEVdNwe
-         Y0YDmnaLIURYJZStMwYHrBZa/pBev71Gq5Yz/iyObS+IU7IiyK2rVKaA30QUaOGLiASV
-         hmXu8nUNmB8KpDCdT2Kpdd3KkUrfKSVr2dp5QEZejnA1zbCz/R1D5lAKtIkG5AOlGu+c
-         Vgvw==
-X-Gm-Message-State: AOJu0YyIAX0TcDXwGYzR2K28Sf/qwpIw3+Wa9SOw0yr6O/OBBAvLnE7H
-        yErN5lhV5CoSmZ1yKFw06ZSnIQ==
-X-Google-Smtp-Source: AGHT+IFIvV5TUpm/s3Z1DUytrd1IeI/v7LKPHLGYxHYYOsW2nyBVcgsbo9bseFvy7Lte64hmpJsR0w==
-X-Received: by 2002:a05:600c:3096:b0:405:95c3:e79d with SMTP id g22-20020a05600c309600b0040595c3e79dmr1396174wmn.40.1697807210658;
-        Fri, 20 Oct 2023 06:06:50 -0700 (PDT)
-Received: from localhost ([95.148.15.118])
-        by smtp.gmail.com with ESMTPSA id t10-20020a05600c198a00b00403b63e87f2sm2155727wmq.32.2023.10.20.06.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 06:06:50 -0700 (PDT)
-From:   Punit Agrawal <punit.agrawal@bytedance.com>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        will@kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, krisman@suse.de, broonie@kernel.org,
-        james.morse@arm.com, ionela.voinescu@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] arm64: cpufeature: Display the set of cores with
- a feature
-In-Reply-To: <20231017052322.1211099-2-jeremy.linton@arm.com> (Jeremy Linton's
-        message of "Tue, 17 Oct 2023 00:23:20 -0500")
-References: <20231017052322.1211099-1-jeremy.linton@arm.com>
-        <20231017052322.1211099-2-jeremy.linton@arm.com>
-Date:   Fri, 20 Oct 2023 14:06:49 +0100
-Message-ID: <87ttqlo32u.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Fri, 20 Oct 2023 09:09:44 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C90DBE;
+        Fri, 20 Oct 2023 06:09:42 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 991F45C0ACE;
+        Fri, 20 Oct 2023 09:09:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 20 Oct 2023 09:09:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1697807381; x=1697893781; bh=H9rjDKi86egy+CCMRQXTpLLy3mneqPSVJpZ
+        0V0aMB0U=; b=PpYuKcxuV5/b9Dm0fNrNjLqu/+9aNEJ2L3jN7yvAaHzQLKwGkv8
+        5RQffEtTT8vxlyYSw7eP7+3KdRxE5nrvajVnq7bN3M1xNK/5q1vG+vloYKb3BVKc
+        nNkJDuszSN7/Mb3uUI867osCmN3Y7GAve9ZLVS235ihtRV6zZmVn7zwGT6oSaOUM
+        9KPJ5EFl5SQ1xqMo97yjpqAkTIW/fnJY6txMtIVZpJqES7EgCivhuK5oN9SsErM+
+        eNWZ3jl2GYc/oIsCtCow1FYiyD32kY4A6d+57qmOyrYS90MFrcwCKWSLaFII7P8y
+        t0CuXoZRHyaVTmMF1Yc0+bN7/sNK8QUcwVg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1697807381; x=1697893781; bh=H9rjDKi86egy+CCMRQXTpLLy3mneqPSVJpZ
+        0V0aMB0U=; b=R2ODgfmrxMoUKcsW5mCxmmxN5E/hV/wqa5/bE0QMHV1+TiYGFgc
+        caGjErhizrHXg5YVmMteojh7wgESXzGq2XgDwe/vAmKBdJx5tth5db7xNhJ8FHbH
+        gDjDq/M8YPDkoGMsGP5rNme4iuIVgmHDlh7UzvtDmwoRaxPKNX4vLTOKNd10Fg/O
+        5rUTdIONjl93uvkCQ+C94HR/5E+xKgWb2BAzsUJyEn65w4Z7LUZoKgFk82Hojms1
+        AVwNj3XJhS7knhXNEtJQZ9TnaBC4vvusIS03hY20+I313aPnExWzFMqS0mVoZ1BF
+        uWI/B5URD1ieK0b37XI/fTUkPh6ulFk9xQQ==
+X-ME-Sender: <xms:FXwyZf71TFLG7l9Dc16IiJlcpvHWjl88xVdzWo7_-Sdv3Q4w-t4EOQ>
+    <xme:FXwyZU4N5YF11Ah556Zcwozs632ohpnwOwqLkOkkqSiYY-GcHrEq7Q5iqbgx9YVns
+    psLEgElsKDH>
+X-ME-Received: <xmr:FXwyZWcWw_eKyB0TVjI68rJn0IjGkPn9wvLaaE7y7NFoVlxdJYnw4yoqxD0Nt9Pwolxx0F9wL1F9ZZl0DOk4HslPgkGeF_rZPsurNayF0Q_TcZUagBjlFEtf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:FXwyZQKACAL5-D3QHVTVx5h-cNTJoYN8g9N5E7WG1MyQaoJSdohD3Q>
+    <xmx:FXwyZTIRvHo2_EifTeMKJ0gyeX5_r8nnD9Qryv22RFUBUV4ABajd5g>
+    <xmx:FXwyZZzahPAD921in94LmGibQVwAJ01f1YL5U7qiQ8GtRQ3jItaIOA>
+    <xmx:FXwyZQqHBP_KeJK4vXBtDRWTFOWXxKaOOADS-re6klkDxAR1BVrLVQ>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 20 Oct 2023 09:09:37 -0400 (EDT)
+Message-ID: <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
+Date:   Fri, 20 Oct 2023 21:09:35 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: autofs: add autofs_parse_fd()
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
+        Christian Brauner <brauner@kernel.org>
+References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
+ <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
+ <CADYN=9+HDwqAz-eLV7uVuMa+_+foj+_keSG-TmD2imkwVJ_mpQ@mail.gmail.com>
+ <432f1c1c-2f77-4b1b-b3f8-28330fd6bac3@kadam.mountain>
+ <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeremy Linton <jeremy.linton@arm.com> writes:
-
-> The AMU feature can be enabled on a subset of the cores in a system.
-> Because of that, it prints a message for each core as it is detected.
-> This becomes tedious when there are hundreds of cores. Instead, for
-> CPU features which can be enabled on a subset of the present cores,
-> lets wait until update_cpu_capabilities() and print the subset of cores
-> the feature was enabled on.
+On 20/10/23 19:23, Arnd Bergmann wrote:
+> On Fri, Oct 20, 2023, at 12:45, Dan Carpenter wrote:
+>> On Fri, Oct 20, 2023 at 11:55:57AM +0200, Anders Roxell wrote:
+>>> On Fri, 20 Oct 2023 at 08:37, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
+>>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit rootfs we call
+>>>>> it as compat mode boot testing. Recently it started to failed to get login
+>>>>> prompt.
+>>>>>
+>>>>> We have not seen any kernel crash logs.
+>>>>>
+>>>>> Anders, bisection is pointing to first bad commit,
+>>>>> 546694b8f658 autofs: add autofs_parse_fd()
+>>>>>
+>>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
+>>>> I tried to find something in that commit that would be different
+>>>> in compat mode, but don't see anything at all -- this appears
+>>>> to be just a simple refactoring of the code, unlike the commits
+>>>> that immediately follow it and that do change the mount
+>>>> interface.
+>>>>
+>>>> Unfortunately this makes it impossible to just revert the commit
+>>>> on top of linux-next. Can you double-check your bisection by
+>>>> testing 546694b8f658 and the commit before it again?
+>>> I tried these two patches again:
+>>> 546694b8f658 ("autofs: add autofs_parse_fd()") - doesn't boot
+>>> bc69fdde0ae1 ("autofs: refactor autofs_prepare_pipe()") - boots
+>>>
+>> One difference that I notice between those two patches is that we no
+>> long call autofs_prepare_pipe().  We just call autofs_check_pipe().
+> Indeed, so some of the f_flags end up being different. I assumed
+> this was done intentionally, but it might be worth checking if
+> the patch below makes any difference when the flags get put
+> back the way they were. This is probably not the correct fix, but
+> may help figure out what is going on. It should apply to anything
+> from 546694b8f658 ("autofs: add autofs_parse_fd()") to the current
+> linux-next:
 >
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> ---
->  arch/arm64/include/asm/cpufeature.h |  2 ++
->  arch/arm64/kernel/cpufeature.c      | 22 +++++++++++++---------
->  2 files changed, 15 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 5bba39376055..19b4d001d845 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -23,6 +23,7 @@
->  #include <linux/bug.h>
->  #include <linux/jump_label.h>
->  #include <linux/kernel.h>
-> +#include <linux/cpumask.h>
->  
->  /*
->   * CPU feature register tracking
-> @@ -380,6 +381,7 @@ struct arm64_cpu_capabilities {
->  	 * method is robust against being called multiple times.
->  	 */
->  	const struct arm64_cpu_capabilities *match_list;
-> +	const struct cpumask *cpus;
->  };
->  
->  static inline int cpucap_default_scope(const struct arm64_cpu_capabilities *cap)
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 444a73c2e638..2dd695fc3472 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1944,8 +1944,6 @@ int get_cpu_with_amu_feat(void)
->  static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
->  {
->  	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
-> -		pr_info("detected CPU%d: Activity Monitors Unit (AMU)\n",
-> -			smp_processor_id());
->  		cpumask_set_cpu(smp_processor_id(), &amu_cpus);
->  
->  		/* 0 reference values signal broken/disabled counters */
-> @@ -2405,16 +2403,12 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  #endif /* CONFIG_ARM64_RAS_EXTN */
->  #ifdef CONFIG_ARM64_AMU_EXTN
->  	{
-> -		/*
-> -		 * The feature is enabled by default if CONFIG_ARM64_AMU_EXTN=y.
-> -		 * Therefore, don't provide .desc as we don't want the detection
-> -		 * message to be shown until at least one CPU is detected to
-> -		 * support the feature.
-> -		 */
-> +		.desc = "Activity Monitors Unit (AMU)",
->  		.capability = ARM64_HAS_AMU_EXTN,
->  		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
->  		.matches = has_amu,
->  		.cpu_enable = cpu_amu_enable,
-> +		.cpus = &amu_cpus,
->  		ARM64_CPUID_FIELDS(ID_AA64PFR0_EL1, AMU, IMP)
->  	},
->  #endif /* CONFIG_ARM64_AMU_EXTN */
-> @@ -2981,7 +2975,7 @@ static void update_cpu_capabilities(u16 scope_mask)
->  		    !caps->matches(caps, cpucap_default_scope(caps)))
->  			continue;
->  
-> -		if (caps->desc)
-> +		if (caps->desc && !caps->cpus)
->  			pr_info("detected: %s\n", caps->desc);
->  
->  		__set_bit(caps->capability, system_cpucaps);
-> @@ -3330,6 +3324,7 @@ unsigned long cpu_get_elf_hwcap2(void)
->  
->  static void __init setup_system_capabilities(void)
->  {
-> +	int i;
->  	/*
->  	 * We have finalised the system-wide safe feature
->  	 * registers, finalise the capabilities that depend
-> @@ -3338,6 +3333,15 @@ static void __init setup_system_capabilities(void)
->  	 */
->  	update_cpu_capabilities(SCOPE_SYSTEM);
->  	enable_cpu_capabilities(SCOPE_ALL & ~SCOPE_BOOT_CPU);
+> --- a/fs/autofs/inode.c
+> +++ b/fs/autofs/inode.c
+> @@ -358,6 +358,11 @@ static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
+>          pr_debug("pipe fd = %d, pgrp = %u\n",
+>                   sbi->pipefd, pid_nr(sbi->oz_pgrp));
+>   
+> +        /* We want a packet pipe */
+> +        sbi->pipe->f_flags |= O_DIRECT;
+> +        /* We don't expect -EAGAIN */
+> +        sbi->pipe->f_flags &= ~O_NONBLOCK;
 > +
-> +	for (i = 0; i < ARM64_NCAPS; i++) {
-> +		const struct arm64_cpu_capabilities *caps = cpucap_ptrs[i];
-> +
-> +		if (caps && caps->cpus && caps->desc &&
-> +			cpumask_any(caps->cpus) < nr_cpu_ids)
-> +			pr_info("detected: %s on CPU%*pbl\n",
-> +				caps->desc, cpumask_pr_args(caps->cpus));
-> +	}
->  }
->  
->  void __init setup_cpu_features(void)
 
-Ah I replied to the previous version without realising there's a new
-one. This patch looks unchanged, so, fwiw, feel free to add
 
-Reviewed-by: Punit Agrawal <punit.agrawal@bytedance.com>
-Tested-by: Punit Agrawal <punit.agrawal@bytedance.com>
+That makes sense, we do want a packet pipe and that does also mean
 
-Thanks,
-Punit
+we don't want a non-blocking pipe, it will be interesting to see
+
+if that makes a difference. It's been a long time since Linus
+
+implemented that packet pipe and I can't remember now what the
+
+case was that lead to it.
+
+
+Ian
+
+>          sbi->flags &= ~AUTOFS_SBI_CATATONIC;
+>   
+>          /*
