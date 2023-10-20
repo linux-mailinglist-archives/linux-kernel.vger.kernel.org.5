@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0167D0ED4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944287D0ECD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 13:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377465AbjJTLjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 07:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S1377449AbjJTLjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 07:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377456AbjJTLjA (ORCPT
+        with ESMTP id S1377149AbjJTLiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 07:39:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFC92108;
-        Fri, 20 Oct 2023 04:38:10 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 11:37:52 -0000
+        Fri, 20 Oct 2023 07:38:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D43A1FEA;
+        Fri, 20 Oct 2023 04:38:07 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 11:37:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1697801873;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oWLNPxAL6RB4jWe7j4BW9JKrK+K+JTutnur4CH8rKmM=;
-        b=Gvj2cJ/1KNv8N6SZFVfv1jZQLYcrITN+MS5g9AxvrQfEc+hNd9cjFZs6lmZQYmtZ5iGp8W
-        Vu88PQBMhw1LBGt/0458z/FuYTL2+hvvEksp3I1VikmK56Q11o9sQJSWsaMLASOzCzpaOu
-        2i4+8TLPpzQk/UeGS9RXtePA6uys880YbPu+iVe+EENyX7geGtHlY/r+Axc55/jshXsHf4
-        5vdmx6BU8zNvl2UY54AnHE1NSGLIS72BRiMVBsyg8q1jME6WXAES68253xC2TDR093qYny
-        U92GxBwYgD0XX/VT5squ5vOUwsoNyKCDKD3NMiZBdnuHmP2fMAbKwapp5taZKg==
+        bh=vdYHOrN3XM+EccrGn81iU/XtmJFMCAQc9uJD23D4LzI=;
+        b=giOQkZAIg9RgOPasC279ekFJq3dufkROdN6p8o6Xd+Tk/18XNsV8f58CAfSofr43l0MkzD
+        gBp6w34FowEjZYjgCf2ucMcnSu2IyaWAB9afIufxufl3Hdfjv2Um+7i6KOu/adwgk5nNcd
+        EVxNQWLDnEokVQkUnsbx6ZHKUVAGVgLhW9UKSKagEiAXbl+4S7CoLiWVUqSALfTRKoleJk
+        vqwE1GS7QvYX5a5YHMDMUo8W9jNcbaN4Su5Va9S182m8OsiNkLamLjfh+WV5/DWK/R7R+2
+        YL5TfrDp0JT7qYbEVPqrBLwexyHFg4pAbMMYov/MklN40aGS3hp1AxVIgUxJmQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1697801873;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oWLNPxAL6RB4jWe7j4BW9JKrK+K+JTutnur4CH8rKmM=;
-        b=puXd1RnAYzg/PpcdGJbfHWwIQMMeCz/9sj3LfC7sW6mWBjuwJayiQejKFnmfW+IjRem3Xm
-        KAnUhWfpaHFfvmDg==
+        bh=vdYHOrN3XM+EccrGn81iU/XtmJFMCAQc9uJD23D4LzI=;
+        b=qqdktpSU/ncHeQHWiD2jP9aQtHt12dZ5opNx2g/hZLLJgClWXNIJw29JaBprGbh5C8wE8O
+        AQ2Hju85LEBIEZAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode: Clean up mc_cpu_down_prep()
+Subject: [tip: x86/microcode] x86/microcode: Get rid of the schedule work indirection
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115903.028651784@linutronix.de>
-References: <20231002115903.028651784@linutronix.de>
+In-Reply-To: <20231017211723.354748138@linutronix.de>
+References: <20231017211723.354748138@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169780187253.3135.16969663955261216142.tip-bot2@tip-bot2>
+Message-ID: <169780187303.3135.6617404814622767836.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,47 +66,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     d91172afa89d1bb7ada97625d761bcdefdd4f9f6
-Gitweb:        https://git.kernel.org/tip/d91172afa89d1bb7ada97625d761bcdefdd4f9f6
+Commit-ID:     dda4cedc27cfb76dc07230c501c81c59b62b1db0
+Gitweb:        https://git.kernel.org/tip/dda4cedc27cfb76dc07230c501c81c59b62b1db0
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 13:59:55 +02:00
+AuthorDate:    Tue, 17 Oct 2023 23:23:58 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 19 Oct 2023 15:53:58 +02:00
+CommitterDate: Thu, 19 Oct 2023 15:53:00 +02:00
 
-x86/microcode: Clean up mc_cpu_down_prep()
+x86/microcode: Get rid of the schedule work indirection
 
-This function has nothing to do with suspend. It's a hotplug
-callback. Remove the bogus comment.
-
-Drop the pointless debug printk. The hotplug core provides tracepoints
-which track the invocation of those callbacks.
+Scheduling work on all CPUs to collect the microcode information is just
+another extra step for no value. Let the CPU hotplug callback registration
+do it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115903.028651784@linutronix.de
+Link: https://lore.kernel.org/r/20231017211723.354748138@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/core.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/x86/kernel/cpu/microcode/core.c | 29 +++++++++------------------
+ 1 file changed, 10 insertions(+), 19 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 0ed96d2..e306fee 100644
+index 37145cf..0ed96d2 100644
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -498,16 +498,10 @@ static int mc_cpu_online(unsigned int cpu)
+@@ -481,8 +481,16 @@ static struct syscore_ops mc_syscore_ops = {
  
- static int mc_cpu_down_prep(unsigned int cpu)
+ static int mc_cpu_online(unsigned int cpu)
  {
--	struct device *dev;
--
--	dev = get_cpu_device(cpu);
-+	struct device *dev = get_cpu_device(cpu);
++	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+ 	struct device *dev = get_cpu_device(cpu);
  
- 	microcode_fini_cpu(cpu);
--
--	/* Suspend is in progress, only remove the interface */
- 	sysfs_remove_group(&dev->kobj, &mc_attr_group);
--	pr_debug("%s: CPU%d\n", __func__, cpu);
--
++	memset(uci, 0, sizeof(*uci));
++
++	microcode_ops->collect_cpu_info(cpu, &uci->cpu_sig);
++	cpu_data(cpu).microcode = uci->cpu_sig.rev;
++	if (!cpu)
++		boot_cpu_data.microcode = uci->cpu_sig.rev;
++
+ 	if (sysfs_create_group(&dev->kobj, &mc_attr_group))
+ 		pr_err("Failed to create group for CPU%d\n", cpu);
+ 	return 0;
+@@ -503,20 +511,6 @@ static int mc_cpu_down_prep(unsigned int cpu)
  	return 0;
  }
+ 
+-static void setup_online_cpu(struct work_struct *work)
+-{
+-	int cpu = smp_processor_id();
+-	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+-
+-	memset(uci, 0, sizeof(*uci));
+-
+-	microcode_ops->collect_cpu_info(cpu, &uci->cpu_sig);
+-	cpu_data(cpu).microcode = uci->cpu_sig.rev;
+-	if (!cpu)
+-		boot_cpu_data.microcode = uci->cpu_sig.rev;
+-	mc_cpu_online(cpu);
+-}
+-
+ static struct attribute *cpu_root_microcode_attrs[] = {
+ #ifdef CONFIG_MICROCODE_LATE_LOADING
+ 	&dev_attr_reload.attr,
+@@ -562,12 +556,9 @@ static int __init microcode_init(void)
+ 		}
+ 	}
+ 
+-	/* Do per-CPU setup */
+-	schedule_on_each_cpu(setup_online_cpu);
+-
+ 	register_syscore_ops(&mc_syscore_ops);
+-	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "x86/microcode:online",
+-				  mc_cpu_online, mc_cpu_down_prep);
++	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/microcode:online",
++			  mc_cpu_online, mc_cpu_down_prep);
+ 
+ 	pr_info("Microcode Update Driver: v%s.", DRIVER_VERSION);
  
