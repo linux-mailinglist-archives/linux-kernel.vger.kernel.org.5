@@ -2,286 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 150317D175F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F447D1769
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbjJTUrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 16:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        id S230389AbjJTUsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 16:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbjJTUrs (ORCPT
+        with ESMTP id S230117AbjJTUsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 16:47:48 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70229D65;
-        Fri, 20 Oct 2023 13:47:46 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6be840283ceso1163189b3a.3;
-        Fri, 20 Oct 2023 13:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697834866; x=1698439666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOImYZdSx2m0PGY/kvmONhOIa9TTLkTXQlBLoR0LTq8=;
-        b=fkrMbFRAqI1vUZkgOdAfiRdTiQsPUmyzXLXgcCkkysEYDVYfxsQiuUKYLRxgFP1vbe
-         q6+swc7mnpxFDxy07AzB8DNQa38AHMj1rbW8BndpdRWnyQ1r52OQJ1/0huFeae1+riq7
-         eqQesvQvSe0+X65qgaUTpQCUkkPmiN46/Grsy7rj/umcjGQAOV/8OicMXwO2L6fEROcv
-         R7evtYgSeoNgVJvaBBfCcQSZBC7dwVoaNnRNVNupAUB2APAch6mGjYxU98FCZhArLUhX
-         tdRrLQ1pnClr7j0w0fDyOtO5cHnFItv9Na4366M4cugbGgNqXIhwMv9H8fFJwdXRHa5m
-         Enqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697834866; x=1698439666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=JOImYZdSx2m0PGY/kvmONhOIa9TTLkTXQlBLoR0LTq8=;
-        b=N1gCvrqjVfR4Q+g/QIr8XcXhqdVjJZtPqTWCMqdKhlXr+kI7YgHTUgHvt+tnhhLRMA
-         1sXKpN+mXVgxLubwC9PQ0e7r0b6BNxYQHHmzu7YvLEvxWqHhtketc1NTuFQYWJMc0Bgn
-         xYQuiaEp2yd6BvaYn/WTHbkVfzJtEnsAlzwv2SypqIYG+jVR3AajNe47PXMzUQ+PJDW3
-         Ut21pPNTGjm+JfTXpBLCXGwFIKBROlY+qTRiMG2ZDqbVOS8BINrGeTgpcGTycokJd34s
-         OENRhAWu9uR58DpAe/Kj9onSrILmbics07ddf32+WOeOZTD+8JjraeHHZMBKztObaxVb
-         ABmw==
-X-Gm-Message-State: AOJu0YzJIPF3ZLRBAul+jgyC4v2hkU13Ftcp0Z7QeNe/RWE7jxfBDhwP
-        P7m0GC4Fk0myCyh5zlm0H47hYHMdxrU=
-X-Google-Smtp-Source: AGHT+IE6l3rYdCDPQTlPePjtB6GIowh3BYRmShPbEGbnsFP08KqWR8o5JZih7EBMhmrqdM2tdB4dcA==
-X-Received: by 2002:a05:6a21:7989:b0:17b:8404:96d8 with SMTP id bh9-20020a056a21798900b0017b840496d8mr3002343pzc.41.1697834865589;
-        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:17e0:7ea9:fbc6:4c7d])
-        by smtp.gmail.com with ESMTPSA id r25-20020aa79639000000b00694f14a784bsm1971183pfg.52.2023.10.20.13.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 3/3] perf lock contention: Use per-cpu array map for spinlocks
-Date:   Fri, 20 Oct 2023 13:47:41 -0700
-Message-ID: <20231020204741.1869520-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231020204741.1869520-1-namhyung@kernel.org>
-References: <20231020204741.1869520-1-namhyung@kernel.org>
+        Fri, 20 Oct 2023 16:48:45 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92EDBF;
+        Fri, 20 Oct 2023 13:48:43 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39KKgCbT002542;
+        Fri, 20 Oct 2023 20:48:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Yhoq0dxrpX3TpGKNPe1ltxOKvYmmrUr2BhsB7idTqzQ=;
+ b=MgUhH2r2QfQlDEGIbVSvyCdO1A2nYvtMWTzIaki9sbvYYFklfWgDCRoQNC5Nay4t2L7/
+ H7xL4dV8IBZNww2AghZRAQ5Ko+ziYMur7JvQqk8ghzoXlDtnSrREjR5392yJih4jufmI
+ z+2AJBurlsttEWzQkQN3X/1PNF6rO8Oa8zzG4HnbAiLnLDffncfnVSM7y9rR1ZTQAMQM
+ JYAr++RngRbUWcIHDljnubEkiO1olxxmONYhcYDKx9hrNcAwN6XmqoQtn6gYKWIFrs52
+ /znAzi1b+PMfjimX5E/FOD5bsXc51iNI91FcPsKYvN/+f+ukpInP64yPxg4Kv1AYZG8Q ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tv0tk07ty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 20:48:43 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39KKglu0004392;
+        Fri, 20 Oct 2023 20:48:42 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tv0tk07t6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 20:48:42 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39KKIR77024205;
+        Fri, 20 Oct 2023 20:48:41 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tuc2977h2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 20:48:41 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39KKmeci27263626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Oct 2023 20:48:40 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4ACA35805D;
+        Fri, 20 Oct 2023 20:48:40 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C50F58059;
+        Fri, 20 Oct 2023 20:48:39 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.44.83])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 20 Oct 2023 20:48:39 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com, stable@vger.kernel.org
+Subject: [PATCH] s390/vfio-ap: fix sysfs status attribute for AP queue devices
+Date:   Fri, 20 Oct 2023 16:48:35 -0400
+Message-ID: <20231020204838.409521-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ptKSrGG7XvvzpbUdR3T97HTB6g-QQpxD
+X-Proofpoint-ORIG-GUID: mVxkVwVB00tUJmAdfDS7gFvl3AyJMGQd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=999 clxscore=1015 spamscore=0 lowpriorityscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310200176
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently lock contention timestamp is maintained in a hash map keyed by
-pid.  That means it needs to get and release a map element (which is
-proctected by spinlock!) on each contention begin and end pair.  This
-can impact on performance if there are a lot of contention (usually from
-spinlocks).
+The 'status' attribute for AP queue devices bound to the vfio_ap device
+driver displays incorrect status when the mediated device is attached to a
+guest, but the queue device is not passed through. In the current
+implementation, the status displayed is 'in_use' which is not correct; it
+should be 'assigned'. This can happen if one of the queue devices
+associated with a given adapter is not bound to the vfio_ap device driver.
+For example:
 
-It used to go with task local storage but it had an issue on memory
-allocation in some critical paths.  Although it's addressed in recent
-kernels IIUC, the tool should support old kernels too.  So it cannot
-simply switch to the task local storage at least for now.
+Queues listed in /sys/bus/ap/drivers/vfio_ap:
+14.0005
+14.0006
+14.000d
+16.0006
+16.000d
 
-As spinlocks create lots of contention and they disabled preemption
-during the spinning, it can use per-cpu array to keep the timestamp to
-avoid overhead in hashmap update and delete.
+Queues listed in /sys/devices/vfio_ap/matrix/$UUID/matrix
+14.0005
+14.0006
+14.000d
+16.0005
+16.0006
+16.000d
 
-In contention_begin, it's easy to check the lock types since it can see
-the flags.  But contention_end cannot see it.  So let's try to per-cpu
-array first (unconditionally) if it has an active element (lock != 0).
-Then it should be used and per-task tstamp map should not be used until
-the per-cpu array element is cleared which means nested spinlock
-contention (if any) was finished and it nows see (the outer) lock.
+Queues listed in /sys/devices/vfio_ap/matrix/$UUID/guest_matrix
+14.0005
+14.0006
+14.000d
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+The reason no queues for adapter 0x16 are listed in the guest_matrix is
+because queue 16.0005 is not bound to the vfio_ap device driver, so no
+queue associated with the adapter is passed through to the guest;
+therefore, each queue device for adapter 0x16 should display 'assigned'
+instead of 'in_use', because those queues are not in use by a guest, but
+only assigned to the mediated device.
+
+Let's check the AP configuration for the guest to determine whether a
+queue device is passed through before displaying a status of 'in_use'.
+
+Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Fixes: f139862b92cf ("s390/vfio-ap: add status attribute to AP queue device's sysfs dir")
+Cc: stable@vger.kernel.org
 ---
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 89 +++++++++++++++----
- 1 file changed, 72 insertions(+), 17 deletions(-)
+ drivers/s390/crypto/vfio_ap_ops.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 69d31fd77cd0..95cd8414f6ef 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -42,6 +42,14 @@ struct {
- 	__uint(max_entries, MAX_ENTRIES);
- } tstamp SEC(".maps");
- 
-+/* maintain per-CPU timestamp at the beginning of contention */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct tstamp_data));
-+	__uint(max_entries, 1);
-+} tstamp_cpu SEC(".maps");
-+
- /* actual lock contention statistics */
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
-@@ -311,34 +319,57 @@ static inline __u32 check_lock_type(__u64 lock, __u32 flags)
- 	return 0;
- }
- 
--SEC("tp_btf/contention_begin")
--int contention_begin(u64 *ctx)
-+static inline struct tstamp_data *get_tstamp_elem(__u32 flags)
+diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+index 4db538a55192..871c14a6921f 100644
+--- a/drivers/s390/crypto/vfio_ap_ops.c
++++ b/drivers/s390/crypto/vfio_ap_ops.c
+@@ -1976,6 +1976,7 @@ static ssize_t status_show(struct device *dev,
  {
- 	__u32 pid;
- 	struct tstamp_data *pelem;
+ 	ssize_t nchars = 0;
+ 	struct vfio_ap_queue *q;
++	unsigned long apid, apqi;
+ 	struct ap_matrix_mdev *matrix_mdev;
+ 	struct ap_device *apdev = to_ap_dev(dev);
  
--	if (!enabled || !can_record(ctx))
--		return 0;
-+	/* Use per-cpu array map for spinlock and rwlock */
-+	if (flags == (LCB_F_SPIN | LCB_F_READ) || flags == LCB_F_SPIN ||
-+	    flags == (LCB_F_SPIN | LCB_F_WRITE)) {
-+		__u32 idx = 0;
-+
-+		pelem = bpf_map_lookup_elem(&tstamp_cpu, &idx);
-+		/* Do not update the element for nested locks */
-+		if (pelem && pelem->lock)
-+			pelem = NULL;
-+		return pelem;
-+	}
+@@ -1984,7 +1985,11 @@ static ssize_t status_show(struct device *dev,
+ 	matrix_mdev = vfio_ap_mdev_for_queue(q);
  
- 	pid = bpf_get_current_pid_tgid();
- 	pelem = bpf_map_lookup_elem(&tstamp, &pid);
-+	/* Do not update the element for nested locks */
- 	if (pelem && pelem->lock)
--		return 0;
-+		return NULL;
- 
- 	if (pelem == NULL) {
- 		struct tstamp_data zero = {};
- 
- 		if (bpf_map_update_elem(&tstamp, &pid, &zero, BPF_NOEXIST) < 0) {
- 			__sync_fetch_and_add(&task_fail, 1);
--			return 0;
-+			return NULL;
- 		}
- 
- 		pelem = bpf_map_lookup_elem(&tstamp, &pid);
- 		if (pelem == NULL) {
- 			__sync_fetch_and_add(&task_fail, 1);
--			return 0;
-+			return NULL;
- 		}
- 	}
-+	return pelem;
-+}
-+
-+SEC("tp_btf/contention_begin")
-+int contention_begin(u64 *ctx)
-+{
-+	struct tstamp_data *pelem;
-+
-+	if (!enabled || !can_record(ctx))
-+		return 0;
-+
-+	pelem = get_tstamp_elem(ctx[1]);
-+	if (pelem == NULL)
-+		return 0;
- 
- 	pelem->timestamp = bpf_ktime_get_ns();
- 	pelem->lock = (__u64)ctx[0];
-@@ -377,24 +408,42 @@ int contention_begin(u64 *ctx)
- SEC("tp_btf/contention_end")
- int contention_end(u64 *ctx)
- {
--	__u32 pid;
-+	__u32 pid = 0, idx = 0;
- 	struct tstamp_data *pelem;
- 	struct contention_key key = {};
- 	struct contention_data *data;
- 	__u64 duration;
-+	bool need_delete = false;
- 
- 	if (!enabled)
- 		return 0;
- 
--	pid = bpf_get_current_pid_tgid();
--	pelem = bpf_map_lookup_elem(&tstamp, &pid);
--	if (!pelem || pelem->lock != ctx[0])
--		return 0;
-+	/*
-+	 * For spinlock and rwlock, it needs to get the timestamp for the
-+	 * per-cpu map.  However, contention_end does not have the flags
-+	 * so it cannot know whether it reads percpu or hash map.
-+	 *
-+	 * Try per-cpu map first and check if there's active contention.
-+	 * If it is, do not read hash map because it cannot go to sleeping
-+	 * locks before releasing the spinning locks.
-+	 */
-+	pelem = bpf_map_lookup_elem(&tstamp_cpu, &idx);
-+	if (pelem && pelem->lock) {
-+		if (pelem->lock != ctx[0])
-+			return 0;
-+	} else {
-+		pid = bpf_get_current_pid_tgid();
-+		pelem = bpf_map_lookup_elem(&tstamp, &pid);
-+		if (!pelem || pelem->lock != ctx[0])
-+			return 0;
-+		need_delete = true;
-+	}
- 
- 	duration = bpf_ktime_get_ns() - pelem->timestamp;
- 	if ((__s64)duration < 0) {
- 		pelem->lock = 0;
--		bpf_map_delete_elem(&tstamp, &pid);
-+		if (need_delete)
-+			bpf_map_delete_elem(&tstamp, &pid);
- 		__sync_fetch_and_add(&time_fail, 1);
- 		return 0;
- 	}
-@@ -406,8 +455,11 @@ int contention_end(u64 *ctx)
- 	case LOCK_AGGR_TASK:
- 		if (lock_owner)
- 			key.pid = pelem->flags;
--		else
-+		else {
-+			if (!need_delete)
-+				pid = bpf_get_current_pid_tgid();
- 			key.pid = pid;
-+		}
- 		if (needs_callstack)
- 			key.stack_id = pelem->stack_id;
- 		break;
-@@ -428,7 +480,8 @@ int contention_end(u64 *ctx)
- 	if (!data) {
- 		if (data_map_full) {
- 			pelem->lock = 0;
--			bpf_map_delete_elem(&tstamp, &pid);
-+			if (need_delete)
-+				bpf_map_delete_elem(&tstamp, &pid);
- 			__sync_fetch_and_add(&data_fail, 1);
- 			return 0;
- 		}
-@@ -452,7 +505,8 @@ int contention_end(u64 *ctx)
- 			__sync_fetch_and_add(&data_fail, 1);
- 		}
- 		pelem->lock = 0;
--		bpf_map_delete_elem(&tstamp, &pid);
-+		if (need_delete)
-+			bpf_map_delete_elem(&tstamp, &pid);
- 		return 0;
- 	}
- 
-@@ -466,7 +520,8 @@ int contention_end(u64 *ctx)
- 		data->min_time = duration;
- 
- 	pelem->lock = 0;
--	bpf_map_delete_elem(&tstamp, &pid);
-+	if (need_delete)
-+		bpf_map_delete_elem(&tstamp, &pid);
- 	return 0;
- }
- 
+ 	if (matrix_mdev) {
+-		if (matrix_mdev->kvm)
++		apid = AP_QID_CARD(q->apqn);
++		apqi = AP_QID_QUEUE(q->apqn);
++		if (matrix_mdev->kvm &&
++		    test_bit_inv(apid, matrix_mdev->shadow_apcb.apm) &&
++		    test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm))
+ 			nchars = scnprintf(buf, PAGE_SIZE, "%s\n",
+ 					   AP_QUEUE_IN_USE);
+ 		else
 -- 
-2.42.0.655.g421f12c284-goog
+2.41.0
 
