@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DD07D06F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B717D06FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 05:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346921AbjJTDhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 23:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S1346903AbjJTDij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 23:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346873AbjJTDhx (ORCPT
+        with ESMTP id S1346886AbjJTDih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 23:37:53 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2138.outbound.protection.outlook.com [40.107.215.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53233C0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:37:50 -0700 (PDT)
+        Thu, 19 Oct 2023 23:38:37 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2053.outbound.protection.outlook.com [40.107.95.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240DFD49
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 20:38:35 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NWFx3CREPk7LTrKppvREe8InSaac9V4xUfChXWnU34LsXtHWBJPV65qYfRWjUliwGBQxGWQ6FFjcAq1Z27pgza/JJszteILWqor0gWVIhz6be+T2aM+XQfm7b2PwuFTL885MQodp9CwruDHzQ6OTfX0JaUKTMBijpLY/sGAt2rSsfL1tz+WK+Cyk6ME2GlVE5kG+0s7OOekkt63IjL1mtE0MjupL8mktI/q6UOwKZ4UkVNVc/8/nML656+2nCd6UgPvC4+bZ07TYYr8cgu7T18C6emG6mRczcorFdEK60rSLYnLp9UqTRA7X8kRk8s2j9Cd3Lkd1oq6zOjYrSK3fFg==
+ b=CHIf+L/3uvq/hiUsrUlx/JHnFEKHP4IRU9xV4jKB0SwA7B/Wk9Q4I0z9GzU81q/3s8hPImu0j5cdBW8E/p7BXUGMDnB+2oAJWIOnS0BPvNOpu9PPoz1DJplcccanackSGmenJujfW4Kdm5grQ/mhvGNtDtpP/lTu1+bA5pvW73Ms9qKE7Tsilx3DlOuHTNlRIVqLI2GiGx+DbogNOD11jhbyp/SrarqxBndbr2vlb8hGJkJN075+pvhElbkLlhvwCFvH19kGJ92EtscyAskssvG00v42pYwaUoM+3PEOf/BMu6fJ9jPYTiRGjIOuSbX1foG3+3MQAZw/Nx9jLiRrYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IuPsCV+wDdaN5JJKDxKbeTyfukDgPzJqqblflDbN5ng=;
- b=iNZs0HY9esXi4w3i5n2sJ95+chrnhy3ZiKw/7v03YE5yCpfcWvywrrlT4S4X7mB4zqqUfB4Fcb71J0cXqgaejxF+nn72HIaiSl3M0XdZW7vbeqNvTIsaLBnYyAzKubH7FmCF7Wl/a/83wP2cZZE5MGDkIcJo31VDfc00es1XNK2yL5NnFoz8ocu9kQwQHzv4rbc8hMJE2HehQnL52iBychqEKGGeVbm4FUsSkR5pAZ/MxyCbCIK91TD7ZJC1lC4TkmrERteVq0/QWj7LOgThYWNXDeiz30BiXXDMogoC/bsuaWV1wm75oojHuYoJBu4AKlK8JSMrhaWyIv3FVE8opg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ bh=BuWr7Rhe75v/8uPIlT0yqUZTQmxBEOFnEvqWsHwc6Ug=;
+ b=BG8+3a0nq/Mfq60uaDkUKm6HYlP9vh5YHHnNYuIFS2gdcWve+cugMXFjBsTw+3t4xsLOY1ctrk50nvvXOQ3WvrPbIi6OvOX2L7M/E7xTjUsSdqONnHs/kbOavOd9OiyOFjrsVpistrZ7NTYj1yJ+2k+ZGDe+zt8404BVk9QdSYIL1dUjQ4sETiE3FVIVq8GErGR4G8w2XDB2TNi/npK7DZ2z12hBF8quamBLl1fit84k2Hr95v6gX6D5byoU+/nyXa8s/whZfXIWNUBbWQVjCbgUticRbHOtO1gZPOsFOvbMWJ1ABmACUB3d7Oy2gi3kMMwt9KelMMsKwBP0WHM8AQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linutronix.de smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IuPsCV+wDdaN5JJKDxKbeTyfukDgPzJqqblflDbN5ng=;
- b=WMoek5PasEy/6gW697KN9lTyf8rY+7fk3qd2SEhMglWkRPRhvf8idaP9zWvzQrvFaF4e3vxWP1KgWtetosTxysNq8p98Bu4AT8C4NvugpVd2Hzw1XqO/ytFoJKlrj2/TcOeZrE0pjADMoKmSZNvgGIcVZtzuNRgbPAjp6iQoucGXl1KgzUiTZ27NjsX6rEhVKgUmlkx5NCBEKK/E8G83VesDOBoPLz3LNzBplirBbBvJYnU2iPjKzj+LVwkuRmJed2lM6U2BpPwVIMu9i2OAvfSF0PWUZRqNs+vEKQgtxRpO82bGGRe88THdskW3QcZy+tZ62ARvL3pqIRAhzV52kA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by TY0PR06MB5496.apcprd06.prod.outlook.com (2603:1096:400:267::8) with
+ bh=BuWr7Rhe75v/8uPIlT0yqUZTQmxBEOFnEvqWsHwc6Ug=;
+ b=0Htn6X8xa6N6dehsVz8dKsMc/gqn8KMMOKnQIve4h9jIMtOrwnJVU/xCpCR+2sj+xw3FC8v9PprG4JjdFTfbuOhePamLw7Je8OyVQZO5ICQIdKJERN7BD7apsx4m0t4QS/m4pLVGnAlO0LN0+rHtYl8cKNMlOnS2EEOLqb4ctGw=
+Received: from CY5PR18CA0031.namprd18.prod.outlook.com (2603:10b6:930:13::14)
+ by CH2PR12MB4118.namprd12.prod.outlook.com (2603:10b6:610:a4::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Fri, 20 Oct
- 2023 03:37:45 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::32d4:1209:6b36:86e5]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::32d4:1209:6b36:86e5%7]) with mapi id 15.20.6907.025; Fri, 20 Oct 2023
- 03:37:45 +0000
-Message-ID: <e38bf11a-9372-4302-8405-af44422d879e@vivo.com>
-Date:   Fri, 20 Oct 2023 11:37:41 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm:vmscan: the ref clean dirty folio skip unmap
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-References: <20231019134211.329-1-justinjiang@vivo.com>
- <20231019134211.329-3-justinjiang@vivo.com>
- <ZTH0Aob4srLnnjCM@casper.infradead.org>
-From:   zhiguojiang <justinjiang@vivo.com>
-In-Reply-To: <ZTH0Aob4srLnnjCM@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR01CA0181.apcprd01.prod.exchangelabs.com
- (2603:1096:4:189::13) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Fri, 20 Oct
+ 2023 03:38:32 +0000
+Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
+ (2603:10b6:930:13:cafe::3c) by CY5PR18CA0031.outlook.office365.com
+ (2603:10b6:930:13::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26 via Frontend
+ Transport; Fri, 20 Oct 2023 03:38:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Fri, 20 Oct 2023 03:38:32 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 19 Oct
+ 2023 22:38:31 -0500
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>
+CC:     <x86@kernel.org>, <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
+        <dlazar@gmail.com>, <hdegoede@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH 1/2] x86/apic: Allow reprogramming IOAPIC pins the first time for non-legacy IRQs
+Date:   Thu, 19 Oct 2023 22:38:05 -0500
+Message-ID: <20231020033806.88063-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|TY0PR06MB5496:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0270a854-7002-4d9d-191d-08dbd11dec6f
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|CH2PR12MB4118:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7bac5145-6fe6-4f5d-c98e-08dbd11e087e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: usFI9oVPB8jUFIJYoIJ5ofV8jW1c3pnTgp+jTFtJQEQcx6PqFT5aIdWbWwPq4nJ1jE/uo+5uG8HKlhlDKJRpZ9xgmkxL/cNG1uL751VFpO3u7nQn4Yf+jQ1s8gsxP6zXCdl1+ExE9w94MRCN5qMmcengtq5f0g2OKyXiFQ9MYTv2mN2LsX83mVjlCQohOL6/jHoq+7ucXb20psqo01prBzL7HzRsL9mX05MjLysiIRJ/AF4V4akUb5hc9ifNEimnQFhH7lkQ9sIJ7i33NDjTJApNi1sXgFV6Xk6mMKFBVzVAFFOOVYAA4L42cdFIoNuZEcOO22gGG3QFRF+CW0psL2oppu1g3sS8qI6VOdVKkei7DuCmFU/AFnS+L1fhdcsTJRaj5BvA0pxQG8xqCVEETao5aGCPq+OcgXCfmZbhHYjtkY1APgGFN8HLrGbURap9bq7sbnb725WVDe3mZtoPHeHrArTFsTtdXyeP5jgn8UqeKLPd6hMKT/yCRIPcNC5DMZD7vPd7vUbF5f6L10ZRh22WNUhLfcbDPrnnGBQaVlIMF5Owgi9Os9oxuXJ0aDPqyuWLNKDr7DSUGoGkVsJsaPXxiMkw5Ma/90nErH9C9/8N6BzW+dvpSZ2Qhs5RpkYypxWRkqLFCLgGxDVodqE6RT25v0F0L/zN7P0yWUleZcmHa8cL+BFp+COL23EB9dRu7EeXxSRRTKdBALcZ67s+vQndYWf7cNfIGgQc5dpY7iY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(5660300002)(31686004)(6916009)(66476007)(66556008)(66946007)(316002)(478600001)(8676002)(8936002)(6486002)(83380400001)(4326008)(38100700002)(2616005)(86362001)(31696002)(107886003)(52116002)(6512007)(26005)(2906002)(6506007)(6666004)(36756003)(41300700001)(4744005)(38350700005)(43062005)(14143004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bFlOUXVQdFdKV2lnVVB2QzIrMmI4WDc2VXpyZkdOVmpzeUQwMDZLMk02MFNx?=
- =?utf-8?B?dW9HOHIyRHFqblBybE5xRkx2TnNRYmFBalpxa3NxbDZMakZJSnpkck1pUTZB?=
- =?utf-8?B?YllRUlF5V1hWQ0tHSnNaUXF6d1V4WDF6blZKRTQwMFpSL0xMSjI0V1JPR2p2?=
- =?utf-8?B?MVBYMlhFdUNEWER4OHJ5R1FVQzlIcXpMTzRHNHhVY2VEUGF6Nzl4d2NiUlU4?=
- =?utf-8?B?OVRFSWNUcmFic055NmFQVW5rU2pIM0NRR1ZzQlgybEFQMTV4YWVNelJaRUwx?=
- =?utf-8?B?dkloQjhZWXFEVmxlWGs5ckcyVURRbUR3NWd2N2Zic0EvdnNwTmtvUFFOMVRI?=
- =?utf-8?B?MVpGTlNORHE5WHBjVWtDNjM2L2tSUFBGb2NCQ1N4MjJHK1Q1NExkMjNRdHJZ?=
- =?utf-8?B?Rjdrd3FRUlcvcHIyd3hqRUZtbHRMT0F0bTFFVm5aa0VKTXVvN2xWR05GSXBK?=
- =?utf-8?B?QlljZktOMlBSTTAwckQ2OURySUxVU1dONUgya0FKYjhucjF5NnNwZVJoVHJE?=
- =?utf-8?B?c1BtUm55UlhyejJmSXg2WUU2Rm1SclBENms1MXFaR09jVUlzNjVJMFNGRkR4?=
- =?utf-8?B?dTJDNXVXTVIwMGN0ajFPLzRaNENoeDdXSGRRVWxBMHVuRGU3bllxS0lIWkd5?=
- =?utf-8?B?ZDFQMVBoak9Gb1lScmJ1aFdJM1p5RmZ2Qm5pcWVZaXRGNU12d2hiOGI2OS91?=
- =?utf-8?B?YzluYk9XQ082V1FhSHFFNndrVjdUT0tCZUdhQTJzam51SkUxcVAzN2I0TDdv?=
- =?utf-8?B?VHZ2S2QzdE1CaEtPeGVuMXc4UnRodVJZR2FoaU5DQXdhQzk0MzdJUHZCeWVp?=
- =?utf-8?B?dlNxNHFyY2F0QnkvZ21FK1hPTjZiaTM1MFNGWmt2RHZNeFNxUUNXVFlkOXRj?=
- =?utf-8?B?Nk1OWEU5WkE5OFVTeU5ubkNhcVczMTlKcWFiQ2hxSnZzUUZPbFBib3dGRGlR?=
- =?utf-8?B?ekN6UmZaeGg0cWJSWkhnbm5qUHNSL2RVQ3JyU2FzUU83KzNuQmc5Ti83UXNI?=
- =?utf-8?B?aTdEVkpLaEQySy80c0hVT2RtbnFSOVpFTXc4NTZKV2NneW1WQmxjdy9leURH?=
- =?utf-8?B?bnNDb1MxdDErRkFGNU1BZXh4bEFWNHY3am9JeXVweDgrYW9Ld2E0TDdXK0lq?=
- =?utf-8?B?TUY2U2RFcjhRNlpKTUtLVVBXSGgvblJ6UHpnU1BiUURneDRPVUxtM1dXYXpW?=
- =?utf-8?B?NDdXNWU3TDdINld1L1JwQ2J0Mll5OHFNZmtVdWxBUmg0aGJBUTljTTZUaElT?=
- =?utf-8?B?UUVUWWQrQWtNZy9LNVM4d1ZkR0pTbUhpRHpnU2ZHeFZ0T3pycGJTWmRqTTdW?=
- =?utf-8?B?amZUaW9pQVBVa1ZjTDdlWkxxVURnN3FkbWl0bFBkTFdrVE5JUGNhbnRzYktL?=
- =?utf-8?B?Umt4akNiNCtKSFgzRzFoNGd5TkN4NTdzSTU2T0tuR0Vaczg4OUlKRGUvd2hK?=
- =?utf-8?B?RC82eC9ycXdJRlNibXBiQVF4T3FqMlJheFpRcG02cWJxcWRXWk1iTjlHZFdv?=
- =?utf-8?B?SVlMbzhUNno0QVUwb0JHdEkrZk5EUHdBRWxKNWg0UmtXcEZNTUtmR0JnVFR2?=
- =?utf-8?B?RWxRR3ZqSDNoQWxEVGl3U0RibmFJSkpOL3dDRlRsaHdQZnRiWmhuR0hNa0g1?=
- =?utf-8?B?d1NwbW5QeEI2Zk9BMlV2akJHeUhKSC8xOExFcTdUczJyU3lmRTQ3MjlObGxX?=
- =?utf-8?B?eWhrSlAvcy8vYzdwUGd5cDFzbzNyLzNEMHpNUE9sV1V1RTR1NHlHa2NBekd4?=
- =?utf-8?B?d1JtS1pZQmhXZktFd0xhdlBIQlZnM3BxdUdkQ3dZem5iLzh5ZWE0dTFPam4z?=
- =?utf-8?B?akZpcXAvWkJTWnJ6bENzUWJUeVBkU2ZjYkJWSGlIcjhMRTVZMmkyZVdFSGR1?=
- =?utf-8?B?cFFUSi83bmV6bHdWMlczVlJFbE9xdFBrcTJHNEdnbXJ2eUNnTFIway9SSUhv?=
- =?utf-8?B?d2ordHM5L0Q3b3h0eHNCaThIZXQ0cDZKV2hYL1lJY3Yva3hUS2ZaaHlUTHBq?=
- =?utf-8?B?aGxJWkpWV2RiUk1GRHo0dnBrUmxDcGliVHo1SERWdFhRM21JWXVYbEthd0ZM?=
- =?utf-8?B?c2VZSmc3cWJjcGpRZmxjQ0RSOE9neUpQdmxCc2s1dzA3eXZtTzRubkxURlpz?=
- =?utf-8?Q?Ci0R6kzXcgT1jsHISrMBfKJDW?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0270a854-7002-4d9d-191d-08dbd11dec6f
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 03:37:45.5411
+X-Microsoft-Antispam-Message-Info: /V8lfBX73Cup9LaX3W5fAxbbrfEm8Ewrt6xp/heD4VxtTAM/b8zL8M3h67rzlc0plA0xi+KeY4BZ2JxVbCVraStXThbD2GAAhJJF3YNHUxaf+fZLTIJWyNt4xvle9uwPdp928gAlztskaKcGC4EKaiUDcTRwEbysbm5b+8aKcnPaq2ULI0Ifd/QvRBKttZI64ijZ0J5WyO9vLIoIUFZjmR2DGuGzOrqQN+ymD8coiTldnCX/2VRVA2jCNQc4AX7ilPrHyBsTivX3oSJIZJARn2MHdKEZwcZnh+KO+dXPqoW+ETJRNfoabtoPhv9KzGLLlAJ+uuiwDq/c7b3MgY6z3m6FE9EWz2wjX/8oI1r0yBRwHX2LrzVXhmjqTZwkH74wiRuGNyBmYYhMyJKYWn4ZyWk2fKgcsgKHjGQ/f4jvoCLdtKfFfoOXeRLan57sdK1D0LEsOOMi+r5E2UPZG4MtDnAO7tw0Jj/WSdXIjxLxoCe8YprEq7//anCPO4ij7yLmyagVO/nGrrxEa8c41OHeI3XLta0/feHG2zcSiyFpU6ShdE0918vY5xvNai597nKQJ1vkOakvaw3wJjFBQmd7PHQTvbGv7HKJXv1RoZTsTVFtkVJiCpvKwhi1P89TCGrCgnaGiXmEN0tOn/EUosLlGPuRC44xZPaN19Y1LpmPcc678yrHhWqIysO0rslDri7suuf25oB2LeOAC6ZSJRjO73FHdufJppsqXSLkEo9S4gePmxug4aeArR1RI0dmSUDuTMAFL2Y39O5cMCt/6YXMCw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(451199024)(186009)(1800799009)(82310400011)(64100799003)(46966006)(40470700004)(36840700001)(81166007)(356005)(40460700003)(82740400003)(40480700001)(36860700001)(4326008)(8676002)(54906003)(2906002)(36756003)(8936002)(7696005)(6666004)(16526019)(478600001)(1076003)(26005)(426003)(336012)(2616005)(41300700001)(316002)(47076005)(5660300002)(966005)(110136005)(83380400001)(70586007)(70206006)(86362001)(44832011)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 03:38:32.3714
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aP0x2MrGZ0OiWqUsDdoxDnWjQfw7LU5PhwvpLdG+AIclY2OMirwVrmSvqf2MjayyFleFexK5oXi5QZTIBW4X8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5496
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bac5145-6fe6-4f5d-c98e-08dbd11e087e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4118
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,20 +99,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If the system is set up without legacy IRQs configured
+acpi_register_gsi_ioapic() still needs to be able to program the IOAPIC
+to match the values from _CRS which might not match what is already
+programmed to the IOAPIC.
 
+Reported-by: dlazar@gmail.com
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218003
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ arch/x86/kernel/apic/io_apic.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-在 2023/10/20 11:29, Matthew Wilcox 写道:
-> On Thu, Oct 19, 2023 at 09:42:11PM +0800, Zhiguo Jiang wrote:
->> +++ b/mm/vmscan.c
->> @@ -1225,7 +1225,10 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->>   			stat->nr_ref_keep += nr_pages;
->>   			goto keep_locked;
->>   		case FOLIOREF_RECLAIM:
->> +			break;
->>   		case FOLIOREF_RECLAIM_CLEAN:
->> +			if (dirty)
->> +				goto activate_locked;
-> Why activate_locked and not keep_locked?
-Hi,
-This is  a mistake, should be keep_locked.
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 00da6cf6b07d..27dd279dcc7b 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -928,12 +928,8 @@ static bool mp_check_pin_attr(int irq, struct irq_alloc_info *info)
+ {
+ 	struct mp_chip_data *data = irq_get_chip_data(irq);
+ 
+-	/*
+-	 * setup_IO_APIC_irqs() programs all legacy IRQs with default trigger
+-	 * and polarity attributes. So allow the first user to reprogram the
+-	 * pin with real trigger and polarity attributes.
+-	 */
+-	if (irq < nr_legacy_irqs() && data->count == 1) {
++	/* allow the first user to reprogram the pin with real trigger and polarity */
++	if (data->count == 1) {
+ 		if (info->ioapic.is_level != data->is_level)
+ 			mp_register_handler(irq, info->ioapic.is_level);
+ 		data->entry.is_level = data->is_level = info->ioapic.is_level;
+-- 
+2.34.1
 
